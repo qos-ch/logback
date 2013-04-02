@@ -223,8 +223,8 @@ public class ReconfigureOnChangeTest {
 
     rocfDetachReconfigurationToNewThreadAndAwaitTermination();
 
-    checker.containsMatch(Status.WARN, "Falling back to previously registered safe configuration.");
-    checker.containsMatch(Status.INFO, "Re-registering previous fallback configuration once more");
+    checker.assertContainsMatch(Status.WARN, "Falling back to previously registered safe configuration.");
+    checker.assertContainsMatch(Status.INFO, "Re-registering previous fallback configuration once more");
 
     assertThatFirstFilterIsROCF();
   }
@@ -242,8 +242,8 @@ public class ReconfigureOnChangeTest {
     writeToFile(innerFile, "<included>\n<root>\n</included>");
     rocfDetachReconfigurationToNewThreadAndAwaitTermination();
 
-    checker.containsMatch(Status.WARN, "Falling back to previously registered safe configuration.");
-    checker.containsMatch(Status.INFO, "Re-registering previous fallback configuration once more");
+    checker.assertContainsMatch(Status.WARN, "Falling back to previously registered safe configuration.");
+    checker.assertContainsMatch(Status.INFO, "Re-registering previous fallback configuration once more");
 
     assertThatFirstFilterIsROCF();
   }
@@ -284,8 +284,8 @@ public class ReconfigureOnChangeTest {
 
   private void verify(int expected) {
     StatusChecker checker = new StatusChecker(loggerContext);
-    StatusPrinter.print(loggerContext);
-    assertTrue(checker.isErrorFree(0));
+    //StatusPrinter.print(loggerContext);
+    checker.assertIsErrorFree();
 
     int effectiveResets = checker
             .matchCount(CoreConstants.RESET_MSG_PREFIX);

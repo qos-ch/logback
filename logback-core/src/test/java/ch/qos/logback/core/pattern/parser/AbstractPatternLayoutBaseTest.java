@@ -84,8 +84,8 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
     String s = plb.doLayout(getEventObject());
     assertEquals("", s);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    StatusPrinter.print(context);
-    assertTrue(checker.containsMatch("Empty or null pattern."));
+    //StatusPrinter.print(context);
+    checker.assertContainsMatch("Empty or null pattern.");
   }
 
   @Test
@@ -99,8 +99,8 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
     String s = plb.doLayout(getEventObject());
     assertEquals("", s);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    StatusPrinter.print(context);
-    assertTrue(checker.containsMatch("Empty or null pattern."));
+    //StatusPrinter.print(context);
+    checker.assertContainsMatch("Empty or null pattern.");
   }
 
 }

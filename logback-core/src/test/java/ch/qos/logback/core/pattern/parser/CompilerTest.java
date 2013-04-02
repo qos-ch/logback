@@ -13,15 +13,6 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.Converter;
@@ -29,13 +20,21 @@ import ch.qos.logback.core.pattern.Converter123;
 import ch.qos.logback.core.pattern.ConverterHello;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.Before;
+import org.junit.Test;
 
-public class CompilerTest  {
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
+
+public class CompilerTest {
 
   Map<String, String> converterMap = new HashMap<String, String>();
   Context context = new ContextBase();
-  
-  @Before public void setUp() {
+
+  @Before
+  public void setUp() {
     converterMap.put("OTT", Converter123.class.getName());
     converterMap.put("hello", ConverterHello.class.getName());
     converterMap.putAll(Parser.DEFAULT_COMPOSITE_CONVERTER_MAP);
@@ -69,7 +68,7 @@ public class CompilerTest  {
       Node t = p.parse();
       Converter<Object> head = p.compile(t, converterMap);
       String result = write(head, new Object());
-      assertEquals("abc Hello", result); 
+      assertEquals("abc Hello", result);
     }
     {
       Parser<Object> p = new Parser<Object>("abc %hello %OTT");
@@ -237,9 +236,9 @@ public class CompilerTest  {
     p.setContext(context);
     Node t = p.parse();
     p.compile(t, converterMap);
-    StatusChecker chercker = new StatusChecker(context.getStatusManager());
-    assertTrue(chercker
-        .containsMatch("\\[unknown] is not a valid conversion word"));
+    StatusChecker checker = new StatusChecker(context.getStatusManager());
+    checker
+            .assertContainsMatch("\\[unknown] is not a valid conversion word");
   }
 
   @Test

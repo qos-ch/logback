@@ -80,7 +80,7 @@ public class ConditionalTest {
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNotNull(consoleAppender);
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
   }
 
   @SuppressWarnings("rawtypes")
@@ -97,7 +97,7 @@ public class ConditionalTest {
     ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
     assertNull(consoleAppender);
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
   }
 
   @SuppressWarnings("rawtypes")
@@ -120,7 +120,7 @@ public class ConditionalTest {
 
     // StatusPrinter.printIfErrorsOccured(context);
     StatusChecker checker = new StatusChecker(context);
-    assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
   }
 
   @Test
@@ -131,11 +131,10 @@ public class ConditionalTest {
              + "conditional/conditionalIncludeExistingFile.xml";
      configure(configFileAsStr);
 
-     StatusPrinter.print(context);
      ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
      assertNotNull(consoleAppender);
      StatusChecker checker = new StatusChecker(context);
-     assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
    }
   @Test
 
@@ -146,11 +145,10 @@ public class ConditionalTest {
              + "conditional/conditionalIncludeInexistentFile.xml";
      configure(configFileAsStr);
 
-     StatusPrinter.print(context);
      ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
      assertNull(consoleAppender);
      StatusChecker checker = new StatusChecker(context);
-     assertTrue(checker.isErrorFree(0));
+     checker.assertIsErrorFree();
    }
 
 

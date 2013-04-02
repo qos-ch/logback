@@ -13,15 +13,6 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -32,6 +23,11 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -118,7 +114,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setFile("x");
     StatusPrinter.print(context);
     StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
-    statusChecker.containsMatch(Status.ERROR,
+    statusChecker.assertContainsMatch(Status.ERROR,
             "File property must be set before any triggeringPolicy ");
   }
 
@@ -128,9 +124,8 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setTriggeringPolicy(new SizeBasedTriggeringPolicy<Object>());
     rfa.setFile("x");
     StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
-    boolean containsMatch = statusChecker.containsMatch(Status.ERROR,
+    statusChecker.assertContainsMatch(Status.ERROR,
             "File property must be set before any triggeringPolicy ");
-    assertTrue(containsMatch);
   }
 
   @Test
@@ -170,7 +165,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-.log");
 
     FixedWindowRollingPolicy fwRollingPolicy = new FixedWindowRollingPolicy();
-                   fwRollingPolicy.setContext(context);
+    fwRollingPolicy.setContext(context);
     fwRollingPolicy.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-%i.log.zip");
     fwRollingPolicy.setParent(rfa);
     fwRollingPolicy.start();
@@ -193,7 +188,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     assertFalse(sbTriggeringPolicy.isStarted());
 
   }
-  
+
   /**
    * Test for http://jira.qos.ch/browse/LOGBACK-796
    */
@@ -206,7 +201,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     rfa.start();
     StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
     final String msg = "File property must not match fileNamePattern";
-	boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
+    boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
     assertTrue("Missing error: " + msg, containsMatch);
   }
 

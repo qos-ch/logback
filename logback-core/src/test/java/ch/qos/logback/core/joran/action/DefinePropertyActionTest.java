@@ -82,8 +82,8 @@ public class DefinePropertyActionTest {
     String inContextFoo = context.getProperty("foo");
     assertNull(inContextFoo);
     // check context errors
-    assertTrue(checker.containsMatch(Status.ERROR,
-        "Missing property name for property definer. Near \\[define\\] line 1"));
+    checker.assertContainsMatch(Status.ERROR,
+        "Missing property name for property definer. Near \\[define\\] line 1");
   }
 
   @Test
@@ -91,8 +91,8 @@ public class DefinePropertyActionTest {
     simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
     String inContextFoo = context.getProperty("foo");
     assertNull(inContextFoo);
-    assertTrue(checker.containsMatch(Status.ERROR,
-        "Missing class name for property definer. Near \\[define\\] line 1"));
+    checker.assertContainsMatch(Status.ERROR,
+        "Missing class name for property definer. Near \\[define\\] line 1");
   }
 
   @Test
@@ -102,7 +102,7 @@ public class DefinePropertyActionTest {
     String inContextFoo = context.getProperty("foo");
     assertNull(inContextFoo);
     // check context errors
-    checker.containsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
+    checker.assertContainsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
   }
 
 }

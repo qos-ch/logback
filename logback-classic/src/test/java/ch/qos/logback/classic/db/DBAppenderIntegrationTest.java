@@ -13,9 +13,17 @@
  */
 package ch.qos.logback.classic.db;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.db.DriverManagerConnectionSource;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.MDC;
 
 import java.net.InetAddress;
 import java.sql.Connection;
@@ -25,24 +33,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.core.testUtil.EnvUtilForTests;
-import ch.qos.logback.core.util.EnvUtil;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.MDC;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.db.DriverManagerConnectionSource;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.StatusPrinter;
+import static org.junit.Assert.*;
 
 public class DBAppenderIntegrationTest {
 
@@ -111,8 +102,7 @@ public class DBAppenderIntegrationTest {
 
     // check that there were no errors
     StatusChecker checker = new StatusChecker(lc);
-    assertTrue(checker.isErrorFree(0));
-   
+    checker.assertIsErrorFree();
   }
 
   long getLastEventId() throws SQLException {

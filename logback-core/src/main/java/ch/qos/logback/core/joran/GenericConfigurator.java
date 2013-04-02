@@ -13,6 +13,15 @@
  */
 package ch.qos.logback.core.joran;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.event.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.*;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.status.StatusUtil;
+import org.xml.sax.InputSource;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -22,22 +31,6 @@ import java.net.URLConnection;
 import java.util.List;
 
 import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
-
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.status.StatusChecker;
-import org.xml.sax.InputSource;
-
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
-import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.spi.SimpleRuleStore;
-import ch.qos.logback.core.spi.ContextAwareBase;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
@@ -142,8 +135,8 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     recorder.recordEvents(inputSource);
     doConfigure(recorder.saxEventList);
     // no exceptions a this level
-    StatusChecker statusChecker = new StatusChecker(context);
-    if (statusChecker.noXMLParsingErrorsOccurred(threshold)) {
+    StatusUtil statusUtil = new StatusUtil(context);
+    if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
       addInfo("Registering current configuration as safe fallback point");
       registerSafeConfiguration();
     }

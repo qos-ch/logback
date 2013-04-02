@@ -284,8 +284,8 @@ public class ParserTest {
       assertEquals("Expecting RIGHT_PARENTHESIS token but got null", ise.getMessage());
     }
     StatusChecker sc = new StatusChecker(context);
-    assertTrue(sc.containsMatch("Expecting RIGHT_PARENTHESIS"));
-    assertTrue(sc.containsMatch("See also " + Parser.MISSING_RIGHT_PARENTHESIS));
+    sc.assertContainsMatch("Expecting RIGHT_PARENTHESIS");
+    sc.assertContainsMatch("See also " + Parser.MISSING_RIGHT_PARENTHESIS);
   }
 
 }

@@ -20,10 +20,7 @@ import java.util.List;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.ThrowableToStringArray;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.*;
 
 import static ch.qos.logback.core.status.StatusUtil.filterStatusListByTimeThreshold;
 
@@ -64,8 +61,8 @@ public class StatusPrinter {
       ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
     } else {
-      StatusChecker sc = new StatusChecker(context);
-      if (sc.getHighestLevel(threshold) >= ErrorStatus.WARN) {
+      StatusUtil statusUtil = new StatusUtil(context);
+      if (statusUtil.getHighestLevel(threshold) >= ErrorStatus.WARN) {
         print(sm, threshold);
       }
     }
@@ -87,8 +84,8 @@ public class StatusPrinter {
       ps.println("WARN: Context named \"" + context.getName()
           + "\" has no status manager");
     } else {
-      StatusChecker sc = new StatusChecker(context);
-      if (sc.getHighestLevel(0) == ErrorStatus.ERROR) {
+      StatusUtil statusUtil = new StatusUtil(context);
+      if (statusUtil.getHighestLevel(0) == ErrorStatus.ERROR) {
         print(sm);
       }
     }

@@ -38,6 +38,7 @@ public class TimeBasedRollingWithConfigFileTest extends
         ScaffoldingForRollingTests {
 
   LoggerContext lc = new LoggerContext();
+  StatusChecker statusChecker = new StatusChecker(lc);
   Logger logger = lc.getLogger(this.getClass());
   int fileSize = 0;
   int fileIndexCounter = -1;
@@ -69,9 +70,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     lc.putProperty("testId", testId);
     loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId
             + ".xml");
-    StatusChecker sc = new StatusChecker(lc);
-    StatusPrinter.print(lc  );
-    assertTrue(sc.isErrorFree(0));
+    statusChecker.assertIsErrorFree();
 
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
@@ -118,8 +117,7 @@ public class TimeBasedRollingWithConfigFileTest extends
     RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root
             .getAppender("ROLLING");
 
-    StatusChecker sc = new StatusChecker(lc);
-    assertTrue(sc.isErrorFree(0));
+    statusChecker.assertIsErrorFree();
 
     TimeBasedRollingPolicy tprp = (TimeBasedRollingPolicy<ILoggingEvent>) rfa
             .getTriggeringPolicy();

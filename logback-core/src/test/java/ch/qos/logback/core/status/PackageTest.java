@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({StatusBaseTest.class, StatusCheckerTest.class})
+@Suite.SuiteClasses({StatusBaseTest.class, StatusUtilTest.class})
 
 public class PackageTest {
 }

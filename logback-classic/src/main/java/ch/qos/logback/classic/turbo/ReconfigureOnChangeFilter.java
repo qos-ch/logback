@@ -23,7 +23,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.status.StatusUtil;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
@@ -207,14 +207,14 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     private void performXMLConfiguration(LoggerContext lc) {
       JoranConfigurator jc = new JoranConfigurator();
       jc.setContext(context);
-      StatusChecker statusChecker = new StatusChecker(context);
+      StatusUtil statusUtil = new StatusUtil(context);
       List<SaxEvent> eventList = jc.recallSafeConfiguration();
       URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
       lc.reset();
       long threshold = System.currentTimeMillis();
       try {
         jc.doConfigure(mainConfigurationURL);
-        if (statusChecker.hasXMLParsingErrors(threshold)) {
+        if (statusUtil.hasXMLParsingErrors(threshold)) {
           fallbackConfiguration(lc, eventList, mainURL);
         }
       } catch (JoranException e) {

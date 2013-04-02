@@ -148,7 +148,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     //21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [SystemOut, SystemErr]
     //21:28:01,246   |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using previously set target, System.out by default.
 
-    checker.containsMatch(Status.ERROR, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
+    checker.assertContainsMatch(Status.ERROR, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
 
   }
 

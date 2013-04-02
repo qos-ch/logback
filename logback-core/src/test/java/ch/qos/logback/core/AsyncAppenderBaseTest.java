@@ -156,14 +156,14 @@ public class AsyncAppenderBaseTest {
     assertEquals(0, asyncAppenderBase.getQueueSize());
     asyncAppenderBase.start();
     assertFalse(asyncAppenderBase.isStarted());
-    assertTrue(statusChecker.containsMatch("Invalid queue size"));
+    statusChecker.assertContainsMatch("Invalid queue size");
   }
 
   private void verify(ListAppender la, int expectedSize) {
     assertFalse(la.isStarted());
     assertEquals(expectedSize, la.list.size());
-    assertTrue(statusChecker.isErrorFree(0));
-    assertTrue(statusChecker.containsMatch("Worker thread will flush remaining events before exiting."));
+    statusChecker.assertIsErrorFree();
+    statusChecker.assertContainsMatch("Worker thread will flush remaining events before exiting.");
   }
 
   static class LossyAsyncAppender extends AsyncAppenderBase<Integer> {

@@ -38,6 +38,7 @@ import ch.qos.logback.core.util.CoreTestConstants;
 public class UniqueFileTest {
 
   LoggerContext lc = new LoggerContext();
+  StatusChecker sc = new StatusChecker(lc);
   Logger logger = lc.getLogger(this.getClass());
 
 
@@ -53,9 +54,7 @@ public class UniqueFileTest {
     CachingDateFormatter sdf = new CachingDateFormatter("yyyyMMdd'T'HHmmss");
     String timestamp = sdf.format(System.currentTimeMillis());
 
-    StatusPrinter.print(lc);
-    StatusChecker sc = new StatusChecker(lc);
-    assertTrue(sc.isErrorFree(0));
+    sc.assertIsErrorFree();
 
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
     root.info("hello");

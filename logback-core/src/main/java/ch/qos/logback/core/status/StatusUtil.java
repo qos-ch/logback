@@ -14,11 +14,25 @@
 package ch.qos.logback.core.status;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StatusUtil {
+
+  StatusManager sm;
+
+  public StatusUtil(StatusManager sm) {
+    this.sm = sm;
+  }
+
+  public StatusUtil(Context context) {
+    this.sm = context.getStatusManager();
+  }
 
   /**
    * Returns true if the StatusManager associated with the context passed
@@ -49,26 +63,123 @@ public class StatusUtil {
     return filteredList;
   }
 
-  static public void addStatus(Context context, Status status) {
-    if (context == null) {
-      return;
-    }
-    StatusManager sm = context.getStatusManager();
+  public void addStatus(Status status) {
     if (sm != null) {
       sm.add(status);
     }
   }
- 
-  static public void addInfo(Context context, Object caller, String msg) {
-    addStatus(context, new InfoStatus(msg, caller));
+
+  public void addInfo(Object caller, String msg) {
+    addStatus(new InfoStatus(msg, caller));
   }
 
-  static public void addWarn(Context context, Object caller, String msg) {
-    addStatus(context, new WarnStatus(msg, caller));
+  public void addWarn(Object caller, String msg) {
+    addStatus(new WarnStatus(msg, caller));
   }
-  
-  static public void addError(Context context, Object caller, String msg,
+
+  public void addError(Object caller, String msg,
       Throwable t) {
-    addStatus(context, new ErrorStatus(msg, caller, t));
+    addStatus(new ErrorStatus(msg, caller, t));
   }
+
+  public boolean hasXMLParsingErrors(long threshold) {
+    return containsMatch(threshold, Status.ERROR, CoreConstants.XML_PARSING);
+  }
+
+  public boolean noXMLParsingErrorsOccurred(long threshold) {
+    return !hasXMLParsingErrors(threshold);
+  }
+
+  public int getHighestLevel(long threshold) {
+    List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
+    int maxLevel = Status.INFO;
+    for (Status s : filteredList) {
+      if (s.getLevel() > maxLevel)
+        maxLevel = s.getLevel();
+    }
+    return maxLevel;
+  }
+
+  public boolean isErrorFree(long threshold) {
+    return Status.ERROR > getHighestLevel(threshold);
+  }
+
+  public boolean containsMatch(long threshold, int level, String regex) {
+    List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
+    Pattern p = Pattern.compile(regex);
+
+    for (Status status : filteredList) {
+      if (level != status.getLevel()) {
+        continue;
+      }
+      String msg = status.getMessage();
+      Matcher matcher = p.matcher(msg);
+      if (matcher.lookingAt()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean containsMatch(int level, String regex) {
+    return containsMatch(0, level, regex);
+  }
+
+  public boolean containsMatch(String regex) {
+    Pattern p = Pattern.compile(regex);
+    for (Status status : sm.getCopyOfStatusList()) {
+      String msg = status.getMessage();
+      Matcher matcher = p.matcher(msg);
+      if (matcher.lookingAt()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public int matchCount(String regex) {
+    int count = 0;
+    Pattern p = Pattern.compile(regex);
+    for (Status status : sm.getCopyOfStatusList()) {
+      String msg = status.getMessage();
+      Matcher matcher = p.matcher(msg);
+      if (matcher.lookingAt()) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  public boolean containsException(Class exceptionType) {
+    Iterator stati = sm.getCopyOfStatusList().iterator();
+    while (stati.hasNext()) {
+      Status status = (Status) stati.next();
+      Throwable t = status.getThrowable();
+      if (t != null && t.getClass().getName().equals(exceptionType.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Return the time of last reset. -1 if last reset time could not be found
+   *
+   * @return time of last reset or -1
+   */
+  public long timeOfLastReset() {
+    List<Status> statusList = sm.getCopyOfStatusList();
+    if (statusList == null)
+      return -1;
+
+    int len = statusList.size();
+    for (int i = len - 1; i >= 0; i--) {
+      Status s = statusList.get(i);
+      if (CoreConstants.RESET_MSG_PREFIX.equals(s.getMessage())) {
+        return s.getDate();
+      }
+    }
+    return -1;
+  }
+
 }

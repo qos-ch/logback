@@ -144,7 +144,6 @@ public class JoranConfiguratorTest {
   @Test
   public void statusListener() throws JoranException {
     configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
-    // StatusPrinter.print(loggerContext);
   }
 
   @Test
@@ -305,10 +304,9 @@ public class JoranConfiguratorTest {
     loggerContext.getExecutorService().shutdown();
     loggerContext.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
 
-    //StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree(0));
-    assertTrue(checker.containsMatch(CoreConstants.RESET_MSG_PREFIX));
+    checker.assertIsErrorFree();
+    checker.assertContainsMatch(CoreConstants.RESET_MSG_PREFIX);
   }
 
   @Test
@@ -341,7 +339,7 @@ public class JoranConfiguratorTest {
     assertEquals("UTF-8", encoder.getCharset().displayName());
 
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
   }
 
   void verifyJULLevel(String loggerName, Level expectedLevel) {
@@ -368,9 +366,8 @@ public class JoranConfiguratorTest {
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
             + "/jul/levelChangePropagator0.xml";
     configure(configFileAsStr);
-    StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
     verifyJULLevel(loggerName, null);
     verifyJULLevel("a.b.c", Level.WARN);
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
@@ -385,9 +382,8 @@ public class JoranConfiguratorTest {
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
             + "/jul/levelChangePropagator1.xml";
     configure(configFileAsStr);
-    StatusPrinter.print(loggerContext);
     StatusChecker checker = new StatusChecker(loggerContext);
-    assertTrue(checker.isErrorFree(0));
+    checker.assertIsErrorFree();
     verifyJULLevel(loggerName, Level.INFO);
     verifyJULLevel("a.b.c", Level.WARN);
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
@@ -410,10 +406,9 @@ public class JoranConfiguratorTest {
   public void lbcore193() throws JoranException {
     String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
     configure(configFileAsStr);
-    //StatusPrinter.print(loggerContext);
-    checker.containsException(ScanException.class);
-    checker.containsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
-    checker.containsMatch(Status.ERROR, "See also " + Parser.MISSING_RIGHT_PARENTHESIS);
+    checker.asssertContainsException(ScanException.class);
+    checker.assertContainsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
+    checker.assertContainsMatch(Status.ERROR, "See also " + Parser.MISSING_RIGHT_PARENTHESIS);
   }
 
 
@@ -431,8 +426,7 @@ public class JoranConfiguratorTest {
     assertEquals("node0", loggerContext.getProperty("nodeId"));
     assertEquals("tem", System.getProperty("sys"));
     assertNotNull(loggerContext.getProperty("path"));
-    assertTrue(checker.isErrorFree(0));
-    StatusPrinter.print(loggerContext);
+    checker.assertIsErrorFree();
   }
 
 
@@ -444,6 +438,6 @@ public class JoranConfiguratorTest {
     configurator.setContext(loggerContext);
     configurator.doConfigure(ClassicTestConstants.ISSUES_PREFIX+"lbcore254.xml");
 
-    checker.isErrorFree(0);
+    checker.assertIsErrorFree();
  }
 }

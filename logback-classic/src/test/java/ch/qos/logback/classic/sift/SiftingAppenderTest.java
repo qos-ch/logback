@@ -93,9 +93,9 @@ public class SiftingAppenderTest {
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(nopa);
-    assertTrue(sc.containsMatch(ErrorStatus.ERROR, "No nested appenders found"));
-    assertTrue(sc.containsMatch(ErrorStatus.ERROR,
-        "Failed to build an appender for discriminating value \\[smoke\\]"));
+    sc.assertContainsMatch(ErrorStatus.ERROR, "No nested appenders found");
+    sc.assertContainsMatch(ErrorStatus.ERROR,
+        "Failed to build an appender for discriminating value \\[smoke\\]");
   }
 
   @Test
@@ -113,8 +113,8 @@ public class SiftingAppenderTest {
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(listAppender);
-    assertTrue(sc.containsMatch(ErrorStatus.ERROR,
-        "Only and only one appender can be nested"));
+    sc.assertContainsMatch(ErrorStatus.ERROR,
+        "Only and only one appender can be nested");
   }
 
   @Test

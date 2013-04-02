@@ -36,13 +36,14 @@ public class MBeanUtil {
       String objectNameAsStr) {
     String msg = "Failed to convert [" + objectNameAsStr + "] to ObjectName";
 
+    StatusUtil statusUtil = new StatusUtil(context);
     try {
       return new ObjectName(objectNameAsStr);
     } catch (MalformedObjectNameException e) {
-      StatusUtil.addError(context, caller, msg, e);
+      statusUtil.addError(caller, msg, e);
       return null;
     } catch (NullPointerException e) {
-      StatusUtil.addError(context, caller, msg, e);
+      statusUtil.addError(caller, msg, e);
       return null;
     }
   }
@@ -57,28 +58,31 @@ public class MBeanUtil {
     try {
       mbs.registerMBean(jmxConfigurator, objectName);
     } catch (Exception e) {
-      StatusUtil.addError(loggerContext, caller, "Failed to create mbean", e);
+      StatusUtil statusUtil = new StatusUtil(loggerContext);
+      statusUtil.addError(caller, "Failed to create mbean", e);
     }
   }
 
   public static void unregister(LoggerContext loggerContext, MBeanServer mbs,
       ObjectName objectName, Object caller) {
+
+    StatusUtil statusUtil = new StatusUtil(loggerContext);
     if (mbs.isRegistered(objectName)) {
       try {
-        StatusUtil.addInfo(loggerContext, caller, "Unregistering mbean ["
+        statusUtil.addInfo(caller, "Unregistering mbean ["
             + objectName + "]");
         mbs.unregisterMBean(objectName);
       } catch (InstanceNotFoundException e) {
         // this is theoretically impossible
-        StatusUtil.addError(loggerContext, caller, "Failed to unregister mbean"
+        statusUtil.addError(caller, "Failed to unregister mbean"
             + objectName, e);
       } catch (MBeanRegistrationException e) {
         // this is theoretically impossible
-        StatusUtil.addError(loggerContext, caller, "Failed to unregister mbean"
+        statusUtil.addError(caller, "Failed to unregister mbean"
             + objectName, e);
       }
     } else {
-      StatusUtil.addInfo(loggerContext, caller, "mbean [" + objectName
+      statusUtil.addInfo(caller, "mbean [" + objectName
           + "] does not seem to be registered");
     }
   }
