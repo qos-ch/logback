@@ -13,31 +13,59 @@
  */
 package ch.qos.logback.core.net.server;
 
-import java.util.concurrent.Executor;
-
-import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.AbstractExecutorService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A mock {@link ThreadPoolFactoryBean} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
-class MockThreadPoolFactoryBean extends ThreadPoolFactoryBean 
-    implements Executor {
+class MockThreadPoolFactoryBean extends ThreadPoolFactoryBean {
 
+  private final MockExecutorService executorService = 
+      new MockExecutorService();
+  
   private Runnable lastCommand;
   
   @Override
-  public Executor createExecutor() {
-    return this;
-  }
-
-  public void execute(Runnable command) {
-    lastCommand = command;    
+  public ExecutorService createExecutor() {
+    return executorService;
   }
 
   public Runnable getLastCommand() {
     return lastCommand;
+  }
+  
+  private class MockExecutorService extends AbstractExecutorService {
+
+    public void shutdown() {
+    }
+
+    public List<Runnable> shutdownNow() {
+      return Collections.emptyList();
+    }
+
+    public boolean isShutdown() {
+      return true;
+    }
+
+    public boolean isTerminated() {
+      return true;
+    }
+
+    public boolean awaitTermination(long timeout, TimeUnit unit)
+        throws InterruptedException {
+      return true;
+    }
+
+    public void execute(Runnable command) {
+      lastCommand = command;
+    }
+    
   }
   
 }

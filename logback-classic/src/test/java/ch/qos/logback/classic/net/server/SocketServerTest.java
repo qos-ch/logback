@@ -73,7 +73,6 @@ public class SocketServerTest {
     assertTrue(runner.isContextInjected());
     assertTrue(runner.isStarted());
     assertSame(listener, socketServer.getLastListener());
-    assertSame(threadPool, socketServer.getLastExecutor());
     
     socketServer.stop();
     assertFalse(runner.isStarted());

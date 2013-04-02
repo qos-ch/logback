@@ -39,7 +39,6 @@ public class InstrumentedSocketServer extends SocketServer {
   private final ServerRunner<RemoteAppenderClient> runner;
   
   private ServerListener lastListener;
-  private Executor lastExecutor;
   
   public InstrumentedSocketServer(ServerSocket serverSocket) {
     this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
@@ -81,7 +80,6 @@ public class InstrumentedSocketServer extends SocketServer {
       ServerListener<RemoteAppenderClient> listener,
       Executor executor) {
     lastListener = listener;
-    lastExecutor = executor;
     return runner != null ? runner : super.createServerRunner(listener, executor);
   }
 
@@ -95,8 +93,4 @@ public class InstrumentedSocketServer extends SocketServer {
     return lastListener;
   }
 
-  public Executor getLastExecutor() {
-    return lastExecutor;
-  }
-  
 }

@@ -71,7 +71,6 @@ public class ServerSocketAppenderBaseTest {
     assertTrue(runner.isContextInjected());
     assertTrue(runner.isStarted());
     assertSame(listener, appender.getLastListener());
-    assertSame(threadPool, appender.getLastExecutor());
     
     appender.stop();
     assertFalse(runner.isStarted());

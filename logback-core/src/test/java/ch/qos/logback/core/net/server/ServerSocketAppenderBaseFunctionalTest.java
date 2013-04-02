@@ -21,7 +21,6 @@ import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +54,7 @@ public class ServerSocketAppenderBaseFunctionalTest {
     
     appender.setThreadPool(new ThreadPoolFactoryBean() {
       @Override
-      public Executor createExecutor() {
+      public ExecutorService createExecutor() {
         return executor;
       } 
     });

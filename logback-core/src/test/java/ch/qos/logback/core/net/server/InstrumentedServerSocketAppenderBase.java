@@ -37,7 +37,6 @@ public class InstrumentedServerSocketAppenderBase
   private final ServerRunner<RemoteLoggerClient> runner;
   
   private ServerListener lastListener;
-  private Executor lastExecutor;
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
     this(serverSocket, new RemoteLoggerServerListener(serverSocket), null);
@@ -93,7 +92,6 @@ public class InstrumentedServerSocketAppenderBase
   protected ServerRunner<RemoteLoggerClient> createServerRunner(
       ServerListener<RemoteLoggerClient> listener, Executor executor) {
     lastListener = listener;
-    lastExecutor = executor;
     return runner != null ? runner : super.createServerRunner(listener, executor);
   }
 
@@ -105,10 +103,6 @@ public class InstrumentedServerSocketAppenderBase
 
   public ServerListener getLastListener() {
     return lastListener;
-  }
-
-  public Executor getLastExecutor() {
-    return lastExecutor;
   }
 
 }

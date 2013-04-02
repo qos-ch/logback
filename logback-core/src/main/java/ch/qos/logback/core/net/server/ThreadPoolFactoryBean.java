@@ -16,6 +16,7 @@ package ch.qos.logback.core.net.server;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +37,7 @@ public class ThreadPoolFactoryBean {
   private long keepAliveTime;
   private int queueSize = 1;
   
-  public Executor createExecutor() {
+  public ExecutorService createExecutor() {
     BlockingQueue<Runnable> queue = createQueue();
     return createThreadPool(queue);
   }
@@ -50,7 +51,7 @@ public class ThreadPoolFactoryBean {
     }
   }
   
-  private Executor createThreadPool(BlockingQueue<Runnable> queue) {
+  private ExecutorService createThreadPool(BlockingQueue<Runnable> queue) {
     try {
       return new ThreadPoolExecutor(getCorePoolSize(), getMaximumPoolSize(), 
           getKeepAliveTime(), TimeUnit.MILLISECONDS, queue);
