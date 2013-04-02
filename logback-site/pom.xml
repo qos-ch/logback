@@ -1,62 +1,63 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-           http://maven.apache.org/maven-v4_0_0.xsd">
-    <parent>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-parent</artifactId>
-        <version>1.0.11-SNAPSHOT</version>
-    </parent>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-parent</artifactId>
+    <version>1.0.11-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>logback-site</artifactId>
-    <packaging>jar</packaging>
-    <name>Logback Site</name>
-    <description>logback-site module</description>
+  <modelVersion>4.0.0</modelVersion>
 
-    <url>http://logback.qos.ch</url>
+  <groupId>ch.qos.logback</groupId>
+  <artifactId>logback-site</artifactId>
+  <packaging>jar</packaging>
+  <name>Logback Site</name>
+  <description>logback-site module</description>
 
-    <organization>
-        <name>QOS.ch</name>
-        <url>http://www.qos.ch</url>
-    </organization>
-    <inceptionYear>1999</inceptionYear>
+  <url>http://logback.qos.ch</url>
 
-    <licenses>
-        <license>
-            <name>Eclipse Public License - v 1.0</name>
-            <url>http://www.eclipse.org/legal/epl-v10.html</url>
-        </license>
+  <organization>
+    <name>QOS.ch</name>
+    <url>http://www.qos.ch</url>
+  </organization>
+  <inceptionYear>1999</inceptionYear>
 
-        <license>
-            <name>GNU Lesser General Public License</name>
-            <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
-        </license>
-    </licenses>
+  <licenses>
+    <license>
+      <name>Eclipse Public License - v 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>src/site/pages</directory>
-                <!-- We're saving filtered html docs in a temporary folder-->
-                <!-- and telling the site plug-in to get the docs there.-->
-                <targetPath>../../../target/site</targetPath>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
+    <license>
+      <name>GNU Lesser General Public License</name>
+      <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+    </license>
+  </licenses>
 
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <outputDirectory>${project.parent.basedir}/target/site
-                    </outputDirectory>
-                </configuration>
-            </plugin>
-        </plugins>
+  <build>
+    <resources>
+      <resource>
+        <directory>src/site/pages</directory>
+        <!-- We're saving filtered html docs in a temporary folder-->
+        <!-- and telling the site plug-in to get the docs there.-->
+        <targetPath>../../../target/site</targetPath>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
 
-    </build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <outputDirectory>${project.parent.basedir}/target/site
+          </outputDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
 
 </project>
