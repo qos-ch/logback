@@ -27,6 +27,8 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.net.server.ConcurrentServerRunner;
+import ch.qos.logback.core.net.server.ServerListener;
 
 
 public class ConcurrentServerRunnerTest {
@@ -111,6 +113,14 @@ public class ConcurrentServerRunnerTest {
     @Override
     protected boolean configureClient(MockClient client) {
       return true;
+    }
+
+    @Override
+    protected void logInfo(String message) {
+    }
+
+    @Override
+    protected void logError(String message) {
     }
     
   }
