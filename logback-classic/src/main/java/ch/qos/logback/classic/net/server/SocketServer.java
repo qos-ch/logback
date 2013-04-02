@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import javax.net.ServerSocketFactory;
 
@@ -47,6 +48,7 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
   private ThreadPoolFactoryBean threadPool;
 
   private ServerRunner runner;
+  private ExecutorService executor;
   
   /**
    * Starts the server.
@@ -57,7 +59,8 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
       ServerListener<RemoteAppenderClient> listener = createServerListener(socket);
-      runner = createServerRunner(listener, getThreadPool().createExecutor());
+      executor = getThreadPool().createExecutor();
+      runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
       runner.start();
     }
@@ -84,6 +87,7 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
     if (!isStarted()) return;
     try {
       runner.stop();
+      executor.shutdownNow();
     }
     catch (IOException ex) {
       addError("server shutdown error: " + ex, ex);
