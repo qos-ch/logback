@@ -26,7 +26,7 @@ import ch.qos.logback.core.spi.ContextAware;
  *
  * @author Carl Harris
  */
-public interface RemoteLoggerClient extends Client, ContextAware {
+interface RemoteLoggerClient extends Client, ContextAware {
 
   /**
    * Sets the client's event queue.

@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
  *
  * @author Carl Harris
  */
-public class RemoteLoggerServerRunner
+class RemoteLoggerServerRunner 
     extends ConcurrentServerRunner<RemoteLoggerClient> {
 
   private final int clientQueueSize;

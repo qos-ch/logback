@@ -24,7 +24,7 @@ import java.net.Socket;
  *
  * @author Carl Harris
  */
-public class RemoteLoggerServerListener
+class RemoteLoggerServerListener
     extends ServerSocketListener<RemoteLoggerClient> {
 
   /**
