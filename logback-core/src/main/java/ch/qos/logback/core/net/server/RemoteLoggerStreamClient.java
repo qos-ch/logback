@@ -34,7 +34,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 class RemoteLoggerStreamClient 
     extends ContextAwareBase implements RemoteLoggerClient {
 
-  private final String id;
+  private final String clientId;
   private final Socket socket;
   private final OutputStream outputStream;
   
@@ -46,7 +46,7 @@ class RemoteLoggerStreamClient
    * @param socket socket to which logging events will be written
    */
   public RemoteLoggerStreamClient(String id, Socket socket) {
-    this.id = id;
+    this.clientId = "client " + id + ": ";
     this.socket = socket;
     this.outputStream = null;
   }
@@ -61,7 +61,7 @@ class RemoteLoggerStreamClient
    * @param outputStream output stream to which logging Events will be written
    */
   public RemoteLoggerStreamClient(String id, OutputStream outputStream) {
-    this.id = id;
+    this.clientId = "client " + id + ": ";
     this.socket = null;
     this.outputStream = outputStream;
   }
@@ -100,6 +100,7 @@ class RemoteLoggerStreamClient
    * {@inheritDoc}
    */
   public void run() {
+    System.err.println(getContext().getName());
     if (getContext() == null) {
       throw new IllegalStateException("context is not configured");
     }
@@ -107,6 +108,8 @@ class RemoteLoggerStreamClient
       throw new IllegalStateException("client has no event queue");
     }
   
+    addInfo(clientId + "connected"); 
+
     ObjectOutputStream oos = null;
     try {
       int counter = 0;
@@ -129,13 +132,13 @@ class RemoteLoggerStreamClient
       }
     }
     catch (SocketException ex) {
-      addInfo(this + ": " + ex);
+      addInfo(clientId + ex);
     }
     catch (IOException ex) {
-      addError(this + ": " + ex);
+      addError(clientId + ex);
     }
     catch (RuntimeException ex) {
-      addError(this + ": " + ex);
+      addError(clientId + ex);
     }
     finally {
       if (oos != null) {
@@ -147,7 +150,7 @@ class RemoteLoggerStreamClient
         }
       }
       close();
-      addInfo(this + ": connection closed");
+      addInfo(clientId + "connection closed");
     }
   }
 
@@ -157,13 +160,4 @@ class RemoteLoggerStreamClient
     }
     return new ObjectOutputStream(socket.getOutputStream());
   }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString() {
-    return "client " + id;
-  }
- 
 }
