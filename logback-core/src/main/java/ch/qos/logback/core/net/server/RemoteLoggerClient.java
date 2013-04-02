@@ -15,6 +15,7 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.Serializable;
+import java.util.concurrent.BlockingQueue;
 
 import ch.qos.logback.core.spi.ContextAware;
 
@@ -28,12 +29,12 @@ import ch.qos.logback.core.spi.ContextAware;
 public interface RemoteLoggerClient extends Client, ContextAware {
 
   /**
-   * Sets the size of the client's event queue.
+   * Sets the client's event queue.
    * <p>
-   * Has no effect if invoked after {@link #run()} is invoked. 
-   * @param queueSize the queue size to set
+   * This method must be invoked before the {@link #run()} method is invoked.
+   * @param queue the queue to set
    */
-  void setQueueSize(int queueSize);
+  void setQueue(BlockingQueue<Serializable> queue);
   
   /**
    * Offers an event to the client.
