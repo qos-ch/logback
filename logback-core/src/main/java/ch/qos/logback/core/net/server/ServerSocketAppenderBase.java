@@ -92,6 +92,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     try {
       runner.stop();
       executor.shutdownNow();
+      super.stop();
     }
     catch (IOException ex) {
       addError("server shutdown error: " + ex, ex);
