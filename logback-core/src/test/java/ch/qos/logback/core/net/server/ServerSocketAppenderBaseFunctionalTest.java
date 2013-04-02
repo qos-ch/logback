@@ -64,7 +64,6 @@ public class ServerSocketAppenderBaseFunctionalTest {
   
   @After
   public void tearDown() throws Exception {
-    executor.shutdownNow(); // interrupt client waiting in BlockingQueue.accept
     executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
     assertTrue(executor.isTerminated());
   }

@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import javax.net.ServerSocketFactory;
 
@@ -52,6 +53,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
   private String address;
   private ThreadPoolFactoryBean threadPool;
 
+  private ExecutorService executor;
   private ServerRunner<RemoteLoggerClient> runner;
 
   @Override
@@ -61,7 +63,8 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
       ServerListener<RemoteLoggerClient> listener = createServerListener(socket);
-      runner = createServerRunner(listener, getThreadPool().createExecutor());
+      executor = getThreadPool().createExecutor();
+      runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
       runner.start();
     }
@@ -87,6 +90,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     if (!isStarted()) return;
     try {
       runner.stop();
+      executor.shutdownNow();
     }
     catch (IOException ex) {
       addError("server shutdown error: " + ex, ex);
