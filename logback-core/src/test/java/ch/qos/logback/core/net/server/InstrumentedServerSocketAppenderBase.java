@@ -11,47 +11,58 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 
 import javax.net.ServerSocketFactory;
 
-import ch.qos.logback.classic.net.server.RemoteAppenderClient;
-import ch.qos.logback.classic.net.server.RemoteAppenderServerListener;
-import ch.qos.logback.classic.net.server.SocketServer;
-import ch.qos.logback.core.net.server.ServerListener;
-import ch.qos.logback.core.net.server.ServerRunner;
-
+import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * A {@link SocketServer} with instrumentation for unit testing.
+ * A {@link ServerSocketAppenderBase} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
-public class InstrumentedSocketServer extends SocketServer {
-  
+public class InstrumentedServerSocketAppenderBase
+    extends ServerSocketAppenderBase<Serializable> {
+
   private final ServerSocket serverSocket;
-  private final ServerListener<RemoteAppenderClient> listener;
-  private final ServerRunner<RemoteAppenderClient> runner;
+  private final ServerListener<RemoteLoggerClient> listener;
+  private final ServerRunner<RemoteLoggerClient> runner;
   
   private ServerListener lastListener;
   
-  public InstrumentedSocketServer(ServerSocket serverSocket) {
-    this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
+  public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
+    this(serverSocket, new RemoteLoggerServerListener(serverSocket), null);
   }
   
-  public InstrumentedSocketServer(ServerSocket serverSocket,
-      ServerListener<RemoteAppenderClient> listener, 
-      ServerRunner<RemoteAppenderClient> runner) {
+  public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
+      ServerListener<RemoteLoggerClient> listener, 
+      ServerRunner<RemoteLoggerClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
   }
 
+  @Override
+  protected void postProcessEvent(Serializable event) {
+  }
+
+  @Override
+  protected PreSerializationTransformer<Serializable> getPST() {
+    return new PreSerializationTransformer<Serializable>() {
+      public Serializable transform(Serializable event) {
+        return event;
+      }
+    };
+  }
+  
   @Override
   protected ServerSocketFactory getServerSocketFactory() throws Exception {
     return new ServerSocketFactory() {
@@ -75,16 +86,17 @@ public class InstrumentedSocketServer extends SocketServer {
     };
   }
 
+  
+
   @Override
-  protected ServerRunner createServerRunner(
-      ServerListener<RemoteAppenderClient> listener,
-      Executor executor) {
+  protected ServerRunner<RemoteLoggerClient> createServerRunner(
+      ServerListener<RemoteLoggerClient> listener, Executor executor) {
     lastListener = listener;
     return runner != null ? runner : super.createServerRunner(listener, executor);
   }
 
   @Override
-  protected ServerListener<RemoteAppenderClient> createServerListener(
+  protected ServerListener<RemoteLoggerClient> createServerListener(
       ServerSocket socket) {
     return listener;
   }

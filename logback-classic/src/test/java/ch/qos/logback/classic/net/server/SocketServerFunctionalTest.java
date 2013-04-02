@@ -21,7 +21,6 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +36,8 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
+import ch.qos.logback.core.net.server.ServerSocketUtil;
+import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 
 /**
  * A functional test for {@link SocketServer}.
@@ -71,7 +72,7 @@ public class SocketServerFunctionalTest {
     
     socketServer.setThreadPool(new ThreadPoolFactoryBean() {
       @Override
-      public Executor createExecutor() {
+      public ExecutorService createExecutor() {
         return executor;
       } 
     });

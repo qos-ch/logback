@@ -11,34 +11,44 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
 
 
 public class ConcurrentServerRunnerTest {
 
-  private MockServerListener listener = new MockServerListener();
+  private MockContext context = new MockContext();
+  private MockServerListener<MockClient> listener = 
+      new MockServerListener<MockClient>();
+  
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private ConcurrentServerRunner runner = new ConcurrentServerRunner(listener, executor);
+  private ConcurrentServerRunner<MockClient> runner = 
+      new InstrumentedConcurrentServerRunner(listener, executor);
 
   @Before
   public void setUp() throws Exception {
-    runner.setContext((LoggerContext) LoggerFactory.getILoggerFactory());
+    runner.setContext(context);
   }
 
+  @After
+  public void tearDown() throws Exception {
+    executor.shutdown();
+    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
+  }
+  
   @Test
   public void testStartStop() throws Exception {
     assertFalse(runner.isStarted());
@@ -72,8 +82,6 @@ public class ConcurrentServerRunnerTest {
     assertTrue(client.isRunning());
     client.close();
     runner.stop();
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
   }
 
   @Test
@@ -92,8 +100,47 @@ public class ConcurrentServerRunnerTest {
       assertTrue(client.isRunning());
     }
     runner.stop();
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
   }
 
+  @Test
+  public void testRunClientAndVisit() throws Exception {
+    runner.start();
+    MockClient client = new MockClient();
+    listener.addClient(client);
+    int retries = 200;
+    synchronized (client) {
+      while (retries-- > 0 && !client.isRunning()) {
+        client.wait(10);
+      }
+    }
+    assertTrue(client.isRunning());
+    MockClientVisitor visitor = new MockClientVisitor();
+    runner.accept(visitor);
+    assertSame(client, visitor.getLastVisited());
+    runner.stop();    
+  }
+
+  
+  static class InstrumentedConcurrentServerRunner 
+      extends ConcurrentServerRunner<MockClient> {
+
+    public InstrumentedConcurrentServerRunner(
+        ServerListener<MockClient> listener, Executor executor) {
+      super(listener, executor);
+    }
+
+    @Override
+    protected boolean configureClient(MockClient client) {
+      return true;
+    }
+
+    @Override
+    protected void logInfo(String message) {
+    }
+
+    @Override
+    protected void logError(String message) {
+    }
+    
+  }
 }

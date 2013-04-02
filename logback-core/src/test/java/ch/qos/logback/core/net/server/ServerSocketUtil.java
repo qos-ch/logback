@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
 import java.net.BindException;
@@ -25,7 +25,7 @@ import javax.net.ServerSocketFactory;
  *
  * @author Carl Harris
  */
-class ServerSocketUtil {
+public class ServerSocketUtil {
 
   /**
    * Creates a new {@link ServerSocket} bound to a random unused port.

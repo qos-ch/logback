@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
 
@@ -23,7 +23,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * @author Carl Harris
  */
-class MockServerRunner extends ContextAwareBase implements ServerRunner {
+public class MockServerRunner<T extends Client> extends ContextAwareBase 
+    implements ServerRunner<T> {
 
   private IOException startException;
   private IOException stopException;
@@ -52,6 +53,10 @@ class MockServerRunner extends ContextAwareBase implements ServerRunner {
 
   public boolean isStarted() {
     return startCount > 0;
+  }
+
+  public void accept(ClientVisitor visitor) {
+    throw new UnsupportedOperationException();
   }
 
   public int getStartCount() {

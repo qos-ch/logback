@@ -11,20 +11,16 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -48,17 +44,17 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * @author Carl Harris
  */
-class ConcurrentServerRunner extends ContextAwareBase implements Runnable, ServerRunner {
+public abstract class ConcurrentServerRunner<T extends Client> 
+    extends ContextAwareBase 
+    implements Runnable, ServerRunner<T> {
 
   private final Lock clientsLock = new ReentrantLock();
   
-  private final Collection<Client> clients = new ArrayList<Client>();
+  private final Collection<T> clients = new ArrayList<T>();
 
-  private final ServerListener listener;
+  private final ServerListener<T> listener;
   private final Executor executor;
   
-  private LoggerContext lc;
-  private Logger logger;
   private boolean started;
   
   /**
@@ -73,7 +69,7 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
    *    execution handler to ensure that when a client cannot be accomodated
    *    it is summarily closed to prevent resource leaks.
    */
-  public ConcurrentServerRunner(ServerListener listener, Executor executor) {
+  public ConcurrentServerRunner(ServerListener<T> listener, Executor executor) {
     this.listener = listener;
     this.executor = executor;
   }
@@ -93,10 +89,11 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
   public void stop() throws IOException {
     if (!isStarted()) return;
     listener.close();
-    Collection<Client> clients = new ArrayList<Client>(this.clients);
-    for (Client client : clients) {
-      client.close();
-    }
+    accept(new ClientVisitor<T>() {
+      public void visit(T client) {
+        client.close();
+      } 
+    });
     started = false;
   }
 
@@ -110,20 +107,42 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
   /**
    * {@inheritDoc}
    */
+  public void accept(ClientVisitor<T> visitor) {
+    Collection<T> clients = copyClients();
+    for (T client : clients) {
+      try {
+        visitor.visit(client);
+      }
+      catch (RuntimeException ex) {
+        logError(client + ": " + ex);
+      }
+    }
+  }
+
+  private Collection<T> copyClients() {
+    clientsLock.lock();
+    try {
+      Collection<T> copy = new ArrayList<T>(clients);
+      return copy;
+    }
+    finally {
+      clientsLock.unlock();
+    }
+  }
+  
+  /**
+   * {@inheritDoc}
+   */
   public void run() {
     try {
       logInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
-        Client client = listener.acceptClient();
-        LoggerContext lc = getLoggerContext();
-        if (lc == null) {
-          logError("logger context not yet configured -- "
-              + "dropping client connection " + client); 
+        T client = listener.acceptClient();
+        if (!configureClient(client)) {
+          logError("dropping client connection " + client); 
           client.close();
           continue;
         }
-        
-        client.setLoggerContext(lc);
         executor.execute(new ClientWrapper(client));
       }
     }
@@ -138,47 +157,13 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
     listener.close();
   }
   
-  private void logInfo(String message) {
-    Logger logger = getLogger();
-    if (logger != null) {
-      logger.info(message);
-    }
-    else {
-      addInfo(message);
-    }
-  }
+  protected abstract boolean configureClient(T client);
   
-  private void logError(String message) {
-    Logger logger = getLogger();
-    if (logger != null) {
-      logger.error(message);
-    }
-    else {
-      addError(message);
-    }
-  }
+  protected abstract void logInfo(String message);
   
-  private Logger getLogger() {
-    if (logger == null) {
-      LoggerContext lc = getLoggerContext();
-      if (lc != null) {
-        logger = lc.getLogger(getClass().getPackage().getName());
-      }
-    }
-    return logger;
-  }
+  protected abstract void logError(String message);
   
-  private LoggerContext getLoggerContext() {
-    if (lc == null) {   
-      ILoggerFactory factory = LoggerFactory.getILoggerFactory();
-      if (factory instanceof LoggerContext) {
-        lc = (LoggerContext) factory;
-      }
-    }
-    return lc;
-  }
-  
-  private void addClient(Client client) {
+  private void addClient(T client) {
     clientsLock.lock();
     try {
       clients.add(client);
@@ -188,7 +173,7 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
     }
   }
   
-  private void removeClient(Client client) {
+  private void removeClient(T client) {
     clientsLock.lock();
     try {
       clients.remove(client);
@@ -200,14 +185,10 @@ class ConcurrentServerRunner extends ContextAwareBase implements Runnable, Serve
   
   private class ClientWrapper implements Client {
     
-    private final Client delegate;
+    private final T delegate;
     
-    public ClientWrapper(Client client) {
+    public ClientWrapper(T client) {
       this.delegate = client;
-    }
-
-    public void setLoggerContext(LoggerContext lc) {
-      delegate.setLoggerContext(lc);
     }
 
     public void run() {

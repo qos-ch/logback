@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.core.net.server;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -32,7 +32,7 @@ import java.io.IOException;
  * listener is discarded.
  * </ol>
  */
-interface ServerListener extends Closeable {
+public interface ServerListener<T extends Client> extends Closeable {
 
   /**
    * Accepts the next client that appears on this listener.
@@ -44,7 +44,7 @@ interface ServerListener extends Closeable {
    * @throws IOException
    * @throws InterruptedException
    */
-  Client acceptClient() throws IOException, InterruptedException;
+  T acceptClient() throws IOException, InterruptedException;
   
   /**
    * Closes any underlying {@link Closeable} resources associated with this
