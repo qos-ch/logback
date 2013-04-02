@@ -19,10 +19,10 @@ import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * An object that is responsible for the asynchronous execution of a
- * {@link SocketServer}.
+ * socket server.
  * <p>
  * This interface exists primarily to allow the runner to be mocked for
- * the purpose of unit testing the {@link SocketServer} implementation.
+ * the purpose of unit testing the socket server implementation.
  * 
  * @author Carl Harris
  */
