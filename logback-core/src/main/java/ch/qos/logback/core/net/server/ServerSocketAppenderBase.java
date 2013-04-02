@@ -67,6 +67,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
       runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
       runner.start();
+      super.start();
     }
     catch (Exception ex) {
       addError("server startup error: " + ex, ex);
@@ -103,7 +104,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    */
   @Override
   public final boolean isStarted() {
-    return runner != null && runner.isStarted();
+    return runner != null && runner.isStarted() && super.isStarted();
   }
 
   @Override
