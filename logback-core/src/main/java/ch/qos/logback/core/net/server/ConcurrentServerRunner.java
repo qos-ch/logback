@@ -89,10 +89,11 @@ public abstract class ConcurrentServerRunner<T extends Client>
   public void stop() throws IOException {
     if (!isStarted()) return;
     listener.close();
-    Collection<Client> clients = new ArrayList<Client>(this.clients);
-    for (Client client : clients) {
-      client.close();
-    }
+    accept(new ClientVisitor<T>() {
+      public void visit(T client) {
+        client.close();
+      } 
+    });
     started = false;
   }
 
