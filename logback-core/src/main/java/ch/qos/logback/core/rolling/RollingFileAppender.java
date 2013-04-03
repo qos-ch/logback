@@ -90,10 +90,10 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     if (triggeringPolicy instanceof RollingPolicyBase) {
       final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
       final FileNamePattern fileNamePattern = base.fileNamePattern;
-      if (fileNamePattern != null) {
+      // no use checking if either fileName or  fileNamePattern are null
+      if (fileNamePattern != null && fileName != null) {
         String regex = fileNamePattern.toRegex();
-        final String activeFileName = base.getActiveFileName();
-        return activeFileName.matches(regex);
+        return fileName.matches(regex);
       }
     }
     return false;
