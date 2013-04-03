@@ -18,7 +18,7 @@
   <url>http://logback.qos.ch</url>
 
   <properties>
-    <scala.version>2.9.1</scala.version>
+    <!--<scala.version>2.9.1</scala.version>-->
   </properties>
 
   <licenses>
@@ -75,12 +75,12 @@
       <optional>true</optional>
     </dependency>
 
-    <dependency>
-      <groupId>org.scala-lang</groupId>
-      <artifactId>scala-library</artifactId>
-      <version>${scala.version}</version>
-      <scope>test</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.scala-lang</groupId>-->
+      <!--<artifactId>scala-library</artifactId>-->
+      <!--<version>${scala.version}</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
 
   </dependencies>
 
@@ -95,24 +95,6 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.scala-tools</groupId>
-        <artifactId>maven-scala-plugin</artifactId>
-        <configuration>
-          <testSourceDir>src/test/scala</testSourceDir>
-        </configuration>
-        <executions>
-          <execution>
-            <id>scala-test-compile</id>
-            <phase>process-test-resources</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

@@ -16,12 +16,12 @@ package ch.qos.logback.core.util;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 import org.junit.Test;
 
-import scala.actors.threadpool.Arrays;
 
 /**
  * Unit tests for {@link StringCollectionUtil}.
