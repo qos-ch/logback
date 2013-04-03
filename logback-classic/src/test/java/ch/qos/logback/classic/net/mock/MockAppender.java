@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net.server;
+package ch.qos.logback.classic.net.mock;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
@@ -21,7 +21,7 @@ import ch.qos.logback.core.AppenderBase;
  *
  * @author Carl Harris
  */
-class MockAppender extends AppenderBase<ILoggingEvent> {
+public class MockAppender extends AppenderBase<ILoggingEvent> {
 
   private int eventCount;
   private ILoggingEvent lastEvent;
