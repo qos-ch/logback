@@ -195,13 +195,16 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
   @Test
   public void testFileShouldNotMatchFileNamePattern() {
     rfa.setContext(context);
-    rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "x-2012.log");
-    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "x-%d{yyyy}.log");
-    rfa.setTriggeringPolicy(tbrp);
+    rfa.setFile(CoreTestConstants.OUTPUT_DIR_PREFIX + "x-2013-04.log");
+    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "x-%d{yyyy-MM}.log");
+    tbrp.start();
+
+    rfa.setRollingPolicy(tbrp);
     rfa.start();
-    StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
-    final String msg = "File property must not match fileNamePattern";
+    StatusChecker statusChecker = new StatusChecker(context);
+    final String msg = "File property collides with fileNamePattern. Aborting.";
     boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
+    StatusPrinter.print(context);
     assertTrue("Missing error: " + msg, containsMatch);
   }
 

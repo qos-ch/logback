@@ -27,7 +27,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 public abstract class RollingPolicyBase extends ContextAwareBase implements
     RollingPolicy {
   protected CompressionMode compressionMode = CompressionMode.NONE;
-  protected FileNamePattern fileNamePattern;
+
+  FileNamePattern fileNamePattern;
   // fileNamePatternStr is always slashified, see setter
   protected String fileNamePatternStr;
 
