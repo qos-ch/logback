@@ -65,7 +65,7 @@
     <!--<jetty.version>8.0.1.v20110908</jetty.version>-->
 
     <!-- Maven Plugin Dependencies -->
-    <maven-surefire-plugin.version>1.9.0</maven-surefire-plugin.version>
+    <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
     <maven-surefire-plugin.version>2.14</maven-surefire-plugin.version>
   </properties>
 
@@ -419,7 +419,7 @@
           <plugin>
             <groupId>com.mycila.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
-            <version>1.9.0</version>
+            <version>${maven-license-plugin.version}</version>
             <configuration>
               <header>src/main/licenseHeader.txt</header>
               <quiet>false</quiet>
