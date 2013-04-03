@@ -36,7 +36,7 @@
   <h2><a name="top">Logback error messages and their meanings</a></h2>
   
 
-  <h3 class="doAnchor"  name="null_CS">The contextSelector cannot be
+  <h3 class="doAnchor" name="null_CS">The contextSelector cannot be
   null in <code>StaticLoggerBinder</code>.  
   </h3>
 
@@ -357,7 +357,24 @@
   triggering policy declarations.
   </p>
 
-  
+  <!-- ============================================================= -->  
+
+  <h3 class="doAnchor" name="rfa_collision"><span
+  class="option">File</span> property collides with <span
+  class="option">fileNamePattern</span>. Aborting.
+  </h3>
+
+  <p>When the <span class="option">file</span> property matches the
+  regular expression defined by <span
+  class="option">fileNamePattern</span>, there is a risk of
+  collison. A collision occurs when the active log file as defined by
+  the <span class="option">file</span> property has the same path as
+  an existing log archive. Such a collision will result in the log
+  archive being overwritten.
+  </p>
+
+  <p>To avoid data loss, <code>RollingFileAppender</code> will emit an
+  error message and refuse to start.</p>
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="renamingError">Failed to rename file [x]

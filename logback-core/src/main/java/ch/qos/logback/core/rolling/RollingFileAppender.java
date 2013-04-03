@@ -13,14 +13,14 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.FileAppender;
+import ch.qos.logback.core.rolling.helper.CompressionMode;
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
+
 import java.io.File;
 import java.io.IOException;
 
 import static ch.qos.logback.core.CoreConstants.CODES_URL;
-
-import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.rolling.helper.CompressionMode;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
 
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
@@ -38,22 +38,16 @@ public class RollingFileAppender<E> extends FileAppender<E> {
   TriggeringPolicy<E> triggeringPolicy;
   RollingPolicy rollingPolicy;
 
+  static private String RFA_NO_TP_URL = CODES_URL + "#rfa_no_tp";
+  static private String RFA_NO_RP_URL = CODES_URL + "#rfa_no_rp";
+  static private String COLLISION_URL = CODES_URL + "#rfa_collision";
+
   public void start() {
     if (triggeringPolicy == null) {
       addWarn("No TriggeringPolicy was set for the RollingFileAppender named "
               + getName());
-      addWarn("For more information, please visit " + CODES_URL + "#rfa_no_tp");
+      addWarn("For more information, please visit " + RFA_NO_TP_URL);
       return;
-    }
-
-    // sanity check for http://jira.qos.ch/browse/LOGBACK-796
-    if (triggeringPolicy instanceof RollingPolicyBase) {
-      final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
-      final FileNamePattern pattern = new FileNamePattern(base.getFileNamePattern(), getContext());
-      final String activeFileName = base.getActiveFileName();
-      if (activeFileName.matches(pattern.toRegex())) {
-        addError("File property must not match fileNamePattern");
-      }
     }
 
     // we don't want to void existing log files
@@ -65,7 +59,14 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     if (rollingPolicy == null) {
       addError("No RollingPolicy was set for the RollingFileAppender named "
               + getName());
-      addError("For more information, please visit " + CODES_URL + "rfa_no_rp");
+      addError("For more information, please visit " + RFA_NO_RP_URL);
+      return;
+    }
+
+    // sanity check for http://jira.qos.ch/browse/LOGBACK-796
+    if (fileAndPatternCollide()) {
+      addError("File property collides with fileNamePattern. Aborting.");
+      addError("For more information, please visit " + COLLISION_URL);
       return;
     }
 
@@ -83,6 +84,19 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     currentlyActiveFile = new File(getFile());
     addInfo("Active log file name: " + getFile());
     super.start();
+  }
+
+  private boolean fileAndPatternCollide() {
+    if (triggeringPolicy instanceof RollingPolicyBase) {
+      final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
+      final FileNamePattern fileNamePattern = base.fileNamePattern;
+      if (fileNamePattern != null) {
+        String regex = fileNamePattern.toRegex();
+        final String activeFileName = base.getActiveFileName();
+        return activeFileName.matches(regex);
+      }
+    }
+    return false;
   }
 
   @Override
