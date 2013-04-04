@@ -59,7 +59,7 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
       ServerListener<RemoteAppenderClient> listener = createServerListener(socket);
-      executor = getThreadPool().createExecutor();
+      executor = createExecutorService();
       runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
       runner.start();
@@ -80,6 +80,13 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
     return new RemoteAppenderServerRunner(listener, executor);
   }
   
+  protected ExecutorService createExecutorService() {
+    if (getThreadPool() == null) {
+      return getContext().getExecutorService();
+    }
+    return getThreadPool().createExecutor();
+  }
+  
   /**
    * Stops the server.
    */
@@ -87,7 +94,9 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
     if (!isStarted()) return;
     try {
       runner.stop();
-      executor.shutdownNow();
+      if (executor != getContext().getExecutorService()) {
+        executor.shutdownNow();
+      }
     }
     catch (IOException ex) {
       addError("server shutdown error: " + ex, ex);
