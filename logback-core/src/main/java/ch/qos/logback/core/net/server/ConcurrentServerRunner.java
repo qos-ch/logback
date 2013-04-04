@@ -112,7 +112,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
         visitor.visit(client);
       }
       catch (RuntimeException ex) {
-        logError(client + ": " + ex);
+        addError(client + ": " + ex);
       }
     }
   }
@@ -133,11 +133,11 @@ public abstract class ConcurrentServerRunner<T extends Client>
    */
   public void run() {
     try {
-      logInfo("listening on " + listener);
+      addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
         T client = listener.acceptClient();
         if (!configureClient(client)) {
-          logError(client + ": connection dropped");
+          addError(client + ": connection dropped");
           client.close();
           continue;
         }
@@ -145,7 +145,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
           executor.execute(new ClientWrapper(client));
         }
         catch (RejectedExecutionException ex) {
-          logError(client + ": connection dropped");
+          addError(client + ": connection dropped");
           client.close();
         }
       }
@@ -154,22 +154,18 @@ public abstract class ConcurrentServerRunner<T extends Client>
       assert true;  // ok... we'll shut down
     }
     catch (SocketException ex) {
-      logInfo(ex.toString());
+      addInfo(ex.toString());
     }
     catch (Exception ex) {
-      logError(ex.toString());      	
+      addError(ex.toString());      	
     }
     
-    logInfo("shutting down");
+    addInfo("shutting down");
     listener.close();
   }
 
   protected abstract boolean configureClient(T client);
-  
-  protected abstract void logInfo(String message);
-  
-  protected abstract void logError(String message);
-  
+    
   private void addClient(T client) {
     clientsLock.lock();
     try {
