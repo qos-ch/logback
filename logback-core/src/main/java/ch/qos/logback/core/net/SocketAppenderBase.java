@@ -43,7 +43,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   /**
    * The default reconnection delay (30000 milliseconds or 30 seconds).
    */
-  static final int DEFAULT_RECONNECTION_DELAY = 30000;
+  public static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
   /**
    * We remember host name as String in addition to the resolved InetAddress so

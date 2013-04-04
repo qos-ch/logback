@@ -20,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( { SyslogAppenderTest.class, DilutedSMTPAppenderTest.class,
     SocketAppenderTest.class, JMSQueueAppenderTest.class, JMSTopicAppenderTest.class,
-        SMTPAppender_GreenTest.class, SMTPAppender_SubethaSMTPTest.class })
+        SMTPAppender_GreenTest.class, SMTPAppender_SubethaSMTPTest.class,
+        SocketRemoteTest.class })
 public class PackageTest {
 }
