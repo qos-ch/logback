@@ -116,6 +116,11 @@ public abstract class ConcurrentServerRunner<T extends Client>
     }
   }
 
+  /**
+   * Creates a copy of the collection of all clients that are presently
+   * being tracked by the server.
+   * @return collection of client objects
+   */
   private Collection<T> copyClients() {
     clientsLock.lock();
     try {
@@ -160,8 +165,22 @@ public abstract class ConcurrentServerRunner<T extends Client>
     listener.close();
   }
 
+  /**
+   * Configures a connected client.
+   * <p>
+   * A subclass implements this method to perform any necessary configuration
+   * of the client object before its {@link Client#run()} method is invoked.
+   * 
+   * @param client the subject client
+   * @return {@code true} if configuration was successful; if the return
+   *    value is {@code false} the client connection will be dropped
+   */
   protected abstract boolean configureClient(T client);
     
+  /**
+   * Adds a client to the collection of those being tracked by the server.
+   * @param client the client to add
+   */
   private void addClient(T client) {
     clientsLock.lock();
     try {
@@ -172,6 +191,10 @@ public abstract class ConcurrentServerRunner<T extends Client>
     }
   }
   
+  /**
+   * Removes a client from the collection of those being tracked by the server.
+   * @param client the client to remote
+   */
   private void removeClient(T client) {
     clientsLock.lock();
     try {
@@ -182,6 +205,10 @@ public abstract class ConcurrentServerRunner<T extends Client>
     }
   }
   
+  /**
+   * A wrapper for a {@link Client} responsible for ensuring that client
+   * tracking is performed properly.
+   */
   private class ClientWrapper implements Client {
     
     private final T delegate;
