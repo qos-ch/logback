@@ -22,6 +22,10 @@ import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.After;
 import org.junit.Before;
@@ -77,12 +81,12 @@ public class SocketConnectorBaseTest {
     thread.start();
     Socket socket = connector.awaitConnection(2 * DELAY);
     assertNull(socket);
-    assertTrue(exceptionHandler.getLastException() instanceof ConnectException);
+    Exception lastException = exceptionHandler.awaitConnectionFailed(DELAY);
+    assertTrue(lastException instanceof ConnectException);
     assertTrue(thread.isAlive());
     thread.interrupt();
     thread.join(DELAY);
     assertFalse(thread.isAlive());
-    assertTrue(exceptionHandler.getLastException() instanceof InterruptedException);
   }
 
   @Test
@@ -93,7 +97,8 @@ public class SocketConnectorBaseTest {
     thread.start();
     Socket socket = connector.awaitConnection(2 * DELAY);
     assertNull(socket);
-    assertTrue(exceptionHandler.getLastException() instanceof ConnectException);
+    Exception lastException = exceptionHandler.awaitConnectionFailed(DELAY);
+    assertTrue(lastException instanceof ConnectException);
     assertTrue(thread.isAlive());
     
     // now rebind to the same local address
@@ -112,16 +117,30 @@ public class SocketConnectorBaseTest {
   
   private static class MockExceptionHandler implements ExceptionHandler {
 
+    private final Lock lock = new ReentrantLock();
+    private final Condition failedCondition = lock.newCondition();
+      
     private Exception lastException;
     
     public void connectionFailed(SocketConnector connector, Exception ex) {
       lastException = ex;
     }
     
-    public Exception getLastException() {
-      return lastException;
+    public Exception awaitConnectionFailed(long delay) 
+         throws InterruptedException {
+      lock.lock();
+      try {
+        boolean timeout = false;
+        while (lastException == null && !timeout) {
+          timeout = !failedCondition.await(delay, TimeUnit.MILLISECONDS);
+        }
+        return lastException;
+      }
+      finally {
+        lock.unlock();
+      }
     }
-    
+        
   }
   
 }
