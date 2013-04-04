@@ -151,7 +151,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
       }
     }
     catch (InterruptedException ex) {
-      // ok... we'll shut down
+      assert true;  // ok... we'll shut down
     }
     catch (SocketException ex) {
       logInfo(ex.toString());
