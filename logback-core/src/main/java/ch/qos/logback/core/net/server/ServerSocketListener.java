@@ -18,6 +18,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 
+import ch.qos.logback.core.util.CloseUtil;
+
 /**
  * A {@link ServerListener} that accepts connections on a {@link ServerSocket}.
  *
@@ -59,12 +61,7 @@ public abstract class ServerSocketListener<T extends Client>
    * {@inheritDoc}
    */
   public void close() {
-    try {
-      serverSocket.close();
-    }
-    catch (IOException ex) {
-      ex.printStackTrace(System.err);
-    }
+    CloseUtil.closeQuietly(serverSocket);
   }
 
   /**

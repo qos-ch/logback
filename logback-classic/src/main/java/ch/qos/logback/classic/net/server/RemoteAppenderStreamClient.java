@@ -22,6 +22,7 @@ import java.net.Socket;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.util.CloseUtil;
 
 /**
  * A {@link RemoteAppenderClient} that reads serialized {@link ILoggingEvent} 
@@ -77,12 +78,7 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
    */
   public void close() {
     if (socket == null) return;
-    try {
-      socket.close();
-    }
-    catch (IOException ex) {
-      ex.printStackTrace(System.err);
-    }    
+    CloseUtil.closeQuietly(socket);
   }
 
   /**
@@ -121,12 +117,7 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
     }
     finally {
       if (ois != null) {
-        try {
-          ois.close();
-        }
-        catch (IOException ex) {
-          assert true;   // safe to ignore exception on close
-        }
+        CloseUtil.closeQuietly(ois);
       }
       close();
       logger.info(this + ": connection closed");
