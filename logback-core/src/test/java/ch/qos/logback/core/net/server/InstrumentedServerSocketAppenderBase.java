@@ -20,7 +20,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.net.ServerSocketFactory;
 
@@ -41,9 +40,10 @@ public class InstrumentedServerSocketAppenderBase
   
   private ServerListener lastListener;
   
-  public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
+  public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
+      ExecutorService executor) {
     this(serverSocket, new RemoteLoggerServerListener(serverSocket), null,
-        Executors.newCachedThreadPool());
+        executor);
   }
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
