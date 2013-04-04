@@ -68,8 +68,7 @@ public class SocketRemoteTest {
   private LoggerContext lc;
   private Logger logger;
   
-  private InstrumentedSocketRemote remote = 
-      new InstrumentedSocketRemote();
+  private InstrumentedSocketRemote remote; 
   
   @Before
   public void setUp() throws Exception {
@@ -77,6 +76,7 @@ public class SocketRemoteTest {
     socket = new Socket(serverSocket.getInetAddress(), 
         serverSocket.getLocalPort());
     connector = new MockSocketConnector(socket);
+    remote = new InstrumentedSocketRemote(connector, socketFactory, executor);
     remote.setContext(context);    
 
     lc = (LoggerContext) LoggerFactory.getILoggerFactory();    
@@ -130,7 +130,25 @@ public class SocketRemoteTest {
     remote.stop();
     assertFalse(remote.isStarted());
   }
+
+  @Test
+  public void testStartStopWithContextExecutorService() throws Exception {
+    InstrumentedSocketRemote remote = new InstrumentedSocketRemote(
+        connector, socketFactory, context.getExecutorService());
+    remote.setContext(context);
+    remote.setHost(InetAddress.getLocalHost().getHostName());
+    remote.setPort(6000);
+    remote.setAcceptConnectionTimeout(DELAY / 2);
+    remote.start();
+    assertTrue(remote.isStarted());
+    remote.awaitConnectorCreated(DELAY);
+    remote.stop();
+    assertFalse(remote.isStarted());
+    // we must not shut down the context's executor service 
+    assertFalse(context.getExecutorService().isShutdown());
+  }
   
+
   @Test
   public void testServerSlowToAcceptConnection() throws Exception {
     remote.setHost(InetAddress.getLocalHost().getHostName());
@@ -202,10 +220,21 @@ public class SocketRemoteTest {
   /**
    * A {@link SocketRemote} with instrumentation for unit testing.
    */
-  private class InstrumentedSocketRemote extends SocketRemote {
+  private static class InstrumentedSocketRemote extends SocketRemote {
 
+    private final SocketConnector connector;
+    private final SocketFactory socketFactory;
+    private final ExecutorService executorService;
+    
     private boolean connectorCreated;
     private boolean executorCreated;
+
+    public InstrumentedSocketRemote(SocketConnector connector,
+        SocketFactory socketFactory, ExecutorService executorService) {
+      this.connector = connector;
+      this.socketFactory = socketFactory;
+      this.executorService = executorService;
+    }
 
     @Override
     protected synchronized SocketConnector newConnector(
@@ -222,7 +251,8 @@ public class SocketRemoteTest {
 
     @Override
     protected ExecutorService createExecutorService() {
-      return executor;
+      executorCreated = true;
+      return executorService;
     }
 
     public synchronized boolean awaitConnectorCreated(long delay) 
