@@ -57,7 +57,7 @@ public class AppenderAttachableImplLockTest {
   }
 
   @SuppressWarnings("unchecked")
-  @Test(timeout = 1000)
+  @Test(timeout = 5000)
   public void detachAppenderBoom() throws InterruptedException {
     Appender<Integer> mockAppender = mock(Appender.class);
     when(mockAppender.getName()).thenThrow(new OutOfMemoryError("oops"));
