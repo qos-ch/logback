@@ -14,7 +14,6 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -153,11 +152,8 @@ public abstract class ConcurrentServerRunner<T extends Client>
     catch (InterruptedException ex) {
       assert true;  // ok... we'll shut down
     }
-    catch (SocketException ex) {
-      addInfo(ex.toString());
-    }
     catch (Exception ex) {
-      addError(ex.toString());      	
+      addError("listener: " + ex);
     }
     
     addInfo("shutting down");
