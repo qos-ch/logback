@@ -51,7 +51,6 @@ public class SocketRemote extends ContextAwareBase
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
   
-  private String name = toString();
   private String address;
   private InetAddress inetAddress;
   private int port;
@@ -76,15 +75,14 @@ public class SocketRemote extends ContextAwareBase
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
-      addError("No port was configured for remote " + name 
-          + ". For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
+      addError("No port was configured for remote. "
+          + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
     }
 
     if (address == null) {
       errorCount++;
-      addError("No remote address was configured for remote " + name
-          + name
-          + ". For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
+      addError("No remote address was configured for remote. " 
+          + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
     }
     
     if (reconnectionDelay == 0) {
@@ -102,7 +100,7 @@ public class SocketRemote extends ContextAwareBase
     }
         
     if (errorCount == 0) {
-      remoteId = "remote " + name + " [" + address + ":" + port + "]: ";
+      remoteId = "remote " + address + ":" + port + ": ";
       executor = createExecutorService();
       executor.execute(this);
       started = true;
@@ -238,10 +236,6 @@ public class SocketRemote extends ContextAwareBase
     return Executors.newCachedThreadPool();
   }
   
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public void setAddress(String address) {
     this.address = address;
   }
