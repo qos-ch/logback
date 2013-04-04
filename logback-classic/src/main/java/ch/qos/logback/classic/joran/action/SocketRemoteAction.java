@@ -46,15 +46,6 @@ public class SocketRemoteAction extends Action {
           className, SocketRemote.class, context);
       remote.setContext(context);
 
-      String remoteName = ic.subst(attributes.getValue(NAME_ATTRIBUTE));
-      if (OptionHelper.isEmpty(remoteName)) {
-        addWarn("No name given for remote of type " + className
-            + "].");
-      } else {
-        remote.setName(remoteName);
-        addInfo("Naming remote as [" + remoteName + "]");
-      }
-
       ic.pushObject(remote);
     }
     catch (Exception ex) {
