@@ -137,7 +137,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
       while (!Thread.currentThread().isInterrupted()) {
         T client = listener.acceptClient();
         if (!configureClient(client)) {
-          logError("dropping client connection " + client); 
+          logError(client + ": connection dropped");
           client.close();
           continue;
         }
