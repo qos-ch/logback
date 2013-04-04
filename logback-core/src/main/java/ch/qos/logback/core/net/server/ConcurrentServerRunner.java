@@ -14,7 +14,6 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -112,11 +111,16 @@ public abstract class ConcurrentServerRunner<T extends Client>
         visitor.visit(client);
       }
       catch (RuntimeException ex) {
-        logError(client + ": " + ex);
+        addError(client + ": " + ex);
       }
     }
   }
 
+  /**
+   * Creates a copy of the collection of all clients that are presently
+   * being tracked by the server.
+   * @return collection of client objects
+   */
   private Collection<T> copyClients() {
     clientsLock.lock();
     try {
@@ -133,11 +137,11 @@ public abstract class ConcurrentServerRunner<T extends Client>
    */
   public void run() {
     try {
-      logInfo("listening on " + listener);
+      addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
         T client = listener.acceptClient();
         if (!configureClient(client)) {
-          logError(client + ": connection dropped");
+          addError(client + ": connection dropped");
           client.close();
           continue;
         }
@@ -145,7 +149,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
           executor.execute(new ClientWrapper(client));
         }
         catch (RejectedExecutionException ex) {
-          logError(client + ": connection dropped");
+          addError(client + ": connection dropped");
           client.close();
         }
       }
@@ -153,23 +157,30 @@ public abstract class ConcurrentServerRunner<T extends Client>
     catch (InterruptedException ex) {
       assert true;  // ok... we'll shut down
     }
-    catch (SocketException ex) {
-      logInfo(ex.toString());
-    }
     catch (Exception ex) {
-      logError(ex.toString());      	
+      addError("listener: " + ex);
     }
     
-    logInfo("shutting down");
+    addInfo("shutting down");
     listener.close();
   }
 
+  /**
+   * Configures a connected client.
+   * <p>
+   * A subclass implements this method to perform any necessary configuration
+   * of the client object before its {@link Client#run()} method is invoked.
+   * 
+   * @param client the subject client
+   * @return {@code true} if configuration was successful; if the return
+   *    value is {@code false} the client connection will be dropped
+   */
   protected abstract boolean configureClient(T client);
-  
-  protected abstract void logInfo(String message);
-  
-  protected abstract void logError(String message);
-  
+    
+  /**
+   * Adds a client to the collection of those being tracked by the server.
+   * @param client the client to add
+   */
   private void addClient(T client) {
     clientsLock.lock();
     try {
@@ -180,6 +191,10 @@ public abstract class ConcurrentServerRunner<T extends Client>
     }
   }
   
+  /**
+   * Removes a client from the collection of those being tracked by the server.
+   * @param client the client to remote
+   */
   private void removeClient(T client) {
     clientsLock.lock();
     try {
@@ -190,6 +205,10 @@ public abstract class ConcurrentServerRunner<T extends Client>
     }
   }
   
+  /**
+   * A wrapper for a {@link Client} responsible for ensuring that client
+   * tracking is performed properly.
+   */
   private class ClientWrapper implements Client {
     
     private final T delegate;
