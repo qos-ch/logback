@@ -51,8 +51,8 @@ public class SocketRemote extends ContextAwareBase
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
   
-  private String address;
-  private InetAddress inetAddress;
+  private String host;
+  private InetAddress address;
   private int port;
   private int reconnectionDelay;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
@@ -79,9 +79,9 @@ public class SocketRemote extends ContextAwareBase
           + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
     }
 
-    if (address == null) {
+    if (host == null) {
       errorCount++;
-      addError("No remote address was configured for remote. " 
+      addError("No host name or address was configured for remote. " 
           + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
     }
     
@@ -91,16 +91,16 @@ public class SocketRemote extends ContextAwareBase
     
     if (errorCount == 0) {
       try {
-        inetAddress = InetAddress.getByName(address);
+        address = InetAddress.getByName(host);
       }
       catch (UnknownHostException ex) {
-        addError("unknown host: " + address);
+        addError("unknown host: " + host);
         errorCount++;
       }
     }
         
     if (errorCount == 0) {
-      remoteId = "remote " + address + ":" + port + ": ";
+      remoteId = "remote " + host + ":" + port + ": ";
       executor = createExecutorService();
       executor.execute(this);
       started = true;
@@ -132,7 +132,7 @@ public class SocketRemote extends ContextAwareBase
   public void run() {
     try {
       LoggerContext lc = awaitConfiguration();      
-      SocketConnector connector = createConnector(inetAddress, port, 0, 
+      SocketConnector connector = createConnector(address, port, 0, 
           reconnectionDelay);
       while (!executor.isShutdown() && 
           !Thread.currentThread().isInterrupted()) {
@@ -145,7 +145,7 @@ public class SocketRemote extends ContextAwareBase
         }
         socket = connector.awaitConnection();
         dispatchEvents(lc);
-        connector = createConnector(inetAddress, port, reconnectionDelay);
+        connector = createConnector(address, port, reconnectionDelay);
       }
     }
     catch (InterruptedException ex) {
@@ -236,12 +236,12 @@ public class SocketRemote extends ContextAwareBase
     return Executors.newCachedThreadPool();
   }
   
-  public void setAddress(String address) {
-    this.address = address;
+  public void setHost(String host) {
+    this.host = host;
   }
 
-  public void setRemoteAddress(String address) {
-    setAddress(address);
+  public void setRemoteHost(String host) {
+    setHost(host);
   }
   
   public void setPort(int port) {

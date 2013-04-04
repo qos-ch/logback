@@ -43,7 +43,7 @@ public class SSLSocketRemoteTest {
   @Test
   public void testUsingDefaultConfig() throws Exception {
     // should be able to start successfully with no SSL configuration at all
-    remote.setAddress(InetAddress.getLocalHost().getHostAddress());
+    remote.setHost(InetAddress.getLocalHost().getHostAddress());
     remote.setPort(6000);
     remote.start();
     assertNotNull(remote.getSocketFactory());

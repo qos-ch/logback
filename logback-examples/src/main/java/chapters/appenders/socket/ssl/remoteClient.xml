@@ -13,7 +13,7 @@
   </appender>
   
   <remote class="ch.qos.logback.classic.net.SSLSocketRemote">
-    <address>${address}</address>
+    <host>${host}</host>
     <port>${port}</port>
     <reconnectionDelay>5000</reconnectionDelay>
     <ssl>
