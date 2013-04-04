@@ -192,6 +192,7 @@
 &lt;/appender&gt;</pre>
 				
 
+
   
 
   <!-- ============================================================= -->
@@ -635,6 +636,47 @@ return false;</pre>
   &lt;/appender>
 &lt;/configuration>
    </pre>
+
+  <!-- =========================================================== -->
+
+  <h3 class="doAnchor" name="remote_no_host">No remote host or address
+  is set for <code>SocketRemote</code>
+    
+  </h3>
+
+  <p>A remote host or address is mandatory for SocketRemote. </p>
+  <p>You can specify the remote host in the configuration file
+  as follows.
+  </p>
+  
+  <pre class="prettyprint source">&lt;remote class="ch.qos.logback.classic.net.SocketRemote">
+  ...
+  &lt;host>127.0.0.1&lt;/host>
+  ...
+&lt;/remote&gt;</pre>
+
+
+  
+
+  <!-- ============================================================= -->
+
+  <h3 class="doAnchor" name="socket_no_port">No remote port is set for
+  <code>SocketRemote</code>    
+  </h3>
+    
+  <p>A remote port is mandatory for SocketRemote.</p>
+      
+  <p>You can specify the remote port in the configuration file
+  like this:
+  </p>
+      
+  <pre class="prettyprint source">&lt;remote class=&quot;ch.qos.logback.classic.net.SocketRemote&quot;&gt;
+  ...
+  &lt;port>4560&lt;/port>
+  ...
+&lt;/remote&gt;</pre>
+        
+
 
   <script src="templates/footer.js" type="text/javascript"></script>
   </div>
