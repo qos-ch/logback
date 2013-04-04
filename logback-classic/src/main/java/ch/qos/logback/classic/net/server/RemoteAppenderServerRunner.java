@@ -16,9 +16,6 @@ package ch.qos.logback.classic.net.server;
 
 import java.util.concurrent.Executor;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.net.server.ConcurrentServerRunner;
 import ch.qos.logback.core.net.server.ServerListener;
@@ -33,8 +30,6 @@ import ch.qos.logback.core.net.server.ServerRunner;
 class RemoteAppenderServerRunner
     extends ConcurrentServerRunner<RemoteAppenderClient> {
 
-  private LoggerContext lc;
-
   /**
    * Constructs a new server runner.
    * @param listener the listener from which the server will accept new
@@ -47,26 +42,13 @@ class RemoteAppenderServerRunner
     super(listener, executor);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected boolean configureClient(RemoteAppenderClient client) {
-    LoggerContext lc = getLoggerContext();
-    if (lc == null) {
-      addError("logger context not yet available");
-      return false;
-    }
-    
-    client.setLoggerContext(lc);
+    client.setLoggerContext((LoggerContext) getContext());
     return true;
   }
   
-  protected LoggerContext getLoggerContext() {
-    if (lc == null) {   
-      ILoggerFactory factory = LoggerFactory.getILoggerFactory();
-      if (factory instanceof LoggerContext) {
-        lc = (LoggerContext) factory;
-      }
-    }
-    return lc;
-  }
-
 }
