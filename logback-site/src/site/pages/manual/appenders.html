@@ -2080,6 +2080,239 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <a href="#simpleSSLSocketServer">SimpleSSLSocketServer</a>.
     </p>
    
+    <h3 class="doAnchor"><a name="serverSocketAppender"></a>
+      ServerSocketAppender and SSLServerSocketAppender</h3>
+    
+    <p>The <code>SocketAppender</code> component (and its SSL-enabled 
+       counterpart) discussed previously are designed to allow an application
+       to connect to a remote logging server over the network for the purpose
+       of delivering logging events to the server.  In some certain situations,
+       it may be inconvenient or infeasible to have an application initiate a
+       connection to a remote logging server.  For these situations, Logback
+       Classic offers 
+       <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
+       <code>ServerSocketAppender</code></a>.  
+    </p>
+    
+    <p>Instead of initiating a connection to a remote logging server, 
+    <code>ServerSocketAppender</code> passively listens on a TCP socket
+    awaiting incoming connections from remote clients.  Logging events
+    that are delivered to the appender are distributed to each connected
+    client.  Logging events that occur when no client is connected are
+    <em>summarily discarded</em>.
+    </p>
+    
+    <p>In addition to the basic <code>ServerSocketAppender</code>, Logback
+    offers <a href="../xref/ch/qos/logback/classic/net/server/SSLServerSocketAppender">
+    <code>SSLServerSocketAppender</code></a>, which distributes logging events
+    to each connected client using a secure, encrypted channel.  Moreover, the
+    SSL-enabled appender fully supports mutual certificate-based authentication,
+    which can be used to ensure that only authorized clients can connect to
+    the appender to receive logging events.   
+    </p>
+   
+    <p>The approach to encoding logging events for transmission on the wire 
+    is identical to that used by <code>SocketAppender</code>; each event is 
+    a serialized instance of <code>ILoggingEvent</code>.  Only the direction 
+    of connection initiation is reversed.  While <code>SocketAppender</code> 
+    acts as the active peer in establishing the connection to a logging server,
+    <code>ServerSocketAppender</code> is passive; it listens for
+    incoming connections from clients.  This difference is especially useful
+    in situations such as the following:
+    </p>
+    <ul>
+			<li>For security reasons, a central logging server may be
+				located behind a network firewall that does not allow incoming
+				connections. Using a <code>ServerSocketAppender</code> component, an
+				application that wishes to deliver events to the central
+				logger can passively wait for the central logger to initiate the
+				connection from behind the firewall.
+			</li>
+			<li>
+			  <p>A central logging server may be using a <code>SocketServer</code> 
+			  component (or a <code>SimpleSocketServer</code>) to receive events from
+				one or more applications using a <code>SocketServer</code> component.
+				Events received at the central logger server could then be distributed
+				to interested downstream receivers using <code>ServerSocketAppender</code>.
+				The has the advantage that the central logging server may not need to
+				be configured for each new downstream receiver.  The central logging
+				serve thus acts as a hub, receiving logging events from applications
+				and distributing them to interested clients.</p>
+				<p>This is particularly relevant for developer tools such as IDE 
+				plugins or enterprise management tools that might want to receive 
+				events from server-based applications for local display, filtering,
+				and alerting.  Arranging for the central server to initiate a
+				connection to such tools may prove difficult, particularly when the 
+				tool is running on a developer's workstation, which may indeed be
+				mobile.</p>
+      </li>
+    </ul>
+
+    <p>The <a href="../xref/ch/qos/logback/classic/net/SocketRemote">
+    <code>SocketRemote</code></a> component (and its SSL-enabled counterpart, 
+    <a href="../xref/ch/qos/logback/classic/net/SSLSocketRemote">
+    <code>SSLSocketRemote</code></a>) provide the companion client that 
+    connects to a <code>ServerSocketAppender</code>.  This component is
+    configured in <em>logback.xml</em> just like other logback components. 
+    When a configuration containing the remote component is loaded, the
+    component will initiate a connection to a <code>ServerSocketAppender</code>
+    running at a remote host and port.  
+    </p>
+    
+    <h4>Using SocketRemote with ServerSocketAppender</h4>
+   
+    <p>The configuration used for <code>SocketRemote</code> and
+    <code>ServerSocketAppender</code> is conceptually similar to that used
+    with <code>SocketAppender</code> and <code>SocketServer</code>.  The 
+    differences relate to the fact that the roles of <code>client</code>
+    and <code>server</code> are reversed.
+    </p>
+    
+    <p>The following example illustrates a configuration that uses
+    <code>ServerSocketAppender</code>:
+    </p>
+
+    <p class="example">Example: Basic ServerSocketAppender Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/remoteServer.xml)</p>
+<pre id="socketRemote" class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="SERVER" 
+    class="ch.qos.logback.classic.net.server.ServerSocketAppender">
+    &lt;port>${port}&lt;/port>
+    &lt;includeCallerData>${includeCallerData}&lt;/includeCallerData>
+  &lt;/appender>
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="SERVER" />
+  &lt;/root>  
+
+&lt;/configuration>
+</pre>
+    <p>Note that this configuration differs from previous examples using
+    <code>SocketAppender</code> only in the <em>class</em> specified for
+    the appender, and in the absence of the <span class="prop">remoteHost</span>
+    property &mdash; this appender waits passively for inbound connections 
+    from remote hosts rather than opening a connection to a remote logging
+    server.
+    </p>
+    
+    <p>Assuming you are in the <em>logback-examples/</em> directory, 
+    you can run this example configuration using the following command:</p>
+    <p class="source">java -Dport=6000 -DincludeCallerData=false \
+    chapters.appenders.socket.SocketRemoteServer \
+    src/main/java/chapters/appenders/socket/remoteServer.xml
+    </p>   
+   
+		<p>The example application loads the specified configuration and then
+		prompts the user to enter messages which will be relayed to connected
+		clients.  Since there are no client connections, yet, messages entered at
+		this point will be discarded by the appender.
+		</p>
+   
+    <p class="example">Example: Basic SocketRemote Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/remoteClient.xml)</p>
+    <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
+<pre id="socketRemote" class="prettyprint source">&lt;configuration debug="true">
+    
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
+    &lt;encoder>
+      &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  
+  &lt;remote class="ch.qos.logback.classic.net.SocketRemote">
+    &lt;host>${host}&lt;/host>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+  &lt;/remote>
+  
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>  
+
+&lt;/configuration></pre>
+        
+   <p>This configuration will cause logback to connect to an 
+   <code>ServerSocketAppender</code> running on the host and port specified
+   by the <em>host</em> and <em>port</em> substitution variables.  Logging
+   events received from the remote appender will be logged locally 
+   (according to the configuration shown here) via a console appender.  You
+   can configure any valid combination of appender and logger elements to 
+   direct events received from the remote appender to an appropriate 
+   destination.  Moreover, you can configure an any number of remote 
+   components to connect to as many remote appenders as you desire. 
+   </p>
+   
+   <p>Assuming you are in the <em>logback-examples/</em> directory, 
+   you can run this example configuration using the following command:</p>
+   <p class="source">java -Dhost=localhost -Dport=6000 \
+    chapters.appenders.socket.SocketRemoteClient \
+    src/main/java/chapters/appenders/socket/remoteClient.xml
+   </p>   
+   
+   <p>The example loads the configuration and then simply waits for logging
+   events from the remote appender.  If you run this example when the remote
+   appender is not running, you'll see <em>connection refused</em> messages
+   appearing in the log output, periodically.  The <code>SocketRemote</code>
+   component will periodically attempt to reconnect to the remote appender
+   until it succeeds or until the logger context is shut down.  The delay
+   interval between attempts is configurable using the 
+   <span class="prop">reconnectionDelay</span> property as shown in the
+   example configuration.</p>
+   
+   <h4>Using SSLSocketRemote with SSLServerSocketAppender</h4>
+   <p>
+   Using <code>SSLSocketRemote</code> is quite similar.  The essential 
+   differences are in the class specified for the remote and the ability to
+   nest the <span class="prop">ssl</span> property to specify SSL configuration
+   properties.  The following example illustrates a basic configuration:
+   </p>
+   
+    <p class="example">Example: Basic SSLSocketRemote Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/ssl/remoteClient.xml)</p>
+    <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
+<pre id="sslSocketRemote" class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
+    &lt;encoder>
+      &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
+    &lt;/encoder>         
+  &lt;/appender>
+  
+  &lt;remote class="ch.qos.logback.classic.net.SSLSocketRemote">
+    &lt;host>${host}&lt;/host>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+    &lt;ssl>
+      &lt;trustStore>
+        &lt;location>${truststore}&lt;/location>
+        &lt;password>${password}&lt;/password>
+      &lt;/trustStore>
+    &lt;/ssl>
+  &lt;/remote>
+  
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>  
+   
+&lt;/configuration></pre>
+
+  <p>Note that the <em>class</em> attribute now specifies 
+  <code>SSLSocketRemote</code> and that in addition to the configuration
+  properties shown in the previous example, this configuration contains
+  an SSL configuration specifying the location and password for a 
+  trust store that will be used in validating that the remote appender is
+  trusted.  See <a href="usingSSL.html">Using SSL</a> for more information 
+  on configuring SSL properties for a remote.
+  </p>
+  
+  <p>It is important to note that our example is using a self-signed
+    X.509 credential that suitable for testing and experimentation, only. 
+    <strong>In a production setting, you should obtain an appropriate
+    X.509 credential to identify your trusted appender components</strong>.  
+    See <a href="usingSSL.html">Using SSL</a> for more information.
+  </p>
+  
+  <p>
+  </p>
    <h3 class="doAnchor">SMTPAppender</h3>
    
    <p>The <a
