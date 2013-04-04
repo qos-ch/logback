@@ -22,7 +22,6 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.net.SocketFactory;
@@ -115,7 +114,9 @@ public class SocketRemote extends ContextAwareBase
     if (socket != null) {
       CloseUtil.closeQuietly(socket);
     }
-    executor.shutdownNow();
+    if (executor != getContext().getExecutorService()) {
+      executor.shutdownNow();
+    }
     started = false;
   }
 
@@ -233,7 +234,7 @@ public class SocketRemote extends ContextAwareBase
   }
 
   protected ExecutorService createExecutorService() {
-    return Executors.newCachedThreadPool();
+    return getContext().getExecutorService();
   }
   
   public void setHost(String host) {
