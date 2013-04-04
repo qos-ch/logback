@@ -38,7 +38,7 @@ import ch.qos.logback.core.net.SocketConnector;
 import ch.qos.logback.core.net.SocketConnectorBase;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
-import ch.qos.logback.core.util.SocketUtil;
+import ch.qos.logback.core.util.CloseUtil;
 
 /**
  * A component that receives serialized {@link ILoggingEvent} objects from a
@@ -115,7 +115,7 @@ public class SocketRemote extends ContextAwareBase
   public void stop() {
     if (!isStarted()) return;
     if (socket != null) {
-      SocketUtil.closeQuietly(socket);
+      CloseUtil.closeQuietly(socket);
     }
     executor.shutdownNow();
     started = false;
@@ -190,7 +190,7 @@ public class SocketRemote extends ContextAwareBase
       addInfo(remoteId + "unknown event class: " + ex);
     }
     finally {
-      SocketUtil.closeQuietly(socket);
+      CloseUtil.closeQuietly(socket);
       socket = null;
       addInfo(remoteId + "connection closed");
     }
