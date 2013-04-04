@@ -17,6 +17,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.net.SSLSocketAppender;
+import ch.qos.logback.classic.net.SSLSocketRemote;
 import ch.qos.logback.classic.net.server.SSLServerSocketAppender;
 import ch.qos.logback.classic.net.server.SocketServerNestedComponentRegistryRules;
 import ch.qos.logback.core.AppenderBase;
@@ -47,6 +48,7 @@ public class DefaultNestedComponentRules {
         .add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
 
     registry.add(SSLSocketAppender.class, "ssl", SSLConfiguration.class);
+    registry.add(SSLSocketRemote.class, "ssl", SSLConfiguration.class);
     registry.add(SSLServerSocketAppender.class, "ssl", SSLConfiguration.class);
     SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
     SocketServerNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
