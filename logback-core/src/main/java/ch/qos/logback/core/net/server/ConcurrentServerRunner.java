@@ -18,7 +18,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -65,10 +65,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
    * @param executor a executor that will facilitate execution of the
    *    listening and client-handling tasks; while any {@link Executor}
    *    is allowed here, outside of unit testing the only reasonable choice
-   *    is a bounded thread pool of some kind.  If the executor passed here 
-   *    is a {@link ThreadPoolExecutor} the runner configures a rejected 
-   *    execution handler to ensure that when a client cannot be accomodated
-   *    it is summarily closed to prevent resource leaks.
+   *    is a bounded thread pool of some kind.
    */
   public ConcurrentServerRunner(ServerListener<T> listener, Executor executor) {
     this.listener = listener;
@@ -140,15 +137,21 @@ public abstract class ConcurrentServerRunner<T extends Client>
       while (!Thread.currentThread().isInterrupted()) {
         T client = listener.acceptClient();
         if (!configureClient(client)) {
-          logError("dropping client connection " + client); 
+          logError(client + ": connection dropped");
           client.close();
           continue;
         }
-        executor.execute(new ClientWrapper(client));
+        try {
+          executor.execute(new ClientWrapper(client));
+        }
+        catch (RejectedExecutionException ex) {
+          logError(client + ": connection dropped");
+          client.close();
+        }
       }
     }
     catch (InterruptedException ex) {
-      // ok... we'll shut down
+      assert true;  // ok... we'll shut down
     }
     catch (SocketException ex) {
       logInfo(ex.toString());
