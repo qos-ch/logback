@@ -63,7 +63,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
       ServerListener<RemoteLoggerClient> listener = createServerListener(socket);
-      executor = getThreadPool().createExecutor();
+      executor = createExecutor();
       runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
       runner.start();
@@ -86,12 +86,24 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
         getClientQueueSize());
   }
   
+  protected ExecutorService createExecutor() {
+    if (getThreadPool() == null) {
+      return getContext().getExecutorService();
+    }
+    return getThreadPool().createExecutor();
+  }
+  
   @Override
   public void stop() {
     if (!isStarted()) return;
     try {
       runner.stop();
-      executor.shutdownNow();
+      
+      // shutdown the executor only if we created our own
+      if (executor != getContext().getExecutorService()) {
+        executor.shutdownNow();
+      }
+      
       super.stop();
     }
     catch (IOException ex) {
@@ -230,13 +242,10 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * Gets the server's thread pool configuration.
-   * @return thread pool configuration; if no thread pool configuration was
-   *    provided, a default configuration is returned
+   * @return thread pool configuration or {@code null} if no configuration was
+   *    provided
    */
   public ThreadPoolFactoryBean getThreadPool() {
-    if (threadPool == null) {
-      return new ThreadPoolFactoryBean();
-    }
     return threadPool;
   }
 
