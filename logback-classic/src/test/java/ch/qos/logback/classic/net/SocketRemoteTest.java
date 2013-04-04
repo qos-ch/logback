@@ -17,7 +17,6 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -69,8 +68,8 @@ public class SocketRemoteTest {
   private LoggerContext lc;
   private Logger logger;
   
-  private InstrumentedRemoteEventSource remote = 
-      new InstrumentedRemoteEventSource();
+  private InstrumentedSocketRemote remote = 
+      new InstrumentedSocketRemote();
   
   @Before
   public void setUp() throws Exception {
@@ -128,8 +127,6 @@ public class SocketRemoteTest {
     remote.start();
     assertTrue(remote.isStarted());
     remote.awaitConnectorCreated(DELAY);
-    assertSame(remote, connector.getLastExceptionHandler());
-    assertSame(socketFactory, connector.getLastSocketFactory());
     remote.stop();
     assertFalse(remote.isStarted());
   }
@@ -205,7 +202,7 @@ public class SocketRemoteTest {
   /**
    * A {@link SocketRemote} with instrumentation for unit testing.
    */
-  private class InstrumentedRemoteEventSource extends SocketRemote {
+  private class InstrumentedSocketRemote extends SocketRemote {
 
     private boolean connectorCreated;
     private boolean executorCreated;
@@ -248,8 +245,6 @@ public class SocketRemoteTest {
   private static class MockSocketConnector implements SocketConnector {
 
     private final Socket socket;
-    private ExceptionHandler lastExceptionHandler;
-    private SocketFactory lastSocketFactory;
     
     public MockSocketConnector(Socket socket) {
       this.socket = socket;
@@ -267,21 +262,11 @@ public class SocketRemoteTest {
     }
 
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-      lastExceptionHandler = exceptionHandler;
     }
 
     public void setSocketFactory(SocketFactory socketFactory) {
-      lastSocketFactory = socketFactory;
     }
 
-    public ExceptionHandler getLastExceptionHandler() {
-      return lastExceptionHandler;
-    }
-
-    public SocketFactory getLastSocketFactory() {
-      return lastSocketFactory;
-    }
-    
   }
 
   /**
