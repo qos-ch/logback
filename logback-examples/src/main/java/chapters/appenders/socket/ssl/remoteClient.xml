@@ -15,7 +15,7 @@
   <remote class="ch.qos.logback.classic.net.SSLSocketRemote">
     <host>${host}</host>
     <port>${port}</port>
-    <reconnectionDelay>5000</reconnectionDelay>
+    <reconnectionDelay>10000</reconnectionDelay>
     <ssl>
       <trustStore>
         <location>${truststore}</location>
