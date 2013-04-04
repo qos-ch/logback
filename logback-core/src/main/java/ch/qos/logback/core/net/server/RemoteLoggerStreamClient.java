@@ -24,6 +24,7 @@ import java.util.concurrent.BlockingQueue;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.util.CloseUtil;
 
 /**
  * A {@link RemoteLoggerClient} that writes serialized logging events to an
@@ -88,12 +89,7 @@ class RemoteLoggerStreamClient
    */
   public void close() {
     if (socket == null) return;
-    try {
-      socket.close();
-    }
-    catch (IOException ex) {
-      ex.printStackTrace(System.err);
-    }    
+    CloseUtil.closeQuietly(socket);
   }
 
   /**
@@ -134,12 +130,7 @@ class RemoteLoggerStreamClient
     }
     finally {
       if (oos != null) {
-        try {
-          oos.close();
-        }
-        catch (IOException ex) {
-          assert true;   // safe to ignore the exception here
-        }
+        CloseUtil.closeQuietly(oos);
       }
       close();
       addInfo(clientId + "connection closed");
