@@ -37,7 +37,7 @@ import ch.qos.logback.core.net.server.ServerSocketUtil;
  */
 public class SocketConnectorBaseTest {
 
-  private static final int DELAY = 250;
+  private static final int DELAY = 1000;
   
   private MockExceptionHandler exceptionHandler = new MockExceptionHandler();
   
@@ -65,6 +65,7 @@ public class SocketConnectorBaseTest {
     thread.start();
     Socket socket = connector.awaitConnection(2 * DELAY);
     assertNotNull(socket);
+    thread.join(DELAY);
     assertFalse(thread.isAlive());
     socket.close();
   }
@@ -79,7 +80,7 @@ public class SocketConnectorBaseTest {
     assertTrue(exceptionHandler.getLastException() instanceof ConnectException);
     assertTrue(thread.isAlive());
     thread.interrupt();
-    thread.join(1000);
+    thread.join(DELAY);
     assertFalse(thread.isAlive());
     assertTrue(exceptionHandler.getLastException() instanceof InterruptedException);
   }
@@ -104,6 +105,7 @@ public class SocketConnectorBaseTest {
     // now we should be able to connect
     socket = connector.awaitConnection(2 * DELAY);
     assertNotNull(socket);
+    thread.join(DELAY);
     assertFalse(thread.isAlive());
     socket.close();
   }
