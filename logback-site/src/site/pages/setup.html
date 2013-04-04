@@ -160,32 +160,17 @@
    
    <p>If you wish to contribute to the project or just hack for fun,
    you will probably want to import logback as a project into your
-   favorite IDE. Logback uses Maven as its build tool. The Scala
-   language is used in certain logback test cases. Moreover, logback
-   offers a Groovy-based configurator so there is a dependency on the
-   Groovy language as well. It follows that your IDE should have
-   plugins for Maven, Scala and Groovy in order to <em>build</em>
-   logback from your within IDE. The Scala+Groovy dependecy just
-   mentioned are <em>build-time</em> dependencies. The only mandatory
-   logback dependency at runrime is the JRE, unless of course you wish
-   to use the Groovy configurator in which case Groovy runtime will be
-   a required dependency as well. Also note that building from the
-   command line is fairly trivial, the command 'mvn install' given
-   from $LOGBACK_HOME folder should suffice. </p>
-
-   <p class="highlight">If you can't be bothered with installing the
-   Scala plugin for your IDE, just remove the ".scala" files from the
-   source tree as they are not strictly necessary for building
-   logback.
-   </p>
-
-   <p>If you can't be bothered with installing the Scala plugin for
-   your IDE, just remove the ".scala" files from the source tree as
-   they are not strictly necessary for building logback.. There are
-   about 5 or 6 such files. You will also need to modify the
-   <code>PackageTest</code> file in the "ch.qos.logback.core.rolling"
-   packages to remove references to these test files written in
-   Scala. These class references all end in "STest.class".</p>
+   favorite IDE. Logback uses Maven as its build tool. Logback offers
+   a Groovy-based configurator so there is a dependency on the Groovy
+   language. It follows that your IDE should have plugins for Maven
+   and Groovy in order to <em>build</em> logback from your within
+   IDE. The Groovy dependecy just mentioned is a <em>build-time</em>
+   dependency. The only mandatory logback dependency at runrime is the
+   JRE, unless of course you wish to use the Groovy configurator in
+   which case Groovy runtime will be a required dependency as
+   well. Also note that building from the command line is fairly
+   trivial, the command 'mvn install' given from $LOGBACK_HOME folder
+   should suffice. </p>
 
    <p><span class="label">ask for help</span> Notwithstanding the
    instructions below, if you have trouble building logback from the
@@ -195,15 +180,12 @@
    IDEA</h3>
 
    <p>Assuming you have the latest version of IntelliJ IDEA installed,
-   the only required additional plugin is the Scala plugin. IntelliJ
-   IDEA supports Maven as well as Groovy out of the box. Once you have
-   the Scala plugin installed, you can import logback into
-   IDEA. Select File&rarr; New Project &rarr; Import from external
-   model&rarr; Maven, then select $LOGBACK_HOME as the Root
-   directory. The import should finish successfully in a few
-   seconds. If you import logback before the scala-plugin is
-   installed, you would need to re-import logback as a project after
-   the Scala plugin is installed.</p>
+   no additional plugin installation is necessary. IntelliJ IDEA
+   supports Maven as well as Groovy out of the box. You can import
+   logback into IDEA by selecting File&rarr; New Project &rarr; Import
+   from external model&rarr; Maven, then select $LOGBACK_HOME as the
+   Root directory. The import should finish successfully in a few
+   seconds.</p>
 
    <h3 class="doAnchor" name="eclipse">Building with Eclipse</h3>
 
@@ -229,22 +211,38 @@
    
 
    <ol>
-     <li>Install Eclipse Indigo, aka Eclipse 3.7</li>
-     <li>in <em>eclipse.ini</em> file modify the parameter "mx",
+     <li>Install Eclipse</li>
+
+<!--     <li>in <em>eclipse.ini</em> file modify the parameter "mx",
      i.e. change -Xmx384m to -Xmx1384m</li>
+-->
 
-     <li>In Eclipse, select Help &rarr; Intall new Software &rarr;
-     Work with <a
-     href="http://dist.springsource.org/release/GRECLIPSE/e3.7/">http://dist.springsource.org/release/GRECLIPSE/e3.7/</a>
-     and then Select "Groovy-Eclipse Feature". Installation of other
-     plugins in particular "m2e Configurator for Groovy-Eclipse" is
-     <b>not</b> necessary</li>
+     <li>Install the Groovy plugin for Eclipse. 
 
-     <li>Similar to the previous step, install Scala IDE for Eclipse
-     plugin as explained on the <a
-     href="http://scala-ide.org/download/current.html">Scala IDE</a>
-     web-site. Installation of "JDT Weaving" or "Scala IDE for Eclipse
-     Source feature" are not necessary.</li>
+       <ul>
+         <li>
+           <p>You first need to determine the update site appropriate
+           for your version of Eclipse. The list of available update
+           sites is available from <a
+           href="http://groovy.codehaus.org/Eclipse+Plugin">Groovy
+           project documentation</a>.
+           </p>
+           <p>For example, for Eclipse 4.2 (Juno) the URL of the
+           update site is
+           "http://dist.springsource.org/release/GRECLIPSE/e4.2/".
+           </p>
+         </li>
+         
+         <li>In Eclipse, select Help &rarr; Intall new Software &rarr;
+         Work with the update site you chose in the previous step and
+         then Select "Groovy-Eclipse Feature". Installation of other
+         plugins in particular "m2e Configurator for Groovy-Eclipse"
+         is <b>not</b> necessary
+         </li>
+       </ul>
+    </li>
+
+
 
      <li><pre>cd $LOGBACK_HOME</pre>
 
@@ -263,15 +261,9 @@
      General&rarr; Existing Prokects into Workspace, select
      $LOGBACK_HOME folder for the import
      </li>   
-
-    
-     <li>In Eclipse, add the scala nature to logback-core project:
-     (right click on logback-core project&rarr; Configure&rarr; Add
-     Scala Nature)
-     </li>   
      
      <li>In Eclipse, remove the
-     logback-classic/target/generated-sources/groovy-sttubs/main
+     logback-classic/target/generated-sources/groovy-stubs/main
      directory from the list of source folders (logback-classic&rarr;
      project properties &rarr; Java Build Path)
      </li>   
@@ -286,6 +278,10 @@
      </li>   
      
    </ol>
+
+
+   <p>The above listed procedure has been last tested bu the author
+   using Juno on April 4th 2013.</p>
 
    <script src="templates/footer.js" type="text/javascript"></script>
 </div>
