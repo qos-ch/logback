@@ -2044,7 +2044,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     the presence of the nested <span class="prop">ssl</span> property,
     which is used here to specify the location and password for the
     key store containing the server's private key and certificate, using
-    substitution variables.
+    substitution variables. The <span class="prop">ssl</span> property 
+    of the server component accepts the same nested configuration 
+    properties as those accepted by <code>SSLSocketAppender</code>.  
+    <strong>See  <a href="usingSSL.html">Using SSL</a> for details on 
+    configuring the SSL properties for <code>SSLSocketServer</code></strong>.
     </p>    
    
     <p>We can now run our SSL-enabled server configuration using the 
@@ -2074,13 +2078,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p>Once our server is started, we can connect to it just as shown in 
     the previous examples for using 
     <a href="#simpleSSLSocketServer">SimpleSSLSocketServer</a>.
-    </p>
-    
-    <p>The <span class="prop">ssl</span> property of the server component
-    accepts the same nested configuration properties as those accepted
-    by <code>SSLSocketAppender</code>.  <strong>See 
-    <a href="usingSSL.html">Using SSL</a> for details on configuring 
-    the SSL properties for <code>SSLSocketServer</code></strong>.
     </p>
    
    <h3 class="doAnchor">SMTPAppender</h3>
