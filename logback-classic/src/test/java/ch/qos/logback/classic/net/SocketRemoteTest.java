@@ -102,12 +102,12 @@ public class SocketRemoteTest {
   @Test
   public void testStartNoRemoteAddress() throws Exception {
     remote.start();
-    assertTrue(context.getLastStatus().getMessage().contains("address"));
+    assertTrue(context.getLastStatus().getMessage().contains("host"));
   }
 
   @Test
   public void testStartNoPort() throws Exception {
-    remote.setAddress(TEST_HOST_NAME);
+    remote.setHost(TEST_HOST_NAME);
     remote.start();
     assertTrue(context.getLastStatus().getMessage().contains("port"));
   }
@@ -115,14 +115,14 @@ public class SocketRemoteTest {
   @Test
   public void testStartUnknownHost() throws Exception {
     remote.setPort(6000);
-    remote.setAddress(TEST_HOST_NAME);
+    remote.setHost(TEST_HOST_NAME);
     remote.start();
     assertTrue(context.getLastStatus().getMessage().contains("unknown host"));
   }
   
   @Test
   public void testStartStop() throws Exception {
-    remote.setAddress(InetAddress.getLocalHost().getHostName());
+    remote.setHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.setAcceptConnectionTimeout(DELAY / 2);
     remote.start();
@@ -136,7 +136,7 @@ public class SocketRemoteTest {
   
   @Test
   public void testServerSlowToAcceptConnection() throws Exception {
-    remote.setAddress(InetAddress.getLocalHost().getHostName());
+    remote.setHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.setAcceptConnectionTimeout(DELAY / 4);
     remote.start();
@@ -147,7 +147,7 @@ public class SocketRemoteTest {
 
   @Test
   public void testServerDropsConnection() throws Exception {
-    remote.setAddress(InetAddress.getLocalHost().getHostName());
+    remote.setHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.start();
     assertTrue(remote.awaitConnectorCreated(DELAY));
@@ -157,7 +157,7 @@ public class SocketRemoteTest {
   
   @Test
   public void testDispatchEventForEnabledLevel() throws Exception {
-    remote.setAddress(InetAddress.getLocalHost().getHostName());
+    remote.setHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.start();
     assertTrue(remote.awaitConnectorCreated(DELAY));
@@ -183,7 +183,7 @@ public class SocketRemoteTest {
 
   @Test
   public void testNoDispatchEventForDisabledLevel() throws Exception {
-    remote.setAddress(InetAddress.getLocalHost().getHostName());
+    remote.setHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.start();
     assertTrue(remote.awaitConnectorCreated(DELAY));
