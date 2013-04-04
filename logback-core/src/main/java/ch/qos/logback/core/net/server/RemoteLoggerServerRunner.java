@@ -55,20 +55,4 @@ class RemoteLoggerServerRunner
     return true;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void logInfo(String message) {
-    addInfo(message);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void logError(String message) {
-    addError(message);
-  }
-
 }

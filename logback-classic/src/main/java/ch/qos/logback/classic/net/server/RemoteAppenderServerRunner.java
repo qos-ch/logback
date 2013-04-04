@@ -19,7 +19,6 @@ import java.util.concurrent.Executor;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.net.server.ConcurrentServerRunner;
 import ch.qos.logback.core.net.server.ServerListener;
@@ -35,7 +34,6 @@ class RemoteAppenderServerRunner
     extends ConcurrentServerRunner<RemoteAppenderClient> {
 
   private LoggerContext lc;
-  private Logger logger;
 
   /**
    * Constructs a new server runner.
@@ -53,42 +51,12 @@ class RemoteAppenderServerRunner
   protected boolean configureClient(RemoteAppenderClient client) {
     LoggerContext lc = getLoggerContext();
     if (lc == null) {
-      logError("logger context not yet available");
+      addError("logger context not yet available");
       return false;
     }
     
     client.setLoggerContext(lc);
     return true;
-  }
-
-  protected void logInfo(String message) {
-    Logger logger = getLogger();
-    if (logger != null) {
-      logger.info(message);
-    }
-    else {
-      addInfo(message);
-    }
-  }
-  
-  protected void logError(String message) {
-    Logger logger = getLogger();
-    if (logger != null) {
-      logger.error(message);
-    }
-    else {
-      addError(message);
-    }
-  }
-  
-  protected Logger getLogger() {
-    if (logger == null) {
-      LoggerContext lc = getLoggerContext();
-      if (lc != null) {
-        logger = lc.getLogger(getClass().getPackage().getName());
-      }
-    }
-    return logger;
   }
   
   protected LoggerContext getLoggerContext() {

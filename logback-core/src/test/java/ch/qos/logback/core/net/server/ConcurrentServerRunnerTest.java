@@ -134,13 +134,6 @@ public class ConcurrentServerRunnerTest {
       return true;
     }
 
-    @Override
-    protected void logInfo(String message) {
-    }
-
-    @Override
-    protected void logError(String message) {
-    }
-    
   }
+  
 }
