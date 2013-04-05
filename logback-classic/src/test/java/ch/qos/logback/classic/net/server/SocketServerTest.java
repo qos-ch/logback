@@ -41,8 +41,6 @@ import ch.qos.logback.core.status.Status;
 public class SocketServerTest {
 
   private MockContext context = new MockContext();
-
-  private MockExecutorService executorService = new MockExecutorService();
   
   private MockServerRunner<RemoteAppenderClient> runner = 
       new MockServerRunner<RemoteAppenderClient>();
@@ -50,13 +48,17 @@ public class SocketServerTest {
   private MockServerListener<RemoteAppenderClient> listener = 
       new MockServerListener<RemoteAppenderClient>();
   
+  private MockThreadPoolFactoryBean threadPool = 
+      new MockThreadPoolFactoryBean();
+  
   private ServerSocket serverSocket;
   private InstrumentedSocketServer socketServer;
   
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
-    socketServer = new InstrumentedSocketServer(serverSocket, listener, runner, executorService);
+    socketServer = new InstrumentedSocketServer(serverSocket, listener, runner);
+    socketServer.setThreadPool(threadPool);
     socketServer.setContext(context);
   }
   
@@ -74,27 +76,7 @@ public class SocketServerTest {
     
     socketServer.stop();
     assertFalse(runner.isStarted());
-    assertTrue(executorService.isShutdown());
   }
-
-  @Test
-  public void testStartStopWithContextExecutorService() throws Exception {
-    InstrumentedSocketServer socketServer = 
-        new InstrumentedSocketServer(serverSocket, listener, runner, 
-            context.getExecutorService());
-    
-    socketServer.setContext(context);
-    socketServer.start();
-    assertTrue(runner.isContextInjected());
-    assertTrue(runner.isStarted());
-    assertSame(listener, socketServer.getLastListener());
-    
-    socketServer.stop();
-    assertFalse(runner.isStarted());
-    // we must not shut down the context's executor service
-    assertFalse(executorService.isShutdown());
-  }
-
 
   @Test
   public void testStartThrowsException() throws Exception {

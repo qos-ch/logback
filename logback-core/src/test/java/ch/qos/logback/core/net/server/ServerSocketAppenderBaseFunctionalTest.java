@@ -50,8 +50,7 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
     serverSocket = ServerSocketUtil.createServerSocket();
     
-    appender = new InstrumentedServerSocketAppenderBase(serverSocket, 
-        executor);
+    appender = new InstrumentedServerSocketAppenderBase(serverSocket);
     
     appender.setThreadPool(new ThreadPoolFactoryBean() {
       @Override

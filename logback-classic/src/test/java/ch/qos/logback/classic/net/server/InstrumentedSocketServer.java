@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.net.ServerSocketFactory;
 
@@ -39,22 +37,19 @@ public class InstrumentedSocketServer extends SocketServer {
   private final ServerSocket serverSocket;
   private final ServerListener<RemoteAppenderClient> listener;
   private final ServerRunner<RemoteAppenderClient> runner;
-  private final ExecutorService executorService;
   
   private ServerListener lastListener;
   
   public InstrumentedSocketServer(ServerSocket serverSocket) {
-    this(serverSocket, new RemoteAppenderServerListener(serverSocket), null, 
-        Executors.newCachedThreadPool());
+    this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
   }
   
   public InstrumentedSocketServer(ServerSocket serverSocket,
       ServerListener<RemoteAppenderClient> listener, 
-      ServerRunner<RemoteAppenderClient> runner, ExecutorService executorService) {
+      ServerRunner<RemoteAppenderClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
-    this.executorService = executorService;
   }
 
   @Override
@@ -92,11 +87,6 @@ public class InstrumentedSocketServer extends SocketServer {
   protected ServerListener<RemoteAppenderClient> createServerListener(
       ServerSocket socket) {
     return listener;
-  }
-
-  @Override
-  protected ExecutorService createExecutorService() {
-    return executorService;
   }
 
   public ServerListener getLastListener() {
