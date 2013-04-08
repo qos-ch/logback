@@ -34,15 +34,16 @@
 
     <p><code>RollingFileAppender</code> will now detect when <span
     class="option">file</span> property collides with <span
-    class="option">fileNamePattern</span>, emit <a href="">an error
-    message</a> and refuse to initialize. This was requested in <a
+    class="option">fileNamePattern</span>, emit <a
+    href="codes.html#rfa_collision">an error message</a> and refuse to
+    initialize. This was requested in <a
     href="http://jira.qos.ch/browse/LOGBACK-796">LOGBACK-796</a> by
     Karl Pietrzak who also provided a patch.
     </p>
 
-    <p>In order to simply our build, several unit tests have been
+    <p>In order to simplify our build, several unit tests have been
     ported from Scala to Java. It follows that logback no longer
-    depends on Scala, not even for testing.</p>
+    depends on Scala, not even during the test phase of the build.</p>
 
 
     <h3>25th of March, 2013 - Release of version 1.0.11</h3>

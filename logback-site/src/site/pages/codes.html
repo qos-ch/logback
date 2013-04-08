@@ -374,8 +374,11 @@
   archive being overwritten.
   </p>
 
-  <p>To avoid data loss, <code>RollingFileAppender</code> will emit an
-  error message and refuse to start.</p>
+  <p>As such, in case <span class="option">file</span> property
+  matches the regular expression defined by <span
+  class="option">fileNamePattern</span>, in order to avoid data loss,
+  <code>RollingFileAppender</code> will emit an error message and
+  refuse to start.</p>
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="renamingError">Failed to rename file [x]
