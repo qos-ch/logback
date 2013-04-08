@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.spi;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -347,6 +349,17 @@ public class LoggingEvent implements ILoggingEvent {
     sb.append(level).append("] ");
     sb.append(getFormattedMessage());
     return sb.toString();
+  }
+
+  /**
+   * LoggerEventVO instances should be used for serialization. Use
+   * {@link LoggingEventVO#build(LoggingEvent) build} method to create the LoggerEventVO instance.
+   *
+   * @since 1.0.11
+   */
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    throw new UnsupportedOperationException(this.getClass() + " does not support serialization. " +
+            "Use LoggerEventVO instance instead. See also LoggerEventVO.build method.");
   }
 
 }

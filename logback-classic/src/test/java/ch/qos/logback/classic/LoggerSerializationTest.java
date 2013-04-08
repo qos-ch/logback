@@ -15,14 +15,18 @@ package ch.qos.logback.classic;
 
 import java.io.*;
 
+import ch.qos.logback.core.util.CoreTestConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LoggerSerializationTest {
+
+  static final String SERIALIZATION_PREFIX = CoreTestConstants.TEST_INPUT_PREFIX+"/serialization/";
 
   // force SLF4J initialization for subsequent Logger readResolce ooperaiton
   org.slf4j.Logger unused = LoggerFactory.getLogger(this.getClass());
@@ -103,28 +107,6 @@ public class LoggerSerializationTest {
     assertTrue("serialized loggers should be nearly the same size a:" + sizeA + ", sizeB:" + sizeB, (sizeA - sizeB) < 10);
   }
 
-  @Test
-  public void secondObjectShouldAddLittleToLength() throws IOException {
-    Logger a = lc.getLogger("a");
-    Logger b = lc.getLogger("b");
-
-    writeObject(oos, a);
-    int sizeA = bos.size();
-    oos.flush();
-    writeObject(oos,b);
-    int sizeAB = bos.size();
-    oos.close();
-
-    System.out.println("sizeA:"+sizeA);
-    System.out.println("sizeAB:"+sizeAB);
-    System.out.println("diff:"+(sizeAB-sizeA));
-
-    FileOutputStream fos = new FileOutputStream("/tmp/a.ser");
-    fos.write(bos.toByteArray());
-    fos.close();
-
-  }
-
   private Foo writeAndRead(Foo foo) throws IOException,
           ClassNotFoundException {
     writeObject(oos, foo);
@@ -147,4 +129,26 @@ public class LoggerSerializationTest {
     oos.flush();
     oos.close();
   }
+
+  @Test
+  public void testCompatibilityWith_v1_0_10 () throws IOException, ClassNotFoundException {
+    FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX+"logger_v1.0.10.ser");
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    Logger a = (Logger) ois.readObject();
+    ois.close();
+    assertEquals("a", a.getName());
+  }
+
+  // interestingly enough, logback 1.0.10 can also read loggers serialized by 1.0.11
+  // fields not serialized are set to their default values and since the fields are not
+  // used, it works out nicely
+  @Test
+  public void testCompatibilityWith_v1_0_11 () throws IOException, ClassNotFoundException {
+    FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX+"logger_v1.0.11.ser");
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    Logger a = (Logger) ois.readObject();
+    ois.close();
+    assertEquals("a", a.getName());
+  }
+
 }
