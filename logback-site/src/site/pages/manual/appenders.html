@@ -1645,6 +1645,14 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
           The host name of the server.
         </td>
       </tr>		
+      <tr>
+        <td><span class="prop" container="socket">ssl</span></td>
+        <td><code>SSLConfiguration</code></td>
+        <td>Supported only for <code>SSLSocketAppender</code>, this
+            property provides the SSL configuration that will be used by
+            the appender, as described in <a href="usingSSL.html">Using SSL</a>.
+        </td>
+      </tr>
     </table>
     
     <h4>Logging Server Options</h4>
@@ -1934,6 +1942,49 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     to be a receiver for remote logging events.
     </p>
     
+    <p>The <code>SocketServer</code> component provides the following 
+    configurable properties:</p>
+    
+    <table class="bodyTable striped">
+      <tr>
+        <th>Property Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketServer">address</span></td>
+        <td><code>String</code></td>
+        <td>The local network interface address on which the server
+        will listen.  If this property is not specified, the server
+        will listen on all network interfaces.</td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketServer">port</span></td>
+        <td><code>int</code></td>
+        <td>The TCP port on which the server will listen.  If this
+        property is not specified, a default value will be used.</td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketServer">ssl</span></td>
+        <td><code>SSLConfiguration</code></td>
+        <td>Supported only for <code>SSLSocketServer</code>, this
+            property provides the SSL configuration that will be used by
+            the server, as described in <a href="usingSSL.html">Using SSL</a>.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketServer">threadPool</span></td>
+        <td><code>ThreadPoolFactoryBean</code></td>
+        <td>This property specifies configuration for a thread pool that will
+            be used to manage the appender's thread resources.  In most cases,
+            this configuration is not required, as the defaults are generally
+            adequate.  See <a href="../xref/ch/qos/logback/core/net/server/ThreadPoolFactoryBean">
+            <code>ThreadPoolFactoryBean</code></a> for a description of the 
+            configurable properties and recommended settings.
+        </td>
+      </tr>
+    </table>
+    
     <p>For example, the following configuration uses the 
     <code>SocketServer</code> component with a minimal appender and 
     logger configuration.
@@ -1983,30 +2034,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p>We can connect to the running server just as shown in the previous
     examples for using <a href="#simpleSocketServer">SimpleSocketServer</a>.
     </p>
-    
-    <p>The <code>SocketServer</code> component provides the following 
-    configurable properties:</p>
-    
-    <table class="bodyTable striped">
-      <tr>
-        <th>Property Name</th>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketServer">address</span></td>
-        <td><code>String</code></td>
-        <td>The local network interface address on which the server
-        will listen.  If this property is not specified, the server
-        will listen on all network interfaces.</td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketServer">port</span></td>
-        <td><code>int</code></td>
-        <td>The TCP port on which the server will listen.  If this
-        property is not specified, a default value will be used.</td>
-      </tr>
-    </table>
     
     <p>A minimal server configuration using <code>SSLSocketServer</code>
     follows.</p>
@@ -2158,6 +2185,100 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     component will initiate a connection to a <code>ServerSocketAppender</code>
     running at a remote host and port.  
     </p>
+    
+    <p>The following configuration properties are supported by 
+    <code>ServerSocketAppender</code>:</p>
+    
+    <table class="bodyTable striped">
+      <tr>
+      <th>Property Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      </tr>
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">address</span></td>
+        <td><code>String</code></td>
+        <td>The local network interface address on which the appender
+        will listen.  If this property is not specified, the appender
+        will listen on all network interfaces.</td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">includeCallerData</span></td>
+        <td><code>boolean</code></td>
+        <td>
+          <p>
+            If true, the caller data will be available to the remote host. 
+            By default no caller data is sent to the client.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">port</span></td>
+        <td><code>int</code></td>
+        <td>
+          <p>
+            The port number on which the appender will listen.
+          </p>
+        </td>
+      </tr> 
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">ssl</span></td>
+        <td><code>SSLConfiguration</code></td>
+        <td>Supported only for <code>SSLServerSocketAppender</code>, this
+            property provides the SSL configuration that will be used by
+            the appender, as described in <a href="usingSSL.html">Using SSL</a>.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">threadPool</span></td>
+        <td><code>ThreadPoolFactoryBean</code></td>
+        <td>This property specifies configuration for a thread pool that will
+            be used to manage the appender's thread resources.  In most cases,
+            this configuration is not required, as the defaults are generally
+            adequate.  See <a href="../xref/ch/qos/logback/core/net/server/ThreadPoolFactoryBean">
+            <code>ThreadPoolFactoryBean</code></a> for a description of the 
+            configurable properties and recommended settings.
+        </td>
+      </tr>
+    </table>
+    
+    <p>The following configuration properties are supported by 
+    <code>SocketRemote</code>:</p>
+    
+    <table class="bodyTable striped">
+      <tr>
+      <th>Property Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketRemote">host</span></td>
+        <td><code>String</code></td>
+        <td>The hostname or address of the remote server socket appender.</td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketRemote">port</span></td>
+        <td><code>int</code></td>
+        <td>The port number of the remote server socket appender.</td>
+      </tr> 
+      <tr>
+        <td><span class="prop" container="socket">reconnectionDelay</span></td>
+        <td><code>int</code></td>
+        <td>
+          A positive integer representing the number of milliseconds to wait
+          before attempting to reconnect after a connection failure.  The
+          default value is 30000 (30 seconds).
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socketRemote">ssl</span></td>
+        <td><code>SSLConfiguration</code></td>
+        <td>Supported only for <code>SSLSocketRemote</code>, this
+            property provides the SSL configuration that will be used for
+            this remote, as described in <a href="usingSSL.html">Using SSL</a>.
+        </td>
+      </tr>
+    </table>
     
     <h4>Using SocketRemote with ServerSocketAppender</h4>
    
