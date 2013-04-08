@@ -54,7 +54,7 @@ import ch.qos.logback.core.util.PropertySetterException;
 public class PropertySetter extends ContextAwareBase {
 
   protected Object obj;
-  protected Class objClass;
+  protected Class<?> objClass;
   protected PropertyDescriptor[] propertyDescriptors;
   protected MethodDescriptor[] methodDescriptors;
 
@@ -145,7 +145,7 @@ public class PropertySetter extends ContextAwareBase {
           + "].");
     }
 
-    Class[] paramTypes = setter.getParameterTypes();
+    Class<?>[] paramTypes = setter.getParameterTypes();
 
     if (paramTypes.length != 1) {
       throw new PropertySetterException("#params for setter != 1");
@@ -217,7 +217,7 @@ public class PropertySetter extends ContextAwareBase {
     if (method == null) {
       return null;
     }
-    Class[] classArray = method.getParameterTypes();
+    Class<?>[] classArray = method.getParameterTypes();
     if (classArray.length != 1) {
       return null;
     } else {
@@ -266,7 +266,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  public Class getObjClass() {
+  public Class<?> getObjClass() {
     return objClass;
   }
 
@@ -274,7 +274,7 @@ public class PropertySetter extends ContextAwareBase {
     Method adderMethod = findAdderMethod(name);
     // first let us use the addXXX method
     if (adderMethod != null) {
-      Class[] paramTypes = adderMethod.getParameterTypes();
+      Class<?>[] paramTypes = adderMethod.getParameterTypes();
       if (!isSanityCheckSuccessful(name, adderMethod, paramTypes,
           complexProperty)) {
         return;
@@ -288,7 +288,7 @@ public class PropertySetter extends ContextAwareBase {
 
   void invokeMethodWithSingleParameterOnThisObject(Method method,
       Object parameter) {
-    Class ccc = parameter.getClass();
+    Class<?> ccc = parameter.getClass();
     try {
       method.invoke(this.obj, parameter);
     } catch (Exception e) {
@@ -312,7 +312,7 @@ public class PropertySetter extends ContextAwareBase {
       return;
     }
 
-    Class[] paramTypes = adderMethod.getParameterTypes();
+    Class<?>[] paramTypes = adderMethod.getParameterTypes();
     isSanityCheckSuccessful(name, adderMethod, paramTypes, strValue);
 
     Object arg;
@@ -347,7 +347,7 @@ public class PropertySetter extends ContextAwareBase {
       return;
     }
 
-    Class[] paramTypes = setter.getParameterTypes();
+    Class<?>[] paramTypes = setter.getParameterTypes();
 
     if (!isSanityCheckSuccessful(name, setter, paramTypes, complexProperty)) {
       return;
@@ -363,7 +363,7 @@ public class PropertySetter extends ContextAwareBase {
 
   private boolean isSanityCheckSuccessful(String name, Method method,
       Class<?>[] params, Object complexProperty) {
-    Class ccc = complexProperty.getClass();
+    Class<?> ccc = complexProperty.getClass();
     if (params.length != 1) {
       addError("Wrong number of parameters in setter method for property ["
           + name + "] in " + obj.getClass().getName());
@@ -446,7 +446,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  Class getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
+  Class<?> getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
     DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class,
         relevantMethod);
     if (defaultClassAnnon != null) {
@@ -455,7 +455,7 @@ public class PropertySetter extends ContextAwareBase {
     return null;
   }
 
-  Class getByConcreteType(String name, Method relevantMethod) {
+  Class<?> getByConcreteType(String name, Method relevantMethod) {
 
     Class<?> paramType = getParameterClassForMethod(relevantMethod);
     if (paramType == null) {
@@ -471,10 +471,10 @@ public class PropertySetter extends ContextAwareBase {
 
   }
 
-  public Class getClassNameViaImplicitRules(String name,
+  public Class<?> getClassNameViaImplicitRules(String name,
       AggregationType aggregationType, DefaultNestedComponentRegistry registry) {
 
-    Class registryResult = registry.findDefaultComponentType(obj.getClass(),
+    Class<?> registryResult = registry.findDefaultComponentType(obj.getClass(),
         name);
     if (registryResult != null) {
       return registryResult;
@@ -484,7 +484,7 @@ public class PropertySetter extends ContextAwareBase {
     if (relevantMethod == null) {
       return null;
     }
-    Class byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
+    Class<?> byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
     if (byAnnotation != null) {
       return byAnnotation;
     }

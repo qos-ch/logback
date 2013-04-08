@@ -55,8 +55,8 @@ public class FileStoreUtil {
 //    return fileStoreA.equals(fileStoreB);
 
     try {
-      Class pathClass = Class.forName(PATH_CLASS_STR);
-      Class filesClass = Class.forName(FILES_CLASS_STR);
+      Class<?> pathClass = Class.forName(PATH_CLASS_STR);
+      Class<?> filesClass = Class.forName(FILES_CLASS_STR);
 
       Method toPath = File.class.getMethod("toPath");
       Method getFileStoreMethod = filesClass.getMethod("getFileStore", pathClass);
