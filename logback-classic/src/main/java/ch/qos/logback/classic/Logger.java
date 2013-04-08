@@ -20,14 +20,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggerRemoteView;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
@@ -38,10 +36,7 @@ import ch.qos.logback.core.spi.FilterReply;
 public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     AppenderAttachable<ILoggingEvent>, Serializable {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 5454405123156820674L;
+  private static final long serialVersionUID = 8745934908040027998L;
 
   /**
    * The fully qualified name of this class. Used in gathering caller
