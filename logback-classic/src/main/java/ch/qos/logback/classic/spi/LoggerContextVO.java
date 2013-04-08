@@ -45,7 +45,6 @@ public class LoggerContextVO implements Serializable {
     this.name = lc.getName();
     this.propertyMap = lc.getCopyOfPropertyMap();
     this.birthTime = lc.getBirthTime();
-
   }
 
   public LoggerContextVO(String name, Map<String,String> propertyMap, long birthTime) {
@@ -94,6 +93,9 @@ public class LoggerContextVO implements Serializable {
     int result = name != null ? name.hashCode() : 0;
     result = 31 * result + (propertyMap != null ? propertyMap.hashCode() : 0);
     result = 31 * result + (int) (birthTime ^ (birthTime >>> 32));
+
+    System.out.println("LoggerContextVO"+System.identityHashCode(this)+" hashcode:"+result);
+
     return result;
   }
 }

@@ -84,23 +84,20 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * A new instance of LoggerContextRemoteView needs to be created each time the
    * name or propertyMap (including keys or values) changes.
    */
-  private void syncRemoteView() {
+  private void updateLoggerContextVO() {
     loggerContextRemoteView = new LoggerContextVO(this);
-    for (Logger logger : loggerCache.values()) {
-      logger.buildRemoteView();
-    }
   }
 
   @Override
   public void putProperty(String key, String val) {
     super.putProperty(key, val);
-    syncRemoteView();
+    updateLoggerContextVO();
   }
 
   @Override
   public void setName(String name) {
     super.setName(name);
-    syncRemoteView();
+    updateLoggerContextVO();
   }
 
   public final Logger getLogger(final Class clazz) {
