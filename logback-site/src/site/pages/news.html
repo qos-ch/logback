@@ -31,7 +31,54 @@
     <hr width="80%" align="center" />
 
     <h3>April, 2013 - Release of version 1.0.12</h3>
-
+    
+    <p>Several improvements and additions to socket-based appenders are 
+       included in this release:</p>
+    
+    <ul>
+      <li>A new <code>SSLSocketAppender</code> extends the basic 
+      <code>SocketAppender</code> providing the ability to deliver logging
+      events over the Secure Socket Layer (SSL).  The corresponding 
+      <code>SimpleSSLSocketServer</code> extends the basic 
+      <code>SimpleSocketServer</code> as a basic logging server application 
+      that receives logging events from a <code>SSLSocketAppender</code>.
+      </li>
+      
+      <li>A new <code>SocketServer</code> component (and its SSL-enabled 
+      counterpart, <code>SSLSocketServer</code>) provides the ability to
+      incorporate logging server functionality into <em>any</em> application
+      that uses Logback Classic, as an alternative to the simple standalone
+      socket server application provided with logback.  The new server 
+      component is configured in <em>logback.xml</em> in the same manner as 
+      other logback components such as appenders and loggers.  A logback 
+      configuration that includes a server component listens passively on 
+      a TCP socket for connections from incoming socket appender clients.  
+      Logging events received from remote appenders are logged according to 
+      the local configuration.  See <a href="manual/appenders.html#socketServer">
+      SocketServer and SSLSocketServer</a> in the manual for usage 
+      instructions.    
+      </li>
+      
+      <li>While <code>SocketAppender</code> is designed to initiate a connection
+      to a remote logging server in order to deliver logging events, a new
+      <code>ServerSocketAppender</code> reverses the direction of connection 
+      initiation.  A logback configuration that utilizes 
+      <code>ServerSocketAppender</code> (or <code>SSLServerSocketAppender</code>)
+      listens passively on a TCP socket for connections from interested 
+      clients that wish to <em>receive</em> logging events.  The corresponding
+      <code>SocketRemote</code> (and <code>SSLSocketRemote</code>) provides
+      a component that can be added to any logback configuration in order to
+      connect to a remote server socket appender, and to log events received
+      from the remote appender according to local configuration.  See 
+      <a href="manual/appenders.html#serverSocketAppender">ServerSocketAppender
+      and SSLServerSocketAppender</a> in the manual for usage instructions.        
+      </li>
+    </ul>
+    
+    <p>All of the new capabilities for socket-based appenders were 
+       contributed by Carl Harris.       
+    </p>
+    
     <p><code>RollingFileAppender</code> will now detect when <span
     class="option">file</span> property collides with <span
     class="option">fileNamePattern</span>, emit <a
