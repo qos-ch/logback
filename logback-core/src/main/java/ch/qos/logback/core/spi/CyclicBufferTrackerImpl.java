@@ -101,7 +101,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
   }
 
   private void removeHead() {
-    CyclicBuffer cb = head.value;
+    CyclicBuffer<E> cb = head.value;
     if (cb != null) {
       cb.clear();
     }
@@ -207,6 +207,7 @@ public class CyclicBufferTrackerImpl<E> implements CyclicBufferTracker<E> {
         return false;
       if (getClass() != obj.getClass())
         return false;
+      @SuppressWarnings("unchecked")
       final Entry other = (Entry) obj;
       if (key == null) {
         if (other.key != null)

@@ -464,6 +464,11 @@ public class Foo {
    <code>myLogger</code> is disabled for the DEBUG level.
    </p>
 
+   <p class="highlight">When a configuration file changes, it will be
+   automatically reloaded but only after several logger invocations
+   and after a delay determined by the scanning period.
+   </p>
+
    <p>Given that <code>ReconfigureOnChangeFilter</code> is invoked
    every time <em>any</em> logger is invoked, regardless of logger
    level, <code>ReconfigureOnChangeFilter</code> is absolutely

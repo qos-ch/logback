@@ -28,7 +28,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
   int bufferSize = DEFAULT_BUFFER_SIZE;
   int maxNumBuffers = DEFAULT_NUMBER_OF_BUFFERS;
 
-  List<TEntry> entryList = new LinkedList<TEntry>();
+  List<TEntry<E>> entryList = new LinkedList<TEntry<E>>();
   long lastCheck = 0;
 
   public int getBufferSize() {
@@ -46,9 +46,9 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
     this.maxNumBuffers = maxNumBuffers;
   }
 
-  private TEntry getEntry(String k) {
+  private TEntry<E> getEntry(String k) {
     for (int i = 0; i < entryList.size(); i++) {
-      TEntry te = entryList.get(i);
+      TEntry<E> te = entryList.get(i);
       if (te.key.equals(k)) {
         return te;
       }
@@ -61,7 +61,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
 
     List<String> result = new LinkedList<String>();
     for (int i = 0; i < entryList.size(); i++) {
-      TEntry te = entryList.get(i);
+      TEntry<E> te = entryList.get(i);
       result.add(te.key);
     }
     return result;
@@ -69,7 +69,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
 
 
   public CyclicBuffer<E> getOrCreate(String key, long timestamp) {
-    TEntry te = getEntry(key);
+    TEntry<E> te = getEntry(key);
     if (te == null) {
       CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
       te = new TEntry<E>(key, cb, timestamp);
@@ -88,7 +88,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
 
   public void removeBuffer(String k) {
     for (int i = 0; i < entryList.size(); i++) {
-      TEntry te = entryList.get(i);
+      TEntry<E> te = entryList.get(i);
       if (te.key.equals(k)) {
         entryList.remove(i);
         return;
@@ -96,7 +96,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
     }
   }
 
-  private boolean isEntryStale(TEntry entry, long now) {
+  private boolean isEntryStale(TEntry<E> entry, long now) {
     return ((entry.timestamp + THRESHOLD) < now);
   }
 
@@ -118,9 +118,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
 
   // ==================================================================
 
-  private class TEntry<E> implements Comparable {
-    TEntry next;
-    TEntry prev;
+  private class TEntry<X> implements Comparable<TEntry<?>> {
 
     String key;
     CyclicBuffer<E> value;
@@ -132,10 +130,6 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
       this.timestamp = timestamp;
     }
 
-    public void setTimestamp(long timestamp) {
-      this.timestamp = timestamp;
-    }
-
     @Override
     public int hashCode() {
       final int prime = 31;
@@ -144,12 +138,12 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
       return result;
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(TEntry<?> o) {
       if (!(o instanceof TEntry)) {
         throw new IllegalArgumentException("arguments must be of type " + TEntry.class);
       }
 
-      TEntry other = (TEntry) o;
+      TEntry<?> other = (TEntry<?>) o;
       if (timestamp > other.timestamp) {
         return 1;
       }
@@ -167,7 +161,8 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
         return false;
       if (getClass() != obj.getClass())
         return false;
-      final TEntry other = (TEntry) obj;
+      @SuppressWarnings("unchecked")
+      final TEntry<?> other = (TEntry<?>) obj;
       if (key == null) {
         if (other.key != null)
           return false;

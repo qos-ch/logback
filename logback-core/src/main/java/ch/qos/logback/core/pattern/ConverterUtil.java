@@ -23,17 +23,17 @@ public class ConverterUtil {
    *
    * @param head
    */
-  public static void startConverters(Converter head) {
-    Converter c = head;
+  public static <E> void startConverters(Converter<E> head) {
+    Converter<E> c = head;
     while (c != null) {
       // CompositeConverter is a subclass of  DynamicConverter
       if (c instanceof CompositeConverter) {
-        CompositeConverter cc = (CompositeConverter) c;
-        Converter childConverter = cc.childConverter;
+        CompositeConverter<E> cc = (CompositeConverter<E>) c;
+        Converter<E> childConverter = cc.childConverter;
         startConverters(childConverter);
         cc.start();
       } else if (c instanceof DynamicConverter) {
-        DynamicConverter dc = (DynamicConverter) c;
+        DynamicConverter<E> dc = (DynamicConverter<E>) c;
         dc.start();
       }
       c = c.getNext();
@@ -55,7 +55,7 @@ public class ConverterUtil {
   }
 
   public static <E> void setContextForConverters(Context context, Converter<E> head) {
-    Converter c = head;
+    Converter<E> c = head;
     while (c != null) {
       if (c instanceof ContextAware) {
         ((ContextAware) c).setContext(context);
