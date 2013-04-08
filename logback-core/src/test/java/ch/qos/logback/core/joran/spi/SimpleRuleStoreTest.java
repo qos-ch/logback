@@ -45,7 +45,7 @@ public class SimpleRuleStoreTest {
 
     // test for all possible case combinations of "a/b"
     for (String s : cc.combinations("a/b")) {
-       List r = srs.matchActions(new Pattern(s));
+       List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -61,7 +61,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("a/b"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
       assertEquals(2, r.size());
 
@@ -81,7 +81,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(pa, new XAction());
 
     for (String s : cc.combinations("a")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -97,7 +97,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("*/b"), new XAction());
 
     for (String s : cc.combinations("a/b")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -114,7 +114,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("*/c"), new XAction());
 
     for (String s : cc.combinations("a/b/c")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -131,7 +131,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("*/a/b"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -148,7 +148,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("a/b"), new ZAction());
 
     for (String s : cc.combinations("a/b")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -164,7 +164,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("a/*"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
       assertEquals(1, r.size());
       assertTrue(r.get(0) instanceof YAction);
@@ -177,7 +177,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("a/b/*"), new XAction(2));
 
     for (String s : cc.combinations("a/other")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNull(r);
     }
   }
@@ -189,7 +189,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("*/a/b"), new XAction(3));
 
     for (String s : cc.combinations("a/b")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -208,7 +208,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new Pattern("tG/tS/test/*"), new XAction(9));
 
     for (String s : cc.combinations("tG/tS/toto")) {
-      List r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new Pattern(s));
       assertNull(r);
     }
   }

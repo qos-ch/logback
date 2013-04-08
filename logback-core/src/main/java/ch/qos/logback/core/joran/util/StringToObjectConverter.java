@@ -28,7 +28,7 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public class StringToObjectConverter {
 
-  private static final Class[] STING_CLASS_PARAMETER = new Class[] { String.class };
+  private static final Class<?>[] STING_CLASS_PARAMETER = new Class[] { String.class };
 
   static public boolean canBeBuiltFromSimpleString(Class<?> parameterClass) {
     Package p = parameterClass.getPackage();

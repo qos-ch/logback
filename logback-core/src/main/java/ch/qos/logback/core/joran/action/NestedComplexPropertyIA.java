@@ -93,7 +93,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     // perform variable name substitution
     className = ec.subst(className);
 
-    Class componentClass = null;
+    Class<?> componentClass = null;
     try {
 
       if (!OptionHelper.isEmpty(className)) {

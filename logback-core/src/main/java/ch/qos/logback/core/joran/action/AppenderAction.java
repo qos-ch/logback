@@ -51,7 +51,7 @@ public class AppenderAction<E> extends Action {
     try {
       addInfo("About to instantiate appender of type [" + className + "]");
 
-      appender = (Appender) OptionHelper.instantiateByClassName(className,
+      appender = (Appender<E>) OptionHelper.instantiateByClassName(className,
           ch.qos.logback.core.Appender.class, context);
 
       appender.setContext(context);
@@ -68,7 +68,7 @@ public class AppenderAction<E> extends Action {
 
       // The execution context contains a bag which contains the appenders
       // created thus far.
-      HashMap<String, Appender> appenderBag = (HashMap) ec.getObjectMap().get(
+      HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) ec.getObjectMap().get(
           ActionConst.APPENDER_BAG);
 
       // add the appender just created to the appender bag.

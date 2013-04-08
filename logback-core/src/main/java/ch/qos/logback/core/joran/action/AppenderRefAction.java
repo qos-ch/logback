@@ -24,7 +24,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.HashMap;
 
-public class AppenderRefAction extends Action {
+public class AppenderRefAction<E> extends Action {
   boolean inError = false;
 
   @SuppressWarnings("unchecked")
@@ -44,7 +44,7 @@ public class AppenderRefAction extends Action {
       return;
     }
 
-    AppenderAttachable appenderAttachable = (AppenderAttachable) o;
+    AppenderAttachable<E> appenderAttachable = (AppenderAttachable<E>) o;
 
     String appenderName = ec.subst(attributes.getValue(ActionConst.REF_ATTRIBUTE));
 
@@ -57,9 +57,9 @@ public class AppenderRefAction extends Action {
       return;
     }
 
-    HashMap appenderBag = (HashMap) ec.getObjectMap().get(
+    HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) ec.getObjectMap().get(
         ActionConst.APPENDER_BAG);
-    Appender appender = (Appender) appenderBag.get(appenderName);
+    Appender<E> appender = (Appender<E>) appenderBag.get(appenderName);
 
     if (appender == null) {
       String msg = "Could not find an appender named [" + appenderName

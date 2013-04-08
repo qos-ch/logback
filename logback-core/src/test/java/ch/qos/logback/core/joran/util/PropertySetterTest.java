@@ -132,14 +132,14 @@ public class PropertySetterTest {
 
   @Test
   public void testgetClassNameViaImplicitRules() {
-    Class compClass = setter.getClassNameViaImplicitRules("door",
+    Class<?> compClass = setter.getClassNameViaImplicitRules("door",
         AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
     assertEquals(Door.class, compClass);
   }
 
   @Test
   public void testgetComplexPropertyColleClassNameViaImplicitRules() {
-    Class compClass = setter.getClassNameViaImplicitRules("window",
+    Class<?> compClass = setter.getClassNameViaImplicitRules("window",
         AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
         defaultComponentRegistry);
     assertEquals(Window.class, compClass);
@@ -206,11 +206,11 @@ public class PropertySetterTest {
     Method relevantMethod = setter.getRelevantMethod("SwimmingPool",
         AggregationType.AS_COMPLEX_PROPERTY);
     assertNotNull(relevantMethod);
-    Class spClass = setter.getDefaultClassNameByAnnonation("SwimmingPool",
+    Class<?> spClass = setter.getDefaultClassNameByAnnonation("SwimmingPool",
         relevantMethod);
     assertEquals(SwimmingPoolImpl.class, spClass);
 
-    Class classViaImplicitRules = setter.getClassNameViaImplicitRules(
+    Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules(
         "SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY,
         defaultComponentRegistry);
     assertEquals(SwimmingPoolImpl.class, classViaImplicitRules);
@@ -221,11 +221,11 @@ public class PropertySetterTest {
     Method relevantMethod = setter.getRelevantMethod("LargeSwimmingPool",
         AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
     assertNotNull(relevantMethod);
-    Class spClass = setter.getDefaultClassNameByAnnonation("LargeSwimmingPool",
+    Class<?> spClass = setter.getDefaultClassNameByAnnonation("LargeSwimmingPool",
         relevantMethod);
     assertEquals(LargeSwimmingPoolImpl.class, spClass);
 
-    Class classViaImplicitRules = setter.getClassNameViaImplicitRules(
+    Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules(
         "LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
         defaultComponentRegistry);
     assertEquals(LargeSwimmingPoolImpl.class, classViaImplicitRules);

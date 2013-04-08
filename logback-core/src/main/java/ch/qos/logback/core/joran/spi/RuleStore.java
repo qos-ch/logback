@@ -35,5 +35,5 @@ public interface RuleStore {
 
   void addRule(Pattern pattern, Action action);
 
-  List matchActions(Pattern currentPatern);
+  List<Action> matchActions(Pattern currentPatern);
 }

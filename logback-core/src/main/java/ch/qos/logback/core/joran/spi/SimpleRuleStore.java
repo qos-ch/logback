@@ -80,8 +80,8 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
   // if no tail match, check for prefix match, i.e. matches for x/*
   // match for x/y/* has higher priority than matches for x/*
 
-  public List matchActions(Pattern currentPattern) {
-    List actionList;
+  public List<Action> matchActions(Pattern currentPattern) {
+    List<Action> actionList;
 
     if ((actionList = rules.get(currentPattern)) != null) {
       return actionList;
@@ -96,7 +96,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
   }
 
-  List tailMatch(Pattern currentPattern) {
+  List<Action> tailMatch(Pattern currentPattern) {
     int max = 0;
     Pattern longestMatchingPattern = null;
 
@@ -118,7 +118,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
   }
 
-  List prefixMatch(Pattern currentPattern) {
+  List<Action> prefixMatch(Pattern currentPattern) {
     int max = 0;
     Pattern longestMatchingPattern = null;
 
@@ -142,7 +142,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
   }
 
-  List middleMatch(Pattern currentPattern) {
+  List<Action> middleMatch(Pattern currentPattern) {
     
     int max = 0;
     Pattern longestMatchingPattern = null;

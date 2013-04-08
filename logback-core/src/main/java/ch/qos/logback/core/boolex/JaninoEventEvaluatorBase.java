@@ -27,8 +27,8 @@ import org.codehaus.janino.ScriptEvaluator;
  */
 abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> {
 
-  static Class EXPRESSION_TYPE = boolean.class;
-  static Class[] THROWN_EXCEPTIONS = new Class[1];
+  static Class<?> EXPRESSION_TYPE = boolean.class;
+  static Class<?>[] THROWN_EXCEPTIONS = new Class[1];
 
   static public final int ERROR_THRESHOLD = 4;
   static {
@@ -44,7 +44,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
 
   abstract protected String[] getParameterNames();
 
-  abstract protected Class[] getParameterTypes();
+  abstract protected Class<?>[] getParameterTypes();
 
   abstract protected Object[] getParameterValues(E event);
 
@@ -93,7 +93,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
     matcherList.add(matcher);
   }
 
-  public List getMatcherList() {
+  public List<Matcher> getMatcherList() {
     return matcherList;
   }
 }

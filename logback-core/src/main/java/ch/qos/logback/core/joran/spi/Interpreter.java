@@ -65,7 +65,7 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * 
  */
 public class Interpreter {
-  private static List EMPTY_LIST = new Vector(0);
+  private static List<Action> EMPTY_LIST = new Vector<Action>(0);
 
   final private RuleStore ruleStore;
   final private InterpretationContext interpretationContext;
@@ -83,7 +83,7 @@ public class Interpreter {
    * {@link #endElement}.
    * 
    */
-  Stack<List> actionListStack;
+  Stack<List<Action>> actionListStack;
 
   /**
    * If the skip nested is set, then we skip all its nested elements until it is
@@ -98,7 +98,7 @@ public class Interpreter {
     interpretationContext = new InterpretationContext(context, this);
     implicitActions = new ArrayList<ImplicitAction>(3);
     this.pattern = initialPattern;
-    actionListStack = new Stack<List>();
+    actionListStack = new Stack<List<Action>>();
     eventPlayer = new EventPlayer(this);
   }
 
@@ -142,7 +142,7 @@ public class Interpreter {
       return;
     }
 
-    List applicableActionList = getApplicableActionList(pattern, atts);
+    List<Action> applicableActionList = getApplicableActionList(pattern, atts);
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
       callBeginAction(applicableActionList, tagName, atts);
@@ -167,7 +167,7 @@ public class Interpreter {
     setDocumentLocator(be.locator);
 
     String body = be.getText();
-    List applicableActionList = actionListStack.peek();
+    List<Action> applicableActionList = actionListStack.peek();
 
     if (body != null) {
       body = body.trim();
@@ -187,7 +187,7 @@ public class Interpreter {
     // given that an action list is always pushed for every startElement, we
     // need
     // to always pop for every endElement
-    List applicableActionList = (List) actionListStack.pop();
+    List<Action> applicableActionList = (List<Action>) actionListStack.pop();
 
     if (skip != null) {
       if (skip.equals(pattern)) {
@@ -228,7 +228,7 @@ public class Interpreter {
    * action is found, it is returned. Thus, the returned list will have at most
    * one element.
    */
-  List lookupImplicitAction(Pattern pattern, Attributes attributes,
+  List<Action> lookupImplicitAction(Pattern pattern, Attributes attributes,
       InterpretationContext ec) {
     int len = implicitActions.size();
 
@@ -249,8 +249,8 @@ public class Interpreter {
   /**
    * Return the list of applicable patterns for this
    */
-  List getApplicableActionList(Pattern pattern, Attributes attributes) {
-    List applicableActionList = ruleStore.matchActions(pattern);
+  List<Action> getApplicableActionList(Pattern pattern, Attributes attributes) {
+    List<Action> applicableActionList = ruleStore.matchActions(pattern);
 
     // logger.debug("set of applicable patterns: " + applicableActionList);
     if (applicableActionList == null) {
@@ -261,13 +261,13 @@ public class Interpreter {
     return applicableActionList;
   }
 
-  void callBeginAction(List applicableActionList, String tagName,
+  void callBeginAction(List<Action> applicableActionList, String tagName,
       Attributes atts) {
     if (applicableActionList == null) {
       return;
     }
 
-    Iterator i = applicableActionList.iterator();
+    Iterator<Action> i = applicableActionList.iterator();
     while (i.hasNext()) {
       Action action = (Action) i.next();
       // now let us invoke the action. We catch and report any eventual
@@ -284,11 +284,11 @@ public class Interpreter {
     }
   }
 
-  private void callBodyAction(List applicableActionList, String body) {
+  private void callBodyAction(List<Action> applicableActionList, String body) {
     if (applicableActionList == null) {
       return;
     }
-    Iterator i = applicableActionList.iterator();
+    Iterator<Action> i = applicableActionList.iterator();
 
     while (i.hasNext()) {
       Action action = (Action) i.next();
@@ -302,13 +302,13 @@ public class Interpreter {
     }
   }
 
-  private void callEndAction(List applicableActionList, String tagName) {
+  private void callEndAction(List<Action> applicableActionList, String tagName) {
     if (applicableActionList == null) {
       return;
     }
 
     // logger.debug("About to call end actions on node: [" + localName + "]");
-    Iterator i = applicableActionList.iterator();
+    Iterator<Action> i = applicableActionList.iterator();
 
     while (i.hasNext()) {
       Action action = (Action) i.next();

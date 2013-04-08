@@ -25,15 +25,15 @@ package ch.qos.logback.core.joran.spi;
  */
 public class HostClassAndPropertyDouble {
 
-  final Class hostClass;
+  final Class<?> hostClass;
   final String propertyName;
 
-  public HostClassAndPropertyDouble(Class hostClass, String propertyName) {
+  public HostClassAndPropertyDouble(Class<?> hostClass, String propertyName) {
     this.hostClass = hostClass;
     this.propertyName = propertyName;
   }
 
-  public Class getHostClass() {
+  public Class<?> getHostClass() {
     return hostClass;
   }
 

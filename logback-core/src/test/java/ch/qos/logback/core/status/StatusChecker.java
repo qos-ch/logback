@@ -39,7 +39,7 @@ public class StatusChecker extends StatusUtil {
     assertTrue(containsMatch(regex));
   }
 
-  public void asssertContainsException(Class scanExceptionClass) {
+  public void asssertContainsException(Class<?> scanExceptionClass) {
     assertTrue(containsException(scanExceptionClass));
   }
 

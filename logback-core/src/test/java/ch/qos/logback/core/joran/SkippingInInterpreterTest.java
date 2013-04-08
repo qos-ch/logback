@@ -56,7 +56,7 @@ public class SkippingInInterpreterTest {
     return spf.newSAXParser();
   }
 
-  void doTest(String filename, Integer expectedInt, Class exceptionClass)
+  void doTest(String filename, Integer expectedInt, Class<?> exceptionClass)
       throws Exception {
 
     rulesMap.put(new Pattern("test"), new NOPAction());

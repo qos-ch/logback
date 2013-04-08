@@ -25,7 +25,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 abstract public class AbstractEventEvaluatorAction extends Action {
 
-  EventEvaluator evaluator;
+  EventEvaluator<?> evaluator;
   boolean inError = false;
 
   /**
@@ -58,7 +58,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
       return;
     }
     try {
-      evaluator = (EventEvaluator) OptionHelper.instantiateByClassName(
+      evaluator = (EventEvaluator<?>) OptionHelper.instantiateByClassName(
           className, ch.qos.logback.core.boolex.EventEvaluator.class, context);
 
       evaluator.setContext(this.context);
@@ -104,7 +104,7 @@ abstract public class AbstractEventEvaluatorAction extends Action {
       ec.popObject();
 
       try {
-        Map<String, EventEvaluator> evaluatorMap = (Map<String, EventEvaluator>) context
+        Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
             .getObject(CoreConstants.EVALUATOR_MAP);
         if(evaluatorMap == null) {
           addError("Could not find EvaluatorMap");

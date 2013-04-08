@@ -41,14 +41,14 @@ public class DefaultNestedComponentRegistryTest {
   public void smoke() {
     String propertyName = "window";
     registry.add(House.class, propertyName, Window.class);
-    Class result = registry.findDefaultComponentType(House.class, propertyName);
+    Class<?> result = registry.findDefaultComponentType(House.class, propertyName);
     assertEquals(Window.class, result);
   }
 
   @Test
   public void absent() {
     registry.add(House.class, "a", Window.class);
-    Class result = registry.findDefaultComponentType(House.class, "other");
+    Class<?> result = registry.findDefaultComponentType(House.class, "other");
     assertNull(result);
   }
 }

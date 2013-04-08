@@ -118,7 +118,7 @@ public class Loader {
     return Thread.currentThread().getContextClassLoader();
   }
 
-  public static Class loadClass(String clazz, Context context)
+  public static Class<?> loadClass(String clazz, Context context)
           throws ClassNotFoundException {
     ClassLoader cl = getClassLoaderOfObject(context);
     return cl.loadClass(clazz);
@@ -144,7 +144,7 @@ public class Loader {
    * @param clazz
    * @return
    */
-  public static ClassLoader getClassLoaderAsPrivileged(final Class clazz) {
+  public static ClassLoader getClassLoaderAsPrivileged(final Class<?> clazz) {
     if (!HAS_GET_CLASS_LOADER_PERMISSION)
       return null;
     else
@@ -163,7 +163,7 @@ public class Loader {
    * @param clazz
    * @return
    */
-  public static ClassLoader getClassLoaderOfClass(final Class clazz) {
+  public static ClassLoader getClassLoaderOfClass(final Class<?> clazz) {
     ClassLoader cl = clazz.getClassLoader();
     if (cl == null) {
       return ClassLoader.getSystemClassLoader();
@@ -177,7 +177,7 @@ public class Loader {
    * <code>Thread</code> <code>contextClassLoader</code> if that fails try
    * Class.forname. Under JDK 1.1 only Class.forName is used.
    */
-  public static Class loadClass(String clazz) throws ClassNotFoundException {
+  public static Class<?> loadClass(String clazz) throws ClassNotFoundException {
     // Just call Class.forName(clazz) if we are running under JDK 1.1
     // or if we are instructed to ignore the TCL.
     if (ignoreTCL) {
