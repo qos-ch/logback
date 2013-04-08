@@ -41,6 +41,16 @@
     Karl Pietrzak who also provided a patch.
     </p>
 
+    <p>In reasponse to <a
+    href="http://jira.qos.ch/browse/LOGBACK-829">LOGBACK-829</a>,
+    serialization of Logger instances has been significantly
+    simplified and much unnecessary bloat removed. Moreover, the new
+    serialization of <code>Logger</code> objects is also compatible
+    with serialization streams using older Logger instances. Logger
+    instances serialized by logback 1.0.10 (and earlier) can be read
+    by newer (1.0.11 and later) versions of logback and vice-versa.
+    </p>
+
     <p>In order to simplify our build, several unit tests have been
     ported from Scala to Java. It follows that logback no longer
     depends on Scala, not even during the test phase of the build.</p>

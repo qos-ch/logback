@@ -131,20 +131,20 @@ public class LoggerSerializationTest {
   }
 
   @Test
-  public void testCompatibilityWith_v1_0_10 () throws IOException, ClassNotFoundException {
-    FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX+"logger_v1.0.10.ser");
+  public void testCompatibilityWith_v1_0_11 () throws IOException, ClassNotFoundException {
+    FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX+"logger_v1.0.11.ser");
     ObjectInputStream ois = new ObjectInputStream(fis);
     Logger a = (Logger) ois.readObject();
     ois.close();
     assertEquals("a", a.getName());
   }
 
-  // interestingly enough, logback 1.0.10 can also read loggers serialized by 1.0.11
+  // interestingly enough, logback 1.0.11 and earlier can also read loggers serialized by 1.0.12.
   // fields not serialized are set to their default values and since the fields are not
   // used, it works out nicely
   @Test
-  public void testCompatibilityWith_v1_0_11 () throws IOException, ClassNotFoundException {
-    FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX+"logger_v1.0.11.ser");
+  public void testCompatibilityWith_v1_0_12 () throws IOException, ClassNotFoundException {
+    FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX+"logger_v1.0.12.ser");
     ObjectInputStream ois = new ObjectInputStream(fis);
     Logger a = (Logger) ois.readObject();
     ois.close();

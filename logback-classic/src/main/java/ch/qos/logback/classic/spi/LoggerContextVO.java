@@ -94,8 +94,6 @@ public class LoggerContextVO implements Serializable {
     result = 31 * result + (propertyMap != null ? propertyMap.hashCode() : 0);
     result = 31 * result + (int) (birthTime ^ (birthTime >>> 32));
 
-    System.out.println("LoggerContextVO"+System.identityHashCode(this)+" hashcode:"+result);
-
     return result;
   }
 }
