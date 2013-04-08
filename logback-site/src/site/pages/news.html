@@ -41,14 +41,15 @@
     Karl Pietrzak who also provided a patch.
     </p>
 
-    <p>In reasponse to <a
+    <p>In response to <a
     href="http://jira.qos.ch/browse/LOGBACK-829">LOGBACK-829</a>,
-    serialization of Logger instances has been significantly
-    simplified and much unnecessary bloat removed. Moreover, the new
-    serialization of <code>Logger</code> objects is also compatible
-    with serialization streams using older Logger instances. Logger
-    instances serialized by logback 1.0.10 (and earlier) can be read
-    by newer (1.0.11 and later) versions of logback and vice-versa.
+    serialization of <code>Logger</code> instances has been
+    significantly simplified and much unnecessary bloat removed. As an
+    added bonus, the new serialization of <code>Logger</code> objects
+    is also compatible with serialization streams using older Logger
+    instances. <code>Logger</code> instances serialized by logback
+    1.0.11 and earlier can be read by logback version 1.0.12 and later
+    and <em>vice-versa</em>.
     </p>
 
     <p>In order to simplify our build, several unit tests have been
