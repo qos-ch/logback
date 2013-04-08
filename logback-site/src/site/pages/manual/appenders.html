@@ -4393,8 +4393,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		will cover their use.
 		</p>
 		
-  	<a name="AccessSocketAppender"/>
-		<h3>SocketAppender</h3>
+  	<a name="AccessSocketAppender"></a>
+		<h3>SocketAppender and SSLSocketAppender</h3>
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/access/net/SocketAppender.html">
@@ -4405,29 +4405,40 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		deserialization, the event can be logged as if it were generated
 		locally.
 		</p>
+		
+		<p>The <a href="../xref/ch/qos/logback/access/net/SSLSocketAppender.html">
+    <code>SSLSocketAppender</code></a> extends the basic 
+    <code>SocketAppender</code></a> allowing logging to a remote entity over 
+    the Secure Sockets Layer (SSL).
+    </p>
+    
 		<p>
 			The properties of access' <code>SocketAppender</code> are the same as those available
 			for classic's <code>SocketAppender</code>.
 		</p>
 
-    <a name="AccessSSLSocketAppender"></a>
-    <h3>SSLSocketAppender</h3>
-
-    <p>The <a 
-    href="../xref/ch/qos/logback/access/net/SSLSocketAppender.html">
-    <code>SSLSocketAppender</code></a> extends the basic <a
-    href="../xref/ch/qos/logback/access/net/SocketAppender.html">
-    <code>SocketAppender</code></a> allowing
-    logging to a remote entity over the Secure Sockets Layer (SSL).  Just as
-    when using the basic <code>SocketAppender</code>, log events are delivered
-    by transmitting serialized <code>AccessEvent</code> instances.  However,
-    when using <code>SSLSocketAppender</code>, the serialized object stream 
-    is sent over an encrypted session.
+    <a name="AccessServerSocketAppender"></a>
+    <h3>ServerSocketAppender and SSLServerSocketAppender</h3>
+    
+    <p>Like <code>SocketAppender</code>, the <a
+    href="../xref/ch/qos/logback/access/net/server/ServerSocketAppender.html">
+    <code>ServerSocketAppender</code></a> is designed to log to a remote
+    entity by transmitting serialized <code>AccessEvent</code> objects
+    over the wire.  However, when using <code>ServerSocketAppender</code>
+    the appender acts as a server, passively listening on a TCP socket awaiting
+    inbound connections from interested clients.  Logging events delivered
+    to the appender are distributed to all connected clients.
+    </p>
+    
+    <p>The <a href="../xref/ch/qos/logback/access/net/server/SSLServerSocketAppender.html">
+    <code>SSLSocketAppender</code></a> extends the basic 
+    <code>ServerSocketAppender</code></a> allowing logging to a remote entity 
+    over the Secure Sockets Layer (SSL).
     </p>
     
     <p>
-      The properties of access' <code>SSLSocketAppender</code> are the same as 
-      those available for classic's <code>SSLSocketAppender</code>.
+      The properties of access' <code>ServerSocketAppender</code> are the same 
+      as those available for classic's <code>ServerSocketAppender</code>.
     </p>
     
 	 	<a name="AccessSMTPAppender"></a>	
