@@ -17,6 +17,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -30,21 +31,25 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadPoolFactoryBean {
 
-  public static final int DEFAULT_POOL_SIZE = 10;
+  public static final int DEFAULT_CORE_POOL_SIZE = 1;
+  public static final int DEFAULT_MAXIMUM_POOL_SIZE = Integer.MAX_VALUE;
+  public static final int DEFAULT_KEEP_ALIVE_TIME = 60000;
+  public static final int DEFAULT_QUEUE_SIZE = 0;
 
-  private int corePoolSize = DEFAULT_POOL_SIZE;  
-  private int maximumPoolSize;
-  private long keepAliveTime;
-  private int queueSize = 1;
+  private int corePoolSize = DEFAULT_CORE_POOL_SIZE;  
+  private int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
+  private long keepAliveTime = DEFAULT_KEEP_ALIVE_TIME;
+  private int queueSize = DEFAULT_QUEUE_SIZE;
   
   public ExecutorService createExecutor() {
-    BlockingQueue<Runnable> queue = createQueue();
-    return createThreadPool(queue);
+    return createThreadPool(createQueue());
   }
 
   private BlockingQueue<Runnable> createQueue() {
     try {
-      return new ArrayBlockingQueue<Runnable>(getQueueSize()); 
+      return queueSize == 0 ?
+          new SynchronousQueue<Runnable>() : 
+              new ArrayBlockingQueue<Runnable>(getQueueSize()); 
     }
     catch (IllegalArgumentException ex) {
       throw new IllegalArgumentException("illegal threadPool.queueSize");
@@ -57,7 +62,8 @@ public class ThreadPoolFactoryBean {
           getKeepAliveTime(), TimeUnit.MILLISECONDS, queue);
     }
     catch (IllegalArgumentException ex) {
-      throw new IllegalArgumentException("illegal thread pool configuration: " + ex, ex);
+      throw new IllegalArgumentException(
+          "illegal thread pool configuration: " + ex, ex);
     }
   }
   
@@ -70,9 +76,6 @@ public class ThreadPoolFactoryBean {
   }
 
   public int getMaximumPoolSize() {
-    if (maximumPoolSize < getCorePoolSize()) {
-      return getCorePoolSize();
-    }
     return maximumPoolSize;
   }
 
