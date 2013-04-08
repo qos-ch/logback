@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -55,22 +56,22 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   private String name;
 
   // The assigned levelInt of this logger. Can be null.
-  private Level level;
+  transient private Level level;
 
   // The effective levelInt is the assigned levelInt and if null, a levelInt is
   // inherited form a parent.
-  private int effectiveLevelInt;
+  transient private int effectiveLevelInt;
 
   /**
    * The parent of this category. All categories have at least one ancestor
    * which is the root category.
    */
-  private Logger parent;
+  transient private Logger parent;
 
   /**
    * The children of this logger. A logger may have zero or more children.
    */
-  private List<Logger> childrenList;
+  transient private List<Logger> childrenList;
 
   /**
    * It is assumed that once the 'aai' variable is set to a non-null value, it
@@ -92,7 +93,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * <p>
    * 4) AppenderAttachableImpl is thread safe
    */
-  private transient AppenderAttachableImpl<ILoggingEvent> aai;
+  transient private AppenderAttachableImpl<ILoggingEvent> aai;
   /**
    * Additivity is set to true by default, that is children inherit the
    * appenders of their ancestors by default. If this variable is set to
@@ -101,18 +102,14 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * its appenders, unless the children have their additivity flag set to
    * <code>false</code> too. See the user manual for more details.
    */
-  private boolean additive = true;
+  transient private boolean additive = true;
 
   final transient LoggerContext loggerContext;
-  // loggerRemoteView cannot be final because it may change as a consequence
-  // of changes in LoggerContext
-  LoggerRemoteView loggerRemoteView;
 
   Logger(String name, Logger parent, LoggerContext loggerContext) {
     this.name = name;
     this.parent = parent;
     this.loggerContext = loggerContext;
-    buildRemoteView();
   }
 
   public Level getEffectiveLevel() {
@@ -787,14 +784,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    */
   public LoggerContext getLoggerContext() {
     return loggerContext;
-  }
-
-  public LoggerRemoteView getLoggerRemoteView() {
-    return loggerRemoteView;
-  }
-
-  void buildRemoteView() {
-    this.loggerRemoteView = new LoggerRemoteView(name, loggerContext);
   }
 
   public void log(Marker marker, String fqcn, int levelInt, String message,

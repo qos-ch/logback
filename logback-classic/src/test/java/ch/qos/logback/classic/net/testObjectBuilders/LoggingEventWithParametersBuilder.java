@@ -22,8 +22,8 @@ public class LoggingEventWithParametersBuilder implements Builder<LoggingEvent> 
 
   final String MSG = "aaaaabbbbbcccc {} cdddddaaaaabbbbbcccccdddddaaaa {}";
 
-  private Logger logger = new LoggerContext()
-      .getLogger(Logger.ROOT_LOGGER_NAME);
+  LoggerContext loggerContext = new LoggerContext();
+  private Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
   public LoggingEvent build(int i) {
 
@@ -42,7 +42,7 @@ public class LoggingEventWithParametersBuilder implements Builder<LoggingEvent> 
     le.getFormattedMessage();
     le.setLevel(Level.DEBUG);
     le.setLoggerName(logger.getName());
-    le.setLoggerContextRemoteView(logger.getLoggerRemoteView().getLoggerContextView());
+    le.setLoggerContextRemoteView(loggerContext.getLoggerContextRemoteView());
     le.setThreadName("threadName");
     return le;
   }
