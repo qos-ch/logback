@@ -50,6 +50,7 @@ import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 public class SocketServerFunctionalTest {
 
   private static final int EVENT_COUNT = 10;
+  private static final int SHUTDOWN_DELAY = 10000;
   
   private MockAppender appender;
   private Logger logger;
@@ -111,7 +112,7 @@ public class SocketServerFunctionalTest {
     }
 
     executor.shutdown();
-    executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+    executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
     assertTrue(executor.isTerminated());
     
     ILoggingEvent rcvdEvent = appender.getLastEvent();
