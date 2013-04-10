@@ -99,10 +99,15 @@
     and <em>vice-versa</em>.
     </p>
 
+    <p>The code detecting whether Groovy is available on the class
+    path deals with the case where logback binaries are installed as
+    endoresed libraries. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
+    </p>
+
     <p>In order to simplify our build, several unit tests have been
     ported from Scala to Java. It follows that logback no longer
     depends on Scala, not even during the test phase of the build.</p>
-
 
     <h3>25th of March, 2013 - Release of version 1.0.11</h3>
 

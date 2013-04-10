@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.util;
 
+import ch.qos.logback.core.util.Loader;
+
 /**
  * @author Ceki G&uuml;c&uuml;
  */
@@ -20,7 +22,7 @@ public class EnvUtil {
 
 
   static public boolean isGroovyAvailable() {
-    ClassLoader classLoader =  EnvUtil.class.getClassLoader();
+    ClassLoader classLoader = Loader.getClassLoaderOfClass(EnvUtil.class);
     try {
       Class bindingClass = classLoader.loadClass("groovy.lang.Binding");
       return (bindingClass != null);
