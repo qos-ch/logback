@@ -17,6 +17,7 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
 
 import ch.qos.logback.core.net.ssl.ConfigurableSSLServerSocketFactory;
+import ch.qos.logback.core.net.ssl.SSLComponent;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
@@ -28,7 +29,7 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  * @author Carl Harris
  */
 public abstract class SSLServerSocketAppenderBase<E> 
-    extends ServerSocketAppenderBase<E> {
+    extends ServerSocketAppenderBase<E> implements SSLComponent {
 
   private SSLConfiguration ssl;
   private ServerSocketFactory socketFactory;
