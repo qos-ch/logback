@@ -20,24 +20,24 @@ import java.net.InetAddress;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.core.net.mock.MockContext;
+import ch.qos.logback.classic.LoggerContext;
 
 /**
- * Unit tests for {@link SSLSocketRemote}.
+ * Unit tests for {@link SSLSocketReceiver}.
  *
  * @author Carl Harris
  */
-public class SSLSocketRemoteTest {
+public class SSLSocketReceiverTest {
 
-  private MockContext context = new MockContext();
-
-  private SSLSocketRemote remote =
-      new SSLSocketRemote();
+  private SSLSocketReceiver remote =
+      new SSLSocketReceiver();
   
   @Before
   public void setUp() throws Exception {
-    remote.setContext(context);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    remote.setContext(lc);
   }
   
   @Test

@@ -18,15 +18,17 @@ import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
 
 import ch.qos.logback.core.net.ssl.ConfigurableSSLSocketFactory;
+import ch.qos.logback.core.net.ssl.SSLComponent;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * A {@link SocketRemote} that supports SSL.
+ * A {@link SocketReceiver} that supports SSL.
  *
  * @author Carl Harris
  */
-public class SSLSocketRemote extends SocketRemote {
+public class SSLSocketReceiver extends SocketReceiver 
+    implements SSLComponent {
 
   private SSLConfiguration ssl;
   private SocketFactory socketFactory;
@@ -45,17 +47,18 @@ public class SSLSocketRemote extends SocketRemote {
    * {@inheritDoc}
    */
   @Override
-  public void start() {
+  protected boolean shouldStart() {
     try {
       SSLContext sslContext = getSsl().createContext(this);
       SSLParametersConfiguration parameters = getSsl().getParameters();
       parameters.setContext(getContext());
       socketFactory = new ConfigurableSSLSocketFactory(parameters, 
           sslContext.getSocketFactory());
-      super.start();
+      return super.shouldStart();
     }
     catch (Exception ex) {
       addError(ex.getMessage(), ex);
+      return false;
     }
   }
 
