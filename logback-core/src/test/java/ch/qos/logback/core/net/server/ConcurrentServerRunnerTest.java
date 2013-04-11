@@ -30,6 +30,9 @@ import org.junit.Test;
 
 public class ConcurrentServerRunnerTest {
 
+  private static final int DELAY = 10000;
+  private static final int SHORT_DELAY = 10;
+  
   private MockContext context = new MockContext();
   private MockServerListener<MockClient> listener = 
       new MockServerListener<MockClient>();
@@ -45,8 +48,8 @@ public class ConcurrentServerRunnerTest {
 
   @After
   public void tearDown() throws Exception {
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
+    executor.shutdownNow();
+    assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
   }
   
   @Test
@@ -54,10 +57,10 @@ public class ConcurrentServerRunnerTest {
     assertFalse(runner.isRunning());
     executor.execute(runner);
     assertTrue(runner.isRunning());
-    int retries = 200;
+    int retries = DELAY / SHORT_DELAY;
     synchronized (listener) {
       while (retries-- > 0 && listener.getWaiter() == null) {
-        listener.wait(10);
+        listener.wait(SHORT_DELAY);
       }
     }
     assertNotNull(listener.getWaiter());
@@ -65,7 +68,7 @@ public class ConcurrentServerRunnerTest {
     assertTrue(listener.isClosed());
     assertFalse(runner.isRunning());
     executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
+    assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
   }
   
   @Test
@@ -73,10 +76,10 @@ public class ConcurrentServerRunnerTest {
     executor.execute(runner);
     MockClient client = new MockClient();
     listener.addClient(client);
-    int retries = 200;
+    int retries = DELAY / SHORT_DELAY;
     synchronized (client) {
       while (retries-- > 0 && !client.isRunning()) {
-        client.wait(10);
+        client.wait(SHORT_DELAY);
       }
     }
     assertTrue(client.isRunning());
@@ -91,10 +94,10 @@ public class ConcurrentServerRunnerTest {
     while (count-- > 0) {
       MockClient client = new MockClient();
       listener.addClient(client);
-      int retries = 200;
+      int retries = DELAY / SHORT_DELAY;
       synchronized (client) {
         while (retries-- > 0 && !client.isRunning()) {
-          client.wait(10);
+          client.wait(SHORT_DELAY);
         }
       }
       assertTrue(client.isRunning());
@@ -107,10 +110,10 @@ public class ConcurrentServerRunnerTest {
     executor.execute(runner);
     MockClient client = new MockClient();
     listener.addClient(client);
-    int retries = 200;
+    int retries = DELAY / SHORT_DELAY;
     synchronized (client) {
       while (retries-- > 0 && !client.isRunning()) {
-        client.wait(10);
+        client.wait(SHORT_DELAY);
       }
     }
     assertTrue(client.isRunning());
