@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class ReceiverAction extends Action {
 
-  private SocketReceiver remote;
+  private ReceiverBase receiver;
   private boolean inError;
   
   @Override
@@ -47,11 +47,11 @@ public class ReceiverAction extends Action {
     try {
       addInfo("About to instantiate receiver of type [" + className + "]");
 
-      remote = (SocketReceiver) OptionHelper.instantiateByClassName(
+      receiver = (ReceiverBase) OptionHelper.instantiateByClassName(
           className, ReceiverBase.class, context);
-      remote.setContext(context);
+      receiver.setContext(context);
 
-      ic.pushObject(remote);
+      ic.pushObject(receiver);
     }
     catch (Exception ex) {
       inError = true;
@@ -66,10 +66,10 @@ public class ReceiverAction extends Action {
     
     if (inError) return;
     
-    remote.start();
+    receiver.start();
 
     Object o = ic.peekObject();
-    if (o != remote) {
+    if (o != receiver) {
       addWarn("The object at the of the stack is not the remote " +
       		"pushed earlier.");
     } else {
