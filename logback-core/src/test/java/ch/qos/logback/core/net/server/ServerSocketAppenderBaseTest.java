@@ -40,11 +40,11 @@ public class ServerSocketAppenderBaseTest {
 
   private MockContext context = new MockContext();
   
-  private MockServerRunner<RemoteLoggerClient> runner = 
-      new MockServerRunner<RemoteLoggerClient>();
+  private MockServerRunner<RemoteReceiverClient> runner = 
+      new MockServerRunner<RemoteReceiverClient>();
   
-  private MockServerListener<RemoteLoggerClient> listener = 
-      new MockServerListener<RemoteLoggerClient>();
+  private MockServerListener<RemoteReceiverClient> listener = 
+      new MockServerListener<RemoteReceiverClient>();
   
   private MockThreadPoolFactoryBean threadPool = 
       new MockThreadPoolFactoryBean();

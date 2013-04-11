@@ -54,7 +54,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
   private ThreadPoolFactoryBean threadPool;
 
   private ExecutorService executor;
-  private ServerRunner<RemoteLoggerClient> runner;
+  private ServerRunner<RemoteReceiverClient> runner;
 
   @Override
   public void start() {
@@ -62,7 +62,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     try {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
-      ServerListener<RemoteLoggerClient> listener = createServerListener(socket);
+      ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
       executor = getThreadPool().createExecutor();
       runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
@@ -74,15 +74,15 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     }
   }
   
-  protected ServerListener<RemoteLoggerClient> createServerListener(
+  protected ServerListener<RemoteReceiverClient> createServerListener(
       ServerSocket socket) {
-    return new RemoteLoggerServerListener(socket);
+    return new RemoteReceiverServerListener(socket);
   }
   
-  protected ServerRunner<RemoteLoggerClient> createServerRunner(
-      ServerListener<RemoteLoggerClient> listener,
+  protected ServerRunner<RemoteReceiverClient> createServerRunner(
+      ServerListener<RemoteReceiverClient> listener,
       Executor executor) {
-    return new RemoteLoggerServerRunner(listener, executor, 
+    return new RemoteReceiverServerRunner(listener, executor, 
         getClientQueueSize());
   }
   
@@ -113,8 +113,8 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     if (event == null) return;
     postProcessEvent(event);
     final Serializable serEvent = getPST().transform(event);
-    runner.accept(new ClientVisitor<RemoteLoggerClient>() {
-      public void visit(RemoteLoggerClient client) {
+    runner.accept(new ClientVisitor<RemoteReceiverClient>() {
+      public void visit(RemoteReceiverClient client) {
         client.offer(serEvent);
       }      
     });

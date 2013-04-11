@@ -33,18 +33,18 @@ public class InstrumentedServerSocketAppenderBase
     extends ServerSocketAppenderBase<Serializable> {
 
   private final ServerSocket serverSocket;
-  private final ServerListener<RemoteLoggerClient> listener;
-  private final ServerRunner<RemoteLoggerClient> runner;
+  private final ServerListener<RemoteReceiverClient> listener;
+  private final ServerRunner<RemoteReceiverClient> runner;
   
   private ServerListener lastListener;
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
-    this(serverSocket, new RemoteLoggerServerListener(serverSocket), null);
+    this(serverSocket, new RemoteReceiverServerListener(serverSocket), null);
   }
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
-      ServerListener<RemoteLoggerClient> listener, 
-      ServerRunner<RemoteLoggerClient> runner) {
+      ServerListener<RemoteReceiverClient> listener, 
+      ServerRunner<RemoteReceiverClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
@@ -87,14 +87,14 @@ public class InstrumentedServerSocketAppenderBase
   }
 
   @Override
-  protected ServerRunner<RemoteLoggerClient> createServerRunner(
-      ServerListener<RemoteLoggerClient> listener, Executor executor) {
+  protected ServerRunner<RemoteReceiverClient> createServerRunner(
+      ServerListener<RemoteReceiverClient> listener, Executor executor) {
     lastListener = listener;
     return runner != null ? runner : super.createServerRunner(listener, executor);
   }
 
   @Override
-  protected ServerListener<RemoteLoggerClient> createServerListener(
+  protected ServerListener<RemoteReceiverClient> createServerListener(
       ServerSocket socket) {
     return listener;
   }

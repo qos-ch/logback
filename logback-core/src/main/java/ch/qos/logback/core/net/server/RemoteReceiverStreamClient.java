@@ -27,13 +27,13 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
- * A {@link RemoteLoggerClient} that writes serialized logging events to an
+ * A {@link RemoteReceiverClient} that writes serialized logging events to an
  * {@link OutputStream}.
  *
  * @author Carl Harris
  */
-class RemoteLoggerStreamClient 
-    extends ContextAwareBase implements RemoteLoggerClient {
+class RemoteReceiverStreamClient 
+    extends ContextAwareBase implements RemoteReceiverClient {
 
   private final String clientId;
   private final Socket socket;
@@ -46,7 +46,7 @@ class RemoteLoggerStreamClient
    * @param id identifier string for the client
    * @param socket socket to which logging events will be written
    */
-  public RemoteLoggerStreamClient(String id, Socket socket) {
+  public RemoteReceiverStreamClient(String id, Socket socket) {
     this.clientId = "client " + id + ": ";
     this.socket = socket;
     this.outputStream = null;
@@ -61,7 +61,7 @@ class RemoteLoggerStreamClient
    * @param id identifier string for the client
    * @param outputStream output stream to which logging Events will be written
    */
-  public RemoteLoggerStreamClient(String id, OutputStream outputStream) {
+  public RemoteReceiverStreamClient(String id, OutputStream outputStream) {
     this.clientId = "client " + id + ": ";
     this.socket = null;
     this.outputStream = outputStream;
