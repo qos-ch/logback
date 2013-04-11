@@ -41,10 +41,14 @@ public abstract class ReceiverBase extends ContextAwareBase
     if (getContext() == null) {
       throw new IllegalStateException("context not set");
     }
+    
+    executor = createExecutorService();
     if (shouldStart()) {
-      executor = createExecutorService();
       executor.execute(getRunnableTask());
       started = true;
+    }
+    else {
+      executor.shutdownNow();
     }
   }
 
