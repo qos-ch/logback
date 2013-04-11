@@ -42,7 +42,7 @@ import ch.qos.logback.core.util.CloseUtil;
  * @author Carl Harris
  */
 public class SocketReceiver extends ReceiverBase
-    implements SocketConnector.ExceptionHandler {
+    implements Runnable, SocketConnector.ExceptionHandler {
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
   
@@ -100,6 +100,11 @@ public class SocketReceiver extends ReceiverBase
     if (socket != null) {
       CloseUtil.closeQuietly(socket);
     }
+  }
+
+  @Override
+  protected Runnable getRunnableTask() {
+    return this;
   }
 
   /**

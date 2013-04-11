@@ -28,7 +28,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * @author Carl Harris
  */
 public abstract class ReceiverBase extends ContextAwareBase 
-    implements LifeCycle, Runnable {
+    implements LifeCycle {
 
   private ExecutorService executor;
   private boolean started;
@@ -43,9 +43,9 @@ public abstract class ReceiverBase extends ContextAwareBase
     }
     if (shouldStart()) {
       executor = createExecutorService();
-      executor.execute(this);
+      executor.execute(getRunnableTask());
       started = true;
-    }    
+    }
   }
 
   /**
@@ -74,8 +74,9 @@ public abstract class ReceiverBase extends ContextAwareBase
    * Determines whether this receiver should start.
    * <p>
    * Subclasses will implement this method to do any subclass-specific
-   * validation.  The subclass's {@link #run()} method will be invoked if
-   * and only if this method returns {@code true}. 
+   * validation.  The subclass's {@link #getRunnableTask()} method will be 
+   * invoked (and the task returned will be submitted to the executor)
+   * if and only if this method returns {@code true} 
    * @return flag indicating whether this receiver should start
    */
   protected abstract boolean shouldStart();
@@ -84,6 +85,12 @@ public abstract class ReceiverBase extends ContextAwareBase
    * Allows a subclass to participate in receiver shutdown.
    */
   protected abstract void onStop();
+  
+  /**
+   * Provides the runnable task this receiver will execute.
+   * @return runnable task
+   */
+  protected abstract Runnable getRunnableTask();
   
   /**
    * Creates an executor for concurrent execution of tasks associated with
