@@ -78,6 +78,10 @@ public abstract class ConcurrentServerRunner<T extends Client>
     return running;
   }
 
+  protected void setRunning(boolean running) {
+    this.running = running;
+  }
+  
   /**
    * {@inheritDoc}
    */
