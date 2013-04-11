@@ -50,6 +50,7 @@ import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 public class SocketServerFunctionalTest {
 
   private static final int EVENT_COUNT = 10;
+  private static final int SHUTDOWN_DELAY = 10000;
   
   private MockAppender appender;
   private Logger logger;
@@ -84,6 +85,8 @@ public class SocketServerFunctionalTest {
   @After
   public void tearDown() throws Exception {
     socketServer.stop();
+    executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
+    assertTrue(executor.isTerminated());
   }
   
   @Test
@@ -107,14 +110,9 @@ public class SocketServerFunctionalTest {
     }
     finally {
       socket.close();
-      serverSocket.close();
     }
-
-    executor.shutdown();
-    executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
-    assertTrue(executor.isTerminated());
     
-    ILoggingEvent rcvdEvent = appender.getLastEvent();
+    ILoggingEvent rcvdEvent = appender.awaitAppend(SHUTDOWN_DELAY);
     assertNotNull(rcvdEvent);
     assertEquals(event.getLoggerName(), rcvdEvent.getLoggerName());
     assertEquals(event.getLevel(), rcvdEvent.getLevel());

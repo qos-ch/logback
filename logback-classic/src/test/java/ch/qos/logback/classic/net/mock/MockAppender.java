@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.net.mock;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -30,44 +32,27 @@ public class MockAppender extends AppenderBase<ILoggingEvent> {
 
   private final Lock lock = new ReentrantLock();
   private final Condition appendCondition = lock.newCondition();
-  
-  private int eventCount;
-  private ILoggingEvent lastEvent;
+  private final BlockingQueue<ILoggingEvent> events = 
+      new LinkedBlockingQueue<ILoggingEvent>();
   
   @Override
   protected void append(ILoggingEvent eventObject) {
     lock.lock();
     try {
-      eventCount++;
-      lastEvent = eventObject;
-      appendCondition.signalAll();      
+      events.offer(eventObject);
+      appendCondition.signalAll();
     }
     finally {
       lock.unlock();
     }
   }
   
-  public boolean awaitAppend(long delay) throws InterruptedException{
-    lock.lock();
-    try {
-      int count = eventCount;
-      boolean timeout = false;
-      while (count == eventCount && !timeout) {
-        timeout = !appendCondition.await(delay, TimeUnit.MILLISECONDS);
-      }
-      return !timeout;
-    }
-    finally {
-      lock.unlock();
-    }
-  }
-
-  public int getEventCount() {
-    return eventCount;
+  public ILoggingEvent awaitAppend(long delay) throws InterruptedException {
+    return events.poll(delay, TimeUnit.MILLISECONDS);
   }
 
   public ILoggingEvent getLastEvent() {
-    return lastEvent;
+    return events.peek();
   }
 
 }

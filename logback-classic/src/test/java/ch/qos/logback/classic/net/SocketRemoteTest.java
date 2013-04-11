@@ -17,6 +17,7 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -170,8 +171,7 @@ public class SocketRemoteTest {
     oos.writeObject(eventVO);
     oos.flush();
 
-    appender.awaitAppend(DELAY);
-    ILoggingEvent rcvdEvent = appender.getLastEvent();
+    ILoggingEvent rcvdEvent = appender.awaitAppend(DELAY);
     assertNotNull(rcvdEvent);
     assertEquals(event.getLoggerName(), rcvdEvent.getLoggerName());
     assertEquals(event.getLevel(), rcvdEvent.getLevel());
@@ -196,7 +196,7 @@ public class SocketRemoteTest {
     oos.writeObject(eventVO);
     oos.flush();
 
-    assertFalse(appender.awaitAppend(DELAY));
+    assertNull(appender.awaitAppend(DELAY));
   }
 
   /**
