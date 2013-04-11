@@ -65,6 +65,7 @@ class MockThreadPoolFactoryBean extends ThreadPoolFactoryBean {
     }
 
     public void execute(Runnable command) {
+      command.run();
       lastCommand = command;
     }
     

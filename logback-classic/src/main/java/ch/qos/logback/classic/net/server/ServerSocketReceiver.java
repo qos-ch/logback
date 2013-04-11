@@ -22,19 +22,19 @@ import java.util.concurrent.ExecutorService;
 
 import javax.net.ServerSocketFactory;
 
+import ch.qos.logback.classic.net.ReceiverBase;
 import ch.qos.logback.core.net.SocketAppenderBase;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
 import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.LifeCycle;
+import ch.qos.logback.core.util.CloseUtil;
 
 /**
  * A logging socket server that is configurable using Joran.
  *
  * @author Carl Harris
  */
-public class SocketServer extends ContextAwareBase implements LifeCycle {
+public class ServerSocketReceiver extends ReceiverBase {
   
   /**
    * Default {@link ServerSocket} backlog
@@ -47,25 +47,28 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
   private String address;
   private ThreadPoolFactoryBean threadPool;
 
+  private ServerSocket serverSocket;
   private ServerRunner runner;
-  private ExecutorService executor;
   
   /**
    * Starts the server.
    */
-  public final void start() {
-    if (isStarted()) return;
+  protected boolean shouldStart() {
     try {
-      ServerSocket socket = getServerSocketFactory().createServerSocket(
+      ServerSocket serverSocket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
-      ServerListener<RemoteAppenderClient> listener = createServerListener(socket);
-      executor = getThreadPool().createExecutor();
-      runner = createServerRunner(listener, executor);
+
+      ServerListener<RemoteAppenderClient> listener = 
+          createServerListener(serverSocket);
+      
+      runner = createServerRunner(listener, getExecutor());
       runner.setContext(getContext());
-      runner.start();
+      return true;
     }
     catch (Exception ex) {
       addError("server startup error: " + ex, ex);
+      CloseUtil.closeQuietly(serverSocket);
+      return false;
     }
   }
 
@@ -80,26 +83,27 @@ public class SocketServer extends ContextAwareBase implements LifeCycle {
     return new RemoteAppenderServerRunner(listener, executor);
   }
   
+  @Override
+  protected ExecutorService createExecutorService() {
+    return getThreadPool().createExecutor();
+  }
+
+  @Override
+  protected Runnable getRunnableTask() {
+    return runner;
+  }
+
   /**
-   * Stops the server.
+   * {@inheritDoc}
    */
-  public final void stop() {
-    if (!isStarted()) return;
+  protected void onStop() {
     try {
+      if (runner == null) return;
       runner.stop();
-      executor.shutdownNow();
     }
     catch (IOException ex) {
       addError("server shutdown error: " + ex, ex);
     }
-  }
-
-  /**
-   * Gets a flag indicating whether the server is running.
-   * @return flag state
-   */
-  public final boolean isStarted() {
-    return runner != null && runner.isStarted();
   }
 
   /**

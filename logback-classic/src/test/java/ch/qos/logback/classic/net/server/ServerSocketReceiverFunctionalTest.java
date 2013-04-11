@@ -41,13 +41,13 @@ import ch.qos.logback.core.net.server.ServerSocketUtil;
 import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 
 /**
- * A functional test for {@link SocketServer}.
+ * A functional test for {@link ServerSocketReceiver}.
  * <p>
  * In this test we create a SocketServer, connect to it over the local
  * network interface, and validate that it receives messages and delivers
  * them to its appender.
  */
-public class SocketServerFunctionalTest {
+public class ServerSocketReceiverFunctionalTest {
 
   private static final int EVENT_COUNT = 10;
   private static final int SHUTDOWN_DELAY = 10000;
@@ -55,8 +55,8 @@ public class SocketServerFunctionalTest {
   private MockAppender appender;
   private Logger logger;
   private ServerSocket serverSocket;
-  private ExecutorService executor = Executors.newFixedThreadPool(2);
-  private InstrumentedSocketServer socketServer;
+  private ExecutorService executor = Executors.newCachedThreadPool();
+  private InstrumentedServerSocketReceiver receiver;
   
   @Before
   public void setUp() throws Exception {
@@ -70,21 +70,22 @@ public class SocketServerFunctionalTest {
 
     serverSocket = ServerSocketUtil.createServerSocket();
     
-    socketServer = new InstrumentedSocketServer(serverSocket);
+    receiver = new InstrumentedServerSocketReceiver(serverSocket);
     
-    socketServer.setThreadPool(new ThreadPoolFactoryBean() {
+    receiver.setThreadPool(new ThreadPoolFactoryBean() {
       @Override
       public ExecutorService createExecutor() {
         return executor;
       } 
     });
     
-    socketServer.setContext(lc);
+    receiver.setContext(lc);
+    receiver.start();
   }
   
   @After
   public void tearDown() throws Exception {
-    socketServer.stop();
+    receiver.stop();
     executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
     assertTrue(executor.isTerminated());
   }
@@ -93,7 +94,6 @@ public class SocketServerFunctionalTest {
   public void testLogEventFromClient() throws Exception {
     ILoggingEvent event = new LoggingEvent(logger.getName(), logger, 
         Level.DEBUG, "test message", null, new Object[0]);
-    socketServer.start();
     Socket socket = new Socket(InetAddress.getLocalHost(), 
         serverSocket.getLocalPort());
     

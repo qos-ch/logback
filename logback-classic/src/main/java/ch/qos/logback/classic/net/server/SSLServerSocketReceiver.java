@@ -17,15 +17,17 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
 
 import ch.qos.logback.core.net.ssl.ConfigurableSSLServerSocketFactory;
+import ch.qos.logback.core.net.ssl.SSLComponent;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * A {@link SocketServer} that supports SSL.
+ * A {@link ServerSocketReceiver} that supports SSL.
  *
  * @author Carl Harris
  */
-public class SSLSocketServer extends SocketServer {
+public class SSLServerSocketReceiver extends ServerSocketReceiver 
+    implements SSLComponent {
 
   private SSLConfiguration ssl;
   private ServerSocketFactory socketFactory;

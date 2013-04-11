@@ -34,11 +34,11 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 
 /**
- * Unit tests for {@link SocketServer}.
+ * Unit tests for {@link ServerSocketReceiver}.
  *
  * @author Carl Harris
  */
-public class SocketServerTest {
+public class ServerSocketReceiverTest {
 
   private MockContext context = new MockContext();
   
@@ -52,14 +52,14 @@ public class SocketServerTest {
       new MockThreadPoolFactoryBean();
   
   private ServerSocket serverSocket;
-  private InstrumentedSocketServer socketServer;
+  private InstrumentedServerSocketReceiver receiver;
   
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
-    socketServer = new InstrumentedSocketServer(serverSocket, listener, runner);
-    socketServer.setThreadPool(threadPool);
-    socketServer.setContext(context);
+    receiver = new InstrumentedServerSocketReceiver(serverSocket, listener, runner);
+    receiver.setThreadPool(threadPool);
+    receiver.setContext(context);
   }
   
   @After
@@ -69,42 +69,29 @@ public class SocketServerTest {
   
   @Test
   public void testStartStop() throws Exception {
-    socketServer.start();
+    receiver.start();
     assertTrue(runner.isContextInjected());
-    assertTrue(runner.isStarted());
-    assertSame(listener, socketServer.getLastListener());
+    assertTrue(runner.isRunning());
+    assertSame(listener, receiver.getLastListener());
     
-    socketServer.stop();
-    assertFalse(runner.isStarted());
-  }
-
-  @Test
-  public void testStartThrowsException() throws Exception {
-    IOException ex = new IOException("test exception");
-    runner.setStartException(ex);
-    socketServer.start();
-    assertFalse(socketServer.isStarted());
-    Status status = context.getLastStatus();
-    assertNotNull(status);    
-    assertTrue(status instanceof ErrorStatus);
-    assertTrue(status.getMessage().contains(ex.getMessage()));
-    assertSame(ex, status.getThrowable());
+    receiver.stop();
+    assertFalse(runner.isRunning());
   }
 
   @Test
   public void testStartWhenAlreadyStarted() throws Exception {
-    socketServer.start();
-    socketServer.start();
+    receiver.start();
+    receiver.start();
     assertEquals(1, runner.getStartCount());
   }
 
   @Test
   public void testStopThrowsException() throws Exception {
-    socketServer.start();
-    assertTrue(socketServer.isStarted());
+    receiver.start();
+    assertTrue(receiver.isStarted());
     IOException ex = new IOException("test exception");
     runner.setStopException(ex);
-    socketServer.stop();
+    receiver.stop();
     
     Status status = context.getLastStatus();
     assertNotNull(status);    
@@ -115,7 +102,7 @@ public class SocketServerTest {
 
   @Test
   public void testStopWhenNotStarted() throws Exception {
-    socketServer.stop();
+    receiver.stop();
     assertEquals(0, runner.getStartCount());
   }
 

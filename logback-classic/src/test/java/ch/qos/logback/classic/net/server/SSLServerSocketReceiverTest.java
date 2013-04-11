@@ -24,11 +24,11 @@ import org.junit.Test;
 import ch.qos.logback.core.net.server.MockContext;
 
 /**
- * Unit tests for {@link SSLSocketServer}.
+ * Unit tests for {@link SSLServerSocketReceiver}.
  *
  * @author Carl Harris
  */
-public class SSLSocketServerTest {
+public class SSLServerSocketReceiverTest {
 
   private MockContext context = new MockContext();
   
@@ -37,18 +37,18 @@ public class SSLSocketServerTest {
   private MockSSLParametersConfiguration parameters = 
       new MockSSLParametersConfiguration();
   
-  private SSLSocketServer socketServer = new SSLSocketServer();
+  private SSLServerSocketReceiver receiver = new SSLServerSocketReceiver();
   
   @Before
   public void setUp() throws Exception {
-    socketServer.setContext(context);
-    socketServer.setSsl(ssl);
+    receiver.setContext(context);
+    receiver.setSsl(ssl);
     ssl.setParameters(parameters);
   }
   
   @Test
   public void testGetServerSocketFactory() throws Exception {
-    ServerSocketFactory socketFactory = socketServer.getServerSocketFactory();
+    ServerSocketFactory socketFactory = receiver.getServerSocketFactory();
     assertNotNull(socketFactory);
     assertTrue(ssl.isContextCreated());
     assertTrue(parameters.isContextInjected());
