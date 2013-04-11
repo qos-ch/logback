@@ -66,7 +66,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
       executor = getThreadPool().createExecutor();
       runner = createServerRunner(listener, executor);
       runner.setContext(getContext());
-      runner.start();
+      executor.execute(runner);
       super.start();
     }
     catch (Exception ex) {
@@ -97,15 +97,6 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     catch (IOException ex) {
       addError("server shutdown error: " + ex, ex);
     }
-  }
-
-  /**
-   * Gets a flag indicating whether the server is running.
-   * @return flag state
-   */
-  @Override
-  public final boolean isStarted() {
-    return runner != null && runner.isStarted() && super.isStarted();
   }
 
   @Override

@@ -26,7 +26,6 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 public class MockServerRunner<T extends Client> extends ContextAwareBase 
     implements ServerRunner<T> {
 
-  private IOException startException;
   private IOException stopException;
   private int startCount;
   private boolean contextInjected;
@@ -37,10 +36,7 @@ public class MockServerRunner<T extends Client> extends ContextAwareBase
     super.setContext(context);
   }
 
-  public void start() throws IOException {
-    if (startException != null) {
-      throw startException;
-    }
+  public void run() {
     startCount++;
   }
 
@@ -51,10 +47,10 @@ public class MockServerRunner<T extends Client> extends ContextAwareBase
     startCount--;
   }
 
-  public boolean isStarted() {
+  public boolean isRunning() {
     return startCount > 0;
   }
-
+  
   public void accept(ClientVisitor visitor) {
     throw new UnsupportedOperationException();
   }
@@ -65,10 +61,6 @@ public class MockServerRunner<T extends Client> extends ContextAwareBase
 
   public boolean isContextInjected() {
     return contextInjected;
-  }
-
-  public void setStartException(IOException startException) {
-    this.startException = startException;
   }
 
   public void setStopException(IOException stopException) {
