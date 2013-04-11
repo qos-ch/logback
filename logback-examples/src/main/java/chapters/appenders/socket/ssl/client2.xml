@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!-- ==================================================================== -->
-<!-- Sample SSLSocketRemote configuration.                                -->
+<!-- Sample SSLSocketReceiver configuration.                              -->
 <!-- ==================================================================== -->
 
 <configuration debug="true">
@@ -12,7 +12,11 @@
     </encoder>         
   </appender>
   
-  <remote class="ch.qos.logback.classic.net.SSLSocketRemote">
+  <root level="DEBUG">
+    <appender-ref ref="CONSOLE" />
+  </root>  
+
+  <receiver class="ch.qos.logback.classic.net.SSLSocketReceiver">
     <host>${host}</host>
     <port>${port}</port>
     <reconnectionDelay>10000</reconnectionDelay>
@@ -22,12 +26,8 @@
         <password>${password}</password>
       </trustStore>
     </ssl>
-  </remote>
+  </receiver>
   
-  <root level="DEBUG">
-    <appender-ref ref="CONSOLE" />
-  </root>  
-
 </configuration>
 
 

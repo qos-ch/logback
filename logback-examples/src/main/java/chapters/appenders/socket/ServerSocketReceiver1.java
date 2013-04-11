@@ -20,14 +20,15 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 
 
 /**
- * This application uses an SSLSocketServer that log messages to a
+ * This application uses a SocketAppender that log messages to a
  * server on a host and port specified by the user. It waits for the
  * user to type a message which will be sent to the server.
  * */
-public class SocketServer {
+public class ServerSocketReceiver1 {
+
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java " + SocketServer.class.getName() +
+    System.err.println("Usage: java " + ServerSocketReceiver1.class.getName() +
       " configFile\n" +
       "   configFile a logback configuration file" +
       "   in XML format.");
