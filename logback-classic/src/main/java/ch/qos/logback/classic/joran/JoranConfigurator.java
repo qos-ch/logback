@@ -82,12 +82,9 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new Pattern("configuration/consolePlugin"),
         new ConsolePluginAction());
     
-    rs.addRule(new Pattern("configuration/server"),
-        new ServerAction());
-
-    rs.addRule(new Pattern("configuration/remote"),
-        new SocketRemoteAction());
-
+    rs.addRule(new Pattern("configuration/receiver"),
+        new ReceiverAction());
+    
   }
 
   @Override

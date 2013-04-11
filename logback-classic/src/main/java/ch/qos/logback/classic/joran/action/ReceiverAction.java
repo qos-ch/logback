@@ -15,40 +15,47 @@ package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.classic.net.server.SocketServer;
+import ch.qos.logback.classic.net.ReceiverBase;
+import ch.qos.logback.classic.net.SocketReceiver;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * A Joran {@link Action} for a server configuration.
+ * A Joran {@link Action} for a {@link SocketReceiver} configuration.
  *
  * @author Carl Harris
  */
-public class ServerAction extends Action {
+public class ReceiverAction extends Action {
 
-  private SocketServer server;
+  private SocketReceiver remote;
   private boolean inError;
   
   @Override
   public void begin(InterpretationContext ic, String name,
       Attributes attributes) throws ActionException {
+    
     String className = attributes.getValue(CLASS_ATTRIBUTE);
     if (OptionHelper.isEmpty(className)) {
-      className = SocketServer.class.getCanonicalName();
+      addError("Missing class name for receiver. Near [" + name
+          + "] line " + getLineNumber(ic));
+      inError = true;
+      return;
     }
-    try {
-      addInfo("About to instantiate server of type [" + className + "]");
 
-      server = (SocketServer) OptionHelper.instantiateByClassName(className,
-          SocketServer.class, context);
-      server.setContext(context);
-      ic.pushObject(server);
+    try {
+      addInfo("About to instantiate receiver of type [" + className + "]");
+
+      remote = (SocketReceiver) OptionHelper.instantiateByClassName(
+          className, ReceiverBase.class, context);
+      remote.setContext(context);
+
+      ic.pushObject(remote);
     }
     catch (Exception ex) {
       inError = true;
-      addError("Could not create a server of type [" + className + "].", ex);
+      addError("Could not create a receiver of type [" + className + "].", ex);
       throw new ActionException(ex);
     }
   }
@@ -59,11 +66,11 @@ public class ServerAction extends Action {
     
     if (inError) return;
     
-    server.start();
+    remote.start();
 
     Object o = ic.peekObject();
-    if (o != server) {
-      addWarn("The object at the of the stack is not the server " +
+    if (o != remote) {
+      addWarn("The object at the of the stack is not the remote " +
       		"pushed earlier.");
     } else {
       ic.popObject();
