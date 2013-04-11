@@ -1669,8 +1669,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       clients.  Each received event is logged according to local server 
       policy.    
       </li>
-      <li><code>SocketServer</code> and its SSL-enabled counterpart
-      <code>SSLSocketServer</code> which can be configured in the
+      <li><code>ServerSocketReceiver</code> and its SSL-enabled counterpart
+      <code>SSLServerSocketReceiver</code> which can be configured in the
       <em>logback.xml</em> configuration file of <em>any</em> application
       that uses Logback Classic, allowing any application to be a 
       receiver for remote logging events.
@@ -1922,19 +1922,19 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     the SSL configuration as aid to auditing local policy conformance.
     </p>
  	  
- 	  <h4>Using SocketServer and SSLSocketServer</h4>
+ 	  <h4>Using ServerSocketReceiver and SSLServerSocketReceiver</h4>
  	  <p>While <code>SimpleSocketServer</code> and 
  	  <code>SimpleSSLSocketServer</code> both provide an easy-to-use 
  	  standalone logging server application, you may wish instead to 
  	  integrate logging server functionality into an existing application
     utilizing Logback Classic.  This ability is provided by
-    <a href="../xref/ch/qos/logback/classic/net/server/SocketServer.html">
-    <code>SocketServer</code></a> and its SSL-enabled counterpart
-    <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
-    <code>SSLSocketServer</code></a>.
+    <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketReceiver.html">
+    <code>ServerSocketReceiver</code></a> and its SSL-enabled counterpart
+    <a href="../xref/ch/qos/logback/classic/net/server/SSLServerSocketReceiver.html">
+    <code>SSLServerSocketReceiver</code></a>.
     </p>
     
-    <p><code>SocketServer</code> and <code>SSLSocketServer</code> are 
+    <p><code>ServerSocketReceiver</code> and <code>SSLServerSocketReceiver</code> are 
     components that are configured in the same manner as appenders,
     loggers, and the like &mdash; by placing the appropriate configuration
     properties in your application's <em>logback.xml</em> configuration
@@ -1942,7 +1942,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     to be a receiver for remote logging events.
     </p>
     
-    <p>The <code>SocketServer</code> component provides the following 
+    <p>The <code>ServerSocketReceiver</code> component provides the following 
     configurable properties:</p>
     
     <table class="bodyTable striped">
@@ -1952,28 +1952,28 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         <th>Description</th>
       </tr>
       <tr>
-        <td><span class="prop" container="socketServer">address</span></td>
+        <td><span class="prop" container="serverSocketReceiver">address</span></td>
         <td><code>String</code></td>
         <td>The local network interface address on which the server
         will listen.  If this property is not specified, the server
         will listen on all network interfaces.</td>
       </tr>
       <tr>
-        <td><span class="prop" container="socketServer">port</span></td>
+        <td><span class="prop" container="serverSocketReceiver">port</span></td>
         <td><code>int</code></td>
         <td>The TCP port on which the server will listen.  If this
         property is not specified, a default value will be used.</td>
       </tr>
       <tr>
-        <td><span class="prop" container="socketServer">ssl</span></td>
+        <td><span class="prop" container="serverSocketReceiver">ssl</span></td>
         <td><code>SSLConfiguration</code></td>
-        <td>Supported only for <code>SSLSocketServer</code>, this
+        <td>Supported only for <code>SSLServerSocketReceiver</code>, this
             property provides the SSL configuration that will be used by
             the server, as described in <a href="usingSSL.html">Using SSL</a>.
         </td>
       </tr>
       <tr>
-        <td><span class="prop" container="socketServer">threadPool</span></td>
+        <td><span class="prop" container="serverSocketReceiver">threadPool</span></td>
         <td><code>ThreadPoolFactoryBean</code></td>
         <td>This property specifies configuration for a thread pool that will
             be used to manage the appender's thread resources.  In most cases,
@@ -1986,11 +1986,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </table>
     
     <p>For example, the following configuration uses the 
-    <code>SocketServer</code> component with a minimal appender and 
+    <code>ServerSocketReceiver</code> component with a minimal appender and 
     logger configuration.
     </p>
     
-   	<p class="example">Example: Basic SocketServer Configuration
+   	<p class="example">Example: Basic ServerSocketReceiver Configuration
 		(logback-examples/src/main/java/chapters/appenders/socket/server3.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('server3');">View as .groovy</span>
 <pre id="server3" class="prettyprint source">&lt;configuration debug="true">
@@ -2005,15 +2005,15 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 
-  &lt;server class="ch.qos.logback.classic.net.server.SocketServer">
+  &lt;receiver class="ch.qos.logback.classic.net.server.ServerSocketReceiver">
     &lt;port>${port}&lt;/port>
-  &lt;/server>
+  &lt;/receiver>
   
 &lt;/configuration></pre>
   
-    <p>Note that the <span class="prop">server</span> configuration 
-    property identifies the server class that we wish to use.  Either
-    <code>SocketServer</code> or <code>SSLSocketServer</code> may be
+    <p>Note that the <span class="prop">receiver</span> configuration 
+    property identifies the receiver class that we wish to use.  Either
+    <code>ServerSocketReceiver</code> or <code>SSLServerSocketReceiver</code> may be
     specified here.
     </p>
     
@@ -2022,12 +2022,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     path for a logback configuration file as a command line argument,
     and runs the given configuration.  While our example is somewhat
     trivial, keep in mind that you can configure logback's 
-    <code>SocketServer</code> (and <code>SSLSocketServer</code>) 
+    <code>ServerSocketReceiver</code> (and <code>SSLServerSocketReceiver</code>) 
     component in <em>any</em> application.
     </p>
     
     <p>We can run our example server application as follows:</p>
-    <p class="source">java -Dport=6000 chapters.appenders.socket.SocketServer \
+    <p class="source">java -Dport=6000 chapters.appenders.socket.ServerSocketReceiver1 \
     src/main/java/chapters/appenders/socket/server3.xml
  	  </p>
   
@@ -2035,10 +2035,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     examples for using <a href="#simpleSocketServer">SimpleSocketServer</a>.
     </p>
     
-    <p>A minimal server configuration using <code>SSLSocketServer</code>
+    <p>A minimal server configuration using <code>SSLServerSocketReceiver</code>
     follows.</p>
 
-   	<p class="example">Example: Basic SSLSocketServer Configuration
+   	<p class="example">Example: Basic SSLServerSocketReceiver Configuration
 		(logback-examples/src/main/java/chapters/appenders/socket/ssl/server2.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
 <pre id="sslserver2" class="prettyprint source">&lt;configuration debug="true">
@@ -2053,7 +2053,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 
-  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
+  &lt;receiver class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
     &lt;port>${port}&lt;/port>
     &lt;ssl>
       &lt;keyStore>
@@ -2061,21 +2061,21 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         &lt;password>${password}&lt;/password>
       &lt;/keyStore>
     &lt;/ssl>
-  &lt;/server>
+  &lt;/receiver>
   
 &lt;/configuration></pre>
 
     <p>The essential differences between this configuration and the
-    previous example using <code>SocketServer</code> are the specification
-    of <code>SSLSocketServer</code> in the <em>class</em> attribute and
+    previous example using <code>ServerSocketReceiver</code> are the specification
+    of <code>SSLServerSocketReceiver</code> in the <em>class</em> attribute and
     the presence of the nested <span class="prop">ssl</span> property,
     which is used here to specify the location and password for the
-    key store containing the server's private key and certificate, using
+    key store containing the receiver's private key and certificate, using
     substitution variables. The <span class="prop">ssl</span> property 
-    of the server component accepts the same nested configuration 
+    of the receiver component accepts the same nested configuration 
     properties as those accepted by <code>SSLSocketAppender</code>.  
-    <strong>See  <a href="usingSSL.html">Using SSL</a> for details on 
-    configuring the SSL properties for <code>SSLSocketServer</code></strong>.
+    <strong>See <a href="usingSSL.html">Using SSL</a> for details on 
+    configuring the SSL properties for <code>SSLServerSocketReceiver</code></strong>.
     </p>    
    
     <p>We can now run our SSL-enabled server configuration using the 
@@ -2086,7 +2086,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p class="source">java -Dport=6000 \
     -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
     -Dpassword=changeit \
-    chapters.appenders.socket.SocketServer \
+    chapters.appenders.socket.ServerSocketReceiver1 \
     src/main/java/chapters/appenders/socket/ssl/server2.xml
  	  </p>
   
@@ -2156,9 +2156,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 				connection from behind the firewall.
 			</li>
 			<li>
-			  <p>A central logging server may be using a <code>SocketServer</code> 
+			  <p>A central logging server may be using a <code>ServerSocketReceiver</code> 
 			  component (or a <code>SimpleSocketServer</code>) to receive events from
-				one or more applications using a <code>SocketServer</code> component.
+				one or more applications.
 				Events received at the central logger server could then be distributed
 				to interested downstream receivers using <code>ServerSocketAppender</code>.
 				The has the advantage that the central logging server may not need to
@@ -2175,13 +2175,13 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       </li>
     </ul>
 
-    <p>The <a href="../xref/ch/qos/logback/classic/net/SocketRemote">
-    <code>SocketRemote</code></a> component (and its SSL-enabled counterpart, 
-    <a href="../xref/ch/qos/logback/classic/net/SSLSocketRemote">
-    <code>SSLSocketRemote</code></a>) provide the companion client that 
+    <p>The <a href="../xref/ch/qos/logback/classic/net/SocketReceiver">
+    <code>SocketReceiver</code></a> component (and its SSL-enabled counterpart, 
+    <a href="../xref/ch/qos/logback/classic/net/SSLSocketReceiver">
+    <code>SSLSocketReceiver</code></a>) provide the companion client that 
     connects to a <code>ServerSocketAppender</code>.  This component is
     configured in <em>logback.xml</em> just like other logback components. 
-    When a configuration containing the remote component is loaded, the
+    When a configuration containing the receiver component is loaded, the
     component will initiate a connection to a <code>ServerSocketAppender</code>
     running at a remote host and port.  
     </p>
@@ -2243,7 +2243,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </table>
     
     <p>The following configuration properties are supported by 
-    <code>SocketRemote</code>:</p>
+    <code>SocketReceiver</code>:</p>
     
     <table class="bodyTable striped">
       <tr>
@@ -2252,12 +2252,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       <th>Description</th>
       </tr>
       <tr>
-        <td><span class="prop" container="socketRemote">host</span></td>
+        <td><span class="prop" container="SocketReceiver">host</span></td>
         <td><code>String</code></td>
         <td>The hostname or address of the remote server socket appender.</td>
       </tr>
       <tr>
-        <td><span class="prop" container="socketRemote">port</span></td>
+        <td><span class="prop" container="SocketReceiver">port</span></td>
         <td><code>int</code></td>
         <td>The port number of the remote server socket appender.</td>
       </tr> 
@@ -2271,20 +2271,20 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
       <tr>
-        <td><span class="prop" container="socketRemote">ssl</span></td>
+        <td><span class="prop" container="SocketReceiver">ssl</span></td>
         <td><code>SSLConfiguration</code></td>
-        <td>Supported only for <code>SSLSocketRemote</code>, this
+        <td>Supported only for <code>SSLSocketReceiver</code>, this
             property provides the SSL configuration that will be used for
-            this remote, as described in <a href="usingSSL.html">Using SSL</a>.
+            this receiver, as described in <a href="usingSSL.html">Using SSL</a>.
         </td>
       </tr>
     </table>
     
-    <h4>Using SocketRemote with ServerSocketAppender</h4>
+    <h4>Using ServerSocketAppender and SocketReceiver</h4>
    
-    <p>The configuration used for <code>SocketRemote</code> and
+    <p>The configuration used for <code>SocketReceiver</code> and
     <code>ServerSocketAppender</code> is conceptually similar to that used
-    with <code>SocketAppender</code> and <code>SocketServer</code>.  The 
+    with <code>SocketAppender</code> and <code>ServerSocketReceiver</code>.  The 
     differences relate to the fact that the roles of <code>client</code>
     and <code>server</code> are reversed.
     </p>
@@ -2294,8 +2294,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
 
     <p class="example">Example: Basic ServerSocketAppender Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/remoteServer.xml)</p>
-<pre id="socketRemote" class="prettyprint source">&lt;configuration debug="true">
+    (logback-examples/src/main/java/chapters/appenders/socket/server4.xml)</p>
+<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="SERVER" 
     class="ch.qos.logback.classic.net.server.ServerSocketAppender">
     &lt;port>${port}&lt;/port>
@@ -2319,8 +2319,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p>Assuming you are in the <em>logback-examples/</em> directory, 
     you can run this example configuration using the following command:</p>
     <p class="source">java -Dport=6000 -DincludeCallerData=false \
-    chapters.appenders.socket.SocketRemoteServer \
-    src/main/java/chapters/appenders/socket/remoteServer.xml
+    chapters.appenders.socket.ServerSocketAppender1 \
+    src/main/java/chapters/appenders/socket/server4.xml
     </p>   
    
 		<p>The example application loads the specified configuration and then
@@ -2329,10 +2329,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		this point will be discarded by the appender.
 		</p>
    
-    <p class="example">Example: Basic SocketRemote Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/remoteClient.xml)</p>
+    <p class="example">Example: Basic SocketReceiver Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/client2.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
-<pre id="socketRemote" class="prettyprint source">&lt;configuration debug="true">
+<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
     
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
     &lt;encoder>
@@ -2340,16 +2340,16 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;/encoder>
   &lt;/appender>
   
-  &lt;remote class="ch.qos.logback.classic.net.SocketRemote">
-    &lt;host>${host}&lt;/host>
-    &lt;port>${port}&lt;/port>
-    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
-  &lt;/remote>
-  
   &lt;root level="DEBUG">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>  
 
+  &lt;receiver class="ch.qos.logback.classic.net.SocketReceiver">
+    &lt;host>${host}&lt;/host>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+  &lt;/receiver>
+  
 &lt;/configuration></pre>
         
    <p>This configuration will cause logback to connect to an 
@@ -2359,46 +2359,89 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
    (according to the configuration shown here) via a console appender.  You
    can configure any valid combination of appender and logger elements to 
    direct events received from the remote appender to an appropriate 
-   destination.  Moreover, you can configure an any number of remote 
+   destination.  Moreover, you can configure an any number of receiver 
    components to connect to as many remote appenders as you desire. 
    </p>
    
    <p>Assuming you are in the <em>logback-examples/</em> directory, 
    you can run this example configuration using the following command:</p>
    <p class="source">java -Dhost=localhost -Dport=6000 \
-    chapters.appenders.socket.SocketRemoteClient \
-    src/main/java/chapters/appenders/socket/remoteClient.xml
+    chapters.appenders.socket.SocketReceiver1 \
+    src/main/java/chapters/appenders/socket/client2.xml
    </p>   
    
    <p>The example loads the configuration and then simply waits for logging
    events from the remote appender.  If you run this example when the remote
    appender is not running, you'll see <em>connection refused</em> messages
-   appearing in the log output, periodically.  The <code>SocketRemote</code>
+   appearing in the log output, periodically.  The <code>SocketReceiver</code>
    component will periodically attempt to reconnect to the remote appender
    until it succeeds or until the logger context is shut down.  The delay
    interval between attempts is configurable using the 
    <span class="prop">reconnectionDelay</span> property as shown in the
    example configuration.</p>
    
-   <h4>Using SSLSocketRemote with SSLServerSocketAppender</h4>
+   <h4>Using SSLServerSocketAppender and SSLSocketReceiver</h4>
    <p>
-   Using <code>SSLSocketRemote</code> is quite similar.  The essential 
-   differences are in the class specified for the remote and the ability to
+   Using the SSL-enabled component variants is very similar.  The essential 
+   differences are in the class specified for the receiver and the ability to
    nest the <span class="prop">ssl</span> property to specify SSL configuration
    properties.  The following example illustrates a basic configuration:
    </p>
    
-    <p class="example">Example: Basic SSLSocketRemote Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/ssl/remoteClient.xml)</p>
+   <p>The following example illustrates a configuration that uses
+    <code>SSLServerSocketAppender</code>:
+    </p>
+
+    <p class="example">Example: Basic SSLServerSocketAppender Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/ssl/server3.xml)</p>
+<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="SERVER" 
+    class="ch.qos.logback.classic.net.server.SSLServerSocketAppender">
+    &lt;port>${port}&lt;/port>
+    &lt;includeCallerData>${includeCallerData}&lt;/includeCallerData>
+    &lt;ssl>
+      &lt;keyStore>
+        &lt;location>${keystore}&lt;/location>
+        &lt;password>${password}&lt;/password>
+      &lt;/keyStore>
+    &lt;/ssl>
+  &lt;/appender>
+
+  &lt;root level="debug">
+    &lt;appender-ref ref="SERVER" />
+  &lt;/root>  
+
+&lt;/configuration>
+</pre>
+   
+   <p>You can run this example configuration using the following command:</p>
+   <p class="source">java -Dport=6000 \
+    -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dpassword=changeit \
+    -DincludeCallerData=false \
+    chapters.appenders.socket.ServerSocketAppender1 \
+    src/main/java/chapters/appenders/socket/ssl/server3.xml
+   </p>   
+   
+   <p>Configuring the <code>SSLSocketReceiver</code> is also very similar
+   to configuring the basic <code>SocketReceiver</code>:
+   </p>
+   
+    <p class="example">Example: Basic SSLSocketReceiver Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/ssl/client2.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
-<pre id="sslSocketRemote" class="prettyprint source">&lt;configuration debug="true">
+<pre id="sslSocketReceiver" class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
     &lt;encoder>
       &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
     &lt;/encoder>         
   &lt;/appender>
   
-  &lt;remote class="ch.qos.logback.classic.net.SSLSocketRemote">
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>  
+   
+  &lt;receiver class="ch.qos.logback.classic.net.SSLSocketReceiver">
     &lt;host>${host}&lt;/host>
     &lt;port>${port}&lt;/port>
     &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
@@ -2408,21 +2451,17 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         &lt;password>${password}&lt;/password>
       &lt;/trustStore>
     &lt;/ssl>
-  &lt;/remote>
+  &lt;/receiver>
   
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>  
-   
 &lt;/configuration></pre>
 
   <p>Note that the <em>class</em> attribute now specifies 
-  <code>SSLSocketRemote</code> and that in addition to the configuration
+  <code>SSLSocketReceiver</code> and that in addition to the configuration
   properties shown in the previous example, this configuration contains
   an SSL configuration specifying the location and password for a 
   trust store that will be used in validating that the remote appender is
   trusted.  See <a href="usingSSL.html">Using SSL</a> for more information 
-  on configuring SSL properties for a remote.
+  on configuring SSL properties for a receiver.
   </p>
   
   <p>It is important to note that our example is using a self-signed
@@ -2432,8 +2471,14 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     See <a href="usingSSL.html">Using SSL</a> for more information.
   </p>
   
-  <p>
-  </p>
+  <p>You can run this example configuration using the following command:</p>
+  <p class="source">java -Dhost=localhost -Dport=6000 \
+    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dpassword=changeit \
+    chapters.appenders.socket.SocketReceiver1 \
+    src/main/java/chapters/appenders/socket/ssl/client2.xml
+  </p>   
+   
    <h3 class="doAnchor">SMTPAppender</h3>
    
    <p>The <a

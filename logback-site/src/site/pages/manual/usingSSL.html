@@ -27,44 +27,18 @@
     <div id="content">    
       <h1>Using SSL</h1>
       <p>Logback Classic supports the use of the Secure Sockets Layer 
-         (SSL) when delivering log events to a remote log server using
-         <a href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html"> 
-         <code>SSLSocketAppender</code></a>.  This appender acts as a
-         secure network client, connecting to an SSL-enabled log server 
-         and delivering serialized logging events over a secure channel.
-         It supports all of the same logging features as the plain old
-         <code>SocketAppender</code> while offering secure transport for
-         logging events over the network.
+         (SSL) when delivering log events from a socket-based appender
+         to a remote receiver.  When using An SSL-enabled appender and 
+         corresponding serialized logging events are delivered over a 
+         secure channel.
       </p>
       
-      <p>Logback Classic supports two SSL-enabled logging servers.</p>
-      <ul>
-        <li>The <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
-            <code>SSLSocketServer</code></a> is a logging server component
-            that can be added to any Logback configuration file (e.g.
-            <em>logback.xml</em>) to allow logging events to be
-            received from a remote logger and logged according to the
-            local configuration.
-        </li>
-        <li>For those who are presently using 
-            <a href="../xref/ch/qos/logback/classic/net/SimpleSocketServer.html">
-            <code>SimpleSocketServer</code></a> and simply want to start 
-            using <code>SSLSocketAppender</code> to deliver logging
-            events over a secure channel, Logback Classic provides the
-            <a href="../xref/ch/qos/logback/classic/net/SimpleSSLSocketServer.html">
-            <code>SimpleSSLSocketServer</code></a>.  This server 
-            supports the same command line interface as the plain old
-            <code>SimpleSocketServer</code>, while offering secure
-            transport for logging events over the network.
-        </li>
-      </ul>
-s      
       <h2 class="doAnchor">SSL and X.509 Certificates</h2>
       <p>In order to use SSL-enabled Logback components, you will need an
          X.509 credential (a private key, corresponding certificate,
          and CA certification chain) to identify your logging server.  If 
          you wish to use mutual authentication, you will also need credentials 
-         for your Logback appender clients using <code>SSLSocketAppender</code>.  
+         for your Logback components that act as SSL clients.
       </p>      
       <p>While you can use a credential issued by a commercial
          certification authority (CA), you can also use a certificate issued
@@ -88,11 +62,9 @@ s
          support has many configurable options, and a pluggable provider
          framework that allows the built-in SSL and cryptographic
          capabilities of the platform to be replaced or augmented.
-         SSL-enabled Logback components such as
-         <code>SSLSocketAppender</code> and <code>SSLSocketServer</code>
-         provide the ability to fully specify all of the configurable
-         aspects of the SSL engine and cryptographic providers, to meet
-         your unique security needs.
+         SSL-enabled Logback components provide the ability to fully specify 
+         all of the configurable aspects of the SSL engine and cryptographic 
+         providers, to meet your unique security needs.
       </p>
       
       <h3>Basic SSL Configuration using JSSE System Properties</h3>
@@ -110,7 +82,7 @@ s
          system properties to customize JSSE.      
       </p>
 
-      <p>If you're using either the <code>SSLSocketServer</code> component 
+      <p>If you're using either the <code>SSLServerSocketReceiver</code> component 
          in your application's logback configuration or using the 
          <code>SimpleSSLSocketServer</code> as a standalone application
          to receive logging events, you'll need to configure JSSE system
@@ -149,18 +121,17 @@ s
          application via a command-line interface.
       </p>
          
-      <p><strong>If your logging server is using a certificate that was 
-         signed by a commercial certification authority (CA), you
+      <p><strong>If your logback server component is using a certificate 
+         that was signed by a commercial certification authority (CA), you
          probably don't need to provide <em>any</em> SSL configuration 
-         in your applications that use 
-         <code>SSLSocketAppender</code></strong>.  When using a 
-         commercially-signed logging server certificate, simply setting
+         in your applications that SSL-enabled client components.  When using
+         a commercially-signed logging server certificate, simply setting
          the key store system properties in the server is usually 
          all that is needed.
       </p>
                
-      <p>If are using either a self-signed logging server certificate
-         or your logging server's certificate was signed by a
+      <p>If are using either a self-signed logback server certificate
+         or your logback server's certificate was signed by a
          certification authority (CA) that is not among those whose root
          certificates are in the Java platform's default trust store
          (e.g. when your organization has its own internal certification
@@ -183,7 +154,7 @@ s
         <tr>
           <td><code>javax.net.ssl.trustStore</code></td>
           <td>Specifies a filesystem path to the file containing your
-              logging server's certificate or trusted root certificate(s)
+              logback server's certificate or trusted root certificate(s)
               for the certification authority (CA) that signed.</td>
         </tr>
         <tr>
@@ -208,7 +179,7 @@ s
          Advanced SSL Configuration</h3>
       <p>In certain situations, the basic SSL configuration using 
          JSSE system properties is not adequate.  For example, if you
-         are using the <code>SSLSocketServer</code> component in a web
+         are using the <code>SSLServerSocketReceiver</code> component in a web
          application, you may wish to use a different credential to
          identify your logging server for your remote logging clients
          than the credential that your web server uses to identify
@@ -224,7 +195,7 @@ s
          specify the SSL configuration using the <code>ssl</code> 
          property in the configuration of the component.          
       </p>      
-      <p>For example, if you wish to use <code>SSLSocketServer</code>
+      <p>For example, if you wish to use <code>SSLServerSocketReceiver</code>
          and configure the key store properties for your logging 
          server's credential, you could use a configuration such as the 
          following.
@@ -232,7 +203,7 @@ s
 
       <span class="asGroovy" onclick="return asGroovy('logback-ssl-serverKeyStore');">View as .groovy</span>
       <pre id="logback-ssl-serverKeyStore" class="prettyprint source">&lt;configuration>
-  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
+  &lt;server class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
     &lt;ssl>
       &lt;keyStore>
         &lt;location>classpath:/logging-server-keystore.jks&lt;/location>
@@ -293,16 +264,16 @@ s
       
       <p>JSSE exposes a large number of configurable options, and 
          Logback's SSL support makes nearly all of them available for
-         you to specify in your server or appender configuration.  
+         you to specify in your SSL-enabled component configuration.  
          When using XML configuration, SSL properties are introduced to 
-         these components by nesting an &lt;ssl> element in the appender
-         or server configuration.  This configuration element corresponds 
+         these components by nesting an &lt;ssl> element in the 
+         component configuration.  This configuration element corresponds 
          to the 
          <a href="../xref/ch/qos/logback/core/net/ssl/SSLConfiguration.html">
          <code>SSLConfiguration</code></a> class.
       </p>
       
-      <p>When configuring SSL for your server or appender components
+      <p>When configuring SSL for your components
          you need only configure those SSL properties for which the
          defaults are not adequate.  Overspecifying the SSL configuration
          is often those cause of difficult-to-diagnose problems.
@@ -699,7 +670,7 @@ s
           <td>Set this property to the value <code>true</code> to 
               configure a server to <em>require</em> a valid client
               certificate.  This property is ignored when configured
-              for a client <code>SSLSocketAppender</code>.
+              for a client component such as <code>SSLSocketAppender</code>.
           </td>
         </tr>
         <tr>
@@ -709,7 +680,7 @@ s
           <td>Set this property to the value <code>true</code> to 
               configure the server to <em>request</em> a client
               certificate.  This property is ignored when configured
-              for a client <code>SSLSocketAppender</code>.
+              for a client component such as <code>SSLSocketAppender</code>.
           </td>
         </tr>
       </table>
@@ -847,7 +818,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 
-  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
+  &lt;server class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
     &lt;ssl>
       &lt;keyStore>
         &lt;location>classpath:server.keystore&lt;/location>
@@ -932,10 +903,10 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       
       <p class="example">Example: SSL Configuration Audit Logging</p>
       
-      <pre>06:46:31,941 |-INFO in SSLSocketServer@4ef18d37 - SSL protocol 'SSL' provider 'SunJSSE version 1.6'
-06:46:31,967 |-INFO in SSLSocketServer@4ef18d37 - key store of type 'JKS' provider 'SUN version 1.6': file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
-06:46:31,967 |-INFO in SSLSocketServer@4ef18d37 - key manager algorithm 'SunX509' provider 'SunJSSE version 1.6'
-06:46:31,973 |-INFO in SSLSocketServer@4ef18d37 - secure random algorithm 'SHA1PRNG' provider 'SUN version 1.6'
+      <pre>06:46:31,941 |-INFO in SSLServerSocketReceiver@4ef18d37 - SSL protocol 'SSL' provider 'SunJSSE version 1.6'
+06:46:31,967 |-INFO in SSLServerSocketReceiver@4ef18d37 - key store of type 'JKS' provider 'SUN version 1.6': file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
+06:46:31,967 |-INFO in SSLServerSocketReceiver@4ef18d37 - key manager algorithm 'SunX509' provider 'SunJSSE version 1.6'
+06:46:31,973 |-INFO in SSLServerSocketReceiver@4ef18d37 - secure random algorithm 'SHA1PRNG' provider 'SUN version 1.6'
 06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv2Hello
 06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv3
 06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: TLSv1
