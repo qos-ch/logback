@@ -45,15 +45,15 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.net.SocketConnector;
-import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
+import ch.qos.logback.core.status.Status;
 
 /**
- * Unit tests for {@link SocketRemote}.
+ * Unit tests for {@link SocketReceiver}.
  *
  * @author Carl Harris
  */
-public class SocketRemoteTest {
+public class SocketReceiverTest {
 
   private static final int DELAY = 200;
   private static final String TEST_HOST_NAME = "NOT.A.VALID.HOST.NAME";
@@ -62,15 +62,14 @@ public class SocketRemoteTest {
   private ServerSocket serverSocket;
   private Socket socket;
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private MockContext context = new MockContext();
   private MockSocketFactory socketFactory = new MockSocketFactory();
   private MockSocketConnector connector;
   private MockAppender appender;
   private LoggerContext lc;
   private Logger logger;
   
-  private InstrumentedSocketRemote remote = 
-      new InstrumentedSocketRemote();
+  private InstrumentedSocketReceiver remote = 
+      new InstrumentedSocketReceiver();
   
   @Before
   public void setUp() throws Exception {
@@ -78,9 +77,9 @@ public class SocketRemoteTest {
     socket = new Socket(serverSocket.getInetAddress(), 
         serverSocket.getLocalPort());
     connector = new MockSocketConnector(socket);
-    remote.setContext(context);    
 
     lc = (LoggerContext) LoggerFactory.getILoggerFactory();    
+    remote.setContext(lc);    
     appender = new MockAppender();
     appender.start();
     logger = lc.getLogger(getClass());
@@ -102,14 +101,20 @@ public class SocketRemoteTest {
   @Test
   public void testStartNoRemoteAddress() throws Exception {
     remote.start();
-    assertTrue(context.getLastStatus().getMessage().contains("host"));
+    assertFalse(remote.isStarted());
+    int count = lc.getStatusManager().getCount();
+    Status status = lc.getStatusManager().getCopyOfStatusList().get(count - 1);
+    assertTrue(status.getMessage().contains("host"));
   }
 
   @Test
   public void testStartNoPort() throws Exception {
     remote.setHost(TEST_HOST_NAME);
     remote.start();
-    assertTrue(context.getLastStatus().getMessage().contains("port"));
+    assertFalse(remote.isStarted());
+    int count = lc.getStatusManager().getCount();
+    Status status = lc.getStatusManager().getCopyOfStatusList().get(count - 1);
+    assertTrue(status.getMessage().contains("port"));
   }
 
   @Test
@@ -117,7 +122,10 @@ public class SocketRemoteTest {
     remote.setPort(6000);
     remote.setHost(TEST_HOST_NAME);
     remote.start();
-    assertTrue(context.getLastStatus().getMessage().contains("unknown host"));
+    assertFalse(remote.isStarted());
+    int count = lc.getStatusManager().getCount();
+    Status status = lc.getStatusManager().getCopyOfStatusList().get(count - 1);
+    assertTrue(status.getMessage().contains("unknown host"));
   }
   
   @Test
@@ -200,9 +208,9 @@ public class SocketRemoteTest {
   }
 
   /**
-   * A {@link SocketRemote} with instrumentation for unit testing.
+   * A {@link SocketReceiver} with instrumentation for unit testing.
    */
-  private class InstrumentedSocketRemote extends SocketRemote {
+  private class InstrumentedSocketReceiver extends SocketReceiver {
 
     private boolean connectorCreated;
     private boolean executorCreated;

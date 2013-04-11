@@ -18,7 +18,7 @@ import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
 
 /**
- * Nested component registry rules for {@link SocketServer}.
+ * Nested component registry rules for {@link ServerSocketReceiver}.
  *
  * @author Carl Harris
  */
@@ -27,9 +27,9 @@ public class SocketServerNestedComponentRegistryRules {
   public static void addDefaultNestedComponentRegistryRules(
       DefaultNestedComponentRegistry registry) {
     
-    registry.add(SocketServer.class, "threadPool", 
+    registry.add(ServerSocketReceiver.class, "threadPool", 
         ThreadPoolFactoryBean.class);
-    registry.add(SSLSocketServer.class, "ssl",
+    registry.add(SSLServerSocketReceiver.class, "ssl",
         SSLConfiguration.class);
   }
 

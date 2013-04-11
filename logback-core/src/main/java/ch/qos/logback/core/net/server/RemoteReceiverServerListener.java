@@ -19,20 +19,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * A {@link ServerListener} that accepts connections from remote logger
- * clients.
+ * A {@link ServerListener} that accepts connections from remote receiver
+ * component clients.
  *
  * @author Carl Harris
  */
-class RemoteLoggerServerListener
-    extends ServerSocketListener<RemoteLoggerClient> {
+class RemoteReceiverServerListener
+    extends ServerSocketListener<RemoteReceiverClient> {
 
   /**
    * Constructs a new listener.
    * @param serverSocket server socket from which new client connections
    *    will be accepted
    */
-  public RemoteLoggerServerListener(ServerSocket serverSocket) {
+  public RemoteReceiverServerListener(ServerSocket serverSocket) {
     super(serverSocket);
   }
 
@@ -40,9 +40,9 @@ class RemoteLoggerServerListener
    * {@inheritDoc}
    */
   @Override
-  protected RemoteLoggerClient createClient(String id, Socket socket)
+  protected RemoteReceiverClient createClient(String id, Socket socket)
       throws IOException {
-    return new RemoteLoggerStreamClient(id, socket);
+    return new RemoteReceiverStreamClient(id, socket);
   }
 
 }

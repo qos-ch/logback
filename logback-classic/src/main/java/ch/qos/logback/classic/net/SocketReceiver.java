@@ -27,17 +27,12 @@ import java.util.concurrent.RejectedExecutionException;
 
 import javax.net.SocketFactory;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.net.SocketAppenderBase;
 import ch.qos.logback.core.net.SocketConnector;
 import ch.qos.logback.core.net.SocketConnectorBase;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
@@ -46,8 +41,8 @@ import ch.qos.logback.core.util.CloseUtil;
  * 
  * @author Carl Harris
  */
-public class SocketRemote extends ContextAwareBase
-    implements LifeCycle, SocketConnector.ExceptionHandler, Runnable {
+public class SocketReceiver extends ReceiverBase
+    implements Runnable, SocketConnector.ExceptionHandler {
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
   
@@ -57,21 +52,13 @@ public class SocketRemote extends ContextAwareBase
   private int reconnectionDelay;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
 
-  private ExecutorService executor;
-  private boolean started;
   private String remoteId;
   private volatile Socket socket;
   
   /**
    * {@inheritDoc}
    */
-  public void start() {
-    if (isStarted()) return;
-    
-    if (getContext() == null) {
-      throw new IllegalStateException("context not set");
-    }
-    
+  protected boolean shouldStart() {
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
@@ -101,29 +88,23 @@ public class SocketRemote extends ContextAwareBase
         
     if (errorCount == 0) {
       remoteId = "remote " + host + ":" + port + ": ";
-      executor = createExecutorService();
-      executor.execute(this);
-      started = true;
     }
+    
+    return errorCount == 0;
   }
 
   /**
    * {@inheritDoc}
    */
-  public void stop() {
-    if (!isStarted()) return;
+  protected void onStop() {
     if (socket != null) {
       CloseUtil.closeQuietly(socket);
     }
-    executor.shutdownNow();
-    started = false;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public boolean isStarted() {
-    return started;
+  @Override
+  protected Runnable getRunnableTask() {
+    return this;
   }
 
   /**
@@ -131,13 +112,12 @@ public class SocketRemote extends ContextAwareBase
    */
   public void run() {
     try {
-      LoggerContext lc = awaitConfiguration();      
+      LoggerContext lc = (LoggerContext) getContext();  
       SocketConnector connector = createConnector(address, port, 0, 
           reconnectionDelay);
-      while (!executor.isShutdown() && 
-          !Thread.currentThread().isInterrupted()) {
+      while (!Thread.currentThread().isInterrupted()) {
         try {
-          executor.execute(connector);
+          getExecutor().execute(connector);
         }
         catch (RejectedExecutionException ex) {
           // executor is shutting down... 
@@ -154,16 +134,6 @@ public class SocketRemote extends ContextAwareBase
     addInfo("shutting down");
   }
   
-  private LoggerContext awaitConfiguration() throws InterruptedException {
-    ILoggerFactory factory = LoggerFactory.getILoggerFactory();
-    while (!(factory instanceof LoggerContext)
-        && !Thread.currentThread().isInterrupted()) {
-      Thread.sleep(500);
-      factory = LoggerFactory.getILoggerFactory();
-    }
-    return (LoggerContext) factory;
-  }
-
   private void dispatchEvents(LoggerContext lc) {
     try {
       socket.setSoTimeout(acceptConnectionTimeout);

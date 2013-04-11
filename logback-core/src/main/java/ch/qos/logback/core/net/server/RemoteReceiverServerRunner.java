@@ -19,13 +19,13 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
 
 /**
- * A {@link ServerRunner} that sends logging events to remote logger
- * clients.
+ * A {@link ServerRunner} that listens for connections from remote receiver
+ * component clients and delivers logging events to all connected clients.
  *
  * @author Carl Harris
  */
-class RemoteLoggerServerRunner 
-    extends ConcurrentServerRunner<RemoteLoggerClient> {
+class RemoteReceiverServerRunner 
+    extends ConcurrentServerRunner<RemoteReceiverClient> {
 
   private final int clientQueueSize;
   
@@ -38,8 +38,8 @@ class RemoteLoggerServerRunner
    * @param queueSize size of the event queue that will be maintained for
    *    each client
    */
-  public RemoteLoggerServerRunner(
-      ServerListener<RemoteLoggerClient> listener, Executor executor,
+  public RemoteReceiverServerRunner(
+      ServerListener<RemoteReceiverClient> listener, Executor executor,
       int clientQueueSize) {
     super(listener, executor);
     this.clientQueueSize = clientQueueSize;
@@ -49,7 +49,7 @@ class RemoteLoggerServerRunner
    * {@inheritDoc}
    */
   @Override
-  protected boolean configureClient(RemoteLoggerClient client) {
+  protected boolean configureClient(RemoteReceiverClient client) {
     client.setContext(getContext());
     client.setQueue(new ArrayBlockingQueue<Serializable>(clientQueueSize));
     return true;

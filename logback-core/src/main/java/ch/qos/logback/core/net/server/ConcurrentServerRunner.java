@@ -55,7 +55,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
   private final ServerListener<T> listener;
   private final Executor executor;
   
-  private boolean started;
+  private boolean running;
   
   /**
    * Constructs a new server runner.
@@ -74,31 +74,20 @@ public abstract class ConcurrentServerRunner<T extends Client>
   /**
    * {@inheritDoc}
    */
-  public void start() throws IOException {
-    if (isStarted()) return;
-    executor.execute(this);
-    started = true;
+  public boolean isRunning() {
+    return running;
   }
 
   /**
    * {@inheritDoc}
    */
   public void stop() throws IOException {
-    if (!isStarted()) return;
     listener.close();
     accept(new ClientVisitor<T>() {
       public void visit(T client) {
         client.close();
       } 
     });
-    started = false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public boolean isStarted() {
-    return started;
   }
 
   /**
@@ -136,6 +125,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
    * {@inheritDoc}
    */
   public void run() {
+    running = true;
     try {
       addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
@@ -160,7 +150,8 @@ public abstract class ConcurrentServerRunner<T extends Client>
     catch (Exception ex) {
       addError("listener: " + ex);
     }
-    
+
+    running = false;    
     addInfo("shutting down");
     listener.close();
   }

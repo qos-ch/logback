@@ -40,11 +40,11 @@ public class ServerSocketAppenderBaseTest {
 
   private MockContext context = new MockContext();
   
-  private MockServerRunner<RemoteLoggerClient> runner = 
-      new MockServerRunner<RemoteLoggerClient>();
+  private MockServerRunner<RemoteReceiverClient> runner = 
+      new MockServerRunner<RemoteReceiverClient>();
   
-  private MockServerListener<RemoteLoggerClient> listener = 
-      new MockServerListener<RemoteLoggerClient>();
+  private MockServerListener<RemoteReceiverClient> listener = 
+      new MockServerListener<RemoteReceiverClient>();
   
   private MockThreadPoolFactoryBean threadPool = 
       new MockThreadPoolFactoryBean();
@@ -69,24 +69,11 @@ public class ServerSocketAppenderBaseTest {
   public void testStartStop() throws Exception {
     appender.start();
     assertTrue(runner.isContextInjected());
-    assertTrue(runner.isStarted());
+    assertTrue(runner.isRunning());
     assertSame(listener, appender.getLastListener());
     
     appender.stop();
-    assertFalse(runner.isStarted());
-  }
-
-  @Test
-  public void testStartThrowsException() throws Exception {
-    IOException ex = new IOException("test exception");
-    runner.setStartException(ex);
-    appender.start();
-    assertFalse(appender.isStarted());
-    Status status = context.getLastStatus();
-    assertNotNull(status);    
-    assertTrue(status instanceof ErrorStatus);
-    assertTrue(status.getMessage().contains(ex.getMessage()));
-    assertSame(ex, status.getThrowable());
+    assertFalse(runner.isRunning());
   }
 
   @Test

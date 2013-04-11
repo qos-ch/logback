@@ -22,17 +22,17 @@ import javax.net.ServerSocketFactory;
 
 import ch.qos.logback.classic.net.server.RemoteAppenderClient;
 import ch.qos.logback.classic.net.server.RemoteAppenderServerListener;
-import ch.qos.logback.classic.net.server.SocketServer;
+import ch.qos.logback.classic.net.server.ServerSocketReceiver;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
 
 
 /**
- * A {@link SocketServer} with instrumentation for unit testing.
+ * A {@link ServerSocketReceiver} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
-public class InstrumentedSocketServer extends SocketServer {
+public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
   
   private final ServerSocket serverSocket;
   private final ServerListener<RemoteAppenderClient> listener;
@@ -40,11 +40,11 @@ public class InstrumentedSocketServer extends SocketServer {
   
   private ServerListener lastListener;
   
-  public InstrumentedSocketServer(ServerSocket serverSocket) {
+  public InstrumentedServerSocketReceiver(ServerSocket serverSocket) {
     this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
   }
   
-  public InstrumentedSocketServer(ServerSocket serverSocket,
+  public InstrumentedServerSocketReceiver(ServerSocket serverSocket,
       ServerListener<RemoteAppenderClient> listener, 
       ServerRunner<RemoteAppenderClient> runner) {
     this.serverSocket = serverSocket;

@@ -51,9 +51,9 @@ public class ConcurrentServerRunnerTest {
   
   @Test
   public void testStartStop() throws Exception {
-    assertFalse(runner.isStarted());
-    runner.start();
-    assertTrue(runner.isStarted());
+    assertFalse(runner.isRunning());
+    executor.execute(runner);
+    assertTrue(runner.isRunning());
     int retries = 200;
     synchronized (listener) {
       while (retries-- > 0 && listener.getWaiter() == null) {
@@ -63,14 +63,14 @@ public class ConcurrentServerRunnerTest {
     assertNotNull(listener.getWaiter());
     runner.stop();
     assertTrue(listener.isClosed());
-    assertFalse(runner.isStarted());
+    assertFalse(runner.isRunning());
     executor.shutdown();
     assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
   }
   
   @Test
   public void testRunOneClient() throws Exception {
-    runner.start();
+    executor.execute(runner);
     MockClient client = new MockClient();
     listener.addClient(client);
     int retries = 200;
@@ -86,7 +86,7 @@ public class ConcurrentServerRunnerTest {
 
   @Test
   public void testRunManyClients() throws Exception {
-    runner.start();
+    executor.execute(runner);
     int count = 10;
     while (count-- > 0) {
       MockClient client = new MockClient();
@@ -104,7 +104,7 @@ public class ConcurrentServerRunnerTest {
 
   @Test
   public void testRunClientAndVisit() throws Exception {
-    runner.start();
+    executor.execute(runner);
     MockClient client = new MockClient();
     listener.addClient(client);
     int retries = 200;

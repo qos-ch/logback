@@ -26,11 +26,11 @@ import org.junit.Test;
 
 
 /**
- * Unit tests for {@link RemoteLoggerStreamClient}.
+ * Unit tests for {@link RemoteReceiverStreamClient}.
  *
  * @author Carl Harris
  */
-public class RemoteLoggerStreamClientTest {
+public class RemoteReceiverStreamClientTest {
 
   private static final String TEST_EVENT = "test event";
 
@@ -41,8 +41,8 @@ public class RemoteLoggerStreamClientTest {
   private ByteArrayOutputStream outputStream = 
       new ByteArrayOutputStream();
   
-  private RemoteLoggerStreamClient client = 
-      new RemoteLoggerStreamClient("someId", outputStream);
+  private RemoteReceiverStreamClient client = 
+      new RemoteReceiverStreamClient("someId", outputStream);
   
   @Before
   public void setUp() throws Exception {

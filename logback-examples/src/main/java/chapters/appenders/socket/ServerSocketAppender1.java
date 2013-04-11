@@ -18,6 +18,10 @@
  */
 package chapters.appenders.socket;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -25,14 +29,14 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 
 /**
  * This application loads a configuration containing a 
- * {@link SocketRemote} and then logs events received from the remote
- * appender to the console.
+ * {@link ServerSocketAppender} and then allows the user to enter messages
+ * which will be relayed to remote clients via this appender.
  */
-public class SocketRemoteClient {
+public class ServerSocketAppender1 {
 
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java " + SocketRemoteClient.class.getName() +
+    System.err.println("Usage: java " + ServerSocketAppender1.class.getName() +
       " configFile\n" +
       "   configFile a logback configuration file" +
       "   in XML format.");
@@ -54,7 +58,23 @@ public class SocketRemoteClient {
       configurator.doConfigure(configFile);
     }
 
-    Thread.sleep(Long.MAX_VALUE);
+    Logger logger = LoggerFactory.getLogger(ServerSocketAppender1.class);
+
+    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+    while (true) {
+      System.out.println(
+        "Type a message to send to remote clients. Type 'q' to quit.");
+
+      String s = reader.readLine();
+
+      if (s.equals("q")) {
+        break;
+      } else {
+        logger.debug(s);
+      }
+    }
+    
     ((LoggerContext) LoggerFactory.getILoggerFactory()).stop();
   }
 
