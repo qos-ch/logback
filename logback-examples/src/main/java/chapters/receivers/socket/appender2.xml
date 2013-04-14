@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <!-- ==================================================================== -->
-<!-- Sample SocketAppender configuration.                                 -->
+<!-- Sample SSLSocketAppender configuration.                              -->
 <!-- ==================================================================== -->
 
 <configuration debug="true">
