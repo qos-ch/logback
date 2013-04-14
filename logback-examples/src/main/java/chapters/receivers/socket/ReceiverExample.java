@@ -16,7 +16,7 @@
  * limitations under the License.
  *
  */
-package chapters.appenders.socket;
+package chapters.receivers.socket;
 
 import org.slf4j.LoggerFactory;
 
@@ -25,14 +25,14 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 
 /**
  * This application loads a configuration containing a 
- * {@link SocketRemote} and then logs events received from the remote
- * appender to the console.
+ * receiver component and logs events received from the remote
+ * appender according to the local configuration.
  */
-public class SocketReceiver1 {
+public class ReceiverExample {
 
   static void usage(String msg) {
     System.err.println(msg);
-    System.err.println("Usage: java " + SocketReceiver1.class.getName() +
+    System.err.println("Usage: java " + ReceiverExample.class.getName() +
       " configFile\n" +
       "   configFile a logback configuration file" +
       "   in XML format.");
@@ -55,7 +55,6 @@ public class SocketReceiver1 {
     }
 
     Thread.sleep(Long.MAX_VALUE);
-    ((LoggerContext) LoggerFactory.getILoggerFactory()).stop();
   }
 
 }
