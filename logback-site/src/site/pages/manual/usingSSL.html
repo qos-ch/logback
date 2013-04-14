@@ -36,9 +36,8 @@
       </div>
 
 
-    <script src="../templates/creative.js" type="text/javascript"></script>
-    <script src="../templates/setup.js" type="text/javascript"></script>
-    
+      <script src="../templates/creative.js" type="text/javascript"></script>
+      <!-- script src="../templates/setup.js" type="text/javascript"></script -->
 
       <p>Logback supports the use of the Secure Sockets Layer 
          (SSL) when delivering log events from a socket-based appender
@@ -47,12 +46,59 @@
          over a secure channel.
       </p>
       
+      <h2 class="doAnchor">SSL and Component Roles</h2>
+      
+      <p>Logback components such as appenders and receivers may act in
+      either the server role or the client role, with respect to network
+      connection initiation. When acting in the server role, a logback
+      component passively listens for connections from remote client
+      components.  Conversely, a component acting in the client role 
+      initiates a connection to remote server component.  For example, 
+      an appender acting in the <em>client</em> role connects to a 
+      receiver acting in the <em>server</em> role.  Or a receiver
+      acting in the <em>client</em> role connects to an appender
+      acting in the <em>server</em> role.</p>
+      
+      <p>The roles of the components are generally determined by the
+      component type.  For example, an <code>SSLServerSocketAppender</code>
+      is an appender component that acts in the server role, while an
+      <code>SSLSocketAppender</code> is an appender component that acts
+      in the client role.  Thus the developer or application administrator 
+      can configure Logback components to support the desired direction
+      of network connection initiation.</p>
+      
+      <p>The direction of connection initiation is significant in the 
+      context of SSL, because in SSL a server component must possess an
+      X.509 credential to identify itself to connecting clients.  A
+      client component, when connecting to the server, uses the server's
+      certificate to validate that the server is trusted.  The
+      developer or application administrator must be aware of the 
+      roles of Logback components, so as to properly configure the
+      server's key store (containing the server's X.509 credential) 
+      and the client's trust store (containing self-signed 
+      root certificates used when validating server trust).</p>
+      
+      <p>When SSL is configured for <em>mutual authentication</em>, then
+      both the server component and the client component must possess
+      valid X.509 credentials whose trust can be asserted by their 
+      respective peer.  Mutual authentication is configured in the
+      server component, therefore the developer or application 
+      administrator must be aware of which components are acting in 
+      the server role.</p>
+      
+      <p>In this chapter, we use the term <em>server component</em>
+      or simply <em>server</em> to refer to a Logback component such
+      as an appender or receiver that is acting in the server role.  We
+      use the term <em>client component</em> or simply <em>client</em>
+      to refer to a component that is acting in the client role.
+            
       <h2 class="doAnchor">SSL and X.509 Certificates</h2>
+      
       <p>In order to use SSL-enabled Logback components, you will need an
          X.509 credential (a private key, corresponding certificate,
-         and CA certification chain) to identify your Logback components
+         and CA certification chain) to identify your components
          that act as SSL servers.  If you wish to use mutual authentication, 
-         you will also need credentials for your Logback components that 
+         you will also need credentials for your components that 
          act as SSL clients.
       </p>      
       <p>While you can use a credential issued by a commercial
@@ -61,12 +107,12 @@
          following is all that is required:
       </p> 
       <ol>
-        <li>The component acting in the server role must be configured 
+        <li>The server component must be configured 
             with a key store containing the server's private key, 
             corresponding certificate, and CA certification chain
              (if not using a self-signed certificate).
         </li>
-        <li>The component acting in the client role must be configured 
+        <li>The client component must be configured 
             with a trust store containing trusted root CA 
             certificate(s) or the server's self-signed root certificate.
         </li>
@@ -86,8 +132,8 @@
       <h3>Basic SSL Configuration using JSSE System Properties</h3>
       <p>Fortunately, nearly all of the configurable SSL properties for
          SSL-enabled Logback components have reasonable defaults.  In 
-         most cases all that is needed to use SSL-enabled Logback
-         components is the configuration of some JSSE system properties.
+         most cases all that is needed is the configuration of some JSSE 
+         system properties.
       </p>
       
       <p>The remainder of this section describes the specific JSSE
@@ -98,9 +144,10 @@
          system properties to customize JSSE.      
       </p>
 
-      <p>If you're using any of logback's SSL-enabled appender or receiver
+      <p>If you're using any of Logback's SSL-enabled appender or receiver
          components that act in the server role (e.g. 
-         <code>SSLServerSocketReceiver</code>, <code>ServerSocketAppender</code>,
+         <code>SSLServerSocketReceiver</code>, 
+         <code>SSLServerSocketAppender</code>,
          or <code>SimpleSSLSocketServer</code>) you'll need to configure 
          JSSE system properties that provide the location, type, and 
          password of the key store containing a private key and 
@@ -133,21 +180,22 @@
       </table>
 
       <p>See <a href="#Examples">Examples</a> below for examples of
-         setting these system properties when starting a server 
-         application via a command-line interface.
+         setting these system properties when starting an application
+         that uses Logback's SSL-enabled server components.
       </p>
          
-      <p><strong>If your logback server component is using a certificate 
-         that was signed by a commercial certification authority (CA), you
-         probably don't need to provide <em>any</em> SSL configuration 
-         in your applications that SSL-enabled client components</strong>.  
-         When using a commercially-signed certificate for your server 
-         component, simply setting the system key store properties for JVM 
-         that runs the server component is usually all that is needed.
+      <p>If your server component is using a certificate 
+         that was signed by a commercial certification authority (CA), 
+         <strong>you probably don't need to provide <em>any</em> SSL 
+         configuration in your applications that use SSL-enabled client 
+         components</strong>.  When using a commercially-signed 
+         certificate for your server  component, simply setting the 
+         system key store properties for JVM that runs the server 
+         component is usually all that is needed.
       </p>
                
-      <p>If are using either a self-signed logback server certificate
-         or your logback server certificate was signed by a
+      <p>If you are using either a self-signed server certificate
+         or your server certificate was signed by a
          certification authority (CA) that is not among those whose root
          certificates are in the Java platform's default trust store
          (e.g. when your organization has its own internal certification
@@ -155,9 +203,9 @@
          properties that provide the location, type, and password of the
          trust store containing your server's certificate or trusted
          root certificates for the certification authority (CA) that
-         signed your server's certificate.  <em>These properties will 
-         need to be set in the application that utilizes
-         <code>SSLSocketAppender</code></em>.
+         signed your server's certificate.  <strong>These properties will 
+         need to be set in each application that utilizes an SSL-enabled
+         client component</strong>.
       </p>
         
       <h4><a name="basicConfig.trustStore"></a>
@@ -170,7 +218,7 @@
         <tr>
           <td><code>javax.net.ssl.trustStore</code></td>
           <td>Specifies a filesystem path to the file containing your
-              logback server component's certificate or trusted root
+              server component's certificate or trusted root
               certificate(s) for the certification authority (CA) that
               signed the server certificate.</td>
         </tr>
@@ -188,8 +236,8 @@
       </table>
 
       <p>See <a href="#Examples">Examples</a> below for examples of
-         setting these system properties when starting a client 
-         application via a command-line interface.
+         setting these system properties when starting an application 
+         that utilizes Logback's SSL-enabled client components.
       </p>         
             
       <h3 class="doAnchor"><a name="SSLConfiguration"></a>
@@ -220,14 +268,6 @@
 
       <span class="asGroovy" onclick="return asGroovy('logback-ssl-serverKeyStore');">View as .groovy</span>
       <pre id="logback-ssl-serverKeyStore" class="prettyprint source">&lt;configuration>
-  &lt;server class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
-    &lt;ssl>
-      &lt;keyStore>
-        &lt;location>classpath:/logging-server-keystore.jks&lt;/location>
-        &lt;password>changeit&lt;/password>
-      &lt;/keyStore>
-    &lt;/ssl>
-  &lt;/server> 
 
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
@@ -239,6 +279,15 @@
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 
+  &lt;receiver class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
+    &lt;ssl>
+      &lt;keyStore>
+        &lt;location>classpath:/logging-server-keystore.jks&lt;/location>
+        &lt;password>changeit&lt;/password>
+      &lt;/keyStore>
+    &lt;/ssl>
+  &lt;/receiver> 
+
 &lt;/configuration></pre>
 
       <p>This configuration specifies the location of the key store
@@ -248,7 +297,7 @@
          the key store.
       </p>
       <p>If you wanted to use <code>SSLSocketAppender</code> in your
-         application's logback configuration, but did not want to change
+         application's Logback configuration, but did not want to change
          the application's default trust store using the JSSE
          <code>javax.net.ssl.trustStore</code> property, you could 
          configure the appender as follows.
@@ -260,6 +309,7 @@
     &lt;ssl>
       &lt;trustStore>
         &lt;location>classpath:/logging-server-truststore.jks&lt;/location>
+        &lt;password>changeit&lt;/password>
       &lt;/trustStore>
     &lt;/ssl>
   &lt;/appender>
@@ -293,7 +343,7 @@
       <p>When configuring SSL for your components
          you need only configure those SSL properties for which the
          defaults are not adequate.  Overspecifying the SSL configuration
-         is often those cause of difficult-to-diagnose problems.
+         is often the cause of difficult-to-diagnose problems.
       </p>
  
       <p>The following table describes the top-level SSL configuration
@@ -742,8 +792,53 @@
         </tr>
       </table>
       
-      <h2>Examples</h2>
+      <h2 class="doAnchor"><a name="Examples"></a>Examples</h2>
 
+      <h3>Using JSSE System Properties</h3>
+      <p>JSSE system properties can be used to specify the location and 
+      password for a key store containing your server's X.509 credential,
+      or to specify the location and password for a trust store 
+      containing self-signed root CA certificates used by your client
+      components to validate server trust.</p>
+
+      <h4>Specifying the Server's Key Store</h4>
+      <p>When running a server component, you need to specify the location
+      and password for the key store containing the server's credential.
+      One way to do this is using JSSE system properties.  The following
+      example shows a command line that could be used to start the
+      <code>SimpleSSLSocketServer</code> that is shipped with Logback.</p>
+    
+      <p class="source">java -DkeyStore=/etc/logback-server-keystore.jks \
+     -DkeyStorePassword=changeit -DkeyStoreType=JKS \
+     ch.qos.logback.net.SimpleSSLSocketServer 6000 /etc/logback-server-config.xml</p>
+              
+      <p>Note that when using the JSSE <em>keyStore</em> system property,
+      a path to the key store is specified.  When specifying the location
+      in <em>logback.xml</em>, a URL for the key store is specified.</p>
+      
+      <p>While this example starts the standalone server application
+      provided with Logback, the same system properties could be specified
+      to start any application that uses an SSL-enabled Logback server
+      component.
+      
+      <h4>Specifying the Client's Trust Store</h4>
+      
+      <p>When using a client component, you need to specify the location
+      and password for a trust store containing root CA certificates used
+      for validating server trust.  One way to do this is using JSSE
+      system properties.  The following example shows a command line
+      that could be used to start an application named 
+      <code>com.example.MyLoggingApplication</code> that uses one or
+      more of Logback's SSL-enabled client components.</p>
+
+      <p class="source">java -DtrustStore=/etc/logback-client-truststore.jks \
+     -DtrustStorePassword=changeit -DtrustStoreType=JKS \
+     com.example.MyLoggingApplication</p>
+      
+      <p>Note that when using the JSSE <em>trustStore</em> system property,
+      a path to the key store is specified.  When specifying the location
+      in <em>logback.xml</em>, a URL for the trust store is specified.</p>
+      
       <h3>Creating and Using a Self-Signed Server Component Credential</h3>
       <p>To generate a self-signed certificate, you can use the <em>keytool</em>
       utility that is shipped with the Java Runtime Environment (JRE).
@@ -902,10 +997,10 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       <p>In settings where secure communications are required, it is often
       necessary to audit the configuration of components that use SSL to
       validate conformance with local security policies.  The SSL
-      support in Logback Classic addresses this need by providing detailed
-      logging of SSL configuration when the logback configuration is
-      initialized.  You can enable audit logging using the
-      <code>debug</code> property in the configuration:</p>
+      support in Logback addresses this need by providing detailed
+      logging of SSL configuration when Logback is initialized.  You can 
+      enable audit logging using the <code>debug</code> property in the
+      configuration:</p>
       
       <pre class="prettyprint source">&lt;configuration debug="true">
   
@@ -1192,6 +1287,8 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          properties on both the server and client.
       </p>
          
+      <script src="../templates/footer.js" type="text/javascript"></script>
+
     </div>
   </body>
 </html>
