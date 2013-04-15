@@ -191,22 +191,22 @@
       (logback-examples/src/main/java/chapters/receivers/socket/receiver1.xml)</p>
       <span class="asGroovy" onclick="return asGroovy('receiver1');">View as .groovy</span>
   <pre id="server" class="prettyprint source">&lt;configuration debug="true">
-  
-    &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-      &lt;encoder>
-        &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
-      &lt;/encoder>
-    &lt;/appender>
-  
-    &lt;root level="DEBUG">
-      &lt;appender-ref ref="CONSOLE" />
-    &lt;/root>
 
-    &lt;receiver class="ch.qos.logback.classic.net.server.ServerSocketReceiver">
-      &lt;port>${port}&lt;/port>
-    &lt;/receiver>
-  
-  &lt;/configuration></pre>
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+
+  &lt;receiver class="ch.qos.logback.classic.net.server.ServerSocketReceiver">
+    &lt;port>${port}&lt;/port>
+  &lt;/receiver>
+
+&lt;/configuration></pre>
   
       <p>Note that the receiver component's <em>class</em> 
       attribute identifies the receiver subtype that we wish to use.  In
@@ -250,28 +250,28 @@
       (logback-examples/src/main/java/chapters/receivers/socket/receiver2.xml)</p>
       <span class="asGroovy" onclick="return asGroovy('receiver2');">View as .groovy</span>
   <pre id="receiver2" class="prettyprint source">&lt;configuration debug="true">
-  
-    &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-      &lt;encoder>
-        &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
-      &lt;/encoder>
-    &lt;/appender>
-  
-    &lt;root level="DEBUG">
-      &lt;appender-ref ref="CONSOLE" />
-    &lt;/root>
 
-    &lt;receiver class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
-      &lt;port>${port}&lt;/port>
-      &lt;ssl>
-        &lt;keyStore>
-          &lt;location>${keystore}&lt;/location>
-          &lt;password>${password}&lt;/password>
-        &lt;/keyStore>
-      &lt;/ssl>
-    &lt;/receiver>
-  
-  &lt;/configuration></pre>
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>
+
+  &lt;receiver class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
+    &lt;port>${port}&lt;/port>
+    &lt;ssl>
+      &lt;keyStore>
+        &lt;location>${keystore}&lt;/location>
+        &lt;password>${password}&lt;/password>
+      &lt;/keyStore>
+    &lt;/ssl>
+  &lt;/receiver>
+
+&lt;/configuration></pre>
 
       <p>The essential differences between this configuration and the
       previous example using <code>ServerSocketReceiver</code> are the 
@@ -387,23 +387,23 @@
       <span class="asGroovy" onclick="return asGroovy('receiver3');">View as .groovy</span>
   <pre id="client3" class="prettyprint source">&lt;configuration debug="true">
     
-    &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
-      &lt;encoder>
-        &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
-      &lt;/encoder>
-    &lt;/appender>
-  
-    &lt;root level="DEBUG">
-      &lt;appender-ref ref="CONSOLE" />
-    &lt;/root>  
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
+    &lt;encoder>
+      &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
 
-    &lt;receiver class="ch.qos.logback.classic.net.SocketReceiver">
-      &lt;remoteHost>${host}&lt;/remoteHost>
-      &lt;port>${port}&lt;/port>
-      &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
-    &lt;/receiver>
-  
-  &lt;/configuration></pre>
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>  
+
+  &lt;receiver class="ch.qos.logback.classic.net.SocketReceiver">
+    &lt;remoteHost>${host}&lt;/remoteHost>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+  &lt;/receiver>
+
+&lt;/configuration></pre>
         
       <p>This configuration will cause logback to connect to a 
       <code>ServerSocketAppender</code> running on the host and port specified
@@ -460,29 +460,30 @@
       (logback-examples/src/main/java/chapters/receivers/socket/receiver4.xml)</p>
       <span class="asGroovy" onclick="return asGroovy('receiver4');">View as .groovy</span>
   <pre id="receiver4" class="prettyprint source">&lt;configuration debug="true">
-    &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
-      &lt;encoder>
-        &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
-      &lt;/encoder>         
-    &lt;/appender>
-  
-    &lt;root level="DEBUG">
-      &lt;appender-ref ref="CONSOLE" />
-    &lt;/root>  
-   
-    &lt;receiver class="ch.qos.logback.classic.net.SSLSocketReceiver">
-      &lt;remoteHost>${host}&lt;/remoteHost>
-      &lt;port>${port}&lt;/port>
-      &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
-      &lt;ssl>
-        &lt;trustStore>
-          &lt;location>${truststore}&lt;/location>
-          &lt;password>${password}&lt;/password>
-        &lt;/trustStore>
-      &lt;/ssl>
-    &lt;/receiver>
-  
-  &lt;/configuration></pre>
+
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
+    &lt;encoder>
+      &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
+    &lt;/encoder>         
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="CONSOLE" />
+  &lt;/root>  
+ 
+  &lt;receiver class="ch.qos.logback.classic.net.SSLSocketReceiver">
+    &lt;remoteHost>${host}&lt;/remoteHost>
+    &lt;port>${port}&lt;/port>
+    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+    &lt;ssl>
+      &lt;trustStore>
+        &lt;location>${truststore}&lt;/location>
+        &lt;password>${password}&lt;/password>
+      &lt;/trustStore>
+    &lt;/ssl>
+  &lt;/receiver>
+
+&lt;/configuration></pre>
 
       <p>Note that the <em>class</em> attribute now specifies 
       <code>SSLSocketReceiver</code> and that in addition to the configuration
