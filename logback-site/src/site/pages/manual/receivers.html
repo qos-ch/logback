@@ -47,7 +47,7 @@
 		events from a remote appender and logs each received event according
 		to local policy.  Using a combination of socket-based appenders and
 		receivers, it is possible to construct sophisticated topologies
-		for distribution of application logging events.</p>
+		for distribution of application logging events over a network.</p>
 	
 	  <p>A receiver extends the <a
 		href="../xref/ch/qos/logback/classic/ReceiverBase.html">
@@ -58,9 +58,12 @@
 		a receiver is <a href="../xref/ch/qos/logback/core/spi/ContextAware">
 		ContextAware</a>.
 		
-		<p>Traditionally, a <code>SocketAppender</code> has acted as a 
-		client, connecting to a standalone <code>SimpleSocketServer</code> 
-		application acting as a server.  The receiver component offers much 
+		<p>Historically, support for logging event delivery over a network
+		connection in Logback has been provided by <code>SocketAppender</code>
+		and the corresponding <code>SimpleSocketServer</code>.  The appender
+		acts as a client, initiating a network connection to the server
+		application, and delivering logging events via the network connection.  
+		The receiver component and corresponding appender support offers much 
 		greater flexibility.</p>
 		
 		<p>A receiver component is configured in <em>logback.xml</em>, just
@@ -79,8 +82,8 @@
 		appender and receiver, <em>logging events always flow from 
 		the appender towards the receiver</em>.</p>
 		
-	  <p>This flexibility to allow a receiver to initiate the connection
-	  to a logback appender is particularly useful in certain situations:
+	  <p>The flexibility to allow a receiver to initiate the connection
+	  to an appender is particularly useful in certain situations:
 	  </p>
     <ul>
 			<li>For security reasons, a central logging server may be
@@ -94,14 +97,15 @@
 		    and enterprise management applications to have access to the
 		    logging event stream of running applications.  Traditionally,
 		    Logback has supported this (for example in Logback Beagle) by
-		    requiring the receiving application to act in the server role, 
-		    passively listening for connections a remote appender.  This
-		    can prove difficult to manage, especially for tools running on
-		    a developer's workstation, which may indeed by mobile.  However,
-		    such tools can now be implemented using a Logback receiver
-		    component acting in the client role, initiating a connection to
-		    a remote appender in order to receive logging events for local
-		    display, filtering, and alerting.
+		    requiring the recipient application (e.g. a developer tool running
+		    in an IDE) to act in the server role, passively listening for 
+		    connections from a remote appender.  This can prove difficult to 
+		    manage, especially for tools running on a developer's workstation, 
+		    which may indeed by mobile.  However, such tools can now be 
+		    implemented using a Logback receiver component acting in the 
+		    client role, initiating a connection to a remote appender in 
+		    order to receive logging events for local display, filtering, 
+		    and alerting.
       </li>
     </ul>
 
@@ -116,12 +120,11 @@
 		
 		<p>A receiver that is configured to act in the server role passively
 		listens for incoming connections from remote appenders.  This is 
-		functionally equivalent to the traditional
+		functionally equivalent to using the standalone
 		<code>SimpleSocketServer</code> application, except that by using
 		the receiver component, <em>any</em> application that uses Logback
 		Classic can receive logging events from remote appenders by simply
-		configuring the receiver in <em>logback.xml</em> like any other
-	  logback component.</p>
+		configuring the receiver in <em>logback.xml</em>.
 				
 	  <p>Logback includes two receiver components that act in the server
 	  role; <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketReceiver.html">
@@ -144,14 +147,14 @@
       <tr>
         <td><span class="prop" container="serverSocketReceiver">address</span></td>
         <td><code>String</code></td>
-        <td>The local network interface address on which the server
-        will listen.  If this property is not specified, the server
+        <td>The local network interface address on which the receiver
+        will listen.  If this property is not specified, the receiver
         will listen on all network interfaces.</td>
       </tr>
       <tr>
         <td><span class="prop" container="serverSocketReceiver">port</span></td>
         <td><code>int</code></td>
-        <td>The TCP port on which the server will listen.  If this
+        <td>The TCP port on which the receiver will listen.  If this
         property is not specified, a default value will be used.</td>
       </tr>
       <tr>
@@ -159,14 +162,14 @@
         <td><code>SSLConfiguration</code></td>
         <td>Supported only for <code>SSLServerSocketReceiver</code>, this
             property provides the SSL configuration that will be used by
-            the server, as described in <a href="usingSSL.html">Using SSL</a>.
+            the receiver, as described in <a href="usingSSL.html">Using SSL</a>.
         </td>
       </tr>
       <tr>
         <td><span class="prop" container="serverSocketReceiver">threadPool</span></td>
         <td><code>ThreadPoolFactoryBean</code></td>
         <td>This property specifies configuration for a thread pool that will
-            be used to manage the appender's thread resources.  In most cases,
+            be used to manage the receiver's thread resources.  In most cases,
             this configuration is not required, as the defaults are generally
             adequate.  See <a href="../xref/ch/qos/logback/core/net/server/ThreadPoolFactoryBean">
             <code>ThreadPoolFactoryBean</code></a> for a description of the 
@@ -220,6 +223,7 @@
     
     <p>From a shell in the <em>logback-examples</em> directory, 
     we can run our example server application as follows:</p>
+    
     <p class="source">java -Dport=6000 chapters.receivers.socket.ReceiverExample \
     src/main/java/chapters/receivers/socket/receiver1.xml</p>
   
@@ -231,7 +235,7 @@
     the receiver.  We can run the example client application as follows:
     </p>
     
-    <p class="source">java -DremoteHost=localhost -Dport=6000 \
+    <p class="source">java -Dhost=localhost -Dport=6000 \
     chapters.receivers.socket.AppenderExample\
     src/main/java/chapters/receivers/socket/appender1.xml</p>
     
@@ -287,7 +291,7 @@
     -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
     -Dpassword=changeit \
     chapters.receivers.socket.ReceiverExample \
-    src/main/java/chapters/receivers/receiver2.xml</p>
+    src/main/java/chapters/receivers/socket/receiver2.xml</p>
   
  	  <p>Note that the <em>keystore</em> property given on the command
  	  line specifies a file URL that identifies the location of the key 
@@ -295,24 +299,25 @@
  	  <a href="usingSSL.html">Using SSL</a>.
  	  </p>
     
-    <p>Also we must point out that our example X.509
-    credential is suitable for testing and experimentation, only. 
-    <strong>In a production setting, you should obtain an appropriate
-    X.509 credential to identify your SSL-enabled logback components</strong>. 
-    See <a href="usingSSL.html">Using SSL</a> for more information.</p>
-
     <p>We can connect to the running receiver using a client application
-    that is configured with a <code>SSLSocketAppender</code>.  Our example
-    client application simply loads a logback configuration that will
-    connect a socket appender to our example receiver.  It then awaits
-    input from the user in the form of a message that will be relayed to
-    the receiver.  We can run the example client application as follows:
+    that is configured with a <code>SSLSocketAppender</code>.  We use 
+    the sample example client application used in the previous example,
+    with a configuration file that uses an SSL-enabled appender.  We
+    run the example as follows:
     </p>
     
-    <p class="source">java -DremoteHost=localhost -Dport=6001 \
+    <p class="source">java -Dhost=localhost -Dport=6001 \
+    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/truststore.jks \
+    -Dpassword=changeit \
     chapters.receivers.socket.AppenderExample \
     src/main/java/chapters/receivers/socket/appender2.xml</p>
     
+    <p>Note that our example is using a self-signed X.509 credential that 
+    is suitable for testing and experimentation, only.  <strong>In a 
+    production setting, you should obtain an appropriate X.509 credential 
+    to identify your SSL-enabled logback components</strong>.  See 
+    <a href="usingSSL.html">Using SSL</a> for more information.</p>
+  
     <h2><span class="anchor"><a name="receiverClientComponents"></a></span>
 		Receivers that Act in the Client Role</h2>
 		
@@ -400,7 +405,7 @@
   
 &lt;/configuration></pre>
         
-    <p>This configuration will cause logback to connect to an 
+    <p>This configuration will cause logback to connect to a 
     <code>ServerSocketAppender</code> running on the host and port specified
     by the <em>host</em> and <em>port</em> substitution variables.  Logging
     events received from the remote appender will be logged locally 
@@ -417,9 +422,9 @@
     <p>The example loads the configuration and then simply waits for logging
     events from the remote appender.  If you run this example when the remote
     appender is not running, you'll see <em>connection refused</em> messages
-    appearing in the log output, periodically.  The <code>SocketReceiver</code>
-    component will periodically attempt to reconnect to the remote appender
-    until it succeeds or until the logger context is shut down.  The delay
+    appearing in the log output, periodically.  The receiver will 
+    periodically attempt to reconnect to the remote appender until it 
+    succeeds or until the logger context is shut down.  The delay
     interval between attempts is configurable using the 
     <span class="prop">reconnectionDelay</span> property as shown in the
     example configuration.</p>
@@ -436,19 +441,20 @@
     chapters.receivers.socket.AppenderExample \
     src/main/java/chapters/receivers/socket/appender3.xml</p>   
 
+    <p>If you enter a message to send when the receiver is not connected,
+    note that the message is simply discarded.</p>
 
     <h3><span class="anchor"><a name="usingSSLSocketReceiver"></a></span>
     Using SocketSSLReceiver</h3>
 
 
-   <p>
-   The configuration needed the <code>SSLSocketReceiver</code> is very 
-   similar to that used with <code>SocketReceiver</code>.  The essential 
-   differences are in the class specified for the receiver and the ability 
-   to nest the <span class="prop">ssl</span> property to specify SSL 
-   configuration properties.  The following example illustrates a basic 
-   configuration:
-   </p>
+    <p>The configuration needed for <code>SSLSocketReceiver</code> is very 
+    similar to that used with <code>SocketReceiver</code>.  The essential 
+    differences are in the class specified for the receiver and the ability 
+    to nest the <span class="prop">ssl</span> property to specify SSL 
+    configuration properties.  The following example illustrates a basic 
+    configuration:
+    </p>
    
     <p class="example">Example: Basic SSLSocketReceiver Configuration
     (logback-examples/src/main/java/chapters/receivers/socket/receiver4.xml)</p>
@@ -487,17 +493,10 @@
     on configuring SSL properties.
     </p>
   
-    <p>It is important to note once again, that our example is using a 
-    self-signed X.509 credential that suitable for testing and 
-    experimentation, only.  <strong>In a production setting, you should 
-    obtain an appropriate X.509 credential to identify your SSL-enabled
-    logback components</strong>.  See <a href="usingSSL.html">Using SSL</a> 
-    for more information.</p>
-  
     <p>You can run this example configuration using the following command:</p>
   
     <p class="source">java -Dhost=localhost -Dport=6001 \
-    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/truststore.jks \
     -Dpassword=changeit \
     chapters.receivers.socket.ReceiverExample \
     src/main/java/chapters/receivers/socket/receiver4.xml</p>   
@@ -519,8 +518,21 @@
     </p>
 
     <p class="source">java -Dport=6001 \
+    -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dpassword=changeit \
     chapters.receivers.socket.AppenderExample \
     src/main/java/chapters/receivers/socket/appender4.xml</p>   
+
+    <p>If you enter a message to send when the receiver is not connected,
+    note that the message is simply discarded.</p>
+
+    <p>It is important to note once again that our example is using a 
+    self-signed X.509 credential that is suitable for testing and 
+    experimentation, only.  <strong>In a production setting, you should 
+    obtain an appropriate X.509 credential to identify your SSL-enabled
+    logback components</strong>.  See <a href="usingSSL.html">Using SSL</a> 
+    for more information.</p>
+  
 
 </body>  
 </html>
