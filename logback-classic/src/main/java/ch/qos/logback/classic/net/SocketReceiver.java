@@ -46,7 +46,7 @@ public class SocketReceiver extends ReceiverBase
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
   
-  private String host;
+  private String remoteHost;
   private InetAddress address;
   private int port;
   private int reconnectionDelay;
@@ -66,7 +66,7 @@ public class SocketReceiver extends ReceiverBase
           + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
     }
 
-    if (host == null) {
+    if (remoteHost == null) {
       errorCount++;
       addError("No host name or address was configured for remote. " 
           + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
@@ -78,16 +78,16 @@ public class SocketReceiver extends ReceiverBase
     
     if (errorCount == 0) {
       try {
-        address = InetAddress.getByName(host);
+        address = InetAddress.getByName(remoteHost);
       }
       catch (UnknownHostException ex) {
-        addError("unknown host: " + host);
+        addError("unknown host: " + remoteHost);
         errorCount++;
       }
     }
         
     if (errorCount == 0) {
-      remoteId = "remote " + host + ":" + port + ": ";
+      remoteId = "remote " + remoteHost + ":" + port + ": ";
     }
     
     return errorCount == 0;
@@ -206,12 +206,8 @@ public class SocketReceiver extends ReceiverBase
     return Executors.newCachedThreadPool();
   }
   
-  public void setHost(String host) {
-    this.host = host;
-  }
-
-  public void setRemoteHost(String host) {
-    setHost(host);
+  public void setRemoteHost(String remoteHost) {
+    this.remoteHost = remoteHost;
   }
   
   public void setPort(int port) {

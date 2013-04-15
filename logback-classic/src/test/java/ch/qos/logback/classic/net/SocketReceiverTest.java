@@ -109,7 +109,7 @@ public class SocketReceiverTest {
 
   @Test
   public void testStartNoPort() throws Exception {
-    remote.setHost(TEST_HOST_NAME);
+    remote.setRemoteHost(TEST_HOST_NAME);
     remote.start();
     assertFalse(remote.isStarted());
     int count = lc.getStatusManager().getCount();
@@ -120,7 +120,7 @@ public class SocketReceiverTest {
   @Test
   public void testStartUnknownHost() throws Exception {
     remote.setPort(6000);
-    remote.setHost(TEST_HOST_NAME);
+    remote.setRemoteHost(TEST_HOST_NAME);
     remote.start();
     assertFalse(remote.isStarted());
     int count = lc.getStatusManager().getCount();
@@ -130,7 +130,7 @@ public class SocketReceiverTest {
   
   @Test
   public void testStartStop() throws Exception {
-    remote.setHost(InetAddress.getLocalHost().getHostName());
+    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.setAcceptConnectionTimeout(DELAY / 2);
     remote.start();
@@ -142,7 +142,7 @@ public class SocketReceiverTest {
   
   @Test
   public void testServerSlowToAcceptConnection() throws Exception {
-    remote.setHost(InetAddress.getLocalHost().getHostName());
+    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.setAcceptConnectionTimeout(DELAY / 4);
     remote.start();
@@ -153,7 +153,7 @@ public class SocketReceiverTest {
 
   @Test
   public void testServerDropsConnection() throws Exception {
-    remote.setHost(InetAddress.getLocalHost().getHostName());
+    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.start();
     assertTrue(remote.awaitConnectorCreated(DELAY));
@@ -163,7 +163,7 @@ public class SocketReceiverTest {
   
   @Test
   public void testDispatchEventForEnabledLevel() throws Exception {
-    remote.setHost(InetAddress.getLocalHost().getHostName());
+    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.start();
     assertTrue(remote.awaitConnectorCreated(DELAY));
@@ -188,7 +188,7 @@ public class SocketReceiverTest {
 
   @Test
   public void testNoDispatchEventForDisabledLevel() throws Exception {
-    remote.setHost(InetAddress.getLocalHost().getHostName());
+    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
     remote.setPort(6000);
     remote.start();
     assertTrue(remote.awaitConnectorCreated(DELAY));
