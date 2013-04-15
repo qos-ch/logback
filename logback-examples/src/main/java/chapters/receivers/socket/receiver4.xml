@@ -17,7 +17,7 @@
   </root>
 
   <receiver class="ch.qos.logback.classic.net.SSLSocketReceiver">
-    <host>${host}</host>
+    <remoteHost>${host}</remoteHost>
     <port>${port}</port>
     <reconnectionDelay>10000</reconnectionDelay>
     <ssl>
