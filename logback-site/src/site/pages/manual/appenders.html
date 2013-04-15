@@ -1889,7 +1889,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
     	  	
     <p class="source">java -Dhost=localhost -Dport=6000 \
-    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/truststore.jks \
     -Dpassword=changeit \
     chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml
  	  </p>
@@ -1906,17 +1906,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
  	  <a href="usingSSL.html">Using SSL</a>.
  	  </p>
  
-    <p>Note also that the trust store specified on the comamnd-line 
-    is the same file we referenced when starting the server.  This is a 
-    convenience made possible by the fact that we are utilizing a 
-    self-signed certificate suitable for testing and experimentation, only.  
-    <strong>In a production setting you would not want to install 
-    your server's X.509 credential (consisting of a private key and 
-    certificate) in each of your client applications</strong>.  You 
-    would instead utilize a trust store containing only trusted root
-    certificate(s) as described in <a href="usingSSL.html">Using SSL</a>.
- 	  </p>
- 	   
     <p>As we saw previously at server startup, because the 
     client configuration has <code>debug="true"</code> specified on the
     root element, the client's startup logging includes the details of
@@ -1930,11 +1919,10 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p>The <code>SocketAppender</code> component (and its SSL-enabled 
        counterpart) discussed previously are designed to allow an application
        to connect to a remote logging server over the network for the purpose
-       of delivering logging events to the server.  In some certain situations,
+       of delivering logging events to the server.  In some situations,
        it may be inconvenient or infeasible to have an application initiate a
        connection to a remote logging server.  For these situations, Logback
-       Classic offers 
-       <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
+       offers <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
        <code>ServerSocketAppender</code></a>.  
     </p>
     
@@ -2085,9 +2073,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     Using SSL</a> for information regarding SSL configuration properties.
     </p>
     
-    <p>Because the <code>ServerSocketAppender</code> subtypes wait
-    passively for a connection from interested receivers, we will defer
-    presenting illustrative examples to the chapter entitled 
+    <p>Because the <code>ServerSocketAppender</code> subtypes are designed
+    to be used with receiver components, we will defer presenting 
+    illustrative examples to the chapter entitled 
     <a href="receivers.html">Receivers</a>.</p>
     
    <h3 class="doAnchor">SMTPAppender</h3>
