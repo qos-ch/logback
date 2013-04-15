@@ -344,7 +344,7 @@
         <th>Description</th>
         </tr>
         <tr>
-          <td><span class="prop" container="SocketReceiver">host</span></td>
+          <td><span class="prop" container="SocketReceiver">remoteHost</span></td>
           <td><code>String</code></td>
           <td>The hostname or address of the remote server socket appender.</td>
         </tr>
@@ -398,7 +398,7 @@
     &lt;/root>  
 
     &lt;receiver class="ch.qos.logback.classic.net.SocketReceiver">
-      &lt;host>${host}&lt;/host>
+      &lt;remoteHost>${host}&lt;/remoteHost>
       &lt;port>${port}&lt;/port>
       &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
     &lt;/receiver>
@@ -415,9 +415,7 @@
       <p>Assuming you are in the <em>logback-examples/</em> directory, 
       you can run this example configuration using the following command:</p>
 
-      <p class="source">java -Dhost=localhost -Dport=6000 \
-      chapters.receivers.socket.ReceiverExample \
-      src/main/java/chapters/receivers/socket/receiver3.xml</p>   
+         
 
       <p>The example loads the configuration and then simply waits for logging
       events from the remote appender.  If you run this example when the remote
@@ -427,7 +425,9 @@
       succeeds or until the logger context is shut down.  The delay
       interval between attempts is configurable using the 
       <span class="prop">reconnectionDelay</span> property as shown in the
-      example configuration.</p>
+      example configuration.<p class="source">java -Dhost=localhost -Dport=6000 \
+      chapters.receivers.socket.ReceiverExample \
+      src/main/java/chapters/receivers/socket/receiver3.xml</p></p>
 
       <p>We can provide a remote appender to which our example receiver
       can connect, using the same appender example used previously.  The 
@@ -471,7 +471,7 @@
     &lt;/root>  
    
     &lt;receiver class="ch.qos.logback.classic.net.SSLSocketReceiver">
-      &lt;host>${host}&lt;/host>
+      &lt;remoteHost>${host}&lt;/remoteHost>
       &lt;port>${port}&lt;/port>
       &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
       &lt;ssl>
