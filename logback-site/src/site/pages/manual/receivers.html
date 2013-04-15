@@ -56,7 +56,7 @@
       in the Logback component 
       <a href="../xref/ch/qos/logback/core/spi/LifeCycle">LifeCycle</a> and
       a receiver is <a href="../xref/ch/qos/logback/core/spi/ContextAware">
-      ContextAware</a>.
+      ContextAware</a></p>.
     
       <p>Historically, support for logging event delivery over a network
       connection in Logback has been provided by <code>SocketAppender</code>
@@ -71,7 +71,7 @@
       of <a href="onJoran.html">Joran</a> to be utilized in configuring
       a receiver component.  Moreover, <em>any</em> application can 
       receive logging events from remote appenders by simply configuring
-      one or more receiver components.
+      one or more receiver components.</p>
     
       <p>Connection initiation between an appender and a receiver 
       can occur in either direction.  A receiver can act in the role of a
@@ -124,7 +124,7 @@
       <code>SimpleSocketServer</code> application, except that by using
       the receiver component, <em>any</em> application that uses Logback
       Classic can receive logging events from remote appenders by simply
-      configuring the receiver in <em>logback.xml</em>.
+      configuring the receiver in <em>logback.xml</em></p>.
         
       <p>Logback includes two receiver components that act in the server
       role; <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketReceiver.html">
@@ -133,7 +133,7 @@
       <code>SSLServerSocketReceiver</code></a>.  Both of these receiver
       components are designed to accept connections from incoming
       <code>SocketAppender</code> (or <code>SSLSocketAppender</code>)
-      clients.    
+      clients.</p>
         
       <p>The <code>ServerSocketReceiver</code> components provide the 
       following configurable properties:</p>
@@ -323,7 +323,7 @@
     
       <p>A receiver that is configured to act in the client role initiates
       a connection to a remote appender.  The remote appender must be a
-      server type, such as <code>ServerSocketAppender</code>.  
+      server type, such as <code>ServerSocketAppender</code>.</p>  
     
       <p>Logback includes two receiver components that act in the client
       role; <a href="../xref/ch/qos/logback/classic/net/SocketReceiver.html">
@@ -332,7 +332,7 @@
       <code>SSLSocketReceiver</code></a>.  Both of these receiver
       components are designed to initiate a connection to a remote appender
       that is a <code>ServerSocketAppender</code> 
-      (or <code>SSLServerSocketAppender</code>).
+      (or <code>SSLServerSocketAppender</code>).</p>
         
       <p>The following configuration properties are supported by 
       <code>SocketReceiver</code> subtypes:</p>
