@@ -85,7 +85,6 @@ public class NestedBasicPropertyIA extends ImplicitAction {
   public void body(InterpretationContext ec, String body) {
 
     String finalBody = ec.subst(body);
-    // System.out.println("body "+body+", finalBody="+finalBody);
     // get the action data object pushed in isApplicable() method call
     IADataForBasicProperty actionData = (IADataForBasicProperty) actionDataStack.peek();
     switch (actionData.aggregationType) {

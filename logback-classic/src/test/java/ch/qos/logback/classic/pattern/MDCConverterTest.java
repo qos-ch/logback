@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.pattern;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -47,7 +48,7 @@ public class MDCConverterTest {
   }
 
   @Test
-  public void testConverWithOneEntry() {
+  public void testConvertWithOneEntry() {
     MDC.clear();
     MDC.put("testKey", "testValue");
     ILoggingEvent le = createLoggingEvent();
@@ -56,17 +57,14 @@ public class MDCConverterTest {
   }
 
   @Test
-  public void testConverWithMultipleEntries() {
+  public void testConvertWithMultipleEntries() {
     MDC.clear();
     MDC.put("testKey", "testValue");
     MDC.put("testKey2", "testValue2");
     ILoggingEvent le = createLoggingEvent();
     String result = converter.convert(le);
-    if (SystemInfo.getJavaVendor().contains("IBM")) {
-      assertEquals("testKey2=testValue2, testKey=testValue", result);
-    } else {
-      assertEquals("testKey=testValue, testKey2=testValue2", result);
-    }
+    boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
+    assertTrue(result + " is not conform", isConform);
   }
 
   private ILoggingEvent createLoggingEvent() {
