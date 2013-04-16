@@ -85,7 +85,7 @@ public class SocketConnectorBaseTest {
     assertTrue(lastException instanceof ConnectException);
     assertTrue(thread.isAlive());
     thread.interrupt();
-    thread.join(DELAY);
+    thread.join(4 * DELAY);
     assertFalse(thread.isAlive());
   }
 
