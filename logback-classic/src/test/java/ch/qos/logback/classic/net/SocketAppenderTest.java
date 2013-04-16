@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.*;
 
