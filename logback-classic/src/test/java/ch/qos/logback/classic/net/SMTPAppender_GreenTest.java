@@ -120,7 +120,7 @@ public class SMTPAppender_GreenTest {
   }
 
   private void waitForServerToReceiveEmails(int emailCount) throws InterruptedException {
-    greenMailServer.waitForIncomingEmail(emailCount);
+    greenMailServer.waitForIncomingEmail(20000, emailCount);
   }
 
   private MimeMultipart verify(String subject) throws MessagingException,
