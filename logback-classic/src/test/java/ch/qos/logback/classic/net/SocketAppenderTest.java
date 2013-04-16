@@ -38,7 +38,8 @@ public class SocketAppenderTest {
   static final String LIST_APPENDER_NAME = "list";
   static final int RECONNECT_DELAY = 1;
   static final int SERVER_LATCH_WAIT_TIMEOUT = 1000;
-  static final int APPENDER_LATCH_WAIT_TIMEOUT = 10;
+  static final int APPENDER_LATCH_WAIT_TIMEOUT = 1000;
+  static final int LATE_SERVER_LAUNCH_MAX_TRIES = 10;
 
   static int diff = RandomUtil.getPositiveInt();
 
@@ -224,8 +225,7 @@ public class SocketAppenderTest {
     updateListAppenderLatch(1);
 
 
-    int len = 1000/APPENDER_LATCH_WAIT_TIMEOUT;
-    for(int i = 0; i < len; i++) {
+    for(int i = 0; i < LATE_SERVER_LAUNCH_MAX_TRIES; i++) {
       logger.debug("test msg lateServerLaunch");
       if(waitForListAppenderLatch()) {
         System.out.println("Success after "+i+" attempts");
