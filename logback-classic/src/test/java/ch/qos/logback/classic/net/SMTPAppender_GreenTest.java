@@ -119,11 +119,15 @@ public class SMTPAppender_GreenTest {
     return mma.length;
   }
 
+  private void waitForServerToReceiveEmails(int emailCount) throws InterruptedException {
+    greenMailServer.waitForIncomingEmail(emailCount);
+  }
+
   private MimeMultipart verify(String subject) throws MessagingException,
           IOException, InterruptedException {
     int expectedEmailCount = oldCount + 1;
     // wait for the server to receive the messages
-    greenMailServer.waitForIncomingEmail(expectedEmailCount);
+    waitForServerToReceiveEmails(expectedEmailCount);
     MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
     assertEquals(expectedEmailCount, mma.length);
@@ -286,9 +290,11 @@ public class SMTPAppender_GreenTest {
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
 
+    int expectedEmailCount = oldCount+3;
+    waitForServerToReceiveEmails(expectedEmailCount);
     MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
-    assertEquals(oldCount+3, mma.length);
+    assertEquals(expectedEmailCount, mma.length);
   }
 
   // http://jira.qos.ch/browse/LBCLASSIC-221
@@ -307,10 +313,12 @@ public class SMTPAppender_GreenTest {
     logger.error("error one");
 
     waitUntilEmailIsSent();
+    int expectedEmailCount = oldCount+2;
+    waitForServerToReceiveEmails(expectedEmailCount);
 
     MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
-    assertEquals(oldCount+2, mma.length);
+    assertEquals(expectedEmailCount, mma.length);
 
     MimeMessage mm0 = mma[oldCount];
     MimeMultipart content0 = (MimeMultipart) mm0.getContent();
