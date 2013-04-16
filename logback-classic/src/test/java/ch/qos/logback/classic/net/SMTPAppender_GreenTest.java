@@ -90,7 +90,6 @@ public class SMTPAppender_GreenTest {
     smtpAppender.setSubject(TEST_SUBJECT);
     smtpAppender.addTo("nospam@qos.ch");
     smtpAppender.setAsynchronousSending(synchronicity);
-    // smtpAppender.start();
   }
 
   private Layout<ILoggingEvent> buildPatternLayout(LoggerContext lc, String pattern) {
@@ -121,10 +120,13 @@ public class SMTPAppender_GreenTest {
   }
 
   private MimeMultipart verify(String subject) throws MessagingException,
-          IOException {
+          IOException, InterruptedException {
+    int expectedEmailCount = oldCount + 1;
+    // wait for the server to receive the messages
+    greenMailServer.waitForIncomingEmail(expectedEmailCount);
     MimeMessage[] mma = greenMailServer.getReceivedMessages();
     assertNotNull(mma);
-    assertEquals(oldCount + 1, mma.length);
+    assertEquals(expectedEmailCount, mma.length);
     MimeMessage mm = mma[oldCount];
     // http://jira.qos.ch/browse/LBCLASSIC-67
     assertEquals(subject, mm.getSubject());
@@ -137,7 +139,7 @@ public class SMTPAppender_GreenTest {
   }
 
   @Test
-  public void syncronousSmoke() throws Exception {
+  public void synchronousSmoke() throws Exception {
     buildSMTPAppender(SYNCHRONOUS);
 
     smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
@@ -153,7 +155,7 @@ public class SMTPAppender_GreenTest {
   }
 
   @Test
-  public void asyncronousSmoke() throws Exception {
+  public void asynchronousSmoke() throws Exception {
     buildSMTPAppender(ASYNCHRONOUS);
     smtpAppender.setLayout(buildPatternLayout(lc, DEFAULT_PATTERN));
     smtpAppender.start();
@@ -170,7 +172,7 @@ public class SMTPAppender_GreenTest {
 
   // See also http://jira.qos.ch/browse/LOGBACK-734
   @Test
-  public void callerDataShouldBeCorrectlySetWithAsyncronousSending() throws Exception {
+  public void callerDataShouldBeCorrectlySetWithAsynchronousSending() throws Exception {
     buildSMTPAppender(ASYNCHRONOUS);
     smtpAppender.setLayout(buildPatternLayout(lc,DEFAULT_PATTERN));
     smtpAppender.setIncludeCallerData(true);
