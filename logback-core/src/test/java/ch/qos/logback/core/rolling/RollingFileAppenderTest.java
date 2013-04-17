@@ -204,7 +204,6 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     StatusChecker statusChecker = new StatusChecker(context);
     final String msg = "File property collides with fileNamePattern. Aborting.";
     boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
-    StatusPrinter.print(context);
     assertTrue("Missing error: " + msg, containsMatch);
   }
 

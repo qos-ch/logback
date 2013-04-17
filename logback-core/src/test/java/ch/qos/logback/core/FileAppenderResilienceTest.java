@@ -85,10 +85,12 @@ public class FileAppenderResilienceTest {
     t.join();
 
     double bestCaseSuccessRatio = 1/delayCoefficient;
-    double lossinessFactor = 0.8;
+    // expect to loose at most 35% of the events
+    double lossinessFactor = 0.35;
+    double resilianceFactor = (1-lossinessFactor);
 
     ResilienceUtil
-              .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * lossinessFactor);
+              .verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * resilianceFactor);
   }
 
   private void closeLogFileOnPurpose() throws IOException {

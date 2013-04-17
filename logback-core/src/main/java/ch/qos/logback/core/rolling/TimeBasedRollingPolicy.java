@@ -15,7 +15,10 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.*;
@@ -101,6 +104,27 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     super.start();
   }
 
+  @Override
+  public void stop() {
+    if(!isStarted())
+      return;
+    waitForAsynchronousJobToStop();
+    super.stop();
+  }
+
+
+  private void waitForAsynchronousJobToStop() {
+    if(1==1) return;
+    if(future != null) {
+      try {
+        future.get(CoreConstants.SECONDS_TO_WAIT_FOR_COMPRESSION_JOBS, TimeUnit.SECONDS);
+      } catch (TimeoutException e) {
+        addError("Timeout while waiting for compression job to finish", e);
+      } catch (Exception e) {
+        addError("Unexpected exception while waiting for compression job to finish", e);
+      }
+    }
+  }
   private String transformFileNamePattern2ZipEntry(String fileNamePatternStr) {
     String slashified = FileFilterUtil.slashify(fileNamePatternStr);
     return FileFilterUtil.afterLastSlash(slashified);
@@ -123,8 +147,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     String elapsedPeriodsFileName = timeBasedFileNamingAndTriggeringPolicy
         .getElapsedPeriodsFileName();
 
-    String elpasedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
-
+    String elapsedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
 
     if (compressionMode == CompressionMode.NONE) {
       if (getParentsRawFileProperty() != null) {
@@ -132,9 +155,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
       } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
     } else {
       if (getParentsRawFileProperty() == null) {
-        future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elpasedPeriodStem);
+        future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
       } else {
-        future = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elpasedPeriodStem);
+        future = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
       }
     }
 
