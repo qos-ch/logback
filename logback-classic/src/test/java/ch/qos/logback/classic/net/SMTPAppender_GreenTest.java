@@ -73,6 +73,8 @@ public class SMTPAppender_GreenTest {
             ServerSetup.PROTOCOL_SMTP);
     greenMailServer = new GreenMail(serverSetup);
     greenMailServer.start();
+    // give the server a head start
+    Thread.yield();
   }
 
   @After
@@ -109,12 +111,6 @@ public class SMTPAppender_GreenTest {
     layout.setPattern("%level%class%msg");
     layout.start();
     return layout;
-  }
-
-  private int messageCount() throws MessagingException, IOException {
-    MimeMessage[] mma = greenMailServer.getReceivedMessages();
-    assertNotNull(mma);
-    return mma.length;
   }
 
   private void waitForServerToReceiveEmails(int emailCount) throws InterruptedException {
