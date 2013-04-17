@@ -23,9 +23,12 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 
 /**
- * Track appenders by a key. When an appender is not used for
- * longer than THRESHOLD, stop it.
+ * Track appenders by a key. When an appender is not used for longer than
+ * 'timeout', stop it. If there are more appenders than 'maxAppenders' then stop
+ * the oldest appender.
+ * 
  * @author Ceki Gulcu
+ * @author Tommy Becker
  */
 public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
   //An access-ordered LinkedMap with capacity bounded by maxAppenders
@@ -69,7 +72,6 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     }
   }
 
-  
   public synchronized void stopStaleAppenders(long now) {
     if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
       return;
@@ -77,30 +79,30 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     lastCheck = now;
     Iterator<Map.Entry<String, Entry>> iter = map.entrySet().iterator();
     while (iter.hasNext()) {
-        Map.Entry<String, Entry> mapEntry = iter.next();
-        Entry entry = mapEntry.getValue();
-        if (isEntryStale(entry, now)) {
-            iter.remove();
-            Appender<E> appender = entry.value;
-            appender.stop();
-        }
+      Map.Entry<String, Entry> mapEntry = iter.next();
+      Entry entry = mapEntry.getValue();
+      if (isEntryStale(entry, now)) {
+        iter.remove();
+        Appender<E> appender = entry.value;
+        appender.stop();
+      }
     }
-  } 
+  }
 
   /**
    * @since 0.9.19
    * @param key
    */
   public synchronized void stopAndRemoveNow(String key) {
-      Entry e = map.remove(key);
-      if (e != null) {
-          Appender<E> appender = e.value;
-          appender.stop();
-      }
+    Entry e = map.remove(key);
+    if (e != null) {
+      Appender<E> appender = e.value;
+      appender.stop();
+    }
   }
   
   public List<String> keyList() {
-      return new ArrayList(map.keySet());
+      return new ArrayList<String>(map.keySet());
   }
   
   
@@ -114,24 +116,16 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
     return ((entry.timestamp + timeout) < now);
   }
 
-  public void dump() {
-      for (Entry e : map.values()) {
-          System.out.print("N:");
-          System.out.print(e.key + ", ");
-          System.out.println();
-      }
-  }
-
   public List<Appender<E>> valueList() {
-      List<Appender<E>> result = new ArrayList();
-      for (Entry entry : map.values()) {
-          result.add(entry.value);
-      }
-      return result;
+    List<Appender<E>> result = new ArrayList<Appender<E>>();
+    for (Entry entry : map.values()) {
+      result.add(entry.value);
+    }
+    return result;
   }
 
   public void setTimeout(int timeout) {
-      this.timeout = timeout;
+    this.timeout = timeout;
   }
 
   public void setMaxAppenders(int maxAppenders) {
@@ -160,10 +154,7 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((key == null) ? 0 : key.hashCode());
-      return result;
+      return key.hashCode();
     }
 
     @Override
