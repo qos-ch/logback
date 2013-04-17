@@ -13,22 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
-import ch.qos.logback.core.status.OnConsoleStatusListener;
-import org.dom4j.DocumentException;
-import org.dom4j.io.SAXReader;
-import org.junit.*;
-import org.slf4j.MDC;
-
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -39,11 +23,26 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
-
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
+import org.dom4j.DocumentException;
+import org.dom4j.io.SAXReader;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.MDC;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -64,8 +63,10 @@ public class SMTPAppender_GreenTest {
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass());
 
+
   @Before
   public void setUp() throws Exception {
+
     OnConsoleStatusListener.addNewInstanceToContext(loggerContext);
     MDC.clear();
     ServerSetup serverSetup = new ServerSetup(port, "localhost",
@@ -142,7 +143,7 @@ public class SMTPAppender_GreenTest {
 
   @Test
   public void synchronousSmoke() throws Exception {
-    String subject =  "synchronousSmoke";
+    String subject = "synchronousSmoke";
     buildSMTPAppender(subject, SYNCHRONOUS);
 
     smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
@@ -159,7 +160,7 @@ public class SMTPAppender_GreenTest {
 
   @Test
   public void asynchronousSmoke() throws Exception {
-    String subject =  "asynchronousSmoke";
+    String subject = "asynchronousSmoke";
     buildSMTPAppender(subject, ASYNCHRONOUS);
     smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
     smtpAppender.start();
@@ -195,7 +196,7 @@ public class SMTPAppender_GreenTest {
   // lost MDC
   @Test
   public void LBCLASSIC_104() throws Exception {
-    String subject =  "LBCLASSIC_104";
+    String subject = "LBCLASSIC_104";
     buildSMTPAppender(subject, SYNCHRONOUS);
     smtpAppender.setAsynchronousSending(false);
     smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
@@ -216,7 +217,7 @@ public class SMTPAppender_GreenTest {
 
   @Test
   public void html() throws Exception {
-    String subject =  "html";
+    String subject = "html";
     buildSMTPAppender(subject, SYNCHRONOUS);
     smtpAppender.setAsynchronousSending(false);
     smtpAppender.setLayout(buildHTMLLayout());
@@ -270,7 +271,7 @@ public class SMTPAppender_GreenTest {
     logger.debug(msg2);
     logger.debug("invisible");
     waitUntilEmailIsSent();
-    MimeMultipart mp = verifyAndExtractMimeMultipart("testCustomEvaluator "+this.getClass().getName() + " - " + msg2);
+    MimeMultipart mp = verifyAndExtractMimeMultipart("testCustomEvaluator " + this.getClass().getName() + " - " + msg2);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertEquals("testCustomEvaluator", body);
   }
@@ -285,7 +286,7 @@ public class SMTPAppender_GreenTest {
     String msg = "hello";
     logger.error(msg);
     waitUntilEmailIsSent();
-    MimeMultipart mp = verifyAndExtractMimeMultipart("testCustomBufferSize "+this.getClass().getName() + " - " + msg);
+    MimeMultipart mp = verifyAndExtractMimeMultipart("testCustomBufferSize " + this.getClass().getName() + " - " + msg);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));
     assertEquals(msg, body);
   }
