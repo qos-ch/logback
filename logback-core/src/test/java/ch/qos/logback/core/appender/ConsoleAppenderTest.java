@@ -13,16 +13,6 @@
  */
 package ch.qos.logback.core.appender;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
@@ -32,6 +22,15 @@ import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -139,7 +138,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
   public void wrongTarget() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     EchoEncoder<Object> encoder = new EchoEncoder<Object>();
-    System.out.println("xxx");
+    encoder.setContext(context);
+    ca.setContext(context);
     ca.setTarget("foo");
     ca.setEncoder(encoder);
     ca.start();
@@ -147,8 +147,9 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     StatusChecker checker = new StatusChecker(context);
     //21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [SystemOut, SystemErr]
     //21:28:01,246   |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using previously set target, System.out by default.
+//    StatusPrinter.print(context);
 
-    checker.assertContainsMatch(Status.ERROR, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
+    checker.assertContainsMatch(Status.WARN, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
 
   }
 

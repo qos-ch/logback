@@ -289,7 +289,7 @@ public class SMTPAppender_GreenTest {
     logger.addAppender(smtpAppender);
     logger.debug("hello");
     logger.error("en error", new Exception("an exception"));
-
+    Thread.yield();
     int expectedEmailCount = oldCount+3;
     waitForServerToReceiveEmails(expectedEmailCount);
     MimeMessage[] mma = greenMailServer.getReceivedMessages();
@@ -312,7 +312,7 @@ public class SMTPAppender_GreenTest {
     logger.debug(msg1);
     logger.error("error one");
 
-    waitUntilEmailIsSent();
+    Thread.yield();
     int expectedEmailCount = oldCount+2;
     waitForServerToReceiveEmails(expectedEmailCount);
 

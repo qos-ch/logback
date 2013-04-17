@@ -108,8 +108,6 @@
           <excludes>
             <exclude>**/All*Test.java</exclude>
             <exclude>**/PackageTest.java</exclude>
-            <exclude>**/ConsoleAppenderTest.java</exclude>
-            <exclude>**/TimeBasedRollingTest.java</exclude>
           </excludes>
         </configuration>
       </plugin>

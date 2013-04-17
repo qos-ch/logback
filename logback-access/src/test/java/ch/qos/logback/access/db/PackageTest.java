@@ -13,14 +13,11 @@
  */
 package ch.qos.logback.access.db;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({DBAppenderHSQLTest.class, DBAppenderIntegrationTest.class})
+public class PackageTest  {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(DBAppenderHSQLTest.class));
-    suite.addTest(new JUnit4TestAdapter(DBAppenderIntegrationTest.class));
-    return suite;
-  }
 }
