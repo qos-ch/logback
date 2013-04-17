@@ -5,7 +5,7 @@
     <SMTPPort>${port}</SMTPPort>
     <To>nospam@qos.ch</To>
     <From>user@host.dom</From>
-    <Subject>%logger - %m</Subject>
+    <Subject>testCustomEvaluator %logger - %m</Subject>
     <evaluator class="ch.qos.logback.classic.net.CounterBasedEvaluator">
       <limit>2</limit>
     </evaluator>
