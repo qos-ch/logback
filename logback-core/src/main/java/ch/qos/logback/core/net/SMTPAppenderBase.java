@@ -311,11 +311,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     for (int i = 0; i < len; i++) {
       try {
         PatternLayoutBase<E> emailPL = toPatternLayoutList.get(i);
-        String email = emailPL.doLayout(event);
-        if (email == null || email.length() == 0) {
+        String emailAdrr = emailPL.doLayout(event);
+        if (emailAdrr == null || emailAdrr.length() == 0) {
           continue;
         }
-        InternetAddress[] tmp = InternetAddress.parse(email, true);
+        InternetAddress[] tmp = InternetAddress.parse(emailAdrr, true);
         iaList.addAll(Arrays.asList(tmp));
       } catch (AddressException e) {
         addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event [" + event + "]", e);
@@ -392,8 +392,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       mimeMsg.setContent(mp);
 
       mimeMsg.setSentDate(new Date());
+      addInfo("About to send out SMTP message \"" + subjectStr + "\" to " + Arrays.toString(toAddressArray));
       Transport.send(mimeMsg);
-      addInfo("Sent out SMTP message \"" + subjectStr + "\" to " + Arrays.toString(toAddressArray));
     } catch (Exception e) {
       addError("Error occurred while sending e-mail notification.", e);
     }
