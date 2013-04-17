@@ -80,9 +80,10 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       maxIndex = minIndex;
     }
 
-    if ((maxIndex - minIndex) > MAX_WINDOW_SIZE) {
+    final int maxWindowSize = getMaxWindowSize();
+    if ((maxIndex - minIndex) > maxWindowSize) {
       addWarn("Large window sizes are not allowed.");
-      maxIndex = minIndex + MAX_WINDOW_SIZE;
+      maxIndex = minIndex + maxWindowSize;
       addWarn("MaxIndex reduced to " + maxIndex);
     }
 
@@ -101,6 +102,15 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     compressor = new Compressor(compressionMode);
     compressor.setContext(this.context);
     super.start();
+  }
+
+  /**
+   * Subclasses can override this method to increase the max window size, if required.  This is to
+   * address LOGBACK-266.
+   * @return
+   */
+  protected int getMaxWindowSize() {
+    return MAX_WINDOW_SIZE;
   }
 
   private String transformFileNamePatternFromInt2Date(String fileNamePatternStr) {
