@@ -16,7 +16,6 @@ package ch.qos.logback.classic.joran;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.LogManager;
 
 import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.core.pattern.parser.Parser;
@@ -24,7 +23,6 @@ import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CachingDateFormatter;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -59,6 +57,7 @@ public class JoranConfiguratorTest {
   void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
     jc.setContext(loggerContext);
+    loggerContext.putProperty("diff", "" + diff);
     jc.doConfigure(file);
   }
 
@@ -343,10 +342,7 @@ public class JoranConfiguratorTest {
   }
 
   void verifyJULLevel(String loggerName, Level expectedLevel) {
-    LogManager lm = LogManager.getLogManager();
-
     java.util.logging.Logger julLogger = JULHelper.asJULLogger(loggerName);
-
     java.util.logging.Level julLevel = julLogger.getLevel();
 
     if (expectedLevel == null) {
@@ -369,7 +365,7 @@ public class JoranConfiguratorTest {
     StatusChecker checker = new StatusChecker(loggerContext);
     checker.assertIsErrorFree();
     verifyJULLevel(loggerName, null);
-    verifyJULLevel("a.b.c", Level.WARN);
+    verifyJULLevel("a.b.c."+diff, Level.WARN);
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
   }
 
@@ -385,7 +381,7 @@ public class JoranConfiguratorTest {
     StatusChecker checker = new StatusChecker(loggerContext);
     checker.assertIsErrorFree();
     verifyJULLevel(loggerName, Level.INFO);
-    verifyJULLevel("a.b.c", Level.WARN);
+    verifyJULLevel("a.b.c."+diff, Level.WARN);
     verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
   }
 
