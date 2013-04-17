@@ -108,6 +108,9 @@
           <excludes>
             <exclude>**/All*Test.java</exclude>
             <exclude>**/PackageTest.java</exclude>
+            <!-- ConsoleAppenderTest redirects System.out which is not well tolerated by Maven -->
+            <exclude>**/ConsoleAppenderTest.java</exclude>
+            <!--<exclude>**/TimeBasedRollingTest.java</exclude>-->
           </excludes>
         </configuration>
       </plugin>

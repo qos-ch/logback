@@ -32,6 +32,9 @@ import java.io.UnsupportedEncodingException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ * Redirecting System.out is quite messy. Disable this test in Maven bu not in Package.class
+ */
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
   XTeeOutputStream tee;
