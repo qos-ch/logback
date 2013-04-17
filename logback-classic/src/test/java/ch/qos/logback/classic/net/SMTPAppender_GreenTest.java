@@ -291,6 +291,7 @@ public class SMTPAppender_GreenTest {
   // this test fails intermittently on Jenkins.
   @Test
   public void testMultipleTo() throws Exception {
+    // disable.SMTPAppender_GreenTest system property needs to be set manually
     if(System.getProperty("disable.SMTPAppender_GreenTest") != null)  {
       System.out.println("SMTPAppender_GreenTest.testMultipleTo disabled");
       return;
