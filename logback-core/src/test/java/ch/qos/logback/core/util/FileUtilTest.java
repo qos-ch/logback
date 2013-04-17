@@ -35,7 +35,8 @@ public class FileUtilTest {
   Context context = new ContextBase();
   FileUtil fileUtil = new FileUtil(context);
   List<File> cleanupList = new ArrayList<File>();
-  int diff =  new Random().nextInt(100);
+  // test-output folder is not always clean
+  int diff =  new Random().nextInt(10000);
 
   @Before
   public void setUp() throws Exception {
