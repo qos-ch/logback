@@ -53,7 +53,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void smoke() {
-    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "temp.log";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-smoke.log";
 
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
@@ -72,8 +72,8 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void testCreateParentFolders() {
-    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat" + diff
-        + "/testing.txt";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff
+        + "/testCreateParentFolders.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
@@ -95,12 +95,12 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void testPrudentModeLogicalImplications() {
-    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "testing.txt";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "fat-testPrudentModeLogicalImplications.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
     appender.setFile(filename);
-    appender.setName("testPrudentMode");
+    appender.setName("testPrudentModeLogicalImplications");
     appender.setContext(context);
 
     appender.setAppend(false);
