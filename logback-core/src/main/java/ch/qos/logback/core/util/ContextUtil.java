@@ -54,6 +54,9 @@ public class ContextUtil extends ContextAwareBase {
     while (interfaces.hasMoreElements()) {
       NetworkInterface networkInterface = interfaces.nextElement();
       Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+      if (inetAddresses == null) {
+        continue;
+      }
       while(inetAddresses.hasMoreElements()) {
         InetAddress ipAddress = inetAddresses.nextElement();
         if (invalidAddress(ipAddress)) {
