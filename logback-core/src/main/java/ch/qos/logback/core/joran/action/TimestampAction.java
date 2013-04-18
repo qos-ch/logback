@@ -73,7 +73,7 @@ public class TimestampAction extends Action {
     String val = sdf.format(timeReference);
 
     addInfo("Adding property to the context with key=\"" + keyStr
-        + "\" and value=\"" + val + "\" to the context");
+        + "\" and value=\"" + val + "\" to the " + scope + " scope");
     ActionUtil.setProperty(ec, keyStr, val, scope);
   }
 
