@@ -62,7 +62,8 @@
     <jetty.version>7.5.1.v20110908</jetty.version>
     <jansi.version>1.8</jansi.version>
     <findbugs.version>2.5</findbugs.version>
-    <!--<jetty.version>8.0.1.v20110908</jetty.version>-->
+
+     <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
   </properties>
 
   <developers>
@@ -393,7 +394,7 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>com.google.code.maven-license-plugin</groupId>
+            <groupId>com.mycila.maven-license-plugin</groupId>
             <artifactId>maven-license-plugin</artifactId>
             <version>1.9.0</version>
             <configuration>
@@ -417,19 +418,6 @@
         </plugins>
       </build>
 
-      <pluginRepositories>
-        <pluginRepository>
-          <id>mc-release</id>
-          <name>Local Maven repository of releases</name>
-          <url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-        </pluginRepository>
-      </pluginRepositories>
     </profile>
 
     <profile>

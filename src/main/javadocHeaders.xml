@@ -3,7 +3,8 @@
     <firstLine>/**</firstLine>
     <beforeEachLine> * </beforeEachLine>
     <endLine> */</endLine>
-    <!--<skipLine>packa</skipLine>-->
+    <isMultiline>true</isMultiline>
+    <allowBlankLines>false</allowBlankLines>
     <firstLineDetectionPattern>(\s|\t)*/\*.*$</firstLineDetectionPattern>
     <lastLineDetectionPattern>.*\*/(\s|\t)*$</lastLineDetectionPattern>
   </javadoc_style>
