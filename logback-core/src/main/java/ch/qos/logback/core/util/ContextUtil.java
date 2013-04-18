@@ -14,7 +14,10 @@
 package ch.qos.logback.core.util;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -30,8 +33,58 @@ public class ContextUtil extends ContextAwareBase {
   }
 
   public static String getLocalHostName() throws UnknownHostException {
-    InetAddress localhost = InetAddress.getLocalHost();
-    return localhost.getHostName();
+    try {
+      InetAddress localhost = InetAddress.getLocalHost();
+      return localhost.getHostName();
+    } catch (UnknownHostException e) {
+      String ipAddress = getLocalAddressAsString();
+      if (ipAddress == null) {
+        throw e;
+      }
+      return ipAddress;
+    }
+  }
+
+  private static String getLocalAddressAsString() {
+    Enumeration<NetworkInterface> interfaces = getNetworkInterfaces();
+    if (interfaces == null) {
+      return null;
+    }
+
+    while (interfaces.hasMoreElements()) {
+      NetworkInterface networkInterface = interfaces.nextElement();
+      Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+      if (inetAddresses == null) {
+        continue;
+      }
+      while(inetAddresses.hasMoreElements()) {
+        InetAddress ipAddress = inetAddresses.nextElement();
+        if (invalidAddress(ipAddress)) {
+          continue;
+        }
+        return ipAddress.getHostAddress();
+      }
+    }
+    return null;
+  }
+
+  private static Enumeration<NetworkInterface> getNetworkInterfaces() {
+    Enumeration<NetworkInterface> interfaces;
+    try {
+      interfaces = NetworkInterface.getNetworkInterfaces();
+    }
+    catch (SocketException e) {
+      return null;
+    }
+    return interfaces;
+  }
+
+  private static boolean invalidAddress(InetAddress ipAddress) {
+    return ipAddress == null
+      || ipAddress.isLoopbackAddress()
+      || ipAddress.isAnyLocalAddress()
+      || ipAddress.isLinkLocalAddress()
+      || ipAddress.isMulticastAddress();
   }
 
   /**
