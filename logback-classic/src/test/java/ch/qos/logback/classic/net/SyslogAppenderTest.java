@@ -183,7 +183,7 @@ public class SyslogAppenderTest {
 
   @Test
   public void large() throws InterruptedException {
-    setMockServerAndConfigure(1);
+    setMockServerAndConfigure(2);
     StringBuilder largeBuf = new StringBuilder();
     for (int i = 0; i < 2 * 1024 * 1024; i++) {
       largeBuf.append('a');
@@ -197,15 +197,24 @@ public class SyslogAppenderTest {
     
     mockServer.join(8000);
     assertTrue(mockServer.isFinished());
-    
-    // the first message is wasted
-    assertEquals(1, mockServer.getMessageList().size());
-    String msg = mockServer.getMessageList().get(0);
-    String expected = "<"
+ 
+   // both messages received
+    assertEquals(2, mockServer.getMessageList().size());
+
+   String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
-    assertTrue(msg.startsWith(expected));
     String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
     String threadName = Thread.currentThread().getName();
+
+    // large message is truncated
+    String largeMsg = mockServer.getMessageList().get(0);
+    assertTrue(largeMsg.startsWith(expected));
+    String largeRegex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
+        + " " + "a{64000,66000}";
+    checkRegexMatch(largeMsg, largeRegex);
+
+    String msg = mockServer.getMessageList().get(1);
+    assertTrue(msg.startsWith(expected));
     String regex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
         + " " + logMsg;
     checkRegexMatch(msg, regex);
