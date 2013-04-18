@@ -91,6 +91,11 @@
     href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
     </p>
 
+    <p><code>DBAppender</code> in logback-classic module no longer
+    assumes that caller information is always available. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-805">LOGBACK-805</a>
+    reported by Daris Cooper who also provided a corrective patch.</p>
+
     <p>In order to simplify our build, several unit tests have been
     ported from Scala to Java. It follows that logback no longer
     depends on Scala, not even during the test phase of the build.</p>
@@ -128,11 +133,6 @@
     reported by Sayevskiy Viacheslav. Many thanks to Ivan
     (Wee-Willie-Winkie) who contributed the appropriate fix.
     </p>
-
-    <p><code>DBAppender</code> in logback-classic module no longer
-    assumes that caller information is always available. This fixes <a
-    href="http://jira.qos.ch/browse/LOGBACK-805">LOGBACK-805</a>
-    reported by Daris Cooper who also provided a corrective patch.</p>
 
     <p>In logback-access, more correct determination of whether
     contents of an <code>HttpServletRequest</code> are URL encoded or

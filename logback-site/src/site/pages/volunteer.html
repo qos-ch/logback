@@ -37,6 +37,12 @@
       </p>
       </li>
 
+      <li><span class="label">high priority</span> <b>Proof reading the documentation</b>
+      <p>We are always looking for volunteers to proof-read the
+      documentation. Suggestions as to the design and look-and-feel of
+      the site are also welcome.</p>
+      </li>
+
       <li><span class="label">high priority</span> <b>Maintain the groovy configurator</b>
 
       <p>The Groovy configurator, aka Gaffer, although pretty cool, is
@@ -63,17 +69,54 @@
       <p>We are looking for volunteers for fixing logback
       bugs. Volunteering to solve bugs is a good way to learn about
       any project.
-      </p>      
-      </li>
+      </p> 
 
-      <li><span class="label">high priority</span> <b>Proof reading the documentation</b>
-      <p>We are always looking for volunteers to proof-read the
-      documentation. Suggestions as to the design and look-and-feel of
-      the site are also welcome.</p>
-      </li>
-    </ol>
+      <p>For those looking for highly technical challenges with
+      limited scope, have a look at various build failures observable
+      on <a href="http://logback.qos.ch/jenkins/">our Jenkins
+      instance</a>.
+      </p>
+
+      <p>Our build is quite stable but failures occur from time to
+      time on our Jenkins instance hosted on a relatively old
+      computer.</p>
+
+      <ul>
+        <li><a
+        href="http://logback.qos.ch/jenkins/job/logback/298/">build
+        #298</a> with test faulure in <a
+        href="http://logback.qos.ch/jenkins/job/logback/ch.qos.logback$logback-core/298/testReport/junit/ch.qos.logback.core/AsyncAppenderBaseTest/workerShouldStopEvenIfInterruptExceptionConsumedWithinSubappender/">AsyncAppenderBaseTest</a>
+        probable cause: race condition
+        </li>
+
+
+        <li><a
+        href="http://logback.qos.ch/jenkins/job/logback/91/">build
+        #91</a> with test faulure in <a
+        href="http://logback.qos.ch/jenkins/job/logback/ch.qos.logback$logback-classic/91/testReport/junit/ch.qos.logback.classic.net/SMTPAppender_GreenTest/testMultipleTo/">SMTPAppender_GreenTest</a>
+        probable cause: race condition, GreenMail server not running
+        at time of message transmission</li>
+
+        <li><a
+        href="http://logback.qos.ch/jenkins/job/logback/149/">build
+        #149</a> with test faulure in <a
+        href="http://logback.qos.ch/jenkins/job/logback/ch.qos.logback$logback-classic/149/testReport/junit/ch.qos.logback.classic.joran/JoranConfiguratorTest/levelChangePropagator1/">JoranConfiguratorTest.levelChangePropagator1</a>
+        probable cause: parallel execution, j.u.l. shared-state
+        overridden by levelChangePropagator0 while levelChangePropagator1 is running
+        </li>
+
+      </ul>
+
+      <p>These build failures are quite hard to reproduce. If you
+      intend to work on these problems, you will probably first need
+      to make changes to logback code so that the problem becomes
+      easily reproducible. One the problem is identified and
+      reproducible, solving it should be much easier.
+      </p>
+
+    <h3>Setting up the project</h3>
     
-    <p>>If you wish to contribute to the project or just hack for fun,
+    <p>If you wish to contribute to the project or just hack for fun,
     you will probably want to import logback as a project into your
     favorite IDE. See the instructions for <a
     href="setup.html#ide">building logback in Eclipse or IntelliJ
