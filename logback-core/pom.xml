@@ -89,21 +89,12 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
+        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <forkMode>once</forkMode>
           <reportFormat>plain</reportFormat>
-          <parallel>classes</parallel>
+          <!--<parallel>classes</parallel>-->
           <trimStackTrace>false</trimStackTrace>
           <excludes>
             <exclude>**/All*Test.java</exclude>
@@ -118,6 +109,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF

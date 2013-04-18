@@ -99,9 +99,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
+        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <forkMode>once</forkMode>
+          <!--<parallel>classes</parallel>-->
           <reportFormat>plain</reportFormat>
           <disableXmlReport>true</disableXmlReport>
           <excludes>
@@ -115,6 +116,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF
