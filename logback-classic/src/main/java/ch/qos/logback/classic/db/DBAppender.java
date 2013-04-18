@@ -27,7 +27,6 @@ import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
 import ch.qos.logback.classic.spi.*;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.db.DBAppenderBase;
-import static ch.qos.logback.core.CoreConstants.EMPTY_STRING;
 
 /**
  * The DBAppender inserts logging events into three database tables in a format
@@ -163,14 +162,23 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   void bindCallerDataWithPreparedStatement(PreparedStatement stmt,
       StackTraceElement[] callerDataArray) throws SQLException {
 
-    StackTraceElement callerData = EMPTY_CALLER_DATA;
-    if(callerDataArray != null && callerDataArray[0] != null)
-      callerData = callerDataArray[0];
+    StackTraceElement caller = extractFirstCaller(callerDataArray);
 
-    stmt.setString(CALLER_FILENAME_INDEX, callerData.getFileName());
-    stmt.setString(CALLER_CLASS_INDEX, callerData.getClassName());
-    stmt.setString(CALLER_METHOD_INDEX, callerData.getMethodName());
-    stmt.setString(CALLER_LINE_INDEX, Integer.toString(callerData.getLineNumber()));
+    stmt.setString(CALLER_FILENAME_INDEX, caller.getFileName());
+    stmt.setString(CALLER_CLASS_INDEX, caller.getClassName());
+    stmt.setString(CALLER_METHOD_INDEX, caller.getMethodName());
+    stmt.setString(CALLER_LINE_INDEX, Integer.toString(caller.getLineNumber()));
+  }
+
+  private StackTraceElement extractFirstCaller(StackTraceElement[] callerDataArray) {
+    StackTraceElement caller = EMPTY_CALLER_DATA;
+    if(hasAtLeastOneNonNullElement(callerDataArray))
+      caller = callerDataArray[0];
+    return caller;
+  }
+
+  private boolean hasAtLeastOneNonNullElement(StackTraceElement[] callerDataArray) {
+    return callerDataArray != null && callerDataArray.length > 0 && callerDataArray[0] != null;
   }
 
   Map<String, String> mergePropertyMaps(ILoggingEvent event) {
