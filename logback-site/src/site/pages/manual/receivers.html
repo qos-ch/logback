@@ -56,7 +56,7 @@
       in the Logback component 
       <a href="../xref/ch/qos/logback/core/spi/LifeCycle">LifeCycle</a> and
       a receiver is <a href="../xref/ch/qos/logback/core/spi/ContextAware">
-      ContextAware</a></p>.
+      ContextAware</a>.</p>
     
       <p>Historically, support for logging event delivery over a network
       connection in Logback has been provided by <code>SocketAppender</code>
@@ -124,11 +124,17 @@
       <code>SimpleSocketServer</code> application, except that by using
       the receiver component, <em>any</em> application that uses Logback
       Classic can receive logging events from remote appenders by simply
-      configuring the receiver in <em>logback.xml</em></p>.
+      configuring the receiver in <em>logback.xml</em>.</p>
         
-      <p>Logback includes two receiver components that act in the server
-      role; <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketReceiver.html">
-      <code>ServerSocketReceiver</code></a> and its SSL-enabled subtype
+      <p><a href="images/chapters/receivers/serverSocketReceiver.png">
+      <img border="1" src="images/chapters/receivers/serverSocketReceiver.png" alt="click to enlarge" width="800"/>
+      </a></p>
+
+      <p>Logback includes two receiver components that act in the
+      server role; <a
+      href="../xref/ch/qos/logback/classic/net/server/ServerSocketReceiver.html">
+      <code>ServerSocketReceiver</code></a> and its SSL-enabled
+      subtype
       <a href="../xref/ch/qos/logback/classic/net/server/SSLServerSocketReceiver.html">
       <code>SSLServerSocketReceiver</code></a>.  Both of these receiver
       components are designed to accept connections from incoming
@@ -325,6 +331,10 @@
       a connection to a remote appender.  The remote appender must be a
       server type, such as <code>ServerSocketAppender</code>.</p>  
     
+      <p><a href="images/chapters/receivers/socketReceiver.png">
+      <img border="1" src="images/chapters/receivers/socketReceiver.png" alt="click to enlarge" width="800"/>
+      </a></p>
+
       <p>Logback includes two receiver components that act in the client
       role; <a href="../xref/ch/qos/logback/classic/net/SocketReceiver.html">
       <code>SocketReceiver</code></a> and its SSL-enabled subtype
