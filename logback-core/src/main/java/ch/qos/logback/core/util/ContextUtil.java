@@ -17,6 +17,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -45,19 +46,42 @@ public class ContextUtil extends ContextAwareBase {
   }
 
   private static String getLocalAddressAsString() {
-    try {
-      NetworkInterface networkInterface = NetworkInterface.getNetworkInterfaces().nextElement();
-      if (networkInterface == null) {
-        return null;
-      }
-      InetAddress ipAddress = networkInterface.getInetAddresses().nextElement();
-      if (ipAddress == null) {
-        return null;
-      }
-      return ipAddress.getHostAddress();
-    } catch (SocketException e) {
+    Enumeration<NetworkInterface> interfaces = getNetworkInterfaces();
+    if (interfaces == null) {
       return null;
     }
+
+    while (interfaces.hasMoreElements()) {
+      NetworkInterface networkInterface = interfaces.nextElement();
+      Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
+      while(inetAddresses.hasMoreElements()) {
+        InetAddress ipAddress = inetAddresses.nextElement();
+        if (invalidAddress(ipAddress)) {
+          continue;
+        }
+        return ipAddress.getHostAddress();
+      }
+    }
+    return null;
+  }
+
+  private static Enumeration<NetworkInterface> getNetworkInterfaces() {
+    Enumeration<NetworkInterface> interfaces;
+    try {
+      interfaces = NetworkInterface.getNetworkInterfaces();
+    }
+    catch (SocketException e) {
+      return null;
+    }
+    return interfaces;
+  }
+
+  private static boolean invalidAddress(InetAddress ipAddress) {
+    return ipAddress == null
+      || ipAddress.isLoopbackAddress()
+      || ipAddress.isAnyLocalAddress()
+      || ipAddress.isLinkLocalAddress()
+      || ipAddress.isMulticastAddress();
   }
 
   /**
