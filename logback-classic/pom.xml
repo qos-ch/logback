@@ -269,7 +269,6 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
           </dependency>
-
         </dependencies>
 
         <executions>
@@ -308,7 +307,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
+        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <!-- once, never, pertest, always -->
           <forkMode>once</forkMode>
