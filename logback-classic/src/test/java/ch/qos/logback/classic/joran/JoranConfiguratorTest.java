@@ -324,6 +324,18 @@ public class JoranConfiguratorTest {
   }
 
   @Test
+  public void timestampLocal() throws JoranException, IOException,
+          InterruptedException {
+
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+            + "timestamp-local.xml";
+    configure(configFileAsStr);
+
+    String r = loggerContext.getProperty("testTimestamp");
+    assertNull(r);
+  }
+
+  @Test
   public void encoderCharset() throws JoranException, IOException,
           InterruptedException {
 

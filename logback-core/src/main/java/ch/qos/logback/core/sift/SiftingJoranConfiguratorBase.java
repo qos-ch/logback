@@ -46,7 +46,7 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
 
   int errorEmmissionCount = 0;
 
-  protected void oneAndOnlyOneCheck(Map appenderMap) {
+  protected void oneAndOnlyOneCheck(Map<?, ?> appenderMap) {
     String errMsg = null;
     if (appenderMap.size() == 0) {
       errorEmmissionCount++;

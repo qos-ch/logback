@@ -124,7 +124,7 @@ public abstract class SiftingAppenderBase<E> extends
   /**
    * @since 0.9.19
    */
-  public AppenderTracker getAppenderTracker() {
+  public AppenderTracker<E> getAppenderTracker() {
     return appenderTracker;
   }
 

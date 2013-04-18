@@ -31,10 +31,12 @@ public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILog
 
   String key;
   String value;
+  Map<String, String> parentpropertyMap;
   
-  SiftingJoranConfigurator(String key, String value) {
+  SiftingJoranConfigurator(String key, String value, Map<String, String> parentpropertyMap) {
     this.key = key;
     this.value = value;
+    this.parentpropertyMap = parentpropertyMap;
   }
   
   @Override
@@ -61,6 +63,7 @@ public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILog
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     Map<String, String> propertiesMap = new HashMap<String, String>();
+    propertiesMap.putAll(parentpropertyMap);
     propertiesMap.put(key, value);
     interpreter.setInterpretationContextPropertiesMap(propertiesMap);
   }

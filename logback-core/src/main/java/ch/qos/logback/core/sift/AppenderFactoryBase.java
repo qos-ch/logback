@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.sift;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.core.Appender;
@@ -26,13 +25,12 @@ public abstract class AppenderFactoryBase<E> {
   final List<SaxEvent> eventList;
   
   protected AppenderFactoryBase(List<SaxEvent> eventList) {
-    this.eventList = new ArrayList<SaxEvent>(eventList);
-    removeSiftElement();
+    this.eventList = removeSiftElement(eventList);
+    
   }
 
-  void removeSiftElement() {
-    eventList.remove(0);
-    eventList.remove(eventList.size() - 1);
+  List<SaxEvent> removeSiftElement(List<SaxEvent> eventList) {
+    return eventList.subList(1, eventList.size() - 1);
   }
 
   public abstract SiftingJoranConfiguratorBase<E> getSiftingJoranConfigurator(String k);

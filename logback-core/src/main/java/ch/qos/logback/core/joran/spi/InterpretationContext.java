@@ -15,7 +15,6 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -60,6 +59,10 @@ public class InterpretationContext extends ContextAwareBase implements
   
   public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
     return defaultNestedComponentRegistry;
+  }
+  
+  public Map<String, String> getCopyOfPropertyMap() {
+    return new HashMap<String, String>(propertiesMap);
   }
   
   void setPropertiesMap(Map<String, String> propertiesMap) {
@@ -129,9 +132,7 @@ public class InterpretationContext extends ContextAwareBase implements
     if (props == null) {
       return;
     }
-    Iterator i = props.keySet().iterator();
-    while (i.hasNext()) {
-      String key = (String) i.next();
+    for (String key : props.stringPropertyNames()) {
       addSubstitutionProperty(key, props.getProperty(key));
     }
   }
