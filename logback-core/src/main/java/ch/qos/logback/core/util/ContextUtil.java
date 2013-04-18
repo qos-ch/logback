@@ -32,59 +32,38 @@ public class ContextUtil extends ContextAwareBase {
     setContext(context);
   }
 
-  public static String getLocalHostName() throws UnknownHostException {
+  public static String getLocalHostName() throws UnknownHostException, 
+      SocketException {
     try {
       InetAddress localhost = InetAddress.getLocalHost();
       return localhost.getHostName();
     } catch (UnknownHostException e) {
-      String ipAddress = getLocalAddressAsString();
-      if (ipAddress == null) {
-        throw e;
-      }
-      return ipAddress;
+      return getLocalAddressAsString();
     }
   }
 
-  private static String getLocalAddressAsString() {
-    Enumeration<NetworkInterface> interfaces = getNetworkInterfaces();
-    if (interfaces == null) {
-      return null;
-    }
-
-    while (interfaces.hasMoreElements()) {
-      NetworkInterface networkInterface = interfaces.nextElement();
-      Enumeration<InetAddress> inetAddresses = networkInterface.getInetAddresses();
-      if (inetAddresses == null) {
-        continue;
-      }
-      while(inetAddresses.hasMoreElements()) {
-        InetAddress ipAddress = inetAddresses.nextElement();
-        if (invalidAddress(ipAddress)) {
-          continue;
+  private static String getLocalAddressAsString() throws UnknownHostException,
+      SocketException {
+    final Enumeration<NetworkInterface> interfaces = 
+        NetworkInterface.getNetworkInterfaces();
+    while (interfaces != null && interfaces.hasMoreElements()) {
+      final Enumeration<InetAddress> addresses = 
+          interfaces.nextElement().getInetAddresses();
+      while (addresses != null && addresses.hasMoreElements()) {
+        InetAddress address = addresses.nextElement();
+        if (acceptableAddress(address)) { 
+	  return address.getHostAddress();
         }
-        return ipAddress.getHostAddress();
       }
     }
-    return null;
+    throw new UnknownHostException();
   }
 
-  private static Enumeration<NetworkInterface> getNetworkInterfaces() {
-    Enumeration<NetworkInterface> interfaces;
-    try {
-      interfaces = NetworkInterface.getNetworkInterfaces();
-    }
-    catch (SocketException e) {
-      return null;
-    }
-    return interfaces;
-  }
-
-  private static boolean invalidAddress(InetAddress ipAddress) {
-    return ipAddress == null
-      || ipAddress.isLoopbackAddress()
-      || ipAddress.isAnyLocalAddress()
-      || ipAddress.isLinkLocalAddress()
-      || ipAddress.isMulticastAddress();
+  private static boolean acceptableAddress(InetAddress address) {
+    return address != null
+      && !address.isLoopbackAddress()
+      && !address.isAnyLocalAddress()
+      && !address.isLinkLocalAddress();
   }
 
   /**
@@ -95,6 +74,8 @@ public class ContextUtil extends ContextAwareBase {
       String localhostName =  getLocalHostName();
       context.putProperty(CoreConstants.HOSTNAME_KEY, localhostName);
     } catch (UnknownHostException e) {
+      addError("Failed to get local hostname", e);
+    } catch (SocketException e) {
       addError("Failed to get local hostname", e);
     } catch (SecurityException e) {
       addError("Failed to get local hostname", e);
