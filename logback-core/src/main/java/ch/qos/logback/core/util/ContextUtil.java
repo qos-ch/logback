@@ -14,6 +14,8 @@
 package ch.qos.logback.core.util;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Iterator;
 import java.util.List;
@@ -30,8 +32,32 @@ public class ContextUtil extends ContextAwareBase {
   }
 
   public static String getLocalHostName() throws UnknownHostException {
-    InetAddress localhost = InetAddress.getLocalHost();
-    return localhost.getHostName();
+    try {
+      InetAddress localhost = InetAddress.getLocalHost();
+      return localhost.getHostName();
+    } catch (UnknownHostException e) {
+      String ipAddress = getLocalAddressAsString();
+      if (ipAddress == null) {
+        throw e;
+      }
+      return ipAddress;
+    }
+  }
+
+  private static String getLocalAddressAsString() {
+    try {
+      NetworkInterface networkInterface = NetworkInterface.getNetworkInterfaces().nextElement();
+      if (networkInterface == null) {
+        return null;
+      }
+      InetAddress ipAddress = networkInterface.getInetAddresses().nextElement();
+      if (ipAddress == null) {
+        return null;
+      }
+      return ipAddress.getHostAddress();
+    } catch (SocketException e) {
+      return null;
+    }
   }
 
   /**
