@@ -36,6 +36,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import org.slf4j.MDC;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
@@ -145,6 +146,19 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
             + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
+  }
+
+  @Test
+  public void testMdcWithDefaultValue() {
+    pl.setPattern("%msg %mdc{foo} %mdc{bar,-}");
+    pl.start();
+    MDC.put("foo", "foo");
+    try {
+      String val = pl.doLayout(getEventObject());
+      assertEquals("Some message foo -", val);
+    } finally {
+      MDC.remove("foo");
+    }
   }
 
 

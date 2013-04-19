@@ -13,20 +13,23 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
+
+import java.util.List;
+import java.util.Map;
 
 public class MDCConverter extends ClassicConverter {
 
   String key;
-  private static final String EMPTY_STRING = "";
+  private String EMPTY_STRING = "";
 
   @Override
   public void start() {
     key = getFirstOption();
+    List<String> optionList = getOptionList();
+    if (optionList != null && optionList.size() > 1) {
+      EMPTY_STRING = optionList.get(1);
+    }
     super.start();
   }
 
