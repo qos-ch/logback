@@ -40,9 +40,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   public static final String ZIP_ENTRY_DATE_PATTERN = "yyyy-MM-dd_HHmm";
 
   /**
-   * It's almost always a bad idea to have a large window size, say over 12.
+   * It's almost always a bad idea to have a large window size, say over 20.
    */
-  private static int MAX_WINDOW_SIZE = 12;
+  private static int MAX_WINDOW_SIZE = 20;
 
   public FixedWindowRollingPolicy() {
     minIndex = 1;
