@@ -37,14 +37,14 @@ import ch.qos.logback.core.util.CloseUtil;
 /**
  * A component that receives serialized {@link ILoggingEvent} objects from a
  * remote appender over a {@link Socket}.
- * 
+ *
  * @author Carl Harris
  */
 public class SocketReceiver extends ReceiverBase
-    implements Runnable, SocketConnector.ExceptionHandler {
+        implements Runnable, SocketConnector.ExceptionHandler {
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
-  
+
   private String remoteHost;
   private InetAddress address;
   private int port;
@@ -53,7 +53,7 @@ public class SocketReceiver extends ReceiverBase
 
   private String remoteId;
   private volatile Socket socket;
-  
+
   /**
    * {@inheritDoc}
    */
@@ -62,33 +62,32 @@ public class SocketReceiver extends ReceiverBase
     if (port == 0) {
       errorCount++;
       addError("No port was configured for remote. "
-          + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
+              + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
     }
 
     if (remoteHost == null) {
       errorCount++;
-      addError("No host name or address was configured for remote. " 
-          + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
+      addError("No host name or address was configured for remote. "
+              + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
     }
-    
+
     if (reconnectionDelay == 0) {
       reconnectionDelay = SocketAppenderBase.DEFAULT_RECONNECTION_DELAY;
     }
-    
+
     if (errorCount == 0) {
       try {
         address = InetAddress.getByName(remoteHost);
-      }
-      catch (UnknownHostException ex) {
+      } catch (UnknownHostException ex) {
         addError("unknown host: " + remoteHost);
         errorCount++;
       }
     }
-        
+
     if (errorCount == 0) {
       remoteId = "remote " + remoteHost + ":" + port + ": ";
     }
-    
+
     return errorCount == 0;
   }
 
@@ -111,14 +110,13 @@ public class SocketReceiver extends ReceiverBase
    */
   public void run() {
     try {
-      LoggerContext lc = (LoggerContext) getContext();  
-      SocketConnector connector = createConnector(address, port, 0, 
-          reconnectionDelay);
+      LoggerContext lc = (LoggerContext) getContext();
+      SocketConnector connector = createConnector(address, port, 0,
+              reconnectionDelay);
       while (!Thread.currentThread().isInterrupted()) {
         try {
           getExecutor().execute(connector);
-        }
-        catch (RejectedExecutionException ex) {
+        } catch (RejectedExecutionException ex) {
           // executor is shutting down... 
           continue;
         }
@@ -126,13 +124,12 @@ public class SocketReceiver extends ReceiverBase
         dispatchEvents(lc);
         connector = createConnector(address, port, reconnectionDelay);
       }
-    }
-    catch (InterruptedException ex) {
+    } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
     }
     addInfo("shutting down");
   }
-  
+
   private void dispatchEvents(LoggerContext lc) {
     try {
       socket.setSoTimeout(acceptConnectionTimeout);
@@ -145,58 +142,52 @@ public class SocketReceiver extends ReceiverBase
         if (remoteLogger.isEnabledFor(event.getLevel())) {
           remoteLogger.callAppenders(event);
         }
-      }     
-    }
-    catch (EOFException ex) {
+      }
+    } catch (EOFException ex) {
       addInfo(remoteId + "end-of-stream detected");
-    }
-    catch (IOException ex) {
+    } catch (IOException ex) {
       addInfo(remoteId + "connection failed: " + ex);
-    }
-    catch (ClassNotFoundException ex) {
+    } catch (ClassNotFoundException ex) {
       addInfo(remoteId + "unknown event class: " + ex);
-    }
-    finally {
+    } finally {
       CloseUtil.closeQuietly(socket);
       socket = null;
       addInfo(remoteId + "connection closed");
     }
   }
-   
+
   /**
    * {@inheritDoc}
    */
   public void connectionFailed(SocketConnector connector, Exception ex) {
     if (ex instanceof InterruptedException) {
       addInfo("connector interrupted");
-    }
-    else if (ex instanceof ConnectException) {
+    } else if (ex instanceof ConnectException) {
       addInfo(remoteId + "connection refused");
-    }
-    else {
+    } else {
       addInfo(remoteId + ex);
     }
   }
 
-  private SocketConnector createConnector(InetAddress address, int port, 
-      int delay) {
+  private SocketConnector createConnector(InetAddress address, int port,
+                                          int delay) {
     return createConnector(address, port, delay, delay);
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
-      int initialDelay, int retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay, 
-        retryDelay);
+                                          int initialDelay, int retryDelay) {
+    SocketConnector connector = newConnector(address, port, initialDelay,
+            retryDelay);
     connector.setExceptionHandler(this);
     connector.setSocketFactory(getSocketFactory());
     return connector;
   }
-  
-  protected SocketConnector newConnector(InetAddress address, 
-      int port, int initialDelay, int retryDelay) {
+
+  protected SocketConnector newConnector(InetAddress address,
+                                         int port, int initialDelay, int retryDelay) {
     return new SocketConnectorBase(address, port, initialDelay, retryDelay);
   }
-  
+
   protected SocketFactory getSocketFactory() {
     return SocketFactory.getDefault();
   }
@@ -204,11 +195,11 @@ public class SocketReceiver extends ReceiverBase
   protected ExecutorService createExecutorService() {
     return Executors.newCachedThreadPool();
   }
-  
+
   public void setRemoteHost(String remoteHost) {
     this.remoteHost = remoteHost;
   }
-  
+
   public void setPort(int port) {
     this.port = port;
   }
@@ -220,5 +211,5 @@ public class SocketReceiver extends ReceiverBase
   public void setAcceptConnectionTimeout(int acceptConnectionTimeout) {
     this.acceptConnectionTimeout = acceptConnectionTimeout;
   }
-    
+
 }

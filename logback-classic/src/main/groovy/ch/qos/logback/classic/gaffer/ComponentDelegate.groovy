@@ -25,7 +25,7 @@ class ComponentDelegate extends ContextAwareBase {
 
   final Object component;
 
-  final List fieldsToCaccade = [];
+  final List fieldsToCascade = [];
 
   ComponentDelegate(Object component) {
     this.component = component;
@@ -74,7 +74,7 @@ class ComponentDelegate extends ContextAwareBase {
   }
 
   void cascadeFields(ComponentDelegate subDelegate) {
-    for (String k: fieldsToCaccade) {
+    for (String k: fieldsToCascade) {
       subDelegate.metaClass."${k}" = this."${k}"
     }
   }

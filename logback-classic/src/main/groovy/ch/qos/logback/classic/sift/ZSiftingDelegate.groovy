@@ -27,7 +27,7 @@ class ZSiftingDelegate extends ContextAwareBase {
     if (closure != null) {
       AppenderDelegate ad = new AppenderDelegate(appender);
       ad.metaClass."${key}" = value
-      ad.fieldsToCaccade << "${key}"
+      ad.fieldsToCascade << "${key}"
       ad.context = context;
       closure.delegate = ad;
       closure.resolveStrategy = Closure.DELEGATE_FIRST
