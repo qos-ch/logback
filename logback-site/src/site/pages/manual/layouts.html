@@ -1676,6 +1676,8 @@ java.lang.Exception: display
 		<p>Building a custom conversion specifier consists of two steps.
     </p>
 		
+    <h4>Step 1</h4>
+
 		<p>First, you must extend the <code>ClassicConverter</code>
 		class. <a
 		href="../xref/ch/qos/logback/classic/pattern/ClassicConverter.html">
@@ -1688,9 +1690,8 @@ java.lang.Exception: display
 		<code>ILoggingEvent</code> and returns it as a String. It might
 		abbreviate the logger name in the process.</p>
 		
-		<p>Let us say that our customized <code>ClassicConverter</code>
-		colors the level of the logging event, according to ANSI terminal
-		conventions. Here is a possible implementation:</p>
+		<p>Here is a customer converter which returns the time elapsed
+		since its creaton in nanoseconds:</p>
 		
 <em> Example: Sample Converter Example 
 <a href="../xref/chapters/layouts/MySampleConverter.html">
@@ -1706,12 +1707,14 @@ java.lang.Exception: display
   <b>}</b>
 }</pre>
 
-		<p>This implementation is relatively straightforward. The
+		<p>This implementation is pretty straightforward. The
 		<code>MySampleConverter</code> class extends
 		<code>ClassicConverter</code>, and implements the
 		<code>convert</code> method which returns the number of
 		nano-seconds elapsed since its creation.
 		</p>
+
+    <h4>Step 2</h4>
 
 		<p>In the second step, we must let logback know about the new
 		<code>Converter</code>. For this purpose, we need to declare the
