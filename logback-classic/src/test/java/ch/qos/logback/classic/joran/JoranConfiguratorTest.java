@@ -15,6 +15,8 @@ package ch.qos.logback.classic.joran;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.classic.jul.JULHelper;
@@ -326,13 +328,27 @@ public class JoranConfiguratorTest {
   @Test
   public void timestampLocal() throws JoranException, IOException,
           InterruptedException {
+	  
+	String sysProp = "ch.qos.logback.classic.joran.JoranConfiguratorTest.timestampLocal";
+	System.setProperty(sysProp, "");
 
     String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
             + "timestamp-local.xml";
     configure(configFileAsStr);
 
+	// It's hard to test the local variable has been set, as it's not
+	// visible from here. But instead we test that it's not set in the
+	// context. And check that a system property has been replaced with the
+	// contents of the local variable
+    
     String r = loggerContext.getProperty("testTimestamp");
     assertNull(r);
+    
+    String exprected = "today is " + new SimpleDateFormat("yyyy-MM").format(new Date());
+    String sysPropValue = System.getProperty(sysProp);
+    assertEquals(exprected, sysPropValue);
+    
+    
   }
 
   @Test
