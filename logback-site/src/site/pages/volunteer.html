@@ -43,7 +43,20 @@
       the site are also welcome.</p>
       </li>
 
-      <li><span class="label">high priority</span> <b>Maintain the groovy configurator</b>
+      <li><span class="label">medium priority</span> <b>Decoder:
+      parse log files and transform them into logging events</b>
+      
+      <p>This effort has been started under the <a
+      href="https://github.com/qos-ch/logback-decoder">logback-decoder</a>
+      project but has stalled. This problem is technically
+      interesting, has a well-defined scope and mostly independent of
+      the logback framework.
+      </p>
+      
+      </li>
+
+      <li><span class="label">medium priority</span> <b>Maintain the
+      groovy configurator</b>
 
       <p>The Groovy configurator, aka Gaffer, although pretty cool, is
       not getting the attention it deserves. The amount of code
@@ -51,12 +64,6 @@
       insurmountable. We are looking for a volunteer to take over
       Gaffer.
        </p>
-      </li>
-
-      <li><b>Write a tool for parsing log files</b>
-
-        <p>We are looking for a volunteer to write a tool for parsing
-        log files.</p>
       </li>
 
       <li><b>Improve OSGi support</b>
@@ -82,6 +89,15 @@
       computer.</p>
 
       <ul>
+
+        <li><a
+        href="http://logback.qos.ch/jenkins/job/logback/149/">build
+        #149</a> with test faulure in <a
+        href="http://logback.qos.ch/jenkins/job/logback/ch.qos.logback$logback-classic/149/testReport/junit/ch.qos.logback.classic.joran/JoranConfiguratorTest/levelChangePropagator1/">JoranConfiguratorTest.levelChangePropagator1</a>
+        probable cause: parallel execution, j.u.l. shared-state
+        overridden by levelChangePropagator0 while levelChangePropagator1 is running
+        </li>
+
         <li><a
         href="http://logback.qos.ch/jenkins/job/logback/298/">build
         #298</a> with test faulure in <a
@@ -97,13 +113,6 @@
         probable cause: race condition, GreenMail server not running
         at time of message transmission</li>
 
-        <li><a
-        href="http://logback.qos.ch/jenkins/job/logback/149/">build
-        #149</a> with test faulure in <a
-        href="http://logback.qos.ch/jenkins/job/logback/ch.qos.logback$logback-classic/149/testReport/junit/ch.qos.logback.classic.joran/JoranConfiguratorTest/levelChangePropagator1/">JoranConfiguratorTest.levelChangePropagator1</a>
-        probable cause: parallel execution, j.u.l. shared-state
-        overridden by levelChangePropagator0 while levelChangePropagator1 is running
-        </li>
 
       </ul>
 
