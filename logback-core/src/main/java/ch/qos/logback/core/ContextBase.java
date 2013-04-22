@@ -37,14 +37,19 @@ public class ContextBase implements Context {
 
   LogbackLock configurationLock = new LogbackLock();
 
-  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JD 1.6 or higher it's set to 0
+  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JDK 1.6 or higher it's set to 0
   // so that there are no idle threads
   private static final int CORE_POOL_SIZE = EnvUtil.isJDK5() ? 1 : 0;
 
-  // 0 (JDK 1,6+) or 1 (JDK 1.5) idle threads, 2 maximum threads, no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(CORE_POOL_SIZE, 2,
+  // if you need a different MAX_POOL_SIZE, please file create a jira issue
+  // asking to make MAX_POOL_SIZE a parameter.
+  private static int MAX_POOL_SIZE = 32;
+
+  // 0 (JDK 1,6+) or 1 (JDK 1.5) idle threads, MAX_POOL_SIZE maximum threads,
+  // no idle waiting
+  ExecutorService executorService = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE,
           0L, TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<Runnable>());
+          new SynchronousQueue<Runnable>());
 
   public StatusManager getStatusManager() {
     return sm;
