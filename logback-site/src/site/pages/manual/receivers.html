@@ -49,12 +49,13 @@
       for distribution of application logging events over a network.</p>
   
       <p>A receiver extends the <a
-      href="../xref/ch/qos/logback/classic/ReceiverBase.html">
-      <code>ch.qos.logback.classic.ReceiverBase</code></a> class.  By virtue
-      of the fact that a receiver extends this class, a receiver participates
-      in the Logback component 
-      <a href="../xref/ch/qos/logback/core/spi/LifeCycle">LifeCycle</a> and
-      a receiver is <a href="../xref/ch/qos/logback/core/spi/ContextAware">
+      href="../xref/ch/qos/logback/classic/net/ReceiverBase.html">
+      <code>ch.qos.logback.classic.net.ReceiverBase</code></a> class.
+      By virtue of the fact that a receiver extends this class, a
+      receiver participates in the Logback component <a
+      href="../xref/ch/qos/logback/core/spi/LifeCycle.html">LifeCycle</a>
+      and a receiver is <a
+      href="../xref/ch/qos/logback/core/spi/ContextAware.html">
       ContextAware</a>.</p>
     
       <p>Historically, support for logging event delivery over a network
@@ -171,6 +172,7 @@
           </td>
         </tr>
         <tr>
+          <!-- should this option be removed altogether? -->
           <td><span class="prop" container="serverSocketReceiver">threadPool</span></td>
           <td><code>ThreadPoolFactoryBean</code></td>
           <td>This property specifies configuration for a thread pool that will
@@ -230,7 +232,7 @@
       <p>From a shell in the <em>logback-examples</em> directory, 
       we can run our example server application as follows:</p>
     
-      <p class="source">java -Dport=6000 chapters.receivers.socket.ReceiverExample \
+      <p class="source">java -Dport=6000 <a href="../xref/chapters/receivers/socket/ReceiverExample.html">chapters.receivers.socket.ReceiverExample</a> \ 
       src/main/java/chapters/receivers/socket/receiver1.xml</p>
   
       <p>We can connect to the running receiver using a client application
@@ -242,7 +244,7 @@
       </p>
     
       <p class="source">java -Dhost=localhost -Dport=6000 \
-      chapters.receivers.socket.AppenderExample\
+      <a href="../xref/chapters/receivers/socket/AppenderExample.html">chapters.receivers.socket.AppenderExample </a>\
       src/main/java/chapters/receivers/socket/appender1.xml</p>
     
       <h3 class="doAnchor" name="usingSSLServerSocketReceiver">Using

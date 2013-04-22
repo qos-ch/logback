@@ -47,8 +47,8 @@ public class AppenderExample {
 
     if (configFile.endsWith(".xml")) {
       LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+      lc.reset();
       JoranConfigurator configurator = new JoranConfigurator();
-      lc.stop();
       configurator.setContext(lc);
       configurator.doConfigure(configFile);
     }
