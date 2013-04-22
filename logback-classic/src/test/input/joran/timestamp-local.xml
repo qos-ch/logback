@@ -1,0 +1,7 @@
+<configuration>
+  <timestamp key="testTimestamp" datePattern="yyyy-MM"/>
+  <property scope="system"  
+  	name="ch.qos.logback.classic.joran.JoranConfiguratorTest.timestampLocal" 
+  	value="today is ${testTimestamp}"/>
+</configuration>
+  

@@ -1,4 +1,4 @@
 <configuration>
-  <timestamp key="testTimestamp" datePattern="yyyy-MM"/>
+  <timestamp key="testTimestamp" datePattern="yyyy-MM" scope="context"/>
 </configuration>
   
