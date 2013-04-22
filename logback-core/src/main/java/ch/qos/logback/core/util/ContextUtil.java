@@ -13,6 +13,10 @@
  */
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.spi.ContextAwareBase;
+
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -22,18 +26,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.spi.ContextAwareBase;
-
 public class ContextUtil extends ContextAwareBase {
 
   public ContextUtil(Context context) {
     setContext(context);
   }
 
-  public static String getLocalHostName() throws UnknownHostException, 
-      SocketException {
+  public static String getLocalHostName() throws UnknownHostException,
+          SocketException {
     try {
       InetAddress localhost = InetAddress.getLocalHost();
       return localhost.getHostName();
@@ -43,16 +43,16 @@ public class ContextUtil extends ContextAwareBase {
   }
 
   private static String getLocalAddressAsString() throws UnknownHostException,
-      SocketException {
-    final Enumeration<NetworkInterface> interfaces = 
-        NetworkInterface.getNetworkInterfaces();
+          SocketException {
+    Enumeration<NetworkInterface> interfaces =
+            NetworkInterface.getNetworkInterfaces();
     while (interfaces != null && interfaces.hasMoreElements()) {
-      final Enumeration<InetAddress> addresses = 
-          interfaces.nextElement().getInetAddresses();
+      Enumeration<InetAddress> addresses =
+              interfaces.nextElement().getInetAddresses();
       while (addresses != null && addresses.hasMoreElements()) {
         InetAddress address = addresses.nextElement();
-        if (acceptableAddress(address)) { 
-	  return address.getHostAddress();
+        if (acceptableAddress(address)) {
+          return address.getHostAddress();
         }
       }
     }
@@ -61,9 +61,9 @@ public class ContextUtil extends ContextAwareBase {
 
   private static boolean acceptableAddress(InetAddress address) {
     return address != null
-      && !address.isLoopbackAddress()
-      && !address.isAnyLocalAddress()
-      && !address.isLinkLocalAddress();
+            && !address.isLoopbackAddress()
+            && !address.isAnyLocalAddress()
+            && !address.isLinkLocalAddress();
   }
 
   /**
@@ -71,7 +71,7 @@ public class ContextUtil extends ContextAwareBase {
    */
   public void addHostNameAsProperty() {
     try {
-      String localhostName =  getLocalHostName();
+      String localhostName = getLocalHostName();
       context.putProperty(CoreConstants.HOSTNAME_KEY, localhostName);
     } catch (UnknownHostException e) {
       addError("Failed to get local hostname", e);
@@ -82,7 +82,7 @@ public class ContextUtil extends ContextAwareBase {
     }
   }
 
-   public void addProperties(Properties props) {
+  public void addProperties(Properties props) {
     if (props == null) {
       return;
     }
@@ -100,7 +100,7 @@ public class ContextUtil extends ContextAwareBase {
   }
 
   public void addFrameworkPackage(List<String> frameworkPackages, String packageName) {
-    if(!frameworkPackages.contains(packageName)) {
+    if (!frameworkPackages.contains(packageName)) {
       frameworkPackages.add(packageName);
     }
   }
