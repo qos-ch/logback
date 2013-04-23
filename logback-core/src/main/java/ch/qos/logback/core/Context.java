@@ -16,6 +16,7 @@ package ch.qos.logback.core;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.status.StatusManager;
 
@@ -113,4 +114,15 @@ public interface Context extends PropertyContainer {
    * @since 1.0.0
    */
   ExecutorService getExecutorService();
+  
+  /**
+   * Adds a component that participates in the context's life cycle.
+   * <p>
+   * A component that is passed to this method, will be started if necessary,
+   * and will be stopped when the context is reset.
+   * 
+   * @param component the subject componet
+   */
+  void addLifeCycleComponent(LifeCycle component);
+  
 }

@@ -14,10 +14,14 @@
 package ch.qos.logback.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
+
+import ch.qos.logback.core.spi.LifeCycle;
 
 public class ContextBaseTest {
 
@@ -68,4 +72,32 @@ public class ContextBaseTest {
     // not go through CoreConstants
     assertEquals(HELLO, context.getProperty("CONTEXT_NAME"));
   }
+  
+  @Test
+  public void addLifeCycleComponentTest() {
+    MockLifeCycleComponent component = new MockLifeCycleComponent();
+    context.addLifeCycleComponent(component);
+    assertTrue(component.isStarted());
+    context.reset();
+    assertFalse(component.isStarted());
+  }
+
+  private static class MockLifeCycleComponent implements LifeCycle {
+
+    private boolean started;
+    
+    public void start() {
+      started = true;      
+    }
+
+    public void stop() {
+      started = false;
+    }
+
+    public boolean isStarted() {
+      return started;
+    }
+    
+  }
+  
 }
