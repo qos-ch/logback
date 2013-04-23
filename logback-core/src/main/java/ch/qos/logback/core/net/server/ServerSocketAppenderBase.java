@@ -19,7 +19,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 import javax.net.ServerSocketFactory;
 
@@ -51,9 +50,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
   private int clientQueueSize = DEFAULT_CLIENT_QUEUE_SIZE;
   
   private String address;
-  private ThreadPoolFactoryBean threadPool;
 
-  private ExecutorService executor;
   private ServerRunner<RemoteReceiverClient> runner;
 
   @Override
@@ -63,10 +60,10 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
       ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
-      executor = getThreadPool().createExecutor();
-      runner = createServerRunner(listener, executor);
+      
+      runner = createServerRunner(listener, getContext().getExecutorService());
       runner.setContext(getContext());
-      executor.execute(runner);
+      getContext().getExecutorService().execute(runner);
       super.start();
     }
     catch (Exception ex) {
@@ -91,7 +88,6 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
     if (!isStarted()) return;
     try {
       runner.stop();
-      executor.shutdownNow();
       super.stop();
     }
     catch (IOException ex) {
@@ -217,26 +213,6 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    */
   public void setClientQueueSize(int clientQueueSize) {
     this.clientQueueSize = clientQueueSize;
-  }
-
-  /**
-   * Gets the server's thread pool configuration.
-   * @return thread pool configuration; if no thread pool configuration was
-   *    provided, a default configuration is returned
-   */
-  public ThreadPoolFactoryBean getThreadPool() {
-    if (threadPool == null) {
-      return new ThreadPoolFactoryBean();
-    }
-    return threadPool;
-  }
-
-  /**
-   * Sets the server's thread pool configuration.
-   * @param threadPool the configuration to set
-   */
-  public void setThreadPool(ThreadPoolFactoryBean threadPool) {
-    this.threadPool = threadPool;
   }
 
 }
