@@ -15,13 +15,21 @@ package ch.qos.logback.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import ch.qos.logback.core.spi.LifeCycle;
+
 public class ContextBaseTest {
 
-  ContextBase context = new ContextBase();
+  private InstrumentedLifeCycleManager lifeCycleManager =
+      new InstrumentedLifeCycleManager();
+  
+  private InstrumentedContextBase context = 
+      new InstrumentedContextBase(lifeCycleManager);
 
   @Test
   public void renameDefault() {
@@ -53,9 +61,13 @@ public class ContextBaseTest {
     context.putObject("keyA", "valA");
     assertEquals("valA", context.getProperty("keyA"));
     assertEquals("valA", context.getObject("keyA"));
+    MockLifeCycleComponent component = new MockLifeCycleComponent();
+    context.register(component);
+    assertSame(component, lifeCycleManager.getLastComponent());
     context.reset();
     assertNull(context.getProperty("keyA"));
     assertNull(context.getObject("keyA"));
+    assertTrue(lifeCycleManager.isReset());
   }
 
   @Test
@@ -68,4 +80,47 @@ public class ContextBaseTest {
     // not go through CoreConstants
     assertEquals(HELLO, context.getProperty("CONTEXT_NAME"));
   }
+
+  private static class InstrumentedContextBase extends ContextBase {
+  
+    private final LifeCycleManager lifeCycleManager;
+    
+    public InstrumentedContextBase(LifeCycleManager lifeCycleManager) {
+      this.lifeCycleManager = lifeCycleManager;
+    }
+  
+    @Override
+    protected LifeCycleManager getLifeCycleManager() {
+      return lifeCycleManager;
+    }
+    
+  }
+
+  private static class InstrumentedLifeCycleManager extends LifeCycleManager {
+    
+    private LifeCycle lastComponent;
+    private boolean reset;
+    
+    @Override
+    public void register(LifeCycle component) {
+      lastComponent = component;
+      super.register(component);
+    }
+    
+    @Override
+    public void reset() {
+      reset = true;
+      super.reset();
+    }
+
+    public LifeCycle getLastComponent() {
+      return lastComponent;
+    }
+
+    public boolean isReset() {
+      return reset;
+    }
+    
+  }
+
 }

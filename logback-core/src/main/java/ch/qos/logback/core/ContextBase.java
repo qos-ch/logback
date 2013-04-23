@@ -13,15 +13,19 @@
  */
 package ch.qos.logback.core;
 
+import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.EnvUtil;
-
-import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 
 public class ContextBase implements Context {
 
@@ -51,6 +55,8 @@ public class ContextBase implements Context {
           0L, TimeUnit.MILLISECONDS,
           new SynchronousQueue<Runnable>());
 
+  private LifeCycleManager lifeCycleManager;
+  
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -111,6 +117,7 @@ public class ContextBase implements Context {
    * Clear the internal objectMap and all properties.
    */
   public void reset() {
+    getLifeCycleManager().reset();
     propertyMap.clear();
     objectMap.clear();
   }
@@ -146,8 +153,20 @@ public class ContextBase implements Context {
     return  executorService;
   }
 
+  public void register(LifeCycle component) {
+    getLifeCycleManager().register(component);
+  }
+
+  protected synchronized LifeCycleManager getLifeCycleManager() {
+    if (lifeCycleManager == null) {
+      lifeCycleManager = new LifeCycleManager();
+    }
+    return lifeCycleManager;
+  }
+  
   @Override
   public String toString() {
     return name;
   }
+
 }
