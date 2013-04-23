@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
@@ -29,7 +25,6 @@ import ch.qos.logback.core.spi.LifeCycle;
 public abstract class ReceiverBase extends ContextAwareBase 
     implements LifeCycle {
 
-  private ExecutorService executor;
   private boolean started;
   
   /**
@@ -41,13 +36,12 @@ public abstract class ReceiverBase extends ContextAwareBase
       throw new IllegalStateException("context not set");
     }
     
-    executor = createExecutorService();
     if (shouldStart()) {
-      executor.execute(getRunnableTask());
+      getContext().getExecutorService().execute(getRunnableTask());
       started = true;
     }
     else {
-      executor.shutdownNow();
+      getContext().getExecutorService().shutdownNow();
     }
   }
 
@@ -62,7 +56,6 @@ public abstract class ReceiverBase extends ContextAwareBase
     catch (RuntimeException ex) {
       addError("on stop: " + ex, ex);
     }
-    executor.shutdownNow();
     started = false;
   }
   
@@ -94,29 +87,5 @@ public abstract class ReceiverBase extends ContextAwareBase
    * @return runnable task
    */
   protected abstract Runnable getRunnableTask();
-  
-  /**
-   * Creates an executor for concurrent execution of tasks associated with
-   * the receiver (including the receiver's {@link #run()} task itself.
-   * <p>
-   * Subclasses may override to provide a custom executor.
-   * 
-   * @return executor service
-   */
-  protected ExecutorService createExecutorService() {
-    return Executors.newCachedThreadPool();
-  }  
-
-  /**
-   * Provides access to the receiver's executor.
-   * <p>
-   * A subclass may use the executor returned by this method to run
-   * concurrent tasks as needed.
-   *  
-   * @return executor
-   */
-  protected Executor getExecutor() {
-    return executor;
-  }
   
 }

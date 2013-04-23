@@ -18,7 +18,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 
 import javax.net.ServerSocketFactory;
 
@@ -26,7 +25,6 @@ import ch.qos.logback.classic.net.ReceiverBase;
 import ch.qos.logback.core.net.SocketAppenderBase;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
-import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
@@ -45,7 +43,6 @@ public class ServerSocketReceiver extends ReceiverBase {
   private int backlog = DEFAULT_BACKLOG;
   
   private String address;
-  private ThreadPoolFactoryBean threadPool;
 
   private ServerSocket serverSocket;
   private ServerRunner runner;
@@ -61,7 +58,7 @@ public class ServerSocketReceiver extends ReceiverBase {
       ServerListener<RemoteAppenderClient> listener = 
           createServerListener(serverSocket);
       
-      runner = createServerRunner(listener, getExecutor());
+      runner = createServerRunner(listener, getContext().getExecutorService());
       runner.setContext(getContext());
       return true;
     }
@@ -83,11 +80,6 @@ public class ServerSocketReceiver extends ReceiverBase {
     return new RemoteAppenderServerRunner(listener, executor);
   }
   
-  @Override
-  protected ExecutorService createExecutorService() {
-    return getThreadPool().createExecutor();
-  }
-
   @Override
   protected Runnable getRunnableTask() {
     return runner;
@@ -181,26 +173,6 @@ public class ServerSocketReceiver extends ReceiverBase {
    */
   public void setAddress(String address) {
     this.address = address;
-  }
-
-  /**
-   * Gets the server's thread pool configuration.
-   * @return thread pool configuration; if no thread pool configuration was
-   *    provided, a default configuration is returned
-   */
-  public ThreadPoolFactoryBean getThreadPool() {
-    if (threadPool == null) {
-      return new ThreadPoolFactoryBean();
-    }
-    return threadPool;
-  }
-
-  /**
-   * Sets the server's thread pool configuration.
-   * @param threadPool the configuration to set
-   */
-  public void setThreadPool(ThreadPoolFactoryBean threadPool) {
-    this.threadPool = threadPool;
   }
 
 }
