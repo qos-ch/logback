@@ -85,6 +85,9 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
         iter.remove();
         Appender<E> appender = entry.value;
         appender.stop();
+      } else {
+        // if the first entry is not stale, then the following entries won't be stale either
+        break;
       }
     }
   }
