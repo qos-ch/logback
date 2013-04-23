@@ -25,6 +25,11 @@ public class ActionUtil {
     LOCAL, CONTEXT, SYSTEM
   };
 
+  /**
+   * Convert a string into a scope. Scole.LOCAL is returned by default.
+   * @param scopeStr
+   * @return a scope corresponding to the input string;  Scope.LOCAL by default.
+   */
   static public Scope stringToScope(String scopeStr) {
     if(Scope.SYSTEM.toString().equalsIgnoreCase(scopeStr))
       return Scope.SYSTEM;
