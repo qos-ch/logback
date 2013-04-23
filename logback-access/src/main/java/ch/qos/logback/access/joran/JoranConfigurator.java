@@ -33,8 +33,6 @@ import ch.qos.logback.core.joran.conditional.ThenAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.net.ssl.SSLComponent;
-import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
 
@@ -77,7 +75,6 @@ public class JoranConfigurator extends JoranConfiguratorBase {
 
     registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
     registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
-    registry.add(SSLComponent.class, "ssl", SSLConfiguration.class);
     SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
   }
 

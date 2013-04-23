@@ -25,6 +25,7 @@ public class SSLNestedComponentRegistryRules {
 
   static public void addDefaultNestedComponentRegistryRules(
       DefaultNestedComponentRegistry registry) {
+    registry.add(SSLComponent.class, "ssl", SSLConfiguration.class);
     registry.add(SSLConfiguration.class, "parameters", 
         SSLParametersConfiguration.class);
     registry.add(SSLConfiguration.class, "keyStore", 
