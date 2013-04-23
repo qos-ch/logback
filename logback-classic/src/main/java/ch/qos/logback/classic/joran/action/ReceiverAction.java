@@ -50,7 +50,7 @@ public class ReceiverAction extends Action {
       receiver = (ReceiverBase) OptionHelper.instantiateByClassName(
           className, ReceiverBase.class, context);
       receiver.setContext(context);
-
+      
       ic.pushObject(receiver);
     }
     catch (Exception ex) {
@@ -66,8 +66,9 @@ public class ReceiverAction extends Action {
     
     if (inError) return;
     
+    ic.getContext().register(receiver);
     receiver.start();
-
+    
     Object o = ic.peekObject();
     if (o != receiver) {
       addWarn("The object at the of the stack is not the remote " +
