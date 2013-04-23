@@ -22,36 +22,37 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class StatusListenerConfigHelper {
 
-  static void installIfAsked(LoggerContext loggerContext) {
-    String slClass = OptionHelper.getSystemProperty(
-        ContextInitializer.STATUS_LISTENER_CLASS);
-    if (!OptionHelper.isEmpty(slClass)) {
-      addStatusListener(loggerContext, slClass);
-    }
-  }
+	static void installIfAsked(LoggerContext loggerContext) {
+		String slClass = OptionHelper
+				.getSystemProperty(ContextInitializer.STATUS_LISTENER_CLASS);
+		if (!OptionHelper.isEmpty(slClass)) {
+			addStatusListener(loggerContext, slClass);
+		}
+	}
 
-  static void addStatusListener(LoggerContext loggerContext,
-      String listenerClass) {
-    StatusListener listener = null;
-    if (ContextInitializer.SYSOUT.equalsIgnoreCase(listenerClass)) {
-      listener = new OnConsoleStatusListener();
-    } else {
-      try {
-        listener = (StatusListener) OptionHelper.instantiateByClassName(
-            listenerClass, StatusListener.class, loggerContext);
-      } catch (Exception e) {
-        // printing on the console is the best we can do
-        e.printStackTrace();
-      }
-    }
-    
-    if(listener instanceof ContextAware) // LOGBACK-767
-        ((ContextAware) listener).setContext(loggerContext);
-    if(listener instanceof LifeCycle)  // LOGBACK-767
-        ((LifeCycle) listener).start();
-    
-    if (listener != null) {
-      loggerContext.getStatusManager().add(listener);
-    }
-  }
+	static void addStatusListener(LoggerContext loggerContext,
+			String listenerClass) {
+		StatusListener listener = null;
+		if (ContextInitializer.SYSOUT.equalsIgnoreCase(listenerClass)) {
+			listener = new OnConsoleStatusListener();
+		} else {
+			try {
+				listener = (StatusListener) OptionHelper
+						.instantiateByClassName(listenerClass,
+								StatusListener.class, loggerContext);
+			} catch (Exception e) {
+				// printing on the console is the best we can do
+				e.printStackTrace();
+			}
+		}
+
+		if (listener != null) {
+			if (listener instanceof ContextAware) // LOGBACK-767
+				((ContextAware) listener).setContext(loggerContext);
+			if (listener instanceof LifeCycle) // LOGBACK-767
+				((LifeCycle) listener).start();
+			
+			loggerContext.getStatusManager().add(listener);
+		}
+	}
 }
