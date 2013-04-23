@@ -91,6 +91,13 @@
     href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
     </p>
 
+    <p>SiftingAppender now propagates properties defined elsewhere in
+    the configuration file into the configuration process of nested
+    appenders. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-833">LOGBACK-833</a> with
+    David Roussel providing the appropriate patch..
+    </p>
+
     <p>As all other actions affecting properties,
     <code>TimestampAction</code> now inserts the user-specified
     property into the local scope by default. The property was

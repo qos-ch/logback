@@ -222,9 +222,19 @@ public class OptionHelper {
     }
   }
 
-  @Deprecated
+  /**
+   * Return a String[] of size two. The first item containing the key part and the second item
+   * containing a default value specified by the user. The second item will be null if no default value
+   * is specified.
+   *
+   * @param key
+   * @return
+   */
   static public String[] extractDefaultReplacement(String key) {
     String[] result = new String[2];
+    if(key == null)
+      return result;
+
     result[0] = key;
     int d = key.indexOf(DELIM_DEFAULT);
     if (d != -1) {
