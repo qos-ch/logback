@@ -157,7 +157,19 @@ public class ContextBase implements Context {
     getLifeCycleManager().register(component);
   }
 
-  protected synchronized LifeCycleManager getLifeCycleManager() {
+  /**
+   * Gets the life cycle manager for this context.
+   * <p>
+   * The default implementation lazily initializes an instance of
+   * {@link LifeCycleManager}.  Subclasses may override to provide a custom 
+   * manager implementation, but must take care to return the same manager
+   * object for each call to this method.
+   * <p>
+   * This is exposed primarily to support instrumentation for unit testing.
+   * 
+   * @return manager object 
+   */
+  synchronized LifeCycleManager getLifeCycleManager() {
     if (lifeCycleManager == null) {
       lifeCycleManager = new LifeCycleManager();
     }
