@@ -22,13 +22,11 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -38,7 +36,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
-import ch.qos.logback.core.net.server.ThreadPoolFactoryBean;
 
 /**
  * A functional test for {@link ServerSocketReceiver}.
@@ -55,12 +52,12 @@ public class ServerSocketReceiverFunctionalTest {
   private MockAppender appender;
   private Logger logger;
   private ServerSocket serverSocket;
-  private ExecutorService executor = Executors.newCachedThreadPool();
   private InstrumentedServerSocketReceiver receiver;
+  private LoggerContext lc;
   
   @Before
   public void setUp() throws Exception {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    lc = new LoggerContext();
     
     appender = new MockAppender();
     appender.start();
@@ -71,14 +68,7 @@ public class ServerSocketReceiverFunctionalTest {
     serverSocket = ServerSocketUtil.createServerSocket();
     
     receiver = new InstrumentedServerSocketReceiver(serverSocket);
-    
-    receiver.setThreadPool(new ThreadPoolFactoryBean() {
-      @Override
-      public ExecutorService createExecutor() {
-        return executor;
-      } 
-    });
-    
+        
     receiver.setContext(lc);
     receiver.start();
   }
@@ -86,6 +76,8 @@ public class ServerSocketReceiverFunctionalTest {
   @After
   public void tearDown() throws Exception {
     receiver.stop();
+    ExecutorService executor = lc.getExecutorService();
+    executor.shutdownNow();
     executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
     assertTrue(executor.isTerminated());
   }

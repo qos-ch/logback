@@ -39,9 +39,9 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
   private static final int EVENT_COUNT = 10;
   
-  private MockContext context = new MockContext();
+  private ExecutorService executor = Executors.newCachedThreadPool();
+  private MockContext context = new MockContext(executor);
   private ServerSocket serverSocket;
-  private ExecutorService executor = Executors.newFixedThreadPool(2);
   private InstrumentedServerSocketAppenderBase appender;
   
   @Before
@@ -49,21 +49,14 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
     serverSocket = ServerSocketUtil.createServerSocket();
     
-    appender = new InstrumentedServerSocketAppenderBase(serverSocket);
-    
-    appender.setThreadPool(new ThreadPoolFactoryBean() {
-      @Override
-      public ExecutorService createExecutor() {
-        return executor;
-      } 
-    });
-    
+    appender = new InstrumentedServerSocketAppenderBase(serverSocket);    
     appender.setContext(context);
   }
   
   @After
   public void tearDown() throws Exception {
-    executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+    executor.shutdownNow();
+    executor.awaitTermination(10000, TimeUnit.MILLISECONDS);
     assertTrue(executor.isTerminated());
   }
   

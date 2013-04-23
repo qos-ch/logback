@@ -48,9 +48,6 @@ public class ServerSocketReceiverTest {
   private MockServerListener<RemoteAppenderClient> listener = 
       new MockServerListener<RemoteAppenderClient>();
   
-  private MockThreadPoolFactoryBean threadPool = 
-      new MockThreadPoolFactoryBean();
-  
   private ServerSocket serverSocket;
   private InstrumentedServerSocketReceiver receiver;
   
@@ -58,7 +55,6 @@ public class ServerSocketReceiverTest {
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
     receiver = new InstrumentedServerSocketReceiver(serverSocket, listener, runner);
-    receiver.setThreadPool(threadPool);
     receiver.setContext(context);
   }
   

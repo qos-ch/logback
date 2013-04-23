@@ -115,7 +115,7 @@ public class SocketReceiver extends ReceiverBase
               reconnectionDelay);
       while (!Thread.currentThread().isInterrupted()) {
         try {
-          getExecutor().execute(connector);
+          getContext().getExecutorService().execute(connector);
         } catch (RejectedExecutionException ex) {
           // executor is shutting down... 
           continue;

@@ -26,7 +26,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
@@ -34,7 +33,6 @@ import javax.net.SocketFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -54,20 +52,19 @@ import ch.qos.logback.core.status.Status;
  */
 public class SocketReceiverTest {
 
-  private static final int DELAY = 200;
+  private static final int DELAY = 1000;
   private static final String TEST_HOST_NAME = "NOT.A.VALID.HOST.NAME";
 
 
   private ServerSocket serverSocket;
   private Socket socket;
-  private ExecutorService executor = Executors.newCachedThreadPool();
   private MockSocketFactory socketFactory = new MockSocketFactory();
   private MockSocketConnector connector;
   private MockAppender appender;
   private LoggerContext lc;
   private Logger logger;
   
-  private InstrumentedSocketReceiver remote = 
+  private InstrumentedSocketReceiver receiver = 
       new InstrumentedSocketReceiver();
   
   @Before
@@ -77,8 +74,9 @@ public class SocketReceiverTest {
         serverSocket.getLocalPort());
     connector = new MockSocketConnector(socket);
 
-    lc = (LoggerContext) LoggerFactory.getILoggerFactory();    
-    remote.setContext(lc);    
+    lc = new LoggerContext();
+    lc.reset();
+    receiver.setContext(lc);    
     appender = new MockAppender();
     appender.start();
     logger = lc.getLogger(getClass());
@@ -87,10 +85,9 @@ public class SocketReceiverTest {
   
   @After
   public void tearDown() throws Exception {
-    remote.stop();
-    if (!remote.isExecutorCreated()) {
-      executor.shutdownNow();
-    }
+    receiver.stop();
+    ExecutorService executor = lc.getExecutorService();
+    executor.shutdownNow();
     assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
     socket.close();
     serverSocket.close();
@@ -99,8 +96,8 @@ public class SocketReceiverTest {
   
   @Test
   public void testStartNoRemoteAddress() throws Exception {
-    remote.start();
-    assertFalse(remote.isStarted());
+    receiver.start();
+    assertFalse(receiver.isStarted());
     int count = lc.getStatusManager().getCount();
     Status status = lc.getStatusManager().getCopyOfStatusList().get(count - 1);
     assertTrue(status.getMessage().contains("host"));
@@ -108,9 +105,9 @@ public class SocketReceiverTest {
 
   @Test
   public void testStartNoPort() throws Exception {
-    remote.setRemoteHost(TEST_HOST_NAME);
-    remote.start();
-    assertFalse(remote.isStarted());
+    receiver.setRemoteHost(TEST_HOST_NAME);
+    receiver.start();
+    assertFalse(receiver.isStarted());
     int count = lc.getStatusManager().getCount();
     Status status = lc.getStatusManager().getCopyOfStatusList().get(count - 1);
     assertTrue(status.getMessage().contains("port"));
@@ -118,10 +115,10 @@ public class SocketReceiverTest {
 
   @Test
   public void testStartUnknownHost() throws Exception {
-    remote.setPort(6000);
-    remote.setRemoteHost(TEST_HOST_NAME);
-    remote.start();
-    assertFalse(remote.isStarted());
+    receiver.setPort(6000);
+    receiver.setRemoteHost(TEST_HOST_NAME);
+    receiver.start();
+    assertFalse(receiver.isStarted());
     int count = lc.getStatusManager().getCount();
     Status status = lc.getStatusManager().getCopyOfStatusList().get(count - 1);
     assertTrue(status.getMessage().contains("unknown host"));
@@ -129,43 +126,43 @@ public class SocketReceiverTest {
   
   @Test
   public void testStartStop() throws Exception {
-    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
-    remote.setPort(6000);
-    remote.setAcceptConnectionTimeout(DELAY / 2);
-    remote.start();
-    assertTrue(remote.isStarted());
-    remote.awaitConnectorCreated(DELAY);
-    remote.stop();
-    assertFalse(remote.isStarted());
+    receiver.setRemoteHost(InetAddress.getLocalHost().getHostName());
+    receiver.setPort(6000);
+    receiver.setAcceptConnectionTimeout(DELAY / 2);
+    receiver.start();
+    assertTrue(receiver.isStarted());
+    receiver.awaitConnectorCreated(DELAY);
+    receiver.stop();
+    assertFalse(receiver.isStarted());
   }
   
   @Test
   public void testServerSlowToAcceptConnection() throws Exception {
-    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
-    remote.setPort(6000);
-    remote.setAcceptConnectionTimeout(DELAY / 4);
-    remote.start();
-    assertTrue(remote.awaitConnectorCreated(DELAY / 2));
+    receiver.setRemoteHost(InetAddress.getLocalHost().getHostName());
+    receiver.setPort(6000);
+    receiver.setAcceptConnectionTimeout(DELAY / 4);
+    receiver.start();
+    assertTrue(receiver.awaitConnectorCreated(DELAY / 2));
     // note that we don't call serverSocket.accept() here
     // but stop (in tearDown) should still clean up everything
   }
 
   @Test
   public void testServerDropsConnection() throws Exception {
-    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
-    remote.setPort(6000);
-    remote.start();
-    assertTrue(remote.awaitConnectorCreated(DELAY));
+    receiver.setRemoteHost(InetAddress.getLocalHost().getHostName());
+    receiver.setPort(6000);
+    receiver.start();
+    assertTrue(receiver.awaitConnectorCreated(DELAY));
     Socket socket = serverSocket.accept();
     socket.close();
   }
   
   @Test
   public void testDispatchEventForEnabledLevel() throws Exception {
-    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
-    remote.setPort(6000);
-    remote.start();
-    assertTrue(remote.awaitConnectorCreated(DELAY));
+    receiver.setRemoteHost(InetAddress.getLocalHost().getHostName());
+    receiver.setPort(6000);
+    receiver.start();
+    assertTrue(receiver.awaitConnectorCreated(DELAY));
     Socket socket = serverSocket.accept();
 
     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -187,10 +184,10 @@ public class SocketReceiverTest {
 
   @Test
   public void testNoDispatchEventForDisabledLevel() throws Exception {
-    remote.setRemoteHost(InetAddress.getLocalHost().getHostName());
-    remote.setPort(6000);
-    remote.start();
-    assertTrue(remote.awaitConnectorCreated(DELAY));
+    receiver.setRemoteHost(InetAddress.getLocalHost().getHostName());
+    receiver.setPort(6000);
+    receiver.start();
+    assertTrue(receiver.awaitConnectorCreated(DELAY));
     Socket socket = serverSocket.accept();
 
     ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -212,7 +209,6 @@ public class SocketReceiverTest {
   private class InstrumentedSocketReceiver extends SocketReceiver {
 
     private boolean connectorCreated;
-    private boolean executorCreated;
 
     @Override
     protected synchronized SocketConnector newConnector(
@@ -227,11 +223,6 @@ public class SocketReceiverTest {
       return socketFactory;
     }
 
-    @Override
-    protected ExecutorService createExecutorService() {
-      return executor;
-    }
-
     public synchronized boolean awaitConnectorCreated(long delay) 
         throws InterruptedException {
       while (!connectorCreated) {
@@ -240,10 +231,6 @@ public class SocketReceiverTest {
       return connectorCreated;
     }
 
-    public boolean isExecutorCreated() {
-      return executorCreated;
-    }
-    
   }
   
   /**
