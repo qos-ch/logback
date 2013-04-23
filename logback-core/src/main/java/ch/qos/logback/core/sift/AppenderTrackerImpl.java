@@ -13,10 +13,7 @@
  */
 package ch.qos.logback.core.sift;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
@@ -24,22 +21,19 @@ import ch.qos.logback.core.CoreConstants;
 /**
  * Track appenders by a key. When an appender is not used for
  * longer than THRESHOLD, stop it.
+ *
  * @author Ceki Gulcu
+ * @author Tommy Becker
  */
 public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
 
-  Map<String, Entry> map = new HashMap<String, Entry>();
- 
-  Entry head; // least recently used entries are towards the head
-  Entry tail; // most recently used entries are towards the tail
+  static final boolean ACCESS_ORDERED = true;
+  Map<String, Entry> map = new LinkedHashMap<String, Entry>(16, .75f, ACCESS_ORDERED);
 
   long lastCheck = 0;
 
   AppenderTrackerImpl() {
-    head = new Entry(null, null, 0);
-    tail = head;
   }
-
 
   public synchronized void put(String key, Appender<E> value, long timestamp) {
     Entry entry = map.get(key);
@@ -47,7 +41,6 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
       entry = new Entry(key, value, timestamp);
       map.put(key, entry);
     }
-    moveToTail(entry);
   }
 
   public synchronized Appender<E> get(String key, long timestamp) {
@@ -56,133 +49,73 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
       return null;
     } else {
       existing.setTimestamp(timestamp);
-      moveToTail(existing);
       return existing.value;
     }
   }
 
-  
+
   public synchronized void stopStaleAppenders(long now) {
-    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
+    if (isTooSoon(now)) {
       return;
     }
     lastCheck = now;
-    while (head.value != null && isEntryStale(head,now)) {
-      Appender<E> appender = head.value;
-      appender.stop();
-      removeHead();
-    }
-  } 
-
-  /**
-   * @since 0.9.19
-   * @param key
-   */
-  public synchronized void stopAndRemoveNow(String key) {
-    Entry e = head;
-    Entry found = null;
-    while (e != tail) {
-      if(key.equals(e.key)) {
-        found = e;
+    Iterator<Map.Entry<String, Entry>> iter = map.entrySet().iterator();
+    while (iter.hasNext()) {
+      Map.Entry<String, Entry> mapEntry = iter.next();
+      Entry entry = mapEntry.getValue();
+      if (isEntryStale(entry, now)) {
+        iter.remove();
+        Appender<E> appender = entry.value;
+        appender.stop();
+      } else {
+        // if the first entry is not stale, then the following entries won't be stale either
         break;
       }
-      e = e.next;
     }
-    if(found != null) {
-      rearrangePreexistingLinks(e);
-      map.remove(key);
+  }
+
+  private boolean isTooSoon(long now) {
+    return (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND) > now;
+  }
+
+  /**
+   * @param key
+   * @since 0.9.19
+   */
+  public synchronized void endOfLife(String key) {
+    Entry e = map.remove(key);
+    if (e != null) {
       Appender<E> appender = e.value;
       appender.stop();
     }
   }
-  
+
   public List<String> keyList() {
-    List<String> result = new LinkedList<String>();
-    Entry e = head;
-    while (e != tail) {
-      result.add(e.key);
-      e = e.next;
-    }
-    return result;
+    return new ArrayList<String>(map.keySet());
   }
-  
-  
+
+
   private boolean isEntryStale(Entry entry, long now) {
     // stopped or improperly started appenders are considered stale
     // see also http://jira.qos.ch/browse/LBCLASSIC-316
-    if(!entry.value.isStarted())
+    if (!entry.value.isStarted())
       return true;
 
     // unused appenders are also considered stale
     return ((entry.timestamp + THRESHOLD) < now);
   }
 
-  
-  private void removeHead() {
-    // System.out.println("RemoveHead called");
-    map.remove(head.key);
-    head = head.next;
-    head.prev = null;
-  }
-
-  private void moveToTail(Entry e) {
-    rearrangePreexistingLinks(e);
-    rearrangeTailLinks(e);
-  }
-
-  private void rearrangePreexistingLinks(Entry e) {
-    if (e.prev != null) {
-      e.prev.next = e.next;
-    }
-    if (e.next != null) {
-      e.next.prev = e.prev;
-    }
-    if (head == e) {
-      head = e.next;
-    }
-  }
-
-  private void rearrangeTailLinks(Entry e) {
-    if (head == tail) {
-      head = e;
-    }
-    Entry preTail = tail.prev;
-    if (preTail != null) {
-      preTail.next = e;
-    }
-    e.prev = preTail;
-    e.next = tail;
-    tail.prev = e;
-  }
-
-  public void dump() {
-    Entry e = head;
-    System.out.print("N:");
-    while (e != null) {
-      // System.out.print(e+"->");
-      System.out.print(e.key + ", ");
-      e = e.next;
-    }
-    System.out.println();
-  }
-
-
 
   public List<Appender<E>> valueList() {
-    List<Appender<E>> result = new LinkedList<Appender<E>>();
-    Entry e = head;
-    while (e != tail) {
-      result.add(e.value);
-      e = e.next;
+    List<Appender<E>> result = new ArrayList<Appender<E>>();
+    for (Entry entry : map.values()) {
+      result.add(entry.value);
     }
     return result;
   }
-  
+
   // ================================================================
   private class Entry {
-    Entry next;
-    Entry prev;
-
     String key;
     Appender<E> value;
     long timestamp;
@@ -193,20 +126,13 @@ public class AppenderTrackerImpl<E> implements AppenderTracker<E> {
       this.timestamp = timestamp;
     }
 
-//    public long getTimestamp() {
-//      return timestamp;
-//    }
-
     public void setTimestamp(long timestamp) {
       this.timestamp = timestamp;
     }
 
     @Override
     public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + ((key == null) ? 0 : key.hashCode());
-      return result;
+      return key.hashCode();
     }
 
     @Override

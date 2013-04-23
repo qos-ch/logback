@@ -72,7 +72,7 @@ public class AppenderTrackerTest {
   public void removeNow() {
     long now = 3000;
     appenderTracker.put(key, la, now);
-    appenderTracker.stopAndRemoveNow(key);
+    appenderTracker.endOfLife(key);
     assertFalse(la.isStarted());
     appenderTracker.get(key, now++);
     assertNull(appenderTracker.get(key, now++));

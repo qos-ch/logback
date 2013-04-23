@@ -41,6 +41,11 @@ public class SiftingAppender extends SiftingAppenderBase<IAccessEvent> {
   }
 
   @Override
+  protected boolean eventMarksEndOfLife(IAccessEvent event) {
+    return false;
+  }
+
+  @Override
   @DefaultClass(AccessEventDiscriminator.class)
   public void setDiscriminator(Discriminator<IAccessEvent> discriminator) {
     super.setDiscriminator(discriminator);

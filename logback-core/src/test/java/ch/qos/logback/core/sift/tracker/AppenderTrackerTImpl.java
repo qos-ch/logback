@@ -68,7 +68,7 @@ public class AppenderTrackerTImpl implements AppenderTracker<Object> {
     }
   }
 
-  synchronized public void stopAndRemoveNow(String key) {
+  synchronized public void endOfLife(String key) {
     TEntry found = null;
     for (TEntry te : entryList) {
       if (key.equals(te.key)) {

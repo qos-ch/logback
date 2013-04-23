@@ -89,10 +89,16 @@ public abstract class SiftingAppenderBase<E> extends
         return;
       }
     }
+    // immediately remove the appender if asked by the user
+    if (eventMarksEndOfLife(event)) {
+      appenderTracker.endOfLife(discriminatingValue);
+    }
     appenderTracker.stopStaleAppenders(timestamp);
     
     appender.doAppend(event);
   }
+
+  protected abstract boolean eventMarksEndOfLife(E event);
 
   public Discriminator<E> getDiscriminator() {
     return discriminator;

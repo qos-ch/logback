@@ -126,7 +126,7 @@ public class Simulator {
 
   void doRemoveNow(AppenderTracker<Object> appenderTracker, String key) {
     // System.out.println("doRemoveNow "+(i++));
-    appenderTracker.stopAndRemoveNow(key);
+    appenderTracker.endOfLife(key);
   }
 
 }

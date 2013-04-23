@@ -93,7 +93,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     }
   }
 
-  protected boolean isEventMarkedForBufferRemoval(ILoggingEvent eventObject) {
+  protected boolean eventMarksEndOfLife(ILoggingEvent eventObject) {
     Marker marker = eventObject.getMarker();
     if(marker == null)
       return false;

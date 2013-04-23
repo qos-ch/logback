@@ -236,7 +236,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     // immediately remove the buffer if asked by the user
-    if (isEventMarkedForBufferRemoval(eventObject)) {
+    if (eventMarksEndOfLife(eventObject)) {
       cbTracker.removeBuffer(key);
     }
 
@@ -252,7 +252,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  abstract protected boolean isEventMarkedForBufferRemoval(E eventObject);
+  abstract protected boolean eventMarksEndOfLife(E eventObject);
 
   abstract protected void subAppend(CyclicBuffer<E> cb, E eventObject);
 

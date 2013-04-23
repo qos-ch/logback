@@ -86,7 +86,7 @@ public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
     return pl;
   }
 
-  protected boolean isEventMarkedForBufferRemoval(IAccessEvent eventObject) {
+  protected boolean eventMarksEndOfLife(IAccessEvent eventObject) {
     return false;
   }
 
