@@ -3749,6 +3749,17 @@ logger.debug("Alice says hello"); </p>
     distinct log files, "unknown.log" and "Alice.log".
 		</p>
 
+    <p><span class="label">local-scoped variables</span> As of version
+    1.0.12, properties defined in local scope within the configuration
+    file will be available to nested appenders. Moreover, you can <a
+    href="configuration.html#definingProps">define variables</a> or <a
+    href="configuration.html#definingPropsOnTheFly">dynamically
+    compute</a> variables from <em>within</em> the the
+    <code>&lt;sift></code> element. Combining a variable from parts
+    defined outside and within the <code>&lt;sift></code> element is
+    also supported.
+    </p>
+
     <h3><a name="AsyncAppender"
     href="#AsyncAppender">AsyncAppender</a></h3>
 
