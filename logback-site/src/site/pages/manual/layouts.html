@@ -753,8 +753,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 			<tr>
 				<td class="word" name="mdc">
-					<b>X</b>{<em>key</em>} <br /> 
-					<b>mdc</b>{<em>key</em>} <br />
+					<b>X</b>{<em>key:-defaultVal</em>} <br /> 
+					<b>mdc</b>{<em>key:-defaultVal</em>} <br />
 				</td>
 
 				<td>
@@ -766,16 +766,19 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					<p>If the <b>mdc</b> conversion word is followed by a key
 					between braces, as in <b>%mdc{userid}</b>, then the MDC
 					value corresponding to the key 'userid' will be output. If
-					the that value is null, the empty string is output.
+					the value is null, then the <a
+					href="configuration.html#defaultValuesForVariables">default
+					value</a> speficied after the <b>:-</b> operator is
+					output. If no deault value is specified than the empty
+					string is output.
 					</p>
 
-					<p>If no option is given, then the entire content of the MDC
+					<p>If no key is given, then the entire content of the MDC
 					will be output in the format "key1=val1, key2=val2".
 					</p>
 
 					<p>See the <a href="mdc.html">chapter on MDC</a> for more
-					details on the subject.
-					</p>
+					details on the subject.</p>
 
 				</td>
 			</tr>
