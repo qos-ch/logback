@@ -1999,17 +1999,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
             the appender, as described in <a href="usingSSL.html">Using SSL</a>.
         </td>
       </tr>
-      <tr>
-        <td><span class="prop" container="serverSocketAppender">threadPool</span></td>
-        <td><code>ThreadPoolFactoryBean</code></td>
-        <td>This property specifies configuration for a thread pool that will
-            be used to manage the appender's thread resources.  In most cases,
-            this configuration is not required, as the defaults are generally
-            adequate.  See <a href="../xref/ch/qos/logback/core/net/server/ThreadPoolFactoryBean">
-            <code>ThreadPoolFactoryBean</code></a> for a description of the 
-            configurable properties and recommended settings.
-        </td>
-      </tr>
     </table>
     
     <p>The following example illustrates a configuration that uses
