@@ -21,14 +21,14 @@ import java.util.Map;
 public class MDCConverter extends ClassicConverter {
 
   String key;
-  private String EMPTY_STRING = "";
+  private String DEFAULT_VALUE = "";
 
   @Override
   public void start() {
     key = getFirstOption();
     List<String> optionList = getOptionList();
     if (optionList != null && optionList.size() > 1) {
-      EMPTY_STRING = optionList.get(1);
+      DEFAULT_VALUE = optionList.get(1);
     }
     super.start();
   }
@@ -44,7 +44,7 @@ public class MDCConverter extends ClassicConverter {
     Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
     if (mdcPropertyMap == null) {
-      return EMPTY_STRING;
+      return DEFAULT_VALUE;
     }
 
     if (key == null) {
@@ -55,7 +55,7 @@ public class MDCConverter extends ClassicConverter {
       if (value != null) {
         return value;
       } else {
-        return EMPTY_STRING;
+        return DEFAULT_VALUE;
       }
     }
   }
