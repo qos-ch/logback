@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -58,7 +57,7 @@ public class ServerSocketReceiverFunctionalTest {
   
   @Before
   public void setUp() throws Exception {
-    lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    lc = new LoggerContext();
     
     appender = new MockAppender();
     appender.start();
