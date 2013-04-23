@@ -36,9 +36,6 @@ public class LifeCycleManager {
    * @param component the component whose life cycle is to be managed
    */
   public void register(LifeCycle component) {
-    if (!component.isStarted()) {
-      component.start();
-    }
     components.add(component);
   }
   

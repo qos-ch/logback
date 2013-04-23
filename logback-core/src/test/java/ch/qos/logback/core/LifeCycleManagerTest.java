@@ -15,7 +15,6 @@
 package ch.qos.logback.core;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ public class LifeCycleManagerTest {
   public void testRegisterAndReset() {
     MockLifeCycleComponent component = new MockLifeCycleComponent();
     manager.register(component);
-    assertTrue(component.isStarted());
+    component.start();
     manager.reset();
     assertFalse(component.isStarted());
   }
