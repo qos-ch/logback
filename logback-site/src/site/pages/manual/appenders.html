@@ -99,8 +99,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	
-	<h2><a name="AppenderBase" href="#AppenderBase"><span
-	class="anchor"/></a>AppenderBase</h2>
+	<h2 class="doAnchor" name="AppenderBase">AppenderBase</h2>
 	
 	<p>The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
 	<code>ch.qos.logback.core.AppenderBase</code></a> class is an
@@ -236,8 +235,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 
 	
-	<h2><a name="OutputStreamAppender" href="#OutputStreamAppender"><span
-	class="anchor"/></a>OutputStreamAppender
+	<h2 class="doAnchor"
+	name="OutputStreamAppender">OutputStreamAppender
   </h2>
 	
 	<p><a
@@ -285,8 +284,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<img src="images/chapters/appenders/appenderClassDiagram.jpg" alt="A UML diagram showing OutputStreamAppender and sub-classes"/>
 	
 
-	<h2><a name="ConsoleAppender" href="#ConsoleAppender"><span
-	class="anchor"/></a>ConsoleAppender</h2>
+	<h2 class="doAnchor" name="ConsoleAppender">ConsoleAppender</h2>
 	
   <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
   <code>ConsoleAppender</code></a>, as the name indicates, appends on
@@ -380,8 +378,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    href="../xref/chapters/appenders/ConfigurationTester.html">chapters.appenders.ConfigurationTester</a> src/main/java/chapters/appenders/conf/logback-Console.xml</p>
 	
 	
-   <h2><a name="FileAppender" href="#FileAppender"><span
-   class="anchor"/></a>FileAppender</h2>
+   <h2 class="doAnchor" name="FileAppender">FileAppender</h2>
 	
    <p>The <a
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
@@ -550,8 +547,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    src/main/java/chapters/appenders/conf/logback-fileAppender.xml</p>
 	
 	
-   <h3><a name="uniquelyNamed" href="#uniquelyNamed"><span
-   class="anchor"/></a>Uniquely named files (by timestamp)</h3>
+   <h3 class="doAnchor" name="uniquelyNamed">Uniquely named files (by
+   timestamp)</h3>
    
    <p>During the application development phase or in the case of
    short-lived applications, e.g. batch applications, it is desirable
@@ -628,8 +625,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   ...
 &lt;/configuration></pre>
 
-   <h2><a name="RollingFileAppender" href="#RollingFileAppender"><span
-   class="anchor"/></a>RollingFileAppender
+   <h2 class="doAnchor" name="RollingFileAppender">RollingFileAppender
    </h2>
    
    <p><a
@@ -737,8 +733,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
    </table>
 	
-   <h3><a name="onRollingPolicies" href="#onRollingPolicies"><span
-   class="anchor"/></a>Overview of rolling policies</h3>
+   <h3 class="doAnchor" name="onRollingPolicies">Overview of rolling
+   policies</h3>
 	
    <p><a
    href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
@@ -774,10 +770,8 @@ public interface RollingPolicy extends LifeCycle {
         ================= -->
 
 	
-   <h4>
-     <a name="TimeBasedRollingPolicy"
-     href="#TimeBasedRollingPolicy"><span
-     class="anchor"/></a>TimeBasedRollingPolicy
+   <h4 class="doAnchor"
+   name="TimeBasedRollingPolicy">TimeBasedRollingPolicy
    </h4>
 
    <p><a
@@ -1169,9 +1163,8 @@ public interface RollingPolicy extends LifeCycle {
 &lt;/configuration></pre>
 
 
-   <h4><a name="FixedWindowRollingPolicy"
-   href="#FixedWindowRollingPolicy"><span
-   class="anchor"/></a>FixedWindowRollingPolicy
+   <h4 class="doAnchor"
+   name="FixedWindowRollingPolicy">FixedWindowRollingPolicy
    </h4>
 
    <p>When rolling over, <a
@@ -1350,10 +1343,8 @@ public interface RollingPolicy extends LifeCycle {
 &lt;/configuration></pre>
 
 
-    <h3>
-      <a name="SizeAndTimeBasedFNATP"
-      href="#SizeAndTimeBasedFNATP"><span class="anchor"/></a>Size
-      <b>and</b> time based archiving
+    <h3 class="doAnchor" name="SizeAndTimeBasedFNATP">Size <b>and</b>
+    time based archiving
     </h3>
 
     <p>Sometimes you may wish to archive files essentially by date but
@@ -1517,9 +1508,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     </p>
 
-		<h3> 
-      <a name="SocketAppender" href="#SocketAppender"><span
-      class="anchor"/></a>SocketAppender and SSLSocketAppender
+		<h3 class="doAnchor" name="SocketAppender">SocketAppender and
+		SSLSocketAppender
     </h3>
 		
 		<p>The appenders covered thus far are only able to log to local
@@ -1901,29 +1891,30 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
  	  </p>
  	  
  	  <p>Note that the <em>truststore</em> property given on the command
- 	  line specifies a file URL that identifies the location of the trust 
- 	  store.  You may also use a classpath URL as described in 
- 	  <a href="usingSSL.html">Using SSL</a>.
+ 	  line specifies a file URL that identifies the location of the
+ 	  trust store.  You may also use a classpath URL as described in <a
+ 	  href="usingSSL.html">Using SSL</a>.
  	  </p>
  
-    <p>As we saw previously at server startup, because the 
-    client configuration has <code>debug="true"</code> specified on the
-    root element, the client's startup logging includes the details of
-    the SSL configuration as aid to auditing local policy conformance.
+    <p>As we saw previously at server startup, because the client
+    configuration has <code>debug="true"</code> specified on the root
+    element, the client's startup logging includes the details of the
+    SSL configuration as aid to auditing local policy conformance.
     </p>
  	  
  	  
-    <h3 class="doAnchor"><a name="serverSocketAppender"></a>
+    <h3 class="doAnchor" name="serverSocketAppender">
       ServerSocketAppender and SSLServerSocketAppender</h3>
     
-    <p>The <code>SocketAppender</code> component (and its SSL-enabled 
-       counterpart) discussed previously are designed to allow an application
-       to connect to a remote logging server over the network for the purpose
-       of delivering logging events to the server.  In some situations,
-       it may be inconvenient or infeasible to have an application initiate a
-       connection to a remote logging server.  For these situations, Logback
-       offers <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
-       <code>ServerSocketAppender</code></a>.  
+    <p>The <code>SocketAppender</code> component (and its SSL-enabled
+    counterpart) discussed previously are designed to allow an
+    application to connect to a remote logging server over the network
+    for the purpose of delivering logging events to the server.  In
+    some situations, it may be inconvenient or infeasible to have an
+    application initiate a connection to a remote logging server.  For
+    these situations, Logback offers <a
+    href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
+    <code>ServerSocketAppender</code></a>.
     </p>
     
     <p>Instead of initiating a connection to a remote logging server, 
@@ -1949,7 +1940,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     of connection initiation is reversed.  While <code>SocketAppender</code> 
     acts as the active peer in establishing the connection to a logging server,
     <code>ServerSocketAppender</code> is passive; it listens for
-    incoming connections from clients.  
+    incoming connections from clients.</p>  
 
     <p>The <code>ServerSocketAppender</code> subtypes are intended to be
     used exclusively with Logback <em>receiver</em> components.  See
@@ -2356,7 +2347,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
 
-
 		</table>		
 		
 		<p>The <code>SMTPAppender</code> keeps only the last 256 logging
@@ -2486,8 +2476,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <code>HTMLLayout</code> does not use inline CSS.
     </p>
 
-    <h3><a name="cyclicBufferSize" href="#cyclicBufferSize"><span
-    class="anchor"/></a>Custom buffer size</h3>
+    <h3 class="doAnchor" name="cyclicBufferSize">Custom buffer
+    size</h3>
 
     <p>By default, the outgoing message will contain the last 256
     messages seen by <code>SMTPAppender</code>. If your heart so
@@ -2670,10 +2660,8 @@ logger.error(<b>notifyAdmin</b>,
   chapters.appenders.mail.Marked_EMail src/main/java/chapters/appenders/mail/mailWithMarker.xml</pre>
 
 
-  <h4><a name="marker_JaninoEventEvaluator"
-  href="#marker_JaninoEventEvaluator"><span
-  class="anchor"/></a>Marker-based triggering with
-  JaninoEventEvaluator</h4>
+  <h4 class="doAnchor" name="marker_JaninoEventEvaluator">Marker-based
+  triggering with JaninoEventEvaluator</h4>
 
     <p>Note that instead of using the marker-centric
     <code>OnMarkerEvaluator</code>, we could use the much more generic
@@ -2703,10 +2691,8 @@ logger.error(<b>notifyAdmin</b>,
   &lt;/appender>
 &lt;/configuration></pre>
 
-    <h4><a name="marker_GEventEvaluator"
-    href="#marker_GEventEvaluator"><span
-    class="anchor"/></a>Marker-based triggering with
-    GEventEvaluator</h4>
+    <h4 class="doAnchor" name="marker_GEventEvaluator">Marker-based
+    triggering with GEventEvaluator</h4>
 
     <p>Here is the equivalent evaluator using <a
     href="filters.html#GEventEvaluator">GEventEvaluator</a>.</p>
@@ -2746,9 +2732,8 @@ logger.error(<b>notifyAdmin</b>,
     connection is encrypted right from the start.
     </p>
 
-    <h3><a name="gmailSSL" href="#gmailSSL"><span
-    class="anchor"/></a>SMTPAppender configuration for Gmail
-    (SSL)</h3>
+    <h3> class="doAnchor"name="gmailSSL">SMTPAppender configuration
+    for Gmail (SSL)</h3>
 
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail with the SSL protocol. </p>
@@ -2781,8 +2766,8 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 
-    <h3><a name="gmailSTARTTLS" href="#gmailSTARTTLS"><span
-    class="anchor"/></a>SMTPAppender for Gmail (STARTTLS)</h3>
+    <h3 class="doAnchor" name="gmailSTARTTLS">SMTPAppender for Gmail
+    (STARTTLS)</h3>
 
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail for the STARTTLS protocol. </p>
@@ -2813,8 +2798,8 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 
-    <h3><a name="smtpDiscriminator" href="#smtpDiscriminator"><span
-    class="anchor"/></a>SMTPAppender with MDCDiscriminator</h3>
+    <h3 class="doAnchor" name="smtpDiscriminator">SMTPAppender with MDCDiscriminator</h3>
+
 
     <p>As mentioned earlier, by specifying a discriminator other than
     the default one, <code>SMTPAppender</code> will generate email
@@ -2864,8 +2849,8 @@ logger.error(<b>notifyAdmin</b>,
     host, greatly facilitating problem diagnosis.
     </p>
     
-    <h4><a name= "bufferManagement" href="#bufferManagement"><span
-    class="anchor"/></a>Buffer management in very busy systems</h4>
+    <h4 class="doAnchor" name= "bufferManagement">Buffer management in
+    very busy systems</h4>
 
     <p>Internally, each distinct value returned by the discriminator
     will cause the creation of a new cyclic buffer. However, at most
@@ -2907,9 +2892,7 @@ logger.error(<b>notifyAdmin</b>,
     <!-- =========================================================== -->
 
 
-    <h3><a name="DBAppender" href="#DBAppender"><span
-    class="anchor"/></a>DBAppender
-		</h3>
+    <h3 class="doAnchor" name="DBAppender">DBAppender</h3>
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a>
@@ -3371,9 +3354,8 @@ logger.error(<b>notifyAdmin</b>,
 		
 		-->
 
-    <h4><a name="JNDIConnectionSource"
-    href="#JNDIConnectionSource"><span
-    class="anchor"/></a>JNDIConnectionSource</h4>
+    <h4 class="doAnchor"
+    name="JNDIConnectionSource">JNDIConnectionSource</h4>
 
 		<p><a
 		href="../xref/ch/qos/logback/core/db/JNDIConnectionSource.html">

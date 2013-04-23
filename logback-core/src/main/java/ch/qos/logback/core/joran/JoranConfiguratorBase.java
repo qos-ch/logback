@@ -57,6 +57,7 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
   @Override
   protected void addInstanceRules(RuleStore rs) {
 
+    // is "configuration/variable" referenced in the docs?
     rs.addRule(new Pattern("configuration/variable"), new PropertyAction());
     rs.addRule(new Pattern("configuration/property"), new PropertyAction());
 

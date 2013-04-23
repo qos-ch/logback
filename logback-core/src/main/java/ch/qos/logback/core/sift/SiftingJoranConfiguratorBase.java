@@ -19,11 +19,12 @@ import java.util.Map;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.GenericConfigurator;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.*;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.RuleStore;
 
 public abstract class SiftingJoranConfiguratorBase<E> extends
     GenericConfigurator {
@@ -41,6 +42,16 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
     nestedSimpleIA.setContext(context);
     interpreter.addImplicitAction(nestedSimpleIA);
   }
+
+  @Override
+  protected void addInstanceRules(RuleStore rs) {
+    rs.addRule(new Pattern("configuration/property"), new PropertyAction());
+    rs.addRule(new Pattern("configuration/timestamp"), new TimestampAction());
+    rs.addRule(new Pattern("configuration/define"), new DefinePropertyAction());
+  }
+
+
+
 
   abstract public Appender<E> getAppender();
 

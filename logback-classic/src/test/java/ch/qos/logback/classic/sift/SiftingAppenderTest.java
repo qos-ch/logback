@@ -163,7 +163,7 @@ public class SiftingAppenderTest {
     String prefix = "Y";
     configure(SIFT_FOLDER_PREFIX + "propertyPropagation.xml");
     MDC.put(mdcKey, mdcVal);
-    logger.debug("localPropertiesShouldBeVisible");
+    logger.debug(msg);
     long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
@@ -173,5 +173,44 @@ public class SiftingAppenderTest {
     assertEquals(1, listAppender.strList.size());
     assertEquals(prefix + msg, strList.get(0));
   }
+
+  @Test
+  public void propertyDefinedWithinSiftElementShouldBeVisible() throws JoranException {
+    String mdcKey = "propertyDefinedWithinSift";
+    String mdcVal = "" + diff;
+    String msg = "propertyDefinedWithinSiftElementShouldBeVisible";
+    String prefix = "Y";
+    configure(SIFT_FOLDER_PREFIX + "propertyDefinedInSiftElement.xml");
+    MDC.put(mdcKey, mdcVal);
+    logger.debug(msg);
+    long timestamp = System.currentTimeMillis();
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
+            .getAppenderTracker().get(mdcVal, timestamp);
+    assertNotNull(listAppender);
+    List<String> strList = listAppender.strList;
+    assertEquals(1, listAppender.strList.size());
+    assertEquals(prefix + msg, strList.get(0));
+  }
+
+  @Test
+  public void compositePropertyShouldCombineWithinAndWithoutSiftElement() throws JoranException {
+    String mdcKey = "compositeProperty";
+    String mdcVal = "" + diff;
+    String msg = "compositePropertyShouldCombineWithinAndWithoutSiftElement";
+    String prefix = "composite";
+    configure(SIFT_FOLDER_PREFIX + "compositeProperty.xml");
+    MDC.put(mdcKey, mdcVal);
+    logger.debug(msg);
+    long timestamp = System.currentTimeMillis();
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
+            .getAppenderTracker().get(mdcVal, timestamp);
+    assertNotNull(listAppender);
+    List<String> strList = listAppender.strList;
+    assertEquals(1, listAppender.strList.size());
+    assertEquals(prefix + msg, strList.get(0));
+  }
+
 
 }

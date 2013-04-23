@@ -46,6 +46,7 @@ public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILog
   
   @Override
   protected void addInstanceRules(RuleStore rs) {
+    super.addInstanceRules(rs);
     rs.addRule(new Pattern("configuration/appender"), new AppenderAction());
   }
 
