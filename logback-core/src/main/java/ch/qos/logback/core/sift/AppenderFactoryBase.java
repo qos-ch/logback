@@ -20,6 +20,11 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.JoranException;
 
+/**
+ * Builds new appenders dynamically by running SiftingJoranConfigurator instance, a custom configurator
+ * tailored for the contents of the sift element.
+ * @param <E>
+ */
 public abstract class AppenderFactoryBase<E> {
 
   final List<SaxEvent> eventList;

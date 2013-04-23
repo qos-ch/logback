@@ -91,6 +91,15 @@
     href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
     </p>
 
+    <p>As all other actions affecting properties,
+    <code>TimestampAction</code> now inserts the user-specified
+    property into the local scope by default. The property was
+    inserted into the context scope in earlier versions of logback.
+    This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-835">LOGBACK-835</a> with
+    David Roussel providing the appropriate patch.
+    </p>
+
     <p>Logback is now able to retrieve the name of localhost when
     running under OS X and Java 7. This issue was reporteed by <a
     href="http://jira.qos.ch/browse/LOGBACK-749">LOGBACK-749</a> by

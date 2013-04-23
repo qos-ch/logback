@@ -66,7 +66,6 @@ public class TimestampAction extends Action {
       return;
 
     String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
-
     Scope scope = ActionUtil.stringToScope(scopeStr);
     
     CachingDateFormatter sdf = new CachingDateFormatter(datePatternStr);
