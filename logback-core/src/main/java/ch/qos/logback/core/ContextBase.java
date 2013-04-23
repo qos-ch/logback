@@ -16,9 +16,7 @@ package ch.qos.logback.core;
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -57,7 +55,7 @@ public class ContextBase implements Context {
           0L, TimeUnit.MILLISECONDS,
           new SynchronousQueue<Runnable>());
 
-  private final Set<LifeCycle> lifeCycleComponents = new HashSet<LifeCycle>();
+  private LifeCycleManager lifeCycleManager;
   
   public StatusManager getStatusManager() {
     return sm;
@@ -119,7 +117,7 @@ public class ContextBase implements Context {
    * Clear the internal objectMap and all properties.
    */
   public void reset() {
-    resetLifeCycleComponents();
+    getLifeCycleManager().reset();
     propertyMap.clear();
     objectMap.clear();
   }
@@ -156,23 +154,19 @@ public class ContextBase implements Context {
   }
 
   public void addLifeCycleComponent(LifeCycle component) {
-    if (!component.isStarted()) {
-      component.start();
-    }
-    lifeCycleComponents.add(component);
+    getLifeCycleManager().addComponent(component);
   }
 
-  private void resetLifeCycleComponents() {
-    for (LifeCycle component : lifeCycleComponents) {
-      if (component.isStarted()) {
-        component.stop();
-      }
+  protected synchronized LifeCycleManager getLifeCycleManager() {
+    if (lifeCycleManager == null) {
+      lifeCycleManager = new LifeCycleManager();
     }
-    lifeCycleComponents.clear();
+    return lifeCycleManager;
   }
   
   @Override
   public String toString() {
     return name;
   }
+
 }

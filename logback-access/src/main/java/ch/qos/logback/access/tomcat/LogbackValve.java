@@ -16,11 +16,9 @@ package ch.qos.logback.access.tomcat;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,6 +43,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.BasicStatusManager;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.LifeCycleManager;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -79,7 +78,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
 
-  private final Set<LifeCycle> lifeCycleComponents = new HashSet<LifeCycle>();
+  private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
   
   private long birthTime = System.currentTimeMillis();
   LogbackLock configurationLock = new LogbackLock();
@@ -201,7 +200,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   protected void stopInternal() throws LifecycleException {
     started = false;
     setState(LifecycleState.STOPPING);
-    resetLifeCycleComponents();
+    lifeCycleManager.reset();
   }
 
   public void addAppender(Appender<IAccessEvent> newAppender) {
@@ -307,19 +306,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   }
 
   public void addLifeCycleComponent(LifeCycle component) {
-    if (!component.isStarted()) {
-      component.start();
-    }
-    lifeCycleComponents.add(component);
-  }
-
-  private void resetLifeCycleComponents() {
-    for (LifeCycle component : lifeCycleComponents) {
-      if (component.isStarted()) {
-        component.stop();
-      }
-    }
-    lifeCycleComponents.clear();
+    lifeCycleManager.addComponent(component);
   }
 
   // ====== Methods from catalina Lifecycle =====
