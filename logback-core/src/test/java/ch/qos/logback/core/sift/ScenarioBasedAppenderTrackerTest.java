@@ -33,7 +33,7 @@ public class ScenarioBasedAppenderTrackerTest {
   
   @Test
   public void shortTest() {
-    simulator = new Simulator(20, AppenderTracker.THRESHOLD / 2, INVERSE_OF_NO_REMOVE);
+    simulator = new Simulator(20, AppenderTracker.DEFAULT_TIMEOUT / 2, INVERSE_OF_NO_REMOVE);
     simulator.buildScenario(200);
     simulator.simulate();
     verify();
@@ -42,7 +42,7 @@ public class ScenarioBasedAppenderTrackerTest {
 
   @Test
   public void shortTestWithRemovals() {
-    simulator = new Simulator(10, AppenderTracker.THRESHOLD / 10, 2);
+    simulator = new Simulator(10, AppenderTracker.DEFAULT_TIMEOUT / 10, 2);
     simulator.buildScenario(200);
     simulator.simulate();
     verify();
@@ -50,7 +50,7 @@ public class ScenarioBasedAppenderTrackerTest {
   
   @Test
   public void mediumTest() {
-    simulator = new Simulator(100, AppenderTracker.THRESHOLD / 2, INVERSE_OF_NO_REMOVE);
+    simulator = new Simulator(100, AppenderTracker.DEFAULT_TIMEOUT / 2, INVERSE_OF_NO_REMOVE);
     simulator.buildScenario(20000);
     simulator.simulate();
     verify();
@@ -58,7 +58,7 @@ public class ScenarioBasedAppenderTrackerTest {
 
   @Test
   public void mediumTestWithRemovals() {
-    simulator = new Simulator(10, AppenderTracker.THRESHOLD / 100, 2);
+    simulator = new Simulator(10, AppenderTracker.DEFAULT_TIMEOUT / 100, 2);
     simulator.buildScenario(20000);
     simulator.simulate();
     verify();
@@ -67,7 +67,7 @@ public class ScenarioBasedAppenderTrackerTest {
   @Test
   @Ignore
   public void longTest() {
-    simulator = new Simulator(100, AppenderTracker.THRESHOLD / 200, 10);
+    simulator = new Simulator(100, AppenderTracker.DEFAULT_TIMEOUT / 200, 10);
     simulator.buildScenario(2000000);
     simulator.simulate();
     verify();

@@ -20,7 +20,9 @@ import ch.qos.logback.core.CoreConstants;
 
 public interface AppenderTracker<E> {
 
-  int THRESHOLD = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+  int DEFAULT_TIMEOUT = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+
+  int DEFAULT_MAX_APPENDERS = Integer.MAX_VALUE;
 
   void put(String key, Appender<E> value, long timestamp);
   Appender<E> get(String key, long timestamp);
@@ -28,4 +30,6 @@ public interface AppenderTracker<E> {
   List<String> keyList();
   List<Appender<E>> valueList();
   void stopAndRemoveNow(String key);
+  void setTimeout(int timeout);
+  void setMaxAppenders(int maxAppenders);
 }
