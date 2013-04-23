@@ -39,15 +39,17 @@ public class StatusListenerConfigHelper {
       try {
         listener = (StatusListener) OptionHelper.instantiateByClassName(
             listenerClass, StatusListener.class, loggerContext);
-        if(listener instanceof ContextAware) // LOGBACK-767
-          ((ContextAware) listener).setContext(loggerContext);
-        if(listener instanceof LifeCycle)  // LOGBACK-767
-          ((LifeCycle) listener).start();
       } catch (Exception e) {
         // printing on the console is the best we can do
         e.printStackTrace();
       }
     }
+    
+    if(listener instanceof ContextAware) // LOGBACK-767
+        ((ContextAware) listener).setContext(loggerContext);
+    if(listener instanceof LifeCycle)  // LOGBACK-767
+        ((LifeCycle) listener).start();
+    
     if (listener != null) {
       loggerContext.getStatusManager().add(listener);
     }
