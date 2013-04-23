@@ -13,19 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import static ch.qos.logback.classic.ClassicTestConstants.ISO_REGEX;
-import static ch.qos.logback.classic.ClassicTestConstants.MAIN_REGEX;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
-
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -36,6 +23,14 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.MDC;
+
+import static ch.qos.logback.classic.ClassicTestConstants.ISO_REGEX;
+import static ch.qos.logback.classic.ClassicTestConstants.MAIN_REGEX;
+import static org.junit.Assert.*;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
@@ -45,9 +40,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
   Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
   ILoggingEvent le;
-  List<String> optionList = new ArrayList<String>();
 
-  public PatternLayoutTest() {
+	public PatternLayoutTest() {
     super();
     Exception ex = new Exception("Bogus exception");
     le = makeLoggingEvent(ex);
@@ -145,6 +139,19 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
             + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
     assertTrue(val.matches(regex));
+  }
+
+  @Test
+  public void testMdcWithDefaultValue() {
+    pl.setPattern("%msg %mdc{foo} %mdc{bar:-[null]}");
+    pl.start();
+    MDC.put("foo", "foo");
+    try {
+      String val = pl.doLayout(getEventObject());
+      assertEquals("Some message foo [null]", val);
+    } finally {
+      MDC.remove("foo");
+    }
   }
 
 
