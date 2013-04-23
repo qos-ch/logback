@@ -305,8 +305,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     return configurationLock;
   }
 
-  public void addLifeCycleComponent(LifeCycle component) {
-    lifeCycleManager.addComponent(component);
+  public void register(LifeCycle component) {
+    lifeCycleManager.register(component);
   }
 
   // ====== Methods from catalina Lifecycle =====

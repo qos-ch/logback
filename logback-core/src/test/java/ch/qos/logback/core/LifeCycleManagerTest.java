@@ -30,9 +30,9 @@ public class LifeCycleManagerTest {
   private LifeCycleManager manager = new LifeCycleManager();
   
   @Test
-  public void testAddComponentAndReset() {
+  public void testRegisterAndReset() {
     MockLifeCycleComponent component = new MockLifeCycleComponent();
-    manager.addComponent(component);
+    manager.register(component);
     assertTrue(component.isStarted());
     manager.reset();
     assertFalse(component.isStarted());

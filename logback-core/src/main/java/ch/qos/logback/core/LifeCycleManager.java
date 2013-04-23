@@ -22,7 +22,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 /**
  * An object that manages a collection of components that implement the
  * {@link LifeCycle} interface.  Each component that is added to the manager
- * is started if necessary, and is stopped when the manager is reset.
+ * will be stopped and removed from the manager when the manager is reset.
  *
  * @author Carl Harris
  */
@@ -31,12 +31,11 @@ public class LifeCycleManager {
   private final Set<LifeCycle> components = new HashSet<LifeCycle>();
   
   /**
-   * Adds a component to this manager.  
+   * Registers a component with this manager.  
    * <p>
-   * The component is started if necessary. 
    * @param component the component whose life cycle is to be managed
    */
-  public void addComponent(LifeCycle component) {
+  public void register(LifeCycle component) {
     if (!component.isStarted()) {
       component.start();
     }

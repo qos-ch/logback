@@ -62,7 +62,7 @@ public class ContextBaseTest {
     assertEquals("valA", context.getProperty("keyA"));
     assertEquals("valA", context.getObject("keyA"));
     MockLifeCycleComponent component = new MockLifeCycleComponent();
-    context.addLifeCycleComponent(component);
+    context.register(component);
     assertSame(component, lifeCycleManager.getLastComponent());
     context.reset();
     assertNull(context.getProperty("keyA"));
@@ -102,9 +102,9 @@ public class ContextBaseTest {
     private boolean reset;
     
     @Override
-    public void addComponent(LifeCycle component) {
+    public void register(LifeCycle component) {
       lastComponent = component;
-      super.addComponent(component);
+      super.register(component);
     }
     
     @Override

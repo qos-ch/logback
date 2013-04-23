@@ -153,8 +153,8 @@ public class ContextBase implements Context {
     return  executorService;
   }
 
-  public void addLifeCycleComponent(LifeCycle component) {
-    getLifeCycleManager().addComponent(component);
+  public void register(LifeCycle component) {
+    getLifeCycleManager().register(component);
   }
 
   protected synchronized LifeCycleManager getLifeCycleManager() {

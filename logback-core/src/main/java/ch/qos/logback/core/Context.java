@@ -116,13 +116,13 @@ public interface Context extends PropertyContainer {
   ExecutorService getExecutorService();
   
   /**
-   * Adds a component that participates in the context's life cycle.
+   * Register a component that participates in the context's life cycle.
    * <p>
-   * A component that is passed to this method, will be started if necessary,
-   * and will be stopped when the context is reset.
+   * All components registered via this method will be stopped and removed
+   * from the context when the context is reset.
    * 
-   * @param component the subject componet
+   * @param component the subject component
    */
-  void addLifeCycleComponent(LifeCycle component);
+  void register(LifeCycle component);
   
 }

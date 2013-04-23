@@ -66,7 +66,8 @@ public class ReceiverAction extends Action {
     
     if (inError) return;
     
-    ic.getContext().addLifeCycleComponent(receiver);
+    ic.getContext().register(receiver);
+    receiver.start();
     
     Object o = ic.peekObject();
     if (o != receiver) {
