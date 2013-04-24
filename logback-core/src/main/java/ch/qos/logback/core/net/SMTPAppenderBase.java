@@ -96,7 +96,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   protected EventEvaluator<E> eventEvaluator;
 
   protected Discriminator<E> discriminator = new DefaultDiscriminator<E>();
-  protected CyclicBufferTracker<E> cbTracker;
+  protected CyclicBufferTrackerImpl<E> cbTracker;
 
   private int errorCount = 0;
 
@@ -237,13 +237,13 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     // immediately remove the buffer if asked by the user
     if (eventMarksEndOfLife(eventObject)) {
-      cbTracker.removeBuffer(key);
+      cbTracker.endOfLife(key);
     }
 
-    cbTracker.clearStaleBuffers(now);
+    cbTracker.removeStaleComponents(now);
 
     if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
-      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
+      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.getComponentCount() + "] buffers");
       lastTrackerStatusPrint = now;
       // quadruple 'delay' assuming less than max delay
       if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {
@@ -516,11 +516,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     this.localhost = localhost;
   }
 
-  public CyclicBufferTracker<E> getCyclicBufferTracker() {
+  public CyclicBufferTrackerImpl<E> getCyclicBufferTracker() {
     return cbTracker;
   }
 
-  public void setCyclicBufferTracker(CyclicBufferTracker<E> cbTracker) {
+  public void setCyclicBufferTracker(CyclicBufferTrackerImpl<E> cbTracker) {
     this.cbTracker = cbTracker;
   }
 

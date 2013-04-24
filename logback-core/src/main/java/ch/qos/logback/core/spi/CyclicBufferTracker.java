@@ -21,7 +21,7 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
  *
  * @author Ceki G&uuml;c&uuml;
  */
-public interface CyclicBufferTracker<E> {
+public interface CyclicBufferTracker extends ComponentTracker<CyclicBuffer> {
 
   int DEFAULT_BUFFER_SIZE = 256;
   int DEFAULT_NUMBER_OF_BUFFERS = 64;
@@ -52,7 +52,7 @@ public interface CyclicBufferTracker<E> {
    * @param timestamp
    * @return
    */
-  CyclicBuffer<E> getOrCreate(String key, long timestamp);
+  CyclicBuffer getOrCreate(String key, long timestamp);
 
   /**
    * Remove a cyclic buffer identified by its key.

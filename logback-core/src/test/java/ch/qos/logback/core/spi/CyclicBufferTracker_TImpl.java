@@ -23,10 +23,10 @@ import java.util.List;
 /**
  * @author Ceki G&uuml;c&uuml;
  */
-public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
+public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuffer<E>> {
 
-  int bufferSize = DEFAULT_BUFFER_SIZE;
-  int maxNumBuffers = DEFAULT_NUMBER_OF_BUFFERS;
+  int bufferSize = CyclicBufferTrackerImpl.DEFAULT_BUFFER_SIZE;
+  int maxNumBuffers = CyclicBufferTrackerImpl.DEFAULT_NUMBER_OF_BUFFERS;
 
   List<TEntry<E>> entryList = new LinkedList<TEntry<E>>();
   long lastCheck = 0;
@@ -86,7 +86,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
 
   }
 
-  public void removeBuffer(String k) {
+  public void endOfLife(String k) {
     for (int i = 0; i < entryList.size(); i++) {
       TEntry<E> te = entryList.get(i);
       if (te.key.equals(k)) {
@@ -97,10 +97,10 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
   }
 
   private boolean isEntryStale(TEntry<E> entry, long now) {
-    return ((entry.timestamp + THRESHOLD) < now);
+    return ((entry.timestamp + DEFAULT_TIMEOUT) < now);
   }
 
-  public void clearStaleBuffers(long now) {
+  public void removeStaleComponents(long now) {
     if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
       return;
     }
@@ -111,7 +111,7 @@ public class CyclicBufferTracker_TImpl<E> implements CyclicBufferTracker<E> {
     }
   }
 
-  public int size() {
+  public int getComponentCount() {
     return entryList.size();
   }
 

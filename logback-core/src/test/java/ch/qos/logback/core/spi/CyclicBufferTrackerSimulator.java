@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.spi;
 
+import ch.qos.logback.core.helpers.CyclicBuffer;
+
 import java.util.*;
 
 /**
@@ -75,7 +77,7 @@ public class CyclicBufferTrackerSimulator {
 
 
   void play(SimulationEvent simulationEvent,
-            CyclicBufferTracker<Object> tracker) {
+            ComponentTracker<CyclicBuffer<Object>> tracker) {
     String key = simulationEvent.key;
     long timestamp = simulationEvent.timestamp;
     EventType eventType = simulationEvent.eventType;
@@ -84,7 +86,7 @@ public class CyclicBufferTrackerSimulator {
         tracker.getOrCreate(key, timestamp);
         break;
       case DELETE:
-        tracker.removeBuffer(key);
+        tracker.endOfLife(key);
         break;
     }
   }
