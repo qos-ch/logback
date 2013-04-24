@@ -163,7 +163,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     // stopped or improperly started appenders are considered stale
     // see also http://jira.qos.ch/browse/LBCLASSIC-316
     C c = entry.component;
-    if(!isComponentStale(c))
+    if(isComponentStale(c))
       return true;
 
     return ((entry.timestamp + timeout) < now);
