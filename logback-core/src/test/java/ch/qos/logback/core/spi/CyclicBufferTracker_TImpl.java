@@ -26,29 +26,17 @@ import java.util.List;
 public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuffer<E>> {
 
   int bufferSize = CyclicBufferTrackerImpl.DEFAULT_BUFFER_SIZE;
-  int maxNumBuffers = CyclicBufferTrackerImpl.DEFAULT_NUMBER_OF_BUFFERS;
+  int maxComponents = CyclicBufferTrackerImpl.DEFAULT_NUMBER_OF_BUFFERS;
 
-  List<TEntry<E>> entryList = new LinkedList<TEntry<E>>();
+  List<TEntry<E>> mainList = new LinkedList<TEntry<E>>();
+  List<TEntry<E>> lingererList = new LinkedList<TEntry<E>>();
+
   long lastCheck = 0;
 
-  public int getBufferSize() {
-    return bufferSize;
-  }
 
-  public void setBufferSize(int size) {
-  }
-
-  public int getMaxNumberOfBuffers() {
-    return maxNumBuffers;
-  }
-
-  public void setMaxNumberOfBuffers(int maxNumBuffers) {
-    this.maxNumBuffers = maxNumBuffers;
-  }
-
-  private TEntry<E> getEntry(String k) {
-    for (int i = 0; i < entryList.size(); i++) {
-      TEntry<E> te = entryList.get(i);
+  private TEntry<E> getEntry(List<TEntry<E>> list,String k) {
+    for (int i = 0; i < list.size(); i++) {
+      TEntry<E> te = list.get(i);
       if (te.key.equals(k)) {
         return te;
       }
@@ -56,63 +44,98 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
     return null;
   }
 
-  List<String> keyList() {
-    Collections.sort(entryList);
+  private TEntry getFromEitherMap(String key) {
+    TEntry entry = getEntry(mainList, key);
+    if(entry != null)
+      return entry;
+    else {
+      return getEntry(lingererList, key);
+    }
+  }
 
+
+  List<String> keyList() {
+    Collections.sort(mainList);
     List<String> result = new LinkedList<String>();
-    for (int i = 0; i < entryList.size(); i++) {
-      TEntry<E> te = entryList.get(i);
+    for (int i = 0; i < mainList.size(); i++) {
+      TEntry<E> te = mainList.get(i);
       result.add(te.key);
     }
     return result;
   }
 
 
+
   public CyclicBuffer<E> getOrCreate(String key, long timestamp) {
-    TEntry<E> te = getEntry(key);
+    TEntry<E> te = getFromEitherMap(key);
     if (te == null) {
       CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
       te = new TEntry<E>(key, cb, timestamp);
-      entryList.add(te);
-      if (entryList.size() >= maxNumBuffers) {
-        entryList.remove(0);
+      mainList.add(te);
+      if (mainList.size() > maxComponents) {
+        Collections.sort(mainList);
+        mainList.remove(0);
       }
-      return cb;
     } else {
       te.timestamp = timestamp;
-      Collections.sort(entryList);
-      return te.value;
+      Collections.sort(mainList);
     }
-
+    return te.value;
   }
 
   public void endOfLife(String k) {
-    for (int i = 0; i < entryList.size(); i++) {
-      TEntry<E> te = entryList.get(i);
+    TEntry<E> te = null;
+    boolean found = false;
+    for (int i = 0; i < mainList.size(); i++) {
+      te = mainList.get(i);
       if (te.key.equals(k)) {
-        entryList.remove(i);
-        return;
+        mainList.remove(i);
+        found = true;
+        break;
       }
+    }
+    if(found) {
+      lingererList.add(te);
     }
   }
 
   private boolean isEntryStale(TEntry<E> entry, long now) {
     return ((entry.timestamp + DEFAULT_TIMEOUT) < now);
   }
+  private boolean isEntryDoneLingering(TEntry<E> tEntry, long now) {
+    return ((tEntry.timestamp + AbstractComponentTracker.LINGERING_TIMEOUT) < now);
+  }
 
   public void removeStaleComponents(long now) {
-    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
-      return;
-    }
-    lastCheck = now;
-    Collections.sort(entryList);
-    while (entryList.size() != 0 && isEntryStale(entryList.get(0), now)) {
-      entryList.remove(0);
+    if (isTooSoonForRemovalIteration(now)) return;
+    removeStaleComponentsFromMainList(now);
+    removeStaleComponentsFromLingerersList(now);
+  }
+
+  private void removeStaleComponentsFromMainList(long now) {
+    Collections.sort(mainList);
+    while (mainList.size() != 0 && isEntryStale(mainList.get(0), now)) {
+      mainList.remove(0);
     }
   }
 
+  private void removeStaleComponentsFromLingerersList(long now) {
+    Collections.sort(lingererList);
+    while (lingererList.size() != 0 && isEntryDoneLingering(lingererList.get(0), now)) {
+      lingererList.remove(0);
+    }
+  }
+
+  private boolean isTooSoonForRemovalIteration(long now) {
+    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
+      return true;
+    }
+    lastCheck = now;
+    return false;
+  }
+
   public int getComponentCount() {
-    return entryList.size();
+    return mainList.size() + lingererList.size();
   }
 
 

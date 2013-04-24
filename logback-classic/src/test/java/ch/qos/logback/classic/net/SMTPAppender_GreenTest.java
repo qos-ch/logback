@@ -202,7 +202,7 @@ public class SMTPAppender_GreenTest {
     MDC.put("key", "val");
     logger.debug("LBCLASSIC_104");
     MDC.clear();
-    logger.error("en error", new Exception("an exception"));
+    logger.error("en error", new Exception("test"));
 
     MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
     String body = GreenMailUtil.getBody(mp.getBodyPart(0));

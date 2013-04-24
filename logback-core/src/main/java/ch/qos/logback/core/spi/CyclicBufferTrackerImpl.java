@@ -16,10 +16,7 @@ package ch.qos.logback.core.spi;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -59,5 +56,9 @@ public class CyclicBufferTrackerImpl<E> extends AbstractComponentTracker<CyclicB
   @Override
   protected boolean isComponentStale(CyclicBuffer<E> eCyclicBuffer) {
     return false;
+  }
+
+  List<String> keyList() {
+    return new ArrayList<String>(keySet());
   }
 }

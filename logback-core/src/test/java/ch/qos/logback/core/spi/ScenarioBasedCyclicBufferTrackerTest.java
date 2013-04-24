@@ -33,7 +33,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
   @Test
   public void shortTest() {
     simulator = new CyclicBufferTrackerSimulator(64, 500);
-    simulator.buildScenario(200);
+    simulator.buildScenario(70);
     simulator.simulate();
     verify();
   }

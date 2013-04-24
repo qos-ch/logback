@@ -173,7 +173,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     return ((entry.timestamp + LINGERING_TIMEOUT) < now);
   }
 
-  protected Set<String> keyList() {
+  protected Set<String> keySet() {
     return mainMap.keySet();
   }
 
@@ -184,8 +184,9 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
    */
   public void endOfLife(String key) {
     Entry entry = mainMap.remove(key);
-    entry.lingering = true;
-    lingerersMap.put(key, entry);
+    if(entry == null)
+      return;
+     lingerersMap.put(key, entry);
   }
 
   public long getTimeout() {
@@ -209,7 +210,6 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     String key;
     C component;
     long timestamp;
-    boolean lingering = false;
 
     Entry(String k, C c, long timestamp) {
       this.key = k;

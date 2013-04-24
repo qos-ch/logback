@@ -14,7 +14,6 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
-import ch.qos.logback.core.sift.AppenderTrackerImpl;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
@@ -54,7 +53,7 @@ public class CyclicBufferTrackerImplTest {
     long now = 3000;
     CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
     assertEquals(cb, tracker.getOrCreate(key, now++));
-    now += AppenderTrackerImpl.THRESHOLD + 1000;
+    now += CyclicBufferTrackerImpl.DEFAULT_TIMEOUT + 1000;
     tracker.removeStaleComponents(now);
     assertEquals(0, tracker.keyList().size());
     assertEquals(0, tracker.getComponentCount());
@@ -67,7 +66,8 @@ public class CyclicBufferTrackerImplTest {
     cb.add(new Object());
     assertEquals(1, cb.length());
     tracker.endOfLife(key);
-
+    now += CyclicBufferTrackerImpl.LINGERING_TIMEOUT + 10;
+    tracker.removeStaleComponents(now);
     assertEquals(0, tracker.keyList().size());
     assertEquals(0, tracker.getComponentCount());
     assertEquals(0, cb.length());
