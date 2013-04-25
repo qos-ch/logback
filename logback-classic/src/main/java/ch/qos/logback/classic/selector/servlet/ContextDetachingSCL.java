@@ -42,6 +42,10 @@ public class ContextDetachingSCL implements ServletContextListener {
       System.out.println("About to detach context named " + loggerContextName);
       
       ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+      if(selector == null) {
+        System.out.println("Selector is null, cannot detach context. Skipping.");
+        return;
+      }
       LoggerContext context = selector.detachLoggerContext(loggerContextName);
       if (context != null) {
         Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
