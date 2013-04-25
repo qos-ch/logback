@@ -16,6 +16,9 @@ package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.CoreConstants;
 
+import java.util.Collection;
+import java.util.Set;
+
 /**
  * Interface for tracking various components by key. Components which have not
  * been accessed for more than a user-specified duration are deemed stale and
@@ -29,8 +32,18 @@ public interface ComponentTracker<C> {
 
 
   int DEFAULT_TIMEOUT = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+  int DEFAULT_MAX_COMPONENTS = Integer.MAX_VALUE;
 
   int getComponentCount();
+
+
+  /**
+   * Find the component identified by 'key', no timestamp update is performed.
+   *
+   * @param key
+   * @return
+   */
+  C get(String key);
 
   /**
    * Get the component identified by 'key', updating its timestamp in the
@@ -50,7 +63,7 @@ public interface ComponentTracker<C> {
    * been accessed for more than a user-specified duration are deemed stale.
    *
    *
-   * @param now
+   * @param now  current time in milliseconds
    */
   void removeStaleComponents(long now);
 
@@ -60,4 +73,17 @@ public interface ComponentTracker<C> {
    * @param key
    */
   void endOfLife(String key);
+
+  /**
+   * The collections of all components tracked by this instance.
+   * @return
+   */
+  Collection<C> components();
+
+
+  /**
+   * Set of all keys in this tracker.
+   * @return
+   */
+  Set<String> keySet();
 }

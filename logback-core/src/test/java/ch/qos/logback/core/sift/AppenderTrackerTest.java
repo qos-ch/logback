@@ -29,7 +29,7 @@ public class AppenderTrackerTest {
 
   
   Context context = new ContextBase();
-  AppenderTracker<Object> appenderTracker = new AppenderTrackerImpl<Object>();
+  AppenderTracker<Object> appenderTracker = new AppenderTracker<Object>(context, null);
   ListAppender<Object> la = new ListAppender<Object>();
   String key = "a";
   
@@ -43,38 +43,8 @@ public class AppenderTrackerTest {
   @Test
   public void empty0() {
     long now = 3000;
-    appenderTracker.stopStaleAppenders(now);
-    assertEquals(0, appenderTracker.keyList().size());
+    appenderTracker.removeStaleComponents(now);
+    assertEquals(0, appenderTracker.getComponentCount());
   }
-  
-  @Test
-  public void empty1() {
-    long now = 3000;
-    assertNull(appenderTracker.get(key, now++));
-    now += AppenderTrackerImpl.THRESHOLD+1000;
-    appenderTracker.stopStaleAppenders(now);
-    assertNull(appenderTracker.get(key, now++));
-  }
-  
-  @Test
-  public void smoke() {
-    assertTrue(la.isStarted());
-    long now = 3000;
-    appenderTracker.put(key, la, now);
-    assertEquals(la, appenderTracker.get(key, now++));
-    now += AppenderTrackerImpl.THRESHOLD+1000;
-    appenderTracker.stopStaleAppenders(now);
-    assertFalse(la.isStarted());
-    assertNull(appenderTracker.get(key, now++));
-  }
- 
-  @Test
-  public void removeNow() {
-    long now = 3000;
-    appenderTracker.put(key, la, now);
-    appenderTracker.endOfLife(key);
-    assertFalse(la.isStarted());
-    appenderTracker.get(key, now++);
-    assertNull(appenderTracker.get(key, now++));
-  }     
+
 }

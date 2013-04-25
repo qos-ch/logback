@@ -15,9 +15,6 @@ package ch.qos.logback.core.sift;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.helpers.NOPAppender;
-import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
  * This appender serves as the base class for actual SiftingAppenders
@@ -31,11 +28,14 @@ import ch.qos.logback.core.joran.spi.JoranException;
 public abstract class SiftingAppenderBase<E> extends
     AppenderBase<E> {
 
-  protected AppenderTracker<E> appenderTracker = new AppenderTrackerImpl<E>();
+  protected AppenderTracker<E> appenderTracker;
   AppenderFactoryBase<E> appenderFactory;
 
   Discriminator<E> discriminator;
 
+  /**
+   * This setter is intended to be invoked by SiftAction. Customers have no reason to invoke this setter directly.
+   */
   public void setAppenderFactory(AppenderFactoryBase<E> appenderFactory) {
     this.appenderFactory = appenderFactory;
   }
@@ -51,6 +51,11 @@ public abstract class SiftingAppenderBase<E> extends
       addError("Discriminator has not started successfully. Aborting");
       errors++;
     }
+    if(appenderFactory == null) {
+      addError("appenderFactory has not been set. Aborting");
+      errors++;
+    }
+    appenderTracker = new AppenderTracker<E>(context, appenderFactory);
     if (errors == 0) {
       super.start();
     }
@@ -58,7 +63,7 @@ public abstract class SiftingAppenderBase<E> extends
 
   @Override
   public void stop() {
-    for (Appender<E> appender : appenderTracker.valueList()) {
+    for (Appender<E> appender : appenderTracker.components()) {
       appender.stop();
     }
   }
@@ -74,27 +79,12 @@ public abstract class SiftingAppenderBase<E> extends
     String discriminatingValue = discriminator.getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
     
-    Appender<E> appender = appenderTracker.get(discriminatingValue, timestamp);
-    if (appender == null) {
-      try {
-        appender = appenderFactory.buildAppender(context, discriminatingValue);
-        if (appender == null) {
-          appender = buildNOPAppender(discriminatingValue);
-        }
-        appenderTracker.put(discriminatingValue, appender, timestamp);
-
-      } catch (JoranException e) {
-        addError("Failed to build appender for [" + discriminatingValue + "]",
-            e);
-        return;
-      }
-    }
-    // immediately remove the appender if asked by the user
+    Appender<E> appender = appenderTracker.getOrCreate(discriminatingValue, timestamp);
+    // marks the appender for removal as specified by the user
     if (eventMarksEndOfLife(event)) {
       appenderTracker.endOfLife(discriminatingValue);
     }
-    appenderTracker.stopStaleAppenders(timestamp);
-    
+    appenderTracker.removeStaleComponents(timestamp);
     appender.doAppend(event);
   }
 
@@ -109,18 +99,7 @@ public abstract class SiftingAppenderBase<E> extends
   }
   
   
-  int nopaWarningCount = 0;
-  
-  NOPAppender<E> buildNOPAppender(String discriminatingValue) {
-    if(nopaWarningCount < CoreConstants.MAX_ERROR_COUNT) {
-      nopaWarningCount++;
-      addError("Failed to build an appender for discriminating value ["+discriminatingValue+"]");
-    }
-    NOPAppender<E> nopa = new NOPAppender<E>();
-    nopa.setContext(context);
-    nopa.start();
-    return nopa;
-  }
+
 
   // sometime one needs to close a nested appender immediately
   // for example when executing a command which has its own nested appender

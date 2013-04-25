@@ -58,7 +58,7 @@ public class CyclicBufferTrackerImpl<E> extends AbstractComponentTracker<CyclicB
     return false;
   }
 
-  List<String> keyList() {
-    return new ArrayList<String>(keySet());
+  List<String> keysInMainMapAsOrderedList() {
+    return new ArrayList<String>(mainMap.keySet());
   }
 }

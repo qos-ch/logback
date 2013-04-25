@@ -16,9 +16,7 @@ package ch.qos.logback.core.spi;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -28,7 +26,7 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
   int bufferSize = CyclicBufferTrackerImpl.DEFAULT_BUFFER_SIZE;
   int maxComponents = CyclicBufferTrackerImpl.DEFAULT_NUMBER_OF_BUFFERS;
 
-  List<TEntry<E>> mainList = new LinkedList<TEntry<E>>();
+  List<TEntry<E>> liveList = new LinkedList<TEntry<E>>();
   List<TEntry<E>> lingererList = new LinkedList<TEntry<E>>();
 
   long lastCheck = 0;
@@ -44,8 +42,8 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
     return null;
   }
 
-  private TEntry getFromEitherMap(String key) {
-    TEntry entry = getEntry(mainList, key);
+  private TEntry getFromEitherList(String key) {
+    TEntry entry = getEntry(liveList, key);
     if(entry != null)
       return entry;
     else {
@@ -54,31 +52,55 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
   }
 
 
-  List<String> keyList() {
-    Collections.sort(mainList);
+  List<String> mainKeysAsOrderedList() {
+    Collections.sort(liveList);
     List<String> result = new LinkedList<String>();
-    for (int i = 0; i < mainList.size(); i++) {
-      TEntry<E> te = mainList.get(i);
+    for (int i = 0; i < liveList.size(); i++) {
+      TEntry<E> te = liveList.get(i);
       result.add(te.key);
     }
     return result;
   }
 
+  public Set<String> keySet() {
+    HashSet<String> allKeys = new HashSet<String>();
+    for (TEntry e : liveList)
+      allKeys.add(e.key);
+    for (TEntry e : lingererList)
+      allKeys.add(e.key);
+    return allKeys;
+  }
 
+
+  public Collection<CyclicBuffer<E>> components() {
+    List<CyclicBuffer<E>> allComponents = new ArrayList<CyclicBuffer<E>>();
+    for (TEntry e : liveList)
+      allComponents.add(e.value);
+    for (TEntry e : lingererList)
+      allComponents.add(e.value);
+
+    return allComponents;
+  }
+
+  public CyclicBuffer<E> get(String key) {
+    TEntry<E> te = getFromEitherList(key);
+    if(te == null) return  null;
+    else return te.value;
+  }
 
   public CyclicBuffer<E> getOrCreate(String key, long timestamp) {
-    TEntry<E> te = getFromEitherMap(key);
+    TEntry<E> te = getFromEitherList(key);
     if (te == null) {
       CyclicBuffer<E> cb = new CyclicBuffer<E>(bufferSize);
       te = new TEntry<E>(key, cb, timestamp);
-      mainList.add(te);
-      if (mainList.size() > maxComponents) {
-        Collections.sort(mainList);
-        mainList.remove(0);
+      liveList.add(te);
+      if (liveList.size() > maxComponents) {
+        Collections.sort(liveList);
+        liveList.remove(0);
       }
     } else {
       te.timestamp = timestamp;
-      Collections.sort(mainList);
+      Collections.sort(liveList);
     }
     return te.value;
   }
@@ -86,10 +108,10 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
   public void endOfLife(String k) {
     TEntry<E> te = null;
     boolean found = false;
-    for (int i = 0; i < mainList.size(); i++) {
-      te = mainList.get(i);
+    for (int i = 0; i < liveList.size(); i++) {
+      te = liveList.get(i);
       if (te.key.equals(k)) {
-        mainList.remove(i);
+        liveList.remove(i);
         found = true;
         break;
       }
@@ -113,9 +135,9 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
   }
 
   private void removeStaleComponentsFromMainList(long now) {
-    Collections.sort(mainList);
-    while (mainList.size() != 0 && isEntryStale(mainList.get(0), now)) {
-      mainList.remove(0);
+    Collections.sort(liveList);
+    while (liveList.size() != 0 && isEntryStale(liveList.get(0), now)) {
+      liveList.remove(0);
     }
   }
 
@@ -135,7 +157,7 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
   }
 
   public int getComponentCount() {
-    return mainList.size() + lingererList.size();
+    return liveList.size() + lingererList.size();
   }
 
 

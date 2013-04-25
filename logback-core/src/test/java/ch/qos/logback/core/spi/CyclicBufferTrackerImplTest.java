@@ -32,7 +32,7 @@ public class CyclicBufferTrackerImplTest {
   public void empty0() {
     long now = 3000;
     tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());
   }
 
@@ -42,7 +42,7 @@ public class CyclicBufferTrackerImplTest {
     assertNotNull(tracker.getOrCreate(key, now++));
     now += CyclicBufferTracker.THRESHOLD + 1000;
     tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());
 
     assertNotNull(tracker.getOrCreate(key, now++));
@@ -55,7 +55,7 @@ public class CyclicBufferTrackerImplTest {
     assertEquals(cb, tracker.getOrCreate(key, now++));
     now += CyclicBufferTrackerImpl.DEFAULT_TIMEOUT + 1000;
     tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());
   }
 
@@ -68,7 +68,7 @@ public class CyclicBufferTrackerImplTest {
     tracker.endOfLife(key);
     now += CyclicBufferTrackerImpl.LINGERING_TIMEOUT + 10;
     tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.keyList().size());
+    assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());
     assertEquals(0, cb.length());
   }

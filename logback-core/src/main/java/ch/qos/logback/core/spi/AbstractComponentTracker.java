@@ -21,18 +21,18 @@ import java.util.*;
 /**
  * An abstract implementation of the ComponentTracker interface.
  *
+ * @param <C>
  * @author Ceki Gulcu
  * @author Tommy Becker
  * @author David Roussel
- * @param <C>
  */
 abstract public class AbstractComponentTracker<C> implements ComponentTracker<C> {
   private static final boolean ACCESS_ORDERED = true;
 
   // Components in lingering state last 10 seconds
-  final static long LINGERING_TIMEOUT = 10*CoreConstants.MILLIS_IN_ONE_SECOND;
+  final static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
-  protected int maxComponents;
+  protected int maxComponents = DEFAULT_MAX_COMPONENTS;
   protected long timeout;
 
 
@@ -53,12 +53,14 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
 
   /**
    * Stop or clean the component.
+   *
    * @param component
    */
   abstract protected void stop(C component);
 
   /**
    * Build a component based on the key.
+   *
    * @param key
    * @return
    */
@@ -75,22 +77,30 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
 
 
   public int getComponentCount() {
-    return mainMap.size()+lingerersMap.size();
+    return mainMap.size() + lingerersMap.size();
   }
 
   /**
    * Get an entry from the mainMap, if not found search the lingerersMap.
+   *
    * @param key
    * @return
    */
   private Entry getFromEitherMap(String key) {
     Entry entry = mainMap.get(key);
-    if(entry != null)
+    if (entry != null)
       return entry;
     else {
       return lingerersMap.get(key);
     }
   }
+
+  public synchronized C get(String key) {
+    Entry entry = getFromEitherMap(key);
+    if (entry == null) return null;
+    else return entry.component;
+  }
+
 
   public synchronized C getOrCreate(String key, long timestamp) {
     Entry entry = getFromEitherMap(key);
@@ -108,7 +118,6 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   /**
    * Clear (and detach) components which are stale. Components which have not
    * been accessed for more than a user-specified duration are deemed stale.
-   *
    *
    * @param now
    */
@@ -163,7 +172,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     // stopped or improperly started appenders are considered stale
     // see also http://jira.qos.ch/browse/LBCLASSIC-316
     C c = entry.component;
-    if(isComponentStale(c))
+    if (isComponentStale(c))
       return true;
 
     return ((entry.timestamp + timeout) < now);
@@ -173,20 +182,32 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     return ((entry.timestamp + LINGERING_TIMEOUT) < now);
   }
 
-  protected Set<String> keySet() {
-    return mainMap.keySet();
+  public Set<String> keySet() {
+    HashSet<String> allKeys = new HashSet<String>(mainMap.keySet());
+    allKeys.addAll(lingerersMap.keySet());
+    return allKeys;
   }
 
+  public Collection<C> components() {
+    List<C> allComponents = new ArrayList<C>();
+    for (Entry e : mainMap.values())
+      allComponents.add(e.component);
+    for (Entry e : lingerersMap.values())
+      allComponents.add(e.component);
+
+    return allComponents;
+  }
 
   /**
    * Mark component identified by 'key' as having reached its end-of-life.
+   *
    * @param key
    */
   public void endOfLife(String key) {
     Entry entry = mainMap.remove(key);
-    if(entry == null)
+    if (entry == null)
       return;
-     lingerersMap.put(key, entry);
+    lingerersMap.put(key, entry);
   }
 
   public long getTimeout() {

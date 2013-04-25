@@ -27,7 +27,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
   void verify() {
     CyclicBufferTrackerImpl<Object> at = simulator.realCBTracker;
     CyclicBufferTracker_TImpl<Object> t_at = simulator.t_CBTracker;
-    assertEquals(t_at.keyList(), at.keyList());
+    assertEquals(t_at.mainKeysAsOrderedList(), at.keysInMainMapAsOrderedList());
   }
 
   @Test

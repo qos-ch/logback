@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({AppenderTrackerTest.class, ScenarioBasedAppenderTrackerTest.class})
+@SuiteClasses({AppenderTrackerTest.class})
 public class PackageTest  {
 }
