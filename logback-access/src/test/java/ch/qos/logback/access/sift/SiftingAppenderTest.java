@@ -17,9 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 import ch.qos.logback.access.jetty.JettyFixtureBase;
@@ -65,7 +63,7 @@ public class SiftingAppenderTest {
     StatusPrinter.print(rli);
     SiftingAppender siftingAppender = (SiftingAppender) rli
         .getAppender("SIFTING");
-    Set<String> keySet = siftingAppender.getAppenderTracker().keySet();
+    Set<String> keySet = siftingAppender.getAppenderTracker().allKeys();
     assertEquals(3, keySet.size());
 
     Set<String> witnessSet = new LinkedHashSet<String>();

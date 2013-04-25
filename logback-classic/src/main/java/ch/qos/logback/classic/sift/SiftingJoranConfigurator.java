@@ -29,14 +29,9 @@ import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
 public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILoggingEvent> {
 
-  String key;
-  String value;
-  Map<String, String> parentPropertyMap;
-  
+
   SiftingJoranConfigurator(String key, String value, Map<String, String> parentPropertyMap) {
-    this.key = key;
-    this.value = value;
-    this.parentPropertyMap = parentPropertyMap;
+    super(key, value, parentPropertyMap);
   }
   
   @Override

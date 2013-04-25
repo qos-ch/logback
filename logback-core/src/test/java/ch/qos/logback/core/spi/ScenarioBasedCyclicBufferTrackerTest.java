@@ -13,43 +13,60 @@
  */
 package ch.qos.logback.core.spi;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 
 /**
+ * A
+ *
  * @author Ceki G&uuml;c&uuml;
  */
 public class ScenarioBasedCyclicBufferTrackerTest {
 
   CyclicBufferTrackerSimulator simulator;
+  CyclicBufferTrackerSimulator.Parameters parameters = new CyclicBufferTrackerSimulator.Parameters();
 
   void verify() {
     CyclicBufferTracker<Object> at = simulator.realCBTracker;
-    CyclicBufferTracker_TImpl<Object> t_at = simulator.t_CBTracker;
-    assertEquals(t_at.mainKeysAsOrderedList(), at.keysInMainMapAsOrderedList());
+    CyclicBufferTrackerT<Object> t_at = simulator.t_CBTracker;
+    assertEquals(t_at.liveKeysAsOrderedList(), at.liveKeysAsOrderedList());
+    assertEquals(t_at.lingererKeysAsOrderedList(), at.lingererKeysAsOrderedList());
+  }
+
+  @Before public void setUp() {
+    parameters.keySpaceLen = 128;
+    parameters.maxTimestampInc =  ComponentTracker.DEFAULT_TIMEOUT / 2;
   }
 
   @Test
   public void shortTest() {
-    simulator = new CyclicBufferTrackerSimulator(64, 500);
-    simulator.buildScenario(70);
+    parameters.keySpaceLen = 64;
+    parameters.maxTimestampInc = 500;
+    parameters.simulationLength = 70;
+
+    simulator = new CyclicBufferTrackerSimulator(parameters);
+    simulator.buildScenario();
     simulator.simulate();
     verify();
   }
 
   @Test
   public void mediumTest() {
-    simulator = new CyclicBufferTrackerSimulator(128, ComponentTracker.DEFAULT_TIMEOUT / 2);
-    simulator.buildScenario(20000);
+    parameters.simulationLength = 20000;
+
+    simulator = new CyclicBufferTrackerSimulator(parameters);
+    simulator.buildScenario();
     simulator.simulate();
     verify();
   }
 
   @Test
   public void longTest() {
-    simulator = new CyclicBufferTrackerSimulator(128, ComponentTracker.DEFAULT_TIMEOUT / 2);
-    simulator.buildScenario(100000);
+    parameters.simulationLength = 100*1000;
+    simulator = new CyclicBufferTrackerSimulator(parameters);
+    simulator.buildScenario();
     simulator.simulate();
     verify();
   }

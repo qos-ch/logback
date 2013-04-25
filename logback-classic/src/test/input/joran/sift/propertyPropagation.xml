@@ -5,7 +5,7 @@
 
   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
-      <Key>localProperty</Key>
+      <key>localProperty</key>
       <defaultValue>default</defaultValue>
     </discriminator>
     <sift>

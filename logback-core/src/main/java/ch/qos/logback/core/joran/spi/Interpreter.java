@@ -92,8 +92,7 @@ public class Interpreter {
   Pattern skip = null;
 
   public Interpreter(Context context, RuleStore rs, Pattern initialPattern) {
-    this.cai = new CAI_WithLocatorSupport(this);
-    this.cai.setContext(context);
+    this.cai = new CAI_WithLocatorSupport(context, this);
     ruleStore = rs;
     interpretationContext = new InterpretationContext(context, this);
     implicitActions = new ArrayList<ImplicitAction>(3);
@@ -341,8 +340,8 @@ public class Interpreter {
  */
 class CAI_WithLocatorSupport extends ContextAwareImpl {
 
-  CAI_WithLocatorSupport(Interpreter interpreter) {
-    super(interpreter);
+  CAI_WithLocatorSupport(Context context, Interpreter interpreter) {
+    super(context, interpreter);
   }
 
   @Override

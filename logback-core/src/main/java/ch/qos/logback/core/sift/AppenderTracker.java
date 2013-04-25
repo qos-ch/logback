@@ -43,7 +43,7 @@ public class AppenderTracker<E> extends AbstractComponentTracker<Appender<E>> {
     super();
     this.context = context;
     this.appenderFactory = appenderFactory;
-    this.contextAware = new ContextAwareImpl(context);
+    this.contextAware = new ContextAwareImpl(context, this);
   }
 
 

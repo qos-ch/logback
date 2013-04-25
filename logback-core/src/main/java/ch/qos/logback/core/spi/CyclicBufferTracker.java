@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.spi;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
 import java.util.*;
@@ -60,7 +59,13 @@ public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffe
   }
 
   // for testing purposes
-  List<String> keysInMainMapAsOrderedList() {
-    return new ArrayList<String>(mainMap.keySet());
+  List<String> liveKeysAsOrderedList() {
+    return new ArrayList<String>(liveMap.keySet());
   }
+
+  List<String> lingererKeysAsOrderedList() {
+    return new ArrayList<String>(lingerersMap.keySet());
+
+  }
+
 }

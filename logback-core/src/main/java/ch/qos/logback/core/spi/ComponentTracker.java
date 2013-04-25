@@ -51,8 +51,8 @@ public interface ComponentTracker<C> {
 
 
   /**
-   * Find the component identified by 'key', no timestamp update is performed. returns null if no
-   * corresponding components could be found
+   * Find the component identified by 'key', without updating the timestamp. Returns null if no
+   * corresponding component could be found.
    *
    * @param key
    * @return corresponding component, may be null
@@ -97,7 +97,7 @@ public interface ComponentTracker<C> {
    * Returns the collection of all components tracked by this instance.
    * @return  collection of components
    */
-  Collection<C> components();
+  Collection<C> allComponents();
 
 
   /**
@@ -105,5 +105,5 @@ public interface ComponentTracker<C> {
    *
    * @return
    */
-  Set<String> keySet();
+  Set<String> allKeys();
 }

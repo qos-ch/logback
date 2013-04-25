@@ -33,8 +33,10 @@ public class ContextAwareImpl implements ContextAware {
   protected Context context;
   final Object origin;
   
-  public ContextAwareImpl(Object origin) {
+  public ContextAwareImpl(Context context, Object origin) {
+    this.context = context;
     this.origin = origin;
+
   }
   
   protected Object getOrigin() {

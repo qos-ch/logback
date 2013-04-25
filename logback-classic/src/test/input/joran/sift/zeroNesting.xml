@@ -6,8 +6,8 @@
   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
 
     <discriminator>
-      <Key>userid</Key>
-      <defaultValue>smoke</defaultValue>
+      <key>userid</key>
+      <defaultValue>zeroDefault</defaultValue>
     </discriminator>
     <sift>     
     </sift>

@@ -52,10 +52,11 @@ public abstract class SiftingAppenderBase<E> extends
       errors++;
     }
     if(appenderFactory == null) {
-      addError("appenderFactory has not been set. Aborting");
+      addError("AppenderFactory has not been set. Aborting");
       errors++;
+    } else {
+      appenderTracker = new AppenderTracker<E>(context, appenderFactory);
     }
-    appenderTracker = new AppenderTracker<E>(context, appenderFactory);
     if (errors == 0) {
       super.start();
     }
@@ -63,7 +64,7 @@ public abstract class SiftingAppenderBase<E> extends
 
   @Override
   public void stop() {
-    for (Appender<E> appender : appenderTracker.components()) {
+    for (Appender<E> appender : appenderTracker.allComponents()) {
       appender.stop();
     }
   }

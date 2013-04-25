@@ -13,16 +13,15 @@
  */
 package ch.qos.logback.classic.sift;
 
-import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.*;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.spi.ComponentTracker;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusChecker;
@@ -33,6 +32,7 @@ import org.junit.Test;
 import org.slf4j.MDC;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -64,14 +64,17 @@ public class SiftingAppenderTest {
   public void smoke() throws JoranException {
     configure(SIFT_FOLDER_PREFIX + "smoke.xml");
     logger.debug("smoke");
-    long timestamp = 0;
-    SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
-    ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) ha
-            .getAppenderTracker().find("smoke");
-    assertNotNull(listAppender);
+    Appender<ILoggingEvent> appender = getAppenderTracker().find("smokeDefault");
+    assertNotNull(appender);
+    ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) appender;
     List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
     assertEquals("smoke", eventList.get(0).getMessage());
+  }
+
+  private AppenderTracker<ILoggingEvent> getAppenderTracker() {
+    SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
+    return ha.getAppenderTracker();
   }
 
   @Test
@@ -82,15 +85,13 @@ public class SiftingAppenderTest {
     logger.debug("hello");
     logger.debug("hello");
     logger.debug("hello");
-
-    long timestamp = 0;
-
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
-    NOPAppender<ILoggingEvent> nopa = (NOPAppender<ILoggingEvent>) sa
-            .getAppenderTracker().find("smoke");
+
+    Appender<ILoggingEvent> appender = getAppenderTracker().find("zeroDefault");
+    assertNotNull(appender);
+    NOPAppender<ILoggingEvent> nopa = (NOPAppender<ILoggingEvent>) appender;
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
-    assertNotNull(nopa);
     sc.assertContainsMatch(ErrorStatus.ERROR, "No nested appenders found");
   }
 
@@ -101,11 +102,7 @@ public class SiftingAppenderTest {
     logger.debug("hello");
     logger.debug("hello");
 
-    long timestamp = 0;
-
-    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
-    ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) sa
-            .getAppenderTracker().find("smoke");
+    Appender<ILoggingEvent> listAppender = getAppenderTracker().find("multipleDefault");
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(listAppender);
@@ -117,7 +114,6 @@ public class SiftingAppenderTest {
   public void defaultLayoutRule() throws JoranException {
     configure(SIFT_FOLDER_PREFIX + "defaultLayoutRule.xml");
     logger.debug("hello");
-    long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) ha
             .getAppenderTracker().find("default");
@@ -146,11 +142,35 @@ public class SiftingAppenderTest {
     MDC.remove(mdcKey);
     LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null,
             null);
-    le.setTimeStamp(timestamp + ComponentTracker.DEFAULT_TIMEOUT * 2);
+    le.setTimeStamp(timestamp + ComponentTracker.DEFAULT_TIMEOUT + 1);
     sa.doAppend(le);
     assertFalse(listAppender.isStarted());
-    assertEquals(1, sa.getAppenderTracker().keySet().size());
-    assertTrue(sa.getAppenderTracker().keySet().contains("cycleDefault"));
+    assertEquals(1, sa.getAppenderTracker().allKeys().size());
+    assertTrue(sa.getAppenderTracker().allKeys().contains("cycleDefault"));
+  }
+
+  @Test
+  public void sessionFinalizationShouldCauseLingering() throws JoranException {
+    String mdcKey = "linger";
+    String mdcVal = "session" + diff;
+    configure(SIFT_FOLDER_PREFIX + "lingering.xml");
+    MDC.put(mdcKey, mdcVal);
+    logger.debug("linger 1");
+    logger.debug(ClassicConstants.FINALIZE_SESSION_MARKER, "linger 2");
+    long now = System.currentTimeMillis();
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    AppenderTracker<ILoggingEvent> tracker = sa.getAppenderTracker();
+    String key = "a";
+
+    assertEquals(1, tracker.allKeys().size());
+    Appender<ILoggingEvent> appender = tracker.find(mdcVal);
+    assertTrue(appender.isStarted());
+
+    tracker.removeStaleComponents(now + AppenderTracker.LINGERING_TIMEOUT + 1);
+    // previously lingering appenders should be closed upon timeout
+    assertFalse(appender.isStarted());
+    // and they should be gone
+    assertEquals(0, tracker.allKeys().size());
   }
 
   @Test

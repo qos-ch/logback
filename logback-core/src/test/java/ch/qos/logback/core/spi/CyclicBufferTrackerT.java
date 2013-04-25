@@ -53,18 +53,25 @@ public class CyclicBufferTrackerT<E> implements ComponentTracker<CyclicBuffer<E>
     }
   }
 
-
-  List<String> mainKeysAsOrderedList() {
-    Collections.sort(liveList);
+  private List<String> keysAsOrderedList(List<TEntry<E>> list) {
+    Collections.sort(list);
     List<String> result = new LinkedList<String>();
-    for (int i = 0; i < liveList.size(); i++) {
-      TEntry<E> te = liveList.get(i);
+    for (int i = 0; i < list.size(); i++) {
+      TEntry<E> te = list.get(i);
       result.add(te.key);
     }
     return result;
   }
 
-  public Set<String> keySet() {
+  List<String> liveKeysAsOrderedList() {
+    return keysAsOrderedList(liveList);
+  }
+  List<String> lingererKeysAsOrderedList() {
+    return keysAsOrderedList(lingererList);
+  }
+
+
+  public Set<String> allKeys() {
     HashSet<String> allKeys = new HashSet<String>();
     for (TEntry e : liveList)
       allKeys.add(e.key);
@@ -74,7 +81,7 @@ public class CyclicBufferTrackerT<E> implements ComponentTracker<CyclicBuffer<E>
   }
 
 
-  public Collection<CyclicBuffer<E>> components() {
+  public Collection<CyclicBuffer<E>> allComponents() {
     List<CyclicBuffer<E>> allComponents = new ArrayList<CyclicBuffer<E>>();
     for (TEntry e : liveList)
       allComponents.add(e.value);

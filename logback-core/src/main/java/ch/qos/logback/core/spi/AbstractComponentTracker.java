@@ -33,12 +33,15 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   private static final boolean ACCESS_ORDERED = true;
 
   // Components in lingering state last 10 seconds
-  final static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
+  final public static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
   protected int maxComponents = DEFAULT_MAX_COMPONENTS;
   protected long timeout = DEFAULT_TIMEOUT;
 
-  LinkedHashMap<String, Entry<C>> mainMap = new LinkedHashMap<String, Entry<C>>(32, .75f, ACCESS_ORDERED);
+  // an access ordered map. Least recently accessed element will be removed after a 'timeout'
+  LinkedHashMap<String, Entry<C>> liveMap = new LinkedHashMap<String, Entry<C>>(32, .75f, ACCESS_ORDERED);
+
+  // an access ordered map. Least recently accessed element will be removed after LINGERING_TIMEOUT
   LinkedHashMap<String, Entry<C>> lingerersMap = new LinkedHashMap<String, Entry<C>>(16, .75f, ACCESS_ORDERED);
   long lastCheck = 0;
 
@@ -68,17 +71,17 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
 
 
   public int getComponentCount() {
-    return mainMap.size() + lingerersMap.size();
+    return liveMap.size() + lingerersMap.size();
   }
 
   /**
-   * Get an entry from the mainMap, if not found search the lingerersMap.
+   * Get an entry from the liveMap, if not found search the lingerersMap.
    *
    * @param key
    * @return
    */
   private Entry<C> getFromEitherMap(String key) {
-    Entry<C> entry = mainMap.get(key);
+    Entry<C> entry = liveMap.get(key);
     if (entry != null)
       return entry;
     else {
@@ -117,7 +120,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
       C c = buildComponent(key);
       entry = new Entry(key, c, timestamp);
       // new entries go into the main map
-      mainMap.put(key, entry);
+      liveMap.put(key, entry);
     } else {
       entry.setTimestamp(timestamp);
     }
@@ -138,11 +141,11 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   }
 
   private void removeExcedentComponents() {
-    genericStaleComponentRemover(mainMap, 0, byExcedent);
+    genericStaleComponentRemover(liveMap, 0, byExcedent);
   }
 
   private void removeStaleComponentsFromMainMap(long now) {
-    genericStaleComponentRemover(mainMap, now, byTimeout);
+    genericStaleComponentRemover(liveMap, now, byTimeout);
   }
 
   private void removeStaleComponentsFromLingerersMap(long now) {
@@ -167,7 +170,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
 
   private RemovalPredicator<C> byExcedent = new RemovalPredicator<C>() {
     public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
-      return (mainMap.size() > maxComponents);
+      return (liveMap.size() > maxComponents);
     }
   };
 
@@ -207,15 +210,15 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     return ((entry.timestamp + LINGERING_TIMEOUT) < now);
   }
 
-  public Set<String> keySet() {
-    HashSet<String> allKeys = new HashSet<String>(mainMap.keySet());
+  public Set<String> allKeys() {
+    HashSet<String> allKeys = new HashSet<String>(liveMap.keySet());
     allKeys.addAll(lingerersMap.keySet());
     return allKeys;
   }
 
-  public Collection<C> components() {
+  public Collection<C> allComponents() {
     List<C> allComponents = new ArrayList<C>();
-    for (Entry<C> e : mainMap.values())
+    for (Entry<C> e : liveMap.values())
       allComponents.add(e.component);
     for (Entry<C> e : lingerersMap.values())
       allComponents.add(e.component);
@@ -229,7 +232,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
    * @param key
    */
   public void endOfLife(String key) {
-    Entry entry = mainMap.remove(key);
+    Entry entry = liveMap.remove(key);
     if (entry == null)
       return;
     lingerersMap.put(key, entry);

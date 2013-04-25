@@ -46,7 +46,7 @@ public class IncludeAction extends Action {
   public void begin(InterpretationContext ec, String name, Attributes attributes)
           throws ActionException {
 
-    SaxEventRecorder recorder = new SaxEventRecorder();
+    SaxEventRecorder recorder = new SaxEventRecorder(context);
 
     this.attributeInUse = null;
 
