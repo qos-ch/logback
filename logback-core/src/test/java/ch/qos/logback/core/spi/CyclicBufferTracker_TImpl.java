@@ -82,7 +82,7 @@ public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuff
     return allComponents;
   }
 
-  public CyclicBuffer<E> get(String key) {
+  public CyclicBuffer<E> find(String key) {
     TEntry<E> te = getFromEitherList(key);
     if(te == null) return  null;
     else return te.value;

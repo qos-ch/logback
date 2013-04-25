@@ -45,7 +45,7 @@ public interface AppenderAttachable<E> {
   boolean isAttached(Appender<E> appender);
 
   /**
-   * Detach and stop all previously added appenders.
+   * Detach and processPriorToRemoval all previously added appenders.
    */
   void detachAndStopAllAppenders(); 
 

@@ -19,11 +19,14 @@ import ch.qos.logback.core.CoreConstants;
 import java.util.*;
 
 /**
- * An abstract implementation of the ComponentTracker interface.
+ * An abstract implementation of the ComponentTracker interface. Derived classes must implement
+ * {@link #buildComponent(String)}, {@link #processPriorToRemoval(Object)}, and {@link #isComponentStale(Object)}
+ * methods as appropriate for their component type.
  *
- * @param <C>
- * @author Ceki Gulcu
+ * @param <C> component type
+ *
  * @author Tommy Becker
+ * @author Ceki Gulcu
  * @author David Roussel
  */
 abstract public class AbstractComponentTracker<C> implements ComponentTracker<C> {
@@ -33,22 +36,10 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   final static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
   protected int maxComponents = DEFAULT_MAX_COMPONENTS;
-  protected long timeout;
+  protected long timeout = DEFAULT_TIMEOUT;
 
-
-  Map<String, Entry> mainMap = new LinkedHashMap<String, Entry>(16, .75f, ACCESS_ORDERED) {
-    @Override
-    protected boolean removeEldestEntry(Map.Entry<String, Entry> mapEntry) {
-      if (size() > maxComponents) {
-        C component = mapEntry.getValue().component;
-        stop(component);
-        return true;
-      }
-      return false;
-    }
-  };
-
-  Map<String, Entry> lingerersMap = new LinkedHashMap<String, Entry>(16, .75f, ACCESS_ORDERED);
+  LinkedHashMap<String, Entry<C>> mainMap = new LinkedHashMap<String, Entry<C>>(32, .75f, ACCESS_ORDERED);
+  LinkedHashMap<String, Entry<C>> lingerersMap = new LinkedHashMap<String, Entry<C>>(16, .75f, ACCESS_ORDERED);
   long lastCheck = 0;
 
   /**
@@ -56,7 +47,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
    *
    * @param component
    */
-  abstract protected void stop(C component);
+  abstract protected void processPriorToRemoval(C component);
 
   /**
    * Build a component based on the key.
@@ -86,8 +77,8 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
    * @param key
    * @return
    */
-  private Entry getFromEitherMap(String key) {
-    Entry entry = mainMap.get(key);
+  private Entry<C> getFromEitherMap(String key) {
+    Entry<C> entry = mainMap.get(key);
     if (entry != null)
       return entry;
     else {
@@ -95,15 +86,33 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     }
   }
 
-  public synchronized C get(String key) {
-    Entry entry = getFromEitherMap(key);
+  /**
+   * {@inheritDoc}
+   *
+   * <p>Note that this method is synchronized.</p>
+   *
+   * @param key {@inheritDoc}
+   * @return {@inheritDoc}
+   *
+   */
+  public synchronized C find(String key) {
+    Entry<C> entry = getFromEitherMap(key);
     if (entry == null) return null;
     else return entry.component;
   }
 
 
+  /**
+   *  {@inheritDoc}
+   *
+   * <p>Note that this method is atomic, i.e. synchronized.</p>
+   *
+   * @param key {@inheritDoc}
+   * @param timestamp {@inheritDoc}
+   * @return {@inheritDoc}
+   */
   public synchronized C getOrCreate(String key, long timestamp) {
-    Entry entry = getFromEitherMap(key);
+    Entry<C> entry = getFromEitherMap(key);
     if (entry == null) {
       C c = buildComponent(key);
       entry = new Entry(key, c, timestamp);
@@ -123,41 +132,57 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
    */
   public synchronized void removeStaleComponents(long now) {
     if (isTooSoonForRemovalIteration(now)) return;
+    removeExcedentComponents();
     removeStaleComponentsFromMainMap(now);
     removeStaleComponentsFromLingerersMap(now);
   }
 
+  private void removeExcedentComponents() {
+    genericStaleComponentRemover(mainMap, 0, byExcedent);
+  }
+
   private void removeStaleComponentsFromMainMap(long now) {
-    Iterator<Map.Entry<String, Entry>> iter = mainMap.entrySet().iterator();
+    genericStaleComponentRemover(mainMap, now, byTimeout);
+  }
+
+  private void removeStaleComponentsFromLingerersMap(long now) {
+    genericStaleComponentRemover(lingerersMap, now, byLingering);
+  }
+
+  private void genericStaleComponentRemover(LinkedHashMap<String, Entry<C>> map, long now,
+                                            RemovalPredicator<C> removalPredicator) {
+    Iterator<Map.Entry<String, Entry<C>>> iter = map.entrySet().iterator();
     while (iter.hasNext()) {
-      Map.Entry<String, Entry> mapEntry = iter.next();
-      Entry entry = mapEntry.getValue();
-      if (isEntryStale(entry, now)) {
+      Map.Entry<String, Entry<C>> mapEntry = iter.next();
+      Entry<C> entry = mapEntry.getValue();
+      if (removalPredicator.isSlatedForRemoval(entry, now)) {
         iter.remove();
         C c = entry.component;
-        stop(c);
+        processPriorToRemoval(c);
       } else {
-        // if an entry is not stale, then the following entries won't be stale either
         break;
       }
     }
   }
 
-  private void removeStaleComponentsFromLingerersMap(long now) {
-    Iterator<Map.Entry<String, Entry>> iter = lingerersMap.entrySet().iterator();
-    while (iter.hasNext()) {
-      Map.Entry<String, Entry> mapEntry = iter.next();
-      Entry entry = mapEntry.getValue();
-      if (isEntryDoneLingering(entry, now)) {
-        iter.remove();
-        C c = entry.component;
-        stop(c);
-      } else {
-        // if an entry is not stale, then the following entries won't be stale either
-        break;
-      }
+  private RemovalPredicator<C> byExcedent = new RemovalPredicator<C>() {
+    public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
+      return (mainMap.size() > maxComponents);
     }
-  }
+  };
+
+  private RemovalPredicator<C> byTimeout = new RemovalPredicator<C>() {
+    public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
+      return isEntryStale(entry, timestamp);
+    }
+  };
+  private RemovalPredicator<C> byLingering = new RemovalPredicator<C>() {
+    public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
+      return isEntryDoneLingering(entry, timestamp);
+    }
+  };
+
+
 
   private boolean isTooSoonForRemovalIteration(long now) {
     if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
@@ -168,7 +193,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   }
 
 
-  private boolean isEntryStale(Entry entry, long now) {
+  private boolean isEntryStale(Entry<C> entry, long now) {
     // stopped or improperly started appenders are considered stale
     // see also http://jira.qos.ch/browse/LBCLASSIC-316
     C c = entry.component;
@@ -190,9 +215,9 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
 
   public Collection<C> components() {
     List<C> allComponents = new ArrayList<C>();
-    for (Entry e : mainMap.values())
+    for (Entry<C> e : mainMap.values())
       allComponents.add(e.component);
-    for (Entry e : lingerersMap.values())
+    for (Entry<C> e : lingerersMap.values())
       allComponents.add(e.component);
 
     return allComponents;
@@ -226,8 +251,15 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     this.maxComponents = maxComponents;
   }
 
+
+
+
   // ================================================================
-  private class Entry {
+  private interface RemovalPredicator<C> {
+    boolean isSlatedForRemoval(Entry<C> entry, long timestamp);
+  }
+  // ================================================================
+  private static class Entry<C> {
     String key;
     C component;
     long timestamp;

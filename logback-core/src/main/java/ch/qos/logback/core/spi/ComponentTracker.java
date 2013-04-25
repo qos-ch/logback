@@ -24,32 +24,44 @@ import java.util.Set;
  * been accessed for more than a user-specified duration are deemed stale and
  * removed.
  *
+ * @author Tommy Becker
  * @author Ceki Gulcu
+ * @author David Roussel
  *
  * @since 1.0.12
  */
 public interface ComponentTracker<C> {
 
 
-  int DEFAULT_TIMEOUT = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+  /**
+   * The default timeout duration is 30 minutes
+   */
+  public final int DEFAULT_TIMEOUT = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+
+  /**
+   * By default an unlimited number of elements can be tracked.
+   */
   int DEFAULT_MAX_COMPONENTS = Integer.MAX_VALUE;
 
+  /**
+   * Returns the number of components tracked.
+   * @return number of components
+   */
   int getComponentCount();
 
 
   /**
-   * Find the component identified by 'key', no timestamp update is performed.
+   * Find the component identified by 'key', no timestamp update is performed. returns null if no
+   * corresponding components could be found
    *
    * @param key
-   * @return
+   * @return corresponding component, may be null
    */
-  C get(String key);
+  C find(String key);
 
   /**
    * Get the component identified by 'key', updating its timestamp in the
-   * process. If there is no corresponding component, create it. If the current
-   * number of components is above or equal to 'getMaxComponents' then the least
-   * recently accessed component is removed.
+   * process. If the corresponding component could not be found, it is created.
    *
    * @param key
    * @param timestamp
@@ -59,9 +71,14 @@ public interface ComponentTracker<C> {
 
 
   /**
-   * Clear (and detach) components which are stale. Components which have not
+   * Remove components which are deemed stale. Components which have not
    * been accessed for more than a user-specified duration are deemed stale.
    *
+   * <p>If the number of components exceeds, {@link #getComponentCount()},
+   * components in excess will be removed.</p>
+   *
+   * <p>Depending on the component type, components will be cleared or stopped
+   * (as appropriate) right before removal.</p>
    *
    * @param now  current time in milliseconds
    */
@@ -69,20 +86,23 @@ public interface ComponentTracker<C> {
 
 
   /**
-   * Mark component identified by 'key' as having reached its end-of-life.
+   * Mark component identified by 'key' as having reached its end-of-life. End-of-lifed
+   * components will linger for a few more seconds before being removed.
+   *
    * @param key
    */
   void endOfLife(String key);
 
   /**
-   * The collections of all components tracked by this instance.
-   * @return
+   * Returns the collection of all components tracked by this instance.
+   * @return  collection of components
    */
   Collection<C> components();
 
 
   /**
-   * Set of all keys in this tracker.
+   * Set of all keys in this tracker in no particular order.
+   *
    * @return
    */
   Set<String> keySet();

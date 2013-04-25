@@ -24,11 +24,12 @@ import ch.qos.logback.core.spi.AbstractComponentTracker;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 
 /**
- * Track appenders by a key. When an appender is not used for
- * longer than THRESHOLD, stop it.
+ * Track appenders by key. When an appender is not used for
+ * longer than {@link #DEFAULT_TIMEOUT} it is stopped and removed.
  *
- * @author Ceki Gulcu
  * @author Tommy Becker
+ * @author Ceki Gulcu
+ * @author David Roussel
  */
 public class AppenderTracker<E> extends AbstractComponentTracker<Appender<E>> {
 
@@ -47,7 +48,7 @@ public class AppenderTracker<E> extends AbstractComponentTracker<Appender<E>> {
 
 
   @Override
-  protected void stop(Appender<E> component) {
+  protected void processPriorToRemoval(Appender<E> component) {
     component.stop();
   }
 

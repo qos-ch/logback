@@ -81,7 +81,7 @@ public class SiftingAppenderTest {
 
   private void check(SiftingAppender siftingAppender, String key, int expectedCount) {
     ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender
-      .getAppenderTracker().get(key);
+      .getAppenderTracker().find(key);
     assertEquals(expectedCount, listAppender.list.size());
   }
 

@@ -144,7 +144,7 @@ public class SocketReceiverTest {
     receiver.start();
     assertTrue(receiver.awaitConnectorCreated(DELAY / 2));
     // note that we don't call serverSocket.accept() here
-    // but stop (in tearDown) should still clean up everything
+    // but processPriorToRemoval (in tearDown) should still clean up everything
   }
 
   @Test

@@ -235,7 +235,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   /**
-   * First stop all registered turbo filters and then clear the registration
+   * First processPriorToRemoval all registered turbo filters and then clear the registration
    * list.
    */
   public void resetTurboFilterList() {

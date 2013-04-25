@@ -19,20 +19,21 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
 import java.util.*;
 
 /**
+ * CyclicBufferTracker tracks  {@link CyclicBuffer} instances.
+ *
  * @author Ceki G&uuml;c&uuml;
  */
 public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffer<E>> {
 
-  static final int DEFAULT_BUFFER_SIZE = 256;
   static final int DEFAULT_NUMBER_OF_BUFFERS = 64;
 
+  static final int DEFAULT_BUFFER_SIZE = 256;
   int bufferSize = DEFAULT_BUFFER_SIZE;
 
 
   public CyclicBufferTracker() {
     super();
     setMaxComponents(DEFAULT_NUMBER_OF_BUFFERS);
-    setTimeout(DEFAULT_TIMEOUT);
   }
 
   public int getBufferSize() {
@@ -44,7 +45,7 @@ public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffe
   }
 
   @Override
-  protected void stop(CyclicBuffer<E> component) {
+  protected void processPriorToRemoval(CyclicBuffer<E> component) {
     component.clear();
   }
 
@@ -58,6 +59,7 @@ public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffe
     return false;
   }
 
+  // for testing purposes
   List<String> keysInMainMapAsOrderedList() {
     return new ArrayList<String>(mainMap.keySet());
   }

@@ -67,7 +67,7 @@ public class SiftingAppenderTest {
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
     ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) ha
-            .getAppenderTracker().get("smoke");
+            .getAppenderTracker().find("smoke");
     assertNotNull(listAppender);
     List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
@@ -87,7 +87,7 @@ public class SiftingAppenderTest {
 
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     NOPAppender<ILoggingEvent> nopa = (NOPAppender<ILoggingEvent>) sa
-            .getAppenderTracker().get("smoke");
+            .getAppenderTracker().find("smoke");
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(nopa);
@@ -105,7 +105,7 @@ public class SiftingAppenderTest {
 
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) sa
-            .getAppenderTracker().get("smoke");
+            .getAppenderTracker().find("smoke");
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(listAppender);
@@ -120,7 +120,7 @@ public class SiftingAppenderTest {
     long timestamp = 0;
     SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) ha
-            .getAppenderTracker().get("default");
+            .getAppenderTracker().find("default");
 
     assertNotNull(listAppender);
     List<String> strList = listAppender.strList;
@@ -137,7 +137,7 @@ public class SiftingAppenderTest {
     long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>)
-            sa.getAppenderTracker().get("a");
+            sa.getAppenderTracker().find("a");
     assertNotNull(listAppender);
     List<ILoggingEvent> eventList = listAppender.list;
     assertEquals(1, listAppender.list.size());
@@ -165,7 +165,7 @@ public class SiftingAppenderTest {
     long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
-            .getAppenderTracker().get(mdcVal);
+            .getAppenderTracker().find(mdcVal);
     assertNotNull(listAppender);
     List<String> strList = listAppender.strList;
     assertEquals(1, listAppender.strList.size());
@@ -184,7 +184,7 @@ public class SiftingAppenderTest {
     long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
-            .getAppenderTracker().get(mdcVal);
+            .getAppenderTracker().find(mdcVal);
     assertNotNull(listAppender);
     List<String> strList = listAppender.strList;
     assertEquals(1, listAppender.strList.size());
@@ -203,7 +203,7 @@ public class SiftingAppenderTest {
     long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
-            .getAppenderTracker().get(mdcVal);
+            .getAppenderTracker().find(mdcVal);
     assertNotNull(listAppender);
     List<String> strList = listAppender.strList;
     assertEquals(1, listAppender.strList.size());

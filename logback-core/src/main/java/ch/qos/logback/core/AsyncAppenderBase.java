@@ -106,7 +106,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     if (!isStarted())
       return;
 
-    // mark this appender as stopped so that Worker can also stop if it is invoking aii.appendLoopOnAppenders
+    // mark this appender as stopped so that Worker can also processPriorToRemoval if it is invoking aii.appendLoopOnAppenders
     // and sub-appenders consume the interruption
     super.stop();
 
