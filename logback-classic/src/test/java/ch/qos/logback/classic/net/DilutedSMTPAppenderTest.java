@@ -22,7 +22,6 @@ import javax.mail.MessagingException;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
-import ch.qos.logback.core.spi.CyclicBufferTrackerImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +36,7 @@ import ch.qos.logback.core.Layout;
 public class DilutedSMTPAppenderTest {
 
   SMTPAppender appender;
-  CyclicBufferTrackerImpl<ILoggingEvent> cbTracker;
+  CyclicBufferTracker<ILoggingEvent> cbTracker;
   CyclicBuffer<ILoggingEvent> cb;
 
   @Before

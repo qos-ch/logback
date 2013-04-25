@@ -16,59 +16,49 @@ package ch.qos.logback.core.spi;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
+import java.util.*;
+
 /**
- * An interface for tracking cyclic buffers by key.
- *
  * @author Ceki G&uuml;c&uuml;
  */
-public interface CyclicBufferTracker extends ComponentTracker<CyclicBuffer> {
+public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffer<E>> {
 
-  int DEFAULT_BUFFER_SIZE = 256;
-  int DEFAULT_NUMBER_OF_BUFFERS = 64;
+  static final int DEFAULT_BUFFER_SIZE = 256;
+  static final int DEFAULT_NUMBER_OF_BUFFERS = 64;
 
-  int THRESHOLD = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
-
-  int getBufferSize();
-
-  void setBufferSize(int size);
-  int getMaxNumberOfBuffers();
-
-  /**
-   * Set the maximum number of tracked buffers. After reaching the maximum number of
-   * buffers, the creation of a new buffer implies the removal of the least recently
-   * used buffer.
-   *
-   * @param maxNumBuffers
-   */
-  void setMaxNumberOfBuffers(int maxNumBuffers);
+  int bufferSize = DEFAULT_BUFFER_SIZE;
 
 
-  /**
-   * Get the cyclic buffer identified by 'key', updating its timestamp in the process.
-   * If there is no such buffer, create it. If the current number of buffers is
-   * above or equal to 'maxNumBuffers' then the least recently accessed buffer is removed.
-   *
-   * @param key
-   * @param timestamp
-   * @return
-   */
-  CyclicBuffer getOrCreate(String key, long timestamp);
+  public CyclicBufferTracker() {
+    super();
+    setMaxComponents(DEFAULT_NUMBER_OF_BUFFERS);
+    setTimeout(DEFAULT_TIMEOUT);
+  }
 
-  /**
-   * Remove a cyclic buffer identified by its key.
-   */
-  void removeBuffer(String key);
+  public int getBufferSize() {
+    return bufferSize;
+  }
 
-  /**
-   * Clear (and detach) buffers which are stale.
-   *
-   * @param now
-   */
-  void clearStaleBuffers(long now);
+  public void setBufferSize(int bufferSize) {
+    this.bufferSize = bufferSize;
+  }
 
-  /**
-   * The size of the internal map/list/collection holding the cyclic buffers.
-   * @return  size of internal collection
-   */
-  int size();
+  @Override
+  protected void stop(CyclicBuffer<E> component) {
+    component.clear();
+  }
+
+  @Override
+  protected CyclicBuffer<E> buildComponent(String key) {
+    return  new CyclicBuffer<E>(bufferSize);
+  }
+
+  @Override
+  protected boolean isComponentStale(CyclicBuffer<E> eCyclicBuffer) {
+    return false;
+  }
+
+  List<String> keysInMainMapAsOrderedList() {
+    return new ArrayList<String>(mainMap.keySet());
+  }
 }

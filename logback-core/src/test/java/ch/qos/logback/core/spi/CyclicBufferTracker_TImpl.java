@@ -23,8 +23,8 @@ import java.util.*;
  */
 public class CyclicBufferTracker_TImpl<E> implements ComponentTracker<CyclicBuffer<E>> {
 
-  int bufferSize = CyclicBufferTrackerImpl.DEFAULT_BUFFER_SIZE;
-  int maxComponents = CyclicBufferTrackerImpl.DEFAULT_NUMBER_OF_BUFFERS;
+  int bufferSize = CyclicBufferTracker.DEFAULT_BUFFER_SIZE;
+  int maxComponents = CyclicBufferTracker.DEFAULT_NUMBER_OF_BUFFERS;
 
   List<TEntry<E>> liveList = new LinkedList<TEntry<E>>();
   List<TEntry<E>> lingererList = new LinkedList<TEntry<E>>();

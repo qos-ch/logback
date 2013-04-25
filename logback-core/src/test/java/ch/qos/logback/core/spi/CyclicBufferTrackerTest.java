@@ -22,10 +22,10 @@ import static junit.framework.Assert.assertNotNull;
 /**
  * @author Ceki G&uuml;c&uuml;
  */
-public class CyclicBufferTrackerImplTest {
+public class CyclicBufferTrackerTest {
 
 
-  CyclicBufferTrackerImpl<Object> tracker = new CyclicBufferTrackerImpl<Object>();
+  CyclicBufferTracker<Object> tracker = new CyclicBufferTracker<Object>();
   String key = "a";
 
   @Test
@@ -40,7 +40,7 @@ public class CyclicBufferTrackerImplTest {
   public void empty1() {
     long now = 3000;
     assertNotNull(tracker.getOrCreate(key, now++));
-    now += CyclicBufferTracker.THRESHOLD + 1000;
+    now += ComponentTracker.DEFAULT_TIMEOUT + 1000;
     tracker.removeStaleComponents(now);
     assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());
@@ -53,7 +53,7 @@ public class CyclicBufferTrackerImplTest {
     long now = 3000;
     CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
     assertEquals(cb, tracker.getOrCreate(key, now++));
-    now += CyclicBufferTrackerImpl.DEFAULT_TIMEOUT + 1000;
+    now += CyclicBufferTracker.DEFAULT_TIMEOUT + 1000;
     tracker.removeStaleComponents(now);
     assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());
@@ -66,7 +66,7 @@ public class CyclicBufferTrackerImplTest {
     cb.add(new Object());
     assertEquals(1, cb.length());
     tracker.endOfLife(key);
-    now += CyclicBufferTrackerImpl.LINGERING_TIMEOUT + 10;
+    now += CyclicBufferTracker.LINGERING_TIMEOUT + 10;
     tracker.removeStaleComponents(now);
     assertEquals(0, tracker.keysInMainMapAsOrderedList().size());
     assertEquals(0, tracker.getComponentCount());

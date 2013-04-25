@@ -22,7 +22,7 @@ import java.util.*;
  */
 public class CyclicBufferTrackerSimulator {
 
-  CyclicBufferTrackerImpl<Object> realCBTracker = new CyclicBufferTrackerImpl<Object>();
+  CyclicBufferTracker<Object> realCBTracker = new CyclicBufferTracker<Object>();
   CyclicBufferTracker_TImpl<Object> t_CBTracker = new CyclicBufferTracker_TImpl<Object>();
 
   List<SimulationEvent> scenario = new ArrayList<SimulationEvent>();

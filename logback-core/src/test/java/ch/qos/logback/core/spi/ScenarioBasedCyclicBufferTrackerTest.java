@@ -25,7 +25,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
   CyclicBufferTrackerSimulator simulator;
 
   void verify() {
-    CyclicBufferTrackerImpl<Object> at = simulator.realCBTracker;
+    CyclicBufferTracker<Object> at = simulator.realCBTracker;
     CyclicBufferTracker_TImpl<Object> t_at = simulator.t_CBTracker;
     assertEquals(t_at.mainKeysAsOrderedList(), at.keysInMainMapAsOrderedList());
   }
@@ -40,7 +40,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
 
   @Test
   public void mediumTest() {
-    simulator = new CyclicBufferTrackerSimulator(128, CyclicBufferTracker.THRESHOLD / 2);
+    simulator = new CyclicBufferTrackerSimulator(128, ComponentTracker.DEFAULT_TIMEOUT / 2);
     simulator.buildScenario(20000);
     simulator.simulate();
     verify();
@@ -48,7 +48,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
 
   @Test
   public void longTest() {
-    simulator = new CyclicBufferTrackerSimulator(128, CyclicBufferTracker.THRESHOLD / 2);
+    simulator = new CyclicBufferTrackerSimulator(128, ComponentTracker.DEFAULT_TIMEOUT / 2);
     simulator.buildScenario(200000);
     simulator.simulate();
     verify();
