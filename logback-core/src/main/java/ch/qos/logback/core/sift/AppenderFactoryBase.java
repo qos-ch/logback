@@ -14,6 +14,7 @@
 package ch.qos.logback.core.sift;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
@@ -28,9 +29,13 @@ import ch.qos.logback.core.joran.spi.JoranException;
 public abstract class AppenderFactoryBase<E> {
 
   final List<SaxEvent> eventList;
-  
-  protected AppenderFactoryBase(List<SaxEvent> eventList) {
+  protected String key;
+  protected Map<String, String> parentPropertyMap;
+
+  protected AppenderFactoryBase(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
     this.eventList = removeSiftElement(eventList);
+    this.key = key;
+    this.parentPropertyMap = parentPropertyMap;
     
   }
 

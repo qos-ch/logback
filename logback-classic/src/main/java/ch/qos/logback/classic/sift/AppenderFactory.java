@@ -26,13 +26,9 @@ import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
  */
 public class AppenderFactory extends AppenderFactoryBase<ILoggingEvent> {
 
-  String key;
-  Map<String, String> parentPropertyMap;
 
   AppenderFactory(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
-    super(eventList);
-    this.key = key;
-    this.parentPropertyMap = parentPropertyMap;
+    super(eventList, key, parentPropertyMap);
   }
 
   public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String discriminatingValue) {
