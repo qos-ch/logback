@@ -20,23 +20,43 @@ import ch.qos.logback.core.AppenderBase;
  * This appender serves as the base class for actual SiftingAppenders
  * implemented by the logback-classic and logback-access modules. In a nutshell,
  * a SiftingAppender contains other appenders which it can build dynamically
- * depending on discriminating values supplied by event currently being
- * processed. The built appender is specified as part of a configuration file.
- * 
+ * depending on discriminating values supplied by the event currently being
+ * processed. The appender to build (dynamically) is specified as part of a
+ * configuration file.
+ *
  * @author Ceki Gulcu
  */
 public abstract class SiftingAppenderBase<E> extends
-    AppenderBase<E> {
+        AppenderBase<E> {
 
   protected AppenderTracker<E> appenderTracker;
-  AppenderFactoryBase<E> appenderFactory;
+  AppenderFactory<E> appenderFactory;
+  int timeout = AppenderTracker.DEFAULT_TIMEOUT;
+  int maxAppenderCount = AppenderTracker.DEFAULT_MAX_COMPONENTS;
 
   Discriminator<E> discriminator;
 
+  public int getTimeout() {
+    return timeout;
+  }
+
+  public void setTimeout(int timeout) {
+    this.timeout = timeout;
+  }
+
+  public int getMaxAppenderCount() {
+    return maxAppenderCount;
+  }
+
+  public void setMaxAppenderCount(int maxAppenderCount) {
+    this.maxAppenderCount = maxAppenderCount;
+  }
+
   /**
-   * This setter is intended to be invoked by SiftAction. Customers have no reason to invoke this setter directly.
+   * This setter is intended to be invoked by SiftAction. Customers have no reason to invoke
+   * this method directly.
    */
-  public void setAppenderFactory(AppenderFactoryBase<E> appenderFactory) {
+  public void setAppenderFactory(AppenderFactory<E> appenderFactory) {
     this.appenderFactory = appenderFactory;
   }
 
@@ -51,11 +71,13 @@ public abstract class SiftingAppenderBase<E> extends
       addError("Discriminator has not started successfully. Aborting");
       errors++;
     }
-    if(appenderFactory == null) {
+    if (appenderFactory == null) {
       addError("AppenderFactory has not been set. Aborting");
       errors++;
     } else {
       appenderTracker = new AppenderTracker<E>(context, appenderFactory);
+      appenderTracker.setMaxComponents(maxAppenderCount);
+      appenderTracker.setTimeout(timeout);
     }
     if (errors == 0) {
       super.start();
@@ -76,10 +98,9 @@ public abstract class SiftingAppenderBase<E> extends
     if (!isStarted()) {
       return;
     }
-
     String discriminatingValue = discriminator.getDiscriminatingValue(event);
     long timestamp = getTimestamp(event);
-    
+
     Appender<E> appender = appenderTracker.getOrCreate(discriminatingValue, timestamp);
     // marks the appender for removal as specified by the user
     if (eventMarksEndOfLife(event)) {
@@ -98,15 +119,14 @@ public abstract class SiftingAppenderBase<E> extends
   public void setDiscriminator(Discriminator<E> discriminator) {
     this.discriminator = discriminator;
   }
-  
-  
 
 
-  // sometime one needs to close a nested appender immediately
+  // sometimes one needs to close a nested appender immediately
   // for example when executing a command which has its own nested appender
   // and the command also cleans up after itself. However, an open file appender
   // will prevent the folder from being deleted
   // see http://www.qos.ch/pipermail/logback-user/2010-March/001487.html
+
   /**
    * @since 0.9.19
    */

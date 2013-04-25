@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.sift;
 
-import java.util.*;
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
@@ -36,10 +34,10 @@ public class AppenderTracker<E> extends AbstractComponentTracker<Appender<E>> {
   int nopaWarningCount = 0;
 
   final Context context;
-  final AppenderFactoryBase<E> appenderFactory;
+  final AppenderFactory<E> appenderFactory;
   final ContextAwareImpl contextAware;
 
-  public AppenderTracker(Context context, AppenderFactoryBase<E> appenderFactory) {
+  public AppenderTracker(Context context, AppenderFactory<E> appenderFactory) {
     super();
     this.context = context;
     this.appenderFactory = appenderFactory;

@@ -27,7 +27,9 @@ import ch.qos.logback.core.read.ListAppender;
 
 public class AppenderTrackerTest {
 
-  
+
+  AppenderFactory a;
+
   Context context = new ContextBase();
   AppenderTracker<Object> appenderTracker = new AppenderTracker<Object>(context, null);
   ListAppender<Object> la = new ListAppender<Object>();
@@ -39,12 +41,21 @@ public class AppenderTrackerTest {
     la.start();
   }
 
-  
   @Test
   public void empty0() {
     long now = 3000;
     appenderTracker.removeStaleComponents(now);
     assertEquals(0, appenderTracker.getComponentCount());
   }
+
+  @Test
+  public void empty1() {
+    long now = 3000;
+    assertNull(appenderTracker.find(key));
+    now += AppenderTracker.DEFAULT_TIMEOUT+1000;
+    appenderTracker.removeStaleComponents(now);
+    assertNull(appenderTracker.find(key));
+  }
+
 
 }

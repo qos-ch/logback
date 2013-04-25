@@ -42,7 +42,7 @@ public class SiftAction extends Action implements InPlayListener {
     if (o instanceof SiftingAppender) {
       SiftingAppender sa = (SiftingAppender) o;
       Map<String, String> propertyMap = ic.getCopyOfPropertyMap();
-      AppenderFactory appenderFactory = new AppenderFactory(seList, sa
+      AppenderFactoryUsingJoran appenderFactory = new AppenderFactoryUsingJoran(seList, sa
           .getDiscriminatorKey(), propertyMap);
       sa.setAppenderFactory(appenderFactory);
     }
