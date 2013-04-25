@@ -49,7 +49,7 @@ public class ScenarioBasedCyclicBufferTrackerTest {
   @Test
   public void longTest() {
     simulator = new CyclicBufferTrackerSimulator(128, ComponentTracker.DEFAULT_TIMEOUT / 2);
-    simulator.buildScenario(200000);
+    simulator.buildScenario(100000);
     simulator.simulate();
     verify();
   }

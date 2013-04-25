@@ -113,7 +113,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   }
 
   public void startInternal() throws LifecycleException {
-    System.out.println("***startInternal() called");
     if (filename == null) {
       String tomcatHomeProperty = OptionHelper
           .getSystemProperty("catalina.home");
@@ -127,7 +126,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
     if (configFile.exists()) {
       try {
-        System.out.println("***startInternal() JoranConfigurator");
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(this);
         jc.doConfigure(filename);
