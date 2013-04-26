@@ -14,8 +14,7 @@
 package ch.qos.logback.classic.sift;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.sift.Discriminator;
-import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.sift.AbstractDiscriminator;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.Map;
@@ -28,12 +27,10 @@ import java.util.Map;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class MDCBasedDiscriminator extends ContextAwareBase implements
-        Discriminator<ILoggingEvent> {
+public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
   private String key;
   private String defaultValue;
-  private boolean started = false;
 
   /**
    * Return the value associated with an MDC entry designated by the Key
@@ -54,10 +51,7 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements
     }
   }
 
-  public boolean isStarted() {
-    return started;
-  }
-
+  @Override
   public void start() {
     int errors = 0;
     if (OptionHelper.isEmpty(key)) {
@@ -71,10 +65,6 @@ public class MDCBasedDiscriminator extends ContextAwareBase implements
     if (errors == 0) {
       started = true;
     }
-  }
-
-  public void stop() {
-    started = false;
   }
 
   public String getKey() {
