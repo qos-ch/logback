@@ -60,6 +60,8 @@ public class IncludeActionTest {
 
   static final String TOP_BY_FILE = INCLUSION_DIR_PREFIX + "topByFile.xml";
 
+  static final String TOP_OPTIONAL = INCLUSION_DIR_PREFIX + "topOptional.xml";
+
   static final String INTERMEDIARY_FILE = INCLUSION_DIR_PREFIX
       + "intermediaryByFile.xml";
 
@@ -112,6 +114,12 @@ public class IncludeActionTest {
   public void basicFile() throws JoranException {
     System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
     tc.doConfigure(TOP_BY_FILE);
+    verifyConfig(new String[] { "IA", "IB" });
+  }
+
+  @Test
+  public void optionalFile() throws JoranException {
+    tc.doConfigure(TOP_OPTIONAL);
     verifyConfig(new String[] { "IA", "IB" });
   }
 
