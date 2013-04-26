@@ -22,7 +22,9 @@ import java.util.Set;
 /**
  * Interface for tracking various components by key. Components which have not
  * been accessed for more than a user-specified duration are deemed stale and
- * removed.
+ * removed. Components can also be explicitly marked as having reached their
+ * {@link #endOfLife(String)} in which case they will linger for a few seconds
+ * and then be removed.
  *
  * @author Tommy Becker
  * @author Ceki Gulcu
@@ -31,7 +33,6 @@ import java.util.Set;
  * @since 1.0.12
  */
 public interface ComponentTracker<C> {
-
 
   /**
    * The default timeout duration is 30 minutes

@@ -14,20 +14,22 @@
 package ch.qos.logback.core.sift;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.Before;
 import org.junit.Test;
-
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.read.ListAppender;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+/**
+ * Relatively straightforward unit tests for AppenderTracker.
+ */
 public class AppenderTrackerTest {
 
   Context context = new ContextBase();
@@ -50,24 +52,23 @@ public class AppenderTrackerTest {
   @Test
   public void findingTheInexistentShouldNotBomb() {
     assertNull(appenderTracker.find(key));
-    now += AppenderTracker.DEFAULT_TIMEOUT + 1000;
+    now += AppenderTracker.DEFAULT_TIMEOUT + 1;
     appenderTracker.removeStaleComponents(now);
     assertNull(appenderTracker.find(key));
   }
 
   @Test
   public void smoke() {
-    appenderTracker.getOrCreate(key, now);
-    Appender<Object> a = appenderTracker.find(key);
+    Appender<Object> a = appenderTracker.getOrCreate(key, now);
     assertTrue(a.isStarted());
-    now += AppenderTracker.DEFAULT_TIMEOUT + 1000;
+    now += AppenderTracker.DEFAULT_TIMEOUT + 1;
     appenderTracker.removeStaleComponents(now);
     assertFalse(a.isStarted());
     assertNull(appenderTracker.find(key));
   }
 
   @Test
-  public void endOfLivedItemsShouldBeRemovedAfterLingeringTimeout() {
+  public void endOfLivedAppendersShouldBeRemovedAfterLingeringTimeout() {
     Appender a = appenderTracker.getOrCreate(key, now);
     appenderTracker.endOfLife(key);
     now += AppenderTracker.LINGERING_TIMEOUT + 1;
@@ -76,6 +77,23 @@ public class AppenderTrackerTest {
     a = appenderTracker.find(key);
     assertNull(a);
   }
+
+  @Test
+  public void endOfLivedAppenderShouldBeAvailableDuringLingeringPeriod() {
+    Appender a = appenderTracker.getOrCreate(key, now);
+    appenderTracker.endOfLife(key);
+    // clean
+    appenderTracker.removeStaleComponents(now);
+    Appender lingering = appenderTracker.getOrCreate(key, now);
+    assertTrue(lingering.isStarted());
+    assertTrue(a == lingering);
+    now += AppenderTracker.LINGERING_TIMEOUT + 1;
+    appenderTracker.removeStaleComponents(now);
+    assertFalse(a.isStarted());
+    a = appenderTracker.find(key);
+    assertNull(a);
+  }
+
 
   @Test
   public void trackerShouldHonorMaxComponentsParameter() {
@@ -120,6 +138,7 @@ public class AppenderTrackerTest {
       assertTrue(appenderList.get(i).isStarted());
     }
   }
+
   // ======================================================================
   static class ListAppenderFactory implements AppenderFactory<Object> {
 

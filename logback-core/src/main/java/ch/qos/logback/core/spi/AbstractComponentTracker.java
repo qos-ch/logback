@@ -35,6 +35,11 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   // Components in lingering state last 10 seconds
   final public static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
+  /**
+   * The minimum amount of time that has to elapse between successive removal iterations.
+   */
+  final public static long WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS = CoreConstants.MILLIS_IN_ONE_SECOND;
+
   protected int maxComponents = DEFAULT_MAX_COMPONENTS;
   protected long timeout = DEFAULT_TIMEOUT;
 
@@ -104,7 +109,6 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     else return entry.component;
   }
 
-
   /**
    *  {@inheritDoc}
    *
@@ -125,6 +129,18 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
       entry.setTimestamp(timestamp);
     }
     return entry.component;
+  }
+
+  /**
+   * Mark component identified by 'key' as having reached its end-of-life.
+   *
+   * @param key
+   */
+  public void endOfLife(String key) {
+    Entry entry = liveMap.remove(key);
+    if (entry == null)
+      return;
+    lingerersMap.put(key, entry);
   }
 
   /**
@@ -185,16 +201,13 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     }
   };
 
-
-
   private boolean isTooSoonForRemovalIteration(long now) {
-    if (lastCheck + CoreConstants.MILLIS_IN_ONE_SECOND > now) {
+    if (lastCheck + WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS > now) {
       return true;
     }
     lastCheck = now;
     return false;
   }
-
 
   private boolean isEntryStale(Entry<C> entry, long now) {
     // stopped or improperly started appenders are considered stale
@@ -226,18 +239,6 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     return allComponents;
   }
 
-  /**
-   * Mark component identified by 'key' as having reached its end-of-life.
-   *
-   * @param key
-   */
-  public void endOfLife(String key) {
-    Entry entry = liveMap.remove(key);
-    if (entry == null)
-      return;
-    lingerersMap.put(key, entry);
-  }
-
   public long getTimeout() {
     return timeout;
   }
@@ -253,9 +254,6 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
   public void setMaxComponents(int maxComponents) {
     this.maxComponents = maxComponents;
   }
-
-
-
 
   // ================================================================
   private interface RemovalPredicator<C> {

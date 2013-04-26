@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="true">
+
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+        <discriminator>
+            <key>max</key>
+            <defaultValue>default</defaultValue>
+        </discriminator>
+        <maxAppenderCount>5</maxAppenderCount>
+        <sift>
+            <appender name="list-${userid}"
+                      class="ch.qos.logback.core.read.ListAppender"/>
+        </sift>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="SIFT"/>
+    </root>
+
+</configuration>

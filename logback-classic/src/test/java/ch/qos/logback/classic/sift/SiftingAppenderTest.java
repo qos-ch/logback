@@ -22,6 +22,7 @@ import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.sift.AppenderTracker;
+import ch.qos.logback.core.spi.AbstractComponentTracker;
 import ch.qos.logback.core.spi.ComponentTracker;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusChecker;
@@ -32,9 +33,9 @@ import org.junit.Test;
 import org.slf4j.MDC;
 
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class SiftingAppenderTest {
 
@@ -43,8 +44,9 @@ public class SiftingAppenderTest {
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass().getName());
   Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-  StatusChecker sc = new StatusChecker(loggerContext);
+  StatusChecker statusChecker = new StatusChecker(loggerContext);
   int diff = RandomUtil.getPositiveInt();
+  int now = 0;
 
   protected void configure(String file) throws JoranException {
     JoranConfigurator jc = new JoranConfigurator();
@@ -92,7 +94,7 @@ public class SiftingAppenderTest {
     NOPAppender<ILoggingEvent> nopa = (NOPAppender<ILoggingEvent>) appender;
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
-    sc.assertContainsMatch(ErrorStatus.ERROR, "No nested appenders found");
+    statusChecker.assertContainsMatch(ErrorStatus.ERROR, "No nested appenders found");
   }
 
   @Test
@@ -106,7 +108,7 @@ public class SiftingAppenderTest {
     StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
     assertNotNull(listAppender);
-    sc.assertContainsMatch(ErrorStatus.ERROR,
+    statusChecker.assertContainsMatch(ErrorStatus.ERROR,
             "Only and only one appender can be nested");
   }
 
@@ -160,7 +162,6 @@ public class SiftingAppenderTest {
     long now = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     AppenderTracker<ILoggingEvent> tracker = sa.getAppenderTracker();
-    String key = "a";
 
     assertEquals(1, tracker.allKeys().size());
     Appender<ILoggingEvent> appender = tracker.find(mdcVal);
@@ -182,7 +183,6 @@ public class SiftingAppenderTest {
     configure(SIFT_FOLDER_PREFIX + "propertyPropagation.xml");
     MDC.put(mdcKey, mdcVal);
     logger.debug(msg);
-    long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
             .getAppenderTracker().find(mdcVal);
@@ -201,7 +201,6 @@ public class SiftingAppenderTest {
     configure(SIFT_FOLDER_PREFIX + "propertyDefinedInSiftElement.xml");
     MDC.put(mdcKey, mdcVal);
     logger.debug(msg);
-    long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
             .getAppenderTracker().find(mdcVal);
@@ -220,7 +219,6 @@ public class SiftingAppenderTest {
     configure(SIFT_FOLDER_PREFIX + "compositeProperty.xml");
     MDC.put(mdcKey, mdcVal);
     logger.debug(msg);
-    long timestamp = System.currentTimeMillis();
     SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
     StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa
             .getAppenderTracker().find(mdcVal);
@@ -230,5 +228,45 @@ public class SiftingAppenderTest {
     assertEquals(prefix + msg, strList.get(0));
   }
 
+  @Test
+  public void maxAppendersCountPropertyShouldBeHonored() throws JoranException {
+    configure(SIFT_FOLDER_PREFIX + "maxAppenderCount.xml");
+    int max = 5;
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+    String mdcKey = "max";
+    for(int i = 0; i <= max; i++) {
+      MDC.put(mdcKey, "" + (diff + i));
+      LoggingEvent event = new LoggingEvent("", logger, Level.DEBUG, "max"+i, null, null);
+      event.setTimeStamp(now);
+      sa.doAppend(event);
+      now += AbstractComponentTracker.WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS;
+    }
+    AppenderTracker<ILoggingEvent> tracker = sa.getAppenderTracker();
+    assertEquals(max, tracker.allKeys().size());
+    assertNull(tracker.find("" + (diff + 0)));
+    for(int i = 1; i <= max; i++) {
+      assertNotNull(tracker.find("" + (diff + i)));
+    }
+  }
+
+  @Test
+  public void timeoutPropertyShouldBeHonored() throws JoranException, InterruptedException {
+    configure(SIFT_FOLDER_PREFIX + "timeout.xml");
+    long timeout = 30*1000;
+    SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+
+    LoggingEvent event = new LoggingEvent("", logger, Level.DEBUG, "timeout", null, null);
+    event.setTimeStamp(now);
+    sa.doAppend(event);
+
+    AppenderTracker<ILoggingEvent> tracker = sa.getAppenderTracker();
+
+    assertEquals(1, tracker.getComponentCount());
+
+    now += timeout+1;
+    tracker.removeStaleComponents(now);
+    assertEquals(0, tracker.getComponentCount());
+    statusChecker.assertIsErrorFree();
+  }
 
 }

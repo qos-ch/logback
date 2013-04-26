@@ -65,7 +65,6 @@ public class AppenderTracker<E> extends AbstractComponentTracker<Appender<E>> {
     return appender;
   }
 
-
   private NOPAppender<E> buildNOPAppender(String key) {
     if (nopaWarningCount < CoreConstants.MAX_ERROR_COUNT) {
       nopaWarningCount++;
