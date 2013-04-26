@@ -40,6 +40,9 @@
     application that receives logging events from a 
     <code>SSLSocketAppender</code>.</p>
       
+    <p class="highlight">Receiver components are configured in
+    logback.xml just like any other logback component.</p>
+
     <p>While <code>SimpleSocketServer</code> (and its new SSL-enabled
     counterpart, <code>SimpleSSLSocketServer</code>) provide an 
     easy-to-use standalone logging server application, a new component
@@ -87,22 +90,24 @@
 
     <p>The code detecting whether Groovy is available on the class
     path deals with the case where logback binaries are installed as
-    endoresed libraries. This fixes <a
+    endorsed libraries. This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
     </p>
 
     <p class="highlight">Groovy configurator no longer supports
-    SiftingAppender.</p>
+    <code>SiftingAppender</code>.</p>
 
     <p>In response to <a
     href="http://jira.qos.ch/browse/LOGBACK-244">LOGBACK-244</a>, <a
     href="http://jira.qos.ch/browse/LOGBACK-724">LOGBACK-724</a> and
     in particular patches provided by Tommy Becker and David Roussel
     component tracking code has been simplified and completely
-    re-written. SiftingAppender now supports timeout and
-    maxAppenderCount parameter. As a direct consequence of
-    modificatons to component tracking code, the groovy configurator
-    no longer supports <code>SiftingAppender</code>.</p>
+    re-written. <code>SiftingAppender</code> now supports the <a
+    href="manual/appenders.html#siftTimeout">timeout</a> and <a
+    href="manual/appenders.html#siftMaxAppenderCount">maxAppenderCount</a>
+    parameters. As a direct consequence of modifications to component
+    tracking code, the groovy configurator no longer supports
+    <code>SiftingAppender</code>.</p>
 
     <p>SiftingAppender now propagates properties defined elsewhere in
     the configuration file into the configuration process of nested
@@ -121,9 +126,9 @@
     </p>
 
     <p>Logback is now able to retrieve the name of localhost when
-    running under OS X and Java 7. This issue was reporteed by <a
+    running under OS X and Java 7. This issue was reported by <a
     href="http://jira.qos.ch/browse/LOGBACK-749">LOGBACK-749</a> by
-    Oliver Schrenk with patches provied by Ralph Goers and Pavel
+    Oliver Schrenk with patches provided by Ralph Goers and Pavel
     Valodzka.
     </p>
 

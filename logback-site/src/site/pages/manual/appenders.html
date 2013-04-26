@@ -3651,7 +3651,8 @@ logger.error(<b>notifyAdmin</b>,
 			</tr>
 			<tr>
 				<td><span class="prop" container="sift">timeout</span></td>
-				<td><code><a href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
+				<td><code><a
+				href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
 				<td>A nested appender which has not been accessed beyond the
 				<span class="prop">timeout</span> duration is deemed stale. A
 				stale appender is closed and unreferenced by
@@ -3788,8 +3789,58 @@ logger.debug("Alice says hello"); </p>
     also supported.
     </p>
 
-    <h3><a name="AsyncAppender"
-    href="#AsyncAppender">AsyncAppender</a></h3>
+    <h4 class="doAnchor" name="siftGettingTimeoutRight">Getting the
+    <span class="prop">timeout</span> right</h4>
+
+    <p>For certain types of applications, it may be difficult to get
+    the <span class="prop">timeout</span> parameter right. If the
+    <span class="prop">timeout</span> is too small, a nested appender
+    might be removed just to be created anew a few seconds later. This
+    phenomenon is called <em>trashing</em>. If the <span
+    class="prop">timeout</span> is too long and appenders are created
+    in quick succession, you might run out of resources. Similarly,
+    setting <span class="prop">maxAppenderCount</span> too low might
+    cause trashing as well.
+    </p>
+
+    <p>In many case, it may be easier to pinpoint a location in your
+    code after which a nested appender is no longer needed. If such a
+    location exists, even approximately, log from that location using
+    the <a
+    href="../apidocs/ch/qos/logback/classic/ClassicConstants.html#FINALIZE_SESSION_MARKER">FINALIZE_SESSION</a>
+    marker. Whenever SiftingAppender sees a logging event marked as
+    <code>FINALIZE_SESSION</code> it will end-of-life the associated
+    nested appender. Upon reaching its end-of-life, a nested appender
+    will linger for a few seconds to process any late coming events
+    (if any) and then will be closed.
+    </p>
+    
+    <pre class="prettyprint source">import org.slf4j.Logger;
+import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
+
+  void job(String jobId) {
+   
+    MDC.put("jobId", jobId);
+    logger.info("Starting job.");
+
+    ... do whather the job needs to do
+    
+    // will cause the nested appender reach end-of-life. It will
+    // linger for a few seconds.
+    logger.info(FINALIZE_SESSION_MARKER, "About to end the job");
+
+    try {
+      .. perform clean up
+    } catch(Exception e);  
+      // This log statement will be handled by the lingering appender. 
+      // No new appender will be created.
+      logger.error("unexpected error while cleaning up", e);
+    }
+  }
+
+</pre>
+
+    <h3 class="doAnchor" name="AsyncAppender">AsyncAppender</h3>
 
     <p>AsyncAppender logs <a
     href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>s
@@ -3919,8 +3970,8 @@ logger.debug("Alice says hello"); </p>
 &lt;/configuration></pre>
   
 
-		<h3><a name="WriteYourOwnAppender"
-		href="#WriteYourOwnAppender">Writing your own Appender</a></h3>
+		<h3 class="doAnchor" name="WriteYourOwnAppender">Writing your own
+		Appender</h3>
 
 
     <p>You can easily write your appender by subclassing
@@ -4038,8 +4089,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		</p>
   
 
-		<h2><a name="logback_access" href="#logback_access">Logback
-		Access</a></h2>
+		<h2 class="doAnchor" name="logback_access">Logback Access</h2>
 		
 		<p>Most of the appenders found in logback-classic have their
 		equivalent in logback-access. These work essentially in the same
@@ -4047,8 +4097,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		will cover their use.
 		</p>
 		
-  	<a name="AccessSocketAppender"></a>
-		<h3>SocketAppender and SSLSocketAppender</h3>
+		<h3 class="doAnchor" name="AccessSocketAppender">SocketAppender
+		and SSLSocketAppender</h3>
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/access/net/SocketAppender.html">
@@ -4071,8 +4121,9 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			for classic's <code>SocketAppender</code>.
 		</p>
 
-    <a name="AccessServerSocketAppender"></a>
-    <h3>ServerSocketAppender and SSLServerSocketAppender</h3>
+    <h3 class="doAnchor"
+    name="AccessServerSocketAppender">ServerSocketAppender and
+    SSLServerSocketAppender</h3>
     
     <p>Like <code>SocketAppender</code>, the <a
     href="../xref/ch/qos/logback/access/net/server/ServerSocketAppender.html">
@@ -4090,22 +4141,24 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     over the Secure Sockets Layer (SSL).
     </p>
     
-    <p>
-      The properties of access' <code>ServerSocketAppender</code> are the same 
-      as those available for classic's <code>ServerSocketAppender</code>.
+    <p>The properties of access' <code>ServerSocketAppender</code> are
+    the same as those available for classic's
+    <code>ServerSocketAppender</code>.
     </p>
     
-	 	<a name="AccessSMTPAppender"></a>	
-		<h3>SMTPAppender</h3>
+	 	
+		<h3 class="doAnchor" name="AccessSMTPAppender">SMTPAppender</h3>
 		
-		<p>
-			Access' <a href="../xref/ch/qos/logback/access/net/SMTPAppender.html">
-			<code>SMTPAppender</code></a> works in the same way as its Classic counterpart.
-			However, the <span class="prop">evaluator</span> option is rather different. 
-			By default, a <code>URLEvaluator</code> object
-			is used by <code>SMTPAppender</code>. This evaluator contains a list of URLs that are
-			checked against the current request's URL. When one of the pages given to the
-			<code>URLEvaluator</code> is requested, <code>SMTPAppender</code> sends an email.
+		<p>Access' <a
+		href="../xref/ch/qos/logback/access/net/SMTPAppender.html">
+		<code>SMTPAppender</code></a> works in the same way as its Classic
+		counterpart.  However, the <span class="prop">evaluator</span>
+		option is rather different.  By default, a
+		<code>URLEvaluator</code> object is used by
+		<code>SMTPAppender</code>. This evaluator contains a list of URLs
+		that are checked against the current request's URL. When one of
+		the pages given to the <code>URLEvaluator</code> is requested,
+		<code>SMTPAppender</code> sends an email.
 		</p>
 		
 		<p>
@@ -4137,12 +4190,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		included in the email.
 		</p>
 
-		<a name="AccessDBAppender"></a>
-		<h3>DBAppender</h3>
+		<h3 class="doAnchor" name="AccessDBAppender">DBAppender</h3>
 		
-		<p>
-			<a href="../xref/ch/qos/logback/access/db/DBAppender.html"><code>DBAppender</code></a>
-			is used to insert the access events into a database.
+		<p><a
+		href="../xref/ch/qos/logback/access/db/DBAppender.html"><code>DBAppender</code></a>
+		is used to insert the access events into a database.
 		</p>
 
 		<p>Two tables are used by <code>DBAppender</code>:
@@ -4297,8 +4349,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 &lt;/configuration></pre>
 
 
-    <h3><a name="AccessSiftingAppender"
-    href="#AccessSiftingAppender">SiftingAppender</a></h3>
+    <h3 class="doAnchor"
+    name="AccessSiftingAppender">SiftingAppender</h3>
    
     <p>The SiftingAppender in logback-access is quite similar to its
     logback-classic counterpart. The main difference is that in
