@@ -13,16 +13,13 @@
  */
 package ch.qos.logback.core.sift;
 
-import ch.qos.logback.core.sift.Discriminator;
 
 /**
  * @author Ceki G&uuml;c&uuml;
  */
-public class DefaultDiscriminator<E> implements Discriminator<E> {
+public class DefaultDiscriminator<E> extends AbstractDiscriminator<E> {
 
   static public final String DEFAULT = "default";
-
-  boolean started = false;
 
   public String getDiscriminatingValue(E e) {
     return DEFAULT;
@@ -32,15 +29,4 @@ public class DefaultDiscriminator<E> implements Discriminator<E> {
     return DEFAULT;
   }
 
-  public void start() {
-    started = true;
-  }
-
-  public void stop() {
-    started = false;
-  }
-
-  public boolean isStarted() {
-    return started;  
-  }
 }

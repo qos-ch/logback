@@ -17,8 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.sift.Discriminator;
-import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.sift.AbstractDiscriminator;
 
 /**
  * 
@@ -30,10 +29,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class AccessEventDiscriminator extends ContextAwareBase implements
-    Discriminator<IAccessEvent> {
-
-  boolean started = false;
+public class AccessEventDiscriminator extends AbstractDiscriminator<IAccessEvent> {
 
   /**
    * At present time the followed fields can be designated: COOKIE,
@@ -120,10 +116,7 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     return null;
   }
 
-  public boolean isStarted() {
-    return started;
-  }
-
+  @Override
   public void start() {
 
     int errorCount = 0;
@@ -150,10 +143,6 @@ public class AccessEventDiscriminator extends ContextAwareBase implements
     if (errorCount == 0) {
       started = true;
     }
-  }
-
-  public void stop() {
-    started = false;
   }
 
   public void setFieldName(FieldName fieldName) {

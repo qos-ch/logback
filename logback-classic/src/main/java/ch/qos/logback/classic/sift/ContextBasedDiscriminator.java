@@ -14,8 +14,7 @@
 package ch.qos.logback.classic.sift;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.sift.Discriminator;
-import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.sift.AbstractDiscriminator;
 
 /**
  * This discriminator returns the value context to which this event is attached
@@ -27,12 +26,10 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class ContextBasedDiscriminator extends ContextAwareBase implements
-    Discriminator<ILoggingEvent> {
+public class ContextBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
   private static final String KEY = "contextName";
   private String defaultValue;
-  private boolean started = false;
 
   /**
    * Return the name of the current context name as found in the logging event.
@@ -45,18 +42,6 @@ public class ContextBasedDiscriminator extends ContextAwareBase implements
     } else {
       return contextName;
     }
-  }
-
-  public boolean isStarted() {
-    return started;
-  }
-
-  public void start() {
-    started = true;
-  }
-
-  public void stop() {
-    started = false;
   }
 
   public String getKey() {
