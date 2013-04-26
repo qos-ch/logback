@@ -18,14 +18,13 @@ import java.util.regex.Pattern;
 
 /**
  * Duration instances represent a lapse of time. Internally, the duration is
- * stored in milliseconds.
- * <p>
- * 
- * The {@link #valueOf} method can convert strings such as "3.5 minutes", "5
- * hours", into Duration instances. The recognized units of time are the
- * "millisecond", "second", "minute" "hour" and "day". The unit name may be
- * followed by an "s". Thus, "2 day" and "2 days" are equivalent. In the absence
- * of a time unit specification, milliseconds are assumed.
+ * stored in milliseconds. This class follows the {@link #valueOf} convention meaning that it can
+ * convert an appropriately formatted string into a Duration object.
+ *
+ * <p>For example, string such as "3.5 minutes" or "5 hours" can be converted into Durations.
+ * The recognized units of time are the "millisecond", "second", "minute" "hour" and "day".
+ * The unit name may be followed by an "s". Thus, "2 day" and "2 days" are equivalent. In the
+ * absence of a time unit specification, milliseconds are assumed.
  * 
  * 
  * @author Ceki Gulcu

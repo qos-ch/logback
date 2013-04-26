@@ -3642,15 +3642,43 @@ logger.error(<b>notifyAdmin</b>,
     </p>
 
 
+    
+    <table class="bodyTable striped">
+			<tr>
+				<th>Property Name</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><span class="prop" container="sift">timeout</span></td>
+				<td><code><a href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
+				<td>A nested appender which has not been accessed beyond the
+				<span class="prop">timeout</span> duration is deemed stale. A
+				stale appender is closed and unreferenced by
+				<code>SiftingAppender</code>. The dfault value for <span
+				class="prop">timeout</span> is 30 minutes.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="sift">maxAppenderCount</span></td>
+				<td><code>integer</code></td>
+				<td>The maximum number of nested appenders
+				<code>SiftingAppender</code> may create and track. Default
+				value for <span class="prop">maxAppenderCount</span> is
+				Integer.MAX_VALUE.</td>
+			</tr>
+  </table>
+
     <p><code>SiftingAppender</code> achieves this feat by creating
-    child appenders on the fly. Child appenders are created based on a
-    template specified within the configuration of the
+    nested appenders on the fly. Nested appenders are created based on
+    a template specified within the configuration of the
     <code>SiftingAppender</code> itself (enclosed within the
     <code>&lt;sift></code> element, see example
     below). <code>SiftingAppender</code> is responsible for managing
     the lifecycle of child appenders. For example,
     <code>SiftingAppender</code> will automatically close and remove
-    any unused child appender.
+    any stale appender. A nested appender is considered stale when no
+    accesses it beyond the duration specified by the <span
+    class="prop">timeout</span> parameter.
     </p>
 
     <p>When handling a logging event, <code>SiftingAppender</code>

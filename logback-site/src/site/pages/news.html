@@ -64,7 +64,6 @@
     <a href="manual/appenders.html#serverSocketAppender">ServerSocketAppender</a>
     for information on configuring appenders as event sources for
     receiver components.</p>
-    
 
     <p><code>RollingFileAppender</code> will now detect when <span
     class="option">file</span> property collides with <span
@@ -95,15 +94,21 @@
     <p class="highlight">Groovy configurator no longer supports
     SiftingAppender.</p>
 
-    <p>Component tracking code has been simplified and completely
-    re-written. As a result of these changes, the groovy configurator
+    <p>In response to <a
+    href="http://jira.qos.ch/browse/LOGBACK-244">LOGBACK-244</a>, <a
+    href="http://jira.qos.ch/browse/LOGBACK-724">LOGBACK-724</a> and
+    in particular patches provided by Tommy Becker and David Roussel
+    component tracking code has been simplified and completely
+    re-written. SiftingAppender now supports timeout and
+    maxAppenderCount parameter. As a direct consequence of
+    modificatons to component tracking code, the groovy configurator
     no longer supports <code>SiftingAppender</code>.</p>
 
     <p>SiftingAppender now propagates properties defined elsewhere in
     the configuration file into the configuration process of nested
     appenders. This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-833">LOGBACK-833</a> with
-    David Roussel providing the appropriate patch..
+    David Roussel providing the appropriate patch.
     </p>
 
     <p>As all other actions affecting properties,

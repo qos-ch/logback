@@ -9,7 +9,7 @@
             <key>timeout</key>
             <defaultValue>smoke</defaultValue>
         </discriminator>
-        <timeout>30000</timeout>
+        <timeout>30 seconds</timeout>
         <sift>
             <appender name="list-${userid}"
                       class="ch.qos.logback.core.read.ListAppender"/>

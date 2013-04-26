@@ -15,6 +15,7 @@ package ch.qos.logback.core.sift;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.util.Duration;
 
 /**
  * This appender serves as the base class for actual SiftingAppenders
@@ -31,16 +32,16 @@ public abstract class SiftingAppenderBase<E> extends
 
   protected AppenderTracker<E> appenderTracker;
   AppenderFactory<E> appenderFactory;
-  int timeout = AppenderTracker.DEFAULT_TIMEOUT;
+  Duration timeout = new Duration(AppenderTracker.DEFAULT_TIMEOUT);
   int maxAppenderCount = AppenderTracker.DEFAULT_MAX_COMPONENTS;
 
   Discriminator<E> discriminator;
 
-  public int getTimeout() {
+  public Duration getTimeout() {
     return timeout;
   }
 
-  public void setTimeout(int timeout) {
+  public void setTimeout(Duration timeout) {
     this.timeout = timeout;
   }
 
@@ -77,7 +78,7 @@ public abstract class SiftingAppenderBase<E> extends
     } else {
       appenderTracker = new AppenderTracker<E>(context, appenderFactory);
       appenderTracker.setMaxComponents(maxAppenderCount);
-      appenderTracker.setTimeout(timeout);
+      appenderTracker.setTimeout(timeout.getMilliseconds());
     }
     if (errors == 0) {
       super.start();
