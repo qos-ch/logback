@@ -35,6 +35,10 @@ public class EnvUtilForTests {
   }
 
 
+  static public boolean isRunningOnSlowJenkins() {
+    return System.getProperty(CoreTestConstants.SLOW_JENKINS) != null;
+  }
+
 
   static public String getLocalHostName() {
     InetAddress localhostIA;
