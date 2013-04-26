@@ -1679,11 +1679,35 @@ fileName=myApp.log
 
  
 
-  <p>At the present time, logback does not ship with any classes
-  implementing <code>PropertyDefiner</code>. We merely provide an
-  extension point so that you (the user) may define properties
-  dynamically.
+  <p>At the present time, logback does ships with two fairly simple
+  implementations of <code>PropertyDefiner</code>.  
   </p>
+
+  <table class="bodyTable striped">
+    <tr>
+      <th>Implementation name</th>
+      <th>Description</th>
+    </tr>
+
+    <tr>
+      <td><a
+      href="../apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html"><code>FileExistsPropertyDefiner</code></a>
+      </td>
+      <td>Set the named variable to "true" if the file specified by
+      <span class="prop">path</span> property exists, to "false"
+      otherwise.
+      </td>
+    </tr>
+    <tr>
+      <td><a
+      href="../apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html"><code>ResourceExistsPropertyDefiner</code></a>
+      </td>
+      <td>Set the named variable to "true" if the <span
+      class="prop">resource</span> specified by the user is available
+      on the class path, to "false" otherwise.
+      </td>
+    </tr>
+  </table>
 
   <!-- ============================================================== -->
 
