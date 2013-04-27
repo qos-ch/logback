@@ -33,9 +33,9 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
 
-  boolean includeCallerData = false;
+  private boolean includeCallerData = false;
 
-  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  private PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
   
   public SocketAppender() {
   }
