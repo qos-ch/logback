@@ -49,7 +49,7 @@ public class SocketReceiver extends ReceiverBase
   private int reconnectionDelay;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
 
-  private String remoteId;
+  private String receiverId;
   private volatile Socket socket;
 
   /**
@@ -59,13 +59,13 @@ public class SocketReceiver extends ReceiverBase
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
-      addError("No port was configured for remote. "
+      addError("No port was configured for receiver. "
               + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
     }
 
     if (remoteHost == null) {
       errorCount++;
-      addError("No host name or address was configured for remote. "
+      addError("No host name or address was configured for receiver. "
               + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
     }
 
@@ -83,7 +83,7 @@ public class SocketReceiver extends ReceiverBase
     }
 
     if (errorCount == 0) {
-      remoteId = "remote " + remoteHost + ":" + port + ": ";
+      receiverId = "receiver " + remoteHost + ":" + port + ": ";
     }
 
     return errorCount == 0;
@@ -133,7 +133,7 @@ public class SocketReceiver extends ReceiverBase
       socket.setSoTimeout(acceptConnectionTimeout);
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
       socket.setSoTimeout(0);
-      addInfo(remoteId + "connection established");
+      addInfo(receiverId + "connection established");
       while (true) {
         ILoggingEvent event = (ILoggingEvent) ois.readObject();
         Logger remoteLogger = lc.getLogger(event.getLoggerName());
@@ -142,15 +142,15 @@ public class SocketReceiver extends ReceiverBase
         }
       }
     } catch (EOFException ex) {
-      addInfo(remoteId + "end-of-stream detected");
+      addInfo(receiverId + "end-of-stream detected");
     } catch (IOException ex) {
-      addInfo(remoteId + "connection failed: " + ex);
+      addInfo(receiverId + "connection failed: " + ex);
     } catch (ClassNotFoundException ex) {
-      addInfo(remoteId + "unknown event class: " + ex);
+      addInfo(receiverId + "unknown event class: " + ex);
     } finally {
       CloseUtil.closeQuietly(socket);
       socket = null;
-      addInfo(remoteId + "connection closed");
+      addInfo(receiverId + "connection closed");
     }
   }
 
@@ -161,9 +161,9 @@ public class SocketReceiver extends ReceiverBase
     if (ex instanceof InterruptedException) {
       addInfo("connector interrupted");
     } else if (ex instanceof ConnectException) {
-      addInfo(remoteId + "connection refused");
+      addInfo(receiverId + "connection refused");
     } else {
-      addInfo(remoteId + ex);
+      addInfo(receiverId + ex);
     }
   }
 
