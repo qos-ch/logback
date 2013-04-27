@@ -20,8 +20,6 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.net.SocketFactory;
@@ -190,10 +188,6 @@ public class SocketReceiver extends ReceiverBase
 
   protected SocketFactory getSocketFactory() {
     return SocketFactory.getDefault();
-  }
-
-  protected ExecutorService createExecutorService() {
-    return Executors.newCachedThreadPool();
   }
 
   public void setRemoteHost(String remoteHost) {
