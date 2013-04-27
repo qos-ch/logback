@@ -6,10 +6,12 @@
   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
 
     <discriminator>
-      <key>userid</key>
-      <defaultValue>zeroDefault</defaultValue>
+      <key>linger</key>
+      <defaultValue>linger</defaultValue>
     </discriminator>
-    <sift>     
+    <sift>
+      <appender name="list-${linger}"
+        class="ch.qos.logback.core.read.ListAppender" />
     </sift>
   </appender>
 

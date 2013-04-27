@@ -18,21 +18,17 @@ import java.util.Map;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.sift.AppenderFactoryBase;
+import ch.qos.logback.core.sift.AbstractAppenderFactoryUsingJoran;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
 /**
  *
  */
-public class AppenderFactory extends AppenderFactoryBase<ILoggingEvent> {
+public class AppenderFactoryUsingJoran extends AbstractAppenderFactoryUsingJoran<ILoggingEvent> {
 
-  String key;
-  Map<String, String> parentPropertyMap;
 
-  AppenderFactory(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
-    super(eventList);
-    this.key = key;
-    this.parentPropertyMap = parentPropertyMap;
+  AppenderFactoryUsingJoran(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
+    super(eventList, key, parentPropertyMap);
   }
 
   public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String discriminatingValue) {

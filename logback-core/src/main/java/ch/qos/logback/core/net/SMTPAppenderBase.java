@@ -42,7 +42,6 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.sift.DefaultDiscriminator;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
-import ch.qos.logback.core.spi.CyclicBufferTrackerImpl;
 import ch.qos.logback.core.util.ContentTypeUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -116,7 +115,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   public void start() {
 
     if (cbTracker == null) {
-      cbTracker = new CyclicBufferTrackerImpl<E>();
+      cbTracker = new CyclicBufferTracker<E>();
     }
 
     Session session = null;
@@ -237,13 +236,13 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     // immediately remove the buffer if asked by the user
     if (eventMarksEndOfLife(eventObject)) {
-      cbTracker.removeBuffer(key);
+      cbTracker.endOfLife(key);
     }
 
-    cbTracker.clearStaleBuffers(now);
+    cbTracker.removeStaleComponents(now);
 
     if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
-      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
+      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.getComponentCount() + "] buffers");
       lastTrackerStatusPrint = now;
       // quadruple 'delay' assuming less than max delay
       if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {

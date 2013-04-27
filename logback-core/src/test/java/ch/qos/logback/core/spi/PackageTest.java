@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AppenderAttachableImplTest.class, AppenderAttachableImplLockTest.class,
-        CyclicBufferTrackerImplTest.class, ScenarioBasedCyclicBufferTrackerTest.class})
+        CyclicBufferTrackerTest.class, ScenarioBasedCyclicBufferTrackerTest.class})
 
 public class PackageTest {
 }

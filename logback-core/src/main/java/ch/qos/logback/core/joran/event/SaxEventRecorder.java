@@ -40,8 +40,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
   final ContextAwareImpl cai;
 
-  public SaxEventRecorder() {
-    cai = new ContextAwareImpl(this);
+  public SaxEventRecorder(Context context) {
+    cai = new ContextAwareImpl(context, this);
   }
 
   public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();

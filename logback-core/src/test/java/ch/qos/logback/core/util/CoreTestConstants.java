@@ -28,4 +28,7 @@ public class CoreTestConstants {
 
   public static final String BASH_PATH_ON_CYGWIN = "c:/cygwin/bin/bash";
   public static final String BASH_PATH_ON_LINUX = "bash";
+
+
+  public static final String SLOW_JENKINS = "slowJenkins";
 }

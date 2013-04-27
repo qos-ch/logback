@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.spi;
 
+import ch.qos.logback.core.helpers.CyclicBuffer;
+
 import java.util.*;
 
 /**
@@ -20,21 +22,27 @@ import java.util.*;
  */
 public class CyclicBufferTrackerSimulator {
 
-  CyclicBufferTrackerImpl<Object> realCBTracker = new CyclicBufferTrackerImpl<Object>();
-  CyclicBufferTracker_TImpl<Object> t_CBTracker = new CyclicBufferTracker_TImpl<Object>();
+  static class Parameters {
+    public int keySpaceLen;
+    public int maxTimestampInc;
+    public int simulationLength;
+  }
+
+  CyclicBufferTracker<Object> realCBTracker = new CyclicBufferTracker<Object>();
+  CyclicBufferTrackerT<Object> t_CBTracker = new CyclicBufferTrackerT<Object>();
 
   List<SimulationEvent> scenario = new ArrayList<SimulationEvent>();
   List<String> keySpace = new ArrayList<String>();
-  int maxTimestampInc;
   Random randomKeyGen = new Random(100);
   Random simulatorRandom = new Random(11234);
+  Parameters params;
 
-  int deleteToInsertRatio = 10;
+  int getToEndOfLifeRatio = 10;
 
-  CyclicBufferTrackerSimulator(int keySpaceLen, int maxTimestampInc) {
-    this.maxTimestampInc = maxTimestampInc;
+  CyclicBufferTrackerSimulator(Parameters params) {
+    this.params = params;
     Map<String, String> checkMap = new HashMap<String, String>();
-    for (int i = 0; i < keySpaceLen; i++) {
+    for (int i = 0; i < params.keySpaceLen; i++) {
       String k = getRandomKeyStr();
       if (checkMap.containsKey(k)) {
         System.out.println("random key collision occurred");
@@ -51,19 +59,18 @@ public class CyclicBufferTrackerSimulator {
     return String.format("%X", ri);
   }
 
-  void buildScenario(int simLen) {
+  void buildScenario() {
     long timestamp = 30000;
     int keySpaceLen = keySpace.size();
-    for (int i = 0; i < simLen; i++) {
-      int index = simulatorRandom.nextInt(keySpaceLen);
-      timestamp += simulatorRandom.nextInt(maxTimestampInc);
-      EventType eventType = EventType.INSERT;
-      if (simulatorRandom.nextInt(deleteToInsertRatio) == 0) {
-        eventType = EventType.DELETE;
+    for (int i = 0; i < params.simulationLength; i++) {
+      int keyIndex = simulatorRandom.nextInt(keySpaceLen);
+      timestamp += simulatorRandom.nextInt(params.maxTimestampInc);
+      String key = keySpace.get(keyIndex);
+      scenario.add(new SimulationEvent(EventType.INSERT, key, timestamp));
+      if (simulatorRandom.nextInt(getToEndOfLifeRatio) == 0) {
+        scenario.add(new SimulationEvent(EventType.END_OF_LIFE, key, timestamp));
       }
-
-      String key = keySpace.get(index);
-      scenario.add(new SimulationEvent(eventType, key, timestamp));
+      scenario.add(new SimulationEvent(EventType.REMOVE_STALE, key, timestamp));
     }
   }
 
@@ -75,7 +82,7 @@ public class CyclicBufferTrackerSimulator {
 
 
   void play(SimulationEvent simulationEvent,
-            CyclicBufferTracker<Object> tracker) {
+            ComponentTracker<CyclicBuffer<Object>> tracker) {
     String key = simulationEvent.key;
     long timestamp = simulationEvent.timestamp;
     EventType eventType = simulationEvent.eventType;
@@ -83,8 +90,11 @@ public class CyclicBufferTrackerSimulator {
       case INSERT:
         tracker.getOrCreate(key, timestamp);
         break;
-      case DELETE:
-        tracker.removeBuffer(key);
+      case END_OF_LIFE:
+        tracker.endOfLife(key);
+        break;
+      case REMOVE_STALE:
+        tracker.removeStaleComponents(timestamp);
         break;
     }
   }
@@ -98,7 +108,7 @@ public class CyclicBufferTrackerSimulator {
 
   // =========================================================================
   enum EventType {
-    INSERT, DELETE;
+    INSERT, END_OF_LIFE, REMOVE_STALE;
   }
 
   class SimulationEvent {
@@ -112,8 +122,13 @@ public class CyclicBufferTrackerSimulator {
       this.timestamp = timestamp;
     }
 
+    @Override
     public String toString() {
-      return "Event: k=" + key + ", timestamp=" + timestamp;
+      return "SimulationEvent{" +
+              "eventType=" + eventType +
+              ", key='" + key + '\'' +
+              ", timestamp=" + timestamp +
+              '}';
     }
   }
 }

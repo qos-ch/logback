@@ -36,8 +36,8 @@ import ch.qos.logback.core.Layout;
 public class DilutedSMTPAppenderTest {
 
   SMTPAppender appender;
-  CyclicBufferTracker cbTracker;
-  CyclicBuffer cb;
+  CyclicBufferTracker<ILoggingEvent> cbTracker;
+  CyclicBuffer<ILoggingEvent> cb;
 
   @Before
   public void setUp() throws Exception {

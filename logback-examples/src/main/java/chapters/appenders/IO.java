@@ -120,7 +120,7 @@ public class IO extends Thread {
       threads[i].start();
     }
 
-    // wait for them to stop, compute the average throughput
+    // wait for them to processPriorToRemoval, compute the average throughput
     double sum = 0;
 
     for (int i = 0; i < numThreads; i++) {
@@ -129,7 +129,7 @@ public class IO extends Thread {
     }
 
     if (scarceCPU) {
-      // setting the interrupted field will cause counterThread to stop
+      // setting the interrupted field will cause counterThread to processPriorToRemoval
       counterThread.interrupted = true;
       counterThread.join();
     }

@@ -27,10 +27,21 @@ import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 public abstract class SiftingJoranConfiguratorBase<E> extends
-    GenericConfigurator {
+        GenericConfigurator {
+
+  protected final String key;
+  protected final String value;
+  // properties inherited from the main joran run
+  protected final Map<String, String> parentPropertyMap;
+
+  protected SiftingJoranConfiguratorBase(String key, String value, Map<String, String> parentPropertyMap) {
+    this.key = key;
+    this.value = value;
+    this.parentPropertyMap = parentPropertyMap;
+  }
 
   final static String ONE_AND_ONLY_ONE_URL = CoreConstants.CODES_URL
-      + "#1andOnly1";
+          + "#1andOnly1";
 
   @Override
   protected void addImplicitRules(Interpreter interpreter) {
@@ -50,9 +61,6 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
     rs.addRule(new Pattern("configuration/define"), new DefinePropertyAction());
   }
 
-
-
-
   abstract public Appender<E> getAppender();
 
   int errorEmmissionCount = 0;
@@ -65,7 +73,7 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
     } else if (appenderMap.size() > 1) {
       errorEmmissionCount++;
       errMsg = "Only and only one appender can be nested the <sift> element in SiftingAppender. See also "
-          + ONE_AND_ONLY_ONE_URL;
+              + ONE_AND_ONLY_ONE_URL;
     }
 
     if (errMsg != null && errorEmmissionCount < CoreConstants.MAX_ERROR_COUNT) {
@@ -75,5 +83,10 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
 
   public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
     super.doConfigure(eventList);
+  }
+
+  @Override
+  public String toString() {
+    return this.getClass().getName() + "{" + key + "=" + value + '}';
   }
 }

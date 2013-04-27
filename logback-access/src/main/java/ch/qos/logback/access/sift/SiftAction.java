@@ -15,6 +15,7 @@ package ch.qos.logback.access.sift;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.xml.sax.Attributes;
 
@@ -39,8 +40,9 @@ public class SiftAction  extends Action implements InPlayListener {
     ic.removeInPlayListener(this);
     Object o = ic.peekObject();
     if (o instanceof SiftingAppender) {
-      SiftingAppender siftingAppender = (SiftingAppender) o; 
-      AppenderFactory appenderFactory = new AppenderFactory(seList, siftingAppender.getDiscriminatorKey());
+      SiftingAppender siftingAppender = (SiftingAppender) o;
+      Map<String, String> propertyMap = ic.getCopyOfPropertyMap();
+      AppenderFactoryUsingJoran appenderFactory = new AppenderFactoryUsingJoran(seList, siftingAppender.getDiscriminatorKey(), propertyMap);
       siftingAppender.setAppenderFactory(appenderFactory);
     }
   }

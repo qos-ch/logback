@@ -30,26 +30,35 @@ public class StatusListenerConfigHelper {
     }
   }
 
-  static void addStatusListener(LoggerContext loggerContext,
+  private static void addStatusListener(LoggerContext loggerContext,
       String listenerClass) {
     StatusListener listener = null;
     if (ContextInitializer.SYSOUT.equalsIgnoreCase(listenerClass)) {
       listener = new OnConsoleStatusListener();
     } else {
-      try {
-        listener = (StatusListener) OptionHelper.instantiateByClassName(
-            listenerClass, StatusListener.class, loggerContext);
-        if(listener instanceof ContextAware) // LOGBACK-767
-          ((ContextAware) listener).setContext(loggerContext);
-        if(listener instanceof LifeCycle)  // LOGBACK-767
-          ((LifeCycle) listener).start();
-      } catch (Exception e) {
-        // printing on the console is the best we can do
-        e.printStackTrace();
-      }
+      listener = createListenerPerClassName(loggerContext, listenerClass);
     }
+    initListener(loggerContext, listener);
+  }
+
+  private static void initListener(LoggerContext loggerContext, StatusListener listener) {
     if (listener != null) {
+      if(listener instanceof ContextAware) // LOGBACK-767
+        ((ContextAware) listener).setContext(loggerContext);
+      if(listener instanceof LifeCycle)  // LOGBACK-767
+        ((LifeCycle) listener).start();
       loggerContext.getStatusManager().add(listener);
+    }
+  }
+
+  private static StatusListener createListenerPerClassName(LoggerContext loggerContext, String listenerClass) {
+    try {
+      return (StatusListener) OptionHelper.instantiateByClassName(
+              listenerClass, StatusListener.class, loggerContext);
+    } catch (Exception e) {
+      // printing on the console is the best we can do
+      e.printStackTrace();
+      return null;
     }
   }
 }

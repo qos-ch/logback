@@ -99,7 +99,7 @@ public class JMXConfiguratorTest {
     
     lc.stop();
     
-    // check that after lc.stop, jmxConfigurator is no longer
+    // check that after lc.processPriorToRemoval, jmxConfigurator is no longer
     // registered as a listener in the loggerContext nor as an
     // MBean in mbs
     listenerList = lc.getCopyOfListenerList();

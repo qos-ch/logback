@@ -14,24 +14,22 @@
 package ch.qos.logback.access.sift;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.sift.AppenderFactoryBase;
+import ch.qos.logback.core.sift.AbstractAppenderFactoryUsingJoran;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class AppenderFactory extends AppenderFactoryBase<IAccessEvent> {
+public class AppenderFactoryUsingJoran extends AbstractAppenderFactoryUsingJoran<IAccessEvent> {
 
-  String keyName;
-
-  AppenderFactory(List<SaxEvent> eventList, String keyName) {
-    super(eventList);
-    this.keyName = keyName;
+  AppenderFactoryUsingJoran(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
+    super(eventList, key, parentPropertyMap);
   }
 
   public SiftingJoranConfiguratorBase<IAccessEvent> getSiftingJoranConfigurator(
       String keyValue) {
-    return new SiftingJoranConfigurator(keyName, keyValue);
+    return new SiftingJoranConfigurator(key, keyValue, parentPropertyMap);
   }
 
 }

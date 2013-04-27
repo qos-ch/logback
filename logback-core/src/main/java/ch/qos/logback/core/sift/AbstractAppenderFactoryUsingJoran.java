@@ -14,6 +14,7 @@
 package ch.qos.logback.core.sift;
 
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
@@ -21,16 +22,20 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
- * Builds new appenders dynamically by running SiftingJoranConfigurator instance, a custom configurator
- * tailored for the contents of the sift element.
+ * Builds new appenders dynamically by running SiftingJoranConfigurator instance,
+ * a custom configurator tailored for the contents of the sift element.
  * @param <E>
  */
-public abstract class AppenderFactoryBase<E> {
+public abstract class AbstractAppenderFactoryUsingJoran<E> implements AppenderFactory<E> {
 
   final List<SaxEvent> eventList;
-  
-  protected AppenderFactoryBase(List<SaxEvent> eventList) {
+  protected String key;
+  protected Map<String, String> parentPropertyMap;
+
+  protected AbstractAppenderFactoryUsingJoran(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
     this.eventList = removeSiftElement(eventList);
+    this.key = key;
+    this.parentPropertyMap = parentPropertyMap;
     
   }
 
@@ -40,7 +45,7 @@ public abstract class AppenderFactoryBase<E> {
 
   public abstract SiftingJoranConfiguratorBase<E> getSiftingJoranConfigurator(String k);
   
-  Appender<E> buildAppender(Context context, String discriminatingValue) throws JoranException {
+  public Appender<E> buildAppender(Context context, String discriminatingValue) throws JoranException {
     SiftingJoranConfiguratorBase<E> sjc = getSiftingJoranConfigurator(discriminatingValue);
     sjc.setContext(context);
     sjc.doConfigure(eventList);

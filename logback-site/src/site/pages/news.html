@@ -30,7 +30,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>April, 2013 - Release of version 1.0.12</h3>
+    <h3>April 26th, 2013 - Release of version 1.0.12</h3>
     
     <p>A new <code>SSLSocketAppender</code> extends the basic 
     <code>SocketAppender</code> providing the ability to deliver 
@@ -40,6 +40,9 @@
     application that receives logging events from a 
     <code>SSLSocketAppender</code>.</p>
       
+    <p class="highlight">Receiver components are configured in
+    logback.xml just like any other logback component.</p>
+
     <p>While <code>SimpleSocketServer</code> (and its new SSL-enabled
     counterpart, <code>SimpleSSLSocketServer</code>) provide an 
     easy-to-use standalone logging server application, a new component
@@ -64,7 +67,7 @@
     <a href="manual/appenders.html#serverSocketAppender">ServerSocketAppender</a>
     for information on configuring appenders as event sources for
     receiver components.</p>
-    
+
     <p><code>RollingFileAppender</code> will now detect when <span
     class="option">file</span> property collides with <span
     class="option">fileNamePattern</span>, emit <a
@@ -73,6 +76,13 @@
     href="http://jira.qos.ch/browse/LOGBACK-796">LOGBACK-796</a> by
     Karl Pietrzak who also provided a patch.
     </p>
+
+    <p>In configuration files, the <code>&lt;include></code> element
+    now admits the <span class="attr">optional</span> attribute. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-230">LOGBACK-230</a>
+    reported by Attila Király. Many thanks to Tommy Becker who
+    contributed a patch.</p>
 
     <p>In response to <a
     href="http://jira.qos.ch/browse/LOGBACK-829">LOGBACK-829</a>,
@@ -87,15 +97,30 @@
 
     <p>The code detecting whether Groovy is available on the class
     path deals with the case where logback binaries are installed as
-    endoresed libraries. This fixes <a
+    endorsed libraries. This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
     </p>
+
+    <p class="highlight">Groovy configurator no longer supports
+    <code>SiftingAppender</code>.</p>
+
+    <p>In response to <a
+    href="http://jira.qos.ch/browse/LOGBACK-244">LOGBACK-244</a>, <a
+    href="http://jira.qos.ch/browse/LOGBACK-724">LOGBACK-724</a> and
+    in particular patches provided by Tommy Becker and David Roussel
+    component tracking code has been simplified and completely
+    re-written. <code>SiftingAppender</code> now supports the <a
+    href="manual/appenders.html#siftTimeout">timeout</a> and <a
+    href="manual/appenders.html#siftMaxAppenderCount">maxAppenderCount</a>
+    parameters. As a direct consequence of modifications to component
+    tracking code, the groovy configurator no longer supports
+    <code>SiftingAppender</code>.</p>
 
     <p>SiftingAppender now propagates properties defined elsewhere in
     the configuration file into the configuration process of nested
     appenders. This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-833">LOGBACK-833</a> with
-    David Roussel providing the appropriate patch..
+    David Roussel providing the appropriate patch.
     </p>
 
     <p>As all other actions affecting properties,
@@ -108,9 +133,9 @@
     </p>
 
     <p>Logback is now able to retrieve the name of localhost when
-    running under OS X and Java 7. This issue was reporteed by <a
+    running under OS X and Java 7. This issue was reported by <a
     href="http://jira.qos.ch/browse/LOGBACK-749">LOGBACK-749</a> by
-    Oliver Schrenk with patches provied by Ralph Goers and Pavel
+    Oliver Schrenk with patches provided by Ralph Goers and Pavel
     Valodzka.
     </p>
 

@@ -17,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import ch.qos.logback.access.jetty.JettyFixtureBase;
 import org.junit.After;
@@ -55,33 +55,31 @@ public class SiftingAppenderTest {
   public void invokingDifferentPathShouldBeSiftedAccordingly() throws Exception {
     rli.setFileName(PREFIX + "sifting.xml");
     jettyFixture.start();
-    StatusPrinter.print(rli);
     invokeServer("/");
     invokeServer("/x");
     invokeServer("/x");
     invokeServer("/y");
 
+    StatusPrinter.print(rli);
     SiftingAppender siftingAppender = (SiftingAppender) rli
         .getAppender("SIFTING");
-    List<String> keyList = siftingAppender.getAppenderTracker().keyList();
-    assertEquals(3, keyList.size());
+    Set<String> keySet = siftingAppender.getAppenderTracker().allKeys();
+    assertEquals(3, keySet.size());
 
-    List<String> witnessList = new ArrayList<String>();
-    witnessList.add("NA");
-    witnessList.add("x");
-    witnessList.add("y");
-    assertEquals(witnessList, keyList);
+    Set<String> witnessSet = new LinkedHashSet<String>();
+    witnessSet.add("NA");
+    witnessSet.add("x");
+    witnessSet.add("y");
+    assertEquals(witnessSet, keySet);
 
-    long now = System.currentTimeMillis();
-    check(siftingAppender, "NA", 1, now);
-    check(siftingAppender, "x", 2, now);
-    check(siftingAppender, "y", 1, now);
-
+    check(siftingAppender, "NA", 1);
+    check(siftingAppender, "x", 2);
+    check(siftingAppender, "y", 1);
   }
 
-  private void check(SiftingAppender siftingAppender, String key, int expectedCount, long now) {
+  private void check(SiftingAppender siftingAppender, String key, int expectedCount) {
     ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender
-      .getAppenderTracker().get(key, now);
+      .getAppenderTracker().find(key);
     assertEquals(expectedCount, listAppender.list.size());
   }
 

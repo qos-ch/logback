@@ -109,7 +109,7 @@ public class IOPerformance extends Thread {
       threads[i].start();
     }
 
-    // wait for them to stop, compute the average throughput
+    // wait for them to processPriorToRemoval, compute the average throughput
     double sum = 0;
 
     for (int i = 0; i < NUM_THREADS; i++) {
@@ -117,7 +117,7 @@ public class IOPerformance extends Thread {
       sum += threads[i].throughput;
     }
 
-    // setting the interrupted field will cause counterThread to stop
+    // setting the interrupted field will cause counterThread to processPriorToRemoval
     otherIOThread.interrupted = true;
     otherIOThread.join();
 

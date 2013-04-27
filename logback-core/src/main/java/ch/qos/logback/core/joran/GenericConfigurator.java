@@ -130,8 +130,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
       informContextOfURLUsedForConfiguration(getContext(), null);
     }
-    SaxEventRecorder recorder = new SaxEventRecorder();
-    recorder.setContext(context);
+    SaxEventRecorder recorder = new SaxEventRecorder(context);
     recorder.recordEvents(inputSource);
     doConfigure(recorder.saxEventList);
     // no exceptions a this level

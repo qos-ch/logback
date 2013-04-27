@@ -67,11 +67,12 @@ class GafferConfigurator {
   protected ImportCustomizer importCustomizer() {
     def customizer = new ImportCustomizer()
 
-    customizer.addImports(PatternLayoutEncoder.class.name, SiftingAppender.class.name)
 
     def core = 'ch.qos.logback.core'
     customizer.addStarImports(core, "${core}.encoder", "${core}.read", "${core}.rolling", "${core}.status",
             "ch.qos.logback.classic.net")
+
+    customizer.addImports(PatternLayoutEncoder.class.name)
 
     customizer.addStaticStars(Level.class.name)
 

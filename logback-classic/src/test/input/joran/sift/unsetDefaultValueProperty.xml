@@ -6,7 +6,7 @@
   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
 
     <discriminator>
-      <Key>userid</Key>
+      <key>userid</key>
     </discriminator>
     <sift>
       <appender name="list-${userid}"

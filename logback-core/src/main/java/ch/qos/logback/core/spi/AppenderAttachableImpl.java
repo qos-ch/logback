@@ -97,7 +97,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
   }
 
   /**
-   * Remove and stop all previously attached appenders.
+   * Remove and processPriorToRemoval all previously attached appenders.
    */
   public void detachAndStopAllAppenders() {
     for (Appender<E> a : appenderList) {

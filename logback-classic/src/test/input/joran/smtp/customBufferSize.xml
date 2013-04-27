@@ -7,7 +7,7 @@
     <From>user@host.dom</From>
     <Subject>testCustomBufferSize %logger - %m</Subject>
 
-    <CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
+    <CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
       <bufferSize>1</bufferSize>
     </CyclicBufferTracker>
     

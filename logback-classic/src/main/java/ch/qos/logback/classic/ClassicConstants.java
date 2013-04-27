@@ -45,5 +45,6 @@ public class ClassicConstants {
 
   public static final String GAFFER_CONFIGURATOR_FQCN = "ch.qos.logback.classic.gaffer.GafferConfigurator";
 
-  public static final Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker("FINALIZE_SESSION");
+  public static final String FINALIZE_SESSION = "FINALIZE_SESSION";
+  public static final Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker(FINALIZE_SESSION);
 }

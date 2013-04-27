@@ -204,7 +204,7 @@ public class JaninoEventEvaluatorTest {
       } catch (EvaluationException e) {
       }
     }
-    // after a few attempts the evaluator should stop
+    // after a few attempts the evaluator should processPriorToRemoval
     assertFalse(jee.isStarted());
 
   }
