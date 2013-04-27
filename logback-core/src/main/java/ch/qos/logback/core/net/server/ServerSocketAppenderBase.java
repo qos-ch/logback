@@ -167,7 +167,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    * @return queue depth
    * @see java.net.ServerSocket
    */
-  public Integer getBacklog() {
+  public int getBacklog() {
     return backlog;
   }
 
@@ -179,7 +179,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    * @param backlog the queue depth to set
    * @see java.net.ServerSocket
    */
-  public void setBacklog(Integer backlog) {
+  public void setBacklog(int backlog) {
     this.backlog = backlog;
   }
 
