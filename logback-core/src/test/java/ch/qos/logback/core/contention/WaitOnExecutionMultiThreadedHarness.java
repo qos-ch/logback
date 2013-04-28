@@ -13,21 +13,32 @@
  */
 package ch.qos.logback.core.contention;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.StatusUtil;
+
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class WaitOnExecutionMultiThreadedHarness extends AbstractMultiThreadedHarness {
-    ThreadPoolExecutor threadPoolExecutor;
-    int count;
+  Context context;
+  StatusUtil statusUtil;
+  int count;
 
-    public WaitOnExecutionMultiThreadedHarness(ThreadPoolExecutor threadPoolExecutor, int count) {
-        this.threadPoolExecutor = threadPoolExecutor;
-        this.count = count;
+  public WaitOnExecutionMultiThreadedHarness(Context context, int count) {
+    this.context = context;
+    this.statusUtil = new StatusUtil(context);
+    this.count = count;
+  }
 
+  @Override
+  void waitUntilEndCondition() throws InterruptedException {
+    while (visibleResets() < count) {
+      Thread.yield();
     }
-    @Override
-    void waitUntilEndCondition() throws InterruptedException {
-      while(threadPoolExecutor.getCompletedTaskCount() < count) {
-        Thread.yield();
-      }
-    }
+  }
+
+  private int visibleResets() {
+    return statusUtil.matchCount("Detected change in");
+  }
 }
