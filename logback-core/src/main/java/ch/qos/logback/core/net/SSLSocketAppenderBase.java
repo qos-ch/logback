@@ -34,6 +34,28 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E>
   private SocketFactory socketFactory;
 
   /**
+   * Constructs a new appender.
+   */
+  protected SSLSocketAppenderBase() {    
+  }
+  
+  /**
+   * Constructs a new appender that will connect to the given remote host 
+   * and port.
+   * <p>
+   * This constructor was introduced primarily to allow the encapsulation 
+   * of the base {@link SocketAppenderBase} to be improved in a manner that
+   * is least disruptive to <em>existing</em> subclasses.  <strong>This
+   * constructor will be removed in future release</strong>.
+   * @param remoteHost target remote host
+   * @param port target port on remote host
+   */
+  @Deprecated
+  protected SSLSocketAppenderBase(String remoteHost, int port) {
+    super(remoteHost, port);
+  }
+  
+  /**
    * Gets an {@link SocketFactory} that produces SSL sockets using an
    * {@link SSLContext} that is derived from the appender's configuration.
    * @return socket factory

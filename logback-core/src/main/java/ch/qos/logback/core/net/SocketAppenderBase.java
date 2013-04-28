@@ -17,23 +17,34 @@ package ch.qos.logback.core.net;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.SynchronousQueue;
+
 import javax.net.SocketFactory;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
+import ch.qos.logback.core.util.CloseUtil;
 
 /**
- * 
- * This is the base class for module specific SocketAppender implementations.
+ * An abstract base for module specific {@link SocketAppender}
+ * implementations.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
+ * @author Carl Harris
  */
 
-public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
+public abstract class SocketAppenderBase<E> extends AppenderBase<E> 
+    implements Runnable, SocketConnector.ExceptionHandler {
 
   /**
    * The default port number of remote logging server (4560).
@@ -46,100 +57,211 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
   public static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
   /**
-   * We remember host name as String in addition to the resolved InetAddress so
-   * that it can be returned via getOption().
+   * Default size of the queue used to hold logging events that are destined
+   * for the remote peer.
    */
-  protected String remoteHost;
+  public static final int DEFAULT_QUEUE_SIZE = 0;
+  
+  /**
+   * Default timeout when waiting for the remote server to accept our
+   * connection.
+   */
+  private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
-  protected InetAddress address;
-  protected int port = DEFAULT_PORT;
-  protected ObjectOutputStream oos;
-  protected int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
-
-  private Connector connector;
-
-  protected int counter = 0;
+  private String remoteHost;
+  private int port = DEFAULT_PORT;
+  private InetAddress address;
+  private int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
+  private int queueSize = DEFAULT_QUEUE_SIZE;
+  private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
+  
+  private BlockingQueue<E> queue;
+  private String peerId;
+  private Future<?> task;
+  private volatile Socket socket;
 
   /**
-   * Start this appender.
+   * Constructs a new appender.
+   */
+  protected SocketAppenderBase() {    
+  }
+  
+  /**
+   * Constructs a new appender that will connect to the given remote host 
+   * and port.
+   * <p>
+   * This constructor was introduced primarily to allow the encapsulation 
+   * of the this class to be improved in a manner that is least disruptive 
+   * to <em>existing</em> subclasses.  <strong>This constructor will be 
+   * removed in future release</strong>.
+   * 
+   * @param remoteHost target remote host
+   * @param port target port on remote host
+   */
+  @Deprecated
+  protected SocketAppenderBase(String remoteHost, int port) {    
+    this.remoteHost = remoteHost;
+    this.port = port;
+  }
+  
+  /**
+   * {@inheritDoc}
    */
   public void start() {
+    if (isStarted()) return;
     int errorCount = 0;
-    if (port == 0) {
+    if (port <= 0) {
       errorCount++;
       addError("No port was configured for appender"
           + name
           + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
     }
 
-    if (address == null) {
+    if (remoteHost == null) {
       errorCount++;
-      addError("No remote address was configured for appender"
+      addError("No remote host was configured for appender"
           + name
           + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
     }
-
-    connect(address, port);
+    
+    if (queueSize < 0) {
+      errorCount++;
+      addError("Queue size must be non-negative");
+    }
 
     if (errorCount == 0) {
-      this.started = true;
+      try {
+        address = InetAddress.getByName(remoteHost);
+      } catch (UnknownHostException ex) {
+        addError("unknown host: " + remoteHost);
+        errorCount++;
+      }
+    }
+
+    if (errorCount == 0) {
+      queue = newBlockingQueue(queueSize);
+      peerId = "remote peer " + remoteHost + ":" + port + ": ";
+      task = getContext().getExecutorService().submit(this);
+      super.start();
     }
   }
 
   /**
-   * Strop this appender.
-   * 
-   * <p>
-   * This will mark the appender as closed and call then {@link #cleanUp}
-   * method.
+   * {@inheritDoc}
    */
   @Override
   public void stop() {
-    if (!isStarted())
-      return;
-
-    this.started = false;
-    cleanUp();
+    if (!isStarted()) return;
+    CloseUtil.closeQuietly(socket);
+    task.cancel(true);
+    super.stop();
   }
 
   /**
-   * Drop the connection to the remote host and release the underlying connector
-   * thread if it has been created
+   * {@inheritDoc}
    */
-  public void cleanUp() {
-    if (oos != null) {
-      try {
-        oos.close();
-      } catch (IOException e) {
-        addError("Could not close oos.", e);
+  @Override
+  protected void append(E event) {
+    if (event == null || !isStarted()) return;    
+    queue.offer(event);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public final void run() {
+    try {
+      SocketConnector connector = createConnector(address, port, 0,
+          reconnectionDelay);
+      while (!Thread.currentThread().isInterrupted()) {
+        try {
+          getContext().getExecutorService().execute(connector);
+        } catch (RejectedExecutionException ex) {
+          // executor is shutting down... 
+          continue;
+        }
+        socket = connector.awaitConnection();
+        dispatchEvents();
+        connector = createConnector(address, port, reconnectionDelay);
       }
-      oos = null;
+    } catch (InterruptedException ex) {
+      assert true;    // ok... we'll exit now
     }
-    if (connector != null) {
-      addInfo("Interrupting the connector.");
-      connector.interrupted = true;
-      connector = null; // allow gc
+    addInfo("shutting down");
+  }
+  
+  private void dispatchEvents() throws InterruptedException {
+    try {
+      socket.setSoTimeout(acceptConnectionTimeout);
+      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      socket.setSoTimeout(0);
+      addInfo(peerId + "connection established");
+      int counter = 0;
+      while (true) {
+        E event = queue.take();
+        postProcessEvent(event);
+        Serializable serEvent = getPST().transform(event);
+        oos.writeObject(serEvent);
+        oos.flush();
+        if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
+          // Failing to reset the object output stream every now and
+          // then creates a serious memory leak.
+          oos.reset();
+          counter = 0;
+        }
+      }
+    } catch (IOException ex) {
+      addInfo(peerId + "connection failed: " + ex);
+    } finally {
+      CloseUtil.closeQuietly(socket);
+      socket = null;
+      addInfo(peerId + "connection closed");
+    }
+  } 
+    
+  /**
+   * {@inheritDoc}
+   */
+  public void connectionFailed(SocketConnector connector, Exception ex) {
+    if (ex instanceof InterruptedException) {
+      addInfo("connector interrupted");
+    } else if (ex instanceof ConnectException) {
+      addInfo(peerId + "connection refused");
+    } else {
+      addInfo(peerId + ex);
     }
   }
 
-  void connect(InetAddress address, int port) {
-    if (this.address == null)
-      return;
-    try {
-      // First, close the previous connection if any.
-      cleanUp();
-      oos = new ObjectOutputStream(getSocketFactory()
-          .createSocket(address, port).getOutputStream());
-    } catch (IOException e) {
+  private SocketConnector createConnector(InetAddress address, int port,
+                                          int delay) {
+    return createConnector(address, port, delay, delay);
+  }
 
-      String msg = "Could not connect to remote logback server at ["
-          + address.getHostName() + "].";
-      if (reconnectionDelay > 0) {
-        msg += " We will try again later.";
-        fireConnector(); // fire the connector thread
-      }
-      addInfo(msg, e);
-    }
+  private SocketConnector createConnector(InetAddress address, int port,
+                                          int initialDelay, int retryDelay) {
+    SocketConnector connector = newConnector(address, port, initialDelay,
+            retryDelay);
+    connector.setExceptionHandler(this);
+    connector.setSocketFactory(getSocketFactory());
+    return connector;
+  }
+
+  /**
+   * Creates a new {@link SocketConnector}.
+   * <p>
+   * The default implementation creates an instance of {@link SocketConnectorBase}.
+   * A subclass may override to provide a different {@link SocketConnector}
+   * implementation.
+   * 
+   * @param address target remote address
+   * @param port target remote port
+   * @param initialDelay delay before the first connection attempt
+   * @param retryDelay delay before a reconnection attempt
+   * @return socket connector
+   */
+  protected SocketConnector newConnector(InetAddress address,
+                                         int port, int initialDelay, int retryDelay) {
+    return new SocketConnectorBase(address, port, initialDelay, retryDelay);
   }
 
   /**
@@ -151,62 +273,44 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     return SocketFactory.getDefault();
   }
 
-  @Override
-  protected void append(E event) {
-
-    if (event == null)
-      return;
-
-    if (address == null) {
-      addError("No remote host is set for SocketAppender named \""
-          + this.name
-          + "\". For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
-      return;
-    }
-
-    if (oos != null) {
-      try {
-        postProcessEvent(event);
-        Serializable serEvent = getPST().transform(event);
-        oos.writeObject(serEvent);
-        oos.flush();
-        if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
-          counter = 0;
-          // Failing to reset the object output stream every now and
-          // then creates a serious memory leak.
-          // System.err.println("Doing oos.reset()");
-          oos.reset();
-        }
-      } catch (IOException e) {
-        if (oos != null) {
-          try {
-            oos.close();
-          } catch (IOException ignore) {
-          }
-        }
-
-        oos = null;
-        addWarn("Detected problem with connection: " + e);
-        if (reconnectionDelay > 0) {
-          fireConnector();
-        }
-      }
-    }
+  /**
+   * Creates a blocking queue that will be used to hold logging events until
+   * they can be delivered to the remote receiver.
+   * <p>
+   * The default implementation creates a (bounded) {@link ArrayBlockingQueue} 
+   * for positive queue sizes.  Otherwise it creates a {@link SynchronousQueue}.
+   * <p>
+   * This method is exposed primarily to support instrumentation for unit
+   * testing.
+   * 
+   * @param queueSize size of the queue
+   * @return
+   */
+  BlockingQueue<E> newBlockingQueue(int queueSize) {
+    return queueSize <= 0 ? 
+        new SynchronousQueue<E>() : new ArrayBlockingQueue<E>(queueSize);
   }
-
+  
+  /**
+   * Post-processes an event before it is serialized for delivery to the
+   * remote receiver.
+   * @param event the event to post-process
+   */
   protected abstract void postProcessEvent(E event);
+  
+  /**
+   * Get the pre-serialization transformer that will be used to transform
+   * each event into a Serializable object before delivery to the remote
+   * receiver.
+   * @return transformer object
+   */
   protected abstract PreSerializationTransformer<E> getPST();
 
-  void fireConnector() {
-    if (connector == null) {
-      addInfo("Starting a new connector thread.");
-      connector = new Connector();
-      connector.setDaemon(true);
-      connector.setPriority(Thread.MIN_PRIORITY);
-      connector.start();
-    }
-  }
-
+  /*
+   * This method is used by logback modules only in the now deprecated
+   * convenience constructors for SocketAppender
+   */
+  @Deprecated
   protected static InetAddress getAddressByName(String host) {
     try {
       return InetAddress.getByName(host);
@@ -220,7 +324,6 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
    * The <b>RemoteHost</b> property takes the name of of the host where a corresponding server is running.
    */
   public void setRemoteHost(String host) {
-    address = getAddressByName(host);
     remoteHost = host;
   }
 
@@ -266,49 +369,42 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E> {
     return reconnectionDelay;
   }
 
+  /**
+   * The <b>queueSize</b> property takes a non-negative integer representing
+   * the number of logging events to retain for delivery to the remote receiver.
+   * When the queue size is zero, event delivery to the remote receiver is
+   * synchronous.  When the queue size is greater than zero, the 
+   * {@link #append(Object)} method returns immediately after enqueing the
+   * event, assuming that there is space available in the queue.  Using a 
+   * non-zero queue length can improve performance by eliminating delays
+   * caused by transient network delays.  If the queue is full when the
+   * {@link #append(Object)} method is called, the event is summarily 
+   * and silently dropped.
+   * 
+   * @param queueSize the queue size to set.
+   */
+  public void setQueueSize(int queueSize) {
+    this.queueSize = queueSize;
+  }
   
   /**
-   * The Connector will reconnect when the server becomes available again. It
-   * does this by attempting to open a new connection every
-   * <code>reconnectionDelay</code> milliseconds.
-   * 
-   * <p>
-   * It stops trying whenever a connection is established. It will restart to
-   * try reconnect to the server when previously open connection is dropped.
-   * 
-   * @author Ceki G&uuml;lc&uuml;
-   * @since 0.8.4
+   * Returns the value of the <b>queueSize</b> property.
    */
-  class Connector extends Thread {
-
-    boolean interrupted = false;
-
-    public void run() {
-      Socket socket;
-      while (!interrupted) {
-        try {
-          sleep(reconnectionDelay);
-          SocketAppenderBase.this.addInfo("Attempting connection to " + address.getHostName());
-          socket = getSocketFactory().createSocket(address, port);
-          synchronized (this) {
-            oos = new ObjectOutputStream(socket.getOutputStream());
-            connector = null;
-            addInfo("Connection established. Exiting connector thread.");
-            break;
-          }
-        } catch (InterruptedException e) {
-          addInfo("Connector interrupted. Leaving loop.");
-          return;
-        } catch (java.net.ConnectException e) {
-          addInfo("Remote host " + address.getHostName()
-              + " refused connection.");
-        } catch (IOException e) {
-          addInfo("Could not connect to " + address.getHostName()
-              + ". Exception is " + e);
-        }
-      }
-      // addInfo("Exiting Connector.run() method.");
-    }
+  public int getQueueSize() {
+    return queueSize;
+  }
+  
+  /**
+   * Sets the timeout that controls how long we'll wait for the remote
+   * peer to accept our connection attempt.
+   * <p>
+   * This property is configurable primarily to support instrumentation
+   * for unit testing.
+   * 
+   * @param acceptConnectionTimeout timeout value in milliseconds
+   */
+  void setAcceptConnectionTimeout(int acceptConnectionTimeout) {
+    this.acceptConnectionTimeout = acceptConnectionTimeout;
   }
 
 }
