@@ -1,4 +1,4 @@
-package ch.qos.logback.core.net.server;
+package ch.qos.logback.core.net.mock;
 
 import java.util.Collections;
 import java.util.List;
