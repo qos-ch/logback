@@ -40,7 +40,7 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<IAccessEvent> {
    */
   @Deprecated
   public SSLSocketAppender(String host, int port) {
-    this(getAddressByName(host), port);
+    super(host, port);
   }
 
   /**
@@ -48,8 +48,7 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<IAccessEvent> {
    */
   @Deprecated
   public SSLSocketAppender(InetAddress address, int port) {
-    this.address = address;
-    this.port = port;
+    super(address.getHostAddress(), port);
   }
 
   @Override
