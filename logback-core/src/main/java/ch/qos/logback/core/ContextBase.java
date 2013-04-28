@@ -51,9 +51,7 @@ public class ContextBase implements Context {
 
   // 0 (JDK 1,6+) or 1 (JDK 1.5) idle threads, MAX_POOL_SIZE maximum threads,
   // no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE,
-          0L, TimeUnit.MILLISECONDS,
-          new SynchronousQueue<Runnable>());
+  private volatile ExecutorService executorService;
 
   private LifeCycleManager lifeCycleManager;
   
@@ -120,6 +118,7 @@ public class ContextBase implements Context {
     getLifeCycleManager().reset();
     propertyMap.clear();
     objectMap.clear();
+    resetExecutorService();
   }
 
   /**
@@ -149,8 +148,32 @@ public class ContextBase implements Context {
     return configurationLock;
   }
 
+  private synchronized void resetExecutorService() {
+    if (executorService != null) {
+      executorService.shutdownNow();
+      executorService = null;
+    }
+  }
+
   public ExecutorService getExecutorService() {
-    return  executorService;
+    if (executorService == null) {
+      synchronized (this) {
+        if (executorService == null) {
+          executorService = newExecutorService();
+        }
+      }
+    }    
+    return executorService;
+  }
+
+  /**
+   * Creates a new executor service for the context.
+   * @return executor service
+   */
+  protected ExecutorService newExecutorService() {
+    return new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE,
+        0L, TimeUnit.MILLISECONDS,
+        new SynchronousQueue<Runnable>());
   }
 
   public void register(LifeCycle component) {

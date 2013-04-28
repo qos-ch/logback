@@ -14,10 +14,14 @@
 package ch.qos.logback.core;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
+import java.util.concurrent.ExecutorService;
 
 import org.junit.Test;
 
@@ -81,9 +85,29 @@ public class ContextBaseTest {
     assertEquals(HELLO, context.getProperty("CONTEXT_NAME"));
   }
 
+  @Test
+  public void executorServiceInitializationAndReset() throws Exception {
+    // should create the executor service on the first call
+    ExecutorService executorService = context.getExecutorService();
+    assertNotNull(executorService);
+    assertSame(context.lastExecutorService, executorService);
+    // calling again (without reset) should return the existing executor service
+    context.lastExecutorService = null;
+    assertSame(executorService, context.getExecutorService());
+    assertNull(context.lastExecutorService);
+    // after a reset, the executor service should be shut down...
+    context.reset();
+    assertTrue(executorService.isTerminated());
+    // ... and a subsequent request should create a new one
+    ExecutorService nextExecutorService = context.getExecutorService();
+    assertNotNull(executorService);
+    assertNotSame(executorService, nextExecutorService);
+  }
+  
   private static class InstrumentedContextBase extends ContextBase {
   
     private final LifeCycleManager lifeCycleManager;
+    private ExecutorService lastExecutorService;
     
     public InstrumentedContextBase(LifeCycleManager lifeCycleManager) {
       this.lifeCycleManager = lifeCycleManager;
@@ -92,6 +116,12 @@ public class ContextBaseTest {
     @Override
     protected LifeCycleManager getLifeCycleManager() {
       return lifeCycleManager;
+    }
+
+    @Override
+    protected ExecutorService newExecutorService() {
+      lastExecutorService = super.newExecutorService();
+      return lastExecutorService;
     }
     
   }
