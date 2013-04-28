@@ -40,6 +40,7 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<ILoggingEvent> {
   /**
    * Connects to remote server at <code>address</code> and <code>port</code>.
    */
+  @Deprecated
   public SSLSocketAppender(String host, int port) {
     this(getAddressByName(host), port);
   }
@@ -47,6 +48,7 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<ILoggingEvent> {
   /**
    * Connects to remote server at <code>address</code> and <code>port</code>.
    */
+  @Deprecated
   public SSLSocketAppender(InetAddress address, int port) {
     this.address = address;
     this.port = port;

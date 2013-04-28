@@ -143,7 +143,7 @@ public class ServerSocketReceiver extends ReceiverBase {
    * @return queue depth
    * @see java.net.ServerSocket
    */
-  public Integer getBacklog() {
+  public int getBacklog() {
     return backlog;
   }
 
@@ -155,7 +155,7 @@ public class ServerSocketReceiver extends ReceiverBase {
    * @param backlog the queue depth to set
    * @see java.net.ServerSocket
    */
-  public void setBacklog(Integer backlog) {
+  public void setBacklog(int backlog) {
     this.backlog = backlog;
   }
 

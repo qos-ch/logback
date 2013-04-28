@@ -33,16 +33,18 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
 
-  boolean includeCallerData = false;
-
-  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  private static final PreSerializationTransformer<ILoggingEvent> pst = 
+      new LoggingEventPreSerializationTransformer();
   
+  private boolean includeCallerData = false;
+
   public SocketAppender() {
   }
 
   /**
    * Connects to remote server at <code>address</code> and <code>port</code>.
    */
+  @Deprecated
   public SocketAppender(InetAddress address, int port) {
     this.address = address;
     this.remoteHost = address.getHostName();
@@ -52,6 +54,7 @@ public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
   /**
    * Connects to remote server at <code>host</code> and <code>port</code>.
    */
+  @Deprecated
   public SocketAppender(String host, int port) {
     this.port = port;
     this.address = getAddressByName(host);
