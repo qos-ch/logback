@@ -40,6 +40,9 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public class SSLContextFactoryBean {
     
+  private static final String JSSE_KEY_STORE_PROPERTY = "javax.net.ssl.keyStore";
+  private static final String JSSE_TRUST_STORE_PROPERTY = "javax.net.ssl.trustStore";
+  
   private KeyStoreFactoryBean keyStore;
   private KeyStoreFactoryBean trustStore;
   private SecureRandomFactoryBean secureRandom;
@@ -169,6 +172,9 @@ public class SSLContextFactoryBean {
    *    configuration was provided
    */
   public KeyStoreFactoryBean getKeyStore() {
+    if (keyStore == null) { 
+      keyStore = keyStoreFromSystemProperties(JSSE_KEY_STORE_PROPERTY);
+    }
     return keyStore;
   }
 
@@ -186,6 +192,9 @@ public class SSLContextFactoryBean {
    *    configuration was provided
    */
   public KeyStoreFactoryBean getTrustStore() {
+    if (trustStore == null) {
+      trustStore = keyStoreFromSystemProperties(JSSE_TRUST_STORE_PROPERTY);
+    }
     return trustStore;
   }
 
@@ -195,6 +204,36 @@ public class SSLContextFactoryBean {
    */
   public void setTrustStore(KeyStoreFactoryBean trustStore) {
     this.trustStore = trustStore;
+  }
+
+  /**
+   * Constructs a key store factory bean using JSSE system properties.
+   * @param property base property name (e.g. {@code javax.net.ssl.keyStore})
+   * @return key store or {@code null} if no value is defined for the
+   *    base system property name
+   */
+  private KeyStoreFactoryBean keyStoreFromSystemProperties(String property) {
+    if (System.getProperty(property) == null) return null;
+    KeyStoreFactoryBean keyStore = new KeyStoreFactoryBean();
+    keyStore.setLocation(locationFromSystemProperty(property));
+    keyStore.setProvider(System.getProperty(property + "Provider"));
+    keyStore.setPassword(System.getProperty(property + "Password"));
+    keyStore.setType(System.getProperty(property + "Type"));
+    return keyStore;
+  }
+
+  /**
+   * Constructs a resource location from a JSSE system property.
+   * @param name property name (e.g. {@code javax.net.ssl.keyStore})
+   * @return URL for the location specified in the property or {@code null}
+   *    if no value is defined for the property
+   */
+  private String locationFromSystemProperty(String name) {
+    String location = System.getProperty(name);
+    if (location != null && !location.startsWith("file:")) {
+      location = "file:" + location;
+    }
+    return location;
   }
 
   /**
