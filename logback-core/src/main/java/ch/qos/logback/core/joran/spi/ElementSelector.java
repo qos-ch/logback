@@ -26,15 +26,12 @@ import java.util.List;
  */
 public class ElementSelector extends ElementPath {
 
-
-  // contains String instances
-  ArrayList<String> partList = new ArrayList<String>();
-
   public ElementSelector() {
+    super();
   }
 
   public ElementSelector(List<String> list) {
-   super(list);
+    super(list);
   }
 
   /**
