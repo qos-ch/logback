@@ -169,14 +169,12 @@ public class ContextBase implements Context {
               new WarnStatus("interrupted task: " + task, this));
         }
       }
-    }
-    catch (InterruptedException ex) {
+    } catch (InterruptedException ex) {
       // if we're interrupted while blocked in a thread wait, our thread's 
       // interrupt status is cleared.  Setting it again allows the interrupt 
       // to be detected by something further up the stack.
       Thread.currentThread().interrupt();
-    }
-    finally {
+    } finally {
       executorService = null;
     }
   }
