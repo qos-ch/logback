@@ -48,7 +48,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
   public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
   Locator locator;
-  ElementPath globalElementPath = new ElementSelector();
+  ElementPath globalElementPath = new ElementPath();
 
   final public void recordEvents(InputStream inputStream) throws JoranException {
     recordEvents(new InputSource(inputStream));

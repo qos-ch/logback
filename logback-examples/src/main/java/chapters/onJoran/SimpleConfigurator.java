@@ -61,5 +61,4 @@ public class SimpleConfigurator extends GenericConfigurator {
       interpreter.addImplicitAction(ia);
     }
   }
-
 }

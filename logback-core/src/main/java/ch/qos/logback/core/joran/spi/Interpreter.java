@@ -71,7 +71,7 @@ public class Interpreter {
   final private InterpretationContext interpretationContext;
   final private ArrayList<ImplicitAction> implicitActions;
   final private CAI_WithLocatorSupport cai;
-  private ElementSelector elementSelector;
+  private ElementPath elementPath;
   Locator locator;
   EventPlayer eventPlayer;
 
@@ -91,12 +91,12 @@ public class Interpreter {
    */
   ElementPath skip = null;
 
-  public Interpreter(Context context, RuleStore rs, ElementSelector initialElementSelector) {
+  public Interpreter(Context context, RuleStore rs, ElementPath initialElementPath) {
     this.cai = new CAI_WithLocatorSupport(context, this);
     ruleStore = rs;
     interpretationContext = new InterpretationContext(context, this);
     implicitActions = new ArrayList<ImplicitAction>(3);
-    this.elementSelector = initialElementSelector;
+    this.elementPath = initialElementPath;
     actionListStack = new Stack<List<Action>>();
     eventPlayer = new EventPlayer(this);
   }
@@ -133,7 +133,7 @@ public class Interpreter {
       String qName, Attributes atts) {
 
     String tagName = getTagName(localName, qName);
-    elementSelector.push(tagName);
+    elementPath.push(tagName);
 
     if (skip != null) {
       // every startElement pushes an action list
@@ -141,7 +141,7 @@ public class Interpreter {
       return;
     }
 
-    List<Action> applicableActionList = getApplicableActionList(elementSelector, atts);
+    List<Action> applicableActionList = getApplicableActionList(elementPath, atts);
     if (applicableActionList != null) {
       actionListStack.add(applicableActionList);
       callBeginAction(applicableActionList, tagName, atts);
@@ -149,7 +149,7 @@ public class Interpreter {
       // every startElement pushes an action list
       pushEmptyActionList();
       String errMsg = "no applicable action for [" + tagName
-          + "], current pattern is [" + elementSelector + "]";
+          + "], current ElementPath  is [" + elementPath + "]";
       cai.addError(errMsg);
     }
   }
@@ -189,7 +189,7 @@ public class Interpreter {
     List<Action> applicableActionList = (List<Action>) actionListStack.pop();
 
     if (skip != null) {
-      if (skip.equals(elementSelector)) {
+      if (skip.equals(elementPath)) {
         skip = null;
       }
     } else if (applicableActionList != EMPTY_LIST) {
@@ -197,7 +197,7 @@ public class Interpreter {
     }
 
     // given that we always push, we must also pop the pattern
-    elementSelector.pop();
+    elementPath.pop();
   }
 
   public Locator getLocator() {
@@ -248,12 +248,12 @@ public class Interpreter {
   /**
    * Return the list of applicable patterns for this
    */
-  List<Action> getApplicableActionList(ElementSelector elementSelector, Attributes attributes) {
-    List<Action> applicableActionList = ruleStore.matchActions(elementSelector);
+  List<Action> getApplicableActionList(ElementPath elementPath, Attributes attributes) {
+    List<Action> applicableActionList = ruleStore.matchActions(elementPath);
 
     // logger.debug("set of applicable patterns: " + applicableActionList);
     if (applicableActionList == null) {
-      applicableActionList = lookupImplicitAction(elementSelector, attributes,
+      applicableActionList = lookupImplicitAction(elementPath, attributes,
           interpretationContext);
     }
 
@@ -274,10 +274,10 @@ public class Interpreter {
       try {
         action.begin(interpretationContext, tagName, atts);
       } catch (ActionException e) {
-        skip = (ElementPath) elementSelector.clone();
+        skip = (ElementPath) elementPath.clone();
         cai.addError("ActionException in Action for tag [" + tagName + "]", e);
       } catch (RuntimeException e) {
-        skip = (ElementPath) elementSelector.clone();
+        skip = (ElementPath) elementPath.clone();
         cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
       }
     }

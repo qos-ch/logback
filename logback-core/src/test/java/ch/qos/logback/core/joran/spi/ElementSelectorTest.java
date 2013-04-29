@@ -87,46 +87,46 @@ public class ElementSelectorTest {
   @Test
   public void testTailMatch() {
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("*");
-      assertEquals(0, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(0, ruleElementSelector.getTailMatchLength(p));
     }
 
     {
-      ElementSelector p = new ElementSelector("/a");
+      ElementPath p = new ElementPath("/a");
       ElementSelector ruleElementSelector = new ElementSelector("*/a");
-      assertEquals(1, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getTailMatchLength(p));
     }
 
     {
-      ElementSelector p = new ElementSelector("/A");
+      ElementPath p = new ElementPath("/A");
       ElementSelector ruleElementSelector = new ElementSelector("*/a");
-      assertEquals(1, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getTailMatchLength(p));
     }
     
     {
-      ElementSelector p = new ElementSelector("/a");
+      ElementPath p = new ElementPath("/a");
       ElementSelector ruleElementSelector = new ElementSelector("*/A");
-      assertEquals(1, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getTailMatchLength(p));
     }
     
     
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("*/b");
-      assertEquals(1, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getTailMatchLength(p));
     }
     
     {
-      ElementSelector p = new ElementSelector("/a/B");
+      ElementPath p = new ElementPath("/a/B");
       ElementSelector ruleElementSelector = new ElementSelector("*/b");
-      assertEquals(1, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getTailMatchLength(p));
     }
     
     {
-      ElementSelector p = new ElementSelector("/a/b/c");
+      ElementPath p = new ElementPath("/a/b/c");
       ElementSelector ruleElementSelector = new ElementSelector("*/b/c");
-      assertEquals(2, p.getTailMatchLength(ruleElementSelector));
+      assertEquals(2, ruleElementSelector.getTailMatchLength(p));
     }
   }
   
@@ -134,45 +134,45 @@ public class ElementSelectorTest {
   @Test
   public void testPrefixMatch() {
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("/x/*");
-      assertEquals(0, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(0, ruleElementSelector.getPrefixMatchLength(p));
     }
 
     {
-      ElementSelector p = new ElementSelector("/a");
+      ElementPath p = new ElementPath("/a");
       ElementSelector ruleElementSelector = new ElementSelector("/x/*");
-      assertEquals(0, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(0, ruleElementSelector.getPrefixMatchLength(p));
     }
 
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("/a/*");
-      assertEquals(1, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getPrefixMatchLength(p));
     }
 
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("/A/*");
-      assertEquals(1, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getPrefixMatchLength(p));
     }
     
     {
-      ElementSelector p = new ElementSelector("/A/b");
+      ElementPath p = new ElementPath("/A/b");
       ElementSelector ruleElementSelector = new ElementSelector("/a/*");
-      assertEquals(1, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(1, ruleElementSelector.getPrefixMatchLength(p));
     }
     
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("/a/b/*");
-      assertEquals(2, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(2, ruleElementSelector.getPrefixMatchLength(p));
     }
     
     {
-      ElementSelector p = new ElementSelector("/a/b");
+      ElementPath p = new ElementPath("/a/b");
       ElementSelector ruleElementSelector = new ElementSelector("/*");
-      assertEquals(0, p.getPrefixMatchLength(ruleElementSelector));
+      assertEquals(0, ruleElementSelector.getPrefixMatchLength(p));
     }
   }
 

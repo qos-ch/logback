@@ -107,14 +107,14 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   }
 
-  protected ElementSelector initialPattern() {
-    return new ElementSelector();
+  protected ElementPath initialElementPath() {
+    return new ElementPath();
   }
 
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
-    this.interpreter = new Interpreter(context, rs, initialPattern());
+    this.interpreter = new Interpreter(context, rs, initialElementPath());
     InterpretationContext interpretationContext = interpreter.getInterpretationContext();
     interpretationContext.setContext(context);
     addImplicitRules(interpreter);

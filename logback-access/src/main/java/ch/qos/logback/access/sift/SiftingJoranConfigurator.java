@@ -21,6 +21,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
+import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
@@ -35,8 +36,8 @@ public class SiftingJoranConfigurator extends
   }
 
   @Override
-  protected ElementSelector initialPattern() {
-    return new ElementSelector("configuration");
+  protected ElementPath initialElementPath() {
+    return new ElementPath("configuration");
   }
 
   @Override

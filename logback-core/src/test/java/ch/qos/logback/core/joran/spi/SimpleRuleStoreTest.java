@@ -45,7 +45,8 @@ public class SimpleRuleStoreTest {
 
     // test for all possible case combinations of "a/b"
     for (String s : cc.combinations("a/b")) {
-       List<Action> r = srs.matchActions(new ElementSelector(s));
+      System.out.println("s="+s);
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -61,7 +62,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("a/b"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(2, r.size());
 
@@ -81,7 +82,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(pa, new XAction());
 
     for (String s : cc.combinations("a")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -97,7 +98,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("*/b"), new XAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -114,7 +115,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("*/c"), new XAction());
 
     for (String s : cc.combinations("a/b/c")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -131,7 +132,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("*/a/b"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -148,7 +149,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("a/b"), new ZAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -164,7 +165,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("a/*"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
       assertTrue(r.get(0) instanceof YAction);
@@ -177,7 +178,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("a/b/*"), new XAction(2));
 
     for (String s : cc.combinations("a/other")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNull(r);
     }
   }
@@ -189,7 +190,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("*/a/b"), new XAction(3));
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -208,7 +209,7 @@ public class SimpleRuleStoreTest {
     srs.addRule(new ElementSelector("tG/tS/test/*"), new XAction(9));
 
     for (String s : cc.combinations("tG/tS/toto")) {
-      List<Action> r = srs.matchActions(new ElementSelector(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNull(r);
     }
   }

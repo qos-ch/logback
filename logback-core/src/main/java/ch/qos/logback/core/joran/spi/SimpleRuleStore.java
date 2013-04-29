@@ -80,33 +80,41 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
   // if no tail match, check for prefix match, i.e. matches for x/*
   // match for x/y/* has higher priority than matches for x/*
 
-  public List<Action> matchActions(ElementSelector currentElementSelector) {
+  public List<Action> matchActions(ElementPath elementPath) {
     List<Action> actionList;
 
-    if ((actionList = rules.get(currentElementSelector)) != null) {
+    if ((actionList = fullPathMatch(elementPath)) != null) {
       return actionList;
-    } else if ((actionList = suffixMatch(currentElementSelector)) != null) {
+    } else if ((actionList = suffixMatch(elementPath)) != null) {
       return actionList;
-    } else if ((actionList = prefixMatch(currentElementSelector)) != null) {
+    } else if ((actionList = prefixMatch(elementPath)) != null) {
       return actionList;
-    } else if ((actionList = middleMatch(currentElementSelector)) != null) {
+    } else if ((actionList = middleMatch(elementPath)) != null) {
       return actionList;
     } else {
       return null;
     }
   }
 
+  List<Action> fullPathMatch(ElementPath elementPath) {
+    for (ElementSelector selector : rules.keySet()) {
+       if(selector.fullPathMatch(elementPath))
+         return rules.get(selector);
+    }
+    return null;
+  }
+
   // Suffix matches are matches of type */x/y
-  List<Action> suffixMatch(ElementSelector elementSelector) {
+  List<Action> suffixMatch(ElementPath elementPath) {
     int max = 0;
     ElementSelector longestMatchingElementSelector = null;
 
-    for (ElementSelector p : rules.keySet()) {
-      if (isSuffixPattern(p)) {
-        int r = elementSelector.getTailMatchLength(p);
+    for (ElementSelector selector : rules.keySet()) {
+      if (isSuffixPattern(selector)) {
+        int r = selector.getTailMatchLength(elementPath);
         if (r > max) {
           max = r;
-          longestMatchingElementSelector = p;
+          longestMatchingElementSelector = selector;
         }
       }
     }
@@ -122,18 +130,18 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     return (p.size() > 1) && p.get(0).equals(KLEENE_STAR);
   }
 
-  List<Action> prefixMatch(ElementSelector elementSelector) {
+  List<Action> prefixMatch(ElementPath elementPath) {
     int max = 0;
     ElementSelector longestMatchingElementSelector = null;
 
-    for (ElementSelector p : rules.keySet()) {
-      String last = p.peekLast();
+    for (ElementSelector selector : rules.keySet()) {
+      String last = selector.peekLast();
       if (isKleeneStar(last)) {
-        int r = elementSelector.getPrefixMatchLength(p);
+        int r = selector.getPrefixMatchLength(elementPath);
         // to qualify the match length must equal p's size omitting the '*'
-        if ((r == p.size() - 1) && (r > max)) {
+        if ((r == selector.size() - 1) && (r > max)) {
           max = r;
-          longestMatchingElementSelector = p;
+          longestMatchingElementSelector = selector;
         }
       }
     }
@@ -149,38 +157,37 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     return KLEENE_STAR.equals(last);
   }
 
-  List<Action> middleMatch(ElementSelector currentElementSelector) {
+  List<Action> middleMatch(ElementPath path) {
     
     int max = 0;
     ElementSelector longestMatchingElementSelector = null;
 
-    for (ElementSelector p : rules.keySet()) {
-      String last = p.peekLast();
+    for (ElementSelector selector : rules.keySet()) {
+      String last = selector.peekLast();
       String first = null;
-      if(p.size() > 1) {
-        first = p.get(0);
+      if(selector.size() > 1) {
+        first = selector.get(0);
       }
       if (isKleeneStar(last) && isKleeneStar(first)) {
-        List<String> partList = p.getCopyOfPartList();
-        if(partList.size() > 2) {
-          partList.remove(0);
-          partList.remove(partList.size()-1);
+        List<String> copyOfPartList = selector.getCopyOfPartList();
+        if(copyOfPartList.size() > 2) {
+          copyOfPartList.remove(0);
+          copyOfPartList.remove(copyOfPartList.size()-1);
         }
         
         int r = 0;
-        ElementSelector clone = new ElementSelector(partList);
-        if(currentElementSelector.isContained(clone)) {
+        ElementSelector clone = new ElementSelector(copyOfPartList);
+        if(clone.isContainedIn(path)) {
           r = clone.size();
         }
         if (r > max) {
           max = r;
-          longestMatchingElementSelector = p;
+          longestMatchingElementSelector = selector;
         }
       }
     }
 
     if (longestMatchingElementSelector != null) {
-      System.out.println("XXXXXXXXXX middle match for pattern "+ currentElementSelector);
       return rules.get(longestMatchingElementSelector);
     } else {
       return null;

@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,14 +27,22 @@ import java.util.List;
 public class ElementSelector extends ElementPath {
 
 
+  // contains String instances
+  ArrayList<String> partList = new ArrayList<String>();
+
   public ElementSelector() {
   }
 
   public ElementSelector(List<String> list) {
-    super(list);
+   super(list);
   }
 
-
+  /**
+   * Build an elementPath from a string.
+   *
+   * Note that "/x" is considered equivalent to "x" and to "x/"
+   *
+   */
   public ElementSelector(String p) {
     super(p);
   }
@@ -44,16 +53,13 @@ public class ElementSelector extends ElementPath {
     return p;
   }
 
-  public int size() {
-    return partList.size();
-  }
 
   /**
    * Returns the number of "tail" components that this pattern has in common
    * with the pattern p passed as parameter. By "tail" components we mean the
    * components at the end of the pattern.
    */
-  public int getTailMatchLength(ElementSelector p) {
+  public int getTailMatchLength(ElementPath p) {
     if (p == null) {
       return 0;
     }
@@ -83,21 +89,20 @@ public class ElementSelector extends ElementPath {
     return match;
   }
 
-  public boolean isContained(ElementSelector p) {
+  public boolean isContainedIn(ElementPath p) {
     if(p == null) {
       return false;
     }
-    String lStr = this.toString();
-    return lStr.contains(p.toString());
+    return p.toStableString().contains(toStableString());
   }
-  
-  
+
+
   /**
    * Returns the number of "prefix" components that this pattern has in common
    * with the pattern p passed as parameter. By "prefix" components we mean the
    * components at the beginning of the pattern.
    */
-  public int getPrefixMatchLength(ElementSelector p) {
+  public int getPrefixMatchLength(ElementPath p) {
     if (p == null) {
       return 0;
     }
@@ -133,7 +138,7 @@ public class ElementSelector extends ElementPath {
 
   @Override
   public boolean equals(Object o) {
-    if ((o == null) || !(o instanceof ElementPath)) {
+    if ((o == null) || !(o instanceof ElementSelector)) {
       return false;
     }
 
@@ -165,16 +170,22 @@ public class ElementSelector extends ElementPath {
       // http://jira.qos.ch/browse/LBCORE-76
       hc ^= get(i).toLowerCase().hashCode();
     }
-
     return hc;
   }
 
-  @Override
-  public String toString() {
-    StringBuilder result = new StringBuilder();
-    for (String current : partList) {
-      result.append("[").append(current).append("]");
+
+  public boolean fullPathMatch(ElementPath path) {
+    if (path.size() != size()) {
+      return false;
     }
-    return result.toString();
+
+    int len = size();
+    for (int i = 0; i < len; i++) {
+      if (!equalityCheck(get(i), path.get(i))) {
+        return false;
+      }
+    }
+    // if everything matches, then the two patterns are equal
+    return true;
   }
 }
