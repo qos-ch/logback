@@ -15,19 +15,18 @@ package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
 
-import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.spi.Interpreter;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
-  HashMap<Pattern, Action> rulesMap;
+  HashMap<ElementSelector, Action> rulesMap;
   
-  public SimpleConfigurator(HashMap<Pattern, Action> rules) {
+  public SimpleConfigurator(HashMap<ElementSelector, Action> rules) {
     this.rulesMap = rules;
   }
   
@@ -48,9 +47,9 @@ public class SimpleConfigurator extends GenericConfigurator {
 
   @Override
   protected void addInstanceRules(RuleStore rs) {
-    for(Pattern pattern : rulesMap.keySet()) {
-      Action action = rulesMap.get(pattern);
-      rs.addRule(pattern, action);
+    for(ElementSelector elementSelector : rulesMap.keySet()) {
+      Action action = rulesMap.get(elementSelector);
+      rs.addRule(elementSelector, action);
     }
   }
 

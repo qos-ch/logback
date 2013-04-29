@@ -15,10 +15,10 @@ package ch.qos.logback.core.joran.action;
 
 import java.util.Stack;
 
+import ch.qos.logback.core.joran.spi.ElementPath;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.AggregationType;
 
@@ -40,11 +40,11 @@ public class NestedBasicPropertyIA extends ImplicitAction {
   // be followed by the corresponding pop.
   Stack<IADataForBasicProperty> actionDataStack = new Stack<IADataForBasicProperty>();
 
-  public boolean isApplicable(Pattern pattern, Attributes attributes,
+  public boolean isApplicable(ElementPath elementPath, Attributes attributes,
       InterpretationContext ec) {
     // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
     // "]");
-    String nestedElementTagName = pattern.peekLast();
+    String nestedElementTagName = elementPath.peekLast();
 
     // no point in attempting if there is no parent object
     if (ec.isEmpty()) {

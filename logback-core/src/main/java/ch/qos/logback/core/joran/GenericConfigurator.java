@@ -107,8 +107,8 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   }
 
-  protected Pattern initialPattern() {
-    return new Pattern();
+  protected ElementSelector initialPattern() {
+    return new ElementSelector();
   }
 
   protected void buildInterpreter() {

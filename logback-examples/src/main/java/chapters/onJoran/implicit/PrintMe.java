@@ -22,7 +22,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 
@@ -40,10 +40,10 @@ public class PrintMe {
   public static void main(String[] args) throws Exception {
     Context context = new ContextBase();
 
-    Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
     // we start with the rule for the top-most (root) element
-    ruleMap.put(new Pattern("*/foo"), new NOPAction());
+    ruleMap.put(new ElementSelector("*/foo"), new NOPAction());
 
     // Add an implicit action. 
     List<ImplicitAction> iaList = new ArrayList<ImplicitAction>();

@@ -22,6 +22,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import static ch.qos.logback.core.CoreConstants.XML_PARSING;
+
+import ch.qos.logback.core.joran.spi.ElementPath;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -31,7 +34,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.status.Status;
@@ -46,7 +48,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
   public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
   Locator locator;
-  Pattern globalPattern = new Pattern();
+  ElementPath globalElementPath = new ElementSelector();
 
   final public void recordEvents(InputStream inputStream) throws JoranException {
     recordEvents(new InputSource(inputStream));
@@ -102,8 +104,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
       Attributes atts) {
 
     String tagName = getTagName(localName, qName);
-    globalPattern.push(tagName);
-    Pattern current = (Pattern) globalPattern.clone();
+    globalElementPath.push(tagName);
+    ElementPath current = (ElementPath) globalElementPath.clone();
     saxEventList.add(new StartEvent(current, namespaceURI, localName, qName,
         atts, getLocator()));
   }
@@ -138,7 +140,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   public void endElement(String namespaceURI, String localName, String qName) {
     saxEventList
         .add(new EndEvent(namespaceURI, localName, qName, getLocator()));
-    globalPattern.pop();
+    globalElementPath.pop();
   }
 
   String getTagName(String localName, String qName) {

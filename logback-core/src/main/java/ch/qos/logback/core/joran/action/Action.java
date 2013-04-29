@@ -50,7 +50,7 @@ public abstract class Action extends ContextAwareBase {
 
   /**
    * Called when the parser encounters an element matching a
-   * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
+   * {@link ch.qos.logback.core.joran.spi.ElementSelector Pattern}.
    */
   public abstract void begin(InterpretationContext ic, String name,
       Attributes attributes) throws ActionException;

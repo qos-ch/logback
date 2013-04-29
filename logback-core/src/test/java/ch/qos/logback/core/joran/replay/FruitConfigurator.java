@@ -23,7 +23,7 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class FruitConfigurator extends GenericConfigurator {
@@ -56,7 +56,7 @@ public class FruitConfigurator extends GenericConfigurator {
   
   @Override
   protected void addInstanceRules(RuleStore rs) {
-    rs.addRule(new Pattern("fruitShell"), new NOPAction());
+    rs.addRule(new ElementSelector("fruitShell"), new NOPAction());
   }
 
 }

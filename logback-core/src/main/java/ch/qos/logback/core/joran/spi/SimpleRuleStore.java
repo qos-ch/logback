@@ -31,10 +31,10 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
-  static String ANY = "*";
+  static String KLEENE_STAR = "*";
   
   // key: Pattern instance, value: ArrayList containing actions
-  HashMap<Pattern, List<Action>> rules = new HashMap<Pattern, List<Action>>();
+  HashMap<ElementSelector, List<Action>> rules = new HashMap<ElementSelector, List<Action>>();
 
   // public SimpleRuleStore() {
   // }
@@ -47,20 +47,20 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
    * Add a new rule, i.e. a pattern, action pair to the rule store. <p> Note
    * that the added action's LoggerRepository will be set in the process.
    */
-  public void addRule(Pattern pattern, Action action) {
+  public void addRule(ElementSelector elementSelector, Action action) {
     action.setContext(context);
 
-    List<Action> a4p = rules.get(pattern);
+    List<Action> a4p = rules.get(elementSelector);
 
     if (a4p == null) {
       a4p = new ArrayList<Action>();
-      rules.put(pattern, a4p);
+      rules.put(elementSelector, a4p);
     }
 
     a4p.add(action);
   }
 
-  public void addRule(Pattern pattern, String actionClassName) {
+  public void addRule(ElementSelector elementSelector, String actionClassName) {
     Action action = null;
 
     try {
@@ -70,7 +70,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
       addError("Could not instantiate class [" + actionClassName + "]", e);
     }
     if (action != null) {
-      addRule(pattern, action);
+      addRule(elementSelector, action);
     }
   }
 
@@ -80,80 +80,87 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
   // if no tail match, check for prefix match, i.e. matches for x/*
   // match for x/y/* has higher priority than matches for x/*
 
-  public List<Action> matchActions(Pattern currentPattern) {
+  public List<Action> matchActions(ElementSelector currentElementSelector) {
     List<Action> actionList;
 
-    if ((actionList = rules.get(currentPattern)) != null) {
+    if ((actionList = rules.get(currentElementSelector)) != null) {
       return actionList;
-    } else if ((actionList = tailMatch(currentPattern)) != null) {
+    } else if ((actionList = suffixMatch(currentElementSelector)) != null) {
       return actionList;
-    } else if ((actionList = prefixMatch(currentPattern)) != null) {
+    } else if ((actionList = prefixMatch(currentElementSelector)) != null) {
       return actionList;
-    } else if ((actionList = middleMatch(currentPattern)) != null) { 
+    } else if ((actionList = middleMatch(currentElementSelector)) != null) {
       return actionList;
     } else {
       return null;
     }
   }
 
-  List<Action> tailMatch(Pattern currentPattern) {
+  // Suffix matches are matches of type */x/y
+  List<Action> suffixMatch(ElementSelector elementSelector) {
     int max = 0;
-    Pattern longestMatchingPattern = null;
+    ElementSelector longestMatchingElementSelector = null;
 
-    for (Pattern p : rules.keySet()) {
-
-      if ((p.size() > 1) && p.get(0).equals(ANY)) {
-        int r = currentPattern.getTailMatchLength(p);
+    for (ElementSelector p : rules.keySet()) {
+      if (isSuffixPattern(p)) {
+        int r = elementSelector.getTailMatchLength(p);
         if (r > max) {
           max = r;
-          longestMatchingPattern = p;
+          longestMatchingElementSelector = p;
         }
       }
     }
 
-    if (longestMatchingPattern != null) {
-      return rules.get(longestMatchingPattern);
+    if (longestMatchingElementSelector != null) {
+      return rules.get(longestMatchingElementSelector);
     } else {
       return null;
     }
   }
 
-  List<Action> prefixMatch(Pattern currentPattern) {
-    int max = 0;
-    Pattern longestMatchingPattern = null;
+  private boolean isSuffixPattern(ElementSelector p) {
+    return (p.size() > 1) && p.get(0).equals(KLEENE_STAR);
+  }
 
-    for (Pattern p : rules.keySet()) {
+  List<Action> prefixMatch(ElementSelector elementSelector) {
+    int max = 0;
+    ElementSelector longestMatchingElementSelector = null;
+
+    for (ElementSelector p : rules.keySet()) {
       String last = p.peekLast();
-      if (ANY.equals(last)) {
-        int r = currentPattern.getPrefixMatchLength(p);
+      if (isKleeneStar(last)) {
+        int r = elementSelector.getPrefixMatchLength(p);
         // to qualify the match length must equal p's size omitting the '*'
         if ((r == p.size() - 1) && (r > max)) {
-          // System.out.println("New longest prefixMatch "+p);
           max = r;
-          longestMatchingPattern = p;
+          longestMatchingElementSelector = p;
         }
       }
     }
 
-    if (longestMatchingPattern != null) {
-      return rules.get(longestMatchingPattern);
+    if (longestMatchingElementSelector != null) {
+      return rules.get(longestMatchingElementSelector);
     } else {
       return null;
     }
   }
 
-  List<Action> middleMatch(Pattern currentPattern) {
+  private boolean isKleeneStar(String last) {
+    return KLEENE_STAR.equals(last);
+  }
+
+  List<Action> middleMatch(ElementSelector currentElementSelector) {
     
     int max = 0;
-    Pattern longestMatchingPattern = null;
+    ElementSelector longestMatchingElementSelector = null;
 
-    for (Pattern p : rules.keySet()) {
+    for (ElementSelector p : rules.keySet()) {
       String last = p.peekLast();
       String first = null;
       if(p.size() > 1) {
         first = p.get(0);
       }
-      if (ANY.equals(last) && ANY.equals(first)) {
+      if (isKleeneStar(last) && isKleeneStar(first)) {
         List<String> partList = p.getCopyOfPartList();
         if(partList.size() > 2) {
           partList.remove(0);
@@ -161,19 +168,20 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         }
         
         int r = 0;
-        Pattern clone = new Pattern(partList);        
-        if(currentPattern.isContained(clone)) {
+        ElementSelector clone = new ElementSelector(partList);
+        if(currentElementSelector.isContained(clone)) {
           r = clone.size();
         }
         if (r > max) {
           max = r;
-          longestMatchingPattern = p;
+          longestMatchingElementSelector = p;
         }
       }
     }
 
-    if (longestMatchingPattern != null) {
-      return rules.get(longestMatchingPattern);
+    if (longestMatchingElementSelector != null) {
+      System.out.println("XXXXXXXXXX middle match for pattern "+ currentElementSelector);
+      return rules.get(longestMatchingElementSelector);
     } else {
       return null;
     }

@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,94 +23,29 @@ import java.util.List;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class Pattern {
-
-  // contains String instances
-  ArrayList<String> partList = new ArrayList<String>();
+public class ElementSelector extends ElementPath {
 
 
-  public Pattern() {
+  public ElementSelector() {
   }
 
-  public Pattern(List<String> list) {
-    partList.addAll(list);
+  public ElementSelector(List<String> list) {
+    super(list);
   }
 
-  /**
-   * Build a pattern from a string.
-   * 
-   * Note that "/x" is considered equivalent to "x" and to "x/"
-   * 
-   */
-  public Pattern(String p) {
-    this();
 
-    if (p == null) {
-      return;
-    }
-
-    int lastIndex = 0;
-
-    // System.out.println("p is "+ p);
-    while (true) {
-      int k = p.indexOf('/', lastIndex);
-
-      // System.out.println("k is "+ k);
-      if (k == -1) {
-        String lastPart = p.substring(lastIndex);
-        if (lastPart != null && lastPart.length() > 0) {
-          partList.add(p.substring(lastIndex));
-        }
-        break;
-      } else {
-        String c = p.substring(lastIndex, k);
-
-        if (c.length() > 0) {
-          partList.add(c);
-        }
-
-        lastIndex = k + 1;
-      }
-    }
-
-    // System.out.println(components);
+  public ElementSelector(String p) {
+    super(p);
   }
 
-  public List<String> getCopyOfPartList() {
-    return new ArrayList<String>(partList);
-  }
-  
   public Object clone() {
-    Pattern p = new Pattern();
+    ElementSelector p = new ElementSelector();
     p.partList.addAll(this.partList);
     return p;
   }
 
-  public void push(String s) {
-    partList.add(s);
-  }
-
   public int size() {
     return partList.size();
-  }
-
-  public String get(int i) {
-    return (String) partList.get(i);
-  }
-
-  public void pop() {
-    if (!partList.isEmpty()) {
-      partList.remove(partList.size() - 1);
-    }
-  }
-
-  public String peekLast() {
-    if (!partList.isEmpty()) {
-      int size = partList.size();
-      return (String) partList.get(size - 1);
-    } else {
-      return null;
-    }
   }
 
   /**
@@ -119,7 +53,7 @@ public class Pattern {
    * with the pattern p passed as parameter. By "tail" components we mean the
    * components at the end of the pattern.
    */
-  public int getTailMatchLength(Pattern p) {
+  public int getTailMatchLength(ElementSelector p) {
     if (p == null) {
       return 0;
     }
@@ -149,7 +83,7 @@ public class Pattern {
     return match;
   }
 
-  public boolean isContained(Pattern p) {
+  public boolean isContained(ElementSelector p) {
     if(p == null) {
       return false;
     }
@@ -163,7 +97,7 @@ public class Pattern {
    * with the pattern p passed as parameter. By "prefix" components we mean the
    * components at the beginning of the pattern.
    */
-  public int getPrefixMatchLength(Pattern p) {
+  public int getPrefixMatchLength(ElementSelector p) {
     if (p == null) {
       return 0;
     }
@@ -199,11 +133,11 @@ public class Pattern {
 
   @Override
   public boolean equals(Object o) {
-    if ((o == null) || !(o instanceof Pattern)) {
+    if ((o == null) || !(o instanceof ElementPath)) {
       return false;
     }
 
-    Pattern r = (Pattern) o;
+    ElementSelector r = (ElementSelector) o;
 
     if (r.size() != size()) {
       return false;
