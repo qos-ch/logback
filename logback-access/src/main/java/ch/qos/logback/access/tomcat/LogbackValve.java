@@ -114,10 +114,21 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   public void startInternal() throws LifecycleException {
     if (filename == null) {
-      String tomcatBaseProperty = OptionHelper
+    	String tomcatBaseProperty = OptionHelper
           .getSystemProperty("catalina.base");
 
       filename = tomcatBaseProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+      
+    	File baseConfigFile = new File(filename);
+    	if (!baseConfigFile.exists()) {
+    	
+        String tomcatHomeProperty = OptionHelper
+            .getSystemProperty("catalina.home");
+
+        filename = tomcatHomeProperty + File.separatorChar
+            + DEFAULT_CONFIG_FILE;
+      }
+      
       getStatusManager().add(
           new InfoStatus("filename property not set. Assuming [" + filename
               + "]", this));
