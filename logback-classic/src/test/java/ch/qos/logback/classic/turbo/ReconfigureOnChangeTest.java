@@ -170,7 +170,8 @@ public class ReconfigureOnChangeTest {
     ExecutorService executorService = loggerContext.getExecutorService();
     reconfigureOnChangeFilter.detachReconfigurationToNewThread();
     // the "old" executorService would have been shutdown as result of detachReconfigurationToNewThread call
-    executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
+    executorService.awaitTermination(
+        LoggerContext.EXECUTOR_SHUTDOWN_DELAY + 1000, TimeUnit.MILLISECONDS);
   }
 
   List<File> getConfigurationFileList(LoggerContext context) {
