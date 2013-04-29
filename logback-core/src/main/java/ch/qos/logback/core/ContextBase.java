@@ -16,7 +16,6 @@ package ch.qos.logback.core;
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
@@ -26,17 +25,10 @@ import java.util.concurrent.TimeUnit;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.EnvUtil;
 
 public class ContextBase implements Context {
 
-  /** 
-   * Time allowed (in milliseconds) for short-term tasks running in the 
-   * context's executor to terminate when the context is reset.
-   */
-  public static final int EXECUTOR_SHUTDOWN_DELAY = 1000;
-  
   private long birthTime = System.currentTimeMillis();
 
   private String name;
@@ -157,24 +149,8 @@ public class ContextBase implements Context {
   }
 
   private synchronized void resetExecutorService() {
-    if (executorService == null) return;
-    try {
+    if (executorService != null) {
       executorService.shutdown();
-      boolean didTerminate = executorService.awaitTermination(
-          EXECUTOR_SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
-      if (!didTerminate) {
-        List<Runnable> remainingTasks = executorService.shutdownNow();
-        for (Runnable task : remainingTasks) {
-          getStatusManager().add(
-              new WarnStatus("interrupted task: " + task, this));
-        }
-      }
-    } catch (InterruptedException ex) {
-      // if we're interrupted while blocked in a thread wait, our thread's 
-      // interrupt status is cleared.  Setting it again allows the interrupt 
-      // to be detected by something further up the stack.
-      Thread.currentThread().interrupt();
-    } finally {
       executorService = null;
     }
   }
