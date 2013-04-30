@@ -43,6 +43,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -85,12 +86,11 @@ public class ReconfigureOnChangeTest {
 
   LoggerContext loggerContext = new LoggerContext();
   Logger logger = loggerContext.getLogger(this.getClass());
-  ExecutorService executorService = loggerContext.getExecutorService();
 
   StatusChecker checker = new StatusChecker(loggerContext);
   AbstractMultiThreadedHarness harness;
 
-  ThreadPoolExecutor executor = (ThreadPoolExecutor) loggerContext.getExecutorService();
+  ThreadPoolExecutor localExecutorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
 
   int expectedResets = 2;
 
@@ -101,11 +101,12 @@ public class ReconfigureOnChangeTest {
 
   @Before
   public void setUp() {
-    harness = new WaitOnExecutionMultiThreadedHarness(executor, expectedResets);
+    harness = new WaitOnExecutionMultiThreadedHarness(loggerContext, expectedResets);
   }
 
   @After
   public void tearDown() {
+    StatusPrinter.print(loggerContext);
   }
 
   void configure(File file) throws JoranException {
@@ -166,8 +167,9 @@ public class ReconfigureOnChangeTest {
 
   private void rocfDetachReconfigurationToNewThreadAndAwaitTermination() throws InterruptedException {
     ReconfigureOnChangeFilter reconfigureOnChangeFilter = (ReconfigureOnChangeFilter) getFirstTurboFilter();
+    ExecutorService executorService = loggerContext.getExecutorService();
     reconfigureOnChangeFilter.detachReconfigurationToNewThread();
-    executorService.shutdown();
+    // the "old" executorService would have been shutdown as result of detachReconfigurationToNewThread call
     executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
   }
 
