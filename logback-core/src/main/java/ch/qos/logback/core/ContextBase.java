@@ -18,16 +18,13 @@ import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 
-public class ContextBase implements Context {
+public class ContextBase implements Context, LifeCycle {
 
   private long birthTime = System.currentTimeMillis();
 
@@ -41,21 +38,9 @@ public class ContextBase implements Context {
 
   LogbackLock configurationLock = new LogbackLock();
 
-  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JDK 1.6 or higher it's set to 0
-  // so that there are no idle threads
-  private static final int CORE_POOL_SIZE = EnvUtil.isJDK5() ? 1 : 0;
-
-  // if you need a different MAX_POOL_SIZE, please file create a jira issue
-  // asking to make MAX_POOL_SIZE a parameter.
-  private static int MAX_POOL_SIZE = 32;
-
-  // 0 (JDK 1,6+) or 1 (JDK 1.5) idle threads, MAX_POOL_SIZE maximum threads,
-  // no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(CORE_POOL_SIZE, MAX_POOL_SIZE,
-          0L, TimeUnit.MILLISECONDS,
-          new SynchronousQueue<Runnable>());
-
+  private volatile ExecutorService executorService;
   private LifeCycleManager lifeCycleManager;
+  private boolean started;
   
   public StatusManager getStatusManager() {
     return sm;
@@ -113,6 +98,24 @@ public class ContextBase implements Context {
     return name;
   }
 
+  public void start() {
+    // We'd like to create the executor service here, but we can't;
+    // ContextBase has not always implemented LifeCycle and there are *many*
+    // uses (mostly in tests) that would need to be modified.
+    started = true;
+  }
+  
+  public void stop() {
+    // We don't check "started" here, because the executor service uses
+    // lazy initialization, rather than being created in the start method
+    stopExecutorService();
+    started = false;
+  }
+
+  public boolean isStarted() {
+    return started;
+  }
+
   /**
    * Clear the internal objectMap and all properties.
    */
@@ -150,9 +153,23 @@ public class ContextBase implements Context {
   }
 
   public ExecutorService getExecutorService() {
-    return  executorService;
+    if (executorService == null) {
+      synchronized (this) {
+        if (executorService == null) {
+          executorService = ExecutorServiceUtil.newExecutorService();
+        }
+      }
+    }
+    return executorService; 
   }
 
+  private synchronized void stopExecutorService() {
+    if (executorService != null) {
+      ExecutorServiceUtil.shutdown(executorService, getStatusManager());
+      executorService = null;
+    }
+  }
+  
   public void register(LifeCycle component) {
     getLifeCycleManager().register(component);
   }
