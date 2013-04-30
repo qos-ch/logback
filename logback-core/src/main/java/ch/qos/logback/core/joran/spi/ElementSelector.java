@@ -17,12 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A pattern is used to designate XML elements in a document.
- * 
- * <p>For more information see
- * http://logback.qos.ch/manual/onJoran.html#pattern
- * 
+ * ElementSelector extends {@link ElementPath} with matching operations such as {@link #fullPathMatch(ElementPath)},
+ * {@link #getPrefixMatchLength(ElementPath)} and {@link #getTailMatchLength(ElementPath)}.
+ *
+ * <p>Parts of the path may contain '*' for wildcard matching.
+ *
  * @author Ceki G&uuml;lc&uuml;
+ * @since 1.1.0
  */
 public class ElementSelector extends ElementPath {
 
@@ -44,12 +45,20 @@ public class ElementSelector extends ElementPath {
     super(p);
   }
 
-  public Object clone() {
-    ElementSelector p = new ElementSelector();
-    p.partList.addAll(this.partList);
-    return p;
-  }
+  public boolean fullPathMatch(ElementPath path) {
+    if (path.size() != size()) {
+      return false;
+    }
 
+    int len = size();
+    for (int i = 0; i < len; i++) {
+      if (!equalityCheck(get(i), path.get(i))) {
+        return false;
+      }
+    }
+    // if everything matches, then the two patterns are equal
+    return true;
+  }
 
   /**
    * Returns the number of "tail" components that this pattern has in common
@@ -74,8 +83,8 @@ public class ElementSelector extends ElementPath {
 
     // loop from the end to the front
     for (int i = 1; i <= minLen; i++) {
-      String l = (String) this.partList.get(lSize - i);
-      String r = (String) p.partList.get(rSize - i);
+      String l = this.partList.get(lSize - i);
+      String r = p.partList.get(rSize - i);
 
       if (equalityCheck(l, r)) {
         match++;
@@ -116,8 +125,8 @@ public class ElementSelector extends ElementPath {
     int match = 0;
 
     for (int i = 0; i < minLen; i++) {
-      String l = (String) this.partList.get(i);
-      String r = (String) p.partList.get(i);
+      String l = this.partList.get(i);
+      String r = p.partList.get(i);
 
       if (equalityCheck(l, r)) {
         match++;
@@ -171,18 +180,4 @@ public class ElementSelector extends ElementPath {
   }
 
 
-  public boolean fullPathMatch(ElementPath path) {
-    if (path.size() != size()) {
-      return false;
-    }
-
-    int len = size();
-    for (int i = 0; i < len; i++) {
-      if (!equalityCheck(get(i), path.get(i))) {
-        return false;
-      }
-    }
-    // if everything matches, then the two patterns are equal
-    return true;
-  }
 }

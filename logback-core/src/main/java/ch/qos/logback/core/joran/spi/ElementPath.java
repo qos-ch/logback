@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: ceki
- * Date: 29.04.13
- * Time: 23:19
- * To change this template use File | Settings | File Templates.
+ * A element path characterizes a traversal path in an XML document.
+ *
+ * @author Ceki Gulcu
+ * @since 1.1.0
  */
 public class ElementPath {
   // contains String instances
@@ -26,35 +25,22 @@ public class ElementPath {
    * <p/>
    * Note that "/x" is considered equivalent to "x" and to "x/"
    */
-  public ElementPath(String p) {
-    this();
-
-    if (p == null) {
+  public ElementPath(String pathStr) {
+    if (pathStr == null) {
       return;
     }
 
-    int lastIndex = 0;
+    String[] partArray = pathStr.split("/");
+    if(partArray == null) return;
 
-    while (true) {
-      int k = p.indexOf('/', lastIndex);
-      if (k == -1) {
-        String lastPart = p.substring(lastIndex);
-        if (lastPart != null && lastPart.length() > 0) {
-          partList.add(p.substring(lastIndex));
-        }
-        break;
-      } else {
-        String c = p.substring(lastIndex, k);
-        if (c.length() > 0) {
-          partList.add(c);
-        }
-
-        lastIndex = k + 1;
+    for(String part: partArray) {
+      if(part.length() >0) {
+        partList.add(part);
       }
     }
   }
 
-  public Object clone() {
+  public ElementPath duplicate() {
     ElementPath p = new ElementPath();
     p.partList.addAll(this.partList);
     return p;

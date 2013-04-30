@@ -274,10 +274,10 @@ public class Interpreter {
       try {
         action.begin(interpretationContext, tagName, atts);
       } catch (ActionException e) {
-        skip = (ElementPath) elementPath.clone();
+        skip = elementPath.duplicate();
         cai.addError("ActionException in Action for tag [" + tagName + "]", e);
       } catch (RuntimeException e) {
-        skip = (ElementPath) elementPath.clone();
+        skip = elementPath.duplicate();
         cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
       }
     }
@@ -290,7 +290,7 @@ public class Interpreter {
     Iterator<Action> i = applicableActionList.iterator();
 
     while (i.hasNext()) {
-      Action action = (Action) i.next();
+      Action action = i.next();
       try {
         action.body(interpretationContext, body);
       } catch (ActionException ae) {
@@ -310,7 +310,7 @@ public class Interpreter {
     Iterator<Action> i = applicableActionList.iterator();
 
     while (i.hasNext()) {
-      Action action = (Action) i.next();
+      Action action = i.next();
       // now let us invoke the end method of the action. We catch and report
       // any eventual exceptions
       try {

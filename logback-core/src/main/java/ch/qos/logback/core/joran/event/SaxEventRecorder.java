@@ -105,7 +105,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
     String tagName = getTagName(localName, qName);
     globalElementPath.push(tagName);
-    ElementPath current = (ElementPath) globalElementPath.clone();
+    ElementPath current = globalElementPath.duplicate();
     saxEventList.add(new StartEvent(current, namespaceURI, localName, qName,
         atts, getLocator()));
   }
