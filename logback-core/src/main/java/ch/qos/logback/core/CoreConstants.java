@@ -13,8 +13,30 @@
  */
 package ch.qos.logback.core;
 
+import ch.qos.logback.core.util.EnvUtil;
+
 public class CoreConstants {
 
+  /**
+   * Number of idle threads to retain in a context's executor service.
+   */
+  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JDK 1.6 or higher it's set to 0
+  // so that there are no idle threads
+  public static final int CORE_POOL_SIZE = EnvUtil.isJDK5() ? 1 : 0;
+
+  /**
+   * Maximum number of threads to allow in a context's executor service.
+   */
+  // if you need a different MAX_POOL_SIZE, please file create a jira issue
+  // asking to make MAX_POOL_SIZE a parameter.
+  public static int MAX_POOL_SIZE = 32;
+
+  /**
+   * Time to wait for asynchronous tasks to finish (in milliseconds) when
+   * the context is shut down.
+   */
+  public static final int EXECUTOR_SHUTDOWN_DELAY = 5000;
+  
   // Note that the line.separator property can be looked up even by
   // applets.
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");

@@ -20,9 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -56,6 +53,7 @@ import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
 //import org.apache.catalina.Lifecycle;
@@ -99,10 +97,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   boolean started;
   boolean alreadySetLogbackStatusManager = false;
 
-    // 0 idle threads, 2 maximum threads, no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(0, 2,
-          0L, TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<Runnable>());
+  private ExecutorService executorService; 
 
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
@@ -113,6 +108,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   }
 
   public void startInternal() throws LifecycleException {
+    executorService = ExecutorServiceUtil.newExecutorService();
     if (filename == null) {
       String tomcatHomeProperty = OptionHelper
           .getSystemProperty("catalina.home");
@@ -199,6 +195,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     started = false;
     setState(LifecycleState.STOPPING);
     lifeCycleManager.reset();
+    if (executorService != null) {
+      ExecutorServiceUtil.shutdown(executorService, getStatusManager());
+      executorService = null;
+    }
   }
 
   public void addAppender(Appender<IAccessEvent> newAppender) {
