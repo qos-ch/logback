@@ -27,7 +27,7 @@ public class Basic {
   public void withOneSlowTask() throws InterruptedException {
     executor.execute(new InterruptIgnoring(CoreConstants.EXECUTOR_SHUTDOWN_DELAY + 1000));
     Thread.sleep(100);
-    ExecutorServiceUtil.shutdown(executor, context.getStatusManager());
+    ExecutorServiceUtil.shutdown(executor);
   }
 
   //  InterruptIgnoring ===========================================
