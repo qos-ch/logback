@@ -31,12 +31,6 @@ public class CoreConstants {
   // asking to make MAX_POOL_SIZE a parameter.
   public static final int MAX_POOL_SIZE = 32;
 
-  /**
-   * Time to wait for asynchronous tasks to finish (in milliseconds) when
-   * the context is shut down.
-   */
-  public static final int EXECUTOR_SHUTDOWN_DELAY = 5000;
-  
   // Note that the line.separator property can be looked up even by
   // applets.
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
