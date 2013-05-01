@@ -29,7 +29,7 @@ public class CoreConstants {
    */
   // if you need a different MAX_POOL_SIZE, please file create a jira issue
   // asking to make MAX_POOL_SIZE a parameter.
-  public static int MAX_POOL_SIZE = 32;
+  public static final int MAX_POOL_SIZE = 32;
 
   /**
    * Time to wait for asynchronous tasks to finish (in milliseconds) when
