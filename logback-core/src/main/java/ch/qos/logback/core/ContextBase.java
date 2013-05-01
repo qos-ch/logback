@@ -165,7 +165,7 @@ public class ContextBase implements Context, LifeCycle {
 
   private synchronized void stopExecutorService() {
     if (executorService != null) {
-      ExecutorServiceUtil.shutdown(executorService, getStatusManager());
+      ExecutorServiceUtil.shutdown(executorService);
       executorService = null;
     }
   }
