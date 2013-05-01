@@ -60,7 +60,7 @@ class RemoteReceiverStreamClient
    * @param id identifier string for the client
    * @param outputStream output stream to which logging Events will be written
    */
-  public RemoteReceiverStreamClient(String id, OutputStream outputStream) {
+  RemoteReceiverStreamClient(String id, OutputStream outputStream) {
     this.clientId = "client " + id + ": ";
     this.socket = null;
     this.outputStream = outputStream;
