@@ -40,9 +40,11 @@ public class SSLSocketAppenderBaseTest {
   
   @Test
   public void testUsingDefaultConfig() throws Exception {
-    // should be able to start successfully with no SSL configuration at all
+    // should be able to start and stop successfully with no SSL 
+    // configuration at all
     appender.start();
     assertNotNull(appender.getSocketFactory());
+    appender.stop();
   }
   
   private static class InstrumentedSSLSocketAppenderBase 
