@@ -115,8 +115,7 @@ public class SocketReceiver extends ReceiverBase
         try {
           getContext().getExecutorService().execute(connector);
         } catch (RejectedExecutionException ex) {
-          // executor is shutting down... 
-          continue;
+          break; // executor is shutting down...          
         }
         socket = connector.awaitConnection();
         dispatchEvents(lc);
