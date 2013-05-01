@@ -42,7 +42,9 @@ import ch.qos.logback.core.net.server.ServerSocketUtil;
 public class SocketConnectorBaseTest {
 
   private static final int DELAY = 1000;
-  
+  private static final int SHORT_DELAY = 10;
+  private static final int RETRY_DELAY = 10;
+
   private MockExceptionHandler exceptionHandler = new MockExceptionHandler();
   
   private ServerSocket serverSocket;
@@ -52,7 +54,7 @@ public class SocketConnectorBaseTest {
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
     connector = new SocketConnectorBase(serverSocket.getInetAddress(), 
-        serverSocket.getLocalPort(), 0, DELAY);
+        serverSocket.getLocalPort(), 0, RETRY_DELAY);
     connector.setExceptionHandler(exceptionHandler);
   }
   
@@ -89,15 +91,19 @@ public class SocketConnectorBaseTest {
     assertFalse(thread.isAlive());
   }
 
-  @Test
+  @Test(timeout = 5000)
   public void testConnectEventually() throws Exception {
     serverSocket.close();
     
     Thread thread = new Thread(connector);
     thread.start();
-    Socket socket = connector.awaitConnection(2 * DELAY);
+    // this attempt is intended to timeout
+    Socket socket = connector.awaitConnection(SHORT_DELAY);
+
     assertNull(socket);
+    // on Ceki's machine (Windows 7) this always takes 1second  regardless of the value of DELAY
     Exception lastException = exceptionHandler.awaitConnectionFailed(DELAY);
+    assertNotNull(lastException);
     assertTrue(lastException instanceof ConnectException);
     assertTrue(thread.isAlive());
     
@@ -106,9 +112,10 @@ public class SocketConnectorBaseTest {
     serverSocket = new ServerSocket();
     serverSocket.setReuseAddress(true);
     serverSocket.bind(address);
-    
+
     // now we should be able to connect
     socket = connector.awaitConnection(2 * DELAY);
+
     assertNotNull(socket);
     thread.join(DELAY);
     assertFalse(thread.isAlive());
@@ -130,9 +137,12 @@ public class SocketConnectorBaseTest {
          throws InterruptedException {
       lock.lock();
       try {
-        boolean timeout = false;
-        while (lastException == null && !timeout) {
-          timeout = !failedCondition.await(delay, TimeUnit.MILLISECONDS);
+        long increment = 10;
+        while (lastException == null && delay > 0) {
+          boolean success = failedCondition.await(increment, TimeUnit.MILLISECONDS);
+          delay -= increment;
+          if(success) break;
+
         }
         return lastException;
       }
