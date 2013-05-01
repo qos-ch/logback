@@ -196,7 +196,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     setState(LifecycleState.STOPPING);
     lifeCycleManager.reset();
     if (executorService != null) {
-      ExecutorServiceUtil.shutdown(executorService, getStatusManager());
+      ExecutorServiceUtil.shutdown(executorService);
       executorService = null;
     }
   }
