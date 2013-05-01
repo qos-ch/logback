@@ -42,6 +42,7 @@ public class SSLServerSocketAppenderBaseTest {
     // should be able to start successfully with no SSL configuration at all
     appender.start();
     assertNotNull(appender.getServerSocketFactory());
+    appender.stop();
   }
 
   private static class InstrumentedSSLServerSocketAppenderBase 
