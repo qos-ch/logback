@@ -1,14 +1,14 @@
 package ch.qos.logback.core.issue.LOGBACK_849;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.util.ExecutorServiceUtil;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 
 public class Basic {
@@ -19,13 +19,13 @@ public class Basic {
   @Test(timeout = 100)
   public void withNoSubmittedTasksShutdownNowShouldReturnImmediately() throws InterruptedException {
     executor.shutdownNow();
-    executor.awaitTermination(CoreConstants.EXECUTOR_SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
+    executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
   }
 
   @Ignore
   @Test
   public void withOneSlowTask() throws InterruptedException {
-    executor.execute(new InterruptIgnoring(CoreConstants.EXECUTOR_SHUTDOWN_DELAY + 1000));
+    executor.execute(new InterruptIgnoring(1000));
     Thread.sleep(100);
     ExecutorServiceUtil.shutdown(executor);
   }
