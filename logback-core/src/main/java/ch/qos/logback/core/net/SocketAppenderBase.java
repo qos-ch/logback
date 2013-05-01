@@ -177,8 +177,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E>
         try {
           getContext().getExecutorService().execute(connector);
         } catch (RejectedExecutionException ex) {
-          // executor is shutting down... 
-          continue;
+          break;   // executor is shutting down...   
         }
         socket = connector.awaitConnection();
         dispatchEvents();
