@@ -20,6 +20,8 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.net.SocketFactory;
@@ -51,6 +53,7 @@ public class SocketReceiver extends ReceiverBase
 
   private String receiverId;
   private volatile Socket socket;
+  private Future<Socket> connectorTask;
 
   /**
    * {@inheritDoc}
@@ -109,22 +112,49 @@ public class SocketReceiver extends ReceiverBase
   public void run() {
     try {
       LoggerContext lc = (LoggerContext) getContext();
-      SocketConnector connector = createConnector(address, port, 0,
-              reconnectionDelay);
       while (!Thread.currentThread().isInterrupted()) {
-        try {
-          getContext().getExecutorService().execute(connector);
-        } catch (RejectedExecutionException ex) {
-          break; // executor is shutting down...          
-        }
-        socket = connector.awaitConnection();
+        SocketConnector connector = createConnector(address, port, 0,
+                reconnectionDelay);
+        connectorTask = activateConnector(connector);
+        if (connectorTask == null)
+          break;
+        socket = waitForConnectorToReturnASocket();
+        if (socket == null)
+          break;
         dispatchEvents(lc);
-        connector = createConnector(address, port, reconnectionDelay);
       }
     } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
     }
     addInfo("shutting down");
+  }
+
+  private SocketConnector createConnector(InetAddress address, int port,
+                                          int initialDelay, int retryDelay) {
+    SocketConnector connector = newConnector(address, port, initialDelay,
+            retryDelay);
+    connector.setExceptionHandler(this);
+    connector.setSocketFactory(getSocketFactory());
+    return connector;
+  }
+
+
+  private Future<Socket> activateConnector(SocketConnector connector) {
+    try {
+      return getContext().getExecutorService().submit(connector);
+    } catch (RejectedExecutionException ex) {
+      return null;
+    }
+  }
+
+  private Socket waitForConnectorToReturnASocket() throws InterruptedException {
+    try {
+      Socket s = connectorTask.get();
+      connectorTask = null;
+      return s;
+    } catch (ExecutionException e) {
+      return null;
+    }
   }
 
   private void dispatchEvents(LoggerContext lc) {
@@ -166,19 +196,6 @@ public class SocketReceiver extends ReceiverBase
     }
   }
 
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int delay) {
-    return createConnector(address, port, delay, delay);
-  }
-
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
-    connector.setExceptionHandler(this);
-    connector.setSocketFactory(getSocketFactory());
-    return connector;
-  }
 
   protected SocketConnector newConnector(InetAddress address,
                                          int port, int initialDelay, int retryDelay) {

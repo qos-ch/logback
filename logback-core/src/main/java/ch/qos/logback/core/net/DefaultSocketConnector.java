@@ -35,9 +35,6 @@ import javax.net.SocketFactory;
 public class DefaultSocketConnector implements SocketConnector {
 
 
-  private final Lock lock = new ReentrantLock();
-  private final Condition connectCondition = lock.newCondition();
-
   private final InetAddress address;
   private final int port;
 
@@ -75,26 +72,23 @@ public class DefaultSocketConnector implements SocketConnector {
   }
 
   /**
-   * Loops until the desired connection is established.
+   * Loops until the desired connection is established and returns the resulting connector.
    */
-  public void run() {
+  public Socket call() {
     preventReuse();
     inCaseOfMissingFieldsFallbackToDefaults();
     try {
       while (!Thread.currentThread().isInterrupted()) {
         Thread.sleep(delayStrategy.nextDelay());
-        Socket newSocket = createSocket();
-        if(newSocket != null) {
-          socket = newSocket;
-          signalConnected();
-          // connection established, we are done
-          break;
+        socket = createSocket();
+        if(socket != null) {
+          return socket;
         }
       }
     } catch (InterruptedException ex) {
       // we have been interrupted
     }
-    System.out.println("Exiting connector");
+    return null;
   }
 
   private Socket createSocket() {
@@ -119,42 +113,6 @@ public class DefaultSocketConnector implements SocketConnector {
     }
     if (socketFactory == null) {
       socketFactory = SocketFactory.getDefault();
-    }
-  }
-
-  /**
-   * Signals any threads waiting on {@code connectCondition} that the
-   * connection has been established.
-   */
-  private void signalConnected() {
-    lock.lock();
-    try {
-      connectCondition.signalAll();
-    } finally {
-      lock.unlock();
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Socket awaitConnection() throws InterruptedException {
-    return awaitConnection(Long.MAX_VALUE);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Socket awaitConnection(long delay) throws InterruptedException {
-    lock.lock();
-    try {
-      boolean timeout = false;
-      while (socket == null && !timeout) {
-        timeout = !connectCondition.await(delay, TimeUnit.MILLISECONDS);
-      }
-      return socket;
-    } finally {
-      lock.unlock();
     }
   }
 
