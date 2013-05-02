@@ -35,15 +35,15 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
- * An abstract base for module specific {@link SocketAppender}
- * implementations.
+ * An abstract base for module specific {@code SocketAppender}
+ * implementations in other logback modules.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * @author Carl Harris
  */
 
-public abstract class SocketAppenderBase<E> extends AppenderBase<E> 
+public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     implements Runnable, SocketConnector.ExceptionHandler {
 
   /**
@@ -83,7 +83,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E>
   /**
    * Constructs a new appender.
    */
-  protected SocketAppenderBase() {    
+  protected AbstractSocketAppender() {
   }
   
   /**
@@ -99,7 +99,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E>
    * @param port target port on remote host
    */
   @Deprecated
-  protected SocketAppenderBase(String remoteHost, int port) {    
+  protected AbstractSocketAppender(String remoteHost, int port) {
     this.remoteHost = remoteHost;
     this.port = port;
   }

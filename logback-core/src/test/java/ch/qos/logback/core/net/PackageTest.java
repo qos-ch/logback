@@ -19,9 +19,9 @@ import org.junit.runners.Suite;
 
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SocketAppenderBaseTest.class,
+@Suite.SuiteClasses({AbstractSocketAppenderTest.class,
         DefaultSocketConnectorTest.class,
-        SSLSocketAppenderBaseTest.class,
+        AbstractSSLSocketAppenderTest.class,
         ch.qos.logback.core.net.server.PackageTest.class,
         ch.qos.logback.core.net.ssl.PackageTest.class})
 public class PackageTest {

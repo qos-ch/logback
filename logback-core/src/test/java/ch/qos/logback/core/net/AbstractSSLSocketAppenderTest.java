@@ -22,11 +22,11 @@ import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * Unit tests for {@link SSLSocketAppenderBase}.
+ * Unit tests for {@link AbstractSSLSocketAppender}.
  *
  * @author Carl Harris
  */
-public class SSLSocketAppenderBaseTest {
+public class AbstractSSLSocketAppenderTest {
   
   private MockContext context = new MockContext();
 
@@ -48,7 +48,7 @@ public class SSLSocketAppenderBaseTest {
   }
   
   private static class InstrumentedSSLSocketAppenderBase 
-      extends SSLSocketAppenderBase<Object> {
+      extends AbstractSSLSocketAppender<Object> {
 
     @Override
     protected void postProcessEvent(Object event) {

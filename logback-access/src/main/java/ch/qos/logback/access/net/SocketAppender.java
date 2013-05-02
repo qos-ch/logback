@@ -17,7 +17,7 @@ package ch.qos.logback.access.net;
 import java.net.InetAddress;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -32,7 +32,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  */
 
-public class SocketAppender extends SocketAppenderBase<IAccessEvent> {
+public class SocketAppender extends AbstractSocketAppender<IAccessEvent> {
   
   PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
   

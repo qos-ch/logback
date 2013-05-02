@@ -17,7 +17,7 @@ package ch.qos.logback.classic.net;
 import java.net.InetAddress;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -31,7 +31,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * @author S&eacute;bastien Pennec
  */
 
-public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
+public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
 
   private static final PreSerializationTransformer<ILoggingEvent> pst = 
       new LoggingEventPreSerializationTransformer();

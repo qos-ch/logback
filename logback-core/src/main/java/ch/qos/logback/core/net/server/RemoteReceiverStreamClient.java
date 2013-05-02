@@ -108,7 +108,7 @@ class RemoteReceiverStreamClient
           oos.flush();
           if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
             // failing to reset the stream periodically will result in a
-            // serious memory leak (as noted in SocketAppenderBase)
+            // serious memory leak (as noted in AbstractSocketAppender)
             counter = 0;
             oos.reset();
           }

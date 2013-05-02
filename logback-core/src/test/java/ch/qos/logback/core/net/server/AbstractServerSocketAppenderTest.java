@@ -31,11 +31,11 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 
 /**
- * Unit tests for {@link ServerSocketAppenderBase}.
+ * Unit tests for {@link AbstractServerSocketAppender}.
  *
  * @author Carl Harris
  */
-public class ServerSocketAppenderBaseTest {
+public class AbstractServerSocketAppenderTest {
 
 
   private MockContext context = new MockContext();

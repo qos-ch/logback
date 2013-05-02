@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({ConcurrentServerRunnerTest.class,
         RemoteReceiverStreamClientTest.class,
         ServerSocketAppenderBaseFunctionalTest.class,
-        ServerSocketAppenderBaseTest.class,
+        AbstractServerSocketAppenderTest.class,
         SSLServerSocketAppenderBaseTest.class})
 public class PackageTest {
 }

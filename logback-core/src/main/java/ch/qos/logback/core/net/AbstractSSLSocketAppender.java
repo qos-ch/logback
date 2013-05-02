@@ -22,12 +22,12 @@ import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * 
- * This is the base class for module specific SSLSocketAppender implementations.
- * 
+ * An abstract base for module specific {@code SSLSocketAppender}
+ * implementations located in other logback modules.
+ *
  * @author Carl Harris
  */
-public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E>
+public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppender<E>
     implements SSLComponent {
 
   private SSLConfiguration ssl;
@@ -36,7 +36,7 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E>
   /**
    * Constructs a new appender.
    */
-  protected SSLSocketAppenderBase() {    
+  protected AbstractSSLSocketAppender() {
   }
   
   /**
@@ -44,14 +44,14 @@ public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E>
    * and port.
    * <p>
    * This constructor was introduced primarily to allow the encapsulation 
-   * of the base {@link SocketAppenderBase} to be improved in a manner that
+   * of the base {@link AbstractSocketAppender} to be improved in a manner that
    * is least disruptive to <em>existing</em> subclasses.  <strong>This
    * constructor will be removed in future release</strong>.
    * @param remoteHost target remote host
    * @param port target port on remote host
    */
   @Deprecated
-  protected SSLSocketAppenderBase(String remoteHost, int port) {
+  protected AbstractSSLSocketAppender(String remoteHost, int port) {
     super(remoteHost, port);
   }
   

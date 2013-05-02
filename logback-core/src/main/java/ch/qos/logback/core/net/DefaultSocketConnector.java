@@ -87,11 +87,11 @@ public class DefaultSocketConnector implements SocketConnector {
         if(newSocket != null) {
           socket = newSocket;
           signalConnected();
+          break;
         }
       }
     } catch (InterruptedException ex) {
-      // we have been interrupted. Probably better to exit run() silently?
-      exceptionHandler.connectionFailed(this, ex);
+      // we have been interrupted
     }
   }
 

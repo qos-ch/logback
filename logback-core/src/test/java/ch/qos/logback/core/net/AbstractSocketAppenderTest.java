@@ -38,11 +38,11 @@ import ch.qos.logback.core.net.server.ServerSocketUtil;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * Unit tests for {@link SocketAppenderBase}.
+ * Unit tests for {@link AbstractSocketAppender}.
  *
  * @author Carl Harris
  */
-public class SocketAppenderBaseTest {
+public class AbstractSocketAppenderTest {
 
   private static final int DELAY = 10000;
   
@@ -190,7 +190,7 @@ public class SocketAppenderBaseTest {
   }
   
   private static class InstrumentedSocketAppenderBase
-      extends SocketAppenderBase<String> {
+      extends AbstractSocketAppender<String> {
 
     private BlockingQueue<String> lastQueue;
     
