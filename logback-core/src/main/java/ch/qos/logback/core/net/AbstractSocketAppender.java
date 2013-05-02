@@ -78,6 +78,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   private BlockingQueue<E> queue;
   private String peerId;
   private Future<?> task;
+  private Future<?> connectorTask;
+
   private volatile Socket socket;
 
   /**
@@ -154,6 +156,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (!isStarted()) return;
     CloseUtil.closeQuietly(socket);
     task.cancel(true);
+    if(connectorTask != null)
+      connectorTask.cancel(true);
     super.stop();
   }
 
@@ -175,11 +179,12 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
         SocketConnector connector = createConnector(address, port, 0,
                 reconnectionDelay);
 
-        boolean connectorActivated = activateConnector(connector);
-        if(!connectorActivated)
+        connectorTask = activateConnector(connector);
+        if(connectorTask == null)
           break;
 
         socket = connector.awaitConnection();
+        connectorTask = null;
         dispatchEvents();
       }
     } catch (InterruptedException ex) {
@@ -231,7 +236,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) throws RejectedExecutionException {
+                                          int initialDelay, int retryDelay) {
     SocketConnector connector = newConnector(address, port, initialDelay,
             retryDelay);
     connector.setExceptionHandler(this);
@@ -239,12 +244,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     return connector;
   }
 
-  private boolean activateConnector(SocketConnector connector) {
+  private Future<?> activateConnector(SocketConnector connector) {
     try {
-      getContext().getExecutorService().execute(connector);
-      return true;
+      return getContext().getExecutorService().submit(connector);
     } catch (RejectedExecutionException ex) {
-      return false;
+      return null;
     }
   }
 

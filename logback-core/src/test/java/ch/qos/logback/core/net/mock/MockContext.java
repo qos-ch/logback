@@ -29,7 +29,6 @@ import ch.qos.logback.core.status.StatusManager;
  */
 public class MockContext extends ContextBase {
 
-  private final MockStatusManager statusManager = new MockStatusManager();
   private final ExecutorService executorService;
   
   private Status lastStatus;
@@ -39,12 +38,8 @@ public class MockContext extends ContextBase {
   }
   
   public MockContext(ExecutorService executorService) {
+    this.setStatusManager(new MockStatusManager());
     this.executorService = executorService;
-  }
-    
-  @Override
-  public StatusManager getStatusManager() {
-    return statusManager;
   }
 
   @Override

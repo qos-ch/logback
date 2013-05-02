@@ -94,6 +94,7 @@ public class DefaultSocketConnector implements SocketConnector {
     } catch (InterruptedException ex) {
       // we have been interrupted
     }
+    System.out.println("Exiting connector");
   }
 
   private Socket createSocket() {
