@@ -81,7 +81,8 @@ public class SocketConnectorBaseTest {
     serverSocket.close();
     Thread thread = new Thread(connector);
     thread.start();
-    Socket socket = connector.awaitConnection(2 * DELAY);
+    // this connection attempt will always timeout
+    Socket socket = connector.awaitConnection(SHORT_DELAY);
     assertNull(socket);
     Exception lastException = exceptionHandler.awaitConnectionFailed(DELAY);
     assertTrue(lastException instanceof ConnectException);
@@ -97,7 +98,7 @@ public class SocketConnectorBaseTest {
     
     Thread thread = new Thread(connector);
     thread.start();
-    // this attempt is intended to timeout
+    // this connection attempt will always timeout
     Socket socket = connector.awaitConnection(SHORT_DELAY);
 
     assertNull(socket);
