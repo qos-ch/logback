@@ -75,11 +75,11 @@ public class DefaultSocketConnector implements SocketConnector {
   }
 
   /**
-   * {@inheritDoc}
+   * Loops until the desired connection is established.
    */
   public void run() {
     preventReuse();
-    ifMissingFallbackToDefaults();
+    inCaseOfMissingFieldsFallbackToDefaults();
     try {
       while (!Thread.currentThread().isInterrupted()) {
         Thread.sleep(delayStrategy.nextDelay());
@@ -87,6 +87,7 @@ public class DefaultSocketConnector implements SocketConnector {
         if(newSocket != null) {
           socket = newSocket;
           signalConnected();
+          // connection established, we are done
           break;
         }
       }
@@ -111,7 +112,7 @@ public class DefaultSocketConnector implements SocketConnector {
     }
   }
 
-  private void ifMissingFallbackToDefaults() {
+  private void inCaseOfMissingFieldsFallbackToDefaults() {
     if (exceptionHandler == null) {
       exceptionHandler = new ConsoleExceptionHandler();
     }

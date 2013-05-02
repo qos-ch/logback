@@ -171,17 +171,16 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   public final void run() {
     try {
-      SocketConnector connector = createConnector(address, port, 0,
-          reconnectionDelay);
       while (!Thread.currentThread().isInterrupted()) {
-        try {
-          getContext().getExecutorService().execute(connector);
-        } catch (RejectedExecutionException ex) {
-          break;   // executor is shutting down...   
-        }
+        SocketConnector connector = createConnector(address, port, 0,
+                reconnectionDelay);
+
+        boolean connectorActivated = activateConnector(connector);
+        if(!connectorActivated)
+          break;
+
         socket = connector.awaitConnection();
         dispatchEvents();
-        connector = createConnector(address, port, reconnectionDelay);
       }
     } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
@@ -232,18 +231,23 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
-                                          int delay) {
-    return createConnector(address, port, delay, delay);
-  }
-
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
+                                          int initialDelay, int retryDelay) throws RejectedExecutionException {
     SocketConnector connector = newConnector(address, port, initialDelay,
             retryDelay);
     connector.setExceptionHandler(this);
     connector.setSocketFactory(getSocketFactory());
     return connector;
   }
+
+  private boolean activateConnector(SocketConnector connector) {
+    try {
+      getContext().getExecutorService().execute(connector);
+      return true;
+    } catch (RejectedExecutionException ex) {
+      return false;
+    }
+  }
+
 
   /**
    * Creates a new {@link SocketConnector}.
