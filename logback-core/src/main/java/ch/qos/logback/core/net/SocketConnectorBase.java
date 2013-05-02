@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core.net;
 
+import ch.qos.logback.core.util.DelayStrategy;
+import ch.qos.logback.core.util.FixedDelay;
+
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
@@ -29,13 +32,7 @@ import javax.net.SocketFactory;
  */
 public class SocketConnectorBase implements SocketConnector {
 
-  /**
-   * A strategy for choosing a delay after a failed connection attempt.
-   */
-  public interface DelayStrategy {
-    int nextDelay();
-  }
-  
+
   private final Lock lock = new ReentrantLock();
   private final Condition connectCondition = lock.newCondition();
   
@@ -167,25 +164,4 @@ public class SocketConnectorBase implements SocketConnector {
     
   }
 
-  /**
-   * A default {@link DelayStrategy} that implements a simple fixed delay.
-   */
-  private static class FixedDelay implements DelayStrategy {
-
-    private final int retryDelay;
-    private int nextDelay;
-    
-    public FixedDelay(int initialDelay, int retryDelay) {
-      this.nextDelay = initialDelay;
-      this.retryDelay = retryDelay;
-    }
-    
-    public int nextDelay() {
-      int delay = nextDelay;
-      nextDelay = retryDelay;
-      return delay;
-    }
-    
-  }
-  
 }
