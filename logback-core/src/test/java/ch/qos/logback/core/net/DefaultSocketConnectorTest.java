@@ -35,11 +35,11 @@ import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
 
 /**
- * Unit tests for {@link SocketConnectorBase}.
+ * Unit tests for {@link DefaultSocketConnector}.
  *
  * @author Carl Harris
  */
-public class SocketConnectorBaseTest {
+public class DefaultSocketConnectorTest {
 
   private static final int DELAY = 1000;
   private static final int SHORT_DELAY = 10;
@@ -48,12 +48,12 @@ public class SocketConnectorBaseTest {
   private MockExceptionHandler exceptionHandler = new MockExceptionHandler();
   
   private ServerSocket serverSocket;
-  private SocketConnectorBase connector;
+  private DefaultSocketConnector connector;
   
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
-    connector = new SocketConnectorBase(serverSocket.getInetAddress(), 
+    connector = new DefaultSocketConnector(serverSocket.getInetAddress(),
         serverSocket.getLocalPort(), 0, RETRY_DELAY);
     connector.setExceptionHandler(exceptionHandler);
   }

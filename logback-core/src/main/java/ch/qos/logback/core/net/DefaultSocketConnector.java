@@ -16,6 +16,7 @@ package ch.qos.logback.core.net;
 import ch.qos.logback.core.util.DelayStrategy;
 import ch.qos.logback.core.util.FixedDelay;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
@@ -26,81 +27,99 @@ import java.util.concurrent.locks.ReentrantLock;
 import javax.net.SocketFactory;
 
 /**
- * Base implementation of {@link SocketConnector}.
+ * Default implementation of {@link SocketConnector}.
  *
  * @author Carl Harris
+ * @since 1.0.12
  */
-public class SocketConnectorBase implements SocketConnector {
+public class DefaultSocketConnector implements SocketConnector {
 
 
   private final Lock lock = new ReentrantLock();
   private final Condition connectCondition = lock.newCondition();
-  
+
   private final InetAddress address;
   private final int port;
-  
+
   private ExceptionHandler exceptionHandler;
   private SocketFactory socketFactory;
   private DelayStrategy delayStrategy;
   private Socket socket;
-  
+
   /**
    * Constructs a new connector.
-   * @param address address of remote listener
-   * @param port port of remote listener
+   *
+   * @param address      address of remote listener
+   * @param port         port of remote listener
    * @param initialDelay delay before initial connection attempt
-   * @param retryDelay delay after failed connection attempt
+   * @param retryDelay   delay after failed connection attempt
    */
-  public SocketConnectorBase(InetAddress address, int port, 
-      int initialDelay, int retryDelay) {
+  public DefaultSocketConnector(InetAddress address, int port,
+                                int initialDelay, int retryDelay) {
     this(address, port, new FixedDelay(initialDelay, retryDelay));
   }
-  
+
   /**
    * Constructs a new connector.
-   * @param address address of remote listener
-   * @param port port of remote listener
-   * @param delayStrategy strategy for choosing the delay to impose before 
-   *    each connection attempt
+   *
+   * @param address       address of remote listener
+   * @param port          port of remote listener
+   * @param delayStrategy strategy for choosing the delay to impose before
+   *                      each connection attempt
    */
-  public SocketConnectorBase(InetAddress address, int port,
-      DelayStrategy delayStrategy) {
+  public DefaultSocketConnector(InetAddress address, int port,
+                                DelayStrategy delayStrategy) {
     this.address = address;
     this.port = port;
     this.delayStrategy = delayStrategy;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public void run() {
+    preventReuse();
+    ifMissingFallbackToDefaults();
+    try {
+      while (!Thread.currentThread().isInterrupted()) {
+        Thread.sleep(delayStrategy.nextDelay());
+        Socket newSocket = createSocket();
+        if(newSocket != null) {
+          socket = newSocket;
+          signalConnected();
+        }
+      }
+    } catch (InterruptedException ex) {
+      // we have been interrupted. Probably better to exit run() silently?
+      exceptionHandler.connectionFailed(this, ex);
+    }
+  }
+
+  private Socket createSocket() {
+    Socket newSocket = null;
+    try {
+      newSocket = socketFactory.createSocket(address, port);
+    } catch (IOException ioex) {
+      exceptionHandler.connectionFailed(this, ioex);
+    }
+    return newSocket;
+  }
+
+  private void preventReuse() {
     if (socket != null) {
       throw new IllegalStateException("connector cannot be reused");
     }
+  }
+
+  private void ifMissingFallbackToDefaults() {
     if (exceptionHandler == null) {
       exceptionHandler = new ConsoleExceptionHandler();
     }
     if (socketFactory == null) {
       socketFactory = SocketFactory.getDefault();
     }
-    try {
-      while (!Thread.currentThread().isInterrupted()) {
-        Thread.sleep(delayStrategy.nextDelay());
-        try {
-          socket = socketFactory.createSocket(address, port);
-          signalConnected();
-          break;
-        }
-        catch (Exception ex) {
-          exceptionHandler.connectionFailed(this, ex);
-        }
-      }
-    }
-    catch (InterruptedException ex) {
-      exceptionHandler.connectionFailed(this, ex);
-    }
   }
-    
+
   /**
    * Signals any threads waiting on {@code connectCondition} that the
    * connection has been established.
@@ -109,12 +128,11 @@ public class SocketConnectorBase implements SocketConnector {
     lock.lock();
     try {
       connectCondition.signalAll();
-    }
-    finally {
+    } finally {
       lock.unlock();
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -133,8 +151,7 @@ public class SocketConnectorBase implements SocketConnector {
         timeout = !connectCondition.await(delay, TimeUnit.MILLISECONDS);
       }
       return socket;
-    }
-    finally {
+    } finally {
       lock.unlock();
     }
   }
@@ -157,11 +174,11 @@ public class SocketConnectorBase implements SocketConnector {
    * A default {@link ExceptionHandler} that writes to {@code System.out}
    */
   private static class ConsoleExceptionHandler implements ExceptionHandler {
-    
+
     public void connectionFailed(SocketConnector connector, Exception ex) {
       System.out.println(ex);
     }
-    
+
   }
 
 }

@@ -248,7 +248,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E>
   /**
    * Creates a new {@link SocketConnector}.
    * <p>
-   * The default implementation creates an instance of {@link SocketConnectorBase}.
+   * The default implementation creates an instance of {@link DefaultSocketConnector}.
    * A subclass may override to provide a different {@link SocketConnector}
    * implementation.
    * 
@@ -260,7 +260,7 @@ public abstract class SocketAppenderBase<E> extends AppenderBase<E>
    */
   protected SocketConnector newConnector(InetAddress address,
                                          int port, int initialDelay, int retryDelay) {
-    return new SocketConnectorBase(address, port, initialDelay, retryDelay);
+    return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
   /**
