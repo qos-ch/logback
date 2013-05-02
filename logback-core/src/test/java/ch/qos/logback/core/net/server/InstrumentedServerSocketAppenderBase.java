@@ -24,12 +24,12 @@ import javax.net.ServerSocketFactory;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * A {@link ServerSocketAppenderBase} with instrumentation for unit testing.
+ * A {@link AbstractServerSocketAppender} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
 public class InstrumentedServerSocketAppenderBase
-    extends ServerSocketAppenderBase<Serializable> {
+    extends AbstractServerSocketAppender<Serializable> {
 
   private final ServerSocket serverSocket;
   private final ServerListener<RemoteReceiverClient> listener;

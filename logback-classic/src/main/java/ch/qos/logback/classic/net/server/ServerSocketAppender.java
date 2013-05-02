@@ -15,7 +15,7 @@ package ch.qos.logback.classic.net.server;
 
 import ch.qos.logback.classic.net.LoggingEventPreSerializationTransformer;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.server.ServerSocketAppenderBase;
+import ch.qos.logback.core.net.server.AbstractServerSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -26,7 +26,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * @author Carl Harris
  */
 public class ServerSocketAppender
-    extends ServerSocketAppenderBase<ILoggingEvent> {
+    extends AbstractServerSocketAppender<ILoggingEvent> {
 
   private static final PreSerializationTransformer<ILoggingEvent> pst = 
       new LoggingEventPreSerializationTransformer();

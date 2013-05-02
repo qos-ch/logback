@@ -11,16 +11,18 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net;
+package ch.qos.logback.core.util;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses( { SyslogAppenderTest.class, DilutedSMTPAppenderTest.class,
-        JMSQueueAppenderTest.class, JMSTopicAppenderTest.class,
-        SMTPAppender_GreenTest.class, SMTPAppender_SubethaSMTPTest.class,
-        SocketReceiverTest.class, SSLSocketReceiverTest.class })
-public class PackageTest {
+/**
+ * A strategy for computing a delay.
+ *
+ * @author Carl Harris
+ * @since 1.1.0
+ */
+public interface DelayStrategy {
+  /**
+   * The value computed by this {@code DelayStrategy} for the next delay.
+   * @return a delay value
+   */
+  int nextDelay();
 }
