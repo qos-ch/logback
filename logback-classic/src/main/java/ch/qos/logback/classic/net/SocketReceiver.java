@@ -27,9 +27,9 @@ import javax.net.SocketFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.DefaultSocketConnector;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.net.SocketConnector;
-import ch.qos.logback.core.net.SocketConnectorBase;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
@@ -70,7 +70,7 @@ public class SocketReceiver extends ReceiverBase
     }
 
     if (reconnectionDelay == 0) {
-      reconnectionDelay = SocketAppenderBase.DEFAULT_RECONNECTION_DELAY;
+      reconnectionDelay = AbstractSocketAppender.DEFAULT_RECONNECTION_DELAY;
     }
 
     if (errorCount == 0) {
@@ -182,7 +182,7 @@ public class SocketReceiver extends ReceiverBase
 
   protected SocketConnector newConnector(InetAddress address,
                                          int port, int initialDelay, int retryDelay) {
-    return new SocketConnectorBase(address, port, initialDelay, retryDelay);
+    return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
   protected SocketFactory getSocketFactory() {

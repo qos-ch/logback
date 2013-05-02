@@ -46,7 +46,7 @@ public interface SocketConnector extends Runnable {
   /**
    * Blocks the calling thread until a connection is successfully
    * established or timeout occurs.
-   * @param the maximum time to wait (in milliseconds)
+   * @param delay the maximum time to wait (in milliseconds)
    * @return the connected socket or {@code null} if timeout occurs
    * @throws InterruptedException
    */
@@ -55,7 +55,7 @@ public interface SocketConnector extends Runnable {
   /**
    * Sets the connector's exception handler.
    * <p>
-   * The handler must be set before the {@link run()} method is invoked.  
+   * The handler must be set before the {@link #run()} method is invoked.
    * @param exceptionHandler the handler to set
    */
   void setExceptionHandler(ExceptionHandler exceptionHandler);

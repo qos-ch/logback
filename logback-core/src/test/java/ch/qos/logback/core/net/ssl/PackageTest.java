@@ -11,16 +11,22 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net;
+
+
+package ch.qos.logback.core.net.ssl;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+
 
 @RunWith(Suite.class)
-@SuiteClasses( { SyslogAppenderTest.class, DilutedSMTPAppenderTest.class,
-        JMSQueueAppenderTest.class, JMSTopicAppenderTest.class,
-        SMTPAppender_GreenTest.class, SMTPAppender_SubethaSMTPTest.class,
-        SocketReceiverTest.class, SSLSocketReceiverTest.class })
+@Suite.SuiteClasses({KeyManagerFactoryFactoryBeanTest.class,
+        KeyStoreFactoryBeanTest.class,
+        SecureRandomFactoryBeanTest.class,
+        SSLConfigurationTest.class,
+        SSLContextFactoryBeanTest.class,
+        SSLParametersConfigurationTest.class,
+        TrustManagerFactoryFactoryBeanTest.class})
 public class PackageTest {
+
 }

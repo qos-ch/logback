@@ -129,7 +129,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
    * {@inheritDoc}
    */
   public void run() {
-    running = true;
+    setRunning(true);
     try {
       addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
@@ -155,7 +155,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
       addError("listener: " + ex);
     }
 
-    running = false;    
+    setRunning(false);
     addInfo("shutting down");
     listener.close();
   }

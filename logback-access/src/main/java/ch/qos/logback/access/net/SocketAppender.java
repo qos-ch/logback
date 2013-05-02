@@ -17,7 +17,7 @@ package ch.qos.logback.access.net;
 import java.net.InetAddress;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -32,7 +32,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  */
 
-public class SocketAppender extends SocketAppenderBase<IAccessEvent> {
+public class SocketAppender extends AbstractSocketAppender<IAccessEvent> {
   
   PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
   
@@ -44,9 +44,7 @@ public class SocketAppender extends SocketAppenderBase<IAccessEvent> {
    */
   @Deprecated
   public SocketAppender(InetAddress address, int port) {
-    this.address = address;
-    this.remoteHost = address.getHostName();
-    this.port = port;
+    super(address.getHostAddress(), port);
   }
 
   /**
@@ -54,9 +52,7 @@ public class SocketAppender extends SocketAppenderBase<IAccessEvent> {
    */
   @Deprecated
   public SocketAppender(String host, int port) {
-    this.port = port;
-    this.address = getAddressByName(host);
-    this.remoteHost = host;
+    super(host, port);
   }
   
   @Override

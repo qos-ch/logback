@@ -16,7 +16,7 @@ package ch.qos.logback.classic.net;
 import java.net.InetAddress;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.SSLSocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSSLSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -27,7 +27,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  * @author Carl Harris
  */
-public class SSLSocketAppender extends SSLSocketAppenderBase<ILoggingEvent> {
+public class SSLSocketAppender extends AbstractSSLSocketAppender<ILoggingEvent> {
 
   private final PreSerializationTransformer<ILoggingEvent> pst = 
       new LoggingEventPreSerializationTransformer();
@@ -42,7 +42,7 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<ILoggingEvent> {
    */
   @Deprecated
   public SSLSocketAppender(String host, int port) {
-    this(getAddressByName(host), port);
+    super(host, port);
   }
 
   /**
@@ -50,8 +50,7 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<ILoggingEvent> {
    */
   @Deprecated
   public SSLSocketAppender(InetAddress address, int port) {
-    this.address = address;
-    this.port = port;
+    super(address.getHostAddress(), port);
   }
 
   @Override
