@@ -23,9 +23,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.SynchronousQueue;
+
 
 import javax.net.SocketFactory;
 
@@ -78,7 +80,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   private BlockingQueue<E> queue;
   private String peerId;
   private Future<?> task;
-  private Future<?> connectorTask;
+  private Future<Socket> connectorTask;
 
   private volatile Socket socket;
 
@@ -183,8 +185,9 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
         if(connectorTask == null)
           break;
 
-        socket = connector.awaitConnection();
-        connectorTask = null;
+        socket = waitForConnectorToReturnASocket();
+        if(socket == null)
+          break;
         dispatchEvents();
       }
     } catch (InterruptedException ex) {
@@ -192,7 +195,34 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
     addInfo("shutting down");
   }
-  
+
+  private SocketConnector createConnector(InetAddress address, int port,
+                                          int initialDelay, int retryDelay) {
+    SocketConnector connector = newConnector(address, port, initialDelay,
+            retryDelay);
+    connector.setExceptionHandler(this);
+    connector.setSocketFactory(getSocketFactory());
+    return connector;
+  }
+
+  private Future<Socket> activateConnector(SocketConnector connector) {
+    try {
+      return getContext().getExecutorService().submit(connector);
+    } catch (RejectedExecutionException ex) {
+      return null;
+    }
+  }
+
+  private Socket waitForConnectorToReturnASocket() throws InterruptedException {
+    try {
+      Socket s =  connectorTask.get();
+      connectorTask = null;
+      return s;
+    } catch (ExecutionException e) {
+      return null;
+    }
+  }
+
   private void dispatchEvents() throws InterruptedException {
     try {
       socket.setSoTimeout(acceptConnectionTimeout);
@@ -235,22 +265,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
   }
 
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
-    connector.setExceptionHandler(this);
-    connector.setSocketFactory(getSocketFactory());
-    return connector;
-  }
-
-  private Future<?> activateConnector(SocketConnector connector) {
-    try {
-      return getContext().getExecutorService().submit(connector);
-    } catch (RejectedExecutionException ex) {
-      return null;
-    }
-  }
 
 
   /**

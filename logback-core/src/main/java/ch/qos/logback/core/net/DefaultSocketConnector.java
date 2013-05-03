@@ -13,18 +13,14 @@
  */
 package ch.qos.logback.core.net;
 
-import ch.qos.logback.core.util.DelayStrategy;
-import ch.qos.logback.core.util.FixedDelay;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.net.SocketFactory;
+
+import ch.qos.logback.core.util.DelayStrategy;
+import ch.qos.logback.core.util.FixedDelay;
 
 /**
  * Default implementation of {@link SocketConnector}.
@@ -34,17 +30,12 @@ import javax.net.SocketFactory;
  */
 public class DefaultSocketConnector implements SocketConnector {
 
-
-  private final Lock lock = new ReentrantLock();
-  private final Condition connectCondition = lock.newCondition();
-
   private final InetAddress address;
   private final int port;
+  private final DelayStrategy delayStrategy;
 
   private ExceptionHandler exceptionHandler;
   private SocketFactory socketFactory;
-  private DelayStrategy delayStrategy;
-  private Socket socket;
 
   /**
    * Constructs a new connector.
@@ -75,26 +66,16 @@ public class DefaultSocketConnector implements SocketConnector {
   }
 
   /**
-   * Loops until the desired connection is established.
+   * Loops until the desired connection is established and returns the resulting connector.
    */
-  public void run() {
-    preventReuse();
-    inCaseOfMissingFieldsFallbackToDefaults();
-    try {
-      while (!Thread.currentThread().isInterrupted()) {
-        Thread.sleep(delayStrategy.nextDelay());
-        Socket newSocket = createSocket();
-        if(newSocket != null) {
-          socket = newSocket;
-          signalConnected();
-          // connection established, we are done
-          break;
-        }
-      }
-    } catch (InterruptedException ex) {
-      // we have been interrupted
+  public Socket call() throws InterruptedException {
+    useDefaultsForMissingFields();
+    Socket socket = createSocket();
+    while (socket == null && !Thread.currentThread().isInterrupted()) {
+      Thread.sleep(delayStrategy.nextDelay());
+      socket = createSocket();
     }
-    System.out.println("Exiting connector");
+    return socket;
   }
 
   private Socket createSocket() {
@@ -107,54 +88,12 @@ public class DefaultSocketConnector implements SocketConnector {
     return newSocket;
   }
 
-  private void preventReuse() {
-    if (socket != null) {
-      throw new IllegalStateException("connector cannot be reused");
-    }
-  }
-
-  private void inCaseOfMissingFieldsFallbackToDefaults() {
+  private void useDefaultsForMissingFields() {
     if (exceptionHandler == null) {
       exceptionHandler = new ConsoleExceptionHandler();
     }
     if (socketFactory == null) {
       socketFactory = SocketFactory.getDefault();
-    }
-  }
-
-  /**
-   * Signals any threads waiting on {@code connectCondition} that the
-   * connection has been established.
-   */
-  private void signalConnected() {
-    lock.lock();
-    try {
-      connectCondition.signalAll();
-    } finally {
-      lock.unlock();
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Socket awaitConnection() throws InterruptedException {
-    return awaitConnection(Long.MAX_VALUE);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public Socket awaitConnection(long delay) throws InterruptedException {
-    lock.lock();
-    try {
-      boolean timeout = false;
-      while (socket == null && !timeout) {
-        timeout = !connectCondition.await(delay, TimeUnit.MILLISECONDS);
-      }
-      return socket;
-    } finally {
-      lock.unlock();
     }
   }
 
