@@ -45,7 +45,7 @@ class RemoteAppenderServerRunner extends ConcurrentServerRunner {
 
   @Override
   protected Client buildClient(String id, Socket socket) {
-    return new RemoteAppenderStreamClient(id, socket);
+    return new AppenderFacingStreamClient(id, socket);
   }
 
   /**
@@ -53,8 +53,8 @@ class RemoteAppenderServerRunner extends ConcurrentServerRunner {
    */
   @Override
   protected boolean configureClient(Client client) {
-    RemoteAppenderClient remoteAppenderClient = (RemoteAppenderClient) client;
-    remoteAppenderClient.setLoggerContext((LoggerContext) getContext());
+    AppenderFacingClient appenderFacingClient = (AppenderFacingClient) client;
+    appenderFacingClient.setLoggerContext((LoggerContext) getContext());
     return true;
   }
 

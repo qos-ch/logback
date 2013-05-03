@@ -27,11 +27,11 @@ import ch.qos.logback.core.net.mock.MockContext;
 
 
 /**
- * Unit tests for {@link RemoteReceiverStreamClient}.
+ * Unit tests for {@link ReceiverFacingStreamClient}.
  *
  * @author Carl Harris
  */
-public class RemoteReceiverStreamClientTest {
+public class ReceiverFacingStreamClientTest {
 
   private static final String TEST_EVENT = "test event";
 
@@ -42,8 +42,8 @@ public class RemoteReceiverStreamClientTest {
   private ByteArrayOutputStream outputStream = 
       new ByteArrayOutputStream();
   
-  private RemoteReceiverStreamClient client = 
-      new RemoteReceiverStreamClient("someId", outputStream);
+  private ReceiverFacingStreamClient client =
+      new ReceiverFacingStreamClient("someId", outputStream);
   
   @Before
   public void setUp() throws Exception {

@@ -33,7 +33,7 @@ public class InstrumentedServerSocketAppenderBase
 
   private final ServerSocket serverSocket;
   private final ServerListener listener;
-  private final ServerRunner<RemoteReceiverClient> runner;
+  private final ServerRunner<ReceiverFacingClient> runner;
   
   private ServerListener lastListener;
   
@@ -43,7 +43,7 @@ public class InstrumentedServerSocketAppenderBase
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
       ServerListener listener,
-      ServerRunner<RemoteReceiverClient> runner) {
+      ServerRunner<ReceiverFacingClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
@@ -86,7 +86,7 @@ public class InstrumentedServerSocketAppenderBase
   }
 
   @Override
-  protected ServerRunner<RemoteReceiverClient> createServerRunner(
+  protected ServerRunner<ReceiverFacingClient> createServerRunner(
       ServerListener listener, Executor executor) {
     lastListener = listener;
     return runner != null ? runner : super.createServerRunner(listener, executor);

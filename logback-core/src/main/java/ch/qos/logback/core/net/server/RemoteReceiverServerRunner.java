@@ -25,7 +25,7 @@ import java.util.concurrent.Executor;
  * @author Carl Harris
  */
 class RemoteReceiverServerRunner 
-    extends ConcurrentServerRunner<RemoteReceiverClient> {
+    extends ConcurrentServerRunner<ReceiverFacingClient> {
 
   private final int clientQueueSize;
   
@@ -49,14 +49,14 @@ class RemoteReceiverServerRunner
    * {@inheritDoc}
    */
   @Override
-  protected boolean configureClient(RemoteReceiverClient client) {
+  protected boolean configureClient(ReceiverFacingClient client) {
     client.setContext(getContext());
     client.setQueue(new ArrayBlockingQueue<Serializable>(clientQueueSize));
     return true;
   }
 
   @Override
-  protected RemoteReceiverClient buildClient(String id, Socket socket) {
-    return new RemoteReceiverStreamClient(id , socket);
+  protected ReceiverFacingClient buildClient(String id, Socket socket) {
+    return new ReceiverFacingStreamClient(id , socket);
   }
 }

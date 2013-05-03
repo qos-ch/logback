@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ConcurrentServerRunnerTest.class,
-        RemoteReceiverStreamClientTest.class,
+        ReceiverFacingStreamClientTest.class,
         ServerSocketAppenderBaseFunctionalTest.class,
         AbstractServerSocketAppenderTest.class,
         SSLServerSocketAppenderBaseTest.class})

@@ -51,7 +51,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
   
   private String address;
 
-  private ServerRunner<RemoteReceiverClient> runner;
+  private ServerRunner<ReceiverFacingClient> runner;
 
   @Override
   public void start() {
@@ -75,7 +75,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     return new ServerSocketListener(socket);
   }
   
-  protected ServerRunner<RemoteReceiverClient> createServerRunner(
+  protected ServerRunner<ReceiverFacingClient> createServerRunner(
       ServerListener listener,
       Executor executor) {
     return new RemoteReceiverServerRunner(listener, executor, 
@@ -99,8 +99,8 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     if (event == null) return;
     postProcessEvent(event);
     final Serializable serEvent = getPST().transform(event);
-    runner.accept(new ClientVisitor<RemoteReceiverClient>() {
-      public void visit(RemoteReceiverClient client) {
+    runner.accept(new ClientVisitor<ReceiverFacingClient>() {
+      public void visit(ReceiverFacingClient client) {
         client.offer(serEvent);
       }      
     });

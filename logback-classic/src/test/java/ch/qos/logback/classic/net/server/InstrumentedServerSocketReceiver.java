@@ -34,7 +34,7 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
   
   private final ServerSocket serverSocket;
   private final ServerListener listener;
-  private final ServerRunner<RemoteAppenderClient> runner;
+  private final ServerRunner<AppenderFacingClient> runner;
   
   private ServerListener lastListener;
   
@@ -44,7 +44,7 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
   
   public InstrumentedServerSocketReceiver(ServerSocket serverSocket,
       ServerListener listener,
-      ServerRunner<RemoteAppenderClient> runner) {
+      ServerRunner<AppenderFacingClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
