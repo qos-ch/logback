@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net;
 
 import java.net.Socket;
+import java.util.concurrent.Callable;
 
 import javax.net.SocketFactory;
 
@@ -25,7 +26,7 @@ import javax.net.SocketFactory;
  *
  * @author Carl Harris
  */
-public interface SocketConnector extends Runnable {
+public interface SocketConnector extends Callable<Socket> {
 
   /**
    * An exception handler that is notified of all exceptions that occur
@@ -41,21 +42,12 @@ public interface SocketConnector extends Runnable {
    * @return the connected socket
    * @throws InterruptedException
    */
-  Socket awaitConnection() throws InterruptedException;
+  Socket call() throws InterruptedException;
 
-  /**
-   * Blocks the calling thread until a connection is successfully
-   * established or timeout occurs.
-   * @param delay the maximum time to wait (in milliseconds)
-   * @return the connected socket or {@code null} if timeout occurs
-   * @throws InterruptedException
-   */
-  Socket awaitConnection(long delay) throws InterruptedException;
-  
   /**
    * Sets the connector's exception handler.
    * <p>
-   * The handler must be set before the {@link #run()} method is invoked.
+   * The handler must be set before the {@link #call()} method is invoked.
    * @param exceptionHandler the handler to set
    */
   void setExceptionHandler(ExceptionHandler exceptionHandler);

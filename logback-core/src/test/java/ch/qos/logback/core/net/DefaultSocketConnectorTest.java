@@ -13,16 +13,16 @@
  */
 package ch.qos.logback.core.net;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -33,6 +33,12 @@ import org.junit.Test;
 
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
+
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * Unit tests for {@link DefaultSocketConnector}.
@@ -49,7 +55,9 @@ public class DefaultSocketConnectorTest {
   
   private ServerSocket serverSocket;
   private DefaultSocketConnector connector;
-  
+
+  ExecutorService executor = Executors.newSingleThreadExecutor();
+
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
@@ -67,47 +75,54 @@ public class DefaultSocketConnectorTest {
   
   @Test
   public void testConnect() throws Exception {
-    Thread thread = new Thread(connector);
-    thread.start();
-    Socket socket = connector.awaitConnection(2 * DELAY);
+    Future<Socket> connectorTask = executor.submit(connector);
+
+    Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
     assertNotNull(socket);
-    thread.join(DELAY);
-    assertFalse(thread.isAlive());
+    connectorTask.cancel(true);
+
+    assertTrue(connectorTask.isDone());
     socket.close();
   }
 
   @Test
   public void testConnectionFails() throws Exception {
     serverSocket.close();
-    Thread thread = new Thread(connector);
-    thread.start();
+    Future<Socket> connectorTask = executor.submit(connector);
+
     // this connection attempt will always timeout
-    Socket socket = connector.awaitConnection(SHORT_DELAY);
-    assertNull(socket);
+    try {
+      connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
+      fail();
+    } catch(TimeoutException e) {
+    }
     Exception lastException = exceptionHandler.awaitConnectionFailed(DELAY);
     assertTrue(lastException instanceof ConnectException);
-    assertTrue(thread.isAlive());
-    thread.interrupt();
-    thread.join(4 * DELAY);
-    assertFalse(thread.isAlive());
+    assertFalse(connectorTask.isDone());
+    connectorTask.cancel(true);
+
+    //thread.join(4 * DELAY);
+    assertTrue(connectorTask.isCancelled());
   }
 
   @Test(timeout = 5000)
   public void testConnectEventually() throws Exception {
     serverSocket.close();
-    
-    Thread thread = new Thread(connector);
-    thread.start();
-    // this connection attempt will always timeout
-    Socket socket = connector.awaitConnection(SHORT_DELAY);
 
-    assertNull(socket);
+    Future<Socket> connectorTask = executor.submit(connector);
+    // this connection attempt will always timeout
+    try {
+      connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
+      fail();
+    } catch(TimeoutException e) {
+    }
+
+
     // on Ceki's machine (Windows 7) this always takes 1second  regardless of the value of DELAY
     Exception lastException = exceptionHandler.awaitConnectionFailed(DELAY);
     assertNotNull(lastException);
     assertTrue(lastException instanceof ConnectException);
-    assertTrue(thread.isAlive());
-    
+
     // now rebind to the same local address
     SocketAddress address = serverSocket.getLocalSocketAddress();
     serverSocket = new ServerSocket();
@@ -115,11 +130,11 @@ public class DefaultSocketConnectorTest {
     serverSocket.bind(address);
 
     // now we should be able to connect
-    socket = connector.awaitConnection(2 * DELAY);
+    Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
 
     assertNotNull(socket);
-    thread.join(DELAY);
-    assertFalse(thread.isAlive());
+
+    assertFalse(connectorTask.isCancelled());
     socket.close();
   }
   
