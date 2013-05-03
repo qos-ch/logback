@@ -17,7 +17,12 @@ import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.concurrent.*;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,7 +34,11 @@ import org.junit.Test;
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
 
-import static org.junit.Assert.*;
+import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 
 /**
  * Unit tests for {@link DefaultSocketConnector}.
