@@ -32,10 +32,10 @@ public class DefaultSocketConnector implements SocketConnector {
 
   private final InetAddress address;
   private final int port;
+  private final DelayStrategy delayStrategy;
 
   private ExceptionHandler exceptionHandler;
   private SocketFactory socketFactory;
-  private DelayStrategy delayStrategy;
 
   /**
    * Constructs a new connector.
