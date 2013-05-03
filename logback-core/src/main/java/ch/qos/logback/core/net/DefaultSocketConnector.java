@@ -13,18 +13,14 @@
  */
 package ch.qos.logback.core.net;
 
-import ch.qos.logback.core.util.DelayStrategy;
-import ch.qos.logback.core.util.FixedDelay;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.net.SocketFactory;
+
+import ch.qos.logback.core.util.DelayStrategy;
+import ch.qos.logback.core.util.FixedDelay;
 
 /**
  * Default implementation of {@link SocketConnector}.
