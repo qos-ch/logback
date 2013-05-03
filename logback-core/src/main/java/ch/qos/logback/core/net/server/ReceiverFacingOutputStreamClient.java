@@ -31,7 +31,7 @@ import ch.qos.logback.core.util.CloseUtil;
  *
  * @author Carl Harris
  */
-class ReceiverFacingStreamClient
+class ReceiverFacingOutputStreamClient
         extends ContextAwareBase implements ReceiverFacingClient {
 
   private final String clientId;
@@ -46,7 +46,7 @@ class ReceiverFacingStreamClient
    * @param id     identifier string for the client
    * @param socket socket to which logging events will be written
    */
-  public ReceiverFacingStreamClient(String id, Socket socket) {
+  public ReceiverFacingOutputStreamClient(String id, Socket socket) {
     this.clientId = "client " + id + ": ";
     this.socket = socket;
     this.outputStream = null;
@@ -61,7 +61,7 @@ class ReceiverFacingStreamClient
    * @param id           identifier string for the client
    * @param outputStream output stream to which logging Events will be written
    */
-  ReceiverFacingStreamClient(String id, OutputStream outputStream) {
+  ReceiverFacingOutputStreamClient(String id, OutputStream outputStream) {
     this.clientId = "client " + id + ": ";
     this.socket = null;
     this.outputStream = outputStream;

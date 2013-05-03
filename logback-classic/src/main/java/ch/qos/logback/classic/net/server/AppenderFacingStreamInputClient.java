@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.CloseUtil;
  *
  * @author Carl Harris
  */
-class AppenderFacingStreamClient implements AppenderFacingClient {
+class AppenderFacingStreamInputClient implements AppenderFacingClient {
 
   private final String id;
   private final Socket socket;
@@ -45,7 +45,7 @@ class AppenderFacingStreamClient implements AppenderFacingClient {
    * @param id          a display name for the client
    * @param inputStream input stream from which events will be read
    */
-  public AppenderFacingStreamClient(String id, Socket socket) {
+  public AppenderFacingStreamInputClient(String id, Socket socket) {
     this.id = id;
     this.socket = socket;
     this.inputStream = null;
@@ -60,7 +60,7 @@ class AppenderFacingStreamClient implements AppenderFacingClient {
    * @param id          a display name for the client
    * @param inputStream input stream from which events will be read
    */
-  public AppenderFacingStreamClient(String id, InputStream inputStream) {
+  public AppenderFacingStreamInputClient(String id, InputStream inputStream) {
     this.id = id;
     this.socket = null;
     this.inputStream = inputStream;

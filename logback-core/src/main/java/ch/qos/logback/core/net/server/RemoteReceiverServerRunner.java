@@ -57,6 +57,6 @@ class RemoteReceiverServerRunner
 
   @Override
   protected ReceiverFacingClient buildClient(String id, Socket socket) {
-    return new ReceiverFacingStreamClient(id , socket);
+    return new ReceiverFacingOutputStreamClient(id , socket);
   }
 }

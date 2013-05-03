@@ -45,7 +45,7 @@ class RemoteAppenderServerRunner extends ConcurrentServerRunner {
 
   @Override
   protected Client buildClient(String id, Socket socket) {
-    return new AppenderFacingStreamClient(id, socket);
+    return new AppenderFacingStreamInputClient(id, socket);
   }
 
   /**

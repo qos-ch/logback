@@ -33,16 +33,16 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 
 /**
- * Unit tests for {@link AppenderFacingStreamClient}.
+ * Unit tests for {@link AppenderFacingStreamInputClient}.
  *
  * @author Carl Harris
  */
-public class AppenderFacingStreamClientTest {
+public class AppenderFacingStreamInputClientTest {
 
   private MockAppender appender;
   private Logger logger;
   private LoggingEvent event;
-  private AppenderFacingStreamClient client;
+  private AppenderFacingStreamInputClient client;
 
   @Before
   public void setUp() throws Exception {
@@ -65,7 +65,7 @@ public class AppenderFacingStreamClientTest {
     oos.close();
    
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-    client = new AppenderFacingStreamClient("some client ID", bis);
+    client = new AppenderFacingStreamInputClient("some client ID", bis);
     client.setLoggerContext(lc);
   }
   
