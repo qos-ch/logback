@@ -33,19 +33,19 @@ import ch.qos.logback.core.net.server.ServerListener;
 public class MockServerListener implements ServerListener {
 
   private final BlockingQueue<Socket> queue =
-      new LinkedBlockingQueue<Socket>();
-  
+          new LinkedBlockingQueue<Socket>();
+
   private boolean closed;
   private Thread waiter;
-  
+
   public synchronized Thread getWaiter() {
     return waiter;
   }
-  
+
   public synchronized void setWaiter(Thread waiter) {
     this.waiter = waiter;
   }
-  
+
   public synchronized boolean isClosed() {
     return closed;
   }
@@ -61,8 +61,7 @@ public class MockServerListener implements ServerListener {
     setWaiter(Thread.currentThread());
     try {
       return queue.take();
-    }
-    finally {
+    } finally {
       setWaiter(null);
     }
   }
@@ -70,13 +69,13 @@ public class MockServerListener implements ServerListener {
   public void addSocket(Socket s) {
     queue.offer(s);
   }
-  
+
   public synchronized void close() {
     setClosed(true);
     Thread waiter = getWaiter();
     if (waiter != null) {
       waiter.interrupt();
-    }   
+    }
   }
 
 }

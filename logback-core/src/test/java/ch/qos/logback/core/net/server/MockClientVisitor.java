@@ -18,18 +18,18 @@ package ch.qos.logback.core.net.server;
  *
  * @author Carl Harris
  */
-public class MockClientVisitor implements ClientVisitor<MockClient> {
+public class MockClientVisitor implements ClientVisitor<WaitingClient> {
 
-  private MockClient lastVisited;
+  private WaitingClient lastVisited;
   
   /**
    * {@inheritDoc}
    */
-  public void visit(MockClient client) {
+  public void visit(WaitingClient client) {
     lastVisited = client;
   }
 
-  public MockClient getLastVisited() {
+  public WaitingClient getLastVisited() {
     return lastVisited;
   }
 
