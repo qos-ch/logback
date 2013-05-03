@@ -34,14 +34,12 @@ import javax.net.SocketFactory;
  */
 public class DefaultSocketConnector implements SocketConnector {
 
-
   private final InetAddress address;
   private final int port;
 
   private ExceptionHandler exceptionHandler;
   private SocketFactory socketFactory;
   private DelayStrategy delayStrategy;
-  private Socket socket;
 
   /**
    * Constructs a new connector.
@@ -74,21 +72,14 @@ public class DefaultSocketConnector implements SocketConnector {
   /**
    * Loops until the desired connection is established and returns the resulting connector.
    */
-  public Socket call() {
-    preventReuse();
-    inCaseOfMissingFieldsFallbackToDefaults();
-    try {
-      while (!Thread.currentThread().isInterrupted()) {
-        Thread.sleep(delayStrategy.nextDelay());
-        socket = createSocket();
-        if(socket != null) {
-          return socket;
-        }
-      }
-    } catch (InterruptedException ex) {
-      // we have been interrupted
+  public Socket call() throws InterruptedException {
+    useDefaultsForMissingFields();
+    Socket socket = createSocket();
+    while (socket == null && !Thread.currentThread().isInterrupted()) {
+      Thread.sleep(delayStrategy.nextDelay());
+      socket = createSocket();
     }
-    return null;
+    return socket;
   }
 
   private Socket createSocket() {
@@ -101,13 +92,7 @@ public class DefaultSocketConnector implements SocketConnector {
     return newSocket;
   }
 
-  private void preventReuse() {
-    if (socket != null) {
-      throw new IllegalStateException("connector cannot be reused");
-    }
-  }
-
-  private void inCaseOfMissingFieldsFallbackToDefaults() {
+  private void useDefaultsForMissingFields() {
     if (exceptionHandler == null) {
       exceptionHandler = new ConsoleExceptionHandler();
     }
