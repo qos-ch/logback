@@ -20,11 +20,9 @@ import java.util.concurrent.Executor;
 
 import javax.net.ServerSocketFactory;
 
-import ch.qos.logback.classic.net.server.RemoteAppenderClient;
-import ch.qos.logback.classic.net.server.RemoteAppenderServerListener;
-import ch.qos.logback.classic.net.server.ServerSocketReceiver;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
+import ch.qos.logback.core.net.server.ServerSocketListener;
 
 
 /**
@@ -35,17 +33,17 @@ import ch.qos.logback.core.net.server.ServerRunner;
 public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
   
   private final ServerSocket serverSocket;
-  private final ServerListener<RemoteAppenderClient> listener;
+  private final ServerListener listener;
   private final ServerRunner<RemoteAppenderClient> runner;
   
   private ServerListener lastListener;
   
   public InstrumentedServerSocketReceiver(ServerSocket serverSocket) {
-    this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
+    this(serverSocket, new ServerSocketListener(serverSocket), null);
   }
   
   public InstrumentedServerSocketReceiver(ServerSocket serverSocket,
-      ServerListener<RemoteAppenderClient> listener, 
+      ServerListener listener,
       ServerRunner<RemoteAppenderClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
@@ -77,14 +75,14 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
 
   @Override
   protected ServerRunner createServerRunner(
-      ServerListener<RemoteAppenderClient> listener,
+      ServerListener listener,
       Executor executor) {
     lastListener = listener;
     return runner != null ? runner : super.createServerRunner(listener, executor);
   }
 
   @Override
-  protected ServerListener<RemoteAppenderClient> createServerListener(
+  protected ServerListener createServerListener(
       ServerSocket socket) {
     return listener;
   }

@@ -14,6 +14,8 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -52,7 +54,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
   
   private final Collection<T> clients = new ArrayList<T>();
 
-  private final ServerListener<T> listener;
+  private final ServerListener listener;
   private final Executor executor;
   
   private boolean running;
@@ -66,7 +68,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
    *    is allowed here, outside of unit testing the only reasonable choice
    *    is a bounded thread pool of some kind.
    */
-  public ConcurrentServerRunner(ServerListener<T> listener, Executor executor) {
+  public ConcurrentServerRunner(ServerListener listener, Executor executor) {
     this.listener = listener;
     this.executor = executor;
   }
@@ -133,18 +135,20 @@ public abstract class ConcurrentServerRunner<T extends Client>
     try {
       addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
-        T client = listener.acceptClient();
+        Socket socket = listener.acceptSocket();
+        String id = socketAddressToString(socket.getRemoteSocketAddress());
+        T client = buildClient(id, socket);
         if (!configureClient(client)) {
           addError(client + ": connection dropped");
-          client.close();
+          socket.close();
           continue;
         }
         try {
           executor.execute(new ClientWrapper(client));
         }
         catch (RejectedExecutionException ex) {
-          addError(client + ": connection dropped");
-          client.close();
+          addError(socket + ": connection dropped");
+          socket.close();
         }
       }
     }
@@ -159,6 +163,17 @@ public abstract class ConcurrentServerRunner<T extends Client>
     addInfo("shutting down");
     listener.close();
   }
+
+  private String socketAddressToString(SocketAddress address) {
+    String addr = address.toString();
+    int i = addr.indexOf("/");
+    if (i >= 0) {
+      addr = addr.substring(i + 1);
+    }
+    return addr;
+  }
+
+  protected abstract T buildClient(String id, Socket socket);
 
   /**
    * Configures a connected client.

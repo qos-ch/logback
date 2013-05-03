@@ -15,6 +15,7 @@ package ch.qos.logback.core.net.server;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.Socket;
 
 /**
  * A listener that accepts {@link Client} connections on behalf of a
@@ -32,7 +33,7 @@ import java.io.IOException;
  * listener is discarded.
  * </ol>
  */
-public interface ServerListener<T extends Client> extends Closeable {
+public interface ServerListener extends Closeable {
 
   /**
    * Accepts the next client that appears on this listener.
@@ -44,7 +45,7 @@ public interface ServerListener<T extends Client> extends Closeable {
    * @throws IOException
    * @throws InterruptedException
    */
-  T acceptClient() throws IOException, InterruptedException;
+  Socket acceptSocket() throws IOException, InterruptedException;
   
   /**
    * Closes any underlying {@link Closeable} resources associated with this

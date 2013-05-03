@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -29,10 +30,10 @@ import ch.qos.logback.core.net.server.ServerListener;
  *
  * @author Carl Harris
  */
-public class MockServerListener<T extends Client> implements ServerListener<T> {
+public class MockServerListener implements ServerListener {
 
-  private final BlockingQueue<T> queue = 
-      new LinkedBlockingQueue<T>();
+  private final BlockingQueue<Socket> queue =
+      new LinkedBlockingQueue<Socket>();
   
   private boolean closed;
   private Thread waiter;
@@ -53,7 +54,7 @@ public class MockServerListener<T extends Client> implements ServerListener<T> {
     this.closed = closed;
   }
 
-  public T acceptClient() throws IOException, InterruptedException {
+  public Socket acceptSocket() throws IOException, InterruptedException {
     if (isClosed()) {
       throw new IOException("closed");
     }
@@ -66,8 +67,8 @@ public class MockServerListener<T extends Client> implements ServerListener<T> {
     }
   }
 
-  public void addClient(T client) {
-    queue.offer(client);
+  public void addSocket(Socket s) {
+    queue.offer(s);
   }
   
   public synchronized void close() {

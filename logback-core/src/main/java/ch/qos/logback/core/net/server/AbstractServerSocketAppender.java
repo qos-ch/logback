@@ -59,7 +59,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     try {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
-      ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
+      ServerListener listener = createServerListener(socket);
       
       runner = createServerRunner(listener, getContext().getExecutorService());
       runner.setContext(getContext());
@@ -70,13 +70,13 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     }
   }
   
-  protected ServerListener<RemoteReceiverClient> createServerListener(
+  protected ServerListener createServerListener(
       ServerSocket socket) {
-    return new RemoteReceiverServerListener(socket);
+    return new ServerSocketListener(socket);
   }
   
   protected ServerRunner<RemoteReceiverClient> createServerRunner(
-      ServerListener<RemoteReceiverClient> listener,
+      ServerListener listener,
       Executor executor) {
     return new RemoteReceiverServerRunner(listener, executor, 
         getClientQueueSize());

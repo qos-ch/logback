@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.net.Socket;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,13 +38,12 @@ public class ConcurrentServerRunnerTest {
 
   private static final int DELAY = 10000;
   private static final int SHORT_DELAY = 10;
-  
+
   private MockContext context = new MockContext();
-  private MockServerListener<MockClient> listener = 
-      new MockServerListener<MockClient>();
-  
+  private MockServerListener listener = new MockServerListener();
+
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private InstrumentedConcurrentServerRunner runner = 
+  private InstrumentedConcurrentServerRunner runner =
       new InstrumentedConcurrentServerRunner(listener, executor);
 
   @Before
@@ -56,7 +56,7 @@ public class ConcurrentServerRunnerTest {
     executor.shutdownNow();
     assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
   }
-  
+
   @Test
   public void testStartStop() throws Exception {
     assertFalse(runner.isRunning());
@@ -73,12 +73,12 @@ public class ConcurrentServerRunnerTest {
     assertTrue(listener.isClosed());
     assertFalse(runner.awaitRunState(false, DELAY));
   }
-  
+
   @Test
   public void testRunOneClient() throws Exception {
     executor.execute(runner);
     MockClient client = new MockClient();
-    listener.addClient(client);
+  //  listener.addClient(client);
     int retries = DELAY / SHORT_DELAY;
     synchronized (client) {
       while (retries-- > 0 && !client.isRunning()) {
@@ -96,7 +96,7 @@ public class ConcurrentServerRunnerTest {
     int count = 10;
     while (count-- > 0) {
       MockClient client = new MockClient();
-      listener.addClient(client);
+ //     listener.addClient(client);
       int retries = DELAY / SHORT_DELAY;
       synchronized (client) {
         while (retries-- > 0 && !client.isRunning()) {
@@ -112,7 +112,7 @@ public class ConcurrentServerRunnerTest {
   public void testRunClientAndVisit() throws Exception {
     executor.execute(runner);
     MockClient client = new MockClient();
-    listener.addClient(client);
+//    listener.addClient(client);
     int retries = DELAY / SHORT_DELAY;
     synchronized (client) {
       while (retries-- > 0 && !client.isRunning()) {
@@ -123,18 +123,17 @@ public class ConcurrentServerRunnerTest {
     MockClientVisitor visitor = new MockClientVisitor();
     runner.accept(visitor);
     assertSame(client, visitor.getLastVisited());
-    runner.stop();    
+    runner.stop();
   }
 
-  
-  static class InstrumentedConcurrentServerRunner 
-      extends ConcurrentServerRunner<MockClient> {
+
+  static class InstrumentedConcurrentServerRunner extends ConcurrentServerRunner<MockClient> {
 
     private final Lock lock = new ReentrantLock();
     private final Condition runningCondition = lock.newCondition();
-    
+
     public InstrumentedConcurrentServerRunner(
-        ServerListener<MockClient> listener, Executor executor) {
+        ServerListener listener, Executor executor) {
       super(listener, executor);
     }
 
@@ -155,7 +154,12 @@ public class ConcurrentServerRunnerTest {
       }
     }
 
-    public boolean awaitRunState(boolean state, 
+    @Override
+    protected MockClient buildClient(String id, Socket socket) {
+      return new MockClient();
+    }
+
+    public boolean awaitRunState(boolean state,
         long delay) throws InterruptedException {
       lock.lock();
       try {
@@ -169,5 +173,5 @@ public class ConcurrentServerRunnerTest {
       }
     }
   }
-  
+
 }
