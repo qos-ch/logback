@@ -40,65 +40,65 @@ import ch.qos.logback.core.status.Status;
  */
 public class ServerSocketReceiverTest {
 
-//  private MockContext context = new MockContext();
-//
-//  private MockServerRunner<RemoteAppenderClient> runner =
-//      new MockServerRunner<RemoteAppenderClient>();
-//
-//  private MockServerListener listener = new MockServerListenerRemoteAppenderClient();
-//
-//  private ServerSocket serverSocket;
-//  private InstrumentedServerSocketReceiver receiver;
-//
-//  @Before
-//  public void setUp() throws Exception {
-//    serverSocket = ServerSocketUtil.createServerSocket();
-//    receiver = new InstrumentedServerSocketReceiver(serverSocket, listener, runner);
-//    receiver.setContext(context);
-//  }
-//
-//  @After
-//  public void tearDown() throws Exception {
-//    serverSocket.close();
-//  }
-//
-//  @Test
-//  public void testStartStop() throws Exception {
-//    receiver.start();
-//    assertTrue(runner.isContextInjected());
-//    assertTrue(runner.isRunning());
-//    assertSame(listener, receiver.getLastListener());
-//
-//    receiver.stop();
-//    assertFalse(runner.isRunning());
-//  }
-//
-//  @Test
-//  public void testStartWhenAlreadyStarted() throws Exception {
-//    receiver.start();
-//    receiver.start();
-//    assertEquals(1, runner.getStartCount());
-//  }
-//
-//  @Test
-//  public void testStopThrowsException() throws Exception {
-//    receiver.start();
-//    assertTrue(receiver.isStarted());
-//    IOException ex = new IOException("test exception");
-//    runner.setStopException(ex);
-//    receiver.stop();
-//
-//    Status status = context.getLastStatus();
-//    assertNotNull(status);
-//    assertTrue(status instanceof ErrorStatus);
-//    assertTrue(status.getMessage().contains(ex.getMessage()));
-//    assertSame(ex, status.getThrowable());
-//  }
-//
-//  @Test
-//  public void testStopWhenNotStarted() throws Exception {
-//    receiver.stop();
-//    assertEquals(0, runner.getStartCount());
-//  }
+  private MockContext context = new MockContext();
+
+  private MockServerRunner<RemoteAppenderClient> runner =
+          new MockServerRunner<RemoteAppenderClient>();
+
+  private MockServerListener listener = new MockServerListener();
+
+  private ServerSocket serverSocket;
+  private InstrumentedServerSocketReceiver receiver;
+
+  @Before
+  public void setUp() throws Exception {
+    serverSocket = ServerSocketUtil.createServerSocket();
+    receiver = new InstrumentedServerSocketReceiver(serverSocket, listener, runner);
+    receiver.setContext(context);
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    serverSocket.close();
+  }
+
+  @Test
+  public void testStartStop() throws Exception {
+    receiver.start();
+    assertTrue(runner.isContextInjected());
+    assertTrue(runner.isRunning());
+    assertSame(listener, receiver.getLastListener());
+
+    receiver.stop();
+    assertFalse(runner.isRunning());
+  }
+
+  @Test
+  public void testStartWhenAlreadyStarted() throws Exception {
+    receiver.start();
+    receiver.start();
+    assertEquals(1, runner.getStartCount());
+  }
+
+  @Test
+  public void testStopThrowsException() throws Exception {
+    receiver.start();
+    assertTrue(receiver.isStarted());
+    IOException ex = new IOException("test exception");
+    runner.setStopException(ex);
+    receiver.stop();
+
+    Status status = context.getLastStatus();
+    assertNotNull(status);
+    assertTrue(status instanceof ErrorStatus);
+    assertTrue(status.getMessage().contains(ex.getMessage()));
+    assertSame(ex, status.getThrowable());
+  }
+
+  @Test
+  public void testStopWhenNotStarted() throws Exception {
+    receiver.stop();
+    assertEquals(0, runner.getStartCount());
+  }
 
 }
