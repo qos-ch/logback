@@ -22,8 +22,10 @@ import java.util.List;
 // E = TE|T
 //   = T(E|~)
 // E = TEopt where Eopt = E|~
-// T = LITERAL | { E } |'${' V '}'
-// V = (E|E :- E)
+// T = LITERAL | { C } |'${' V '}'
+// C = E|E :- E
+//   = E(':-'E|~)
+// V = E|E :- E
 //   = E(':-'E|~)
 public class Parser {
 
@@ -71,7 +73,7 @@ public class Parser {
         return new Node(Node.Type.LITERAL, t.payload);
       case CURLY_LEFT:
         advanceTokenPointer();
-        Node inner = E();
+        Node inner = C();
         Token right = getCurentToken();
         expectCurlyRight(right);
         advanceTokenPointer();
@@ -118,7 +120,21 @@ public class Parser {
       variable.defaultPart = def;
     }
     return variable;
-
+  }
+  // C = E(':='E|~)
+  private Node C() throws ScanException {
+    Node e0 = E();
+    //Node variable = new Node(Node.Type.VARIABLE, e);
+    Token t = getCurentToken();
+    if (t != null && t.type == Token.Type.DEFAULT) {
+      advanceTokenPointer();
+      Node literal = e0.next = new Node(Node.Type.LITERAL, ":-");
+      Node e1 = E();
+      if(e1 != null) {
+        literal.next = e1;
+      }
+    }
+    return e0;
   }
 
   void advanceTokenPointer() {
