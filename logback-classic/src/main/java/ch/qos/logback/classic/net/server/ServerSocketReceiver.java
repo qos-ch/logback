@@ -21,7 +21,7 @@ import java.util.concurrent.Executor;
 
 import javax.net.ServerSocketFactory;
 
-import ch.qos.logback.classic.net.ReceiverBase;
+import ch.qos.logback.classic.net.AbstractReceiver;
 import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
@@ -33,7 +33,7 @@ import ch.qos.logback.core.util.CloseUtil;
  *
  * @author Carl Harris
  */
-public class ServerSocketReceiver extends ReceiverBase {
+public class ServerSocketReceiver extends AbstractReceiver {
   
   /**
    * Default {@link ServerSocket} backlog

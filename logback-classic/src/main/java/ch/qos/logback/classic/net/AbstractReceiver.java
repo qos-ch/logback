@@ -22,7 +22,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  *
  * @author Carl Harris
  */
-public abstract class ReceiverBase extends ContextAwareBase 
+public abstract class AbstractReceiver extends ContextAwareBase
     implements LifeCycle {
 
   private boolean started;

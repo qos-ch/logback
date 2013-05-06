@@ -19,7 +19,7 @@ import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.jmx.JMXConfigurator
 import ch.qos.logback.classic.jmx.MBeanUtil
-import ch.qos.logback.classic.net.ReceiverBase
+import ch.qos.logback.classic.net.AbstractReceiver
 import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter
 import ch.qos.logback.classic.turbo.TurboFilter
 import ch.qos.logback.core.Appender
@@ -149,7 +149,7 @@ public class ConfigurationDelegate extends ContextAwareBase {
 
   void receiver(String name, Class aClass, Closure closure = null) {
     addInfo("About to instantiate receiver of type [" + clazz.name + "]");
-    ReceiverBase receiver = aClass.newInstance();
+    AbstractReceiver receiver = aClass.newInstance();
     receiver.context = context;
     if(closure != null) {
       ComponentDelegate componentDelegate = new ComponentDelegate(receiver);
