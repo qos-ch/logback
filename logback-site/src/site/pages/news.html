@@ -39,7 +39,13 @@
     reported by Christian Brensing who also provided the appropriate
     pull request.
     </p>
-    
+
+    <p>Logback will now correctly parse variables with a default
+    separator string nested within accolades, e.g. "{a:-b}". Such
+    strings resemble variable references but lack the $ prefix, e.g
+    "${a:-b}". This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-859">LOGBACK-859</a>
+    reported by Yoni Moses.</p>
 
     <hr width="80%" align="center" />
 
@@ -94,7 +100,7 @@
     now admits the <span class="attr">optional</span> attribute. This
     fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-230">LOGBACK-230</a>
-    reported by Attila Király. Many thanks to Tommy Becker who
+    reported by Attila KirÃ¡ly. Many thanks to Tommy Becker who
     contributed a patch.</p>
 
     <p>In response to <a
