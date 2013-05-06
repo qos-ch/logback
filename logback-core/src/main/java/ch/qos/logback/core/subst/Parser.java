@@ -27,6 +27,12 @@ import java.util.List;
 //   = E(':-'E|~)
 // V = E|E :- E
 //   = E(':-'E|~)
+
+/**
+ * Parse a token list returning a node chain.
+ *
+ * @author Ceki Gulcu
+ */
 public class Parser {
 
   final List<Token> tokenList;
@@ -47,15 +53,14 @@ public class Parser {
     }
     Node eOpt = Eopt();
     if (eOpt != null) {
-      appendNode(t, eOpt);
+      t.append(eOpt);
     }
     return t;
   }
 
   // Eopt = E|~
   private Node Eopt() throws ScanException {
-    Token next = getCurentToken();
-    // System.out.println("Current token is " + next);
+    Token next = peekAtCurentToken();
     if (next == null) {
       return null;
     } else {
@@ -65,30 +70,26 @@ public class Parser {
 
   // T = LITERAL | '${' V '}'
   private Node T() throws ScanException {
-    Token t = getCurentToken();
+    Token t = peekAtCurentToken();
 
     switch (t.type) {
       case LITERAL:
         advanceTokenPointer();
-        return new Node(Node.Type.LITERAL, t.payload);
+        return makeNewLiteralNode(t.payload);
       case CURLY_LEFT:
         advanceTokenPointer();
-        Node inner = C();
-        Token right = getCurentToken();
+        Node innerNode = C();
+        Token right = peekAtCurentToken();
         expectCurlyRight(right);
         advanceTokenPointer();
-        Node curlyLeft = new Node(Node.Type.LITERAL, CoreConstants.LEFT_ACCOLADE);
-        curlyLeft.next = inner;
-        Node curlyRightNode = new Node(Node.Type.LITERAL, CoreConstants.RIGHT_ACCOLADE);
-        if(inner == null)
-          curlyLeft.next = curlyRightNode;
-        else
-          appendNode(inner, curlyRightNode);
+        Node curlyLeft = makeNewLiteralNode(CoreConstants.LEFT_ACCOLADE);
+        curlyLeft.append(innerNode);
+        curlyLeft.append(makeNewLiteralNode(CoreConstants.RIGHT_ACCOLADE));
         return curlyLeft;
       case START:
         advanceTokenPointer();
         Node v = V();
-        Token w = getCurentToken();
+        Token w = peekAtCurentToken();
         expectCurlyRight(w);
         advanceTokenPointer();
         return v;
@@ -97,44 +98,39 @@ public class Parser {
     }
   }
 
-  private void appendNode(Node node, Node additionalNode) {
-     Node n = node;
-     while(true) {
-       if(n.next == null) {
-         n.next = additionalNode;
-         return;
-       }
-       n = n.next;
-     }
+  private Node makeNewLiteralNode(String s) {
+    return new Node(Node.Type.LITERAL, s);
   }
-
 
   // V = E(':='E|~)
   private Node V() throws ScanException {
     Node e = E();
     Node variable = new Node(Node.Type.VARIABLE, e);
-    Token t = getCurentToken();
-    if (t != null && t.type == Token.Type.DEFAULT) {
+    Token t = peekAtCurentToken();
+    if (isDefaultToken(t)) {
       advanceTokenPointer();
       Node def = E();
       variable.defaultPart = def;
     }
     return variable;
   }
+
   // C = E(':='E|~)
   private Node C() throws ScanException {
     Node e0 = E();
-    //Node variable = new Node(Node.Type.VARIABLE, e);
-    Token t = getCurentToken();
-    if (t != null && t.type == Token.Type.DEFAULT) {
+    Token t = peekAtCurentToken();
+    if (isDefaultToken(t)) {
       advanceTokenPointer();
-      Node literal = e0.next = new Node(Node.Type.LITERAL, ":-");
+      Node literal = makeNewLiteralNode(CoreConstants.DEFAULT_VALUE_SEPARATOR);
+      e0.append(literal);
       Node e1 = E();
-      if(e1 != null) {
-        literal.next = e1;
-      }
+      e0.append(e1);
     }
     return e0;
+  }
+
+  private boolean isDefaultToken(Token t) {
+    return t != null && t.type == Token.Type.DEFAULT;
   }
 
   void advanceTokenPointer() {
@@ -155,9 +151,9 @@ public class Parser {
     }
   }
 
-  Token getCurentToken() {
+  Token peekAtCurentToken() {
     if (pointer < tokenList.size()) {
-      return (Token) tokenList.get(pointer);
+      return tokenList.get(pointer);
     }
     return null;
   }
