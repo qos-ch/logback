@@ -332,7 +332,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     this.acceptConnectionTimeout = acceptConnectionTimeout;
   }
 
-  void setReconnectionDelay(Duration duration) {
+  public void setReconnectionDelay(Duration duration) {
     this.reconnectionDuration = duration;
   }
 }
