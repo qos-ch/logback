@@ -54,11 +54,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   public static final int DEFAULT_PORT = 4560;
 
   /**
-   * The default reconnection delay (30000 milliseconds or 30 seconds).
-   */
-  public static final int DEFAULT_RECONNECTION_DELAY = 30000;
-
-  /**
    * Default size of the queue used to hold logging events that are destined
    * for the remote peer.
    */
@@ -72,17 +67,17 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
 
   private String remoteHost;
   private int port = DEFAULT_PORT;
-  private InetAddress address;
-  private int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
+
   private int queueSize = DEFAULT_QUEUE_SIZE;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
   
   private BlockingQueue<E> queue;
-  private String peerId;
   private Future<?> task;
-  private Future<Socket> connectorTask;
+
 
   private volatile Socket socket;
+
+  private ConnectionRunner connectionRunner;
 
   /**
    * Constructs a new appender.
@@ -133,18 +128,10 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
       addError("Queue size must be non-negative");
     }
 
-    if (errorCount == 0) {
-      try {
-        address = InetAddress.getByName(remoteHost);
-      } catch (UnknownHostException ex) {
-        addError("unknown host: " + remoteHost);
-        errorCount++;
-      }
-    }
 
     if (errorCount == 0) {
       queue = newBlockingQueue(queueSize);
-      peerId = "remote peer " + remoteHost + ":" + port + ": ";
+      connectionRunner = new ConnectionRunner(context, remoteHost, port);
       task = getContext().getExecutorService().submit(this);
       super.start();
     }
@@ -158,8 +145,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (!isStarted()) return;
     CloseUtil.closeQuietly(socket);
     task.cancel(true);
-    if(connectorTask != null)
-      connectorTask.cancel(true);
+    connectionRunner.stop();
     super.stop();
   }
 
@@ -178,14 +164,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   public final void run() {
     try {
       while (!Thread.currentThread().isInterrupted()) {
-        SocketConnector connector = createConnector(address, port, 0,
-                reconnectionDelay);
-
-        connectorTask = activateConnector(connector);
-        if(connectorTask == null)
-          break;
-
-        socket = waitForConnectorToReturnASocket();
+        socket = connectionRunner.connect();
         if(socket == null)
           break;
         dispatchEvents();
@@ -196,39 +175,15 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     addInfo("shutting down");
   }
 
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
-    connector.setExceptionHandler(this);
-    connector.setSocketFactory(getSocketFactory());
-    return connector;
-  }
 
-  private Future<Socket> activateConnector(SocketConnector connector) {
-    try {
-      return getContext().getExecutorService().submit(connector);
-    } catch (RejectedExecutionException ex) {
-      return null;
-    }
-  }
-
-  private Socket waitForConnectorToReturnASocket() throws InterruptedException {
-    try {
-      Socket s =  connectorTask.get();
-      connectorTask = null;
-      return s;
-    } catch (ExecutionException e) {
-      return null;
-    }
-  }
 
   private void dispatchEvents() throws InterruptedException {
+
     try {
       socket.setSoTimeout(acceptConnectionTimeout);
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       socket.setSoTimeout(0);
-      addInfo(peerId + "connection established");
+      addInfo(connectionRunner.getPeerId() + "connection established");
       int counter = 0;
       while (true) {
         E event = queue.take();
@@ -244,57 +199,15 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
         }
       }
     } catch (IOException ex) {
-      addInfo(peerId + "connection failed: " + ex);
+      addInfo(connectionRunner.getPeerId() + " connection failed: " + ex);
     } finally {
       CloseUtil.closeQuietly(socket);
       socket = null;
-      addInfo(peerId + "connection closed");
+      addInfo(connectionRunner.getPeerId() + "connection closed");
     }
   } 
     
-  /**
-   * {@inheritDoc}
-   */
-  public void connectionFailed(SocketConnector connector, Exception ex) {
-    if (ex instanceof InterruptedException) {
-      addInfo("connector interrupted");
-    } else if (ex instanceof ConnectException) {
-      addInfo(peerId + "connection refused");
-    } else {
-      addInfo(peerId + ex);
-    }
-  }
-
-
-
-  /**
-   * Creates a new {@link SocketConnector}.
-   * <p>
-   * The default implementation creates an instance of {@link DefaultSocketConnector}.
-   * A subclass may override to provide a different {@link SocketConnector}
-   * implementation.
-   * 
-   * @param address target remote address
-   * @param port target remote port
-   * @param initialDelay delay before the first connection attempt
-   * @param retryDelay delay before a reconnection attempt
-   * @return socket connector
-   */
-  protected SocketConnector newConnector(InetAddress address,
-                                         int port, int initialDelay, int retryDelay) {
-    return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
-  }
-
-  /**
-   * Gets the default {@link SocketFactory} for the platform.
-   * <p>
-   * Subclasses may override to provide a custom socket factory.
-   */
-  protected SocketFactory getSocketFactory() {
-    return SocketFactory.getDefault();
-  }
-
-  /**
+ /**
    * Creates a blocking queue that will be used to hold logging events until
    * they can be delivered to the remote receiver.
    * <p>
@@ -370,25 +283,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     return port;
   }
 
-  /**
-   * The <b>reconnectionDelay</b> property takes a positive integer representing
-   * the number of milliseconds to wait between each failed connection attempt
-   * to the server. The default value of this option is 30000 which corresponds
-   * to 30 seconds.
-   *
-   * <p>
-   * Setting this option to zero turns off reconnection capability.
-   */
-  public void setReconnectionDelay(int delay) {
-    this.reconnectionDelay = delay;
-  }
 
-  /**
-   * Returns value of the <b>reconnectionDelay</b> property.
-   */
-  public int getReconnectionDelay() {
-    return reconnectionDelay;
-  }
 
   /**
    * The <b>queueSize</b> property takes a non-negative integer representing
