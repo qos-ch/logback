@@ -26,9 +26,12 @@ import java.util.List;
 import java.util.concurrent.*;
 
 import ch.qos.logback.core.BasicStatusManager;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
@@ -49,8 +52,10 @@ public class AbstractSocketAppenderTest {
   private static final int DELAY = 10000;
 
   private ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-  private MockContext mockContext = new MockContext(executorService);
+  private Context mockContext = new MockContext(executorService);
   private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender();
+
+  StatusChecker statusChecker = new StatusChecker(mockContext);
 
   @Before
   public void setUp() throws Exception {
@@ -72,7 +77,7 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.setQueueSize(0);
     instrumentedAppender.start();
     assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("port"));
+    statusChecker.assertContainsMatch(Status.ERROR, "No port was configured");
   }
 
   @Test
@@ -82,7 +87,7 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.setQueueSize(0);
     instrumentedAppender.start();
     assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("remote host"));
+    statusChecker.assertContainsMatch(Status.ERROR, "No remote host");
   }
 
   @Test
@@ -92,7 +97,7 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.setQueueSize(-1);
     instrumentedAppender.start();
     assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("Queue"));
+    statusChecker.assertContainsMatch(Status.ERROR, "Queue");
   }
 
   @Test
@@ -101,8 +106,14 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.setRemoteHost("NOT.A.VALID.REMOTE.HOST.NAME");
     instrumentedAppender.setQueueSize(0);
     instrumentedAppender.start();
+    instrumentedAppender.append("invalid host");
+
+    instrumentedAppender.stop();
+    waitForActiveCountToEqual(executorService, 0);
+
+     StatusPrinter.print(mockContext);
     assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("unknown host"));
+    statusChecker.assertContainsMatch(Status.ERROR, "unknown host");
   }
 
   @Test
@@ -130,7 +141,6 @@ public class AbstractSocketAppenderTest {
   @Ignore
   @Test(timeout = 2000)
   public void appenderShouldCleanupTasksWhenStopped() throws Exception {
-    mockContext.setStatusManager(new BasicStatusManager());
     instrumentedAppender.setPort(1);
     instrumentedAppender.setRemoteHost("localhost");
     instrumentedAppender.setQueueSize(1);
@@ -197,15 +207,18 @@ public class AbstractSocketAppenderTest {
   @Test
   public void testDispatchEvent() throws Exception {
     ServerSocket serverSocket = ServerSocketUtil.createServerSocket();
+    instrumentedAppender.setReconnectionDelay(new Duration(10));
     instrumentedAppender.setRemoteHost(serverSocket.getInetAddress().getHostAddress());
     instrumentedAppender.setPort(serverSocket.getLocalPort());
     instrumentedAppender.setQueueSize(1);
     instrumentedAppender.start();
 
+    instrumentedAppender.append("some event");
+
     Socket appenderSocket = serverSocket.accept();
     serverSocket.close();
 
-    instrumentedAppender.append("some event");
+
 
     final int shortDelay = 100;
     for (int i = 0, retries = DELAY / shortDelay;

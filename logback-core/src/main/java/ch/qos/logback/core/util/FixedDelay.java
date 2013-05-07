@@ -21,8 +21,8 @@ package ch.qos.logback.core.util;
  */
 public class FixedDelay implements DelayStrategy {
 
-  private final int subsequentDelay;
-  private int nextDelay;
+  private final long subsequentDelay;
+  private long nextDelay;
 
   /**
    * Initialize a new {@code FixedDelay} with a given {@code initialDelay} and
@@ -31,7 +31,7 @@ public class FixedDelay implements DelayStrategy {
    * @param initialDelay    value for the initial delay
    * @param subsequentDelay value for all other delays
    */
-  public FixedDelay(int initialDelay, int subsequentDelay) {
+  public FixedDelay(long initialDelay, long subsequentDelay) {
     String s = new String();
     this.nextDelay = initialDelay;
     this.subsequentDelay = subsequentDelay;
@@ -43,15 +43,15 @@ public class FixedDelay implements DelayStrategy {
    *
    * @param delay value for all delays
    */
-  public FixedDelay(int delay) {
+  public FixedDelay(long delay) {
     this(delay, delay);
   }
 
   /**
    * {@inheritDoc}
    */
-  public int nextDelay() {
-    int delay = nextDelay;
+  public long nextDelay() {
+    long delay = nextDelay;
     nextDelay = subsequentDelay;
     return delay;
   }

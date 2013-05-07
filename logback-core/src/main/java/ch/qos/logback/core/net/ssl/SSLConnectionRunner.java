@@ -2,6 +2,8 @@ package ch.qos.logback.core.net.ssl;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.net.ConnectionRunner;
+import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.util.Duration;
 
 import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
@@ -11,9 +13,9 @@ public class SSLConnectionRunner extends ConnectionRunner {
 
   private SocketFactory sslSocketFactory;
 
-  public SSLConnectionRunner(Context context, String remoteHost, int port,
-                             SSLConfiguration ssl) throws GeneralSecurityException {
-    super(context, remoteHost, port);
+  public SSLConnectionRunner(ContextAware contextAware, String remoteHost, int port,
+                             Duration reconnectDuration, SSLConfiguration ssl) throws GeneralSecurityException {
+    super(contextAware, remoteHost, port, reconnectDuration);
     initSocketFactory(ssl);
   }
 

@@ -39,22 +39,6 @@ public class SocketAppender extends AbstractSocketAppender<IAccessEvent> {
   public SocketAppender() {
   }
 
-  /**
-   * Connects to remote server at <code>address</code> and <code>port</code>.
-   */
-  @Deprecated
-  public SocketAppender(InetAddress address, int port) {
-    super(address.getHostAddress(), port);
-  }
-
-  /**
-   * Connects to remote server at <code>host</code> and <code>port</code>.
-   */
-  @Deprecated
-  public SocketAppender(String host, int port) {
-    super(host, port);
-  }
-  
   @Override
   protected void postProcessEvent(IAccessEvent event) {
     event.prepareForDeferredProcessing();

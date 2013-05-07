@@ -35,18 +35,23 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.CloseUtil;
+import ch.qos.logback.core.util.Duration;
 
 /**
  * An abstract base for module specific {@code SocketAppender}
  * implementations in other logback modules.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * @author Carl Harris
  */
 
 public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
-    implements Runnable, SocketConnector.ExceptionHandler {
+        implements Runnable {
+
+  static String NO_PORT_ERROR_URL = CoreConstants.CODES_URL + "#socket_no_port";
+  static String NO_HOST_ERROR_URL = CoreConstants.CODES_URL + "#socket_no_host";
+
 
   /**
    * The default port number of remote logging server (4560).
@@ -58,51 +63,58 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * for the remote peer.
    */
   public static final int DEFAULT_QUEUE_SIZE = 0;
-  
+
   /**
    * Default timeout when waiting for the remote server to accept our
    * connection.
    */
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
+  /**
+   * The default reconnection delay (30000 milliseconds or 30 seconds).
+   */
+  public static final int DEFAULT_RECONNECTION_DELAY = 30000;
+
   private String remoteHost;
   private int port = DEFAULT_PORT;
 
   private int queueSize = DEFAULT_QUEUE_SIZE;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
-  
+
+  Duration reconnectionDuration = null;
+
   private BlockingQueue<E> queue;
   private Future<?> task;
 
 
   private volatile Socket socket;
 
-  private ConnectionRunner connectionRunner;
+  ConnectionRunner connectionRunner;
 
   /**
    * Constructs a new appender.
    */
   protected AbstractSocketAppender() {
   }
-  
+
   /**
-   * Constructs a new appender that will connect to the given remote host 
+   * Constructs a new appender that will connect to the given remote host
    * and port.
-   * <p>
-   * This constructor was introduced primarily to allow the encapsulation 
-   * of the this class to be improved in a manner that is least disruptive 
-   * to <em>existing</em> subclasses.  <strong>This constructor will be 
+   * <p/>
+   * This constructor was introduced primarily to allow the encapsulation
+   * of the this class to be improved in a manner that is least disruptive
+   * to <em>existing</em> subclasses.  <strong>This constructor will be
    * removed in future release</strong>.
-   * 
+   *
    * @param remoteHost target remote host
-   * @param port target port on remote host
+   * @param port       target port on remote host
    */
   @Deprecated
   protected AbstractSocketAppender(String remoteHost, int port) {
     this.remoteHost = remoteHost;
     this.port = port;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -111,27 +123,24 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     int errorCount = 0;
     if (port <= 0) {
       errorCount++;
-      addError("No port was configured for appender"
-          + name
-          + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_port");
+      addError("No port was configured for appender [" + name + "]");
+      addError("For more information, please visit " + NO_PORT_ERROR_URL);
     }
 
     if (remoteHost == null) {
       errorCount++;
-      addError("No remote host was configured for appender"
-          + name
-          + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
+      addError("No remote host was configured for appender" + name);
+      addError("For more information, please visit " + NO_HOST_ERROR_URL);
     }
-    
+
     if (queueSize < 0) {
       errorCount++;
       addError("Queue size must be non-negative");
     }
 
-
     if (errorCount == 0) {
       queue = newBlockingQueue(queueSize);
-      connectionRunner = new ConnectionRunner(context, remoteHost, port);
+      connectionRunner = new ConnectionRunner(this, remoteHost, port, reconnectionDuration);
       task = getContext().getExecutorService().submit(this);
       super.start();
     }
@@ -154,7 +163,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   @Override
   protected void append(E event) {
-    if (event == null || !isStarted()) return;    
+    if (event == null || !isStarted()) return;
     queue.offer(event);
   }
 
@@ -165,7 +174,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     try {
       while (!Thread.currentThread().isInterrupted()) {
         socket = connectionRunner.connect();
-        if(socket == null)
+        if (socket == null)
           break;
         dispatchEvents();
       }
@@ -174,7 +183,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
     addInfo("shutting down");
   }
-
 
 
   private void dispatchEvents() throws InterruptedException {
@@ -205,37 +213,39 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
       socket = null;
       addInfo(connectionRunner.getPeerId() + "connection closed");
     }
-  } 
-    
- /**
+  }
+
+  /**
    * Creates a blocking queue that will be used to hold logging events until
    * they can be delivered to the remote receiver.
-   * <p>
-   * The default implementation creates a (bounded) {@link ArrayBlockingQueue} 
+   * <p/>
+   * The default implementation creates a (bounded) {@link ArrayBlockingQueue}
    * for positive queue sizes.  Otherwise it creates a {@link SynchronousQueue}.
-   * <p>
+   * <p/>
    * This method is exposed primarily to support instrumentation for unit
    * testing.
-   * 
+   *
    * @param queueSize size of the queue
    * @return
    */
   BlockingQueue<E> newBlockingQueue(int queueSize) {
-    return queueSize <= 0 ? 
-        new SynchronousQueue<E>() : new ArrayBlockingQueue<E>(queueSize);
+    return queueSize <= 0 ?
+            new SynchronousQueue<E>() : new ArrayBlockingQueue<E>(queueSize);
   }
-  
+
   /**
    * Post-processes an event before it is serialized for delivery to the
    * remote receiver.
+   *
    * @param event the event to post-process
    */
   protected abstract void postProcessEvent(E event);
-  
+
   /**
    * Get the pre-serialization transformer that will be used to transform
    * each event into a Serializable object before delivery to the remote
    * receiver.
+   *
    * @return transformer object
    */
   protected abstract PreSerializationTransformer<E> getPST();
@@ -284,43 +294,45 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
 
 
-
   /**
    * The <b>queueSize</b> property takes a non-negative integer representing
    * the number of logging events to retain for delivery to the remote receiver.
    * When the queue size is zero, event delivery to the remote receiver is
-   * synchronous.  When the queue size is greater than zero, the 
+   * synchronous.  When the queue size is greater than zero, the
    * {@link #append(Object)} method returns immediately after enqueing the
-   * event, assuming that there is space available in the queue.  Using a 
+   * event, assuming that there is space available in the queue.  Using a
    * non-zero queue length can improve performance by eliminating delays
    * caused by transient network delays.  If the queue is full when the
-   * {@link #append(Object)} method is called, the event is summarily 
+   * {@link #append(Object)} method is called, the event is summarily
    * and silently dropped.
-   * 
+   *
    * @param queueSize the queue size to set.
    */
   public void setQueueSize(int queueSize) {
     this.queueSize = queueSize;
   }
-  
+
   /**
    * Returns the value of the <b>queueSize</b> property.
    */
   public int getQueueSize() {
     return queueSize;
   }
-  
+
   /**
    * Sets the timeout that controls how long we'll wait for the remote
    * peer to accept our connection attempt.
-   * <p>
+   * <p/>
    * This property is configurable primarily to support instrumentation
    * for unit testing.
-   * 
+   *
    * @param acceptConnectionTimeout timeout value in milliseconds
    */
   void setAcceptConnectionTimeout(int acceptConnectionTimeout) {
     this.acceptConnectionTimeout = acceptConnectionTimeout;
   }
 
+  void setReconnectionDelay(Duration duration) {
+    this.reconnectionDuration = duration;
+  }
 }

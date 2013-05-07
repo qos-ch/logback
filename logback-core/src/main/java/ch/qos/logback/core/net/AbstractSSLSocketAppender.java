@@ -49,7 +49,8 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
   public void start() {
     try {
       if(isStarted()) {
-        new SSLConnectionRunner(context, getRemoteHost(), getPort(), getSsl());
+        super.connectionRunner = new SSLConnectionRunner(this, getRemoteHost(), getPort(),
+                reconnectionDuration, getSsl());
       }
       super.start();
 

@@ -38,7 +38,6 @@ public class MockContext extends ContextBase {
   }
   
   public MockContext(ExecutorService executorService) {
-    this.setStatusManager(new MockStatusManager());
     this.executorService = executorService;
   }
 
@@ -46,45 +45,4 @@ public class MockContext extends ContextBase {
   public ExecutorService getExecutorService() {
     return executorService;
   }
-
-  public Status getLastStatus() {
-    return lastStatus;
-  }
-
-  public void setLastStatus(Status lastStatus) {
-    this.lastStatus = lastStatus;
-  }
-
-  private class MockStatusManager implements StatusManager {
-
-    public void add(Status status) {
-      lastStatus = status;
-    }
-
-    public List<Status> getCopyOfStatusList() {
-      throw new UnsupportedOperationException();
-    }
-
-    public int getCount() {
-      throw new UnsupportedOperationException();
-    }
-
-    public void add(StatusListener listener) {
-      throw new UnsupportedOperationException();
-    }
-
-    public void remove(StatusListener listener) {
-      throw new UnsupportedOperationException();
-    }
-
-    public void clear() {
-      throw new UnsupportedOperationException();
-    }
-
-    public List<StatusListener> getCopyOfStatusListenerList() {
-      throw new UnsupportedOperationException();
-    }
-     
-  }
-  
 }

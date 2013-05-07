@@ -2,7 +2,9 @@ package ch.qos.logback.core.net;
 
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.util.Duration;
 
 import javax.net.SocketFactory;
 import java.net.ConnectException;
@@ -15,21 +17,26 @@ import java.util.concurrent.RejectedExecutionException;
 
 public class ConnectionRunner extends ContextAwareBase implements SocketConnector.ExceptionHandler {
 
+
   /**
    * The default reconnection delay (30000 milliseconds or 30 seconds).
    */
   public static final int DEFAULT_RECONNECTION_DELAY = 30000;
-  private int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
+  private long reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
 
   private Future<Socket> connectorTask;
 
   private String remoteHost;
   private int port;
 
-  protected ConnectionRunner(Context context, String remoteHost, int port) {
-    super(context);
+  protected ConnectionRunner(ContextAware contextAware, String remoteHost, int port, Duration reconnectionDuration) {
+    super(contextAware);
+    setContext(contextAware.getContext());
     this.remoteHost = remoteHost;
     this.port = port;
+    if(reconnectionDuration != null) {
+      reconnectionDelay = reconnectionDuration.getMilliseconds();
+    }
   }
 
 
@@ -39,7 +46,7 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
+                                          long initialDelay, long retryDelay) {
     SocketConnector connector = newConnector(address, port, initialDelay,
             retryDelay);
     connector.setExceptionHandler(this);
@@ -61,7 +68,7 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
    * @return socket connector
    */
   protected SocketConnector newConnector(InetAddress address,
-                                         int port, int initialDelay, int retryDelay) {
+                                         int port, long initialDelay, long retryDelay) {
     return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
@@ -93,25 +100,18 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
   }
 
 
-  /**
-   * The <b>reconnectionDelay</b> property takes a positive integer representing
-   * the number of milliseconds to wait between each failed connection attempt
-   * to the server. The default value of this option is 30000 which corresponds
-   * to 30 seconds.
-   * <p/>
-   * <p/>
-   * Setting this option to zero turns off reconnection capability.
-   */
-  public void setReconnectionDelay(int delay) {
-    this.reconnectionDelay = delay;
-  }
-
-  /**
-   * Returns value of the <b>reconnectionDelay</b> property.
-   */
-  public int getReconnectionDelay() {
-    return reconnectionDelay;
-  }
+//  /**
+//   * The <b>reconnectionDelay</b> property takes a positive integer representing
+//   * the number of milliseconds to wait between each failed connection attempt
+//   * to the server. The default value of this option is 30000 which corresponds
+//   * to 30 seconds.
+//   * <p/>
+//   * <p/>
+//   * Setting this option to zero turns off reconnection capability.
+//   */
+//  public void setReconnectionDelay(int delay) {
+//    this.reconnectionDelay = delay;
+//  }
 
   public Socket connect() throws InterruptedException {
     InetAddress address = resolve(remoteHost);
