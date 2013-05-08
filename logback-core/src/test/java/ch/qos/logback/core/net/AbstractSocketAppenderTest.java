@@ -100,7 +100,7 @@ public class AbstractSocketAppenderTest {
     statusChecker.assertContainsMatch(Status.ERROR, "Queue");
   }
 
-  @Test
+  @Test(timeout=10000)
   public void appenderShouldFailToStartWithUnresolvableRemoteHost() throws Exception {
     instrumentedAppender.setPort(1);
     instrumentedAppender.setRemoteHost("NOT.A.VALID.REMOTE.HOST.NAME");
@@ -111,7 +111,7 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.stop();
     waitForActiveCountToEqual(executorService, 0);
 
-     StatusPrinter.print(mockContext);
+    StatusPrinter.print(mockContext);
     assertFalse(instrumentedAppender.isStarted());
     statusChecker.assertContainsMatch(Status.ERROR, "unknown host");
   }

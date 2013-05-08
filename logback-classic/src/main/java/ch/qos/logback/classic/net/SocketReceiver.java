@@ -29,10 +29,13 @@ import javax.net.SocketFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.net.ConnectionRunner;
 import ch.qos.logback.core.net.DefaultSocketConnector;
 import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.net.SocketConnector;
 import ch.qos.logback.core.util.CloseUtil;
+import ch.qos.logback.core.util.Duration;
 
 /**
  * A component that receives serialized {@link ILoggingEvent} objects from a
@@ -41,7 +44,10 @@ import ch.qos.logback.core.util.CloseUtil;
  * @author Carl Harris
  */
 public class SocketReceiver extends AbstractReceiver
-        implements Runnable, SocketConnector.ExceptionHandler {
+        implements Runnable {
+
+  static String NO_PORT_ERROR_URL = CoreConstants.CODES_URL + "#receiver_no_port";
+  static String NO_HOST_ERROR_URL = CoreConstants.CODES_URL + "#receiver_no_host";
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
@@ -53,7 +59,8 @@ public class SocketReceiver extends AbstractReceiver
 
   private String receiverId;
   private volatile Socket socket;
-  private Future<Socket> connectorTask;
+  Duration reconnectionDuration = null;
+  ConnectionRunner connectionRunner;
 
   /**
    * {@inheritDoc}
@@ -62,14 +69,14 @@ public class SocketReceiver extends AbstractReceiver
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
-      addError("No port was configured for receiver. "
-              + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
+      addError("No port was configured for receiver. ");
+      addError("For more information, please visit "+NO_PORT_ERROR_URL);
     }
 
     if (remoteHost == null) {
       errorCount++;
-      addError("No host name or address was configured for receiver. "
-              + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
+      addError("No host name or address was configured for receiver. ");
+      addError("For more information, please visit "+NO_HOST_ERROR_URL);
     }
 
     if (reconnectionDelay == 0) {
@@ -77,15 +84,7 @@ public class SocketReceiver extends AbstractReceiver
     }
 
     if (errorCount == 0) {
-      try {
-        address = InetAddress.getByName(remoteHost);
-      } catch (UnknownHostException ex) {
-        addError("unknown host: " + remoteHost);
-        errorCount++;
-      }
-    }
-
-    if (errorCount == 0) {
+      connectionRunner = new ConnectionRunner(this, remoteHost, port, reconnectionDuration);
       receiverId = "receiver " + remoteHost + ":" + port + ": ";
     }
 
@@ -98,6 +97,9 @@ public class SocketReceiver extends AbstractReceiver
   protected void onStop() {
     if (socket != null) {
       CloseUtil.closeQuietly(socket);
+    }
+    if(connectionRunner != null) {
+      connectionRunner.stop();
     }
   }
 
@@ -113,12 +115,7 @@ public class SocketReceiver extends AbstractReceiver
     try {
       LoggerContext lc = (LoggerContext) getContext();
       while (!Thread.currentThread().isInterrupted()) {
-        SocketConnector connector = createConnector(address, port, 0,
-                reconnectionDelay);
-        connectorTask = activateConnector(connector);
-        if (connectorTask == null)
-          break;
-        socket = waitForConnectorToReturnASocket();
+        socket = connectionRunner.connect();
         if (socket == null)
           break;
         dispatchEvents(lc);
@@ -127,34 +124,6 @@ public class SocketReceiver extends AbstractReceiver
       assert true;    // ok... we'll exit now
     }
     addInfo("shutting down");
-  }
-
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
-    connector.setExceptionHandler(this);
-    connector.setSocketFactory(getSocketFactory());
-    return connector;
-  }
-
-
-  private Future<Socket> activateConnector(SocketConnector connector) {
-    try {
-      return getContext().getExecutorService().submit(connector);
-    } catch (RejectedExecutionException ex) {
-      return null;
-    }
-  }
-
-  private Socket waitForConnectorToReturnASocket() throws InterruptedException {
-    try {
-      Socket s = connectorTask.get();
-      connectorTask = null;
-      return s;
-    } catch (ExecutionException e) {
-      return null;
-    }
   }
 
   private void dispatchEvents(LoggerContext lc) {
@@ -183,25 +152,6 @@ public class SocketReceiver extends AbstractReceiver
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void connectionFailed(SocketConnector connector, Exception ex) {
-    if (ex instanceof InterruptedException) {
-      addInfo("connector interrupted");
-    } else if (ex instanceof ConnectException) {
-      addInfo(receiverId + "connection refused");
-    } else {
-      addInfo(receiverId + ex);
-    }
-  }
-
-
-  protected SocketConnector newConnector(InetAddress address,
-                                         int port, int initialDelay, int retryDelay) {
-    return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
-  }
-
   protected SocketFactory getSocketFactory() {
     return SocketFactory.getDefault();
   }
@@ -214,8 +164,8 @@ public class SocketReceiver extends AbstractReceiver
     this.port = port;
   }
 
-  public void setReconnectionDelay(int reconnectionDelay) {
-    this.reconnectionDelay = reconnectionDelay;
+  public void setReconnectionDelay(Duration duration) {
+    this.reconnectionDuration = duration;
   }
 
   public void setAcceptConnectionTimeout(int acceptConnectionTimeout) {

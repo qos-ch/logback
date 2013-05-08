@@ -34,6 +34,7 @@ public class ContextAwareBase implements ContextAware {
   public ContextAwareBase() {
     declaredOrigin = this;
   }
+
   public ContextAwareBase(Object declaredOrigin) {
     this.declaredOrigin = declaredOrigin;
   }

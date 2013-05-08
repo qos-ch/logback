@@ -29,7 +29,7 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
   private String remoteHost;
   private int port;
 
-  protected ConnectionRunner(ContextAware contextAware, String remoteHost, int port, Duration reconnectionDuration) {
+  public ConnectionRunner(ContextAware contextAware, String remoteHost, int port, Duration reconnectionDuration) {
     super(contextAware);
     setContext(contextAware.getContext());
     this.remoteHost = remoteHost;
@@ -40,7 +40,8 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
   }
 
 
-  void stop() {
+  public void stop() {
+    addInfo("Stopping ConnectionRunner");
     if (connectorTask != null)
       connectorTask.cancel(true);
   }
