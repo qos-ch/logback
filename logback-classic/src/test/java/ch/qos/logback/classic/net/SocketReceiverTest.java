@@ -59,7 +59,6 @@ public class SocketReceiverTest {
   private static final String TEST_HOST_NAME = "NOT.A.VALID.HOST.NAME";
 
   private ServerSocket serverSocket;
-  private Socket socket;
   private MockSocketFactory socketFactory = new MockSocketFactory();
   private MockAppender mockAppender = new MockAppender();
   private LoggerContext receiversLoggerContext = new LoggerContext();
@@ -75,8 +74,6 @@ public class SocketReceiverTest {
 
     serverSocket = ServerSocketUtil.createServerSocket();
     port = serverSocket.getLocalPort();
-    socket = new Socket(serverSocket.getInetAddress(), port);
-
     mockAppender.start();
     logger = receiversLoggerContext.getLogger(getClass());
     logger.addAppender(mockAppender);
@@ -89,7 +86,6 @@ public class SocketReceiverTest {
     ExecutorService executor = receiversLoggerContext.getExecutorService();
     executor.shutdownNow();
     assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
-    socket.close();
     serverSocket.close();
     receiversLoggerContext.stop();
   }

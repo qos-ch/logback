@@ -49,21 +49,21 @@ public class ServerSocketUtil {
    */
   public static ServerSocket createServerSocket(
       ServerSocketFactory socketFactory) throws IOException {
-    ServerSocket socket = null;
+    ServerSocket serverSocket = null;
     int retries = 10;
-    while (retries-- > 0 && socket == null) {
+    while (retries-- > 0 && serverSocket == null) {
       int port = (int)((65536 - 1024) * Math.random()) + 1024;
       try {
-        socket = socketFactory.createServerSocket(port);
+        serverSocket = socketFactory.createServerSocket(port);
       }
       catch (BindException ex) {
         // try again with different port
       }
     }
-    if (socket == null) {
+    if (serverSocket == null) {
       throw new BindException("cannot find an unused port to bind");
     }
-    return socket;
+    return serverSocket;
   }
   
 }
