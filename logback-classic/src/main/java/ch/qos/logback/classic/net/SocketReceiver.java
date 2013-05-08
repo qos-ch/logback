@@ -116,8 +116,12 @@ public class SocketReceiver extends AbstractReceiver
       LoggerContext lc = (LoggerContext) getContext();
       while (!Thread.currentThread().isInterrupted()) {
         socket = connectionRunner.connect();
-        if (socket == null)
+        if (socket == null)  {
+          addWarn("null socket");
           break;
+        }  else {
+          addInfo("Connected to "+remoteHost+":"+port);
+        }
         dispatchEvents(lc);
       }
     } catch (InterruptedException ex) {
@@ -129,8 +133,12 @@ public class SocketReceiver extends AbstractReceiver
   private void dispatchEvents(LoggerContext lc) {
     try {
       socket.setSoTimeout(acceptConnectionTimeout);
+      addInfo("About to create input stream for reading events from "+remoteHost+":"+port);
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+      // wait indefinitely for incoming data
+      // can SO_TIMEOUT changed after the input stream is created?
       socket.setSoTimeout(0);
+
       addInfo(receiverId + "connection established");
       while (true) {
         ILoggingEvent event = (ILoggingEvent) ois.readObject();

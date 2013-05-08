@@ -39,6 +39,7 @@ public class MockAppender extends AppenderBase<ILoggingEvent> {
   protected void append(ILoggingEvent eventObject) {
     lock.lock();
     try {
+      System.out.println("xxxxxxxxxxxxx");
       events.offer(eventObject);
       appendCondition.signalAll();
     }
