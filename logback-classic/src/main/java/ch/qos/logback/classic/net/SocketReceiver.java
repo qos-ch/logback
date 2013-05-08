@@ -136,9 +136,7 @@ public class SocketReceiver extends AbstractReceiver
       addInfo("About to create input stream for reading events from "+remoteHost+":"+port);
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
       // wait indefinitely for incoming data
-      // can SO_TIMEOUT changed after the input stream is created?
       socket.setSoTimeout(0);
-
       addInfo(receiverId + "connection established");
       while (true) {
         ILoggingEvent event = (ILoggingEvent) ois.readObject();
