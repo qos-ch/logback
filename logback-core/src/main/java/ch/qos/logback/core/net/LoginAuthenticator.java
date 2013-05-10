@@ -16,6 +16,9 @@ package ch.qos.logback.core.net;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 
+/**
+ * Used by SMTPAppender for authentication purposes.
+ */
 public class LoginAuthenticator extends Authenticator {
 
   String username;

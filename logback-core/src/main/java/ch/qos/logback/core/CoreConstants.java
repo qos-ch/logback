@@ -100,6 +100,7 @@ public class CoreConstants {
   public static final char SINGLE_QUOTE_CHAR = '\'';
   public static final char COLON_CHAR = ':';
   public static final char DASH_CHAR = '-';
+  public static final String DEFAULT_VALUE_SEPARATOR = ":-";
 
 
   /**

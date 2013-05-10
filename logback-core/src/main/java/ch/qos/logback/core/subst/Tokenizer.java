@@ -34,7 +34,7 @@ public class Tokenizer {
   TokenizerState state = TokenizerState.LITERAL_STATE;
   int pointer = 0;
 
-  List tokenize() throws ScanException {
+  List<Token> tokenize() throws ScanException {
     List<Token> tokenList = new ArrayList<Token>();
     StringBuilder buf = new StringBuilder();
 
