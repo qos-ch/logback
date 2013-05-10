@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.SocketFactory;
 
 import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
@@ -65,6 +66,7 @@ public class SocketReceiverTest {
   private Logger logger;
   int port;
 
+  StatusChecker statusChecker = new StatusChecker(receiversLoggerContext);
   private InstrumentedSocketReceiver receiver = new InstrumentedSocketReceiver();
 
   @Before
@@ -114,10 +116,10 @@ public class SocketReceiverTest {
     receiver.setPort(port);
     receiver.setRemoteHost(TEST_HOST_NAME);
     receiver.start();
-    assertFalse(receiver.isStarted());
-    int count = receiversLoggerContext.getStatusManager().getCount();
-    Status status = receiversLoggerContext.getStatusManager().getCopyOfStatusList().get(count - 1);
-    assertTrue(status.getMessage().contains("unknown host"));
+    waitForActiveCountToEqual((ThreadPoolExecutor) receiversLoggerContext.getExecutorService(), 1);
+    //  invalid host name does not impact start status
+    assertTrue(receiver.isStarted());
+    statusChecker.assertContainsMatch(Status.ERROR, "unknown host");
   }
 
   @Test()
@@ -160,7 +162,7 @@ public class SocketReceiverTest {
     receiversLoggerContext.getStatusManager().add(new InfoStatus(msg, this));
   }
 
-  @Test(timeout = 500 * 1000)
+  @Test(timeout = 5000)
   public void testDispatchEventForEnabledLevel() throws Exception {
     receiver.setRemoteHost(InetAddress.getLocalHost().getHostName());
     receiver.setReconnectionDelay(new Duration(10));
