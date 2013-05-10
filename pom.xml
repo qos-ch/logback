@@ -33,10 +33,10 @@
 
   <scm>
     <url>https://github.com/ceki/logback</url>
-    <connection>git@github.com:ceki/logback.git</connection> 
+    <connection>git@github.com:ceki/logback.git</connection>
   </scm>
 
-  
+
 
   <modules>
     <module>logback-core</module>
@@ -99,6 +99,12 @@
       <version>1.2</version>
       <scope>test</scope>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>com.google.code.findbugs</groupId>-->
+      <!--<artifactId>jsr305</artifactId>-->
+      <!--<version>2.0.1</version>-->
+      <!--<scope>provided</scope>-->
+    <!--</dependency>-->
   </dependencies>
 
 
@@ -468,7 +474,7 @@
           </plugin>
         </plugins>
       </build>
-    </profile> 
+    </profile>
 
 
   </profiles>

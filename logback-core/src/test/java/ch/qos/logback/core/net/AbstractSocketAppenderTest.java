@@ -43,6 +43,8 @@ import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
+import javax.net.SocketFactory;
+
 /**
  * Unit tests for {@link AbstractSocketAppender}.
  *
@@ -137,13 +139,13 @@ public class AbstractSocketAppenderTest {
     assertEquals(1, instrumentedAppender.lastQueue.remainingCapacity());
   }
 
-  // this test takes 1 second and is deemed too long
-  @Ignore
-  @Test(timeout = 2000)
+  @Test(timeout = 1000)
   public void appenderShouldCleanupTasksWhenStopped() throws Exception {
     instrumentedAppender.setPort(1);
     instrumentedAppender.setRemoteHost("localhost");
     instrumentedAppender.setQueueSize(1);
+    instrumentedAppender.setSocketFactory(new SocketFactoryWithTimeout(10));
+
     instrumentedAppender.start();
     assertTrue(instrumentedAppender.isStarted());
 
@@ -222,6 +224,7 @@ public class AbstractSocketAppenderTest {
 
   }
 
+  // ========================================
   private static class InstrumentedSocketAppender extends AbstractSocketAppender<String> {
 
     private BlockingQueue<String> lastQueue;

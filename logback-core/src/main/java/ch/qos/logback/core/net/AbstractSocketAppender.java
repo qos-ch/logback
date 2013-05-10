@@ -77,19 +77,17 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
 
   private String remoteHost;
   private int port = DEFAULT_PORT;
-
   private int queueSize = DEFAULT_QUEUE_SIZE;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
-
-  Duration reconnectionDuration = null;
-
   private BlockingQueue<E> queue;
   private Future<?> task;
-
-
   private volatile Socket socket;
+  protected Duration reconnectionDuration = null;
+  protected ConnectionRunner connectionRunner;
 
-  ConnectionRunner connectionRunner;
+
+
+  private SocketFactory socketFactory;
 
   /**
    * Constructs a new appender.
@@ -141,6 +139,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (errorCount == 0) {
       queue = newBlockingQueue(queueSize);
       connectionRunner = new ConnectionRunner(this, remoteHost, port, reconnectionDuration);
+      connectionRunner.setSocketFactory(socketFactory);
       task = getContext().getExecutorService().submit(this);
       super.start();
     }
@@ -250,20 +249,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   protected abstract PreSerializationTransformer<E> getPST();
 
-  /*
-   * This method is used by logback modules only in the now deprecated
-   * convenience constructors for SocketAppender
-   */
-  @Deprecated
-  protected static InetAddress getAddressByName(String host) {
-    try {
-      return InetAddress.getByName(host);
-    } catch (Exception e) {
-      // addError("Could not find address of [" + host + "].", e);
-      return null;
-    }
-  }
-
   /**
    * The <b>RemoteHost</b> property takes the name of of the host where a corresponding server is running.
    */
@@ -334,5 +319,9 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
 
   public void setReconnectionDelay(Duration duration) {
     this.reconnectionDuration = duration;
+  }
+
+  public void setSocketFactory(SocketFactory socketFactory) {
+    this.socketFactory = socketFactory;
   }
 }

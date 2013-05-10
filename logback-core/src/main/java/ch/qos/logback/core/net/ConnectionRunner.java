@@ -17,7 +17,6 @@ import java.util.concurrent.RejectedExecutionException;
 
 public class ConnectionRunner extends ContextAwareBase implements SocketConnector.ExceptionHandler {
 
-
   /**
    * The default reconnection delay (30000 milliseconds or 30 seconds).
    */
@@ -28,6 +27,7 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
 
   private String remoteHost;
   private int port;
+  SocketFactory socketFactory;
 
   public ConnectionRunner(ContextAware contextAware, String remoteHost, int port, Duration reconnectionDuration) {
     super(contextAware);
@@ -39,11 +39,46 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
     }
   }
 
-
   public void stop() {
     addInfo("Stopping ConnectionRunner");
     if (connectorTask != null)
       connectorTask.cancel(true);
+  }
+
+  /**
+   * Returns the SocketFactory set by {@link #setSocketFactory(javax.net.SocketFactory)}. If no factory is set,
+   * return the default {@link SocketFactory} for the platform.
+   * <p/>
+   * Subclasses may override to provide a custom socket factory.
+   */
+  protected SocketFactory getSocketFactory() {
+    if(socketFactory == null) {
+      socketFactory =  SocketFactory.getDefault();
+    }
+    return socketFactory;
+  }
+
+  protected void setSocketFactory(SocketFactory socketFactory) {
+    this.socketFactory = socketFactory;
+  }
+
+  public Socket connect() throws InterruptedException {
+    InetAddress address = resolve(remoteHost);
+    if(address == null) return null;
+    SocketConnector connector = createConnector(address, port, reconnectionDelay);
+    connectorTask = activateConnector(connector);
+    if (connectorTask == null)
+      return null;
+    return waitForConnectorToReturnASocket();
+  }
+
+  private InetAddress resolve(String remoteHost) {
+    try {
+      return InetAddress.getByName(remoteHost);
+    } catch (UnknownHostException ex) {
+      addError("unknown host: " + remoteHost, ex);
+      return null;
+    }
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
@@ -71,15 +106,6 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
     return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
-  /**
-   * Gets the default {@link SocketFactory} for the platform.
-   * <p/>
-   * Subclasses may override to provide a custom socket factory.
-   */
-  protected SocketFactory getSocketFactory() {
-    return SocketFactory.getDefault();
-  }
-
   private Future<Socket> activateConnector(SocketConnector connector) {
     try {
       return getContext().getExecutorService().submit(connector);
@@ -98,24 +124,6 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
     }
   }
 
-  public Socket connect() throws InterruptedException {
-    InetAddress address = resolve(remoteHost);
-    if(address == null) return null;
-    SocketConnector connector = createConnector(address, port, reconnectionDelay);
-    connectorTask = activateConnector(connector);
-    if (connectorTask == null)
-      return null;
-    return waitForConnectorToReturnASocket();
-  }
-
-  InetAddress resolve(String remoteHost) {
-    try {
-      return InetAddress.getByName(remoteHost);
-    } catch (UnknownHostException ex) {
-      addError("unknown host: " + remoteHost, ex);
-      return null;
-    }
-  }
 
   String getPeerId() {
     return remoteHost + ":" + port;
