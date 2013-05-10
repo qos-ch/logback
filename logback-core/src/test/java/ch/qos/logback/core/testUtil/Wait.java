@@ -6,8 +6,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 public class Wait {
 
+  static long MAX_WAIT = 10000;
+
   static public void forActiveCountToEqual(ThreadPoolExecutor executorService, int i) {
-    while (executorService.getActiveCount() != i) {
+    long start = System.currentTimeMillis();
+    while (executorService.getActiveCount() != i && withinTimeLimits(start)) {
       try {
         Thread.sleep(10);
         System.out.print(".");
@@ -16,13 +19,19 @@ public class Wait {
     }
   }
   static public void forStatusMessage(StatusChecker statusChecker, String regex) {
-    while (!statusChecker.containsMatch(regex)) {
+    long start = System.currentTimeMillis();
+    while (!statusChecker.containsMatch(regex) && withinTimeLimits(start)) {
       try {
         Thread.sleep(10);
-        System.out.print(".");
+
       } catch (InterruptedException e) {
       }
     }
+  }
+
+  private static boolean withinTimeLimits(long start) {
+    long now = System.currentTimeMillis();
+    return (now - start) < MAX_WAIT;
   }
 
 }

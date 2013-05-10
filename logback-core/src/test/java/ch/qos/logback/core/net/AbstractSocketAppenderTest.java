@@ -111,12 +111,9 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.start();
     instrumentedAppender.append("invalid host");
 
-    instrumentedAppender.stop();
-    Wait.forActiveCountToEqual(executorService, 0);
-
-    StatusPrinter.print(mockContext);
-    assertFalse(instrumentedAppender.isStarted());
-    statusChecker.assertContainsMatch(Status.ERROR, "unknown host");
+    String errMessage = "unknown host";
+    Wait.forStatusMessage(statusChecker, errMessage);
+    statusChecker.assertContainsMatch(Status.ERROR, errMessage);
   }
 
   @Test
