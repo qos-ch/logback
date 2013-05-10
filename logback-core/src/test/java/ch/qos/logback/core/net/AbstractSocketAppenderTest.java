@@ -31,6 +31,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.testUtil.Wait;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
@@ -80,14 +81,16 @@ public class AbstractSocketAppenderTest {
     statusChecker.assertContainsMatch(Status.ERROR, "No port was configured");
   }
 
-  @Test
-  public void appenderShouldFailToStartWithoutValidRemoteHost() throws Exception {
+  @Test(timeout = DELAY)
+  public void appenderShouldNotStartWithMissingRemoteHostProperty() throws Exception {
     instrumentedAppender.setPort(1);
     instrumentedAppender.setRemoteHost(null);
     instrumentedAppender.setQueueSize(0);
     instrumentedAppender.start();
     assertFalse(instrumentedAppender.isStarted());
-    statusChecker.assertContainsMatch(Status.ERROR, "No remote host");
+    String errMessage = "No remote host was configured";
+    Wait.forStatusMessage(statusChecker, errMessage);
+    statusChecker.assertContainsMatch(Status.ERROR, errMessage);
   }
 
   @Test
@@ -100,7 +103,7 @@ public class AbstractSocketAppenderTest {
     statusChecker.assertContainsMatch(Status.ERROR, "Queue");
   }
 
-  @Test(timeout=10000)
+  @Test(timeout = 10000)
   public void appenderShouldFailToStartWithUnresolvableRemoteHost() throws Exception {
     instrumentedAppender.setPort(1);
     instrumentedAppender.setRemoteHost("NOT.A.VALID.REMOTE.HOST.NAME");
@@ -109,7 +112,7 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.append("invalid host");
 
     instrumentedAppender.stop();
-    waitForActiveCountToEqual(executorService, 0);
+    Wait.forActiveCountToEqual(executorService, 0);
 
     StatusPrinter.print(mockContext);
     assertFalse(instrumentedAppender.isStarted());
@@ -147,23 +150,12 @@ public class AbstractSocketAppenderTest {
     instrumentedAppender.start();
     assertTrue(instrumentedAppender.isStarted());
 
-    waitForActiveCountToEqual(executorService, 2);
+    Wait.forActiveCountToEqual(executorService, 2);
     instrumentedAppender.stop();
-    waitForActiveCountToEqual(executorService, 0);
+    Wait.forActiveCountToEqual(executorService, 0);
     StatusPrinter.print(mockContext);
     assertEquals(0, executorService.getActiveCount());
 
-  }
-
-  private void waitForActiveCountToEqual(ThreadPoolExecutor executorService, int i) {
-    while (executorService.getActiveCount() != i) {
-      try {
-        Thread.yield();
-        Thread.sleep(1);
-        System.out.print(".");
-      } catch (InterruptedException e) {
-      }
-    }
   }
 
 
@@ -217,7 +209,6 @@ public class AbstractSocketAppenderTest {
 
     Socket appenderSocket = serverSocket.accept();
     serverSocket.close();
-
 
 
     final int shortDelay = 100;

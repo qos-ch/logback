@@ -33,6 +33,7 @@ import javax.net.SocketFactory;
 
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.Wait;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
@@ -118,7 +119,7 @@ public class SocketReceiverTest {
     receiver.start();
     //  invalid host name does not impact start status
     assertTrue(receiver.isStarted());
-    waitForStatusMessage(statusChecker, "unknown host");
+    Wait.forStatusMessage(statusChecker, "unknown host");
     statusChecker.assertContainsMatch(Status.ERROR, "unknown host");
   }
 
@@ -170,7 +171,7 @@ public class SocketReceiverTest {
     receiver.setPort(port);
     receiver.start();
     // TODO find a way to wait for connector creation
-    waitForActiveCountToEqual((ThreadPoolExecutor) receiversLoggerContext.getExecutorService(), 1);
+    Wait.forActiveCountToEqual((ThreadPoolExecutor) receiversLoggerContext.getExecutorService(), 1);
     Thread.sleep(100);
     //assertTrue(receiver.awaitConnectorCreated(DELAY));
     Socket socket = serverSocket.accept();
@@ -215,25 +216,8 @@ public class SocketReceiverTest {
     assertNull(mockAppender.awaitAppend(DELAY));
   }
 
-  private void waitForActiveCountToEqual(ThreadPoolExecutor executorService, int i) {
-    while (executorService.getActiveCount() != i) {
-      try {
-        Thread.sleep(10);
-        System.out.print(".");
-      } catch (InterruptedException e) {
-      }
-    }
-  }
 
-  private void waitForStatusMessage(StatusChecker statusChecker, String regex) {
-    while (!statusChecker.containsMatch(regex)) {
-      try {
-        Thread.sleep(10);
-        System.out.print(".");
-      } catch (InterruptedException e) {
-      }
-    }
-  }
+
 
   /**
    * A {@link SocketReceiver} with instrumentation for unit testing.
