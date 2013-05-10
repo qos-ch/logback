@@ -116,11 +116,12 @@ public class SocketReceiverTest {
     receiver.setPort(port);
     receiver.setRemoteHost(TEST_HOST_NAME);
     receiver.start();
-    waitForActiveCountToEqual((ThreadPoolExecutor) receiversLoggerContext.getExecutorService(), 1);
     //  invalid host name does not impact start status
     assertTrue(receiver.isStarted());
+    waitForStatusMessage(statusChecker, "unknown host");
     statusChecker.assertContainsMatch(Status.ERROR, "unknown host");
   }
+
 
   @Test()
   public void testStartStop() throws Exception {
@@ -216,6 +217,16 @@ public class SocketReceiverTest {
 
   private void waitForActiveCountToEqual(ThreadPoolExecutor executorService, int i) {
     while (executorService.getActiveCount() != i) {
+      try {
+        Thread.sleep(10);
+        System.out.print(".");
+      } catch (InterruptedException e) {
+      }
+    }
+  }
+
+  private void waitForStatusMessage(StatusChecker statusChecker, String regex) {
+    while (!statusChecker.containsMatch(regex)) {
       try {
         Thread.sleep(10);
         System.out.print(".");

@@ -47,9 +47,8 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
-                                          long initialDelay, long retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
+                                          long retryDelay) {
+    SocketConnector connector = newConnector(address, port, retryDelay);
     connector.setExceptionHandler(this);
     connector.setSocketFactory(getSocketFactory());
     return connector;
@@ -64,12 +63,11 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
    *
    * @param address      target remote address
    * @param port         target remote port
-   * @param initialDelay delay before the first connection attempt
    * @param retryDelay   delay before a reconnection attempt
    * @return socket connector
    */
-  protected SocketConnector newConnector(InetAddress address,
-                                         int port, long initialDelay, long retryDelay) {
+  protected SocketConnector newConnector(InetAddress address, int port,  long retryDelay) {
+    int initialDelay = 0;
     return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
@@ -100,24 +98,10 @@ public class ConnectionRunner extends ContextAwareBase implements SocketConnecto
     }
   }
 
-
-//  /**
-//   * The <b>reconnectionDelay</b> property takes a positive integer representing
-//   * the number of milliseconds to wait between each failed connection attempt
-//   * to the server. The default value of this option is 30000 which corresponds
-//   * to 30 seconds.
-//   * <p/>
-//   * <p/>
-//   * Setting this option to zero turns off reconnection capability.
-//   */
-//  public void setReconnectionDelay(int delay) {
-//    this.reconnectionDelay = delay;
-//  }
-
   public Socket connect() throws InterruptedException {
     InetAddress address = resolve(remoteHost);
-    SocketConnector connector = createConnector(address, port, 0,
-            reconnectionDelay);
+    if(address == null) return null;
+    SocketConnector connector = createConnector(address, port, reconnectionDelay);
     connectorTask = activateConnector(connector);
     if (connectorTask == null)
       return null;

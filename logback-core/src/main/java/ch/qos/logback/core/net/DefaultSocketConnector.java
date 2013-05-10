@@ -58,8 +58,7 @@ public class DefaultSocketConnector implements SocketConnector {
    * @param delayStrategy strategy for choosing the delay to impose before
    *                      each connection attempt
    */
-  public DefaultSocketConnector(InetAddress address, int port,
-                                DelayStrategy delayStrategy) {
+  public DefaultSocketConnector(InetAddress address, int port, DelayStrategy delayStrategy) {
     this.address = address;
     this.port = port;
     this.delayStrategy = delayStrategy;
@@ -73,6 +72,7 @@ public class DefaultSocketConnector implements SocketConnector {
     Socket socket = createSocket();
     while (socket == null && !Thread.currentThread().isInterrupted()) {
       Thread.sleep(delayStrategy.nextDelay());
+      System.out.println("about to create socket");
       socket = createSocket();
     }
     return socket;
@@ -119,7 +119,6 @@ public class DefaultSocketConnector implements SocketConnector {
     public void connectionFailed(SocketConnector connector, Exception ex) {
       System.out.println(ex);
     }
-
   }
 
 }
