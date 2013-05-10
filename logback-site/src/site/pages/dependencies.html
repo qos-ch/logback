@@ -22,28 +22,32 @@
 	
 		<h1>Dependencies per module</h1>
 
+    <p>As of version 1.0.12, logback requires JDK 1.6 to build,
+    however, it is inteded to run under JDK 1.5 (with the exception of
+    SSL related functionality).</p>
+
     <p>Each logback module has a different set of dependencies. These
     are listed below in a separate table per module.</p>
 
     <h2>logback-core</h2>
 
-    <table class="bodyTable">
+    <table class="bodyTable striped">
       <tr>
         <th>Component</th>
         <th>dependencies</th>       
       </tr>
 
-      <tr class="a">
+      <tr>
         <td>Overall</td>
-        <td>
-          <ul>
-            <li>JDK 1.5
-            </li>
-          </ul>
-        </td>       
+        <td><ul><li>JDK 1.5</li></ul></td>       
       </tr>
 
-      <tr class="b">
+      <tr>
+        <td>ch.qos.logback.core.net.ssl.*</td>
+        <td><ul><li>JDK 1.6</li></ul></td>       
+      </tr>
+
+      <tr>
         <td><code>JaninoEventEvaluatorBase</code> and derived classes</td>
         <td>
           <ul>
@@ -52,7 +56,7 @@
         </td>
       </tr>
 
-      <tr class="a">
+      <tr>
         <td><code>SMTPAppenderBase</code> and derived classes</td>
         <td>
           <ul>         
@@ -72,13 +76,13 @@
     
     <h2>logback-classic</h2>
 
-    <table class="bodyTable">
+    <table class="bodyTable striped">
       <tr>
         <th>Component</th>
         <th>dependencies</th>       
       </tr>
 
-      <tr class="a">
+      <tr>
         <td>Overall</td>
         <td>
           <ul>
@@ -88,7 +92,7 @@
         </td>       
       </tr>
 
-      <tr class="b">
+      <tr>
         <td>Overall</td>
         <td>
           <ul>
@@ -110,7 +114,7 @@
         </td>       
       </tr>
       
-      <tr class="b">
+      <tr>
         <td>ch.qos.logback.classic.selector.*</td>
         <td>
           <ul>
@@ -120,7 +124,7 @@
         </td>       
       </tr>
 
-      <tr class="b">
+      <tr>
         <td>c.q.l.c.boolex.JaninoEventEvaluator</td>
         <td>
           <ul>
@@ -149,13 +153,13 @@
 
   <h2>logback-access</h2>
 
-    <table class="bodyTable">
+    <table class="bodyTable striped">
       <tr>
         <th>Component</th>
         <th>dependencies</th>       
       </tr>
 
-      <tr class="a">
+      <tr>
         <td>Overall</td>
         <td>
           <ul>
@@ -165,7 +169,7 @@
         </td>       
       </tr>
 
-      <tr class="b">
+      <tr>
         <td>Overall</td>
         <td>
           <ul>
@@ -176,7 +180,7 @@
         </td>       
       </tr>
 
-      <tr class="a">
+      <tr>
         <td>Overall</td>
         <td>
           <ul>
@@ -187,7 +191,7 @@
       </tr>
 
 
-      <tr class="b">
+      <tr>
         <td>ch.qos.logback.access.jetty.*</td>
         <td>
           <ul>
@@ -197,7 +201,7 @@
         </td>       
       </tr>
 
-      <tr class="a">
+      <tr>
         <td>ch.qos.logback.access.tomcat.*</td>
         <td>
           <ul>

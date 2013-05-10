@@ -28,10 +28,9 @@
     announce</a> mailing list.</p>
 
 
-
     <hr width="80%" align="center" />
 
-    <h3>May , 2013 - Release of version 1.1.0</h3>
+    <h3>May 10th, 2013 - Release of version 1.0.13</h3>
   
     <p>In logback-access MANIFEST file, imports of Jetty and Tomcat
     are now optional. This fixes <a
@@ -40,12 +39,18 @@
     pull request.
     </p>
 
-    <p>Logback will now correctly parse variables with a default
+    <p>Logback will now correctly parses variables with a default
     separator string nested within accolades, e.g. "{a:-b}". Such
     strings resemble variable references but lack the $ prefix, e.g
     "${a:-b}". This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-859">LOGBACK-859</a>
     reported by Yoni Moses.</p>
+
+    <p>In <code>InterpretationContext</code> class replaced code using
+    JDK 1.6 API with code using JDK 1.5. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-860">LOGBACK-860</a>
+    reproted by Bas Stoker.
+    </p>
 
     <p>Updated the "org.fusesource.jansi:jansi" dependency to version
     1.9.</p>
