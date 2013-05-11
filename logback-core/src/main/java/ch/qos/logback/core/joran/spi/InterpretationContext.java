@@ -132,8 +132,10 @@ public class InterpretationContext extends ContextAwareBase implements
     if (props == null) {
       return;
     }
-    for (String key : props.stringPropertyNames()) {
-      addSubstitutionProperty(key, props.getProperty(key));
+    for(Object keyObject: props.keySet()) {
+      String key = (String) keyObject;
+      String val = props.getProperty(key);
+      addSubstitutionProperty(key, val);
     }
   }
 

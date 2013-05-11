@@ -22,6 +22,8 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +49,7 @@ public class AbstractServerSocketAppenderTest {
 
   private ServerSocket serverSocket;
   private InstrumentedServerSocketAppenderBase appender;
+  StatusChecker statusChecker = new StatusChecker(context);
 
   @Before
   public void setUp() throws Exception {
@@ -85,12 +88,9 @@ public class AbstractServerSocketAppenderTest {
     IOException ex = new IOException("test exception");
     runner.setStopException(ex);
     appender.stop();
-
-    Status status = context.getLastStatus();
-    assertNotNull(status);
-    assertTrue(status instanceof ErrorStatus);
-    assertTrue(status.getMessage().contains(ex.getMessage()));
-    assertSame(ex, status.getThrowable());
+    statusChecker.asssertContainsException(IOException.class);
+    // TODO is this the correct message to check for?
+    statusChecker.assertContainsMatch(Status.ERROR, "server shutdown error");
   }
 
   @Test

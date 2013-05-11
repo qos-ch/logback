@@ -15,6 +15,10 @@ package ch.qos.logback.core.net;
 
 import static org.junit.Assert.assertNotNull;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,28 +31,32 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * @author Carl Harris
  */
 public class AbstractSSLSocketAppenderTest {
-  
-  private MockContext context = new MockContext();
 
-  private InstrumentedSSLSocketAppenderBase appender =
-      new InstrumentedSSLSocketAppenderBase();
-  
+  private Context context = new ContextBase();
+
+  private InstrumentedSSLSocketAppenderBase appender = new InstrumentedSSLSocketAppenderBase();
+
+  int port = RandomUtil.getRandomServerPort();
+
   @Before
   public void setUp() throws Exception {
     appender.setContext(context);
+    appender.setRemoteHost("localhost");
+    appender.setPort(port);
   }
-  
+
   @Test
   public void testUsingDefaultConfig() throws Exception {
     // should be able to start and stop successfully with no SSL 
     // configuration at all
     appender.start();
-    assertNotNull(appender.getSocketFactory());
+    StatusPrinter.print(context);
+    assertNotNull(appender.connectionRunner.getSocketFactory());
     appender.stop();
   }
-  
-  private static class InstrumentedSSLSocketAppenderBase 
-      extends AbstractSSLSocketAppender<Object> {
+
+  // ======================================
+  private static class InstrumentedSSLSocketAppenderBase extends AbstractSSLSocketAppender<Object> {
 
     @Override
     protected void postProcessEvent(Object event) {
@@ -59,6 +67,6 @@ public class AbstractSSLSocketAppenderTest {
     protected PreSerializationTransformer<Object> getPST() {
       throw new UnsupportedOperationException();
     }
-    
+
   }
 }

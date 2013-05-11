@@ -19,6 +19,7 @@ import javax.net.ssl.SSLContext;
 import ch.qos.logback.core.net.ssl.ConfigurableSSLSocketFactory;
 import ch.qos.logback.core.net.ssl.SSLComponent;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
+import ch.qos.logback.core.net.ssl.SSLConnectionRunner;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
@@ -30,7 +31,9 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppender<E>
     implements SSLComponent {
 
-  private SSLConfiguration ssl;
+
+  private SSLConfiguration sslConfiguration;
+
   private SocketFactory socketFactory;
 
   /**
@@ -40,43 +43,17 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
   }
   
   /**
-   * Constructs a new appender that will connect to the given remote host 
-   * and port.
-   * <p>
-   * This constructor was introduced primarily to allow the encapsulation 
-   * of the base {@link AbstractSocketAppender} to be improved in a manner that
-   * is least disruptive to <em>existing</em> subclasses.  <strong>This
-   * constructor will be removed in future release</strong>.
-   * @param remoteHost target remote host
-   * @param port target port on remote host
-   */
-  @Deprecated
-  protected AbstractSSLSocketAppender(String remoteHost, int port) {
-    super(remoteHost, port);
-  }
-  
-  /**
-   * Gets an {@link SocketFactory} that produces SSL sockets using an
-   * {@link SSLContext} that is derived from the appender's configuration.
-   * @return socket factory
-   */
-  @Override
-  protected SocketFactory getSocketFactory() {
-    return socketFactory;
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
   public void start() {
     try {
-      SSLContext sslContext = getSsl().createContext(this);
-      SSLParametersConfiguration parameters = getSsl().getParameters();
-      parameters.setContext(getContext());
-      socketFactory = new ConfigurableSSLSocketFactory(parameters, 
-          sslContext.getSocketFactory());
+      if(isStarted()) {
+        super.connectionRunner = new SSLConnectionRunner(this, getRemoteHost(), getPort(),
+                reconnectionDuration, getSsl());
+      }
       super.start();
+
     }
     catch (Exception ex) {
       addError(ex.getMessage(), ex);
@@ -89,10 +66,10 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
    *    default configuration is returned
    */
   public SSLConfiguration getSsl() {
-    if (ssl == null) {
-      ssl = new SSLConfiguration();
+    if (sslConfiguration == null) {
+      sslConfiguration = new SSLConfiguration();
     }
-    return ssl;
+    return sslConfiguration;
   }
 
   /**
@@ -100,7 +77,7 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
    * @param ssl the SSL configuration to set
    */
   public void setSsl(SSLConfiguration ssl) {
-    this.ssl = ssl;
+    this.sslConfiguration = ssl;
   }
 
 }

@@ -13,6 +13,7 @@
  */
 package chapters.appenders.socket;
 
+import ch.qos.logback.core.util.Duration;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
@@ -45,7 +46,7 @@ public class ConsolePluginClient {
 		socketAppender.setRemoteHost(hostname);
 		socketAppender.setPort(port);
 		socketAppender.setIncludeCallerData(true);
-		socketAppender.setReconnectionDelay(10000);
+		socketAppender.setReconnectionDelay(Duration.valueOf("10s"));
 
 		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 

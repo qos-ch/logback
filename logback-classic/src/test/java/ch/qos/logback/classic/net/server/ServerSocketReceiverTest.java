@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import ch.qos.logback.core.status.StatusChecker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +50,7 @@ public class ServerSocketReceiverTest {
 
   private ServerSocket serverSocket;
   private InstrumentedServerSocketReceiver receiver;
+  StatusChecker statusChecker = new StatusChecker(context);
 
   @Before
   public void setUp() throws Exception {
@@ -88,11 +90,7 @@ public class ServerSocketReceiverTest {
     runner.setStopException(ex);
     receiver.stop();
 
-    Status status = context.getLastStatus();
-    assertNotNull(status);
-    assertTrue(status instanceof ErrorStatus);
-    assertTrue(status.getMessage().contains(ex.getMessage()));
-    assertSame(ex, status.getThrowable());
+    statusChecker.containsException(IOException.class);
   }
 
   @Test
