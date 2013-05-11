@@ -114,7 +114,6 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
 
   private void waitForAsynchronousJobToStop() {
-    if(1==1) return;
     if(future != null) {
       try {
         future.get(CoreConstants.SECONDS_TO_WAIT_FOR_COMPRESSION_JOBS, TimeUnit.SECONDS);

@@ -273,7 +273,7 @@ public class ScaffoldingForRollingTests {
   protected void waitForJobsToComplete() {
     for (Future future : futureList) {
       try {
-        future.get(4000, TimeUnit.MILLISECONDS);
+        future.get(10, TimeUnit.SECONDS);
       } catch (Exception e) {
         new RuntimeException("unexpected exception while testing", e);
       }
