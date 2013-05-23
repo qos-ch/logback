@@ -398,7 +398,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   /**
-   * Checks if the caller has the permission to alter the logging configuration.
+   * Checks if the caller has the permission to change the state of the logging
+   * system (such as adding filters or setting logger levels).
    */
   static void checkPermission() {
     SecurityManager sm = System.getSecurityManager();
