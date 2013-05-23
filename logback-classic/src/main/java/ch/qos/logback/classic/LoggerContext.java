@@ -15,6 +15,7 @@ package ch.qos.logback.classic;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.LoggingPermission;
 
 import ch.qos.logback.classic.util.LoggerNameUtil;
@@ -381,6 +382,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   public void setMaxCallerDataDepth(int maxCallerDataDepth) {
     checkPermission();
     this.maxCallerDataDepth = maxCallerDataDepth;
+  }
+
+  @Override
+  public ExecutorService getExecutorService() {
+    checkPermission();
+    return super.getExecutorService();
   }
 
   /**
