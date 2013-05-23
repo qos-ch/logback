@@ -33,6 +33,8 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
+import static ch.qos.logback.classic.LoggerContext.checkPermission;
+
 public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     AppenderAttachable<ILoggingEvent>, Serializable {
 
@@ -147,6 +149,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public synchronized void setLevel(Level newLevel) {
+    checkPermission();
+    
     if (level == newLevel) {
       // nothing to do;
       return;
@@ -204,12 +208,14 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * This is useful when re-reading configuration information.
    */
   public void detachAndStopAllAppenders() {
+    checkPermission();
     if (aai != null) {
       aai.detachAndStopAllAppenders();
     }
   }
 
   public boolean detachAppender(String name) {
+    checkPermission();
     if (aai == null) {
       return false;
     }
@@ -219,6 +225,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   // this method MUST be synchronized. See comments on 'aai' field for further
   // details.
   public synchronized void addAppender(Appender<ILoggingEvent> newAppender) {
+    checkPermission();
     if (aai == null) {
       aai = new AppenderAttachableImpl<ILoggingEvent>();
     }
@@ -234,6 +241,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
 
   @SuppressWarnings("unchecked")
   public Iterator<Appender<ILoggingEvent>> iteratorForAppenders() {
+    checkPermission();
     if (aai == null) {
       return Collections.EMPTY_LIST.iterator();
     }
@@ -241,6 +249,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public Appender<ILoggingEvent> getAppender(String name) {
+    checkPermission();
     if (aai == null) {
       return null;
     }
@@ -279,6 +288,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * Remove the appender passed as parameter form the list of appenders.
    */
   public boolean detachAppender(Appender<ILoggingEvent> appender) {
+    checkPermission();
     if (aai == null) {
       return false;
     }
@@ -749,6 +759,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void setAdditive(boolean additive) {
+    checkPermission();
     this.additive = additive;
   }
 
