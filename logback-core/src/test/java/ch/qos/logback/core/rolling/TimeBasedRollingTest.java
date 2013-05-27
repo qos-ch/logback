@@ -99,7 +99,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
 
   void genericTest(String testId, String patternPrefix, String compressionSuffix, boolean fileOptionIsSet, int waitDuration) throws IOException {
-    boolean withCompression = compressionSuffix.length() > 0;
     String fileName = fileOptionIsSet ? testId2FileName(testId) : null;
     initRFA(rfa1, fileName);
 
@@ -197,7 +196,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     defaultTest("test6", "test6", ".gz", FILE_OPTION_SET, NO_RESTART);
   }
 
-  // LBCORE-169
+  // LOGBACK-168
   @Test
   public void withMissingTargetDirWithCompression() throws IOException {
     defaultTest("test7", "%d{yyyy-MM-dd, aux}/", ".gz", FILE_OPTION_SET, NO_RESTART);
