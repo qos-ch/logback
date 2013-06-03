@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.spi;
 
 import java.net.URL;
+import java.security.CodeSource;
 import java.util.HashMap;
 
 import sun.reflect.Reflection;
@@ -162,15 +163,18 @@ public class PackagingDataCalculator {
     try {
       if (type != null) {
         // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
-        URL resource = type.getProtectionDomain().getCodeSource().getLocation();
-        if (resource != null) {
-          String locationStr = resource.toString();
-          // now lets remove all but the file name
-          String result = getCodeLocation(locationStr, '/');
-          if (result != null) {
-            return result;
+        CodeSource codeSource = type.getProtectionDomain().getCodeSource();
+        if (codeSource != null) {
+          URL resource = codeSource.getLocation();
+          if (resource != null) {
+            String locationStr = resource.toString();
+            // now lets remove all but the file name
+            String result = getCodeLocation(locationStr, '/');
+            if (result != null) {
+              return result;
+            }
+            return getCodeLocation(locationStr, '\\');
           }
-          return getCodeLocation(locationStr, '\\');
         }
       }
     } catch (Exception e) {
