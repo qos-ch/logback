@@ -23,7 +23,8 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementPath;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
@@ -35,14 +36,14 @@ public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILog
   }
   
   @Override
-  protected Pattern initialPattern() {
-    return new Pattern("configuration");
+  protected ElementPath initialElementPath() {
+    return new ElementPath("configuration");
   }
   
   @Override
   protected void addInstanceRules(RuleStore rs) {
     super.addInstanceRules(rs);
-    rs.addRule(new Pattern("configuration/appender"), new AppenderAction());
+    rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
   }
 
 

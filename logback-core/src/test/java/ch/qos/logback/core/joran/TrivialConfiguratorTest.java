@@ -35,7 +35,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ext.IncAction;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.TrivialStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -44,12 +44,12 @@ import ch.qos.logback.core.util.CoreTestConstants;
 public class TrivialConfiguratorTest {
 
   Context context = new ContextBase();
-  HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
+  HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
 
   public void doTest(String filename) throws Exception {
 
     // rule store is case insensitve
-    rulesMap.put(new Pattern("x/inc"), new IncAction());
+    rulesMap.put(new ElementSelector("x/inc"), new IncAction());
 
     TrivialConfigurator trivialConfigurator = new TrivialConfigurator(rulesMap);
 

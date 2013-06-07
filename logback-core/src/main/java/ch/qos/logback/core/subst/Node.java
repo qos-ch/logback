@@ -35,6 +35,18 @@ public class Node {
     this.defaultPart = defaultPart;
   }
 
+  void append(Node newNode) {
+    if(newNode == null)
+      return;
+    Node n = this;
+    while(true) {
+      if(n.next == null) {
+        n.next = newNode;
+        return;
+      }
+      n = n.next;
+    }
+  }
 
   @Override
   public String toString() {

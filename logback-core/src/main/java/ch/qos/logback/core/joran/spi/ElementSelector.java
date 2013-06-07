@@ -17,101 +17,47 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A pattern is used to designate XML elements in a document.
- * 
- * <p>For more information see
- * http://logback.qos.ch/manual/onJoran.html#pattern
- * 
+ * ElementSelector extends {@link ElementPath} with matching operations such as {@link #fullPathMatch(ElementPath)},
+ * {@link #getPrefixMatchLength(ElementPath)} and {@link #getTailMatchLength(ElementPath)}.
+ *
+ * <p>Parts of the path may contain '*' for wildcard matching.
+ *
  * @author Ceki G&uuml;lc&uuml;
+ * @since 1.1.0
  */
-public class Pattern {
+public class ElementSelector extends ElementPath {
 
-  // contains String instances
-  ArrayList<String> partList = new ArrayList<String>();
-
-
-  public Pattern() {
+  public ElementSelector() {
+    super();
   }
 
-  public Pattern(List<String> list) {
-    partList.addAll(list);
+  public ElementSelector(List<String> list) {
+    super(list);
   }
 
   /**
-   * Build a pattern from a string.
-   * 
+   * Build an elementPath from a string.
+   *
    * Note that "/x" is considered equivalent to "x" and to "x/"
-   * 
+   *
    */
-  public Pattern(String p) {
-    this();
+  public ElementSelector(String p) {
+    super(p);
+  }
 
-    if (p == null) {
-      return;
+  public boolean fullPathMatch(ElementPath path) {
+    if (path.size() != size()) {
+      return false;
     }
 
-    int lastIndex = 0;
-
-    // System.out.println("p is "+ p);
-    while (true) {
-      int k = p.indexOf('/', lastIndex);
-
-      // System.out.println("k is "+ k);
-      if (k == -1) {
-        String lastPart = p.substring(lastIndex);
-        if (lastPart != null && lastPart.length() > 0) {
-          partList.add(p.substring(lastIndex));
-        }
-        break;
-      } else {
-        String c = p.substring(lastIndex, k);
-
-        if (c.length() > 0) {
-          partList.add(c);
-        }
-
-        lastIndex = k + 1;
+    int len = size();
+    for (int i = 0; i < len; i++) {
+      if (!equalityCheck(get(i), path.get(i))) {
+        return false;
       }
     }
-
-    // System.out.println(components);
-  }
-
-  public List<String> getCopyOfPartList() {
-    return new ArrayList<String>(partList);
-  }
-  
-  public Object clone() {
-    Pattern p = new Pattern();
-    p.partList.addAll(this.partList);
-    return p;
-  }
-
-  public void push(String s) {
-    partList.add(s);
-  }
-
-  public int size() {
-    return partList.size();
-  }
-
-  public String get(int i) {
-    return (String) partList.get(i);
-  }
-
-  public void pop() {
-    if (!partList.isEmpty()) {
-      partList.remove(partList.size() - 1);
-    }
-  }
-
-  public String peekLast() {
-    if (!partList.isEmpty()) {
-      int size = partList.size();
-      return (String) partList.get(size - 1);
-    } else {
-      return null;
-    }
+    // if everything matches, then the two patterns are equal
+    return true;
   }
 
   /**
@@ -119,7 +65,7 @@ public class Pattern {
    * with the pattern p passed as parameter. By "tail" components we mean the
    * components at the end of the pattern.
    */
-  public int getTailMatchLength(Pattern p) {
+  public int getTailMatchLength(ElementPath p) {
     if (p == null) {
       return 0;
     }
@@ -137,8 +83,8 @@ public class Pattern {
 
     // loop from the end to the front
     for (int i = 1; i <= minLen; i++) {
-      String l = (String) this.partList.get(lSize - i);
-      String r = (String) p.partList.get(rSize - i);
+      String l = this.partList.get(lSize - i);
+      String r = p.partList.get(rSize - i);
 
       if (equalityCheck(l, r)) {
         match++;
@@ -149,21 +95,20 @@ public class Pattern {
     return match;
   }
 
-  public boolean isContained(Pattern p) {
+  public boolean isContainedIn(ElementPath p) {
     if(p == null) {
       return false;
     }
-    String lStr = this.toString();
-    return lStr.contains(p.toString());
+    return p.toStableString().contains(toStableString());
   }
-  
-  
+
+
   /**
    * Returns the number of "prefix" components that this pattern has in common
    * with the pattern p passed as parameter. By "prefix" components we mean the
    * components at the beginning of the pattern.
    */
-  public int getPrefixMatchLength(Pattern p) {
+  public int getPrefixMatchLength(ElementPath p) {
     if (p == null) {
       return 0;
     }
@@ -180,8 +125,8 @@ public class Pattern {
     int match = 0;
 
     for (int i = 0; i < minLen; i++) {
-      String l = (String) this.partList.get(i);
-      String r = (String) p.partList.get(i);
+      String l = this.partList.get(i);
+      String r = p.partList.get(i);
 
       if (equalityCheck(l, r)) {
         match++;
@@ -199,11 +144,11 @@ public class Pattern {
 
   @Override
   public boolean equals(Object o) {
-    if ((o == null) || !(o instanceof Pattern)) {
+    if ((o == null) || !(o instanceof ElementSelector)) {
       return false;
     }
 
-    Pattern r = (Pattern) o;
+    ElementSelector r = (ElementSelector) o;
 
     if (r.size() != size()) {
       return false;
@@ -231,16 +176,8 @@ public class Pattern {
       // http://jira.qos.ch/browse/LBCORE-76
       hc ^= get(i).toLowerCase().hashCode();
     }
-
     return hc;
   }
 
-  @Override
-  public String toString() {
-    StringBuilder result = new StringBuilder();
-    for (String current : partList) {
-      result.append("[").append(current).append("]");
-    }
-    return result.toString();
-  }
+
 }

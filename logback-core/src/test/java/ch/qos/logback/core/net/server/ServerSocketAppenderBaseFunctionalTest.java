@@ -28,8 +28,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.net.mock.MockContext;
+
 /**
- * A functional test for {@link ServerSocketAppenderBase}.
+ * A functional test for {@link AbstractServerSocketAppender}.
  *
  * @author Carl Harris
  */

@@ -31,7 +31,7 @@ import ch.qos.logback.core.joran.conditional.ElseAction;
 import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.conditional.ThenAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
@@ -48,22 +48,22 @@ public class JoranConfigurator extends JoranConfiguratorBase {
   public void addInstanceRules(RuleStore rs) {
     super.addInstanceRules(rs);
     
-    rs.addRule(new Pattern("configuration"), new ConfigurationAction());
-    rs.addRule(new Pattern("configuration/appender-ref"), new AppenderRefAction());
+    rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
+    rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
     
-    rs.addRule(new Pattern("configuration/appender/sift"), new SiftAction());
-    rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());
+    rs.addRule(new ElementSelector("configuration/appender/sift"), new SiftAction());
+    rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
     
-    rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
+    rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());
 
     // add if-then-else support
-    rs.addRule(new Pattern("*/if"), new IfAction());
-    rs.addRule(new Pattern("*/if/then"), new ThenAction());
-    rs.addRule(new Pattern("*/if/then/*"), new NOPAction());
-    rs.addRule(new Pattern("*/if/else"), new ElseAction());
-    rs.addRule(new Pattern("*/if/else/*"), new NOPAction());
+    rs.addRule(new ElementSelector("*/if"), new IfAction());
+    rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
+    rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
+    rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
+    rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
 
-    rs.addRule(new Pattern("configuration/include"), new IncludeAction());
+    rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
   }
 
   @Override

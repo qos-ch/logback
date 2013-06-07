@@ -1,5 +1,5 @@
 
-Here is a list of persons who have signed a CLA [1] in file.
+Here is a list of persons who have signed a CLA [1].
 
 Name                     Location              Date
 ----                     --------              ----
@@ -28,17 +28,18 @@ Joris Kuipers            Amstelveen, NL        2013-02-11
 Andrey Korzhevskiy       Skryabina Akademika, Russia 2013-03-26 
 Carl E. Harris Jr.       VA, USA               2013-03-27
 Matthew R. Bertolini     NJ, USA               2013-04-23
+Gregory A. Denton        WA, USA               2013-05-02
 
 Justification for CLAs
 ----------------------
 
-There is no denying that the CLA requirement adds overhead. However,
-the CLA offers several advantages:
-
+The CLA requirement adds a bureaucratic step before contributions can
+be accepted. However, the CLA offers several advantages:
+  
 1) having a CLA on file for all contributors provides reassurance to
-downstream users. For example, IP officers from Eclipse contact QOS.ch
-at regular intervals asking whether QOS.ch has CLA for all SLF4J and
-logback contributions.
+downstream users. For example, IP officers from Eclipse foundation
+contact QOS.ch at regular intervals asking whether QOS.ch has CLA for
+SLF4J and logback contributions.
 
 2) allows QOS.ch to change the software license as long as the change
 is not contrary to public interest. This allowed QOS.ch to add Eclipse
@@ -50,12 +51,12 @@ dual-licensing logback would have been near impossible.
 3) by virtue of clause 3 of the CLA, the contributor vouches for
 his/her contributions as his/her own. Thus, QOS.ch takes a lesser risk
 when distributing software because QOS.ch can claim that some vetting
-has been performed (due dillegence). 
+has been performed (due diligence). 
 
-A more neutral discussion of CLAs can be found at [2].
+A more detailed discussion of CLAs can be found at [2].
 
 BTW, the CLA can be sent to Ceki directly by email. A scanned copy on
-two separate pages is OK but please make sure that the images render
+two separate pages is fine but please make sure that the images render
 reasonably well when printed on a laser printer. Images taken by
 cellphone cameras often render as a large gray smudge when printed.
 

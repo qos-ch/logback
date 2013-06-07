@@ -42,8 +42,8 @@ public class MDCBasedDiscriminatorTest {
   Logger logger = context.getLogger(this.getClass());
 
   int diff = RandomUtil.getPositiveInt();
-  String key = "k" + diff;
-  String value = "val" + diff;
+  String key = "MDCBasedDiscriminatorTest_key" + diff;
+  String value = "MDCBasedDiscriminatorTest_val" + diff;
   LoggingEvent event;
 
   @Before

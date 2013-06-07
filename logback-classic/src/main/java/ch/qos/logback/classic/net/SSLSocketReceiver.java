@@ -34,7 +34,7 @@ public class SSLSocketReceiver extends SocketReceiver
 
   /**
    * Gets an {@link SocketFactory} that produces SSL sockets using an
-   * {@link SSLContext} that is derived from the remote's configuration.
+   * {@link SSLContext} that is derived from the receiver's configuration.
    * @return socket factory
    */
   @Override

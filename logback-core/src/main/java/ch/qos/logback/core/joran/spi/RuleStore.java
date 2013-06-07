@@ -19,21 +19,41 @@ import ch.qos.logback.core.joran.action.Action;
 
 /**
  * 
- * As its name indicates, a RuleStore contains 2-tuples consists of a Pattern
+ * As its name indicates, a RuleStore contains 2-tuples consists of a ElementSelector
  * and an Action.
  * 
  * <p>As a joran configurator goes through the elements in a document, it asks
  * the rule store whether there are rules matching the current pattern by
- * invoking the {@link #matchActions(Pattern)} method.
+ * invoking the {@link #matchActions(ElementPath)} method.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
 public interface RuleStore {
-  void addRule(Pattern pattern, String actionClassStr)
+
+  /**
+   * Add a new rule, given by a pattern and a action class (String).
+   *
+   * @param elementSelector
+   * @param actionClassStr
+   * @throws ClassNotFoundException
+   */
+  void addRule(ElementSelector elementSelector, String actionClassStr)
       throws ClassNotFoundException;
 
-  void addRule(Pattern pattern, Action action);
+  /**
+   * Add a new rule, given by a pattern and an action instance.
+   *
+   * @param elementSelector
+   * @param action
+   */
+  void addRule(ElementSelector elementSelector, Action action);
 
-  List<Action> matchActions(Pattern currentPatern);
+  /**
+   * Return a list of actions matching a pattern.
+   *
+   * @param elementPath the path to match for
+   * @return list of matching actions
+   */
+  List<Action> matchActions(ElementPath elementPath);
 }

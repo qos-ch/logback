@@ -108,6 +108,13 @@ public class NodeToStringTransformerTest {
     assertEquals("%d{HH:mm:ss.SSS} host:local %logger{36} - %msg%n", nodeToStringTransformer.transform());
   }
 
+  @Test
+  public void loneColonShouldReadLikeAnyOtherCharacter() throws ScanException {
+    String input = "java:comp/env/jdbc/datasource";
+    Node node = makeNode(input);
+    NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+    assertEquals(input, nodeToStringTransformer.transform());
+  }
 
   @Test
   public void withDefaultValue() throws ScanException {

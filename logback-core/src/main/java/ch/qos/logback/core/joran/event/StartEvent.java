@@ -13,23 +13,22 @@
  */
 package ch.qos.logback.core.joran.event;
 
+import ch.qos.logback.core.joran.spi.ElementPath;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
-import ch.qos.logback.core.joran.spi.Pattern;
-
 public class StartEvent extends SaxEvent {
 
   final public Attributes attributes;
-  final public Pattern pattern;
+  final public ElementPath elementPath;
   
-  StartEvent(Pattern pattern, String namespaceURI, String localName, String qName,
+  StartEvent(ElementPath elementPath, String namespaceURI, String localName, String qName,
       Attributes attributes, Locator locator) {
     super(namespaceURI, localName, qName, locator);
     // locator impl is used to take a snapshot!
     this.attributes = new AttributesImpl(attributes);
-    this.pattern = pattern;
+    this.elementPath = elementPath;
   }
 
   public Attributes getAttributes() {

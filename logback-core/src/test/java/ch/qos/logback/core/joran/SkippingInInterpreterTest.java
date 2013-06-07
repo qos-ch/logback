@@ -23,6 +23,7 @@ import java.util.List;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
@@ -34,7 +35,6 @@ import ch.qos.logback.core.joran.action.ext.BadEndAction;
 import ch.qos.logback.core.joran.action.ext.HelloAction;
 import ch.qos.logback.core.joran.action.ext.TouchAction;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.CoreTestConstants;
@@ -47,7 +47,7 @@ import ch.qos.logback.core.util.CoreTestConstants;
  */
 public class SkippingInInterpreterTest {
 
-  HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
+  HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
   Context context = new ContextBase();
   StatusManager sm = context.getStatusManager();
 
@@ -59,18 +59,18 @@ public class SkippingInInterpreterTest {
   void doTest(String filename, Integer expectedInt, Class<?> exceptionClass)
       throws Exception {
 
-    rulesMap.put(new Pattern("test"), new NOPAction());
-    rulesMap.put(new Pattern("test/badBegin"), new BadBeginAction());
-    rulesMap.put(new Pattern("test/badBegin/touch"), new TouchAction());
-    rulesMap.put(new Pattern("test/badEnd"), new BadEndAction());
-    rulesMap.put(new Pattern("test/badEnd/touch"), new TouchAction());
-    rulesMap.put(new Pattern("test/hello"), new HelloAction());
+    rulesMap.put(new ElementSelector("test"), new NOPAction());
+    rulesMap.put(new ElementSelector("test/badBegin"), new BadBeginAction());
+    rulesMap.put(new ElementSelector("test/badBegin/touch"), new TouchAction());
+    rulesMap.put(new ElementSelector("test/badEnd"), new BadEndAction());
+    rulesMap.put(new ElementSelector("test/badEnd/touch"), new TouchAction());
+    rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
 
-    rulesMap.put(new Pattern("test/isolate"), new NOPAction());
-    rulesMap.put(new Pattern("test/isolate/badEnd"), new BadEndAction());
-    rulesMap.put(new Pattern("test/isolate/badEnd/touch"), new TouchAction());
-    rulesMap.put(new Pattern("test/isolate/touch"), new TouchAction());
-    rulesMap.put(new Pattern("test/hello"), new HelloAction());
+    rulesMap.put(new ElementSelector("test/isolate"), new NOPAction());
+    rulesMap.put(new ElementSelector("test/isolate/badEnd"), new BadEndAction());
+    rulesMap.put(new ElementSelector("test/isolate/badEnd/touch"), new TouchAction());
+    rulesMap.put(new ElementSelector("test/isolate/touch"), new TouchAction());
+    rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
 
     TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);

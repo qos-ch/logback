@@ -56,7 +56,9 @@ public class SocketMin {
     try {
       int port = Integer.parseInt(portStr);
       logger.info("Creating socket appender (" + host + "," + port + ").");
-      s = new SocketAppender(host, port);
+      s = new SocketAppender();
+      s.setRemoteHost(host);
+      s.setPort(port);
       s.setName("S");
       root.addAppender(s);
     } catch (java.lang.NumberFormatException e) {

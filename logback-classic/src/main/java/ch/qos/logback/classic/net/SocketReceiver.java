@@ -20,8 +20,8 @@ import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.net.SocketFactory;
@@ -29,9 +29,9 @@ import javax.net.SocketFactory;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.DefaultSocketConnector;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.net.SocketConnector;
-import ch.qos.logback.core.net.SocketConnectorBase;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
@@ -51,8 +51,9 @@ public class SocketReceiver extends ReceiverBase
   private int reconnectionDelay;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
 
-  private String remoteId;
+  private String receiverId;
   private volatile Socket socket;
+  private Future<Socket> connectorTask;
 
   /**
    * {@inheritDoc}
@@ -61,18 +62,18 @@ public class SocketReceiver extends ReceiverBase
     int errorCount = 0;
     if (port == 0) {
       errorCount++;
-      addError("No port was configured for remote. "
+      addError("No port was configured for receiver. "
               + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
     }
 
     if (remoteHost == null) {
       errorCount++;
-      addError("No host name or address was configured for remote. "
+      addError("No host name or address was configured for receiver. "
               + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
     }
 
     if (reconnectionDelay == 0) {
-      reconnectionDelay = SocketAppenderBase.DEFAULT_RECONNECTION_DELAY;
+      reconnectionDelay = AbstractSocketAppender.DEFAULT_RECONNECTION_DELAY;
     }
 
     if (errorCount == 0) {
@@ -85,7 +86,7 @@ public class SocketReceiver extends ReceiverBase
     }
 
     if (errorCount == 0) {
-      remoteId = "remote " + remoteHost + ":" + port + ": ";
+      receiverId = "receiver " + remoteHost + ":" + port + ": ";
     }
 
     return errorCount == 0;
@@ -111,67 +112,21 @@ public class SocketReceiver extends ReceiverBase
   public void run() {
     try {
       LoggerContext lc = (LoggerContext) getContext();
-      SocketConnector connector = createConnector(address, port, 0,
-              reconnectionDelay);
       while (!Thread.currentThread().isInterrupted()) {
-        try {
-          getContext().getExecutorService().execute(connector);
-        } catch (RejectedExecutionException ex) {
-          // executor is shutting down... 
-          continue;
-        }
-        socket = connector.awaitConnection();
+        SocketConnector connector = createConnector(address, port, 0,
+                reconnectionDelay);
+        connectorTask = activateConnector(connector);
+        if (connectorTask == null)
+          break;
+        socket = waitForConnectorToReturnASocket();
+        if (socket == null)
+          break;
         dispatchEvents(lc);
-        connector = createConnector(address, port, reconnectionDelay);
       }
     } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
     }
     addInfo("shutting down");
-  }
-
-  private void dispatchEvents(LoggerContext lc) {
-    try {
-      socket.setSoTimeout(acceptConnectionTimeout);
-      ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-      socket.setSoTimeout(0);
-      addInfo(remoteId + "connection established");
-      while (true) {
-        ILoggingEvent event = (ILoggingEvent) ois.readObject();
-        Logger remoteLogger = lc.getLogger(event.getLoggerName());
-        if (remoteLogger.isEnabledFor(event.getLevel())) {
-          remoteLogger.callAppenders(event);
-        }
-      }
-    } catch (EOFException ex) {
-      addInfo(remoteId + "end-of-stream detected");
-    } catch (IOException ex) {
-      addInfo(remoteId + "connection failed: " + ex);
-    } catch (ClassNotFoundException ex) {
-      addInfo(remoteId + "unknown event class: " + ex);
-    } finally {
-      CloseUtil.closeQuietly(socket);
-      socket = null;
-      addInfo(remoteId + "connection closed");
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public void connectionFailed(SocketConnector connector, Exception ex) {
-    if (ex instanceof InterruptedException) {
-      addInfo("connector interrupted");
-    } else if (ex instanceof ConnectException) {
-      addInfo(remoteId + "connection refused");
-    } else {
-      addInfo(remoteId + ex);
-    }
-  }
-
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int delay) {
-    return createConnector(address, port, delay, delay);
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
@@ -183,17 +138,72 @@ public class SocketReceiver extends ReceiverBase
     return connector;
   }
 
+
+  private Future<Socket> activateConnector(SocketConnector connector) {
+    try {
+      return getContext().getExecutorService().submit(connector);
+    } catch (RejectedExecutionException ex) {
+      return null;
+    }
+  }
+
+  private Socket waitForConnectorToReturnASocket() throws InterruptedException {
+    try {
+      Socket s = connectorTask.get();
+      connectorTask = null;
+      return s;
+    } catch (ExecutionException e) {
+      return null;
+    }
+  }
+
+  private void dispatchEvents(LoggerContext lc) {
+    try {
+      socket.setSoTimeout(acceptConnectionTimeout);
+      ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+      socket.setSoTimeout(0);
+      addInfo(receiverId + "connection established");
+      while (true) {
+        ILoggingEvent event = (ILoggingEvent) ois.readObject();
+        Logger remoteLogger = lc.getLogger(event.getLoggerName());
+        if (remoteLogger.isEnabledFor(event.getLevel())) {
+          remoteLogger.callAppenders(event);
+        }
+      }
+    } catch (EOFException ex) {
+      addInfo(receiverId + "end-of-stream detected");
+    } catch (IOException ex) {
+      addInfo(receiverId + "connection failed: " + ex);
+    } catch (ClassNotFoundException ex) {
+      addInfo(receiverId + "unknown event class: " + ex);
+    } finally {
+      CloseUtil.closeQuietly(socket);
+      socket = null;
+      addInfo(receiverId + "connection closed");
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void connectionFailed(SocketConnector connector, Exception ex) {
+    if (ex instanceof InterruptedException) {
+      addInfo("connector interrupted");
+    } else if (ex instanceof ConnectException) {
+      addInfo(receiverId + "connection refused");
+    } else {
+      addInfo(receiverId + ex);
+    }
+  }
+
+
   protected SocketConnector newConnector(InetAddress address,
                                          int port, int initialDelay, int retryDelay) {
-    return new SocketConnectorBase(address, port, initialDelay, retryDelay);
+    return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
   protected SocketFactory getSocketFactory() {
     return SocketFactory.getDefault();
-  }
-
-  protected ExecutorService createExecutorService() {
-    return Executors.newCachedThreadPool();
   }
 
   public void setRemoteHost(String remoteHost) {

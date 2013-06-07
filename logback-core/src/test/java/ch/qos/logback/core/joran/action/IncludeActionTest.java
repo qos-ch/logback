@@ -38,7 +38,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -91,10 +91,10 @@ public class IncludeActionTest {
   @Before
   public void setUp() throws Exception {
     FileTestUtil.makeTestOutputDir();
-    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
-    rulesMap.put(new Pattern("x"), new NOPAction());
-    rulesMap.put(new Pattern("x/include"), new IncludeAction());
-    rulesMap.put(new Pattern("x/stack"), stackAction);
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    rulesMap.put(new ElementSelector("x"), new NOPAction());
+    rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
+    rulesMap.put(new ElementSelector("x/stack"), stackAction);
 
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);

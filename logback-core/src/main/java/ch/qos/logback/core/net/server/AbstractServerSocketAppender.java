@@ -23,17 +23,17 @@ import java.util.concurrent.Executor;
 import javax.net.ServerSocketFactory;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
  * 
- * This is the base class for module specific ServerSocketAppender 
- * implementations.
+ * This is the super class for module specific ServerSocketAppender
+ * implementations can derive from.
  * 
  * @author Carl Harris
  */
-public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
+public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
   /**
    * Default {@link ServerSocket} backlog
@@ -45,7 +45,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    */
   public static final int DEFAULT_CLIENT_QUEUE_SIZE = 100;
   
-  private int port = SocketAppenderBase.DEFAULT_PORT;
+  private int port = AbstractSocketAppender.DEFAULT_PORT;
   private int backlog = DEFAULT_BACKLOG;
   private int clientQueueSize = DEFAULT_CLIENT_QUEUE_SIZE;
   
@@ -65,8 +65,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
       runner.setContext(getContext());
       getContext().getExecutorService().execute(runner);
       super.start();
-    }
-    catch (Exception ex) {
+    } catch (Exception ex) {
       addError("server startup error: " + ex, ex);
     }
   }
@@ -167,7 +166,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    * @return queue depth
    * @see java.net.ServerSocket
    */
-  public Integer getBacklog() {
+  public int getBacklog() {
     return backlog;
   }
 
@@ -179,7 +178,7 @@ public abstract class ServerSocketAppenderBase<E> extends AppenderBase<E> {
    * @param backlog the queue depth to set
    * @see java.net.ServerSocket
    */
-  public void setBacklog(Integer backlog) {
+  public void setBacklog(int backlog) {
     this.backlog = backlog;
   }
 

@@ -41,11 +41,12 @@ public class SimpleRuleStoreTest {
   
   @Test
   public void smoke() throws Exception {
-    srs.addRule(new Pattern("a/b"), new XAction());
+    srs.addRule(new ElementSelector("a/b"), new XAction());
 
     // test for all possible case combinations of "a/b"
     for (String s : cc.combinations("a/b")) {
-       List<Action> r = srs.matchActions(new Pattern(s));
+      System.out.println("s="+s);
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -57,11 +58,11 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void smokeII() throws Exception {
-    srs.addRule(new Pattern("a/b"), new XAction());
-    srs.addRule(new Pattern("a/b"), new YAction());
+    srs.addRule(new ElementSelector("a/b"), new XAction());
+    srs.addRule(new ElementSelector("a/b"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(2, r.size());
 
@@ -77,11 +78,11 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testSlashSuffix() throws Exception {
-    Pattern pa = new Pattern("a/");
+    ElementSelector pa = new ElementSelector("a/");
     srs.addRule(pa, new XAction());
 
     for (String s : cc.combinations("a")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -94,10 +95,10 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testTail1() throws Exception {
-    srs.addRule(new Pattern("*/b"), new XAction());
+    srs.addRule(new ElementSelector("*/b"), new XAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -111,10 +112,10 @@ public class SimpleRuleStoreTest {
   @Test
   public void testTail2() throws Exception {
     SimpleRuleStore srs = new SimpleRuleStore(new ContextBase());
-    srs.addRule(new Pattern("*/c"), new XAction());
+    srs.addRule(new ElementSelector("*/c"), new XAction());
 
     for (String s : cc.combinations("a/b/c")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -127,11 +128,11 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testTail3() throws Exception {
-    srs.addRule(new Pattern("*/b"), new XAction());
-    srs.addRule(new Pattern("*/a/b"), new YAction());
+    srs.addRule(new ElementSelector("*/b"), new XAction());
+    srs.addRule(new ElementSelector("*/a/b"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -143,12 +144,12 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testTail4() throws Exception {
-    srs.addRule(new Pattern("*/b"), new XAction());
-    srs.addRule(new Pattern("*/a/b"), new YAction());
-    srs.addRule(new Pattern("a/b"), new ZAction());
+    srs.addRule(new ElementSelector("*/b"), new XAction());
+    srs.addRule(new ElementSelector("*/a/b"), new YAction());
+    srs.addRule(new ElementSelector("a/b"), new ZAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
 
@@ -160,11 +161,11 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testSuffix() throws Exception {
-    srs.addRule(new Pattern("a"), new XAction());
-    srs.addRule(new Pattern("a/*"), new YAction());
+    srs.addRule(new ElementSelector("a"), new XAction());
+    srs.addRule(new ElementSelector("a/*"), new YAction());
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
       assertEquals(1, r.size());
       assertTrue(r.get(0) instanceof YAction);
@@ -173,23 +174,23 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testDeepSuffix() throws Exception {
-    srs.addRule(new Pattern("a"), new XAction(1));
-    srs.addRule(new Pattern("a/b/*"), new XAction(2));
+    srs.addRule(new ElementSelector("a"), new XAction(1));
+    srs.addRule(new ElementSelector("a/b/*"), new XAction(2));
 
     for (String s : cc.combinations("a/other")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNull(r);
     }
   }
 
   @Test
   public void testPrefixSuffixInteraction1() throws Exception {
-    srs.addRule(new Pattern("a"), new ZAction());
-    srs.addRule(new Pattern("a/*"), new YAction());
-    srs.addRule(new Pattern("*/a/b"), new XAction(3));
+    srs.addRule(new ElementSelector("a"), new ZAction());
+    srs.addRule(new ElementSelector("a/*"), new YAction());
+    srs.addRule(new ElementSelector("*/a/b"), new XAction(3));
 
     for (String s : cc.combinations("a/b")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNotNull(r);
 
       assertEquals(1, r.size());
@@ -202,13 +203,13 @@ public class SimpleRuleStoreTest {
 
   @Test
   public void testPrefixSuffixInteraction2() throws Exception {
-    srs.addRule(new Pattern("tG"), new XAction());
-    srs.addRule(new Pattern("tG/tS"), new YAction());
-    srs.addRule(new Pattern("tG/tS/test"), new ZAction());
-    srs.addRule(new Pattern("tG/tS/test/*"), new XAction(9));
+    srs.addRule(new ElementSelector("tG"), new XAction());
+    srs.addRule(new ElementSelector("tG/tS"), new YAction());
+    srs.addRule(new ElementSelector("tG/tS/test"), new ZAction());
+    srs.addRule(new ElementSelector("tG/tS/test/*"), new XAction(9));
 
     for (String s : cc.combinations("tG/tS/toto")) {
-      List<Action> r = srs.matchActions(new Pattern(s));
+      List<Action> r = srs.matchActions(new ElementPath(s));
       assertNull(r);
     }
   }

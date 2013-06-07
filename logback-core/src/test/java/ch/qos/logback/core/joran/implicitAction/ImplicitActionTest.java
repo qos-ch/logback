@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -39,8 +39,8 @@ public class ImplicitActionTest {
   @Before
   public void setUp() throws Exception {
     fruitContext.setName("fruits");
-    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
-    rulesMap.put(new Pattern("/context/"), new FruitContextAction());
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    rulesMap.put(new ElementSelector("/context/"), new FruitContextAction());
     simpleConfigurator = new SimpleConfigurator(rulesMap);
     simpleConfigurator.setContext(fruitContext);
   }

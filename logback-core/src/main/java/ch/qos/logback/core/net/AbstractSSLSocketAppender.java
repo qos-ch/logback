@@ -22,17 +22,39 @@ import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * 
- * This is the base class for module specific SSLSocketAppender implementations.
- * 
+ * An abstract base for module specific {@code SSLSocketAppender}
+ * implementations located in other logback modules.
+ *
  * @author Carl Harris
  */
-public abstract class SSLSocketAppenderBase<E> extends SocketAppenderBase<E>
+public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppender<E>
     implements SSLComponent {
 
   private SSLConfiguration ssl;
   private SocketFactory socketFactory;
 
+  /**
+   * Constructs a new appender.
+   */
+  protected AbstractSSLSocketAppender() {
+  }
+  
+  /**
+   * Constructs a new appender that will connect to the given remote host 
+   * and port.
+   * <p>
+   * This constructor was introduced primarily to allow the encapsulation 
+   * of the base {@link AbstractSocketAppender} to be improved in a manner that
+   * is least disruptive to <em>existing</em> subclasses.  <strong>This
+   * constructor will be removed in future release</strong>.
+   * @param remoteHost target remote host
+   * @param port target port on remote host
+   */
+  @Deprecated
+  protected AbstractSSLSocketAppender(String remoteHost, int port) {
+    super(remoteHost, port);
+  }
+  
   /**
    * Gets an {@link SocketFactory} that produces SSL sockets using an
    * {@link SSLContext} that is derived from the appender's configuration.

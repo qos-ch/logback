@@ -16,6 +16,7 @@ package ch.qos.logback.classic.pattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,12 +33,14 @@ public class MDCConverterTest {
 
   LoggerContext lc;
   MDCConverter converter;
+  int diff = RandomUtil.getPositiveInt();
 
   @Before
   public void setUp() throws Exception {
     lc = new LoggerContext();
     converter = new MDCConverter();
     converter.start();
+    MDC.clear();
   }
 
   @After
@@ -45,20 +48,22 @@ public class MDCConverterTest {
     lc = null;
     converter.stop();
     converter = null;
+    MDC.clear();
   }
 
   @Test
   public void testConvertWithOneEntry() {
-    MDC.clear();
-    MDC.put("testKey", "testValue");
+    String k = "MDCConverterTest_k"+diff;
+    String v = "MDCConverterTest_v"+diff;
+
+    MDC.put(k, v);
     ILoggingEvent le = createLoggingEvent();
     String result = converter.convert(le);
-    assertEquals("testKey=testValue", result);
+    assertEquals(k+"="+v, result);
   }
 
   @Test
   public void testConvertWithMultipleEntries() {
-    MDC.clear();
     MDC.put("testKey", "testValue");
     MDC.put("testKey2", "testValue2");
     ILoggingEvent le = createLoggingEvent();

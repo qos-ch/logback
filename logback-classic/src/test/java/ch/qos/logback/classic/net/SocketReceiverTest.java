@@ -244,14 +244,7 @@ public class SocketReceiverTest {
       this.socket = socket;
     }
 
-    public void run() {
-    }
-
-    public Socket awaitConnection() throws InterruptedException {
-      return awaitConnection(Long.MAX_VALUE);
-    }
-
-    public Socket awaitConnection(long delay) throws InterruptedException {
+    public Socket call() throws InterruptedException {
       return socket;
     }
 

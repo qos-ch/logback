@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +29,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.CoreTestConstants;
@@ -56,8 +56,8 @@ public class DefinePropertyActionTest {
   @Before
   public void setUp() throws Exception {
 
-    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
-    rulesMap.put(new Pattern("define"), new DefinePropertyAction());
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    rulesMap.put(new ElementSelector("define"), new DefinePropertyAction());
     simpleConfigurator = new SimpleConfigurator(rulesMap);
     simpleConfigurator.setContext(context);
   }
