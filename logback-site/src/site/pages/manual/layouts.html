@@ -534,6 +534,8 @@ WARN  [main]: Message 2</p>
         <td class="word" name="date">
           <b>d</b>{<em>pattern</em>} <br /> 
           <b>date</b>{<em>pattern</em>} <br />
+          <b>d</b>{<em>pattern</em>, <em>timezone</em>} <br />
+          <b>date</b>{<em>pattern</em>,&nbsp;<em>timezone</em>} <br />
         </td>
         <td>
 					<p>Used to output the date of the logging event.  The date
@@ -574,25 +576,26 @@ WARN  [main]: Message 2</p>
 							<td>14:06:49.812</td>
 						</tr>
 						<tr>
-							<td>%date{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss.SSS}</td>
+							<td>%date{dd&nbsp;MMM&nbsp;yyyy;HH:mm:ss.SSS}</td>
 							<td>20 oct. 2006;14:06:49.812	</td>
 						</tr>
 					</table>
 
-          <p>In addition to the date pattern, this converter admits a
-          second option as the timezone. Thus, the
-          '%date{HH:mm:ss.SSS,Australia/Perth} would print the time in
-          the time zone of Perth, Australia, the world's most isolated
-          city.
+          <p>The second parameter can be used to specify a
+          timezone. Note that in the absence of the timezone
+          parameter, the default timezone of the host Java platform is
+          used.  Thus, the '%date{HH:mm:ss.SSS,&nbsp;Australia/Perth}
+          would print the time in the time zone of Perth, Australia,
+          the world's most isolated city.
           </p>
 
-          <p>Given that the comma ',' character is interpreted as the
-          option separator, the pattern string [HH:mm:ss,SSS] will
-          print the time in the [SSS] time zone which does not
-          exist. Thus, the time will be printed in the default GMT
-          timezone. If you wish to include a comma in your date
-          pattern, then simply enclose the pattern between quotes. For
-          example, %date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
+          <p><span class="label">common error</span> Given that the
+          comma ',' character is interpreted as the parameter
+          separator, the pattern <code>HH:mm:ss,SSS</code> will be
+          interpreted as the pattern <code>HM:mm:ss</code> and the
+          timezone <code>SSS</code>. If you wish to include a comma in
+          your date pattern, then simply enclose the pattern between
+          quotes. For example, %date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
           </p>
 				</td>
 			</tr>
