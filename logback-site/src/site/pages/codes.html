@@ -386,18 +386,18 @@
 
   <b>On Windows</b>
 
-  <p>On certain platforms, e.g. Windows, a log file cannot be renamed
-  if there are handles referencing it. For example, when the file is
-  read by another process such as <code>less</code>,
-  <code>tail</code>, etc. During application hot-redeployment, the old
-  instance of the application will have open references to log files
-  until the old instance is completely shutdown or until the
-  <code>stop()</code> method on its <a
+  <p>On the Windows platform a log file cannot be renamed if there are
+  handles referencing it. For example, when the file is read by
+  another process such as <code>less</code>, <code>tail</code>,
+  etc. During application hot-redeployment, the old instance of the
+  application will have open references to log files until the old
+  instance is completely shutdown or until the <code>stop()</code>
+  method on its <a
   href="apidocs/ch/qos/logback/classic/LoggerContext.html"><code>LoggerContext</code></a>
   is invoked.
   </p>
 
-  <p>On the Windows platform, <a
+  <p><a
   href="http://technet.microsoft.com/en-us/sysinternals/bb896653">Process
   Explorer</a> can help you locate the processes which reference a
   given file (Find -&gt; Find Handle or DLL). On Linux, you can use
@@ -405,20 +405,23 @@
   <em>pathToFile</em></code> command to find which process has the
   file given by <em>pathToFile</em> open. </p>
 
-  <p>In practice, it can be hard to ensure that there are no file
-  handle references to log files. It can be easier to avoid file
-  renaming altogether. As a first step, let us note that for
-  <code>TimeBasedRollingPolicy</code>, the <span
-  class="option">file</span> option can be omitted. If omitted, no
-  file renaming will be performed during roll over. Thus, in order to
-  avoid file renaming errors just leave blank the <span
-  class="option">file</span> option of
-  <code>RollingFileAppender</code>, as shown in the next configuration
-  snippet.
+  <p>Rolling might also fail due to incorrect file permission
+  settings. On windows, renaming a file requires the "modify"
+  permission which is different than the permission to "write" to the
+  file.</p>
+
+
+  <p>In practice, it can be hard to set the right permissions or to
+  ensure that there are no file handle references to log files. Under
+  such circumstances, it can be easier to avoid file renaming
+  altogether. File renaming can be avoided by omitting the <span
+  class="option">file</span> property in
+  <code>TimeBasedRollingPolicy</code>, as shown in the next
+  configuration snippet.
   </p>
 
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-  &lt;!-- <span class="option">file</span> option left unset/blank -->
+  &lt;!-- <span class="option">file</span> property left unset/blank -->
   &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
     &lt;fileNamePattern>mylog.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
   &lt;/rollingPolicy>
