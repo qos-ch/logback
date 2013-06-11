@@ -538,49 +538,49 @@ WARN  [main]: Message 2</p>
           <b>date</b>{<em>pattern</em>,&nbsp;<em>timezone</em>} <br />
         </td>
         <td>
-					<p>Used to output the date of the logging event.  The date
-					conversion word admits a pattern string as a parameter. The
-					pattern syntax is compatible with the format accepted by <a
-					href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
+         <p>Used to output the date of the logging event.  The date
+         conversion word admits a pattern string as a parameter. The
+         pattern syntax is compatible with the format accepted by <a
+         href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
 
-					<p>You can specify the string <em>"ISO8601"</em> for the
-					ISO8601 date format. Note that the %date conversion word
-					defaults to the <a
-					href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date
-					format</a> in the absence of a pattern parameter.</p>
+         <p>You can specify the string <em>"ISO8601"</em> for the
+         ISO8601 date format. Note that the %date conversion word
+         defaults to the <a
+         href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date
+         format</a> in the absence of a pattern parameter.</p>
 
-					<p>Here are some sample parameter values. They assume that
-					the actual date is Friday 20th of October, 2006 and that the
-					author has returned to working on this document just after
-					lunch.</p>
+         <p>Here are some sample parameter values. They assume that
+         the actual date is Friday 20th of October, 2006 and that the
+         author has returned to working on this document just after
+         lunch.</p>
 					
-					<table class="bodyTable dark" cellpadding="8">
-						<tr>
-							<th>Conversion Pattern</th>
-							<th>Result</th>
-						</tr>
-            <tr>
-							<td>%d</td>
-							<td>2006-10-20 14:06:49,812</td>
-						</tr>
-						<tr>
-							<td>%date</td>
-							<td>2006-10-20 14:06:49,812</td>
-						</tr>
-						<tr>
-							<td>%date{ISO8601}</td>
-							<td>2006-10-20 14:06:49,812</td>
-						</tr>			
-						<tr>
-							<td>%date{HH:mm:ss.SSS}</td>
-							<td>14:06:49.812</td>
-						</tr>
-						<tr>
-							<td>%date{dd&nbsp;MMM&nbsp;yyyy;HH:mm:ss.SSS}</td>
-							<td>20 oct. 2006;14:06:49.812	</td>
-						</tr>
-					</table>
-
+         <table class="bodyTable dark" cellpadding="8">
+           <tr>
+             <th>Conversion Pattern</th>
+            <th>Result</th>
+           </tr>
+           <tr>
+             <td>%d</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date{ISO8601}</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>			
+           <tr>
+             <td>%date{HH:mm:ss.SSS}</td>
+             <td>14:06:49.812</td>
+           </tr>
+           <tr>
+             <td>%date{dd&nbsp;MMM&nbsp;yyyy;HH:mm:ss.SSS}</td>
+             <td>20 oct. 2006;14:06:49.812	</td>
+           </tr>
+         </table>
+         
           <p>The second parameter specifies a timezone. For example,
           the '%date{HH:mm:ss.SSS,&nbsp;Australia/Perth} would print
           the time in the time zone of Perth, Australia, the world's
