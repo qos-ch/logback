@@ -82,8 +82,7 @@
 		loggers.
 		</p>
     
-    <h3><a name="LoggerContext" href="#LoggerContext"><span
-    class="anchor"/></a>Logger context</h3>
+    <h3 class="doAnchor" name="LoggerContext">Logger context</h3>
 
 		<p>The first and foremost advantage of any logging API over plain
 		<code>System.out.println</code> resides in its ability to disable
@@ -149,9 +148,8 @@ public interface Logger {
 
 
 
-    <h3><a name="effectiveLevel" href="#effectiveLevel"><span
-    class="anchor"/></a>Effective Level aka Level Inheritance
-    </h3>
+    <h3 class="doAnchor" name="effectiveLevel">Effective Level aka
+    Level Inheritance </h3>
 
 		<p>Loggers may be assigned levels. The set of possible levels
 		(TRACE, DEBUG, INFO, WARN and ERROR) are defined in the
@@ -330,9 +328,8 @@ public interface Logger {
 		parent <code>X</code>, which has an assigned level.
 		</p>
 
-    <h3><a name="basic_selection" href="#basic_selection"><span
-    class="anchor"/></a>Printing methods and the basic selection
-    rule</h3>
+    <h3 class="doAnchor" name="basic_selection">Printing methods and
+    the basic selection rule</h3>
 
 		<p>By definition, the printing method determines the level of a
 		logging request. For example, if <code>L</code> is a logger
@@ -662,8 +659,8 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		</p>
 
 
-		<h3><a name="parametrized" href="#parametrized"><span
-		class="anchor"/></a>Parameterized logging</h3>
+		<h3 class="doAnchor" name="parametrized">Parameterized
+		logging</h3>
 
 		<p>Given that loggers in logback-classic implement the <a
 		href="http://www.slf4j.org/api/org/slf4j/Logger.html">SLF4J's
@@ -841,8 +838,7 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
   </a>
 
   
-  <h3><a name="performance" href="#performance"><span
-  class="anchor"/></a>Performance</h3>
+  <h3 class="doAnchor" name="performance">Performance</h3>
 
   <p>One of the often-cited arguments against logging is its
   computational cost.  This is a legitimate concern as even
