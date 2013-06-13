@@ -12,12 +12,15 @@
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
 
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
 
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"></script>
     <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -675,7 +678,23 @@ public class MyApp3 {
    <h3 class="doAnchor" name="stopContext">Stopping
    logback-classic</h3>
 
-   <h2 class="doAnchor" name="syntax" >Configuration file syntax</h2>
+   <p>In order to release the resources used by logback-classic, it is
+   always a good idea to stop the logback context. Stopping the
+   context will close all appenders attached to loggers defined by the
+   context and stop any active threads.
+   </p>
+
+<pre class="prettyprint lang-java source">
+// assume SLF4J is bound to logback-classic in the current environment
+<b>LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+<b>loggerContext.stop();</b></pre>
+
+   <p>In web-applications, such code would be invoked from within the
+   <a
+   href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)">contextDestroyed</a>
+   method of <code>ServletContextListener</code> to stop logback.
+
+   <h2 class="doAnchor" name="syntax">Configuration file syntax</h2>
 
    <p>As you have seen thus far in the manual with plenty of examples
    still to follow, logback allows you to redefine logging behavior
