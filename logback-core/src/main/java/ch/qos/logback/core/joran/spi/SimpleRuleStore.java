@@ -75,9 +75,10 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
   }
 
   // exact match has highest priority
-  // if no exact match, check for tail match, i.e matches of type */x/y
-  // tail match for */x/y has higher priority than match for */x
-  // if no tail match, check for prefix match, i.e. matches for x/*
+  // if no exact match, check for suffix (tail) match, i.e matches
+  // of type */x/y. Suffix match for */x/y has higher priority than match for
+  // */x
+  // if no suffix match, check for prefix match, i.e. matches for x/*
   // match for x/y/* has higher priority than matches for x/*
 
   public List<Action> matchActions(ElementPath elementPath) {
