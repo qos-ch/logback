@@ -31,8 +31,10 @@ import ch.qos.logback.classic.pattern.LoggerConverter;
 import ch.qos.logback.classic.pattern.MDCConverter;
 import ch.qos.logback.classic.pattern.MarkerConverter;
 import ch.qos.logback.classic.pattern.MessageConverter;
+import ch.qos.logback.classic.pattern.MessageOrJsonConverter;
 import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
 import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
+import ch.qos.logback.classic.pattern.ProcessIdConverter;
 import ch.qos.logback.classic.pattern.PropertyConverter;
 import ch.qos.logback.classic.pattern.RelativeTimeConverter;
 import ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter;
@@ -96,6 +98,9 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     defaultConverterMap.put("tid", ThreadIdConverter.class.getName());
     defaultConverterMap.put("threadId", ThreadIdConverter.class.getName());
 
+    defaultConverterMap.put("pid", ProcessIdConverter.class.getName());
+    defaultConverterMap.put("processId", ProcessIdConverter.class.getName());
+
     defaultConverterMap.put("lo", LoggerConverter.class.getName());
     defaultConverterMap.put("logger", LoggerConverter.class.getName());
     defaultConverterMap.put("c", LoggerConverter.class.getName());
@@ -103,6 +108,8 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     defaultConverterMap.put("m", MessageConverter.class.getName());
     defaultConverterMap.put("msg", MessageConverter.class.getName());
     defaultConverterMap.put("message", MessageConverter.class.getName());
+
+    defaultConverterMap.put("messageOrJson", MessageOrJsonConverter.class.getName());
 
     defaultConverterMap.put("C", ClassOfCallerConverter.class.getName());
     defaultConverterMap.put("class", ClassOfCallerConverter.class.getName());
