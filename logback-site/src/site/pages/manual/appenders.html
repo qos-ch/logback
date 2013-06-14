@@ -3843,10 +3843,7 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>s
     asynchronously. It acts solely as an event dispatcher and must
     therefore reference another appender in order to do anything
-    useful. In order to avoid loss of logging events, this appender
-    should be closed. It is the user's responsibility to close
-    appenders, typically at the end of the application lifecycle.
-    </p>
+    useful.</p>
 
     <p><span class="label notice">Lossy by default if 80% full</span>
     AsyncAppender buffers events in a <a
@@ -3859,6 +3856,15 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     and INFO if its queue is 80% full. This strategy has an amazingly
     favorable effect on performance at the cost of event loss.
     </p>
+
+    <p><span class="label">Application stop/redeploy</span> Upon
+    application shutdown or redeploy, <code>AsyncAppender</code> must
+    be stopped in order to stop and reclaim the worker thread and to
+    flush the logging events from the queue. This can be achieved by
+    <a href="configuration.html#stopContext">stopping the
+    LoggerContext</a> which will close all appenders, including any
+    <code>AsyncAppender</code> instances.</p>
+
 
     <p>Here is the list of properties admitted by
     <code>AsyncAppender:</code></p>

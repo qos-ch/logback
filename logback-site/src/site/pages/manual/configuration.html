@@ -685,6 +685,10 @@ public class MyApp3 {
    </p>
 
 <pre class="prettyprint lang-java source">
+import org.sflf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+...
+
 // assume SLF4J is bound to logback-classic in the current environment
 <b>LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
 <b>loggerContext.stop();</b></pre>
@@ -692,7 +696,8 @@ public class MyApp3 {
    <p>In web-applications, such code would be invoked from within the
    <a
    href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)">contextDestroyed</a>
-   method of <code>ServletContextListener</code> to stop logback.
+   method of <code>ServletContextListener</code> in order to stop
+   logback-classic and release resources.
 
    <h2 class="doAnchor" name="syntax">Configuration file syntax</h2>
 
