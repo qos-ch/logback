@@ -112,10 +112,9 @@ public class LoggingEvent implements ILoggingEvent {
 
     this.message = message;
 
-    FormattingTuple ft = MessageFormatter.arrayFormat(message, argArray);
-    formattedMessage = ft.getMessage();
 
     if (throwable == null) {
+      FormattingTuple ft = MessageFormatter.arrayFormat(null, argArray);
       argumentArray = ft.getArgArray();
       throwable = ft.getThrowable();
     } else {
