@@ -111,15 +111,13 @@ public class LoggingEvent implements ILoggingEvent {
     this.level = level;
 
     this.message = message;
+    this.argumentArray = argArray;
 
-    FormattingTuple ft = MessageFormatter.arrayFormat(message, argArray);
-    formattedMessage = ft.getMessage();
-
-    if (throwable == null) {
-      argumentArray = ft.getArgArray();
-      throwable = ft.getThrowable();
-    } else {
-      this.argumentArray = argArray;
+    if(throwable == null) {
+      throwable =  EventArgUtil.extractThrowable(argArray);
+      if(EventArgUtil.successfulExtraction(throwable)) {
+        this.argumentArray = EventArgUtil.trimmedCopy(argArray);
+      }
     }
 
     if (throwable != null) {
