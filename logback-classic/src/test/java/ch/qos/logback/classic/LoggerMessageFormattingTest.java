@@ -21,7 +21,7 @@ import org.junit.Test;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 
-public class MessageFormattingTest  {
+public class LoggerMessageFormattingTest {
 
   LoggerContext lc;
   ListAppender<ILoggingEvent> listAppender;
@@ -80,5 +80,7 @@ public class MessageFormattingTest  {
     String formattedMessage = layout.doLayout(event);
     assertEquals("12", formattedMessage);
   }
+
+
 
 }

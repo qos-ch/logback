@@ -80,7 +80,7 @@ public class LoggingEvent implements ILoggingEvent {
   // we gain significant space at serialization time by marking
   // formattedMessage as transient and constructing it lazily in
   // getFormattedMessage()
-  private transient String formattedMessage;
+  transient String formattedMessage;
 
   private transient Object[] argumentArray;
 
