@@ -183,6 +183,10 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     if (fileChannel == null) {
       return;
     }
+
+    // Clear any current interrupt (see LOGBACK-875)
+    boolean interrupted = Thread.interrupted();
+
     FileLock fileLock = null;
     try {
       fileLock = fileChannel.lock();
@@ -192,9 +196,18 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         fileChannel.position(size);
       }
       super.writeOut(event);
-    } finally {
+    } catch (IOException e) {
+      // Mainly to catch FileLockInterruptionExceptions (see LOGBACK-875)
+      resilientFOS.postIOFailure(e);
+    }
+    finally {
       if (fileLock != null) {
         fileLock.release();
+      }
+
+      // Re-interrupt if we started in an interrupted state (see LOGBACK-875)
+      if (interrupted) {
+        Thread.currentThread().interrupt();
       }
     }
   }

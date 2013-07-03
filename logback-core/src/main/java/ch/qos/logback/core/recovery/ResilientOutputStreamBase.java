@@ -97,7 +97,7 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
     }
   }
 
-  void postIOFailure(IOException e) {
+  public void postIOFailure(IOException e) {
     addStatusIfCountNotOverLimit(new ErrorStatus("IO failure while writing to "
         + getDescription(), this, e));
     presumedClean = false;
