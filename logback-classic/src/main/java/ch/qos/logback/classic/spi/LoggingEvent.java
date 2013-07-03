@@ -114,10 +114,7 @@ public class LoggingEvent implements ILoggingEvent {
     this.argumentArray = argArray;
 
     if(throwable == null) {
-      throwable =  EventArgUtil.extractThrowable(argArray);
-      if(EventArgUtil.successfulExtraction(throwable)) {
-        this.argumentArray = EventArgUtil.trimmedCopy(argArray);
-      }
+      throwable = extractThrowableAnRearrangeArguments(argArray);
     }
 
     if (throwable != null) {
@@ -129,6 +126,14 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     timeStamp = System.currentTimeMillis();
+  }
+
+  private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
+    Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
+    if(EventArgUtil.successfulExtraction(extractedThrowable)) {
+      this.argumentArray = EventArgUtil.trimmedCopy(argArray);
+    }
+    return extractedThrowable;
   }
 
   public void setArgumentArray(Object[] argArray) {
@@ -284,8 +289,7 @@ public class LoggingEvent implements ILoggingEvent {
     return loggerContextVO.getBirthTime();
   }
 
-  // computer formatted lazy as suggested in
-  // http://jira.qos.ch/browse/LBCLASSIC-47
+  // lazy computation as suggested in LOGBACK-495
   public String getFormattedMessage() {
     if (formattedMessage != null) {
       return formattedMessage;
@@ -351,7 +355,7 @@ public class LoggingEvent implements ILoggingEvent {
 
   /**
    * LoggerEventVO instances should be used for serialization. Use
-   * {@link LoggingEventVO#build(LoggingEvent) build} method to create the LoggerEventVO instance.
+   * {@link LoggingEventVO#build(ILoggingEvent) build} method to create the LoggerEventVO instance.
    *
    * @since 1.0.11
    */

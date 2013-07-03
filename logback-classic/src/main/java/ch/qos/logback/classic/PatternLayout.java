@@ -16,27 +16,7 @@ package ch.qos.logback.classic;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.classic.pattern.CallerDataConverter;
-import ch.qos.logback.classic.pattern.ClassOfCallerConverter;
-import ch.qos.logback.classic.pattern.ContextNameConverter;
-import ch.qos.logback.classic.pattern.PropertyConverter;
-import ch.qos.logback.classic.pattern.DateConverter;
-import ch.qos.logback.classic.pattern.EnsureExceptionHandling;
-import ch.qos.logback.classic.pattern.ExtendedThrowableProxyConverter;
-import ch.qos.logback.classic.pattern.FileOfCallerConverter;
-import ch.qos.logback.classic.pattern.LevelConverter;
-import ch.qos.logback.classic.pattern.LineOfCallerConverter;
-import ch.qos.logback.classic.pattern.LineSeparatorConverter;
-import ch.qos.logback.classic.pattern.LoggerConverter;
-import ch.qos.logback.classic.pattern.MDCConverter;
-import ch.qos.logback.classic.pattern.MarkerConverter;
-import ch.qos.logback.classic.pattern.MessageConverter;
-import ch.qos.logback.classic.pattern.MethodOfCallerConverter;
-import ch.qos.logback.classic.pattern.NopThrowableInformationConverter;
-import ch.qos.logback.classic.pattern.RelativeTimeConverter;
-import ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter;
-import ch.qos.logback.classic.pattern.ThreadConverter;
-import ch.qos.logback.classic.pattern.ThrowableProxyConverter;
+import ch.qos.logback.classic.pattern.*;
 import ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -149,6 +129,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
     defaultConverterMap.put("boldWhite", BoldWhiteCompositeConverter.class.getName());
     defaultConverterMap.put("highlight", HighlightingCompositeConverter.class.getName());
 
+    defaultConverterMap.put("lsn", LocalSequenceNumberConverter.class.getName());
 
 
   }

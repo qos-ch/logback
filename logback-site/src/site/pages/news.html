@@ -34,13 +34,21 @@
 
     <h3>, 2013 - Release of version 2.0.0-alpha1</h3>
 
-    <p>The LoggingEvent constructor delays message formatting so that
-    it can be computed lazily by the getFormattedMessage method. This
-    fixes <a
+    <p>The <code>LoggingEvent</code> constructor delays message
+    formatting so that it can be computed lazily by the
+    <code>getFormattedMessage</code> method. This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-873">LOGBACK-873</a> and
     re-fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-495">LOGBACK-495</a>.
     </p>
+
+    <p><code>PackagingDataCalculator</code> now checks for the case
+    where the caller has no protection domain. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-617">LOGBACK-617</a>
+    reported by Yuri de Wit. The relevant fix was provided by Mikhail
+    Mazursky.
+    </p>
+    
 
     <hr width="80%" align="center" />
 
