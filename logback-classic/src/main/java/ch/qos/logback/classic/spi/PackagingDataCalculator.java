@@ -96,6 +96,7 @@ public class PackagingDataCalculator {
           }
         }
         catch (SecurityException se) {
+          // ignore, see LOGBACK-880
         }
         ClassPackagingData pi = calculateByExactType(callerClass);
         step.setClassPackagingData(pi);
