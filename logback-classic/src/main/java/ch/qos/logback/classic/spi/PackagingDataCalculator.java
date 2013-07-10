@@ -89,9 +89,13 @@ public class PackagingDataCalculator {
 
       if (callerClass != null && stepClassname.equals(callerClass.getName())) {
         // see also LBCLASSIC-263
+        try {
         lastExactClassLoader = callerClass.getClassLoader();
         if (firsExactClassLoader == null) {
           firsExactClassLoader = lastExactClassLoader;
+        }
+        }
+        catch (SecurityException se) {
         }
         ClassPackagingData pi = calculateByExactType(callerClass);
         step.setClassPackagingData(pi);
