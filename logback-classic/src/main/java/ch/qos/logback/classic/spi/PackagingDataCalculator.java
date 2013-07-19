@@ -44,6 +44,7 @@ public class PackagingDataCalculator {
       GET_CALLER_CLASS_METHOD_AVAILABLE = true;
     } catch (NoClassDefFoundError e) {
     } catch (NoSuchMethodError e) {
+    } catch (UnsupportedOperationException e) {
     } catch (Throwable e) {
       System.err.println("Unexpected exception");
       e.printStackTrace();
