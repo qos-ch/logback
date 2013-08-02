@@ -50,7 +50,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   }
 
   String getPrefixPattern() {
-    return "%syslogStart{" + getFacility() + "}%nopex{}";
+    return "%syslogStart{" + getFacility() + "," + getHostname() + "}%nopex{}";
   }
 
   /*

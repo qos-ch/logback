@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
@@ -36,6 +38,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
   Layout<E> layout;
   String facilityStr;
+  String hostname;
   String syslogHost;
   protected String suffixPattern;
   SyslogOutputStream sos;
@@ -193,6 +196,31 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       facilityStr = facilityStr.trim();
     }
     this.facilityStr = facilityStr;
+  }
+  
+  /**
+   * Returns the value of the <b>Hostname</b> option.   
+   */
+  public String getHostname() {
+    return hostname;
+  }
+  
+  /**
+   * The <b>Hostname</b> option allows the local hostname to be overridden
+   */
+  public void setHostname(String hostname) {
+    if(hostname != null) {
+      hostname = hostname.trim();
+      
+      Pattern p = Pattern.compile("\\s");
+      Matcher m = p.matcher(hostname);
+      if(m.find())
+      {
+        addError("Hostname: " + hostname + " cannot contain spaces");
+        return;
+      }
+    }
+    this.hostname = hostname;
   }
 
   /**
