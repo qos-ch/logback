@@ -21,10 +21,11 @@ DROP TABLE  logging_event;
 CREATE TABLE logging_event 
   (
     timestmp          BIGINT NOT NULL,
-   	formatted_message VARCHAR(4000) NOT NULL,
+    formatted_message VARCHAR(4000) NOT NULL,
     logger_name       VARCHAR(254) NOT NULL,
     level_string      VARCHAR(254) NOT NULL,
     thread_name       VARCHAR(254),
+    marker            VARCHAR(254),
     reference_flag    SMALLINT,
     arg0              VARCHAR(254),
     arg1              VARCHAR(254),
