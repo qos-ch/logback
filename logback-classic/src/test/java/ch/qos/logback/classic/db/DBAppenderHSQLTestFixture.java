@@ -123,6 +123,7 @@ public class DBAppenderHSQLTestFixture  {
     buf.append("CALLER_CLASS VARCHAR(256), ");
     buf.append("CALLER_METHOD VARCHAR(256), ");
     buf.append("CALLER_LINE CHAR(4), ");
+    buf.append("MARKER VARCHAR(256), ");
     buf.append("EVENT_ID BIGINT NOT NULL IDENTITY);");
     query(conn, buf.toString());
 

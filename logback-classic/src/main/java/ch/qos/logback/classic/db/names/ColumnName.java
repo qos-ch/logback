@@ -31,6 +31,7 @@ public enum ColumnName {
   CALLER_CLASS,
   CALLER_METHOD,
   CALLER_LINE,
+  MARKER,
   
   // MDC
   MAPPED_KEY,
