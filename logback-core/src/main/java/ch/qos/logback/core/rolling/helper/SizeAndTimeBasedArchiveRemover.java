@@ -39,7 +39,11 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
         parentDir, stemRegex);
 
     for (File f : matchingFileArray) {
-      f.delete();
+      Date fileLastModified = rc.getRelativeDate(new Date(f.lastModified()), -1);
+    	if (fileLastModified.compareTo(dateOfPeriodToClean) <= 0){
+    		  f.delete();
+    	    addInfo("deleting " + f);
+    	}
     }
 
     if (parentClean) {
