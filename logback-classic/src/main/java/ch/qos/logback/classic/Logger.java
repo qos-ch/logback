@@ -32,6 +32,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
+import static ch.qos.logback.classic.FQCNHelper.getFQCN;
 
 public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     AppenderAttachable<ILoggingEvent>, Serializable {
@@ -42,8 +43,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
    * The fully qualified name of this class. Used in gathering caller
    * information.
    */
-  public static final String FQCN = ch.qos.logback.classic.Logger.class
-      .getName();
+ // public static final String FQCN = ch.qos.logback.classic.Logger.class
+ //     .getName();
 
   /**
    * The name of this logger
@@ -442,43 +443,43 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void trace(String msg) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.TRACE, msg, null, null);
   }
 
   public void trace(String format, Object arg) {
-    filterAndLog_1(FQCN, null, Level.TRACE, format, arg, null);
+    filterAndLog_1(getFQCN(), null, Level.TRACE, format, arg, null);
   }
 
   public void trace(String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, null, Level.TRACE, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), null, Level.TRACE, format, arg1, arg2, null);
   }
 
   public void trace(String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.TRACE, format, argArray, null);
   }
 
   public void trace(String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.TRACE, msg, null, t);
   }
 
   public void trace(Marker marker, String msg) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.TRACE, msg, null, null);
   }
 
   public void trace(Marker marker, String format, Object arg) {
-    filterAndLog_1(FQCN, marker, Level.TRACE, format, arg, null);
+    filterAndLog_1(getFQCN(), marker, Level.TRACE, format, arg, null);
   }
 
   public void trace(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, marker, Level.TRACE, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), marker, Level.TRACE, format, arg1, arg2, null);
   }
 
   public void trace(Marker marker, String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.TRACE, format, argArray, null);
   }
 
   public void trace(Marker marker, String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.TRACE, msg, null, t);
   }
 
   public boolean isDebugEnabled() {
@@ -499,83 +500,83 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void debug(String msg) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.DEBUG, msg, null, null);
   }
 
   public void debug(String format, Object arg) {
-    filterAndLog_1(FQCN, null, Level.DEBUG, format, arg, null);
+    filterAndLog_1(getFQCN(), null, Level.DEBUG, format, arg, null);
   }
 
   public void debug(String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, null, Level.DEBUG, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), null, Level.DEBUG, format, arg1, arg2, null);
   }
 
   public void debug(String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.DEBUG, format, argArray, null);
   }
 
   public void debug(String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.DEBUG, msg, null, t);
   }
 
   public void debug(Marker marker, String msg) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.DEBUG, msg, null, null);
   }
 
   public void debug(Marker marker, String format, Object arg) {
-    filterAndLog_1(FQCN, marker, Level.DEBUG, format, arg, null);
+    filterAndLog_1(getFQCN(), marker, Level.DEBUG, format, arg, null);
   }
 
   public void debug(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, marker, Level.DEBUG, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), marker, Level.DEBUG, format, arg1, arg2, null);
   }
 
   public void debug(Marker marker, String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.DEBUG, format, argArray, null);
   }
 
   public void debug(Marker marker, String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.DEBUG, msg, null, t);
   }
 
   public void error(String msg) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.ERROR, msg, null, null);
   }
 
   public void error(String format, Object arg) {
-    filterAndLog_1(FQCN, null, Level.ERROR, format, arg, null);
+    filterAndLog_1(getFQCN(), null, Level.ERROR, format, arg, null);
   }
 
   public void error(String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, null, Level.ERROR, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), null, Level.ERROR, format, arg1, arg2, null);
   }
 
   public void error(String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.ERROR, format, argArray, null);
   }
 
   public void error(String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.ERROR, msg, null, t);
   }
 
   public void error(Marker marker, String msg) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.ERROR, msg, null, null);
   }
 
   public void error(Marker marker, String format, Object arg) {
-    filterAndLog_1(FQCN, marker, Level.ERROR, format, arg, null);
+    filterAndLog_1(getFQCN(), marker, Level.ERROR, format, arg, null);
   }
 
   public void error(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, marker, Level.ERROR, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), marker, Level.ERROR, format, arg1, arg2, null);
   }
 
   public void error(Marker marker, String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.ERROR, format, argArray, null);
   }
 
   public void error(Marker marker, String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.ERROR, msg, null, t);
   }
 
   public boolean isInfoEnabled() {
@@ -596,43 +597,43 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void info(String msg) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.INFO, msg, null, null);
   }
 
   public void info(String format, Object arg) {
-    filterAndLog_1(FQCN, null, Level.INFO, format, arg, null);
+    filterAndLog_1(getFQCN(), null, Level.INFO, format, arg, null);
   }
 
   public void info(String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, null, Level.INFO, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), null, Level.INFO, format, arg1, arg2, null);
   }
 
   public void info(String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.INFO, format, argArray, null);
   }
 
   public void info(String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.INFO, msg, null, t);
   }
 
   public void info(Marker marker, String msg) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.INFO, msg, null, null);
   }
 
   public void info(Marker marker, String format, Object arg) {
-    filterAndLog_1(FQCN, marker, Level.INFO, format, arg, null);
+    filterAndLog_1(getFQCN(), marker, Level.INFO, format, arg, null);
   }
 
   public void info(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, marker, Level.INFO, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), marker, Level.INFO, format, arg1, arg2, null);
   }
 
   public void info(Marker marker, String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.INFO, format, argArray, null);
   }
 
   public void info(Marker marker, String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.INFO, msg, null, t);
   }
 
   public boolean isTraceEnabled() {
@@ -705,43 +706,43 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
   }
 
   public void warn(String msg) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.WARN, msg, null, null);
   }
 
   public void warn(String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.WARN, msg, null, t);
   }
 
   public void warn(String format, Object arg) {
-    filterAndLog_1(FQCN, null, Level.WARN, format, arg, null);
+    filterAndLog_1(getFQCN(), null, Level.WARN, format, arg, null);
   }
 
   public void warn(String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, null, Level.WARN, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), null, Level.WARN, format, arg1, arg2, null);
   }
 
   public void warn(String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), null, Level.WARN, format, argArray, null);
   }
 
   public void warn(Marker marker, String msg) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, msg, null, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.WARN, msg, null, null);
   }
 
   public void warn(Marker marker, String format, Object arg) {
-    filterAndLog_1(FQCN, marker, Level.WARN, format, arg, null);
+    filterAndLog_1(getFQCN(), marker, Level.WARN, format, arg, null);
   }
 
   public void warn(Marker marker, String format, Object[] argArray) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, format, argArray, null);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.WARN, format, argArray, null);
   }
 
   public void warn(Marker marker, String format, Object arg1, Object arg2) {
-    filterAndLog_2(FQCN, marker, Level.WARN, format, arg1, arg2, null);
+    filterAndLog_2(getFQCN(), marker, Level.WARN, format, arg1, arg2, null);
   }
 
   public void warn(Marker marker, String msg, Throwable t) {
-    filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, msg, null, t);
+    filterAndLog_0_Or3Plus(getFQCN(), marker, Level.WARN, msg, null, t);
   }
 
   public boolean isAdditive() {
