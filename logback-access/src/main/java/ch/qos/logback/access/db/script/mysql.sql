@@ -6,7 +6,7 @@
 
 # This SQL script creates the required tables by ch.qos.logback.access.db.DBAppender.
 #
-# It is intended for MySQL databases. It has been tested on MySQL 5.0.22 with 
+# It is intended for MySQL databases. It has been tested on MySQL 5.5.31 with 
 # INNODB tables.
 
 
@@ -16,7 +16,7 @@ DROP TABLE IF EXISTS access_event;
 COMMIT;
 
 BEGIN;
-CREATE TABLE ACCESS_EVENT 
+CREATE TABLE access_event 
   (
     timestmp          BIGINT NOT NULL,
     requestURI        VARCHAR(254),
