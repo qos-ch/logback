@@ -35,7 +35,7 @@ public class JNDIUtil {
       return null;
     }
     try {
-      return (String) ctx.lookup(name);
+      return ctx.lookup(name).toString();
     } catch (NamingException e) {
       return null;
     }
