@@ -51,11 +51,10 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       if ("full".equals(lengthStr)) {
         lengthOption = Integer.MAX_VALUE;
       } else if ("short".equals(lengthStr)) {
-        lengthOption = 2;
+        lengthOption = 1;
       } else {
         try {
-          // we add one because, printing starts at offset 1
-          lengthOption = Integer.parseInt(lengthStr) + 1;
+          lengthOption = Integer.parseInt(lengthStr);
         } catch (NumberFormatException nfe) {
           addError("Could not parse [" + lengthStr + "] as an integer");
           lengthOption = Integer.MAX_VALUE;
