@@ -41,16 +41,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
     if (dataSource == null) {
       addWarn("WARNING: No data source specified");
     } else {
-      Connection connection = null;
-      try {
-        connection = getConnection();
-      } catch (SQLException se) {
-        addWarn("Could not get a connection to discover the dialect to use.",
-            se);
-      }
-      if (connection != null) {
-        discoverConnectionProperties();
-      }
+      discoverConnectionProperties();
       if (!supportsGetGeneratedKeys()
           && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
         addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");

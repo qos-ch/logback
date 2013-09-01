@@ -13,10 +13,12 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-
+import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +30,8 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztHelper;
+
+import static org.junit.Assert.*;
 
 public class ThrowableProxyConverterTest {
 
@@ -64,6 +68,42 @@ public class ThrowableProxyConverterTest {
     verify(t);
   }
 
+  @Test
+  public void withArgumentOfOne() throws Exception {
+    final Throwable t = TeztHelper.makeNestedException(0);
+    t.printStackTrace(pw);
+    final ILoggingEvent le = createLoggingEvent(t);
+
+    final List<String> optionList = Arrays.asList("1");
+    tpc.setOptionList(optionList);
+    tpc.start();
+
+    final String result = tpc.convert(le);
+
+    final BufferedReader reader = new BufferedReader(new StringReader(result));
+    assertTrue(reader.readLine().contains(t.getMessage()));
+    assertNotNull(reader.readLine());
+    assertNull("Unexpected line in stack trace", reader.readLine());
+  }
+
+  @Test
+  public void withShortArgument() throws Exception {
+    final Throwable t = TeztHelper.makeNestedException(0);
+    t.printStackTrace(pw);
+    final ILoggingEvent le = createLoggingEvent(t);
+
+    final List<String> options = Arrays.asList("short");
+    tpc.setOptionList(options);
+    tpc.start();
+
+    final String result = tpc.convert(le);
+
+    final BufferedReader reader = new BufferedReader(new StringReader(result));
+    assertTrue(reader.readLine().contains(t.getMessage()));
+    assertNotNull(reader.readLine());
+    assertNull("Unexpected line in stack trace", reader.readLine());
+  }
+
   void verify(Throwable t) {
     t.printStackTrace(pw);
 
@@ -73,6 +113,4 @@ public class ThrowableProxyConverterTest {
     result = result.replace("common frames omitted", "more");
     assertEquals(sw.toString(), result);
   }
-
-
 }
