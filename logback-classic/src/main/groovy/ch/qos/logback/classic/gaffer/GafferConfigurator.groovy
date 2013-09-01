@@ -17,9 +17,9 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.classic.sift.SiftingAppender
-import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.status.OnConsoleStatusListener
 import ch.qos.logback.core.util.ContextUtil
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.OptionHelper
 
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil
 import org.codehaus.groovy.control.CompilerConfiguration
