@@ -104,7 +104,7 @@ public class ConfigurationDelegate extends ContextAwareBase {
   void logger(String name, Level level, List<String> appenderNames = [], Boolean additivity = null) {
     if (name) {
       Logger logger = ((LoggerContext) context).getLogger(name);
-      addInfo("Setting level of ${name} logger to " + level);
+      addInfo("Setting level of logger [${name}] to " + level);
       logger.level = level;
 
       if (appenderNames) {
