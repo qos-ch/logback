@@ -13,10 +13,10 @@
  */
 package ch.qos.logback.classic.util;
 
-import org.junit.Test;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -71,6 +71,20 @@ public class LoggerNameUtilTest {
     witnessList.add("Nested");
 
     List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested");
+    assertEquals(witnessList, partList);
+  }
+
+  @Test
+  public void supportNestedClassesWithNestedDot() {
+    //LOGBACK-384
+    List<String> witnessList = new ArrayList<String>();
+    witnessList.add("com");
+    witnessList.add("foo");
+    witnessList.add("Bar");
+    witnessList.add("Nested");
+    witnessList.add("dot");
+
+    List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested.dot");
     assertEquals(witnessList, partList);
   }
 
