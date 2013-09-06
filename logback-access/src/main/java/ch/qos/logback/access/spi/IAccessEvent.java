@@ -60,6 +60,11 @@ public interface IAccessEvent extends DeferredProcessingAware {
    */
   long getTimeStamp();
 
+  /**
+   * The time elapsed between receiving the request and logging it.
+   */
+  long getElapsedTime();
+
   String getRequestURI();
 
   /**

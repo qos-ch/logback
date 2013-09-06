@@ -358,6 +358,13 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return statusCode;
   }
 
+  public long getElapsedTime() {
+    if (serverAdapter.getRequestTimestamp() < 0) {
+      return -1;
+    }
+    return timeStamp - serverAdapter.getRequestTimestamp();
+  }
+
   public String getRequestContent() {
     if (requestContent != null) {
       return requestContent;
@@ -482,6 +489,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     getRequestURL();
     getServerName();
     getTimeStamp();
+    getElapsedTime();
 
     getStatusCode();
     getContentLength();
