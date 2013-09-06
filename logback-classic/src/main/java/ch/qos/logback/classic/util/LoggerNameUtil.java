@@ -13,10 +13,10 @@
  */
 package ch.qos.logback.classic.util;
 
+import ch.qos.logback.core.CoreConstants;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import ch.qos.logback.core.CoreConstants;
 
 /**
  * Utility class for analysing logger names.
@@ -37,12 +37,14 @@ public class LoggerNameUtil {
    * @return
    */
   public static int getSeparatorIndexOf(String name, int fromIndex) {
-      int dotIndex = name.indexOf(CoreConstants.DOT, fromIndex);
-      int dollarIndex = name.indexOf(CoreConstants.DOLLAR, fromIndex);
-      if (dotIndex == -1 && dollarIndex == -1) return -1;
-      if (dotIndex == -1) return dollarIndex;
-      if (dollarIndex == -1) return dotIndex;
-      return dotIndex < dollarIndex ? dotIndex : dollarIndex;
+    int dotIndex = name.indexOf(CoreConstants.DOT, fromIndex);
+    int dollarIndex = name.indexOf(CoreConstants.DOLLAR, fromIndex);
+
+    if (dotIndex == -1 && dollarIndex == -1) return -1;
+    if (dotIndex == -1) return dollarIndex;
+    if (dollarIndex == -1) return dotIndex;
+
+    return dotIndex < dollarIndex ? dotIndex : dollarIndex;
   }
 
   public static List<String> computeNameParts(String loggerName) {
