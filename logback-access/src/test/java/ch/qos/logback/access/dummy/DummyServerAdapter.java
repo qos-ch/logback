@@ -34,6 +34,10 @@ public class DummyServerAdapter implements ServerAdapter {
   public int getStatusCode() {
     return response.getStatus();
   }
+
+  public long getRequestTimestamp() {
+    return -1;
+  }
   
   public Map<String, String> buildResponseHeaderMap() {
     return response.headerMap;
