@@ -74,5 +74,19 @@ public class LoggerNameUtilTest {
     assertEquals(witnessList, partList);
   }
 
+  @Test
+  public void supportNestedClassesWithNestedDot() {
+    //LOGBACK-384
+    List<String> witnessList = new ArrayList<String>();
+    witnessList.add("com");
+    witnessList.add("foo");
+    witnessList.add("Bar");
+    witnessList.add("Nested");
+    witnessList.add("dot");
+
+    List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested.dot");
+    assertEquals(witnessList, partList);
+  }
+
 
 }
