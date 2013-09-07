@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -51,11 +51,10 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       if ("full".equals(lengthStr)) {
         lengthOption = Integer.MAX_VALUE;
       } else if ("short".equals(lengthStr)) {
-        lengthOption = 2;
+        lengthOption = 1;
       } else {
         try {
-          // we add one because, printing starts at offset 1
-          lengthOption = Integer.parseInt(lengthStr) + 1;
+          lengthOption = Integer.parseInt(lengthStr);
         } catch (NumberFormatException nfe) {
           addError("Could not parse [" + lengthStr + "] as an integer");
           lengthOption = Integer.MAX_VALUE;

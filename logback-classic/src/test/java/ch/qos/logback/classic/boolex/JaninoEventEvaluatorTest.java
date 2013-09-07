@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -204,7 +204,7 @@ public class JaninoEventEvaluatorTest {
       } catch (EvaluationException e) {
       }
     }
-    // after a few attempts the evaluator should stop
+    // after a few attempts the evaluator should processPriorToRemoval
     assertFalse(jee.isStarted());
 
   }

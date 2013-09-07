@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -107,14 +107,14 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
   }
 
-  protected Pattern initialPattern() {
-    return new Pattern();
+  protected ElementPath initialElementPath() {
+    return new ElementPath();
   }
 
   protected void buildInterpreter() {
     RuleStore rs = new SimpleRuleStore(context);
     addInstanceRules(rs);
-    this.interpreter = new Interpreter(context, rs, initialPattern());
+    this.interpreter = new Interpreter(context, rs, initialElementPath());
     InterpretationContext interpretationContext = interpreter.getInterpretationContext();
     interpretationContext.setContext(context);
     addImplicitRules(interpreter);
@@ -130,8 +130,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
       informContextOfURLUsedForConfiguration(getContext(), null);
     }
-    SaxEventRecorder recorder = new SaxEventRecorder();
-    recorder.setContext(context);
+    SaxEventRecorder recorder = new SaxEventRecorder(context);
     recorder.recordEvents(inputSource);
     doConfigure(recorder.saxEventList);
     // no exceptions a this level

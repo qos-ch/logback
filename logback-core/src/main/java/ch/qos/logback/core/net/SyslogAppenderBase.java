@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -33,7 +33,6 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
   final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL
       + "#syslog_layout";
-  final static int MSG_SIZE_LIMIT = 256 * 1024;
 
   Layout<E> layout;
   String facilityStr;
@@ -41,6 +40,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   protected String suffixPattern;
   SyslogOutputStream sos;
   int port = SyslogConstants.SYSLOG_PORT;
+  int maxMessageSize = 65000;
 
   public void start() {
     int errorCount = 0;
@@ -84,8 +84,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       if(msg == null) {
         return;
       }
-      if (msg.length() > MSG_SIZE_LIMIT) {
-        msg = msg.substring(0, MSG_SIZE_LIMIT);
+      if (msg.length() > maxMessageSize) {
+        msg = msg.substring(0, maxMessageSize);
       }
       sos.write(msg.getBytes());
       sos.flush();
@@ -209,6 +209,25 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
    */
   public void setPort(int port) {
     this.port = port;
+  }
+
+  /**
+   * 
+   * @return
+   */
+  public int getMaxMessageSize() {
+    return maxMessageSize;
+  }
+
+  /**
+   * Maximum size for the syslog message (in characters); messages
+   * longer than this are truncated. The default value is 65400 (which
+   * is near the maximum for syslog-over-UDP). Note that the value is
+   * characters; the number of bytes may vary if non-ASCII characters
+   * are present.
+   */
+  public void setMaxMessageSize(int maxMessageSize) {
+    this.maxMessageSize = maxMessageSize;
   }
 
   public Layout<E> getLayout() {

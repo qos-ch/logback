@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,6 +15,7 @@ package ch.qos.logback.access.sift;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.xml.sax.Attributes;
 
@@ -39,8 +40,9 @@ public class SiftAction  extends Action implements InPlayListener {
     ic.removeInPlayListener(this);
     Object o = ic.peekObject();
     if (o instanceof SiftingAppender) {
-      SiftingAppender siftingAppender = (SiftingAppender) o; 
-      AppenderFactory appenderFactory = new AppenderFactory(seList, siftingAppender.getDiscriminatorKey());
+      SiftingAppender siftingAppender = (SiftingAppender) o;
+      Map<String, String> propertyMap = ic.getCopyOfPropertyMap();
+      AppenderFactoryUsingJoran appenderFactory = new AppenderFactoryUsingJoran(seList, siftingAppender.getDiscriminatorKey(), propertyMap);
       siftingAppender.setAppenderFactory(appenderFactory);
     }
   }

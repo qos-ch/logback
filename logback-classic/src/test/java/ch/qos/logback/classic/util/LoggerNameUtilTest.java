@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -74,5 +74,29 @@ public class LoggerNameUtilTest {
     assertEquals(witnessList, partList);
   }
 
+  @Test
+  public void supportNestedClassesWithNestedDot() {
+    //LOGBACK-384
+    List<String> witnessList = new ArrayList<String>();
+    witnessList.add("com");
+    witnessList.add("foo");
+    witnessList.add("Bar");
+    witnessList.add("Nested");
+    witnessList.add("dot");
+
+    List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested.dot");
+    assertEquals(witnessList, partList);
+  }
+
+  @Test
+  public void supportNestedClassesAtBeginning() {
+    List<String> witnessList = new ArrayList<String>();
+    witnessList.add("foo");
+    witnessList.add("Nested");
+    witnessList.add("bar");
+
+    List<String> partList = LoggerNameUtil.computeNameParts("foo$Nested.bar");
+    assertEquals(witnessList, partList);
+  }
 
 }

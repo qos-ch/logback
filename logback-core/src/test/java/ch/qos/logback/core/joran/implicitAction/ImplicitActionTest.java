@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -39,8 +39,8 @@ public class ImplicitActionTest {
   @Before
   public void setUp() throws Exception {
     fruitContext.setName("fruits");
-    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
-    rulesMap.put(new Pattern("/context/"), new FruitContextAction());
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    rulesMap.put(new ElementSelector("/context/"), new FruitContextAction());
     simpleConfigurator = new SimpleConfigurator(rulesMap);
     simpleConfigurator.setContext(fruitContext);
   }

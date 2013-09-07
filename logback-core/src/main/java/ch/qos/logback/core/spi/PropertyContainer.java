@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,7 +13,11 @@
  */
 package ch.qos.logback.core.spi;
 
+import java.util.Map;
+
 public interface PropertyContainer {
 
   String getProperty(String key);
+  
+  Map<String, String> getCopyOfPropertyMap();
 }

@@ -34,13 +34,11 @@ import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class TimeBasedRollingWithArchiveRemoval_Test {
+public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRollingTests {
   String MONTHLY_DATE_PATTERN = "yyyy-MM";
   String MONTHLY_CRONOLOG_DATE_PATTERN = "yyyy/MM";
   final String DAILY_CRONOLOG_DATE_PATTERN = "yyyy/MM/dd";
 
-  Context context = new ContextBase();
-  EchoEncoder<Object> encoder = new EchoEncoder<Object>();
 
   RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
   TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
@@ -48,28 +46,21 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
   // by default tbfnatp is an instance of DefaultTimeBasedFileNamingAndTriggeringPolicy
   TimeBasedFileNamingAndTriggeringPolicy<Object> tbfnatp = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
 
-
   long MILLIS_IN_MINUTE = 60 * 1000;
   long MILLIS_IN_HOUR = 60 * MILLIS_IN_MINUTE;
   long MILLIS_IN_DAY = 24 * MILLIS_IN_HOUR;
   long MILLIS_IN_MONTH = (long) ((365.242199 / 12) * MILLIS_IN_DAY);
   int MONTHS_IN_YEAR = 12;
 
-  int diff;
-  String randomOutputDir;
   int slashCount = 0;
-
-  long now = System.currentTimeMillis();
 
   @Before
   public void setUp() {
-    context.setName("test");
-    diff = RandomUtil.getPositiveInt();
-    randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
+    super.setUp();
   }
 
 
-  int computeSlashCount(String datePattern) {
+  private int computeSlashCount(String datePattern) {
     if (datePattern == null)
       return 0;
     else {
@@ -95,10 +86,13 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     int maxHistory = 2;
     String fileNamePattern = randomOutputDir + "/%d{" + MONTHLY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip";
 
-    long startTime = now;
-    long endTime = logOverMultiplePeriods(now, fileNamePattern, MILLIS_IN_MONTH, maxHistory, numPeriods, 0, 0);
+    long startTime = currentTime;
+    long endTime = logOverMultiplePeriodsContinuously(currentTime, fileNamePattern, MILLIS_IN_MONTH, maxHistory,
+            numPeriods);
+    System.out.println("randomOutputDir:" + randomOutputDir);
     System.out.println("start:" + startTime + ", end=" + endTime);
     int differenceInMonths = RollingCalendar.diffInMonths(startTime, endTime);
+    System.out.println("differenceInMonths:" + differenceInMonths);
     Calendar startTimeAsCalendar = Calendar.getInstance();
     startTimeAsCalendar.setTimeInMillis(startTime);
     int indexOfStartPeriod = startTimeAsCalendar.get(Calendar.MONTH);
@@ -111,10 +105,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
                              int numInactivityPeriods) {
     slashCount = computeSlashCount(DAILY_DATE_PATTERN);
     logOverMultiplePeriods(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt", MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
-    //StatusPrinter.print(context)
     check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity + numInactivityPeriods));
   }
-
 
   @Test
   public void basicDailyRollover() {
@@ -122,7 +114,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     int simulatedNumberOfPeriods = 20 * 3;
     int startInactivity = 0;
     int numInactivityPeriods = 0;
-    generateDailyRollover(now, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
+    generateDailyRollover(currentTime, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
   }
 
   // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
@@ -133,7 +125,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     int simulatedNumberOfPeriods = 15;
     int startInactivity = 6;
     int numInactivityPeriods = 3;
-    generateDailyRollover(now, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
+    generateDailyRollover(currentTime, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
   }
 
   @Test
@@ -142,7 +134,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     int simulatedNumberOfPeriods = 70;
     int startInactivity = 30;
     int numInactivityPeriods = 1;
-    generateDailyRollover(now, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
+    generateDailyRollover(currentTime, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
   }
 
   @Test
@@ -151,25 +143,25 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     int simulatedNumberOfPeriods = 10;
     int startInactivity = 3;
     int numInactivityPeriods = 4;
-    generateDailyRollover(now, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
+    generateDailyRollover(currentTime, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
   }
 
   @Test
   public void dailyRolloverWithSecondPhase() {
     slashCount = computeSlashCount(DAILY_DATE_PATTERN);
     int maxHistory = 5;
-    long endTime = logOverMultiplePeriods(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt",
-            MILLIS_IN_DAY, maxHistory, maxHistory * 2, 0, 0);
-    logOverMultiplePeriods(endTime + MILLIS_IN_DAY * 10, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt",
-            MILLIS_IN_DAY, maxHistory, maxHistory, 0, 0);
+    long endTime = logOverMultiplePeriodsContinuously(currentTime, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt",
+            MILLIS_IN_DAY, maxHistory, maxHistory * 2);
+    logOverMultiplePeriodsContinuously(endTime + MILLIS_IN_DAY * 10, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt",
+            MILLIS_IN_DAY, maxHistory, maxHistory);
     check(expectedCountWithoutFolders(maxHistory));
   }
 
   @Test
   public void dailyCronologRollover() {
     slashCount = computeSlashCount(DAILY_CRONOLOG_DATE_PATTERN);
-    logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip",
-            MILLIS_IN_DAY, 8, 8 * 3, 0, 0);
+    logOverMultiplePeriodsContinuously(currentTime, randomOutputDir + "/%d{" + DAILY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip",
+            MILLIS_IN_DAY, 8, 8 * 3);
     int expectedDirMin = 9 + slashCount;
     int expectDirMax = expectedDirMin + 1 + 1;
     expectedFileAndDirCount(9, expectedDirMin, expectDirMax);
@@ -181,8 +173,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     sizeAndTimeBasedFNATP.setMaxFileSize("10000");
     tbfnatp = sizeAndTimeBasedFNATP;
     slashCount = computeSlashCount(DAILY_DATE_PATTERN);
-    logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip", MILLIS_IN_DAY,
-            5, 5 * 4, 0, 0);
+    logOverMultiplePeriodsContinuously(currentTime, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i.zip", MILLIS_IN_DAY,
+            5, 5 * 4);
     checkPatternCompliance(5 + 1 + slashCount, "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)(.zip)?");
   }
 
@@ -192,8 +184,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     sizeAndTimeBasedFNATP.setMaxFileSize("10000");
     tbfnatp = sizeAndTimeBasedFNATP;
     slashCount = 1;
-    logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip", MILLIS_IN_DAY,
-            5, 5 * 4, 0, 0);
+    logOverMultiplePeriodsContinuously(currentTime, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip", MILLIS_IN_DAY,
+            5, 5 * 4);
     checkDirPatternCompliance(6);
   }
 
@@ -205,25 +197,25 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     slashCount = 1;
     int maxHistory = 5;
     int simulatedNumberOfPeriods = maxHistory * 4;
-    long endTime = logOverMultiplePeriods(now, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY,
-            maxHistory, 3, 0, 0);
-    logOverMultiplePeriods(endTime + MILLIS_IN_DAY * 7, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i",
-            MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods, 0, 0);
+    long endTime = logOverMultiplePeriodsContinuously(currentTime, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i", MILLIS_IN_DAY,
+            maxHistory, 3);
+    logOverMultiplePeriodsContinuously(endTime + MILLIS_IN_DAY * 7, randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i",
+            MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods);
     checkDirPatternCompliance(maxHistory + 1);
   }
 
 
-  void logOncePeriod(long currentTime, String fileNamePattern, int maxHistory)  {
-    buildRollingFileAppender(currentTime, fileNamePattern, maxHistory, true);
+  void logOncePeriod(long currentTime, String fileNamePattern, int maxHistory) {
+    buildRollingFileAppender(currentTime, fileNamePattern, maxHistory, DO_CLEAN_HISTORY_ON_START);
     rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
     rfa.stop();
   }
 
   @Test
   public void cleanHistoryOnStart() {
-    long  now = this.now;
-    String fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt" ;
-    int maxHistory = 3 ;
+    long now = this.currentTime;
+    String fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt";
+    int maxHistory = 3;
     for (int i = 0; i <= 5; i++) {
       logOncePeriod(now, fileNamePattern, maxHistory);
       now = now + MILLIS_IN_DAY;
@@ -231,7 +223,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
     StatusPrinter.print(context);
     check(expectedCountWithoutFolders(maxHistory));
   }
-
 
 
   int expectedCountWithoutFolders(int maxHistory) {
@@ -268,10 +259,16 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
   boolean DO_NOT_CLEAN_HISTORY_ON_START = false;
 
 
-  long logOverMultiplePeriods(long currentTime, String fileNamePattern, long periodDurationInMillis, int maxHistory,
+  long logOverMultiplePeriodsContinuously(long simulatedTime, String fileNamePattern, long periodDurationInMillis, int maxHistory,
+                                          int simulatedNumberOfPeriods) {
+    return logOverMultiplePeriods(simulatedTime, fileNamePattern, periodDurationInMillis, maxHistory,
+            simulatedNumberOfPeriods, 0, 0);
+  }
+
+  long logOverMultiplePeriods(long simulatedTime, String fileNamePattern, long periodDurationInMillis, int maxHistory,
                               int simulatedNumberOfPeriods, int startInactivity,
                               int numInactivityPeriods) {
-    buildRollingFileAppender(currentTime, fileNamePattern, maxHistory, DO_NOT_CLEAN_HISTORY_ON_START);
+    buildRollingFileAppender(simulatedTime, fileNamePattern, maxHistory, DO_NOT_CLEAN_HISTORY_ON_START);
     int ticksPerPeriod = 512;
     int runLength = simulatedNumberOfPeriods * ticksPerPeriod;
     int startInactivityIndex = 1 + startInactivity * ticksPerPeriod;
@@ -282,36 +279,22 @@ public class TimeBasedRollingWithArchiveRemoval_Test {
       if (i < startInactivityIndex || i > endInactivityIndex) {
         rfa.doAppend("Hello ----------------------------------------------------------" + i);
       }
-      tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime(), tickDuration));
-      if (i % (ticksPerPeriod / 2) == 0) {
-        waitForCompression(tbrp);
-      }
+      tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime(),
+              tickDuration));
+      add(tbrp.future);
+      waitForJobsToComplete();
     }
-
-    //println("Last date" + new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
-    waitForCompression(tbrp);
     rfa.stop();
     return tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
   }
 
   boolean extraFolder(int numPeriods, int periodsPerEra, int beginPeriod, int maxHistory) {
-    //println("numPeriods=" + numPeriods + ", beginPeriod=" + beginPeriod + ", maxHistory=" + maxHistory)
     int valueOfLastMonth = ((beginPeriod) + numPeriods) % periodsPerEra;
     return (valueOfLastMonth < maxHistory);
   }
 
-  long addTime(long currentTime, long timeToWait) {
-    return currentTime + timeToWait;
-  }
-
-  void waitForCompression(TimeBasedRollingPolicy tbrp) {
-    if (tbrp.future != null && !tbrp.future.isDone()) {
-      try {
-        tbrp.future.get(1000, TimeUnit.MILLISECONDS);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
+  long addTime(long time, long timeToWait) {
+    return time + timeToWait;
   }
 
 

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,14 +13,11 @@
  */
 package ch.qos.logback.access.db;
 
-import junit.framework.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
-public class PackageTest extends TestCase {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({DBAppenderHSQLTest.class, DBAppenderIntegrationTest.class})
+public class PackageTest  {
 
-  public static Test suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTest(new JUnit4TestAdapter(DBAppenderHSQLTest.class));
-    suite.addTest(new JUnit4TestAdapter(DBAppenderIntegrationTest.class));
-    return suite;
-  }
 }

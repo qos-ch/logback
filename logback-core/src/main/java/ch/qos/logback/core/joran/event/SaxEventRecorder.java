@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -22,6 +22,9 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import static ch.qos.logback.core.CoreConstants.XML_PARSING;
+
+import ch.qos.logback.core.joran.spi.ElementPath;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
@@ -31,7 +34,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.status.Status;
@@ -40,13 +42,13 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
   final ContextAwareImpl cai;
 
-  public SaxEventRecorder() {
-    cai = new ContextAwareImpl(this);
+  public SaxEventRecorder(Context context) {
+    cai = new ContextAwareImpl(context, this);
   }
 
   public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
   Locator locator;
-  Pattern globalPattern = new Pattern();
+  ElementPath globalElementPath = new ElementPath();
 
   final public void recordEvents(InputStream inputStream) throws JoranException {
     recordEvents(new InputSource(inputStream));
@@ -102,8 +104,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
       Attributes atts) {
 
     String tagName = getTagName(localName, qName);
-    globalPattern.push(tagName);
-    Pattern current = (Pattern) globalPattern.clone();
+    globalElementPath.push(tagName);
+    ElementPath current = globalElementPath.duplicate();
     saxEventList.add(new StartEvent(current, namespaceURI, localName, qName,
         atts, getLocator()));
   }
@@ -138,7 +140,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
   public void endElement(String namespaceURI, String localName, String qName) {
     saxEventList
         .add(new EndEvent(namespaceURI, localName, qName, getLocator()));
-    globalPattern.pop();
+    globalElementPath.pop();
   }
 
   String getTagName(String localName, String qName) {

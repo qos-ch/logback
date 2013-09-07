@@ -534,65 +534,72 @@ WARN  [main]: Message 2</p>
         <td class="word" name="date">
           <b>d</b>{<em>pattern</em>} <br /> 
           <b>date</b>{<em>pattern</em>} <br />
+          <b>d</b>{<em>pattern</em>, <em>timezone</em>} <br />
+          <b>date</b>{<em>pattern</em>,&nbsp;<em>timezone</em>} <br />
         </td>
         <td>
-					<p>Used to output the date of the logging event.  The date
-					conversion word admits a pattern string as an option. The
-					pattern syntax is compatible with the format accepted by <a
-					href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
+         <p>Used to output the date of the logging event.  The date
+         conversion word admits a pattern string as a parameter. The
+         pattern syntax is compatible with the format accepted by <a
+         href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
 
-					<p>You can specify the string <em>"ISO8601"</em> for the
-					ISO8601 date format. Note that the %date conversion word
-					defaults to the <a
-					href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date
-					format</a> in the absence of a pattern option.</p>
+         <p>You can specify the string <em>"ISO8601"</em> for the
+         ISO8601 date format. Note that the %date conversion word
+         defaults to the <a
+         href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date
+         format</a> in the absence of a pattern parameter.</p>
 
-					<p>Here are some sample option values. They assume that the
-					actual date is Friday 20th of October, 2006 and that the
-					author has returned to working on this document just after
-					lunch.</p>
+         <p>Here are some sample parameter values. They assume that
+         the actual date is Friday 20th of October, 2006 and that the
+         author has returned to working on this document just after
+         lunch.</p>
 					
-					<table class="bodyTable dark" cellpadding="8">
-						<tr>
-							<th>Conversion Pattern</th>
-							<th>Result</th>
-						</tr>
-            <tr>
-							<td>%d</td>
-							<td>2006-10-20 14:06:49,812</td>
-						</tr>
-						<tr>
-							<td>%date</td>
-							<td>2006-10-20 14:06:49,812</td>
-						</tr>
-						<tr>
-							<td>%date{ISO8601}</td>
-							<td>2006-10-20 14:06:49,812</td>
-						</tr>			
-						<tr>
-							<td>%date{HH:mm:ss.SSS}</td>
-							<td>14:06:49.812</td>
-						</tr>
-						<tr>
-							<td>%date{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss.SSS}</td>
-							<td>20 oct. 2006;14:06:49.812	</td>
-						</tr>
-					</table>
-
-          <p>In addition to the date pattern, this converter admits a
-          second option as the timezone. Thus, the
-          '%date{HH:mm:ss.SSS,Australia/Perth} would print the time in
-          the time zone of Perth, Australia, the world's most isolated
-          city.
+         <table class="bodyTable dark" cellpadding="8">
+           <tr>
+             <th>Conversion Pattern</th>
+            <th>Result</th>
+           </tr>
+           <tr>
+             <td>%d</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date{ISO8601}</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>			
+           <tr>
+             <td>%date{HH:mm:ss.SSS}</td>
+             <td>14:06:49.812</td>
+           </tr>
+           <tr>
+             <td>%date{dd&nbsp;MMM&nbsp;yyyy;HH:mm:ss.SSS}</td>
+             <td>20 oct. 2006;14:06:49.812	</td>
+           </tr>
+         </table>
+         
+          <p>The second parameter specifies a timezone. For example,
+          the '%date{HH:mm:ss.SSS,&nbsp;Australia/Perth} would print
+          the time in the time zone of Perth, Australia, the world's
+          most isolated city.  Note that in the absence of the
+          timezone parameter, the default timezone of the host Java
+          platform is used.  If the specified timezone identifier is
+          unknown or misspelled, the GMT timezone is assumed as
+          dictated by the <a
+          href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">TimeZone.getTimeZone(String)</a>
+          method specification.
           </p>
 
-          <p>Given that the comma ',' character is interpreted as the
-          option separator, the pattern string [HH:mm:ss,SSS] will
-          print the time in the [SSS] time zone which does not
-          exist. Thus, the time will be printed in the default GMT
-          timezone. If you wish to include a comma in your date
-          pattern, then simply enclose the pattern between quotes. For
-          example, %date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
+          <p><span class="label">common error</span> Given that the
+          comma ',' character is interpreted as the parameter
+          separator, the pattern <code>HH:mm:ss,SSS</code> will be
+          interpreted as the pattern <code>HM:mm:ss</code> and the
+          timezone <code>SSS</code>. If you wish to include a comma in
+          your date pattern, then simply enclose the pattern between
+          quotes. For example, %date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
           </p>
 				</td>
 			</tr>
@@ -753,8 +760,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 
 			<tr>
 				<td class="word" name="mdc">
-					<b>X</b>{<em>key</em>} <br /> 
-					<b>mdc</b>{<em>key</em>} <br />
+					<b>X</b>{<em>key:-defaultVal</em>} <br /> 
+					<b>mdc</b>{<em>key:-defaultVal</em>} <br />
 				</td>
 
 				<td>
@@ -766,16 +773,19 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					<p>If the <b>mdc</b> conversion word is followed by a key
 					between braces, as in <b>%mdc{userid}</b>, then the MDC
 					value corresponding to the key 'userid' will be output. If
-					the that value is null, the empty string is output.
+					the value is null, then the <a
+					href="configuration.html#defaultValuesForVariables">default
+					value</a> speficied after the <b>:-</b> operator is
+					output. If no deault value is specified than the empty
+					string is output.
 					</p>
 
-					<p>If no option is given, then the entire content of the MDC
+					<p>If no key is given, then the entire content of the MDC
 					will be output in the format "key1=val1, key2=val2".
 					</p>
 
 					<p>See the <a href="mdc.html">chapter on MDC</a> for more
-					details on the subject.
-					</p>
+					details on the subject.</p>
 
 				</td>
 			</tr>
@@ -1676,6 +1686,8 @@ java.lang.Exception: display
 		<p>Building a custom conversion specifier consists of two steps.
     </p>
 		
+    <h4>Step 1</h4>
+
 		<p>First, you must extend the <code>ClassicConverter</code>
 		class. <a
 		href="../xref/ch/qos/logback/classic/pattern/ClassicConverter.html">
@@ -1688,9 +1700,8 @@ java.lang.Exception: display
 		<code>ILoggingEvent</code> and returns it as a String. It might
 		abbreviate the logger name in the process.</p>
 		
-		<p>Let us say that our customized <code>ClassicConverter</code>
-		colors the level of the logging event, according to ANSI terminal
-		conventions. Here is a possible implementation:</p>
+		<p>Here is a customer converter which returns the time elapsed
+		since its creaton in nanoseconds:</p>
 		
 <em> Example: Sample Converter Example 
 <a href="../xref/chapters/layouts/MySampleConverter.html">
@@ -1706,12 +1717,14 @@ java.lang.Exception: display
   <b>}</b>
 }</pre>
 
-		<p>This implementation is relatively straightforward. The
+		<p>This implementation is pretty straightforward. The
 		<code>MySampleConverter</code> class extends
 		<code>ClassicConverter</code>, and implements the
 		<code>convert</code> method which returns the number of
 		nano-seconds elapsed since its creation.
 		</p>
+
+    <h4>Step 2</h4>
 
 		<p>In the second step, we must let logback know about the new
 		<code>Converter</code>. For this purpose, we need to declare the

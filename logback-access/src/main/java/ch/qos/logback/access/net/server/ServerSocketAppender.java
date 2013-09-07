@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,7 +15,7 @@ package ch.qos.logback.access.net.server;
 
 import ch.qos.logback.access.net.AccessEventPreSerializationTransformer;
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.net.server.ServerSocketAppenderBase;
+import ch.qos.logback.core.net.server.AbstractServerSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -26,7 +26,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * @author Carl Harris
  */
 public class ServerSocketAppender
-    extends ServerSocketAppenderBase<IAccessEvent> {
+    extends AbstractServerSocketAppender<IAccessEvent> {
 
   private static final PreSerializationTransformer<IAccessEvent> pst =
       new AccessEventPreSerializationTransformer();

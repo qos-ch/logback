@@ -10,9 +10,11 @@
     <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
 
   </head>
-  <body>
+  <body onload="decorate();">
     <script type="text/javascript">prefix='';</script>
     <script src="templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/jquery-min.js"></script>
+    <script type="text/javascript" src="js/decorator.js"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="templates/left.js" type="text/javascript"></script>
@@ -31,16 +33,14 @@
     will probably love logback.</p>
 
 
-    <h3><a name="fasterImpl" href="#fasterImpl"><span
-    class="anchor"/></a>Faster implementation</h3>
+    <h3 class="doAnchor" name="fasterImpl">Faster implementation</h3>
 
     <p>Based on our previous work on log4j, logback internals have
     been re-written to perform about ten times faster on certain
     critical execution paths. Not only are logback components faster,
     they have a smaller memory footprint as well.</p>
 
-    <h3><a name="tdd" href="#tdd"><span class="anchor"/></a>Extensive
-    battery of tests</h3>
+    <h3 class="doAnchor" name="tdd">Extensive battery of tests</h3>
 
     <p>Logback comes with a very extensive battery of tests developed
     over the course of several years and untold hours of work. While
@@ -51,8 +51,8 @@
     conditions.
     </p>
     
-    <h3><a name="slf4j" href="#slf4j"><span
-    class="anchor"/></a>logback-classic speaks SLF4J natively</h3>
+    <h3 class="doAnchor" name="slf4j">logback-classic speaks SLF4J
+    natively</h3>
 
     <p>Since the <code>Logger</code> class in logback-classic
     implements the SLF4J API natively, you incur zero overhead when
@@ -65,14 +65,13 @@
     in switching logging frameworks.
     </p>
     
-    <h3><a name="docs" href="#docs"><span
-    class="anchor"/></a>Extensive documentation</h3>
+    <h3 class="doAnchor" name="docs">Extensive documentation</h3>
     
     <p>Logback ships with detailed and constantly updated
     documentation.</p>
 
-    <h3><a name="DSL" href="#DSL"><span
-    class="anchor"/></a>Configuration files in XML or Groovy</h3>
+    <h3 class="doAnchor" name="DSL">Configuration files in XML or
+    Groovy</h3>
 
     <p>The traditional way of configuring logback is via an XML
     file. Most of the examples in the documentation use this XML
@@ -90,9 +89,8 @@
     logback.groovy</a>.
     </p>
 
-    <h3><a name="autoScan" href="#autoScan"><span
-    class="anchor"/></a>Automatic reloading of configuration
-    files</h3>
+    <h3 class="doAnchor" name="autoScan">Automatic reloading of
+    configuration files</h3>
 
     <p>Logback-classic can <a
     href="manual/configuration.html#autoScan">automatically reload its
@@ -104,8 +102,8 @@
     of a separate thread for scanning.
    </p>
 
-    <h3><a name="grace" href="#grace"><span
-    class="anchor"/></a>Graceful recovery from I/O failures</h3>
+    <h3 class="doAnchor" name="grace">Graceful recovery from I/O
+    failures</h3>
 
     <p>Logback's <code>FileAppender</code> and all its sub-classes,
     including <code>RollingFileAppender</code>, can gracefully recover
@@ -116,8 +114,8 @@
     from the previous error condition.
     </p>
     
-    <h3><a name="maxHistory" href="#maxHistory"><span
-    class="anchor"/></a>Automatic removal of old log archives</h3>
+    <h3 class="doAnchor" name="maxHistory">Automatic removal of old
+    log archives</h3>
 
     <p>By setting the <span class="option">maxHistory</span> property
     of <a
@@ -131,9 +129,8 @@
     files older than 12 months will be automatically removed.
     </p>
 
-    <h3><a name="compression" href="#compression"><span
-    class="anchor"/></a>Automatic compression of archived log
-    files</h3>
+    <h3 class="doAnchor" name="compression">Automatic compression of
+    archived log files</h3>
 
     <p><a
     href="manual/appenders.html#RollingFileAppender">RollingFileAppender</a>
@@ -143,8 +140,7 @@
     duration of the compression.
     </p>
 
-    <h3><a name="prudent" href="#prudent"><span
-    class="anchor"/></a>Prudent mode</h3>
+    <h3 class="doAnchor" name="prudent">Prudent mode</h3>
 
     <p>In <a href="manual/appenders.html#prudent">prudent mode</a>,
     multiple <code>FileAppender</code> instances running on multiple
@@ -153,17 +149,15 @@
     <code>RollingFileAppender</code>.
     </p>
 
-    <h3><a name="lilith" href="#lilith"><span
-    class="anchor"/></a>Lilith</h3>
+    <h3 class="doAnchor" name="lilith">Lilith</h3>
 
     <p><a href="http://lilith.huxhorn.de/">Lilith</a> is a logging and
     access event viewer for logback. It is comparable to log4j's
     chainsaw, except that Lilith is designed to handle large amounts of
     logging data without flinching.</p>
   
-    <h3><a name="conditional" href="#conditional"><span
-    class="anchor"/></a>Conditional processing of configuration
-    files</h3>
+    <h3 class="doAnchor" name="conditional">Conditional processing of
+    configuration files</h3>
 
     <p>Developers often need to juggle between several logback
     configuration files targeting different environments such as
@@ -178,8 +172,7 @@
     </p>
 
 
-    <h3><a name="filters" href="#filters"><span
-    class="anchor"/></a>Filters</h3>
+    <h3 class="doAnchor" name="filters">Filters</h3>
 
     <p>Logback comes with a wide array of <a
     href="manual/filters.html">filtering capabilities</a> going much
@@ -212,8 +205,7 @@
     </p>
     
 
-    <h3><a name="sift" href="#sift"><span
-    class="anchor"/></a>SiftingAppender</h3>
+    <h3 class="doAnchor" name="sift">SiftingAppender</h3>
     
     <p><a
     href="manual/appenders.html#SiftingAppender">SiftingAppender</a>
@@ -224,9 +216,8 @@
     user go into distinct log files, one log file per user.
     </p>
     
-    <h3><a name="packagingData" href="#packagingData"><span
-    class="anchor"/></a>Stack traces with packaging data
-    </h3>
+    <h3 class="doAnchor" name="packagingData">Stack traces with
+    packaging data</h3>
 
     <p>When logback prints an exception, the stack trace will include
     packaging data. Here is a sample stack trace generated by the <a
@@ -264,9 +255,9 @@ java.lang.Exception: 99 is invalid
     their IDE</a>.
     </p>
 
-    <h3><a name="logbackAccess" href="#logbackAccess"><span
-    class="anchor"/></a>Logback-access, i.e. HTTP-access logging with
-    brains, is an integral part of logback</h3>
+    <h3 class="doAnchor" name="logbackAccess">Logback-access,
+    i.e. HTTP-access logging with brains, is an integral part of
+    logback</h3>
 
     <p>Last but not least, the logback-access module, part of the
     logback distribution, integrates with Servlet containers such as
@@ -275,8 +266,7 @@ java.lang.Exception: 99 is invalid
     design, all the logback-classic features you love are
     available in logback-access as well.</p>
 
-    <h3><a name="inSummary" href="#inSummary"><span
-    class="anchor"/></a>In summary</h3>
+    <h3 class="doAnchor" name="inSummary">In summary</h3>
 
     <p>We have listed a number of reasons for preferring logback over
     log4j. Given that logback builds upon on our previous work on

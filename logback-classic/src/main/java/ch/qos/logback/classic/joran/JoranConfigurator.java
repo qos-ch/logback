@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -25,11 +25,11 @@ import ch.qos.logback.core.joran.conditional.ElseAction;
 import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.conditional.ThenAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 /**
- * This JoranConfiguratorclass adds rules specific to logback-classic.
+ * JoranConfigurator class adds rules specific to logback-classic.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -40,54 +40,51 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     // parent rules already added
     super.addInstanceRules(rs);
 
-    rs.addRule(new Pattern("configuration"), new ConfigurationAction());
+    rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
 
-    rs.addRule(new Pattern("configuration/contextName"),
+    rs.addRule(new ElementSelector("configuration/contextName"),
         new ContextNameAction());
-      rs.addRule(new Pattern("configuration/contextListener"),
+      rs.addRule(new ElementSelector("configuration/contextListener"),
         new LoggerContextListenerAction());
-    rs.addRule(new Pattern("configuration/insertFromJNDI"),
+    rs.addRule(new ElementSelector("configuration/insertFromJNDI"),
         new InsertFromJNDIAction());
-    rs.addRule(new Pattern("configuration/evaluator"), new EvaluatorAction());
+    rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());
 
-    rs.addRule(new Pattern("configuration/appender/sift"), new SiftAction());
-    rs.addRule(new Pattern("configuration/appender/sift/*"), new NOPAction());
+    rs.addRule(new ElementSelector("configuration/appender/sift"), new SiftAction());
+    rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
 
-    rs.addRule(new Pattern("configuration/logger"), new LoggerAction());
-    rs.addRule(new Pattern("configuration/logger/level"), new LevelAction());
+    rs.addRule(new ElementSelector("configuration/logger"), new LoggerAction());
+    rs.addRule(new ElementSelector("configuration/logger/level"), new LevelAction());
 
-    rs.addRule(new Pattern("configuration/root"), new RootLoggerAction());
-    rs.addRule(new Pattern("configuration/root/level"), new LevelAction());
-    rs.addRule(new Pattern("configuration/logger/appender-ref"),
+    rs.addRule(new ElementSelector("configuration/root"), new RootLoggerAction());
+    rs.addRule(new ElementSelector("configuration/root/level"), new LevelAction());
+    rs.addRule(new ElementSelector("configuration/logger/appender-ref"),
         new AppenderRefAction());
-    rs.addRule(new Pattern("configuration/root/appender-ref"),
+    rs.addRule(new ElementSelector("configuration/root/appender-ref"),
         new AppenderRefAction());
     
     // add if-then-else support
-    rs.addRule(new Pattern("*/if"), new IfAction());
-    rs.addRule(new Pattern("*/if/then"), new ThenAction());
-    rs.addRule(new Pattern("*/if/then/*"), new NOPAction());
-    rs.addRule(new Pattern("*/if/else"), new ElseAction());
-    rs.addRule(new Pattern("*/if/else/*"), new NOPAction());   
+    rs.addRule(new ElementSelector("*/if"), new IfAction());
+    rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
+    rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
+    rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
+    rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
     
     // add jmxConfigurator only if we have JMX available.
     // If running under JDK 1.4 (retrotranslateed logback) then we
     // might not have JMX.
     if (PlatformInfo.hasJMXObjectName()) {
-      rs.addRule(new Pattern("configuration/jmxConfigurator"),
+      rs.addRule(new ElementSelector("configuration/jmxConfigurator"),
           new JMXConfiguratorAction());
     }
-    rs.addRule(new Pattern("configuration/include"), new IncludeAction());
+    rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
 
-    rs.addRule(new Pattern("configuration/consolePlugin"),
+    rs.addRule(new ElementSelector("configuration/consolePlugin"),
         new ConsolePluginAction());
     
-    rs.addRule(new Pattern("configuration/server"),
-        new ServerAction());
-
-    rs.addRule(new Pattern("configuration/remote"),
-        new SocketRemoteAction());
-
+    rs.addRule(new ElementSelector("configuration/receiver"),
+        new ReceiverAction());
+    
   }
 
   @Override

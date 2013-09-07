@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -23,7 +23,7 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class FruitConfigurator extends GenericConfigurator {
@@ -56,7 +56,7 @@ public class FruitConfigurator extends GenericConfigurator {
   
   @Override
   protected void addInstanceRules(RuleStore rs) {
-    rs.addRule(new Pattern("fruitShell"), new NOPAction());
+    rs.addRule(new ElementSelector("fruitShell"), new NOPAction());
   }
 
 }

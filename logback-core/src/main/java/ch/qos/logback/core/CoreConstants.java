@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,7 +13,23 @@
  */
 package ch.qos.logback.core;
 
+import ch.qos.logback.core.util.EnvUtil;
+
 public class CoreConstants {
+
+  /**
+   * Number of idle threads to retain in a context's executor service.
+   */
+  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JDK 1.6 or higher it's set to 0
+  // so that there are no idle threads
+  public static final int CORE_POOL_SIZE = EnvUtil.isJDK5() ? 1 : 0;
+
+  /**
+   * Maximum number of threads to allow in a context's executor service.
+   */
+  // if you need a different MAX_POOL_SIZE, please file create a jira issue
+  // asking to make MAX_POOL_SIZE a parameter.
+  public static final int MAX_POOL_SIZE = 32;
 
   // Note that the line.separator property can be looked up even by
   // applets.
@@ -84,6 +100,7 @@ public class CoreConstants {
   public static final char SINGLE_QUOTE_CHAR = '\'';
   public static final char COLON_CHAR = ':';
   public static final char DASH_CHAR = '-';
+  public static final String DEFAULT_VALUE_SEPARATOR = ":-";
 
 
   /**
@@ -141,6 +158,11 @@ public class CoreConstants {
   public static final int MILLIS_IN_ONE_HOUR = MILLIS_IN_ONE_MINUTE*60;
   public static final int MILLIS_IN_ONE_DAY = MILLIS_IN_ONE_HOUR*24;
   public static final int MILLIS_IN_ONE_WEEK = MILLIS_IN_ONE_DAY*7;
+
+  /**
+   * The number of seconds to wait for compression jobs to finish.
+   */
+  public static final int SECONDS_TO_WAIT_FOR_COMPRESSION_JOBS = 30;
 
   public static final String CONTEXT_SCOPE_VALUE = "context";
 

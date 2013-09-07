@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -39,16 +39,19 @@ public class IncludeAction extends Action {
   private static final String FILE_ATTR = "file";
   private static final String URL_ATTR = "url";
   private static final String RESOURCE_ATTR = "resource";
+  private static final String OPTIONAL_ATTR = "optional";
 
   private String attributeInUse;
+  private boolean optional;
 
   @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes)
           throws ActionException {
 
-    SaxEventRecorder recorder = new SaxEventRecorder();
+    SaxEventRecorder recorder = new SaxEventRecorder(context);
 
     this.attributeInUse = null;
+    this.optional = OptionHelper.toBoolean(attributes.getValue(OPTIONAL_ATTR), false);
 
     if (!checkAttributes(attributes)) {
       return;
@@ -140,8 +143,10 @@ public class IncludeAction extends Action {
     try {
       return url.openStream();
     } catch (IOException e) {
-      String errMsg = "Failed to open [" + url.toString() + "]";
-      addError(errMsg, e);
+      if (!optional) {
+        String errMsg = "Failed to open [" + url.toString() + "]";
+        addError(errMsg, e);
+      }
       return null;
     }
   }

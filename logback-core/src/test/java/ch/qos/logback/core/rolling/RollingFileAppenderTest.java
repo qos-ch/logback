@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -204,7 +204,6 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     StatusChecker statusChecker = new StatusChecker(context);
     final String msg = "File property collides with fileNamePattern. Aborting.";
     boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
-    StatusPrinter.print(context);
     assertTrue("Missing error: " + msg, containsMatch);
   }
 

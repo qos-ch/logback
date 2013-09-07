@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -55,7 +55,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
   private final ServerListener<T> listener;
   private final Executor executor;
   
-  private boolean started;
+  private boolean running;
   
   /**
    * Constructs a new server runner.
@@ -74,31 +74,24 @@ public abstract class ConcurrentServerRunner<T extends Client>
   /**
    * {@inheritDoc}
    */
-  public void start() throws IOException {
-    if (isStarted()) return;
-    executor.execute(this);
-    started = true;
+  public boolean isRunning() {
+    return running;
   }
 
+  protected void setRunning(boolean running) {
+    this.running = running;
+  }
+  
   /**
    * {@inheritDoc}
    */
   public void stop() throws IOException {
-    if (!isStarted()) return;
     listener.close();
     accept(new ClientVisitor<T>() {
       public void visit(T client) {
         client.close();
       } 
     });
-    started = false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public boolean isStarted() {
-    return started;
   }
 
   /**
@@ -136,6 +129,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
    * {@inheritDoc}
    */
   public void run() {
+    setRunning(true);
     try {
       addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
@@ -160,7 +154,8 @@ public abstract class ConcurrentServerRunner<T extends Client>
     catch (Exception ex) {
       addError("listener: " + ex);
     }
-    
+
+    setRunning(false);
     addInfo("shutting down");
     listener.close();
   }

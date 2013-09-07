@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,11 +15,11 @@ package ch.qos.logback.core.joran.action;
 
 import java.util.Stack;
 
+import ch.qos.logback.core.joran.spi.ElementPath;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -44,10 +44,10 @@ public class NestedComplexPropertyIA extends ImplicitAction {
   // be followed by a corresponding pop.
   Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
 
-  public boolean isApplicable(Pattern pattern, Attributes attributes,
+  public boolean isApplicable(ElementPath elementPath, Attributes attributes,
       InterpretationContext ic) {
 
-    String nestedElementTagName = pattern.peekLast();
+    String nestedElementTagName = elementPath.peekLast();
 
     // calling ic.peekObject with an empty stack will throw an exception
     if (ic.isEmpty()) {

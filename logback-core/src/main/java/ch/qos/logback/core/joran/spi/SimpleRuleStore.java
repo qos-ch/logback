@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -31,10 +31,10 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
-  static String ANY = "*";
+  static String KLEENE_STAR = "*";
   
   // key: Pattern instance, value: ArrayList containing actions
-  HashMap<Pattern, List<Action>> rules = new HashMap<Pattern, List<Action>>();
+  HashMap<ElementSelector, List<Action>> rules = new HashMap<ElementSelector, List<Action>>();
 
   // public SimpleRuleStore() {
   // }
@@ -47,20 +47,20 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
    * Add a new rule, i.e. a pattern, action pair to the rule store. <p> Note
    * that the added action's LoggerRepository will be set in the process.
    */
-  public void addRule(Pattern pattern, Action action) {
+  public void addRule(ElementSelector elementSelector, Action action) {
     action.setContext(context);
 
-    List<Action> a4p = rules.get(pattern);
+    List<Action> a4p = rules.get(elementSelector);
 
     if (a4p == null) {
       a4p = new ArrayList<Action>();
-      rules.put(pattern, a4p);
+      rules.put(elementSelector, a4p);
     }
 
     a4p.add(action);
   }
 
-  public void addRule(Pattern pattern, String actionClassName) {
+  public void addRule(ElementSelector elementSelector, String actionClassName) {
     Action action = null;
 
     try {
@@ -70,110 +70,126 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
       addError("Could not instantiate class [" + actionClassName + "]", e);
     }
     if (action != null) {
-      addRule(pattern, action);
+      addRule(elementSelector, action);
     }
   }
 
   // exact match has highest priority
-  // if no exact match, check for tail match, i.e matches of type */x/y
-  // tail match for */x/y has higher priority than match for */x
-  // if no tail match, check for prefix match, i.e. matches for x/*
+  // if no exact match, check for suffix (tail) match, i.e matches
+  // of type */x/y. Suffix match for */x/y has higher priority than match for
+  // */x
+  // if no suffix match, check for prefix match, i.e. matches for x/*
   // match for x/y/* has higher priority than matches for x/*
 
-  public List<Action> matchActions(Pattern currentPattern) {
+  public List<Action> matchActions(ElementPath elementPath) {
     List<Action> actionList;
 
-    if ((actionList = rules.get(currentPattern)) != null) {
+    if ((actionList = fullPathMatch(elementPath)) != null) {
       return actionList;
-    } else if ((actionList = tailMatch(currentPattern)) != null) {
+    } else if ((actionList = suffixMatch(elementPath)) != null) {
       return actionList;
-    } else if ((actionList = prefixMatch(currentPattern)) != null) {
+    } else if ((actionList = prefixMatch(elementPath)) != null) {
       return actionList;
-    } else if ((actionList = middleMatch(currentPattern)) != null) { 
+    } else if ((actionList = middleMatch(elementPath)) != null) {
       return actionList;
     } else {
       return null;
     }
   }
 
-  List<Action> tailMatch(Pattern currentPattern) {
+  List<Action> fullPathMatch(ElementPath elementPath) {
+    for (ElementSelector selector : rules.keySet()) {
+       if(selector.fullPathMatch(elementPath))
+         return rules.get(selector);
+    }
+    return null;
+  }
+
+  // Suffix matches are matches of type */x/y
+  List<Action> suffixMatch(ElementPath elementPath) {
     int max = 0;
-    Pattern longestMatchingPattern = null;
+    ElementSelector longestMatchingElementSelector = null;
 
-    for (Pattern p : rules.keySet()) {
-
-      if ((p.size() > 1) && p.get(0).equals(ANY)) {
-        int r = currentPattern.getTailMatchLength(p);
+    for (ElementSelector selector : rules.keySet()) {
+      if (isSuffixPattern(selector)) {
+        int r = selector.getTailMatchLength(elementPath);
         if (r > max) {
           max = r;
-          longestMatchingPattern = p;
+          longestMatchingElementSelector = selector;
         }
       }
     }
 
-    if (longestMatchingPattern != null) {
-      return rules.get(longestMatchingPattern);
+    if (longestMatchingElementSelector != null) {
+      return rules.get(longestMatchingElementSelector);
     } else {
       return null;
     }
   }
 
-  List<Action> prefixMatch(Pattern currentPattern) {
+  private boolean isSuffixPattern(ElementSelector p) {
+    return (p.size() > 1) && p.get(0).equals(KLEENE_STAR);
+  }
+
+  List<Action> prefixMatch(ElementPath elementPath) {
     int max = 0;
-    Pattern longestMatchingPattern = null;
+    ElementSelector longestMatchingElementSelector = null;
 
-    for (Pattern p : rules.keySet()) {
-      String last = p.peekLast();
-      if (ANY.equals(last)) {
-        int r = currentPattern.getPrefixMatchLength(p);
+    for (ElementSelector selector : rules.keySet()) {
+      String last = selector.peekLast();
+      if (isKleeneStar(last)) {
+        int r = selector.getPrefixMatchLength(elementPath);
         // to qualify the match length must equal p's size omitting the '*'
-        if ((r == p.size() - 1) && (r > max)) {
-          // System.out.println("New longest prefixMatch "+p);
+        if ((r == selector.size() - 1) && (r > max)) {
           max = r;
-          longestMatchingPattern = p;
+          longestMatchingElementSelector = selector;
         }
       }
     }
 
-    if (longestMatchingPattern != null) {
-      return rules.get(longestMatchingPattern);
+    if (longestMatchingElementSelector != null) {
+      return rules.get(longestMatchingElementSelector);
     } else {
       return null;
     }
   }
 
-  List<Action> middleMatch(Pattern currentPattern) {
+  private boolean isKleeneStar(String last) {
+    return KLEENE_STAR.equals(last);
+  }
+
+  List<Action> middleMatch(ElementPath path) {
     
     int max = 0;
-    Pattern longestMatchingPattern = null;
+    ElementSelector longestMatchingElementSelector = null;
 
-    for (Pattern p : rules.keySet()) {
-      String last = p.peekLast();
+    for (ElementSelector selector : rules.keySet()) {
+      String last = selector.peekLast();
       String first = null;
-      if(p.size() > 1) {
-        first = p.get(0);
+      if(selector.size() > 1) {
+        first = selector.get(0);
       }
-      if (ANY.equals(last) && ANY.equals(first)) {
-        List<String> partList = p.getCopyOfPartList();
-        if(partList.size() > 2) {
-          partList.remove(0);
-          partList.remove(partList.size()-1);
+      if (isKleeneStar(last) && isKleeneStar(first)) {
+        List<String> copyOfPartList = selector.getCopyOfPartList();
+        if(copyOfPartList.size() > 2) {
+          copyOfPartList.remove(0);
+          copyOfPartList.remove(copyOfPartList.size()-1);
         }
         
         int r = 0;
-        Pattern clone = new Pattern(partList);        
-        if(currentPattern.isContained(clone)) {
+        ElementSelector clone = new ElementSelector(copyOfPartList);
+        if(clone.isContainedIn(path)) {
           r = clone.size();
         }
         if (r > max) {
           max = r;
-          longestMatchingPattern = p;
+          longestMatchingElementSelector = selector;
         }
       }
     }
 
-    if (longestMatchingPattern != null) {
-      return rules.get(longestMatchingPattern);
+    if (longestMatchingElementSelector != null) {
+      return rules.get(longestMatchingElementSelector);
     } else {
       return null;
     }

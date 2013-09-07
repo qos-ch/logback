@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,10 +13,12 @@
  */
 package ch.qos.logback.classic.sift;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
+import org.slf4j.Marker;
 
 /**
  * This appender can contains other appenders which it can build dynamically
@@ -42,4 +44,11 @@ public class SiftingAppender extends SiftingAppenderBase<ILoggingEvent> {
     super.setDiscriminator(discriminator);
   }
 
+  protected boolean eventMarksEndOfLife(ILoggingEvent event) {
+    Marker marker = event.getMarker();
+    if(marker == null)
+      return false;
+
+    return marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER);
+  }
 }

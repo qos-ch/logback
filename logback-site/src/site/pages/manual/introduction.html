@@ -10,10 +10,12 @@
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />    
 
   </head>
-  <body onload="prettyPrint()">
+  <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script src="../templates/header.js" type="text/javascript"> </script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
     <div id="left">
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
@@ -220,20 +222,7 @@ public class HelloWorld2 {
   </ol>
  
   
-  <h2><a name="building" href="#building"><span
-  class="anchor"/></a>Building logback</h2>
-  
-  <!-- 
-  
-   Try downloading the file manually from:
-      http://java.sun.com/products/jms/docs.html
-
-  Then, install it using the command:
-      mvn install:install-file -DgroupId=javax.jms -DartifactId=jms \
-          -Dversion=1.1 -Dpackaging=jar -Dfile=/path/to/file 
-  
-   -->
-  
+  <h2 class="doAnchor" name="building">Building logback</h2>
   
   <p>As its build tool, logback relies on <a
   href="http://maven.apache.org">Maven</a>, a widely-used open-source

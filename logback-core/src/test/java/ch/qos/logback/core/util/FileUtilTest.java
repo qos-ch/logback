@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -35,7 +35,8 @@ public class FileUtilTest {
   Context context = new ContextBase();
   FileUtil fileUtil = new FileUtil(context);
   List<File> cleanupList = new ArrayList<File>();
-  int diff =  new Random().nextInt(100);
+  // test-output folder is not always clean
+  int diff =  new Random().nextInt(10000);
 
   @Before
   public void setUp() throws Exception {

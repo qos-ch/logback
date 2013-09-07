@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -80,7 +80,7 @@ public class LoggingEvent implements ILoggingEvent {
   // we gain significant space at serialization time by marking
   // formattedMessage as transient and constructing it lazily in
   // getFormattedMessage()
-  private transient String formattedMessage;
+  transient String formattedMessage;
 
   private transient Object[] argumentArray;
 
@@ -111,15 +111,10 @@ public class LoggingEvent implements ILoggingEvent {
     this.level = level;
 
     this.message = message;
+    this.argumentArray = argArray;
 
-    FormattingTuple ft = MessageFormatter.arrayFormat(message, argArray);
-    formattedMessage = ft.getMessage();
-
-    if (throwable == null) {
-      argumentArray = ft.getArgArray();
-      throwable = ft.getThrowable();
-    } else {
-      this.argumentArray = argArray;
+    if(throwable == null) {
+      throwable = extractThrowableAnRearrangeArguments(argArray);
     }
 
     if (throwable != null) {
@@ -131,6 +126,14 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     timeStamp = System.currentTimeMillis();
+  }
+
+  private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
+    Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
+    if(EventArgUtil.successfulExtraction(extractedThrowable)) {
+      this.argumentArray = EventArgUtil.trimmedCopy(argArray);
+    }
+    return extractedThrowable;
   }
 
   public void setArgumentArray(Object[] argArray) {
@@ -286,8 +289,7 @@ public class LoggingEvent implements ILoggingEvent {
     return loggerContextVO.getBirthTime();
   }
 
-  // computer formatted lazy as suggested in
-  // http://jira.qos.ch/browse/LBCLASSIC-47
+  // lazy computation as suggested in LOGBACK-495
   public String getFormattedMessage() {
     if (formattedMessage != null) {
       return formattedMessage;
@@ -353,7 +355,7 @@ public class LoggingEvent implements ILoggingEvent {
 
   /**
    * LoggerEventVO instances should be used for serialization. Use
-   * {@link LoggingEventVO#build(LoggingEvent) build} method to create the LoggerEventVO instance.
+   * {@link LoggingEventVO#build(ILoggingEvent) build} method to create the LoggerEventVO instance.
    *
    * @since 1.0.11
    */

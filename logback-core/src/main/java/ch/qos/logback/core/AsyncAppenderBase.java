@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -106,7 +106,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     if (!isStarted())
       return;
 
-    // mark this appender as stopped so that Worker can also stop if it is invoking aii.appendLoopOnAppenders
+    // mark this appender as stopped so that Worker can also processPriorToRemoval if it is invoking aii.appendLoopOnAppenders
     // and sub-appenders consume the interruption
     super.stop();
 

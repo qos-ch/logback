@@ -28,57 +28,95 @@
     announce</a> mailing list.</p>
 
 
+
+
     <hr width="80%" align="center" />
 
-    <h3>April, 2013 - Release of version 1.0.12</h3>
-    
-    <p>Several improvements and additions to socket-based appenders are 
-       included in this release:</p>
-    
-    <ul>
-      <li>A new <code>SSLSocketAppender</code> extends the basic 
-      <code>SocketAppender</code> providing the ability to deliver logging
-      events over the Secure Socket Layer (SSL).  The corresponding 
-      <code>SimpleSSLSocketServer</code> extends the basic 
-      <code>SimpleSocketServer</code> as a basic logging server application 
-      that receives logging events from a <code>SSLSocketAppender</code>.
-      </li>
-      
-      <li>A new <code>SocketServer</code> component (and its SSL-enabled 
-      counterpart, <code>SSLSocketServer</code>) provides the ability to
-      incorporate logging server functionality into <em>any</em> application
-      that uses Logback Classic, as an alternative to the simple standalone
-      socket server application provided with logback.  The new server 
-      component is configured in <em>logback.xml</em> in the same manner as 
-      other logback components such as appenders and loggers.  A logback 
-      configuration that includes a server component listens passively on 
-      a TCP socket for connections from incoming socket appender clients.  
-      Logging events received from remote appenders are logged according to 
-      the local configuration.  See <a href="manual/appenders.html#socketServer">
-      SocketServer and SSLSocketServer</a> in the manual for usage 
-      instructions.    
-      </li>
-      
-      <li>While <code>SocketAppender</code> is designed to initiate a connection
-      to a remote logging server in order to deliver logging events, a new
-      <code>ServerSocketAppender</code> reverses the direction of connection 
-      initiation.  A logback configuration that utilizes 
-      <code>ServerSocketAppender</code> (or <code>SSLServerSocketAppender</code>)
-      listens passively on a TCP socket for connections from interested 
-      clients that wish to <em>receive</em> logging events.  The corresponding
-      <code>SocketRemote</code> (and <code>SSLSocketRemote</code>) provides
-      a component that can be added to any logback configuration in order to
-      connect to a remote server socket appender, and to log events received
-      from the remote appender according to local configuration.  See 
-      <a href="manual/appenders.html#serverSocketAppender">ServerSocketAppender
-      and SSLServerSocketAppender</a> in the manual for usage instructions.        
-      </li>
-    </ul>
-    
-    <p>All of the new capabilities for socket-based appenders were 
-       contributed by Carl Harris.       
+    <h3>, 2013 - Release of version 2.0.0-alpha1</h3>
+
+    <p>The <code>LoggingEvent</code> constructor delays message
+    formatting so that it can be computed lazily by the
+    <code>getFormattedMessage</code> method. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-873">LOGBACK-873</a> and
+    re-fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-495">LOGBACK-495</a>.
+    </p>
+
+    <p><code>PackagingDataCalculator</code> now checks for the case
+    where the caller has no protection domain. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-617">LOGBACK-617</a>
+    reported by Yuri de Wit. The relevant fix was provided by Mikhail
+    Mazursky.
     </p>
     
+
+    <hr width="80%" align="center" />
+
+    <h3>May 10th, 2013 - Release of version 1.0.13</h3>
+  
+    <p>In logback-access MANIFEST file, imports of Jetty and Tomcat
+    are now optional. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-300">LOGBACK-300</a>
+    reported by Christian Brensing who also provided the appropriate
+    pull request.
+    </p>
+
+    <p>Logback will now correctly parses variables with a default
+    separator string nested within accolades, e.g. "{a:-b}". Such
+    strings resemble variable references but lack the $ prefix, e.g
+    "${a:-b}". This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-859">LOGBACK-859</a>
+    reported by Yoni Moses.</p>
+
+    <p>In <code>InterpretationContext</code> class replaced code using
+    JDK 1.6 API with code using JDK 1.5. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-860">LOGBACK-860</a>
+    reported by Bas Stoker.
+    </p>
+
+    <p>Updated the "org.fusesource.jansi:jansi" dependency to version
+    1.9.</p>
+
+    <hr width="80%" align="center" />
+
+    <h3>April 26th, 2013 - Release of version 1.0.12</h3>
+    
+    <p>A new <code>SSLSocketAppender</code> extends the basic 
+    <code>SocketAppender</code> providing the ability to deliver 
+    logging events over the Secure Socket Layer (SSL).  The 
+    corresponding <code>SimpleSSLSocketServer</code> extends the classic 
+    <code>SimpleSocketServer</code> as a basic logging server 
+    application that receives logging events from a 
+    <code>SSLSocketAppender</code>.</p>
+      
+    <p class="highlight">Receiver components are configured in
+    logback.xml just like any other logback component.</p>
+
+    <p>While <code>SimpleSocketServer</code> (and its new SSL-enabled
+    counterpart, <code>SimpleSSLSocketServer</code>) provide an 
+    easy-to-use standalone logging server application, a new component
+    type known as a <em>receiver</em> allows <em>any</em> application 
+    to receive logging events from remote appenders over a TCP/IP network 
+    connection, using Logback Classic.  Receiver components are 
+    configured in <em>logback.xml</em> just like any other logback 
+    component.</p>
+      
+    <p>A receiver can either listen passively for connections from
+    remote <code>SocketAppender</code> components acting as clients, 
+    or it can assume the client role, initiating a connection to a 
+    remote appender acting as a server.  The receiver components 
+    shipped with Logback include full support for logging event 
+    delivery over the Secure Sockets Layer (SSL).</p>
+
+    <p>All of the new socket-based receiver and appender components were 
+    contributed by Carl Harris.  See 
+    <a href="manual/receivers.html">Receivers</a> in the Logback Manual 
+    for more information on configuring receiver components.  See 
+    <a href="manual/appenders.html#SocketAppender">SocketAppender</a> and
+    <a href="manual/appenders.html#serverSocketAppender">ServerSocketAppender</a>
+    for information on configuring appenders as event sources for
+    receiver components.</p>
+
     <p><code>RollingFileAppender</code> will now detect when <span
     class="option">file</span> property collides with <span
     class="option">fileNamePattern</span>, emit <a
@@ -87,6 +125,13 @@
     href="http://jira.qos.ch/browse/LOGBACK-796">LOGBACK-796</a> by
     Karl Pietrzak who also provided a patch.
     </p>
+
+    <p>In configuration files, the <code>&lt;include></code> element
+    now admits the <span class="attr">optional</span> attribute. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-230">LOGBACK-230</a>
+    reported by Attila Kiraly. Many thanks to Tommy Becker who
+    contributed a patch.</p>
 
     <p>In response to <a
     href="http://jira.qos.ch/browse/LOGBACK-829">LOGBACK-829</a>,
@@ -101,9 +146,58 @@
 
     <p>The code detecting whether Groovy is available on the class
     path deals with the case where logback binaries are installed as
-    endoresed libraries. This fixes <a
+    endorsed libraries. This fixes <a
     href="http://jira.qos.ch/browse/LOGBACK-831">LOGBACK-831</a>.
     </p>
+
+    <p class="highlight">Groovy configurator no longer supports
+    <code>SiftingAppender</code>.</p>
+
+    <p>In response to <a
+    href="http://jira.qos.ch/browse/LOGBACK-244">LOGBACK-244</a>, <a
+    href="http://jira.qos.ch/browse/LOGBACK-724">LOGBACK-724</a> and
+    in particular patches provided by Tommy Becker and David Roussel
+    component tracking code has been simplified and completely
+    re-written. <code>SiftingAppender</code> now supports the <a
+    href="manual/appenders.html#siftTimeout">timeout</a> and <a
+    href="manual/appenders.html#siftMaxAppenderCount">maxAppenderCount</a>
+    parameters. As a direct consequence of modifications to component
+    tracking code, the groovy configurator no longer supports
+    <code>SiftingAppender</code>.</p>
+
+    <p>SiftingAppender now propagates properties defined elsewhere in
+    the configuration file into the configuration process of nested
+    appenders. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-833">LOGBACK-833</a> with
+    David Roussel providing the appropriate patch.
+    </p>
+
+    <p>As all other actions affecting properties,
+    <code>TimestampAction</code> now inserts the user-specified
+    property into the local scope by default. The property was
+    inserted into the context scope in earlier versions of logback.
+    This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-835">LOGBACK-835</a> with
+    David Roussel providing the appropriate patch.
+    </p>
+
+    <p>Logback is now able to retrieve the name of localhost when
+    running under OS X and Java 7. This issue was reported by <a
+    href="http://jira.qos.ch/browse/LOGBACK-749">LOGBACK-749</a> by
+    Oliver Schrenk with patches provided by Ralph Goers and Pavel
+    Valodzka.
+    </p>
+
+    <p>The <a href="manual/layouts.html#mdc">mdc</a> converter can now
+    handle default values. This feature was requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-246">LOGBACK-246</a> by
+    Michael Osipov with Denis Bazhenov providing a patch.
+    </p>
+
+    <p><code>DBAppender</code> in logback-classic module no longer
+    assumes that caller information is always available. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-805">LOGBACK-805</a>
+    reported by Daris Cooper who also provided a corrective patch.</p>
 
     <p>In order to simplify our build, several unit tests have been
     ported from Scala to Java. It follows that logback no longer
@@ -142,11 +236,6 @@
     reported by Sayevskiy Viacheslav. Many thanks to Ivan
     (Wee-Willie-Winkie) who contributed the appropriate fix.
     </p>
-
-    <p><code>DBAppender</code> in logback-classic module no longer
-    assumes that caller information is always available. This fixes <a
-    href="http://jira.qos.ch/browse/LOGBACK-805">LOGBACK-805</a>
-    reported by Daris Cooper who also provided a corrective patch.</p>
 
     <p>In logback-access, more correct determination of whether
     contents of an <code>HttpServletRequest</code> are URL encoded or

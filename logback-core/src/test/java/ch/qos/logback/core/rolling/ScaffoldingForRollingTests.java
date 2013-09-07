@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -55,15 +56,16 @@ public class ScaffoldingForRollingTests {
   EchoEncoder<Object> encoder = new EchoEncoder<Object>();
   Context context = new ContextBase();
   protected List<String> expectedFilenameList = new ArrayList<String>();
-
   protected long nextRolloverThreshold; // initialized in setUp()
   protected long currentTime; // initialized in setUp()
-  Calendar cal = Calendar.getInstance();
+  protected List<Future<?>> futureList = new ArrayList<Future<?>>();
+
+  Calendar calendar = Calendar.getInstance();
 
   public void setUp() {
     context.setName("test");
-    cal.set(Calendar.MILLISECOND, 333);
-    currentTime = cal.getTimeInMillis();
+    calendar.set(Calendar.MILLISECOND, 333);
+    currentTime = calendar.getTimeInMillis();
     recomputeRolloverThreshold(currentTime);
   }
 
@@ -157,16 +159,6 @@ public class ScaffoldingForRollingTests {
     return (currentTime - delta);
   }
 
-
-  void waitForCompression(TimeBasedRollingPolicy<Object> tbrp) {
-    if (tbrp.future != null && !tbrp.future.isDone()) {
-      try {
-        tbrp.future.get(400, TimeUnit.MILLISECONDS);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
 
   protected void addExpectedFileName_ByDate(String patternStr, long millis) {
     FileNamePattern fileNamePattern = new FileNamePattern(patternStr, context);
@@ -271,4 +263,21 @@ public class ScaffoldingForRollingTests {
     assertTrue(firstZipEntry.getName().matches(pattern));
   }
 
+  protected void add(Future future) {
+    if (future == null) return;
+    if (!futureList.contains(future)) {
+      futureList.add(future);
+    }
+  }
+
+  protected void waitForJobsToComplete() {
+    for (Future future : futureList) {
+      try {
+        future.get(10, TimeUnit.SECONDS);
+      } catch (Exception e) {
+        new RuntimeException("unexpected exception while testing", e);
+      }
+    }
+
+  }
 }

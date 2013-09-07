@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -22,20 +22,28 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.net.mock.MockContext;
+
 
 public class ConcurrentServerRunnerTest {
 
+  private static final int DELAY = 10000;
+  private static final int SHORT_DELAY = 10;
+  
   private MockContext context = new MockContext();
   private MockServerListener<MockClient> listener = 
       new MockServerListener<MockClient>();
   
   private ExecutorService executor = Executors.newCachedThreadPool();
-  private ConcurrentServerRunner<MockClient> runner = 
+  private InstrumentedConcurrentServerRunner runner = 
       new InstrumentedConcurrentServerRunner(listener, executor);
 
   @Before
@@ -45,75 +53,73 @@ public class ConcurrentServerRunnerTest {
 
   @After
   public void tearDown() throws Exception {
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
+    executor.shutdownNow();
+    assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
   }
   
   @Test
   public void testStartStop() throws Exception {
-    assertFalse(runner.isStarted());
-    runner.start();
-    assertTrue(runner.isStarted());
-    int retries = 200;
+    assertFalse(runner.isRunning());
+    executor.execute(runner);
+    assertTrue(runner.awaitRunState(true, DELAY));
+    int retries = DELAY / SHORT_DELAY;
     synchronized (listener) {
       while (retries-- > 0 && listener.getWaiter() == null) {
-        listener.wait(10);
+        listener.wait(SHORT_DELAY);
       }
     }
     assertNotNull(listener.getWaiter());
     runner.stop();
     assertTrue(listener.isClosed());
-    assertFalse(runner.isStarted());
-    executor.shutdown();
-    assertTrue(executor.awaitTermination(2000, TimeUnit.MILLISECONDS));
+    assertFalse(runner.awaitRunState(false, DELAY));
   }
   
   @Test
   public void testRunOneClient() throws Exception {
-    runner.start();
+    executor.execute(runner);
     MockClient client = new MockClient();
     listener.addClient(client);
-    int retries = 200;
+    int retries = DELAY / SHORT_DELAY;
     synchronized (client) {
       while (retries-- > 0 && !client.isRunning()) {
-        client.wait(10);
+        client.wait(SHORT_DELAY);
       }
     }
-    assertTrue(client.isRunning());
+    assertTrue(runner.awaitRunState(true, DELAY));
     client.close();
     runner.stop();
   }
 
   @Test
   public void testRunManyClients() throws Exception {
-    runner.start();
+    executor.execute(runner);
     int count = 10;
     while (count-- > 0) {
       MockClient client = new MockClient();
       listener.addClient(client);
-      int retries = 200;
+      int retries = DELAY / SHORT_DELAY;
       synchronized (client) {
         while (retries-- > 0 && !client.isRunning()) {
-          client.wait(10);
+          client.wait(SHORT_DELAY);
         }
       }
-      assertTrue(client.isRunning());
+      assertTrue(runner.awaitRunState(true, DELAY));
     }
     runner.stop();
   }
 
   @Test
   public void testRunClientAndVisit() throws Exception {
-    runner.start();
+    executor.execute(runner);
     MockClient client = new MockClient();
     listener.addClient(client);
-    int retries = 200;
+    int retries = DELAY / SHORT_DELAY;
     synchronized (client) {
       while (retries-- > 0 && !client.isRunning()) {
-        client.wait(10);
+        client.wait(SHORT_DELAY);
       }
     }
-    assertTrue(client.isRunning());
+    assertTrue(runner.awaitRunState(true, DELAY));
     MockClientVisitor visitor = new MockClientVisitor();
     runner.accept(visitor);
     assertSame(client, visitor.getLastVisited());
@@ -124,6 +130,9 @@ public class ConcurrentServerRunnerTest {
   static class InstrumentedConcurrentServerRunner 
       extends ConcurrentServerRunner<MockClient> {
 
+    private final Lock lock = new ReentrantLock();
+    private final Condition runningCondition = lock.newCondition();
+    
     public InstrumentedConcurrentServerRunner(
         ServerListener<MockClient> listener, Executor executor) {
       super(listener, executor);
@@ -134,6 +143,31 @@ public class ConcurrentServerRunnerTest {
       return true;
     }
 
+    @Override
+    protected void setRunning(boolean running) {
+      lock.lock();
+      try {
+        super.setRunning(running);
+        runningCondition.signalAll();
+      }
+      finally {
+        lock.unlock();
+      }
+    }
+
+    public boolean awaitRunState(boolean state, 
+        long delay) throws InterruptedException {
+      lock.lock();
+      try {
+        while (isRunning() != state) {
+          runningCondition.await(delay, TimeUnit.MILLISECONDS);
+        }
+        return isRunning();
+      }
+      finally {
+        lock.unlock();
+      }
+    }
   }
   
 }

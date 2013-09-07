@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -17,7 +17,7 @@ package ch.qos.logback.classic.net;
 import java.net.InetAddress;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.SocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -31,31 +31,30 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * @author S&eacute;bastien Pennec
  */
 
-public class SocketAppender extends SocketAppenderBase<ILoggingEvent> {
+public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
 
-  boolean includeCallerData = false;
-
-  PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+  private static final PreSerializationTransformer<ILoggingEvent> pst = 
+      new LoggingEventPreSerializationTransformer();
   
-  public SocketAppender() {
-  }
+  private boolean includeCallerData = false;
 
-  /**
-   * Connects to remote server at <code>address</code> and <code>port</code>.
-   */
-  public SocketAppender(InetAddress address, int port) {
-    this.address = address;
-    this.remoteHost = address.getHostName();
-    this.port = port;
+  public SocketAppender() {
   }
 
   /**
    * Connects to remote server at <code>host</code> and <code>port</code>.
    */
+  @Deprecated
   public SocketAppender(String host, int port) {
-    this.port = port;
-    this.address = getAddressByName(host);
-    this.remoteHost = host;
+    super(host, port);
+  }
+
+  /**
+   * Connects to remote server at <code>address</code> and <code>port</code>.
+   */
+  @Deprecated
+  public SocketAppender(InetAddress address, int port) {
+    super(address.getHostAddress(), port);
   }
 
   @Override

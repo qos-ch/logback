@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -45,20 +45,20 @@ public class DBAppenderHSQLTest {
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
 
-  int existingRowCount;
+  int existingEventTableRowCount;
   Statement stmt;
 
   @BeforeClass
   static public void fixtureSetUp() throws SQLException {
     DB_APPENDER_HSQL_TEST_FIXTURE = new DBAppenderHSQLTestFixture();
     DB_APPENDER_HSQL_TEST_FIXTURE.setUp();
-  } 
-  
+  }
+
   @AfterClass
-  static public  void fixtureTearDown()  throws SQLException {
+  static public void fixtureTearDown() throws SQLException {
     DB_APPENDER_HSQL_TEST_FIXTURE.tearDown();
   }
-  
+
   @Before
   public void setUp() throws SQLException {
     context = new AccessContext();
@@ -76,7 +76,7 @@ public class DBAppenderHSQLTest {
     appender.setConnectionSource(connectionSource);
 
     stmt = connectionSource.getConnection().createStatement();
-    existingRowCount = existingRowCount(stmt);
+    existingEventTableRowCount = existingEventTableRowCount(stmt);
   }
 
   @After
@@ -87,7 +87,7 @@ public class DBAppenderHSQLTest {
     stmt.close();
   }
 
-  int existingRowCount(Statement stmt) throws SQLException {
+  int existingEventTableRowCount(Statement stmt) throws SQLException {
     ResultSet rs = stmt.executeQuery("SELECT count(*) FROM access_event");
     int result = -1;
     if (rs.next()) {
@@ -109,10 +109,10 @@ public class DBAppenderHSQLTest {
 
     IAccessEvent event = createAccessEvent();
     appender.append(event);
-    
+
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM access_event where EVENT_ID = "+ existingRowCount);
+    rs = stmt.executeQuery("SELECT * FROM access_event where EVENT_ID = " + existingEventTableRowCount);
     if (rs.next()) {
       assertEquals(event.getTimeStamp(), rs.getLong(1));
       assertEquals(event.getRequestURI(), rs.getString(2));
@@ -130,33 +130,33 @@ public class DBAppenderHSQLTest {
     rs.close();
     stmt.close();
   }
-  
-  
+
+
   @Test
   public void testCheckNoHeadersAreInserted() throws Exception {
     setInsertHeadersAndStart(false);
-    
+
     IAccessEvent event = createAccessEvent();
     appender.append(event);
     StatusPrinter.print(context.getStatusManager());
-    
+
     //Check that no headers were inserted
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM access_event_header");
-    
+    rs = stmt.executeQuery("SELECT * FROM access_event_header where EVENT_ID = " + existingEventTableRowCount);
+
     assertFalse(rs.next());
     rs.close();
     stmt.close();
   }
 
   @Test
-  public void testAppendHeaders() throws SQLException {   
+  public void testAppendHeaders() throws SQLException {
     setInsertHeadersAndStart(true);
-    
+
     IAccessEvent event = createAccessEvent();
     appender.append(event);
-    
+
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
     rs = stmt.executeQuery("SELECT * FROM access_event_header");
@@ -195,10 +195,10 @@ public class DBAppenderHSQLTest {
     }
 
     StatusPrinter.print(context);
-    
+
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
-    rs = stmt.executeQuery("SELECT * FROM access_event where requestURI='"+uri+"'");
+    rs = stmt.executeQuery("SELECT * FROM access_event where requestURI='" + uri + "'");
     int count = 0;
     while (rs.next()) {
       count++;
@@ -210,9 +210,9 @@ public class DBAppenderHSQLTest {
   }
 
   private IAccessEvent createAccessEvent() {
-     return createAccessEvent(""); 
+    return createAccessEvent("");
   }
-  
+
   private IAccessEvent createAccessEvent(String uri) {
     DummyRequest request = new DummyRequest();
     request.setRequestUri(uri);

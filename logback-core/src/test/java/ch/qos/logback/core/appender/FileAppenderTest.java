@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -53,7 +53,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void smoke() {
-    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "temp.log";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-smoke.log";
 
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
@@ -72,8 +72,8 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void testCreateParentFolders() {
-    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat" + diff
-        + "/testing.txt";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff
+        + "/testCreateParentFolders.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
@@ -95,12 +95,12 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void testPrudentModeLogicalImplications() {
-    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "testing.txt";
+    String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "fat-testPrudentModeLogicalImplications.txt";
     File file = new File(filename);
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
     appender.setFile(filename);
-    appender.setName("testPrudentMode");
+    appender.setName("testPrudentModeLogicalImplications");
     appender.setContext(context);
 
     appender.setAppend(false);

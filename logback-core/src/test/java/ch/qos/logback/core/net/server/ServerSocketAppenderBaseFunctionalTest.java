@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,7 +11,6 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-
 package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertEquals;
@@ -29,8 +28,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.net.mock.MockContext;
+
 /**
- * A functional test for {@link ServerSocketAppenderBase}.
+ * A functional test for {@link AbstractServerSocketAppender}.
  *
  * @author Carl Harris
  */
@@ -40,9 +41,9 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
   private static final int EVENT_COUNT = 10;
   
-  private MockContext context = new MockContext();
+  private ExecutorService executor = Executors.newCachedThreadPool();
+  private MockContext context = new MockContext(executor);
   private ServerSocket serverSocket;
-  private ExecutorService executor = Executors.newFixedThreadPool(2);
   private InstrumentedServerSocketAppenderBase appender;
   
   @Before
@@ -50,21 +51,14 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
     serverSocket = ServerSocketUtil.createServerSocket();
     
-    appender = new InstrumentedServerSocketAppenderBase(serverSocket);
-    
-    appender.setThreadPool(new ThreadPoolFactoryBean() {
-      @Override
-      public ExecutorService createExecutor() {
-        return executor;
-      } 
-    });
-    
+    appender = new InstrumentedServerSocketAppenderBase(serverSocket);    
     appender.setContext(context);
   }
   
   @After
   public void tearDown() throws Exception {
-    executor.awaitTermination(1000, TimeUnit.MILLISECONDS);
+    executor.shutdownNow();
+    executor.awaitTermination(10000, TimeUnit.MILLISECONDS);
     assertTrue(executor.isTerminated());
   }
   

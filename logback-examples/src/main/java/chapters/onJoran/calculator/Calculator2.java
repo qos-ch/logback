@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -19,8 +19,8 @@ import java.util.Map;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 
@@ -38,16 +38,16 @@ import chapters.onJoran.SimpleConfigurator;
  */
 public class Calculator2 {
   public static void main(String[] args) throws Exception {
-    Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
    
     
     // Note the wild card character '*', in the paterns, signifying any level 
     // of nesting.
-    ruleMap.put(new Pattern("*/computation"), new ComputationAction2());
+    ruleMap.put(new ElementSelector("*/computation"), new ComputationAction2());
 
-    ruleMap.put(new Pattern("*/computation/literal"), new LiteralAction());
-    ruleMap.put(new Pattern("*/computation/add"), new AddAction());
-    ruleMap.put(new Pattern("*/computation/multiply"), new MultiplyAction());
+    ruleMap.put(new ElementSelector("*/computation/literal"), new LiteralAction());
+    ruleMap.put(new ElementSelector("*/computation/add"), new AddAction());
+    ruleMap.put(new ElementSelector("*/computation/multiply"), new MultiplyAction());
     
     Context context = new ContextBase();
     SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);

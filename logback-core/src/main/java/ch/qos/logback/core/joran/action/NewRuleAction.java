@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,7 +16,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.OptionHelper;
 
 
@@ -50,7 +50,7 @@ public class NewRuleAction extends Action {
     try {
       addInfo("About to add new Joran parsing rule [" + pattern + ","
           + actionClass + "].");
-      ec.getJoranInterpreter().getRuleStore().addRule(new Pattern(pattern),
+      ec.getJoranInterpreter().getRuleStore().addRule(new ElementSelector(pattern),
           actionClass);
     } catch (Exception oops) {
       inError = true;

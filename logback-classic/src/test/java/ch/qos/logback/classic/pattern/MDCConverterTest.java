@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -14,7 +14,9 @@
 package ch.qos.logback.classic.pattern;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,12 +33,14 @@ public class MDCConverterTest {
 
   LoggerContext lc;
   MDCConverter converter;
+  int diff = RandomUtil.getPositiveInt();
 
   @Before
   public void setUp() throws Exception {
     lc = new LoggerContext();
     converter = new MDCConverter();
     converter.start();
+    MDC.clear();
   }
 
   @After
@@ -44,29 +48,28 @@ public class MDCConverterTest {
     lc = null;
     converter.stop();
     converter = null;
+    MDC.clear();
   }
 
   @Test
-  public void testConverWithOneEntry() {
-    MDC.clear();
-    MDC.put("testKey", "testValue");
+  public void testConvertWithOneEntry() {
+    String k = "MDCConverterTest_k"+diff;
+    String v = "MDCConverterTest_v"+diff;
+
+    MDC.put(k, v);
     ILoggingEvent le = createLoggingEvent();
     String result = converter.convert(le);
-    assertEquals("testKey=testValue", result);
+    assertEquals(k+"="+v, result);
   }
 
   @Test
-  public void testConverWithMultipleEntries() {
-    MDC.clear();
+  public void testConvertWithMultipleEntries() {
     MDC.put("testKey", "testValue");
     MDC.put("testKey2", "testValue2");
     ILoggingEvent le = createLoggingEvent();
     String result = converter.convert(le);
-    if (SystemInfo.getJavaVendor().contains("IBM")) {
-      assertEquals("testKey2=testValue2, testKey=testValue", result);
-    } else {
-      assertEquals("testKey=testValue, testKey2=testValue2", result);
-    }
+    boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
+    assertTrue(result + " is not conform", isConform);
   }
 
   private ILoggingEvent createLoggingEvent() {

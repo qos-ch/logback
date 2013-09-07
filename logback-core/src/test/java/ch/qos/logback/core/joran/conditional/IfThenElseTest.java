@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import ch.qos.logback.core.joran.action.PropertyAction;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +31,6 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
@@ -56,15 +56,15 @@ public class IfThenElseTest {
 
   @Before
   public void setUp() throws Exception {
-    HashMap<Pattern, Action> rulesMap = new HashMap<Pattern, Action>();
-    rulesMap.put(new Pattern("x"), new NOPAction());
-    rulesMap.put(new Pattern("x/stack"), stackAction);
-    rulesMap.put(new Pattern("x/property"), new PropertyAction());
-    rulesMap.put(new Pattern("*/if"), new IfAction());
-    rulesMap.put(new Pattern("*/if/then"), new ThenAction());
-    rulesMap.put(new Pattern("*/if/then/*"), new NOPAction());
-    rulesMap.put(new Pattern("*/if/else"), new ElseAction());
-    rulesMap.put(new Pattern("*/if/else/*"), new NOPAction());
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    rulesMap.put(new ElementSelector("x"), new NOPAction());
+    rulesMap.put(new ElementSelector("x/stack"), stackAction);
+    rulesMap.put(new ElementSelector("x/property"), new PropertyAction());
+    rulesMap.put(new ElementSelector("*/if"), new IfAction());
+    rulesMap.put(new ElementSelector("*/if/then"), new ThenAction());
+    rulesMap.put(new ElementSelector("*/if/then/*"), new NOPAction());
+    rulesMap.put(new ElementSelector("*/if/else"), new ElseAction());
+    rulesMap.put(new ElementSelector("*/if/else/*"), new NOPAction());
 
     tc = new TrivialConfigurator(rulesMap);
     tc.setContext(context);

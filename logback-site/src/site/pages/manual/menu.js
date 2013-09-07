@@ -13,3 +13,5 @@ document.write('<p class="menu"><a href="jmxConfig.html"><b>Ch10: JMX Configurat
 document.write('<p class="menu"><a href="onJoran.html"><b>Ch11: Joran</b></a></p>');
 document.write('<p class="menu"><a href="groovy.html"><b>Ch12: Groovy Configuration</b></a></p>');
 document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch13: Migration from log4j</b></a></p>');
+document.write('<p class="menu"><a href="receivers.html"><b>Ch14: Receivers</b></a></p>');
+document.write('<p class="menu"><a href="usingSSL.html"><b>Ch15: Using SSL</b></a></p>');

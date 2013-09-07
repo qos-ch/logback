@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -42,7 +42,6 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.sift.DefaultDiscriminator;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
-import ch.qos.logback.core.spi.CyclicBufferTrackerImpl;
 import ch.qos.logback.core.util.ContentTypeUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -116,7 +115,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
   public void start() {
 
     if (cbTracker == null) {
-      cbTracker = new CyclicBufferTrackerImpl<E>();
+      cbTracker = new CyclicBufferTracker<E>();
     }
 
     Session session = null;
@@ -236,14 +235,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     // immediately remove the buffer if asked by the user
-    if (isEventMarkedForBufferRemoval(eventObject)) {
-      cbTracker.removeBuffer(key);
+    if (eventMarksEndOfLife(eventObject)) {
+      cbTracker.endOfLife(key);
     }
 
-    cbTracker.clearStaleBuffers(now);
+    cbTracker.removeStaleComponents(now);
 
     if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
-      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.size() + "] buffers");
+      addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.getComponentCount() + "] buffers");
       lastTrackerStatusPrint = now;
       // quadruple 'delay' assuming less than max delay
       if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {
@@ -252,7 +251,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
   }
 
-  abstract protected boolean isEventMarkedForBufferRemoval(E eventObject);
+  abstract protected boolean eventMarksEndOfLife(E eventObject);
 
   abstract protected void subAppend(CyclicBuffer<E> cb, E eventObject);
 
@@ -311,11 +310,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     for (int i = 0; i < len; i++) {
       try {
         PatternLayoutBase<E> emailPL = toPatternLayoutList.get(i);
-        String email = emailPL.doLayout(event);
-        if (email == null || email.length() == 0) {
+        String emailAdrr = emailPL.doLayout(event);
+        if (emailAdrr == null || emailAdrr.length() == 0) {
           continue;
         }
-        InternetAddress[] tmp = InternetAddress.parse(email, true);
+        InternetAddress[] tmp = InternetAddress.parse(emailAdrr, true);
         iaList.addAll(Arrays.asList(tmp));
       } catch (AddressException e) {
         addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event [" + event + "]", e);
@@ -392,8 +391,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       mimeMsg.setContent(mp);
 
       mimeMsg.setSentDate(new Date());
+      addInfo("About to send out SMTP message \"" + subjectStr + "\" to " + Arrays.toString(toAddressArray));
       Transport.send(mimeMsg);
-      addInfo("Sent out SMTP message \"" + subjectStr + "\" to " + Arrays.toString(toAddressArray));
     } catch (Exception e) {
       addError("Error occurred while sending e-mail notification.", e);
     }

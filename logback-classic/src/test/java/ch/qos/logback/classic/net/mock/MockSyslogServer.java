@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -44,7 +44,7 @@ public class MockSyslogServer extends Thread {
       socket = new DatagramSocket(port);
 
       for (int i = 0; i < loopLen; i++) {
-        byte[] buf = new byte[2048];
+        byte[] buf = new byte[65536];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         //System.out.println("Waiting for message");
         socket.receive(packet);

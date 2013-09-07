@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -42,6 +42,10 @@ public class ContextDetachingSCL implements ServletContextListener {
       System.out.println("About to detach context named " + loggerContextName);
       
       ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+      if(selector == null) {
+        System.out.println("Selector is null, cannot detach context. Skipping.");
+        return;
+      }
       LoggerContext context = selector.detachLoggerContext(loggerContextName);
       if (context != null) {
         Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);

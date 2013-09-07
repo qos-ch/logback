@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,7 +11,6 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.core.CoreConstants;
@@ -38,12 +37,14 @@ public class LoggerNameUtil {
    * @return
    */
   public static int getSeparatorIndexOf(String name, int fromIndex) {
-    int i = name.indexOf(CoreConstants.DOT, fromIndex);
-    if (i != -1) {
-      return i;
-    } else {
-      return name.indexOf(CoreConstants.DOLLAR, fromIndex);
-    }
+    int dotIndex = name.indexOf(CoreConstants.DOT, fromIndex);
+    int dollarIndex = name.indexOf(CoreConstants.DOLLAR, fromIndex);
+
+    if (dotIndex == -1 && dollarIndex == -1) return -1;
+    if (dotIndex == -1) return dollarIndex;
+    if (dollarIndex == -1) return dotIndex;
+
+    return dotIndex < dollarIndex ? dotIndex : dollarIndex;
   }
 
   public static List<String> computeNameParts(String loggerName) {

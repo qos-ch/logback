@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,15 +16,10 @@ package ch.qos.logback.classic.util;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
-import ch.qos.logback.classic.net.SSLSocketAppender;
-import ch.qos.logback.classic.net.SSLSocketRemote;
-import ch.qos.logback.classic.net.server.SSLServerSocketAppender;
-import ch.qos.logback.classic.net.server.SocketServerNestedComponentRegistryRules;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
 /**
@@ -47,11 +42,7 @@ public class DefaultNestedComponentRules {
     registry
         .add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
 
-    registry.add(SSLSocketAppender.class, "ssl", SSLConfiguration.class);
-    registry.add(SSLSocketRemote.class, "ssl", SSLConfiguration.class);
-    registry.add(SSLServerSocketAppender.class, "ssl", SSLConfiguration.class);
     SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
-    SocketServerNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
   }
 
 }

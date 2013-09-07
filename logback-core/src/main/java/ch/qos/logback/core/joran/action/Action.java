@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -50,7 +50,7 @@ public abstract class Action extends ContextAwareBase {
 
   /**
    * Called when the parser encounters an element matching a
-   * {@link ch.qos.logback.core.joran.spi.Pattern Pattern}.
+   * {@link ch.qos.logback.core.joran.spi.ElementSelector Pattern}.
    */
   public abstract void begin(InterpretationContext ic, String name,
       Attributes attributes) throws ActionException;

@@ -1,0 +1,24 @@
+<configuration debug="true">
+
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>propertyDefinedWithinSift</key>
+      <defaultValue>default</defaultValue>
+    </discriminator>
+    <sift>
+      <property name="X" value="Y"/>  
+
+      <appender name="LIST-${propertyDefinedWithinSift}"
+        class="ch.qos.logback.core.testUtil.StringListAppender">
+        <layout>
+          <pattern>${X}%msg</pattern>                       
+        </layout>
+      </appender>
+    </sift>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="SIFT" />
+  </root>
+
+</configuration>

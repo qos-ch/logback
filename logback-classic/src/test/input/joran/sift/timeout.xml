@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="true">
+
+    <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+
+        <discriminator>
+            <key>timeout</key>
+            <defaultValue>smoke</defaultValue>
+        </discriminator>
+        <timeout>30 seconds</timeout>
+        <sift>
+            <appender name="list-${userid}"
+                      class="ch.qos.logback.core.read.ListAppender"/>
+        </sift>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="SIFT"/>
+    </root>
+
+</configuration>

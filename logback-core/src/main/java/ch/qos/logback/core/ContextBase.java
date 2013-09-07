@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,17 +13,18 @@
  */
 package ch.qos.logback.core;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.*;
-
-import ch.qos.logback.core.spi.LogbackLock;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.EnvUtil;
-
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 
-public class ContextBase implements Context {
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+
+import ch.qos.logback.core.spi.LifeCycle;
+import ch.qos.logback.core.spi.LogbackLock;
+import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
+
+public class ContextBase implements Context, LifeCycle {
 
   private long birthTime = System.currentTimeMillis();
 
@@ -37,15 +38,10 @@ public class ContextBase implements Context {
 
   LogbackLock configurationLock = new LogbackLock();
 
-  // CORE_POOL_SIZE must be 1 for JDK 1.5. For JD 1.6 or higher it's set to 0
-  // so that there are no idle threads
-  private static final int CORE_POOL_SIZE = EnvUtil.isJDK5() ? 1 : 0;
-
-  // 0 (JDK 1,6+) or 1 (JDK 1.5) idle threads, 2 maximum threads, no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(CORE_POOL_SIZE, 2,
-          0L, TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<Runnable>());
-
+  private volatile ExecutorService executorService;
+  private LifeCycleManager lifeCycleManager;
+  private boolean started;
+  
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -102,10 +98,29 @@ public class ContextBase implements Context {
     return name;
   }
 
+  public void start() {
+    // We'd like to create the executor service here, but we can't;
+    // ContextBase has not always implemented LifeCycle and there are *many*
+    // uses (mostly in tests) that would need to be modified.
+    started = true;
+  }
+  
+  public void stop() {
+    // We don't check "started" here, because the executor service uses
+    // lazy initialization, rather than being created in the start method
+    stopExecutorService();
+    started = false;
+  }
+
+  public boolean isStarted() {
+    return started;
+  }
+
   /**
    * Clear the internal objectMap and all properties.
    */
   public void reset() {
+    getLifeCycleManager().reset();
     propertyMap.clear();
     objectMap.clear();
   }
@@ -138,11 +153,49 @@ public class ContextBase implements Context {
   }
 
   public ExecutorService getExecutorService() {
-    return  executorService;
+    if (executorService == null) {
+      synchronized (this) {
+        if (executorService == null) {
+          executorService = ExecutorServiceUtil.newExecutorService();
+        }
+      }
+    }
+    return executorService; 
   }
 
+  private synchronized void stopExecutorService() {
+    if (executorService != null) {
+      ExecutorServiceUtil.shutdown(executorService);
+      executorService = null;
+    }
+  }
+  
+  public void register(LifeCycle component) {
+    getLifeCycleManager().register(component);
+  }
+
+  /**
+   * Gets the life cycle manager for this context.
+   * <p>
+   * The default implementation lazily initializes an instance of
+   * {@link LifeCycleManager}.  Subclasses may override to provide a custom 
+   * manager implementation, but must take care to return the same manager
+   * object for each call to this method.
+   * <p>
+   * This is exposed primarily to support instrumentation for unit testing.
+   * 
+   * @return manager object 
+   */
+  synchronized LifeCycleManager getLifeCycleManager() {
+    if (lifeCycleManager == null) {
+      lifeCycleManager = new LifeCycleManager();
+    }
+    return lifeCycleManager;
+  }
+  
   @Override
   public String toString() {
     return name;
   }
+
 }

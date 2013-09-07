@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,15 +16,15 @@ package ch.qos.logback.core.joran;
 import java.util.HashMap;
 
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.Interpreter;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class TrivialConfigurator extends GenericConfigurator {
 
-  HashMap<Pattern, Action> rulesMap;
+  HashMap<ElementSelector, Action> rulesMap;
   
-  public TrivialConfigurator(HashMap<Pattern, Action> rules) {
+  public TrivialConfigurator(HashMap<ElementSelector, Action> rules) {
     this.rulesMap = rules;
   }
   
@@ -34,9 +34,9 @@ public class TrivialConfigurator extends GenericConfigurator {
 
   @Override
   protected void addInstanceRules(RuleStore rs) {
-    for(Pattern pattern : rulesMap.keySet()) {
-      Action action = rulesMap.get(pattern);
-      rs.addRule(pattern, action);
+    for(ElementSelector elementSelector : rulesMap.keySet()) {
+      Action action = rulesMap.get(elementSelector);
+      rs.addRule(elementSelector, action);
     }
   }
 

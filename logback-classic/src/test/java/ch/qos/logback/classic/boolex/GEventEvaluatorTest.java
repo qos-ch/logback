@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -25,6 +25,7 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
@@ -157,7 +158,8 @@ public class GEventEvaluatorTest {
   }
 
   @Test
-  public void perfTest() throws EvaluationException {
+  @Ignore
+  public void MANUAL_perfTest() throws EvaluationException {
     gee.setExpression("event.timeStamp < 100 && event.message != 'xx' ");
     gee.start();
 

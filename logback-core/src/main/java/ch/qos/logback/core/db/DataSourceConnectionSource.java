@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -41,16 +41,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
     if (dataSource == null) {
       addWarn("WARNING: No data source specified");
     } else {
-      Connection connection = null;
-      try {
-        connection = getConnection();
-      } catch (SQLException se) {
-        addWarn("Could not get a connection to discover the dialect to use.",
-            se);
-      }
-      if (connection != null) {
-        discoverConnectionProperties();
-      }
+      discoverConnectionProperties();
       if (!supportsGetGeneratedKeys()
           && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
         addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");

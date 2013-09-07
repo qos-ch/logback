@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -53,10 +53,10 @@ public class ParserTest {
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
     Node witness = new Node(Node.Type.LITERAL, "%x");
-    Node t = witness.next =  new Node(Node.Type.LITERAL, "{");
+    Node t = witness.next = new Node(Node.Type.LITERAL, "{");
     t.next = new Node(Node.Type.LITERAL, "a");
     t = t.next;
-    t.next =  new Node(Node.Type.LITERAL, "}");
+    t.next = new Node(Node.Type.LITERAL, "}");
     assertEquals(witness, node);
   }
 
@@ -68,11 +68,11 @@ public class ParserTest {
     Node node = parser.parse();
     Node witness = new Node(Node.Type.LITERAL, "%x");
 
-    Node t = witness.next =  new Node(Node.Type.LITERAL, "{");
+    Node t = witness.next = new Node(Node.Type.LITERAL, "{");
     t.next = new Node(Node.Type.LITERAL, "y");
     t = t.next;
 
-    t.next =  new Node(Node.Type.LITERAL, "}");
+    t.next = new Node(Node.Type.LITERAL, "}");
     t = t.next;
 
     t.next = new Node(Node.Type.LITERAL, " %a");
@@ -84,10 +84,10 @@ public class ParserTest {
     t.next = new Node(Node.Type.LITERAL, "b");
     t = t.next;
 
-    t.next =  new Node(Node.Type.LITERAL, "}");
+    t.next = new Node(Node.Type.LITERAL, "}");
     t = t.next;
 
-    t.next =  new Node(Node.Type.LITERAL, " c");
+    t.next = new Node(Node.Type.LITERAL, " c");
 
     node.dump();
     System.out.println("");
@@ -133,10 +133,15 @@ public class ParserTest {
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
     Node witness = new Node(Node.Type.LITERAL, "a");
-    Node nestedWitness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
-    nestedWitness.next = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "c"));
-    witness.next = nestedWitness;
-    witness.next.next = new Node(Node.Type.LITERAL, "c");
+    Node bLiteralNode = new Node(Node.Type.LITERAL, "b");
+    Node cLiteralNode = new Node(Node.Type.LITERAL, "c");
+    Node bVariableNode = new Node(Node.Type.VARIABLE, bLiteralNode);
+    Node cVariableNode = new Node(Node.Type.VARIABLE, cLiteralNode);
+    bLiteralNode.next = cVariableNode;
+
+    witness.next = bVariableNode;
+    witness.next.next = new Node(Node.Type.LITERAL, "d");
+    assertEquals(witness, node);
   }
 
   @Test
@@ -145,10 +150,31 @@ public class ParserTest {
     Parser parser = new Parser(tokenizer.tokenize());
     Node node = parser.parse();
     Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
-    witness.defaultPart =   new Node(Node.Type.LITERAL, "c");
-    //dump(node);
+    witness.defaultPart = new Node(Node.Type.LITERAL, "c");
+    assertEquals(witness, node);
   }
 
+  @Test
+  public void defaultSeparatorOutsideOfAVariable() throws ScanException {
+    Tokenizer tokenizer = new Tokenizer("{a:-b}");
+    Parser parser = new Parser(tokenizer.tokenize());
+    Node node = parser.parse();
+
+    dump(node);
+    Node witness = new Node(Node.Type.LITERAL, "{");
+    Node t = witness.next = new Node(Node.Type.LITERAL, "a");
+
+
+    t.next = new Node(Node.Type.LITERAL, ":-");
+    t = t.next;
+
+    t.next = new Node(Node.Type.LITERAL, "b");
+    t = t.next;
+
+    t.next = new Node(Node.Type.LITERAL, "}");
+
+    assertEquals(witness, node);
+  }
 
   private void dump(Node node) {
     while (node != null) {

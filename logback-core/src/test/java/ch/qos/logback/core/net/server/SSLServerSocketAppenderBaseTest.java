@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,6 +15,8 @@ package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.concurrent.Executors;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,7 +30,8 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  */
 public class SSLServerSocketAppenderBaseTest {
 
-  private MockContext context = new MockContext();
+  private MockContext context = new MockContext(Executors.newCachedThreadPool());
+  
   private SSLServerSocketAppenderBase appender =
       new InstrumentedSSLServerSocketAppenderBase();
   
@@ -42,6 +45,7 @@ public class SSLServerSocketAppenderBaseTest {
     // should be able to start successfully with no SSL configuration at all
     appender.start();
     assertNotNull(appender.getServerSocketFactory());
+    appender.stop();
   }
 
   private static class InstrumentedSSLServerSocketAppenderBase 

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -23,6 +23,8 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Map;
 
+import ch.qos.logback.classic.spi.CallerData;
+import ch.qos.logback.core.status.StatusChecker;
 import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;
@@ -39,27 +41,25 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderH2Test {
 
-  LoggerContext lc;
+  LoggerContext loggerContext = new LoggerContext();;
   Logger logger;
   DBAppender appender;
   DriverManagerConnectionSource connectionSource;
   DBAppenderH2TestFixture dbAppenderH2TestFixture;
   int diff = RandomUtil.getPositiveInt();
+  StatusChecker checker = new StatusChecker(loggerContext);
 
   @Before
   public void setUp() throws SQLException {
     dbAppenderH2TestFixture = new DBAppenderH2TestFixture();
-
     dbAppenderH2TestFixture.setUp();
-
-    lc = new LoggerContext();
-    lc.setName("default");
-    logger = lc.getLogger("root");
+    loggerContext.setName("default");
+    logger = loggerContext.getLogger("root");
     appender = new DBAppender();
     appender.setName("DB");
-    appender.setContext(lc);
+    appender.setContext(loggerContext);
     connectionSource = new DriverManagerConnectionSource();
-    connectionSource.setContext(lc);
+    connectionSource.setContext(loggerContext);
     connectionSource.setDriverClass(DBAppenderH2TestFixture.H2_DRIVER_CLASS);
     connectionSource.setUrl(dbAppenderH2TestFixture.url);
     System.out.println("cs.url=" + dbAppenderH2TestFixture.url);
@@ -75,7 +75,7 @@ public class DBAppenderH2Test {
   @After
   public void tearDown() throws SQLException {
     logger = null;
-    lc = null;
+    loggerContext = null;
     appender = null;
     connectionSource = null;
     dbAppenderH2TestFixture.tearDown();
@@ -87,7 +87,7 @@ public class DBAppenderH2Test {
 
     appender.append(event);
 
-    StatusPrinter.print(lc);
+    StatusPrinter.print(loggerContext);
 
     Statement stmt = connectionSource.getConnection().createStatement();
     ResultSet rs = null;
@@ -150,14 +150,11 @@ public class DBAppenderH2Test {
       assertEquals(event.getTimeStamp(), rs.getLong(DBAppender.TIMESTMP_INDEX));
       assertEquals(event.getFormattedMessage(), rs.getString(DBAppender.FORMATTED_MESSAGE_INDEX));
     }
-
-    StatusPrinter.print(lc);
-
   }
 
   @Test
   public void testContextInfo() throws SQLException {
-    lc.putProperty("testKey1", "testValue1");
+    loggerContext.putProperty("testKey1", "testValue1");
     MDC.put("k" + diff, "v" + diff);
     ILoggingEvent event = createLoggingEvent();
 
@@ -200,14 +197,27 @@ public class DBAppenderH2Test {
     stmt.close();
   }
 
+  // http://jira.qos.ch/browse/LOGBACK-805
+  @Test
+  public void emptyCallerDataShouldBeHandledGracefully() {
+    LoggingEvent event = createLoggingEvent();
+    event.setCallerData(new StackTraceElement[0]);
+    appender.append(event);
 
-  private ILoggingEvent createLoggingEvent(String msg, Object[] args) {
+    event.setCallerData(new StackTraceElement[] {null});
+    appender.append(event);
+
+    checker.assertIsErrorFree();
+  }
+
+
+  private LoggingEvent createLoggingEvent(String msg, Object[] args) {
     return new LoggingEvent(this.getClass().getName(), logger,
             Level.DEBUG, msg, new Exception("test Ex"), args);
   }
 
 
-  private ILoggingEvent createLoggingEvent() {
+  private LoggingEvent createLoggingEvent() {
     return createLoggingEvent("test message", new Integer[]{diff});
   }
 

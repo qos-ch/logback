@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,7 +15,6 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -60,6 +59,10 @@ public class InterpretationContext extends ContextAwareBase implements
   
   public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
     return defaultNestedComponentRegistry;
+  }
+  
+  public Map<String, String> getCopyOfPropertyMap() {
+    return new HashMap<String, String>(propertiesMap);
   }
   
   void setPropertiesMap(Map<String, String> propertiesMap) {
@@ -129,10 +132,10 @@ public class InterpretationContext extends ContextAwareBase implements
     if (props == null) {
       return;
     }
-    Iterator i = props.keySet().iterator();
-    while (i.hasNext()) {
-      String key = (String) i.next();
-      addSubstitutionProperty(key, props.getProperty(key));
+    for(Object keyObject: props.keySet()) {
+      String key = (String) keyObject;
+      String val = props.getProperty(key);
+      addSubstitutionProperty(key, val);
     }
   }
 

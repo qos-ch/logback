@@ -110,7 +110,6 @@
       <li><span class="code">import ch.qos.logback.core.status.*;</span></li>
       <li><span class="code">import ch.qos.logback.classic.net.*;</span></li>
       <li><span class="code">import ch.qos.logback.classic.encoder.PatternLayoutEncoder;</span></li>
-      <li><span class="code">import ch.qos.logback.classic.sift.SiftingAppender;</span></li>
     </ul>
 
     <p>In addition, all constants in <span
@@ -118,6 +117,14 @@
     imported as is (uppercase) and as lowercased aliases. It follows
     that your scripts can reference both <em>INFO</em> or
     <em>info</em> without a static import statement.</p>
+
+
+    <h2 class="doAnchor" name="sift">SiftingAppender no longer supported</h2>
+
+    <p><span class="label">Since version 1.0.12</span>
+    <code>SiftingAppender</code> is no longer supported within groovy
+    configuration files. However, in case there is demand, it may be
+    re-introduced.</p>
 
     <h2 class="doAnchor" name="entensions">Extensions specific to
     <em>logback.groovy</em></h2>
@@ -128,6 +135,8 @@
     order of invocation of these methods does NOT matter, with one
     exception: appenders MUST be defined before they can be attached
     to a logger.</p>
+
+    
 
     <!-- ========================================================== -->
 

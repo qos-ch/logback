@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -26,18 +26,14 @@ import ch.qos.logback.core.spi.ContextAware;
  * 
  * @author Carl Harris
  */
-public interface ServerRunner<T extends Client> extends ContextAware {
+public interface ServerRunner<T extends Client> extends ContextAware, Runnable {
 
   /**
-   * Starts execution of the runner.
-   * <p>
-   * After scheduling execution of itself, the receiver must return 
-   * immediately. If the receiver is already running, this method must have
-   * no effect.
-   * @throws IOException
+   * Gets a flag indicating whether the server is currently running.
+   * @return flag state
    */
-  void start() throws IOException;
-
+  boolean isRunning();
+  
   /**
    * Stops execution of the runner.
    * <p>
@@ -47,12 +43,6 @@ public interface ServerRunner<T extends Client> extends ContextAware {
    * @throws IOException
    */
   void stop() throws IOException;
-
-  /**
-   * Gets a flag indicating whether the receiver is running.
-   * @return flag state
-   */
-  boolean isStarted();
 
   /**
    * Presents each connected client to the given visitor.   

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,6 +16,7 @@ package ch.qos.logback.core;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.status.StatusManager;
 
@@ -113,4 +114,15 @@ public interface Context extends PropertyContainer {
    * @since 1.0.0
    */
   ExecutorService getExecutorService();
+  
+  /**
+   * Register a component that participates in the context's life cycle.
+   * <p>
+   * All components registered via this method will be stopped and removed
+   * from the context when the context is reset.
+   * 
+   * @param component the subject component
+   */
+  void register(LifeCycle component);
+  
 }

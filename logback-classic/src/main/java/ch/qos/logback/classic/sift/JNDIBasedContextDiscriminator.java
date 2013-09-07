@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -17,8 +17,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.core.sift.Discriminator;
-import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.sift.AbstractDiscriminator;
 
 /**
  * This discriminator returns the value context as determined by JNDI. If the
@@ -30,12 +29,10 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class JNDIBasedContextDiscriminator extends ContextAwareBase implements
-    Discriminator<ILoggingEvent> {
+public class JNDIBasedContextDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
   private static final String KEY = "contextName";
   private String defaultValue;
-  private boolean started = false;
 
   /**
    * Return the name of the current context name as found in the logging event.
@@ -54,18 +51,6 @@ public class JNDIBasedContextDiscriminator extends ContextAwareBase implements
     }
 
     return lc.getName();
-  }
-
-  public boolean isStarted() {
-    return started;
-  }
-
-  public void start() {
-    started = true;
-  }
-
-  public void stop() {
-    started = false;
   }
 
   public String getKey() {

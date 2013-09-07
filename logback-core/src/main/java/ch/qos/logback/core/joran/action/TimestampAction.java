@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran.action;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
@@ -64,12 +65,15 @@ public class TimestampAction extends Action {
     if (inError)
       return;
 
+    String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
+    Scope scope = ActionUtil.stringToScope(scopeStr);
+    
     CachingDateFormatter sdf = new CachingDateFormatter(datePatternStr);
     String val = sdf.format(timeReference);
 
     addInfo("Adding property to the context with key=\"" + keyStr
-        + "\" and value=\"" + val + "\" to the context");
-    context.putProperty(keyStr, val);
+        + "\" and value=\"" + val + "\" to the " + scope + " scope");
+    ActionUtil.setProperty(ec, keyStr, val, scope);
   }
 
   @Override

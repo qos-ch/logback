@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -99,7 +99,7 @@ public class JMXConfiguratorTest {
     
     lc.stop();
     
-    // check that after lc.stop, jmxConfigurator is no longer
+    // check that after lc.processPriorToRemoval, jmxConfigurator is no longer
     // registered as a listener in the loggerContext nor as an
     // MBean in mbs
     listenerList = lc.getCopyOfListenerList();

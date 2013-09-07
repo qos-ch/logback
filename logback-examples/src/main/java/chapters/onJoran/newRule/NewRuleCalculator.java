@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -20,7 +20,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NewRuleAction;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 import chapters.onJoran.calculator.ComputationAction1;
@@ -39,16 +39,16 @@ public class NewRuleCalculator {
 
     Context context = new ContextBase();
 
-    Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
     // we start with the rule for the top-most (root) element
-    ruleMap.put(new Pattern("*/computation"), new ComputationAction1());
+    ruleMap.put(new ElementSelector("*/computation"), new ComputationAction1());
 
     // Associate "/new-rule" pattern with NewRuleAction from the
     // org.apache.joran.action package.
     // 
     // We will let the XML file to teach the Joran interpreter about new rules
-    ruleMap.put(new Pattern("/computation/newRule"), new NewRuleAction());
+    ruleMap.put(new ElementSelector("/computation/newRule"), new NewRuleAction());
 
     SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
     // link the configurator with its context

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -130,4 +130,19 @@ public class TokenizerTest {
     assertEquals(witnessList, tokenList);
   }
 
-}
+  @Test
+  public void defaultSeparatorOutsideVariable() throws ScanException {
+
+    String input = "{a:-b}";
+    Tokenizer tokenizer = new Tokenizer(input);
+    List<Token> tokenList = tokenizer.tokenize();
+    witnessList.add(Token.CURLY_LEFT_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "a"));
+    witnessList.add(Token.DEFAULT_SEP_TOKEN);
+    witnessList.add(new Token(Token.Type.LITERAL, "b"));
+    witnessList.add(Token.CURLY_RIGHT_TOKEN);
+    assertEquals(witnessList, tokenList);
+  }
+
+
+  }

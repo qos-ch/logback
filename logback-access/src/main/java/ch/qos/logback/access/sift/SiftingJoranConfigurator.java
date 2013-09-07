@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -21,29 +21,28 @@ import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementPath;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
 public class SiftingJoranConfigurator extends
     SiftingJoranConfiguratorBase<IAccessEvent> {
 
-  String key;
-  String value;
 
-  SiftingJoranConfigurator(String key, String value) {
-    this.key = key;
-    this.value = value;
+
+  SiftingJoranConfigurator(String key, String value, Map<String, String> parentPropertyMap) {
+    super(key, value, parentPropertyMap);
   }
 
   @Override
-  protected Pattern initialPattern() {
-    return new Pattern("configuration");
+  protected ElementPath initialElementPath() {
+    return new ElementPath("configuration");
   }
 
   @Override
   protected void addInstanceRules(RuleStore rs) {
-    rs.addRule(new Pattern("configuration/appender"), new AppenderAction());
+    rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
   }
 
   @Override
@@ -54,6 +53,7 @@ public class SiftingJoranConfigurator extends
     omap.put(ActionConst.APPENDER_BAG, new HashMap());
     omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     Map<String, String> propertiesMap = new HashMap<String, String>();
+    propertiesMap.putAll(parentPropertyMap);
     propertiesMap.put(key, value);
     interpreter.setInterpretationContextPropertiesMap(propertiesMap);
   }

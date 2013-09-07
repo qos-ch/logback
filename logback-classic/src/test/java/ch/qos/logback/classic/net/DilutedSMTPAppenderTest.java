@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -36,8 +36,8 @@ import ch.qos.logback.core.Layout;
 public class DilutedSMTPAppenderTest {
 
   SMTPAppender appender;
-  CyclicBufferTracker cbTracker;
-  CyclicBuffer cb;
+  CyclicBufferTracker<ILoggingEvent> cbTracker;
+  CyclicBuffer<ILoggingEvent> cb;
 
   @Before
   public void setUp() throws Exception {

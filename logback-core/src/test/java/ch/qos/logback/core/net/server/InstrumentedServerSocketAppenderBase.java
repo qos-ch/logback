@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,7 +11,6 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
@@ -25,26 +24,26 @@ import javax.net.ServerSocketFactory;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * A {@link ServerSocketAppenderBase} with instrumentation for unit testing.
+ * A {@link AbstractServerSocketAppender} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */
 public class InstrumentedServerSocketAppenderBase
-    extends ServerSocketAppenderBase<Serializable> {
+    extends AbstractServerSocketAppender<Serializable> {
 
   private final ServerSocket serverSocket;
-  private final ServerListener<RemoteLoggerClient> listener;
-  private final ServerRunner<RemoteLoggerClient> runner;
+  private final ServerListener<RemoteReceiverClient> listener;
+  private final ServerRunner<RemoteReceiverClient> runner;
   
   private ServerListener lastListener;
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
-    this(serverSocket, new RemoteLoggerServerListener(serverSocket), null);
+    this(serverSocket, new RemoteReceiverServerListener(serverSocket), null);
   }
   
   public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
-      ServerListener<RemoteLoggerClient> listener, 
-      ServerRunner<RemoteLoggerClient> runner) {
+      ServerListener<RemoteReceiverClient> listener, 
+      ServerRunner<RemoteReceiverClient> runner) {
     this.serverSocket = serverSocket;
     this.listener = listener;
     this.runner = runner;
@@ -87,14 +86,14 @@ public class InstrumentedServerSocketAppenderBase
   }
 
   @Override
-  protected ServerRunner<RemoteLoggerClient> createServerRunner(
-      ServerListener<RemoteLoggerClient> listener, Executor executor) {
+  protected ServerRunner<RemoteReceiverClient> createServerRunner(
+      ServerListener<RemoteReceiverClient> listener, Executor executor) {
     lastListener = listener;
     return runner != null ? runner : super.createServerRunner(listener, executor);
   }
 
   @Override
-  protected ServerListener<RemoteLoggerClient> createServerListener(
+  protected ServerListener<RemoteReceiverClient> createServerListener(
       ServerSocket socket) {
     return listener;
   }

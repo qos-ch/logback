@@ -26,9 +26,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-
-
-
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
   private SizeAndTimeBasedFNATP sizeAndTimeBasedFNATP = null;
   private RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
@@ -110,6 +107,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
       addExpectedFileNamedIfItsTime(randomOutputDir, testId, msg, compressionSuffix);
       incCurrentTime(20);
       tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      add(tbrp1.future);
     }
 
     if (withSecondPhase) {
@@ -120,15 +118,15 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     if (stem != null)
       massageExpectedFilesToCorresponToCurrentTarget(file, true);
 
-    Thread.sleep(20);
+    Thread.yield();
     // wait for compression to finish
-    if (tbrp1.future != null)
-      tbrp1.future.get();
+    waitForJobsToComplete();
 
     StatusPrinter.print(context);
     existenceCheck(expectedFilenameList);
     sortedContentCheck(randomOutputDir, runLength, prefix);
   }
+
 
   void secondPhase(String testId, String file, String stem, String compressionSuffix, int runLength, String prefix) {
     rfa1.stop();

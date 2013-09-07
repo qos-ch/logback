@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-    <title>Logback: Using SSL</title>
+    <title>Chapter 15: Using SSL</title>
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
@@ -25,46 +25,81 @@
       <script src="menu.js" type="text/javascript"></script>
     </div>
     <div id="content">    
-      <h1>Using SSL</h1>
-      <p>Logback Classic supports the use of the Secure Sockets Layer 
-         (SSL) when delivering log events to a remote log server using
-         <a href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html"> 
-         <code>SSLSocketAppender</code></a>.  This appender acts as a
-         secure network client, connecting to an SSL-enabled log server 
-         and delivering serialized logging events over a secure channel.
-         It supports all of the same logging features as the plain old
-         <code>SocketAppender</code> while offering secure transport for
-         logging events over the network.
+      <h1>Chapter 15: Using SSL</h1>
+      
+      <div class="quote">
+
+        <p><em>The whole difference between construction and creation is 
+        exactly this: that a thing constructed can only be loved after it 
+        is constructed; but a thing created is loved before it exists.</em></p>
+        <p>&mdash;CHARLES DICKENS</p>
+      </div>
+
+
+      <script src="../templates/creative.js" type="text/javascript"></script>
+      <!-- script src="../templates/setup.js" type="text/javascript"></script -->
+
+      <p>Logback supports the use of the Secure Sockets Layer 
+         (SSL) when delivering log events from a socket-based appender
+         to a remote receiver.  When using an SSL-enabled appender and  
+         corresponding receiver, serialized logging events are delivered 
+         over a secure channel.
       </p>
       
-      <p>Logback Classic supports two SSL-enabled logging servers.</p>
-      <ul>
-        <li>The <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
-            <code>SSLSocketServer</code></a> is a logging server component
-            that can be added to any Logback configuration file (e.g.
-            <em>logback.xml</em>) to allow logging events to be
-            received from a remote logger and logged according to the
-            local configuration.
-        </li>
-        <li>For those who are presently using 
-            <a href="../xref/ch/qos/logback/classic/net/SimpleSocketServer.html">
-            <code>SimpleSocketServer</code></a> and simply want to start 
-            using <code>SSLSocketAppender</code> to deliver logging
-            events over a secure channel, Logback Classic provides the
-            <a href="../xref/ch/qos/logback/classic/net/SimpleSSLSocketServer.html">
-            <code>SimpleSSLSocketServer</code></a>.  This server 
-            supports the same command line interface as the plain old
-            <code>SimpleSocketServer</code>, while offering secure
-            transport for logging events over the network.
-        </li>
-      </ul>
-s      
+      <h2 class="doAnchor">SSL and Component Roles</h2>
+      
+      <p>Logback components such as appenders and receivers may act in
+      either the server role or the client role, with respect to network
+      connection initiation. When acting in the server role, a logback
+      component passively listens for connections from remote client
+      components.  Conversely, a component acting in the client role 
+      initiates a connection to remote server component.  For example, 
+      an appender acting in the <em>client</em> role connects to a 
+      receiver acting in the <em>server</em> role.  Or a receiver
+      acting in the <em>client</em> role connects to an appender
+      acting in the <em>server</em> role.</p>
+      
+      <p>The roles of the components are generally determined by the
+      component type.  For example, an <code>SSLServerSocketAppender</code>
+      is an appender component that acts in the server role, while an
+      <code>SSLSocketAppender</code> is an appender component that acts
+      in the client role.  Thus the developer or application administrator 
+      can configure Logback components to support the desired direction
+      of network connection initiation.</p>
+      
+      <p>The direction of connection initiation is significant in the 
+      context of SSL, because in SSL a server component must possess an
+      X.509 credential to identify itself to connecting clients.  A
+      client component, when connecting to the server, uses the server's
+      certificate to validate that the server is trusted.  The
+      developer or application administrator must be aware of the 
+      roles of Logback components, so as to properly configure the
+      server's key store (containing the server's X.509 credential) 
+      and the client's trust store (containing self-signed 
+      root certificates used when validating server trust).</p>
+      
+      <p>When SSL is configured for <em>mutual authentication</em>, then
+      both the server component and the client component must possess
+      valid X.509 credentials whose trust can be asserted by their 
+      respective peer.  Mutual authentication is configured in the
+      server component, therefore the developer or application 
+      administrator must be aware of which components are acting in 
+      the server role.</p>
+      
+      <p>In this chapter, we use the term <em>server component</em>
+      or simply <em>server</em> to refer to a Logback component such
+      as an appender or receiver that is acting in the server role.  We
+      use the term <em>client component</em> or simply <em>client</em>
+      to refer to a component that is acting in the client role.
+            
       <h2 class="doAnchor">SSL and X.509 Certificates</h2>
+      
       <p>In order to use SSL-enabled Logback components, you will need an
          X.509 credential (a private key, corresponding certificate,
-         and CA certification chain) to identify your logging server.  If 
-         you wish to use mutual authentication, you will also need credentials 
-         for your Logback appender clients using <code>SSLSocketAppender</code>.  
+         and CA certification chain) to identify your components
+         that act as SSL servers.  If you wish to use mutual authentication, 
+         you will also need credentials for your components that 
+         act as SSL clients.
       </p>      
       <p>While you can use a credential issued by a commercial
          certification authority (CA), you can also use a certificate issued
@@ -72,13 +107,14 @@ s
          following is all that is required:
       </p> 
       <ol>
-        <li>The server must be configured with a key store containing 
-            the server's private key, corresponding certificate, and
-            CA certification chain (if not using a self-signed certificate).
+        <li>The server component must be configured 
+            with a key store containing the server's private key, 
+            corresponding certificate, and CA certification chain
+             (if not using a self-signed certificate).
         </li>
-        <li>The client must be configured with a trust store containing
-            the trusted root CA certificate(s) or the server's 
-            signed root certificate.
+        <li>The client component must be configured 
+            with a trust store containing trusted root CA 
+            certificate(s) or the server's self-signed root certificate.
         </li>
       </ol>
           
@@ -88,18 +124,16 @@ s
          support has many configurable options, and a pluggable provider
          framework that allows the built-in SSL and cryptographic
          capabilities of the platform to be replaced or augmented.
-         SSL-enabled Logback components such as
-         <code>SSLSocketAppender</code> and <code>SSLSocketServer</code>
-         provide the ability to fully specify all of the configurable
-         aspects of the SSL engine and cryptographic providers, to meet
-         your unique security needs.
+         SSL-enabled Logback components provide the ability to fully specify 
+         all of the configurable aspects of the SSL engine and cryptographic 
+         providers, to meet your unique security needs.
       </p>
       
       <h3>Basic SSL Configuration using JSSE System Properties</h3>
       <p>Fortunately, nearly all of the configurable SSL properties for
          SSL-enabled Logback components have reasonable defaults.  In 
-         most cases all that is needed to use SSL-enabled Logback
-         components is the configuration of some JSSE system properties.
+         most cases all that is needed is the configuration of some JSSE 
+         system properties.
       </p>
       
       <p>The remainder of this section describes the specific JSSE
@@ -110,13 +144,14 @@ s
          system properties to customize JSSE.      
       </p>
 
-      <p>If you're using either the <code>SSLSocketServer</code> component 
-         in your application's logback configuration or using the 
-         <code>SimpleSSLSocketServer</code> as a standalone application
-         to receive logging events, you'll need to configure JSSE system
-         properties that provide the location, type, and password
-         of the key store containing the private key and certificate for
-         your logging server.
+      <p>If you're using any of Logback's SSL-enabled appender or receiver
+         components that act in the server role (e.g. 
+         <code>SSLServerSocketReceiver</code>, 
+         <code>SSLServerSocketAppender</code>,
+         or <code>SimpleSSLSocketServer</code>) you'll need to configure 
+         JSSE system properties that provide the location, type, and 
+         password of the key store containing a private key and 
+         certificate.
       </p>
       
       <h4><a name="basicConfig.keyStore"></a>
@@ -129,7 +164,7 @@ s
         <tr>
           <td><code>javax.net.ssl.keyStore</code></td>
           <td>Specifies a filesystem path to the file containing your
-              logging server's private key and certificate.</td>
+              server components's private key and certificate.</td>
         </tr>
         <tr>
           <td><code>javax.net.ssl.keyStoreType</code></td>
@@ -145,22 +180,22 @@ s
       </table>
 
       <p>See <a href="#Examples">Examples</a> below for examples of
-         setting these system properties when starting a server 
-         application via a command-line interface.
+         setting these system properties when starting an application
+         that uses Logback's SSL-enabled server components.
       </p>
          
-      <p><strong>If your logging server is using a certificate that was 
-         signed by a commercial certification authority (CA), you
-         probably don't need to provide <em>any</em> SSL configuration 
-         in your applications that use 
-         <code>SSLSocketAppender</code></strong>.  When using a 
-         commercially-signed logging server certificate, simply setting
-         the key store system properties in the server is usually 
-         all that is needed.
+      <p>If your server component is using a certificate 
+         that was signed by a commercial certification authority (CA), 
+         <strong>you probably don't need to provide <em>any</em> SSL 
+         configuration in your applications that use SSL-enabled client 
+         components</strong>.  When using a commercially-signed 
+         certificate for your server  component, simply setting the 
+         system key store properties for JVM that runs the server 
+         component is usually all that is needed.
       </p>
                
-      <p>If are using either a self-signed logging server certificate
-         or your logging server's certificate was signed by a
+      <p>If you are using either a self-signed server certificate
+         or your server certificate was signed by a
          certification authority (CA) that is not among those whose root
          certificates are in the Java platform's default trust store
          (e.g. when your organization has its own internal certification
@@ -168,9 +203,9 @@ s
          properties that provide the location, type, and password of the
          trust store containing your server's certificate or trusted
          root certificates for the certification authority (CA) that
-         signed your server's certificate.  <em>These properties will 
-         need to be set in the application that utilizes
-         <code>SSLSocketAppender</code></em>.
+         signed your server's certificate.  <strong>These properties will 
+         need to be set in each application that utilizes an SSL-enabled
+         client component</strong>.
       </p>
         
       <h4><a name="basicConfig.trustStore"></a>
@@ -183,8 +218,9 @@ s
         <tr>
           <td><code>javax.net.ssl.trustStore</code></td>
           <td>Specifies a filesystem path to the file containing your
-              logging server's certificate or trusted root certificate(s)
-              for the certification authority (CA) that signed.</td>
+              server component's certificate or trusted root
+              certificate(s) for the certification authority (CA) that
+              signed the server certificate.</td>
         </tr>
         <tr>
           <td><code>javax.net.ssl.trustStoreType</code></td>
@@ -200,15 +236,15 @@ s
       </table>
 
       <p>See <a href="#Examples">Examples</a> below for examples of
-         setting these system properties when starting a client 
-         application via a command-line interface.
+         setting these system properties when starting an application 
+         that utilizes Logback's SSL-enabled client components.
       </p>         
             
       <h3 class="doAnchor"><a name="SSLConfiguration"></a>
          Advanced SSL Configuration</h3>
       <p>In certain situations, the basic SSL configuration using 
          JSSE system properties is not adequate.  For example, if you
-         are using the <code>SSLSocketServer</code> component in a web
+         are using the <code>SSLServerSocketReceiver</code> component in a web
          application, you may wish to use a different credential to
          identify your logging server for your remote logging clients
          than the credential that your web server uses to identify
@@ -224,7 +260,7 @@ s
          specify the SSL configuration using the <code>ssl</code> 
          property in the configuration of the component.          
       </p>      
-      <p>For example, if you wish to use <code>SSLSocketServer</code>
+      <p>For example, if you wish to use <code>SSLServerSocketReceiver</code>
          and configure the key store properties for your logging 
          server's credential, you could use a configuration such as the 
          following.
@@ -232,14 +268,6 @@ s
 
       <span class="asGroovy" onclick="return asGroovy('logback-ssl-serverKeyStore');">View as .groovy</span>
       <pre id="logback-ssl-serverKeyStore" class="prettyprint source">&lt;configuration>
-  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
-    &lt;ssl>
-      &lt;keyStore>
-        &lt;location>classpath:/logging-server-keystore.jks&lt;/location>
-        &lt;password>changeit&lt;/password>
-      &lt;/keyStore>
-    &lt;/ssl>
-  &lt;/server> 
 
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
@@ -251,6 +279,15 @@ s
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 
+  &lt;receiver class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
+    &lt;ssl>
+      &lt;keyStore>
+        &lt;location>classpath:/logging-server-keystore.jks&lt;/location>
+        &lt;password>changeit&lt;/password>
+      &lt;/keyStore>
+    &lt;/ssl>
+  &lt;/receiver> 
+
 &lt;/configuration></pre>
 
       <p>This configuration specifies the location of the key store
@@ -260,7 +297,7 @@ s
          the key store.
       </p>
       <p>If you wanted to use <code>SSLSocketAppender</code> in your
-         application's logback configuration, but did not want to change
+         application's Logback configuration, but did not want to change
          the application's default trust store using the JSSE
          <code>javax.net.ssl.trustStore</code> property, you could 
          configure the appender as follows.
@@ -272,6 +309,7 @@ s
     &lt;ssl>
       &lt;trustStore>
         &lt;location>classpath:/logging-server-truststore.jks&lt;/location>
+        &lt;password>changeit&lt;/password>
       &lt;/trustStore>
     &lt;/ssl>
   &lt;/appender>
@@ -293,19 +331,19 @@ s
       
       <p>JSSE exposes a large number of configurable options, and 
          Logback's SSL support makes nearly all of them available for
-         you to specify in your server or appender configuration.  
+         you to specify in your SSL-enabled component configuration.  
          When using XML configuration, SSL properties are introduced to 
-         these components by nesting an &lt;ssl> element in the appender
-         or server configuration.  This configuration element corresponds 
+         these components by nesting an &lt;ssl> element in the 
+         component configuration.  This configuration element corresponds 
          to the 
          <a href="../xref/ch/qos/logback/core/net/ssl/SSLConfiguration.html">
          <code>SSLConfiguration</code></a> class.
       </p>
       
-      <p>When configuring SSL for your server or appender components
+      <p>When configuring SSL for your components
          you need only configure those SSL properties for which the
          defaults are not adequate.  Overspecifying the SSL configuration
-         is often those cause of difficult-to-diagnose problems.
+         is often the cause of difficult-to-diagnose problems.
       </p>
  
       <p>The following table describes the top-level SSL configuration
@@ -699,7 +737,7 @@ s
           <td>Set this property to the value <code>true</code> to 
               configure a server to <em>require</em> a valid client
               certificate.  This property is ignored when configured
-              for a client <code>SSLSocketAppender</code>.
+              for a client component such as <code>SSLSocketAppender</code>.
           </td>
         </tr>
         <tr>
@@ -709,7 +747,7 @@ s
           <td>Set this property to the value <code>true</code> to 
               configure the server to <em>request</em> a client
               certificate.  This property is ignored when configured
-              for a client <code>SSLSocketAppender</code>.
+              for a client component such as <code>SSLSocketAppender</code>.
           </td>
         </tr>
       </table>
@@ -754,17 +792,63 @@ s
         </tr>
       </table>
       
-      <h2>Examples</h2>
+      <h2 class="doAnchor"><a name="Examples"></a>Examples</h2>
 
-      <h3>Creating and Using a Self-Signed Logging Server Credential</h3>
+      <h3>Using JSSE System Properties</h3>
+      <p>JSSE system properties can be used to specify the location and 
+      password for a key store containing your server's X.509 credential,
+      or to specify the location and password for a trust store 
+      containing self-signed root CA certificates used by your client
+      components to validate server trust.</p>
+
+      <h4>Specifying the Server's Key Store</h4>
+      <p>When running a server component, you need to specify the location
+      and password for the key store containing the server's credential.
+      One way to do this is using JSSE system properties.  The following
+      example shows a command line that could be used to start the
+      <code>SimpleSSLSocketServer</code> that is shipped with Logback.</p>
+    
+      <p class="source">java -DkeyStore=/etc/logback-server-keystore.jks \
+     -DkeyStorePassword=changeit -DkeyStoreType=JKS \
+     ch.qos.logback.net.SimpleSSLSocketServer 6000 /etc/logback-server-config.xml</p>
+              
+      <p>Note that when using the JSSE <em>keyStore</em> system property,
+      a path to the key store is specified.  When specifying the location
+      in <em>logback.xml</em>, a URL for the key store is specified.</p>
+      
+      <p>While this example starts the standalone server application
+      provided with Logback, the same system properties could be specified
+      to start any application that uses an SSL-enabled Logback server
+      component.
+      
+      <h4>Specifying the Client's Trust Store</h4>
+      
+      <p>When using a client component, you need to specify the location
+      and password for a trust store containing root CA certificates used
+      for validating server trust.  One way to do this is using JSSE
+      system properties.  The following example shows a command line
+      that could be used to start an application named 
+      <code>com.example.MyLoggingApplication</code> that uses one or
+      more of Logback's SSL-enabled client components.</p>
+
+      <p class="source">java -DtrustStore=/etc/logback-client-truststore.jks \
+     -DtrustStorePassword=changeit -DtrustStoreType=JKS \
+     com.example.MyLoggingApplication</p>
+      
+      <p>Note that when using the JSSE <em>trustStore</em> system property,
+      a path to the key store is specified.  When specifying the location
+      in <em>logback.xml</em>, a URL for the trust store is specified.</p>
+      
+      <h3>Creating and Using a Self-Signed Server Component Credential</h3>
       <p>To generate a self-signed certificate, you can use the <em>keytool</em>
       utility that is shipped with the Java Runtime Environment (JRE).
       The instructions below walk through the process of creating a
-      self-signed X.509 credential in a key store for your logging server 
-      and creating a trust store for use with your appender clients.
+      self-signed X.509 credential in a key store for your server 
+      component and creating a trust store for use with your client
+      components.
       </p>
       
-      <h4>Creating the logging server credential:</h4>
+      <h4>Creating the server component credential:</h4>
       <p>The following command will generate the self-signed client
       credential in a file named <em>server.keystore</em>.</p>
       <pre class="source">keytool -genkey -alias server -dname &quot;CN=my-logging-server&quot; \
@@ -777,7 +861,7 @@ Enter key password for &lt;my-logging-server>
 
       <p>The name <em>my-logging-server</em> used in the <em>dname</em>
       may be any valid name of your choosing.  You may wish to use the
-      fully-qualified domain name of the logging server host. The
+      fully-qualified domain name of the server host. The
       <em>validity</em> argument specifies the number of calendar days
       from the present date until the credential expires.</p>
       
@@ -786,11 +870,11 @@ Enter key password for &lt;my-logging-server>
       This password protects the server's private key, preventing it
       from being used by an authorized party.  Make note of the
       password, because you will need it in subsequent steps and when
-      configuring your logging server.
+      configuring your server.
       </p>
 
-      <h4>Creating a trust store for appender clients:</h4>
-      <p>For use in the configuration of your appender clients, the 
+      <h4>Creating a trust store for client components:</h4>
+      <p>For use in the configuration of your client components, the 
       server's certificate needs to be exported from the key store
       created in the previous step, and imported into a trust store.  The
       following commands will export the certificate and import it into
@@ -826,7 +910,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       clients.
       </p>
           
-      <h4>Configuring the logging server:</h4>
+      <h4>Configuring the server component:</h4>
       <p>You will need to copy the <em>server.keystore</em> file into your 
       server application's configuration.  The key store can be placed
       with your application's classpath resources, or it may simply be
@@ -835,7 +919,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       either a <code>classpath:</code> URL or <code>file:</code> URL, as
       appropriate.  A example server configuration follows:</p>
 
-      <p class="example">Example: Logging Server Configuration</p>
+      <p class="example">Example: Server Component Configuration</p>
       <pre class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
@@ -847,7 +931,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
     &lt;appender-ref ref="CONSOLE" />
   &lt;/root>
 
-  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
+  &lt;server class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver">
     &lt;ssl>
       &lt;keyStore>
         &lt;location>classpath:server.keystore&lt;/location>
@@ -869,15 +953,14 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       using the entered password before configuring the logging system.
       </p>
       
-      <h4>Configuring appender clients:</h4>
+      <h4>Configuring client components:</h4>
       <p>You will need to copy the <em>server.truststore</em> file into
-      the application configuration of each application that uses 
-      <code>SSLSocketAppender</code> to send logging events to your 
-      server.  The trust store can be placed with your application's
-      classpath resources, or it may simply be placed somewhere on the
-      filesystem.  When specifying the location of the trust
-      store in the configuration, you will use either a
-      <code>classpath:</code> URL or <code>file:</code> URL, as
+      the application configuration of each application that uses an
+      SSL-enabled component acting in the client mode.  The trust store 
+      can be placed with your application's classpath resources, or it
+      may simply be placed somewhere on the filesystem.  When specifying 
+      the location of the trust store in the configuration, you will use 
+      either a <code>classpath:</code> URL or <code>file:</code> URL, as
       appropriate.  A example appender client configuration follows:</p>
 
       <p class="example">Example: Appender Client Configuration</p>
@@ -914,10 +997,10 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       <p>In settings where secure communications are required, it is often
       necessary to audit the configuration of components that use SSL to
       validate conformance with local security policies.  The SSL
-      support in Logback Classic addresses this need by providing detailed
-      logging of SSL configuration when the logback configuration is
-      initialized.  You can enable audit logging using the
-      <code>debug</code> property in the configuration:</p>
+      support in Logback addresses this need by providing detailed
+      logging of SSL configuration when Logback is initialized.  You can 
+      enable audit logging using the <code>debug</code> property in the
+      configuration:</p>
       
       <pre class="prettyprint source">&lt;configuration debug="true">
   
@@ -932,10 +1015,10 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       
       <p class="example">Example: SSL Configuration Audit Logging</p>
       
-      <pre>06:46:31,941 |-INFO in SSLSocketServer@4ef18d37 - SSL protocol 'SSL' provider 'SunJSSE version 1.6'
-06:46:31,967 |-INFO in SSLSocketServer@4ef18d37 - key store of type 'JKS' provider 'SUN version 1.6': file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
-06:46:31,967 |-INFO in SSLSocketServer@4ef18d37 - key manager algorithm 'SunX509' provider 'SunJSSE version 1.6'
-06:46:31,973 |-INFO in SSLSocketServer@4ef18d37 - secure random algorithm 'SHA1PRNG' provider 'SUN version 1.6'
+      <pre>06:46:31,941 |-INFO in SSLServerSocketReceiver@4ef18d37 - SSL protocol 'SSL' provider 'SunJSSE version 1.6'
+06:46:31,967 |-INFO in SSLServerSocketReceiver@4ef18d37 - key store of type 'JKS' provider 'SUN version 1.6': file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
+06:46:31,967 |-INFO in SSLServerSocketReceiver@4ef18d37 - key manager algorithm 'SunX509' provider 'SunJSSE version 1.6'
+06:46:31,973 |-INFO in SSLServerSocketReceiver@4ef18d37 - secure random algorithm 'SHA1PRNG' provider 'SUN version 1.6'
 06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv2Hello
 06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv3
 06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: TLSv1
@@ -958,24 +1041,23 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       </p>
       
       <h2>Resolving SSL Exceptions</h2>
-      <p>When using <code>SSLSocketAppender</code>, the appender acts
-         as a client, connecting to an SSL-enabled logging server.
-         If SSL is misconfigured, it generally results in the client
-         and server being unable to negotiate an agreeable session.  This
-         problem usually manifests itself as exceptions being thrown by 
-         both parties when the client attempts to connect to the server.
+      <p>When SSL is misconfigured, it generally results in the client
+         and server components being unable to negotiate an agreeable 
+         session.  This problem usually manifests itself as exceptions 
+         being thrown by both parties when the client attempts to connect 
+         to the server.
       </p>
       <p>The content of the exception messages varies depending on whether 
          you are looking at the client's log or the server's log.  This
          is mostly due to inherent protocol limitations in error reporting
          during session negotiation.  As a consequence of this fact,
          in order to troubleshoot session negotiation problems, you will
-         usually want to look at the logs of both the appender client
-         and the logging server.
+         usually want to look at the logs of both the client and the
+         server.
       </p>
       
       <h3>Server's Certificate is Not Available</h3>
-      <p>When starting the logging server, you
+      <p>When starting the server component, you
          see the following exception in the log:</p>
          
       <p><em>javax.net.ssl.SSLException: No available certificate or 
@@ -998,9 +1080,9 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       </p>
       
       <h3>Client Does Not Trust the Server</h3>
-      <p>When the appender client attempts to connect to the logging
-         server, you see the following exception in the log:
-      </p>
+      <p>When the client attempts to connect to the server, you see the 
+      following exception in the log:</p>
+      
       <p><em>javax.net.ssl.SSLHandshakeException: 
               sun.security.validator.ValidatorException: 
               PKIX path building failed</em>
@@ -1068,7 +1150,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          <code>certificate_expired</code> or <code>certificate_revoked</code> 
          the server needs a new certificate.  The new certificate 
          and associated private key needs to be placed in the key store 
-         specified in the logging server's configuration.  And, if using 
+         specified in the server's configuration.  And, if using 
          a self-signed server certificate, the server's certificate also
          needs to be placed in the trust store specified in the appender
          client's configuration.
@@ -1082,7 +1164,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          property)</strong>.
       </p>
  
-      <p>When the appender client attempts to connect to the logging
+      <p>When the client attempts to connect to the logging
          server, you see the following exception in the client's log:
       </p>
       
@@ -1135,9 +1217,9 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          <code>certificate_expired</code> or <code>certificate_revoked</code> 
          the client needs a new certificate.  The new certificate 
          and associated private key needs to be placed in the key store 
-         specified in the appender client's configuration.  And, if using 
+         specified in the client's configuration.  And, if using 
          a self-signed client certificate, the client's certificate also
-         needs to be placed in the trust store specified in the logging
+         needs to be placed in the trust store specified in the 
          servers's configuration.
       </p>
       
@@ -1149,9 +1231,8 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          protocols in your configuration</strong>.
       </p>
 
-      <p>When the appender client attempts to connect to the logging
-         server, you see the following exception in the log:
-      </p>
+      <p>When the client attempts to connect to the server, you see 
+         the following exception in the log:</p>
       
       <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
          alert: handshake_failure</em>
@@ -1170,7 +1251,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       <p>Check the values specified for the 
          <a href="#parameters.excludedProtocols"><span class="prop">excludedProtocols</span></a> and
          <a href="#parameters.includedProtocols"><span class="prop">includedProtocols</span></a>
-         properties on both the logging server and appender client.
+         properties on both the server and client.
       </p>
 
       <h3>Client and Server Cannot Agree on a Cipher Suite</h3>
@@ -1181,7 +1262,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          cipher suites in your configuration</strong>.
       </p>
       
-      <p>When the appender client attempts to connect to the logging
+      <p>When the client attempts to connect to the
          server, you see the following exception in the log:
       </p>
       
@@ -1196,7 +1277,7 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       </p>
       
       <p>This means that you have configured the cipher suites on the
-         logging server and appender client such that the intersection
+         server and client such that the intersection
          of their respective sets of enabled cipher suites is empty.</p>
       
       <h4>Solution</h4>
@@ -1206,6 +1287,8 @@ Trust this certificate? [no]:  &lt;Enter "yes">
          properties on both the server and client.
       </p>
          
+      <script src="../templates/footer.js" type="text/javascript"></script>
+
     </div>
   </body>
 </html>

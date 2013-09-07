@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,20 +13,24 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
+
+import java.util.Map;
+
+import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
 
 public class MDCConverter extends ClassicConverter {
 
-  String key;
-  private static final String EMPTY_STRING = "";
+  private String key;
+  private String defaultValue = "";
 
   @Override
   public void start() {
-    key = getFirstOption();
+		String[] keyInfo = extractDefaultReplacement(getFirstOption());
+		key = keyInfo[0];
+    if (keyInfo[1] != null) {
+      defaultValue = keyInfo[1];
+    }
     super.start();
   }
 
@@ -41,7 +45,7 @@ public class MDCConverter extends ClassicConverter {
     Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
     if (mdcPropertyMap == null) {
-      return EMPTY_STRING;
+      return defaultValue;
     }
 
     if (key == null) {
@@ -52,7 +56,7 @@ public class MDCConverter extends ClassicConverter {
       if (value != null) {
         return value;
       } else {
-        return EMPTY_STRING;
+        return defaultValue;
       }
     }
   }
@@ -60,7 +64,6 @@ public class MDCConverter extends ClassicConverter {
   /**
    * if no key is specified, return all the values present in the MDC, in the format "k1=v1, k2=v2, ..."
    */
-
   private String outputMDCForAllKeys(Map<String, String> mdcPropertyMap) {
     StringBuilder buf = new StringBuilder();
     boolean first = true;

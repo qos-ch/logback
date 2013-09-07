@@ -1,0 +1,25 @@
+<configuration debug="true">
+
+
+  <property name="X" value="Y"/>  
+
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>localProperty</key>
+      <defaultValue>default</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="LIST-${localProperty}"
+        class="ch.qos.logback.core.testUtil.StringListAppender">
+        <layout>
+          <pattern>${X}%msg</pattern>                       
+        </layout>
+      </appender>
+    </sift>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="SIFT" />
+  </root>
+
+</configuration>

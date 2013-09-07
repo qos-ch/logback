@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -57,8 +57,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   private boolean packagingDataEnabled = true;
 
   private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
-
-  boolean started = false;
 
   int resetCount = 0;
   private List<String> frameworkPackages;
@@ -235,7 +233,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   /**
-   * First stop all registered turbo filters and then clear the registration
+   * First processPriorToRemoval all registered turbo filters and then clear the registration
    * list.
    */
   public void resetTurboFilterList() {
@@ -329,12 +327,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   // === end listeners ==============================================
 
-  public boolean isStarted() {
-    return started;
-  }
-
   public void start() {
-    started = true;
+    super.start();
     fireOnStart();
   }
 
@@ -342,7 +336,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     reset();
     fireOnStop();
     resetAllListeners();
-    started = false;
+    super.stop();
   }
 
   @Override

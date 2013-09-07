@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -40,9 +40,9 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
   public static final String ZIP_ENTRY_DATE_PATTERN = "yyyy-MM-dd_HHmm";
 
   /**
-   * It's almost always a bad idea to have a large window size, say over 12.
+   * It's almost always a bad idea to have a large window size, say over 20.
    */
-  private static int MAX_WINDOW_SIZE = 12;
+  private static int MAX_WINDOW_SIZE = 20;
 
   public FixedWindowRollingPolicy() {
     minIndex = 1;
@@ -80,9 +80,10 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
       maxIndex = minIndex;
     }
 
-    if ((maxIndex - minIndex) > MAX_WINDOW_SIZE) {
+    final int maxWindowSize = getMaxWindowSize();
+    if ((maxIndex - minIndex) > maxWindowSize) {
       addWarn("Large window sizes are not allowed.");
-      maxIndex = minIndex + MAX_WINDOW_SIZE;
+      maxIndex = minIndex + maxWindowSize;
       addWarn("MaxIndex reduced to " + maxIndex);
     }
 
@@ -101,6 +102,15 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     compressor = new Compressor(compressionMode);
     compressor.setContext(this.context);
     super.start();
+  }
+
+  /**
+   * Subclasses can override this method to increase the max window size, if required.  This is to
+   * address LOGBACK-266.
+   * @return
+   */
+  protected int getMaxWindowSize() {
+    return MAX_WINDOW_SIZE;
   }
 
   private String transformFileNamePatternFromInt2Date(String fileNamePatternStr) {

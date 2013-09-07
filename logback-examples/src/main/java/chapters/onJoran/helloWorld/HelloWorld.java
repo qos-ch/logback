@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -19,7 +19,7 @@ import java.util.Map;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.Pattern;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 
@@ -31,10 +31,10 @@ import chapters.onJoran.SimpleConfigurator;
  */
 public class HelloWorld {
   public static void main(String[] args) throws Exception {
-    Map<Pattern, Action> ruleMap = new HashMap<Pattern, Action>();
+    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
     // Associate "hello-world" pattern with HelloWorldAction
-    ruleMap.put(new Pattern("hello-world"), new HelloWorldAction());
+    ruleMap.put(new ElementSelector("hello-world"), new HelloWorldAction());
 
     // Joran needs to work within a context.
     Context context = new ContextBase();

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -15,10 +15,10 @@ package ch.qos.logback.core.joran.action;
 
 import java.util.Stack;
 
+import ch.qos.logback.core.joran.spi.ElementPath;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Pattern;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.AggregationType;
 
@@ -40,11 +40,11 @@ public class NestedBasicPropertyIA extends ImplicitAction {
   // be followed by the corresponding pop.
   Stack<IADataForBasicProperty> actionDataStack = new Stack<IADataForBasicProperty>();
 
-  public boolean isApplicable(Pattern pattern, Attributes attributes,
+  public boolean isApplicable(ElementPath elementPath, Attributes attributes,
       InterpretationContext ec) {
     // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
     // "]");
-    String nestedElementTagName = pattern.peekLast();
+    String nestedElementTagName = elementPath.peekLast();
 
     // no point in attempting if there is no parent object
     if (ec.isEmpty()) {
@@ -85,7 +85,6 @@ public class NestedBasicPropertyIA extends ImplicitAction {
   public void body(InterpretationContext ec, String body) {
 
     String finalBody = ec.subst(body);
-    // System.out.println("body "+body+", finalBody="+finalBody);
     // get the action data object pushed in isApplicable() method call
     IADataForBasicProperty actionData = (IADataForBasicProperty) actionDataStack.peek();
     switch (actionData.aggregationType) {

@@ -23,6 +23,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option
@@ -98,7 +99,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
 
   void genericTest(String testId, String patternPrefix, String compressionSuffix, boolean fileOptionIsSet, int waitDuration) throws IOException {
-    boolean withCompression = compressionSuffix.length() > 0;
     String fileName = fileOptionIsSet ? testId2FileName(testId) : null;
     initRFA(rfa1, fileName);
 
@@ -117,19 +117,18 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       addExpectedFileNamedIfItsTime_ByDate(fileNamePatternStr);
       incCurrentTime(500);
       tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-      if (withCompression)
-        waitForCompression(tbrp1);
+      add(tbrp1.future);
     }
     rfa1.stop();
+    waitForJobsToComplete();
 
     if (waitDuration != NO_RESTART) {
       doRestart(testId, patternPrefix, fileOptionIsSet, waitDuration);
     }
+    waitForJobsToComplete();
 
     massageExpectedFilesToCorresponToCurrentTarget(fileName, fileOptionIsSet);
-
     StatusPrinter.print(context);
-
     rolloverChecker.check(expectedFilenameList);
   }
 
@@ -156,6 +155,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
       addExpectedFileNamedIfItsTime_ByDate(filePatternStr);
       incCurrentTime(100);
       tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      add(tbrp2.future);
     }
     rfa2.stop();
   }
@@ -196,7 +196,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     defaultTest("test6", "test6", ".gz", FILE_OPTION_SET, NO_RESTART);
   }
 
-  // LBCORE-169
+  // LOGBACK-168
   @Test
   public void withMissingTargetDirWithCompression() throws IOException {
     defaultTest("test7", "%d{yyyy-MM-dd, aux}/", ".gz", FILE_OPTION_SET, NO_RESTART);
@@ -266,20 +266,20 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 //    }
 //
 //  }
-
-  // =========================================================================
-  // utility methods
-  // =========================================================================
-
-  void massageExpectedFilesToCorresponToCurrentTarget(String file) {
-    // we added one too many files by date
-    expectedFilenameList.remove(expectedFilenameList.size() - 1);
-    // since file is set, we have to add it
-    addExpectedFileName_ByFile(file);
-  }
-
-  void addExpectedFileName_ByFile(String filenameSuffix) {
-    String fn = randomOutputDir + filenameSuffix;
-    expectedFilenameList.add(fn);
-  }
+//
+//  =========================================================================
+//  utility methods
+//  =========================================================================
+//
+//  void massageExpectedFilesToCorresponToCurrentTarget(String file) {
+//    // we added one too many files by date
+//    expectedFilenameList.remove(expectedFilenameList.size() - 1);
+//    // since file is set, we have to add it
+//    addExpectedFileName_ByFile(file);
+//  }
+//
+//  void addExpectedFileName_ByFile(String filenameSuffix) {
+//    String fn = randomOutputDir + filenameSuffix;
+//    expectedFilenameList.add(fn);
+//  }
 }

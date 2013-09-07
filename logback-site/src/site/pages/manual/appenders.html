@@ -42,8 +42,7 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
     <script src="../templates/setup.js" type="text/javascript"></script>
     
-    <h2><a name="whatIsAnAppender" href="#whatIsAnAppender"><span
-    class="anchor"/></a>What is an Appender?</h2>
+    <h2 class=class="doAnchor" name="whatIsAnAppender">What is an Appender?</h2>
     
 		<p>Logback delegates the task of writing a logging event to
 		components called appenders.  Appenders must implement the <a
@@ -99,8 +98,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	</p>
 	
 	
-	<h2><a name="AppenderBase" href="#AppenderBase"><span
-	class="anchor"/></a>AppenderBase</h2>
+	<h2 class="doAnchor" name="AppenderBase">AppenderBase</h2>
 	
 	<p>The <a href="../xref/ch/qos/logback/core/AppenderBase.html">
 	<code>ch.qos.logback.core.AppenderBase</code></a> class is an
@@ -236,8 +234,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 
 	
-	<h2><a name="OutputStreamAppender" href="#OutputStreamAppender"><span
-	class="anchor"/></a>OutputStreamAppender
+	<h2 class="doAnchor"
+	name="OutputStreamAppender">OutputStreamAppender
   </h2>
 	
 	<p><a
@@ -285,8 +283,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	<img src="images/chapters/appenders/appenderClassDiagram.jpg" alt="A UML diagram showing OutputStreamAppender and sub-classes"/>
 	
 
-	<h2><a name="ConsoleAppender" href="#ConsoleAppender"><span
-	class="anchor"/></a>ConsoleAppender</h2>
+	<h2 class="doAnchor" name="ConsoleAppender">ConsoleAppender</h2>
 	
   <p>The <a href="../xref/ch/qos/logback/core/ConsoleAppender.html">
   <code>ConsoleAppender</code></a>, as the name indicates, appends on
@@ -331,9 +328,9 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 			<a href="http://jansi.fusesource.org/">Jansi</a> library which
 			provides support for ANSI color codes on Windows machines.  On a
 			Windows host, if this property is set to true, then you should
-			put "org.fusesource.jansi:jansi:1.8" on the class path. Note
-			that Unix-based operating systems such as Linux and Mac OS X
-			support ANSI color codes by default.
+			put "org.fusesource.jansi:jansi:${jansi.version}" on the class
+			path. Note that Unix-based operating systems such as Linux and
+			Mac OS X support ANSI color codes by default.
 
       <p>Under the Eclipse IDE, you might want to try the <a
       href="http://www.mihai-nita.net/eclipse/">ANSI in Eclipse
@@ -380,8 +377,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    href="../xref/chapters/appenders/ConfigurationTester.html">chapters.appenders.ConfigurationTester</a> src/main/java/chapters/appenders/conf/logback-Console.xml</p>
 	
 	
-   <h2><a name="FileAppender" href="#FileAppender"><span
-   class="anchor"/></a>FileAppender</h2>
+   <h2 class="doAnchor" name="FileAppender">FileAppender</h2>
 	
    <p>The <a
    href="../xref/ch/qos/logback/core/FileAppender.html"><code>FileAppender</code></a>,
@@ -550,8 +546,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    src/main/java/chapters/appenders/conf/logback-fileAppender.xml</p>
 	
 	
-   <h3><a name="uniquelyNamed" href="#uniquelyNamed"><span
-   class="anchor"/></a>Uniquely named files (by timestamp)</h3>
+   <h3 class="doAnchor" name="uniquelyNamed">Uniquely named files (by
+   timestamp)</h3>
    
    <p>During the application development phase or in the case of
    short-lived applications, e.g. batch applications, it is desirable
@@ -628,8 +624,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   ...
 &lt;/configuration></pre>
 
-   <h2><a name="RollingFileAppender" href="#RollingFileAppender"><span
-   class="anchor"/></a>RollingFileAppender
+   <h2 class="doAnchor" name="RollingFileAppender">RollingFileAppender
    </h2>
    
    <p><a
@@ -737,8 +732,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      </tr>
    </table>
 	
-   <h3><a name="onRollingPolicies" href="#onRollingPolicies"><span
-   class="anchor"/></a>Overview of rolling policies</h3>
+   <h3 class="doAnchor" name="onRollingPolicies">Overview of rolling
+   policies</h3>
 	
    <p><a
    href="../xref/ch/qos/logback/core/rolling/RollingPolicy.html"><code>RollingPolicy</code></a>
@@ -774,10 +769,8 @@ public interface RollingPolicy extends LifeCycle {
         ================= -->
 
 	
-   <h4>
-     <a name="TimeBasedRollingPolicy"
-     href="#TimeBasedRollingPolicy"><span
-     class="anchor"/></a>TimeBasedRollingPolicy
+   <h4 class="doAnchor"
+   name="TimeBasedRollingPolicy">TimeBasedRollingPolicy
    </h4>
 
    <p><a
@@ -1169,9 +1162,8 @@ public interface RollingPolicy extends LifeCycle {
 &lt;/configuration></pre>
 
 
-   <h4><a name="FixedWindowRollingPolicy"
-   href="#FixedWindowRollingPolicy"><span
-   class="anchor"/></a>FixedWindowRollingPolicy
+   <h4 class="doAnchor"
+   name="FixedWindowRollingPolicy">FixedWindowRollingPolicy
    </h4>
 
    <p>When rolling over, <a
@@ -1350,10 +1342,8 @@ public interface RollingPolicy extends LifeCycle {
 &lt;/configuration></pre>
 
 
-    <h3>
-      <a name="SizeAndTimeBasedFNATP"
-      href="#SizeAndTimeBasedFNATP"><span class="anchor"/></a>Size
-      <b>and</b> time based archiving
+    <h3 class="doAnchor" name="SizeAndTimeBasedFNATP">Size <b>and</b>
+    time based archiving
     </h3>
 
     <p>Sometimes you may wish to archive files essentially by date but
@@ -1517,9 +1507,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     </p>
 
-		<h3> 
-      <a name="SocketAppender" href="#SocketAppender"><span
-      class="anchor"/></a>SocketAppender and SSLSocketAppender
+		<h3 class="doAnchor" name="SocketAppender">SocketAppender and
+		SSLSocketAppender
     </h3>
 		
 		<p>The appenders covered thus far are only able to log to local
@@ -1660,20 +1649,21 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     for servers that can be used to receive logging events from
     <code>SocketAppender</code> or <code>SSLSocketAppender</code>.</p>
     <ul>
+      <li><code>ServerSocketReceiver</code> and its SSL-enabled 
+      counterpart <code>SSLServerSocketReceiver</code> are receiver
+      components which can be configured in the <em>logback.xml</em> 
+      configuration file of an application in order receive events
+      from a remote socket appender.  See <a href="receivers.html">
+      Receivers</a> for configuration details and usage examples.
+      </li>
       <li><code>SimpleSocketServer</code> and its SSL-enabled counterpart
-      <code>SimpleSSLSocketServer</code>, which both offer an 
+      <code>SimpleSSLSocketServer</code> both offer an 
       easy-to-use standalone Java application that is designed to
       be configured and run from your shell's command line interface.
       These applications simply wait for logging events from 
       <code>SocketAppender</code> or <code>SSLSocketAppender</code>
       clients.  Each received event is logged according to local server 
-      policy.    
-      </li>
-      <li><code>SocketServer</code> and its SSL-enabled counterpart
-      <code>SSLSocketServer</code> which can be configured in the
-      <em>logback.xml</em> configuration file of <em>any</em> application
-      that uses Logback Classic, allowing any application to be a 
-      receiver for remote logging events.
+      policy.  Usage examples are given below.
       </li>
     </ul>
     
@@ -1824,7 +1814,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p class="source">java -Djavax.net.ssl.keyStore=src/main/java/chapters/appenders/socket/ssl/keystore.jks \
     -Djavax.net.ssl.keyStorePassword=changeit \
     ch.qos.logback.classic.net.SimpleSSLSocketServer 6000 \
-    src/main/java/chapters/appenders/socket/ssl/server1.xml
+    src/main/java/chapters/appenders/socket/ssl/server.xml
     </p>
 	
     <p>This example runs <code>SimpleSSLSocketServer</code> using an
@@ -1888,7 +1878,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
     	  	
     <p class="source">java -Dhost=localhost -Dport=6000 \
-    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
+    -Dtruststore=file:src/main/java/chapters/appenders/socket/ssl/truststore.jks \
     -Dpassword=changeit \
     chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml
  	  </p>
@@ -1900,225 +1890,30 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
  	  </p>
  	  
  	  <p>Note that the <em>truststore</em> property given on the command
- 	  line specifies a file URL that identifies the location of the trust 
- 	  store.  You may also use a classpath URL as described in 
- 	  <a href="usingSSL.html">Using SSL</a>.
+ 	  line specifies a file URL that identifies the location of the
+ 	  trust store.  You may also use a classpath URL as described in <a
+ 	  href="usingSSL.html">Using SSL</a>.
  	  </p>
  
-    <p>Note also that the trust store specified on the comamnd-line 
-    is the same file we referenced when starting the server.  This is a 
-    convenience made possible by the fact that we are utilizing a 
-    self-signed certificate suitable for testing and experimentation, only.  
-    <strong>In a production setting you would not want to install 
-    your server's X.509 credential (consisting of a private key and 
-    certificate) in each of your client applications</strong>.  You 
-    would instead utilize a trust store containing only trusted root
-    certificate(s) as described in <a href="usingSSL.html">Using SSL</a>.
- 	  </p>
- 	   
-    <p>As we saw previously at server startup, because the 
-    client configuration has <code>debug="true"</code> specified on the
-    root element, the client's startup logging includes the details of
-    the SSL configuration as aid to auditing local policy conformance.
+    <p>As we saw previously at server startup, because the client
+    configuration has <code>debug="true"</code> specified on the root
+    element, the client's startup logging includes the details of the
+    SSL configuration as aid to auditing local policy conformance.
     </p>
  	  
- 	  <h4>Using SocketServer and SSLSocketServer</h4>
- 	  <p>While <code>SimpleSocketServer</code> and 
- 	  <code>SimpleSSLSocketServer</code> both provide an easy-to-use 
- 	  standalone logging server application, you may wish instead to 
- 	  integrate logging server functionality into an existing application
-    utilizing Logback Classic.  This ability is provided by
-    <a href="../xref/ch/qos/logback/classic/net/server/SocketServer.html">
-    <code>SocketServer</code></a> and its SSL-enabled counterpart
-    <a href="../xref/ch/qos/logback/classic/net/server/SSLSocketServer.html">
-    <code>SSLSocketServer</code></a>.
-    </p>
-    
-    <p><code>SocketServer</code> and <code>SSLSocketServer</code> are 
-    components that are configured in the same manner as appenders,
-    loggers, and the like &mdash; by placing the appropriate configuration
-    properties in your application's <em>logback.xml</em> configuration
-    file.  This allows <em>any</em> application using Logback Classic
-    to be a receiver for remote logging events.
-    </p>
-    
-    <p>The <code>SocketServer</code> component provides the following 
-    configurable properties:</p>
-    
-    <table class="bodyTable striped">
-      <tr>
-        <th>Property Name</th>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketServer">address</span></td>
-        <td><code>String</code></td>
-        <td>The local network interface address on which the server
-        will listen.  If this property is not specified, the server
-        will listen on all network interfaces.</td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketServer">port</span></td>
-        <td><code>int</code></td>
-        <td>The TCP port on which the server will listen.  If this
-        property is not specified, a default value will be used.</td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketServer">ssl</span></td>
-        <td><code>SSLConfiguration</code></td>
-        <td>Supported only for <code>SSLSocketServer</code>, this
-            property provides the SSL configuration that will be used by
-            the server, as described in <a href="usingSSL.html">Using SSL</a>.
-        </td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketServer">threadPool</span></td>
-        <td><code>ThreadPoolFactoryBean</code></td>
-        <td>This property specifies configuration for a thread pool that will
-            be used to manage the appender's thread resources.  In most cases,
-            this configuration is not required, as the defaults are generally
-            adequate.  See <a href="../xref/ch/qos/logback/core/net/server/ThreadPoolFactoryBean">
-            <code>ThreadPoolFactoryBean</code></a> for a description of the 
-            configurable properties and recommended settings.
-        </td>
-      </tr>
-    </table>
-    
-    <p>For example, the following configuration uses the 
-    <code>SocketServer</code> component with a minimal appender and 
-    logger configuration.
-    </p>
-    
-   	<p class="example">Example: Basic SocketServer Configuration
-		(logback-examples/src/main/java/chapters/appenders/socket/server3.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('server3');">View as .groovy</span>
-<pre id="server3" class="prettyprint source">&lt;configuration debug="true">
-  
-  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;encoder>
-      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-  
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>
-
-  &lt;server class="ch.qos.logback.classic.net.server.SocketServer">
-    &lt;port>${port}&lt;/port>
-  &lt;/server>
-  
-&lt;/configuration></pre>
-  
-    <p>Note that the <span class="prop">server</span> configuration 
-    property identifies the server class that we wish to use.  Either
-    <code>SocketServer</code> or <code>SSLSocketServer</code> may be
-    specified here.
-    </p>
-    
-    <p>Our example server application is very similar in function and
-    design to <code>SimpleSocketServer</code>.  It simply accepts a
-    path for a logback configuration file as a command line argument,
-    and runs the given configuration.  While our example is somewhat
-    trivial, keep in mind that you can configure logback's 
-    <code>SocketServer</code> (and <code>SSLSocketServer</code>) 
-    component in <em>any</em> application.
-    </p>
-    
-    <p>We can run our example server application as follows:</p>
-    <p class="source">java -Dport=6000 chapters.appenders.socket.SocketServer \
-    src/main/java/chapters/appenders/socket/server3.xml
- 	  </p>
-  
-    <p>We can connect to the running server just as shown in the previous
-    examples for using <a href="#simpleSocketServer">SimpleSocketServer</a>.
-    </p>
-    
-    <p>A minimal server configuration using <code>SSLSocketServer</code>
-    follows.</p>
-
-   	<p class="example">Example: Basic SSLSocketServer Configuration
-		(logback-examples/src/main/java/chapters/appenders/socket/ssl/server2.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
-<pre id="sslserver2" class="prettyprint source">&lt;configuration debug="true">
-  
-  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;encoder>
-      &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-  
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>
-
-  &lt;server class="ch.qos.logback.classic.net.server.SSLSocketServer">
-    &lt;port>${port}&lt;/port>
-    &lt;ssl>
-      &lt;keyStore>
-        &lt;location>${keystore}&lt;/location>
-        &lt;password>${password}&lt;/password>
-      &lt;/keyStore>
-    &lt;/ssl>
-  &lt;/server>
-  
-&lt;/configuration></pre>
-
-    <p>The essential differences between this configuration and the
-    previous example using <code>SocketServer</code> are the specification
-    of <code>SSLSocketServer</code> in the <em>class</em> attribute and
-    the presence of the nested <span class="prop">ssl</span> property,
-    which is used here to specify the location and password for the
-    key store containing the server's private key and certificate, using
-    substitution variables. The <span class="prop">ssl</span> property 
-    of the server component accepts the same nested configuration 
-    properties as those accepted by <code>SSLSocketAppender</code>.  
-    <strong>See  <a href="usingSSL.html">Using SSL</a> for details on 
-    configuring the SSL properties for <code>SSLSocketServer</code></strong>.
-    </p>    
-   
-    <p>We can now run our SSL-enabled server configuration using the 
-    same example server application, by specifying values for the
-    substitution variables in our configuration and referencing the
-    appropriate configuration file:</p>
-   
-    <p class="source">java -Dport=6000 \
-    -Dkeystore=file:src/main/java/chapters/appenders/socket/ssl/keystore.jks \
-    -Dpassword=changeit \
-    chapters.appenders.socket.SocketServer \
-    src/main/java/chapters/appenders/socket/ssl/server2.xml
- 	  </p>
-  
- 	  <p>Note that the <em>keystore</em> property given on the command
- 	  line specifies a file URL that identifies the location of the key 
- 	  store.  You may also use a classpath URL as described in 
- 	  <a href="usingSSL.html">Using SSL</a>.
- 	  </p>
-    
-    <p>Also we must point out once again that our example X.509
-    credential is suitable for testing and experimentation, only. 
-    <strong>In a production setting, you should obtain an appropriate
-    X.509 credential to identify your logging server</strong>.  See <a
-    href="usingSSL.html">Using SSL</a> for more information.</p>
-
-    <p>Once our server is started, we can connect to it just as shown in 
-    the previous examples for using 
-    <a href="#simpleSSLSocketServer">SimpleSSLSocketServer</a>.
-    </p>
-   
-    <h3 class="doAnchor"><a name="serverSocketAppender"></a>
+ 	  
+    <h3 class="doAnchor" name="serverSocketAppender">
       ServerSocketAppender and SSLServerSocketAppender</h3>
     
-    <p>The <code>SocketAppender</code> component (and its SSL-enabled 
-       counterpart) discussed previously are designed to allow an application
-       to connect to a remote logging server over the network for the purpose
-       of delivering logging events to the server.  In some certain situations,
-       it may be inconvenient or infeasible to have an application initiate a
-       connection to a remote logging server.  For these situations, Logback
-       Classic offers 
-       <a href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
-       <code>ServerSocketAppender</code></a>.  
+    <p>The <code>SocketAppender</code> component (and its SSL-enabled
+    counterpart) discussed previously are designed to allow an
+    application to connect to a remote logging server over the network
+    for the purpose of delivering logging events to the server.  In
+    some situations, it may be inconvenient or infeasible to have an
+    application initiate a connection to a remote logging server.  For
+    these situations, Logback offers <a
+    href="../xref/ch/qos/logback/classic/net/server/ServerSocketAppender">
+    <code>ServerSocketAppender</code></a>.
     </p>
     
     <p>Instead of initiating a connection to a remote logging server, 
@@ -2144,47 +1939,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     of connection initiation is reversed.  While <code>SocketAppender</code> 
     acts as the active peer in establishing the connection to a logging server,
     <code>ServerSocketAppender</code> is passive; it listens for
-    incoming connections from clients.  This difference is especially useful
-    in situations such as the following:
-    </p>
-    <ul>
-			<li>For security reasons, a central logging server may be
-				located behind a network firewall that does not allow incoming
-				connections. Using a <code>ServerSocketAppender</code> component, an
-				application that wishes to deliver events to the central
-				logger can passively wait for the central logger to initiate the
-				connection from behind the firewall.
-			</li>
-			<li>
-			  <p>A central logging server may be using a <code>SocketServer</code> 
-			  component (or a <code>SimpleSocketServer</code>) to receive events from
-				one or more applications using a <code>SocketServer</code> component.
-				Events received at the central logger server could then be distributed
-				to interested downstream receivers using <code>ServerSocketAppender</code>.
-				The has the advantage that the central logging server may not need to
-				be configured for each new downstream receiver.  The central logging
-				serve thus acts as a hub, receiving logging events from applications
-				and distributing them to interested clients.</p>
-				<p>This is particularly relevant for developer tools such as IDE 
-				plugins or enterprise management tools that might want to receive 
-				events from server-based applications for local display, filtering,
-				and alerting.  Arranging for the central server to initiate a
-				connection to such tools may prove difficult, particularly when the 
-				tool is running on a developer's workstation, which may indeed be
-				mobile.</p>
-      </li>
-    </ul>
+    incoming connections from clients.</p>  
 
-    <p>The <a href="../xref/ch/qos/logback/classic/net/SocketRemote">
-    <code>SocketRemote</code></a> component (and its SSL-enabled counterpart, 
-    <a href="../xref/ch/qos/logback/classic/net/SSLSocketRemote">
-    <code>SSLSocketRemote</code></a>) provide the companion client that 
-    connects to a <code>ServerSocketAppender</code>.  This component is
-    configured in <em>logback.xml</em> just like other logback components. 
-    When a configuration containing the remote component is loaded, the
-    component will initiate a connection to a <code>ServerSocketAppender</code>
-    running at a remote host and port.  
-    </p>
+    <p>The <code>ServerSocketAppender</code> subtypes are intended to be
+    used exclusively with Logback <em>receiver</em> components.  See
+    <a href="receivers.html">Receivers</a> for additional information on
+    this component type.</p>
     
     <p>The following configuration properties are supported by 
     <code>ServerSocketAppender</code>:</p>
@@ -2229,73 +1989,15 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
             the appender, as described in <a href="usingSSL.html">Using SSL</a>.
         </td>
       </tr>
-      <tr>
-        <td><span class="prop" container="serverSocketAppender">threadPool</span></td>
-        <td><code>ThreadPoolFactoryBean</code></td>
-        <td>This property specifies configuration for a thread pool that will
-            be used to manage the appender's thread resources.  In most cases,
-            this configuration is not required, as the defaults are generally
-            adequate.  See <a href="../xref/ch/qos/logback/core/net/server/ThreadPoolFactoryBean">
-            <code>ThreadPoolFactoryBean</code></a> for a description of the 
-            configurable properties and recommended settings.
-        </td>
-      </tr>
     </table>
-    
-    <p>The following configuration properties are supported by 
-    <code>SocketRemote</code>:</p>
-    
-    <table class="bodyTable striped">
-      <tr>
-      <th>Property Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketRemote">host</span></td>
-        <td><code>String</code></td>
-        <td>The hostname or address of the remote server socket appender.</td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketRemote">port</span></td>
-        <td><code>int</code></td>
-        <td>The port number of the remote server socket appender.</td>
-      </tr> 
-      <tr>
-        <td><span class="prop" container="socket">reconnectionDelay</span></td>
-        <td><code>int</code></td>
-        <td>
-          A positive integer representing the number of milliseconds to wait
-          before attempting to reconnect after a connection failure.  The
-          default value is 30000 (30 seconds).
-        </td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="socketRemote">ssl</span></td>
-        <td><code>SSLConfiguration</code></td>
-        <td>Supported only for <code>SSLSocketRemote</code>, this
-            property provides the SSL configuration that will be used for
-            this remote, as described in <a href="usingSSL.html">Using SSL</a>.
-        </td>
-      </tr>
-    </table>
-    
-    <h4>Using SocketRemote with ServerSocketAppender</h4>
-   
-    <p>The configuration used for <code>SocketRemote</code> and
-    <code>ServerSocketAppender</code> is conceptually similar to that used
-    with <code>SocketAppender</code> and <code>SocketServer</code>.  The 
-    differences relate to the fact that the roles of <code>client</code>
-    and <code>server</code> are reversed.
-    </p>
     
     <p>The following example illustrates a configuration that uses
-    <code>ServerSocketAppender</code>:
+      <code>ServerSocketAppender</code>:
     </p>
 
     <p class="example">Example: Basic ServerSocketAppender Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/remoteServer.xml)</p>
-<pre id="socketRemote" class="prettyprint source">&lt;configuration debug="true">
+    (logback-examples/src/main/java/chapters/appenders/socket/server4.xml)</p>
+<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="SERVER" 
     class="ch.qos.logback.classic.net.server.ServerSocketAppender">
     &lt;port>${port}&lt;/port>
@@ -2316,124 +2018,45 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     server.
     </p>
     
-    <p>Assuming you are in the <em>logback-examples/</em> directory, 
-    you can run this example configuration using the following command:</p>
-    <p class="source">java -Dport=6000 -DincludeCallerData=false \
-    chapters.appenders.socket.SocketRemoteServer \
-    src/main/java/chapters/appenders/socket/remoteServer.xml
-    </p>   
-   
-		<p>The example application loads the specified configuration and then
-		prompts the user to enter messages which will be relayed to connected
-		clients.  Since there are no client connections, yet, messages entered at
-		this point will be discarded by the appender.
-		</p>
-   
-    <p class="example">Example: Basic SocketRemote Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/remoteClient.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
-<pre id="socketRemote" class="prettyprint source">&lt;configuration debug="true">
-    
-  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
-    &lt;encoder>
-      &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-  
-  &lt;remote class="ch.qos.logback.classic.net.SocketRemote">
-    &lt;host>${host}&lt;/host>
-    &lt;port>${port}&lt;/port>
-    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
-  &lt;/remote>
-  
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>  
-
-&lt;/configuration></pre>
+    <p>The following example illustrates a configuration using
+    <code>SSLServerSocketAppender</code>.</p>
         
-   <p>This configuration will cause logback to connect to an 
-   <code>ServerSocketAppender</code> running on the host and port specified
-   by the <em>host</em> and <em>port</em> substitution variables.  Logging
-   events received from the remote appender will be logged locally 
-   (according to the configuration shown here) via a console appender.  You
-   can configure any valid combination of appender and logger elements to 
-   direct events received from the remote appender to an appropriate 
-   destination.  Moreover, you can configure an any number of remote 
-   components to connect to as many remote appenders as you desire. 
-   </p>
-   
-   <p>Assuming you are in the <em>logback-examples/</em> directory, 
-   you can run this example configuration using the following command:</p>
-   <p class="source">java -Dhost=localhost -Dport=6000 \
-    chapters.appenders.socket.SocketRemoteClient \
-    src/main/java/chapters/appenders/socket/remoteClient.xml
-   </p>   
-   
-   <p>The example loads the configuration and then simply waits for logging
-   events from the remote appender.  If you run this example when the remote
-   appender is not running, you'll see <em>connection refused</em> messages
-   appearing in the log output, periodically.  The <code>SocketRemote</code>
-   component will periodically attempt to reconnect to the remote appender
-   until it succeeds or until the logger context is shut down.  The delay
-   interval between attempts is configurable using the 
-   <span class="prop">reconnectionDelay</span> property as shown in the
-   example configuration.</p>
-   
-   <h4>Using SSLSocketRemote with SSLServerSocketAppender</h4>
-   <p>
-   Using <code>SSLSocketRemote</code> is quite similar.  The essential 
-   differences are in the class specified for the remote and the ability to
-   nest the <span class="prop">ssl</span> property to specify SSL configuration
-   properties.  The following example illustrates a basic configuration:
-   </p>
-   
-    <p class="example">Example: Basic SSLSocketRemote Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/ssl/remoteClient.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('sslserver2');">View as .groovy</span>
-<pre id="sslSocketRemote" class="prettyprint source">&lt;configuration debug="true">
-  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">    
-    &lt;encoder>
-      &lt;pattern>%date %-5level [%thread] %logger - %message%n&lt;/pattern>
-    &lt;/encoder>         
-  &lt;/appender>
-  
-  &lt;remote class="ch.qos.logback.classic.net.SSLSocketRemote">
-    &lt;host>${host}&lt;/host>
+     <p class="example">Example: Basic SSLServerSocketAppender Configuration
+    (logback-examples/src/main/java/chapters/appenders/socket/ssl/server3.xml)</p>
+<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
+  &lt;appender name="SERVER" 
+    class="ch.qos.logback.classic.net.server.SSLServerSocketAppender">
     &lt;port>${port}&lt;/port>
-    &lt;reconnectionDelay>10000&lt;/reconnectionDelay>
+    &lt;includeCallerData>${includeCallerData}&lt;/includeCallerData>
     &lt;ssl>
-      &lt;trustStore>
-        &lt;location>${truststore}&lt;/location>
+      &lt;keyStore>
+        &lt;location>${keystore}&lt;/location>
         &lt;password>${password}&lt;/password>
-      &lt;/trustStore>
+      &lt;/keyStore>
     &lt;/ssl>
-  &lt;/remote>
-  
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="CONSOLE" />
-  &lt;/root>  
-   
-&lt;/configuration></pre>
+  &lt;/appender>
 
-  <p>Note that the <em>class</em> attribute now specifies 
-  <code>SSLSocketRemote</code> and that in addition to the configuration
-  properties shown in the previous example, this configuration contains
-  an SSL configuration specifying the location and password for a 
-  trust store that will be used in validating that the remote appender is
-  trusted.  See <a href="usingSSL.html">Using SSL</a> for more information 
-  on configuring SSL properties for a remote.
-  </p>
-  
-  <p>It is important to note that our example is using a self-signed
-    X.509 credential that suitable for testing and experimentation, only. 
-    <strong>In a production setting, you should obtain an appropriate
-    X.509 credential to identify your trusted appender components</strong>.  
-    See <a href="usingSSL.html">Using SSL</a> for more information.
-  </p>
-  
-  <p>
-  </p>
+  &lt;root level="debug">
+    &lt;appender-ref ref="SERVER" />
+  &lt;/root>  
+
+&lt;/configuration>
+</pre>
+   
+    <p>The principal differences between this configuration and the
+    previous configuration is that the appender's <em>class</em> attribute
+    identifies the <code>SSLServerSocketAppender</code> type, and the
+    presence of the nested <span class="prop">ssl</span> element which
+    specifies, in this example, configuration of a key store containing
+    an X.509 credential for the appender.  See <a href="usingSSL.html">
+    Using SSL</a> for information regarding SSL configuration properties.
+    </p>
+    
+    <p>Because the <code>ServerSocketAppender</code> subtypes are designed
+    to be used with receiver components, we will defer presenting 
+    illustrative examples to the chapter entitled 
+    <a href="receivers.html">Receivers</a>.</p>
+    
    <h3 class="doAnchor">SMTPAppender</h3>
    
    <p>The <a
@@ -2723,7 +2346,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>
 
-
 		</table>		
 		
 		<p>The <code>SMTPAppender</code> keeps only the last 256 logging
@@ -2853,8 +2475,8 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <code>HTMLLayout</code> does not use inline CSS.
     </p>
 
-    <h3><a name="cyclicBufferSize" href="#cyclicBufferSize"><span
-    class="anchor"/></a>Custom buffer size</h3>
+    <h3 class="doAnchor" name="cyclicBufferSize">Custom buffer
+    size</h3>
 
     <p>By default, the outgoing message will contain the last 256
     messages seen by <code>SMTPAppender</code>. If your heart so
@@ -2870,7 +2492,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;subject>%logger{20} - %m&lt;/subject>
     &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
 
-    <b>&lt;cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl"></b>
+    <b>&lt;cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker"></b>
       <b>&lt;!-- send just one log entry per email --></b>
       <b>&lt;bufferSize>1&lt;/bufferSize></b>
     <b>&lt;/cyclicBufferTracker></b>
@@ -3037,10 +2659,8 @@ logger.error(<b>notifyAdmin</b>,
   chapters.appenders.mail.Marked_EMail src/main/java/chapters/appenders/mail/mailWithMarker.xml</pre>
 
 
-  <h4><a name="marker_JaninoEventEvaluator"
-  href="#marker_JaninoEventEvaluator"><span
-  class="anchor"/></a>Marker-based triggering with
-  JaninoEventEvaluator</h4>
+  <h4 class="doAnchor" name="marker_JaninoEventEvaluator">Marker-based
+  triggering with JaninoEventEvaluator</h4>
 
     <p>Note that instead of using the marker-centric
     <code>OnMarkerEvaluator</code>, we could use the much more generic
@@ -3070,10 +2690,8 @@ logger.error(<b>notifyAdmin</b>,
   &lt;/appender>
 &lt;/configuration></pre>
 
-    <h4><a name="marker_GEventEvaluator"
-    href="#marker_GEventEvaluator"><span
-    class="anchor"/></a>Marker-based triggering with
-    GEventEvaluator</h4>
+    <h4 class="doAnchor" name="marker_GEventEvaluator">Marker-based
+    triggering with GEventEvaluator</h4>
 
     <p>Here is the equivalent evaluator using <a
     href="filters.html#GEventEvaluator">GEventEvaluator</a>.</p>
@@ -3100,9 +2718,7 @@ logger.error(<b>notifyAdmin</b>,
     </p>
 
 
-
-    <h3><a name="smtpAuthentication" href="#smtpAuthentication"><span
-    class="anchor"/></a>Authentication/STARTTLS/SSL</h3>
+    <h3 class="doAnchor" name="smtpAuthentication">Authentication/STARTTLS/SSL</h3>
 
     <p><code>SMTPAppender</code> supports authentication via plain
     user passwords as well as both the STARTTLS and SSL
@@ -3113,9 +2729,8 @@ logger.error(<b>notifyAdmin</b>,
     connection is encrypted right from the start.
     </p>
 
-    <h3><a name="gmailSSL" href="#gmailSSL"><span
-    class="anchor"/></a>SMTPAppender configuration for Gmail
-    (SSL)</h3>
+    <h3> class="doAnchor"name="gmailSSL">SMTPAppender configuration
+    for Gmail (SSL)</h3>
 
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail with the SSL protocol. </p>
@@ -3148,8 +2763,8 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 
-    <h3><a name="gmailSTARTTLS" href="#gmailSTARTTLS"><span
-    class="anchor"/></a>SMTPAppender for Gmail (STARTTLS)</h3>
+    <h3 class="doAnchor" name="gmailSTARTTLS">SMTPAppender for Gmail
+    (STARTTLS)</h3>
 
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail for the STARTTLS protocol. </p>
@@ -3180,8 +2795,8 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
 
 
-    <h3><a name="smtpDiscriminator" href="#smtpDiscriminator"><span
-    class="anchor"/></a>SMTPAppender with MDCDiscriminator</h3>
+    <h3 class="doAnchor" name="smtpDiscriminator">SMTPAppender with MDCDiscriminator</h3>
+
 
     <p>As mentioned earlier, by specifying a discriminator other than
     the default one, <code>SMTPAppender</code> will generate email
@@ -3231,8 +2846,8 @@ logger.error(<b>notifyAdmin</b>,
     host, greatly facilitating problem diagnosis.
     </p>
     
-    <h4><a name= "bufferManagement" href="#bufferManagement"><span
-    class="anchor"/></a>Buffer management in very busy systems</h4>
+    <h4 class="doAnchor" name= "bufferManagement">Buffer management in
+    very busy systems</h4>
 
     <p>Internally, each distinct value returned by the discriminator
     will cause the creation of a new cyclic buffer. However, at most
@@ -3274,9 +2889,7 @@ logger.error(<b>notifyAdmin</b>,
     <!-- =========================================================== -->
 
 
-    <h3><a name="DBAppender" href="#DBAppender"><span
-    class="anchor"/></a>DBAppender
-		</h3>
+    <h3 class="doAnchor" name="DBAppender">DBAppender</h3>
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/classic/db/DBAppender.html"><code>DBAppender</code></a>
@@ -3738,9 +3351,8 @@ logger.error(<b>notifyAdmin</b>,
 		
 		-->
 
-    <h4><a name="JNDIConnectionSource"
-    href="#JNDIConnectionSource"><span
-    class="anchor"/></a>JNDIConnectionSource</h4>
+    <h4 class="doAnchor"
+    name="JNDIConnectionSource">JNDIConnectionSource</h4>
 
 		<p><a
 		href="../xref/ch/qos/logback/core/db/JNDIConnectionSource.html">
@@ -4027,15 +3639,44 @@ logger.error(<b>notifyAdmin</b>,
     </p>
 
 
+    
+    <table class="bodyTable striped">
+			<tr>
+				<th>Property Name</th>
+				<th>Type</th>
+				<th>Description</th>
+			</tr>
+			<tr>
+				<td><span class="prop" container="sift">timeout</span></td>
+				<td><code><a
+				href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
+				<td>A nested appender which has not been accessed beyond the
+				<span class="prop">timeout</span> duration is deemed stale. A
+				stale appender is closed and unreferenced by
+				<code>SiftingAppender</code>. The dfault value for <span
+				class="prop">timeout</span> is 30 minutes.</td>
+			</tr>
+			<tr>
+				<td><span class="prop" container="sift">maxAppenderCount</span></td>
+				<td><code>integer</code></td>
+				<td>The maximum number of nested appenders
+				<code>SiftingAppender</code> may create and track. Default
+				value for <span class="prop">maxAppenderCount</span> is
+				Integer.MAX_VALUE.</td>
+			</tr>
+  </table>
+
     <p><code>SiftingAppender</code> achieves this feat by creating
-    child appenders on the fly. Child appenders are created based on a
-    template specified within the configuration of the
+    nested appenders on the fly. Nested appenders are created based on
+    a template specified within the configuration of the
     <code>SiftingAppender</code> itself (enclosed within the
     <code>&lt;sift></code> element, see example
     below). <code>SiftingAppender</code> is responsible for managing
     the lifecycle of child appenders. For example,
     <code>SiftingAppender</code> will automatically close and remove
-    any unused child appender.
+    any stale appender. A nested appender is considered stale when no
+    accesses it beyond the duration specified by the <span
+    class="prop">timeout</span> parameter.
     </p>
 
     <p>When handling a logging event, <code>SiftingAppender</code>
@@ -4134,17 +3775,75 @@ logger.debug("Alice says hello"); </p>
     distinct log files, "unknown.log" and "Alice.log".
 		</p>
 
-    <h3><a name="AsyncAppender"
-    href="#AsyncAppender">AsyncAppender</a></h3>
+    <p><span class="label">local-scoped variables</span> As of version
+    1.0.12, properties defined in local scope within the configuration
+    file will be available to nested appenders. Moreover, you can <a
+    href="configuration.html#definingProps">define variables</a> or <a
+    href="configuration.html#definingPropsOnTheFly">dynamically
+    compute</a> variables from <em>within</em> the the
+    <code>&lt;sift></code> element. Combining a variable from parts
+    defined outside and within the <code>&lt;sift></code> element is
+    also supported.
+    </p>
+
+    <h4 class="doAnchor" name="siftGettingTimeoutRight">Getting the
+    <span class="prop">timeout</span> right</h4>
+
+    <p>For certain types of applications, it may be difficult to get
+    the <span class="prop">timeout</span> parameter right. If the
+    <span class="prop">timeout</span> is too small, a nested appender
+    might be removed just to be created anew a few seconds later. This
+    phenomenon is called <em>trashing</em>. If the <span
+    class="prop">timeout</span> is too long and appenders are created
+    in quick succession, you might run out of resources. Similarly,
+    setting <span class="prop">maxAppenderCount</span> too low might
+    cause trashing as well.
+    </p>
+
+    <p>In many case, it may be easier to pinpoint a location in your
+    code after which a nested appender is no longer needed. If such a
+    location exists, even approximately, log from that location using
+    the <a
+    href="../apidocs/ch/qos/logback/classic/ClassicConstants.html#FINALIZE_SESSION_MARKER">FINALIZE_SESSION</a>
+    marker. Whenever SiftingAppender sees a logging event marked as
+    <code>FINALIZE_SESSION</code> it will end-of-life the associated
+    nested appender. Upon reaching its end-of-life, a nested appender
+    will linger for a few seconds to process any late coming events
+    (if any) and then will be closed.
+    </p>
+    
+    <pre class="prettyprint source">import org.slf4j.Logger;
+import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
+
+  void job(String jobId) {
+   
+    MDC.put("jobId", jobId);
+    logger.info("Starting job.");
+
+    ... do whather the job needs to do
+    
+    // will cause the nested appender reach end-of-life. It will
+    // linger for a few seconds.
+    logger.info(FINALIZE_SESSION_MARKER, "About to end the job");
+
+    try {
+      .. perform clean up
+    } catch(Exception e);  
+      // This log statement will be handled by the lingering appender. 
+      // No new appender will be created.
+      logger.error("unexpected error while cleaning up", e);
+    }
+  }
+
+</pre>
+
+    <h3 class="doAnchor" name="AsyncAppender">AsyncAppender</h3>
 
     <p>AsyncAppender logs <a
     href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>s
     asynchronously. It acts solely as an event dispatcher and must
     therefore reference another appender in order to do anything
-    useful. In order to avoid loss of logging events, this appender
-    should be closed. It is the user's responsibility to close
-    appenders, typically at the end of the application lifecycle.
-    </p>
+    useful.</p>
 
     <p><span class="label notice">Lossy by default if 80% full</span>
     AsyncAppender buffers events in a <a
@@ -4157,6 +3856,15 @@ logger.debug("Alice says hello"); </p>
     and INFO if its queue is 80% full. This strategy has an amazingly
     favorable effect on performance at the cost of event loss.
     </p>
+
+    <p><span class="label">Application stop/redeploy</span> Upon
+    application shutdown or redeploy, <code>AsyncAppender</code> must
+    be stopped in order to stop and reclaim the worker thread and to
+    flush the logging events from the queue. This can be achieved by
+    <a href="configuration.html#stopContext">stopping the
+    LoggerContext</a> which will close all appenders, including any
+    <code>AsyncAppender</code> instances.</p>
+
 
     <p>Here is the list of properties admitted by
     <code>AsyncAppender:</code></p>
@@ -4265,8 +3973,8 @@ logger.debug("Alice says hello"); </p>
 &lt;/configuration></pre>
   
 
-		<h3><a name="WriteYourOwnAppender"
-		href="#WriteYourOwnAppender">Writing your own Appender</a></h3>
+		<h3 class="doAnchor" name="WriteYourOwnAppender">Writing your own
+		Appender</h3>
 
 
     <p>You can easily write your appender by subclassing
@@ -4384,8 +4092,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		</p>
   
 
-		<h2><a name="logback_access" href="#logback_access">Logback
-		Access</a></h2>
+		<h2 class="doAnchor" name="logback_access">Logback Access</h2>
 		
 		<p>Most of the appenders found in logback-classic have their
 		equivalent in logback-access. These work essentially in the same
@@ -4393,8 +4100,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		will cover their use.
 		</p>
 		
-  	<a name="AccessSocketAppender"></a>
-		<h3>SocketAppender and SSLSocketAppender</h3>
+		<h3 class="doAnchor" name="AccessSocketAppender">SocketAppender
+		and SSLSocketAppender</h3>
 		
 		<p>The <a
 		href="../xref/ch/qos/logback/access/net/SocketAppender.html">
@@ -4417,8 +4124,9 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 			for classic's <code>SocketAppender</code>.
 		</p>
 
-    <a name="AccessServerSocketAppender"></a>
-    <h3>ServerSocketAppender and SSLServerSocketAppender</h3>
+    <h3 class="doAnchor"
+    name="AccessServerSocketAppender">ServerSocketAppender and
+    SSLServerSocketAppender</h3>
     
     <p>Like <code>SocketAppender</code>, the <a
     href="../xref/ch/qos/logback/access/net/server/ServerSocketAppender.html">
@@ -4436,22 +4144,24 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     over the Secure Sockets Layer (SSL).
     </p>
     
-    <p>
-      The properties of access' <code>ServerSocketAppender</code> are the same 
-      as those available for classic's <code>ServerSocketAppender</code>.
+    <p>The properties of access' <code>ServerSocketAppender</code> are
+    the same as those available for classic's
+    <code>ServerSocketAppender</code>.
     </p>
     
-	 	<a name="AccessSMTPAppender"></a>	
-		<h3>SMTPAppender</h3>
+	 	
+		<h3 class="doAnchor" name="AccessSMTPAppender">SMTPAppender</h3>
 		
-		<p>
-			Access' <a href="../xref/ch/qos/logback/access/net/SMTPAppender.html">
-			<code>SMTPAppender</code></a> works in the same way as its Classic counterpart.
-			However, the <span class="prop">evaluator</span> option is rather different. 
-			By default, a <code>URLEvaluator</code> object
-			is used by <code>SMTPAppender</code>. This evaluator contains a list of URLs that are
-			checked against the current request's URL. When one of the pages given to the
-			<code>URLEvaluator</code> is requested, <code>SMTPAppender</code> sends an email.
+		<p>Access' <a
+		href="../xref/ch/qos/logback/access/net/SMTPAppender.html">
+		<code>SMTPAppender</code></a> works in the same way as its Classic
+		counterpart.  However, the <span class="prop">evaluator</span>
+		option is rather different.  By default, a
+		<code>URLEvaluator</code> object is used by
+		<code>SMTPAppender</code>. This evaluator contains a list of URLs
+		that are checked against the current request's URL. When one of
+		the pages given to the <code>URLEvaluator</code> is requested,
+		<code>SMTPAppender</code> sends an email.
 		</p>
 		
 		<p>
@@ -4483,12 +4193,11 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		included in the email.
 		</p>
 
-		<a name="AccessDBAppender"></a>
-		<h3>DBAppender</h3>
+		<h3 class="doAnchor" name="AccessDBAppender">DBAppender</h3>
 		
-		<p>
-			<a href="../xref/ch/qos/logback/access/db/DBAppender.html"><code>DBAppender</code></a>
-			is used to insert the access events into a database.
+		<p><a
+		href="../xref/ch/qos/logback/access/db/DBAppender.html"><code>DBAppender</code></a>
+		is used to insert the access events into a database.
 		</p>
 
 		<p>Two tables are used by <code>DBAppender</code>:
@@ -4643,8 +4352,8 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 &lt;/configuration></pre>
 
 
-    <h3><a name="AccessSiftingAppender"
-    href="#AccessSiftingAppender">SiftingAppender</a></h3>
+    <h3 class="doAnchor"
+    name="AccessSiftingAppender">SiftingAppender</h3>
    
     <p>The SiftingAppender in logback-access is quite similar to its
     logback-classic counterpart. The main difference is that in

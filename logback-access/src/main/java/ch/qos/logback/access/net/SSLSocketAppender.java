@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,7 +16,7 @@ package ch.qos.logback.access.net;
 import java.net.InetAddress;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.net.SSLSocketAppenderBase;
+import ch.qos.logback.core.net.AbstractSSLSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
@@ -27,7 +27,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  * @author Carl Harris
  */
-public class SSLSocketAppender extends SSLSocketAppenderBase<IAccessEvent> {
+public class SSLSocketAppender extends AbstractSSLSocketAppender<IAccessEvent> {
 
   private final PreSerializationTransformer<IAccessEvent> pst = 
       new AccessEventPreSerializationTransformer();
@@ -38,16 +38,17 @@ public class SSLSocketAppender extends SSLSocketAppenderBase<IAccessEvent> {
   /**
    * Connects to remote server at <code>address</code> and <code>port</code>.
    */
+  @Deprecated
   public SSLSocketAppender(String host, int port) {
-    this(getAddressByName(host), port);
+    super(host, port);
   }
 
   /**
    * Connects to remote server at <code>address</code> and <code>port</code>.
    */
+  @Deprecated
   public SSLSocketAppender(InetAddress address, int port) {
-    this.address = address;
-    this.port = port;
+    super(address.getHostAddress(), port);
   }
 
   @Override

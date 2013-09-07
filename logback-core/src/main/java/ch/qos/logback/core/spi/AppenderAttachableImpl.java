@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -97,7 +97,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
   }
 
   /**
-   * Remove and stop all previously attached appenders.
+   * Remove and processPriorToRemoval all previously attached appenders.
    */
   public void detachAndStopAllAppenders() {
     for (Appender<E> a : appenderList) {

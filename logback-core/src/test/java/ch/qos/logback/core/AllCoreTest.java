@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -29,6 +29,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ch.qos.logback.core.appender.PackageTest.class,
         ch.qos.logback.core.spi.PackageTest.class,
         ch.qos.logback.core.rolling.PackageTest.class,
+        ch.qos.logback.core.net.PackageTest.class,
         ch.qos.logback.core.sift.PackageTest.class,
         ch.qos.logback.core.encoder.PackageTest.class,
         ch.qos.logback.core.recovery.PackageTest.class})

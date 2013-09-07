@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -19,14 +19,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import ch.qos.logback.access.spi.IAccessEvent;
-//import org.apache.catalina.Lifecycle;
-import ch.qos.logback.core.spi.*;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
@@ -38,17 +35,28 @@ import org.apache.catalina.valves.ValveBase;
 import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.BasicStatusManager;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.LifeCycleManager;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.spi.AppenderAttachable;
+import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.spi.FilterAttachable;
+import ch.qos.logback.core.spi.FilterAttachableImpl;
+import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.spi.LifeCycle;
+import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
+//import org.apache.catalina.Lifecycle;
 
 /**
  * This class is an implementation of tomcat's Valve interface, by extending
@@ -68,6 +76,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
       + "logback-access.xml";
 
+  private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
+  
   private long birthTime = System.currentTimeMillis();
   LogbackLock configurationLock = new LogbackLock();
 
@@ -87,10 +97,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   boolean started;
   boolean alreadySetLogbackStatusManager = false;
 
-    // 0 idle threads, 2 maximum threads, no idle waiting
-  ExecutorService executorService = new ThreadPoolExecutor(0, 2,
-          0L, TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<Runnable>());
+  private ExecutorService executorService; 
 
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
@@ -101,12 +108,23 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   }
 
   public void startInternal() throws LifecycleException {
-    System.out.println("***startInternal() called");
+    executorService = ExecutorServiceUtil.newExecutorService();
     if (filename == null) {
-      String tomcatHomeProperty = OptionHelper
-          .getSystemProperty("catalina.home");
+    	String tomcatBaseProperty = OptionHelper
+          .getSystemProperty("catalina.base");
 
-      filename = tomcatHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+      filename = tomcatBaseProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+      
+    	File baseConfigFile = new File(filename);
+    	if (!baseConfigFile.exists()) {
+    	
+        String tomcatHomeProperty = OptionHelper
+            .getSystemProperty("catalina.home");
+
+        filename = tomcatHomeProperty + File.separatorChar
+            + DEFAULT_CONFIG_FILE;
+      }
+      
       getStatusManager().add(
           new InfoStatus("filename property not set. Assuming [" + filename
               + "]", this));
@@ -115,7 +133,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
     if (configFile.exists()) {
       try {
-        System.out.println("***startInternal() JoranConfigurator");
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(this);
         jc.doConfigure(filename);
@@ -188,6 +205,11 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   protected void stopInternal() throws LifecycleException {
     started = false;
     setState(LifecycleState.STOPPING);
+    lifeCycleManager.reset();
+    if (executorService != null) {
+      ExecutorServiceUtil.shutdown(executorService);
+      executorService = null;
+    }
   }
 
   public void addAppender(Appender<IAccessEvent> newAppender) {
@@ -290,6 +312,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   public Object getConfigurationLock() {
     return configurationLock;
+  }
+
+  public void register(LifeCycle component) {
+    lifeCycleManager.register(component);
   }
 
   // ====== Methods from catalina Lifecycle =====

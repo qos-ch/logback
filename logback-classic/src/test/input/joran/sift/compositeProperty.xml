@@ -1,0 +1,27 @@
+
+<configuration debug="true">
+
+  <property name="X" value="composite"/>  
+
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+    <discriminator>
+      <key>compositeProperty</key>
+      <defaultValue>default</defaultValue>
+    </discriminator>
+    <sift>
+      <property name="Z" value="${X}"/>  
+
+      <appender name="LIST-${compositeProperty}"
+        class="ch.qos.logback.core.testUtil.StringListAppender">
+        <layout>
+          <pattern>${Z}%msg</pattern>                       
+        </layout>
+      </appender>
+    </sift>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="SIFT" />
+  </root>
+
+</configuration>

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -17,6 +17,7 @@ import javax.net.ServerSocketFactory;
 import javax.net.ssl.SSLContext;
 
 import ch.qos.logback.core.net.ssl.ConfigurableSSLServerSocketFactory;
+import ch.qos.logback.core.net.ssl.SSLComponent;
 import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
@@ -28,7 +29,7 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  * @author Carl Harris
  */
 public abstract class SSLServerSocketAppenderBase<E> 
-    extends ServerSocketAppenderBase<E> {
+    extends AbstractServerSocketAppender<E> implements SSLComponent {
 
   private SSLConfiguration ssl;
   private ServerSocketFactory socketFactory;

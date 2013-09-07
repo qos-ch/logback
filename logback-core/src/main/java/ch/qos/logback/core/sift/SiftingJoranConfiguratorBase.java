@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2011, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -19,17 +19,29 @@ import java.util.Map;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.GenericConfigurator;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.*;
 import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.RuleStore;
 
 public abstract class SiftingJoranConfiguratorBase<E> extends
-    GenericConfigurator {
+        GenericConfigurator {
+
+  protected final String key;
+  protected final String value;
+  // properties inherited from the main joran run
+  protected final Map<String, String> parentPropertyMap;
+
+  protected SiftingJoranConfiguratorBase(String key, String value, Map<String, String> parentPropertyMap) {
+    this.key = key;
+    this.value = value;
+    this.parentPropertyMap = parentPropertyMap;
+  }
 
   final static String ONE_AND_ONLY_ONE_URL = CoreConstants.CODES_URL
-      + "#1andOnly1";
+          + "#1andOnly1";
 
   @Override
   protected void addImplicitRules(Interpreter interpreter) {
@@ -42,11 +54,18 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
     interpreter.addImplicitAction(nestedSimpleIA);
   }
 
+  @Override
+  protected void addInstanceRules(RuleStore rs) {
+    rs.addRule(new ElementSelector("configuration/property"), new PropertyAction());
+    rs.addRule(new ElementSelector("configuration/timestamp"), new TimestampAction());
+    rs.addRule(new ElementSelector("configuration/define"), new DefinePropertyAction());
+  }
+
   abstract public Appender<E> getAppender();
 
   int errorEmmissionCount = 0;
 
-  protected void oneAndOnlyOneCheck(Map appenderMap) {
+  protected void oneAndOnlyOneCheck(Map<?, ?> appenderMap) {
     String errMsg = null;
     if (appenderMap.size() == 0) {
       errorEmmissionCount++;
@@ -54,7 +73,7 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
     } else if (appenderMap.size() > 1) {
       errorEmmissionCount++;
       errMsg = "Only and only one appender can be nested the <sift> element in SiftingAppender. See also "
-          + ONE_AND_ONLY_ONE_URL;
+              + ONE_AND_ONLY_ONE_URL;
     }
 
     if (errMsg != null && errorEmmissionCount < CoreConstants.MAX_ERROR_COUNT) {
@@ -64,5 +83,10 @@ public abstract class SiftingJoranConfiguratorBase<E> extends
 
   public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
     super.doConfigure(eventList);
+  }
+
+  @Override
+  public String toString() {
+    return this.getClass().getName() + "{" + key + "=" + value + '}';
   }
 }

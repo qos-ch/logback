@@ -5,9 +5,9 @@
     <SMTPPort>${port}</SMTPPort>
     <To>nospam@qos.ch</To>
     <From>user@host.dom</From>
-    <Subject>%logger - %m</Subject>
+    <Subject>testCustomBufferSize %logger - %m</Subject>
 
-    <CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTrackerImpl">
+    <CyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
       <bufferSize>1</bufferSize>
     </CyclicBufferTracker>
     

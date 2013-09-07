@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2012, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2013, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -34,7 +34,7 @@ public class Tokenizer {
   TokenizerState state = TokenizerState.LITERAL_STATE;
   int pointer = 0;
 
-  List tokenize() throws ScanException {
+  List<Token> tokenize() throws ScanException {
     List<Token> tokenList = new ArrayList<Token>();
     StringBuilder buf = new StringBuilder();
 

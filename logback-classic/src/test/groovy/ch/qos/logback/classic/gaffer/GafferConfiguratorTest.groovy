@@ -17,6 +17,7 @@ import ch.qos.logback.classic.ClassicTestConstants
 import ch.qos.logback.classic.LoggerContext
 import org.junit.Before
 import ch.qos.logback.core.testUtil.RandomUtil
+import org.junit.Ignore
 import org.junit.Test
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.Level
@@ -39,122 +40,133 @@ import static org.junit.Assert.assertTrue
  */
 class GafferConfiguratorTest {
 
-  LoggerContext context = new LoggerContext();
-  Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME)
-  Logger logger = context.getLogger(this.getClass())
-  int diff = RandomUtil.getPositiveInt();
-  GafferConfigurator configurator = new GafferConfigurator(context);
+    LoggerContext context = new LoggerContext();
+    Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME)
+    Logger logger = context.getLogger(this.getClass())
+    int diff = RandomUtil.getPositiveInt();
+    GafferConfigurator configurator = new GafferConfigurator(context);
 
-  @Before
-  void setUp() {
+    @Before
+    void setUp() {
 
-  }
+    }
 
-  @Test
-  void smoke() {
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "smoke.groovy")
-    String dslText = file.text
-    configurator.run dslText
-    Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
-    assertEquals(Level.WARN, root.level)
-    assertNotNull(root.getAppender("C"))
-    ConsoleAppender ca = root.getAppender("C")
-    assertNotNull(ca.encoder)
-    assertNotNull(ca.encoder.layout)
-    PatternLayout layout = ca.encoder.layout
-    assertEquals("%m%n", layout.pattern)
-  }
+    @Test
+    void smoke() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "smoke.groovy")
+        String dslText = file.text
+        configurator.run dslText
+        Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
+        assertEquals(Level.WARN, root.level)
+        assertNotNull(root.getAppender("C"))
+        ConsoleAppender ca = root.getAppender("C")
+        assertNotNull(ca.encoder)
+        assertNotNull(ca.encoder.layout)
+        PatternLayout layout = ca.encoder.layout
+        assertEquals("%m%n", layout.pattern)
+    }
 
-  @Test
-  void onTheFly() {
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "onTheFly.groovy")
-    String dslText = file.text
-    configurator.run dslText
-  }
+    @Test
+    void onTheFly() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "onTheFly.groovy")
+        String dslText = file.text
+        configurator.run dslText
+    }
 
-  @Test
-  void contextName() {
-    String dslText = "context.name = 'a'"
-    configurator.run dslText
-    assertEquals("a", context.name)
-  }
+    @Test
+    void contextName() {
+        String dslText = "context.name = 'a'"
+        configurator.run dslText
+        assertEquals("a", context.name)
+    }
 
-  @Test
-  void contextProperty() {
-    String dslText = "context.putProperty('x', 'a')"
-    configurator.run dslText
-    assertEquals("a", context.getProperty("x"))
-  }
+    @Test
+    void contextProperty() {
+        String dslText = "context.putProperty('x', 'a')"
+        configurator.run dslText
+        assertEquals("a", context.getProperty("x"))
+    }
 
-  @Test
-  void conversionRule() {
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "conversionRule.groovy")
-    String dslText = file.text
-    configurator.run dslText
+    @Test
+    void conversionRule() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "conversionRule.groovy")
+        String dslText = file.text
+        configurator.run dslText
 
-    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
-    assertNotNull(sla);
-    assertEquals(0, sla.strList.size());
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(0, sla.strList.size());
 
-    assertEquals(Level.DEBUG, root.level);
+        assertEquals(Level.DEBUG, root.level);
 
-    String msg = "Simon says";
-    logger.debug(msg);
-    StatusPrinter.print context
-    assertEquals(1, sla.strList.size());
-    assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
-  }
+        String msg = "Simon says";
+        logger.debug(msg);
+        StatusPrinter.print context
+        assertEquals(1, sla.strList.size());
+        assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
+    }
 
-  @Test
-  void evaluatorWithMatcher() {
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "evaluatorWithMatcher.groovy")
-    String dslText = file.text
-    configurator.run dslText
+    @Test
+    void evaluatorWithMatcher() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "evaluatorWithMatcher.groovy")
+        String dslText = file.text
+        configurator.run dslText
 
-    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
-    assertTrue ca.isStarted()
+        ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+        assertTrue ca.isStarted()
 
-    EvaluatorFilter ef = ca.getCopyOfAttachedFiltersList()[0];
-    assertTrue ef.isStarted()
+        EvaluatorFilter ef = ca.getCopyOfAttachedFiltersList()[0];
+        assertTrue ef.isStarted()
 
-    JaninoEventEvaluator jee = ef.evaluator
-    assertTrue jee.isStarted()
-    Matcher m = jee.matcherList[0]
-    assertTrue m.isStarted()
-  }
+        JaninoEventEvaluator jee = ef.evaluator
+        assertTrue jee.isStarted()
+        Matcher m = jee.matcherList[0]
+        assertTrue m.isStarted()
+    }
 
-  @Test
-  void propertyCascading0() {
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading0.groovy")
-    String dslText = file.text
-    configurator.run dslText
+    @Test
+    void propertyCascading0() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading0.groovy")
+        String dslText = file.text
+        configurator.run dslText
 
-    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
-    assertTrue ca.isStarted()
+        ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+        assertTrue ca.isStarted()
 
-    assertEquals("HELLO %m%n", ca.encoder.layout.pattern)
-  }
-  
-  @Test
-  void propertyCascading1() {
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading1.groovy")
-    String dslText = file.text
-    configurator.run dslText
+        assertEquals("HELLO %m%n", ca.encoder.layout.pattern)
+    }
 
-    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
-    assertTrue ca.isStarted()
-    assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
-  }
+    @Test
+    void propertyCascading1() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading1.groovy")
+        String dslText = file.text
+        configurator.run dslText
 
-  @Test
-  void propertyCascading2() {
-    context.putProperty("p", "HELLO");
-    File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading2.groovy")
-    String dslText = file.text
-    configurator.run dslText
+        ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+        assertTrue ca.isStarted()
+        assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
+    }
 
-    ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
-    assertTrue ca.isStarted()
-    assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
-  }
+    @Test
+    void propertyCascading2() {
+        context.putProperty("p", "HELLO");
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading2.groovy")
+        String dslText = file.text
+        configurator.run dslText
+
+        ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+        assertTrue ca.isStarted()
+        assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
+    }
+
+
+    @Test
+    @Ignore
+    void receiver() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "propertyCascading2.groovy")
+        String dslText = file.text
+        configurator.run dslText
+    }
+
+
 }
