@@ -25,6 +25,7 @@ import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
+import ch.qos.logback.core.net.SyslogWriteStrategy;
 
 /**
  * This appender can be used to send messages to a remote syslog daemon. <p> For
@@ -56,7 +57,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   /*
    * Convert a level to equivalent syslog severity. Only levels for printing
    * methods i.e DEBUG, WARN, INFO and ERROR are converted.
-   * 
+   *
    * @see ch.qos.logback.core.net.SyslogAppenderBase#getSeverityForEvent(java.lang.Object)
    */
   @Override
@@ -66,7 +67,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   }
 
   @Override
-  protected void postProcess(Object eventObject, OutputStream sw) {
+  protected void postProcess(Object eventObject, SyslogWriteStrategy writeStrategy) {
     if (throwableExcluded)
       return;
 
@@ -81,13 +82,13 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
       try {
-        handleThrowableFirstLine(sw, tp, stackTracePrefix, isRootException);
+        handleThrowableFirstLine(writeStrategy, tp, stackTracePrefix, isRootException);
         isRootException = false;
         for (StackTraceElementProxy step : stepArray) {
           StringBuilder sb = new StringBuilder();
           sb.append(stackTracePrefix).append(step);
-          sw.write(sb.toString().getBytes());
-          sw.flush();
+
+          writeStrategy.appendStackTraceElement(sb.toString());
         }
       } catch (IOException e) {
         break;
@@ -97,15 +98,15 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   }
 
   // LOGBACK-411 and  LOGBACK-750
-  private void handleThrowableFirstLine(OutputStream sw, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
+  private void handleThrowableFirstLine(SyslogWriteStrategy writeStrategy, IThrowableProxy tp, String stackTracePrefix, boolean isRootException) throws IOException {
     StringBuilder sb = new StringBuilder().append(stackTracePrefix);
 
     if (!isRootException) {
       sb.append(CoreConstants.CAUSED_BY);
     }
     sb.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    sw.write(sb.toString().getBytes());
-    sw.flush();
+
+    writeStrategy.appendHandleThrowableFirstLine(sb.toString());
   }
 
   boolean stackTraceHeaderLine(StringBuilder sb, boolean topException) {
@@ -130,7 +131,11 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     stackTraceLayout.getInstanceConverterMap().put("syslogStart",
             SyslogStartConverter.class.getName());
 
-    stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
+    if (!isOneLineStackTrace()) {
+      stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
+    } else {
+      stackTraceLayout.setPattern("%nopex{}" + stackTracePattern);
+    }
     stackTraceLayout.setContext(getContext());
     stackTraceLayout.start();
   }

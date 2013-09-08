@@ -35,6 +35,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class SyslogAppenderTest {
 
+  private final static String STACKTRACE_PATTERN = "[%thread] foo " + CoreConstants.TAB;
+  private final static String SUFFIXE_PATTERN = "[%thread] %logger %msg";
   LoggerContext lc = new LoggerContext();
   SyslogAppender sa = new SyslogAppender();
   MockSyslogServer mockServer;
@@ -51,7 +53,7 @@ public class SyslogAppenderTest {
   public void tearDown() throws Exception {
   }
 
-  public void setMockServerAndConfigure(int expectedCount, String suffixPattern)
+  public void setMockServerAndConfigure(int expectedCount, String suffixPattern, String stackTracePattern, boolean oneLinePerStackTrace)
       throws InterruptedException {
     int port = RandomUtil.getRandomServerPort();
 
@@ -65,7 +67,8 @@ public class SyslogAppenderTest {
     sa.setFacility("MAIL");
     sa.setPort(port);
     sa.setSuffixPattern(suffixPattern);
-    sa.setStackTracePattern("[%thread] foo "+CoreConstants.TAB);
+    sa.setStackTracePattern(stackTracePattern);
+    sa.setOneLineStackTrace(oneLinePerStackTrace);
     sa.start();
     assertTrue(sa.isStarted());
 
@@ -74,10 +77,15 @@ public class SyslogAppenderTest {
     logger.addAppender(sa);
 
   }
-  
+
   public void setMockServerAndConfigure(int expectedCount)
-	      throws InterruptedException {
-	 this.setMockServerAndConfigure(expectedCount, "[%thread] %logger %msg");   
+          throws InterruptedException {
+    this.setMockServerAndConfigure(expectedCount, SUFFIXE_PATTERN, STACKTRACE_PATTERN, false);
+  }
+
+  public void setMockServerAndConfigure(int expectedCount, boolean oneLinePerStackTrace)
+          throws InterruptedException {
+    this.setMockServerAndConfigure(expectedCount, SUFFIXE_PATTERN, STACKTRACE_PATTERN, oneLinePerStackTrace);
   }
 
   @Test
@@ -106,10 +114,10 @@ public class SyslogAppenderTest {
         + logMsg);
 
   }
-  
+
   @Test
   public void suffixPatternWithTag() throws InterruptedException {
-    setMockServerAndConfigure(1, "test/something [%thread] %logger %msg");
+    setMockServerAndConfigure(1, "test/something [%thread] %logger %msg", STACKTRACE_PATTERN, false);
     String logMsg = "hello";
     logger.debug(logMsg);
 
@@ -172,7 +180,44 @@ public class SyslogAppenderTest {
 
     msg = mockServer.getMessageList().get(2);
     assertTrue(msg.startsWith(expected));
-    regex = expectedPrefix + "\\[" + threadName + "\\] " +  "foo "+CoreConstants.TAB + "at ch\\.qos.*";
+    regex = expectedPrefix + "\\[" + threadName + "\\] " + "foo " + CoreConstants.TAB + "at ch\\.qos.*";
+    checkRegexMatch(msg, regex);
+  }
+
+
+  @Test
+  public void tExceptionOneLine() throws InterruptedException {
+    //sa.setOneLineStackTrace(false);
+
+    setMockServerAndConfigure(1, SUFFIXE_PATTERN, "{SEP}", true);
+
+    String logMsg = "hello";
+    String exMsg = "just testing";
+    Exception ex = new Exception(exMsg);
+    logger.debug(logMsg, ex);
+    StatusPrinter.print(lc);
+
+    // wait max 2 seconds for mock server to finish. However, it should
+    // much sooner than that.
+    mockServer.join(8000);
+    assertTrue(mockServer.isFinished());
+
+    // message + stacktrace
+    assertEquals(1, mockServer.getMessageList().size());
+    // int i = 0;
+    // for (String line: mockServer.msgList) {
+    // System.out.println(i++ + ": " + line);
+    // }
+
+    String msg = mockServer.getMessageList().get(0);
+    String expected = "<"
+            + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
+    assertTrue(msg.startsWith(expected));
+
+    String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
+    String threadName = Thread.currentThread().getName();
+    String regex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
+            + " " + logMsg + "\\{SEP\\}java\\.lang\\.Exception\\: just testing\\{SEP\\}at .*";
     checkRegexMatch(msg, regex);
   }
 
@@ -194,10 +239,10 @@ public class SyslogAppenderTest {
     logger.debug(logMsg);
     Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN+10);
     logger.debug(logMsg);
-    
+
     mockServer.join(8000);
     assertTrue(mockServer.isFinished());
- 
+
    // both messages received
     assertEquals(2, mockServer.getMessageList().size());
 
