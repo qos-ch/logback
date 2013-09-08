@@ -104,16 +104,16 @@ public class ConfigurationDelegate extends ContextAwareBase {
   void logger(String name, Level level, List<String> appenderNames = [], Boolean additivity = null) {
     if (name) {
       Logger logger = ((LoggerContext) context).getLogger(name);
-      addInfo("Setting level of logger [${name}] to " + level);
       logger.level = level;
 
-      for (aName in appenderNames) {
-        Appender appender = appenderList.find { it -> it.name == aName };
-        if (appender != null) {
-          addInfo("Attaching appender named [${aName}] to " + logger);
-          logger.addAppender(appender);
-        } else {
-          addError("Failed to find appender named [${aName}]");
+      if (appenderNames) {
+        appenderNames.each { aName ->
+          Appender appender = appenderList.find { it -> it.name == aName };
+          if (appender != null) {
+            logger.addAppender(appender);
+          } else {
+            addError("Failed to find appender named [${aName}]");
+          }
         }
       }
 
