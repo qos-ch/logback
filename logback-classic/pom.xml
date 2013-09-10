@@ -124,6 +124,12 @@
       <optional>true</optional>
     </dependency>
 
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.core</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+     </dependency>
 
     <dependency>
       <groupId>ch.qos.logback</groupId>

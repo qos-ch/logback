@@ -156,6 +156,11 @@
         <version>${javax.mail.version}</version>
       </dependency>
       <dependency>
+          <groupId>org.osgi</groupId>
+          <artifactId>org.osgi.core</artifactId>
+          <version>4.2.0</version>
+      </dependency>
+      <dependency>
         <groupId>dom4j</groupId>
         <artifactId>dom4j</artifactId>
         <version>1.6.1</version>

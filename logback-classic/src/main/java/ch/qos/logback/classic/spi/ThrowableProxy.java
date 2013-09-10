@@ -161,5 +161,7 @@ public class ThrowableProxy implements IThrowableProxy {
     System.out.println(builder.toString());
   }
 
-
+  public void setPackagingDataCalculator(PackagingDataCalculator packagingDataCalculator) {
+    this.packagingDataCalculator = packagingDataCalculator;
+  }
 }
