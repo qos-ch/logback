@@ -152,6 +152,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("fullResponse", FullResponseConverter.class.getName());
 
     defaultConverterMap.put("elapsedTime", ElapsedTimeConverter.class.getName());
+    defaultConverterMap.put("D", ElapsedTimeConverter.class.getName());
 
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
 
