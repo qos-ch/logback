@@ -39,7 +39,7 @@ public class ConfigurationAction extends Action {
     // See LOGBACK-527 (the system property is looked up first. Thus, it overrides
     // the equivalent property in the config file. This reversal of scope priority is justified
     // by the use case: the admin trying to chase rogue config file
-    String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+    String debugAttrib = getSystemProperty(DEBUG_SYSTEM_PROPERTY_KEY);
     if (debugAttrib == null) {
       debugAttrib = ic.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
     }
@@ -64,6 +64,18 @@ public class ConfigurationAction extends Action {
     // the context is turbo filter attachable, so it is pushed on top of the
     // stack
     ic.pushObject(getContext());
+  }
+
+  String getSystemProperty(String name) {
+    /*
+     * LOGBACK-743: accessing a system property in the presence of a
+     * SecurityManager (e.g. applet sandbox) can result in a SecurityException.
+     */
+    try {
+      return System.getProperty(name);
+    } catch (SecurityException ex) {
+      return null;
+    }
   }
 
   void processScanAttrib(InterpretationContext ic, Attributes attributes) {

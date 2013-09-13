@@ -17,7 +17,9 @@ import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.classic.sift.SiftingAppender
+import ch.qos.logback.core.status.OnConsoleStatusListener
 import ch.qos.logback.core.util.ContextUtil
+import ch.qos.logback.core.util.OptionHelper
 
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil
 import org.codehaus.groovy.control.CompilerConfiguration
@@ -27,6 +29,8 @@ class GafferConfigurator {
 
   LoggerContext context
                          
+  static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
+
   GafferConfigurator(LoggerContext context) {
     this.context = context
   }
@@ -51,6 +55,15 @@ class GafferConfigurator {
 
     def configuration = new CompilerConfiguration()
     configuration.addCompilationCustomizers(importCustomizer())
+
+    String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+    if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
+            || debugAttrib.equalsIgnoreCase("null")) {
+      // For now, Groovy/Gaffer configuration DSL does not support "debug" attribute. But in order to keep
+      // the conditional logic identical to that in XML/Joran, we have this empty block.
+    } else {
+      OnConsoleStatusListener.addNewInstanceToContext(context);
+    }
 
     // caller data should take into account groovy frames
     new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
