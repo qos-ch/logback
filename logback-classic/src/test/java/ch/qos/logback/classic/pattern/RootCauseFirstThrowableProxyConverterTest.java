@@ -19,6 +19,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -68,7 +69,7 @@ public class RootCauseFirstThrowableProxyConverterTest {
 
     //then
     // make sure that at least some package data was output
-    Pattern p = Pattern.compile(" \\[junit.*\\]");
+    Pattern p = Pattern.compile("\\s*at .*?\\[.*?\\]");
     Matcher m = p.matcher(result);
     int i = 0;
     while(m.find()) {

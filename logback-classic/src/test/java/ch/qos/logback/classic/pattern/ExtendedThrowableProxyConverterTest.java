@@ -65,7 +65,7 @@ public class ExtendedThrowableProxyConverterTest {
     String res = pl.doLayout(e);
 
     // make sure that at least some package data was output
-    Pattern p = Pattern.compile(" \\[junit.*\\]");
+    Pattern p = Pattern.compile("\\s*at .*?\\[.*?\\]");
     Matcher m = p.matcher(res);
     int i = 0;
     while(m.find()) {
