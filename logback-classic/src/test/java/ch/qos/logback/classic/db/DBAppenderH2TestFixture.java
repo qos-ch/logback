@@ -92,6 +92,7 @@ public class DBAppenderH2TestFixture  {
     buf.append("CALLER_CLASS VARCHAR(256), ");
     buf.append("CALLER_METHOD VARCHAR(256), ");
     buf.append("CALLER_LINE CHAR(4), ");
+    buf.append("MARKER VARCHAR(256), ");
     buf.append("EVENT_ID IDENTITY NOT NULL);");
     executeQuery(connection, buf.toString());
 

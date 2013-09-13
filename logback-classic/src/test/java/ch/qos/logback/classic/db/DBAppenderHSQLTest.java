@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.log4j.MDC;
 import org.junit.*;
+import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -105,7 +106,8 @@ public class DBAppenderHSQLTest  {
   public void testAppendLoggingEvent() throws SQLException {
 
 
-    ILoggingEvent event = createLoggingEvent();
+    LoggingEvent event = createLoggingEvent();
+    event.setMarker(MarkerFactory.getMarker("marker"));
     appender.append(event);
     StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     
@@ -123,6 +125,7 @@ public class DBAppenderHSQLTest  {
       assertEquals(callerData.getFileName(), rs.getString(DBAppender.CALLER_FILENAME_INDEX));
       assertEquals(callerData.getClassName(), rs.getString(DBAppender.CALLER_CLASS_INDEX));
       assertEquals(callerData.getMethodName(), rs.getString(DBAppender.CALLER_METHOD_INDEX));
+      assertEquals(event.getMarker().getName(), rs.getString(DBAppender.MARKER_INDEX));
     } else {
       fail("No row was inserted in the database");
     }
@@ -199,7 +202,7 @@ public class DBAppenderHSQLTest  {
   }
 
 
-  private ILoggingEvent createLoggingEvent() {
+  private LoggingEvent createLoggingEvent() {
     return new LoggingEvent(this.getClass().getName(), logger,
         Level.DEBUG, "test message", new Exception("test Ex"), new Integer[]{diff});
   }

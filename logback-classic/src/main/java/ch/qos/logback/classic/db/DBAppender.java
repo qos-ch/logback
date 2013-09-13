@@ -22,9 +22,15 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Marker;
+
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
-import ch.qos.logback.classic.spi.*;
+import ch.qos.logback.classic.spi.CallerData;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.db.DBAppenderBase;
 
@@ -61,7 +67,9 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   static final int  CALLER_CLASS_INDEX = 12;
   static final int  CALLER_METHOD_INDEX = 13;
   static final int  CALLER_LINE_INDEX = 14;
-  static final int  EVENT_ID_INDEX  = 15;
+  static final int  MARKER_INDEX  = 15;
+  static final int  EVENT_ID_INDEX  = 16;
+  
 
   static final StackTraceElement EMPTY_CALLER_DATA = CallerData.naInstance();
 
@@ -97,6 +105,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       PreparedStatement insertStatement) throws Throwable {
 
     bindLoggingEventWithInsertStatement(insertStatement, event);
+    bindMarkerWithInsertStatement(insertStatement, event.getMarker());
     bindLoggingEventArgumentsWithPreparedStatement(insertStatement, event.getArgumentArray());
 
     // This is expensive... should we do it every time?
@@ -118,6 +127,16 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
   }
 
+  void bindMarkerWithInsertStatement(PreparedStatement stmt,
+	      Marker marker) throws SQLException {
+	  if (marker != null) {
+		  stmt.setString(MARKER_INDEX, marker.getName());
+	  }
+	  else {
+		  stmt.setString(MARKER_INDEX, null);
+	  }
+  }
+  
   void bindLoggingEventWithInsertStatement(PreparedStatement stmt,
       ILoggingEvent event) throws SQLException {
     stmt.setLong(TIMESTMP_INDEX, event.getTimeStamp());
