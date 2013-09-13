@@ -14,8 +14,6 @@
 package ch.qos.logback.access.jetty;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +41,6 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -132,10 +129,14 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   }
 
   public void log(Request jettyRequest, Response jettyResponse) {
-    JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
+      long now = System.currentTimeMillis();
+      
+      long duration = now - jettyRequest.getTimeStamp();
+
+      JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
             jettyResponse);
     IAccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse,
-            adapter);
+            adapter, duration);
     if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
       return;
     }
