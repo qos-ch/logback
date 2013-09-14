@@ -90,7 +90,7 @@ public class PackagingDataCalculatorTest {
     int slackFactor = 8;
     if (!SystemInfo.getJavaVendor().contains("Sun")) {
       // be more lenient with other JDKs
-      slackFactor = 10;
+      slackFactor = 15;
     }
     assertTrue("computing class packaging data (" + d1
         + ") should have been less than " + slackFactor
