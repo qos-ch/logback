@@ -19,40 +19,61 @@ import org.junit.Test;
 
 public class RecoveryCoordinatorTest {
 
-  RecoveryCoordinator rc = new RecoveryCoordinator();
-  long now = System.currentTimeMillis();
+  @Test
+  public void recoveryNotNeededAfterInit() {
+    RecoveryCoordinator rc = new RecoveryCoordinator();
+    assertTrue(rc.isTooSoon());
+  }
 
   @Test
-  public void actualTime() throws InterruptedException {
+  public void recoveryNotNeededIfAsleepForLessThanBackOffTime() throws InterruptedException {
+    RecoveryCoordinator rc = new RecoveryCoordinator();
+    Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN / 2);
     assertTrue(rc.isTooSoon());
-    Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN+20);
+  }
+
+  @Test
+  public void recoveryNeededIfAsleepForMoreThanBackOffTime() throws InterruptedException {
+    RecoveryCoordinator rc = new RecoveryCoordinator();
+    Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN + 20);
     assertFalse(rc.isTooSoon());
   }
-  
+
   @Test
-  public void smoke() {
-    // if the machine is really too busy or too slow, rc.isTooSoon can
-    // return false, hence we comment out the next line
-    // assertTrue(rc.isTooSoon());
-    rc.setCurrentTime(now+RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN+1);
+  public void recoveryNotNeededIfCurrentTimeSetToBackOffTime() throws InterruptedException {
+    RecoveryCoordinator rc = new RecoveryCoordinator();
+    long now = System.currentTimeMillis();
+    rc.setCurrentTime(now + RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN);
+    assertTrue(rc.isTooSoon());
+  }
+
+  @Test
+  public void recoveryNeededIfCurrentTimeSetToExceedBackOffTime() {
+    RecoveryCoordinator rc = new RecoveryCoordinator();
+    long now = System.currentTimeMillis();
+    rc.setCurrentTime(now + RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN + 1);
     assertFalse(rc.isTooSoon());
   }
-  
+
   @Test
-  public void longTermFailure() {
+  public void recoveryConditionDetectedEvenAfterReallyLongTimesBetweenRecovery() {
+    // Since backoff time quadruples whenever recovery is needed,
+    // we double the offset on each for-loop iteration, causing
+    // every other iteration to trigger recovery.
+
+    RecoveryCoordinator rc = new RecoveryCoordinator();
+    long now = System.currentTimeMillis();
     long offset = RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN;
-    int tooSoonCount = 0;
-    for(int i = 0; i < 16; i++) {
-      rc.setCurrentTime(now+offset);
-     
-      if(rc.isTooSoon()) {
-        System.out.println("isTooSoon successful at "+(offset));
-        tooSoonCount++;
+
+    for (int i = 0; i < 16; i++) {
+      rc.setCurrentTime(now + offset);
+
+      if (i % 2 == 0) {
+        assertTrue("recovery should've been needed at " + offset, rc.isTooSoon());
       } else {
-        //System.out.println("is NOT too soon at "+(offset));
-    }
+        assertFalse("recovery should NOT have been needed at " + offset, rc.isTooSoon());
+      }
       offset *= 2;
     }
-    assertEquals(8, tooSoonCount);
   }
 }
