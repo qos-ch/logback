@@ -61,6 +61,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
   String serverName;
   String requestContent;
   String responseContent;
+    long elapsedTime;
 
   Map<String, String> requestHeaderMap;
   Map<String, String[]> requestParameterMap;
@@ -84,6 +85,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     this.httpResponse = httpResponse;
     this.timeStamp = System.currentTimeMillis();
     this.serverAdapter = adapter;
+      this.elapsedTime = calculateElapsedTime();
   }
 
   /**
@@ -359,13 +361,17 @@ public class AccessEvent implements Serializable, IAccessEvent {
   }
 
   public long getElapsedTime() {
-    if (serverAdapter.getRequestTimestamp() < 0) {
-      return -1;
-    }
-    return timeStamp - serverAdapter.getRequestTimestamp();
+      return elapsedTime;
   }
 
-  public String getRequestContent() {
+    private long calculateElapsedTime() {
+        if (serverAdapter.getRequestTimestamp() < 0) {
+          return -1;
+        }
+        return timeStamp - serverAdapter.getRequestTimestamp();
+    }
+
+    public String getRequestContent() {
     if (requestContent != null) {
       return requestContent;
     }
