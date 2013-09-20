@@ -45,7 +45,7 @@ public class TomcatServerAdapter implements ServerAdapter {
   }
 
   public long getRequestTimestamp() {
-     return -1;
+     return request.getCoyoteRequest().getStartTime();
   }
 
   public Map<String, String> buildResponseHeaderMap() {
