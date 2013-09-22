@@ -21,9 +21,7 @@ public class ExtendedThrowableProxyConverter extends ThrowableProxyConverter {
 
   @Override
   protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
-    if (step != null) {
-      ThrowableProxyUtil.subjoinPackagingData(builder, step);
-    }
+    ThrowableProxyUtil.subjoinPackagingData(builder, step);
   }
 
   protected void prepareLoggingEvent(ILoggingEvent event) {
