@@ -127,6 +127,23 @@ public class ThrowableProxyTest {
     verify(ex);
   }
 
+  @Test
+  public void suppressedWithSuppressed() throws Exception
+  {
+    assumeNotNull(ADD_SUPPRESSED_METHOD); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      ex=new Exception("Wrapper", e);
+      Exception fooException = new Exception("Foo");
+      Exception barException = new Exception("Bar");
+      addSuppressed(barException, fooException);
+      addSuppressed(e, barException);
+    }
+    verify(ex);
+  }
+
   // see also http://jira.qos.ch/browse/LBCLASSIC-216
   @Test
   public void nullSTE() {

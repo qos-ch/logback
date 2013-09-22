@@ -34,6 +34,8 @@ import ch.qos.logback.core.status.ErrorStatus;
  */
 public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
+  protected static final int BUILDER_CAPACITY = 2048;
+
   int lengthOption;
   List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
 
@@ -137,18 +139,41 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
   }
 
   protected String throwableProxyToString(IThrowableProxy tp) {
-    StringBuilder buf = new StringBuilder(32);
-    IThrowableProxy currentThrowable = tp;
-    while (currentThrowable != null) {
-      subjoinThrowableProxy(buf, currentThrowable);
-      currentThrowable = currentThrowable.getCause();
-    }
-    return buf.toString();
+    StringBuilder sb = new StringBuilder(BUILDER_CAPACITY);
+
+    recursiveAppend(sb, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, tp);
+
+    return sb.toString();
   }
 
-  void subjoinThrowableProxy(StringBuilder buf, IThrowableProxy tp) {
-    ThrowableProxyUtil.subjoinFirstLine(buf, tp);
-    buf.append(CoreConstants.LINE_SEPARATOR);
+  private void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {
+    if(tp == null)
+      return;
+    subjoinFirstLine(sb, prefix, indent, tp);
+    sb.append(CoreConstants.LINE_SEPARATOR);
+    subjoinSTEPArray(sb, indent, tp);
+    IThrowableProxy[] suppressed = tp.getSuppressed();
+    if(suppressed != null) {
+      for(IThrowableProxy current : suppressed) {
+        recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + ThrowableProxyUtil.SUPPRESSED_EXCEPTION_INDENT, current);
+      }
+    }
+    recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
+  }
+
+  private void subjoinFirstLine(StringBuilder buf, String prefix, int indent, IThrowableProxy tp) {
+    ThrowableProxyUtil.indent(buf, indent - 1);
+    if (prefix != null) {
+      buf.append(prefix);
+    }
+    subjoinExceptionMessage(buf, tp);
+  }
+
+  private void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
+    buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+  }
+
+  private void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
@@ -161,15 +186,15 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
 
     for (int i = 0; i < maxIndex; i++) {
-      String string = stepArray[i].toString();
-      buf.append(CoreConstants.TAB);
-      buf.append(string);
+      ThrowableProxyUtil.indent(buf, indent);
+      buf.append(stepArray[i]);
       extraData(buf, stepArray[i]); // allow other data to be added
       buf.append(CoreConstants.LINE_SEPARATOR);
     }
 
     if (commonFrames > 0 && unrestrictedPrinting) {
-      buf.append("\t... ").append(tp.getCommonFrames()).append(
+      ThrowableProxyUtil.indent(buf, indent);
+      buf.append("... ").append(tp.getCommonFrames()).append(
               " common frames omitted").append(CoreConstants.LINE_SEPARATOR);
     }
   }

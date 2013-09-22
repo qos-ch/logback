@@ -17,14 +17,15 @@ import ch.qos.logback.core.CoreConstants;
 
 /**
  * Convert a throwable into an array of ThrowableDataPoint objects.
- * 
- * 
+ *
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ThrowableProxyUtil {
 
   public static final int REGULAR_EXCEPTION_INDENT = 1;
-  public static final int SUPPRESSED_EXCEPTION_INDENT = 2;
+  public static final int SUPPRESSED_EXCEPTION_INDENT = 1;
+  private static final int BUILDER_CAPACITY = 2048;
 
   public static void build(ThrowableProxy nestedTP, Throwable nestedThrowable,
       ThrowableProxy parentTP) {
@@ -76,7 +77,7 @@ public class ThrowableProxyUtil {
   }
 
   public static String asString(IThrowableProxy tp) {
-    StringBuilder sb = new StringBuilder();
+    StringBuilder sb = new StringBuilder(BUILDER_CAPACITY);
 
     recursiveAppend(sb, null, REGULAR_EXCEPTION_INDENT, tp);
 
@@ -86,19 +87,26 @@ public class ThrowableProxyUtil {
   private static void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {
     if(tp == null)
       return;
-    subjoinFirstLine(sb, prefix, tp);
+    subjoinFirstLine(sb, prefix, indent, tp);
     sb.append(CoreConstants.LINE_SEPARATOR);
     subjoinSTEPArray(sb, indent, tp);
     IThrowableProxy[] suppressed = tp.getSuppressed();
     if(suppressed != null) {
       for(IThrowableProxy current : suppressed) {
-        recursiveAppend(sb, CoreConstants.SUPPRESSED, SUPPRESSED_EXCEPTION_INDENT, current);
+        recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + SUPPRESSED_EXCEPTION_INDENT, current);
       }
     }
-    recursiveAppend(sb, CoreConstants.CAUSED_BY, REGULAR_EXCEPTION_INDENT, tp.getCause());
+    recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
   }
 
-  private static void subjoinFirstLine(StringBuilder buf, String prefix, IThrowableProxy tp) {
+  public static void indent(StringBuilder buf, int indent) {
+    for(int j = 0; j < indent; j++) {
+      buf.append(CoreConstants.TAB);
+    }
+  }
+
+  private static void subjoinFirstLine(StringBuilder buf, String prefix, int indent, IThrowableProxy tp) {
+    indent(buf, indent - 1);
     if (prefix != null) {
       buf.append(prefix);
     }
@@ -114,13 +122,13 @@ public class ThrowableProxyUtil {
         } else {
           builder.append(" [");
         }
-   
+
         builder.append(cpd.getCodeLocation()).append(':').append(
             cpd.getVersion()).append(']');
       }
     }
   }
-  
+
   public static void subjoinSTEP(StringBuilder sb, StackTraceElementProxy step) {
     sb.append(step.toString());
     subjoinPackagingData(sb, step);
@@ -138,7 +146,7 @@ public class ThrowableProxyUtil {
 
   /**
    * @param sb The StringBuilder the STEPs are appended to.
-   * @param indentLevel indentation level used for the STEPs, usually either REGULAR_EXCEPTION_INDENT or SUPPRESSED_EXCEPTION_INDENT.
+   * @param indentLevel indentation level used for the STEPs, usually REGULAR_EXCEPTION_INDENT.
    * @param tp the IThrowableProxy containing the STEPs.
    */
   public static void subjoinSTEPArray(StringBuilder sb, int indentLevel, IThrowableProxy tp) {
@@ -147,21 +155,17 @@ public class ThrowableProxyUtil {
 
     for (int i = 0; i < stepArray.length - commonFrames; i++) {
       StackTraceElementProxy step = stepArray[i];
-      for(int j = 0; j < indentLevel ; j++) {
-        sb.append(CoreConstants.TAB);
-      }
+      indent(sb, indentLevel);
       subjoinSTEP(sb, step);
       sb.append(CoreConstants.LINE_SEPARATOR);
     }
-    
+
     if (commonFrames > 0) {
-      for(int j = 0; j < indentLevel ; j++) {
-        sb.append(CoreConstants.TAB);
-      }
+      indent(sb, indentLevel);
       sb.append("... ").append(commonFrames).append(" common frames omitted")
           .append(CoreConstants.LINE_SEPARATOR);
     }
-    
+
   }
 
   public static void subjoinFirstLine(StringBuilder buf, IThrowableProxy tp) {
