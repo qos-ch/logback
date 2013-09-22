@@ -173,7 +173,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
   }
 
-  private void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {
+  protected void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {
     StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
     int commonFrames = tp.getCommonFrames();
 
