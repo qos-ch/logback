@@ -17,6 +17,7 @@ import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,7 +32,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TeztHelper;
 
+import static ch.qos.logback.classic.util.TeztHelper.addSuppressed;
 import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 public class ThrowableProxyConverterTest {
 
@@ -54,6 +57,57 @@ public class ThrowableProxyConverterTest {
     return new LoggingEvent(this.getClass().getName(), lc
         .getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t,
         null);
+  }
+
+  @Test
+  public void suppressed() throws InvocationTargetException, IllegalAccessException
+  {
+    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      Exception fooException = new Exception("Foo");
+      Exception barException = new Exception("Bar");
+      addSuppressed(e, fooException);
+      addSuppressed(e, barException);
+      ex = e;
+    }
+    verify(ex);
+  }
+
+  @Test
+  public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException
+  {
+    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      ex=new Exception("Wrapper", e);
+      Exception fooException = new Exception("Foo");
+      Exception barException = new Exception("Bar");
+      addSuppressed(ex, fooException);
+      addSuppressed(e, barException);
+    }
+    verify(ex);
+  }
+
+  @Test
+  public void suppressedWithSuppressed() throws Exception
+  {
+    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      ex=new Exception("Wrapper", e);
+      Exception fooException = new Exception("Foo");
+      Exception barException = new Exception("Bar");
+      addSuppressed(barException, fooException);
+      addSuppressed(e, barException);
+    }
+    verify(ex);
   }
 
   @Test
@@ -102,6 +156,10 @@ public class ThrowableProxyConverterTest {
     assertTrue(reader.readLine().contains(t.getMessage()));
     assertNotNull(reader.readLine());
     assertNull("Unexpected line in stack trace", reader.readLine());
+  }
+
+  void someMethod() throws Exception {
+    throw new Exception("someMethod");
   }
 
   void verify(Throwable t) {
