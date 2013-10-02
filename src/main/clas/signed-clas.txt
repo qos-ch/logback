@@ -29,6 +29,7 @@ Andrey Korzhevskiy       Skryabina Akademika, Russia 2013-03-26
 Carl E. Harris Jr.       VA, USA               2013-03-27
 Matthew R. Bertolini     NJ, USA               2013-04-23
 Gregory A. Denton        WA, USA               2013-05-02
+Mikhail Mazursky         Bashkortostan,Russia  2013-10-02
 
 Justification for CLAs
 ----------------------
