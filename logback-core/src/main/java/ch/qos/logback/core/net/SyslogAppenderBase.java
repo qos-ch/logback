@@ -24,9 +24,9 @@ import ch.qos.logback.core.Layout;
 
 /**
  * Base class for SyslogAppender.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  * @param <E>
  */
 public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
@@ -41,6 +41,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   SyslogOutputStream sos;
   int port = SyslogConstants.SYSLOG_PORT;
   int maxMessageSize = 65000;
+
+  boolean oneLineStackTrace = false;
 
   public void start() {
     int errorCount = 0;
@@ -80,30 +82,38 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     try {
+      SyslogWriteStrategy writeStrategy = new SyslogWriteStrategy(maxMessageSize, "UTF-8", sos);
+      if (oneLineStackTrace) {
+        writeStrategy.setFlushNone();
+      } else {
+        writeStrategy.setFlushAll();
+      }
+
+
       String msg = layout.doLayout(eventObject);
-      if(msg == null) {
+      if (msg == null) {
         return;
       }
-      if (msg.length() > maxMessageSize) {
-        msg = msg.substring(0, maxMessageSize);
-      }
-      sos.write(msg.getBytes());
-      sos.flush();
-      postProcess(eventObject, sos);
+
+      writeStrategy.appendMessage(msg);
+
+      postProcess(eventObject, writeStrategy);
+
+      writeStrategy.end();
+
     } catch (IOException ioe) {
       addError("Failed to send diagram to " + syslogHost, ioe);
     }
   }
 
-  protected void postProcess(Object event, OutputStream sw) {
+  protected void postProcess(Object event, SyslogWriteStrategy strategy) {
 
   }
 
   /**
    * Returns the integer value corresponding to the named syslog facility.
-   * 
-   * @throws IllegalArgumentException
-   *           if the facility string is not recognized
+   *
+   * @throws IllegalArgumentException if the facility string is not recognized
    */
   static public int facilityStringToint(String facilityStr) {
     if ("KERN".equalsIgnoreCase(facilityStr)) {
@@ -162,7 +172,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   /**
    * The <b>SyslogHost</b> option is the name of the the syslog host where log
    * output should go.
-   * 
+   *
    * <b>WARNING</b> If the SyslogHost is not set, then this appender will fail.
    */
   public void setSyslogHost(String syslogHost) {
@@ -171,7 +181,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
   /**
    * Returns the string value of the <b>Facility</b> option.
-   * 
+   *
    * See {@link #setFacility} for the set of allowed values.
    */
   public String getFacility() {
@@ -183,7 +193,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
    * DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP, AUDIT,
    * ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6,
    * LOCAL7. Case is not important.
-   * 
+   *
    * <p>
    * See {@link SyslogConstants} and RFC 3164 for more information about the
    * <b>Facility</b> option.
@@ -196,7 +206,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * 
+   *
    * @return
    */
   public int getPort() {
@@ -212,7 +222,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   }
 
   /**
-   * 
+   *
    * @return
    */
   public int getMaxMessageSize() {
@@ -247,7 +257,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
 /**
    * See {@link #setSuffixPattern(String).
-   * 
+   *
    * @return
    */
   public String getSuffixPattern() {
@@ -257,10 +267,25 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   /**
    * The <b>suffixPattern</b> option specifies the format of the
    * non-standardized part of the message sent to the syslog server.
-   * 
+   *
    * @param suffixPattern
    */
   public void setSuffixPattern(String suffixPattern) {
     this.suffixPattern = suffixPattern;
+  }
+
+
+  /**
+   * Setting oneLineStackTrace to true causes stack trace data to be sent to
+   * the syslog daemon on one line. By default, stack trace data is sent on separates lines to syslog daemon.
+   *
+   * @param oneLineStackTrace
+   */
+  public void setOneLineStackTrace(boolean oneLineStackTrace) {
+    this.oneLineStackTrace = oneLineStackTrace;
+  }
+
+  public boolean isOneLineStackTrace() {
+    return oneLineStackTrace;
   }
 }
