@@ -10,6 +10,7 @@
 			<user>hr</user>
 			<password>hr</password>
 		</connectionSource>
+        <origin>Integration Test</origin>
 	</appender>
 
 

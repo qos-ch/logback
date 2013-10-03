@@ -30,6 +30,7 @@ CREATE TABLE logging_event
     caller_method     VARCHAR(254) NOT NULL,
     caller_line       CHAR(4) NOT NULL,
     event_id          DECIMAL(40) NOT NULL identity,
+    origin           VARCHAR(254)
     PRIMARY KEY(event_id) 
   ) 
 
