@@ -159,6 +159,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     level = newLevel;
     if (newLevel == null) {
       effectiveLevelInt = parent.effectiveLevelInt;
+      newLevel = parent.getEffectiveLevel();
     } else {
       effectiveLevelInt = newLevel.levelInt;
     }
