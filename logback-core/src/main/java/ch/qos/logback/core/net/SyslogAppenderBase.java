@@ -130,6 +130,14 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       return SyslogConstants.LOG_AUTHPRIV;
     } else if ("FTP".equalsIgnoreCase(facilityStr)) {
       return SyslogConstants.LOG_FTP;
+    } else if ("NTP".equalsIgnoreCase(facilityStr)) {
+      return SyslogConstants.LOG_NTP;
+    } else if ("AUDIT".equalsIgnoreCase(facilityStr)) {
+      return SyslogConstants.LOG_AUDIT;
+    } else if ("ALERT".equalsIgnoreCase(facilityStr)) {
+      return SyslogConstants.LOG_ALERT;
+    } else if ("CLOCK".equalsIgnoreCase(facilityStr)) {
+      return SyslogConstants.LOG_CLOCK;
     } else if ("LOCAL0".equalsIgnoreCase(facilityStr)) {
       return SyslogConstants.LOG_LOCAL0;
     } else if ("LOCAL1".equalsIgnoreCase(facilityStr)) {
