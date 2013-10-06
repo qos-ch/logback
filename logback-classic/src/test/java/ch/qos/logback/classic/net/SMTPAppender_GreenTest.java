@@ -26,10 +26,11 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
+
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
+
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.junit.After;
@@ -40,6 +41,7 @@ import org.slf4j.MDC;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -77,9 +79,9 @@ public class SMTPAppender_GreenTest {
     greenMailServer.start();
     // give the server a head start
     if (EnvUtilForTests.isRunningOnSlowJenkins()) {
-      Thread.currentThread().sleep(2000);
+      Thread.sleep(2000);
     } else {
-      Thread.currentThread().sleep(50);
+      Thread.sleep(50);
     }
   }
 
@@ -345,5 +347,26 @@ public class SMTPAppender_GreenTest {
     String body1 = GreenMailUtil.getBody(content1.getBodyPart(0));
     // second body should not contain content from first message
     assertFalse(body1.contains(msg0));
+  }
+
+  @Test
+  public void multiLineSubjectTruncatedAtFirstNewLine() throws Exception {
+    String line1 = "line 1 of subject";
+    String subject = line1 + "\nline 2 of subject\n";
+    buildSMTPAppender(subject, ASYNCHRONOUS);
+
+    smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
+    smtpAppender.start();
+    logger.addAppender(smtpAppender);
+    logger.debug("hello");
+    logger.error("en error", new Exception("an exception"));
+
+    Thread.yield();
+    waitUntilEmailIsSent();
+    waitForServerToReceiveEmails(1);
+
+    MimeMessage[] mma = greenMailServer.getReceivedMessages();
+    assertEquals(1, mma.length);
+    assertEquals(line1, mma[0].getSubject());
   }
 }
