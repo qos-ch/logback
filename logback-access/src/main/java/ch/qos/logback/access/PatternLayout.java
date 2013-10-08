@@ -18,6 +18,7 @@ import java.util.Map;
 
 import ch.qos.logback.access.pattern.ContentLengthConverter;
 import ch.qos.logback.access.pattern.DateConverter;
+import ch.qos.logback.access.pattern.ElapsedTimeConverter;
 import ch.qos.logback.access.pattern.EnsureLineSeparation;
 import ch.qos.logback.access.pattern.FullRequestConverter;
 import ch.qos.logback.access.pattern.FullResponseConverter;
@@ -150,7 +151,9 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("fullRequest", FullRequestConverter.class.getName());
     defaultConverterMap.put("fullResponse", FullResponseConverter.class.getName());
 
-    
+    defaultConverterMap.put("elapsedTime", ElapsedTimeConverter.class.getName());
+    defaultConverterMap.put("D", ElapsedTimeConverter.class.getName());
+
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
 
     defaultConverterMap.put("black", BlackCompositeConverter.class.getName());

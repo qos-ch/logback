@@ -47,6 +47,10 @@ public class JettyServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
 
+  public long getRequestTimestamp() {
+    return request.getTimeStamp();
+  }
+
   public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     HttpFields httpFields = response.getHttpFields();

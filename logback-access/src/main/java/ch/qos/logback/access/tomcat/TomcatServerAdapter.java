@@ -44,7 +44,10 @@ public class TomcatServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
 
-  
+  public long getRequestTimestamp() {
+     return -1;
+  }
+
   public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     for (String key : response.getHeaderNames()) {
