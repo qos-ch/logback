@@ -13,22 +13,15 @@
  */
 package ch.qos.logback.access.spi;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
+import ch.qos.logback.access.AccessConstants;
+import ch.qos.logback.access.pattern.AccessConverter;
+import ch.qos.logback.access.servlet.Util;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import ch.qos.logback.access.AccessConstants;
-import ch.qos.logback.access.pattern.AccessConverter;
-import ch.qos.logback.access.servlet.Util;
+import java.io.Serializable;
+import java.util.*;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -37,15 +30,15 @@ import ch.qos.logback.access.servlet.Util;
  * logging component instance is called in the container to log then a
  * <code>AccessEvent</code> instance is created. This instance is passed
  * around to the different logback components.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class AccessEvent implements Serializable, IAccessEvent {
 
-  
+
   private static final long serialVersionUID = 866718993618836343L;
-  
+
   private static final String EMPTY = "";
 
   private transient final HttpServletRequest httpRequest;
@@ -61,7 +54,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
   String serverName;
   String requestContent;
   String responseContent;
-    long elapsedTime;
+  long elapsedTime;
 
   Map<String, String> requestHeaderMap;
   Map<String, String[]> requestParameterMap;
@@ -80,18 +73,18 @@ public class AccessEvent implements Serializable, IAccessEvent {
   private long timeStamp = 0;
 
   public AccessEvent(HttpServletRequest httpRequest,
-      HttpServletResponse httpResponse, ServerAdapter adapter) {
+                     HttpServletResponse httpResponse, ServerAdapter adapter) {
     this.httpRequest = httpRequest;
     this.httpResponse = httpResponse;
     this.timeStamp = System.currentTimeMillis();
     this.serverAdapter = adapter;
-      this.elapsedTime = calculateElapsedTime();
+    this.elapsedTime = calculateElapsedTime();
   }
 
   /**
-   * Returns the underlying HttpServletRequest. After serialization the returned 
-   * value will be null. 
-   * 
+   * Returns the underlying HttpServletRequest. After serialization the returned
+   * value will be null.
+   *
    * @return
    */
   public HttpServletRequest getRequest() {
@@ -99,9 +92,9 @@ public class AccessEvent implements Serializable, IAccessEvent {
   }
 
   /**
-   * Returns the underlying HttpServletResponse. After serialization the returned 
-   * value will be null. 
-   * 
+   * Returns the underlying HttpServletResponse. After serialization the returned
+   * value will be null.
+   *
    * @return
    */
   public HttpServletResponse getResponse() {
@@ -295,7 +288,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
   /**
    * Attributes are not serialized
-   * 
+   *
    * @param key
    */
   public String getAttribute(String key) {
@@ -315,12 +308,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
     if (httpRequest != null) {
       String[] value = httpRequest.getParameterValues(key);
       if (value == null) {
-        return new String[] { NA };
+        return new String[]{NA};
       } else {
         return value;
       }
     } else {
-      return new String[] { NA };
+      return new String[]{NA};
     }
   }
 
@@ -361,17 +354,17 @@ public class AccessEvent implements Serializable, IAccessEvent {
   }
 
   public long getElapsedTime() {
-      return elapsedTime;
+    return elapsedTime;
   }
 
-    private long calculateElapsedTime() {
-        if (serverAdapter.getRequestTimestamp() < 0) {
-          return -1;
-        }
-        return timeStamp - serverAdapter.getRequestTimestamp();
+  private long calculateElapsedTime() {
+    if (serverAdapter.getRequestTimestamp() < 0) {
+      return -1;
     }
+    return getTimeStamp() - serverAdapter.getRequestTimestamp();
+  }
 
-    public String getRequestContent() {
+  public String getRequestContent() {
     if (requestContent != null) {
       return requestContent;
     }

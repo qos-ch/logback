@@ -13,24 +13,23 @@
  */
 package ch.qos.logback.access.tomcat;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.qos.logback.access.spi.ServerAdapter;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 
-import ch.qos.logback.access.spi.ServerAdapter;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A tomcat specific implementation of the {@link ServerAdapter} interface.
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class TomcatServerAdapter implements ServerAdapter {
 
   Request request;
   Response response;
-  
+
   public TomcatServerAdapter(Request tomcatRequest, Response tomcatResponse) {
     this.request = tomcatRequest;
     this.response = tomcatResponse;
@@ -45,7 +44,7 @@ public class TomcatServerAdapter implements ServerAdapter {
   }
 
   public long getRequestTimestamp() {
-     return request.getCoyoteRequest().getStartTime();
+    return request.getCoyoteRequest().getStartTime();
   }
 
   public Map<String, String> buildResponseHeaderMap() {
