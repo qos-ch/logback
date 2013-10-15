@@ -314,12 +314,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
     if (httpRequest != null) {
       String[] value = httpRequest.getParameterValues(key);
       if (value == null) {
-        return new String[]{NA};
+        return new String[]{ NA };
       } else {
         return value;
       }
     } else {
-      return new String[]{NA};
+      return new String[]{ NA };
     }
   }
 
