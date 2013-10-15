@@ -13,11 +13,9 @@
  */
 package ch.qos.logback.access;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ch.qos.logback.access.pattern.ContentLengthConverter;
 import ch.qos.logback.access.pattern.DateConverter;
+import ch.qos.logback.access.pattern.ElapsedTimeConverter;
 import ch.qos.logback.access.pattern.EnsureLineSeparation;
 import ch.qos.logback.access.pattern.FullRequestConverter;
 import ch.qos.logback.access.pattern.FullResponseConverter;
@@ -46,6 +44,9 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.color.*;
 import ch.qos.logback.core.pattern.parser.Parser;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * <p>
  * This class is a module-specific implementation of
@@ -54,10 +55,10 @@ import ch.qos.logback.core.pattern.parser.Parser;
  * way to format the logging output that is just as easy and flexible as the
  * usual <code>PatternLayout</code>.
  * </p>
- * <p>
+ * <p/>
  * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#AccessPatternLayout
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -122,22 +123,22 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("server", ServerNameConverter.class.getName());
 
     defaultConverterMap.put("localPort", LocalPortConverter.class.getName());
-    
+
     defaultConverterMap.put("requestAttribute", RequestAttributeConverter.class
         .getName());
     defaultConverterMap.put("reqAttribute", RequestAttributeConverter.class
         .getName());
-    
+
     defaultConverterMap
         .put("reqCookie", RequestCookieConverter.class.getName());
     defaultConverterMap
-    .put("requestCookie", RequestCookieConverter.class.getName());
+        .put("requestCookie", RequestCookieConverter.class.getName());
 
-    
+
     defaultConverterMap.put("responseHeader", ResponseHeaderConverter.class
         .getName());
-    
-    
+
+
     defaultConverterMap.put("requestParameter", RequestParameterConverter.class
         .getName());
     defaultConverterMap.put("reqParameter", RequestParameterConverter.class
@@ -150,7 +151,9 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("fullRequest", FullRequestConverter.class.getName());
     defaultConverterMap.put("fullResponse", FullResponseConverter.class.getName());
 
-    
+    defaultConverterMap.put("elapsedTime", ElapsedTimeConverter.class.getName());
+    defaultConverterMap.put("D", ElapsedTimeConverter.class.getName());
+
     defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
 
     defaultConverterMap.put("black", BlackCompositeConverter.class.getName());
@@ -171,7 +174,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("boldWhite", BoldWhiteCompositeConverter.class.getName());
   }
 
-  
+
   public PatternLayout() {
     // set a default value for pattern
     setPattern(CLF_PATTERN);

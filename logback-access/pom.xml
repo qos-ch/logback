@@ -51,6 +51,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>tomcat-coyote</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <scope>compile</scope>
@@ -58,7 +65,7 @@
     </dependency>
 
     <dependency>
-       <groupId>org.codehaus.janino</groupId>
+      <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
@@ -141,13 +148,13 @@
                 Bnd's analysis of java code.
             -->
             <Import-Package>
-                ch.qos.logback.core.rolling,
-                ch.qos.logback.core.rolling.helper,
-                javax.servlet.*;version="2.5",
-                javax.*;resolution:=optional,
-                org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
-                org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
-                *
+              ch.qos.logback.core.rolling,
+              ch.qos.logback.core.rolling.helper,
+              javax.servlet.*;version="2.5",
+              javax.*;resolution:=optional,
+              org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
+              org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
+              *
             </Import-Package>
             <Bundle-RequiredExecutionEnvironment>J2SE-1.5
             </Bundle-RequiredExecutionEnvironment>
