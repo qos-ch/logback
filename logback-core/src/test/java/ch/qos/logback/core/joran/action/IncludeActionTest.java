@@ -62,8 +62,6 @@ public class IncludeActionTest {
 
   static final String TOP_OPTIONAL = INCLUSION_DIR_PREFIX + "topOptional.xml";
 
-  static final String TOP_OPTIONAL_RESOURCE = INCLUSION_DIR_PREFIX + "topOptionalResource.xml";
-
   static final String INTERMEDIARY_FILE = INCLUSION_DIR_PREFIX
       + "intermediaryByFile.xml";
 
@@ -124,14 +122,6 @@ public class IncludeActionTest {
     tc.doConfigure(TOP_OPTIONAL);
     verifyConfig(new String[] { "IA", "IB" });
     StatusPrinter.print(context);
-  }
-
-  @Test
-  public void optionalResource() throws JoranException {
-    tc.doConfigure(TOP_OPTIONAL_RESOURCE);
-    verifyConfig(new String[] { "IA", "IB" });
-    StatusPrinter.print(context);
-    assertEquals(Status.INFO, statusChecker.getHighestLevel(0));
   }
 
   @Test

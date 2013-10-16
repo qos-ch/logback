@@ -154,11 +154,9 @@ public class IncludeAction extends Action {
   URL resourceAsURL(String resourceAttribute) {
     URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
     if (url == null) {
-      if (!optional) {
-        String errMsg = "Could not find resource corresponding to ["
-                + resourceAttribute + "]";
-        addError(errMsg);
-      }
+      String errMsg = "Could not find resource corresponding to ["
+              + resourceAttribute + "]";
+      addError(errMsg);
       return null;
     } else
       return url;
