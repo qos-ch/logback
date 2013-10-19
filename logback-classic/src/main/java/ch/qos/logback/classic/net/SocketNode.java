@@ -57,13 +57,6 @@ public class SocketNode implements Runnable {
     remoteSocketAddress = socket.getRemoteSocketAddress();
     this.context = context;
     logger = context.getLogger(SocketNode.class);
-
-    try {
-      ois = new ObjectInputStream(new BufferedInputStream(socket
-          .getInputStream()));
-    } catch (Exception e) {
-      logger.error("Could not open ObjectInputStream to " + socket, e);
-    }
   }
 
   // public
@@ -73,6 +66,14 @@ public class SocketNode implements Runnable {
   // }
 
   public void run() {
+
+    try {
+      ois = new ObjectInputStream(new BufferedInputStream(socket
+          .getInputStream()));
+    } catch (Exception e) {
+      logger.error("Could not open ObjectInputStream to " + socket, e);
+    }
+
     ILoggingEvent event;
     Logger remoteLogger;
 
