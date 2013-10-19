@@ -15,7 +15,6 @@ package ch.qos.logback.core.util;
 
 import java.io.IOException;
 import java.net.URL;
-import java.security.AccessControlException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
@@ -51,7 +50,9 @@ public class Loader {
                   AccessController.checkPermission(
                           new RuntimePermission("getClassLoader"));
                   return true;
-                } catch (AccessControlException e) {
+                } catch (SecurityException e) {
+                  // Using SecurityException instead of AccessControlException.
+                  // See bug LOGBACK-760.
                   return false;
                 }
               }
