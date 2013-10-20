@@ -72,6 +72,7 @@ public class SocketNode implements Runnable {
           .getInputStream()));
     } catch (Exception e) {
       logger.error("Could not open ObjectInputStream to " + socket, e);
+      closed = true;
     }
 
     ILoggingEvent event;
