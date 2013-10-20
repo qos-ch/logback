@@ -99,7 +99,14 @@ public class SimpleSocketServer extends Thread {
 
 
   public void run() {
+    
+    final String oldThreadName = Thread.currentThread().getName();
+    
     try {
+      
+      final String newThreadName = getServerThreadName();
+      Thread.currentThread().setName(newThreadName);
+      
       logger.info("Listening on port " + port);
       serverSocket = getServerSocketFactory().createServerSocket(port);
       while (!closed) {
@@ -112,7 +119,8 @@ public class SimpleSocketServer extends Thread {
         synchronized (socketNodeList) {
           socketNodeList.add(newSocketNode);
         }
-        new Thread(newSocketNode).start();
+        final String clientThreadName = getClientThreadName(socket);
+        new Thread(newSocketNode, clientThreadName).start();
       }
     } catch (Exception e) {
       if(closed) {
@@ -121,6 +129,24 @@ public class SimpleSocketServer extends Thread {
         logger.error("Unexpected failure in run method", e);
       }
     }
+    
+    finally {
+      Thread.currentThread().setName(oldThreadName);
+    }
+  }
+
+  /**
+   * Returns the name given to the server thread.
+   */
+  protected String getServerThreadName() {
+    return String.format("Logback %s (port %d)", getClass().getSimpleName(), port);
+  }
+
+  /**
+   * Returns a name to identify each client thread.
+   */
+  protected String getClientThreadName(Socket socket) {
+    return String.format("Logback SocketNode (client: %s)", socket.getRemoteSocketAddress());
   }
 
   /**
