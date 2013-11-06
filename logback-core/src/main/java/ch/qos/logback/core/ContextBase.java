@@ -58,7 +58,7 @@ public class ContextBase implements Context, LifeCycle {
    */
   public void setStatusManager(StatusManager statusManager) {
     // this method was added in response to http://jira.qos.ch/browse/LBCORE-35
-    if (sm == null) {
+    if (statusManager == null) {
       throw new IllegalArgumentException("null StatusManager not allowed");
     }
     this.sm = statusManager;
