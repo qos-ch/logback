@@ -32,7 +32,97 @@
 
     <hr width="80%" align="center" />
 
-    <h3>, 2013 - Release of version 2.0.0-alpha1</h3>
+    <h3>, 2013 - Release of version 1.1.0</h3>
+
+    <p>Fixed various documentation typos, including
+    <a href="http://jira.qos.ch/browse/LOGBACK-921">LOGBACK-921</a>.
+    </p>
+
+    <p><code>ContextBase.setStatusManager</code> now correctly validates the given
+    status manager. (<a href="http://jira.qos.ch/browse/LOGBACK-912">LOGBACK-912</a>)
+    </p>
+
+    <p>The <code>SocketNode</code> creates an <code>ObjectInputStream</code> using
+    the socket's input stream, which blocks waiting for the stream header. This wait
+    has been moved from the constructor to <code>SocketNode.run()</code> so that the
+    node can be created without blocking.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-350">LOGBACK-350</a>)
+    </p>
+
+    <p>Fixed <code>SecurityException</code> during initialization in Google AppEngine.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-760">LOGBACK-760</a>)
+    </p>
+
+    <p>The <code>&lt;includes&gt;</code> tag now allows optional resources (previously,
+    only optional files).
+    (<a href="http://jira.qos.ch/browse/LOGBACK-644">LOGBACK-644</a>)
+    </p>
+
+    <p>Added new layout conversion word (<b>%D</b> or <b>%elapsedTime</b>), which gets
+    the time taken to serve the request. This applies only to Jetty and Tomcat logs
+    via logback-access.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-320">LOGBACK-320</a>)
+    </p>
+
+    <p>Fixed SMTP error when the subject line contained multiple new-lines.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-865">LOGBACK-865</a>)
+    </p>
+
+    <p>Fixed unnecessary re-initialization of the servlet's <code>LoggerContext</code> while
+    attempting to destroy it.
+    </p>
+
+    <p>Added the following syslog facilities to <code>SyslogStartConverter</code>:
+    NTP, AUDIT, ALERT, CLOCK
+    (<a href="http://jira.qos.ch/browse/LOGBACK-754">LOGBACK-754</a>)
+    </p>
+
+    <p>Fixed <code>NullPointerException</code> when setting a JUL logger's level to
+    null, which should have reset the logger level to the parent's effective
+    level.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-906">LOGBACK-906</a>)
+    </p>
+
+    <p>Added support to get suppressed exceptions. This is currently only implemented for
+    <code>RootCauseFirstThrowableProxyConverter</code> and <code>ThrowableProxyConverter</code>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-516">LOGBACK-516</a>)
+    </p>
+
+    <p>Fixed problem of Janino classes not found in some environments (axis2, GWT, etc.).
+    (<a href="http://jira.qos.ch/browse/LOGBACK-832">LOGBACK-832</a>)
+    </p>
+
+    <p>Fixed various unit tests, including modifications for consistent results in Jenkins.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-842">LOGBACK-842</a>)
+    </p>
+
+    <p>Allow Gaffer to read the <code>logback.debug</code> system property to enable verbose
+    output during Groovy-based configuration. Also added debug statements to Gaffer.
+    </p>
+
+    <p>Fixed <code>IllegalArgumentException</code> when missing periods and dollar signs
+    in the logger name.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-384">LOGBACK-384</a>)
+    </p>
+
+    <p>Fixed <code>NullPointerException</code> during JNDI lookup.</p>
+
+    <p>Fixed dangling data source connection.</p>
+
+    <p>Fixed incorrect stack trace depth when specifying <code>%throwable</code> with argument.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-160">LOGBACK-160</a>)
+    </p>
+
+    <p>Fixed MySQL setup script to use lower-case table name to match the references in the file.
+    This had caused an error on system where case sensitivity matters.</p>
+
+    <p>Fixed <code>NullPointerException</code> when getting code source in
+    <code>PackagingDataCalculator</code>.</p>
+
+    <p>The search path for <code>logback-access.xml</code> is now <code>${catalina.base}</code>
+    and then <code>${catalina.home}</code> if not found.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-844">LOGBACK-844</a>)
+    </p>
 
     <p>The <code>LoggingEvent</code> constructor delays message
     formatting so that it can be computed lazily by the
