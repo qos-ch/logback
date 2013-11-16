@@ -24,7 +24,7 @@ import ch.qos.logback.core.spi.LifeCycle;
 /**
  * TurboFilter is a specialized filter with a decide method that takes a bunch 
  * of parameters instead of a single event object. The latter is cleaner but 
- * the latter is much more performant.
+ * the first is much more performant.
  * <p>
  * For more information about turbo filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html#TurboFilter
