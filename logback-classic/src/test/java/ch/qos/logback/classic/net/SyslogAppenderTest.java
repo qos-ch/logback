@@ -16,6 +16,7 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.DatagramSocket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -182,7 +183,7 @@ public class SyslogAppenderTest {
   }
 
   @Test
-  public void large() throws InterruptedException {
+  public void large() throws Exception {
     setMockServerAndConfigure(2);
     StringBuilder largeBuf = new StringBuilder();
     for (int i = 0; i < 2 * 1024 * 1024; i++) {
@@ -198,19 +199,20 @@ public class SyslogAppenderTest {
     mockServer.join(8000);
     assertTrue(mockServer.isFinished());
  
-   // both messages received
+    // both messages received
     assertEquals(2, mockServer.getMessageList().size());
 
-   String expected = "<"
+    String expected = "<"
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     String expectedPrefix = "<\\d{2}>\\w{3} \\d{2} \\d{2}(:\\d{2}){2} [\\w.-]* ";
     String threadName = Thread.currentThread().getName();
 
     // large message is truncated
+    final int maxDatagramSize = new DatagramSocket().getSendBufferSize();
     String largeMsg = mockServer.getMessageList().get(0);
     assertTrue(largeMsg.startsWith(expected));
     String largeRegex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
-        + " " + "a{64000,66000}";
+        + " " + "a{" + (maxDatagramSize - 2000) + "," + maxDatagramSize + "}";
     checkRegexMatch(largeMsg, largeRegex);
 
     String msg = mockServer.getMessageList().get(1);

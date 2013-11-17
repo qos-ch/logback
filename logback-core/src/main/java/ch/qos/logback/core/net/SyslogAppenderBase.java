@@ -40,7 +40,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
   protected String suffixPattern;
   SyslogOutputStream sos;
   int port = SyslogConstants.SYSLOG_PORT;
-  int maxMessageSize = 65000;
+  int maxMessageSize;
 
   public void start() {
     int errorCount = 0;
@@ -51,6 +51,15 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
     try {
       sos = new SyslogOutputStream(syslogHost, port);
+
+      final int systemDatagramSize = sos.getSendBufferSize();
+      if (maxMessageSize == 0) {
+        addInfo("Defaulting maxMessageSize to system datagram size of [" + systemDatagramSize + "]");
+        maxMessageSize = systemDatagramSize;
+      } else if (maxMessageSize > systemDatagramSize) {
+        addWarn("maxMessageSize of [" + maxMessageSize + "] is larger than the system defined datagram size of [" + systemDatagramSize + "].");
+        addWarn("This may result in dropped logs.");
+      }
     } catch (UnknownHostException e) {
       addError("Could not create SyslogWriter", e);
       errorCount++;
