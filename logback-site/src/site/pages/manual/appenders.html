@@ -503,7 +503,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <p><span class="label notice">Immediate Flush</span> By default,
    each log event is immediately flushed to the underlying output
    stream. This default approach is safer in the sense that logging
-   events are not lost in case your applicaiton exits without properly
+   events are not lost in case your application exits without properly
    closing appenders. However, for significantly increased logging
    throughput, you may want to set the <span
    class="prop">immediateFlush</span> property of the underlying
@@ -3939,7 +3939,7 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     
     <p><span class="label notice">Lossy behavior</span> In light of
     the discussion above and in order to reduce blocking, by default,
-    when less than 20% of the queue capacilty remains,
+    when less than 20% of the queue capacity remains,
     <code>AsyncAppender</code> will drop events of level TRACE, DEBUG
     and INFO keeping only events of level WARN and ERROR. This
     strategy ensures non-blocking handling of logging events (hence
