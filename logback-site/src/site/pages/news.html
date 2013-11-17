@@ -34,8 +34,20 @@
 
     <h3>, 2013 - Release of version 1.1.0</h3>
 
+    <p>Fixed silently lost messages from <code>SyslogAppender</code>
+    when they exceeded the system datagram size limit. The default max
+    message size was hard coded to 65KB but now matches the system limit
+    (as read from
+    <a href="http://docs.oracle.com/javase/6/docs/api/java/net/DatagramSocket.html#getSendBufferSize()">
+    <code>DatagramSocket#getSendBufferSize()</code></a>) unless a
+    nonzero limit is specified via <code>SyslogAppender#setMaxMessageSize()</code>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-926">LOGBACK-926</a>)
+    </p>
+
     <p>Fixed various documentation typos, including
-    <a href="http://jira.qos.ch/browse/LOGBACK-921">LOGBACK-921</a>.
+    <a href="http://jira.qos.ch/browse/LOGBACK-921">LOGBACK-921</a>
+    and
+    <a href="http://jira.qos.ch/browse/LOGBACK-904">LOGBACK-904</a>.
     </p>
 
     <p><code>ContextBase.setStatusManager</code> now correctly validates
