@@ -34,6 +34,12 @@
 
     <h3>, 2013 - Release of version 1.1.0</h3>
 
+    <p>To facilitate debugging, <code>SimpleSocketServer</code> now names
+    its threads: <b>Logback SimpleSocketServer (port <i>PORTNUM</i>)</b>.
+    <code>SocketNode</code> client threads are named:
+    <b>Logback SocketNode (client: <i>IPADDR</i>)</b>.
+    </p>
+
     <p>Fixed silently lost messages from <code>SyslogAppender</code>
     when they exceeded the system datagram size limit. The default max
     message size was hard coded to 65KB but now matches the system limit
