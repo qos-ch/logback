@@ -40,10 +40,10 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
 
     for (File f : matchingFileArray) {
       Date fileLastModified = rc.getRelativeDate(new Date(f.lastModified()), -1);
-    	if (fileLastModified.compareTo(dateOfPeriodToClean) <= 0){
-    		  f.delete();
-    	    addInfo("deleting " + f);
-    	}
+      if (fileLastModified.compareTo(dateOfPeriodToClean) <= 0) {
+        f.delete();
+        addInfo("deleting " + f);
+      }
     }
 
     if (parentClean) {
