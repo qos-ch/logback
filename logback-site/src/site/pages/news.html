@@ -34,10 +34,18 @@
 
     <h3>, 2013 - Release of version 1.1.0</h3>
 
+    <p><code>PackagingDataCalculator</code> now catches and ignores
+    <code>UnsupportedOperationException</code> so that it can determine
+    whether the JVM supports <code>Reflection#getCallerClass()</code>
+    without printing that exception's stack trace. This only affects
+    Java 7u40+, which removed support for <code>Reflection#getCallerClass()</code>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-885">LOGBACK-885</a>)
+    </p>
+
     <p>To facilitate debugging, <code>SimpleSocketServer</code> now names
-    its threads: <b>Logback SimpleSocketServer (port <i>PORTNUM</i>)</b>.
+    its threads: "<b>Logback SimpleSocketServer (port <i>PORTNUM</i>)</b>".
     <code>SocketNode</code> client threads are named:
-    <b>Logback SocketNode (client: <i>IPADDR</i>)</b>.
+    "<b>Logback SocketNode (client: <i>IPADDR</i>)</b>".
     </p>
 
     <p>Fixed silently lost messages from <code>SyslogAppender</code>
