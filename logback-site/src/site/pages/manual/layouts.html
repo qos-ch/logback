@@ -2075,13 +2075,13 @@ java.lang.Exception: display
           <p>Outputs the date of the logging event.  The date
           conversion specifier may be followed by a set of braces
           containing a date and time pattern strings used by
-          <code>java.text.SimpleDateFormat</code>.  <em>ABSOLUTE</em>,
-          <em>DATE</em> or <em>ISO8601</em> are also valid values.
+          <code>java.text.SimpleDateFormat</code>.  <em>ISO8601</em>
+          is also a valid value.
 					</p>
-					<p>For example, <b>%d{HH:mm:ss,SSS}</b>,
-					<b>%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}</b> or
-					<b>%d{DATE}</b>.  If no date format specifier is given then
-					ISO8601 format is assumed.
+					<p>For example, <b>%t{HH:mm:ss,SSS}</b> or
+					<b>%t{dd&nbsp;MMM&nbsp;yyyy&nbsp;;HH:mm:ss,SSS}</b>.
+					If no date format specifier is given then the
+					Common Log Format date format is assumed, that is: <b>%t{dd/MMM/yyyy:HH:mm:ss&nbsp;Z}</b>
 					</p>
         </td>
       </tr>
