@@ -17,6 +17,7 @@ import java.io.File;
 import java.util.Date;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
+import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
@@ -36,7 +37,7 @@ public class SizeAndTimeBasedFNATP<E> extends
     // in super.start()
     super.start();
 
-    archiveRemover = new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+    archiveRemover = createArchiveRemover();
     archiveRemover.setContext(context);
 
     // we need to get the correct value of currentPeriodsCounter.
@@ -49,6 +50,10 @@ public class SizeAndTimeBasedFNATP<E> extends
     computeCurrentPeriodsHighestCounterValue(stemRegex);
 
     started = true;
+  }
+
+  protected ArchiveRemover createArchiveRemover() {
+    return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
   }
 
   void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
