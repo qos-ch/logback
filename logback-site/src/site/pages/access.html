@@ -317,13 +317,13 @@
 &lt;pattern>clf&lt;/pattern&gt;</pre>
 
   <p>The so called "combined" format is also widely recognized. It is
-  defined as the '%h %l %u %t "%r" %s %b "%i{Referer}"
+  defined as the '%h %l %u [%t] "%r" %s %b "%i{Referer}"
   "%i{User-Agent}"' pattern. As a facilitator, you can use the
   "combined" as a shorthand. Thus, the following directive
   </p>
 
   <pre class="prettyprint source">&lt;encoder&gt;
-  &lt;pattern>%h %l %u %t "%r" %s %b "%i{Referer}" "%i{User-Agent}"&lt;/pattern&gt;
+  &lt;pattern>%h %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}"&lt;/pattern&gt;
 &lt;/encoder&gt;</pre>
 
   <p>is equivalent to:</p>
