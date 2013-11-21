@@ -15,6 +15,8 @@ package ch.qos.logback.classic;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.logging.LoggingPermission;
 
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.ILoggerFactory;
@@ -87,13 +89,21 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   @Override
+  public void putObject(String key, Object value) {
+    checkPermission();
+    super.putObject(key, value);
+  }
+
+  @Override
   public void putProperty(String key, String val) {
+    checkPermission();
     super.putProperty(key, val);
     updateLoggerContextVO();
   }
 
   @Override
   public void setName(String name) {
+    checkPermission();
     super.setName(name);
     updateLoggerContextVO();
   }
@@ -190,6 +200,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public void setPackagingDataEnabled(boolean packagingDataEnabled) {
+    checkPermission();
     this.packagingDataEnabled = packagingDataEnabled;
   }
 
@@ -207,6 +218,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    */
   @Override
   public void reset() {
+    checkPermission();
     resetCount++;
     super.reset();
     initEvaluatorMap();
@@ -217,6 +229,18 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
     resetStatusListeners();
   }
 
+  @Override
+  public StatusManager getStatusManager() {
+    checkPermission();
+    return super.getStatusManager();
+  }
+
+  @Override
+  public void setStatusManager(StatusManager statusManager) {
+    checkPermission();
+    super.setStatusManager(statusManager);
+  }
+
   private void resetStatusListeners() {
     StatusManager sm = getStatusManager();
     for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
@@ -225,10 +249,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public TurboFilterList getTurboFilterList() {
+    checkPermission();
     return turboFilterList;
   }
 
   public void addTurboFilter(TurboFilter newFilter) {
+    checkPermission();
     turboFilterList.add(newFilter);
   }
 
@@ -237,6 +263,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * list.
    */
   public void resetTurboFilterList() {
+    checkPermission();
     for (TurboFilter tf : turboFilterList) {
       tf.stop();
     }
@@ -275,10 +302,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   // === start listeners ==============================================
   public void addListener(LoggerContextListener listener) {
+    checkPermission();
     loggerContextListenerList.add(listener);
   }
 
   public void removeListener(LoggerContextListener listener) {
+    checkPermission();
     loggerContextListenerList.remove(listener);
   }
 
@@ -328,11 +357,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   // === end listeners ==============================================
 
   public void start() {
+    checkPermission();
     super.start();
     fireOnStart();
   }
 
   public void stop() {
+    checkPermission();
     reset();
     fireOnStop();
     resetAllListeners();
@@ -349,7 +380,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
   }
 
   public void setMaxCallerDataDepth(int maxCallerDataDepth) {
+    checkPermission();
     this.maxCallerDataDepth = maxCallerDataDepth;
+  }
+
+  @Override
+  public ExecutorService getExecutorService() {
+    checkPermission();
+    return super.getExecutorService();
   }
 
   /**
@@ -362,6 +400,18 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
    * @return list of framework packages
    */
   public List<String> getFrameworkPackages() {
+    checkPermission();
     return frameworkPackages;
+  }
+
+  /**
+   * Checks if the caller has the permission to change the state of the logging
+   * system (such as adding filters or setting logger levels).
+   */
+  static void checkPermission() {
+    SecurityManager sm = System.getSecurityManager();
+    if (sm != null) {
+      sm.checkPermission(new LoggingPermission("control", ""));
+    }
   }
 }
