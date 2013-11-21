@@ -56,7 +56,7 @@ public class CoreConstants {
   /**
    * Time format used in Common Log Format
    */
-  public static final String CLF_DATE_PATTERN = "dd/MM/yyyy:HH:mm:ss Z";
+  public static final String CLF_DATE_PATTERN = "dd/MMM/yyyy:HH:mm:ss Z";
 
   /**
    * The key used in locating the evaluator map in context's object map.
