@@ -93,9 +93,8 @@ function capitaliseFirstLetter(str) {
 
 
 function camelCase(str) {  
-  var res = str.trim().replace(/\s\w/g, function(match) {
-              return match.trim().toUpperCase();
-            });
-  return res;
+  return $.trim(str).replace(/\s\w/g, function(match) {
+    return $.trim(match).toUpperCase();
+  });
 }
 
