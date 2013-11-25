@@ -41,9 +41,8 @@ public class DateConverter extends AccessConverter {
       cachingDateFormatter = new CachingDateFormatter(datePattern);
       //maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
     } catch (IllegalArgumentException e) {
-      addWarn(
-        "Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
-      // default to the ISO8601 format
+      addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
+      addWarn("Defaulting to  " + CoreConstants.CLF_DATE_PATTERN);
       cachingDateFormatter = new CachingDateFormatter(CoreConstants.CLF_DATE_PATTERN);
     }
     
