@@ -13,12 +13,13 @@
  */
 package ch.qos.logback.classic.db;
 
+import static ch.qos.logback.core.db.DBHelper.closeStatement;
+
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -215,10 +216,10 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     if (propertiesKeys.size() > 0) {
       PreparedStatement insertPropertiesStatement = null;
       try {
-          insertPropertiesStatement = connection
-              .prepareStatement(insertPropertiesSQL);
+        insertPropertiesStatement = connection
+          .prepareStatement(insertPropertiesSQL);
 
-      for (String key : propertiesKeys) {
+        for (String key : propertiesKeys) {
           String value = mergedMap.get(key);
 
           insertPropertiesStatement.setLong(1, eventId);
@@ -236,7 +237,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
           insertPropertiesStatement.executeBatch();
         }
       } finally {
-        ch.qos.logback.core.db.DBHelper.closeStatement(insertPropertiesStatement);
+        closeStatement(insertPropertiesStatement);
       }
     }
   }
@@ -305,7 +306,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
         exceptionStatement.executeBatch();
       }
     } finally {
-      ch.qos.logback.core.db.DBHelper.closeStatement(exceptionStatement);
+      closeStatement(exceptionStatement);
     }
 
   }

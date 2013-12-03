@@ -162,7 +162,12 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
       long eventId = rs.getLong(1);
       return eventId;
     } finally {
-      if (rs!=null) try {rs.close();} catch (Exception e) {}
+      if (rs!=null) {
+        try {
+          rs.close();
+        } catch (SQLException e) {
+        }
+      }
       DBHelper.closeStatement(idStatement);
     }
   }
