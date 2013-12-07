@@ -33,6 +33,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
   final static String SYSLOG_LAYOUT_URL = CoreConstants.CODES_URL
       + "#syslog_layout";
+  final static int MAX_MESSAGE_SIZE_LIMIT = 65000;
 
   Layout<E> layout;
   String facilityStr;
@@ -54,8 +55,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 
       final int systemDatagramSize = sos.getSendBufferSize();
       if (maxMessageSize == 0) {
-        addInfo("Defaulting maxMessageSize to system datagram size of [" + systemDatagramSize + "]");
-        maxMessageSize = systemDatagramSize;
+        maxMessageSize = Math.min(systemDatagramSize, MAX_MESSAGE_SIZE_LIMIT);
+        addInfo("Defaulting maxMessageSize to [" + maxMessageSize + "]");
       } else if (maxMessageSize > systemDatagramSize) {
         addWarn("maxMessageSize of [" + maxMessageSize + "] is larger than the system defined datagram size of [" + systemDatagramSize + "].");
         addWarn("This may result in dropped logs.");
