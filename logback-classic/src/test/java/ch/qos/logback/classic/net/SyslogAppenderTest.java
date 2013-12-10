@@ -16,7 +16,6 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.DatagramSocket;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -208,11 +207,11 @@ public class SyslogAppenderTest {
     String threadName = Thread.currentThread().getName();
 
     // large message is truncated
-    final int maxDatagramSize = new DatagramSocket().getSendBufferSize();
+    final int maxMessageSize = sa.getMaxMessageSize();
     String largeMsg = mockServer.getMessageList().get(0);
     assertTrue(largeMsg.startsWith(expected));
     String largeRegex = expectedPrefix + "\\[" + threadName + "\\] " + loggerName
-        + " " + "a{" + (maxDatagramSize - 2000) + "," + maxDatagramSize + "}";
+        + " " + "a{" + (maxMessageSize - 2000) + "," + maxMessageSize + "}";
     checkRegexMatch(largeMsg, largeRegex);
 
     String msg = mockServer.getMessageList().get(1);
