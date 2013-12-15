@@ -318,9 +318,8 @@ public class SampleFilter extends Filter&gt;ILoggingEvent> {
     <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
       &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator"> 
         &lt;expression>
-           e.level.toInt() >= WARN.toInt()
-             &amp;amp;&amp;amp;  &lt;!-- Stands for &amp;&amp; in XML -->
-           !(e.mdc?.get("req.userAgent") ~= /Googlebot|msnbot|Yahoo/ )
+           e.level.toInt() >= WARN.toInt() &amp;amp;&amp;amp;  &lt;!-- Stands for &amp;&amp; in XML -->
+           !(e.mdc?.get("req.userAgent") =~ /Googlebot|msnbot|Yahoo/ )
         &lt;/expression>
       &lt;/evaluator>
       &lt;OnMismatch>DENY&lt;/OnMismatch>
