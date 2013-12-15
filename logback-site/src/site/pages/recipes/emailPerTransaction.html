@@ -358,7 +358,7 @@ MDC.put("txId", transactionId); </pre>
      buffers</a>.  </p>
 
      <p>To deal with this problem, we instruct SMTPAppender to discard
-     apprioate buffer at the end of each transaction. This is done by
+     the appropriate buffer at the end of each transaction. This is done by
      logging an event marked as "FINALIZE_SESSION". Here is a modified
      version of <code>PrimeAction</code> which marks the end of a
      transaction with "FINALIZE_SESSION".
