@@ -985,7 +985,7 @@ public interface RollingPolicy extends LifeCycle {
        <td class="small">
          <em>/foo/%d{yyyy-MM,<b>aux</b>}/%d.log</em>
        </td>
-       <td>Rollover daily. Archives located under a folder contaning
+       <td>Rollover daily. Archives located under a folder containing
        year and month.
        </td>
        <td>In this example, the first %d token is marked as
@@ -3650,7 +3650,7 @@ logger.error(<b>notifyAdmin</b>,
 				<td>A nested appender which has not been accessed beyond the
 				<span class="prop">timeout</span> duration is deemed stale. A
 				stale appender is closed and unreferenced by
-				<code>SiftingAppender</code>. The dfault value for <span
+				<code>SiftingAppender</code>. The default value for <span
 				class="prop">timeout</span> is 30 minutes.</td>
 			</tr>
 			<tr>
@@ -3681,7 +3681,7 @@ logger.error(<b>notifyAdmin</b>,
     criteria are computed at runtime by a discriminator. The user can
     specify the selection criteria with the help of a <code><a
     href="../xref/ch/qos/logback/core/sift/Discriminator.html">Discriminator</a></code>. Let
-    us now study an eaxample.
+    us now study an example.
     </p>
  
     <h4>Example</h4>
@@ -3736,10 +3736,10 @@ logger.debug("Alice says hello"); </p>
     <p>In the absence of a class attribute, it is assumed that the
     discriminator type is <a
     href="../xref/ch/qos/logback/classic/sift/MDCBasedDiscriminator.html">MDCBasedDiscriminator</a>.
-    The discrimating value is the MDC value associated with the key
+    The discriminating value is the MDC value associated with the key
     given by the <span class="prop">key</span> property. However, if
     that MDC value is null, then <span
-    class="prop">defaultValue</span> is used as the discrimating
+    class="prop">defaultValue</span> is used as the discriminating
     value.
     </p>
 
