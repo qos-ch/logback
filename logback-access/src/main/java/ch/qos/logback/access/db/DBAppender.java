@@ -104,7 +104,7 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
     Enumeration names = event.getRequestHeaderNames();
     if (names.hasMoreElements()) {
       PreparedStatement insertHeaderStatement = connection
-          .prepareStatement(insertHeaderSQL);
+        .prepareStatement(insertHeaderSQL);
 
       
       while (names.hasMoreElements()) {
