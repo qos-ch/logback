@@ -13,30 +13,43 @@
  */
 package ch.qos.logback.classic.net.server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.net.mock.MockContext;
+import ch.qos.logback.core.net.server.MockServerListener;
+import ch.qos.logback.core.net.server.MockServerRunner;
+import ch.qos.logback.core.net.server.ServerListener;
+import ch.qos.logback.core.net.server.ServerSocketUtil;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.Status;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.nullValue;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.net.ServerSocket;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import ch.qos.logback.core.net.mock.MockContext;
-import ch.qos.logback.core.net.server.MockServerListener;
-import ch.qos.logback.core.net.server.MockServerRunner;
-import ch.qos.logback.core.net.server.ServerSocketUtil;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.Status;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for {@link ServerSocketReceiver}.
  *
  * @author Carl Harris
+ * @author Sebastian Gr&ouml;bler
  */
 public class ServerSocketReceiverTest {
 
@@ -102,4 +115,69 @@ public class ServerSocketReceiverTest {
     assertEquals(0, runner.getStartCount());
   }
 
+  @Test
+  public void providesDefaultValueForMaxPoolSize() throws Exception {
+    assertThat(receiver.getMaxPoolSize(), is(CoreConstants.MAX_POOL_SIZE));
+  }
+
+  @Test
+  public void providesDefaultValueForCorePoolSize() throws Exception {
+    assertThat(receiver.getCorePoolSize(), is(CoreConstants.CORE_POOL_SIZE));
+  }
+
+  @Test
+  public void allowsCustomValueForMaxPoolSize() throws Exception {
+    final int customValue = 128;
+    receiver.setMaxPoolSize(customValue);
+
+    assertThat(receiver.getMaxPoolSize(), is(customValue));
+  }
+
+  @Test
+  public void allowsCustomValueForCorePoolSize() throws Exception {
+    final int customValue = 128;
+    receiver.setCorePoolSize(128);
+
+    assertThat(receiver.getCorePoolSize(), is(customValue));
+  }
+
+  @Test
+  public void stopShutsDownConnectionPoolExecutorServiceWhenPresent() {
+    final ExecutorService executorService = mock(ExecutorService.class);
+
+    receiver.start();
+    receiver.connectionPoolExecutorService = executorService;
+    receiver.stop();
+
+    verify(executorService).shutdownNow();
+    assertThat(receiver.connectionPoolExecutorService, is(nullValue()));
+  }
+
+  @Test
+  public void testShouldStartUsesConnectionPoolExecutorService() {
+
+    // given
+    final ServerSocketReceiver serverSocketReceiver = spy(new ServerSocketReceiver());
+    final int corePoolSize = 21;
+    final int maxPoolSize = 42;
+    serverSocketReceiver.setCorePoolSize(corePoolSize);
+    serverSocketReceiver.setMaxPoolSize(maxPoolSize);
+
+    // when
+    serverSocketReceiver.shouldStart();
+
+    // then
+    final ArgumentCaptor<Executor> captor = ArgumentCaptor.forClass(Executor.class);
+
+    verify(serverSocketReceiver).createServerRunner(any(ServerListener.class), captor.capture());
+
+    final Executor executor = captor.getValue();
+
+    assertThat(executor, instanceOf(ExecutorService.class));
+
+    final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
+
+    assertThat(threadPoolExecutor.getCorePoolSize(), is(corePoolSize));
+    assertThat(threadPoolExecutor.getMaximumPoolSize(), is(maxPoolSize));
+  }
 }
