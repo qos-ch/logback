@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -25,6 +22,9 @@ import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
+
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This appender can be used to send messages to a remote syslog daemon. <p> For
@@ -38,10 +38,10 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
   static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
 
-  PatternLayout stackTraceLayout = new PatternLayout();
-  String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
+  private PatternLayout stackTraceLayout = new PatternLayout();
+  private String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
 
-  boolean throwableExcluded = false;
+  private boolean throwableExcluded = false;
 
 
   public void start() {
