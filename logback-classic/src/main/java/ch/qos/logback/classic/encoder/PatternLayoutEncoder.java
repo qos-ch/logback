@@ -19,14 +19,18 @@ import ch.qos.logback.core.pattern.PatternLayoutEncoderBase;
 
 public class PatternLayoutEncoder extends PatternLayoutEncoderBase<ILoggingEvent> {
 
-  @Override
+
+    public PatternLayoutEncoder() {
+        this.layout = new PatternLayout();
+    }
+
+    @Override
   public void start() {
-    PatternLayout patternLayout = new PatternLayout();
+    PatternLayout patternLayout = (PatternLayout) this.layout;
     patternLayout.setContext(context);
     patternLayout.setPattern(getPattern());
     patternLayout.setOutputPatternAsHeader(outputPatternAsHeader);
     patternLayout.start();
-    this.layout = patternLayout;
     super.start();
   }
    

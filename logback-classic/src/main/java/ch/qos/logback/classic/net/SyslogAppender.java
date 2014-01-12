@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.net;
 
 import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
@@ -22,6 +23,7 @@ import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
+import ch.qos.logback.core.pattern.PatternLayoutBase;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -38,7 +40,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
   static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
 
-  private PatternLayout stackTraceLayout = new PatternLayout();
+  private PatternLayoutEncoder stackTraceLayout = new PatternLayoutEncoder();
   private String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
 
   private boolean throwableExcluded = false;
@@ -76,7 +78,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     if (tp == null)
       return;
 
-    String stackTracePrefix = stackTraceLayout.doLayout(event);
+    String stackTracePrefix = stackTraceLayout.getLayout().doLayout(event);
     boolean isRootException = true;
     while (tp != null) {
       StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
@@ -127,7 +129,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
   }
 
   private void setupStackTraceLayout() {
-    stackTraceLayout.getInstanceConverterMap().put("syslogStart",
+      ((PatternLayoutBase)stackTraceLayout.getLayout()).getInstanceConverterMap().put("syslogStart",
             SyslogStartConverter.class.getName());
 
     stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
