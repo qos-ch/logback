@@ -17,15 +17,14 @@ import ch.qos.logback.core.Appender
 
 class AsyncAppenderDelegate extends AppenderDelegate {
 
-    Map<String, Appender<?>> appendersByName = [:]
+  Map<String, Appender<?>> appendersByName = [:]
 
-    AsyncAppenderDelegate(Appender appender, List<Appender<?>> appenders) {
-        super(appender)
-        appendersByName = appenders.collectEntries { [(it.name) : it]}
-    }
+  AsyncAppenderDelegate(Appender appender, List<Appender<?>> appenders) {
+    super(appender)
+    appendersByName = appenders.collectEntries { [(it.name) : it]}
+  }
 
-
-    void appenderRef(String name){
-        component.addAppender(appendersByName[name])
-    }
+  void appenderRef(String name){
+    component.addAppender(appendersByName[name])
+  }
 }
