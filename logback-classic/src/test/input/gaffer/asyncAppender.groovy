@@ -11,19 +11,21 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.gaffer
-import ch.qos.logback.core.Appender
-/**
- * @author Ceki G&uuml;c&uuml;
- */
-class AppenderDelegate extends ComponentDelegate {
 
-  AppenderDelegate(Appender appender) {
-    super(appender)
+import ch.qos.logback.classic.AsyncAppender
+import ch.qos.logback.classic.PatternLayout
+import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder
+
+appender("STDOUT", ConsoleAppender) {
+  encoder(LayoutWrappingEncoder) {
+    layout(PatternLayout) {
+      pattern = "${p} %m%n"
+    }
   }
-
-  String getLabel() {
-    "appender"  
-  }
-
 }
+appender("STDOUT-ASYNC", AsyncAppender) {
+  appenderRef('STDOUT')
+}
+root(DEBUG, ["STDOUT-ASYNC"])
+

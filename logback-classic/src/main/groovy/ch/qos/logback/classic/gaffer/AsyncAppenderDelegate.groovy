@@ -12,18 +12,19 @@
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.gaffer
+
 import ch.qos.logback.core.Appender
-/**
- * @author Ceki G&uuml;c&uuml;
- */
-class AppenderDelegate extends ComponentDelegate {
 
-  AppenderDelegate(Appender appender) {
+class AsyncAppenderDelegate extends AppenderDelegate {
+
+  Map<String, Appender<?>> appendersByName = [:]
+
+  AsyncAppenderDelegate(Appender appender, List<Appender<?>> appenders) {
     super(appender)
+    appendersByName = appenders.collectEntries { [(it.name) : it]}
   }
 
-  String getLabel() {
-    "appender"  
+  void appenderRef(String name){
+    component.addAppender(appendersByName[name])
   }
-
 }

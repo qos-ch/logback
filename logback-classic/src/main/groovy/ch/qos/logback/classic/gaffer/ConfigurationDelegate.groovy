@@ -133,7 +133,7 @@ public class ConfigurationDelegate extends ContextAwareBase {
     appender.context = context
     appenderList.add(appender)
     if (closure != null) {
-      AppenderDelegate ad = new AppenderDelegate(appender);
+      AppenderDelegate ad = clazz.name == 'ch.qos.logback.classic.AsyncAppender' ? new AsyncAppenderDelegate(appender, appenderList) : new AppenderDelegate(appender);
       copyContributions(ad, appender)
       ad.context = context;
       closure.delegate = ad;
