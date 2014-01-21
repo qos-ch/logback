@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.slf4j.MDC;
 import org.slf4j.Marker;
-import org.slf4j.helpers.FormattingTuple;
 import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
@@ -121,6 +120,9 @@ public class LoggingEvent implements ILoggingEvent {
       this.throwableProxy = new ThrowableProxy(throwable);
       LoggerContext lc = logger.getLoggerContext();
       if (lc.isPackagingDataEnabled()) {
+        if(lc.getClassPackagingDataProvider() != null){
+          this.throwableProxy.setPackagingDataCalculator(new PackagingDataCalculator(lc.getClassPackagingDataProvider()));
+        }
         this.throwableProxy.calculatePackagingData();
       }
     }

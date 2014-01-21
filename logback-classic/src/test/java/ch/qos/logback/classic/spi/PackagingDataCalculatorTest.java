@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.spi;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -53,6 +54,24 @@ public class PackagingDataCalculatorTest {
     pdc.calculate(tp);
     verify(tp);
   }
+
+  @Test
+  public void customClassPackagingProvider() throws Exception {
+    Throwable t = new Throwable("x");
+    ThrowableProxy tp = new ThrowableProxy(t);
+    tp.setPackagingDataCalculator(new PackagingDataCalculator(new DummyPackagingProvider()));
+    PackagingDataCalculator pdc = tp.getPackagingDataCalculator();
+    pdc.calculate(tp);
+    for (StackTraceElementProxy step : tp.getStackTraceElementProxyArray()) {
+      if (step != null) {
+        ClassPackagingData cpd = step.getClassPackagingData();
+        assertEquals("1.0",cpd.getVersion());
+        assertEquals("com.foo.bar",cpd.getCodeLocation());
+      }
+    }
+    tp.fullDump();
+  }
+
 
   public void doCalculateClassPackagingData(
       boolean withClassPackagingCalculation) {
@@ -121,6 +140,17 @@ public class PackagingDataCalculatorTest {
     // NoClassDefFoundError should be caught
     pdc.calculate(tp);
 
+  }
+
+  private static class DummyPackagingProvider implements ClassPackagingDataProvider {
+
+    public String getImplementationVersion(Class type) {
+      return "1.0";
+    }
+
+    public String getCodeLocation(Class type) {
+      return "com.foo.bar";
+    }
   }
 
 }

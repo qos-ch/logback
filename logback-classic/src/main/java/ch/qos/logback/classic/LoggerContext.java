@@ -16,6 +16,7 @@ package ch.qos.logback.classic;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import ch.qos.logback.classic.spi.ClassPackagingDataProvider;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
@@ -54,6 +55,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   private LoggerContextVO loggerContextRemoteView;
   private final TurboFilterList turboFilterList = new TurboFilterList();
+  private ClassPackagingDataProvider classPackagingDataProvider;
   private boolean packagingDataEnabled = true;
 
   private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
@@ -195,6 +197,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   public boolean isPackagingDataEnabled() {
     return packagingDataEnabled;
+  }
+
+  public void setClassPackagingDataProvider(ClassPackagingDataProvider classPackagingDataProvider) {
+    this.classPackagingDataProvider = classPackagingDataProvider;
+  }
+
+  public ClassPackagingDataProvider getClassPackagingDataProvider() {
+    return classPackagingDataProvider;
   }
 
   /**
