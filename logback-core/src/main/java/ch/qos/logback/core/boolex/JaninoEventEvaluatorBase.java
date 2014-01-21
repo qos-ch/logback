@@ -54,8 +54,14 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
   public void start() {
     try {
       assert context != null;
-      scriptEvaluator = new ScriptEvaluator(getDecoratedExpression(), EXPRESSION_TYPE,
-          getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS);
+
+      scriptEvaluator = new ScriptEvaluator();
+      scriptEvaluator.setParentClassLoader(context.getClass().getClassLoader());
+      scriptEvaluator.setParameters(getParameterNames(),getParameterTypes());
+      scriptEvaluator.setReturnType(EXPRESSION_TYPE);
+      scriptEvaluator.setThrownExceptions(THROWN_EXCEPTIONS);
+      scriptEvaluator.cook(getDecoratedExpression());
+
       super.start();
     } catch (Exception e) {
       addError(
