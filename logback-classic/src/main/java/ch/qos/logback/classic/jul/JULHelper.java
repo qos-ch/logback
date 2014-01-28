@@ -32,6 +32,9 @@ public class JULHelper {
   }
 
   static public java.util.logging.Level asJULLevel(Level lbLevel) {
+    if (lbLevel == null)
+      throw new IllegalArgumentException("Unexpected level [null]");
+
     switch (lbLevel.levelInt) {
       case Level.ALL_INT:
         return java.util.logging.Level.ALL;

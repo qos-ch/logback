@@ -13,19 +13,18 @@
  */
 package ch.qos.logback.access.jetty;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-
+import ch.qos.logback.access.spi.ServerAdapter;
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 
-import ch.qos.logback.access.spi.ServerAdapter;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A jetty specific implementation of the {@link ServerAdapter} interface.
- * 
+ *
  * @author S&eacute;bastien Pennec
  * @author Ceki Gulcu
  */
@@ -33,7 +32,7 @@ public class JettyServerAdapter implements ServerAdapter {
 
   Request request;
   Response response;
-  
+
   public JettyServerAdapter(Request jettyRequest, Response jettyResponse) {
     this.request = jettyRequest;
     this.response = jettyResponse;
@@ -47,6 +46,10 @@ public class JettyServerAdapter implements ServerAdapter {
     return response.getStatus();
   }
 
+  public long getRequestTimestamp() {
+    return request.getTimeStamp();
+  }
+
   public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     HttpFields httpFields = response.getHttpFields();
@@ -58,5 +61,5 @@ public class JettyServerAdapter implements ServerAdapter {
     }
     return responseHeaderMap;
   }
-  
+
 }

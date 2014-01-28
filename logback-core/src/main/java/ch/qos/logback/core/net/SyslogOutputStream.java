@@ -87,4 +87,7 @@ public class SyslogOutputStream extends OutputStream {
     baos.write(b);
   }
 
+  int getSendBufferSize() throws SocketException {
+    return ds.getSendBufferSize();
+  }
 }

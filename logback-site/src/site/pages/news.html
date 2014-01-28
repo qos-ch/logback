@@ -32,7 +32,154 @@
 
     <hr width="80%" align="center" />
 
-    <h3>, 2013 - Release of version 2.0.0-alpha1</h3>
+    <h3>January 28th, 2014 - Release of version 1.1.0</h3>
+
+    <p>Previously, logback silently ignored configuration files that did
+    not have the ".xml" or ".groovy" file extension. Now, a <code>LogbackException</code>
+    is thrown to flag this error.
+    </p>
+
+    <p>Groovy configuration now supports <code>appenderRef</code>, which
+    allows the use of <code>AsyncAppender</code> in Groovy.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-269">LOGBACK-269</a>)
+    </p>
+
+    <p><code>SizeAndTimeBasedFNATP</code> now supports a protected function
+    <code>#createArchiveRemover</code> that allows subclasses to specify
+    a custom archive remover used in <code>RollingFileAppender</code>. The
+    default archive remover is <code>SizeAndTimeBasedArchiveRemover</code>.
+    </p>
+
+    <p><code>PackagingDataCalculator</code> now catches and ignores
+    <code>UnsupportedOperationException</code> so that it can determine
+    whether the JVM supports <code>Reflection#getCallerClass()</code>
+    without printing that exception's stack trace. This only affects
+    Java 7u40+, which removed support for <code>Reflection#getCallerClass()</code>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-885">LOGBACK-885</a>)
+    </p>
+
+    <p>To facilitate debugging, <code>SimpleSocketServer</code> now names
+    its threads: "<b>Logback SimpleSocketServer (port <i>PORTNUM</i>)</b>".
+    <code>SocketNode</code> client threads are named:
+    "<b>Logback SocketNode (client: <i>IPADDR</i>)</b>".
+    </p>
+
+    <p>Fixed silently lost messages from <code>SyslogAppender</code>
+    when they exceeded the system datagram size limit. The default max
+    message size was hard coded to 65KB but now matches the system limit
+    (as read from
+    <a href="http://docs.oracle.com/javase/6/docs/api/java/net/DatagramSocket.html#getSendBufferSize()">
+    <code>DatagramSocket#getSendBufferSize()</code></a>) unless a
+    nonzero limit is specified via <code>SyslogAppender#setMaxMessageSize()</code>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-926">LOGBACK-926</a>)
+    </p>
+
+    <p>Fixed various documentation typos, including
+    <a href="http://jira.qos.ch/browse/LOGBACK-466">LOGBACK-466</a>,
+    <a href="http://jira.qos.ch/browse/LOGBACK-768">LOGBACK-768</a>,
+    <a href="http://jira.qos.ch/browse/LOGBACK-904">LOGBACK-904</a>,
+    <a href="http://jira.qos.ch/browse/LOGBACK-921">LOGBACK-921</a>,
+    and
+    <a href="http://jira.qos.ch/browse/LOGBACK-927">LOGBACK-927</a>.
+    </p>
+
+    <p><code>ContextBase.setStatusManager</code> now correctly validates
+    the given status manager.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-912">LOGBACK-912</a>)
+    </p>
+
+    <p>The <code>SocketNode</code> creates an <code>ObjectInputStream</code>
+    using the socket's input stream, which blocks waiting for the
+    stream header. This wait has been moved from the constructor to
+    <code>SocketNode.run()</code> so that the node can be created without
+    blocking.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-350">LOGBACK-350</a>)
+    </p>
+
+    <p>Fixed <code>SecurityException</code> during initialization
+    in Google AppEngine.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-760">LOGBACK-760</a>)
+    </p>
+
+    <p>The <code>&lt;include&gt;</code> element now allows optional
+    resources (previously, only optional files).
+    (<a href="http://jira.qos.ch/browse/LOGBACK-644">LOGBACK-928</a>)
+    </p>
+
+    <p>Added new layout conversion word (<b>%D</b> or <b>%elapsedTime</b>),
+    which gets the time taken to serve the request. This applies
+    only to Jetty and Tomcat logs via logback-access.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-320">LOGBACK-320</a>)
+    </p>
+
+    <p>Fixed SMTP error when the subject line contained multiple
+    new-lines.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-865">LOGBACK-865</a>)
+    </p>
+
+    <p>Fixed unnecessary re-initialization of the servlet's
+    <code>LoggerContext</code> while attempting to destroy it.
+    </p>
+
+    <p>Added the following syslog facilities to <code>SyslogStartConverter</code>:
+    NTP, AUDIT, ALERT, CLOCK
+    (<a href="http://jira.qos.ch/browse/LOGBACK-754">LOGBACK-754</a>)
+    </p>
+
+    <p>Fixed <code>NullPointerException</code> when setting a JUL
+    logger's level to null, which should have reset the logger level
+    to the parent's effective level.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-906">LOGBACK-906</a>)
+    </p>
+
+    <p>Added support to get suppressed exceptions. This is currently
+    only implemented for <code>RootCauseFirstThrowableProxyConverter</code>
+    and <code>ThrowableProxyConverter</code>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-516">LOGBACK-516</a>)
+    </p>
+
+    <p>Fixed problem of Janino classes not found in some environments
+    (axis2, GWT, etc.).
+    (<a href="http://jira.qos.ch/browse/LOGBACK-832">LOGBACK-832</a>)
+    </p>
+
+    <p>Fixed various unit tests, including modifications for consistent
+    results in Jenkins.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-842">LOGBACK-842</a>)
+    </p>
+
+    <p>Allow Gaffer to read the <code>logback.debug</code> system
+    property to enable verbose output during Groovy-based configuration.
+    Also added debug statements to Gaffer.
+    </p>
+
+    <p>Fixed <code>IllegalArgumentException</code> when missing periods
+    and dollar signs in the logger name.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-384">LOGBACK-384</a>)
+    </p>
+
+    <p>Fixed <code>NullPointerException</code> during JNDI lookup.</p>
+
+    <p>Fixed dangling data source connections from <code>DBAppender</code>
+    that caused <i>"maximum open cursors exceeded"</i>.</p>
+
+    <p>Fixed incorrect stack trace depth when specifying <code>%throwable</code>
+    with argument.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-160">LOGBACK-160</a>)
+    </p>
+
+    <p>Fixed MySQL setup script to use lower-case table name to
+    match the references in the file. This had caused an error
+    on systems where case sensitivity matters.</p>
+
+    <p>Fixed <code>NullPointerException</code> when getting code source in
+    <code>PackagingDataCalculator</code>.</p>
+
+    <p>The search path for <code>logback-access.xml</code> is now
+    <code>${catalina.base}</code> and then <code>${catalina.home}</code>
+    if not found.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-844">LOGBACK-844</a>)
+    </p>
 
     <p>The <code>LoggingEvent</code> constructor delays message
     formatting so that it can be computed lazily by the
@@ -410,7 +557,7 @@
     in <code><a
     href="manual/appenders.html#smtpIncludeCallerData">SMTPAppender</a></code>
     to precompute caller data before storing events for future
-    transmission. This property adresses <a
+    transmission. This property addresses <a
     href="http://jira.qos.ch/browse/LOGBACK-734">LOGBACK-734</a>
     reported by Patrick Hogarty.
     </p>
@@ -421,7 +568,7 @@
 
     <p><a
     href="manual/appenders.html#SMTPAppender"><code>SMTPAppender</code></a>
-    now supports the retreival of a <code>javax.mail.Session</code>
+    now supports the retrieval of a <code>javax.mail.Session</code>
     resource from JNDI. This feature was requested in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-332">LBCLASSIC-332</a>
     by Hrotko Gabor.</p>
@@ -459,8 +606,8 @@
 
     <p><code>SMTPAppender</code> now admits the <span
     class="prop">asynchronousSending</span> property, set to 'true' by
-    default. However, it can be set to 'false' for syncronous email
-    transmisison. This property was requested in <a
+    default. However, it can be set to 'false' for synchronous email
+    transmission. This property was requested in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-323">LBCLASSIC-323</a>
     by Patrick Houk.</p>
 
@@ -531,8 +678,8 @@
     </p>
 
     <p><code>SMTPAppender</code> failed to transmit messages under JDK
-    1.5. After some investigation, Dave dicovered that this was due to
-    setting the <code>corePoolSize</code> parameter of the relavant
+    1.5. After some investigation, Dave discovered that this was due to
+    setting the <code>corePoolSize</code> parameter of the relevant
     <code>ThreadPoolExecutor</code> to 0. Setting
     <code>corePoolSize</code> to a higher value, e.g. 1, under JDK 1.5
     solves the problem and fixes <a
@@ -612,7 +759,7 @@
     name pattern of <a
     href="manual/appenders.html#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>. Auxiliary
     %d tokens must be marked as such by passing the AUX
-    paramater. This feature was requested in <a
+    parameter. This feature was requested in <a
     href="http://jira.qos.ch/browse/LBCORE-242">LBCORE-242</a> by
     Thomas Corte.</p>
 
@@ -728,7 +875,7 @@
 
     <p>Logback-classic now supports printing stack traces "root cause
     first" instead of the standard "root cause last". See the
-    documentaiton for <a
+    documentation for <a
     href="manual/layouts.html#rootException">%rootException</a>
     converter for further details. The <code>%rootException</code>
     converter was contributed by Tomasz Nurkiewicz in relation with <a
@@ -753,7 +900,7 @@
 
     <p><code>LogbackMDCAdapter</code> now synchronizes over its thread
     local map. This prevents
-    <code>ConcurrentModificationException</code> from occuring while a
+    <code>ConcurrentModificationException</code> from occurring while a
     child thread copies the map from the parent. This fixes <a
     href="http://jira.qos.ch/browse/LBCLASSIC-289">LBCLASSIC-289</a>
     reported by Josh Oddman.</p>
@@ -1558,7 +1705,7 @@ ALTER TABLE logging_event ADD arg3 VARCHAR(254);</pre>
 
     <h3>29th of December 2008 - Release of version 0.9.14</h3>
 
-    <p>Corrected a serious dead-lock problem occuring during
+    <p>Corrected a serious dead-lock problem occurring during
     configuration. It was reported in <a
     href="http://jira.qos.ch/browse/LBCLASSIC-81">LBCLASSIC-81</a> by
     Holger Mense.</p>

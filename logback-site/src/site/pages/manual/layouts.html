@@ -775,8 +775,8 @@ Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
 					value corresponding to the key 'userid' will be output. If
 					the value is null, then the <a
 					href="configuration.html#defaultValuesForVariables">default
-					value</a> speficied after the <b>:-</b> operator is
-					output. If no deault value is specified than the empty
+					value</a> specified after the <b>:-</b> operator is
+					output. If no default value is specified than the empty
 					string is output.
 					</p>
 
@@ -1051,7 +1051,7 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 
          <p>The %rootException converter admits the same optional
          parameters as the %xException converter described above,
-         including depth and eveluators. It outputs also packaging
+         including depth and evaluators. It outputs also packaging
          information. In short, %rootException is very similar to
          %xException, only the order of exception output is reversed.
          </p>
@@ -1361,7 +1361,7 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 
     <p>Below is a configuration file illustrating coloring. Note the
     %cyan conversion specifier enclosing "%logger{15}". This will
-    output the logger name abreviated to 15 characters in cyan. The
+    output the logger name abbreviated to 15 characters in cyan. The
     %highlight conversion specifier prints its sub-pattern in bold-red
     for events of level ERROR, in red for WARN, in BLUE for INFO, and
     in the default color for other levels.</p>
@@ -1939,7 +1939,7 @@ java.lang.Exception: display
   &lt;/root>
 &lt;/configuration> </pre>
     
-		<h1 class="doAnchor" name="logback-access">Logback access</a></h1>
+		<h1 class="doAnchor" name="logback-access">Logback access</h1>
 
 		<p>Most logback-access layouts are mere adaptations of
 		logback-classic layouts. Logback-classic and logback-access
@@ -2060,20 +2060,28 @@ java.lang.Exception: display
             Status code of the request.
           </p>
         </td>
-      </tr>		
+      </tr>
+      <tr>
+          <td class="word" name="elapsedTime"><b>D / elapsedTime</b></td>
+          <td>
+              <p>
+                  The time taken to serve the request, in milliseconds.
+              </p>
+          </td>
+      </tr>
       <tr>
         <td class="word" name="dateAccess"><b>t / date</b></td>
         <td>
           <p>Outputs the date of the logging event.  The date
           conversion specifier may be followed by a set of braces
           containing a date and time pattern strings used by
-          <code>java.text.SimpleDateFormat</code>.  <em>ABSOLUTE</em>,
-          <em>DATE</em> or <em>ISO8601</em> are also valid values.
+          <code>java.text.SimpleDateFormat</code>.  <em>ISO8601</em>
+          is also a valid value.
 					</p>
-					<p>For example, <b>%d{HH:mm:ss,SSS}</b>,
-					<b>%d{dd&#160;MMM&#160;yyyy&#160;;HH:mm:ss,SSS}</b> or
-					<b>%d{DATE}</b>.  If no date format specifier is given then
-					ISO8601 format is assumed.
+					<p>For example, <b>%t{HH:mm:ss,SSS}</b> or
+					<b>%t{dd&nbsp;MMM&nbsp;yyyy&nbsp;;HH:mm:ss,SSS}</b>.
+					If no date format specifier is given then the
+					Common Log Format date format is assumed, that is: <b>%t{dd/MMM/yyyy:HH:mm:ss&nbsp;Z}</b>
 					</p>
         </td>
       </tr>

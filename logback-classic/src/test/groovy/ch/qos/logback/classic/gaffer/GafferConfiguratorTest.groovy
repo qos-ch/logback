@@ -24,6 +24,7 @@ import ch.qos.logback.classic.Level
 import static junit.framework.Assert.assertNotNull
 import static junit.framework.Assert.assertEquals
 import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.classic.AsyncAppender
 import ch.qos.logback.classic.PatternLayout
 import ch.qos.logback.classic.spi.ILoggingEvent
 import ch.qos.logback.core.testUtil.StringListAppender
@@ -168,5 +169,15 @@ class GafferConfiguratorTest {
         configurator.run dslText
     }
 
+    @Test
+    void appenderRefShouldWork() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "asyncAppender.groovy")
+        configurator.run file.text
+
+        def aa = (AsyncAppender) root.getAppender('STDOUT-ASYNC');
+        assertTrue aa.isStarted()
+        def stdout = (ConsoleAppender) aa.getAppender('STDOUT')
+        assertNotNull stdout
+    }
 
 }

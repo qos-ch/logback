@@ -365,6 +365,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       String subjectStr = "Undefined subject";
       if (subjectLayout != null) {
         subjectStr = subjectLayout.doLayout(lastEventObject);
+
+        // The subject must not contain new-line characters, which cause
+        // an SMTP error (LOGBACK-865). Truncate the string at the first
+        // new-line character.
+        int newLinePos = (subjectStr != null) ? subjectStr.indexOf('\n') : -1;
+        if (newLinePos > -1) {
+          subjectStr = subjectStr.substring(0, newLinePos);
+        }
       }
       mimeMsg.setSubject(subjectStr, charsetEncoding);
 

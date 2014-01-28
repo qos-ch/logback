@@ -12,10 +12,7 @@
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.gaffer
-
 import ch.qos.logback.core.Appender
-import ch.qos.logback.core.spi.ContextAwareBase
-
 /**
  * @author Ceki G&uuml;c&uuml;
  */

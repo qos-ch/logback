@@ -11,21 +11,21 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.access.spi;
 
-import java.util.Map;
+import ch.qos.logback.classic.AsyncAppender
+import ch.qos.logback.classic.PatternLayout
+import ch.qos.logback.core.ConsoleAppender
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 
-/**
- * An interface to access server-specific methods from
- * the server-independent AccessEvent.
- *
- * @author Ceki G&uuml;lc&uuml;
- * @author S&eacute;bastien Pennec
- */
-public interface ServerAdapter {
-
-  long getRequestTimestamp();
-  long getContentLength();
-  int getStatusCode();
-  Map<String, String> buildResponseHeaderMap();
+appender("STDOUT", ConsoleAppender) {
+  encoder(LayoutWrappingEncoder) {
+    layout(PatternLayout) {
+      pattern = "${p} %m%n"
+    }
+  }
 }
+appender("STDOUT-ASYNC", AsyncAppender) {
+  appenderRef('STDOUT')
+}
+root(DEBUG, ["STDOUT-ASYNC"])
+

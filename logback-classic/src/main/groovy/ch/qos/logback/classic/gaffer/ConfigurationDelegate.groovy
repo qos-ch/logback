@@ -104,16 +104,16 @@ public class ConfigurationDelegate extends ContextAwareBase {
   void logger(String name, Level level, List<String> appenderNames = [], Boolean additivity = null) {
     if (name) {
       Logger logger = ((LoggerContext) context).getLogger(name);
+      addInfo("Setting level of logger [${name}] to " + level);
       logger.level = level;
 
-      if (appenderNames) {
-        appenderNames.each { aName ->
-          Appender appender = appenderList.find { it -> it.name == aName };
-          if (appender != null) {
-            logger.addAppender(appender);
-          } else {
-            addError("Failed to find appender named [${aName}]");
-          }
+      for (aName in appenderNames) {
+        Appender appender = appenderList.find { it -> it.name == aName };
+        if (appender != null) {
+          addInfo("Attaching appender named [${aName}] to " + logger);
+          logger.addAppender(appender);
+        } else {
+          addError("Failed to find appender named [${aName}]");
         }
       }
 
@@ -133,7 +133,7 @@ public class ConfigurationDelegate extends ContextAwareBase {
     appender.context = context
     appenderList.add(appender)
     if (closure != null) {
-      AppenderDelegate ad = new AppenderDelegate(appender);
+      AppenderDelegate ad = clazz.name == 'ch.qos.logback.classic.AsyncAppender' ? new AsyncAppenderDelegate(appender, appenderList) : new AppenderDelegate(appender);
       copyContributions(ad, appender)
       ad.context = context;
       closure.delegate = ad;
