@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 
 import javax.net.SocketFactory;
@@ -70,12 +71,19 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
+  /**
+   * Default timeout for how long to wait when inserting an event into
+   * the BlockingQueue.
+   */
+  private static final int DEFAULT_EVENT_DELAY_TIMEOUT = 3000;
+
   private String remoteHost;
   private int port = DEFAULT_PORT;
   private InetAddress address;
   private int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
   private int queueSize = DEFAULT_QUEUE_SIZE;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
+  private int eventDelayLimit = DEFAULT_EVENT_DELAY_TIMEOUT;
   
   private BlockingQueue<E> queue;
   private String peerId;
@@ -168,8 +176,17 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   @Override
   protected void append(E event) {
-    if (event == null || !isStarted()) return;    
-    queue.offer(event);
+    if (event == null || !isStarted()) return;
+
+    try {
+      final boolean inserted = queue.offer(event, eventDelayLimit, TimeUnit.MILLISECONDS);
+      if (!inserted) {
+        addInfo("Dropping event due to timeout limit of [" + eventDelayLimit +
+            "] milliseconds being exceeded");
+      }
+    } catch (InterruptedException e) {
+      addError("Interrupted while appending event to SocketAppender", e);
+    }
   }
 
   /**
@@ -407,12 +424,30 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   public void setQueueSize(int queueSize) {
     this.queueSize = queueSize;
   }
-  
+
   /**
    * Returns the value of the <b>queueSize</b> property.
    */
   public int getQueueSize() {
     return queueSize;
+  }
+
+  /**
+   * The <b>eventDelayLimit</b> takes a non-negative integer representing the
+   * number of milliseconds to allow the appender to block if the underlying
+   * BlockingQueue is full. Once this limit is reached, the event is dropped.
+   *
+   * @param eventDelayLimit the event delay limit (in milliseconds)
+   */
+  public void setEventDelayLimit(int eventDelayLimit) {
+    this.eventDelayLimit = eventDelayLimit;
+  }
+
+  /**
+   * Returns the value of the <b>eventDelayLimit</b> property.
+   */
+  public int getEventDelayLimit() {
+    return eventDelayLimit;
   }
   
   /**
