@@ -138,18 +138,18 @@ public class OptionHelperTest  {
 
 
   @Test(timeout = 1000)
-  public void testSubstVarsShouldNotGoIntoInfiniteLoop() {
+  public void stubstVarsShouldNotGoIntoInfiniteLoop() {
     context.putProperty("v1", "if");
     context.putProperty("v2", "${v3}");
     context.putProperty("v3", "${v4}");
-    context.putProperty("v4", "${");
+    context.putProperty("v4", "${v2}c");
 
     expectedException.expect(Exception.class);
     OptionHelper.substVars(text, context);
   }
 
   @Test
-  public void testShouldNotReject() {
+  public void nonCircularGraphShouldWork() {
     context.putProperty("A", "${B} and ${C}");
     context.putProperty("B", "${B1}");
     context.putProperty("B1", "B1-value");
@@ -161,7 +161,7 @@ public class OptionHelperTest  {
   }
 
   @Test(timeout = 1000)
-  public void testRejectsSimpleCircularReference() {
+  public void detectCircularReferences0() {
     context.putProperty("A", "${A}");
 
     expectedException.expect(IllegalArgumentException.class);
@@ -170,7 +170,7 @@ public class OptionHelperTest  {
   }
 
   @Test(timeout = 1000)
-  public void testRejectsSimpleCircularReference2() {
+  public void detectCircularReferences1() {
     context.putProperty("A", "${A}a");
 
     expectedException.expect(IllegalArgumentException.class);
@@ -179,7 +179,7 @@ public class OptionHelperTest  {
   }
 
   @Test(timeout = 1000)
-  public void testRejectsIndirectCircularReference() {
+  public void detectCircularReferences2() {
     context.putProperty("A", "${B}");
     context.putProperty("B", "${C}");
     context.putProperty("C", "${A}");
@@ -189,8 +189,17 @@ public class OptionHelperTest  {
     OptionHelper.substVars("${A}", context);
   }
 
+
+  @Test
+  public void detectCircularReferencesInDefault() {
+    context.putProperty("A", "${B:-${A}}");
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${A}]");
+    OptionHelper.substVars("${A}", context);
+  }
+
   @Test(timeout = 1000)
-  public void testRejectsIndirectCircularReferenceIntermediate() {
+  public void detectCircularReferences3() {
     context.putProperty("A", "${B}");
     context.putProperty("B", "${C}");
     context.putProperty("C", "${A}");
@@ -201,7 +210,7 @@ public class OptionHelperTest  {
   }
 
   @Test(timeout = 1000)
-  public void testRejectsIndirectCircularReferenceIntermediate2() {
+  public void detectCircularReferences4() {
     context.putProperty("A", "${B}");
     context.putProperty("B", "${C}");
     context.putProperty("C", "${A}");
@@ -212,7 +221,7 @@ public class OptionHelperTest  {
   }
 
   @Test
-  public void testRejectsIndirectCircularReferenceIntermediate3() {
+  public void detectCircularReferences5() {
     context.putProperty("A", "${B} and ${C}");
     context.putProperty("B", "${B1}");
     context.putProperty("B1", "B1-value");

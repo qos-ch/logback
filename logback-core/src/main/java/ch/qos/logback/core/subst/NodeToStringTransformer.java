@@ -18,6 +18,7 @@ import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.util.OptionHelper;
 
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -42,20 +43,25 @@ public class NodeToStringTransformer {
   }
 
   public static String substituteVariable(String input, PropertyContainer pc0, PropertyContainer pc1) throws ScanException {
-    Tokenizer tokenizer = new Tokenizer(input);
-    Parser parser = new Parser(tokenizer.tokenize());
-    Node node = parser.parse();
+    Node node = tokenizeAndParseString(input);
     NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, pc0, pc1);
     return nodeToStringTransformer.transform();
   }
 
+  private static Node tokenizeAndParseString(String value) throws ScanException {
+    Tokenizer tokenizer = new Tokenizer(value);
+    List<Token> tokens = tokenizer.tokenize();
+    Parser parser = new Parser(tokens);
+    return parser.parse();
+  }
+
   public String transform() throws ScanException {
     StringBuilder stringBuilder = new StringBuilder();
-    compileNode(node, stringBuilder);
+    compileNode(node, stringBuilder, new Stack<Node>());
     return stringBuilder.toString();
   }
 
-  private void compileNode(Node inputNode, StringBuilder stringBuilder) throws ScanException {
+  private void compileNode(Node inputNode, StringBuilder stringBuilder, Stack<Node> cycleCheckStack) throws ScanException {
     Node n = inputNode;
     while (n != null) {
       switch (n.type) {
@@ -63,7 +69,7 @@ public class NodeToStringTransformer {
           handleLiteral(n, stringBuilder);
           break;
         case VARIABLE:
-          handleVariable(n, stringBuilder, new Stack<Node>());
+          handleVariable(n, stringBuilder, cycleCheckStack);
           break;
       }
       n = n.next;
@@ -82,30 +88,27 @@ public class NodeToStringTransformer {
 
     StringBuilder keyBuffer = new StringBuilder();
     Node payload = (Node) n.payload;
-    compileNode(payload, keyBuffer);
+    compileNode(payload, keyBuffer, cycleCheckStack);
     String key = keyBuffer.toString();
     String value = lookupKey(key);
+
     if (value != null) {
-      for (Node node = new Parser(new Tokenizer(value).tokenize()).parse(); node != null; node = node.next) {
-        // if the variable contains a variable, continue resolving it
-        if (node.type == Node.Type.VARIABLE) {
-           handleVariable(node, stringBuilder, cycleCheckStack);
-          cycleCheckStack.pop();
-        } else {
-          handleLiteral(node, stringBuilder);
-        }
-      }
+      Node innerNode = tokenizeAndParseString(value);
+      compileNode(innerNode, stringBuilder, cycleCheckStack);
+      cycleCheckStack.pop();
       return;
     }
 
     if (n.defaultPart == null) {
       stringBuilder.append(key + CoreConstants.UNDEFINED_PROPERTY_SUFFIX);
+      cycleCheckStack.pop();
       return;
     }
 
     Node defaultPart = (Node) n.defaultPart;
     StringBuilder defaultPartBuffer = new StringBuilder();
-    compileNode(defaultPart, defaultPartBuffer);
+    compileNode(defaultPart, defaultPartBuffer, cycleCheckStack);
+    cycleCheckStack.pop();
     String defaultVal = defaultPartBuffer.toString();
     stringBuilder.append(defaultVal);
   }
