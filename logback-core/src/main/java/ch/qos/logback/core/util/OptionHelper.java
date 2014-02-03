@@ -114,12 +114,7 @@ public class OptionHelper {
    */
   public static String substVars(String input, PropertyContainer pc0, PropertyContainer pc1) {
     try {
-      String replacement = NodeToStringTransformer.substituteVariable(input, pc0, pc1);
-      // for backward compatibility sake, perform one level of recursion
-      if(replacement.contains(DELIM_START)) {
-        replacement =  NodeToStringTransformer.substituteVariable(replacement, pc0, pc1);
-      }
-      return replacement;
+      return NodeToStringTransformer.substituteVariable(input, pc0, pc1);
     } catch (ScanException e) {
       throw new IllegalArgumentException("Failed to parse input [" + input + "]", e);
     }

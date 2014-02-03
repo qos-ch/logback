@@ -20,14 +20,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import org.junit.rules.ExpectedException;
 
 
 public class OptionHelperTest  {
+
+  @Rule
+  public ExpectedException expectedException = ExpectedException.none();
 
   String text = "Testing ${v1} variable substitution ${v2}";
   String expected = "Testing if variable substitution works";
@@ -109,8 +113,118 @@ public class OptionHelperTest  {
     assertEquals(expected, result); 
   }
 
+  @Test
+  public void testSubstVarsTwoLevelsDeep() {
+    context.putProperty("v1", "if");
+    context.putProperty("v2", "${v3}");
+    context.putProperty("v3", "${v4}");
+    context.putProperty("v4", "works");
 
-  @Ignore
+    String result = OptionHelper.substVars(text, context);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  public void testSubstVarsTwoLevelsWithDefault() {
+    // Example input taken from LOGBCK-943 bug report
+    context.putProperty("APP_NAME", "LOGBACK");
+    context.putProperty("ARCHIVE_SUFFIX", "archive.log");
+    context.putProperty("LOG_HOME", "${logfilepath.default:-logs}");
+    context.putProperty("ARCHIVE_PATH", "${LOG_HOME}/archive/${APP_NAME}");
+
+    String result = OptionHelper.substVars("${ARCHIVE_PATH}_trace_${ARCHIVE_SUFFIX}", context);
+    assertEquals("logs/archive/LOGBACK_trace_archive.log", result);
+  }
+
+
+  @Test(timeout = 1000)
+  public void testSubstVarsShouldNotGoIntoInfiniteLoop() {
+    context.putProperty("v1", "if");
+    context.putProperty("v2", "${v3}");
+    context.putProperty("v3", "${v4}");
+    context.putProperty("v4", "${");
+
+    expectedException.expect(Exception.class);
+    OptionHelper.substVars(text, context);
+  }
+
+  @Test
+  public void testShouldNotReject() {
+    context.putProperty("A", "${B} and ${C}");
+    context.putProperty("B", "${B1}");
+    context.putProperty("B1", "B1-value");
+    context.putProperty("C", "${C1} and ${B}");
+    context.putProperty("C1", "C1-value");
+
+    String result = OptionHelper.substVars("${A}", context);
+    assertEquals("B1-value and C1-value and B1-value", result);
+  }
+
+  @Test(timeout = 1000)
+  public void testRejectsSimpleCircularReference() {
+    context.putProperty("A", "${A}");
+
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${A}]");
+    OptionHelper.substVars("${A}", context);
+  }
+
+  @Test(timeout = 1000)
+  public void testRejectsSimpleCircularReference2() {
+    context.putProperty("A", "${A}a");
+
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${A}]");
+    OptionHelper.substVars("${A}", context);
+  }
+
+  @Test(timeout = 1000)
+  public void testRejectsIndirectCircularReference() {
+    context.putProperty("A", "${B}");
+    context.putProperty("B", "${C}");
+    context.putProperty("C", "${A}");
+
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${C} --> ${A}]");
+    OptionHelper.substVars("${A}", context);
+  }
+
+  @Test(timeout = 1000)
+  public void testRejectsIndirectCircularReferenceIntermediate() {
+    context.putProperty("A", "${B}");
+    context.putProperty("B", "${C}");
+    context.putProperty("C", "${A}");
+
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${B} --> ${C} --> ${A} --> ${B}]");
+    OptionHelper.substVars("${B} ", context);
+  }
+
+  @Test(timeout = 1000)
+  public void testRejectsIndirectCircularReferenceIntermediate2() {
+    context.putProperty("A", "${B}");
+    context.putProperty("B", "${C}");
+    context.putProperty("C", "${A}");
+
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${C} --> ${A} --> ${B} --> ${C}]");
+    OptionHelper.substVars("${C} and ${A}", context);
+  }
+
+  @Test
+  public void testRejectsIndirectCircularReferenceIntermediate3() {
+    context.putProperty("A", "${B} and ${C}");
+    context.putProperty("B", "${B1}");
+    context.putProperty("B1", "B1-value");
+    context.putProperty("C", "${C1}");
+    context.putProperty("C1", "here's the loop: ${A}");
+
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${C} --> ${C1} --> ${A}]");
+    String result = OptionHelper.substVars("${A}", context);
+    System.err.println(result);
+  }
+
   @Test
   public void defaultValueReferencingAVariable() {
     context.putProperty("v1", "k1");
@@ -125,5 +239,5 @@ public class OptionHelperTest  {
     assertEquals("jackrabbit/log/jackrabbit.log", r);
   }
 
-  
+
 }
