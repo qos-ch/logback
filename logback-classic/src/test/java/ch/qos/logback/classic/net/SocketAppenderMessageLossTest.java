@@ -16,7 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SocketAppenderMessageLossTest {
-  int runLen = 1000;
+  int runLen = 100;
 
   @Test(timeout = 1000)
   public void synchronousSocketAppender() throws Exception {
@@ -33,7 +33,7 @@ public class SocketAppenderMessageLossTest {
 
     SocketAppender socketAppender = new SocketAppender();
     socketAppender.setReconnectionDelay(1000);
-    socketAppender.setQueueSize(10);
+    socketAppender.setQueueSize(runLen/10);
     socketAppender.setIncludeCallerData(true);
 
     runTest(socketAppender);
