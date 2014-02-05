@@ -18,15 +18,17 @@ import java.util.regex.Pattern;
 
 /**
  * Duration instances represent a lapse of time. Internally, the duration is
- * stored in milliseconds. This class follows the {@link #valueOf} convention meaning that it can
- * convert an appropriately formatted string into a Duration object.
+ * stored in milliseconds. However, whenever a parameter of type Duration is expected, Joran
+ * (logback's configuration system) will automatically convert strings such as "20 seconds"
+ * "3.5 minutes" or "5 hours" into Duration instances.
  *
- * <p>For example, string such as "3.5 minutes" or "5 hours" can be converted into Durations.
- * The recognized units of time are the "millisecond", "second", "minute" "hour" and "day".
+ * <p>The recognized units of time are the "millisecond", "second", "minute" "hour" and "day".
  * The unit name may be followed by an "s". Thus, "2 day" and "2 days" are equivalent. In the
  * absence of a time unit specification, milliseconds are assumed.
  * 
- * 
+ * <p>Note: the conversion magic is entirely due to the fact that this class follows the
+ * {@link #valueOf} convention.
+ *
  * @author Ceki Gulcu
  */
 public class Duration {

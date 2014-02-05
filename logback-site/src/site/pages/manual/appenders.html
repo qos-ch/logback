@@ -1612,16 +1612,53 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>	
       <tr>
-        <td><span class="prop" container="socket">reconnectionDelay</span></td>
+        <td><span class="prop"
+        container="socket">reconnectionDelay</span></td>
+        <td><code><a
+        href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
+        <td>
+          The <span class="prop">reconnectionDelay</span> option takes
+          a duration string, such "10 seconds" representing the time
+          to wait between each failed connection attempt to the
+          server.  The default value of this option is 30 seconds.
+          Setting this option to zero turns off reconnection
+          capability.  Note that in case of successful connection to
+          the server, there will be no connector thread present.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="socket">queueSize</span></td>
         <td><code>int</code></td>
         <td>
-          The <span class="prop">reconnectionDelay</span> option takes a 
-          positive integer representing the number of milliseconds to wait between 
-          each failed connection attempt to the server. 
-          The default value of this option is 30'000 which corresponds to 30 seconds. 
-          Setting this option to zero turns off reconnection capability. 
-          Note that in case of successful connection to the server, there will be no 
-          connector thread present.
+          <p>The <span class="prop">queueSize</span> property takes a
+          non-negative integer representing the number of logging
+          events to retain for delivery to the remote receiver.  When
+          the queue size is zero, event delivery to the remote
+          receiver is synchronous.  When the queue size is greater
+          than zero, new events are enqueued, assuming that there is
+          space available in the queue.  Using a non-zero queue length
+          can improve performance by eliminating delays caused by
+          transient network delays.
+          </p>
+
+          <p>See also the <span class="prop">eventDelayLimit</span>
+          property.</p>
+
+        </td>
+      </tr>	
+
+      <tr>
+        <td><span class="prop" container="socket">eventDelayLimit</span></td>
+        <td><code><a
+        href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
+        <td>
+          The <span class="prop">eventDelayLimit</span> option takes a
+          duration string, such "10 seconds". It represents the time
+          to wait before dropping events in case the local queue is
+          full, i.e. already contains <span
+          class="prop">queueSize</span> events.  This may occur if the
+          remote host is persistently slow accepting events. The
+          default value of this option is 100 milliseconds.
         </td>
       </tr>
       <tr>

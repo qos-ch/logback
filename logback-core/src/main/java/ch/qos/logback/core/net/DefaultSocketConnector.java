@@ -46,7 +46,7 @@ public class DefaultSocketConnector implements SocketConnector {
    * @param retryDelay   delay after failed connection attempt
    */
   public DefaultSocketConnector(InetAddress address, int port,
-                                int initialDelay, int retryDelay) {
+                                long initialDelay, long retryDelay) {
     this(address, port, new FixedDelay(initialDelay, retryDelay));
   }
 

@@ -6,6 +6,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.Duration;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -17,12 +18,13 @@ import static org.junit.Assert.assertTrue;
 
 public class SocketAppenderMessageLossTest {
   int runLen = 100;
+  Duration reconnectionDelay =  new Duration(1000);
 
   @Test(timeout = 1000)
   public void synchronousSocketAppender() throws Exception {
 
     SocketAppender socketAppender = new SocketAppender();
-    socketAppender.setReconnectionDelay(1000);
+    socketAppender.setReconnectionDelay(reconnectionDelay);
     socketAppender.setIncludeCallerData(true);
 
     runTest(socketAppender);
@@ -32,24 +34,23 @@ public class SocketAppenderMessageLossTest {
   public void smallQueueSocketAppender() throws Exception {
 
     SocketAppender socketAppender = new SocketAppender();
-    socketAppender.setReconnectionDelay(1000);
+    socketAppender.setReconnectionDelay(reconnectionDelay);
     socketAppender.setQueueSize(runLen/10);
-    socketAppender.setIncludeCallerData(true);
 
     runTest(socketAppender);
   }
 
   @Test(timeout = 1000)
   public void largeQueueSocketAppender() throws Exception {
-
     SocketAppender socketAppender = new SocketAppender();
-    socketAppender.setReconnectionDelay(1000);
+    socketAppender.setReconnectionDelay(reconnectionDelay);
     socketAppender.setQueueSize(runLen*5);
-    socketAppender.setIncludeCallerData(true);
 
     runTest(socketAppender);
   }
 
+  // appender used to signal when the N'th event (as set in the latch) is received by the server
+  // this allows us to have test which are both more robust and quicker.
   static public class ListAppenderWithLatch extends AppenderBase<ILoggingEvent> {
     public List<ILoggingEvent> list = new ArrayList<ILoggingEvent>();
     CountDownLatch latch;
@@ -93,8 +94,7 @@ public class SocketAppenderMessageLossTest {
 
     socketAppender.setPort(port);
     socketAppender.setRemoteHost("localhost");
-    socketAppender.setReconnectionDelay(1000);
-    socketAppender.setIncludeCallerData(true);
+    socketAppender.setReconnectionDelay(reconnectionDelay);
     socketAppender.start();
     assertTrue(socketAppender.isStarted());
 
