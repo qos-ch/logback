@@ -194,6 +194,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * {@inheritDoc}
    */
   public final void run() {
+    signalEntryInRunMethod();
     try {
       while (!Thread.currentThread().isInterrupted()) {
         SocketConnector connector = createConnector(address, port, 0,
@@ -214,7 +215,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     addInfo("shutting down");
   }
 
-  private SocketConnector createConnector(InetAddress address, int port,
+    protected void signalEntryInRunMethod() {
+      // do nothing by default
+    }
+
+    private SocketConnector createConnector(InetAddress address, int port,
                                           int initialDelay, long retryDelay) {
     SocketConnector connector = newConnector(address, port, initialDelay,
             retryDelay);

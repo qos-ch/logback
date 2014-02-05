@@ -171,13 +171,14 @@ public class AbstractSocketAppenderTest {
     assertTrue(instrumentedAppender.lastQueue.isEmpty());
   }
 
-  @Test
-  public void testAppendNullEvent() throws Exception {
+  @Test(timeout = 1000)
+  public void testAppendSingleEvent() throws Exception {
     instrumentedAppender.setRemoteHost("localhost");
     instrumentedAppender.start();
 
+    instrumentedAppender.latch.await();
     instrumentedAppender.append("some event");
-    assertTrue(instrumentedAppender.lastQueue.isEmpty());
+    assertTrue(instrumentedAppender.lastQueue.size() == 1);
   }
 
   @Test
@@ -224,7 +225,7 @@ public class AbstractSocketAppenderTest {
   private static class InstrumentedSocketAppender extends AbstractSocketAppender<String> {
 
     private BlockingQueue<String> lastQueue;
-
+    CountDownLatch latch = new  CountDownLatch(1);
     @Override
     protected void postProcessEvent(String event) {
     }
@@ -236,6 +237,11 @@ public class AbstractSocketAppenderTest {
           return event;
         }
       };
+    }
+
+    @Override
+    protected void signalEntryInRunMethod() {
+        latch.countDown();
     }
 
     @Override

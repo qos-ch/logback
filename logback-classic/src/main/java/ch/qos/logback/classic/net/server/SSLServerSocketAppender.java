@@ -19,7 +19,7 @@ import ch.qos.logback.core.net.server.SSLServerSocketAppenderBase;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * A {@Link ServerSocketAppender} that supports SSL.
+ * A {@link ServerSocketAppender} that supports SSL.
  *
  * @author Carl Harris
  */
