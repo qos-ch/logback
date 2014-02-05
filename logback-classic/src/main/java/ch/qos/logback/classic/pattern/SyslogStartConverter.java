@@ -19,6 +19,7 @@ import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.List;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.util.LevelToSyslogSeverity;
@@ -29,21 +30,36 @@ public class SyslogStartConverter extends ClassicConverter {
   long lastTimestamp = -1;
   String timesmapStr = null;
   SimpleDateFormat simpleFormat;
-  String localHostName;
+  String localHostName = null;
   int facility;
 
   public void start() {
     int errorCount = 0;
     
-    String facilityStr = getFirstOption();
-    if (facilityStr == null) {
+    String facilityStr = null;
+    List optionList = getOptionList();    
+    if (optionList != null) {
+      if(optionList.size() > 0)
+      {
+        facilityStr = (String) optionList.get(0);
+      }
+      
+      if(optionList.size() > 1)
+      {
+        localHostName = (String) optionList.get(1);      
+      }     
+    }
+        
+    if (facilityStr == null || facilityStr.equals("null")) {
       addError("was expecting a facility string as an option");
       return;
     }
-
     facility = SyslogAppenderBase.facilityStringToint(facilityStr);
-  
-    localHostName = getLocalHostname();
+        
+    if (localHostName == null || localHostName.equals("null")) {      
+      localHostName = getLocalHostname();
+    }
+
     try {
       // hours should be in 0-23, see also http://jira.qos.ch/browse/LBCLASSIC-48
       simpleFormat = new SimpleDateFormat("MMM dd HH:mm:ss", new DateFormatSymbols(Locale.US));
