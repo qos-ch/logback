@@ -78,20 +78,10 @@ public class SimpleSocketServer extends Thread {
     LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
     configureLC(lc, configFile);
 
-    SimpleSocketServer sss = createServer(serverClass, lc, port);
+    SimpleSocketServer sss = new SimpleSocketServer(lc, port);
     sss.start();
   }
 
-  private static SimpleSocketServer createServer(
-      Class<? extends SimpleSocketServer> serverClass,
-      LoggerContext lc, int port) throws Exception {
-    
-    Constructor<? extends SimpleSocketServer> constructor = 
-        serverClass.getConstructor(LoggerContext.class, int.class);
-    
-    return constructor.newInstance(lc, port);
-  }
-  
   public SimpleSocketServer(LoggerContext lc, int port) {
     this.lc = lc;
     this.port = port;
