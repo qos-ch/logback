@@ -67,9 +67,7 @@ public class SocketAppenderMessageLossTest {
   public void runTest(SocketAppender socketAppender) throws Exception {
     final int port = RandomUtil.getRandomServerPort();
 
-
-
-    LoggerContext serverLoggerContext = new LoggerContext();
+   LoggerContext serverLoggerContext = new LoggerContext();
     serverLoggerContext.setName("serverLoggerContext");
 
     CountDownLatch allMessagesReceivedLatch = new CountDownLatch(runLen);
