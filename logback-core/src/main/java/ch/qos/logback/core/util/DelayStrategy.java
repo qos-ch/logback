@@ -24,5 +24,5 @@ public interface DelayStrategy {
    * The value computed by this {@code DelayStrategy} for the next delay.
    * @return a delay value
    */
-  int nextDelay();
+  long nextDelay();
 }

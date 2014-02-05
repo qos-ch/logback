@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.TimeUnit;
 
 
 import javax.net.SocketFactory;
@@ -35,6 +36,7 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.CloseUtil;
+import ch.qos.logback.core.util.Duration;
 
 /**
  * An abstract base for module specific {@code SocketAppender}
@@ -62,7 +64,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * Default size of the queue used to hold logging events that are destined
    * for the remote peer.
    */
-  public static final int DEFAULT_QUEUE_SIZE = 0;
+  public static final int DEFAULT_QUEUE_SIZE = 128;
   
   /**
    * Default timeout when waiting for the remote server to accept our
@@ -70,12 +72,19 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
+  /**
+   * Default timeout for how long to wait when inserting an event into
+   * the BlockingQueue.
+   */
+  private static final int DEFAULT_EVENT_DELAY_TIMEOUT = 100;
+
   private String remoteHost;
   private int port = DEFAULT_PORT;
   private InetAddress address;
-  private int reconnectionDelay = DEFAULT_RECONNECTION_DELAY;
+  private Duration reconnectionDelay = new Duration(DEFAULT_RECONNECTION_DELAY);
   private int queueSize = DEFAULT_QUEUE_SIZE;
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
+  private Duration eventDelayLimit = new Duration(DEFAULT_EVENT_DELAY_TIMEOUT);
   
   private BlockingQueue<E> queue;
   private String peerId;
@@ -168,8 +177,17 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   @Override
   protected void append(E event) {
-    if (event == null || !isStarted()) return;    
-    queue.offer(event);
+    if (event == null || !isStarted()) return;
+
+    try {
+      final boolean inserted = queue.offer(event, eventDelayLimit.getMilliseconds(), TimeUnit.MILLISECONDS);
+      if (!inserted) {
+        addInfo("Dropping event due to timeout limit of [" + eventDelayLimit +
+            "] milliseconds being exceeded");
+      }
+    } catch (InterruptedException e) {
+      addError("Interrupted while appending event to SocketAppender", e);
+    }
   }
 
   /**
@@ -179,7 +197,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     try {
       while (!Thread.currentThread().isInterrupted()) {
         SocketConnector connector = createConnector(address, port, 0,
-                reconnectionDelay);
+                reconnectionDelay.getMilliseconds());
 
         connectorTask = activateConnector(connector);
         if(connectorTask == null)
@@ -197,7 +215,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
 
   private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, int retryDelay) {
+                                          int initialDelay, long retryDelay) {
     SocketConnector connector = newConnector(address, port, initialDelay,
             retryDelay);
     connector.setExceptionHandler(this);
@@ -281,7 +299,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * @return socket connector
    */
   protected SocketConnector newConnector(InetAddress address,
-                                         int port, int initialDelay, int retryDelay) {
+                                         int port, long initialDelay, long retryDelay) {
     return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
@@ -371,22 +389,21 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
 
   /**
-   * The <b>reconnectionDelay</b> property takes a positive integer representing
-   * the number of milliseconds to wait between each failed connection attempt
-   * to the server. The default value of this option is 30000 which corresponds
-   * to 30 seconds.
+   * The <b>reconnectionDelay</b> property takes a positive {@link Duration} value
+   * representing the time to wait between each failed connection attempt
+   * to the server. The default value of this option is to 30 seconds.
    *
    * <p>
    * Setting this option to zero turns off reconnection capability.
    */
-  public void setReconnectionDelay(int delay) {
+  public void setReconnectionDelay(Duration delay) {
     this.reconnectionDelay = delay;
   }
 
   /**
    * Returns value of the <b>reconnectionDelay</b> property.
    */
-  public int getReconnectionDelay() {
+  public Duration getReconnectionDelay() {
     return reconnectionDelay;
   }
 
@@ -398,21 +415,37 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * {@link #append(Object)} method returns immediately after enqueing the
    * event, assuming that there is space available in the queue.  Using a 
    * non-zero queue length can improve performance by eliminating delays
-   * caused by transient network delays.  If the queue is full when the
-   * {@link #append(Object)} method is called, the event is summarily 
-   * and silently dropped.
+   * caused by transient network delays.
    * 
    * @param queueSize the queue size to set.
    */
   public void setQueueSize(int queueSize) {
     this.queueSize = queueSize;
   }
-  
+
   /**
    * Returns the value of the <b>queueSize</b> property.
    */
   public int getQueueSize() {
     return queueSize;
+  }
+
+  /**
+   * The <b>eventDelayLimit</b> takes a non-negative integer representing the
+   * number of milliseconds to allow the appender to block if the underlying
+   * BlockingQueue is full. Once this limit is reached, the event is dropped.
+   *
+   * @param eventDelayLimit the event delay limit
+   */
+  public void setEventDelayLimit(Duration eventDelayLimit) {
+    this.eventDelayLimit = eventDelayLimit;
+  }
+
+  /**
+   * Returns the value of the <b>eventDelayLimit</b> property.
+   */
+  public Duration getEventDelayLimit() {
+    return eventDelayLimit;
   }
   
   /**
