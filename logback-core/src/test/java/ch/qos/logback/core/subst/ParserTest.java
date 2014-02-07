@@ -13,10 +13,13 @@
  */
 package ch.qos.logback.core.subst;
 
-import ch.qos.logback.core.spi.ScanException;
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.core.spi.ScanException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -174,6 +177,15 @@ public class ParserTest {
     t.next = new Node(Node.Type.LITERAL, "}");
 
     assertEquals(witness, node);
+  }
+
+  @Test
+  public void emptyTokenListDoesNotThrowNullPointerException() throws ScanException {
+    // An empty token list would be returned from Tokenizer.tokenize()
+    // if it were constructed with an empty string. The parser should
+    // be able to handle this.
+    Parser parser = new Parser(new ArrayList<Token>());
+    parser.parse();
   }
 
   private void dump(Node node) {

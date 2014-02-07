@@ -22,10 +22,11 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import org.junit.rules.ExpectedException;
+import ch.qos.logback.core.joran.spi.JoranException;
 
 
 public class OptionHelperTest  {
@@ -241,12 +242,16 @@ public class OptionHelperTest  {
     assertEquals("k1", result);
   }
 
-
   @Test
   public void jackrabbit_standalone() {
     String r = OptionHelper.substVars("${jackrabbit.log:-${repo:-jackrabbit}/log/jackrabbit.log}", context);
     assertEquals("jackrabbit/log/jackrabbit.log", r);
   }
 
+  @Test
+  public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException {
+    context.putProperty("var", "");
+    OptionHelper.substVars("${var}", context);
+  }
 
 }
