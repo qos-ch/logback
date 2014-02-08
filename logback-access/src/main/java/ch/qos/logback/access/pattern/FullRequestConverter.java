@@ -31,7 +31,7 @@ public class FullRequestConverter extends AccessConverter {
 
   @Override
   public String convert(IAccessEvent ae) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append(ae.getRequestURL());
     buf.append(CoreConstants.LINE_SEPARATOR);
     

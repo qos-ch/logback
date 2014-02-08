@@ -60,7 +60,7 @@ public class RegularEscapeUtil implements IEscapeUtil {
   public static String basicEscape(String s) {
     char c;
     int len = s.length();
-    StringBuffer sbuf = new StringBuffer(len);
+    StringBuilder sbuf = new StringBuilder(len);
 
     int i = 0;
     while (i < len) {

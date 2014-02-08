@@ -114,7 +114,7 @@ abstract public class StatusBase implements Status {
    * @Override
    */
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     switch (getEffectiveLevel()) {
     case INFO:
       buf.append("INFO");

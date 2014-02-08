@@ -31,7 +31,7 @@ public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
   }
 
   public String doLayout(ILoggingEvent event) {
-    StringBuffer sbuf = new StringBuffer(128);
+    StringBuilder sbuf = new StringBuilder(128);
     if (prefix != null) {
       sbuf.append(prefix + ": ");
     }

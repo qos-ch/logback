@@ -41,7 +41,7 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
   private boolean insertHeaders = false;
   
   static {
-    StringBuffer sql = new StringBuffer();
+    StringBuilder sql = new StringBuilder();
     sql.append("INSERT INTO access_event (");
     sql.append("timestmp, ");
     sql.append("requestURI, ");
