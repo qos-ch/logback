@@ -15,8 +15,8 @@ package ch.qos.logback.classic.pattern;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,7 +28,10 @@ public class SyslogStartConverter extends ClassicConverter {
 
   long lastTimestamp = -1;
   String timesmapStr = null;
-  SimpleDateFormat simpleFormat;
+  SimpleDateFormat simpleMonthFormat;
+  SimpleDateFormat simpleTimeFormat;
+  private final Calendar calendar  = Calendar.getInstance(Locale.US);
+
   String localHostName;
   int facility;
 
@@ -46,7 +49,8 @@ public class SyslogStartConverter extends ClassicConverter {
     localHostName = getLocalHostname();
     try {
       // hours should be in 0-23, see also http://jira.qos.ch/browse/LBCLASSIC-48
-      simpleFormat = new SimpleDateFormat("MMM dd HH:mm:ss", new DateFormatSymbols(Locale.US));
+      simpleMonthFormat = new SimpleDateFormat("MMM", Locale.US);
+      simpleTimeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
     } catch (IllegalArgumentException e) {
       addError("Could not instantiate SimpleDateFormat", e);
       errorCount++;
@@ -91,9 +95,14 @@ public class SyslogStartConverter extends ClassicConverter {
 
   String computeTimeStampString(long now) {
     synchronized (this) {
-      if (now != lastTimestamp) {
-        lastTimestamp = now;
-        timesmapStr = simpleFormat.format(new Date(now));
+      // Since the formatted output is only precise to the second, we can use the same cached string if the current
+      // second is the same (stripping off the milliseconds).
+      if ((now / 1000) != lastTimestamp) {
+        lastTimestamp = now / 1000;
+        Date nowDate = new Date(now);
+        calendar.setTime(nowDate);
+        timesmapStr = String.format("%s %2d %s", simpleMonthFormat.format(nowDate),
+            calendar.get(Calendar.DAY_OF_MONTH), simpleTimeFormat.format(nowDate));
       }
       return timesmapStr;
     }
