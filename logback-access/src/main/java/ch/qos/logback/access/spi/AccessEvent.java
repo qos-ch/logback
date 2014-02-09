@@ -137,7 +137,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
   public String getRequestURL() {
     if (requestURL == null) {
       if (httpRequest != null) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append(httpRequest.getMethod());
         buf.append(AccessConverter.SPACE_CHAR);
         buf.append(httpRequest.getRequestURI());
@@ -376,7 +376,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
 
     if (Util.isFormUrlEncoded(httpRequest)) {
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
 
       Enumeration pramEnumeration = httpRequest.getParameterNames();
 

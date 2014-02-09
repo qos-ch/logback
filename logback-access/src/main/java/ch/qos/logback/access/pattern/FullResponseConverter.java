@@ -22,7 +22,7 @@ public class FullResponseConverter extends AccessConverter {
 
   @Override
   public String convert(IAccessEvent ae) {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     
     buf.append("HTTP/1.1 ");
     int statusCode = ae.getStatusCode();

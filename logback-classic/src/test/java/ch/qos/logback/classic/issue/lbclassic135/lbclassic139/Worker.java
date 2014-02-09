@@ -54,8 +54,7 @@ public class Worker extends RunnableWithCounterAndDone {
     synchronized (lock) {
       print("In Worker.toString() - got the lock");
       //sleep();
-      final StringBuffer buf = new StringBuffer("STATUS");
-      return buf.toString();
+      return "STATUS";
     }
   }
   

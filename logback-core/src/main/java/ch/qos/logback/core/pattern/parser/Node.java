@@ -83,7 +83,7 @@ public class Node {
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer();
+	    StringBuilder buf = new StringBuilder();
 		switch (type) {
 		case LITERAL:
 			buf.append("LITERAL(" + value + ")");

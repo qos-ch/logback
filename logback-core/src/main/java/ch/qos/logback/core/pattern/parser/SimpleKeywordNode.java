@@ -55,7 +55,7 @@ public class SimpleKeywordNode extends FormattingNode {
   }
 
   public String toString() {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     if (optionList == null) {
       buf.append("KeyWord(" + value + "," + formatInfo + ")");
     } else {

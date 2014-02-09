@@ -55,7 +55,7 @@ public class ScenarioRandomUtil {
 
   public static String randomLoggerName(int average, int stdDeviation) {
     int depth = RandomUtil.gaussianAsPositiveInt(random, average, stdDeviation);
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (int i = 0; i < depth; i++) {
       if (i != 0) {
         buf.append('.');
@@ -68,7 +68,7 @@ public class ScenarioRandomUtil {
   public static String randomId() {
 
     int len = RandomUtil.gaussianAsPositiveInt(random, AVERAGE_ID_LEN, AVERAGE_ID_DEV);
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     for (int i = 0; i < len; i++) {
       int offset = random.nextInt(26);
       char c = (char) ('a' + offset);

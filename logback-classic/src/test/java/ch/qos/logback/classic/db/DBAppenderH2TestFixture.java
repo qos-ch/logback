@@ -76,7 +76,7 @@ public class DBAppenderH2TestFixture  {
 
   private void createTables() throws SQLException {
     assertNotNull(connection);
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("CREATE TABLE LOGGING_EVENT (");
     buf.append("TIMESTMP BIGINT NOT NULL,");
     buf.append("FORMATTED_MESSAGE LONGVARCHAR NOT NULL,");
@@ -95,7 +95,7 @@ public class DBAppenderH2TestFixture  {
     buf.append("EVENT_ID IDENTITY NOT NULL);");
     executeQuery(connection, buf.toString());
 
-    buf = new StringBuffer();
+    buf = new StringBuilder();
     buf.append("CREATE TABLE LOGGING_EVENT_PROPERTY (");
     buf.append("EVENT_ID BIGINT NOT NULL,");
     buf.append("MAPPED_KEY  VARCHAR(254) NOT NULL,");
@@ -104,7 +104,7 @@ public class DBAppenderH2TestFixture  {
     buf.append("FOREIGN KEY (EVENT_ID) REFERENCES LOGGING_EVENT(EVENT_ID));");
     executeQuery(connection, buf.toString());
 
-    buf = new StringBuffer();
+    buf = new StringBuilder();
     buf.append("CREATE TABLE LOGGING_EVENT_EXCEPTION (");
     buf.append("EVENT_ID BIGINT NOT NULL,");
     buf.append("I SMALLINT NOT NULL,");
@@ -115,15 +115,15 @@ public class DBAppenderH2TestFixture  {
   }
 
   private  void dropTables() throws SQLException {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("DROP TABLE LOGGING_EVENT_EXCEPTION IF EXISTS;");
     executeQuery(connection, buf.toString());
 
-    buf = new StringBuffer();
+    buf = new StringBuilder();
     buf.append("DROP TABLE LOGGING_EVENT_PROPERTY IF EXISTS;");
     executeQuery(connection, buf.toString());
 
-    buf = new StringBuffer();
+    buf = new StringBuilder();
     buf.append("DROP TABLE LOGGING_EVENT IF EXISTS;");
     executeQuery(connection, buf.toString());
   }

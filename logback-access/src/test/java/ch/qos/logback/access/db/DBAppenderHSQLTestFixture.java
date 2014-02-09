@@ -77,7 +77,7 @@ public class DBAppenderHSQLTestFixture {
 
   private void createTables() throws SQLException {
     Connection conn = newConnection();
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("CREATE TABLE access_event (");
     buf.append("timestmp BIGINT NOT NULL,");
     buf.append("requestURI VARCHAR(254),");
@@ -92,7 +92,7 @@ public class DBAppenderHSQLTestFixture {
     buf.append("event_id INT NOT NULL IDENTITY);");
     query(conn, buf.toString());
 
-    buf = new StringBuffer();
+    buf = new StringBuilder();
     buf.append("CREATE TABLE access_event_header (");
     buf.append("event_id INT NOT NULL,");
     buf.append("header_key  VARCHAR(254) NOT NULL,");
@@ -105,11 +105,11 @@ public class DBAppenderHSQLTestFixture {
   private  void dropTables() throws SQLException {
     Connection conn = newConnection();
     
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     buf.append("DROP TABLE access_event_header IF EXISTS;");
     query(conn, buf.toString());
     
-    buf = new StringBuffer();
+    buf = new StringBuilder();
     buf.append("DROP TABLE access_event IF EXISTS;");
     query(conn, buf.toString());
   }

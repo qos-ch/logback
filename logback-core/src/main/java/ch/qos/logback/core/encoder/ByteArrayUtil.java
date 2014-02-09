@@ -43,7 +43,7 @@ public class ByteArrayUtil {
   }
   
   static public String toHexString(byte[] ba) {
-    StringBuffer sbuf = new StringBuffer();
+    StringBuilder sbuf = new StringBuilder();
     for(byte b: ba) {
       String s = Integer.toHexString( (int)(b & 0xff));
       if(s.length() == 1) {
