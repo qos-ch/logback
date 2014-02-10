@@ -38,23 +38,7 @@ public abstract class AbstractSSLSocketAppender<E> extends AbstractSocketAppende
    */
   protected AbstractSSLSocketAppender() {
   }
-  
-  /**
-   * Constructs a new appender that will connect to the given remote host 
-   * and port.
-   * <p>
-   * This constructor was introduced primarily to allow the encapsulation 
-   * of the base {@link AbstractSocketAppender} to be improved in a manner that
-   * is least disruptive to <em>existing</em> subclasses.  <strong>This
-   * constructor will be removed in future release</strong>.
-   * @param remoteHost target remote host
-   * @param port target port on remote host
-   */
-  @Deprecated
-  protected AbstractSSLSocketAppender(String remoteHost, int port) {
-    super(remoteHost, port);
-  }
-  
+
   /**
    * Gets an {@link SocketFactory} that produces SSL sockets using an
    * {@link SSLContext} that is derived from the appender's configuration.

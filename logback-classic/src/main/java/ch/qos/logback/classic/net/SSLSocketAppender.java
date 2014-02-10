@@ -37,22 +37,6 @@ public class SSLSocketAppender extends AbstractSSLSocketAppender<ILoggingEvent> 
   public SSLSocketAppender() {
   }
 
-  /**
-   * Connects to remote server at <code>address</code> and <code>port</code>.
-   */
-  @Deprecated
-  public SSLSocketAppender(String host, int port) {
-    super(host, port);
-  }
-
-  /**
-   * Connects to remote server at <code>address</code> and <code>port</code>.
-   */
-  @Deprecated
-  public SSLSocketAppender(InetAddress address, int port) {
-    super(address.getHostAddress(), port);
-  }
-
   @Override
   protected void postProcessEvent(ILoggingEvent event) {
     if (includeCallerData) {

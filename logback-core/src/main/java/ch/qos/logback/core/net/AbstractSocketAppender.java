@@ -100,24 +100,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
   
   /**
-   * Constructs a new appender that will connect to the given remote host 
-   * and port.
-   * <p>
-   * This constructor was introduced primarily to allow the encapsulation 
-   * of the this class to be improved in a manner that is least disruptive 
-   * to <em>existing</em> subclasses.  <strong>This constructor will be 
-   * removed in future release</strong>.
-   * 
-   * @param remoteHost target remote host
-   * @param port target port on remote host
-   */
-  @Deprecated
-  protected AbstractSocketAppender(String remoteHost, int port) {
-    this.remoteHost = remoteHost;
-    this.port = port;
-  }
-  
-  /**
    * {@inheritDoc}
    */
   public void start() {
