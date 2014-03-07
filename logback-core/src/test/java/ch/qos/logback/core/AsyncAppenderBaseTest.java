@@ -257,6 +257,24 @@ public class AsyncAppenderBaseTest {
     asyncAppenderBase.worker.resume();
     asyncAppenderBase.stop();
   }
+  
+  @Test
+  public void hookThreadInstalledDuringStart() {
+    ListAppender la = delayingListAppender;
+    asyncAppenderBase.addAppender(la);
+    asyncAppenderBase.start();
+    
+    assertTrue(Runtime.getRuntime().removeShutdownHook(asyncAppenderBase.hook));
+  }
+  
+  @Test
+  public void hookThreadRemovedDuringStop() {
+	  ListAppender la = delayingListAppender;
+	  asyncAppenderBase.addAppender(la);
+	  asyncAppenderBase.start();
+	  asyncAppenderBase.stop();
+	  assertFalse(Runtime.getRuntime().removeShutdownHook(asyncAppenderBase.hook));
+  }
 
   private void verify(ListAppender la, int expectedSize) {
     assertFalse(la.isStarted());
