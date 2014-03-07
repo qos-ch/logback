@@ -248,7 +248,8 @@ public class AsyncAppenderBaseTest {
     }
     assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
     assertEquals(0, la.list.size());
-        
+    
+    asyncAppenderBase.hook.run();
     assertEquals(loopLen - 1, asyncAppenderBase.getNumberOfElementsInQueue());
     assertEquals(1, la.list.size());
     statusChecker.assertContainsMatch("Shutdown hook will flush remaining events before exiting");
