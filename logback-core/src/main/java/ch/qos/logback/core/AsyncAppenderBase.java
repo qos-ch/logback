@@ -19,6 +19,7 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This appender and derived classes, log events asynchronously.  In order to avoid loss of logging events, this
@@ -54,6 +55,25 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
   Worker worker = new Worker();
 
+ /**
+  * Shutdown hook to process any events that are left in the queue when the JVM shuts down or that are added
+  * by other shutdown hooks.
+  */
+  Hook hook = new Hook();
+	
+  /**
+   * The default queue idle time that must occur before
+   */
+  public static final int DEFAULT_SHUTDOWN_IDLE_DELAY = 1000;
+  int shutdownIdleDelay = DEFAULT_SHUTDOWN_IDLE_DELAY;
+  
+  /**
+   * The default maximum runtime allowed for the hook. If the hook runs for longer
+   * than this time it will exit, discarding any items in the queue
+   */
+  public static final int DEFAULT_HOOK_MAX_RUNTIME = 2000;
+  int maxHookRuntime = DEFAULT_HOOK_MAX_RUNTIME;
+  
   /**
    * Is the eventObject passed as parameter discardable? The base class's implementation of this method always returns
    * 'false' but sub-classes may (and do) override this method.
@@ -95,10 +115,13 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       discardingThreshold = queueSize / 5;
     addInfo("Setting discardingThreshold to " + discardingThreshold);
     worker.setDaemon(true);
-    worker.setName("AsyncAppender-Worker-" + worker.getName());
+    worker.setName("AsyncAppender-Worker-" + getName());
     // make sure this instance is marked as "started" before staring the worker Thread
     super.start();
     worker.start();
+
+    hook.setName("AsyncAppender-Hook-" + getName());
+    Runtime.getRuntime().addShutdownHook(hook);
   }
 
   @Override
@@ -118,6 +141,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     } catch (InterruptedException e) {
       addError("Failed to join worker thread", e);
     }
+
+    Runtime.getRuntime().removeShutdownHook(hook);
   }
 
 
@@ -155,6 +180,22 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
   public void setDiscardingThreshold(int discardingThreshold) {
     this.discardingThreshold = discardingThreshold;
+  }
+  
+  public int getShutdownIdleDelay() {
+	return shutdownIdleDelay;
+  }
+  
+  public void setShutdownIdleDelay(int shutdownIdleDelay) {
+	this.shutdownIdleDelay = shutdownIdleDelay;
+  }
+ 
+  public int getMaxHookRuntime() {
+	return maxHookRuntime;
+  }
+  
+  public void setMaxHookRuntime(int maxHookRuntime) {
+	this.maxHookRuntime = maxHookRuntime;
   }
 
   /**
@@ -234,6 +275,50 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         aai.appendLoopOnAppenders(e);
       }
 
+      aai.detachAndStopAllAppenders();
+    }
+  }
+  
+  class Hook extends Thread {
+    @Override
+    public void run() {
+      AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
+      AppenderAttachableImpl<E> aai = parent.aai;
+        
+      int count = 0;
+        
+      addInfo("Shutdown hook will flush remaining events before exiting");
+      long start = System.currentTimeMillis();
+      long delay = 0;
+        
+      while(true) {
+        try {
+          E event = parent.blockingQueue.poll(parent.shutdownIdleDelay, TimeUnit.MILLISECONDS);
+      
+          if(event != null) {
+            count++;
+            aai.appendLoopOnAppenders(event);  
+            
+            delay = System.currentTimeMillis() - start;
+          } else {
+            addInfo("Async queue idle for " + parent.shutdownIdleDelay + " ms.");
+            break;
+          }
+        } catch (InterruptedException e) {
+          addError("Interrupted while polling for log event from the asynchronous queue", e);
+          //Since this is running in a shutdown hook, it is safe to swallow this exception and not
+          //reset the interrupted status on the thread (generally speaking, bad practice)
+        }
+        
+        if(delay >= parent.maxHookRuntime) {
+          addWarn("Max hook runtime (" + parent.maxHookRuntime + " ms) exceeded. " + parent.blockingQueue.size() + " queued events will be discarded.");
+          break;
+        }
+      }
+        
+      long end = System.currentTimeMillis();
+      addInfo("Processed " + count + " log entries in " + (end - start) + " ms. Exiting");
+      
       aai.detachAndStopAllAppenders();
     }
   }
