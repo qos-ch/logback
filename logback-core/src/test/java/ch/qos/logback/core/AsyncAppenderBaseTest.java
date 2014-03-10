@@ -270,11 +270,11 @@ public class AsyncAppenderBaseTest {
   
   @Test
   public void hookThreadRemovedDuringStop() {
-	  ListAppender la = delayingListAppender;
-	  asyncAppenderBase.addAppender(la);
-	  asyncAppenderBase.start();
-	  asyncAppenderBase.stop();
-	  assertFalse(Runtime.getRuntime().removeShutdownHook(asyncAppenderBase.hook));
+    ListAppender la = delayingListAppender;
+    asyncAppenderBase.addAppender(la);
+    asyncAppenderBase.start();
+    asyncAppenderBase.stop();
+    assertFalse(Runtime.getRuntime().removeShutdownHook(asyncAppenderBase.hook));
   }
 
   private void verify(ListAppender la, int expectedSize) {

@@ -60,7 +60,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   * by other shutdown hooks.
   */
   Hook hook = new Hook();
-	
+  
   /**
    * The default queue idle time that must occur before
    */
@@ -183,19 +183,19 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   }
   
   public int getShutdownIdleDelay() {
-	return shutdownIdleDelay;
+    return shutdownIdleDelay;
   }
   
   public void setShutdownIdleDelay(int shutdownIdleDelay) {
-	this.shutdownIdleDelay = shutdownIdleDelay;
+    this.shutdownIdleDelay = shutdownIdleDelay;
   }
  
   public int getMaxHookRuntime() {
-	return maxHookRuntime;
+    return maxHookRuntime;
   }
   
   public void setMaxHookRuntime(int maxHookRuntime) {
-	this.maxHookRuntime = maxHookRuntime;
+    this.maxHookRuntime = maxHookRuntime;
   }
 
   /**
