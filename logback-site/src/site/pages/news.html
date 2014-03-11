@@ -33,6 +33,9 @@
 
     <p>Removed deprecated constructors in <code>SocketAppender</code>
     and related classes.</p>
+    
+    <p>Added shutdown hook to <code>AsyncAppender</code> to work around 
+    thread hangup that could prevent the queue from being flushed.</p>
 
     <p>Fixed incorrect date format in <code>SyslogAppender</code>.
     (<a href="http://jira.qos.ch/browse/LOGBACK-936">LOGBACK-936</a>)
