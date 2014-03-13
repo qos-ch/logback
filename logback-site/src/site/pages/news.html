@@ -34,8 +34,10 @@
     <p>Removed deprecated constructors in <code>SocketAppender</code>
     and related classes.</p>
     
-    <p>Added shutdown hook to <code>AsyncAppender</code> to work around 
-    thread hangup that could prevent the queue from being flushed.</p>
+    <p>Added max runtime parameter to <code>AsyncAppender</code> to allow
+    the appender to flush events, up to a maximum delay, during a stop
+    of the LoggerContext. This can be used to ensure that all queued
+    events are flushed.</p>
 
     <p>Fixed incorrect date format in <code>SyslogAppender</code>.
     (<a href="http://jira.qos.ch/browse/LOGBACK-936">LOGBACK-936</a>)

@@ -3897,23 +3897,27 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     flush the logging events from the queue. This can be achieved by
     <a href="configuration.html#stopContext">stopping the
     LoggerContext</a> which will close all appenders, including any
-    <code>AsyncAppender</code> instances.</p>
+    <code>AsyncAppender</code> instances. <code>AsyncAppender</code>
+    will wait for the worker thread to flush up to the timeout specified
+    in <span class="prop">maxFlushTime</span>. If you find that queued events
+    are being discarded during close of the <code>LoggerContext</code>, you
+    may need to increase the time out. Specifying a value of 0 for 
+    <span class="prop">maxFlushTime</span> will force the <code>AsyncAppender</code>
+    to wait for all queued events to be flushed before returning from 
+   	the stop method.
+    </p>
     
     <p><span class="label">Post shutdown cleanup</span>
     Depending on the mode of JVM shutdown, the worker thread processing the 
-    queued events can be interrupted causing events to be strandeds in the queue 
-    - even when <a href="configuration.html#stopContext">stopping the
-    LoggerContext properly</a>. <code>AsyncAppender</code>
-    inserts a shutdown hook into the JVM <code>Runtime</code> to process
-    these queued events if possible. This also allows other shutdown hooks 
-    to write log events to an AsyncAppender. <code>AsyncAppender</code>
-    processes all items in the queue and then waits until the queue has
-    idled for a minimum amount of time before exiting. Depending on the
-    queue depth and latency to the referenced appender, this queue flush
-    can slow down JVM shutdown. To prevent excessive shutdown times, 
-    <code>AsyncAppender</code> respects a maximum hook runtime. In the 
-    event that flushing the queue exceeds the defined maximum, the hook 
-    will discard the remaining events and exit.
+    queued events can be interrupted causing events to be strandeds in the
+    queue. This generally occurs when the <code>LoggerContext</code> is not
+    stopped cleanly or when the JVM terminates outside of the typical control
+    flow. In order to avoid interrupting the worker thread under these 
+    conditions, a shutdown hook can be inserted to the JVM runtime that 
+    <a href="configuration.html#stopContext">stops the LoggerContext properly</a>
+    after JVM shutdown has been initiated. A shutdown hook may also be the
+    preferred method for cleanly shutting down Logback when other shutdown hooks
+    attempt to log events.
     </p>
 
     <p>Here is the list of properties admitted by
@@ -3955,23 +3959,17 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
         </td>
       </tr>
       <tr>
-        <td><span class="prop" container="async">shutdownIdleDelay</span></td>
-        <td><code>int</code></td>
-        <td>Other shutdown hooks may want to log events to the referenced appender.
-        In order to ensure that these events are flushed, the shutdown hook
-        waits for the queue to idle for a specific amount of time before exiting.
-        The queue idle delay is specified via <span class="prop">shutdownIdleDelay</span>
-        in milliseconds.
-        </td>
-      </tr>
-      <tr>
-        <td><span class="prop" container="async">maxHookRuntime</span></td>
+        <td><span class="prop" container="async">maxFlushTime</span></td>
         <td><code>int</code></td>
         <td>Depending on the queue depth and latency to the referenced appender,
-        the shutdown hook may take an unacceptable amount of time to fully flush
-        the queue. Use <span class="prop">maxHookRuntime</span> to specify a
-        maximum runtime for the shutdown hook in milliseconds. Events that cannot
-        be processed within this window are discarded.
+        the <code>AsyncAppender</code> may take an unacceptable amount of
+        time to fully flush the queue. When the <code>LoggerContext</code> is 
+        stopped, the <code>AsyncAppender stop</code> method waits 
+        up to this timeout for the worker thread to complete. Use 
+        <span class="prop">maxFlushTime</span> to specify a maximum queue flush
+        timeout in milliseconds. Events that cannot be processed within this
+        window are discarded. Semantics of this value are identical to that of 
+        <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html#join(long)">Thread.join(long)</a>.
         </td>
       </tr>
     </table>
@@ -4042,25 +4040,6 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
   &lt;/root>
 &lt;/configuration></pre>
   
-    <p><span class="label notice">Managing Hook Execution</span>
-    Regardless of whether events have been dropped, the worker thread may
-    be unable to process events when JVM shutdown is initiated. <code>AsyncAppender</code>
-    uses a shutdown hook to ensure that queued events are flushed to 
-    the referenced appender. If you find that log events from other shutdown 
-    hooks are missing from your target appender, you may need to increase the 
-    <span class="prop">shutdownIdleDelay</span>. If you do not have other 
-    shutdown hooks but find that normal application log events are missing,
-    you may need to increase the <span class="prop">maxHookRuntime</span>.
-    To minimize overhead while capturing all normal application logs, set 
-    <span class="prop">shutdownIdleDelay</span> to 0 and <span class="prop">maxHookRuntime</span>
-    to a large value. In the event that shutdown times are critical for your application (such as
-    when automation or clustering software is involved), you may need to constrain
-    the overall hook runtime. The expected <code>AsyncAppender</code> hook runtime
-    is effectively <code>maxHookRuntime + shutdownIdleDelay + fixed overhead</code>.
-    If Logback debug is enabled, <code>AsyncAppender</code> issues debug statements indicating which condition
-    allowed the hook to exit and whether queued events were discarded.
-    </p>
-
 		<h3 class="doAnchor" name="WriteYourOwnAppender">Writing your own
 		Appender</h3>
 

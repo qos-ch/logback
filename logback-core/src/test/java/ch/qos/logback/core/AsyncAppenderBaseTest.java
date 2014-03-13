@@ -160,34 +160,13 @@ public class AsyncAppenderBaseTest {
   }
   
   @Test
-  public void suspendedWorkerThreadDoesNotAppendEvents() {
-    int bufferSize = 1000;
+  public void workerThreadFlushesOnStop() {
     int loopLen = 5;
-    ListAppender la = listAppender;
+    int maxRuntime = (loopLen + 1) * delayingListAppender.delay;
+    ListAppender la = delayingListAppender;
     asyncAppenderBase.addAppender(la);
-    asyncAppenderBase.setQueueSize(bufferSize);
     asyncAppenderBase.setDiscardingThreshold(0);
-    asyncAppenderBase.start();
-    asyncAppenderBase.worker.suspend();
-  
-    for (int i = 0; i < loopLen; i++) {
-      asyncAppenderBase.doAppend(i);
-    }
-    assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
-    assertEquals(0, la.list.size());
-  
-    asyncAppenderBase.worker.resume();
-    asyncAppenderBase.stop();
-  }
-  
-  @Test
-  public void hookThreadAppendsEvents() {
-    int bufferSize = 1000;
-    int loopLen = 5;
-    ListAppender la = listAppender;
-    asyncAppenderBase.addAppender(la);
-    asyncAppenderBase.setQueueSize(bufferSize);
-    asyncAppenderBase.setDiscardingThreshold(0);
+    asyncAppenderBase.setMaxFlushTime(maxRuntime);
     asyncAppenderBase.start();
     asyncAppenderBase.worker.suspend();
 
@@ -196,85 +175,45 @@ public class AsyncAppenderBaseTest {
     }
     assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
     assertEquals(0, la.list.size());
-  
-    asyncAppenderBase.hook.run();
-    assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
-    assertEquals(loopLen, la.list.size());
-    statusChecker.assertContainsMatch("Shutdown hook will flush remaining events before exiting");
-      
+
     asyncAppenderBase.worker.resume();
     asyncAppenderBase.stop();
-  }
-  
-  @Test
-  public void hookThreadExitsWhenIdleTimeoutReached() {
-    int bufferSize = 1000;
-    int idleTimeout = 500;
-    ListAppender la = listAppender;
-    asyncAppenderBase.addAppender(la);
-    asyncAppenderBase.setQueueSize(bufferSize);
-    asyncAppenderBase.setDiscardingThreshold(0);
-    asyncAppenderBase.setShutdownIdleDelay(idleTimeout);
-    asyncAppenderBase.start();
-    asyncAppenderBase.worker.suspend();
     
-    asyncAppenderBase.hook.run();
-      assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
-    assertEquals(0, la.list.size());
-    statusChecker.assertContainsMatch("Shutdown hook will flush remaining events before exiting");
-    statusChecker.assertContainsMatch("Async queue idle for " + idleTimeout + " ms.");
-      
-    asyncAppenderBase.worker.resume();
-    asyncAppenderBase.stop();
+    assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
+    verify(la, loopLen);
   }
   
   @Test
-  public void hookThreadExitsWhenMaxRuntimeReached() {
-    int bufferSize = 1000;
-    int loopLen = 5;
-    int idleTimeout = delayingListAppender.delay*2;
-    int maxRuntime = delayingListAppender.delay/2;
+  public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
+    int maxRuntime = 1;  //runtime of 0 means wait forever, so use 1 ms instead
+    int loopLen = 10;
     ListAppender la = delayingListAppender;
     asyncAppenderBase.addAppender(la);
-    asyncAppenderBase.setQueueSize(bufferSize);
-    asyncAppenderBase.setDiscardingThreshold(0);
-    asyncAppenderBase.setShutdownIdleDelay(idleTimeout);
-    asyncAppenderBase.setMaxHookRuntime(maxRuntime);
+    asyncAppenderBase.setMaxFlushTime(maxRuntime);
     asyncAppenderBase.start();
-    asyncAppenderBase.worker.suspend();
     
     for (int i = 0; i < loopLen; i++) {
-      asyncAppenderBase.doAppend(i);
-    }
-    assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
-    assertEquals(0, la.list.size());
+        asyncAppenderBase.doAppend(i);
+      }
     
-    asyncAppenderBase.hook.run();
-    assertEquals(loopLen - 1, asyncAppenderBase.getNumberOfElementsInQueue());
-    assertEquals(1, la.list.size());
-    statusChecker.assertContainsMatch("Shutdown hook will flush remaining events before exiting");
-    statusChecker.assertContainsMatch("Max hook runtime \\(" + maxRuntime + " ms\\) exceeded. " + asyncAppenderBase.getNumberOfElementsInQueue() + " queued events will be discarded.");
-        
+    asyncAppenderBase.stop();
+    
+    //suspend the thread so that we can make the following assertions without race conditions
+    asyncAppenderBase.worker.suspend();
+    
+    //confirms that stop exited when runtime reached
+    statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxRuntime + " ms\\) exceeded. " + 
+        asyncAppenderBase.getNumberOfElementsInQueue() + " queued events may be discarded.");
+    //confirms that the number of events posted are the number of events removed from the queue
+    assertEquals(la.list.size(), loopLen - asyncAppenderBase.getNumberOfElementsInQueue());
+    
+    //resume the thread to let it finish processing
     asyncAppenderBase.worker.resume();
-    asyncAppenderBase.stop();
-  }
-  
-  @Test
-  public void hookThreadInstalledDuringStart() {
-    ListAppender la = delayingListAppender;
-    asyncAppenderBase.addAppender(la);
-    asyncAppenderBase.start();
     
-    assertTrue(Runtime.getRuntime().removeShutdownHook(asyncAppenderBase.hook));
-  }
-  
-  @Test
-  public void hookThreadRemovedDuringStop() {
-    ListAppender la = delayingListAppender;
-    asyncAppenderBase.addAppender(la);
-    asyncAppenderBase.start();
-    asyncAppenderBase.stop();
-    assertFalse(Runtime.getRuntime().removeShutdownHook(asyncAppenderBase.hook));
+    asyncAppenderBase.worker.join();
+    
+    //confirms that all entries do end up being flushed if we wait long enough
+    verify(la, loopLen);
   }
 
   private void verify(ListAppender la, int expectedSize) {
