@@ -17,10 +17,10 @@ import static ch.qos.logback.core.CoreConstants.CODES_URL;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
-import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.status.ErrorStatus;
 
@@ -45,7 +45,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
   /**
    * All synchronization in this class is done via the lock object.
    */
-  protected LogbackLock lock = new LogbackLock();
+  protected final ReentrantLock lock = new ReentrantLock(true);
 
   /**
    * This is the {@link OutputStream outputStream} where output will be written.
@@ -111,9 +111,12 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
    * Stopped appenders cannot be reused.
    */
   public void stop() {
-    synchronized (lock) {
+    lock.lock();
+    try {
       closeOutputStream();
       super.stop();
+    } finally {
+      lock.unlock();
     }
   }
 
@@ -170,7 +173,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
    *          An already opened OutputStream.
    */
   public void setOutputStream(OutputStream outputStream) {
-    synchronized (lock) {
+    lock.lock();
+    try {
       // close any previously opened output stream
       closeOutputStream();
 
@@ -181,6 +185,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
       }
 
       encoderInit();
+    } finally {
+      lock.unlock();
     }
   }
 
@@ -208,8 +214,11 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
       // the synchronization prevents the OutputStream from being closed while we
       // are writing. It also prevents multiple threads from entering the same
       // converter. Converters assume that they are in a synchronized block.
-      synchronized (lock) {
+      lock.lock();
+      try {
         writeOut(event);
+      } finally {
+        lock.unlock();
       }
     } catch (IOException ioe) {
       // as soon as an exception occurs, move to non-started state

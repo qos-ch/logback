@@ -126,7 +126,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
    * Implemented by delegating most of the rollover work to a rolling policy.
    */
   public void rollover() {
-    synchronized (lock) {
+    lock.lock();
+    try {
       // Note: This method needs to be synchronized because it needs exclusive
       // access while it closes and then re-opens the target file.
       //
@@ -153,6 +154,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
       } catch (IOException e) {
         addError("setFile(" + fileName + ", false) call failed.", e);
       }
+    } finally {
+      lock.unlock();
     }
   }
 

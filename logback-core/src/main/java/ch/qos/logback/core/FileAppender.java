@@ -136,7 +136,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
    *          The path to the log file.
    */
   public void openFile(String file_name) throws IOException {
-    synchronized (lock) {
+    lock.lock();
+    try {
       File file = new File(file_name);
       if (FileUtil.isParentDirectoryCreationRequired(file)) {
         boolean result = FileUtil.createMissingParentDirectories(file);
@@ -150,6 +151,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
           file, append);
       resilientFos.setContext(context);
       setOutputStream(resilientFos);
+    } finally {
+      lock.unlock();
     }
   }
 
