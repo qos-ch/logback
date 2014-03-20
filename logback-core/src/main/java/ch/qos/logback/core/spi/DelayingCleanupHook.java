@@ -11,11 +11,10 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.spi;
+package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.spi.ShutdownHookBase;
 
 /**
  * ShutdownHook implementation that stops the Logback context after a specified
