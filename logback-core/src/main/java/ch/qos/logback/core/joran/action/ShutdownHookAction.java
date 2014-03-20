@@ -16,9 +16,9 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.hook.ShutdownHookBase;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.spi.ShutdownHookBase;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**

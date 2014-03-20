@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.spi;
+package ch.qos.logback.core.hook;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
