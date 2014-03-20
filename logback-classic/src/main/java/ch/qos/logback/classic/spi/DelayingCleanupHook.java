@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.classic.spi;
 
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.spi.ShutdownHookBase;
 
 /**
@@ -53,9 +53,9 @@ public class DelayingCleanupHook extends ShutdownHookBase {
     
     Context hookContext = getContext();
     
-    if (hookContext instanceof LoggerContext) {
-        LoggerContext context = (LoggerContext) hookContext;
-        context.stop();
+    if (hookContext instanceof ContextBase) {
+      ContextBase context = (ContextBase) hookContext;
+      context.stop();
     }
   }
 }
