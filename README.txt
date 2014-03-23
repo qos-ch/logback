@@ -1,4 +1,3 @@
-
 Thank you for downloading logback, the reliable, generic, fast and
 flexible logging library for Java.
 
@@ -9,7 +8,7 @@ Building logback
 
 Building logback is documented at:
 
-  http://logback.qos.ch/manual/introduction.html#BuildingLogback
+  http://logback.qos.ch/setup.html#ide
 
 In case of problems
 ===================
