@@ -233,4 +233,13 @@ public class SyslogAppenderTest {
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     logger.info("hello");
   }
+
+  @Test
+  public void unknownHostShouldNotCauseStopToFail() {
+    // See LOGBACK-960
+    sa.setSyslogHost("unknown.host");
+    sa.setFacility("MAIL");
+    sa.start();
+    sa.stop();
+  }
 }
