@@ -143,4 +143,9 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
   public void setInsertHeaders(boolean insertHeaders) {
     this.insertHeaders = insertHeaders;
   }
+
+  @Override
+  protected String getEventIdColName() {
+	return "EVENT_ID";
+  }
 }

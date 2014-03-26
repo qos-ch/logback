@@ -38,6 +38,8 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
   protected boolean cnxSupportsBatchUpdates = false;
   protected SQLDialect sqlDialect;
 
+  protected abstract String getEventIdColName(); 
+  
   protected abstract Method getGeneratedKeysMethod();
 
   protected abstract String getInsertSQL();
@@ -91,7 +93,7 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
       PreparedStatement insertStatement;
 
       if (cnxSupportsGetGeneratedKeys) {
-        String EVENT_ID_COL_NAME = "EVENT_ID";
+        String EVENT_ID_COL_NAME = getEventIdColName();
         // see
         if (connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
           EVENT_ID_COL_NAME = EVENT_ID_COL_NAME.toLowerCase();
