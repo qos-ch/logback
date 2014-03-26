@@ -40,6 +40,11 @@
 
     <p>Fixed NPE when substituting blank variables
     (<a href="http://jira.qos.ch/browse/LOGBACK-959">LOGBACK-959</a>)
+
+    <p>Fixed <code>NullPointerException</code> that occurs when stopping a
+    <code>SyslogAppender</code> that did not properly initialize, e.g.,
+    due to a hostname resolution failure.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-960">LOGBACK-960</a>)
     </p>
 
     <hr width="80%" align="center" />
