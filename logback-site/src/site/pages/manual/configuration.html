@@ -98,7 +98,17 @@
         classpath</a>..</p>
       </li>
       
-      <li><p>If neither file is found, logback configures itself
+      <li><p>If no such file is found, and the executing JVM has the  
+      <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
+      ServiceLoader</a> (JDK 6 and above) the ServiceLoader will be used to resolve an 
+      implementation of <a href="../xref/ch/qos/logback/classic/spi/Configurator.html">
+      <code>com.qos.logback.classic.spi.Configurator</code></a>.
+      The first implementation found will be used. 
+      See <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
+      ServiceLoader documentation for more details</a>.
+      </li>
+      
+      <li><p>If none of the above succeeds, logback configures itself
       automatically using the <a
       href="../xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>
       which will cause logging output to be directed to the console.

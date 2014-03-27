@@ -23,6 +23,7 @@ import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -59,7 +60,8 @@ public class ContextInitializer {
     if (url == null) {
       throw new IllegalArgumentException("URL argument cannot be null");
     }
-    if (url.toString().endsWith("groovy")) {
+    final String urlString = url.toString();
+    if (urlString.endsWith("groovy")) {
       if (EnvUtil.isGroovyAvailable()) {
         // avoid directly referring to GafferConfigurator so as to avoid
         // loading  groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
@@ -69,7 +71,7 @@ public class ContextInitializer {
         sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.",
                 loggerContext));
       }
-    } else if (url.toString().endsWith("xml")) {
+    } else if (urlString.endsWith("xml")) {
       JoranConfigurator configurator = new JoranConfigurator();
       configurator.setContext(loggerContext);
       configurator.doConfigure(url);
@@ -149,7 +151,18 @@ public class ContextInitializer {
     if (url != null) {
       configureByResource(url);
     } else {
-      BasicConfigurator.configure(loggerContext);
+      Configurator c = EnvUtil.loadFromServiceLoader(Configurator.class);
+      if (c != null) {
+        try {
+          c.setContext(loggerContext);
+          c.configure(loggerContext);
+        } catch (Exception e) {
+          throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader", 
+              c != null ? c.getClass().getCanonicalName() : "null"), e);
+        }
+      } else {
+        BasicConfigurator.configure(loggerContext);
+      }
     }
   }
 
