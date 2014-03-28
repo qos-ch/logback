@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.slf4j.Marker;
 
+import ch.qos.logback.classic.db.names.ColumnName;
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
 import ch.qos.logback.classic.spi.CallerData;
@@ -49,9 +50,11 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
   protected String insertPropertiesSQL;
   protected String insertExceptionSQL;
   protected String insertSQL;
+  protected String eventIdColName;
   protected static final Method GET_GENERATED_KEYS_METHOD;
 
   private DBNameResolver dbNameResolver;
+
 
   static final int TIMESTMP_INDEX = 1;
   static final int  FORMATTED_MESSAGE_INDEX  = 2;
@@ -97,6 +100,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     insertExceptionSQL = SQLBuilder.buildInsertExceptionSQL(dbNameResolver);
     insertPropertiesSQL = SQLBuilder.buildInsertPropertiesSQL(dbNameResolver);
     insertSQL = SQLBuilder.buildInsertSQL(dbNameResolver);
+    eventIdColName = dbNameResolver.getColumnName(ColumnName.EVENT_ID);
     super.start();
   }
 
@@ -321,5 +325,10 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
       exceptionStatement.executeBatch();
     }
     exceptionStatement.close();
+  }
+
+  @Override
+  protected String getEventIdColName() {
+	return eventIdColName;
   }
 }
