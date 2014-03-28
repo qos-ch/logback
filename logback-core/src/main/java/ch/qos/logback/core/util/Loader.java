@@ -54,9 +54,9 @@ public class Loader {
                   // Using SecurityException instead of AccessControlException.
                   // See bug LOGBACK-760.
                   return false;
-                }catch(Exception ex ){ //fixed for LOGBACK-952 
-                    ex.printStackTrace();
-                    return false;
+                } catch (Exception ex) { //fixed for LOGBACK-952 
+                  ex.printStackTrace();
+                  return false;
                 }
               }
             });
