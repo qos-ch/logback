@@ -51,7 +51,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     try {
-      sos = new SyslogOutputStream(syslogHost, port);
+      sos = createOutputStream();
 
       final int systemDatagramSize = sos.getSendBufferSize();
       if (maxMessageSize == 0) {
@@ -78,6 +78,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
       super.start();
     }
   }
+
+  abstract public SyslogOutputStream createOutputStream() throws UnknownHostException, SocketException;
 
   abstract public Layout<E> buildLayout();
 

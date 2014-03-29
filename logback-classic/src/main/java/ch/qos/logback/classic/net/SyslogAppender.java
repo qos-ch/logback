@@ -15,6 +15,8 @@ package ch.qos.logback.classic.net;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.pattern.SyslogStartConverter;
@@ -25,6 +27,7 @@ import ch.qos.logback.classic.util.LevelToSyslogSeverity;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.net.SyslogAppenderBase;
+import ch.qos.logback.core.net.SyslogOutputStream;
 
 /**
  * This appender can be used to send messages to a remote syslog daemon. <p> For
@@ -53,10 +56,15 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     return "%syslogStart{" + getFacility() + "}%nopex{}";
   }
 
-  /*
+  @Override
+  public SyslogOutputStream createOutputStream() throws SocketException, UnknownHostException {
+    return new SyslogOutputStream(getSyslogHost(), getPort());
+  }
+
+  /**
    * Convert a level to equivalent syslog severity. Only levels for printing
    * methods i.e DEBUG, WARN, INFO and ERROR are converted.
-   * 
+   *
    * @see ch.qos.logback.core.net.SyslogAppenderBase#getSeverityForEvent(java.lang.Object)
    */
   @Override
