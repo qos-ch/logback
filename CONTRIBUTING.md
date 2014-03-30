@@ -50,7 +50,7 @@ or [`logback-contrib`](https://github.com/qos-ch/logback-contrib)
 
 ## Patch rules
 
- **P1.** The patch MUST follow the [general logback code style](General style notes).
+ **P1.** The patch MUST follow the [general logback code style](#general-style-notes).
      Disable your IDE's auto-formatting for logback files (unless you're using
      the logback [`codeStyle.xml`](https://github.com/qos-ch/logback/blob/master/codeStyle.xml)
      file in Eclipse).
