@@ -1,10 +1,6 @@
 package ch.qos.logback.classic.net;
 
-import ch.qos.logback.classic.AsyncAppender;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.AsyncAppenderBase;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.layout.EchoLayout;
 import org.jivesoftware.smack.*;
@@ -17,7 +13,7 @@ import org.jivesoftware.smack.packet.Message;
  * @see ch.qos.logback.classic.AsyncAppender
  * @author szalik
  */
-public class XmmpAppender<E> extends AppenderBase<E> {
+public class XmppAppender<E> extends AppenderBase<E> {
 	private ConnectionConfiguration connectionConfiguration;
 	private XMPPConnection conn;
 	private String password;

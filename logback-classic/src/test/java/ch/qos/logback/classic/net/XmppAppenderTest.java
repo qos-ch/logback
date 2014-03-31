@@ -6,15 +6,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 @Ignore
-public class XmmpAppenderTest {
+public class XmppAppenderTest {
 
 	@Test 
 	public void testSimpleMessage() {
 		Logger logger = LoggerFactory.getLogger(getClass());
-		logger.info("Test message 1");
-		logger.warn("Test message 2");
+		logger.warn("Test message 22");
 	}
 
 
@@ -33,6 +31,6 @@ public class XmmpAppenderTest {
 	
 	@After
 	public void waitFor() throws InterruptedException {
-        Thread.sleep(800);
+        Thread.sleep(1800);
 	}
 }

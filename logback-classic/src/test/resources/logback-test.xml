@@ -6,7 +6,7 @@
         </layout>
     </appender>
 
-    <appender name="JABBER" class="ch.qos.logback.classic.net.XmmpAppender">
+    <appender name="JABBER" class="ch.qos.logback.classic.net.XmppAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
             <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
         </layout>
