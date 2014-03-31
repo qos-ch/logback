@@ -1,4 +1,4 @@
-# Bug reports / Github pull-requests
+# Bug reports / GitHub pull-requests
 
 When reporting a bug or submitting a pull request, make sure you search
 [JIRA](http://jira.qos.ch/browse/LOGBACK) and
@@ -66,11 +66,11 @@ or [`logback-contrib`](https://github.com/qos-ch/logback-contrib)
      and indicate the appropriate JIRA key.
 
  **P5.** Pull-requests MUST NOT contain intermediate commits (e.g., bug fixes to
-     your own patch, refactoring your own patch), which should be [squashed and
+     your own patch, refactoring of your own patch), which should be [squashed and
      then force-pushed to your branch](https://github.com/edx/edx-platform/wiki/How-to-Rebase-a-Pull-Request).
      Fewer commits are better.
 
- **P6.** Unit tests MUST be included for behavioral changes or new features.
+ **P6.** Unit tests MUST be included for behavioral changes (especially bug fixes) or new features. 
 
  **P7.** Pull-requests MUST include an update in the release notes that clearly
      describe your changes and the appropriate JIRA key. This will likely
@@ -78,8 +78,8 @@ or [`logback-contrib`](https://github.com/qos-ch/logback-contrib)
 
  **P8.** Pull-requests MUST include updates to logback's documentation pages,
      where necessary. Examples where this would be required:
-        * adding/removing a configuration flag to `SyslogAppender`
-        * adding a new appender to `logback-classic`
+ * adding/removing a configuration flag to `SyslogAppender`
+ * adding a new appender to `logback-classic`
 
 # General style notes
 
@@ -101,9 +101,9 @@ class Foo {
 
 // good
 class Foo {
- public static void main(String[] args) {
-   System.out.println("hello world!");
- }
+  public static void main(String[] args) {
+    System.out.println("hello world!");
+  }
 }
  ```
 
