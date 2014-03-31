@@ -1,0 +1,24 @@
+<configuration debug="true">
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+    </appender>
+
+    <appender name="JABBER" class="ch.qos.logback.classic.net.XmmpAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+        </layout>
+        <xmmpAccount>xmmpappender@jabber.cz</xmmpAccount>
+        <password>qazxswedc</password>
+        <sendToJid>your@Jabber.account</sendToJid>
+    </appender>
+
+
+    <root level="debug">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="JABBER"/>
+    </root>
+
+</configuration>
