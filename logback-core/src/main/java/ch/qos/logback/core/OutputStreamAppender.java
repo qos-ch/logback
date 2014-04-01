@@ -111,8 +111,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
    * Stopped appenders cannot be reused.
    */
   public void stop() {
-    lock.lock();
     try {
+      lock.lock();
       closeOutputStream();
       super.stop();
     } finally {
@@ -173,8 +173,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
    *          An already opened OutputStream.
    */
   public void setOutputStream(OutputStream outputStream) {
-    lock.lock();
     try {
+      lock.lock();
       // close any previously opened output stream
       closeOutputStream();
 
@@ -214,8 +214,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
       // the synchronization prevents the OutputStream from being closed while we
       // are writing. It also prevents multiple threads from entering the same
       // converter. Converters assume that they are in a synchronized block.
-      lock.lock();
       try {
+        lock.lock();
         writeOut(event);
       } finally {
         lock.unlock();

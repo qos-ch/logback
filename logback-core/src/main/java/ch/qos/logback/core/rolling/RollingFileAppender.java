@@ -126,15 +126,36 @@ public class RollingFileAppender<E> extends FileAppender<E> {
    * Implemented by delegating most of the rollover work to a rolling policy.
    */
   public void rollover() {
-    lock.lock();
+
     try {
+        lock.lock();
+
       // Note: This method needs to be synchronized because it needs exclusive
       // access while it closes and then re-opens the target file.
       //
       // make sure to close the hereto active log file! Renaming under windows
       // does not work for open files.
       this.closeOutputStream();
+      attemptRollover();
+      attemptOpenFile();
+    } finally {
+      lock.unlock();
+    }
+  }
 
+    private void attemptOpenFile() {
+      try {
+        // update the currentlyActiveFile LOGBACK-64
+        currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
+
+        // This will also close the file. This is OK since multiple close operations are safe.
+        this.openFile(rollingPolicy.getActiveFileName());
+      } catch (IOException e) {
+        addError("setFile(" + fileName + ", false) call failed.", e);
+      }
+    }
+
+    private void attemptRollover() {
       try {
         rollingPolicy.rollover();
       } catch (RolloverFailure rf) {
@@ -142,24 +163,9 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         // we failed to roll-over, let us not truncate and risk data loss
         this.append = true;
       }
-
-      try {
-        // update the currentlyActiveFile
-        // http://jira.qos.ch/browse/LBCORE-90
-        currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
-
-        // This will also close the file. This is OK since multiple
-        // close operations are safe.
-        this.openFile(rollingPolicy.getActiveFileName());
-      } catch (IOException e) {
-        addError("setFile(" + fileName + ", false) call failed.", e);
-      }
-    } finally {
-      lock.unlock();
     }
-  }
 
-  /**
+    /**
    * This method differentiates RollingFileAppender from its super class.
    */
   @Override
