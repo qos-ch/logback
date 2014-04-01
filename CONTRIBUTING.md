@@ -35,6 +35,9 @@ If your PR falls into the *NO* category, please submit it to either
 or [`logback-contrib`](https://github.com/qos-ch/logback-contrib)
 (CLA required, shorter release cycles than logback, same license as logback).
 
+**Please note that not every pull-request will be accepted even if it
+meets all requirements outlined in this document.**
+
 ## Instructions
  1. [Fork](https://help.github.com/articles/fork-a-repo) the repo on GitHub.
  2. Make a [topic branch](https://github.com/dchelimsky/rspec/wiki/Topic-Branches#using-topic-branches-when-contributing-patches)
@@ -175,5 +178,29 @@ try {
      to aid readability.
 
  **S7.** If you find that a file has two different styles in use, defer to the
-     standard style notes here. You can submit a PR to only fix the formatting.
+     standard style notes here. You can submit a standalone PR to fix the formatting.
 
+ **S8.** No extraneous new-lines. Only one line is necessary between elements.
+ ```java
+// bad
+public foo() {
+  ...
+}
+
+
+
+public bar() {
+  ...
+}
+
+
+
+// good
+public foo() {
+  ...
+}
+
+public bar() {
+  ...
+}
+```
