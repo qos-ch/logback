@@ -110,6 +110,20 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- required by xmmp appender -->
+    <dependency>
+      <groupId>org.igniterealtime.smack</groupId>
+      <artifactId>smack</artifactId>
+      <version>3.2.1</version>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.igniterealtime.smack</groupId>
+      <artifactId>smackx</artifactId>
+      <version>3.2.1</version>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
