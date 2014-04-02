@@ -119,8 +119,8 @@ public class IncludeAction extends Action {
     try {
       return new FileInputStream(pathToFile);
     } catch (IOException ioe) {
-      String errMsg = "File [" + pathToFile + "] does not exist.";
-      addError(errMsg, ioe);
+      String warningMsg = "File [" + pathToFile + "] does not exist.";
+      addWarn(warningMsg);
       return null;
     }
   }
