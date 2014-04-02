@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -252,6 +253,7 @@ public class OptionHelperTest  {
   public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException {
     context.putProperty("var", "");
     OptionHelper.substVars("${var}", context);
+
   }
 
 }

@@ -43,6 +43,8 @@ public class Parser {
   }
 
   public Node parse() throws ScanException {
+    if(tokenList == null || tokenList.isEmpty())
+      return null;
     return E();
   }
 
@@ -71,9 +73,6 @@ public class Parser {
   // T = LITERAL | '${' V '}'
   private Node T() throws ScanException {
     Token t = peekAtCurentToken();
-    if (t == null) {
-      return null;
-    }
 
     switch (t.type) {
       case LITERAL:
