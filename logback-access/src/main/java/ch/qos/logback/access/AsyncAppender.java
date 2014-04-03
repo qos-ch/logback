@@ -21,9 +21,19 @@ import ch.qos.logback.core.AsyncAppenderBase;
  * Asynchronous appender for logback-access.
  *
  * @author Konstantin Pavlov
- * @since 1.1.2
+ * @since 1.1.3
  */
 public class AsyncAppender extends AsyncAppenderBase<IAccessEvent> {
+
+    /**
+     * Prepares {@code eventObject} for deferred processing.
+     *
+     * @param eventObject an event to preprocess
+     */
+    @Override
+    protected void preprocess(IAccessEvent eventObject) {
+        eventObject.prepareForDeferredProcessing();
+    }
 
     /**
      * No events are discardable.
