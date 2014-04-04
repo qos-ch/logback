@@ -3897,7 +3897,28 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     flush the logging events from the queue. This can be achieved by
     <a href="configuration.html#stopContext">stopping the
     LoggerContext</a> which will close all appenders, including any
-    <code>AsyncAppender</code> instances.</p>
+    <code>AsyncAppender</code> instances. <code>AsyncAppender</code>
+    will wait for the worker thread to flush up to the timeout specified
+    in <span class="prop">maxFlushTime</span>. If you find that queued events
+    are being discarded during close of the <code>LoggerContext</code>, you
+    may need to increase the time out. Specifying a value of 0 for 
+    <span class="prop">maxFlushTime</span> will force the <code>AsyncAppender</code>
+    to wait for all queued events to be flushed before returning from 
+   	the stop method.
+    </p>
+    
+    <p><span class="label">Post shutdown cleanup</span>
+    Depending on the mode of JVM shutdown, the worker thread processing the 
+    queued events can be interrupted causing events to be strandeds in the
+    queue. This generally occurs when the <code>LoggerContext</code> is not
+    stopped cleanly or when the JVM terminates outside of the typical control
+    flow. In order to avoid interrupting the worker thread under these 
+    conditions, a shutdown hook can be inserted to the JVM runtime that 
+    <a href="configuration.html#stopContext">stops the LoggerContext properly</a>
+    after JVM shutdown has been initiated. A shutdown hook may also be the
+    preferred method for cleanly shutting down Logback when other shutdown hooks
+    attempt to log events.
+    </p>
 
 
     <p>Here is the list of properties admitted by
@@ -3936,6 +3957,20 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
         href="mdc.html">MDC</a> are copied. You can direct this
         appender to include caller data by setting the <span
         class="prop">includeCallerData</span> property to true.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="async">maxFlushTime</span></td>
+        <td><code>int</code></td>
+        <td>Depending on the queue depth and latency to the referenced appender,
+        the <code>AsyncAppender</code> may take an unacceptable amount of
+        time to fully flush the queue. When the <code>LoggerContext</code> is 
+        stopped, the <code>AsyncAppender stop</code> method waits 
+        up to this timeout for the worker thread to complete. Use 
+        <span class="prop">maxFlushTime</span> to specify a maximum queue flush
+        timeout in milliseconds. Events that cannot be processed within this
+        window are discarded. Semantics of this value are identical to that of 
+        <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html#join(long)">Thread.join(long)</a>.
         </td>
       </tr>
     </table>
