@@ -158,6 +158,63 @@ public class AsyncAppenderBaseTest {
     assertFalse(asyncAppenderBase.isStarted());
     statusChecker.assertContainsMatch("Invalid queue size");
   }
+  
+  @Test
+  public void workerThreadFlushesOnStop() {
+    int loopLen = 5;
+    int maxRuntime = (loopLen + 1) * delayingListAppender.delay;
+    ListAppender la = delayingListAppender;
+    asyncAppenderBase.addAppender(la);
+    asyncAppenderBase.setDiscardingThreshold(0);
+    asyncAppenderBase.setMaxFlushTime(maxRuntime);
+    asyncAppenderBase.start();
+    asyncAppenderBase.worker.suspend();
+
+    for (int i = 0; i < loopLen; i++) {
+      asyncAppenderBase.doAppend(i);
+    }
+    assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
+    assertEquals(0, la.list.size());
+
+    asyncAppenderBase.worker.resume();
+    asyncAppenderBase.stop();
+    
+    assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
+    verify(la, loopLen);
+  }
+  
+  @Test
+  public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
+    int maxRuntime = 1;  //runtime of 0 means wait forever, so use 1 ms instead
+    int loopLen = 10;
+    ListAppender la = delayingListAppender;
+    asyncAppenderBase.addAppender(la);
+    asyncAppenderBase.setMaxFlushTime(maxRuntime);
+    asyncAppenderBase.start();
+    
+    for (int i = 0; i < loopLen; i++) {
+        asyncAppenderBase.doAppend(i);
+      }
+    
+    asyncAppenderBase.stop();
+    
+    //suspend the thread so that we can make the following assertions without race conditions
+    asyncAppenderBase.worker.suspend();
+    
+    //confirms that stop exited when runtime reached
+    statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxRuntime + " ms\\) exceeded. " + 
+        asyncAppenderBase.getNumberOfElementsInQueue() + " queued events may be discarded.");
+    //confirms that the number of events posted are the number of events removed from the queue
+    assertEquals(la.list.size(), loopLen - asyncAppenderBase.getNumberOfElementsInQueue());
+    
+    //resume the thread to let it finish processing
+    asyncAppenderBase.worker.resume();
+    
+    asyncAppenderBase.worker.join();
+    
+    //confirms that all entries do end up being flushed if we wait long enough
+    verify(la, loopLen);
+  }
 
   private void verify(ListAppender la, int expectedSize) {
     assertFalse(la.isStarted());

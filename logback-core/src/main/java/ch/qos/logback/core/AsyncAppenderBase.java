@@ -53,7 +53,15 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   int discardingThreshold = UNDEFINED;
 
   Worker worker = new Worker();
-
+  
+  /**
+   * The default maximum queue flush time allowed during appender stop. If the 
+   * worker takes longer than this time it will exit, discarding any remaining 
+   * items in the queue
+   */
+  public static final int DEFAULT_MAX_FLUSH_TIME = 1000;
+  int maxFlushTime = DEFAULT_MAX_FLUSH_TIME;
+  
   /**
    * Is the eventObject passed as parameter discardable? The base class's implementation of this method always returns
    * 'false' but sub-classes may (and do) override this method.
@@ -95,7 +103,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       discardingThreshold = queueSize / 5;
     addInfo("Setting discardingThreshold to " + discardingThreshold);
     worker.setDaemon(true);
-    worker.setName("AsyncAppender-Worker-" + worker.getName());
+    worker.setName("AsyncAppender-Worker-" + getName());
     // make sure this instance is marked as "started" before staring the worker Thread
     super.start();
     worker.start();
@@ -114,9 +122,18 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     // by sub-appenders
     worker.interrupt();
     try {
-      worker.join(1000);
+      worker.join(maxFlushTime);
+      
+      //check to see if the thread ended and if not add a warning message
+      if(worker.isAlive()) {
+        addWarn("Max queue flush timeout (" + maxFlushTime + " ms) exceeded. " + blockingQueue.size() + 
+            " queued events may be discarded.");
+      }else {
+        addInfo("Queue flush finished successfully within timeout.");
+      }
+      
     } catch (InterruptedException e) {
-      addError("Failed to join worker thread", e);
+      addError("Failed to join worker thread. " + blockingQueue.size() + " queued events may be discarded.", e);
     }
   }
 
@@ -155,6 +172,14 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
   public void setDiscardingThreshold(int discardingThreshold) {
     this.discardingThreshold = discardingThreshold;
+  }
+ 
+  public int getMaxFlushTime() {
+    return maxFlushTime;
+  }
+  
+  public void setMaxFlushTime(int maxFlushTime) {
+    this.maxFlushTime = maxFlushTime;
   }
 
   /**
@@ -230,9 +255,12 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       }
 
       addInfo("Worker thread will flush remaining events before exiting. ");
+
       for (E e : parent.blockingQueue) {
         aai.appendLoopOnAppenders(e);
+        parent.blockingQueue.remove(e);
       }
+      
 
       aai.detachAndStopAllAppenders();
     }
