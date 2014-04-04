@@ -14,22 +14,26 @@
 package ch.qos.logback.classic.util;
 
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.Vector;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -42,7 +46,6 @@ import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.TrivialStatusListener;
-import sun.security.jca.ProviderList;
 import ch.qos.logback.core.util.Loader;
 
 public class ContextInitializerTest {
@@ -58,6 +61,7 @@ public class ContextInitializerTest {
   public void tearDown() throws Exception {
     System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
     System.clearProperty(ContextInitializer.STATUS_LISTENER_CLASS);
+    MockConfigurator.context = null;
   }
 
 
@@ -94,6 +98,25 @@ public class ContextInitializerTest {
     new ContextInitializer(loggerContext).autoConfig();
     Appender<ILoggingEvent> appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
     assertNotNull(appender);
+  }
+  
+  @Test
+  public void autoConfigFromServiceLoaderJDK6andAbove() throws Exception {
+    assumeTrue(!isJDK5());
+    setupMockServiceLoader();
+    assertNull(MockConfigurator.context);
+    new ContextInitializer(loggerContext).autoConfig();
+    assertNotNull(MockConfigurator.context);
+    assertSame(loggerContext, MockConfigurator.context);
+  }
+  
+  @Test
+  public void autoConfigFromServiceLoaderJDK5() throws Exception {
+    assumeTrue(isJDK5());
+    setupMockServiceLoader();
+    assertNull(MockConfigurator.context);
+    new ContextInitializer(loggerContext).autoConfig();
+    assertNull(MockConfigurator.context);
   }
   
   @Test
@@ -156,4 +179,63 @@ public class ContextInitializerTest {
       // pass
     }
   }
+
+  private static boolean isJDK5() {
+    String ver = System.getProperty("java.version");
+    boolean jdk5 = ver.startsWith("1.5.") || ver.equals("1.5");
+    return jdk5;
+  }
+
+  private void setupMockServiceLoader() {
+    final ClassLoader realLoader = EnvUtil.class.getClassLoader();
+    EnvUtil.testServiceLoaderClassLoader = new WrappedClassLoader(realLoader) {
+
+      @Override
+      public Enumeration<URL> getResources(String name) throws IOException {
+        final Enumeration<URL> r;
+        if (name.endsWith("META-INF/services/ch.qos.logback.classic.spi.Configurator")) {
+          Vector<URL> vs = new Vector<URL>();
+          URL u = super.getResource("FAKE_META_INF_SERVICES_ch_qos_logback_classic_spi_Configurator");
+          vs.add(u);
+          return vs.elements();
+        } else {
+          r = super.getResources(name);
+        }
+        return r;
+      }
+    };
+  }
+  
+  static class WrappedClassLoader extends ClassLoader {
+    final ClassLoader delegate;
+    public WrappedClassLoader(ClassLoader delegate) {
+      super();
+      this.delegate = delegate;
+    }
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+      return delegate.loadClass(name);
+    }
+    public URL getResource(String name) {
+      return delegate.getResource(name);
+    }
+    public Enumeration<URL> getResources(String name) throws IOException {
+      return delegate.getResources(name);
+    }
+    public InputStream getResourceAsStream(String name) {
+      return delegate.getResourceAsStream(name);
+    }
+    public void setDefaultAssertionStatus(boolean enabled) {
+      delegate.setDefaultAssertionStatus(enabled);
+    }
+    public void setPackageAssertionStatus(String packageName, boolean enabled) {
+      delegate.setPackageAssertionStatus(packageName, enabled);
+    }
+    public void setClassAssertionStatus(String className, boolean enabled) {
+      delegate.setClassAssertionStatus(className, enabled);
+    }
+    public void clearAssertionStatus() {
+      delegate.clearAssertionStatus();
+    }
+  }
+  
 }
