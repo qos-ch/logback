@@ -202,8 +202,8 @@ public class AsyncAppenderBaseTest {
     asyncAppenderBase.worker.suspend();
     
     //confirms that stop exited when runtime reached
-    statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxRuntime + " ms\\) exceeded. " + 
-        asyncAppenderBase.getNumberOfElementsInQueue() + " queued events may be discarded.");
+    statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxRuntime + " ms\\) exceeded.");
+
     //confirms that the number of events posted are the number of events removed from the queue
     assertEquals(la.list.size(), loopLen - asyncAppenderBase.getNumberOfElementsInQueue());
     

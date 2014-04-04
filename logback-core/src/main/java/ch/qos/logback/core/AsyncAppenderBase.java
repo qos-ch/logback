@@ -126,8 +126,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       
       //check to see if the thread ended and if not add a warning message
       if(worker.isAlive()) {
-        addWarn("Max queue flush timeout (" + maxFlushTime + " ms) exceeded. " + blockingQueue.size() + 
-            " queued events may be discarded.");
+        addWarn("Max queue flush timeout (" + maxFlushTime + " ms) exceeded. Approximately " + blockingQueue.size() +
+            " queued events were possibly discarded.");
       }else {
         addInfo("Queue flush finished successfully within timeout.");
       }
