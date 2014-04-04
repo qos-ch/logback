@@ -698,6 +698,16 @@ import ch.qos.logback.classic.LoggerContext;
    href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)">contextDestroyed</a>
    method of <code>ServletContextListener</code> in order to stop
    logback-classic and release resources.
+   </p>
+   
+   <p>Under certain scenarios, it may be necessary to have logback stop
+   its context during JVM shutdown. For instance, in the event that
+   application shutdown hooks attempt to write log events. If the context
+   is stopped before the JVM begins to shutdown, these shutdown hooks will
+   not be able to log their events. Logback provides a shutdown hook 
+   configuration element for triggering closure of the Logback context upon
+   JVM shutdown.
+   </p>
 
    <h2 class="doAnchor" name="syntax">Configuration file syntax</h2>
 
