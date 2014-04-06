@@ -30,7 +30,6 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
-import ch.qos.logback.core.util.CloseUtil;
 
 /**
  * A logging socket server that is configurable using Joran.
@@ -50,7 +49,6 @@ public class ServerSocketReceiver extends ReceiverBase {
   
   private String address;
 
-  private ServerSocket serverSocket;
   private ServerRunner runner;
 
   private int corePoolSize = CoreConstants.CORE_POOL_SIZE;
@@ -74,7 +72,6 @@ public class ServerSocketReceiver extends ReceiverBase {
     }
     catch (Exception ex) {
       addError("server startup error: " + ex, ex);
-      CloseUtil.closeQuietly(serverSocket);
       return false;
     }
   }
