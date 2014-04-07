@@ -6,6 +6,7 @@
 
 # This SQL script creates the required tables by ch.qos.logback.access.db.DBAppender.
 #
+<<<<<<< HEAD
 # It is intended for MySQL databases. It has been tested on MySQL 5.5.31 with 
 # INNODB tables.
 
@@ -17,6 +18,19 @@ COMMIT;
 
 BEGIN;
 CREATE TABLE access_event 
+=======
+# It is intended for MySQL databases. It has been tested on MySQL 5.0.22 with 
+# INNODB tables.
+
+
+BEGIN;
+DROP TABLE IF EXISTS access_event_header;
+DROP TABLE IF EXISTS access_event;
+COMMIT;
+
+BEGIN;
+CREATE TABLE ACCESS_EVENT 
+>>>>>>> branch 'master' of https://github.com/kalgon/logback.git
   (
     timestmp          BIGINT NOT NULL,
     requestURI        VARCHAR(254),
