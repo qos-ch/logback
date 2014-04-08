@@ -23,6 +23,8 @@ import java.text.DateFormatSymbols;
  */
 class CharSequenceToRegexMapper {
 
+  DateFormatSymbols symbols = DateFormatSymbols.getInstance();
+
   String toRegex(CharSequenceState css) {
     final int occurrences = css.occurrences;
     final char c = css.c;
@@ -51,7 +53,11 @@ class CharSequenceToRegexMapper {
       case 'S':
         return number(occurrences);
       case 'E':
-        return ".{2,12}";
+        if (occurrences >= 4) {
+          return getRegexForLongDaysOfTheWeek();
+        } else {
+          return getRegexForShortDaysOfTheWeek();
+        }
       case 'a':
         return ".{2}";
       case 'Z':
@@ -75,19 +81,30 @@ class CharSequenceToRegexMapper {
   }
 
 
+  private String getRegexForLongDaysOfTheWeek() {
+    String[] shortMonths = symbols.getWeekdays();
+    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
+    return ".{" + minMax[0] + "," + minMax[1] + "}";
+  }
+
+  private String getRegexForShortDaysOfTheWeek() {
+    String[] shortMonths = symbols.getShortWeekdays();
+    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
+    return ".{" + minMax[0] + "," + minMax[1] + "}";
+  }
+
+
   private String number(int occurrences) {
     return "\\d{" + occurrences + "}";
   }
 
   private String getRegexForLongMonths() {
-    DateFormatSymbols symbols = DateFormatSymbols.getInstance();
     String[] shortMonths = symbols.getMonths();
     int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
     return ".{" + minMax[0] + "," + minMax[1] + "}";
   }
 
   String getRegexForShortMonths() {
-    DateFormatSymbols symbols = DateFormatSymbols.getInstance();
     String[] shortMonths = symbols.getShortMonths();
     int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
     return ".{" + minMax[0] + "," + minMax[1] + "}";

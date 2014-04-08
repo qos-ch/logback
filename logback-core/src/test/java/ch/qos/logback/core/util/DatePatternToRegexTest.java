@@ -84,9 +84,13 @@ public class DatePatternToRegexTest {
 
   @Test
   public void dayInWeek() {
-    doTest("yyyy-MMM-E", CAL_2009_08_3_NIGHT);
-    doTest("yyyy-MMM-EE", CAL_2009_08_3_NIGHT);
-    doTest("yyyy-MMM-EEE", CAL_2009_08_3_NIGHT);
+    doTest("EE", CAL_2009_08_3_NIGHT);
+    doTest("EE", CAL_2009_08_3_NIGHT, CZ_LOCALE);
+    doTest("EE", CAL_2009_08_3_NIGHT, KO_LOCALE);
+
+    doTest("EEEE", CAL_2009_08_3_NIGHT);
+    doTest("EEEE", CAL_2009_08_3_NIGHT, CZ_LOCALE);
+    doTest("EEEE", CAL_2009_08_3_NIGHT, KO_LOCALE);
   }
 
   @Test
