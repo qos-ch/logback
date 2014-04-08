@@ -94,6 +94,11 @@ public class ContextBase implements Context, LifeCycle {
     objectMap.put(key, value);
   }
 
+  public void removeObject(String key) {
+    objectMap.remove(key);
+  }
+
+
   public String getName() {
     return name;
   }
@@ -121,7 +126,7 @@ public class ContextBase implements Context, LifeCycle {
    * shutdown hook
    */
   public void reset() {
-	removeShutdownHook();
+	  removeShutdownHook();
     getLifeCycleManager().reset();
     propertyMap.clear();
     objectMap.clear();
@@ -175,10 +180,10 @@ public class ContextBase implements Context, LifeCycle {
   private void removeShutdownHook() {
     Thread hook = (Thread)getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
     if(hook != null) {
-      putObject(CoreConstants.SHUTDOWN_HOOK_THREAD, null);
+      removeObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
       try {
         Runtime.getRuntime().removeShutdownHook(hook);
-      }catch(IllegalStateException e) {
+      } catch(IllegalStateException e) {
         //if JVM is already shutting down, ISE is thrown
         //no need to do anything else
       }
