@@ -33,11 +33,12 @@ class CharSequenceToRegexMapper {
       case 'z':
         return ".*";
       case 'M':
-        if (occurrences >= 4) {
-          return getRegexForLongMonths();
-        } else {
+        if(occurrences <= 2)
+          return number(occurrences);
+        else if (occurrences == 3)
           return getRegexForShortMonths();
-        }
+        else
+          return getRegexForLongMonths();
       case 'y':
       case 'w':
       case 'W':
