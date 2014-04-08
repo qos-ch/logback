@@ -152,8 +152,7 @@ public class IncludeActionTest {
   public void noFileFound() throws JoranException {
     System.setProperty(INCLUDE_KEY, "toto");
     tc.doConfigure(TOP_BY_FILE);
-    assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
-    assertTrue(statusChecker.containsException(FileNotFoundException.class));
+    assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
   }
 
   @Test
@@ -197,12 +196,7 @@ public class IncludeActionTest {
   public void unknownURL() throws JoranException {
     System.setProperty(INCLUDE_KEY, "http://logback2345.qos.ch");
     tc.doConfigure(TOP_BY_URL);
-    assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
-    // OS X throws IOException instead of UnknownHostException
-    // http://jira.qos.ch/browse/LBCORE-129
-    // This behavior has been observed on Windows XP as well
-    assertTrue(statusChecker.containsException(UnknownHostException.class)
-        || statusChecker.containsException(IOException.class));
+    assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
   }
 
   @Test

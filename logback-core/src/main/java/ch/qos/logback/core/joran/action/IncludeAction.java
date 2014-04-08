@@ -119,8 +119,7 @@ public class IncludeAction extends Action {
     try {
       return new FileInputStream(pathToFile);
     } catch (IOException ioe) {
-      String warningMsg = "File [" + pathToFile + "] does not exist.";
-      addWarn(warningMsg);
+      optionalWarning("File [" + pathToFile + "] does not exist.");
       return null;
     }
   }
@@ -143,10 +142,7 @@ public class IncludeAction extends Action {
     try {
       return url.openStream();
     } catch (IOException e) {
-      if (!optional) {
-        String errMsg = "Failed to open [" + url.toString() + "]";
-        addError(errMsg, e);
-      }
+      optionalWarning("Failed to open [" + url.toString() + "]");
       return null;
     }
   }
@@ -154,14 +150,16 @@ public class IncludeAction extends Action {
   URL resourceAsURL(String resourceAttribute) {
     URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
     if (url == null) {
-      if (!optional) {
-        String errMsg = "Could not find resource corresponding to ["
-                + resourceAttribute + "]";
-        addError(errMsg);
-      }
+      optionalWarning("Could not find resource corresponding to [" + resourceAttribute + "]");
       return null;
     } else
       return url;
+  }
+
+  private void optionalWarning(String msg) {
+    if (!optional) {
+      addWarn(msg);
+    }
   }
 
   URL filePathAsURL(String path) {
