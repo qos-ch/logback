@@ -35,6 +35,11 @@
     the appender to flush events, up to a maximum delay, during a stop
     of the LoggerContext. This can be used to ensure that all queued
     events are flushed.</p>
+    
+    <p>Added new configuration element <code>shutdownHook</code> to allow the
+    user to specify a ShutdownHook implementation that will stop the Logback
+    context upon JVM exit.
+    </p>
 
     <h3>2nd of April, 2014 - Release of version 1.1.2</h3>
 

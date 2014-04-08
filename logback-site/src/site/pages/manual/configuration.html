@@ -708,6 +708,13 @@ import ch.qos.logback.classic.LoggerContext;
    href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)">contextDestroyed</a>
    method of <code>ServletContextListener</code> in order to stop
    logback-classic and release resources.
+   </p>
+   
+   <p>In some cases, such as shutdown hooks expect Logback to be available,
+   it may not be possible to stop logback-classic prior to shotdown of the
+   Java Virtual Machine. See below for how to <a href="#stopContextWithHook">
+   Automatically Stop logback-classic</a>.
+   </p>
 
    <h2 class="doAnchor" name="syntax">Configuration file syntax</h2>
 
@@ -1982,7 +1989,37 @@ fileName=myApp.log
   <p>
   </p>
   
-
+  <h2 class="doAnchor" name="stopContextWithHook">Stopping logback-classic 
+   Automatically</h2>
+   
+   <p>Under certain scenarios, it may be necessary to have logback stop
+   its context during JVM shutdown, for instance in the event that
+   application shutdown hooks attempt to write log events. If the context
+   is stopped before the JVM begins to shutdown, these shutdown hooks will
+   not be able to log their events. Logback provides a shutdown hook 
+   configuration element for triggering closure of the Logback context automatically
+   during JVM shutdown.
+   </p>
+   
+   <h3 class=doAnchor" name="delayingShutdownHook">Delaying Shutdown Hook</h3>
+   <p>The default implementation, ch.qos.logback.core.hook.DelayingShutdownHook, simply 
+   waits for the specified <code>delay</code> before calling <code>Context.stop()</code>.
+   The default <code>delay</code> is 0 ms, indicating immediate shutdown. Semantics of
+   the <code>delay</code> parameter are the same as those of <code>Thread.sleep(long)</code>.
+   </p>
+   
+    <pre class="prettyprint source">&lt;configuration debug="true">
+  <b>&lt;shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
+    &lt;delay>1000&lt;/delay>
+  &lt;/shutdownHook></b>
+  .... 
+&lt;/configuration></pre>
+   
+   <h3 class="doAnchor" name="customShutdownHook">Custom Shutdown Hook</h3>
+   <p>It is possible to provide a different implementation of 
+   <code>ch.qos.logback.core.hook.ShutdownHook</code> if alternate shutdown logic
+   is needed for your application. 
+   </p>
 
   <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
