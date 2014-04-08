@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
+import java.util.Locale;
+
 /**
  * This class supports mapping character sequences to
  * regular expressions as appropriate for SimpleDateFormatter.
@@ -21,6 +23,36 @@ package ch.qos.logback.core.util;
  * 
  */
 class CharSequenceToRegexMapper {
+
+  String getMonthRegexByLocale(){
+    Locale lo = Locale.getDefault();
+  
+    if(lo.getLanguage().equals("bg")){ 
+      return ".{1,11}"; // Bulgarian
+    }
+    else if(lo.getLanguage().equals("cs")){
+      // 
+      return ".{1,8}";  // Czech
+    }
+    else if(lo.getLanguage().equals("hi")){
+      return ".{2,8}";  // Hindi
+     }
+    else if(lo.getLanguage().equals("ja")){
+      return ".{1,3}";  // Japanese
+    }
+    else if(lo.getLanguage().equals("ko")){
+      return ".{2,3}";  // Korean
+    }
+    else if(lo.getLanguage().equals("vi")){
+      return ".{5,14}"; // Vietnamese
+    }
+    else if(lo.getLanguage().equals("zh")){
+      return ".{2,3}";  // Chinese
+    }
+    else{
+      return ".{3,12}";
+    }
+  }
 
   String toRegex(CharSequenceState css) {
     final int occurrences = css.occurrences;
@@ -31,7 +63,7 @@ class CharSequenceToRegexMapper {
       return ".*";
     case 'M':
       if (occurrences >= 3) {
-        return ".{3,12}";
+    	return  getMonthRegexByLocale();
       } else {
         return number(occurrences);
       }
@@ -50,7 +82,10 @@ class CharSequenceToRegexMapper {
     case 'S':
       return number(occurrences);
     case 'E':
-      return ".{2,12}";
+      if (occurrences <= 3) {
+        return ".{1,8}";
+      }
+      return ".{3,12}";
     case 'a':
       return ".{2}";
     case 'Z':
