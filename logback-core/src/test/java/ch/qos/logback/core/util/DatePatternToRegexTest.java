@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import org.junit.BeforeClass;
@@ -29,6 +30,9 @@ import ch.qos.logback.core.CoreConstants;
 public class DatePatternToRegexTest {
   static Calendar CAL_2009_08_3_NIGHT = Calendar.getInstance();
   static Calendar CAL_2009_08_3_MORNING = Calendar.getInstance();
+  static Locale CZ_LOCALE = new Locale("cs", "CZ");
+  static Locale KO_LOCALE = new Locale("ko", "KR");
+
 
   @BeforeClass
   public static void setUpCalendars() {
@@ -42,19 +46,28 @@ public class DatePatternToRegexTest {
   @Test
   public void ISO8601() {
     doTest(CoreConstants.ISO8601_PATTERN, CAL_2009_08_3_NIGHT);
-    ;
   }
 
   @Test
   public void withQuotes() {
     doTest("yyyy-MM-dd'T'HH:mm:ss,SSS", CAL_2009_08_3_NIGHT);
-    ;
+
   }
 
   @Test
   public void month() {
     doTest("yyyy-MMM-dd", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MMM-dd", CAL_2009_08_3_NIGHT, CZ_LOCALE);
+    doTest("yyyy-MMM-dd", CAL_2009_08_3_NIGHT, KO_LOCALE);
+
     doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT, CZ_LOCALE);
+    doTest("yyyy-MMMM-dd", CAL_2009_08_3_NIGHT, KO_LOCALE);
+
+  }
+
+  public void monthWithLocal() {
+
   }
 
   @Test
@@ -82,23 +95,39 @@ public class DatePatternToRegexTest {
     doTest("yyyy-MM-dd a", CAL_2009_08_3_MORNING);
   }
 
-
-  void doTest(String datePattern, Calendar calendar, boolean slashified) {
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    DateTokenConverter dtc = makeDTC(datePattern);
-    verify(sdf, calendar, dtc, slashified);
-  }
-
   void doTest(String datePattern, Calendar calendar) {
-    doTest(datePattern, calendar, false);
+    doTest(datePattern, calendar, null);
   }
 
-
-  void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc, boolean slashified) {
-    String expected = sdf.format(calendar.getTime());
-    if (slashified) {
-      expected = expected.replace('\\', '/');
+  void doTest(String datePattern, Calendar calendar, Locale locale) {
+    Locale oldDefaultLocale = Locale.getDefault();
+    if (locale != null) {
+      Locale.setDefault(locale);
     }
+
+    try {
+      SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
+      DateTokenConverter dtc = makeDTC(datePattern);
+      verify(sdf, calendar, dtc);
+    } finally {
+      if (locale != null)
+        Locale.setDefault(oldDefaultLocale);
+
+    }
+  }
+
+  Locale locale;
+
+//  void doTest(String datePattern, Calendar calendar) {
+//    doTest(datePattern, calendar, false);
+//  }
+
+
+  void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc) {
+    String expected = sdf.format(calendar.getTime());
+//    if (slashified) {
+//      expected = expected.replace('\\', '/');
+//    }
     String regex = dtc.toRegex();
     //System.out.println("expected="+expected);
     //System.out.println(regex);

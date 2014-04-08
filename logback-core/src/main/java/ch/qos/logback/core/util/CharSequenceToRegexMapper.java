@@ -13,12 +13,13 @@
  */
 package ch.qos.logback.core.util;
 
+import java.text.DateFormatSymbols;
+
 /**
  * This class supports mapping character sequences to
  * regular expressions as appropriate for SimpleDateFormatter.
- * 
+ *
  * @author Ceki
- * 
  */
 class CharSequenceToRegexMapper {
 
@@ -26,54 +27,80 @@ class CharSequenceToRegexMapper {
     final int occurrences = css.occurrences;
     final char c = css.c;
     switch (css.c) {
-    case 'G':
-    case 'z':
-      return ".*";
-    case 'M':
-      if (occurrences >= 3) {
-        return ".{3,12}";
-      } else {
+      case 'G':
+      case 'z':
+        return ".*";
+      case 'M':
+        if (occurrences >= 4) {
+          return getRegexForLongMonths();
+        } else {
+          return getRegexForShortMonths();
+        }
+      case 'y':
+      case 'w':
+      case 'W':
+      case 'D':
+      case 'd':
+      case 'F':
+      case 'H':
+      case 'k':
+      case 'K':
+      case 'h':
+      case 'm':
+      case 's':
+      case 'S':
         return number(occurrences);
-      }
-    case 'y':
-    case 'w':
-    case 'W':
-    case 'D':
-    case 'd':
-    case 'F':
-    case 'H':
-    case 'k':
-    case 'K':
-    case 'h':
-    case 'm':
-    case 's':
-    case 'S':
-      return number(occurrences);
-    case 'E':
-      return ".{2,12}";
-    case 'a':
-      return ".{2}";
-    case 'Z':
-      return "(\\+|-)\\d{4}";
-    case '.':
-      return "\\.";
-    case '\\': 
-      throw new IllegalStateException("Forward slashes are not allowed");
-    case '\'':
-      if (occurrences == 1) {
-        return "";
-      }
-      throw new IllegalStateException("Too many single quotes");
-    default:
-      if (occurrences == 1) {
-        return "" + c;
-      } else {
-        return c + "{" + occurrences + "}";
-      }
+      case 'E':
+        return ".{2,12}";
+      case 'a':
+        return ".{2}";
+      case 'Z':
+        return "(\\+|-)\\d{4}";
+      case '.':
+        return "\\.";
+      case '\\':
+        throw new IllegalStateException("Forward slashes are not allowed");
+      case '\'':
+        if (occurrences == 1) {
+          return "";
+        }
+        throw new IllegalStateException("Too many single quotes");
+      default:
+        if (occurrences == 1) {
+          return "" + c;
+        } else {
+          return c + "{" + occurrences + "}";
+        }
     }
   }
 
+
   private String number(int occurrences) {
     return "\\d{" + occurrences + "}";
+  }
+
+  private String getRegexForLongMonths() {
+    DateFormatSymbols symbols = DateFormatSymbols.getInstance();
+    String[] shortMonths = symbols.getMonths();
+    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
+    return ".{" + minMax[0] + "," + minMax[1] + "}";
+  }
+
+  String getRegexForShortMonths() {
+    DateFormatSymbols symbols = DateFormatSymbols.getInstance();
+    String[] shortMonths = symbols.getShortMonths();
+    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
+    return ".{" + minMax[0] + "," + minMax[1] + "}";
+  }
+
+  private int[] findMinMaxLengthsInSymbols(String[] symbols) {
+    int min = Integer.MAX_VALUE;
+    int max = 0;
+    for (String symbol : symbols) {
+      int len = symbol.length();
+      min = Math.min(min, len);
+      max = Math.max(max, len);
+    }
+    return new int[]{min, max};
   }
 }
