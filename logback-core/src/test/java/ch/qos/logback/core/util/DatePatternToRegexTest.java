@@ -96,7 +96,13 @@ public class DatePatternToRegexTest {
   @Test
   public void amPm() {
     doTest("yyyy-MM-dd a", CAL_2009_08_3_NIGHT);
+    doTest("yyyy-MM-dd a", CAL_2009_08_3_NIGHT, CZ_LOCALE);
+    doTest("yyyy-MM-dd a", CAL_2009_08_3_NIGHT, KO_LOCALE);
+
     doTest("yyyy-MM-dd a", CAL_2009_08_3_MORNING);
+    doTest("yyyy-MM-dd a", CAL_2009_08_3_MORNING, CZ_LOCALE);
+    doTest("yyyy-MM-dd a", CAL_2009_08_3_MORNING, KO_LOCALE);
+
   }
 
   void doTest(String datePattern, Calendar calendar) {

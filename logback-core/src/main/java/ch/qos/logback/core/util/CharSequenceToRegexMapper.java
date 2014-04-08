@@ -33,11 +33,12 @@ class CharSequenceToRegexMapper {
       case 'z':
         return ".*";
       case 'M':
-        if (occurrences >= 4) {
-          return getRegexForLongMonths();
-        } else {
+        if (occurrences <= 2)
+          return number(occurrences);
+        else if (occurrences == 3)
           return getRegexForShortMonths();
-        }
+        else
+          return getRegexForLongMonths();
       case 'y':
       case 'w':
       case 'W':
@@ -59,7 +60,7 @@ class CharSequenceToRegexMapper {
           return getRegexForShortDaysOfTheWeek();
         }
       case 'a':
-        return ".{2}";
+        return getRegexForAmPms();
       case 'Z':
         return "(\\+|-)\\d{4}";
       case '.':
@@ -80,33 +81,32 @@ class CharSequenceToRegexMapper {
     }
   }
 
-
-  private String getRegexForLongDaysOfTheWeek() {
-    String[] shortMonths = symbols.getWeekdays();
-    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
-    return ".{" + minMax[0] + "," + minMax[1] + "}";
-  }
-
-  private String getRegexForShortDaysOfTheWeek() {
-    String[] shortMonths = symbols.getShortWeekdays();
-    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
-    return ".{" + minMax[0] + "," + minMax[1] + "}";
-  }
-
-
   private String number(int occurrences) {
     return "\\d{" + occurrences + "}";
   }
 
+  private String getRegexForAmPms() {
+    return symbolArrayToRegex(symbols.getAmPmStrings());
+  }
+
+  private String getRegexForLongDaysOfTheWeek() {
+    return symbolArrayToRegex(symbols.getWeekdays());
+  }
+
+  private String getRegexForShortDaysOfTheWeek() {
+    return symbolArrayToRegex(symbols.getShortWeekdays());
+  }
+
   private String getRegexForLongMonths() {
-    String[] shortMonths = symbols.getMonths();
-    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
-    return ".{" + minMax[0] + "," + minMax[1] + "}";
+    return symbolArrayToRegex(symbols.getMonths());
   }
 
   String getRegexForShortMonths() {
-    String[] shortMonths = symbols.getShortMonths();
-    int[] minMax = findMinMaxLengthsInSymbols(shortMonths);
+    return symbolArrayToRegex(symbols.getShortMonths());
+  }
+
+  private String symbolArrayToRegex(String[] symbolArray) {
+    int[] minMax = findMinMaxLengthsInSymbols(symbolArray);
     return ".{" + minMax[0] + "," + minMax[1] + "}";
   }
 
