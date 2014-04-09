@@ -25,6 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
   OptionHelperTest.class,
   StatusPrinterTest.class,
   TimeUtilTest.class,
-  ContentTypeUtilTest.class})
+  ContentTypeUtilTest.class,
+  CharSequenceToRegexMapperTest.class})
 public class PackageTest {
 }

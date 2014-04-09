@@ -110,11 +110,14 @@ class CharSequenceToRegexMapper {
     return ".{" + minMax[0] + "," + minMax[1] + "}";
   }
 
-  private int[] findMinMaxLengthsInSymbols(String[] symbols) {
+  static int[] findMinMaxLengthsInSymbols(String[] symbols) {
     int min = Integer.MAX_VALUE;
     int max = 0;
     for (String symbol : symbols) {
       int len = symbol.length();
+      // some SENTINEL values can be empty strings, the month at index 12 or the weekday at index 0
+      if(len == 0)
+        continue;
       min = Math.min(min, len);
       max = Math.max(max, len);
     }
