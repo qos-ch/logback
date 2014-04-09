@@ -115,8 +115,10 @@ class CharSequenceToRegexMapper {
     int max = 0;
     for (String symbol : symbols) {
       int len = symbol.length();
-      min = Math.min(min, len);
-      max = Math.max(max, len);
+      if(len > 0){
+        min = Math.min(min, len);
+        max = Math.max(max, len);
+      }
     }
     return new int[]{min, max};
   }
