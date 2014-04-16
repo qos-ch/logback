@@ -55,8 +55,8 @@ public interface StatusManager {
    * @param listener
    */
   void add(StatusListener listener);
-  
-  /**
+
+  /**);
    * Remove a status listener.
    * 
    * @param listener
@@ -76,5 +76,7 @@ public interface StatusManager {
    * @return
    */
   List<StatusListener> getCopyOfStatusListenerList();
+
+
 
 }

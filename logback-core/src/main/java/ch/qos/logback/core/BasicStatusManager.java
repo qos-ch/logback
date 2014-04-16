@@ -18,6 +18,7 @@ import java.util.List;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.spi.LogbackLock;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
@@ -105,11 +106,29 @@ public class BasicStatusManager implements StatusManager {
     return count;
   }
 
+  /**
+   * This implementation does not allow duplicate installations of OnConsoleStatusListener
+   * @param listener
+   */
   public void add(StatusListener listener) {
     synchronized (statusListenerListLock) {
+      if(listener instanceof OnConsoleStatusListener) {
+        boolean alreadyPresent =  checkForPresence(statusListenerList, listener.getClass());
+        if(alreadyPresent)
+          return;
+      }
       statusListenerList.add(listener);
     }
   }
+
+  private boolean checkForPresence(List<StatusListener> statusListenerList, Class<?> aClass) {
+    for(StatusListener e: statusListenerList) {
+      if(e.getClass() == aClass)
+        return true;
+    }
+    return false;
+  }
+
 
   public void remove(StatusListener listener) {
     synchronized (statusListenerListLock) {

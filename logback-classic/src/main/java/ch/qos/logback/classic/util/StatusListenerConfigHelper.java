@@ -38,10 +38,10 @@ public class StatusListenerConfigHelper {
     } else {
       listener = createListenerPerClassName(loggerContext, listenerClass);
     }
-    initListener(loggerContext, listener);
+    initAndAddListener(loggerContext, listener);
   }
 
-  private static void initListener(LoggerContext loggerContext, StatusListener listener) {
+  private static void initAndAddListener(LoggerContext loggerContext, StatusListener listener) {
     if (listener != null) {
       if(listener instanceof ContextAware) // LOGBACK-767
         ((ContextAware) listener).setContext(loggerContext);
