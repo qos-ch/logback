@@ -30,7 +30,15 @@
     <hr width="80%" align="center" />
     
     <h3>Version 1.1.3</h3>
-    
+
+
+    <div class="breaking">
+      <h4>All logback modules now require JDK 1.6 instead of
+      previously JDK 1.5. This change was put to consultation on the
+      logback mailing lists with no objections received.</h4>
+    </div>
+
+
     <p>Added max runtime parameter to <code>AsyncAppender</code> to allow
     the appender to flush events, up to a maximum delay, during a stop
     of the LoggerContext. This can be used to ensure that all queued
