@@ -713,8 +713,8 @@ import ch.qos.logback.classic.LoggerContext;
    <h4 class="doAnchor" name="shutdownHook">Stopping logback-classic 
    via a shutdown hook</h4>
    
-   <p>Installing a JVM shutdown hook is a convenient way to closing
-   logback-classic.
+   <p>Installing a JVM shutdown hook is a convenient way for shutting
+   down logback and releasing associated resources.
    </p>
 
 
@@ -727,9 +727,10 @@ import ch.qos.logback.classic.LoggerContext;
    
    <p>The default shutdown hook, namely <a
    href="../apidocs/ch/qos/logback/core/hook/DelayingShutdownHook.html">DelayingShutdownHook</a>,
-   can delay shutdown by a user specified duration. You may install a
-   shutdown hook of your own making by setting the <span
-   class="attr">class</span> attribute.</p>.
+   can delay shutdown by a user specified duration. Note that you may
+   install a shutdown hook of your own making by setting the <span
+   class="attr">class</span> attribute to correspond to your shutdown
+   hook's class name.</p>.
    
    <h2 class="doAnchor" name="syntax">Configuration file syntax</h2>
 
