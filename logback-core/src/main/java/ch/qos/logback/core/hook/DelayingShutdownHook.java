@@ -15,6 +15,7 @@ package ch.qos.logback.core.hook;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.util.Duration;
 
 /**
  * ShutdownHook implementation that stops the Logback context after a specified
@@ -26,29 +27,28 @@ public class DelayingShutdownHook extends ShutdownHookBase {
   /**
    * Default immediate shutdown of the context
    */
-  public static final long DEFAULT_DELAY = 0;
+  public static final Duration DEFAULT_DELAY = Duration.buildByMilliseconds(0);
   
   /**
    * The delay in milliseconds before the ShutdownHook stops the
    * Logback context
    */
-  private long delay;
+  private Duration delay = DEFAULT_DELAY;
     
   public DelayingShutdownHook() {
-    delay = DEFAULT_DELAY;
   }
 
-  public long getDelay() {
+  public Duration getDelay() {
     return delay;
   }
 
-  public void setDelay(long delay) {
+  public void setDelay(Duration delay) {
     this.delay = delay;
   }
 
   public void run() {
     try {
-      Thread.sleep(delay);
+      Thread.sleep(delay.getMilliseconds());
     } catch (InterruptedException e) {
       addError("");
     }
