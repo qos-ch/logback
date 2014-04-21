@@ -15,25 +15,20 @@
 package ch.qos.logback.core.net;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
-
 
 import javax.net.SocketFactory;
 
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.CloseUtil;
 import ch.qos.logback.core.util.Duration;
@@ -45,10 +40,11 @@ import ch.qos.logback.core.util.Duration;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * @author Carl Harris
+ * @author Sebastian Gr&ouml;bler
  */
 
 public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
-    implements Runnable, SocketConnector.ExceptionHandler {
+    implements SocketConnector.ExceptionHandler {
 
   /**
    * The default port number of remote logging server (4560).
@@ -61,7 +57,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   public static final int DEFAULT_RECONNECTION_DELAY = 30000;
 
   /**
-   * Default size of the queue used to hold logging events that are destined
+   * Default size of the deque used to hold logging events that are destined
    * for the remote peer.
    */
   public static final int DEFAULT_QUEUE_SIZE = 128;
@@ -78,6 +74,9 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    */
   private static final int DEFAULT_EVENT_DELAY_TIMEOUT = 100;
 
+  private final ObjectWriterFactory objectWriterFactory;
+  private final QueueFactory queueFactory;
+
   private String remoteHost;
   private int port = DEFAULT_PORT;
   private InetAddress address;
@@ -86,7 +85,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
   private Duration eventDelayLimit = new Duration(DEFAULT_EVENT_DELAY_TIMEOUT);
   
-  private BlockingQueue<E> queue;
+  private BlockingDeque<E> deque;
   private String peerId;
   private Future<?> task;
   private Future<Socket> connectorTask;
@@ -97,8 +96,17 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * Constructs a new appender.
    */
   protected AbstractSocketAppender() {
+    this(new QueueFactory(), new ObjectWriterFactory());
   }
   
+  /**
+   * Constructs a new appender using the given {@link QueueFactory} and {@link ObjectWriterFactory}.
+   */
+  AbstractSocketAppender(QueueFactory queueFactory, ObjectWriterFactory objectWriterFactory) {
+    this.objectWriterFactory = objectWriterFactory;
+    this.queueFactory = queueFactory;
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -119,9 +127,13 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
           + " For more information, please visit http://logback.qos.ch/codes.html#socket_no_host");
     }
     
+    if (queueSize == 0) {
+      addWarn("Queue size of zero is deprecated, use a size of one to indicate synchronous processing");
+    }
+
     if (queueSize < 0) {
       errorCount++;
-      addError("Queue size must be non-negative");
+      addError("Queue size must be greater than zero");
     }
 
     if (errorCount == 0) {
@@ -134,9 +146,14 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
 
     if (errorCount == 0) {
-      queue = newBlockingQueue(queueSize);
+      deque = queueFactory.newLinkedBlockingDeque(queueSize);
       peerId = "remote peer " + remoteHost + ":" + port + ": ";
-      task = getContext().getExecutorService().submit(this);
+      task = getContext().getExecutorService().submit(new Runnable() {
+        @Override
+        public void run() {
+          connectSocketAndDispatchEvents();
+        }
+      });
       super.start();
     }
   }
@@ -162,21 +179,16 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (event == null || !isStarted()) return;
 
     try {
-      final boolean inserted = queue.offer(event, eventDelayLimit.getMilliseconds(), TimeUnit.MILLISECONDS);
+      final boolean inserted = deque.offer(event, eventDelayLimit.getMilliseconds(), TimeUnit.MILLISECONDS);
       if (!inserted) {
-        addInfo("Dropping event due to timeout limit of [" + eventDelayLimit +
-            "] milliseconds being exceeded");
+        addInfo("Dropping event due to timeout limit of [" + eventDelayLimit + "] being exceeded");
       }
     } catch (InterruptedException e) {
       addError("Interrupted while appending event to SocketAppender", e);
     }
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public final void run() {
-    signalEntryInRunMethod();
+  private void connectSocketAndDispatchEvents() {
     try {
       while (!Thread.currentThread().isInterrupted()) {
         SocketConnector connector = createConnector(address, port, 0,
@@ -186,22 +198,37 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
         if(connectorTask == null)
           break;
 
-        socket = waitForConnectorToReturnASocket();
+        socket = waitForConnectorToReturnSocket();
         if(socket == null)
           break;
-        dispatchEvents();
+
+        try {
+          ObjectWriter objectWriter = createObjectWriterForSocket();
+          addInfo(peerId + "connection established");
+          dispatchEvents(objectWriter);
+        } catch (IOException ex) {
+          addInfo(peerId + "connection failed: " + ex);
+        } finally {
+          CloseUtil.closeQuietly(socket);
+          socket = null;
+          addInfo(peerId + "connection closed");
+        }
       }
     } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
     }
+    // TODO I guess the appender should also be stopped at this point
     addInfo("shutting down");
   }
 
-    protected void signalEntryInRunMethod() {
-      // do nothing by default
-    }
+  private ObjectWriter createObjectWriterForSocket() throws IOException {
+    socket.setSoTimeout(acceptConnectionTimeout);
+    ObjectWriter objectWriter = objectWriterFactory.newAutoFlushingObjectWriter(socket.getOutputStream());
+    socket.setSoTimeout(0);
+    return objectWriter;
+  }
 
-    private SocketConnector createConnector(InetAddress address, int port,
+  private SocketConnector createConnector(InetAddress address, int port,
                                           int initialDelay, long retryDelay) {
     SocketConnector connector = newConnector(address, port, initialDelay,
             retryDelay);
@@ -218,9 +245,9 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
   }
 
-  private Socket waitForConnectorToReturnASocket() throws InterruptedException {
+  private Socket waitForConnectorToReturnSocket() throws InterruptedException {
     try {
-      Socket s =  connectorTask.get();
+      Socket s = connectorTask.get();
       connectorTask = null;
       return s;
     } catch (ExecutionException e) {
@@ -228,35 +255,27 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
   }
 
-  private void dispatchEvents() throws InterruptedException {
-    try {
-      socket.setSoTimeout(acceptConnectionTimeout);
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      socket.setSoTimeout(0);
-      addInfo(peerId + "connection established");
-      int counter = 0;
-      while (true) {
-        E event = queue.take();
-        postProcessEvent(event);
-        Serializable serEvent = getPST().transform(event);
-        oos.writeObject(serEvent);
-        oos.flush();
-        if (++counter >= CoreConstants.OOS_RESET_FREQUENCY) {
-          // Failing to reset the object output stream every now and
-          // then creates a serious memory leak.
-          oos.reset();
-          counter = 0;
-        }
+  private void dispatchEvents(ObjectWriter objectWriter) throws InterruptedException, IOException {
+    while (true) {
+      E event = deque.takeFirst();
+      postProcessEvent(event);
+      Serializable serializableEvent = getPST().transform(event);
+      try {
+        objectWriter.write(serializableEvent);
+      } catch (IOException e) {
+        tryReAddingEventToFrontOfQueue(event);
+        throw e;
       }
-    } catch (IOException ex) {
-      addInfo(peerId + "connection failed: " + ex);
-    } finally {
-      CloseUtil.closeQuietly(socket);
-      socket = null;
-      addInfo(peerId + "connection closed");
     }
-  } 
-    
+  }
+
+  private void tryReAddingEventToFrontOfQueue(E event) {
+    final boolean wasInserted = deque.offerFirst(event);
+    if (!wasInserted) {
+      addInfo("Dropping event due to socket connection error and maxed out deque capacity");
+    }
+  }
+
   /**
    * {@inheritDoc}
    */
@@ -269,8 +288,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
       addInfo(peerId + ex);
     }
   }
-
-
 
   /**
    * Creates a new {@link SocketConnector}.
@@ -300,24 +317,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   }
 
   /**
-   * Creates a blocking queue that will be used to hold logging events until
-   * they can be delivered to the remote receiver.
-   * <p>
-   * The default implementation creates a (bounded) {@link ArrayBlockingQueue} 
-   * for positive queue sizes.  Otherwise it creates a {@link SynchronousQueue}.
-   * <p>
-   * This method is exposed primarily to support instrumentation for unit
-   * testing.
-   * 
-   * @param queueSize size of the queue
-   * @return
-   */
-  BlockingQueue<E> newBlockingQueue(int queueSize) {
-    return queueSize <= 0 ? 
-        new SynchronousQueue<E>() : new ArrayBlockingQueue<E>(queueSize);
-  }
-  
-  /**
    * Post-processes an event before it is serialized for delivery to the
    * remote receiver.
    * @param event the event to post-process
@@ -331,20 +330,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * @return transformer object
    */
   protected abstract PreSerializationTransformer<E> getPST();
-
-  /*
-   * This method is used by logback modules only in the now deprecated
-   * convenience constructors for SocketAppender
-   */
-  @Deprecated
-  protected static InetAddress getAddressByName(String host) {
-    try {
-      return InetAddress.getByName(host);
-    } catch (Exception e) {
-      // addError("Could not find address of [" + host + "].", e);
-      return null;
-    }
-  }
 
   /**
    * The <b>RemoteHost</b> property takes the name of of the host where a corresponding server is running.
@@ -397,14 +382,14 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   /**
    * The <b>queueSize</b> property takes a non-negative integer representing
    * the number of logging events to retain for delivery to the remote receiver.
-   * When the queue size is zero, event delivery to the remote receiver is
-   * synchronous.  When the queue size is greater than zero, the 
+   * When the deque size is zero, event delivery to the remote receiver is
+   * synchronous.  When the deque size is greater than zero, the
    * {@link #append(Object)} method returns immediately after enqueing the
-   * event, assuming that there is space available in the queue.  Using a 
-   * non-zero queue length can improve performance by eliminating delays
+   * event, assuming that there is space available in the deque.  Using a
+   * non-zero deque length can improve performance by eliminating delays
    * caused by transient network delays.
    * 
-   * @param queueSize the queue size to set.
+   * @param queueSize the deque size to set.
    */
   public void setQueueSize(int queueSize) {
     this.queueSize = queueSize;

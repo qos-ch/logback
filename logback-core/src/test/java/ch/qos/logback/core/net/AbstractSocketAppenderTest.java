@@ -14,242 +14,467 @@
 
 package ch.qos.logback.core.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.ObjectInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
-import java.net.ServerSocket;
+import java.net.InetAddress;
 import java.net.Socket;
-import java.util.List;
-import java.util.concurrent.*;
-
-import ch.qos.logback.core.BasicStatusManager;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusListener;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.core.net.mock.MockContext;
-import ch.qos.logback.core.net.server.ServerSocketUtil;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
+import ch.qos.logback.core.util.Duration;
+import org.junit.After;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.contains;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 /**
  * Unit tests for {@link AbstractSocketAppender}.
  *
  * @author Carl Harris
+ * @author Sebastian Gr&ouml;bler
  */
 public class AbstractSocketAppenderTest {
 
-  private static final int DELAY = 10000;
+  /**
+   * Timeout used for all blocking operations in multi-threading contexts.
+   */
+  private static final int TIMEOUT = 1000;
 
-  private ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+  private ThreadPoolExecutor executorService = spy((ThreadPoolExecutor) Executors.newCachedThreadPool());
   private MockContext mockContext = new MockContext(executorService);
-  private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender();
+  private PreSerializationTransformer<String> preSerializationTransformer = spy(new StringPreSerializationTransformer());
+  private Socket socket = mock(Socket.class);
+  private SocketConnector socketConnector = mock(SocketConnector.class);
+  private AutoFlushingObjectWriter objectWriter = mock(AutoFlushingObjectWriter.class);
+  private ObjectWriterFactory objectWriterFactory = mock(ObjectWriterFactory.class);
+  private LinkedBlockingDeque<String> deque = spy(new LinkedBlockingDeque<String>(1));
+  private QueueFactory queueFactory = mock(QueueFactory.class);
+  private InstrumentedSocketAppender appender = spy(new InstrumentedSocketAppender(preSerializationTransformer, queueFactory, objectWriterFactory, socketConnector));
 
   @Before
   public void setUp() throws Exception {
-    instrumentedAppender.setContext(mockContext);
+    // setup valid appender with mock dependencies
+    when(socketConnector.call()).thenReturn(socket);
+    when(objectWriterFactory.newAutoFlushingObjectWriter(any(OutputStream.class))).thenReturn(objectWriter);
+    when(queueFactory.<String>newLinkedBlockingDeque(anyInt())).thenReturn(deque);
+
+    appender.setContext(mockContext);
+    appender.setRemoteHost("localhost");
   }
 
   @After
   public void tearDown() throws Exception {
-    instrumentedAppender.stop();
-    assertFalse(instrumentedAppender.isStarted());
+    appender.stop();
+    assertFalse(appender.isStarted());
     executorService.shutdownNow();
-    assertTrue(executorService.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
+    assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
   }
 
   @Test
-  public void appenderShouldFailToStartWithoutValidPort() throws Exception {
-    instrumentedAppender.setPort(-1);
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.setQueueSize(0);
-    instrumentedAppender.start();
-    assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("port"));
+  public void failsToStartWithoutValidPort() throws Exception {
+
+    // given
+    appender.setPort(-1);
+
+    // when
+    appender.start();
+
+    // then
+    assertFalse(appender.isStarted());
+    verify(appender).addError(contains("port"));
   }
 
   @Test
-  public void appenderShouldFailToStartWithoutValidRemoteHost() throws Exception {
-    instrumentedAppender.setPort(1);
-    instrumentedAppender.setRemoteHost(null);
-    instrumentedAppender.setQueueSize(0);
-    instrumentedAppender.start();
-    assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("remote host"));
+  public void failsToStartWithoutValidRemoteHost() throws Exception {
+
+    // given
+    appender.setRemoteHost(null);
+
+    // when
+    appender.start();
+
+    // then
+    assertFalse(appender.isStarted());
+    verify(appender).addError(contains("remote host"));
   }
 
   @Test
-  public void appenderShouldFailToStartWithNegativeQueueSize() throws Exception {
-    instrumentedAppender.setPort(1);
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.setQueueSize(-1);
-    instrumentedAppender.start();
-    assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("Queue"));
+  public void failsToStartWithNegativeQueueSize() throws Exception {
+
+    // given
+    appender.setQueueSize(-1);
+
+    // when
+    appender.start();
+
+    // then
+    assertFalse(appender.isStarted());
+    verify(appender).addError(contains("Queue size must be greater than zero"));
   }
 
   @Test
-  public void appenderShouldFailToStartWithUnresolvableRemoteHost() throws Exception {
-    instrumentedAppender.setPort(1);
-    instrumentedAppender.setRemoteHost("NOT.A.VALID.REMOTE.HOST.NAME");
-    instrumentedAppender.setQueueSize(0);
-    instrumentedAppender.start();
-    assertFalse(instrumentedAppender.isStarted());
-    assertTrue(mockContext.getLastStatus().getMessage().contains("unknown host"));
+  public void failsToStartWithUnresolvableRemoteHost() throws Exception {
+
+    // given
+    appender.setRemoteHost("NOT.A.VALID.REMOTE.HOST.NAME");
+
+    // when
+    appender.start();
+
+    // then
+    assertFalse(appender.isStarted());
+    verify(appender).addError(contains("unknown host"));
   }
 
   @Test
-  public void appenderShouldFailToStartWithZeroQueueLength() throws Exception {
-    instrumentedAppender.setPort(1);
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.setQueueSize(0);
-    instrumentedAppender.start();
-    assertTrue(instrumentedAppender.isStarted());
-    assertTrue(instrumentedAppender.lastQueue instanceof SynchronousQueue);
+  public void startsButOutputsWarningWhenQueueSizeIsZero() throws Exception {
+
+    // given
+    appender.setQueueSize(0);
+
+    // when
+    appender.start();
+
+    // then
+    assertTrue(appender.isStarted());
+    verify(appender).addWarn("Queue size of zero is deprecated, use a size of one to indicate synchronous processing");
   }
 
   @Test
-  public void appenderShouldStartWithValidParameters() throws Exception {
-    instrumentedAppender.setPort(1);
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.setQueueSize(1);
-    instrumentedAppender.start();
-    assertTrue(instrumentedAppender.isStarted());
-    assertTrue(instrumentedAppender.lastQueue instanceof ArrayBlockingQueue);
-    assertEquals(1, instrumentedAppender.lastQueue.remainingCapacity());
-  }
+  public void startsWithValidParameters() throws Exception {
 
-  // this test takes 1 second and is deemed too long
-  @Ignore
-  @Test(timeout = 2000)
-  public void appenderShouldCleanupTasksWhenStopped() throws Exception {
-    mockContext.setStatusManager(new BasicStatusManager());
-    instrumentedAppender.setPort(1);
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.setQueueSize(1);
-    instrumentedAppender.start();
-    assertTrue(instrumentedAppender.isStarted());
+    // when
+    appender.start();
 
-    waitForActiveCountToEqual(executorService, 2);
-    instrumentedAppender.stop();
-    waitForActiveCountToEqual(executorService, 0);
-    StatusPrinter.print(mockContext);
-    assertEquals(0, executorService.getActiveCount());
-
-  }
-
-  private void waitForActiveCountToEqual(ThreadPoolExecutor executorService, int i) {
-    while (executorService.getActiveCount() != i) {
-      try {
-        Thread.yield();
-        Thread.sleep(1);
-        System.out.print(".");
-      } catch (InterruptedException e) {
-      }
-    }
-  }
-
-
-  @Test
-  public void testAppendWhenNotStarted() throws Exception {
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.start();
-    instrumentedAppender.stop();
-
-    // make sure the appender task has stopped
-    executorService.shutdownNow();
-    assertTrue(executorService.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
-
-    instrumentedAppender.append("some event");
-    assertTrue(instrumentedAppender.lastQueue.isEmpty());
-  }
-
-  @Test(timeout = 1000)
-  public void testAppendSingleEvent() throws Exception {
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.start();
-
-    instrumentedAppender.latch.await();
-    instrumentedAppender.append("some event");
-    assertTrue(instrumentedAppender.lastQueue.size() == 1);
+    // then
+    assertTrue(appender.isStarted());
   }
 
   @Test
-  public void testAppendEvent() throws Exception {
-    instrumentedAppender.setRemoteHost("localhost");
-    instrumentedAppender.setQueueSize(1);
-    instrumentedAppender.start();
+  public void createsSocketConnectorWithConfiguredParameters() throws Exception {
 
-    // stop the appender task, but don't stop the appender
-    executorService.shutdownNow();
-    assertTrue(executorService.awaitTermination(DELAY, TimeUnit.MILLISECONDS));
+    // given
+    appender.setReconnectionDelay(new Duration(42));
+    appender.setRemoteHost("localhost");
+    appender.setPort(21);
 
-    instrumentedAppender.append("some event");
-    assertEquals("some event", instrumentedAppender.lastQueue.poll());
+    // when
+    appender.start();
+
+    // then
+    verify(appender, timeout(TIMEOUT)).newConnector(InetAddress.getByName("localhost"), 21, 0, 42);
   }
 
   @Test
-  public void testDispatchEvent() throws Exception {
-    ServerSocket serverSocket = ServerSocketUtil.createServerSocket();
-    instrumentedAppender.setRemoteHost(serverSocket.getInetAddress().getHostAddress());
-    instrumentedAppender.setPort(serverSocket.getLocalPort());
-    instrumentedAppender.setQueueSize(1);
-    instrumentedAppender.start();
+  public void addsInfoMessageWhenSocketConnectionWasEstablished() {
 
-    Socket appenderSocket = serverSocket.accept();
-    serverSocket.close();
+    // when
+    appender.start();
 
-    instrumentedAppender.append("some event");
+    // then
+    verify(appender, timeout(TIMEOUT)).addInfo(contains("connection established"));
+  }
 
-    final int shortDelay = 100;
-    for (int i = 0, retries = DELAY / shortDelay;
-         !instrumentedAppender.lastQueue.isEmpty() && i < retries;
-         i++) {
-      Thread.sleep(shortDelay);
-    }
-    assertTrue(instrumentedAppender.lastQueue.isEmpty());
+  @Test
+  public void addsInfoMessageWhenSocketConnectionFailed() throws Exception {
 
-    ObjectInputStream ois = new ObjectInputStream(appenderSocket.getInputStream());
-    assertEquals("some event", ois.readObject());
-    appenderSocket.close();
+    // given
+    doThrow(new IOException()).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
+    appender.start();
 
+    // when
+    appender.append("some event");
+
+    // then
+    verify(appender, timeout(TIMEOUT).atLeastOnce()).addInfo(contains("connection failed"));
+  }
+
+  @Test
+  public void closesSocketOnException() throws Exception {
+
+    // given
+    doThrow(new IOException()).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
+    appender.start();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(socket, timeout(TIMEOUT).atLeastOnce()).close();
+  }
+
+  @Test
+  public void addsInfoMessageWhenSocketConnectionClosed() throws Exception {
+
+    // given
+    doThrow(new IOException()).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
+    appender.start();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(appender, timeout(TIMEOUT).atLeastOnce()).addInfo(contains("connection closed"));
+  }
+
+  @Test
+  public void shutsDownWhenConnectorTaskCouldNotBeActivated() {
+
+    // given
+    doThrow(new RejectedExecutionException()).when(executorService).submit(socketConnector);
+
+    // when
+    appender.start();
+
+    // then
+    verify(appender, timeout(TIMEOUT)).addInfo("shutting down");
+  }
+
+  @Test
+  public void shutsDownWhenConnectorTaskThrewAnException() throws Exception {
+
+    // given
+    doThrow(new IllegalStateException()).when(socketConnector).call();
+
+    // when
+    appender.start();
+
+    // then
+    verify(appender, timeout(TIMEOUT)).addInfo("shutting down");
+  }
+
+  @Test
+  public void offersEventsToTheEndOfTheDeque() throws Exception {
+
+    // given
+    appender.start();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(deque).offer(eq("some event"), anyLong(), any(TimeUnit.class));
+  }
+
+  @Test
+  public void doesNotQueueAnyEventsWhenStopped() throws Exception {
+
+    // given
+    appender.start();
+    appender.stop();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verifyZeroInteractions(deque);
+  }
+
+  @Test
+  public void addsInfoMessageWhenEventCouldNotBeQueuedInConfiguredTimeoutDueToQueueSizeLimitation() throws Exception {
+
+    // given
+    long eventDelayLimit = 42;
+    doReturn(false).when(deque).offer("some event", eventDelayLimit, TimeUnit.MILLISECONDS);
+    appender.setEventDelayLimit(new Duration(eventDelayLimit));
+    appender.start();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(appender).addInfo("Dropping event due to timeout limit of [" + eventDelayLimit + " milliseconds] being exceeded");
+  }
+
+  @Test
+  public void takesEventsFromTheFrontOfTheDeque() throws Exception {
+
+    // given
+    appender.start();
+    awaitStartOfEventDispatching();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(deque, timeout(TIMEOUT).atLeastOnce()).takeFirst();
+  }
+
+  @Test
+  public void reAddsEventAtTheFrontOfTheDequeWhenTransmissionFails() throws Exception {
+
+    // given
+    doThrow(new IOException()).when(objectWriter).write(anyObject());
+    appender.start();
+    awaitStartOfEventDispatching();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(deque, timeout(TIMEOUT).atLeastOnce()).offerFirst("some event");
+  }
+
+  @Test
+  public void addsErrorMessageWhenAppendingIsInterruptedWhileWaitingForTheQueueToAcceptTheEvent() throws Exception {
+
+    // given
+    final InterruptedException interruptedException = new InterruptedException();
+    doThrow(interruptedException).when(deque).offer(eq("some event"), anyLong(), any(TimeUnit.class));
+    appender.start();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(appender).addError("Interrupted while appending event to SocketAppender", interruptedException);
+  }
+
+  @Test
+  public void postProcessesEventsBeforeTransformingItToASerializable() throws Exception {
+
+    // given
+    appender.start();
+    awaitStartOfEventDispatching();
+
+    // when
+    appender.append("some event");
+    awaitAtLeastOneEventToBeDispatched();
+
+    // then
+    InOrder inOrder = inOrder(appender, preSerializationTransformer);
+    inOrder.verify(appender).postProcessEvent("some event");
+    inOrder.verify(preSerializationTransformer).transform("some event");
+  }
+
+  @Test
+  public void writesSerializedEventToStream() throws Exception {
+
+    // given
+    when(preSerializationTransformer.transform("some event")).thenReturn("some serialized event");
+    appender.start();
+    awaitStartOfEventDispatching();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(objectWriter, timeout(TIMEOUT)).write("some serialized event");
+  }
+
+  @Test
+  public void addsInfoMessageWhenEventIsBeingDroppedBecauseOfConnectionProblemAndDequeCapacityLimitReached() throws Exception {
+
+    // given
+    doThrow(new IOException()).when(objectWriter).write(anyObject());
+    doThrow(new IllegalStateException()).when(deque).offerFirst("some event");
+    appender.start();
+    awaitStartOfEventDispatching();
+    reset(appender);
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(appender, timeout(TIMEOUT)).addInfo("Dropping event due to socket connection error and maxed out deque capacity");
+  }
+
+  @Test
+  public void reEstablishesSocketConnectionOnConnectionDrop() throws Exception {
+
+    // given
+    doThrow(new IOException()).when(objectWriter).write(anyObject());
+    appender.start();
+    awaitStartOfEventDispatching();
+
+    // when
+    appender.append("some event");
+
+    // then
+    verify(objectWriterFactory, timeout(TIMEOUT).atLeast(2)).newAutoFlushingObjectWriter(any(OutputStream.class));
+  }
+
+  @Test
+  public void usesConfiguredAcceptConnectionTimeoutAndResetsSocketTimeoutAfterSuccessfulConnection() throws Exception {
+
+    // when
+    appender.setAcceptConnectionTimeout(42);
+    appender.start();
+    awaitStartOfEventDispatching();
+
+    // then
+    InOrder inOrder = inOrder(socket);
+    inOrder.verify(socket).setSoTimeout(42);
+    inOrder.verify(socket).setSoTimeout(0);
+  }
+
+  private void awaitAtLeastOneEventToBeDispatched() throws IOException {
+    verify(objectWriter, timeout(TIMEOUT)).write(anyString());
+  }
+
+  private void awaitStartOfEventDispatching() throws InterruptedException {
+    verify(deque, timeout(TIMEOUT)).takeFirst();
   }
 
   private static class InstrumentedSocketAppender extends AbstractSocketAppender<String> {
 
-    private BlockingQueue<String> lastQueue;
-    CountDownLatch latch = new  CountDownLatch(1);
+    private PreSerializationTransformer<String> preSerializationTransformer;
+    private SocketConnector socketConnector;
+
+    public InstrumentedSocketAppender(PreSerializationTransformer<String> preSerializationTransformer,
+                                      QueueFactory queueFactory,
+                                      ObjectWriterFactory objectWriterFactory,
+                                      SocketConnector socketConnector) {
+      super(queueFactory, objectWriterFactory);
+      this.preSerializationTransformer = preSerializationTransformer;
+      this.socketConnector = socketConnector;
+    }
+
     @Override
     protected void postProcessEvent(String event) {
     }
 
     @Override
     protected PreSerializationTransformer<String> getPST() {
-      return new PreSerializationTransformer<String>() {
-        public Serializable transform(String event) {
-          return event;
-        }
-      };
+      return preSerializationTransformer;
     }
 
     @Override
-    protected void signalEntryInRunMethod() {
-        latch.countDown();
+    protected SocketConnector newConnector(InetAddress address, int port, long initialDelay, long retryDelay) {
+      return socketConnector;
     }
-
-    @Override
-    BlockingQueue<String> newBlockingQueue(int queueSize) {
-      lastQueue = super.newBlockingQueue(queueSize);
-      return lastQueue;
-    }
-
   }
 
+  private static class StringPreSerializationTransformer implements PreSerializationTransformer<String> {
+
+    @Override
+    public Serializable transform(String event) {
+      return event;
+    }
+  }
 }
