@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -16,68 +16,47 @@
   <name>Logback Access Module</name>
   <description>logback-access module</description>
 
-  <url>http://logback.qos.ch</url>
-
-  <licenses>
-    <license>
-      <name>Eclipse Public License - v 1.0</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
-    </license>
-
-    <license>
-      <name>GNU Lesser General Public License</name>
-      <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
-    </license>
-  </licenses>
-
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <scope>compile</scope>
     </dependency>
-
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-coyote</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -88,11 +67,9 @@
 
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <forkMode>once</forkMode>
           <!--<parallel>classes</parallel>-->
@@ -105,11 +82,9 @@
           </excludes>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven-jar-plugin.version}</version>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF
@@ -157,21 +132,18 @@
               org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
               *
             </Import-Package>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
             </Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
-
 
   <profiles>
     <profile>
       <!-- Integration tests require the host-orion profile -->
       <id>host-orion</id>
-
       <dependencies>
         <dependency>
           <groupId>mysql</groupId>
@@ -179,13 +151,11 @@
           <version>5.0.8</version>
           <scope>test</scope>
         </dependency>
-
         <dependency>
           <groupId>postgresql</groupId>
           <artifactId>postgresql</artifactId>
           <version>8.2-507.jdbc3</version>
         </dependency>
-
         <!-- locally installed artifact -->
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>
@@ -201,10 +171,7 @@
           <scope>test</scope>
         </dependency>
       </dependencies>
-
     </profile>
-
   </profiles>
-
 
 </project>
