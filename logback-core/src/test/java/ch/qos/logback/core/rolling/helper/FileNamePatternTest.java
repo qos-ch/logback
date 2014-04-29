@@ -14,8 +14,10 @@
 package ch.qos.logback.core.rolling.helper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.junit.Test;
 
@@ -146,5 +148,16 @@ public class FileNamePatternTest {
     cal.set(2003, 4, 20, 17, 55);
     FileNamePattern fnp = new FileNamePattern("foo-%d{yyyy.MM, aux}/%d{yyyy.MM.dd}.txt", context);
     assertEquals("foo-2003.05/2003.05.20.txt", fnp.convert(cal.getTime()));
+  }
+
+  @Test
+  public void timeZone() {
+    TimeZone tz = TimeZone.getTimeZone("Australia/Perth");
+
+    FileNamePattern fnp = new FileNamePattern("%d{hh}", context);
+    assertNull(fnp.getPrimaryDateTokenConverter().getTimeZone());
+
+    fnp = new FileNamePattern("%d{hh, " + tz.getID() + "}", context);
+    assertEquals(tz, fnp.getPrimaryDateTokenConverter().getTimeZone());
   }
 }
