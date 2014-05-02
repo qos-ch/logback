@@ -842,6 +842,16 @@ public interface RollingPolicy extends LifeCycle {
          of which can be primary, i.e. used to infer the rollover
          period. All other tokens <em>must</em> be marked as auxiliary
          by passing the 'aux' parameter (see examples below).</p>
+         
+         <p>The next parameter specifies a timezone. For example,
+         %d{yyyy-MM-dd-HH,&nbsp;Etc/UTC}.log would log to a file named
+         for the current hour in UTC. Note that in the absence of this
+         parameter, the default timezone of the host Java platform is
+         used. If the specified timezone identifier is unknown or
+         misspelled, the GMT timezone is assumed as dictated by the <a
+         href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">TimeZone.getTimeZone(String)</a>
+         method specification.
+         </p>
        </td>
      </tr>
      <tr>
@@ -977,6 +987,15 @@ public interface RollingPolicy extends LifeCycle {
        <td>Rollover at the beginning of every minute.</td>
        <td>Similar to previous cases, except that rollover will occur
        at the beginning of every minute.  
+       </td>     
+     </tr>
+     <tr>
+       <td class="small">
+         <em>/wombat/foo%d{yyyy-MM-dd_HH-mm, UTC}.log</em>
+       </td>
+       <td>Rollover at the beginning of every minute.</td>
+       <td>Similar to previous cases, except that file names will be
+       expressed in UTC.
        </td>     
      </tr>
 
