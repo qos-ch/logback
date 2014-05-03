@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -15,24 +15,6 @@
   <name>Logback Core Module</name>
   <description>logback-core module</description>
 
-  <url>http://logback.qos.ch</url>
-
-  <properties>
-    <!--<scala.version>2.9.1</scala.version>-->
-  </properties>
-
-  <licenses>
-    <license>
-      <name>Eclipse Public License - v 1.0</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
-    </license>
-
-    <license>
-      <name>GNU Lesser General Public License</name>
-      <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
-    </license>
-  </licenses>
-
   <dependencies>
     <dependency>
        <groupId>org.codehaus.janino</groupId>
@@ -40,13 +22,11 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
     <dependency>
       <groupId>org.fusesource.jansi</groupId>
       <artifactId>jansi</artifactId>
       <optional>true</optional>      
     </dependency>
-
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>mail</artifactId>
@@ -59,38 +39,25 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>1.9.0</version>
+      <version>1.9.5</version>
       <scope>test</scope>
     </dependency>
-
-
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-
-    <!--<dependency>-->
-      <!--<groupId>org.scala-lang</groupId>-->
-      <!--<artifactId>scala-library</artifactId>-->
-      <!--<version>${scala.version}</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-
   </dependencies>
-
 
   <build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
         <configuration>
           <forkMode>once</forkMode>
           <reportFormat>plain</reportFormat>
@@ -105,11 +72,9 @@
           </excludes>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven-jar-plugin.version}</version>
         <configuration>
           <archive>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF
@@ -127,7 +92,6 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
@@ -152,7 +116,7 @@
               org.codehaus.commons.compiler;resolution:=optional,
               *
             </Import-Package>
-            <Bundle-RequiredExecutionEnvironment>J2SE-1.5
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
             </Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>

@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -36,7 +36,6 @@
     <connection>git@github.com:ceki/logback.git</connection>
   </scm>
 
-
   <modules>
     <module>logback-core</module>
     <module>logback-classic</module>
@@ -46,8 +45,8 @@
   </modules>
 
   <properties>
-    <!-- target JDK version == source JDK version -->
-    <jdk.version>1.6</jdk.version>
+    <maven.compiler.source>1.6</maven.compiler.source>
+    <maven.compiler.target>1.6</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
@@ -62,12 +61,7 @@
     <jetty.version>7.5.1.v20110908</jetty.version>
     <jansi.version>1.9</jansi.version>
 
-    <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-    <maven-jar-plugin.version>2.3.1</maven-jar-plugin.version>
-    <maven-surefire-plugin.version>2.14.1</maven-surefire-plugin.version>
     <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
-    <findbugs-maven-plugin.version>2.5</findbugs-maven-plugin.version>
-
   </properties>
 
   <developers>
@@ -82,7 +76,6 @@
       <name>Joern Huxhorn</name>
       <email>huxi@undisclosed.org</email>
     </developer>
-
   </developers>
 
   <dependencies>
@@ -100,7 +93,6 @@
     </dependency>
   </dependencies>
 
-
   <dependencyManagement>
     <dependencies>
       <!-- Project modules -->
@@ -109,20 +101,17 @@
         <artifactId>logback-core</artifactId>
         <version>${project.version}</version>
       </dependency>
-
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
-
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>${project.version}</version>
       </dependency>
-
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-access</artifactId>
@@ -148,7 +137,6 @@
         <artifactId>jansi</artifactId>
         <version>${jansi.version}</version>
       </dependency>
-
       <dependency>
         <groupId>javax.mail</groupId>
         <artifactId>mail</artifactId>
@@ -179,32 +167,21 @@
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.9</version>
       </dependency>
-
-
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
         <version>${tomcat.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-coyote</artifactId>
         <version>${tomcat.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.eclipse.jetty</groupId>
         <artifactId>jetty-server</artifactId>
         <version>${jetty.version}</version>
       </dependency>
-      <!--
-      <dependency>
-        <groupId>org.mortbay.jetty</groupId>
-        <artifactId>servlet-api-2.5</artifactId>
-        <version>6.1.1</version>
-      </dependency>
-      -->
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-jms_1.1_spec</artifactId>
@@ -218,43 +195,100 @@
     </dependencies>
   </dependencyManagement>
 
-
   <build>
     <extensions>
       <extension>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-ssh</artifactId>
-        <version>2.0</version>
+        <version>2.6</version>
       </extension>
     </extensions>
 
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.17</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.8</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.4.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
-      </plugin>
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>2.1.2</version>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>attach-sources</id>
             <goals>
               <goal>jar</goal>
+              <goal>test-jar</goal>
             </goals>
           </execution>
         </executions>
@@ -262,14 +296,8 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>${maven-jar-plugin.version}</version>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-eclipse-plugin</artifactId>
-        <version>2.8</version>
+        <version>2.9</version>
         <configuration>
           <downloadSources>true</downloadSources>
           <downloadJavadocs>true</downloadJavadocs>
@@ -282,7 +310,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.4</version>
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/dist.xml</descriptor>
@@ -292,17 +320,10 @@
           <outputDirectory>target/site/dist/</outputDirectory>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <!-- avoid "Duplicate entry" warnings -->
-        <version>2.1.0</version>
-      </plugin>
 
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${findbugs-maven-plugin.version}</version>
         <configuration>
           <threshold>High</threshold>
           <!--<trace>true</trace>-->
@@ -314,13 +335,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.0</version>
         <configuration>
           <reportPlugins>
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
-              <version>2.3</version>
+              <version>2.4</version>
               <configuration>
                 <aggregate>true</aggregate>
                 <javadocDir>target/site/apidocs/</javadocDir>
@@ -331,13 +351,13 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.8</version>
+              <version>2.9.1</version>
               <configuration>
                 <aggregate>true</aggregate>
                 <!--<linksource>true</linksource>-->
                 <links>
                   <link>
-                    http://java.sun.com/j2se/1.5.0/docs/api
+                    http://docs.oracle.com/javase/6/docs/api/
                   </link>
                 </links>
                 <groups>
@@ -368,11 +388,9 @@
                 </groups>
               </configuration>
             </plugin>
-
           </reportPlugins>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 
@@ -391,7 +409,6 @@
     </repository>
 
   </distributionManagement>
-
 
   <profiles>
     <profile>
@@ -428,7 +445,6 @@
           </plugin>
         </plugins>
       </build>
-
     </profile>
 
     <profile>
@@ -438,12 +454,13 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.8</version>
+            <version>2.9.1</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
                 <goals>
                   <goal>jar</goal>
+                  <goal>test-jar</goal>
                 </goals>
               </execution>
             </executions>
@@ -452,7 +469,6 @@
       </build>
     </profile>
 
-
     <profile>
       <id>sign-artifacts</id>
       <build>
@@ -460,7 +476,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.1</version>
+            <version>1.5</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -474,8 +490,6 @@
         </plugins>
       </build>
     </profile>
-
-
   </profiles>
 
 </project>
