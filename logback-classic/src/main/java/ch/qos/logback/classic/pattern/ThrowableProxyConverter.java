@@ -36,8 +36,8 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
   protected static final int BUILDER_CAPACITY = 2048;
 
-  int lengthOption;
-  List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
+  protected int lengthOption;
+  protected List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
 
   int errorCount = 0;
 
