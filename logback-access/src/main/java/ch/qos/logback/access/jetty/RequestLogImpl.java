@@ -14,8 +14,6 @@
 package ch.qos.logback.access.jetty;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,7 +41,6 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -151,19 +148,23 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   }
 
   public void start() {
-    URL configURL = getConfigurationFileURL();
-    if (configURL != null) {
-      runJoranOnFile(configURL);
-    } else {
-      addError("Could not find configuration file for logback-access");
-    }
+    configure();
     if (!isQuiet()) {
       StatusPrinter.print(getStatusManager());
     }
     started = true;
   }
 
-  URL getConfigurationFileURL() {
+  protected void configure() {
+    URL configURL = getConfigurationFileURL();
+    if (configURL != null) {
+        runJoranOnFile(configURL);
+    } else {
+        addError("Could not find configuration file for logback-access");
+    }
+  }
+
+  protected URL getConfigurationFileURL() {
     if (fileName != null) {
       addInfo("Will use configuration file [" + fileName + "]");
       File file = new File(fileName);
@@ -266,7 +267,6 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
 
   public void detachAndStopAllAppenders() {
     aai.detachAndStopAllAppenders();
-
   }
 
   public boolean detachAppender(Appender<IAccessEvent> appender) {
