@@ -27,7 +27,7 @@ public class MockSyslogServer extends Thread {
   final int loopLen;
   final int port;
   
-  List<String> msgList = new ArrayList<String>();
+  List<byte[]> msgList = new ArrayList<byte[]>();
   boolean finished = false;
   
   public MockSyslogServer(int loopLen, int port) {
@@ -48,8 +48,9 @@ public class MockSyslogServer extends Thread {
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         //System.out.println("Waiting for message");
         socket.receive(packet);
-        String msg = new String(buf, 0, packet.getLength());
-        msgList.add(msg);
+        byte[] out = new byte[packet.getLength()];
+        System.arraycopy(buf, 0, out, 0, out.length);
+        msgList.add(out);
       }
     } catch (Exception se) {
       se.printStackTrace();
@@ -65,7 +66,7 @@ public class MockSyslogServer extends Thread {
     return finished;
   }
   
-  public List<String> getMessageList() {
+  public List<byte[]> getMessageList() {
     return msgList;
   }
 }
