@@ -36,24 +36,27 @@ public class FileUtil extends ContextAwareBase {
     }
   }
 
-  static public boolean isParentDirectoryCreationRequired(File file) {
-    File parent = file.getParentFile();
-    if (parent != null && !parent.exists()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
+  /**
+   * Creates the parent directories of a file. If parent directories not
+   * specified in file's path, then nothing is done and this returns
+   * gracefully.
+   *
+   * @param file file whose parent directories (if any) should be created
+   * @return {@code true} if either no parents were specified, or if all
+   * parent directories were created successfully; {@code false} otherwise
+   */
   static public boolean createMissingParentDirectories(File file) {
     File parent = file.getParentFile();
     if (parent == null) {
-      throw new IllegalStateException(file + " should not have a null parent");
+      // Parent directory not specified, therefore it's a request to
+      // create nothing. Done! ;)
+      return true;
     }
-    if (parent.exists()) {
-      throw new IllegalStateException(file + " should not have existing parent directory");
-    }
-    return parent.mkdirs();
+
+    // File.mkdirs() creates the parent directories only if they don't
+    // already exist; and it's okay if they do.
+    parent.mkdirs();
+    return parent.exists();
   }
 
 

@@ -119,12 +119,10 @@ public class RenameUtil extends ContextAwareBase {
   }
 
   void createMissingTargetDirsIfNecessary(File toFile) throws RolloverFailure {
-    if (FileUtil.isParentDirectoryCreationRequired(toFile)) {
-      boolean result = FileUtil.createMissingParentDirectories(toFile);
-      if (!result) {
-        throw new RolloverFailure("Failed to create parent directories for ["
-                + toFile.getAbsolutePath() + "]");
-      }
+    boolean result = FileUtil.createMissingParentDirectories(toFile);
+    if (!result) {
+      throw new RolloverFailure("Failed to create parent directories for ["
+              + toFile.getAbsolutePath() + "]");
     }
   }
 

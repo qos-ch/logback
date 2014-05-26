@@ -13,12 +13,10 @@
  */
 package ch.qos.logback.core.util;
 
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,11 +55,11 @@ public class FileUtilTest {
     cleanupList.add(file);
     cleanupList.add(file.getParentFile());
 
-    assertTrue(FileUtil.isParentDirectoryCreationRequired(file));
+    assertFalse(file.getParentFile().exists());
     assertTrue(FileUtil.createMissingParentDirectories(file));
-    assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
+    assertTrue(file.getParentFile().exists());
   }
-  
+
   @Test
   public void checkDeeperParentCreationInquiryAndSubsequentCreation() {
 
@@ -70,10 +68,10 @@ public class FileUtilTest {
     cleanupList.add(file);
     cleanupList.add(file.getParentFile());
     cleanupList.add(file.getParentFile().getParentFile());
-    
-    assertTrue(FileUtil.isParentDirectoryCreationRequired(file));
+
+    assertFalse(file.getParentFile().exists());
     assertTrue(FileUtil.createMissingParentDirectories(file));
-    assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
+    assertTrue(file.getParentFile().exists());
   }
 
   @Test
@@ -90,5 +88,19 @@ public class FileUtilTest {
     Compare.compare(src, target);
   }
 
+  @Test
+  public void createParentDirIgnoresExistingDir() {
+    String target = CoreTestConstants.OUTPUT_DIR_PREFIX+"/fu"+ diff +"/testing.txt";
+    File file = new File(target);
+    cleanupList.add(file);
+    file.mkdirs();
+    assertTrue(file.getParentFile().exists());
+    assertTrue(FileUtil.createMissingParentDirectories(file));
+  }
 
+  @Test
+  public void createParentDirAcceptsNoParentSpecified() {
+    File file = new File("testing.txt");
+    assertTrue(FileUtil.createMissingParentDirectories(file));
+  }
 }

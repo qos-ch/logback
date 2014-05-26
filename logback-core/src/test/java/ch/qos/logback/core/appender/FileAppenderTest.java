@@ -31,7 +31,6 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
-import ch.qos.logback.core.util.FileUtil;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -75,6 +74,9 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff
         + "/testCreateParentFolders.txt";
     File file = new File(filename);
+    assertFalse(file.getParentFile().exists());
+    assertFalse(file.exists());
+
     FileAppender<Object> appender = new FileAppender<Object>();
     appender.setEncoder(new DummyEncoder<Object>());
     appender.setAppend(false);
@@ -84,7 +86,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     appender.start();
     appender.doAppend(new Object());
     appender.stop();
-    assertFalse(FileUtil.isParentDirectoryCreationRequired(file));
+    assertTrue(file.getParentFile().exists());
     assertTrue(file.exists());
 
     // cleanup
