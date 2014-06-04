@@ -481,9 +481,9 @@ public class AccessEvent implements Serializable, IAccessEvent {
   }
 
   public void prepareForDeferredProcessing() {
-    buildRequestHeaderMap();
-    buildRequestParameterMap();
-    buildResponseHeaderMap();
+    getRequestHeaderMap();
+    getRequestParameterMap();
+    getResponseHeaderMap();
     getLocalPort();
     getMethod();
     getProtocol();
