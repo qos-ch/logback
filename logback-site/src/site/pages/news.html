@@ -31,6 +31,10 @@
     
     <h3>Version 1.1.3</h3>
 
+    <p><code>RequestLogImpl</code> now has an overridable <code>configure</code>
+    method to allow extending implementations to configure it via methods
+    other than the <code>logback-access.xml</code> file.</p>
+
     <div class="breaking">
       <h4>All logback modules now require JDK 1.6 instead of
       previously JDK 1.5. This change was put to consultation on the
