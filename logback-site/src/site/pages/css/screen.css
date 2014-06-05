@@ -73,7 +73,7 @@ p.menu {
   border-radius: 3px;
 }
 
-#left a, #right a {
+#left p a, #right p a {
   display: block; 
   width: 95.5%; 
   margin: 0px; 
@@ -217,4 +217,68 @@ td:hover .anchor {
   text-decoration: none;
 }
 
+/**
+ * Code added for mobile compatibility
+ */
+.slide_close { display: none; }
+.handle { display: none; }
+
+@media only screen
+and (max-width: 1175px) {
+	#right, #left {
+		display: none;
+		position: fixed;
+		/*
+		height: 0px;
+		overflow: hidden;
+		transition: height .3s; /*This won't work with auto height */
+	}
+
+	#right:target,
+	#left:target {
+		display: block;
+		/*height: auto;*/
+	}
+	
+	#right:target + #right_open::after,
+	#left:target + #left_open::after {
+		content: '';
+	}
+	
+	.handle {
+		display: inline-block;
+		width: 50%;
+		height:1.5em;
+		background-color: #FFE0B0;
+		border: thin solid #cccccc;
+		top: 0;
+		position: fixed;
+		text-align: center;
+	}
+	.handle::after {
+		content: '\25BC';
+	}
+	.slide_close::after {
+		content: '\25B2';
+	}
+	a.handle {
+		color: #505050;		
+	}
+
+	#right_open {
+		right: 0;
+	}
+	
+	body #content {
+		margin-left: 1em;
+		margin-right: 1em;
+	}
+	
+	.slide_close {
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		right: 4px;
+	}
+}
 
