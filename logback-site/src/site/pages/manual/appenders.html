@@ -1649,15 +1649,15 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         <td><span class="prop" container="socket">queueSize</span></td>
         <td><code>int</code></td>
         <td>
-          <p>The <span class="prop">queueSize</span> property takes a
-          non-negative integer representing the number of logging
+          <p>The <span class="prop">queueSize</span> property takes an
+          integer (greater than zero) representing the number of logging
           events to retain for delivery to the remote receiver.  When
-          the queue size is zero, event delivery to the remote
+          the queue size is one, event delivery to the remote
           receiver is synchronous.  When the queue size is greater
-          than zero, new events are enqueued, assuming that there is
-          space available in the queue.  Using a non-zero queue length
-          can improve performance by eliminating delays caused by
-          transient network delays.
+          than one, new events are enqueued, assuming that there is
+          space available in the queue. Using a queue length greater
+          than one can improve performance by eliminating delays caused
+          by transient network delays.
           </p>
 
           <p>See also the <span class="prop">eventDelayLimit</span>
