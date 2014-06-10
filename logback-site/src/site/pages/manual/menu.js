@@ -1,11 +1,11 @@
 (function() {
-	var rightEl = document.getElementById('right');
-	var rightOpenEl = document.createElement('a');
-	rightOpenEl.href = '#right';
-	rightOpenEl.className = 'handle right_handle';
-	rightOpenEl.id = 'right_open';
-	rightOpenEl.innerHTML = 'Chapter Index'
-	rightEl.parentNode.insertBefore(rightOpenEl, rightEl.nextSibling);	
+  var rightEl = document.getElementById('right');
+  var rightOpenEl = document.createElement('a');
+  rightOpenEl.href = '#right';
+  rightOpenEl.className = 'handle right_handle';
+  rightOpenEl.id = 'right_open';
+  rightOpenEl.innerHTML = 'Chapter Index'
+  rightEl.parentNode.insertBefore(rightOpenEl, rightEl.nextSibling);
 })();
 document.write('<a href="#right_close" class="slide_close" id="right_close"></a>');
 

@@ -1,11 +1,11 @@
 (function() {
-	var leftEl = document.getElementById('left');
-	var leftOpenEl = document.createElement('a');
-	leftOpenEl.href = '#left';
-	leftOpenEl.className = 'handle left_handle';
-	leftOpenEl.id = 'left_open';
-	leftOpenEl.innerHTML = 'Menu'
-	leftEl.parentNode.insertBefore(leftOpenEl, leftEl.nextSibling);	
+  var leftEl = document.getElementById('left');
+  var leftOpenEl = document.createElement('a');
+  leftOpenEl.href = '#left';
+  leftOpenEl.className = 'handle left_handle';
+  leftOpenEl.id = 'left_open';
+  leftOpenEl.innerHTML = 'Menu'
+  leftEl.parentNode.insertBefore(leftOpenEl, leftEl.nextSibling);
 })();
 document.write('<a href="#left_close" class="slide_close" id="left_close"></a>');
 
