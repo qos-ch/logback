@@ -37,6 +37,13 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Changed queue consumption strategy in <code>AbstractSocketAppender</code>
+    from "take" to "peek/remove" in order to avoid losing an event on each socket
+    connection break. Zero is now a deprecated queue size. A queue size of one
+    should be taken instead to indicate synchronous processing.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-977">LOGBACK-977</a>)
+    </p>
+    
     <p><code>RequestLogImpl</code> now has an overridable <code>configure</code>
     method to allow extending implementations to configure it via methods
     other than the <code>logback-access.xml</code> file.</p>
