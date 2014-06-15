@@ -37,6 +37,10 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Fixed <code>IllegalStateException</code> when multiple threads
+    write files to same directory
+    (<a href="http://jira.qos.ch/browse/LOGBACK-128">LOGBACK-128)</a>.<p>
+
     <p>Changed queue consumption strategy in <code>AbstractSocketAppender</code>
     from "take" to "peek/remove" in order to avoid losing an event on each socket
     connection break. Zero is now a deprecated queue size. A queue size of one
