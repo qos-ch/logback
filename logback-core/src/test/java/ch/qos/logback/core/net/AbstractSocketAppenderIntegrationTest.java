@@ -89,7 +89,7 @@ public class AbstractSocketAppenderIntegrationTest {
     instrumentedAppender.append("some event");
 
     // wait for event to be taken from deque and being written into the stream
-    verify(deque, timeout(TIMEOUT)).takeFirst();
+    verify(deque, timeout(TIMEOUT).atLeastOnce()).takeFirst();
     verify(objectWriter, timeout(TIMEOUT)).write("some event");
 
     // then

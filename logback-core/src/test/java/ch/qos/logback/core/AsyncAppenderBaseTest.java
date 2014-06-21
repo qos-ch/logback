@@ -162,7 +162,7 @@ public class AsyncAppenderBaseTest {
   @Test
   public void workerThreadFlushesOnStop() {
     int loopLen = 5;
-    int maxRuntime = (loopLen + 1) * delayingListAppender.delay;
+    int maxRuntime = (loopLen + 1) * Math.max(1000, delayingListAppender.delay);
     ListAppender la = delayingListAppender;
     asyncAppenderBase.addAppender(la);
     asyncAppenderBase.setDiscardingThreshold(0);
