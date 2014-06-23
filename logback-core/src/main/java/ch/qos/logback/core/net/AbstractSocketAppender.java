@@ -85,6 +85,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   
   private BlockingDeque<E> deque;
   private String peerId;
+  private SocketConnector connector;
   private Future<?> task;
 
   private volatile Socket socket;
@@ -145,6 +146,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (errorCount == 0) {
       deque = queueFactory.newLinkedBlockingDeque(queueSize);
       peerId = "remote peer " + remoteHost + ":" + port + ": ";
+      connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
       task = getContext().getExecutorService().submit(new Runnable() {
         @Override
         public void run() {
@@ -186,8 +188,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   private void connectSocketAndDispatchEvents() {
     try {
       while (!Thread.currentThread().isInterrupted()) {
-        SocketConnector connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
-
         socket = connector.call();
         if(socket == null)
           break;
@@ -218,10 +218,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     return objectWriter;
   }
 
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, long retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
+  private SocketConnector createConnector(InetAddress address, int port, int initialDelay, long retryDelay) {
+    SocketConnector connector = newConnector(address, port, initialDelay, retryDelay);
     connector.setExceptionHandler(this);
     connector.setSocketFactory(getSocketFactory());
     return connector;
@@ -274,8 +272,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * @param retryDelay delay before a reconnection attempt
    * @return socket connector
    */
-  protected SocketConnector newConnector(InetAddress address,
-                                         int port, long initialDelay, long retryDelay) {
+  protected SocketConnector newConnector(InetAddress address, int port, long initialDelay, long retryDelay) {
     return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
