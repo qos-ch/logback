@@ -21,9 +21,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
@@ -88,7 +86,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   private BlockingDeque<E> deque;
   private String peerId;
   private Future<?> task;
-  private Future<Socket> connectorTask;
 
   private volatile Socket socket;
 
@@ -166,8 +163,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (!isStarted()) return;
     CloseUtil.closeQuietly(socket);
     task.cancel(true);
-    if(connectorTask != null)
-      connectorTask.cancel(true);
     super.stop();
   }
 
@@ -191,14 +186,9 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   private void connectSocketAndDispatchEvents() {
     try {
       while (!Thread.currentThread().isInterrupted()) {
-        SocketConnector connector = createConnector(address, port, 0,
-                reconnectionDelay.getMilliseconds());
+        SocketConnector connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
 
-        connectorTask = activateConnector(connector);
-        if(connectorTask == null)
-          break;
-
-        socket = waitForConnectorToReturnSocket();
+        socket = connector.call();
         if(socket == null)
           break;
 
@@ -235,24 +225,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     connector.setExceptionHandler(this);
     connector.setSocketFactory(getSocketFactory());
     return connector;
-  }
-
-  private Future<Socket> activateConnector(SocketConnector connector) {
-    try {
-      return getContext().getExecutorService().submit(connector);
-    } catch (RejectedExecutionException ex) {
-      return null;
-    }
-  }
-
-  private Socket waitForConnectorToReturnSocket() throws InterruptedException {
-    try {
-      Socket s = connectorTask.get();
-      connectorTask = null;
-      return s;
-    } catch (ExecutionException e) {
-      return null;
-    }
   }
 
   private void dispatchEvents(ObjectWriter objectWriter) throws InterruptedException, IOException {
