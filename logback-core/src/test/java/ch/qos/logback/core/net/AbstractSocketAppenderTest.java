@@ -392,15 +392,10 @@ public class AbstractSocketAppenderTest {
 
     // given
     doThrow(new IOException()).when(objectWriter).write(anyObject());
+    doReturn(false).when(deque).offerFirst("some event");
     appender.start();
     awaitStartOfEventDispatching();
     reset(appender);
-
-    // fill up deque
-    int max = deque.remainingCapacity();
-    for (int i = 0; i < max; i++) {
-      deque.offer(""+i);
-    }
 
     // when
     appender.append("some event");
