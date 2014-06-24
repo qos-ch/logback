@@ -187,11 +187,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
 
   private void connectSocketAndDispatchEvents() {
     try {
-      while (!Thread.currentThread().isInterrupted()) {
-        socket = connector.call();
-        if(socket == null)
-          break;
-
+      while (socketConnectionCouldBeEstablished()) {
         try {
           ObjectWriter objectWriter = createObjectWriterForSocket();
           addInfo(peerId + "connection established");
@@ -209,6 +205,10 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     }
     // TODO I guess the appender should also be stopped at this point
     addInfo("shutting down");
+  }
+
+  private boolean socketConnectionCouldBeEstablished() throws InterruptedException {
+    return (socket = connector.call()) != null;
   }
 
   private ObjectWriter createObjectWriterForSocket() throws IOException {
