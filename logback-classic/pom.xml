@@ -264,6 +264,7 @@
             <!-- skip performance tests -->
             <exclude>**/*PerfTest.java</exclude>
           </excludes>
+          <argLine>-Duser.country=EN -Duser.language=en -Duser.timezone=CEST</argLine>
         </configuration>
       </plugin>
 
