@@ -203,7 +203,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
     }
-    // TODO I guess the appender should also be stopped at this point
     addInfo("shutting down");
   }
 
