@@ -50,7 +50,7 @@ public class CoreConstants {
   public static final String PATTERN_RULE_REGISTRY = "PATTERN_RULE_REGISTRY";
 
   public static final String ISO8601_STR = "ISO8601";
-  public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+  public static final String ISO8601_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
   public static final String DAILY_DATE_PATTERN = "yyyy-MM-dd";
 
   /**

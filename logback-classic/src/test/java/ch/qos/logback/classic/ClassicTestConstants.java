@@ -16,7 +16,7 @@ package ch.qos.logback.classic;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 public class ClassicTestConstants {
-  final static public String ISO_REGEX = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";
+  final static public String ISO_REGEX = "\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}";
   //pool-1-thread-47
   final static public String NAKED_MAIN_REGEX = "([mM]ain|pool-\\d-)([Tt]hread)?(-\\d{1,3})?";
 
