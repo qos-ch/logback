@@ -32,6 +32,7 @@ Gregory A. Denton        WA, USA               2013-05-02
 Mikhail Mazursky         Bashkortostan,Russia  2013-10-02
 Marvin B. Lillehaug      Trondheim, Norway     2014-01-20
 Chetan Mehrotra          Uttar Pradesh, India  2014-02-04
+Eric Dahl                NE, US                2014-02-04
 Adam Gent                MA, USA               2014-04-01
 
 
