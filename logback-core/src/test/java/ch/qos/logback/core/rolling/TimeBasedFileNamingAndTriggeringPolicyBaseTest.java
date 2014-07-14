@@ -30,9 +30,9 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
   static long MILLIS_IN_MINUTE = 60*1000;
 
   Context context = new ContextBase();
-  RollingFileAppender rfa = new RollingFileAppender();
-  TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-  DefaultTimeBasedFileNamingAndTriggeringPolicy timeBasedFNATP = new DefaultTimeBasedFileNamingAndTriggeringPolicy();
+  RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
+  TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
+  DefaultTimeBasedFileNamingAndTriggeringPolicy<Object> timeBasedFNATP = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
 
   @Before
   public void setUp() {

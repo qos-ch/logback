@@ -36,8 +36,8 @@ public class Simulator {
     this.multiThreaded = multiThreaded;
   }
 
-  public List<Event> generateScenario(int len) {
-    List<Event> scenario = new ArrayList<Event>();
+  public List<Event<String>> generateScenario(int len) {
+    List<Event<String>> scenario = new ArrayList<Event<String>>();
 
     for (int i = 0; i < len; i++) {
 
@@ -53,7 +53,7 @@ public class Simulator {
     return scenario;
   }
 
-  public void simulate(List<Event> scenario, LRUCache<String, String> lruCache,
+  public void simulate(List<Event<String>> scenario, LRUCache<String, String> lruCache,
       T_LRUCache<String> tlruCache) {
     for (Event<String> e : scenario) {
       if (e.put) {

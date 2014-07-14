@@ -122,7 +122,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     Entry<C> entry = getFromEitherMap(key);
     if (entry == null) {
       C c = buildComponent(key);
-      entry = new Entry(key, c, timestamp);
+      entry = new Entry<C>(key, c, timestamp);
       // new entries go into the main map
       liveMap.put(key, entry);
     } else {
@@ -137,7 +137,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
    * @param key
    */
   public void endOfLife(String key) {
-    Entry entry = liveMap.remove(key);
+    Entry<C> entry = liveMap.remove(key);
     if (entry == null)
       return;
     lingerersMap.put(key, entry);

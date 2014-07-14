@@ -558,7 +558,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     if (to == null || to.length() == 0) {
       throw new IllegalArgumentException("Null or empty <to> property");
     }
-    PatternLayoutBase plb = makeNewToPatternLayout(to.trim());
+    PatternLayoutBase<E> plb = makeNewToPatternLayout(to.trim());
     plb.setContext(context);
     plb.start();
     this.toPatternLayoutList.add(plb);

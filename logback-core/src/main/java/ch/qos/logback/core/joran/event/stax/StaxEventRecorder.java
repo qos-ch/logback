@@ -14,7 +14,9 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import javax.xml.stream.events.Attribute;
 
 public class StaxEventRecorder extends ContextAwareBase {
 
@@ -62,7 +64,7 @@ public class StaxEventRecorder extends ContextAwareBase {
     String tagName = se.getName().getLocalPart();
     globalElementPath.push(tagName);
     ElementPath current = globalElementPath.duplicate();
-    StartEvent startEvent = new StartEvent(current, tagName, se.getAttributes(), se.getLocation());
+    StartEvent startEvent = new StartEvent(current, tagName, (Iterator<Attribute>) se.getAttributes(), se.getLocation());
     eventList.add(startEvent);
   }
 
