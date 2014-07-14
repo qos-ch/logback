@@ -87,7 +87,7 @@ public class RollingCalendarTest extends TestCase {
       Date result = rc.getRelativeDate(nowDate, p);
       long offset = rc.getTimeZone().getRawOffset()+rc.getTimeZone().getDSTSavings();
     
-      long origin = now - (now % (MILLIS_IN_DAY)) - offset;      
+      long origin = now - ((now + offset) % (MILLIS_IN_DAY));      
       long expected = origin + p * MILLIS_IN_DAY;
       assertEquals("p="+p, expected, result.getTime());
     }
