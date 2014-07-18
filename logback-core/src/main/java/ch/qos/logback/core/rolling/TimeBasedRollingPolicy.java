@@ -15,13 +15,13 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.*;
+import java.util.TimeZone;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
@@ -47,6 +47,8 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
   private int maxHistory = INFINITE_HISTORY;
   private ArchiveRemover archiveRemover;
+  private String timeZone;
+  private String rollTime; // hh:mm:ss
 
   TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedFileNamingAndTriggeringPolicy;
 
@@ -76,6 +78,23 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
 
     addInfo("Will use the pattern " + fileNamePatternWCS
         + " for the active file");
+    TimeZone tz = timeZone == null ? 
+            TimeZone.getDefault() : TimeZone.getTimeZone(timeZone);
+    tz = (TimeZone) tz.clone(); // to make sure we do not disturb standard zones
+    addInfo("Will use the time zone " + tz.getDisplayName() + " for the rolling logic");
+    if(rollTime != null) {
+        addInfo("Will use the roll time shift " + rollTime);
+        String[] hms = rollTime.split(":");
+        try {
+            int h = Integer.parseInt(hms[0]);
+            int m = Integer.parseInt(hms[1]);
+            int s = Integer.parseInt(hms[2]);
+            int shift = 1000 * (s + 60 * (m + 60 * h));
+            tz.setRawOffset(tz.getRawOffset() - shift);
+        } catch(Exception ex) {
+            addError("Invalid roll time \"" + rollTime + "\"");
+        }
+    }
 
      if(compressionMode == CompressionMode.ZIP) {
       String zipEntryFileNamePatternStr = transformFileNamePattern2ZipEntry(fileNamePatternStr);
@@ -87,6 +106,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
     timeBasedFileNamingAndTriggeringPolicy.setContext(context);
     timeBasedFileNamingAndTriggeringPolicy.setTimeBasedRollingPolicy(this);
+    timeBasedFileNamingAndTriggeringPolicy.setTimeZone(tz);
     timeBasedFileNamingAndTriggeringPolicy.start();
 
     // the maxHistory property is given to TimeBasedRollingPolicy instead of to
@@ -246,6 +266,26 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     this.cleanHistoryOnStart = cleanHistoryOnStart;
   }
 
+  /**
+   * Set the name of the time zone to be used in the RollingCalendar.
+   * If not set, the default zone will be used.
+   * @param timeZone 
+   */
+  public void setTimeZone(String timeZone) {
+      this.timeZone = timeZone;
+  }
+
+  /**
+   * Set the roll time, format "hh:mm:ss".
+   * If this parameter is set, the time zone will be replaced by the 
+   * same zone with the raw offset decreased by the specified time.
+   * This custom time zone will effectively have its midnight at the
+   * specified rolling time, so the rolling will happen at the set time.
+   * @param rollTime 
+   */
+  public void setRollTime(String rollTime) {
+      this.rollTime = rollTime;
+  }
 
   @Override
   public String toString() {

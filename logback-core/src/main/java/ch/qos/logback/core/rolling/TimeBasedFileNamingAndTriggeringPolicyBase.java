@@ -20,6 +20,8 @@ import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import java.util.Locale;
+import java.util.TimeZone;
 
 abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
         ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
@@ -28,6 +30,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
 
   protected ArchiveRemover archiveRemover = null;
   protected String elapsedPeriodsFileName;
+  protected TimeZone timeZone;
   protected RollingCalendar rc;
 
   protected long artificialCurrentTime = -1;
@@ -48,7 +51,11 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
               + "] does not contain a valid DateToken");
     }
 
-    rc = new RollingCalendar();
+    if(timeZone == null) {
+        rc = new RollingCalendar();
+    } else {
+        rc = new RollingCalendar(timeZone, Locale.getDefault());
+    }
     rc.init(dtc.getDatePattern());
     addInfo("The date pattern is '" + dtc.getDatePattern()
             + "' from file name pattern '" + tbrp.fileNamePattern.getPattern()
@@ -115,4 +122,12 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
     return archiveRemover;
   }
 
+  /**
+   * Set time zone used by the RollingCalendar.
+   * If it is not set, RollingCalendar will use the default zone.
+   * @param timeZone 
+   */
+  public void setTimeZone(TimeZone timeZone) {
+    this.timeZone = timeZone;
+  }
 }

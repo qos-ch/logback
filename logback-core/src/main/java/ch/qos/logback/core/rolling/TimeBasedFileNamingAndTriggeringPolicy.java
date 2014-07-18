@@ -15,6 +15,7 @@ package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.spi.ContextAware;
+import java.util.TimeZone;
 
 /**
  * This interface lists the set of methods that need to be implemented by
@@ -81,4 +82,10 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends
    * @param date
    */
   //void setDateInCurrentPeriod(Date date); 
+  
+  /**
+   * Set time zone used by the RollingCalendar
+   * @param timeZone 
+   */
+  public void setTimeZone(TimeZone timeZone);
 }
