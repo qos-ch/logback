@@ -49,6 +49,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
   private ArchiveRemover archiveRemover;
   private String timeZone;
   private String rollTime; // hh:mm:ss
+  private int daysOffset;
 
   TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedFileNamingAndTriggeringPolicy;
 
@@ -81,19 +82,28 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     TimeZone tz = timeZone == null ? 
             TimeZone.getDefault() : TimeZone.getTimeZone(timeZone);
     tz = (TimeZone) tz.clone(); // to make sure we do not disturb standard zones
-    addInfo("Will use the time zone " + tz.getDisplayName() + " for the rolling logic");
+    addInfo("Use the time zone " + tz.getDisplayName() + " for the rolling logic");
+    int shift = 0;
     if(rollTime != null) {
-        addInfo("Will use the roll time shift " + rollTime);
+        addInfo("Use the roll time shift " + rollTime);
         String[] hms = rollTime.split(":");
         try {
             int h = Integer.parseInt(hms[0]);
             int m = Integer.parseInt(hms[1]);
             int s = Integer.parseInt(hms[2]);
-            int shift = 1000 * (s + 60 * (m + 60 * h));
-            tz.setRawOffset(tz.getRawOffset() - shift);
+            shift -= 1000 * (s + 60 * (m + 60 * h));
         } catch(Exception ex) {
             addError("Invalid roll time \"" + rollTime + "\"");
         }
+    }
+    
+    if(daysOffset != 0) {
+        addInfo("Use the roll time days offset " + daysOffset);
+        shift += daysOffset * 24 * 60 * 60 * 1000;
+    }
+    
+    if(shift != 0) {
+        tz.setRawOffset(tz.getRawOffset() + shift);
     }
 
      if(compressionMode == CompressionMode.ZIP) {
@@ -285,6 +295,10 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
    */
   public void setRollTime(String rollTime) {
       this.rollTime = rollTime;
+  }
+
+  public void setDaysOffset(int daysOffset) {
+      this.daysOffset = daysOffset;
   }
 
   @Override
