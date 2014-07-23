@@ -24,7 +24,7 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
   }
 
   public void cleanByPeriodOffset(Date now, int periodOffset) {
-    Date dateOfPeriodToClean = rc.getRelativeDate(now, periodOffset);
+    Date dateOfPeriodToClean = rc.getAdjustedTime(rc.getRelativeDate(now, periodOffset));
 
     String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean);
     String stemRegex = FileFilterUtil.afterLastSlash(regex);

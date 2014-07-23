@@ -237,7 +237,18 @@ public class RollingCalendar extends GregorianCalendar {
     return getTime();
   }
 
-  public Date getNextTriggeringDate(Date now) {
-    return getRelativeDate(now, 1);
-  }
+    public Date getNextTriggeringDate(Date now) {
+        return getRelativeDate(now, 1);
+    }
+
+    public Date getAdjustedTime(Date d) {
+        if (d == null) {
+            return null;
+        }
+        long tm = d.getTime();
+        d = new Date(tm + this.getTimeZone().getOffset(tm)
+                - TimeZone.getDefault().getOffset(tm));
+        return d;
+    }
+
 }

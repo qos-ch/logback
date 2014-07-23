@@ -24,7 +24,7 @@ public class TimeBasedArchiveRemover extends DefaultArchiveRemover {
   }
 
   protected void cleanByPeriodOffset(Date now, int periodOffset) {
-    Date date2delete = rc.getRelativeDate(now, periodOffset);
+    Date date2delete = rc.getAdjustedTime(rc.getRelativeDate(now, periodOffset));
     String filename = fileNamePattern.convert(date2delete);
     File file2Delete = new File(filename);
     if (file2Delete.exists() && file2Delete.isFile()) {

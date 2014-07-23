@@ -39,12 +39,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
   public boolean isTriggeringEvent(File activeFile, final E event) {
     long time = getCurrentTime();
     if (time >= nextCheck) {
-      Date dateOfElapsedPeriod = dateInCurrentPeriod;
-      if(dateOfElapsedPeriod != null) {
-          long tm = dateOfElapsedPeriod.getTime();
-          dateOfElapsedPeriod = new Date(tm + timeZone.getOffset(tm) - 
-                  TimeZone.getDefault().getOffset(tm));
-      }
+      Date dateOfElapsedPeriod = rc.getAdjustedTime(dateInCurrentPeriod);
       addInfo("Elapsed period: "+dateOfElapsedPeriod);
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
           .convert(dateOfElapsedPeriod);

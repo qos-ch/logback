@@ -73,7 +73,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
     addInfo("Setting initial period to " + dateInCurrentPeriod);
     computeNextCheck();
   }
-
+  
   public void stop() {
     started = false;
   }
@@ -97,7 +97,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
   }
 
   public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-    return tbrp.fileNamePatternWCS.convert(dateInCurrentPeriod);
+    return tbrp.fileNamePatternWCS.convert(rc.getAdjustedTime(dateInCurrentPeriod));
   }
 
   public void setCurrentTime(long timeInMillis) {
