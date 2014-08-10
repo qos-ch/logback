@@ -28,11 +28,17 @@ public class TimeBasedArchiveRemover extends DefaultArchiveRemover {
     String filename = fileNamePattern.convert(date2delete);
     File file2Delete = new File(filename);
     if (file2Delete.exists() && file2Delete.isFile()) {
-      file2Delete.delete();
-      addInfo("deleting " + file2Delete);
-      if (parentClean) {
-        removeFolderIfEmpty(file2Delete.getParentFile());
+      Date fileLastModified = new Date(file2Delete.lastModified());
+
+      if (fileLastModified.compareTo(date2delete) <= 0) {
+        file2Delete.delete();
+        addInfo("deleting " + file2Delete);
+
+        if (parentClean) {
+          removeFolderIfEmpty(file2Delete.getParentFile());
+        }
       }
+
     }
   }
 
