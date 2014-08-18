@@ -22,7 +22,7 @@ package ch.qos.logback.classic.db.names;
  * @author Ceki Gulcu
  * @since 0.9.19
  * @see ch.qos.logback.classic.db.names.DefaultDBNameResolver
- * @see ch.qos.logback.classic.db.names.CustomDBNameResolver
+ * @see ch.qos.logback.classic.db.names.SimpleDBNameResolver
  */
 public interface DBNameResolver {
 
