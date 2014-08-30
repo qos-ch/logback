@@ -37,6 +37,10 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Fixed an issue with <code>FileAppender</code> in prudent mode, where
+    an interrupt could prevent further access to the file
+    (<a href="http://jira.qos.ch/browse/LOGBACK-875">LOGBACK-875)</a>.<p>
+
     <p>Fixed <code>IllegalStateException</code> when multiple threads
     write files to same directory
     (<a href="http://jira.qos.ch/browse/LOGBACK-128">LOGBACK-128)</a>.<p>
