@@ -41,35 +41,34 @@ import ch.qos.logback.core.status.Status;
 public class ServerSocketReceiverTest {
 
   private MockContext context = new MockContext();
-  
-  private MockServerRunner<RemoteAppenderClient> runner = 
-      new MockServerRunner<RemoteAppenderClient>();
-  
-  private MockServerListener<RemoteAppenderClient> listener = 
-      new MockServerListener<RemoteAppenderClient>();
-  
+
+  private MockServerRunner<AppenderFacingClient> runner =
+          new MockServerRunner<AppenderFacingClient>();
+
+  private MockServerListener listener = new MockServerListener();
+
   private ServerSocket serverSocket;
   private InstrumentedServerSocketReceiver receiver;
-  
+
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
     receiver = new InstrumentedServerSocketReceiver(serverSocket, listener, runner);
     receiver.setContext(context);
   }
-  
+
   @After
   public void tearDown() throws Exception {
     serverSocket.close();
   }
-  
+
   @Test
   public void testStartStop() throws Exception {
     receiver.start();
     assertTrue(runner.isContextInjected());
     assertTrue(runner.isRunning());
     assertSame(listener, receiver.getLastListener());
-    
+
     receiver.stop();
     assertFalse(runner.isRunning());
   }
@@ -88,9 +87,9 @@ public class ServerSocketReceiverTest {
     IOException ex = new IOException("test exception");
     runner.setStopException(ex);
     receiver.stop();
-    
+
     Status status = context.getLastStatus();
-    assertNotNull(status);    
+    assertNotNull(status);
     assertTrue(status instanceof ErrorStatus);
     assertTrue(status.getMessage().contains(ex.getMessage()));
     assertSame(ex, status.getThrowable());

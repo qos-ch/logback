@@ -13,9 +13,11 @@
  */
 package ch.qos.logback.classic.net.server;
 
+import java.net.Socket;
 import java.util.concurrent.Executor;
 
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.net.server.Client;
 import ch.qos.logback.core.net.server.ConcurrentServerRunner;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
@@ -26,28 +28,34 @@ import ch.qos.logback.core.net.server.ServerRunner;
  *
  * @author Carl Harris
  */
-class RemoteAppenderServerRunner
-    extends ConcurrentServerRunner<RemoteAppenderClient> {
+class RemoteAppenderServerRunner extends ConcurrentServerRunner {
 
   /**
    * Constructs a new server runner.
+   *
    * @param listener the listener from which the server will accept new
-   *    clients
-   * @param executor that will be used to execute asynchronous tasks 
-   *    on behalf of the runner.
+   *                 clients
+   * @param executor that will be used to execute asynchronous tasks
+   *                 on behalf of the runner.
    */
   public RemoteAppenderServerRunner(
-      ServerListener<RemoteAppenderClient> listener, Executor executor) {
+          ServerListener listener, Executor executor) {
     super(listener, executor);
+  }
+
+  @Override
+  protected Client buildClient(String id, Socket socket) {
+    return new AppenderFacingStreamInputClient(id, socket);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected boolean configureClient(RemoteAppenderClient client) {
-    client.setLoggerContext((LoggerContext) getContext());
+  protected boolean configureClient(Client client) {
+    AppenderFacingClient appenderFacingClient = (AppenderFacingClient) client;
+    appenderFacingClient.setLoggerContext((LoggerContext) getContext());
     return true;
   }
-  
+
 }

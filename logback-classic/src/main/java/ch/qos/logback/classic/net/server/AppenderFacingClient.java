@@ -24,7 +24,7 @@ import ch.qos.logback.core.net.server.ServerRunner;
  *  
  * @author Carl Harris
  */
-interface RemoteAppenderClient extends Client {
+interface AppenderFacingClient extends Client {
 
   /**
    * Sets the client's logger context.

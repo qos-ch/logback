@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -29,22 +30,22 @@ import ch.qos.logback.core.net.server.ServerListener;
  *
  * @author Carl Harris
  */
-public class MockServerListener<T extends Client> implements ServerListener<T> {
+public class MockServerListener implements ServerListener {
 
-  private final BlockingQueue<T> queue = 
-      new LinkedBlockingQueue<T>();
-  
+  private final BlockingQueue<Socket> queue =
+          new LinkedBlockingQueue<Socket>();
+
   private boolean closed;
   private Thread waiter;
-  
+
   public synchronized Thread getWaiter() {
     return waiter;
   }
-  
+
   public synchronized void setWaiter(Thread waiter) {
     this.waiter = waiter;
   }
-  
+
   public synchronized boolean isClosed() {
     return closed;
   }
@@ -53,29 +54,28 @@ public class MockServerListener<T extends Client> implements ServerListener<T> {
     this.closed = closed;
   }
 
-  public T acceptClient() throws IOException, InterruptedException {
+  public Socket acceptSocket() throws IOException, InterruptedException {
     if (isClosed()) {
       throw new IOException("closed");
     }
     setWaiter(Thread.currentThread());
     try {
       return queue.take();
-    }
-    finally {
+    } finally {
       setWaiter(null);
     }
   }
 
-  public void addClient(T client) {
-    queue.offer(client);
+  public void addSocket(Socket s) {
+    queue.offer(s);
   }
-  
+
   public synchronized void close() {
     setClosed(true);
     Thread waiter = getWaiter();
     if (waiter != null) {
       waiter.interrupt();
-    }   
+    }
   }
 
 }

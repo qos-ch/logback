@@ -21,10 +21,11 @@ import java.util.concurrent.Executor;
 
 import javax.net.ServerSocketFactory;
 
-import ch.qos.logback.classic.net.ReceiverBase;
+import ch.qos.logback.classic.net.AbstractReceiver;
 import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.net.server.ServerListener;
 import ch.qos.logback.core.net.server.ServerRunner;
+import ch.qos.logback.core.net.server.ServerSocketListener;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
@@ -32,7 +33,7 @@ import ch.qos.logback.core.util.CloseUtil;
  *
  * @author Carl Harris
  */
-public class ServerSocketReceiver extends ReceiverBase {
+public class ServerSocketReceiver extends AbstractReceiver {
   
   /**
    * Default {@link ServerSocket} backlog
@@ -55,8 +56,7 @@ public class ServerSocketReceiver extends ReceiverBase {
       ServerSocket serverSocket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
 
-      ServerListener<RemoteAppenderClient> listener = 
-          createServerListener(serverSocket);
+      ServerListener listener =  createServerListener(serverSocket);
       
       runner = createServerRunner(listener, getContext().getExecutorService());
       runner.setContext(getContext());
@@ -69,13 +69,13 @@ public class ServerSocketReceiver extends ReceiverBase {
     }
   }
 
-  protected ServerListener<RemoteAppenderClient> createServerListener(
+  protected ServerListener createServerListener(
       ServerSocket socket) {
-    return new RemoteAppenderServerListener(socket);
+    return new ServerSocketListener(socket);
   }
   
   protected ServerRunner createServerRunner(
-      ServerListener<RemoteAppenderClient> listener,
+      ServerListener listener,
       Executor executor) {
     return new RemoteAppenderServerRunner(listener, executor);
   }

@@ -40,7 +40,7 @@ import ch.qos.logback.core.util.CloseUtil;
  *
  * @author Carl Harris
  */
-public class SocketReceiver extends ReceiverBase
+public class SocketReceiver extends AbstractReceiver
         implements Runnable, SocketConnector.ExceptionHandler {
 
   private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;

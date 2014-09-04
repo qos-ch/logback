@@ -39,35 +39,34 @@ public class AbstractServerSocketAppenderTest {
 
 
   private MockContext context = new MockContext();
-  
-  private MockServerRunner<RemoteReceiverClient> runner = 
-      new MockServerRunner<RemoteReceiverClient>();
-  
-  private MockServerListener<RemoteReceiverClient> listener = 
-      new MockServerListener<RemoteReceiverClient>();
-  
+
+  private MockServerRunner<ReceiverFacingClient> runner =
+          new MockServerRunner<ReceiverFacingClient>();
+
+  private MockServerListener listener = new MockServerListener();
+
   private ServerSocket serverSocket;
   private InstrumentedServerSocketAppenderBase appender;
-  
+
   @Before
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
     appender = new InstrumentedServerSocketAppenderBase(serverSocket, listener, runner);
     appender.setContext(context);
   }
-  
+
   @After
   public void tearDown() throws Exception {
     serverSocket.close();
   }
-  
+
   @Test
   public void testStartStop() throws Exception {
     appender.start();
     assertTrue(runner.isContextInjected());
     assertTrue(runner.isRunning());
     assertSame(listener, appender.getLastListener());
-    
+
     appender.stop();
     assertFalse(runner.isRunning());
   }
@@ -86,9 +85,9 @@ public class AbstractServerSocketAppenderTest {
     IOException ex = new IOException("test exception");
     runner.setStopException(ex);
     appender.stop();
-    
+
     Status status = context.getLastStatus();
-    assertNotNull(status);    
+    assertNotNull(status);
     assertTrue(status instanceof ErrorStatus);
     assertTrue(status.getMessage().contains(ex.getMessage()));
     assertSame(ex, status.getThrowable());

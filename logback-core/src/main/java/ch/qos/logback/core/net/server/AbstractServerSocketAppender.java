@@ -51,7 +51,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
   
   private String address;
 
-  private ServerRunner<RemoteReceiverClient> runner;
+  private ServerRunner<ReceiverFacingClient> runner;
 
   @Override
   public void start() {
@@ -59,7 +59,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     try {
       ServerSocket socket = getServerSocketFactory().createServerSocket(
           getPort(), getBacklog(), getInetAddress());    
-      ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
+      ServerListener listener = createServerListener(socket);
       
       runner = createServerRunner(listener, getContext().getExecutorService());
       runner.setContext(getContext());
@@ -70,13 +70,13 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     }
   }
   
-  protected ServerListener<RemoteReceiverClient> createServerListener(
+  protected ServerListener createServerListener(
       ServerSocket socket) {
-    return new RemoteReceiverServerListener(socket);
+    return new ServerSocketListener(socket);
   }
   
-  protected ServerRunner<RemoteReceiverClient> createServerRunner(
-      ServerListener<RemoteReceiverClient> listener,
+  protected ServerRunner<ReceiverFacingClient> createServerRunner(
+      ServerListener listener,
       Executor executor) {
     return new RemoteReceiverServerRunner(listener, executor, 
         getClientQueueSize());
@@ -99,8 +99,8 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     if (event == null) return;
     postProcessEvent(event);
     final Serializable serEvent = getPST().transform(event);
-    runner.accept(new ClientVisitor<RemoteReceiverClient>() {
-      public void visit(RemoteReceiverClient client) {
+    runner.accept(new ClientVisitor<ReceiverFacingClient>() {
+      public void visit(ReceiverFacingClient client) {
         client.offer(serEvent);
       }      
     });

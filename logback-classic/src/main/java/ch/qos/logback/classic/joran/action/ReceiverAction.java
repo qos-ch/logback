@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.classic.joran.action;
 
+import ch.qos.logback.classic.net.AbstractReceiver;
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.classic.net.ReceiverBase;
 import ch.qos.logback.classic.net.SocketReceiver;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class ReceiverAction extends Action {
 
-  private ReceiverBase receiver;
+  private AbstractReceiver receiver;
   private boolean inError;
   
   @Override
@@ -47,8 +47,8 @@ public class ReceiverAction extends Action {
     try {
       addInfo("About to instantiate receiver of type [" + className + "]");
 
-      receiver = (ReceiverBase) OptionHelper.instantiateByClassName(
-          className, ReceiverBase.class, context);
+      receiver = (AbstractReceiver) OptionHelper.instantiateByClassName(
+          className, AbstractReceiver.class, context);
       receiver.setContext(context);
       
       ic.pushObject(receiver);

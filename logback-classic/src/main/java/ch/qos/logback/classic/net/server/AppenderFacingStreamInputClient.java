@@ -25,26 +25,27 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
- * A {@link RemoteAppenderClient} that reads serialized {@link ILoggingEvent} 
+ * A {@link AppenderFacingClient} that reads serialized {@link ILoggingEvent}
  * objects from an {@link InputStream}.
  *
  * @author Carl Harris
  */
-class RemoteAppenderStreamClient implements RemoteAppenderClient {
+class AppenderFacingStreamInputClient implements AppenderFacingClient {
 
   private final String id;
   private final Socket socket;
   private final InputStream inputStream;
-  
+
   private LoggerContext lc;
   private Logger logger;
-  
+
   /**
-   * Constructs a new client.  
-   * @param id a display name for the client
+   * Constructs a new client.
+   *
+   * @param id          a display name for the client
    * @param inputStream input stream from which events will be read
    */
-  public RemoteAppenderStreamClient(String id, Socket socket) {
+  public AppenderFacingStreamInputClient(String id, Socket socket) {
     this.id = id;
     this.socket = socket;
     this.inputStream = null;
@@ -52,14 +53,14 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
 
   /**
    * Constructs a new client.
-   * <p>
+   * <p/>
    * This constructor is provided primarily to support unit tests for which
    * it is inconvenient to create a socket.
-   *  
-   * @param id a display name for the client
+   *
+   * @param id          a display name for the client
    * @param inputStream input stream from which events will be read
    */
-  public RemoteAppenderStreamClient(String id, InputStream inputStream) {
+  public AppenderFacingStreamInputClient(String id, InputStream inputStream) {
     this.id = id;
     this.socket = null;
     this.inputStream = inputStream;
@@ -85,7 +86,7 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
    * {@inheritDoc}
    */
   public void run() {
-    logger.info(this + ": connected"); 
+    logger.info(this + ": connected");
     ObjectInputStream ois = null;
     try {
       ois = createObjectInputStream();
@@ -101,21 +102,16 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
           remoteLogger.callAppenders(event);
         }
       }
-    }
-    catch (EOFException ex) {
+    } catch (EOFException ex) {
       // this is normal and expected
-      assert true;    
-    }
-    catch (IOException ex) {
+      assert true;
+    } catch (IOException ex) {
       logger.info(this + ": " + ex);
-    }
-    catch (ClassNotFoundException ex) {
-      logger.error(this + ": unknown event class");      
-    }
-    catch (RuntimeException ex) {
+    } catch (ClassNotFoundException ex) {
+      logger.error(this + ": unknown event class");
+    } catch (RuntimeException ex) {
       logger.error(this + ": " + ex);
-    }
-    finally {
+    } finally {
       if (ois != null) {
         CloseUtil.closeQuietly(ois);
       }
@@ -130,7 +126,7 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
     }
     return new ObjectInputStream(socket.getInputStream());
   }
-  
+
   /**
    * {@inheritDoc}
    */

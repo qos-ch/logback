@@ -42,9 +42,9 @@ public class ServerSocketListenerTest {
   public void setUp() throws Exception {
     serverSocket = ServerSocketUtil.createServerSocket();
     assertNotNull(serverSocket);
-    listener = new InstrumentedServerSocketListener(serverSocket);
+    listener = new ServerSocketListener(serverSocket);
   }
-  
+
   @Test
   public void testAcceptClient() throws Exception {
     RunnableClient localClient = new RunnableClient(
@@ -59,39 +59,24 @@ public class ServerSocketListenerTest {
     }
     assertTrue(localClient.isConnected());
     localClient.close();
-    
+
     serverSocket.setSoTimeout(5000);
-    Client client = listener.acceptClient();
-    assertNotNull(client);
-    client.close();
+    Socket socket = listener.acceptSocket();
+    assertNotNull(socket);
+    socket.close();
   }
-  
-  private static class InstrumentedServerSocketListener 
-      extends ServerSocketListener<RemoteClient> {
 
-    public InstrumentedServerSocketListener(ServerSocket serverSocket) {
-      super(serverSocket);
-    }
-
-    @Override
-    protected RemoteClient createClient(String id, Socket socket)
-        throws IOException {
-      return new RemoteClient(socket);
-    }
-    
-  }
-  
   private static class RemoteClient implements Client {
-   
+
     private final Socket socket;
-    
+
     public RemoteClient(Socket socket) {
       this.socket = socket;
     }
 
     public void run() {
     }
-    
+
     public void close() {
       try {
         socket.close();
@@ -100,16 +85,16 @@ public class ServerSocketListenerTest {
         ex.printStackTrace(System.err);
       }
     }
-    
+
   }
-  
+
   private static class RunnableClient implements Client {
 
     private final InetAddress inetAddress;
     private final int port;
     private boolean connected;
     private boolean closed;
-        
+
     public RunnableClient(InetAddress inetAddress, int port) {
       super();
       this.inetAddress = inetAddress;
@@ -150,6 +135,6 @@ public class ServerSocketListenerTest {
       closed = true;
       notifyAll();
     }
-    
+
   }
 }

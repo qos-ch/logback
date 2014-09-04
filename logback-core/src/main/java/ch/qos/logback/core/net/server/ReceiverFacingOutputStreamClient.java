@@ -26,26 +26,27 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
- * A {@link RemoteReceiverClient} that writes serialized logging events to an
+ * A {@link ReceiverFacingClient} that writes serialized logging events to an
  * {@link OutputStream}.
  *
  * @author Carl Harris
  */
-class RemoteReceiverStreamClient 
-    extends ContextAwareBase implements RemoteReceiverClient {
+class ReceiverFacingOutputStreamClient
+        extends ContextAwareBase implements ReceiverFacingClient {
 
   private final String clientId;
   private final Socket socket;
   private final OutputStream outputStream;
-  
+
   private BlockingQueue<Serializable> queue;
-  
+
   /**
    * Constructs a new client.
-   * @param id identifier string for the client
+   *
+   * @param id     identifier string for the client
    * @param socket socket to which logging events will be written
    */
-  public RemoteReceiverStreamClient(String id, Socket socket) {
+  public ReceiverFacingOutputStreamClient(String id, Socket socket) {
     this.clientId = "client " + id + ": ";
     this.socket = socket;
     this.outputStream = null;
@@ -53,19 +54,19 @@ class RemoteReceiverStreamClient
 
   /**
    * Constructs a new client.
-   * <p> 
+   * <p/>
    * This constructor exists primarily to support unit tests where it
    * is inconvenient to have to create a socket for the test.
-   * 
-   * @param id identifier string for the client
+   *
+   * @param id           identifier string for the client
    * @param outputStream output stream to which logging Events will be written
    */
-  RemoteReceiverStreamClient(String id, OutputStream outputStream) {
+  ReceiverFacingOutputStreamClient(String id, OutputStream outputStream) {
     this.clientId = "client " + id + ": ";
     this.socket = null;
     this.outputStream = outputStream;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -94,8 +95,8 @@ class RemoteReceiverStreamClient
   /**
    * {@inheritDoc}
    */
-  public void run() {  
-    addInfo(clientId + "connected"); 
+  public void run() {
+    addInfo(clientId + "connected");
 
     ObjectOutputStream oos = null;
     try {
@@ -112,22 +113,17 @@ class RemoteReceiverStreamClient
             counter = 0;
             oos.reset();
           }
-        }
-        catch (InterruptedException ex) {
+        } catch (InterruptedException ex) {
           Thread.currentThread().interrupt();
         }
       }
-    }
-    catch (SocketException ex) {
+    } catch (SocketException ex) {
       addInfo(clientId + ex);
-    }
-    catch (IOException ex) {
+    } catch (IOException ex) {
       addError(clientId + ex);
-    }
-    catch (RuntimeException ex) {
+    } catch (RuntimeException ex) {
       addError(clientId + ex);
-    }
-    finally {
+    } finally {
       if (oos != null) {
         CloseUtil.closeQuietly(oos);
       }

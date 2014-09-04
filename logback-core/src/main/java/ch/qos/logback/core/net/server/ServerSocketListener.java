@@ -25,8 +25,7 @@ import ch.qos.logback.core.util.CloseUtil;
  *
  * @author Carl Harris
  */
-public abstract class ServerSocketListener<T extends Client> 
-    implements ServerListener<T> {
+public class ServerSocketListener implements ServerListener {
 
   private final ServerSocket serverSocket;
 
@@ -41,22 +40,10 @@ public abstract class ServerSocketListener<T extends Client>
   /**
    * {@inheritDoc}
    */
-  public T acceptClient() throws IOException {
-    Socket socket = serverSocket.accept();
-    return createClient(
-        socketAddressToString(socket.getRemoteSocketAddress()), socket);
+  public Socket acceptSocket() throws IOException {
+    return serverSocket.accept();
   }
 
-  /**
-   * Creates the client object for a new socket connection
-   * @param id identifier string for the client
-   * @param socket client's socket connection
-   * @return client object
-   * @throws IOException
-   */
-  protected abstract T createClient(String id, Socket socket) 
-      throws IOException;
-  
   /**
    * {@inheritDoc}
    */

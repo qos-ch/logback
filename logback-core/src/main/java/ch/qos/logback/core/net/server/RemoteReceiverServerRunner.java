@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.Serializable;
+import java.net.Socket;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Executor;
 
@@ -24,7 +25,7 @@ import java.util.concurrent.Executor;
  * @author Carl Harris
  */
 class RemoteReceiverServerRunner 
-    extends ConcurrentServerRunner<RemoteReceiverClient> {
+    extends ConcurrentServerRunner<ReceiverFacingClient> {
 
   private final int clientQueueSize;
   
@@ -38,7 +39,7 @@ class RemoteReceiverServerRunner
    *    each client
    */
   public RemoteReceiverServerRunner(
-      ServerListener<RemoteReceiverClient> listener, Executor executor,
+      ServerListener listener, Executor executor,
       int clientQueueSize) {
     super(listener, executor);
     this.clientQueueSize = clientQueueSize;
@@ -48,10 +49,14 @@ class RemoteReceiverServerRunner
    * {@inheritDoc}
    */
   @Override
-  protected boolean configureClient(RemoteReceiverClient client) {
+  protected boolean configureClient(ReceiverFacingClient client) {
     client.setContext(getContext());
     client.setQueue(new ArrayBlockingQueue<Serializable>(clientQueueSize));
     return true;
   }
 
+  @Override
+  protected ReceiverFacingClient buildClient(String id, Socket socket) {
+    return new ReceiverFacingOutputStreamClient(id , socket);
+  }
 }

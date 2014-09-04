@@ -14,6 +14,8 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -25,52 +27,53 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
  * A concurrent {@link ServerRunner}.
- * <p>
+ * <p/>
  * An instance of this object is created with a {@link ServerListener} and
  * an {@link Executor}.  On invocation of the {@link #start()} method, it
  * passes itself to the given {@code Executor} and returns immediately.  On
- * invocation of its {@link #run()} method by the {@link Executor} it begins 
+ * invocation of its {@link #run()} method by the {@link Executor} it begins
  * accepting client connections via its {@code ServerListener}.  As each
- * new {@link Client} is accepted, the client is configured with the 
- * runner's {@link LoggingContext} and is then passed to the {@code 
- * Executor} for concurrent execution of the client's service loop.     
- * <p>
+ * new {@link Client} is accepted, the client is configured with the
+ * runner's {@link LoggingContext} and is then passed to the {@code
+ * Executor} for concurrent execution of the client's service loop.
+ * <p/>
  * On invocation of the {@link #stop()} method, the runner closes the listener
- * and each of the connected clients (by invoking {@link Client#close()} 
+ * and each of the connected clients (by invoking {@link Client#close()}
  * effectively interrupting any blocked I/O calls and causing these concurrent
  * subtasks to exit gracefully).  This ensures that before the {@link #stop()}
- * method returns (1) all I/O resources have been released and (2) all 
+ * method returns (1) all I/O resources have been released and (2) all
  * of the threads of the {@code Executor} are idle.
  *
  * @author Carl Harris
  */
-public abstract class ConcurrentServerRunner<T extends Client> 
-    extends ContextAwareBase 
-    implements Runnable, ServerRunner<T> {
+public abstract class ConcurrentServerRunner<T extends Client>
+        extends ContextAwareBase
+        implements Runnable, ServerRunner<T> {
 
   private final Lock clientsLock = new ReentrantLock();
-  
+
   private final Collection<T> clients = new ArrayList<T>();
 
-  private final ServerListener<T> listener;
+  private final ServerListener listener;
   private final Executor executor;
-  
+
   private boolean running;
-  
+
   /**
    * Constructs a new server runner.
+   *
    * @param listener the listener from which the server will accept new
-   *    clients
+   *                 clients
    * @param executor a executor that will facilitate execution of the
-   *    listening and client-handling tasks; while any {@link Executor}
-   *    is allowed here, outside of unit testing the only reasonable choice
-   *    is a bounded thread pool of some kind.
+   *                 listening and client-handling tasks; while any {@link Executor}
+   *                 is allowed here, outside of unit testing the only reasonable choice
+   *                 is a bounded thread pool of some kind.
    */
-  public ConcurrentServerRunner(ServerListener<T> listener, Executor executor) {
+  public ConcurrentServerRunner(ServerListener listener, Executor executor) {
     this.listener = listener;
     this.executor = executor;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -81,7 +84,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
   protected void setRunning(boolean running) {
     this.running = running;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -90,7 +93,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
     accept(new ClientVisitor<T>() {
       public void visit(T client) {
         client.close();
-      } 
+      }
     });
   }
 
@@ -102,8 +105,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
     for (T client : clients) {
       try {
         visitor.visit(client);
-      }
-      catch (RuntimeException ex) {
+      } catch (RuntimeException ex) {
         addError(client + ": " + ex);
       }
     }
@@ -112,6 +114,7 @@ public abstract class ConcurrentServerRunner<T extends Client>
   /**
    * Creates a copy of the collection of all clients that are presently
    * being tracked by the server.
+   *
    * @return collection of client objects
    */
   private Collection<T> copyClients() {
@@ -119,12 +122,11 @@ public abstract class ConcurrentServerRunner<T extends Client>
     try {
       Collection<T> copy = new ArrayList<T>(clients);
       return copy;
-    }
-    finally {
+    } finally {
       clientsLock.unlock();
     }
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -133,26 +135,25 @@ public abstract class ConcurrentServerRunner<T extends Client>
     try {
       addInfo("listening on " + listener);
       while (!Thread.currentThread().isInterrupted()) {
-        T client = listener.acceptClient();
+        Socket socket = listener.acceptSocket();
+        String id = socketAddressToString(socket.getRemoteSocketAddress());
+        T client = buildClient(id, socket);
         if (!configureClient(client)) {
           addError(client + ": connection dropped");
-          client.close();
+          socket.close();
           continue;
         }
         try {
           executor.execute(new ClientWrapper(client));
-        }
-        catch (RejectedExecutionException ex) {
-          addError(client + ": connection dropped");
-          client.close();
+        } catch (RejectedExecutionException ex) {
+          addError(socket + ": connection dropped");
+          socket.close();
         }
       }
-    }
-    catch (InterruptedException ex) {
+    } catch (InterruptedException ex) {
       assert true;  // ok... we'll shut down
-    }
-    catch (Exception ex) {
-      addError("listener: " + ex);
+    } catch (Exception ex) {
+      addError("listener: ", ex);
     }
 
     setRunning(false);
@@ -160,54 +161,68 @@ public abstract class ConcurrentServerRunner<T extends Client>
     listener.close();
   }
 
+  private String socketAddressToString(SocketAddress address) {
+    if(address == null)
+      return  "null-socket";
+
+    String addr = address.toString();
+    int i = addr.indexOf("/");
+    if (i >= 0) {
+      addr = addr.substring(i + 1);
+    }
+    return addr;
+  }
+
+  protected abstract T buildClient(String id, Socket socket);
+
   /**
    * Configures a connected client.
-   * <p>
+   * <p/>
    * A subclass implements this method to perform any necessary configuration
    * of the client object before its {@link Client#run()} method is invoked.
-   * 
+   *
    * @param client the subject client
    * @return {@code true} if configuration was successful; if the return
-   *    value is {@code false} the client connection will be dropped
+   *         value is {@code false} the client connection will be dropped
    */
   protected abstract boolean configureClient(T client);
-    
+
   /**
    * Adds a client to the collection of those being tracked by the server.
+   *
    * @param client the client to add
    */
   private void addClient(T client) {
     clientsLock.lock();
     try {
       clients.add(client);
-    }
-    finally {
+    } finally {
       clientsLock.unlock();
     }
   }
-  
+
   /**
    * Removes a client from the collection of those being tracked by the server.
+   *
    * @param client the client to remote
    */
   private void removeClient(T client) {
     clientsLock.lock();
     try {
       clients.remove(client);
-    }
-    finally {
+    } finally {
       clientsLock.unlock();
     }
   }
-  
+
   /**
    * A wrapper for a {@link Client} responsible for ensuring that client
    * tracking is performed properly.
    */
   private class ClientWrapper implements Client {
-    
+
     private final T delegate;
-    
+
     public ClientWrapper(T client) {
       this.delegate = client;
     }
@@ -216,16 +231,15 @@ public abstract class ConcurrentServerRunner<T extends Client>
       addClient(delegate);
       try {
         delegate.run();
-      }
-      finally {
+      } finally {
         removeClient(delegate);
-      }      
+      }
     }
 
     public void close() {
       delegate.close();
     }
-    
+
   }
-  
+
 }
