@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +32,9 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
+
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
 public class ConverterTest {
 
@@ -74,7 +73,7 @@ public class ConverterTest {
       StringBuilder buf = new StringBuilder();
       converter.write(buf, le);
       // the number below should be the line number of the previous line
-      assertEquals("75", buf.toString());
+      assertEquals("74", buf.toString());
     }
   }
 
@@ -306,6 +305,21 @@ public class ConverterTest {
       // System.out.println(buf);
     }
 
+    {
+      DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+      this.optionList.clear();
+      this.optionList.add("4..5");
+      converter.setOptionList(this.optionList);
+      converter.start();
+
+      StringBuilder buf = new StringBuilder();
+      converter.write(buf, le);
+      assertTrue("buf is too short", buf.length() >= 10);
+
+      String expected = "Caller+4\t at java.lang.reflect.Method.invoke(";
+      String actual = buf.toString().substring(0, expected.length());
+      assertThat(actual, is(expected));
+    }
   }
 
   @Test

@@ -624,7 +624,9 @@ WARN  [main]: Message 2</p>
 			<tr >
 				<td class="word" name="caller">
 					<b>caller{depth}</b>
+					<b>caller{depthStart..depthEnd}</b>
 					<b>caller{depth, evaluator-1, ... evaluator-n}</b>
+					<b>caller{depthStart..depthEnd, evaluator-1, ... evaluator-n}</b>
 				</td>
 
 				<td>
@@ -656,7 +658,16 @@ Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
 Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
 Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
-					
+
+                    <p>A range specifier can be added to the <em>caller</em> conversion specifier's
+                    options to configure the depth range of the information to be displayed.
+                    </p>
+
+                    <p>For example, <b>%caller{1..2}</b> would display the following excerpt:</p>
+
+<pre class="source white_bg">0    [main] DEBUG - logging statement
+Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
+
 					<p>This conversion word can also use evaluators to test
 					logging events against a given criterion before computing
 					caller data. For example, using <b>%caller{3,
