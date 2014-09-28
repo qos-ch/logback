@@ -35,6 +35,7 @@ import ch.qos.logback.classic.boolex.JaninoEventEvaluator
 import ch.qos.logback.core.filter.EvaluatorFilter
 import ch.qos.logback.core.boolex.Matcher
 import static org.junit.Assert.assertTrue
+import static org.junit.Assert.fail
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -180,4 +181,14 @@ class GafferConfiguratorTest {
         assertNotNull stdout
     }
 
+    @Test
+    void appenderRefWithNonAppenderAttachable() {
+        try {
+            File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "appenderRefWithNonAppenderAttachable.groovy")
+            configurator.run file.text
+            fail 'Must throw an exception.'
+        } catch (IllegalArgumentException ex) {
+            assertTrue 'Non AppenderAttachable appender must throw IllegalArgumentException for appenderRef.', true
+        }
+    }
 }
