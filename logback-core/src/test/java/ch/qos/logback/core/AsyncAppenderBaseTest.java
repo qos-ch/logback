@@ -216,6 +216,20 @@ public class AsyncAppenderBaseTest {
     verify(la, loopLen);
   }
 
+  @Test
+  public void appendShouldNotClearInterruptFlag() throws Exception {
+    Thread.currentThread().interrupt();
+
+    asyncAppenderBase.addAppender(listAppender);
+    asyncAppenderBase.start();
+    asyncAppenderBase.doAppend(0);
+    asyncAppenderBase.stop();
+
+    assertTrue(Thread.currentThread().isInterrupted());
+    // clear flag for next test
+    Thread.interrupted();
+  }
+
   private void verify(ListAppender la, int expectedSize) {
     assertFalse(la.isStarted());
     assertEquals(expectedSize, la.list.size());
