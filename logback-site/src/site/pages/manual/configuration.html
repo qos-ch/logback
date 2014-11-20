@@ -54,7 +54,14 @@
 
     <h2 class="doAnchor" name="auto_configuration">Configuration in
     logback</h2>
-    
+
+    <p>You can always enable debugging
+        <ul>
+            <li>for a quick check without modifying sources (= no accidental commit)</li>
+    	    <li>to figure out which logback config is loaded in production (for example if one crept into a JAR file).</li>
+        </ul> by passing <b>-Dlogback.debug=true</b> to jvm.
+    </p>
+
     <p>Inserting log requests into the application code requires a
     fair amount of planning and effort. Observation shows that
     approximately four percent of code is dedicated to
