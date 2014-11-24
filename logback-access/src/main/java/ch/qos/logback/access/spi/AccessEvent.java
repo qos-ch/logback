@@ -65,6 +65,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
   Map<String, String> requestHeaderMap;
   Map<String, String[]> requestParameterMap;
   Map<String, String> responseHeaderMap;
+  Map<String, Object> attributeMap;
 
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
@@ -292,18 +293,28 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return requestParameterMap;
   }
 
-  /**
-   * Attributes are not serialized
-   *
-   * @param key
-   */
+  private void copyAttributeMap() {
+    if (attributeMap == null && httpRequest != null) {
+      attributeMap = new HashMap<String, Object>();
+
+      Enumeration<String> names = httpRequest.getAttributeNames();
+      if (names != null) {
+        while (names.hasMoreElements()) {
+          String name = names.nextElement();
+          attributeMap.put(name,httpRequest.getAttribute(name));
+        }
+      }
+    }
+  }
+
   public String getAttribute(String key) {
-    if (httpRequest != null) {
-      Object value = httpRequest.getAttribute(key);
-      if (value == null) {
-        return NA;
-      } else {
+    copyAttributeMap();
+    if (attributeMap != null) {
+      Object value = attributeMap.get(key);
+      if (value != null) {
         return value.toString();
+      } else {
+        return NA;
       }
     } else {
       return NA;
@@ -500,5 +511,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     getContentLength();
     getRequestContent();
     getResponseContent();
+
+    copyAttributeMap();
   }
 }

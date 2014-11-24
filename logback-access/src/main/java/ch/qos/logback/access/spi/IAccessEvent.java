@@ -92,11 +92,6 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
   Map<String, String[]> getRequestParameterMap();
 
-  /**
-   * Attributes are not serialized
-   *
-   * @param key
-   */
   String getAttribute(String key);
 
   String[] getRequestParameter(String key);

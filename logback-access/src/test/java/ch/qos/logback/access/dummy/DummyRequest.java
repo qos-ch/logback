@@ -176,7 +176,10 @@ public class DummyRequest implements HttpServletRequest {
   }
 
   public Enumeration getAttributeNames() {
-    return null;
+    return Collections.enumeration(Arrays.asList(
+            "testKey",
+            AccessConstants.LB_INPUT_BUFFER,
+            AccessConstants.LB_OUTPUT_BUFFER));
   }
 
   public String getCharacterEncoding() {
