@@ -17,17 +17,15 @@
        to true. See also http://jira.qos.ch/browse/LBCLASSIC-191 -->
 
 	<echo message="compile classpath: ${currentVersion}" />
-  	<echo message="slfj4:    ${org.slf4j:slf4j-api:jar}" />
-    <echo message="felix   ${org.apache.felix:org.apache.felix.main:jar}" />
-
-
+  <echo message="slfj4:  ${org.slf4j:slf4j-api:jar}" />
+  <echo message="felix:  ${org.apache.felix:org.apache.felix.main:jar}" />
 
   <property name="iBundleJar" value="target/iBundle.jar"/>
   <property name="bundlesDir" value="bundle"/>
 
 
 	<echo message="===============================" />
-	<echo message="basedir:           ${basedir}" />
+	<echo message="basedir:${basedir}" />
 	<echo message="===============================" />
             
   <path id="basicCP">
@@ -42,18 +40,23 @@
 	</path >
 
   <target name="copySLF4J_JAR">
+    <echo>Making lib/ folder in case it does not already exist.</echo>
+	  <mkdir dir="lib/"/>
     <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
-    <delete>
+    <!-- sneak in a clean up procedure of the ../logback-examples/lib/ folder-->
+    <delete quiet="true">
       <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
     </delete>
     <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/" />
   </target>
 
 	<target name="init" depends="copySLF4J_JAR">
+    <echo message="in init"/>
 		<mkdir dir="target/unit-reports" />
 	</target>
 
   <target name="createIBundle" unless="maven.test.skip">
+    <echo message="Making folder ${bundlesDir}"/>
     <mkdir dir="${bundlesDir}"/>
     <jar destFile="${iBundleJar}" 
          manifest="src/IBUNDLE-META-INF/MANIFEST.MF"
