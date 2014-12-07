@@ -34,7 +34,7 @@ Marvin B. Lillehaug      Trondheim, Norway     2014-01-20
 Chetan Mehrotra          Uttar Pradesh, India  2014-02-04
 Eric Dahl                NE, US                2014-02-04
 Adam Gent                MA, USA               2014-04-01
-
+Sebastian Groebler       Berlin, Germany       2014-07-17
 
 Justification for CLAs
 ----------------------
