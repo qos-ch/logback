@@ -32,7 +32,7 @@ import ch.qos.logback.core.status.WarnStatus;
 abstract public class AppenderBase<E> extends ContextAwareBase implements
     Appender<E> {
 
-  protected boolean started = false;
+  protected volatile boolean started = false;
 
   /**
    * The guard prevents an appender from repeatedly calling its own doAppend
