@@ -71,7 +71,12 @@ meets all requirements outlined in this document.**
  **P5.** Pull-requests MUST NOT contain intermediate commits (e.g., bug fixes to
      your own patch, refactoring of your own patch), which should be [squashed and
      then force-pushed to your branch](https://github.com/edx/edx-platform/wiki/How-to-Rebase-a-Pull-Request).
-     Fewer commits are better.
+     Generally, fewer commits are better. However, it's acceptable for a PR to have
+     multiple commits, each implementing specific distinct changes. For example:
+     
+    * def5678 Add support for Foo
+    * abc1234 Add unit tests for Foo
+    * aaa5678 Update documentation for Foo
 
  **P6.** Unit tests MUST be included for behavioral changes (especially bug fixes) or new features. 
 
