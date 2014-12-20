@@ -75,9 +75,10 @@ meets all requirements outlined in this document.**
 
  **P6.** Unit tests MUST be included for behavioral changes (especially bug fixes) or new features. 
 
- **P7.** Pull-requests MUST include an update to the release notes that clearly
-     describe your changes and the appropriate JIRA key. This will likely
-     mimic your commit message. Don't modify the actual [release-notes file](https://github.com/qos-ch/logback/blob/master/logback-site/src/site/pages/news.html)
+ **P7.** Pull-requests (especially bug fixes and new features) MUST include
+     an update to the release notes that clearly describe your changes and
+     the appropriate JIRA key. This will likely mimic your commit message.
+     Don't modify the actual [release-notes file](https://github.com/qos-ch/logback/blob/master/logback-site/src/site/pages/news.html)
      since this potentially causes a merge conflict. Instead, copy your release
      notes (in raw HTML) into a comment in the PR, and a logback developer will
      take care of it.
