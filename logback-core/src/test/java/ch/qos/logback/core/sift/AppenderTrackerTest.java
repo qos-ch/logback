@@ -101,7 +101,7 @@ public class AppenderTrackerTest {
     int max = 10;
     appenderTracker.setMaxComponents(max);
     for (int i = 0; i < (max + 1); i++) {
-      Appender a = appenderTracker.getOrCreate(key + "-" + i, now++);
+      Appender<Object> a = appenderTracker.getOrCreate(key + "-" + i, now++);
       appenderList.add(a);
     }
     // cleaning only happens in removeStaleComponents
@@ -117,7 +117,7 @@ public class AppenderTrackerTest {
     int timeout = 2;
     appenderTracker.setTimeout(timeout);
     for (int i = 0; i <= timeout; i++) {
-      Appender a = appenderTracker.getOrCreate(key + "-" + i, now++);
+      Appender<Object> a = appenderTracker.getOrCreate(key + "-" + i, now++);
       appenderList.add(a);
     }
 

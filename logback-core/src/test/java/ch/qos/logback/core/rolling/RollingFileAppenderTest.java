@@ -169,7 +169,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     fwRollingPolicy.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-%i.log.zip");
     fwRollingPolicy.setParent(rfa);
     fwRollingPolicy.start();
-    SizeBasedTriggeringPolicy sbTriggeringPolicy = new SizeBasedTriggeringPolicy();
+    SizeBasedTriggeringPolicy<Object> sbTriggeringPolicy = new SizeBasedTriggeringPolicy<Object>();
     sbTriggeringPolicy.setContext(context);
     sbTriggeringPolicy.start();
 

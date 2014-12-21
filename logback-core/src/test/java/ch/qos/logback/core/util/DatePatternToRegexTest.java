@@ -117,7 +117,7 @@ public class DatePatternToRegexTest {
 
     try {
       SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-      DateTokenConverter dtc = makeDTC(datePattern);
+      DateTokenConverter<Object> dtc = makeDTC(datePattern);
       verify(sdf, calendar, dtc);
     } finally {
       if (locale != null)
@@ -133,7 +133,7 @@ public class DatePatternToRegexTest {
 //  }
 
 
-  void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter dtc) {
+  void verify(SimpleDateFormat sdf, Calendar calendar, DateTokenConverter<Object> dtc) {
     String expected = sdf.format(calendar.getTime());
 //    if (slashified) {
 //      expected = expected.replace('\\', '/');
@@ -145,8 +145,8 @@ public class DatePatternToRegexTest {
             expected.matches(regex));
   }
 
-  private DateTokenConverter makeDTC(String datePattern) {
-    DateTokenConverter dtc = new DateTokenConverter();
+  private DateTokenConverter<Object> makeDTC(String datePattern) {
+    DateTokenConverter<Object> dtc = new DateTokenConverter<Object>();
     List<String> optionList = new ArrayList<String>();
     optionList.add(datePattern);
     dtc.setOptionList(optionList);

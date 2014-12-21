@@ -49,7 +49,7 @@ public class Reduce {
 
   private static List<String> readFile(File  inputFile) throws IOException {
     BufferedReader reader = null;
-    List<String> lines = new ArrayList();
+    List<String> lines = new ArrayList<String>();
     try {
       reader = new BufferedReader(new FileReader(inputFile));
       String line;
@@ -116,7 +116,7 @@ public class Reduce {
   }
 
   static List<Structure> structure(List<String> lines) {
-    List<Structure> structuredLines = new ArrayList();
+    List<Structure> structuredLines = new ArrayList<Structure>();
     Pattern p = Pattern.compile("(\\d{2,5})\\ +(.*) (LOCK|UNLOCK)");
 
     for (String line : lines) {

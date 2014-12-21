@@ -70,7 +70,7 @@ public class AsyncAppenderBaseTest {
 
   @Test
   public void exceptionsShouldNotCauseHalting() throws InterruptedException {
-    NPEAppender npeAppender = new NPEAppender<Integer>();
+    NPEAppender<Integer> npeAppender = new NPEAppender<Integer>();
     npeAppender.setName("bad");
     npeAppender.setContext(context);
     npeAppender.start();
@@ -163,7 +163,7 @@ public class AsyncAppenderBaseTest {
   public void workerThreadFlushesOnStop() {
     int loopLen = 5;
     int maxRuntime = (loopLen + 1) * Math.max(1000, delayingListAppender.delay);
-    ListAppender la = delayingListAppender;
+    ListAppender<Integer> la = delayingListAppender;
     asyncAppenderBase.addAppender(la);
     asyncAppenderBase.setDiscardingThreshold(0);
     asyncAppenderBase.setMaxFlushTime(maxRuntime);
@@ -187,7 +187,7 @@ public class AsyncAppenderBaseTest {
   public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
     int maxRuntime = 1;  //runtime of 0 means wait forever, so use 1 ms instead
     int loopLen = 10;
-    ListAppender la = delayingListAppender;
+    ListAppender<Integer> la = delayingListAppender;
     asyncAppenderBase.addAppender(la);
     asyncAppenderBase.setMaxFlushTime(maxRuntime);
     asyncAppenderBase.start();

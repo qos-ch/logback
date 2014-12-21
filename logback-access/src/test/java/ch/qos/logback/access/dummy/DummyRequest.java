@@ -63,11 +63,11 @@ public class DummyRequest implements HttpServletRequest {
     return headerNames.get(key);
   }
 
-  public Enumeration getHeaderNames() {
+  public Enumeration<String> getHeaderNames() {
     return headerNames.keys();
   }
 
-  public Enumeration getHeaders(String arg0) {
+  public Enumeration<String> getHeaders(String arg0) {
     return null;
   }
 
@@ -175,7 +175,7 @@ public class DummyRequest implements HttpServletRequest {
     }
   }
 
-  public Enumeration getAttributeNames() {
+  public Enumeration<String> getAttributeNames() {
     return null;
   }
 
@@ -239,7 +239,7 @@ public class DummyRequest implements HttpServletRequest {
     return null;
   }
 
-  public Enumeration getLocales() {
+  public Enumeration<Locale> getLocales() {
     return null;
   }
 
@@ -247,11 +247,11 @@ public class DummyRequest implements HttpServletRequest {
     return null;
   }
 
-  public Map getParameterMap() {
+  public Map<String, String[]> getParameterMap() {
     return null;
   }
 
-  public Enumeration getParameterNames() {
+  public Enumeration<String> getParameterNames() {
     return null;
   }
 
