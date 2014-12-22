@@ -42,8 +42,8 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
       Date fileLastModified = new Date(f.lastModified());
 
       if (fileLastModified.compareTo(dateOfPeriodToClean) <= 0) {
-        f.delete();
         addInfo("deleting " + f);
+        f.delete();
       }
     }
 

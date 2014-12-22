@@ -31,8 +31,8 @@ public class TimeBasedArchiveRemover extends DefaultArchiveRemover {
       Date fileLastModified = new Date(file2Delete.lastModified());
 
       if (fileLastModified.compareTo(date2delete) <= 0) {
-        file2Delete.delete();
         addInfo("deleting " + file2Delete);
+        file2Delete.delete();
 
         if (parentClean) {
           removeFolderIfEmpty(file2Delete.getParentFile());
