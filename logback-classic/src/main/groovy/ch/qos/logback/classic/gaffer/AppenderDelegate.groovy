@@ -12,18 +12,34 @@
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.gaffer
+import java.util.List;
+import java.util.Map;
+
 import ch.qos.logback.core.Appender
+import ch.qos.logback.core.spi.AppenderAttachable;
+
 /**
  * @author Ceki G&uuml;c&uuml;
  */
 class AppenderDelegate extends ComponentDelegate {
 
-  AppenderDelegate(Appender appender) {
+  Map<String, Appender<?>> appendersByName = [:]
+
+  AppenderDelegate(Appender appender, List<Appender<?>> appenders) {
     super(appender)
+    appendersByName = appenders.collectEntries { [(it.name) : it]}
   }
 
   String getLabel() {
-    "appender"  
+    "appender"
   }
 
+  void appenderRef(String name){
+    if (!AppenderAttachable.class.isAssignableFrom(component.class)) {
+        def errorMessage= component.class.name + ' does not implement ' + AppenderAttachable.class.name +
+            '. It is not allowed to use "appenderRef" without implementing ' + AppenderAttachable.class.name + '.'
+        throw new IllegalArgumentException(errorMessage)
+    }
+    component.addAppender(appendersByName[name])
+  }
 }
