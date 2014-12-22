@@ -46,6 +46,7 @@ class GafferConfiguratorTest {
     Logger logger = context.getLogger(this.getClass())
     int diff = RandomUtil.getPositiveInt();
     GafferConfigurator configurator = new GafferConfigurator(context);
+    final shouldFail = new GroovyTestCase().&shouldFail
 
     @Before
     void setUp() {
@@ -180,4 +181,12 @@ class GafferConfiguratorTest {
         assertNotNull stdout
     }
 
+    @Test
+    void appenderRefWithNonAppenderAttachable() {
+        String message = shouldFail(IllegalArgumentException) {
+            File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "appenderRefWithNonAppenderAttachable.groovy")
+            configurator.run file.text
+        }
+        assertEquals message, "ch.qos.logback.core.ConsoleAppender does not implement ch.qos.logback.core.spi.AppenderAttachable."
+    }
 }
