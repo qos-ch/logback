@@ -37,6 +37,10 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Fixed race condition in <code>SMTPAppenderBase</code> causing missing or duplicate emails.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-909">LOGBACK-909</a>)
+    </p>
+
     <p>Fixed an issue with <code>FileAppender</code> in prudent mode, where
     an interrupt could prevent further access to the file
     (<a href="http://jira.qos.ch/browse/LOGBACK-875">LOGBACK-875)</a>.<p>
