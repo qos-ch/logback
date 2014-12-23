@@ -21,9 +21,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
@@ -87,8 +85,8 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   
   private BlockingDeque<E> deque;
   private String peerId;
+  private SocketConnector connector;
   private Future<?> task;
-  private Future<Socket> connectorTask;
 
   private volatile Socket socket;
 
@@ -148,6 +146,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (errorCount == 0) {
       deque = queueFactory.newLinkedBlockingDeque(queueSize);
       peerId = "remote peer " + remoteHost + ":" + port + ": ";
+      connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
       task = getContext().getExecutorService().submit(new Runnable() {
         @Override
         public void run() {
@@ -166,8 +165,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     if (!isStarted()) return;
     CloseUtil.closeQuietly(socket);
     task.cancel(true);
-    if(connectorTask != null)
-      connectorTask.cancel(true);
     super.stop();
   }
 
@@ -190,18 +187,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
 
   private void connectSocketAndDispatchEvents() {
     try {
-      while (!Thread.currentThread().isInterrupted()) {
-        SocketConnector connector = createConnector(address, port, 0,
-                reconnectionDelay.getMilliseconds());
-
-        connectorTask = activateConnector(connector);
-        if(connectorTask == null)
-          break;
-
-        socket = waitForConnectorToReturnSocket();
-        if(socket == null)
-          break;
-
+      while (socketConnectionCouldBeEstablished()) {
         try {
           ObjectWriter objectWriter = createObjectWriterForSocket();
           addInfo(peerId + "connection established");
@@ -217,8 +203,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     } catch (InterruptedException ex) {
       assert true;    // ok... we'll exit now
     }
-    // TODO I guess the appender should also be stopped at this point
     addInfo("shutting down");
+  }
+
+  private boolean socketConnectionCouldBeEstablished() throws InterruptedException {
+    return (socket = connector.call()) != null;
   }
 
   private ObjectWriter createObjectWriterForSocket() throws IOException {
@@ -228,31 +217,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
     return objectWriter;
   }
 
-  private SocketConnector createConnector(InetAddress address, int port,
-                                          int initialDelay, long retryDelay) {
-    SocketConnector connector = newConnector(address, port, initialDelay,
-            retryDelay);
+  private SocketConnector createConnector(InetAddress address, int port, int initialDelay, long retryDelay) {
+    SocketConnector connector = newConnector(address, port, initialDelay, retryDelay);
     connector.setExceptionHandler(this);
     connector.setSocketFactory(getSocketFactory());
     return connector;
-  }
-
-  private Future<Socket> activateConnector(SocketConnector connector) {
-    try {
-      return getContext().getExecutorService().submit(connector);
-    } catch (RejectedExecutionException ex) {
-      return null;
-    }
-  }
-
-  private Socket waitForConnectorToReturnSocket() throws InterruptedException {
-    try {
-      Socket s = connectorTask.get();
-      connectorTask = null;
-      return s;
-    } catch (ExecutionException e) {
-      return null;
-    }
   }
 
   private void dispatchEvents(ObjectWriter objectWriter) throws InterruptedException, IOException {
@@ -302,8 +271,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
    * @param retryDelay delay before a reconnection attempt
    * @return socket connector
    */
-  protected SocketConnector newConnector(InetAddress address,
-                                         int port, long initialDelay, long retryDelay) {
+  protected SocketConnector newConnector(InetAddress address, int port, long initialDelay, long retryDelay) {
     return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
   }
 
