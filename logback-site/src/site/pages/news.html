@@ -37,7 +37,12 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
-    <p>Fixed race condition in <code>SMTPAppenderBase</code> causing missing or duplicate emails.
+    <p>Simplified connection logic of SocketApender to reduce multi-threading
+    overhead and unnecessary instantiation of <code>SocketConnector</code>
+    objects.<p>
+
+    <p>Fixed race condition in <code>SMTPAppenderBase</code> causing missing or
+    duplicate emails.
     (<a href="http://jira.qos.ch/browse/LOGBACK-909">LOGBACK-909</a>)
     </p>
 
