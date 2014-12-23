@@ -6,7 +6,7 @@
 		<connectionSource	class="ch.qos.logback.core.db.DataSourceConnectionSource">
 			<dataSource class="com.mysql.jdbc.jdbc2.optional.MysqlDataSource">
 				<serverName>${serverName}</serverName>
-				<port>${port$</port>
+				<port>${port}</port>
 				<databaseName>${dbName}</databaseName>
 				<user>${user}</user>
 				<password>${pass}</password>
