@@ -37,6 +37,11 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Fixed <code>ConfigurationDelegate.groovy</code> to allow any appender
+    that implements <code>AppenderAttachable</code>, which supports third-party
+    appenders, such as <b>reactor-logback's</b> <code>AsyncAppender</code>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1008">LOGBACK-1008</a>)</p>
+
     <p>Added support for specifying the callstack depth range in the
     <code>PatternLayout</code>. For example, <code>%caller{1..2}</code>
     displays the first two calls in the callstack.</p>
