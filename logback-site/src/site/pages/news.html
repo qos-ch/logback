@@ -37,6 +37,11 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Fixed an issue with <code>TeeHttpServletResponse</code>
+    where the the system default encoding would be used instead of the
+    response encoding when constructing a new writer
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1023">LOGBACK-1023)</a>.<p>
+
     <p>Fixed <code>ConfigurationDelegate.groovy</code> to allow any appender
     that implements <code>AppenderAttachable</code>, which supports third-party
     appenders, such as <b>reactor-logback's</b> <code>AsyncAppender</code>
