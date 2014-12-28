@@ -43,7 +43,7 @@ meets all requirements outlined in this document.**
  2. Make a [topic branch](https://github.com/dchelimsky/rspec/wiki/Topic-Branches#using-topic-branches-when-contributing-patches)
     and start hacking.
  3. If your branch becomes several commits behind master, be sure to rebase
-    to avoid a merge conflict.
+    your change *on top* of master to avoid a merge conflict.
  3. Submit a pull-request based off your topic branch, following the patch
     rules below.
  4. If your patch is non-trivial and you haven't submitted a [signed CLA](http://logback.qos.ch/cla.txt),
@@ -92,7 +92,7 @@ meets all requirements outlined in this document.**
      where necessary. Examples where this would be required:
  * adding/removing a configuration flag to `SyslogAppender`
  * adding a new appender to `logback-classic`
-
+ 
 # General style notes
 
 Please note that most of the formatting rules are provided in
@@ -178,6 +178,12 @@ try {
  * as published by the Free Software Foundation.
  */
   ```
+
+The following command will automatically apply/update the license-header comments for *all* Java/Groovy files. Since this command touches more than only your modified files, be sure to exclude unrelated files from your PR.
+
+```
+mvn -P license license:format
+```
 
  **S5.** Add javadoc for public functions (we won't fault you for skipping private
      functions unless comments are warranted).
