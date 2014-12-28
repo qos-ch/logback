@@ -37,6 +37,10 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Added support for specifying the callstack depth range in the
+    <code>PatternLayout</code>. For example, <code>%caller{1..2}</code>
+    displays the first two calls in the callstack.</p>
+
     <p>Added HTTP request method to <code>MDCInsertingServletFilter</code>.</p>
 
     <p>Fixed time-zone dependent code in <code>RollingCalendarTest</code>.
