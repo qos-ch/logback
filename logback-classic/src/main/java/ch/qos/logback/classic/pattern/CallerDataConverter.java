@@ -16,6 +16,7 @@ package ch.qos.logback.classic.pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import static java.util.regex.Pattern.quote;
 
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -26,7 +27,7 @@ import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.status.ErrorStatus;
 
 /**
- * This converter outputs caller data depending on depth and marker data.
+ * This converter outputs caller data depending on depth or depth range and marker data.
  * 
  * @author Ceki Gulcu
  */
@@ -34,7 +35,10 @@ public class CallerDataConverter extends ClassicConverter {
 
   public static final String DEFAULT_CALLER_LINE_PREFIX = "Caller+";
 
-  int depth = 5;
+  public static final String DEFAULT_RANGE_DELIMITER = "..";
+
+  private int depthStart = 0;
+  private int depthEnd = 5;
   List<EventEvaluator<ILoggingEvent>> evaluatorList = null;
 
 
@@ -49,7 +53,18 @@ public class CallerDataConverter extends ClassicConverter {
     }
 
     try {
-      depth = Integer.parseInt(depthStr);
+      if (isRange(depthStr)) {
+        String[] numbers = splitRange(depthStr);
+        if (numbers.length == 2) {
+          depthStart = Integer.parseInt(numbers[0]);
+          depthEnd = Integer.parseInt(numbers[1]);
+          checkRange();
+        } else {
+          addError("Failed to parse depth option as range [" + depthStr + "]");
+        }
+      } else {
+        depthEnd = Integer.parseInt(depthStr);
+      }
     } catch (NumberFormatException nfe) {
       addError("Failed to parse depth option [" + depthStr + "]", nfe);
     }
@@ -71,6 +86,22 @@ public class CallerDataConverter extends ClassicConverter {
           }
         }
       }
+    }
+  }
+
+  private boolean isRange(String depthStr) {
+    return depthStr.contains(getDefaultRangeDelimiter());
+  }
+
+  private String[] splitRange(String depthStr) {
+    return depthStr.split(quote(getDefaultRangeDelimiter()), 2);
+  }
+
+  private void checkRange() {
+    if (depthStart < 0 || depthEnd < 0) {
+      addError("Invalid depthStart/depthEnd range [" + depthStart + ", " + depthEnd + "] (negative values are not allowed)");
+    } else if (depthStart >= depthEnd) {
+      addError("Invalid depthEnd range [" + depthStart + ", " + depthEnd + "] (start greater or equal to end)");
     }
   }
 
@@ -117,10 +148,10 @@ public class CallerDataConverter extends ClassicConverter {
     }
 
     StackTraceElement[] cda = le.getCallerData();
-    if (cda != null && cda.length > 0) {
-      int limit = depth < cda.length ? depth : cda.length;
+    if (cda != null && cda.length > depthStart) {
+      int limit = depthEnd < cda.length ? depthEnd : cda.length;
 
-      for (int i = 0; i < limit; i++) {
+      for (int i = depthStart; i < limit; i++) {
         buf.append(getCallerLinePrefix());
         buf.append(i);
         buf.append("\t at ");
@@ -135,5 +166,9 @@ public class CallerDataConverter extends ClassicConverter {
 
   protected String getCallerLinePrefix() {
     return DEFAULT_CALLER_LINE_PREFIX;
+  }
+
+  protected String getDefaultRangeDelimiter() {
+    return DEFAULT_RANGE_DELIMITER;
   }
 }
