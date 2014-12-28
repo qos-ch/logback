@@ -41,6 +41,7 @@ public class ClassicConstants {
   public static final String REQUEST_REQUEST_URI = "req.requestURI";
   public static final String REQUEST_QUERY_STRING = "req.queryString";
   public static final String REQUEST_REQUEST_URL = "req.requestURL";
+  public static final String REQUEST_METHOD = "req.method";
   public static final String REQUEST_X_FORWARDED_FOR = "req.xForwardedFor";
 
   public static final String GAFFER_CONFIGURATOR_FQCN = "ch.qos.logback.classic.gaffer.GafferConfigurator";
