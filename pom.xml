@@ -432,6 +432,7 @@
               <aggregate>true</aggregate>
               <includes>
                 <include>src/**/*.java</include>
+                <include>src/**/*.groovy</include>
               </includes>
               <useDefaultExcludes>true</useDefaultExcludes>
               <useDefaultMapping>true</useDefaultMapping>
