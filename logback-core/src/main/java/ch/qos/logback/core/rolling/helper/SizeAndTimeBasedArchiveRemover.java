@@ -28,8 +28,7 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
 
     String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean);
     String stemRegex = FileFilterUtil.afterLastSlash(regex);
-    File archive0 = new File(fileNamePattern.convertMultipleArguments(
-        dateOfPeriodToClean, 0));
+    File archive0 = new File(fileNamePattern.convertMultipleArguments(dateOfPeriodToClean, 0));
     // in case the file has no directory part, i.e. if it's written into the
     // user's current directory.
     archive0 = archive0.getAbsoluteFile();
@@ -38,9 +37,14 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
     File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(
         parentDir, stemRegex);
 
-    for (File f : matchingFileArray) {
-      f.delete();
-    }
+    for (File file2Delete : matchingFileArray) {
+      boolean deleted = file2Delete.delete();
+      if(deleted) {
+        addInfo("deleting " + file2Delete);
+      } else {
+        addWarn("failed to delete " + file2Delete);
+      }
+	}
 
     if (parentClean) {
       removeFolderIfEmpty(parentDir);

@@ -44,7 +44,7 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
 
 
   int computeElapsedPeriodsSinceLastClean(long nowInMillis) {
-    long periodsElapsed = 0;
+    long periodsElapsed;
     if (lastHeartBeat == UNINITIALIZED) {
       addInfo("first clean up after appender initialization");
       periodsElapsed = rc.periodsElapsed(nowInMillis, nowInMillis + INACTIVITY_TOLERANCE_IN_MILLIS);
@@ -53,8 +53,10 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
     } else {
       periodsElapsed = rc.periodsElapsed(lastHeartBeat, nowInMillis);
       if (periodsElapsed < 1) {
-        addWarn("Unexpected periodsElapsed value " + periodsElapsed);
         periodsElapsed = 1;
+        if(this instanceof TimeBasedArchiveRemover) {
+          addWarn("Unexpected periodsElapsed value " + periodsElapsed);
+        }
       }
     }
     return (int) periodsElapsed;
