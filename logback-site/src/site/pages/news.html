@@ -40,7 +40,7 @@
     <p>Fixed an issue with <code>TeeHttpServletResponse</code>
     where the the system default encoding would be used instead of the
     response encoding when constructing a new writer
-    (<a href="http://jira.qos.ch/browse/LOGBACK-1023">LOGBACK-1023)</a>.<p>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1023">LOGBACK-1023)</a>.</p>
 
     <p>Fixed <code>ConfigurationDelegate.groovy</code> to allow any appender
     that implements <code>AppenderAttachable</code>, which supports third-party
@@ -59,7 +59,7 @@
 
     <p>Simplified connection logic of SocketApender to reduce multi-threading
     overhead and unnecessary instantiation of <code>SocketConnector</code>
-    objects.<p>
+    objects.</p>
 
     <p>Fixed race condition in <code>SMTPAppenderBase</code> causing missing or
     duplicate emails.
@@ -68,11 +68,11 @@
 
     <p>Fixed an issue with <code>FileAppender</code> in prudent mode, where
     an interrupt could prevent further access to the file
-    (<a href="http://jira.qos.ch/browse/LOGBACK-875">LOGBACK-875)</a>.<p>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-875">LOGBACK-875)</a>.</p>
 
     <p>Fixed <code>IllegalStateException</code> when multiple threads
     write files to same directory
-    (<a href="http://jira.qos.ch/browse/LOGBACK-128">LOGBACK-128)</a>.<p>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-128">LOGBACK-128)</a>.</p>
 
     <p>Changed queue consumption strategy in <code>AbstractSocketAppender</code>
     from "take" to "peek/remove" in order to avoid losing an event on each socket
@@ -94,8 +94,10 @@
     (<a href="http://jira.qos.ch/browse/LOGBACK-948">LOGBACK-948)</a>.
     </p>
 
-    <p>Threads are now named <i>logback-<b>THREAD_ID</b></i>, where
-    <i>THREAD_ID</i> is a locally assigned integer.</p>
+    <p>Threads created inteernally by logback are now named
+    <i>logback-n</i>, where <i>n</i> is an integer. For the
+    first thread <i>n</i> is set to 1, for each successive thread
+    <i>n</i> is incremented by 1.</p>
 
     <p>Added max runtime parameter to <code>AsyncAppender</code> to allow
     the appender to flush events, up to a maximum delay, during a stop
