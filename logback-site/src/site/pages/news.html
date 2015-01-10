@@ -37,10 +37,15 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Fixed an issue with <code>RollingFileAppender</code> where the first
+    rollover file could be unintentionally deleted, depending on the specified
+    filename pattern
+    (<a href="http://jira.qos.ch/browse/LOGBACK-894">LOGBACK-894</a>).</p>
+
     <p>Fixed an issue with <code>TeeHttpServletResponse</code>
-    where the the system default encoding would be used instead of the
+    where the system default encoding would be used instead of the
     response encoding when constructing a new writer
-    (<a href="http://jira.qos.ch/browse/LOGBACK-1023">LOGBACK-1023)</a>.</p>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1023">LOGBACK-1023</a>).</p>
 
     <p>Fixed <code>ConfigurationDelegate.groovy</code> to allow any appender
     that implements <code>AppenderAttachable</code>, which supports third-party
@@ -68,11 +73,11 @@
 
     <p>Fixed an issue with <code>FileAppender</code> in prudent mode, where
     an interrupt could prevent further access to the file
-    (<a href="http://jira.qos.ch/browse/LOGBACK-875">LOGBACK-875)</a>.</p>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-875">LOGBACK-875</a>).</p>
 
     <p>Fixed <code>IllegalStateException</code> when multiple threads
     write files to same directory
-    (<a href="http://jira.qos.ch/browse/LOGBACK-128">LOGBACK-128)</a>.</p>
+    (<a href="http://jira.qos.ch/browse/LOGBACK-128">LOGBACK-128</a>).</p>
 
     <p>Changed queue consumption strategy in <code>AbstractSocketAppender</code>
     from "take" to "peek/remove" in order to avoid losing an event on each socket
@@ -91,7 +96,7 @@
 
     <p>SQL scripts to setup your logback database are now provided as
     JAR resources
-    (<a href="http://jira.qos.ch/browse/LOGBACK-948">LOGBACK-948)</a>.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-948">LOGBACK-948</a>).
     </p>
 
     <p>Threads created inteernally by logback are now named
