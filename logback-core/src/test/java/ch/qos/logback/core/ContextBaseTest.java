@@ -23,6 +23,9 @@ import org.junit.Test;
 
 import ch.qos.logback.core.spi.LifeCycle;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+
 public class ContextBaseTest {
 
   private InstrumentedLifeCycleManager lifeCycleManager =
@@ -121,6 +124,27 @@ public class ContextBaseTest {
       return reset;
     }
     
+  }
+
+  @Test
+  public void contextThreadpoolIsDaemonized() throws InterruptedException {
+    ExecutorService execSvc = context.getExecutorService();
+    final ArrayList<Thread> executingThreads = new ArrayList<Thread>();
+    execSvc.execute(new Runnable() {
+      @Override
+      public void run() {
+        synchronized (executingThreads) {
+          executingThreads.add(Thread.currentThread());
+          executingThreads.notifyAll();
+        }
+      }
+    });
+    synchronized (executingThreads) {
+      while (executingThreads.isEmpty()) {
+        executingThreads.wait();
+      }
+    }
+    assertTrue("executing thread should be a daemon thread.", executingThreads.get(0).isDaemon());
   }
 
 }
