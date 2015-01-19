@@ -55,11 +55,11 @@ public class ExtendedThrowableProxyConverterTest {
         null);
   }
 
-  @Test
+ @Test
   public void integration() {
     PatternLayout pl = new PatternLayout();
     pl.setContext(lc);
-    pl.setPattern("%m%n");
+    pl.setPattern("%m%n%xEx");
     pl.start();
     ILoggingEvent e = createLoggingEvent(new Exception("x"));
     String res = pl.doLayout(e);

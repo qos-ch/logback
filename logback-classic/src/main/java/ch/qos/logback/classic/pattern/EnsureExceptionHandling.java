@@ -24,7 +24,7 @@ public class EnsureExceptionHandling implements
   /**
    * This implementation checks if any of the converters in the chain handles
    * exceptions. If not, then this method adds a
-   * {@link ExtendedThrowableProxyConverter} instance to the end of the chain.
+   * {@link ThrowableProxyConverter} instance to the end of the chain.
    * <p>
    * This allows appenders using this layout to output exception information
    * event if the user forgets to add %ex to the pattern. Note that the
@@ -43,7 +43,7 @@ public class EnsureExceptionHandling implements
     }
     if (!chainHandlesThrowable(head)) {
       Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
-      Converter<ILoggingEvent> exConverter = new ExtendedThrowableProxyConverter();
+      Converter<ILoggingEvent> exConverter = new ThrowableProxyConverter();
       tail.setNext(exConverter);
     }
   }
