@@ -41,6 +41,7 @@ public class AsyncAppender extends AsyncAppenderBase<ILoggingEvent> {
     return level.toInt() <= Level.INFO_INT;
   }
 
+  @Override
   protected void preprocess(ILoggingEvent eventObject) {
     eventObject.prepareForDeferredProcessing();
     if(includeCallerData)
