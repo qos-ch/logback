@@ -301,7 +301,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
       if (names != null) {
         while (names.hasMoreElements()) {
           String name = names.nextElement();
-          attributeMap.put(name,httpRequest.getAttribute(name));
+          attributeMap.put(name, httpRequest.getAttribute(name));
         }
       }
     }
