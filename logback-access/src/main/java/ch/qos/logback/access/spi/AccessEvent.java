@@ -65,6 +65,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
   Map<String, String> requestHeaderMap;
   Map<String, String[]> requestParameterMap;
   Map<String, String> responseHeaderMap;
+  Map<String, Object> attributeMap;
 
   long contentLength = SENTINEL;
   int statusCode = SENTINEL;
@@ -292,21 +293,48 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return requestParameterMap;
   }
 
-  /**
-   * Attributes are not serialized
-   *
-   * @param key
-   */
   public String getAttribute(String key) {
+    Object value = null;
     if (httpRequest != null) {
-      Object value = httpRequest.getAttribute(key);
-      if (value == null) {
-        return NA;
-      } else {
-        return value.toString();
+      value = httpRequest.getAttribute(key);
+    } else if (attributeMap != null) {
+      // Event was prepared for deferred processing so we have a copy of attribute map
+      value = attributeMap.get(key);
+    }
+
+    return value != null ? value.toString() : NA;
+  }
+
+  private void copyAttributeMap() {
+
+    if (httpRequest == null) {
+      return;
+    }
+
+    attributeMap = new HashMap<String, Object>();
+
+    Enumeration<String> names = httpRequest.getAttributeNames();
+    while (names.hasMoreElements()) {
+      String name = names.nextElement();
+
+      Object value = httpRequest.getAttribute(name);
+      if (shouldCopyAttribute(name, value)) {
+        attributeMap.put(name, value);
       }
+    }
+  }
+
+  private boolean shouldCopyAttribute(String name, Object value) {
+    if (AccessConstants.LB_INPUT_BUFFER.equals(name) || AccessConstants.LB_OUTPUT_BUFFER.equals(name)) {
+      // Do not copy attributes used by logback internally - these are available via other getters anyway
+      return false;
+    } else if (value == null) {
+      // No reasons to copy nulls - Map.get() will return null for missing keys and the list of attribute
+      // names is not available through IAccessEvent
+      return false;
     } else {
-      return NA;
+      // Only copy what is serializable
+      return value instanceof Serializable;
     }
   }
 
@@ -500,5 +528,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     getContentLength();
     getRequestContent();
     getResponseContent();
+
+    copyAttributeMap();
   }
 }
