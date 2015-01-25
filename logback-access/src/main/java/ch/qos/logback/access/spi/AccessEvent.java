@@ -295,11 +295,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
   public String getAttribute(String key) {
     Object value = null;
-    if (httpRequest != null) {
-      value = httpRequest.getAttribute(key);
-    } else if (attributeMap != null) {
-      // Event was prepared for deferred processing so we have a copy of attribute map
+    if (attributeMap != null) {
+      // Event was prepared for deferred processing so we have a copy of attribute map and must use that copy
       value = attributeMap.get(key);
+    } else if (httpRequest != null) {
+      // We have original request so take attribute from it
+      value = httpRequest.getAttribute(key);
     }
 
     return value != null ? value.toString() : NA;

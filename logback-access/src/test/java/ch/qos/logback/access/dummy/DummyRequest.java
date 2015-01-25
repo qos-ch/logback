@@ -35,6 +35,7 @@ public class DummyRequest implements HttpServletRequest {
   
   Hashtable<String, String> headerNames;
   String uri;
+  Map<String, Object> attributes;
 
   static {
     DUMMY_DEFAULT_ATTR_MAP.put("testKey", "testKey");
@@ -46,6 +47,8 @@ public class DummyRequest implements HttpServletRequest {
     headerNames = new Hashtable<String, String>();
     headerNames.put("headerName1", "headerValue1");
     headerNames.put("headerName2", "headerValue2");
+
+    attributes = new HashMap<String, Object>(DUMMY_DEFAULT_ATTR_MAP);
   }
 
   public String getAuthType() {
@@ -170,11 +173,11 @@ public class DummyRequest implements HttpServletRequest {
   }
 
   public Object getAttribute(String key) {
-    return DUMMY_DEFAULT_ATTR_MAP.get(key);
+    return attributes.get(key);
   }
 
   public Enumeration getAttributeNames() {
-    return Collections.enumeration(DUMMY_DEFAULT_ATTR_MAP.keySet());
+    return Collections.enumeration(attributes.keySet());
   }
 
   public String getCharacterEncoding() {
@@ -304,7 +307,8 @@ public class DummyRequest implements HttpServletRequest {
   public void removeAttribute(String arg0) {
   }
 
-  public void setAttribute(String arg0, Object arg1) {
+  public void setAttribute(String name, Object value) {
+    attributes.put(name, value);
   }
 
   public void setCharacterEncoding(String arg0)
