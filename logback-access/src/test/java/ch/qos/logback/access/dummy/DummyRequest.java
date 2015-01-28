@@ -13,33 +13,42 @@
  */
 package ch.qos.logback.access.dummy;
 
+import ch.qos.logback.access.AccessConstants;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.*;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import ch.qos.logback.access.AccessConstants;
-
 public class DummyRequest implements HttpServletRequest {
 
   public final static String  DUMMY_CONTENT_STRING = "request contents";
-  public final static byte[] DUMMY_CONTENT_BYTES = DUMMY_CONTENT_STRING.getBytes(); 
+  public final static byte[] DUMMY_CONTENT_BYTES = DUMMY_CONTENT_STRING.getBytes();
 
-  
+  public static final Map<String, Object> DUMMY_DEFAULT_ATTR_MAP = new HashMap<String, Object>();
+
   public static final String DUMMY_RESPONSE_CONTENT_STRING = "response contents";
   public static final byte[] DUMMY_RESPONSE_CONTENT_BYTES =DUMMY_RESPONSE_CONTENT_STRING.getBytes();
   
   Hashtable<String, String> headerNames;
   String uri;
+  Map<String, Object> attributes;
+
+  static {
+    DUMMY_DEFAULT_ATTR_MAP.put("testKey", "testKey");
+    DUMMY_DEFAULT_ATTR_MAP.put(AccessConstants.LB_INPUT_BUFFER, DUMMY_CONTENT_BYTES);
+    DUMMY_DEFAULT_ATTR_MAP.put(AccessConstants.LB_OUTPUT_BUFFER, DUMMY_RESPONSE_CONTENT_BYTES);
+  }
 
   public DummyRequest() {
     headerNames = new Hashtable<String, String>();
     headerNames.put("headerName1", "headerValue1");
     headerNames.put("headerName2", "headerValue2");
+
+    attributes = new HashMap<String, Object>(DUMMY_DEFAULT_ATTR_MAP);
   }
 
   public String getAuthType() {
@@ -164,19 +173,11 @@ public class DummyRequest implements HttpServletRequest {
   }
 
   public Object getAttribute(String key) {
-    if (key.equals("testKey")) {
-      return "testKey";
-    } else if (AccessConstants.LB_INPUT_BUFFER.equals(key)) {
-      return DUMMY_CONTENT_BYTES;
-    } else if (AccessConstants.LB_OUTPUT_BUFFER.equals(key)) {
-      return DUMMY_RESPONSE_CONTENT_BYTES;
-    } else {
-      return null;
-    }
+    return attributes.get(key);
   }
 
   public Enumeration getAttributeNames() {
-    return null;
+    return Collections.enumeration(attributes.keySet());
   }
 
   public String getCharacterEncoding() {
@@ -306,7 +307,8 @@ public class DummyRequest implements HttpServletRequest {
   public void removeAttribute(String arg0) {
   }
 
-  public void setAttribute(String arg0, Object arg1) {
+  public void setAttribute(String name, Object value) {
+    attributes.put(name, value);
   }
 
   public void setCharacterEncoding(String arg0)

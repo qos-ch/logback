@@ -13,20 +13,16 @@
  */
 package ch.qos.logback.access.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
-import org.junit.Test;
-
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
+import org.junit.Test;
+
+import java.io.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class AccessEventSerializationTest  {
 
@@ -70,7 +66,30 @@ public class AccessEventSerializationTest  {
     
     assertEquals(DummyRequest.DUMMY_RESPONSE_CONTENT_STRING, aeBack
         .getResponseContent());
-    
+
+    assertEquals(DummyRequest.DUMMY_DEFAULT_ATTR_MAP.get("testKey"), aeBack
+        .getAttribute("testKey"));
   }
 
+  // Web containers may (and will) recycle requests objects. So we must make sure that after
+  // we prepared an event for deferred processing it won't be using data from the original
+  // HttpRequest object which may at that time represent another request
+  @Test
+  public void testAttributesAreNotTakenFromRecycledRequestWhenProcessingDeferred() {
+
+    DummyRequest request = new DummyRequest();
+    DummyResponse response = new DummyResponse();
+    DummyServerAdapter adapter = new DummyServerAdapter(request, response);
+
+    IAccessEvent event = new AccessEvent(request, response, adapter);
+
+    request.setAttribute("testKey", "ORIGINAL");
+
+    event.prepareForDeferredProcessing();
+
+    request.setAttribute("testKey", "NEW");
+
+    // Event should capture the original value
+    assertEquals("ORIGINAL", event.getAttribute("testKey"));
+  }
 }
