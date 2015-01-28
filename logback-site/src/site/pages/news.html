@@ -37,6 +37,14 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>All threads opened by <code>ch.qos.logback.core.util.ExecutorServiceUtil#THREAD_FACTORY</code>
+    are now daemons, which fixes an application hang on shutdown when <code>LoggerContext#stop()</code>
+    is not called (<a href="http://jira.qos.ch/browse/LOGBACK-929">LOGBACK-929</a>).
+    Note that daemon threads are abruptly terminated by the JVM, which may cause
+    undesirable results, such as corrupted files written by the <code>FileAppender</code>.
+    It is still highly recommended for the application to call <code>LoggerContext#stop()</code>
+    (e.g., in a shutdown hook) to gracefully shutdown appenders.</p>
+
     <p>Fixed an issue with <code>RollingFileAppender</code> where the first
     rollover file could be unintentionally deleted, depending on the specified
     filename pattern
