@@ -37,6 +37,12 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p><code>AccessEvent</code> now creates a copy of request attributes when
+    its <code>prepareForDeferredProcessing()</code> method is called. This makes
+    attributes visible even if an appender uses a background thread to process
+    events.
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1033">LOGBACK-1033</a>)</p>
+
     <p>All threads opened by <code>ch.qos.logback.core.util.ExecutorServiceUtil#THREAD_FACTORY</code>
     are now daemons, which fixes an application hang on shutdown when <code>LoggerContext#stop()</code>
     is not called (<a href="http://jira.qos.ch/browse/LOGBACK-929">LOGBACK-929</a>).
