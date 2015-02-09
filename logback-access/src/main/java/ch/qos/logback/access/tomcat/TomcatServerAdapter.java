@@ -14,6 +14,7 @@
 package ch.qos.logback.access.tomcat;
 
 import ch.qos.logback.access.spi.ServerAdapter;
+
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 
@@ -35,18 +36,22 @@ public class TomcatServerAdapter implements ServerAdapter {
     this.response = tomcatResponse;
   }
 
+  @Override
   public long getContentLength() {
     return response.getContentLength();
   }
 
+  @Override
   public int getStatusCode() {
     return response.getStatus();
   }
 
+  @Override
   public long getRequestTimestamp() {
     return request.getCoyoteRequest().getStartTime();
   }
 
+  @Override
   public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     for (String key : response.getHeaderNames()) {

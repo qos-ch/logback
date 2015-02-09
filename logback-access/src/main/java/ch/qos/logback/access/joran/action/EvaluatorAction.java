@@ -19,6 +19,7 @@ import ch.qos.logback.core.joran.action.AbstractEventEvaluatorAction;
 
 public class EvaluatorAction extends AbstractEventEvaluatorAction {
 
+  @Override
   protected String defaultClassName() {
     return JaninoEventEvaluator.class.getName();
   }

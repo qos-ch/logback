@@ -22,6 +22,7 @@ public class RequestParameterConverter extends AccessConverter {
 
   String key;
 
+  @Override
   public void start() {
     key = getFirstOption();
     if (OptionHelper.isEmpty(key)) {
@@ -31,6 +32,7 @@ public class RequestParameterConverter extends AccessConverter {
     }
   }
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     if (!isStarted()) {
       return "INACTIVE_REQUEST_PARAM_CONV";

@@ -22,10 +22,10 @@ import java.util.List;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.util.FileUtil;
 import ch.qos.logback.core.util.StatusPrinter;
+
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Response;
-
 
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
@@ -128,6 +128,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
   }
 
+  @Override
   public void log(Request jettyRequest, Response jettyResponse) {
     JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest,
             jettyResponse);
@@ -147,6 +148,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     getStatusManager().add(new ErrorStatus(msg, this));
   }
 
+  @Override
   public void start() {
     configure();
     if (!isQuiet()) {
@@ -204,11 +206,13 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     }
   }
 
+  @Override
   public void stop() {
     aai.detachAndStopAllAppenders();
     started = false;
   }
 
+  @Override
   public boolean isRunning() {
     return started;
   }
@@ -221,22 +225,27 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     this.resource = resource;
   }
 
+  @Override
   public boolean isStarted() {
     return started;
   }
 
+  @Override
   public boolean isStarting() {
     return false;
   }
 
+  @Override
   public boolean isStopping() {
     return false;
   }
 
+  @Override
   public boolean isStopped() {
     return !started;
   }
 
+  @Override
   public boolean isFailed() {
     return false;
   }
@@ -249,54 +258,67 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
     this.quiet = quiet;
   }
 
+  @Override
   public void addAppender(Appender<IAccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
+  @Override
   public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 
+  @Override
   public Appender<IAccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 
+  @Override
   public boolean isAttached(Appender<IAccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
+  @Override
   public void detachAndStopAllAppenders() {
     aai.detachAndStopAllAppenders();
   }
 
+  @Override
   public boolean detachAppender(Appender<IAccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
+  @Override
   public boolean detachAppender(String name) {
     return aai.detachAppender(name);
   }
 
+  @Override
   public void addFilter(Filter<IAccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
+  @Override
   public void clearAllFilters() {
     fai.clearAllFilters();
   }
 
+  @Override
   public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
 
+  @Override
   public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 
+  @Override
   public void addLifeCycleListener(Listener listener) {
     // we'll implement this when asked
   }
 
+  @Override
   public void removeLifeCycleListener(Listener listener) {
     // we'll implement this when asked
   }

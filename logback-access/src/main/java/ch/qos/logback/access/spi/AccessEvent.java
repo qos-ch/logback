@@ -20,6 +20,7 @@ import ch.qos.logback.access.servlet.Util;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -94,6 +95,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
    *
    * @return
    */
+  @Override
   public HttpServletRequest getRequest() {
     return httpRequest;
   }
@@ -104,10 +106,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
    *
    * @return
    */
+  @Override
   public HttpServletResponse getResponse() {
     return httpResponse;
   }
 
+  @Override
   public long getTimeStamp() {
     return timeStamp;
   }
@@ -121,6 +125,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
   }
 
+  @Override
   public String getRequestURI() {
     if (requestURI == null) {
       if (httpRequest != null) {
@@ -135,6 +140,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
   /**
    * The first line of the request.
    */
+  @Override
   public String getRequestURL() {
     if (requestURL == null) {
       if (httpRequest != null) {
@@ -157,6 +163,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return requestURL;
   }
 
+  @Override
   public String getRemoteHost() {
     if (remoteHost == null) {
       if (httpRequest != null) {
@@ -170,6 +177,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return remoteHost;
   }
 
+  @Override
   public String getRemoteUser() {
     if (remoteUser == null) {
       if (httpRequest != null) {
@@ -181,6 +189,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return remoteUser;
   }
 
+  @Override
   public String getProtocol() {
     if (protocol == null) {
       if (httpRequest != null) {
@@ -192,6 +201,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return protocol;
   }
 
+  @Override
   public String getMethod() {
     if (method == null) {
       if (httpRequest != null) {
@@ -203,6 +213,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return method;
   }
 
+  @Override
   public String getServerName() {
     if (serverName == null) {
       if (httpRequest != null) {
@@ -214,6 +225,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return serverName;
   }
 
+  @Override
   public String getRemoteAddr() {
     if (remoteAddr == null) {
       if (httpRequest != null) {
@@ -225,6 +237,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return remoteAddr;
   }
 
+  @Override
   public String getRequestHeader(String key) {
     String result = null;
     key = key.toLowerCase();
@@ -244,6 +257,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
   }
 
+  @Override
   public Enumeration getRequestHeaderNames() {
     // post-serialization
     if (httpRequest == null) {
@@ -253,6 +267,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return httpRequest.getHeaderNames();
   }
 
+  @Override
   public Map<String, String> getRequestHeaderMap() {
     if (requestHeaderMap == null) {
       buildRequestHeaderMap();
@@ -286,6 +301,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
   }
 
+  @Override
   public Map<String, String[]> getRequestParameterMap() {
     if (requestParameterMap == null) {
       buildRequestParameterMap();
@@ -293,6 +309,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return requestParameterMap;
   }
 
+  @Override
   public String getAttribute(String key) {
     Object value = null;
     if (attributeMap != null) {
@@ -339,6 +356,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
   }
 
+  @Override
   public String[] getRequestParameter(String key) {
     if (httpRequest != null) {
       String[] value = httpRequest.getParameterValues(key);
@@ -352,6 +370,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
   }
 
+  @Override
   public String getCookie(String key) {
 
     if (httpRequest != null) {
@@ -369,6 +388,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     return NA;
   }
 
+  @Override
   public long getContentLength() {
     if (contentLength == SENTINEL) {
       if (httpResponse != null) {

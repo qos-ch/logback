@@ -15,18 +15,19 @@ package ch.qos.logback.access.joran.action;
 
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.OptionHelper;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.ContextUtil;
-import ch.qos.logback.core.util.StatusPrinter;
 
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
   static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback-access.debug";
 
+  @Override
   public void begin(InterpretationContext ec, String name, Attributes attributes) {
 
     // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
@@ -49,6 +50,7 @@ public class ConfigurationAction extends Action {
     ec.pushObject(getContext());
   }
 
+  @Override
   public void end(InterpretationContext ec, String name) {
     addInfo("End of configuration.");
     ec.popObject();

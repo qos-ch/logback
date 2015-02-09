@@ -22,7 +22,8 @@ import ch.qos.logback.access.spi.IAccessEvent;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NAConverter extends AccessConverter {
-  
+
+  @Override
   public String convert(IAccessEvent accessEvent) {
       return IAccessEvent.NA;
   }

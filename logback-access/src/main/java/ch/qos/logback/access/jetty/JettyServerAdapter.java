@@ -14,6 +14,7 @@
 package ch.qos.logback.access.jetty;
 
 import ch.qos.logback.access.spi.ServerAdapter;
+
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
@@ -38,18 +39,22 @@ public class JettyServerAdapter implements ServerAdapter {
     this.response = jettyResponse;
   }
 
+  @Override
   public long getContentLength() {
     return response.getContentCount();
   }
 
+  @Override
   public int getStatusCode() {
     return response.getStatus();
   }
 
+  @Override
   public long getRequestTimestamp() {
     return request.getTimeStamp();
   }
 
+  @Override
   public Map<String, String> buildResponseHeaderMap() {
     Map<String, String> responseHeaderMap = new HashMap<String, String>();
     HttpFields httpFields = response.getHttpFields();

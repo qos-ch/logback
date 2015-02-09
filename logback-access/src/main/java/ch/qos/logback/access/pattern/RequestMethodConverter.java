@@ -17,7 +17,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class RequestMethodConverter extends AccessConverter {
 
-   
+  @Override
   public String convert(IAccessEvent accessEvent) {
     return accessEvent.getMethod();
   }

@@ -49,6 +49,7 @@ public class AccessEventDiscriminator extends AbstractDiscriminator<IAccessEvent
   FieldName fieldName;
   String additionalKey;
 
+  @Override
   public String getDiscriminatingValue(IAccessEvent acccessEvent) {
     String rawValue = getRawDiscriminatingValue(acccessEvent);
     if (rawValue == null || rawValue.length() == 0) {

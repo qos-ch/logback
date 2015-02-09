@@ -17,7 +17,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class RemoteHostConverter extends AccessConverter {
 
-  
+  @Override
   public String convert(IAccessEvent accessEvent) {
     return accessEvent.getRemoteHost();
   }

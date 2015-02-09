@@ -37,10 +37,12 @@ public class TeeFilter implements Filter {
 
     boolean active;
 
+    @Override
     public void destroy() {
         // NOP
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response,
                          FilterChain filterChain) throws IOException, ServletException {
 
@@ -73,6 +75,7 @@ public class TeeFilter implements Filter {
 
     }
 
+    @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         String includeListAsStr = filterConfig.getInitParameter(TEE_FILTER_INCLUDES_PARAM);
         String excludeListAsStr = filterConfig.getInitParameter(TEE_FILTER_EXCLUDES_PARAM);

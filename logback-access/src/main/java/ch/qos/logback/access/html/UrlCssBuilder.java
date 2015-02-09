@@ -34,7 +34,8 @@ public class UrlCssBuilder implements CssBuilder {
   public void setUrl(String url) {
     this.url = url;
   }
-  
+
+  @Override
   public void addCss(StringBuilder sbuf) {
     sbuf.append("<link REL=StyleSheet HREF=\"");
     sbuf.append(url);

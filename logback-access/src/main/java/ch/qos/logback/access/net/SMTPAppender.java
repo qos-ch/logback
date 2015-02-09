@@ -55,6 +55,7 @@ public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
    * Perform SMTPAppender specific appending actions, mainly adding the event to
    * the appropriate cyclic buffer.
    */
+  @Override
   protected void subAppend(CyclicBuffer<IAccessEvent> cb, IAccessEvent event) {
     cb.add(event);
   }
@@ -80,12 +81,14 @@ public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
     return pl;
   }
 
+  @Override
   protected PatternLayout makeNewToPatternLayout(String toPattern) {
     PatternLayout pl = new PatternLayout();
     pl.setPattern(toPattern);
     return pl;
   }
 
+  @Override
   protected boolean eventMarksEndOfLife(IAccessEvent eventObject) {
     return false;
   }

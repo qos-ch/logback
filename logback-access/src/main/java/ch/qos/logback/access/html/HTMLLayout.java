@@ -58,6 +58,7 @@ public class HTMLLayout extends HTMLLayoutBase<IAccessEvent> {
     return PatternLayout.defaultConverterMap;
   }
 
+  @Override
   public String doLayout(IAccessEvent event) {
     StringBuilder buf = new StringBuilder();
     startNewTableIfLimitReached(buf);

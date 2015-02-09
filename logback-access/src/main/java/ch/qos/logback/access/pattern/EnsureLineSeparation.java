@@ -24,6 +24,7 @@ public class EnsureLineSeparation implements PostCompileProcessor<IAccessEvent> 
    * Add a line separator converter so that access event appears on a separate
    * line.
    */
+    @Override
   public void process(Converter<IAccessEvent> head) {
     if(head == null)
       throw new IllegalArgumentException("Empty converter chain");

@@ -17,6 +17,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class ContentLengthConverter extends AccessConverter {
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     long len = accessEvent.getContentLength();
     if(len == IAccessEvent.SENTINEL) {

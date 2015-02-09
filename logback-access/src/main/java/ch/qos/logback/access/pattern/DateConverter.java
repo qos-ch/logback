@@ -25,7 +25,8 @@ public class DateConverter extends AccessConverter {
 
 
   CachingDateFormatter cachingDateFormatter = null;
-  
+
+  @Override
   public void start() {
     
     String datePattern = getFirstOption();
@@ -54,8 +55,8 @@ public class DateConverter extends AccessConverter {
       cachingDateFormatter.setTimeZone(tz);
     }
   }
-  
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     long timestamp = accessEvent.getTimeStamp();
     return cachingDateFormatter.format(timestamp);

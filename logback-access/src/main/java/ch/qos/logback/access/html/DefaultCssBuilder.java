@@ -25,6 +25,7 @@ import ch.qos.logback.core.html.CssBuilder;
  */
 public class DefaultCssBuilder implements CssBuilder {
 
+  @Override
   public void addCss(StringBuilder sbuf) {
     sbuf.append("<style  type=\"text/css\">");
     sbuf.append("table{ ");
