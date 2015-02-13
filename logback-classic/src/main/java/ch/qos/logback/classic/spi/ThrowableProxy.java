@@ -34,6 +34,7 @@ public class ThrowableProxy implements IThrowableProxy {
   private boolean calculatedPackageData = false;
 
   private static final Method GET_SUPPRESSED_METHOD;
+  private static final Method GET_NEXT_METHOD;
 
   static {
     Method method = null;
@@ -43,20 +44,30 @@ public class ThrowableProxy implements IThrowableProxy {
       // ignore, will get thrown in Java < 7
     }
     GET_SUPPRESSED_METHOD = method;
+    method = null;
+    try {
+      Class<?> sqlException = Class.forName("java.sql.SQLException");
+      method = sqlException.getMethod("getNextException");
+    } catch (ClassNotFoundException ignore) {
+      // ignore, don't depend on java.sql
+    } catch (NoSuchMethodException ignore) {
+      // ignore
+    }
+    GET_NEXT_METHOD = method;
   }
 
   private static final ThrowableProxy[] NO_SUPPRESSED=new ThrowableProxy[0];
 
   public ThrowableProxy(Throwable throwable) {
-   
+
     this.throwable = throwable;
     this.className = throwable.getClass().getName();
     this.message = throwable.getMessage();
     this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable
         .getStackTrace());
-    
+
     Throwable nested = throwable.getCause();
-    
+
     if (nested != null) {
       this.cause = new ThrowableProxy(nested);
       this.cause.commonFrames = ThrowableProxyUtil
@@ -85,7 +96,28 @@ public class ThrowableProxy implements IThrowableProxy {
         // ignore
       }
     }
-
+    if (GET_NEXT_METHOD != null) {
+      try {
+        Object obj = GET_NEXT_METHOD.invoke(throwable);
+        if (obj instanceof Throwable) {
+          ThrowableProxy throwableProxy = new ThrowableProxy((Throwable) obj);
+          throwableProxy.commonFrames = ThrowableProxyUtil
+              .findNumberOfCommonFrames(throwableProxy.throwable.getStackTrace(),
+                  stackTraceElementProxyArray);
+          if (suppressed.length == 0) {
+            suppressed = new ThrowableProxy[]{throwableProxy};
+          } else {
+            ThrowableProxy[] suppressed = new ThrowableProxy[this.suppressed.length + 1];
+            System.arraycopy(this.suppressed, 0, suppressed, 0, this.suppressed.length);
+            suppressed[suppressed.length-1] = throwableProxy;
+          }
+        }
+      } catch (IllegalAccessException e) {
+        // ignore
+      } catch (InvocationTargetException e) {
+        // ignore
+      }
+    }
   }
 
 
