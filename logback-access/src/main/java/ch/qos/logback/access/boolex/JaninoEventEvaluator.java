@@ -32,6 +32,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent>
   }
 
 
+  @Override
   protected String getDecoratedExpression() {
     String expression = getExpression();
     if (!expression.contains("return")) {
@@ -42,6 +43,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent>
     return expression;
   }
 
+  @Override
   protected String[] getParameterNames() {
     List<String> fullNameList = new ArrayList<String>();
     fullNameList.addAll(DEFAULT_PARAM_NAME_LIST);
@@ -54,6 +56,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent>
     return (String[]) fullNameList.toArray(CoreConstants.EMPTY_STRING_ARRAY);
   }
 
+  @Override
   protected Class[] getParameterTypes() {
     List<Class> fullTypeList = new ArrayList<Class>();
     fullTypeList.addAll(DEFAULT_PARAM_TYPE_LIST);
@@ -63,6 +66,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent>
     return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
   }
 
+  @Override
   protected Object[] getParameterValues(IAccessEvent accessEvent) {
     final int matcherListSize = matcherList.size();
 

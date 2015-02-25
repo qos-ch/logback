@@ -30,30 +30,37 @@ public class StatisticalViewImpl implements StatisticalView, LifeCycle {
     this.countingFilter = countingFilter;
   }
 
+  @Override
   public double getDailyAverage() {
     return statsByDay.getAverage();
   }
 
+  @Override
   public long getLastDaysCount() {
     return statsByDay.getLastCount();
   }
 
+  @Override
   public double getMonthlyAverage() {
     return  statsByMonth.getAverage();
   }
 
+  @Override
   public long getLastMonthsCount() {
     return statsByMonth.getLastCount();
   }
 
+  @Override
   public long getTotal() {
     return countingFilter.getTotal();
   }
 
+  @Override
   public double getWeeklyAverage() {
     return statsByWeek.getAverage();
   }
 
+  @Override
   public long getLastWeeksCount() {
     return statsByWeek.getLastCount();
   }
@@ -73,6 +80,7 @@ public class StatisticalViewImpl implements StatisticalView, LifeCycle {
     update(now);
   }
 
+  @Override
   public void start() {
     System.out.println("StatisticalViewImpl start called");
     started = true;
@@ -84,10 +92,12 @@ public class StatisticalViewImpl implements StatisticalView, LifeCycle {
     statsByMonth = new StatsByMonth(now);
   }
 
+  @Override
   public boolean isStarted() {
     return started;
   }
 
+  @Override
   public void stop() {
     started = false;
     statsByMinute.reset();
@@ -97,18 +107,22 @@ public class StatisticalViewImpl implements StatisticalView, LifeCycle {
     statsByMonth.reset();
   }
 
+  @Override
   public long getLastMinuteCount() {
     return statsByMinute.getLastCount();
   }
 
+  @Override
   public double getMinuteAverage() {
     return statsByMinute.getAverage();
   }
 
+  @Override
   public double getHourlyAverage() {
     return statsByHour.getAverage();
   }
 
+  @Override
   public long getLastHoursCount() {
     return  statsByHour.getLastCount();
   }

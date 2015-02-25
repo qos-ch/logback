@@ -21,6 +21,7 @@ public class RequestAttributeConverter extends AccessConverter {
 
   String key;
 
+  @Override
   public void start() {
     key = getFirstOption();
     if (OptionHelper.isEmpty(key)) {
@@ -30,6 +31,7 @@ public class RequestAttributeConverter extends AccessConverter {
     }
   }
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     if (!isStarted()) {
       return "INACTIVE_REQUEST_ATTRIB_CONV";

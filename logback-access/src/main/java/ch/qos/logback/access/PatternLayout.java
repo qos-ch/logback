@@ -185,10 +185,12 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
   /**
    * Returns the default converter map for this instance.
    */
+  @Override
   public Map<String, String> getDefaultConverterMap() {
     return defaultConverterMap;
   }
 
+  @Override
   public String doLayout(IAccessEvent event) {
     if (!isStarted()) {
       return null;

@@ -107,6 +107,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     return started;
   }
 
+  @Override
   public void startInternal() throws LifecycleException {
     executorService = ExecutorServiceUtil.newExecutorService();
     if (filename == null) {
@@ -169,6 +170,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     this.quiet = quiet;
   }
 
+  @Override
   public void invoke(Request request, Response response) throws IOException,
       ServletException {
 
@@ -202,6 +204,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
   }
 
+  @Override
   protected void stopInternal() throws LifecycleException {
     started = false;
     setState(LifecycleState.STOPPING);
@@ -212,40 +215,49 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     }
   }
 
+  @Override
   public void addAppender(Appender<IAccessEvent> newAppender) {
     aai.addAppender(newAppender);
   }
 
+  @Override
   public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
     return aai.iteratorForAppenders();
   }
 
+  @Override
   public Appender<IAccessEvent> getAppender(String name) {
     return aai.getAppender(name);
   }
 
+  @Override
   public boolean isAttached(Appender<IAccessEvent> appender) {
     return aai.isAttached(appender);
   }
 
+  @Override
   public void detachAndStopAllAppenders() {
     aai.detachAndStopAllAppenders();
 
   }
 
+  @Override
   public boolean detachAppender(Appender<IAccessEvent> appender) {
     return aai.detachAppender(appender);
   }
 
+  @Override
   public boolean detachAppender(String name) {
     return aai.detachAppender(name);
   }
 
+  @Override
   public String getInfo() {
     return "Logback's implementation of ValveBase";
   }
 
   // Methods from ContextBase:
+  @Override
   public StatusManager getStatusManager() {
     return sm;
   }
@@ -254,50 +266,62 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     return propertyMap;
   }
 
+  @Override
   public void putProperty(String key, String val) {
     this.propertyMap.put(key, val);
   }
 
+  @Override
   public String getProperty(String key) {
     return (String) this.propertyMap.get(key);
   }
 
+  @Override
   public Map<String, String> getCopyOfPropertyMap() {
     return new HashMap<String, String>(this.propertyMap);
   }
 
+  @Override
   public Object getObject(String key) {
     return objectMap.get(key);
   }
 
+  @Override
   public void putObject(String key, Object value) {
     objectMap.put(key, value);
   }
 
+  @Override
   public void addFilter(Filter<IAccessEvent> newFilter) {
     fai.addFilter(newFilter);
   }
 
+  @Override
   public void clearAllFilters() {
     fai.clearAllFilters();
   }
 
+  @Override
   public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
     return fai.getCopyOfAttachedFiltersList();
   }
 
+  @Override
   public FilterReply getFilterChainDecision(IAccessEvent event) {
     return fai.getFilterChainDecision(event);
   }
 
+  @Override
   public ExecutorService getExecutorService() {
     return  executorService;
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void setName(String name) {
     if (this.name != null) {
       throw new IllegalStateException(
@@ -306,28 +330,34 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
     this.name = name;
   }
 
+  @Override
   public long getBirthTime() {
     return birthTime;
   }
 
+  @Override
   public Object getConfigurationLock() {
     return configurationLock;
   }
 
+  @Override
   public void register(LifeCycle component) {
     lifeCycleManager.register(component);
   }
 
   // ====== Methods from catalina Lifecycle =====
 
+  @Override
   public void addLifecycleListener(LifecycleListener arg0) {
     // dummy NOP implementation
   }
 
+  @Override
   public LifecycleListener[] findLifecycleListeners() {
     return new LifecycleListener[0];
   }
 
+  @Override
   public void removeLifecycleListener(LifecycleListener arg0) {
     // dummy NOP implementation
   }

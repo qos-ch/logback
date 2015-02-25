@@ -32,6 +32,7 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator, Li
     URLList.add(url);
   }
 
+  @Override
   public void start() {
     if (URLList.size() == 0) {
       addWarn("No URL was given to URLEvaluator");
@@ -39,7 +40,8 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator, Li
       started = true;
     }
   }
-    
+
+  @Override
   public boolean evaluate(Object eventObject) throws NullPointerException, EvaluationException {
     IAccessEvent event = (IAccessEvent)eventObject;
     String url = event.getRequestURL();
@@ -51,18 +53,22 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator, Li
     return false;
   }
 
+  @Override
   public String getName() {
     return name;
   }
 
+  @Override
   public void setName(String name) {
     this.name = name;
   }
 
+  @Override
   public boolean isStarted() {
     return started;
   }
 
+  @Override
   public void stop() {
     started = false;
   }

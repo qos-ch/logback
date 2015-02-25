@@ -30,6 +30,7 @@ public class LocalIPAddressConverter extends AccessConverter {
     }
   }
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     return localIPAddressStr;
   }

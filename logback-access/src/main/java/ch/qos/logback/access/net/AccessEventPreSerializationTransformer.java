@@ -22,6 +22,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 public class AccessEventPreSerializationTransformer implements
     PreSerializationTransformer<IAccessEvent> {
 
+  @Override
   public Serializable transform(IAccessEvent event) {
     if (event instanceof AccessEvent) {
       return (AccessEvent)event;

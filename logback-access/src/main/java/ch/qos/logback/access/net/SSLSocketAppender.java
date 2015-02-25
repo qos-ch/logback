@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.access.net;
 
-import java.net.InetAddress;
-
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.net.AbstractSSLSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;

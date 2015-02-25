@@ -59,6 +59,7 @@ public class SiftingJoranConfigurator extends
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public Appender<IAccessEvent> getAppender() {
     Map<String, Object> omap = interpreter.getInterpretationContext()
         .getObjectMap();

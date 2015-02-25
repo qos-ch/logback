@@ -21,6 +21,7 @@ public class ResponseHeaderConverter extends AccessConverter {
 
   String key;
 
+  @Override
   public void start() {
     key = getFirstOption();
     if (OptionHelper.isEmpty(key)) {
@@ -30,6 +31,7 @@ public class ResponseHeaderConverter extends AccessConverter {
     }
   }
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     if(!isStarted()) {
       return "INACTIVE_REPONSE_HEADER_CONV";

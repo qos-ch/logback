@@ -77,7 +77,8 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
       addWarn("Failed to insert access event");
     }
   }
-  
+
+  @Override
   protected void secondarySubAppend(IAccessEvent event, Connection connection,
       long eventId) throws Throwable {
     if (insertHeaders) {

@@ -27,6 +27,7 @@ public class AppenderFactoryUsingJoran extends AbstractAppenderFactoryUsingJoran
     super(eventList, key, parentPropertyMap);
   }
 
+  @Override
   public SiftingJoranConfiguratorBase<IAccessEvent> getSiftingJoranConfigurator(
       String keyValue) {
     return new SiftingJoranConfigurator(key, keyValue, parentPropertyMap);
