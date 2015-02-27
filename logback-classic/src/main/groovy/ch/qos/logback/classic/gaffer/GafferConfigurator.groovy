@@ -50,7 +50,12 @@ class GafferConfigurator {
   }
 
   void run(String dslText) {
-    Binding binding = new Binding();
+    Binding binding = new Binding()
+    run(binding, dslText)
+  }
+
+  void run(Binding binding, String dslText) {
+
     binding.setProperty("hostname", ContextUtil.localHostName);
 
     def configuration = new CompilerConfiguration()
