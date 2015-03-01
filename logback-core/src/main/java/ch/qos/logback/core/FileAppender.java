@@ -201,7 +201,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
       resilientFOS.postIOFailure(e);
     }
     finally {
-      if (fileLock != null) {
+      if (fileLock != null && fileLock.isValid()) {
         fileLock.release();
       }
 
