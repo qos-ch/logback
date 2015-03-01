@@ -37,6 +37,10 @@
       logback mailing lists with no objections received.</h4>
     </div>
 
+    <p>Irrelevant or internal stack trace lines can now be omitted. Pull request
+    provided by Tomasz Nurkiewicz
+    (<a href="http://jira.qos.ch/browse/LOGBACK-540">LOGBACK-540</a>).</p>
+
     <p><code>AccessEvent</code> now creates a copy of request attributes when
     its <code>prepareForDeferredProcessing()</code> method is called. This makes
     attributes visible even if an appender uses a background thread to process
