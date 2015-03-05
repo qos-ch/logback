@@ -1,0 +1,542 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第8章 診断コンテキスト</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+      
+    <h1>第8章 診断コンテキスト</h1>
+
+    <div class="quote">     
+      <p><em>ドアを閉めなさい</em></p>
+      <p>—LEROY CAIN, Flight Director, Columbia Mission Control</p>
+    </div>
+    
+    <script src="../templates/creative.js" type="text/javascript"></script>
+    
+		<p>logbackの設計目標の1つとして、複雑な分散アプリケーションの監査とデバッグに使うことがあります。現実世界のほとんどの分散型システムは、同時に複数のクライアントの相手をしなければなりません。こういうシステムの典型的なマルチスレッドの実装は、スレッドが別々のクライアントを処理するものです。それぞれのクライアントに対するログ出力を分離するために実際に行われているアプローチは、クライアントごとに新しいロガーを用意するという少々残念なものです。このやり方ではやたらめったらロガーを生成することになりますし、管理のためのオーバーヘッドも馬鹿になりません。
+		</p>
+		
+    <script src="../templates/setup.js" type="text/javascript"></script>
+
+    
+    <p>もう少し軽めのやり方としては、リクエストを受け付けたクライアントの固有の情報をログに出力する方法があります。この方法は書籍「Patterns for Logging Diagnostic Messages in Pattern Languages of Program Design 3」（Addison-Wesley, 1997）でニール・ハリソンが紹介しています。logback が利用しているのはSLF4J API の診断コンテキスト（MDC）で、これはさっき紹介した技法を応用したものです。
+		</p>
+		
+		<p>リクエストごとの固有の情報として、利用者はコンテキストの情報を<code>MDC</code>（Mapped Diagnostic Contextの略です）に設定します。MDCクラスの特筆すべき部分を紹介します。メソッドの完全な説明は<a href="http://www.slf4j.org/api/org/slf4j/MDC.html">MDCのjavadoc</a>を参照してください。
+		</p>
+
+<pre class="prettyprint source">package org.slf4j;
+
+public class MDC {
+  //Put a context value as identified by <em>key</em>
+  //into the current thread's context map.
+  <b>public static void put(String key, String val);</b>
+
+  //Get the context identified by the <code>key</code> parameter.
+  <b>public static String get(String key);</b>
+
+  //Remove the context identified by the <code>key</code> parameter.
+  <b>public static void remove(String key);</b>
+
+  //Clear all entries in the MDC.
+  <b>public static void clear();</b>
+}</pre>
+
+		<p><code>MDC</code>クラスには静的メソッドしかありません。おかげで、開発者が<em>診断コンテキスト</em>に設定した情報は、logback のありとあらゆるコンポーネントから取得できるようになるのです。<code>MDC</code>はコンテキストの情報を<em>スレッドごとに</em>管理します。子スレッドは、親の診断コンテキストの<em>コピー</em>を自動的に継承します。普通なら、開発者はクライアントから受け付けた新しい要求の処理を始めるところで、クライアント識別子、IPアドレス、リクエストパラメーターなどの適切なコンテキスト情報を<code>MDC</code>に設定します。logback のコンポーネントがちゃんと設定されていれば、こういった情報は自動的にログ項目に含まれるようになります。
+		</p>
+
+    <p>logback-classic の MDC 実装は、値の書き込みが比較的穏やかに行われることを想定しているのでくれぐれも注意してください。</p>
+
+		<p><code><a href="http://logback.qos.ch/xref/chapters/mdc/SimpleMDC.html">SimpleMDC</a></code>アプリケーションを使ってこの基本原則を説明しましょう。
+		</p>
+    <p class="example">例7.1：MDCの基本的な使い方（<a href="http://logback.qos.ch/xref/chapters/mdc/SimpleMDC.html">logback-examples/src/main/java/chapters/mdc/SimpleMDC.java</a>）</p>
+<pre class="prettyprint source">package chapters.mdc;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import ch.qos.logback.classic.PatternLayout;
+import ch.qos.logback.core.ConsoleAppender;
+
+public class SimpleMDC {
+  static public void main(String[] args) throws Exception {
+
+    // You can put values in the MDC at any time. Before anything else
+    // we put the first name
+    MDC.put("first", "Dorothy");
+
+    [ SNIP ]
+    
+    Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
+    // We now put the last name
+    MDC.put("last", "Parker");
+
+    // The most beautiful two words in the English language according
+    // to Dorothy Parker:
+    logger.info("Check enclosed.");
+    logger.debug("The most beautiful two words in English.");
+
+    MDC.put("first", "Richard");
+    MDC.put("last", "Nixon");
+    logger.info("I am not a crook.");
+    logger.info("Attributed to the former US president. 17 Nov 1973.");
+  }
+
+  [ SNIP ]
+
+}</pre>
+
+		<p>mainメソッドでは、まずキー<em>first</em>で値<em>Drothy</em>を<code>MDC</code>に設定します。<code>MDC</code>に指定するキーも値も利用者の自由です。同じキーで書き込むと前の値を上書きします。コード上ではlogbackの設定が行われているところです。</p>
+
+    <p>簡潔にするため、logbackを<a href="http://github.com/qos-ch/logback/blob/master/logback-examples/src/main/java/chapters/mdc/simpleMDC.xml">simpleMDC.xml</a>で設定しているところは省略しました。設定ファイル中の該当する箇所は次のようになっています。
+    </p>
+
+ <pre class="prettyprint source">&lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"&gt; 
+  &lt;layout&gt;
+    &lt;Pattern&gt;<b>%X{first} %X{last}</b> - %m%n&lt;/Pattern&gt;
+  &lt;/layout&gt; 
+&lt;/appender&gt;</pre>
+    
+
+
+    <p><code>PatternLayout</code>の変換パターン文字列中の<em>%X変換指定子</em>の使い方を見てください。<em>％X変換指定子</em>二回登場しています。一つ目のキーには<em>first</em>、二つ目のキーには<em>last</em>を指定しています。<code>SimpleMDC.class</code>のロガーを取得した後で、MDCにキー<em>last</em>で値<em>Parker</em>を設定しています。それから、メッセージを変えて二回ロギング要求を発行しています。最後に、また別の値を<code>MDC</code>に設定してから、いくつかロギング要求を発行しています。SimpleMDCを実行すると次のような出力になります。</p>
+
+<div class="source"><pre>Dorothy Parker - Check enclosed.
+Dorothy Parker - The most beautiful two words in English.
+Richard Nixon - I am not a crook.
+Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
+
+
+		<p><code>SimpleMDC</code>アプリケーションを見れば、logbackを適切に設定すると、<code>MDC</code>の値がどのようにレイアウトされて出力されるのかがわかります。また、<code>MDC</code>に設定された情報はロガーの呼び出し一度だけでなく、何度も利用できることがわかります。
+		</p>
+		
+		<h3 class="doAnchor">応用</h3>
+		
+		<p>診断コンテキストが一番脚光を浴びるのはクライアント・サーバーアーキテクチャだ。一般的に、複数のクライアントはサーバ上の複数のスレッドで処理されます。しかし<code>MDC</code>クラスには静的メソッドしかないので、診断コンテキストはスレッドごとに管理するしかありません。つまり、サーバー上のスレッドそれぞれが<code>MDC</code>の分のコストを負うことになるのです。<code>MDC</code>の<code>put()</code>や<code>get()</code>ような操作は、<em>現在の</em>スレッドと子スレッドの<code>MDC</code>にしか影響しません。他のスレッドの<code>MDC</code>は影響を受けないのです。<code>MDC</code>の情報はスレッドごとに管理されているので、それぞれのスレッドは自分用の<code>MDC</code>を持っていることになります。したがって、開発者はスレッド安全性やスレッド間同期のことを考える必要はありません。<code>MDC</code>はそういったことを安全に、透過的に扱えるのです。
+		</p>
+
+		<p>次の例は少し凝っています。クライアント・サーバ環境でどのように<code>MDC</code>を使うのか説明したものです。サーバーは例7.2の<code>NumberCrucher</code>インターフェイスを実装します。<code>The NumberCruncher</code>インターフェイスには、<code>factor()</code>というメソッドが1つあるだけです。クライアントは、RMIによってサーバアプリケーションの<code>factor()</code>メソッドを呼び出して、指定した整数の素因数を取得します。
+		</p>
+
+    <p class="example">例7.2：サービスインターフェイス（<a href="http://logback.qos.ch/xref/chapters/mdc/NumberCruncher.html">logback-examples/src/main/java/chapters/mdc/NumberCruncher.java</a>）</p>
+
+<pre class="prettyprint source">package chapters.mdc;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+/**
+ * NumberCruncher factors positive integers.
+ */
+public interface NumberCruncher extends Remote {
+  /**
+   * Factor a positive integer <code>number</code> and return its
+   * <em>distinct</em> factor's as an integer array.
+   * */
+  int[] factor(int number) throws RemoteException;
+}</pre>
+
+		<p>例7.3の<code>NumberCruncherServer</code>アプリケーションが<code>NumberCruncher</code>インターフェイスを実装しています。mainメソッドはlocalhost上でRMIレジストリを公開して、well-knownポートでリクエストを待ち受けます。
+		</p>
+
+    <p class="example">例7.3：サーバー実装（<a href="http://logback.qos.ch/xref/chapters/mdc/NumberCruncherServer.html">logback-examples/src/main/java/chapters/mdc/NumberCruncherServer.java</a>）</p>
+
+<pre class="prettyprint source">package chapters.mdc;
+
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.Vector;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+
+
+/**
+ * A simple NumberCruncher implementation that logs its progress when
+ * factoring numbers. The purpose of the whole exercise is to show the
+ * use of mapped diagnostic contexts in order to distinguish the log
+ * output from different client requests.
+ * */
+public class NumberCruncherServer extends UnicastRemoteObject
+  implements NumberCruncher {
+
+  private static final long serialVersionUID = 1L;
+
+  static Logger logger = LoggerFactory.getLogger(NumberCruncherServer.class);
+
+  public NumberCruncherServer() throws RemoteException {
+  }
+
+  public int[] factor(int number) throws RemoteException {
+    // The client's host is an important source of information.
+    try {
+      <b>MDC.put("client", NumberCruncherServer.getClientHost());</b>
+    } catch (java.rmi.server.ServerNotActiveException e) {
+      logger.warn("Caught unexpected ServerNotActiveException.", e);
+    }
+
+    // The information contained within the request is another source
+    // of distinctive information. It might reveal the users name,
+    // date of request, request ID etc. In servlet type environments,
+    // useful information is contained in the HttpRequest or in the  
+    // HttpSession.
+    <b>MDC.put("number", String.valueOf(number));</b>
+
+    logger.info("Beginning to factor.");
+
+    if (number &lt;= 0) {
+      throw new IllegalArgumentException(number +
+        " is not a positive integer.");
+    } else if (number == 1) {
+      return new int[] { 1 };
+    }
+
+    Vector&lt;Integer&gt; factors = new Vector&lt;Integer&gt;();
+    int n = number;
+
+    for (int i = 2; (i &lt;= n) &amp;&amp; ((i * i) &lt;= number); i++) {
+      // It is bad practice to place log requests within tight loops.
+      // It is done here to show interleaved log output from
+      // different requests. 
+      logger.debug("Trying " + i + " as a factor.");
+
+      if ((n % i) == 0) {
+        logger.info("Found factor " + i);
+        factors.addElement(new Integer(i));
+
+        do {
+          n /= i;
+        } while ((n % i) == 0);
+      }
+
+      // Placing artificial delays in tight loops will also lead to
+      // sub-optimal results. :-)
+      delay(100);
+    }
+
+    if (n != 1) {
+      logger.info("Found factor " + n);
+      factors.addElement(new Integer(n));
+    }
+
+    int len = factors.size();
+
+    int[] result = new int[len];
+
+    for (int i = 0; i &lt; len; i++) {
+      result[i] = ((Integer) factors.elementAt(i)).intValue();
+    }
+
+    <b>// clean up
+    MDC.remove("client");
+    MDC.remove("number");</b>
+
+    return result;
+  }
+
+  static void usage(String msg) {
+    System.err.println(msg);
+    System.err.println("Usage: java chapters.mdc.NumberCruncherServer configFile\n" +
+      "   where configFile is a logback configuration file.");
+    System.exit(1);
+  }
+
+  public static void delay(int millis) {
+    try {
+      Thread.sleep(millis);
+    } catch (InterruptedException e) {
+    }
+  }
+
+  public static void main(String[] args) {
+    if (args.length != 1) {
+      usage("Wrong number of arguments.");
+    }
+
+    String configFile = args[0];
+
+    if (configFile.endsWith(".xml")) {
+      try {
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(lc);
+        lc.reset();
+        configurator.doConfigure(args[0]);
+      } catch (JoranException je) {
+        je.printStackTrace();
+      }
+    }
+
+    NumberCruncherServer ncs;
+
+    try {
+      ncs = new NumberCruncherServer();
+      logger.info("Creating registry.");
+
+      Registry registry = LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
+      registry.rebind("Factor", ncs);
+      logger.info("NumberCruncherServer bound and ready.");
+    } catch (Exception e) {
+      logger.error("Could not bind NumberCruncherServer.", e);
+
+      return;
+    }
+  }
+}</pre>
+
+		<p>特に大事なのが<code>factor(int number)</code>メソッドの実装です。最初に、<code>MDC</code>へキー<em>client</em>でクライアントのホスト名を設定しています。そして、クライアントから渡された素因数分解する数をキー<em>number</em>で<code>MDC</code>に設定します。計算が終わったらクライアントに結果を返します。ですが、結果を返す前に、キー<em>client</em>とキー<em>number</em>で設定された値をクリアするため、<code>MDC.remove()</code>メソッドを呼んでいます。普通なら<code>put()</code>操作と<code>remove()</code>操作が同じ数だけ登場するべきです。そうしないと、<code>MDC</code>に特定のキーの値が残ってしまうからです。出来る限り<code>remove()</code>操作をfinallyブロックで実行するように仕込んでおくことをおすすめします。確実に実行されることを保証するためです。
+		</p>	
+		
+		<p>理屈っぽい説明が続きましたが、cruncer アプリケーションを実行する準備が整いました。次のコマンドを実行してサーバーを起動しましょう。</p>
+		
+<div class="source"><pre>java chapters.mdc.NumberCruncherServer src/main/java/chapters/mdc/mdc1.xml</pre></div>
+		
+		<p><em>mdc1.xml</em>の内容は次のとおりです。</p>
+
+    <p class="example">例7.4：設定ファイル（<a href="http://logback.qos.ch/xref/chapters/mdc/mdc1.xml">logback-examples/src/main/java/chapters/mdc/mdc1.xml</a>）</p>
+
+<pre class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;layout&gt;
+      &lt;Pattern&gt;%-4r [%thread] %-5level <b>C:%X{client} N:%X{number}</b> - %msg%n&lt;/Pattern&gt;
+    &lt;/layout&gt;	    
+  &lt;/appender&gt;
+  
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="CONSOLE"/&gt;
+  &lt;/root&gt;  
+&lt;/configuration&gt;</pre>
+
+		<p><span class="option">パターン·</span>オプションに<em>％X変換指定子</em>が使われているのを見てください。
+		</p>
+	
+		<p>次のコマンドで<code>NumberCruncherClient</code>アプリケーションを実行しましょう。</p>
+		
+<div class="source"><pre>java chapters.mdc.NumberCruncherClient <em>hostname</em></pre></div>
+
+		<p><em>hostname</em>の部分には<code>NumberCruncherServer</code>を実行しているサーバのホスト名を指定します。</p>
+		
+		<p>複数のクライアントを実行して、最初に起動したクライアントがサーバに129を要求して、その後すぐに二つ目のクライアントから71を要求したときのサーバ側のコンソールには、次のように出力されています。</p>
+		
+<div class="source"><pre>
+<b>70984 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Beginning to factor.</b>
+70984 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 2 as a factor.
+71093 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 3 as a factor.
+71093 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Found factor 3
+71187 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 4 as a factor.
+71297 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 5 as a factor.
+71390 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 6 as a factor.
+<b>71453 [RMI TCP Connection(5)-192.168.1.6] INFO  C:orion N:71 - Beginning to factor.</b>
+71453 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 2 as a factor.
+71484 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 7 as a factor.
+71547 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 3 as a factor.
+71593 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 8 as a factor.
+71656 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 4 as a factor.
+71687 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 9 as a factor.
+71750 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 5 as a factor.
+71797 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 10 as a factor.
+71859 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 6 as a factor.
+71890 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 11 as a factor.
+71953 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 7 as a factor.
+72000 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Found factor 43
+72062 [RMI TCP Connection(5)-192.168.1.6] DEBUG C:orion N:71 - Trying 8 as a factor.
+72156 [RMI TCP Connection(5)-192.168.1.6] INFO  C:orion N:71 - Found factor 71</pre></div>
+
+		<p>クライアントは<em>orion</em>というホスト名のマシンで実行されていることがわかります。サーバーがほぼ同時に別のスレッドでクライアントの要求を処理する場合でも、それぞれのクライアントからのリクエストによるログ出力は、<code>MDC</code>の出力を見れば分かるようになっています。たとえば、<em>number</em>として印付けられた素因数分解する数です。
+		</p>
+		
+		<p>注意深い人なら、スレッド名を見るだけでもリクエストを区別できることが分かるでしょう。サーバ側の実装がスレッドを再利用するようになっていると混乱させられるかもしれません。そうなってしまったら、いつリクエストを受け付けて、いつ応答を返したのかを特定するのは難しいかもしれません。<code>MDC</code>を管理するのはアプリケーション開発者なので、そういった問題が起きることはありません。
+		</p>
+		
+		
+		
+		<h3 class="doAnchor" name="autoMDC"><code>MDC</code>への自動的なアクセス</h3>
+		
+		<p>これまでに見てきたように、<code>MDC</code>があると複数のクライアントの相手をするとき便利です。ユーザー認証のあるWebアプリケーションなら、<code>MDC</code>にユーザー名を設定して、ログアウトするときにそれを削除するようにしておくのが、1つの簡単なソリューションになるでしょう。残念ながら、そのテクニックを使っていても常に確実な結果を得られるわけではありません。<code>MDC</code>がスレッド毎にデータを管理している限り、サーバがスレッドをリサイクするようになっていると、間違った情報が設定されていることがあるかもしれません。</p>
+		
+		<p>リクエストを処理するとき、いつでも<code>MDC</code>に正しい情報が設定されていることを確実にするためにできるのは、処理の始めにユーザー名を設定して、処理の終わりに削除することです。こういう場合サーブレット<code><a href="http://java.sun.com/javaee/5/docs/api/javax/servlet/Filter.html">Filter</a></code>を使うとよいでしょう。
+		</p>
+		
+		<p>サーブレットフィルターの<code>doFilter()</code>メソッドで、リクエストに関連する情報（cookieも）を集めて、それを<code>MDC</code>に設定するのです。他のフィルターで行う後続処理やサーブレットからは、自動的に今設定したばかりのMDCの情報を参照することができます。最後にまたサーブレットフィルターが仕事をするとき、MDCに設定した内容を削除することができます。
+		</p>
+		
+		<p>フィルターの実装例を見てみましょう。</p>
+
+    <p class="example">例7.5：ユーザー名サーブレットフィルター（<a href="http://logback.qos.ch/xref/chapters/mdc/UserServletFilter.html">logback-examples/src/main/java/chapters/mdc/UserServletFilter.html</a>）</p>
+
+<pre class="prettyprint source">package chapters.mdc;
+
+import java.io.IOException;
+import java.security.Principal;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.MDC;
+
+public class UserServletFilter implements Filter {
+
+  private final String USER_KEY = "username";
+  
+  public void destroy() {
+  }
+
+  public void doFilter(ServletRequest request, ServletResponse response,
+    FilterChain chain) throws IOException, ServletException {
+
+    boolean successfulRegistration = false;
+
+    HttpServletRequest req = (HttpServletRequest) request;    
+    Principal principal = req.getUserPrincipal();
+    // Please note that we could have also used a cookie to 
+    // retrieve the user name
+
+    if (principal != null) {
+      String username = principal.getName();
+      successfulRegistration = registerUsername(username);
+    } 
+
+    try {
+      chain.doFilter(request, response);
+    } finally {
+      if (successfulRegistration) {
+        MDC.remove(USER_KEY);
+      }
+    }
+  }
+
+  public void init(FilterConfig arg0) throws ServletException {
+  }
+  
+
+  /**
+   * Register the user in the MDC under USER_KEY.
+   * 
+   * @param username
+   * @return true id the user can be successfully registered
+   */
+  private boolean registerUsername(String username) {
+    if (username != null &amp;&amp; username.trim().length() &gt; 0) {
+      MDC.put(USER_KEY, username);
+      return true;
+    }
+    return false;
+  }
+}</pre>
+
+	<p><code>doFilter()</code>メソッドが呼ばれたら、最初にリクエストオブジェクトから<code>java.security.Principal</code>オブジェクトを取得します。このオブジェクトからは、現在認証されているユーザーのユーザー名を取得することができます。ユーザー情報があったらそれを<code>MDC</code>に設定します。</p>
+		
+	<p>フィルターチェインが完了すると、フィルターでは<code>MDC</code>からユーザー情報を削除します。</p>
+
+  <p>ここで紹介したやり方は、スレッドがリクエストを処理している間だけMDCに値を設定するものです。他のスレッドは影響を受けません。さらに、あらゆるスレッドが、任意の時点で正確なMDCデータを持つようになります。</p>
+		
+
+
+  <h3 class="doAnchor" name="managedThreads">MDCおよび管理スレッド</h3>
+
+  <p>ワーカースレッドが自身を初期化するとき、どんなときでも診断コンテキストを継承するわけではありません。これは<code>java.util.concurrent.Executors</code>がスレッドを管理しているときに発生します。例えば、 <code>newCachedThreadPool</code>は<code>ThreadPoolExecutor</code>オブジェクトを作成しますが、他のスレッドプールを生成するコードでも、スレッドの生成は複雑なロジックになっています。
+  </p>
+
+  <p>そういう場合、元のスレッド（master）でタスクをエグゼキューターに渡す前に、<code>MDC.getCopyOfContextMap()</code>メソッドを呼ぶようにするとよいでしょう。タスクが実行されるとき、まず最初に<code>MDC.setContextMapValues()</code>メソッドを呼ぶようにするべきです。そうすると新しい<code>Executor</code>のスレッドに、元のMDCの値を関連付けることができます。
+  </p>
+
+  <h3 class="doAnchor" name="mis">MDCInsertingServletFilter</h3>
+
+  <p>Webアプリケーションでは、受け付けたHTTPリクエストに関連するホスト名、リクエストURI、ユーザーエージェント文字列などがわかるようになっていると便利なのはよくご存知だと思います。<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/helpers/MDCInsertingServletFilter.html"><code>MDCInsertingServletFilter</code></a>はMDCに次のようなキーと値を設定します。
+  </p>
+
+  <table class="bodyTable">
+    <tr>
+      <th>キー</th>
+      <th>値</th>
+    </tr>
+
+    <tr class="alt">
+      <td><code>req.remoteHost</code></td>
+      <td><a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/ServletRequest.html#getRemoteHost%28%29">getRemoteHost（）</a>メソッドの返すホスト名</td>
+    </tr>
+
+    <tr>
+      <td><code>req.xForwardedFor</code></td>
+      <td><a href="http://en.wikipedia.org/wiki/X-Forwarded-For">"X-Forwarded-For"</a>ヘッダーの値</td>
+    </tr>
+
+    <tr class="alt">
+      <td><code>req.requestURI</code></td>
+      <td><a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getRequestURI%28%29">getRequestURI（）</a>メソッドの返すリクエストURI</td>
+    </tr>
+
+    <tr>
+      <td><code>req.requestURL</code></td>
+      <td><a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getRequestURL%28%29">getRequestURL（）</a>メソッドの返すリクエストURL</td>
+    </tr>
+
+    <tr class="alt">
+      <td><code>req.queryString</code></td>
+      <td><a href="http://java.sun.com/j2ee/sdk_1.3/techdocs/api/javax/servlet/http/HttpServletRequest.html#getQueryString%28%29">getQueryString（）</a>メソッドの返すクエリ文字列</td>
+    </tr>
+
+    <tr>
+      <td><code>req.userAgent</code></td>
+      <td>"User-Agent" ヘッダーの値</td>
+    </tr>
+
+  </table>
+
+  <p><code>MDCInsertingServletFilter</code>を使用するには、Webアプリケーションの<em>web.xml</em>に次の設定を追加します。</p>
+
+  <pre class="prettyprint source">&lt;filter&gt;
+  &lt;filter-name&gt;MDCInsertingServletFilter&lt;/filter-name&gt;
+  &lt;filter-class&gt;
+    ch.qos.logback.classic.helpers.MDCInsertingServletFilter
+  &lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+  &lt;filter-name&gt;MDCInsertingServletFilter&lt;/filter-name&gt;
+  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt; </pre>
+
+  <p><b>複数のフィルターを使用している場合、<code>MDCInsertingServletFilter</code>を他のフィルターより先に宣言するようにしてください。</b> たとえば、アプリケーションの主な処理がフィルター'F'で行われるとしたら、その前に<code>MDCInsertingServletFilter</code>を置かないと、MDCに設定される値を'F'から参照することはできません。
+  </p>
+
+  <p>フィルターを配置したら、上記のMDCのキーを%X変換指定子で使えるようになります。例えば、リモートホストとリクエストURIを一行に出したければ、次のような変換パターン文字列を指定すればよいでしょう。</p>
+
+  <p class="source">%X{req.remoteHost} %X{req.requestURI}%n%d - %m%n</p>
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

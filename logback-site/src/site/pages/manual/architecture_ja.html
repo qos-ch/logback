@@ -1,0 +1,619 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第2章 アーキテクチャ</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+
+   <h1>第2章 アーキテクチャ</h1>
+
+   <div class="quote">
+      <p><em>本物の分類学とは、系統学のことなのだ。</em></p>
+      <p>—CHARLES DARWIN, <em>The Origin of Species</em></p>
+
+      <p><em>文字で書かれたものを読むだけで、得られた情報を具体的な問題に適用し、読んだことを自分のものとして考えること無しには、問題そのものを学ぶことは、不可能ではないが困難だ。さらに、私たちは自ら発見した時にこそ最も良い学びを得るのだ。</em>
+      </p>
+      <p>—DONALD KNUTH, <em>The Art of Computer Programming</em></p>
+   </div>
+
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+
+    <h2>Logbackのアーキテクチャ</h2>
+
+    <p>logback の基本的なアーキテクチャは、さまざまな状況に対応できるよう、十分に汎用的になっています。今のところ、logbackは三つのモジュールに分割されています（logback-core、logback-classic、logback-access）。
+    </p>
+
+    <p><em>coreモジュール</em>は、他の二つのモジュールの足回りとして使用されています。<em>classic</em>モジュールは、 <em>core</em>を拡張するものです。classic モジュールは、著しく改善されたバージョンのlog4jとも考えられます。logback-classic は <a href="http://www.slf4j.org">SLF4J API</a> を直接実装しているので、log4j や java.util.logging(JUL)などの他のロギング実装と切り替えることができます。三つ目の<em>access</em>と呼ばれるモジュールは、HTTPのアクセスログ機能を提供するため、サーブレットコンテナと統合しています。access モジュールについては<a href="http://logback.qos.ch/access.html">別のドキュメント</a>に記載されています。
+    </p>
+
+    <p>このドキュメントの残りの部分では、logback-classicモジュールのことを "logback" と表記しています。
+    </p>
+    
+		<h2>ロガー、アペンダー、レイアウト</h2>
+		
+		<p>logback は三つの主要なクラス（<code>Logger</code> 、 0}Appender、<code>Layout</code> ）で成り立っています。これらの三つのコンポーネントが協調することで、開発者はメッセージを適切な種類、レベルでロギングできるようになっています。また、書式化や出力先を実行中に変更できるようにもなっています。
+		</p>
+
+		<p><code>Logger</code>クラスは、logback-classicモジュールに含まれています。一方、 <code>Appender</code>と<code>Layout</code>インタフェイスは、logback-coreモジュールに含まれています。logback-core モジュールは共通モジュールなので、logger の責務を含まないのです。
+		</p>
+    
+    <h3 class="doAnchor" name="LoggerContext">ロガーコンテキスト</h3>
+
+		<p>どんなロギングAPIであっても単純な<code>System.out.println</code>に勝る第一の、そして最大の利点があります。それは、特定のロギング式を無効にしつつ、他のロギング式には一切影響を与えない機能です。この機能は、ロギング空間、すなわち、すべてのロギング式からなる空間が、開発者の選択した基準に基いて分類されていることを前提としています。logback-classic モジュールにおいて、この分類は logger に固有のものです。全てのロガーは <code>LoggerContext</code> に接続します。<code>LoggerContext</code> には、接続してきたロガーを階層的な木構造として配置する責務があります。
+		</p>
+			
+		<p>ロガーは名前を持ったエンティティです。名前は大文字と小文字が区別され、階層的な命名規則に従うようになっています。</p>
+
+		<div class="definition">
+			<div class="deftitle">名前の階層</div>
+			<p>あるロガーの名前が、他のロガーの名前の中で「.」（ドット）で区切られた前置詞となっているとき、それぞれが先祖と子孫となります。自分自身や、自分の子にも祖先がいない場合、そのロガーは親になります。
+			</p>
+		</div>
+
+		<p>たとえば、<code>"com.foo"</code>という名前のロガーは、<code>"com.foo.Bar"</code> というロガーの親になります。同様に、 <code>"java"</code>は<code>"java.util"</code>の親であると同時に、<code>"java.util.Vector"</code> の祖先になります。この命名スキームは、ほとんどの開発者がきちんと理解しなければならないものです。
+		</p>
+
+		<p>ルートロガーは、ロガー階層の最上位に存在するものです。複数の階層構造すべてに含まれるという意味で、例外的な存在です。他のロガーと同じように、名前で取得することができます。こんな風に。</p>
+		
+    <pre class="prettyprint source">Logger rootLogger = LoggerFactory.getLogger(<a href="http://www.slf4j.org/apidocs/constant-values.html#org.slf4j.Logger.ROOT_LOGGER_NAME">org.slf4j.Logger.ROOT_LOGGER_NAME</a>);</pre>
+
+		<p>他のロガーも、org.slf4j.LoggerFactory</html>クラスの静的クラスメソッドである<code>getLogger</code>によって取得することができます。このメソッドは、パラメータとして欲しいロガーの名前を受け付けます。<code>Logger</code>インタフェイスの基本的なメソッドをいくつか以下に示します。
+		
+
+		<pre class="prettyprint source">package org.slf4j; 
+public interface Logger {
+
+  // Printing methods: 
+  public void trace(String message);
+  public void debug(String message);
+  public void info(String message); 
+  public void warn(String message); 
+  public void error(String message); 
+}</pre>
+
+
+
+    <h3 class="doAnchor" name="effectiveLevel">有効レベル（別名レベルの継承）</h3>
+
+		<p>ロガーにはレベルを割り当てることができます。利用できるレベル（TRACE、DEBUG、INFO、WARNおよびERROR）は<code>ch.qos.logback.classic.Level</code>クラスに定義されています。logback では Level クラスは final として宣言されており、サブクラス化出来ないことに注意してください。より柔軟性のあるアプローチは<code>Marker</code>オブジェクトとして利用可能です。
+		</p>
+
+		<p>レベルの割り当てられていないロガーは、直近の祖先に割り当てられたレベルを継承します。より正確に言うと次のようになります。</p>
+
+		<div class="definition">
+		
+      
+			<p>与えられたロガー<em>L</em>の有効なレベルは、ロガー階層において最初に見つかったロガーのレベルに等しい。階層は<em>L</em>から始まり、ロートロガーに向かって進んでいく。
+			</p>
+		</div>
+	
+		<p>最終的に全てのロガーがレベルを継承できるように、ルートロガーには必ずレベルが割り当てられています。デフォルトではDEBUGになっています。</p>
+
+		<p>以下は、レベル継承ルールに従ってロガーに割り当てられた有効レベルの例です。
+		</p>
+
+		<em>例1</em>
+		<table class="bodyTable">
+			<tr>
+				<th>ロガー名</th>
+				<th>割り当てられたレベル</th>
+				<th>有効レベル</th>
+			</tr>
+			<tr class="alt">
+				<td>ルートロガー</td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
+		  </tr>
+			<tr>
+				<td>X</td>
+				<td>なし</td>
+				<td>DEBUG</td>
+		  </tr>
+
+			<tr class="alt">
+				<td>X.Y</td>
+				<td>なし</td>
+				<td>DEBUG</td>
+		  </tr>
+			<tr>
+				<td>X.Y.Z</td>
+				<td>なし</td>
+				<td>DEBUG</td>
+		  </tr>
+  </table>
+
+		<p>上記の例では、ルートロガーにだけレベルが割り当てられています。レベルは<code>DEBUG</code>で 、他の全てのロガーに継承されています。
+		</p>
+
+		<em>例2</em>
+		<table class="bodyTable">
+			<tr>
+				<th>ロガー名</th>
+				<th>割り当てられたレベル</th>
+				<th>有効レベル</th>
+			</tr>
+			<tr class="alt" align="left">
+				<td>ルート</td>
+				<td>ERROR</td>
+				<td>ERROR</td>
+			</tr>
+			<tr align="left">
+				<td>X</td>
+				<td>INFO</td>
+				<td>INFO</td>
+			</tr>
+
+			<tr class="alt" align="left">
+				<td>X.Y</td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
+			</tr>
+			<tr align="left">
+				<td>X.Y.Z</td>
+				<td>WARN</td>
+				<td>WARN</td>
+			</tr>
+		</table>
+
+		<p>上記の例では、​​すべてのロガーにレベルが割り当てられています。レベルの継承は何も仕事をしていません。
+		</p>
+
+		<em>例3</em>
+		<table class="bodyTable">
+			<tr>
+				<th>ロガー名</th>
+				<th>割り当てられたレベル</th>
+				<th>有効レベル</th>
+			</tr>
+			<tr class="alt" align="left">
+				<td>ルート</td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
+			</tr>
+
+			<tr align="left">
+				<td>X</td>
+				<td>INFO</td>
+				<td>INFO</td>
+			</tr>
+			<tr class="alt" align="left">
+				<td>X.Y</td>
+				<td>なし</td>
+				<td>INFO</td>
+			</tr>
+			<tr align="left">
+				<td>X.Y.Z</td>
+				<td>ERROR</td>
+				<td>ERROR</td>
+			</tr>
+		</table>
+
+		<p>上記の例では、ルートロガーにDEBUG、<code>X</code>にINFO、<code>X.Y.Z</code>にERRORが割り当てられています。<code>X.Y</code>は親である<code>X</code>からレベルを継承しています。</p>
+
+		<em>例4</em>
+		<table class="bodyTable">
+
+			<tr>
+				<th>ロガー名</th>
+				<th>割り当てられたレベル</th>
+				<th>有効レベル</th>
+			</tr>
+			<tr class="alt" align="left">
+				<td>ルート</td>
+				<td>DEBUG</td>
+				<td>DEBUG</td>
+			</tr>
+
+			<tr align="left">
+				<td>X</td>
+				<td>INFO</td>
+				<td>INFO</td>
+			</tr>
+			<tr class="alt" align="left">
+				<td>X.Y</td>
+				<td>なし</td>
+				<td>INFO</td>
+			</tr>
+			<tr align="left">
+				<td>X.Y.Z</td>
+				<td>なし</td>
+				<td>INFO</td>
+			</tr>
+		</table>
+
+   
+		<p>上記の例では、ルートロガーにDEBUG、<code>X</code>にINFOが割り当てられています。<code>X.Y</code>および<code>X.Y.Z</code>は、最も近い親からレベルを継承しています。
+		</p>
+
+    <h3 class="doAnchor" name="basic_selection">印字メソッドと基本的な選択ルール</h3>
+
+		<p>定義によると、印字メソッドはロギング要求のレベルを決定するものです。例えば、<code>L</code>がロガーのインスタンスだとすると、式<code>L.info("..")</code>はINFOレベルのロギングであることになります。</p>
+		
+    
+    <p>ロギング要求は、そのロガーの有効レベル以上である場合に<em>有効</em>となります。そうでなければ、ロギング要求は<em>無効</em>になります。前述のように、レベルが割り当てられていないロガーは最も近い祖先​​から継承します。このルールは次のように要約できます。
+  </p>
+
+     
+		<div class="definition">
+			<div class="deftitle">基本的な選択ルール</div>
+
+			<p>有効レベル<em>q</em>のロガーに発行されたレベル<em>p</em>のログ要求は、<em>p&gt;=q</em>を満たす場合有効になる。
+			</p>
+		</div>
+
+		<p>このルールはlogbackの中核を為すものです。レベルは次のような順序であることを想定しています。<code>TRACE &lt; DEBUG &lt; INFO &lt;  WARN &lt; ERROR</code></p>
+				
+		<p>以下は、選択ルールをより具体的に示したものです。垂直方向のラベルはロギング要求のレベル<em>p</em>です。そして水平方向のラベルはロガーの有効レベル<em>q</em>です。行（ロギング要求のレベル）と列（ロガーの有効レベル）の交点が、基本的な選択ルールの適用結果を表しています。
+		</p>
+		
+		<table width="80%">
+      <tr> 
+        <td class="lgray_bg" rowspan="2"><br>ロギング要求のレベル<em>p</em></td>
+				<td align="center" colspan="6" style="border-top:1px solid #dddddd">ロガーの有効レベル<em>q</em></td>
+			</tr>
+			<tr align="left">
+				<th style="border-bottom:1px solid #dddddd">TRACE</th>
+				<th style="border-bottom:1px solid #dddddd">DEBUG</th>
+				<th style="border-bottom:1px solid #dddddd">INFO</th>
+				<th style="border-bottom:1px solid #dddddd">WARN</th>
+				<th style="border-bottom:1px solid #dddddd">ERROR</th>	
+        <th style="border-bottom:1px solid #dddddd">OFF</th>    			
+			</tr>
+			<tr align="left">
+				<th class="lgray_bg">TRACE</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>
+
+			<tr align="left">
+				<th class="lgray_bg">DEBUG</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>
+			<tr align="left">
+				<th class="lgray_bg">INFO</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="redBold">NO</span></td>
+				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>
+			<tr align="left">
+				<th class="lgray_bg">WARN</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="redBold">NO</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>
+			<tr align="left">
+				<th class="lgray_bg">ERROR</th>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+				<td><span class="greenBold">YES</span></td>
+        <td><span class="redBold">NO</span></td>
+			</tr>		
+		</table>
+		
+		<p>選択ルールのコード例を次に示します。</p>
+
+		<pre class="prettyprint source">import ch.qos.logback.classic.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+....
+
+// "com.foo"という名前のロガーを取得します。
+// ロガーのインスタンスはレベルを設定するために ch.qos.logback.classic.Logger とします。
+ch.qos.logback.classic.Logger logger = 
+        (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
+// レベルに<span class="blue">INFO</span>を設定します。setLevel() メソッドは logback のロガーにしかありません。
+.setLevel(Level. <span class="blue">INFO</span>);
+
+Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
+
+// このロギング要求は有効です。<span class="green bold">WARN</span> &gt;= <span class="blue">INFO</span>
+logger.<span class="green bold">warn</span>("Low fuel level.");
+
+// このロギング要求は無効です。<span class="green bold">DEBUG</span> &lt; <span class="blue">INFO</span>. 
+logger.<span class="green bold">debug</span>("Starting search for nearest gas station.");
+
+// "com.foo.Bar" という名前のロガーは、"com.foo" ロガーからレベルを継承します。
+// したがって、このロギング要求は有効です。<span class="green bold">INFO</span> &gt;= <span class="blue">INFO</span>. 
+barlogger.<span class="green bold">info</span>("Located nearest gas station.");
+
+// このロギング要求は無効です。<span class="green bold">DEBUG</span> &lt; <span class="blue">INFO</span>.
+barlogger.<span class="green bold">debug</span>("Exiting gas station search");</pre>
+
+    <a name="RetrievingLoggers"></a>
+		<h3>ロガーの取得</h3>
+		<p><code><a href="http://logback.qos.ch/apidocs/org/slf4j/LoggerFactory.html#getLogger(java.lang.String)">LoggerFactory.getLogger</a></code>を呼び出しましょう。
+同じ名前なら、常に同じロガーインスタンスへの参照を返します。
+		</p>
+
+		<p>例えば次のような場合は常に同じインスタンスを返します。</p>
+		<pre class="prettyprint source">Logger x = LoggerFactory.getLogger("wombat"); 
+Logger y = LoggerFactory.getLogger("wombat");</pre>
+
+		<p>
+			<code>x</code>と<code>y</code>は、<em>完全に</em>同じオブジェクトを参照します。
+		</p>
+
+		<p>このように、一度ロガーのインスタンスを設定すれば、わざわざ参照を渡さなくても、コード中のどこででも同じインスタンスを取得することができます。現実世界の生物の親子関係とは矛盾していますが、logback のロガーは親と子のどちらが先に生成されても問題ありません。ただし、「親」ロガーから子孫ロガーを見つけようとするときは、事前にインスタンス化しておく必要があります。
+		</p>
+		<p>logback の実行環境の設定は、アプリケーションの初期化時に行われるのが一般的です。設定ファイルを読み込むようにするとよいでしょう。方法についてはすぐ後で説明します。
+		</p>
+		<p>logback では、<em>コンポーネント</em>ごとにロガーの名前を付けるのが簡単です。ロガーをクラスごとにインスタンス化すれば、それぞれのロガーの名前はクラスの完全名になります。これはロガーを定義する簡単かつ便利な方法です。クラスの完全名であるロガーの名前をログに出力するようになっていれば、メッセージを出力した箇所を特定するのは簡単です。ですが、これはロガーの命名戦略としてごく一般的な方法の一つでしかありません。logback 自体にロガーのインスタンス数の制限はありません。従って、開発者は自由に名前を付けることが出来ます。
+		</p>
+
+		<p>とはいえ、ロガーの名前にそれが置かれたクラスの完全名を付けることは、一般的に最も良い方法であるということが共通認識になっています。
+		</p>
+
+    <a name="AppendersAndLayouts"></a>
+    <h3>アペンダーとレイアウト</h3>
+
+		<p>ロガーのレベルに応じてロギング要求の有効無効を選択できる機能は、logbackの機能の一部でしかありません。logback は、ロギング要求を複数の宛先の送りつけることができます。logback では、宛先のことをアペンダーと呼びます。現在利用できるアペンダーには、コンソール、ファイル、MySQLやPostgreSQLやOracleなどのデータベースへのリモート接続、JMS、リモートSyslogデーモンなどがあります。
+
+      <!--It is also possible to log asynchronously. -->
+		</p>
+
+		<p>ロガーには一つ以上のアペンダーを割り当てることができます。</p>
+
+    <p>指定されたロガーにアペンダーを割り当てるには、<code><a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/Logger.html#addAppender(ch.qos.logback.core.Appender)">addAppender</a></code>メソッドを使います。有効なロギング要求は、ロガーに割り当てられた全てのアペンダーについて、階層関係が上位のアペンダーから順に転送されます。別の言い方をすると、ロガー階層からアペンダーも引き継ぐということです。例えば、ルートロガーにコンソールアペンダーを割り当てたなら、有効なロギング要求は少なくともコンソールに出力されることになります。さらに、ロガー<em>L</em>にファイルアペンダーが割り当てられたなら、<em>L</em>とその子孫全てにおいて、有効なロギング要求はコンソールとファイルの両方に出力されます。ロガーの additivity フラグを false に設定すれば、アペンダーを継承しないように振る舞いを変更することができます。
+		</p>
+
+		<p>アペンダーの加算ルールをまとめると次のようになります。
+		</p>
+		<div class="definition">
+
+			<h4 class="deftitle"><a href="./01-architecture.html#additivity" name="additivity">アペンダーの加算性</a></h4>
+
+			<p>ロガー<em>L</em>のログ出力は、<em>L</em>とその祖先も割り当てられた全てのアペンダーに転送される。これが「アペンダーの加算性」の定義である。
+			</p>
+
+			<p>ロガー<em>L</em>の祖先<em>P</em>の aditivity フラグが false の場合、<em>L</em>の出力は<em>L</em>自身に割り当てられたアペンダーと、祖先<em>P</em>に割り当てられたアペンダーだけに転送される。<em>P</em>よりも祖先のロガーのアペンダーには転送されない。</p>
+
+			<p>デフォルトでは、ロガーの aditivity は true になっています。
+			</p>
+
+		</div>以上を踏まえた例を次の表に示します。<table class="bodyTable">
+			<tr>
+				<th>ロガー名</th>
+				<th>割り当てられたアペンダー</th>
+				<th>aditivity フラグ</th>
+				<th>宛先</th>
+				<th>コメント</th>
+			</tr>
+			<tr>
+				<td>root</td>
+				<td>A1</td>
+				<td>適用できません</td>
+				<td>A1</td>
+
+				<td>ルートロガーは、ロガー階層の最上位になるため、aditivity フラグは無効です。
+				</td>
+			</tr>
+			<tr class="alt">
+				<td>x</td>
+				<td>A-x1、A-x2</td>
+				<td>true</td>
+				<td>A1、A-x1、A-x2</td>
+				<td>「x」のアペンダーとルートロガーのアペンダーが対象</td>
+			</tr>
+			<tr>
+				<td>x.y</td>
+				<td>なし</td>
+				<td>true</td>
+				<td>A1、A-x1、A-x2</td>
+				<td>「x」のアペンダーとルートロガーのアペンダーが対象</td>
+			</tr>
+			<tr class="alt">
+				<td>x.y.z</td>
+				<td>A-xyz1</td>
+				<td>true</td>
+				<td>A1、A-x1、A-x2、A-xyz1</td>
+				<td>「x.y.z」のアペンダーと「×」のアペンダーとルートロガーのアペンダーが対象</td>
+			</tr>
+			<tr>
+				<td>security</td>
+				<td>A-sec</td>
+				<td class="blue"><span class="blue">false</span></td>
+				<td>A-sec</td>
+
+				<td>aditivity フラグが<code>false</code>なので、アペンダーは加算されません。A-sec だけが対象になります
+				</td>
+			</tr>
+			<tr class="alt">
+				<td>security.access</td>
+				<td>なし</td>
+				<td>true</td>				
+        <td>A-sec</td>
+				<td>「security」のaditivityフラグが<code>false</code>なので、「security」のアペンダーだけが加算されます
+				</td>
+			</tr>
+		</table>
+
+
+		<p>利用者は、ほとんどの場合出力先だけでなく出力形式もカスタマイズしたがるでしょう。アペンダーと<em>レイアウト</em>を関連付けることで実現できます。レイアウトは、利用者の指定したとおりにロギング要求を整形するものです。一方、アペンダーは整形されたメッセージを指定された宛先に転送します。利用者は、logback の標準配布物に含まれる<code>PatternLayout</code>を使って、C言語の<code>printf</code>関数で使うような変換指示子によって出力形式を指定します。
+		</p>
+
+		<p>PatternLayoutの変換パターンが "%-4relative [%thread] %-5level %logger{32} - %msg%n" のとき、出力は次のようになります。</p>
+
+		<div class="prettyprint source"><pre>176  [main] DEBUG manual.architecture.HelloWorld2 - Hello world.</pre></div>
+
+		<p>最初のフィールドはプログラムが開始してからの経過時間をミリ秒にしたものです。二番目のフィールドはログ要求を行ったスレッドです。三番目のフィールドはログ要求のレベルです。四番目のフィールドはログ要求を行ったロガーの名前です。'-' より後のテキストはログ要求に指定されたメッセージになります。</p>
+
+
+		<h3 class="doAnchor" name="parametrized">パラメータ化ロギング</h3>
+
+		<p>ogbakc-classicのロガーは、<a href="http://www.slf4j.org/api/org/slf4j/Logger.html">SLF4JのLoggerインターフェイス</a>に含まれる一つ以上のパラメータを受け取る出力メソッドを実装しています。これらのメソッドは、コードの読みやすさへの影響を最小限に抑えながら、性能を改善するために用意されたものです。
+		</p>
+
+		<p></p>
+
+		<pre class="prettyprint source">logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));</pre>
+
+		<p>こんな書き方をしているロギング式があった場合、メッセージを組み立てるために、整数<code>i</code>と<code>entry[i]</code>を文字列にするコスト、文字列を連結する中間的なコストがかかるでしょう。これは、ロギング要求が有効かどうかに関わらずかかってしまうコストです。
+		</p>
+
+		<p>パラメータ構築のコストを回避するには、ロギング式全体をテスト条件で囲む方法があります。
+		</p>
+
+		<pre class="prettyprint source">if(logger.isDebugEnabled()) { 
+  logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
+}</pre>
+
+
+		<p>こうすると、DEBUGレベルのロギング要求が無効になっていればパラメータ構築のコストはかからないでしょう。しかし、有効になっている場合、<code>debugEnabled</code>と<code>debug</code>のそれぞれでロガーのレベルが有効かどうかを判定することになってしまいます。ロガーのレベルの評価はロギング要求に対して1%未満の時間しかかからないので、実際のオーバーヘッドは些細なものです。</p>
+
+		<h4>より良い方法</h4>
+
+		<p>メッセージフォーマットに基づいた便利な方法があります。<code>entry</code>が何らかのオブジェクトを指すものとして、次のように書くことが出来ます。</p>
+
+
+		<pre class="prettyprint source">Object entry = new SomeObject(); 
+logger.debug("The entry is {}.", entry);</pre>
+
+		<p>ロギング要求が有効かどうかを判断した後にだけ、そして、それが有効な場合にだけ、ロガーはメッセージを書式化して、'{}' を <code>entry</code> の文字列表現で置き換えます。つまり、ロギング要求が無効な場合、このやり方だとパラメータ構築のコストが発生しません。
+		</p>
+
+
+		<p>以下の二行からはまったく同じ出力が得られます。しかし、 ロギング要求が<em>無効</em>な場合、二行目のやり方は一行目のやり方に比べて少なくとも30倍は遅くなるでしょう。
+		</p>
+
+		<pre class="prettyprint source">logger.debug("The new entry is "+entry+".");
+logger.debug("The new entry is {}.", entry);</pre>
+
+
+		<p>二つ置換場所を指定することもできます。たとえば、次のように書くことができます。</p>
+
+		<pre class="prettyprint source">logger.debug("The new entry is {}. It replaces {}.", entry, oldEntry);</pre>
+
+		<p>引数が三つ以上になる場合、<code>Object[]</code>でラップしなければなりません。たとえば、次のように書くことができます。</p>
+
+
+		<pre class="prettyprint source">Object[] paramArray = {newVal, below, above};
+logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
+
+  
+  <a name="UnderTheHood"></a>
+  <h3>内部実装を覗いてみよう</h3>
+
+  <p>ここまでで、logback の中心的なコンポーネントについて紹介してきました。次のステップに進む準備は完璧です。利用者が logback の出力メソッドを呼び出した時に、logback フレームワークの内部でどんなことが起きているのか見ていきましょう。利用者が<em>com.wombat</em>という名前のロガーについて、<code>info()</code>を呼び出した時の様子を分析してみましょう。
+  </p>
+
+  <h4>ステップ1. フィルタチェインの決定</h4>
+
+  <p><code>TurboFilter</code>が存在するならそれが呼び出されます。Turbo Filter コンテキストにまたがる閾値を設定できるし、いろんなイベントを捨てることができます。捨てるイベントは、<code>Marker</code> 、 <code>Level</code> 、 <code>Logger</code> 、メッセージ、<code>Throwable</code>といったロギング要求に関係する情報から判断します。フィルタチェインの結果が <code>FilterReply.DENY</code> だったら処理中のロギング要求はその時点で破棄します。<code>FilterReply.NEUTRAL</code> だったら次のステップ（ステップ2）に進みます。<code>FilterReply.ACCEPT</code> だったら、次のステップを無視してステップ3にジャンプします。
+  </p>
+
+  <h4>ステップ2. <a href="./02-architecture.html#basic_selection">基本的な選択ルール</a>の適用</h4>
+
+  <p>このステップでは、logback はロガーの有効レベルとロギング要求のレベルを比較します。比較した結果ロギング要求が無効の場合は残りの処理は行わず、ロギング要求を破棄します。ロギング要求が破棄されなければ、次のステップに進みます。
+  </p>
+
+  <h4>ステップ3. <code>LoggingEvent</code>オブジェクトの作成</h4>
+
+  <p>ロギング要求がここまでのフィルタを通過したら、logback はロギング要求に含まれる必要な情報を全て格納した<code>ch.qos.logback.classic.LoggingEvent</code> オブジェクトを作成します。中には、ロギング要求を受け付けたロガーインスタンス、ロギング要求のレベル、ロギング要求に指定された例外オブジェクト、現在の時間、現在のスレッド、ロギング要求を起こしたクラスに関するさまざまな情報、<code>MDC</code>などが含まれます。フィールドによってはレイジーな初期化となるものがあります。つまり、必要になった時点で初期化される、ということです。<code>MDC</code>は、ロギング要求の付加情報となります。MDCについては<a href="./08-mdc.html">以降の章</a>で詳しく説明します。</p>
+
+  <h4>ステップ4. アペンダーの起動</h4>
+
+  <p><code>LoggingEvent</code>オブジェクトを作ったら、logback は利用可能な全てのアペンダーについて <code>doAppend()</code>メソッドを呼び出します。ロガーコンテキストから受け継いだアペンダーが対象になります。
+  </p>
+
+  <p>logback の配布物に含まれているアペンダーは、すべて <code>AppenderBase</code> 抽象クラスを継承しています。<code>doAppend()</code>メソッドは synchronized として宣言されており、スレッドセーフであることが保証されています。<code>AppenderBase</code>クラスの<code>doAppend()</code>メソッドでは、アペンダーに割り当てられたフィルターが存在する場合、それを呼び出します。カスタムフィルターは、実行時にアペンダーに割り当てることができるフィルターのことです。<a href="./07-filters.html">別の章</a>で説明しています。
+  </p>
+
+  <h4>ステップ5. メッセージの書式化</h4>
+
+  <p>ロギングイベントを書式化するのはアペンダーの責任です。しかし、全てでは無いにしてもいくつかのアペンダーは書式化のタスクをレイアウトに委譲します。レイアウトは、<code>LoggingEvent</code>のインスタンスを書式化して、文字列として返します。アペンダーによっては（<code>SocketAppender</code>など）、ロギングイベントを文字列に変換するのではなく、シリアライズすることがあります。つまり、アペンダーはレイアウトを持っていることもあるし、持っていないこともあるのです。
+  </p>
+
+  <h4>ステップ6. <code>LoggingEvent</code>の送信</h4>
+
+  <p>完全に書式化されたロギングイベントは、それぞれのアペンダーの宛先に送信されます。
+  </p>
+  
+  <p>このUMLのシーケンス図は、ここまでで紹介してきたステップ全体を概観するものです。図をクリックすればより大きなサイズの図を見ることができます。
+  </p>
+
+  <a href="underTheHood.html">
+    <img src="images/chapters/architecture/underTheHoodSequence2_small.gif">
+  </a>
+
+  
+  <h3 class="doAnchor" name="performance">性能</h3>
+
+  <p>ロギングについてよく議論の的になる課題の一つとして、必要な計算コストがあります。そこそこの規模のアプリケーションであっても、数千に及ぶログ要求を生成することになるので、性能に関心があるのは当然です。開発中に私たちが一番多くの力と時間を費やしたのは、logback の性能を測定することと、性能を調整することでした。私たちがどれだけの労力を費やしてきたとしてもそれとは関係無く、利用者は次のような性能問題に注意しなければなりません。
+  </p>
+
+  <h4>問題1. ロギングが完全にオフになっているときの性能</h4>
+
+  <p>ルートロガーのレベルに最高レベルの<code>Level.OFF</code>を設定すると、完全にロギングをオフにすることができます。完全にロギングをオフにすると、ロギング要求のコストはメソッド呼び出しと整数比較だけになります。3.2GHz の Pentium D のマシンの場合、通常ならそのコストは 20 マイクロ秒程度になります。
+  </p>
+
+  <p>しかし、メソッド呼び出しによっては隠れたパラメータ構築のコストが含まれます。例えば、ロガー<em>x</em>について次のように実装されていると</p>
+  
+  <pre class="prettyprint source">x.debug("Entry number: " + i + "is " + entry[i]);</pre>
+
+  <p>パラメータ構築のコストが含まれることになります。つまり、整数<code>i</code>と<code>entry[i]</code>を文字列に変換するコストと、中間文字列を連結するコストです。これらのコストは、メッセージがログに出力されるかどうかは関係無くかかります。
+  </p>
+
+  <p>パラメータ構築のコストは、パラメータの数にもよりますが非常に高くなることがあります。パラメータ構築のコストを回避するため、SLF4Jのパラメータ化されたロギングを利用することができます。</p>
+
+  <pre class="prettyprint source">x.debug("Entry number: {} is {}", i, entry[i]);</pre>
+
+  <p>このやり方の場合パラメータ構築のコストは発生しません。前の<code>debug()</code>メソッドの呼び出し方に比べると、圧倒的に速くなります。メッセージが書式化されるのは、割り当てられたアペンダーにロギング要求が送信されるときだけだからです。また、メッセージを書式化するコンポーネントには、高度な最適化が行われています。
+  </p>
+
+  <p>そうはいっても、非常に範囲の狭いループ中にロギング式があると、呼び出し回数が非常におおくなります。性能が劣化する可能性があるため、何のメリットもありません。たとえロギングがオフになっていても、狭い範囲のループにロギング式が含まれていると、アプリケーションの動作が緩慢になってしまいます。それに、ロギングをオンにすると非常に大量の（そして役に立たない）出力が生じます。
+  </p>
+
+  <h4>問題2. ロギングをオンにした状態で、ロギングするかどうかを判定する場合の性能</h4>
+
+  <p>logbackでは、ロガー階層を渡り歩く必要がありません。ロガーは、インスタンスが作成された時点で自分の有効レベル（ロガー自体のレベルと受け継いたレベルを考慮した結果）を知っています。親ロガーのレベルを変更すると、全ての子ロガーは変更通知を受け取ります。したがって、ロガーは祖先ロガーに問い合わせること無く、有効レベルに基いてロギング要求を受け付けるか拒否するかを瞬時に判断することができます。
+  </p>
+
+
+  <h4>問題3. 実際にロギングする（書式化と出力デバイスへの書き込み）</h4>
+
+  <p>これは、ログ出力を書式化し、宛先へ送信するコストです。レイアウト（フォーマッター）の処理を出来る限り高速化するために、同じように過大な労力を費やしました。同じことがアペンダーにも当てはまります。ローカルマシン上のファイルにロギングするとき、実際のロギングのコストは9マイクロ秒から12マイクロ秒程度になりました。リモートサーバ上のデータベースにロギングするとき、これが数ミリ秒に跳ね上がります。
+  </p>
+
+  <p>logback は豊富な機能を備えていますが、設計上の第一目標は高速な実行速度であり、第二目標として挙げられていたのは信頼性だけでした。logback のコンポーネントは、性能改善のため何度も書き直されています。
+  </p>
+
+    
+  <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

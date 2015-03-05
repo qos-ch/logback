@@ -1,0 +1,175 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"></meta>
+    <title>第5章 エンコーダ</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+
+    <h1>第5章 エンコーダー</h1>
+
+    <div class="quote">
+      <p><b>ACTION THIS DAY</b>
+彼らの要求するものを全て最優先にして、それが終わったら報告してくれ。
+      </p>
+      <p>アラン・チューリングと彼の同僚の暗号解読者が署名した破格の予算請求書について、1941年10月、チャーチル首相がヘイスティングス・イスメイ将軍に伝えた言葉</p>
+    </div>
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+    <script src="../templates/setup.js" type="text/javascript"></script>
+
+
+    <h2 class="doAnchor">エンコーダーとは何か</h2>
+
+    <p>エンコーダーの役割は、ロギングイベントをバイト配列に変換するだけでなく、そのバイト配列を<code>OutputStream</code>に書き込むことです。エンコーダーはlogback 0.9.19から導入されました。以前のバージョンでは、ほとんどのアペンダーはロギングイベントを文字列に変換して<code>java.io.Writer</code>に書き込むのをレイアウトに任せていました。また、以前のバージョンでは、利用者は<code>FileAppender</code>に<code>PatternLayout</code>をネストしていました。logback 0.9.19になってから、<code>FileAppender</code>もその派生クラスも、<a href="http://logback.qos.ch/codes.html#layoutInsteadOfEncoder">エンコーダーを利用するようになり、レイアウトを使わなくなりました</a>。
+    </p>
+
+    <p>どうしてこんな破壊的な変更をしたのか？</p>
+
+    <p>詳細は次章で説明しますが、レイアウトにできるのはロギングイベントを文字列に変換することだけです。また、レイアウトはロギングイベントを書き込む間何もできません。ロギングイベントをまとめてバッチ的に処理することができないのです。対照的にエンコーダーはバイト配列を書式化している間だけでなく、書式化されたバイト配列を書き込んでいる間も完全に主導権を握っています。
+    </p>
+
+    <p>現時点では、利便性のあるエンコーダーは<code>PatternLayoutEncoder</code>だけです。単に<code>PatternLayout</code>をラップしただけで、ほとんどの仕事は任せてしまいます。一見すると、エンコーダーは不必要な複雑さだけをもたらしているようにも見えます。しかし、私たちは新しく強力なエンコーダーが登場することによってこういった印象を上書きしてくれることに期待しています。</p>
+
+    <h2 class="doAnchor" name="interface">エンコーダーインターフェイス</h2>
+
+    <p>エンコーダーの役割は、到着したロギングイベントをバイト配列に変換すること<b>と</b>変換されたバイト配列を適切な<code>OutputStream</code>に書き込むことです。前述したように、エンコーダーは親のアペンダーが管理している<code>OutputStream</code>に対して、いつ、どんなバイト配列を書き込むのか完全に制御することができます。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/encoder/Encoder.html">エンコーダのインターフェイス</a>を見てみましょう。
+
+    </p>
+    <pre class="prettyprint source">package ch.qos.logback.core.encoder;
+
+public interface Encoder&lt;E&gt; extends ContextAware, LifeCycle {
+
+   /**
+   * This method is called when the owning appender starts or whenever output
+   * needs to be directed to a new OutputStream, for instance as a result of a
+   * rollover.
+   */
+  void init(OutputStream os) throws IOException;
+
+  /**
+   * Encode and write an event to the appropriate {@link OutputStream}.
+   * Implementations are free to defer writing out of the encoded event and
+   * instead write in batches.
+   */
+  void doEncode(E event) throws IOException;
+
+
+  /**
+   * This method is called prior to the closing of the underling
+   * {@link OutputStream}. Implementations MUST not close the underlying
+   * {@link OutputStream} which is the responsibility of the owning appender.
+   */
+  void close() throws IOException;
+}</pre>
+
+    <p>見ての通り、<code>Encoder</code>インターフェイスには少ししかメソッドが宣言されていません。ですが、これらのメソッドだけで驚くほどたくさんの仕事ができるのです。
+    </p>
+
+
+    <h2 class="doAnchor">LayoutWrappingEncoder</h2>
+
+    <p>logback0.9.19より前は、ほとんどのアペンダーがログの出力形式の面倒をレイアウトにまかせていました。レイアウトインターフェイスを使用するコードが大量に残っているので、レイアウトとエンコーダーを仲介する方法が必要でした。それをするのが<a href="http://logback.qos.ch/xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html">LayoutWrappingEncoder</a>です。LayoutWrappingEncoder はエンコーダーインターフェイスを実装しています。そして、ラップしたレイアウトにロギングイベントを文字列に変換する仕事を委譲します。
+    </p>
+
+    <p><code>LayoutWrappingEncoder</code>のコードを一部抜粋して紹介します。レイアウトインスタンスにどうやって委譲しているのかがわかるでしょうか。。</p>
+
+ <pre class="prettyprint source">package ch.qos.logback.core.encoder;
+
+public class LayoutWrappingEncoder&lt;E&gt; extends EncoderBase&lt;E&gt; {
+
+  protected Layout&lt;E&gt; layout;
+  private Charset charset;
+  private boolean immediateFlush = true;
+
+  public void doEncode(E event) throws IOException {
+    String txt = layout.doLayout(event);
+    outputStream.write(convertToBytes(txt));
+    if (immediateFlush)
+      outputStream.flush();
+  }
+
+  private byte[] convertToBytes(String s) {
+    if (charset == null) {
+      return s.getBytes();
+    } else {
+      return s.getBytes(charset);
+    }
+  }
+}</pre>
+
+    <p><code>doEncode()</code>メソッドは、まず最初に受け取ったロギングイベントをラップしたレイアウトで文字列に変換します。そして変換結果の文字列を、使用者が指定した文字セットで符号化してバイト配列に変換します。次に、変換されたバイト配列を親アペンダーの<code>OutputStream</code>に書き込みます。デフォルトでは<code>OutputStream</code>をすぐにフラッシュします。ただし、<span class="prop">immediateFlush</span>プロパティに明示的にfalseが指定されているときはフラッシュしません。<span class="prop">immediateFlush</span>プロパティにfalseを指定しておくと、ロギングのスループットが大幅に向上します。設定例については、次の<code>PatternLayoutEncoder</code>のところで紹介します。
+    </p>
+
+
+    <h2 class="doAnchor">PatternLayoutEncoder</h2>
+
+    <p><code>PatternLayout</code>は最も広く使われているレイアウトです。この一般的なユースケースに対応するため、logbackは<code>PatternLayoutEncoder</code>を提供しています。これは、<code>PatternLayout</code>のインスタンスだけをラップするようにした<code>LayoutWrappingEncoder</code>の派生クラスです。
+    </p>
+
+    <p>logback0.9.19の頃は、<code>FileAppender</code>やその派生クラスの設定には必ず<code>PatternLayout</code>が使われていました。今は代わりに<code>PatternLayoutEncoder</code>を使わなければなりません。これについては、<a href="http://logback.qos.ch/codes.html#layoutInsteadOfEncoder">logbackのエラーコード</a>でも説明しています。
+    </p>
+
+     <h4 class="doAnchor" name="immediateFlush"><span class="prop">immediateFlush</span>プロパティ</h4>
+
+     <p><code>PatternLayoutEncoder</code> は<a href="http://logback.qos.ch/xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html"><code>LayoutWrappingEncoder</code></a>の派生クラスなので、<span class="prop">immediateFlush</span>プロパティを設定することができます。<span class="prop">immediateFlush</span>のデフォルト値は"true"です。出力ストリームをすぐにフラッシュすることで、ロギングイベントがディスクに書き込まれること、アプリケーションが終了するときにちゃんとアペンダーを閉じなかったときでも、ロギングイベントが失われないことを保証することができます。一方、このプロパティに"false"を指定すると、（それが必要なのかどうかはわかりませんが）ロギングのスループットが5倍にまで向上する可能性があります。前述したとおり、<span class="prop">immediateFlush</span>にfalseを指定した場合、アプリケーションが終了するときにちゃんとアペンダーを閉じなかったとき、ディスクに書き込まれていないロギングイベントが失われる可能性があります。
+     </p>
+
+     <p><code>FileAppender</code>に<code>PatternLayoutEncoder</code>を指定した設定例を見てみましょう。<span class="prop">immediateFlush</span>プロパティにはfalseを指定しています。</p>
+
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+  &lt;file&gt;foo.log&lt;/file&gt;
+  &lt;encoder&gt;
+    &lt;pattern&gt;%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern&gt;
+    &lt;!-- this quadruples logging throughput --&gt;
+    <b>&lt;immediateFlush&gt;false&lt;/immediateFlush&gt;</b>
+  &lt;/encoder&gt;
+&lt;/appender&gt;</pre>
+
+
+    <h4 class="doAnchor" name="outputPatternAsHeader">ヘッダに出力形式を入れる</h4>
+
+    <p>ログファイルの解析を容易にするため、logbackはログファイルの先頭にログの出力形式を出力することができます。この機能はデフォルトでは<b>無効</b>になっています。<code>PatternLayoutEncoder</code>の<span class="prop">outputPatternAsHeader</span>プロパティにtrueを指定すれば、有効化することができます。以下に例を示します。</p>
+
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+  &lt;file&gt;foo.log&lt;/file&gt;
+  &lt;encoder&gt;
+    &lt;pattern&gt;%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern&gt;
+    <b>&lt;outputPatternAsHeader&gt;true&lt;/outputPatternAsHeader&gt;</b>
+  &lt;/encoder&gt;
+&lt;/appender&gt;</pre>
+
+    <p>この設定を使うと次のように出力されます。</p>
+
+    <pre>#logback.classic pattern: %d [%thread] %-5level %logger{36} - %msg%n
+2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hello world
+2012-04-26 14:54:38,461 [main] DEBUG com.foo.App - Hi again
+...</pre>
+
+     <p>先頭行の"#logback.classic pattern"が出力形式として出力されたヘッダです。</p>
+
+
+
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
+
+    </div>
+  </body>
+</html>

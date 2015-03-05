@@ -1,0 +1,165 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第1章：はじめに</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+    
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+
+    <h1>第1章 はじめに</h1>
+
+    <div class="quote">
+      <p><em>やる気のもたらす効果には驚くべきものがある。例え簡単なシステムであろうとも、一つでも稼働しているシステムがあれば熱意は燃え上がる。新しいグラフィカルソフトウェアを使って、スクリーンに画像が表示されたなら、たとえそれが単純な四角形であったとしても、その効果は倍増する。システムを稼働させるまでのプロセス一つ一つにそういう瞬間があるものだ。チームが四ヶ月かけて何かを成し遂げたなら、きっとそれ以上に複雑なことが出来るほどに成長できることに気付かされたものだ。</em></p>
+      
+      <p>—FREDERICK P. BROOKS, JR., <em>The Mythical Man-Month</em></p>
+    </div>
+
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+
+    <h2>logbackとは何か？</h2>
+
+    <p>Logback は巷で大人気の log4j プロジェクトの後継プロジェクトです。log4j の創始者であるCekiGülcü によって設計されました。強固で頑健なロギングシステムの十年間に及ぶ経験に基いて設計、構築されています。おかげで、logback は既存のロギングシステムと比べてより高速で、より小さなフットプリントを持つようになりました。場合によってはその差は非常に大きなこともあります。同じくらい重要なのが、logback は他のロギングシステムには無い<a href="http://logback.qos.ch/reasonsToSwitch.html">固有の便利なフィーチャ</a>を提供していることです。
+    </p>
+
+    <h2>最初のステップ</h2>
+
+    <script src="../templates/setup.js" type="text/javascript"></script>
+    
+    <a name="Requirements"></a>
+    <h3>必要条件</h3>
+
+    <p>logback-classic モジュールを動かす際は、クラスパス上に <em>slf4j-api.jar</em> と <em>logback-core.jar</em>  と <em>logback-classic.jar</em> が配置されている必要があります。
+    </p>
+
+    <p><em>logback-*.jar</em> ファイルは logback の配布物に含まれていますが、 {0]slf4j-api-1.7.6.jar は別のプロジェクトである <a href="http://www.slf4j.org">SLF4J</a> の配布物です。
+    </p>
+
+    <p>さあ、logback を使ってみましょう。</p>
+
+<em>例1.1：ロギングの基本的なテンプレート（ <a href="http://logback.qos.ch/xref/chapters/introduction/HelloWorld1.html">logback-examples/src/main/java/chapters/introduction/HelloWorld1.java</a> ）</em>
+<pre class="prettyprint source">package chapters.introduction;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HelloWorld1 {
+
+  public static void main(String[] args) {
+
+    Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld1");
+    logger.debug("Hello world.");
+
+  }
+}</pre>
+
+    <p><code>HelloWorld1</code>クラスは <code>chapters.introduction</code> パッケージに定義されています。最初に SLF4J の API である <a href="http://slf4j.org/api/org/slf4j/Logger.html"><code>Logger</code></a> と <a href="http://slf4j.org/api/org/slf4j/LoggerFactory.html"><code>LoggerFactory</code></a> を <code>org.slf4j</code> パッケージからインポートしています。
+    </p>
+
+
+    <p>main（）メソッドの最初の行では、<code>LoggerFactory</code>クラスの static メソッドである <code>getLogger</code> メソッドの返す<code>Logger</code> クラスのインスタンスを、<code>logger</code>変数に代入します。logger には "chapters.introduction.HelloWorld1" という名前が付けられています。次の処理では、引数として "Hello World" を渡して、logger の<code>debug</code>メソッドを呼び出しています。これを一言で表すと、main メソッドでは、"Hello World" というメッセージの DEBUG レベルのロギングがある、と言えます。
+    </p>
+
+    <p>上記の例では、logbackのクラスを一つも参照していないことに注意してください。ほとんどの場合、ロギングは本来の仕事ではないので、あなたのクラスでは SLF4J のクラスをインポートするだけでよいのです。このように、全てではないにしても、あなたのクラスの大半はSLF4J APIを使用するだけで、logbackの存在には気づかないでしょう。
+    </p>
+
+
+    <p>このサンプルアプリケーション（<em>chapters.introduction.HelloWorld1</em>）は次のコマンドで実行することができます。</p>
+    <div class="source"><pre>java chapters.introduction.HelloWorld1</pre></div>
+
+    <p><code>HelloWorld1</code>アプリケーションを実行すると、コンソールに何かが一行出力されます。logbackのデフォルトの設定ポリシーにより、デフォルトの設定ファイルが見つからない場合はルートロガーに<code>ConsoleAppender</code>を割り当てるようになっています。
+    </p>
+
+    <p class="source">20:49:07.962 [main] DEBUG chapters.introduction.HelloWorld1 - Hello world.</p>
+
+    <p>logback は組み込みの状態管理システムによって、内部状態をレポートすることができます。<code>StatusManager</code>と呼ばれるコンポーネントを通じて、logback が有効になってから発生した重要なイベントの回数にアクセスすることができます。しばらくは、<code>StatusPrinter</code> クラスの<code>print()</code>メソッドによって logback の内部状態を出力することにします。
+    </p>
+
+<em>例：ロガーの内部状態を出力する（ <a href="http://logback.qos.ch/xref/chapters/introduction/HelloWorld2.html">logback-examples/src/main/java/chapters/introduction/HelloWorld2.java</a> ）</em>
+<pre class="prettyprint source">package chapters.introduction;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+<b>import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;</b>
+
+public class HelloWorld2 {
+
+  public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld2");
+    logger.debug("Hello world.");
+
+    // print internal state
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    StatusPrinter.print(lc);</b>
+  }
+}</pre>
+
+
+   <p><code>HelloWorld2</code>アプリケーションを実行すると次のように出力されます。</p>
+
+<div class="source longline"><pre>12:49:22.203 [main] DEBUG chapters.introduction.HelloWorld2 - Hello world.
+12:49:22,076 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+12:49:22,078 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.xml]
+12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Setting up default configuration.
+</pre></div>
+
+
+  <p>これは、logback が設定ファイルである <em>logback-test.xml</em> と <em>logback.xml</em> を見つけられなかったことを意味しています（詳しくは後述します）。そして、デフォルトポリシー（基本的な<code>ConsoleAppender</code>を使います）を使うように自分自身を設定しています。<code>Appender</code>とは、出力先として使用されるクラスのことです。既存のアペンダーには、コンソール、ファイル、Syslog、TCPソケット、JMSなどをいろいろな出力先のクラスが存在します。ユーザーは自分たちの状況に応じたアペンダーを簡単に作ることができます。
+  </p>
+
+  <p>異常が起きた場合、内部状態を自動的にコンソールに出力するようになっています。</p>
+
+  <p>前の例はかなり単純なものでした。とはいえ、大きなアプリケーションで行われている実際のロギングもそんなに大きく変わるものではありません。一般的なロギング文の形式は変わらないでしょう。違うとしたら設定処理ですね。しかし、必要に応じたカスタマイズや設定をしたくなるでしょう。logbackを設定する方法については、以降の章で説明します。
+  </p>
+
+  <p>前述した例では、<code>StatusPrinter.print()</code>メソッドによって内部状態を出力するように命令していることに注意してください。logback の内部状態は、logback に起因する問題を調査するために非常に役立ちます。
+  </p>
+
+  <p>あなたのアプリケーションでロギングを有効にするための手順は次の三つです。
+  </p>
+
+  <ol> 
+    <li>logback の環境を準備します。やり方はさまざまです。詳細は後述します。</li>
+
+    <li>ロギングをしたい全てのクラスで、<code>org.slf4j.LoggerFactory</code>の<code>getLogger()</code>メソッドによって<code>Logger</code>のインスタンスを取得しましょう。<code>getLogger()</code>メソッドにはクラス名やクラスオブジェクト自体を引数にしましょう。</li>
+    
+    <li>logger インスタンスのロギング用メソッドを呼び出しましょう。debug() info() warn() error() といったものがあります。そうすれば、アペンダーとして設定した出力先にログが出力されます。</li>
+  </ol>
+ 
+  
+  <h2 class="doAnchor" name="building">logbackをビルドする</h2>
+  
+  <p>logback はビルドツールとして Maven を使用しています。<a href="http://maven.apache.org">Maven</a> はオープンソースのビルドツールで、広く利用されているものです。
+  </p>
+
+  <p>Maven をインストールしたら、logback の配布物を展開して、展開先のディレクトリに移動します。そして <code>mvn install</code> コマンドを実行すれば、全てのモジュールがビルドされます。Mavenは必要な外部ライブラリを自動的にダウンロードします。
+  </p>
+
+  <p>logback の配布物には完全なソースコードが含まれているので、編集して自分だけのバージョンのライブラリをビルドすることができます。あなたが修正したバージョンの logback は、LGPL ライセンス、もしくは、EPL ライセンスに従って再配布することもできます。
+  </p>
+
+  <p>IDE から logback をビルドする場合は<a href="http://logback.qos.ch/setup.html#ide">クラスパスの設定について説明したページ</a>を参照してください。</p>
+  
+  <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第13章 log4jからの移行</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+      
+    <h1>第13章 log4jからの移行</h1> 
+
+    <div class="quote">
+      <p><em>多くのものが変化し、多くのものがそのままである。</em></p>
+      
+      <p>—ALPHONSE KARR, <em>Les Guêpes</em></p>
+    </div>
+
+    <p>本章ではカスタマイズされたlog4jのコンポーネントのアペンダーやレイアウトをlogback-classicに移行する方法について議論します。
+    </p>
+
+    <p>log4j のクライアントAPIとして<code>org.apache.log4j</code>パッケージの<code>Logger</code>や<code>Category</code>を使っているだけなら、SLF4Jの<a href="http://www.slf4j.org/migrator.html">SLF4J移行ツール</a>で自動的に移行することができます。<em>log4j.properties</em>から同じ内容のlogback.xmlを作るには、<a href="http://logback.qos.ch/translator/">log4j.properties トランスレーター</a>が使えます。
+    </p>
+
+    <p>広い観点から見ると、log4jとlogback-classicは密接に関連し合っています。ロガーやアペンダー、レイアウトといった基本的なコンポーネントはどちらのフレームワークにもありますし、目的も同じです。同様に、どちらのフレームワークにも一番重要な内部データ構造として<code>LoggingEvent</code>がありますが、実装まで完全に同じわけではありません。一番の違いは、logback-classic の<code>LoggingEvent</code>は<code>ILoggingEvent</code>インターフェイスを実装しているところです。log4jのコンポーネントをlogback-classicに移行するために必要な変更のほとんどは、<code>LoggingEvent</code>の実装の差異を埋めることに費やされます。差異があるといってもその範囲は限られているので安心してください。出来る限りの努力をしたにも関わらず移行がうまくいかなかったら、<a href="http://logback.qos.ch/mailinglist.html">logback-dev メーリングリスト</a>で質問してください。logbackの開発者たちがアドバイスしてくれるはずです。
+    </p>
+
+    
+    <h3 class="doAnchor" name="log4jLayout">log4jのレイアウトを移行する</h3>
+
+    <p>さあ移行してみましょう。対象はlog4j の単純なレイアウト<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>ということにします。これはロギングイベントのメッセージを指定された書式で書式化した文字列を返すものです。コードを見てください。
+    </p>
+    
+
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
+
+import org.apache.log4j.Layout;
+import org.apache.log4j.spi.LoggingEvent;
+
+public class TrivialLog4jLayout extends Layout {
+
+  public void activateOptions() {
+    // there are no options to activate
+  }
+
+  public String format(LoggingEvent loggingEvent) {
+    return loggingEvent.getRenderedMessage();
+  }
+
+  public boolean ignoresThrowable() {
+    return true;
+  }
+}</pre>
+
+    <p>logback-classicで等価なレイアウト<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLogbackLayout.html">TrivialLogbackLayout</a>は次のようになります。</p>
+    
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.LayoutBase;
+
+public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent&gt;</b> {
+
+  public String <b>doLayout</b>(ILoggingEvent loggingEvent) {
+    return loggingEvent.getMessage();
+  }
+}    </pre>
+ 
+   <p>ご覧のように、文字列を書式化するメソッドはlog4jでは<code>format()</code>でしたが、logback-classic では<code>doLayout()</code>なのです。また、logback-classic には<code>ignoresThrowable()</code>に相当するメソッドはありません。logback-classicのレイアウトは<code>LayoutBase&lt;ILoggingEvent&gt;</code>を継承しなければならないので気をつけてください。
+   </p>
+
+   <p><code>activateOptions()</code>メソッドの効果については大いに議論の余地があります。log4jでは、log4j configurator（<code>PropertyConfigurator</code>あるいは<code>DOMConfiguration</code>） から、レイアウトの全てのオプションが設定された後に<code>activateOptions()</code>メソッドが呼ばれるようになっています。したがって、レイアウトには自分に指定されたオプションの整合性をチェックするタイミングが無いので、全て自分で賄わなければなりません。</p>
+
+
+   <p>logback-classic では、レイアウトは<a href="http://logback.qos.ch/xref/ch/qos/logback/core/spi/LifeCycle.html">LifeCycle</a>インターフェイスを実装しなければなりません。このインターフェイスには<code>start()</code>メソッドがあります。この<code>start()</code>メソッドは、log4jの<code>activateOptions()</code>メソッドとほぼ同様の役割を果たします。
+   </p>
+
+   <h3 class="doAnchor" name="log4jAppender">log4jのアペンダーを移行する</h3>
+   
+   <p>アペンダーの移行は、レイアウトの移行とほとんど同じです。単純なアペンダー<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLog4jAppender.html">TrivialLog4jAppender</a>を移行することを考えてみましょう。このアペンダーはレイアウトの返す文字列をコンソールに出力するだけのものです。</p>
+   
+    <pre class="prettyprint source">package chapters.migrationFromLog4j;
+
+import org.apache.log4j.AppenderSkeleton;
+import org.apache.log4j.spi.LoggingEvent;
+
+
+public class TrivialLog4jAppender extends AppenderSkeleton {
+
+  protected void append(LoggingEvent loggingevent) {
+    String s = this.layout.format(loggingevent);
+    System.out.println(s);
+  }
+
+  public void close() {
+    // nothing to do
+  }
+
+  public boolean requiresLayout() {
+    return true;
+  }
+}</pre>
+
+   <p>logback-classicで等価なアペンダー<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLogbackAppender.html">TrivialLogbackAppender</a>は次のようになります。</p>
+
+
+   <pre class="prettyprint source">package chapters.migrationFromLog4j;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.AppenderBase;
+
+public class TrivialLogbackAppender extends AppenderBase&lt;ILoggingEvent&gt; {
+
+  @Override
+  public void start() {
+    if (this.layout == null) {
+      addError("No layout set for the appender named [" + name + "].");
+      return;
+    }
+    super.start();
+  }
+
+  @Override
+  protected void append(ILoggingEvent loggingevent) {
+    // note that AppenderBase.doAppend will invoke this method only if
+    // this appender was successfully started.
+    
+    String s = this.layout.doLayout(loggingevent);
+    System.out.println(s);
+  }
+}</pre>
+
+
+   <p>コードを比べてみると分かるのですが、<code>append()</code>メソッドはそのままです。logbackでは<code>requiresLayout()</code>メソッドを使用しないので、これは削除できます。logbackの<code>stop()</code>メソッドは、log4jの<code>close()</code>メソッドと同じ意味です。logback-classicの<code>AppenderBase</code>には何もしない<code>stop()</code>メソッドの実装があるので、今回のように単純なアペンダーならそれで十分でしょう。
+   </p>
+
+
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

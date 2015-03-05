@@ -1,0 +1,811 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第15章 SSLを使用する</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">    
+      <h1>第15章 SSLを使用する</h1>
+      
+      <div class="quote">
+
+        <p><em>建築物と創造物の間には越えられない壁があります。それは、建築物は作られた後でしか愛されることができないのに、創造物は存在する前から愛されていることです。</em></p>
+        <p>—CHARLES DICKENS</p>
+      </div>
+
+    <script type="text/javascript" src="../templates/creative.js"></script>
+
+      <p>logbackはソケットベースのアペンダーから遠隔のレシーバーにログを配信するために、Secure Socket Layer（SSL）を使用することが出来ます。SSLに対応したアペンダーとレシーバーを使うと、シリアライズされたロギングイベントはセキュアなチャネルで配信されます。
+      </p>
+      
+      <h2 class="doAnchor">SSLとそれを使うコンポーネントの役割</h2>
+      
+      <p>アペンダーやレシーバーはサーバーとしても振る舞うし、クライアントとしても振る舞うことができます。これはネットワーク接続を始める方向によるものです。サーバーとして振る舞うとき、logbackのコンポーネントは外部のクライアントコンポーネントからの接続を待ち受けます。逆に、クライアントとして振る舞うコンポーネントは、外部のサーバーコンポーネントに接続し始めます。たとえば、<em>クライアント</em>として振る舞うアペンダーは、<em>サーバー</em>として振る舞うレシーバーに接続するのです。あるいは、<em>クライアント</em>として振る舞うレシーバーが、 <em>サーバー</em>として振る舞うアペンダーに接続します。</p>
+      
+      <p>コンポーネントの役割は、基本的にコンポーネントタイプによって決まります。たとえば、 <code>SSLServerSocketAppender</code>はサーバーとして振る舞うアペンダーコンポーネントですし、<code>SSLSocketAppender</code>はクライアントとして振る舞うアペンダーコンポーネントです。このように、開発者もアプリケーション管理者も、思った通りの方向でネットワーク接続を始められるようにlogbackのコンポーネントを設定することができます。</p>
+      
+      <p>SSLのコンテキストにおいて接続を開始する方向は非常に重要です。なぜなら、サーバーコンポーネントは接続してくるクライアントに対してX.509証明書を使って自分のことを証明しなければならないからです。クライアントコンポーネントはサーバーに接続するとき、信頼できるかどうかをサーバーの証明書で検証します。開発者やアプリケーション管理者はlogbackのコンポーネントの役割をきちんと理解しておかなければなりません。つまり、サーバーならキーストア（サーバーのX.509証明書を配置します）を適切に構成し、クライアントならトラストストア（信頼できるサーバーかどうかを検証するときに使用する自己署名ルート証明書を配置します）を適切に構成しなければなりません。</p>
+      
+      <p>SSLが<em>相互認証</em>するように設定されている場合、サーバーコンポーネントとクライアントコンポーネントの両方が、それぞれのピアから信頼性を検証された正当なX.509証明書を持っていなければなりません。相互認証はサーバーコンポーネントで設定するものなので、開発者もアプリケーション管理者も、コンポーネントがちゃんとサーバーとして振る舞っていることをきちんと把握しておかなければなりません。</p>
+      
+      <p>本章では、サーバーとして振る舞うアペンダーやレシーバーのことを、単に<em>サーバーコンポーネント</em>あるいは<em>サーバー</em>と呼ぶことにします。そして、クライアントとして振る舞うコンポーネントは<em>クライアントコンポーネント</em>あるいは<em>クライアント</em>と呼ぶことにします。
+            
+      <h2 class="doAnchor">SSLとX.509証明書</h2>
+      
+      <p>SSLに対応したlogbackコンポーネントを使うには、SSLサーバーとして動作するコンポーネントが自分のことを証明するのに、X.509証明書（秘密鍵とそれに対応する証明書、および、CAの証明書チェーン）が必要になります。相互認証を使いたいときは、SSLクライアントとして動作するコンポーネントの証明書も必要です。
+      </p>      
+      <p>民間の証明機関（CA）だけでなく、独自のCAで発行した証明書を使うことができるのですが、自己署名した証明書を使うこともできます。必要事項は次のとおりです。</p> 
+      <ol>
+        <li>（自己署名証明書を使わない場合）サーバーコンポーネントに、サーバーの秘密鍵を含むキーストア、対応する証明書、およびCAの証明書チェーンを指定しなければなりません。
+        </li>
+        <li>クライアントコンポーネントに、信頼されたルートCA証明書（複数可）または、サーバの自己署名ルート証明書を含むトラストストアを指定しなければなりません。
+        </li>
+      </ol>
+          
+      <h2 class="doAnchor">SSL用のlogbackコンポーネントの設定</h2>
+      <p>logbackがSSL対応するのに使っているJava Secure Sockets Extension（JSSE）とJava 暗号化アーキテクチャ（JCA）には設定可能な項目がたくさんあります。また、プラグイン可能なフレームワークなので、組み込みのSSLとプラットフォーム固有の暗号化機能は差し替え可能になっています。SSLに対応したlogbackのコンポーネントでは、SSLエンジンと暗号化プロバイダーに設定できることは全て設定できるようになっています。ですので、利用者によって固有のセキュリティ要件を満たすことができます。
+      </p>
+      
+      <h3>JSSEのシステムプロパティを使った基本的なSSLの設定</h3>
+      <p>SSLに対応したlogbackのコンポーネントでは、SSLの設定可能なプロパティのほとんどについて妥当な初期値が用意されています。したがって、ほとんどの場合いくつかJSEEのシステムプロパティを指定するだけで済むでしょう。
+      </p>
+      
+      <p>このセクションの残りの部分では、ほとんどの環境で必要になる特定のJSSEプロパティについて説明します。システムプロパティを使ってJSSEをカスタマイズする方法の詳細については、
+<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#InstallationAndCustomization">JSSEのカスタマイズ</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>を参照してください。
+      </p>
+
+      <p>サーバーとして振る舞うSSL対応のlogbackアペンダーやレシーバー（<code>SSLServerSocketReceiver</code>や<code>SSLServerSocketAppender</code>や<code>SimpleSSLSocketServer</code>）を使うときは、JSSEのシステムプロパティで秘密鍵と証明書を含むキーストアの場所と種類とパスワードを指定しなければなりません。
+      </p>
+      
+      <h4><a name="basicConfig.keyStore"></a>サーバー側でキーストアを指定するためのシステムプロパティ</h4>
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><code>javax.net.ssl.keyStore</code></td>
+          <td>サーバーコンポーネントの秘密鍵と証明書を含むファイルの、ファイルシステム上のパスを指定します。</td>
+        </tr>
+        <tr>
+          <td><code>javax.net.ssl.keyStoreType</code></td>
+          <td>キーストアの種類を指定します。このプロパティが指定されていない場合、プラットフォームのデフォルト（JKS）になります。
+          </td>
+        </tr>
+        <tr>
+          <td><code>javax.net.ssl.keyStorePassword</code></td>
+          <td>キーストアにアクセスするためのパスワードを指定します。
+          </td>
+        </tr>
+      </table>
+
+      <p><a href="./15-usingSSL.html#Examples">こちらの例</a>で、SSL対応のサーバーコンポーネントを実行する際にシステムプロパティを指定する方法を確認してください。
+      </p>
+         
+      <p>サーバーコンポーネントが民間の証明機関（CA）で署名された証明書を使うときは、<strong>おそらくクライアントコンポーネントでSSLの設定をする必要はありません。</strong>サーバー側では、JVMのシステムプロパティとしてキーストアを指定するだけでよいです。
+      </p>
+               
+      <p>自己署名したサーバー証明書か、Javaのデフォルトのトラストストアに含まれないルート証明書（社内用の証明局など）で署名したサーバー証明書を使うときは、JSEEシステムプロパティでトラストストアの場所、種類、パスワードを指定するか、サーバー証明書を署名した信頼できるルート証明書を指定しなければなりません。<strong>SSL対応のクライアントコンポーネントを利用するアプリケーションごとに、これらのシステムプロパティを設定しなければなりません</strong> 。
+      </p>
+        
+      <h4><a name="basicConfig.trustStore"></a>クライアント側でトラストストアを指定するためのシステムプロパティ</h4>
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><code>javax.net.ssl.trustStore</code></td>
+          <td>サーバーコンポーネントの証明書か、サーバー証明書に署名した認証局（CA）の信頼できるルート証明書のファイルシステム上のパスを指定します。</td>
+        </tr>
+        <tr>
+          <td><code>javax.net.ssl.trustStoreType</code></td>
+          <td>トラストストアの種類を指定します。このプロパティが指定されていない場合、プラットフォームのデフォルト（JKS）になります。
+          </td>
+        </tr>
+        <tr>
+          <td><code>javax.net.ssl.trustStorePassword</code></td>
+          <td>トラストストアにアクセスするためのパスワードを指定します。
+          </td>
+        </tr>
+      </table>
+
+      <p><a href="./15-usingSSL.html#Examples">こちらの例</a>で、SSL対応のクライアントコンポーネントを実行する際にシステムプロパティを指定する方法を確認してください。
+      </p>         
+            
+      <h3 class="doAnchor"><a name="SSLConfiguration"></a>高度なSSLの設定</h3>
+      <p>JSSEシステムプロパティによる基本的なSSLの設定だけでは足りないことがあります。Webアプリケーションで<code>SSLServerSocketReceiver</code>を使用しているとき、WebクライアントがWebサーバーを識別するための証明書と、ロギングクライアントがロギングサーバーを識別するための証明書では別のものを使いたいはずです。ロギングサーバーには、認証、および、認可されたリモートロガーだけが接続できるよう、SSLのクライアントを認証したいこともあるでしょう。あるいは、内部ネットワークではSSLプロトコルと暗号スイートを使わなければならない、というポリシーを強制する組織があるかもしれません。これらのいずれかのニーズを満たすためには、logbackの高度なSSL設定オプションを確かめておいたほういいでしょう。</p>
+      <p>logbackのコンポーネントでSSLを設定するときは、<code>ssl</code>プロパティに指定します。
+      </p>      
+      <p><code>SSLServerSocketReceiver</code>を使うときは、keystoreプロパティでサーバーの証明書を含んだキーストアを指定します。
+      </p>
+
+      <span class="asGroovy" onclick="return asGroovy(&#39;logback-ssl-serverKeyStore&#39;);">Groovyとして表示</span>
+      <pre id="logback-ssl-serverKeyStore" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+  
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="CONSOLE" /&gt;
+  &lt;/root&gt;
+
+  &lt;receiver class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver"&gt;
+    &lt;ssl&gt;
+      &lt;keyStore&gt;
+        &lt;location&gt;classpath:/logging-server-keystore.jks&lt;/location&gt;
+        &lt;password&gt;changeit&lt;/password&gt;
+      &lt;/keyStore&gt;
+    &lt;/ssl&gt;
+  &lt;/receiver&gt; 
+
+&lt;/configuration&gt;</pre>
+
+      <p>ここでは、キーストアの場所にアプリケーションのクラスパスのルートに配置された<em>logging-server-keystore.jks</em>が指定されています。もちろん、fileから始まるURLを指定することもできます。
+      </p>
+      <p>アプリケーションで<code>SSLSocketAppender</code>を使いたいけど、アプリケーション自体の（JSEEの）デフォルトのトラストストアを変更したくないときは、<code>javax.net.ssl.trustStore</code>プロパティを使うことができます。
+      </p>          
+
+      <span class="asGroovy" onclick="return asGroovy(&#39;logback-ssl-clientTrustStore&#39;);">Groovyとして表示</span>
+      <pre id="logback-ssl-clientTrustStore" class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender"&gt;
+    &lt;ssl&gt;
+      &lt;trustStore&gt;
+        &lt;location&gt;classpath:/logging-server-truststore.jks&lt;/location&gt;
+        &lt;password&gt;changeit&lt;/password&gt;
+      &lt;/trustStore&gt;
+    &lt;/ssl&gt;
+  &lt;/appender&gt;
+  
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="SOCKET" /&gt;
+  &lt;/root&gt;
+
+&lt;/configuration&gt;</pre>
+
+      <p>ここでは、トラストストアの場所にアプリケーションのクラスパスのルートに配置された<em>logging-server-truststore.jks</em>が指定されています。
+もちろん、fileから始まるURLを指定することもできます。
+
+      </p>
+
+      <h4>SSLプロパティ</h4>
+      
+      <p>JSSEは設定可能なオプションを大量に公開しています。logbackのSSL対応では公開された設定のほとんどを設定ファイル中で指定できるようになっています。XML形式の設定ファイルでは、SSLの各種設定をssl要素で設定します。ssl要素に対応しているのは<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SSLConfiguration.html">SSLConfiguration</a></code>クラスです。
+      </p>
+      
+      <p>SSLに対応したコンポーネントを設定するには、デフォルト値では困る時にこれらのプロパティを設定するだけでよいです。なんでもかんでも設定してしまうと、こんがらがってしまって問題を解析するのがとてもむずかしくなってしまいます。
+      </p>
+ 
+      <p>SSLの設定におけるトップレベルのプロパティは次のとおりです。これらのプロパティの多くについて、さらに下位のプロパティが存在します。トップレベルなプロパティの一覧表の後に説明します。
+      </p>
+            
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>Type</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><span class="prop" container="ssl">keyManagerFactory</span></td>
+          <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyManagerFactoryFactoryBean.html">
+              <code>KeyManagerFactoryFactoryBean</code></a>
+          </td>
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></code>の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのファクトリが使われます。<a href="./15-usingSSL.html#KeyManagerFactoryFactoryBean">キーマネージャファクトリの設定</a>を参照してください。
+          </td>
+        </tr>
+        <tr>
+          <td><a name="ssl.keyStore"></a><span class="prop" container="ssl">keyStore</span></td>
+          <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyStoreFactoryBean.html">
+              <code>KeyStoreFactoryBean</code></a>
+          </td>
+          <td>
+            <p><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/KeyStore.html">KeyStore</a></code>の設定を指定します。キーストアには、少なくとも1つのX.509証明書（秘密鍵と対応する証明書、あるいはCA証明書チェーン）が含まれていなければなりません。この証明書がSSLのリモートピアに提示されます。
+            </p>
+            <p>SSLクライアント（<code>SSLSocketAppender</code>など）の設定に<span class="prop" container="ssl">keyStore</span>プロパティが必要になるのは、リモートピアへの接続にクライアント認証が必要な場合だけです。
+            </p>
+            <p>SSLサーバー（<code>SimpleSSLSocketServer</code>など）の<span class="prop" container="ssl">keyStore</span>プロパティには、サーバー証明書を格納したキーストアを指定します。このプロパティが設定されていない場合は、JSSEのシステムプロパティ<code>javax.net.ssl.keyStore</code>に、サーバーのキーストアの場所を指定しておかなければなりません。詳細は<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#InstallationAndCustomization">JSSEのカスタマイズ</a>を参照してください。
+            </p>
+            <p><a href="./15-usingSSL.html#KeyStoreFactoryBean">キーストアの設定</a>については後述します。
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="ssl">parameters</span></td>
+          <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SSLParametersConfiguration.html">
+              <code>SSLParametersConfiguration</code></a></td>
+          <td>SSLセッションのネゴシエーションで使用するいろいろなパラメータを指定します。<a href="./15-usingSSL.html#SSLParametersConfiguration">SSLパラメータの設定</a>については後述します。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="ssl">protocol</span></td>
+          <td><code>String</code></td>
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/SSLContext.html">SSLContext</a></code>を作成するために使用するSSLプロトコルを指定します。<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>に記載された<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>を指定してください。このプロパティが設定されていない場合は、JVMのデフォルトのプロトコル名が使用されます。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="ssl">provider</span></td>
+          <td><code>String</code></td>
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/SSLContext.html">SSLContext</a></code>を作成するために使用するJSSEプロバイダー名を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのJSSEプロバイダ名が使用されます。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="ssl">secureRandom</span></td>
+          <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SecureRandomFactoryBean.html">
+              <code>SecureRandomFactoryBean</code></a>
+          </td>
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/SecureRandom.html">SecureRandom</a></code>（安全な乱数生成器）の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトの乱数生成器が使用されます。<a href="./15-usingSSL.html#SecureRandomFactoryBean">安全な乱数生成器の設定</a>については後述します。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="ssl">trustManagerFactory</span></td>
+          <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/TrustManagerFactoryFactoryBean.html">
+              <code>TrustManagerFactoryFactoryBean</code></a>
+          </td>
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></code>の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのファクトリーを使用します。<a href="./15-usingSSL.html#TrustManagerFactoryFactoryBean">トラストマネージャファクトリー</a>については後述します。
+          </td>
+        </tr>
+        <tr>
+          <td><a name="ssl.trustStore"></a><span class="prop" container="ssl">trustStore</span></td>
+          <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyStoreFactoryBean.html">
+              <code>KeyStoreFactoryBean</code></a>
+          </td>
+          <td>
+            <p>SSLのリモートピアの同一性を検証するために使う<code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/KeyStore.html">KeyStore</a></code>の設定を指定します。キーストアには少なくとも1つ以上の<em>トラストアンカー</em>が含まれていなければなりません。"信頼できる"と印の付けられた自己署名証明書のことです。一般的に、トラストストアには自己署名CA証明書が含まれています。
+            </p>
+            <p>このプロパティで指定したトラストストアは、JSSEの<code>java.net.ssl.trustStore</code>システムプロパティで指定された全てのトラストストアを上書きします。詳細は<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#InstallationAndCustomization">JSSEのカスタマイズ</a>を参照してください。
+
+            </p>
+          </td>
+        </tr>
+      </table>
+      
+      <h4 class="doAnchor"><a name="KeyStoreFactoryBean"></a>キーストアの設定</h4>
+          
+      <p><code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyStoreFactoryBean.html">KeyStoreFactoryBean</a></code>は、X.509証明書を格納した<a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/KeyStore.html"><code>KeyStore</code></a>を作成するために必要な設定を提供します。このファクトリーBeanのプロパティは、<a href="./15-usingSSL.html#SSLConfiguration">SSLの設定</a>で紹介した<a href="./15-usingSSL.html#ssl.keyStore"><span class="prop" container="ssl">keyStore</span></a>および<a href="./15-usingSSL.html#ssl.trustStore"><span class="prop" container="ssl">trustStore</span></a>として使うことができます。
+      </p>
+ 
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>型</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><span class="prop" container="keyStore">location</span></td>
+          <td><code>String</code></td>
+          <td>キーストアの場所をURLで指定します。ファイルシステム上のキーストアを指定するときは、<code>file:</code>形式のURLを指定します。<code>classpath:</code>形式のURLを指定すれば、クラスパス上のリソースを指定することもできます。URLスキームがないときは、<code>classpath:</code>が指定されたものとして扱います。</td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="keyStore">password</span></td>
+          <td><code>String</code></td>
+          <td>キーストアにアクセスするためのパスワードを指定します。</td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="keyStore">provider</span></td>
+          <td><code>String</code></td>
+          <td><code>KeyStore</code>を作成するために使用するJCAプロバイダー名を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのキーストアプロバイダーが使用されます。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="keyStore">type</span></td>
+          <td><code>String</code></td>
+          <td><code>KeyStore</code>の種類を指定します。指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/CryptoSpec.html">Java暗号化アーキテクチャ</a>に記載された仕様である<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/CryptoSpec.html#AppA">標準名</a>です。このプロパティが設定されていない場合は、JVMのデフォルトが使用されます。
+          </td>
+        </tr>
+      </table>
+      
+      <h4><a name="KeyManagerFactoryFactoryBean"></a>キーマネージャファクトリーの設定</h4>
+          
+      <p><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/KeyManagerFactory.html"><code>KeyManagerFactory</code></a>を作成するために必要な設定は、<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyManagerFactoryFactoryBean.html">KeyManagerFactoryFactoryBean</a></code>によって提供されます。普通はキーマネージャーファクトリーの明示的な設定は不要です。ほぼ全ての場合にJVMのデフォルトのファクトリーで十分だからです。
+      </p>
+
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>型</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><span class="prop" container="keyManagerFactory">algorithm</span></td>
+          <td><code>String</code></td>
+          <td><code>KeyManagerFactory</code>が使うアルゴリズム名を指定します。指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>に記載された<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>だけです。このプロパティが設定されていない場合は、JVMのデフォルトのアルゴリズムが使用されます。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="keyManagerFactory">provider</span></td>
+          <td><code>String</code></td>
+          <td><code>SecureRandom</code>生成器を生成するのに使われるJCAプロバイダー名を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのJSSEプロバイダーが使用されます。
+          </td>
+        </tr>
+      </table>
+
+      <h4 class="doAnchor"><a name="SecureRandomFactoryBean"></a>安全な乱数生成器の設定</h4>
+          
+      <p><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/SecureRandom.html"><code>SecureRandom</code></a>生成器を作成するために必要な設定は、<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SecureRandomFactoryBean.html">SecureRandomFactoryBean</a></code>によって提供されます。JVMのデフォルトの乱数生成器で十分なことがほとんどなので、普通は明示的に設定する必要がありません。
+      </p>
+ 
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>型</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><span class="prop" container="secureRandom">algorithm</span></td>
+          <td><code>String</code></td>
+          <td><code>安全な乱数生成器</code>のアルゴリズム名を指定します。指定できるのは<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/CryptoSpec.html">Java暗号化アーキテクチャの</a>に記載された<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/CryptoSpec.html#AppA">標準名</a>だけです。このプロパティが設定されていない場合は、JVMのデフォルトの乱数生成アルゴリズムが使用されます。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="secureRandom">provider</span></td>
+          <td><code>String</code></td>
+          <td><code>安全な乱数生成器</code>を生成するために使われるJCAプロバイダー名を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのJSSEプロバイダ名が使用されます。
+          </td>
+        </tr>
+      </table>
+      
+      <h4><a name="SSLParametersConfiguration"></a> SSLパラメータの設定</h4>
+          
+      <p><code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SSLParametersConfiguration.html">SSLParametersConfiguration</a></code>を使って、SSLプロトコル、暗号スイート、およびクライアント認証オプションをカスタマイズすることができます。
+      </p>
+
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>型</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><a name="parameters.excludedCipherSpecs"></a>
+              <span class="prop" container="parameters">excludedCipherSpecs</span></td>
+          <td><code>String</code></td>
+          <td>
+            <p>セッションネゴシエーションをする際に除外するSSL暗号方式名をカンマ区切りリストで指定します。このプロパティに指定する値は、SSLエンジンがサポートしている暗号方式を限定するために使用されます。マッチした暗号方式はすべて無効になります。
+            </p>
+            <p>カンマ区切りリストのそれぞれの項目には単純な文字列あるいは正規表現を指定することができます。
+            </p>
+            <p>指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>にあるものだけです。
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><a name="parameters.includedCipherSpecs"></a>
+              <span class="prop" container="parameters">includedCipherSpecs</span></td>
+          <td><code>String</code></td>
+          <td>
+            <p>セッションネゴシエーションをする際に使用するSSL暗号方式名をカンマ区切りリストで指定します。
+このプロパティに指定する値は、SSLエンジンがサポートしている暗号方式を特定するために使用されます。マッチした暗号方式はすべて有効になります。
+            </p>
+            <p>カンマ区切りリストのそれぞれの項目には単純な文字列あるいは正規表現を指定することができます。
+            </p>
+            <p>指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>にあるものだけです。
+
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><a name="parameters.excludedProtocols"></a>
+              <span class="prop" container="parameters">excludedProtocols</span></td>
+          <td><code>String</code></td>
+          <td>
+            <p>セッションネゴシエーションをする際に除外するSSLプロトコル名をカンマ区切りリストで指定します。このプロパティに指定する値は、SSLエンジンがサポートしているSSLプロトコルを限定するために使用されます。マッチしたSSLプロトコルはすべて無効になります。
+            </p>
+            <p>カンマ区切りリストのそれぞれの項目には単純な文字列あるいは正規表現を指定することができます。
+            </p>
+            <p>指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>にあるものだけです。
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><a name="parameters.includedProtocols"></a>
+              <span class="prop" container="parameters">includedProtocols</span></td>
+          <td><code>String</code></td>
+          <td>
+            <p>セッションネゴシエーションをする際に使用するSSLプロトコル名をカンマ区切りリストで指定します。
+このプロパティに指定する値は、SSLエンジンがサポートしているSSLプロトコルを特定するために使用されます。マッチしたSSLプロトコルはすべて有効になります。
+
+            </p>
+            <p>カンマ区切りリストのそれぞれの項目には単純な文字列あるいは正規表現を指定することができます。
+
+            </p>
+            <p>指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>にあるものだけです。
+            </p>
+          </td>
+        </tr>
+        <tr>
+          <td><a name="parameters.needClientAuth"></a>
+              <span class="prop" container="parameters">needClientAuth</span></td>
+          <td><code>boolean</code></td>
+          <td>サーバー側でクライアント認証が<em>必要</em>なときは、このプロパティに<code>true</code>を指定します。クライアントコンポーネント（<code>SSLSocketAppender</code>など）の場合はこのプロパティは無視されます。
+          </td>
+        </tr>
+        <tr>
+          <td><a name="parameters.wantClientAuth"></a>
+              <span class="prop" container="parameters">wantClientAuth</span></td>
+          <td><code>boolean</code></td>
+          <td>サーバー側でクライアント認証が<em>必要</em>なときは、このプロパティに<code>true</code>を指定します。
+クライアントコンポーネント（<code>SSLSocketAppender</code>など）の場合はこのプロパティは無視されます。
+
+          </td>
+        </tr>
+      </table>
+      
+      <h4><a name="TrustManagerFactoryFactoryBean"></a>トラストマネージャファクトリーの設定</h4>
+          
+      <p><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/TrustManagerFactory.html"><code>TrustManagerFactory</code></a>を作成するために必要な設定は、<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/TrustManagerFactoryFactoryBean.html">TrustManagerFactoryFactoryBean</a></code>が提供します。JVMのデフォルトのファクトリーで十分なことがほとんどなので、普通は明示的に設定する必要がありません。
+
+      </p>
+
+      <table class="bodyTable striped">
+        <tr>
+          <th>プロパティ名</th>
+          <th>型</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><span class="prop" container="trustManagerFactory">algorithm</span></td>
+          <td><code>String</code></td>
+          <td><code>TrustManagerFactory</code>のアルゴリズム名を指定します。指定できるのは、<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">標準名</a>にあるものだけです。このプロパティが設定されていない場合は、JVMのデフォルトのキーマネージャのアルゴリズムが使用されます。
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="trustManagerFactory">provider</span></td>
+          <td><code>String</code></td>
+          <td><code>安全な乱数生成器</code>を生成するために使われるJCAプロバイダー名を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのJSSEプロバイダが使用されます。
+          </td>
+        </tr>
+      </table>
+      
+      <h2 class="doAnchor"><a name="Examples"></a>例</h2>
+
+      <h3>JSSEシステムプロパティを使用する</h3>
+      <p>JSSEシステムプロパティは、サーバーのX.509証明書を含むキーストアの場所とパスワードを指定するために使われます。また、クライアントコンポーネントが信頼できるサーバーかどうかを検証するために使用する、自己署名ルートCA証明書を含むトラストストアの場所とパスワードを指定します。</p>
+
+      <h4>サーバーのキーストアを指定する</h4>
+      <p>サーバーコンポーネントを実行する場合、サーバーの証明書を含むキーストアの場所とパスワードを指定しなければなりません。そのために、JSSEシステムプロパティを使用することができます。logbackの配布物に含まれる<code>SimpleSSLSocketServer</code>を実行してみましょう。</p>
+    
+      <p class="source">java -DkeyStore=/etc/logback-server-keystore.jks \
+     -DkeyStorePassword=changeit -DkeyStoreType=JKS \
+     ch.qos.logback.net.SimpleSSLSocketServer 6000 /etc/logback-server-config.xml</p>
+              
+      <p>JSSEシステムプロパティの<em>keyStore</em>に、サーバーのキーストアへのパスを指定するのを忘れないようにしてください。そのパスを<em>logback.xml</em>で指定するときはURLで指定します。</p>
+      
+      <p>この例ではlogbackの配布物に含まれているスタンドアローンのサーバーアプリケーションを実行しました。どんなアプリケーションでも、logbackのサーバーコンポーネントを使う場合は同じようにシステムプロパティを指定できます。
+      
+      <h4>クライアントのトラストストアを指定する</h4>
+      
+      <p>クライアントコンポーネントを使用する場合、信頼できるサーバーかどうかを検証するために使用する、ルートCA証明書を含むトラストストアの場所とパスワードを指定しなければなりません。そのためにJSSEシステムプロパティを使用することができます。logbackのSSL対応のクライアントコンポーネントを複数使用する<code>com.example.MyLoggingApplication</code>を実行してみましょう。</p>
+
+      <p class="source">java -DtrustStore=/etc/logback-client-truststore.jks \
+     -DtrustStorePassword=changeit -DtrustStoreType=JKS \
+     com.example.MyLoggingApplication</p>
+      
+      <p>JSSEシステムプロパティの<em>trustStore</em>に、トラストストアへのパスを指定するのを忘れないようにしてください。そのパスを<em>logback.xml</em>で指定するときはURLで指定します。</p>
+      
+      <h3>サーバーコンポーネントの自己署名証明書を生成して利用する</h3>
+      <p>自己署名証明書を生成するには、Javaランタイム環境（JRE）に同梱されている<em>keytoolユーティリティ</em>を使用します。以下の手順では、サーバーコンポーネントの自己署名X.509証明書をキーストアに配置してから、クライアントコンポーネントの使用するトラストストアを作成します。
+      </p>
+      
+      <h4>サーバコンポーネントの証明書の生成</h4>
+      <p>次のコマンドを実行すると、<em>server.keystore</em>というファイル名の自己署名クライアント証明書を生成します。</p>
+      <pre class="source">keytool -genkey -alias server -dname "CN=my-logging-server" \
+    -keyalg RSA -validity 365 -keystore server.keystore
+Enter keystore password: &lt;Enter password of your choosing&gt;
+Re-enter new password: &lt;Re-enter same password&gt;
+Enter key password for &lt;my-logging-server&gt;
+	(RETURN if same as keystore password):  &lt;Press RETURN&gt;
+</pre>
+
+      <p><em>dname</em>に指定した<em>my-logging-server</em>は、正当なものであればどんなものでも構いません。サーバーを実行するホストの完全修飾ドメイン名にするとよいでしょう。<em>validity</em>には証明書の有効期限が切れるまでの日数を指定します。</p>
+      
+      <p>本番環境の設定で重要になるのが、サーバー証明書を配置するキーストアにとても強力なパスワードを指定することです。このパスワードによって、サーバーの秘密鍵にアクセスできるのが限られた関係者だけであることを保証します。後の手順でこのパスワードが必要になるので、サーバーの設定をするときに心の中にメモしておいてください。
+      </p>
+
+      <h4>クライアントコンポーネント用のトラストストアの作成</h4>
+      <p>クライアントコンポーネントの設定に使用するため、前の手順で作成したサーバーの証明書をキーストアからエクスポートして、トラストストアにインポートしましょう。次のコマンドを実行すると、証明書をエクスポートして<em>server.truststore</em>というファイル名のトラストストアにインポートします。</p>
+      
+      <pre class="source">keytool -export -rfc -alias server -keystore server.keystore \
+    -file server.crt
+Enter keystore password: &lt;Enter password you chose for in previous step&gt;
+
+keytool -import -alias server -file server.crt -keystore server.truststore
+Enter keystore password: &lt;Enter password of your choosing&gt;
+Re-enter new password: &lt;Re-enter same password&gt;
+Owner: CN=my-logging-server
+Issuer: CN=my-logging-server
+Serial number: 6e7eea40
+Valid from: Sun Mar 31 07:57:29 EDT 2013 until: Mon Mar 31 07:57:29 EDT 2014
+
+   ...
+
+Trust this certificate? [no]:  &lt;Enter "yes"&gt;
+</pre>
+
+      <p>最初のコマンドは、キーストアからエクスポートしたサーバー証明書（サーバーの秘密鍵ではありません）を<em>server.crt</em>というファイル名で保存します。二つ目のコマンドは、サーバー証明書を含んだ<em>server.truststore</em>という新しいトラストストアを作成します。
+      </p>
+      
+      <p>本番環境の設定で重要になるのが、トラストストアにとても強力な、そして、サーバーのキーストアに使用したパスワードとは異なるパスワードを設定することです。ここで指定したパスワードは、クライアントのアペンダーの設定に必要になるので心の中にメモしておいてください。
+      </p>
+          
+      <h4>サーバコンポーネントの設定</h4>
+      <p><em>server.keystore</em>をアプリケーションアーカイブの内部に取り込まなければならないかもしれません。キーストアはアプリケーションのクラスパスリソースとして扱うこともできますし、単にサーバーを実行するホストのファイルシステム上に配置することもできます。設定ファイルからキーストアの場所を指定するときは、<code>classpath:</code>から始まるURLか、<code>file:</code>から始まるURLのいずれかを指定します。設定ファイルを見てみましょう。</p>
+
+      <p class="example">例：サーバーコンポーネントの設定</p>
+      <pre class="prettyprint source">&lt;configuration debug="true"&gt;
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+  
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="CONSOLE" /&gt;
+  &lt;/root&gt;
+
+  &lt;server class="ch.qos.logback.classic.net.server.SSLServerSocketReceiver"&gt;
+    &lt;ssl&gt;
+      &lt;keyStore&gt;
+        &lt;location&gt;classpath:server.keystore&lt;/location&gt;
+        &lt;password&gt;${server.keystore.password}&lt;/password&gt;
+      &lt;/keyStore&gt;
+    &lt;/ssl&gt;
+  &lt;/server&gt;
+&lt;/configuration&gt;</pre>
+      
+      <p>この例では、キーストアがアプリケーションのクラスパスのルートに配置されていることを前提としています。</p>
+      
+      <p>また、キーストアのパスワードには<em>server.keystore.password</em>という変数を指定しています。こうしておけば、どの設定ファイルにもパスワードを書いておかなくてもよくなります。たとえば、アプリケーションが起動した後、ロギングシステムを設定する前にコンソールでパスワード入力を促すプロンプトを出すようにして、システムプロパティ<em>server.keystore.password</em>をプログラム的に設定すればよいのです。
+      </p>
+      
+      <h4>クライアントコンポーネントの設定</h4>
+      <p>クライアントとして振る舞うSSL対応のコンポーネントを使用するアプリケーションそれぞれについて、<em>server.truststore</em>をアプリケーションアーカイブの内部に取り込まなければならないかもしれません。トラストストアはアプリケーションのクラスパスリソースとして扱うこともできますし、単にクライアントを実行するホストのファイルシステム上に配置することもできます。
+設定ファイルからトラストストアの場所を指定するときは、<code>classpath:</code>から始まるURLか、<code>file:</code>から始まるURLのいずれかを指定します。
+アペンダーの設定を見てみましょう。</p>
+
+      <p class="example">例：アペンダーの設定</p>
+
+      <pre class="prettyprint source">&lt;configuration debug="true"&gt;
+  &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender"&gt;
+    &lt;remoteHost&gt;${host}&lt;/remoteHost&gt;
+    &lt;ssl&gt;
+      &lt;trustStore&gt;
+        &lt;location&gt;classpath:server.truststore&lt;/location&gt;
+        &lt;password&gt;${server.truststore.password}&lt;/password&gt;
+      &lt;/trustStore&gt;
+    &lt;/ssl&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="SOCKET" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+      <p>この例では、トラストストアがアプリケーションのクラスパスのルートに配置されていることを前提としています。</p>
+      
+      <p>また、トラストストアのパスワードには<em>server.truststore.password</em>という変数を指定しています。
+こうしておけば、どの設定ファイルにもパスワードを書いておかなくてもよくなります。
+たとえば、アプリケーションが起動した後、ロギングシステムを設定する前にコンソールでパスワード入力を促すプロンプトを出すようにして、システムプロパティ<em>server.truststore.password</em>をプログラム的に設定すればよいのです。
+
+      </p>
+
+      <h2>SSLの設定を監査する</h2>
+      <p>安全な通信が必要とされる環境では、SSLを使うコンポーネントがローカルセキュリティポリシーを満たしていることを検証するため、設定内容を監査しなければならない。logbackでは、自身を初期化している間に行われるSSLの設定について詳細なロギング情報を提供することでこれに対応しています。設定中で<code>debug</code>プロパティを使うことで、監査ログを有効化することができます。</p>
+      
+      <pre class="prettyprint source">&lt;configuration debug="true"&gt;
+  
+  ...
+  
+&lt;/configuration&gt;</pre>
+
+      <p>debugプロパティを有効にすると、ロギングシステムの初期化中に行われるSSLの設定に関するあらゆる情報が得られるようになります。SSL設定の監査ログとして出力されるのは次のようなものです。</p>
+      
+      <p class="example">例：SSL設定の監査ログ</p>
+      
+      <pre>06:46:31,941 |-INFO in SSLServerSocketReceiver@4ef18d37 - SSL protocol 'SSL' provider 'SunJSSE version 1.6'
+06:46:31,967 |-INFO in SSLServerSocketReceiver@4ef18d37 - key store of type 'JKS' provider 'SUN version 1.6': file:src/main/java/chapters/appenders/socket/ssl/keystore.jks
+06:46:31,967 |-INFO in SSLServerSocketReceiver@4ef18d37 - key manager algorithm 'SunX509' provider 'SunJSSE version 1.6'
+06:46:31,973 |-INFO in SSLServerSocketReceiver@4ef18d37 - secure random algorithm 'SHA1PRNG' provider 'SUN version 1.6'
+06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv2Hello
+06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: SSLv3
+06:46:32,755 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled protocol: TLSv1
+06:46:32,756 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled cipher suite: SSL_RSA_WITH_RC4_128_MD5
+06:46:32,756 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled cipher suite: SSL_RSA_WITH_RC4_128_SHA
+06:46:32,756 |-INFO in SSLParametersConfiguration@4a6f19d5 - enabled cipher suite: TLS_RSA_WITH_AES_256_CBC_SHA
+</pre>
+
+      <p>ここで示した出力は大幅にカットしてありますが、一般的には次のようなものが含まれています。
+          <ul>
+            <li>完全なプロトコルのリスト</li>
+            <li>プロバイダー</li>
+            <li>アルゴリズム</li>
+            <li>暗号スイート</li>
+            <li>キーストアやトラストストアの場所</li>
+          </ul>
+      </p>
+      
+      <p>この監査ログに取り扱いに注意の必要な情報が含まれることはありませんが、セキュリティのベストプラクティスとしては、本番環境の設定の妥当性が確認されたなら、監査ログは無効化するべきです。<code>debug</code>プロパティを消すか、<code>false</code>を指定すれば監査ログは無効化されます。
+      </p>
+      
+      <h2>SSLの設定誤りを解決する</h2>
+      <p>SSLの設定が間違っていると、普通ならクライアントとサーバーのコンポーネントの間でセッションを確立できなくなります。これは、クライアントがサーバーに接続しようとしてそれができなかったときにそれぞれで例外をスローすることによって明らかになります。
+      </p>
+      <p>例外メッセージの内容は、見ているログによって異なります。それは、セッションネゴシエーション中に報告されるエラーの原因は、主にプロトコルの制限によるものだからです。したがって、セッションネゴシエーションの問題を解決するには、クライアントとサーバーの両方のログを調査しなければなりません。
+      </p>
+      
+      <h3>サーバの証明書が使用できません</h3>
+      <p>サーバーの証明書が使用できない時、サーバコンポーネントを起動すると次のような例外メッセージがログに出力されます。</p>
+         
+      <p><em>javax.net.ssl.SSLException: No available certificate or 
+         key corresponds to the SSL cipher suites which are enabled</em>
+      </p>
+      
+      <p>ほとんどの場合、サーバーの秘密鍵に対応する証明書を含むキーストアの場所を設定し忘れていることが原因です。
+      </p>
+      
+      <h4>ソリューション</h4>
+      <p>システムプロパティの<a href="./15-usingSSL.html#basicConfig.keyStore">キーストア</a>か、サーバーコンポーネントの<span class="prop">ssl</span>の設定で<span class="prop"><a href="./15-usingSSL.html#ssl.keyStore">keyStore</a></span>プロパティに、サーバ証明書を含むキーストアの場所を指定してください。あと、キーストアのパスワードも指定してください。
+      </p>
+      
+      <h3>クライアントはサーバーを信頼できません</h3>
+      <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException: 
+              sun.security.validator.ValidatorException: 
+              PKIX path building failed</em>
+      </p>
+      <p>これは、クライアントがサーバーの提示した証明書を信頼できないと判断した場合に発生します。よくある原因としては、サーバーが自己署名サーバー証明書（あるいは内部の認証局で署名したサーバー証明書）を使っている上で、クライアントの使用するトラストストアにサーバーの自己署名証明書が含まれていない（あるいはサーバー証明書に署名したCAの信頼できるルート証明書が含まれていない）ことです。
+      </p> 
+      <p>サーバー証明書が失効している場合も同じような現象が発生します。サーバー側のログを見ることが出来るなら、クライアントが接続しようとするたびに次のような例外メッセージが現れているのがわかると思います。</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException: Received fatal alert: ...</em>
+      </p>
+      
+      <p>例外メッセージの後半部分には、クライアントがサーバー証明書を拒否した理由を表すコードが現れます。
+      </p>
+      <table class="bodyTable striped">
+        <tr>
+          <th>コー​​ド</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><code>certificate_unknown</code></td>
+          <td>クライアントのトラストストアが正しく設定されていないことを示しています。
+          </td>
+        </tr>
+        <tr>
+          <td><code>certificate_expired</code></td>
+          <td>サーバー証明書が失効しているので更新が必要なことを示しています。
+          </td>
+        </tr>
+        <tr>
+          <td><code>certificate_revoked</code></td>
+          <td>サーバー証明書に署名した認証局（CA）が、そのサーバー証明書を無効にしたことを示しています。サーバー証明書を更新しなければなりません。
+          </td>
+        </tr>
+      </table>
+        
+      <h4>ソリューション</h4>
+      <p>サーバー側のログに<code>certificate_unknown</code>が現れているときは、システムプロパティ<a href="./15-usingSSL.html#basicConfig.trustStore">トラストストア</a>か、アペンダーの<span class="prop">ssl</span>設定に<a href="./15-usingSSL.html#ssl.trustStore">trustStore</a>プロパティを指定してください。サーバーの自己署名証明書か、証明書に署名したCAのルート証明書を格納した<span class="prop">トラストストア</span>の場所と、アクセスするためのパスワードを指定しなければなりません。
+      </p>
+
+      <p>サーバー側のログに<code>certificate_expired</code>か<code>certificate_revoked</code>が現れているときは、新しいサーバー証明書が必要です。サーバーの設定で指定したキーストアの場所に、新しいサーバー証明書と対応する秘密鍵を配置してください。自己署名サーバー証明書を使っているときは、クライアントのアペンダーの設定に指定されているトラストストアにも新しい証明書を配置しなければなりません。
+      </p>
+      
+      <h3>サーバーはクライアントを信頼できません
+</h3>
+      <p>注： <strong>この問題が生じるのは、サーバーがクライアント証明書を要求するように明示的に設定している場合だけです（<a href="./15-usingSSL.html#parameters.needClientAuth"><span class="prop">needClientAuth</span></a>か<a href="./15-usingSSL.html#parameters.wantClientAuth"><span class="prop">wantClientAuth</span></a>プロパティを指定したときです）。</strong>
+      </p>
+ 
+      <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。
+</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
+         alert: ...</em>
+      </p>
+
+      <p>例外メッセージの後半部分には、サーバーがクライアントの証明書を拒否した理由を表すコードが現れます。
+
+      </p>
+      <table class="bodyTable striped">
+        <tr>
+          <th>コー​​ド</th>
+          <th>説明</th>
+        </tr>
+        <tr>
+          <td><code>certificate_unknown</code></td>
+          <td>サーバのトラストストアが正しく設定されていないことを示しています。
+          </td>
+        </tr>
+        <tr>
+          <td><code>certificate_expired</code></td>
+          <td>クライアントの証明書が失効しているので更新が必要なことを示しています。
+
+          </td>
+        </tr>
+        <tr>
+          <td><code>certificate_revoked</code></td>
+          <td>クライアントの証明書に署名した認証局（CA）が、その証明書を無効にしたことを示しています。証明書を更新しなければなりません。
+
+          </td>
+        </tr>
+      </table>
+        
+      <h4>ソリューション</h4>
+      <p>クライアント側のログに<code>bad_certificate</code>が現れているときは、システムプロパティ<a href="./15-usingSSL.html#basicConfig.trustStore">トラストストア</a>かサーバーコンポーネントの<span class="prop">ssl</span>設定の<span class="prop"><a href="./15-usingSSL.html#ssl.trustStore">trustStore</a></span>プロパティに、トラストストアの場所とパスワードを指定しなければなりません。トラストストアにはクライアントの自己署名証明書か、証明書に署名したCAのルート証明書が含まれていなければなりません。
+      </p>
+
+      <p>サーバー側のログに<code>certifacte_expired</code>あるいは<code>certificate_revoked</code>が現れているときは、新しい証明書が必要です。クライアントの設定で指定したキーストアの場所に、新しい証明書と対応する秘密鍵を配置してください。自己署名証明書を使っているときは、サーバーの設定に指定されているトラストストアにも新しい証明書を配置しなければなりません。
+
+      </p>
+      
+      <h3>クライアントとサーバー間でSSLプロトコルを合意できません</h3>
+      <p>注： <strong>この問題が生じるのは、明示的にSSLプロトコルを<a href="./15-usingSSL.html#parameters.excludedProtocols">除外</a>したり<a href="./15-usingSSL.html#parameters.includedProtocols">指定</a>している場合だけです</strong> 。
+      </p>
+
+      <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
+         alert: handshake_failure</em>
+      </p>
+      
+      <p>サーバーのログに現れるメッセージのほうがわかりやすいです。</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException: SSLv2Hello is disabled</em>
+      </p>
+      
+      <p>一方のピアで除外したプロトコルが、もう一方のピアでは除外されていない場合に発生します。</p>
+         
+      <h4>ソリューション</h4>
+      <p>サーバーとクライアントの両方で、<a href="./15-usingSSL.html#parameters.excludedProtocols"><span class="prop">excludedProtocols</span></a>と<a href="./15-usingSSL.html#parameters.includedProtocols"><span class="prop">includedProtocols</span></a>に指定した値を確認してください。
+      </p>
+
+      <h3>クライアントとサーバー間で暗号スイートを合意できません
+</h3>
+      <p>注： <strong>この問題が生じるのは、明示的に暗号スイートを<a href="./15-usingSSL.html#parameters.excludedCipherSuites">除外</a>したり<a href="./15-usingSSL.html#parameters.includedCipherSuites">指定</a>している場合だけです</strong> 。
+      </p>
+      
+      <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。
+</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException:  Received fatal 
+         alert: handshake_failure</em>
+      </p>
+      
+      <p>サーバーのログに現れるメッセージのほうがわかりやすいです。
+</p>
+      
+      <p><em>javax.net.ssl.SSLHandshakeException: no cipher suites in common</em>
+      </p>
+      
+      <p>クライアントとサーバーそれぞれの暗号スイート一覧について、1つも一致するものが無い場合に発生します。</p>
+      
+      <h4>ソリューション</h4>
+      <p>サーバーとクライアントの両方で、<a href="./15-usingSSL.html#parameters.excludedCipherSuites"><span class="prop">excludedCipherSuites</span></a>と<a href="./15-usingSSL.html#parameters.includedCipherSuites"><span class="prop">includedCipherSuites</span></a>に指定した値を確認してください。
+
+      </p>
+         
+    <script src="../templates/footer.js" type="text/javascript"></script>
+
+    </p></p></div>
+  </body>
+</html>
