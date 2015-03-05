@@ -249,11 +249,7 @@
      where $LOGBACK_HOME stands for the location where you cloned the
      logback project from github </li>
 
-     <li>In case they exist, remove <em>.settings</em>,
-     <em>.classpath</em>, <em>.project</em> folders (again if any)
-     under $LOGBACK_HOME and its sub-folders. Somehow, this step seems
-     to be crucial.</li>
-     
+
      <li>From the command line, run <code>mvn eclipse:eclipse</code>
      in $LOGBACK_HOME</li>
 
@@ -262,10 +258,24 @@
      $LOGBACK_HOME folder for the import
      </li>   
      
-     <li>In Eclipse, remove the
+     <li>In Eclipse, remove the 
+      "**/EvaluatorTemplate.groovy" inclusion pattern from 
+      the 
+     logback-classic/src/main/groovy build path (logback-classic&rarr;
+     project properties &rarr; Java Build Path) as shown next:
+
+     <p><img src="images/setup/remove_evaluator_template.jpg"/> </p>
+
+     </li>   
+
+
+    <li>In Eclipse, remove the
      logback-classic/target/generated-sources/groovy-stubs/main
      directory from the list of source folders (logback-classic&rarr;
-     project properties &rarr; Java Build Path)
+     project properties &rarr; Java Build Path) as shown next.
+     
+     <p><img src="images/setup/remove_gen_src.jpg"/> </p>
+
      </li>   
 
      <li>In Eclipse, clean all projects in Eclipse (Project &rarr;
@@ -281,7 +291,7 @@
 
 
    <p>The above listed procedure has been last tested by the author
-   using Eclipse Juno on April 4th 2013.</p>
+   using Eclipse Luna on March 5th 2015.</p>
 
    <script src="templates/footer.js" type="text/javascript"></script>
 </div>
