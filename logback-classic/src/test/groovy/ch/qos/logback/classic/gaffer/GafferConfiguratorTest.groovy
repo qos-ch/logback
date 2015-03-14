@@ -161,6 +161,16 @@ class GafferConfiguratorTest {
         assertEquals("HELLO %m%n", ca.encoder.getLayout().pattern)
     }
 
+    @Test
+    public void hostnameCascading() {
+        File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "hostnameCascading.groovy")
+        String dslText = file.text
+        configurator.run dslText
+
+        ConsoleAppender ca = (ConsoleAppender) root.getAppender("STDOUT");
+        assertTrue ca.isStarted()
+        assertEquals("%m%n", ca.encoder.getLayout().pattern)
+    }
 
     @Test
     @Ignore

@@ -85,7 +85,7 @@ class ComponentDelegate extends ContextAwareBase {
     }
   }
 
-  void propertyMissing(String name, def value) {
+  void set(String name, def value) {
     NestingType nestingType = PropertyUtil.nestingType(component, name);
     if (nestingType == NestingType.NA) {
       addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
