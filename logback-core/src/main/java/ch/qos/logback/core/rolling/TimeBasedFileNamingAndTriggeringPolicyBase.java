@@ -15,6 +15,7 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
+import java.util.Locale;
 
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
@@ -48,7 +49,11 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends
               + "] does not contain a valid DateToken");
     }
 
-    rc = new RollingCalendar();
+    if (dtc.getTimeZone() != null) {
+      rc = new RollingCalendar(dtc.getTimeZone(), Locale.getDefault());
+    } else {
+      rc = new RollingCalendar();
+    }
     rc.init(dtc.getDatePattern());
     addInfo("The date pattern is '" + dtc.getDatePattern()
             + "' from file name pattern '" + tbrp.fileNamePattern.getPattern()
