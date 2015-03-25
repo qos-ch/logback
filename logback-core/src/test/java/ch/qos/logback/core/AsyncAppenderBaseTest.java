@@ -19,6 +19,7 @@ import ch.qos.logback.core.testUtil.DelayingListAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.NPEAppender;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -69,7 +70,7 @@ public class AsyncAppenderBaseTest {
 
 	@Test
 	public void exceptionsShouldNotCauseHalting() throws InterruptedException {
-		NPEAppender npeAppender = new NPEAppender<Integer>();
+		NPEAppender<Integer> npeAppender = new NPEAppender<Integer>();
 		npeAppender.setName("bad");
 		npeAppender.setContext(context);
 		npeAppender.start();
@@ -160,12 +161,13 @@ public class AsyncAppenderBaseTest {
 		statusChecker.assertContainsMatch("Invalid queue size");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void workerThreadFlushesOnStop() {
 		int loopLen = 5;
 		int maxRuntime = (loopLen + 1)
 				* Math.max(1000, delayingListAppender.delay);
-		ListAppender la = delayingListAppender;
+		ListAppender<Integer> la = delayingListAppender;
 		asyncAppenderBase.addAppender(la);
 		asyncAppenderBase.setDiscardingThreshold(0);
 		asyncAppenderBase.setMaxFlushTime(maxRuntime);
@@ -185,12 +187,13 @@ public class AsyncAppenderBaseTest {
 		verify(la, loopLen);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Test
 	public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
 		int maxRuntime = 1; // runtime of 0 means wait forever, so use 1 ms
 							// instead
 		int loopLen = 10;
-		ListAppender la = delayingListAppender;
+		ListAppender<Integer> la = delayingListAppender;
 		asyncAppenderBase.addAppender(la);
 		asyncAppenderBase.setMaxFlushTime(maxRuntime);
 		asyncAppenderBase.start();
@@ -224,7 +227,7 @@ public class AsyncAppenderBaseTest {
 		verify(la, loopLen);
 	}
 
-	private void verify(ListAppender la, int expectedSize) {
+	private void verify(ListAppender<Integer> la, int expectedSize) {
 		assertFalse(la.isStarted());
 		assertEquals(expectedSize, la.list.size());
 		statusChecker.assertIsErrorFree();
