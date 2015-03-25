@@ -26,6 +26,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -243,6 +244,7 @@ public class AsyncAppenderBaseTest {
 	
 	@Test
 	public void verifyInterruptionOfWorkerIsSwallowed() {
+		fail("fail on purpose");
       asyncAppenderBase.addAppender(delayingListAppender);
 	  asyncAppenderBase.start();
 	  asyncAppenderBase.stop();
