@@ -8,6 +8,8 @@ mvn site:site
 #mvn javadoc:jar
 mvn assembly:assembly
 mvn deploy -P javadocjar,sign-artifacts
+
+#uncomment diffie-hellman support in /etc/ssh/sshd_config
 mvn site:deploy -N
 
 git tag -a v_${VERSION_NUMBER}
