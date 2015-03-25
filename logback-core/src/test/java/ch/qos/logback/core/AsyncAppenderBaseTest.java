@@ -244,7 +244,6 @@ public class AsyncAppenderBaseTest {
 	
 	@Test
 	public void verifyInterruptionOfWorkerIsSwallowed() {
-		fail("fail on purpose");
       asyncAppenderBase.addAppender(delayingListAppender);
 	  asyncAppenderBase.start();
 	  asyncAppenderBase.stop();
