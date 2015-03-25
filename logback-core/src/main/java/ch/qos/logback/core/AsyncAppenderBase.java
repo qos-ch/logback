@@ -155,6 +155,9 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     try {
       blockingQueue.put(eventObject);
     } catch (InterruptedException e) {
+      // Interruption of current thread when in doAppend method should not be consumed
+      // by AsyncAppender
+      Thread.currentThread().interrupt();  	
     }
   }
 
