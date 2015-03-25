@@ -25,6 +25,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -82,6 +83,7 @@ public class XMLLayoutTest {
   public void tearDown() throws Exception {
     lc = null;
     layout = null;
+    MDC.clear();
   }
 
   @Test
@@ -164,11 +166,11 @@ public class XMLLayoutTest {
   }
 
   private LoggingEvent createLoggingEvent() {
-    LoggingEvent event = new LoggingEvent("com.example.XMLLayoutTest-<&>'\"]]>", root,
+    MDC.put(MDC_KEY, MDC_VALUE);
+	LoggingEvent event = new LoggingEvent("com.example.XMLLayoutTest-<&>'\"]]>", root,
     Level.DEBUG, MESSAGE,
     new RuntimeException("Dummy exception: <&>'\"]]>"), null);
     event.setThreadName("Dummy thread <&>'\"");
-    event.getMDCPropertyMap().put(MDC_KEY, MDC_VALUE);
 
     StackTraceElement ste1 = new StackTraceElement("c1", "m1", "f1", 1);
     StackTraceElement ste2 = new StackTraceElement("c2", "m2", "f2", 2);
