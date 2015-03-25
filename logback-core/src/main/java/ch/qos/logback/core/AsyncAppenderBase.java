@@ -134,6 +134,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
       
     } catch (InterruptedException e) {
       addError("Failed to join worker thread. " + blockingQueue.size() + " queued events may be discarded.", e);
+      Thread.currentThread().interrupt();
     }
   }
 
@@ -155,6 +156,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     try {
       blockingQueue.put(eventObject);
     } catch (InterruptedException e) {
+      Thread.currentThread().interrupt();
     }
   }
 
