@@ -48,6 +48,7 @@ public class MDCBasedDiscriminatorTest {
 
   @Before
   public void setUp() {
+    MDC.clear();
     discriminator.setContext(context);
     discriminator.setKey(key);
     discriminator.setDefaultValue(DEFAULT_VAL);
