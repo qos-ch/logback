@@ -14,6 +14,7 @@
 package ch.qos.logback.core.rolling.helper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.Calendar;
@@ -90,6 +91,39 @@ public class FileNamePatternTest {
 
   } 
 
+  
+  @Test
+  public void dateWithTimeZone() {
+    TimeZone utc = TimeZone.getTimeZone("UTC");
+    Calendar cal = Calendar.getInstance(utc);
+    cal.set(2003, 4, 20, 10, 55);
+
+    FileNamePattern fnp = new FileNamePattern("foo%d{yyyy-MM-dd'T'HH:mm, Australia/Perth}", context);
+    // Perth is 8 hours ahead of UTC
+    assertEquals("foo2003-05-20T18:55", fnp.convert(cal.getTime()));
+  } 
+
+  @Test
+  public void auxAndTimeZoneShouldNotConflict() {
+    TimeZone utc = TimeZone.getTimeZone("UTC");
+    Calendar cal = Calendar.getInstance(utc);
+    cal.set(2003, 4, 20, 10, 55);
+
+    {
+      FileNamePattern fnp = new FileNamePattern("foo%d{yyyy-MM-dd'T'HH:mm, aux, Australia/Perth}", context);
+      // Perth is 8 hours ahead of UTC
+      assertEquals("foo2003-05-20T18:55", fnp.convert(cal.getTime()));
+      assertNull(fnp.getPrimaryDateTokenConverter());
+    }
+
+    {
+      FileNamePattern fnp = new FileNamePattern("folder/%d{yyyy/MM, aux, Australia/Perth}/test.%d{yyyy-MM-dd'T'HHmm, Australia/Perth}.log", context);
+      assertEquals("folder/2003/05/test.2003-05-20T1855.log", fnp.convert(cal.getTime()));
+      assertNotNull(fnp.getPrimaryDateTokenConverter());
+    }
+  } 
+
+  
   @Test
   public void withBackslash() {
     FileNamePattern pp = new FileNamePattern("c:\\foo\\bar.%i", context);
@@ -150,14 +184,19 @@ public class FileNamePatternTest {
     assertEquals("foo-2003.05/2003.05.20.txt", fnp.convert(cal.getTime()));
   }
 
-  @Test
-  public void timeZone() {
-    TimeZone tz = TimeZone.getTimeZone("Australia/Perth");
 
+  @Test
+  public void nullTimeZoneByDefault() {
     FileNamePattern fnp = new FileNamePattern("%d{hh}", context);
     assertNull(fnp.getPrimaryDateTokenConverter().getTimeZone());
+  }
 
-    fnp = new FileNamePattern("%d{hh, " + tz.getID() + "}", context);
+  
+  @Test
+  public void settingTimeZoneOptionHasAnEffect() {
+    TimeZone tz = TimeZone.getTimeZone("Australia/Perth");
+
+    FileNamePattern fnp = new FileNamePattern("%d{hh, " + tz.getID() + "}", context);
     assertEquals(tz, fnp.getPrimaryDateTokenConverter().getTimeZone());
   }
 }

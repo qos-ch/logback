@@ -40,7 +40,7 @@ public class CachingDateFormatter {
 
     // See also the discussion in http://jira.qos.ch/browse/LBCLASSIC-36
     // DateFormattingThreadedThroughputCalculator and SelectiveDateFormattingRunnable
-    // are also note worthy
+    // are also noteworthy
 
     // The now == lastTimestamp guard minimizes synchronization
     synchronized (this) {

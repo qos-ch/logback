@@ -21,7 +21,7 @@ import ch.qos.logback.core.pattern.DynamicConverter;
  * 
  * @author Ceki Gulcu
  */
-public class IntegerTokenConverter extends DynamicConverter implements MonoTypedConverter {
+public class IntegerTokenConverter extends DynamicConverter<Object> implements MonoTypedConverter {
 
   public final static String CONVERTER_KEY = "i";
   

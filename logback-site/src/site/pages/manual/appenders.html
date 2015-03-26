@@ -769,9 +769,7 @@ public interface RollingPolicy extends LifeCycle {
         ================= -->
 
 	
-   <h4 class="doAnchor"
-   name="TimeBasedRollingPolicy">TimeBasedRollingPolicy
-   </h4>
+   <h4 class="doAnchor" name="TimeBasedRollingPolicy">TimeBasedRollingPolicy </h4>
 
    <p><a
    href="../xref/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html">
@@ -838,16 +836,32 @@ public interface RollingPolicy extends LifeCycle {
          interpreted as directory separators.
          </p>
 
-         <p>It is possible to specify multiple %d tokens but only one
-         of which can be primary, i.e. used to infer the rollover
+         <h5>Multiple %d specifiers</h5> 
+
+         <p>It is possible to specify multiple %d specifiers but only
+         one of which can be primary, i.e. used to infer the rollover
          period. All other tokens <em>must</em> be marked as auxiliary
          by passing the 'aux' parameter (see examples below).</p>
          
-         <p>The next parameter specifies a timezone. For example,
-         %d{yyyy-MM-dd-HH,&nbsp;Etc/UTC}.log would log to a file named
-         for the current hour in UTC. Note that in the absence of this
-         parameter, the default timezone of the host Java platform is
-         used. If the specified timezone identifier is unknown or
+         <p>Multiple %d specifiers allow you to organize archive files
+         in a folder structure different than that of the roll-over
+         period. For example, the file name pattern shown below
+         organizes log folders by year and month but roll-over log
+         files every day at midnight.</p>
+         
+         <pre>/var/log/<b>%d{yyyy/MM, aux}</b>/myapplication.<b>%d{yyyy-MM-dd}</b>.log</pre>
+
+         <h5>TimeZone</h5> 
+
+         <p>Under certain circumstances, you might wish to roll-over
+         log files according to a clock in a timezone different than
+         that of the host. It is possible to pass a timezone argument
+         following the date-and-time pattern within the %d conversion
+         specifier. For example:</p>
+
+         <pre>aFolder/test.<b>%d</b>{yyyy-MM-dd-HH, <b>UTC</b>}.log</pre>
+
+         <p>If the specified timezone identifier is unknown or
          misspelled, the GMT timezone is assumed as dictated by the <a
          href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">TimeZone.getTimeZone(String)</a>
          method specification.

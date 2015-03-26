@@ -75,7 +75,7 @@ abstract public class DefaultArchiveRemover extends ContextAwareBase implements
   abstract void cleanByPeriodOffset(Date now, int periodOffset);
 
   boolean computeParentCleaningFlag(FileNamePattern fileNamePattern) {
-    DateTokenConverter dtc = fileNamePattern.getPrimaryDateTokenConverter();
+    DateTokenConverter<Object> dtc = fileNamePattern.getPrimaryDateTokenConverter();
     // if the date pattern has a /, then we need parent cleaning
     if (dtc.getDatePattern().indexOf('/') != -1) {
       return true;
