@@ -61,7 +61,7 @@
     <jetty.version>7.5.1.v20110908</jetty.version>
     <jansi.version>1.9</jansi.version>
     <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
-
+    <cobertura.maven.plugin.version>2.6</cobertura.maven.plugin.version>
     <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
   </properties>
 
@@ -319,12 +319,16 @@
         </configuration>
       </plugin>
 
+ 
+
+
       <!-- ================ site plugin ==================== -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <reportPlugins>
+
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
@@ -335,6 +339,19 @@
                 <linkJavadoc>true</linkJavadoc>
               </configuration>
             </plugin>
+            
+            <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>cobertura-maven-plugin</artifactId>
+              <version>${cobertura.maven.plugin.version}</version>
+              <configuration>
+                <formats>
+                  <format>html</format>
+                </formats>
+                <aggregate>true</aggregate>
+              </configuration>
+            </plugin>
+
 
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
@@ -342,7 +359,6 @@
               <version>2.10.1</version>
               <configuration>
                 <aggregate>true</aggregate>
-                <!--<linksource>true</linksource>-->
                 <links>
                   <link>
                     http://docs.oracle.com/javase/6/docs/api/
@@ -376,6 +392,7 @@
                 </groups>
               </configuration>
             </plugin>
+
           </reportPlugins>
         </configuration>
       </plugin>
