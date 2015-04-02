@@ -462,4 +462,20 @@ public class JoranConfiguratorTest {
 
     checker.assertIsErrorFree();
   }
+
+  @Test
+  public void packageDataDisabledByConfigAttribute() throws JoranException {
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+              + "packageDataDisabled.xml";
+    configure(configFileAsStr);
+    assertFalse(loggerContext.isPackagingDataEnabled());
+  }
+
+  @Test
+  public void packageDataEnabledByConfigAttribute() throws JoranException {
+    String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+            + "packageDataEnabled.xml";
+    configure(configFileAsStr);
+    assertTrue(loggerContext.isPackagingDataEnabled());
+  }
 }

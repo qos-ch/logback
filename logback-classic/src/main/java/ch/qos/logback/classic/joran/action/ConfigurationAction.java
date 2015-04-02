@@ -27,6 +27,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
+  static final String PACKAGING_INFO_ATTR = "packageTrace";
   static final String SCAN_ATTR = "scan";
   static final String SCAN_PERIOD_ATTR = "scanPeriod";
   static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
@@ -56,8 +57,13 @@ public class ConfigurationAction extends Action {
     ContextUtil contextUtil = new ContextUtil(context);
     contextUtil.addHostNameAsProperty();
 
-    if(EnvUtil.isGroovyAvailable()) {
-      LoggerContext lc = (LoggerContext) context;
+    LoggerContext lc = (LoggerContext) context;
+    boolean packageTraceEnabled = OptionHelper.toBoolean(
+                                    ic.subst(attributes.getValue(PACKAGING_INFO_ATTR)),
+                                    LoggerContext.DEFAULT_PACKAGING_STATE);
+    lc.setPackagingDataEnabled(packageTraceEnabled);
+
+    if (EnvUtil.isGroovyAvailable()) {
       contextUtil.addGroovyPackages(lc.getFrameworkPackages());
     }
 

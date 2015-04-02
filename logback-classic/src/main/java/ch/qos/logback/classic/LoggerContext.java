@@ -45,6 +45,9 @@ import ch.qos.logback.core.status.WarnStatus;
 public class LoggerContext extends ContextBase implements ILoggerFactory,
         LifeCycle {
 
+  /** Default setting of stacktrace packaging detail */
+  public static final boolean DEFAULT_PACKAGING_STATE = false;
+
   final Logger root;
   private int size;
   private int noAppenderWarning = 0;
@@ -54,7 +57,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory,
 
   private LoggerContextVO loggerContextRemoteView;
   private final TurboFilterList turboFilterList = new TurboFilterList();
-  private boolean packagingDataEnabled = true;
+  private boolean packagingDataEnabled = DEFAULT_PACKAGING_STATE;
 
   private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
 
