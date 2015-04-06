@@ -36,6 +36,7 @@ Eric Dahl                NE, US                2014-02-04
 Adam Gent                MA, USA               2014-04-01
 Sebastian Groebler       Berlin, Germany       2014-07-17
 Alexander Dorokhine      CA, USA               2014-12-07
+Yuji Okazawa             Tokyo, Japan          2015-04-01
 
 Justification for CLAs
 ----------------------
