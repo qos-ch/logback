@@ -1,0 +1,364 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第12章 Groovyによる設定</title>
+    
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content" class="chapter">
+      
+    <h1>第12章 Groovyによる設定</h1>
+      
+      <div class="quote">
+      <p><em>満足した豚になるより不満を抱えた人間になるほうがずっと良い。ましてや、満足気な愚か者になるより不満だらけのソクラテス派になるほうがずっと良い。豚や愚か者がこれとは異なる主張をしたとしても、それは彼らに良いとされる側の経験が無いからなのだ。
+      </em>
+      </p>
+      <p>-ジョン·スチュアート·ミル、 <em>功利主義</em></p>
+    </div>
+    <script src="../templates/creative.js" type="text/javascript"></script>
+
+
+    <p>ドメイン固有言語やDSLはかなり普及しています。XMLベースのlogbackの設定は、DSLのインスタンスとみなすことができます。XMLの性質上、設定ファイルは非常に冗長でかさばるものになります。さらに、logbackのコードの大部分はXMLベースの設定ファイル処理専用のJoranと呼ばれるものです。Joranは、変数置換や条件分岐、および実行時の拡張など、気の利いた機能をサポートしています。しかし、Joranの問題は複雑さだけではありません。ユーザーエクスペリエンスは不十分ですし、直感とはかけ離れています。
+    </p>
+
+    <p>この章で説明するGroovyベースのDSLは、一貫性があり、直感的で、かつ、強力であることを目指しています。XMLの設定ファイルでできることはすべて、それもより短い行数で実現することができます。Groovyスタイルの設定ファイルへの移行を支援するために、<a href="http://logback.qos.ch/translator/asGroovy.html">既存の<em>logback.xml</em>を自動的に<em>logback.groovy</em>へ変換するツールを用意しました</a>。
+    </p>
+
+
+    <h2 class="doAnchor">基本的な哲学</h2>
+    
+    <p>基本的なルールを説明します。<em>logback.groovy</em>はGroovyのプログラムです。Groovy言語はJava言語のスーパーセットなので、Javaにできるあらゆる設定アクションと同じことを<em>logback.groovy</em>で実行することができます。ですが、logbackをJavaの構文でプログラム的に設定するのはかなり厄介なので、logback専用の拡張構文を追加しました。logback専用の拡張構文はできるだけ少なくなるようにしましたし、実際のところほんのわずかしかありません。Groovyに慣れているとしても本章に目を通してもらって、<em>logback.groovy</em>を書くのは非常に簡単であることを理解してください。Groovyに不慣れな方であっても、<em>logback.xml</em>を使い続けるより<em>logback.groovy</em>の記法のほうがずっとわかりやすいと思えるようになるはずです。
+    </p>
+
+    <p>改めて整理します。<em>logback.groovy</em>は最小限のlogback専用の拡張がなされたGroovyプログラムです。<em>logback.groovy</em>の中では、クラスのimportや変数定義、変数評価、GString の${..}記法、if-else構文などのGroovyの機能は<em>全て</em>利用可能です。</p>
+
+    <h2 class="doAnchor">自動import</h2>
+
+    <p><span class="label">logback1.0.10以降</span>決まりきったものになる共通するクラスやパッケージのimportをしなくてもすむように、自動的にimportします。したがって、組み込みのアペンダーやレイアウトについてはわざわざimport文を書かなくても設定だけでよいのです。もちろん、デフォルトのimportでカバーされていないクラスやパッケージがあるなら、それは自分でやらなければなりません。</p>
+
+    <p>デフォルトのimport対象は次のとおりです。</p>
+
+    <ul>
+      <li><span class="code">import ch.qos.logback.core.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.encoder.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.read.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.rolling.*;</span></li>
+      <li><span class="code">import ch.qos.logback.core.status.*;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.net.*;</span></li>
+      <li><span class="code">import ch.qos.logback.classic.encoder.PatternLayoutEncoder;</span></li>
+    </ul>
+
+    <p>さらに、<span class="code">ch.qos.logback.classic.Level</span>の全ての定数は、大文字バージョンと小文字バージョンのそれぞれでstatic importされます。つまり、スクリプトでは<em>INFO</em>と<em>info</em>のどちらでも利用できます。</p>
+
+
+    <h2 class="doAnchor" name="sift">SiftingAppenderはサポートされなくなりました</h2>
+
+    <p><span class="label">logback1.0.12以降</span>Groovy設定ファイルでは<code>SiftingAppender</code>はサポートされなくなりました。需要がありそうなら復活するかもしれません。</p>
+
+    <h2 class="doAnchor" name="entensions"><em>logback.groovy</em>用の拡張構文</h2>
+
+    <p><span class="green">基本的に<em>logback.groovyの構文</em>は、次に説明する半ダースほどのメソッドで構成されています。これらは実際に定義する順番とは逆順に並んでいます。</span>厳密に言えば、これらのメソッドの呼び出し順序は1つの例外（アペンダーはそれを割り当てるロガーの前に定義しなければならない）を除いて重要ではありません。</p>
+
+    
+
+    <!-- ========================================================== -->
+
+    <h3> • <span class="code">root(Level level, List&lt;String&gt; appenderNames = [])</span></h3>
+
+    <p><code>root</code>メソッドはルートロガーのログレベルを設定するために使用します。第二引数のappenderName（<code>List&lt;String&gt;</code>）は任意で、ルートロガーに割り当てるアペンダーを名前で指定します。引数に値を指定しなければ、空のリストが指定されたものとして扱います。。Groovyでは空のリストを<code>[]</code>で記述します。</p>
+
+    <p>ルートロガーのログレベルにWARNを設定するには次のように記述します。</p>
+
+    <pre class="prettyprint source">root(WARN)</pre>
+
+    <p>ルートロガーのログレベルにINFOを設定し、"CONSOLE"アペンダーと"FILE"アペンダーを割り当てるには次のように記述します。</p>
+
+    <pre class="prettyprint source">root(INFO, ["CONSOLE", "FILE"])</pre>
+
+    <p>"CONSOLE"と"FILE"という名前のアペンダーはすでに定義されているものとします。アペンダーの定義の仕方はすぐ後で説明します。
+    </p>
+
+    <!-- ========================================================== -->
+
+    <h3>• <span class="code">logger(String name, Level level, List&lt;String&gt; appenderNames = [], <br>         Boolean additivity = null)</span></h3>
+
+    <p><code>logger()</code>メソッドは引数を四つとります。後ろの二つは任意です。第一引数にはロガーの名前を指定します。第二引数にはロガーのログレベルを指定します。ログレベルに<code>null</code>を指定すると、直近の祖先ロガーに指定されたログレベルを<a href="./01-architecture.html#effectiveLevel">継承</a>するという意味になります。第三引数は<code>List&lt;String&gt;</code>で任意です。省略した場合は空のリストを指定したものとして扱います。リストにはロガーに割り当てるアペンダーの名前を並べます。第四引数は<code>Boolean</code>でこちらも任意です。<a href="./01-architecture.html#additivity">additivityフラグ</a>として使われます。省略した場合は<code>null</code>が指定されたものとして扱います。
+    </p> 
+
+    <p>たとえば、次のスクリプトはロガー名として"com.foo"、ログレベルとしてINFOを設定します。</p>
+
+       <pre class="prettyprint source">logger("com.foo", INFO)</pre>
+
+    <p>次のスクリプトは、ロガー名として"com.foo"、ログレベルとしてDEBUG、そしてアペンダーに"CONSOLE"を割り当てます。</p>
+
+  <pre class="prettyprint source">logger("com.foo", DEBUG, ["CONSOLE"])</pre>
+    
+   <p>次のスクリプトは前のスクリプトとほとんど同じですが、additivityフラグにfalseを設定します。</p>
+
+  <pre class="prettyprint source">logger("com.foo", DEBUG, ["CONSOLE"], false)</pre>
+
+
+    <!-- ========================================================== -->
+    <h3>• <span class="code">appender(String name, Class clazz, Closure closure = null)</span></h3>
+
+    <p>appender()メソッドでは、第一引数にアペンダーの名前を指定します。第二引数は必須で、インスタンス化するアペンダーのクラスを指定します。第三引数には、そのほかの設定をするクロージャーを指定します。省略した場合はnullになります。</p>
+
+    <p>ほとんどのアペンダーは、ちゃんと動作するためにプロパティを設定したりサブコンポーネントを注入しなければなりません。プロパティを設定するには '='演算子（代入）を使用します。サブコンポーネントを注入するには、プロパティ名をメソッド名のように記述して、引数にインスタンス化するクラスを指定します。このコーディング規約は、アペンダーのあらゆるサブコンポーネントについても同じように再帰的に適用されるものです。このアプローチは<em>logback.groovy</em>の中核を為すもので、覚えなければならない唯一の規約となるでしょう。</p>
+    
+    <p>例を見てみましょう。次のスクリプトは"FILE"という名前の<code>FileAppender</code>をインスタンス化して、<span class="option">file</span>プロパティに"testFile.log"を設定し、<span class="option">append</span>プロパティにfalseを設定しています。encoderには<code>PatternLayoutEncoder</code>を注入しています。encoderのpatternプロパティには" - ％level %logger - %msg%n"を設定しています。そしてこのアペンダーをルートロガーに割り当てます。</p>
+
+    <pre class="prettyprint source">appender("FILE", FileAppender) {
+  file = "testFile.log"
+  append = true
+  encoder(PatternLayoutEncoder) {
+    pattern = "%level %logger - %msg%n"
+  }
+}
+
+root(DEBUG, ["FILE"])</pre>
+
+    <p>
+    </p>
+
+    
+    <!-- ========================================================== -->        
+    <h3>• <span class="code">timestamp(String datePattern, long timeReference = -1)</span></h3>
+
+    <p><code>timestamp()</code>メソッドは、<code>datePattern</code>に指定された書式文字列で<code>timeReference</code>に指定されたlong値の時間を書式化した文字列を返します。第一引数の<code>datePattern</code>に指定する書式文字列は、<a href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>で定義されている規則に従わなければなりません。第二引数の<code>timeReference</code>が省略された場合-1が指定されたものとして扱います。これは設定ファイルを解析しているときの現在日時を表す値です。状況によりますが、基準時間として<code>context.birthTime</code>を使うこともあるでしょう。
+    </p>
+
+    <p>次の例では、 <code>bySecond</code>変数に"yyyyMMdd'T'HHmmss"という書式で文字列化した現在日時を代入していますそして、"bySecond" 変数を<span class="option">file</span>プロパティの値として使っています。
+    </p>
+
+<pre class="prettyprint source"><b>def bySecond = timestamp("yyyyMMdd'T'HHmmss")</b>
+
+appender("FILE", FileAppender) {
+  <b>file = "log-${bySecond}.txt"</b>
+  encoder(PatternLayoutEncoder) {
+    pattern = "%logger{35} - %msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+    <!-- ========================================================== -->        
+    <h3>• <span class="code">conversionRule(String conversionWord, Class converterClass)</span></h3>
+
+    <p><a href="./06-layouts.html#customConversionSpecifier">変換指定子</a>を自作しても、logbackに教えてあげなければ利用できません。このlogback.groovyでは、logbackが<code>%sample</code>という変換指定子に対してMySampleConverterを呼び出すようにしています。
+    </p>
+
+    <pre class="prettyprint source">
+import chapters.layouts.MySampleConverter
+
+conversionRule("sample", MySampleConverter)
+appender("STDOUT", ConsoleAppender) {
+  encoder(PatternLayoutEncoder) {
+    pattern = "%-4relative [%thread] %<b>sample</b> - %msg%n"
+  }
+}
+root(DEBUG, ["STDOUT"])</pre>
+
+   <!-- ========================================================== -->
+   <h3>• <span class="code">scan(String scanPeriod = null)</span></h3>
+
+    <p>scan()メソッドを使うと、logbackが定期的にlogback.groovyの変更を監視するようになります。logbackは変更を検出するたびに<em>logback.groovy</em>を再読み込みします。</p>
+
+    <pre class="prettyprint source">scan()</pre>
+
+    <p>デフォルトでは、一分ごとに設定ファイルの変更を監視します。監視周期を指定するには、"scanPeriod" 文字列引数を指定します。"scanPeriod" に指定する文字列には、時間単位としてミリ秒、秒、分または時間を含めることができます。例をみてください。</p>
+
+    <pre class="prettyprint source">scan("30 seconds")</pre>
+    
+    <p>時間単位がない場合ミリ秒が指定されたものとして扱いますが、ほとんどの場合これは不適切な単位です。デフォルトの監視周期を変更する場合は、時間単位を指定することを忘れないでください。どのように変更を監視するのかについて詳しくは<a href="./03-configuration.html#autoScan">自動再読み込みのセクション</a>を参照してください。
+    </p>
+    
+    <!-- ========================================================== -->
+  
+    <h3>• <span class="code">statusListener(Class listenerClass)</span></h3>
+
+    <p><code>statusListener()</code>メソッドは、指定したリスナークラスをステータスリスナーとして追加します。例を見てください。</p>
+
+    <pre class="prettyprint source">import chapters.layouts.MySampleConverter
+
+<b>// statusListener()メソッドの呼び出しはimport文の直後、他の式よりも前に置くことを強く推奨します</b>
+<b>statusListener(OnConsoleStatusListener)</b></pre>
+ 
+    <p><a href="./03-configuration.html#statusListener">ステータスリスナー</a>については前の章で説明しました。</p>
+
+    <h3>• <span class="code">jmxConfigurator(String name)</span></h3>
+
+    <p><a href="./10-jmxConfig.html"><code>JMXConfigurator</code></a>のMBeanを登録します。MBean名としてデフォルトのオブジェクト名（<code>ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator</code>）を使うには引数を指定せずに呼び出してください。</p>
+
+    <pre class="prettyprint source">jmxConfigurator()</pre>
+
+    <p><code>Name</code>キーに"default"以外の値を指定するには、<code>jmxConfigurator()</code>メソッドの引数として指定するだけです。</p>
+
+    <pre class="prettyprint source">jmxConfigurator('MyName')</pre>
+
+    <p>オブジェクト名全体を指定したい場合は、正確なオブジェクト名文字列を引数に指定してください。</p>
+
+    <pre class="prettyprint source">jmxConfigurator('myApp:type=LoggerManager')</pre>
+
+    <p>このメソッドは、指定された文字列をオブジェクト名として使おうとしてから、それが有効なオブジェクト名ではなかったら、フォールバックとして"Name"キーの値にします。</p>
+
+    <!-- ========================================================== -->
+
+    <h2 class="doAnchor" name="internalDSL">内部DSL、すべてはGroovyの賜物だ！</h2>
+
+    <p><em>logback.groovy</em>は内部DSLです。つまり、内容自体が実行可能なGroovyスクリプトなのです。したがって、logback.groovyの中ではGroovy言語に備わっているクラスimport、GString、変数定義、GString文字列中の${..}記法の評価、if-else文などのあらゆる機能を利用することができるのです。以降の説明では<em>logback.groovy</em>における典型的なGroovy言語の使用例を紹介します。
+    </p>
+
+
+    <h3 class="doAnchor" name="varedef">変数定義、そしてGString</h3>
+
+    <p><em>logback.groovy</em>の中ならどこでも変数を定義することができますし、その変数をGString文字列の中で評価することができます。例を見てください。</p>
+
+    <pre class="prettyprint source">// USER_HOME 変数にシステムプロパティの "user.home" の値を代入します
+<b>def USER_HOME = System.getProperty("user.home")</b>
+
+appender("FILE", FileAppender) {
+  // USER_HOME 変数を使います
+  <b>file = "${USER_HOME}/myApp.log"</b>
+  encoder(PatternLayoutEncoder) {
+    pattern = "%msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+
+    <h3 class="doAnchor" name="printing">コンソールへの出力</h3>
+
+    <p>Groovyの<code>println()</code>メソッドを使ってコンソールに出力することができます。例を見てください。</p>
+
+    <pre class="prettyprint source">def USER_HOME = System.getProperty("user.home");
+<b>println "USER_HOME=${USER_HOME}"</b>
+
+appender("FILE", FileAppender) {
+  <b>println "Setting [file] property to [${USER_HOME}/myApp.log]"</b>
+  file = "${USER_HOME}/myApp.log"  
+  encoder(PatternLayoutEncoder) {
+    pattern = "%msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+
+   <h3 class="doAnchor" name="automaticallyExported">自動的に公開されるフィールド</h3>
+
+   <h4 class="doAnchor" name="hostname">'hostname' 変数</h4>
+
+   <p>'hostname' 変数にはスクリプトを実行しているホスト名が設定されています。このドキュメントの著者には正確な説明はできませんが、可視範囲のルールがあるため、'hostname'変数が利用できるのは最上位のスコープだけで、ネストされたスコープからは参照できません。次の例を見ればどういうことかわかるでしょう。
+   </p>
+
+ <pre class="prettyprint source">// will print "hostname is x" where x is the current host's name
+println "Hostname is ${hostname}"
+
+appender("STDOUT", ConsoleAppender) {
+  <b>// will print "hostname is null"</b>
+  <b>println "Hostname is ${hostname}" </b>
+}</pre>
+
+   <p>すべてのスコープでhostname変数を使いたいなら、次のように別の変数に代入して参照しなければなりません。</p>
+
+ <pre class="prettyprint source">// define HOSTNAME by assigning it hostname
+def HOSTNAME=hostname
+// will print "hostname is x" where x is the current host's name
+println "Hostname is ${HOSTNAME}"
+
+appender("STDOUT", ConsoleAppender) {
+  // will print "hostname is x" where x is the current host's name
+  println "Hostname is ${HOSTNAME}" 
+}</pre>
+
+
+   <h3 class="doAnchor" name="everythingIsContext">現在のコンテキストを参照するContextAwareが全ての土台になっている</h3>
+
+   <p><em>logback.groovy</em>スクリプトは<a href="http://logback.qos.ch/xref/ch/qos/logback/core/spi/ContextAware.html">ContextAware</a>オブジェクト上で実行されます。したがって、<code>context</code>変数からいつでも現在のコンテキストにアクセスすることができます。それに、<code>addInfo()</code>メソッドや<code>addWarn()</code>メソッド、<code>addError()</code>メソッドで、<code>StatusManager</code>にステータスメッセージを伝えることができます。</p>
+
+   <pre class="prettyprint source">// always a good idea to add an on console status listener
+statusListener(OnConsoleStatusListener)
+
+// set the context's name to wombat
+<b>context.name = "wombat"</b>
+// add a status message regarding context's name
+<b>addInfo("Context name has been set to ${context.name}")</b>
+
+def USER_HOME = System.getProperty("user.home");
+// add a status message regarding USER_HOME
+<b>addInfo("USER_HOME=${USER_HOME}")</b>
+
+appender("FILE", FileAppender) {
+  // add a status message regarding the file property
+  <b>addInfo("Setting [file] property to [${USER_HOME}/myApp.log]")</b>
+  file = "${USER_HOME}/myApp.log"  
+  encoder(PatternLayoutEncoder) {
+    pattern = "%msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+
+   <h3 class="doAnchor">条件付き設定</h3>
+   
+   <p>Groovyは本格的なプログラミング言語なので、条件分岐を使うと1つの<em>logback.groovy</em>をdevelopment、testing、productionといったいろいろな環境で使い回すことができます。</p>
+
+   <p>次のスクリプトでは、ホスト名が本番環境のホスト名である pixie あるいは orion 以外の場合コンソールアペンダーが有効になるようにしています。ローリングファイルアペンダーの出力ディレクトリがホスト名に依存していることにも気をつけてください。</p>
+   
+   <pre class="prettyprint source">// always a good idea to add an on console status listener
+statusListener(OnConsoleStatusListener)
+
+def appenderList = ["ROLLING"]
+def WEBAPP_DIR = "."
+def consoleAppender = true;
+
+// does hostname match pixie or orion?
+if (hostname =~ /pixie|orion/) {
+  WEBAPP_DIR = "/opt/myapp"     
+  consoleAppender = false   
+} else {
+  appenderList.add("CONSOLE")
+}
+
+if (consoleAppender) {
+  appender("CONSOLE", ConsoleAppender) {
+    encoder(PatternLayoutEncoder) {
+      pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    }
+  }
+}
+
+appender("ROLLING", RollingFileAppender) {
+  encoder(PatternLayoutEncoder) {
+    Pattern = "%d %level %thread %mdc %logger - %m%n"
+  }
+  rollingPolicy(TimeBasedRollingPolicy) {
+    FileNamePattern = "${WEBAPP_DIR}/log/translator-%d{yyyy-MM}.zip"
+  }
+}
+
+root(INFO, appenderList)</pre>
+
+
+
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
+    </div>
+  </body>
+</html>

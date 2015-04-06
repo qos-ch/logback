@@ -1,0 +1,818 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第7章 フィルター</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+	
+    <h1>第7章 フィルター</h1>
+
+    <div class="quote">
+      <p><em>たくさんのアイデアを集めて悪いものを捨てていこう。たくさんのアイデアと、自分なりの基準が無ければ、いいアイデアに巡り会えることはない。</em></p>
+      
+      <p>—LINUS PAULING</p>
+    </div>
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+    
+    <p>ここまでに、<a href="http://logback.qos.ch/manual/architecture.html#basic_selection">基本的な選択ルール</a>がlogback-classicモジュールの中核を担っていることを説明してきました。本章では、それに加えてフィルタリングの方法を紹介します。
+    </p>
+  
+
+    <p>logbackのフィルターは、三値論理に基づいて合成や連結を駆使して、任意に複雑な条件を実現することができます。主に Linux の iptables から着想を得たものです。
+    </p>
+
+    <script src="../templates/setup.js" type="text/javascript"></script>
+
+		<h2>logback-classicモジュール</h2>
+
+
+		<p>logback-classic モジュールには二種類のフィルターがあります。通常フィルターとターボフィルターです。
+		</p>
+		
+    <h3 class="doAnchor" name="filter">通常フィルター</h3>
+
+		<p>通常フィルターとは、<a href="http://logback.qos.ch/xref/ch/qos/logback/core/filter/Filter.html"><code>Filter</code></a>抽象クラスを継承したものです。本質的には<code>ILoggingEvent</code>を引数にとる<code>decide()</code>メソッドを実装することが目的です。
+		</p>
+		
+
+		<p>フィルターは順序付きリストにまとめて扱われます。また、三値論理に基づいて扱われます。それぞれのフィルターの<code>decide(ILoggingEvent event)</code>メソッドが順番に呼び出されます。このメソッドは<a href="http://logback.qos.ch/xref/ch/qos/logback/core/spi/FilterReply.html"><code>FilterReply</code></a>列挙型の値である、<code>DENY</code> 、 <code>NEUTRAL</code>または<code>ACCEPT</code>を返します。<code>decide()</code>メソッドが<code>DENY</code>を返したら、そのロギングイベントは残りのフィルターに渡されることなく、ただちに破棄されます。<code>NEUTRAL</code>を返したら、リスト内の次のフィルターに渡されます。リストの末尾に到達したら、そのロギングイベントは通常通りに処理されることになります。<code>ACCEPT</code>を返したら、残りのフィルターはスキップして、そのロギングイベントはただちに処理されます。
+    </p>
+    
+    <p>logback-classicモジュールでは、<code>Appender</code>にフィルターを追加することが出来ます。アペンダーに複数のフィルターを登録すれば、ロギングイベントをさまざまな条件で篩にかけられるようになります。ロギングメッセージの内容やMDCの内容、時刻や日付などロギングイベントのあらゆる内容を判定できるのです。
+    </p>
+    
+		<h3 class="doAnchor" name="yourOwnFilter">フィルターを自作する</h3>
+		
+		<p>フィルターを自作するのは簡単です。<code>Filter</code>抽象クラスを継承して<code>decide()</code>メソッドを実装するだけです。
+		</p>
+		
+		<p>例としてSampleFilterクラスを見てください。<code>decide()</code>メソッドがACCEPTを返すのは、ロギングイベントのメッセージに "sample" という文字列が含まれる場合だけです。その他の場合はNEUTRALを返すようになっています。
+		</p>
+		
+    <p class="example">例：基本的な自作フィルター（<a href="http://logback.qos.ch/xref/chapters/filters/SampleFilter.html">logback-examples/src/main/java/chapters/filters/SampleFilter.java</a>）</p>
+
+    <pre class="prettyprint source">package chapters.filters;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.spi.FilterReply;
+
+public class SampleFilter extends Filter&lt;ILoggingEvent&gt; {
+
+  @Override
+  public FilterReply decide(ILoggingEvent event) {    
+    if (event.getMessage().contains("sample")) {
+      return FilterReply.ACCEPT;
+    } else {
+      return FilterReply.NEUTRAL;
+    }
+  }
+}</pre>
+
+		<p>次の設定ファイルでは、<code>ConsoleAppender</code>に<code>SampleFilter</code>を割り当てています。
+		</p>
+
+    <p class="example">例：SampleFilterの設定（<a href="http://logback.qos.ch/xref/chapters/filters/SampleFilterConfig.xml">logback-examples/src/main/java/chapters/filters/SampleFilterConfig.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;SampleFilterConfig&#39;);">Groovyとして表示</span>
+    <pre id="SampleFilterConfig" class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+
+    <b>&lt;filter class="chapters.filters.SampleFilter" /&gt;</b>
+
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+	
+  &lt;root&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+		<p>設定フレームワークの Joran を使えばフィルターのプロパティやサブコンポーネントを指定するのも簡単です。フィルタークラスにフィールドのセッターメソッドを追加すれば、<code>filter要素</code>にネストしてプロパティの値を指定することができます。
+		</p>
+		
+		<p>たいていの場合フィルタリング条件には2つの直行する条件が含まれています。マッチするかどうかの条件と、何を返すのかの条件です。たとえば、メッセージが"foobar"だったらACCEPTを返し、そうでなければNEUTRALを返すフィルターもありますし、メッセージが"foobar"だったらNEUTRALを返し、そうでなければDENYを返すフィルターもあります。
+    </p>
+
+    <p>logback の配布物には、この直交性に焦点を当てた<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/filter/AbstractMatcherFilter.html">AbstractMatcherFilter</a></code>が含まれています。このクラスはフィルター条件の判定結果に基づいて何らかの値を返すスケルトンです。判定結果が真の時に返す値を<em>OnMatch</em>プロパティに、偽の時に返す値を<em>OnMismatch</em>プロパティに指定することができます。logbackの配布物に含まれるほとんどの通常フィルターは<code>AbstractMatcherFilter</code>を継承しています。
+    </p>
+		
+		<h3 class="doAnchor" name="levelFilter">LevelFilter</h3>
+		
+		<p><code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/filter/LevelFilter.html">LevelFilter</a></code>は、ロギングイベントのログレベルの正確なマッチングに基づいたフィルタリングをします。ログレベルが設定されたレベルと等しければ、<span class="option">omMatch</span>プロパティあるいは<span class="option">omMismach</span>プロパティに設定された値に応じて、ロギングイベントを受け入れるか拒否するかが決まります。設定ファイルを見てみましょう。
+		</p>
+		
+    <p class="example">例：LevelFilterの設定例（<a href="http://logback.qos.ch/xref/chapters/filters/levelFilterConfig.xml">logback-examples/src/main/java/chapters/filters/levelFilterConfig.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;levelFilterConfig&#39;);">Groovyとして表示</span>
+    <pre id="levelFilterConfig" class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    <b>&lt;filter class="ch.qos.logback.classic.filter.LevelFilter"&gt;
+      &lt;level&gt;INFO&lt;/level&gt;
+      &lt;onMatch&gt;ACCEPT&lt;/onMatch&gt;
+      &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level %logger{30} - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="CONSOLE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+    <h3 class="doAnchor" name="thresholdFilter">ThresholdFilter</h3>
+
+		<p><code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/filter/ThresholdFilter.html">ThresholdFilter</a></code>は、ログレベルが指定されたしきい値より低いロギングイベントをフィルタリングします。ログレベルがしきい値と同じかより高い場合、<code>ThresholdFilter</code>の<code>decide()</code>はNEUTRALを返します。一方、しきい値より低いログレベルのロギングイベントは拒否します。設定ファイルを見てみましょう。
+		</p>
+
+    <p class="example">例：ThresholdFilterの設定例（<a href="http://logback.qos.ch/xref/chapters/filters/thresholdFilterConfig.xml">logback-examples/src/main/java/chapters/filters/thresholdFilterConfig.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;thresholdFilterConfig&#39;);">Groovyとして表示</span>
+    <pre id="thresholdFilterConfig" class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="CONSOLE"
+    class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;!-- deny all events with a level below INFO, that is TRACE and DEBUG --&gt;
+    <b>&lt;filter class="ch.qos.logback.classic.filter.ThresholdFilter"&gt;
+      &lt;level&gt;INFO&lt;/level&gt;
+    &lt;/filter&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level %logger{30} - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="CONSOLE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+
+    <h2 class="doAnchor" name="evalutatorFilter">EvaluatorFilter</h2>
+
+    <p><a href="http://logback.qos.ch/xref/ch/qos/logback/core/filter/EvaluatorFilter.html"><code>EvaluatorFilter</code></a>は内部で<code>EventEvaluator</code>を使用する汎用的なフィルターです。名前のとおり、ロギングイベントが<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/boolex/EventEvaluator.html">EventEvaluator</a></code>に指定された条件を満たすかどうかを評価します。評価結果がなんであれ、<code>EvaluatorFilter</code>に設定された<span class="option">onMatch</span>プロパティまたは<span class="option">onMismatch</span>プロパティの値を返します。
+    </p>
+
+
+    <p><code>EventEvaluator</code>は抽象クラスです。つまり、<code>EventEvaluator</code>を継承すれば、独自のイベント評価ロジックを実装することができます。
+    </p>
+    
+
+    <!-- ======================== GEventEvaluator ========================= -->
+
+    <h3 class="doAnchor" name="GEventEvaluator">GEventEvaluator</h3>
+    
+    <p><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/boolex/GEventEvaluator.html">GEventEvaluator</a>は<a href="http://logback.qos.ch/xref/ch/qos/logback/core/boolex/EventEvaluator.html"><code>EventEvaluator</code></a>の派生クラスで、評価条件に結果が真偽値になるGroovy言語で書かれた任意の式を指定することができます。私たちはこのGroovy言語で書かれた式のことを "Groovy評価式" と呼んでいます。Groovy評価式を使うと、ロギングイベントをこれまでにないくらい柔軟にフィルタリングできるようになります。<code>GEventEvaluator</code> を使うにはGroovyのランタイムが必要です。設定ドキュメントの<a href="http://logback.qos.ch/setup.html#groovy">対応するセクション</a>には、クラスパスにGroovyのランタイムを指定する方法が記載されています。
+    </p>
+
+    <p>Groovy評価式は設定ファイルを解釈する際にコンパイルされます。どのように実行させるのかか、利用者が考える必要はありません。しかし、Groovy言語として間違いが無いことを保証するのは使用者の責任です。
+    </p>
+
+    <p>Groovy評価式は一度に1つのロギングイベントを扱います。logbackは、ロギングイベントを<a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvnet</a>型の変数'<em>event</em>'あるいは'<em>e</em>'として用意します。また、ログレベルのTRACE、DBUG、INFO、WARN、ERROR は、Groovy評価式から同じ名前の変数として使用することが出来ます。したがって、"event.level == DEBUG" と "e.level == DEBUG" は同じ意味のGroovy評価式ということになります。ロギングイベントのログレベルがDEBUGの場合、式の値は<code>true</code>になります。他の比較演算子を使うときは、ログレベルの変数に<code>toInt()</code>演算子を適用して、整数値として評価しなければなりません。
+    </p>
+
+    <p>具体的な例を見てみましょう。</p>
+
+    <span class="asGroovy" onclick="return asGroovy(&#39;GEventEvaluator&#39;);">Groovyとして表示</span>
+    <pre id="GEventEvaluator" class="prettyprint source">&lt;configuration&gt;
+    
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt;      
+      &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator"&gt; 
+        &lt;expression&gt;
+           e.level.toInt() &gt;= WARN.toInt() &amp;amp;&amp;amp;  &lt;!-- Stands for &amp;&amp; in XML --&gt;
+           !(e.mdc?.get("req.userAgent") =~ /Googlebot|msnbot|Yahoo/ )
+        &lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;DENY&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;NEUTRAL&lt;/OnMatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+
+    <p>この設定は、ログレベルがWARN以上で、ユーザーエージェントがクローラー（GooglebotやmsnbotやYahoo）以外のロギングイベントのメッセージをコンソールに出力します。ロギングイベントに関連付けられた MDC の "req.userAgent" の値を正規表現<code>/Googlebot|msnbot|Yahoo/</code>で評価して、ユーザーエージェントを判定しています。MDCがnullになることもあるので、Groovyの<a href="http://groovy.codehaus.org/Null+Object+Pattern">安全なデリファレンス演算子</a>（?.)を使っています。同じことをJava言語で実装するともっと長くなってしまうでしょう。
+    </p>
+    
+    <p>ユーザーエージェント文字列がいつMDCに登録されたのか疑問に思うかもしれません。説明しておくべきでしたが、logbackの配布物に含まれている<a href="http://logback.qos.ch/manual/mdc.html#mis"><code>MDCInsertingServletFilter</code></a>を使っています。詳しくは後の章で説明します。
+    </p>
+
+    <!-- ==================== JaninoEventEvaluator ======================== -->
+    
+    <h3 class="doAnchor" name="JaninoEventEvaluator">JaninoEventEvaluator</h3>
+    
+
+    <p>logback-classicの配布物には、<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>という<code>EventEvaluator</code>の別の実装クラスが含まれています。これは、booleanを返す任意のJava言語のブロックを評価するものです。私たちはこのJava言語で書かれた式のことを"<em>Java評価式</em>”と呼んでいます。Java評価式を使うとロギングイベントを柔軟にフィルタリングできるようになります。<code>JaninoEventEvaluator</code>を使用するには<a href="http://docs.codehaus.org/display/JANINO/Home">Janinoライブラリ</a>が必要です。設定方法は設定ドキュメントの<a href="http://logback.qos.ch/setup.html#janino">対応するセクション</a>を参照してください。<code>JaninoEventEvaluator</code>と比べると、<code>GEventEvaluator</code>はGroovy言語のおかげで非常に使いやすいです。ですが、<code>JaninoEventEvaluator</code>のほうが同じ評価式をより高速に実行することができます。
+    </p>
+
+    <p>Java評価式は設定ファイルを解釈する間にコンパイルされます。どのように呼び出すのか、利用者は気にすることはありません。ですが、Java言語の式が真偽値を返すものであることを保証するのは利用者の責任です。</p>
+
+
+    <p>Java評価式は一度に1つのロギングイベントを扱います。logback-classicは、ロギングイベントのいろいろなフィールドをJava評価式から参照できる変数として自動的に公開します。公開する変数の名前は大文字小文字を区別するものです。表にまとめました。
+    </p>
+
+		<table class="bodyTable">
+      <tr>
+        <th>変数名</th>
+        <th>型</th>
+        <th>説明</th>
+			</tr>
+      <tr>
+				<td>event</td>
+				<td><code>LoggingEvent</code></td>
+
+        <td>ロギング要求に関連付けられたロギングイベントそのもの。以下の変数はロギングイベントから参照することができます。たとえば、 <code>event.getMessage()</code>は<em>message</em>変数と同じ文字列を返します。
+        </td>
+			</tr>
+
+      <tr class="alt">
+				<td>message</td>
+        <td><code>String</code></td>
+        <td>ロギング要求に指定されたメッセージそのものです。ロガー<em>l</em>について l.info("Hello {}", name); というロギング式があったとき、"Hello {}" がメッセージとなります。</td> </tr>
+		
+      <tr>
+				<td>formattedMessage</td>
+        <td><code>String</code></td>
+        <td>ロギング要求の書式化されたメッセージ。ロガー<em>l</em>について l.info("Hello {}", name); というロギング式があったとき、nameの値が"Alice"なら、"Hello Alice" が書式化されたメッセージになります。</td>
+			</tr>
+		
+      <tr class="alt">
+				<td>logger</td>
+				<td><code>String</code></td>
+				<td>ロガーの名前。
+        </td>
+			</tr>
+
+      <tr>
+        <td>loggerContext</td>
+				<td><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/spi/LoggerContextVO.html"><code>LoggerContextVO</code></a></td>
+				<td>ロギングイベントが割り当てられたロガーコンテキストの、値オブジェクトとしてのビュー。
+        </td>
+			</tr>
+
+
+			<tr class="alt">
+				<td>level</td>
+				<td><code>int</code></td>
+				<td>ログレベルに対応する整数値。ログレベルを含む評価式を簡潔にするため、<em>DEBUG</em>、<em>INFO
+</em>、<em>WARN</em>、<em>ERROR</em>が利用できるようになっています。たとえば、<em> level &gt; INFO </em> は正しい評価式です。
+				</td>
+			</tr>
+
+			<tr>
+				<td>timeStamp
+				</td>
+				<td><code>long</code></td>
+				<td>ロギングイベントの作成時のタイムスタンプ。
+				</td>
+			</tr>
+			<tr class="alt">
+				<td>marker</td>
+				<td><code>Marker</code></td>
+        <td>ロギング要求に関連付けられた<code>Marker</code>オブジェクト。マーカーオブジェクトがnullの場合もあるので、<code>NullPointerException</code>を避けるためにnullチェックをするのは使用者の責任です。
+				</td>
+			</tr>
+			<tr>
+				<td>mdc</td>
+				<td><code>Map</code></td>
+				<td>ロギングイベントの作成時に関連付けられたMDC。<em>mdc.get("MYKEY")</em>とすると値を参照できます。logback-classic 0.9.30以降では、'mdc'変数は決してnullになりません。
+
+        <p>Janino はジェネリクスをサポートしていないので、<code>java.util.Map</code>には型パラメータがありません。つまり、<code>mdc.get()</code>の返り値の型は<code>Object</code>であって<code>String</code>ではないのです。戻り値で<code>String</code>のメソッドを実行するには、<code>String</code>にキャストしなければなりません。こんな感じです。
+ <code>((String) mdc.get("k")).contains("val")</code> 
+        </p>
+				</td>
+			</tr>
+
+      <tr class="alt">
+				<td>throwable</td>
+        <td>java.lang.Throwable</td>
+				<td>ロギングイベントに例外オブジェクトが関連付けられていないときは、"throwable"変数はnullになります。"throwable"変数はシリアライズすると失われてしまいます。したがって、リモートサーバ側ではこの値は常にnullになります。ローカルとリモートで同じ評価式を使いたい場合は、次項の<code>throwableProxy</code>変数を使用してください。
+				</td>
+			</tr>
+
+			<tr>
+				<td>throwableProxy</td>
+				<td><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/spi/IThrowableProxy.html"><code>IThrowableProxy</code></a></td>
+				<td>ロギングイベント関連付けられた例外オブジェクトのプロキシオブジェクト。例外オブジェクトが関連付けられていないとき、"throwableProxy"変数はnullになります。"throwable"変数と違って、例外オブジェクトがロギングイベントに関連付けられているときは、シリアライズされてリモートサーバに渡された後でも "throwableProxy"変数の値はnullになりません。
+				</td>
+			</tr>
+
+    
+
+		</table>
+
+    <p>具体的な例を見てみましょう。</p>
+
+    <p class="example">例：評価式の基本的な使い方（<a href="http://logback.qos.ch/xref/chapters/filters/basicEventEvaluator.xml">logback-examples/src/main/java/chapters/filters/basicEventEvaluator.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;basicEventEvaluator&#39;);">Groovyとして表示</span>
+    <pre id="basicEventEvaluator" class="prettyprint source longline">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt;      
+      &lt;evaluator&gt; &lt;!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator --&gt;
+        &lt;expression&gt;<span class="green">return message.contains("billing");</span>&lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+    &lt;/filter&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+		<p>設定ファイル中の太字部分で、<code>ConsoleAppender</code>に<code>EvaluatorFilter</code>を追加しています。<code>EvaluationFilter</code>に追加されたのは<code>JaninoEventEvaluator</code>です。<code>evaluator要素</code>の<span class="attr">class属性</span>を省略すると、Joranはデフォルトの<code>JaninoEventEvaluator</code>を使用します。これはJoranが暗黙的にコンポーネントの型を推測する<a href="http://logback.qos.ch/manual/onJoran.html#defaultClassMapping">珍しいケース</a>の1つです。
+    </p>
+
+    <p><em>expression要素</em>に指定されているのは評価式です。<code>return message.contains("billing");</code>という式の値は真偽値です。<em>message変数</em>は、<code>JaninoEventEvaluator</code>が自動的に公開した変数です。
+    </p>
+
+		<p><span class="option">OnMismatch</span>プロパティにNEUTRALが、<span class="option">OnMatch</span>プロパティにDENYが指定されているので、このフィルターはメッセージに"billing"という文字列の含まれているロギングイベントをすべて拒否することになります。
+    </p>
+
+    <p><a href="http://logback.qos.ch/xref/chapters/filters/FilterEvents.html"><code>FilterEvents</code></a>アプリケーションでは、0〜9までの連番を付けられた10個のロギング要求を生成します。まずはフィルター無しで<code>FilterEvents</code>を実行してみましょう。</p>
+		
+<div class="source"><pre>
+java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfiguration.xml
+</pre></div>
+		
+		<p>次のように、全てのロギング要求が出力されます。</p>
+
+<div class="source"><pre>0    [main] INFO  chapters.filters.FilterEvents - logging statement 0
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 1
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 2
+0    [main] DEBUG chapters.filters.FilterEvents - logging statement 3
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 4
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 5
+0    [main] ERROR chapters.filters.FilterEvents - <b>billing statement 6</b>
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 7
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 8
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 9</pre></div>
+
+
+
+		<p>この中から"billing statement"を取り除きたいものとします。上記の<em>basicEventEvaluator.xml</em>では、メッセージに"billing"を含むロギングイベントをフィルタリングするので、まさに今欲しいものです。</p>
+
+    <p><em>basicEventEvaluator.xml</em>を使って実行してみましょう。</p>
+    <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/basicEventEvaluator.xml</p>
+    <p>次のような出力になります。</p>
+		
+    <p class="source">0    [main] INFO  chapters.filters.FilterEvents - logging statement 0
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 1
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 2
+0    [main] DEBUG chapters.filters.FilterEvents - logging statement 3
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 4
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 5
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 7
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 8
+0    [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
+		
+
+    <p>Java評価式にはJavaのコードブロックを指定できます。つまり次のようなものでも正しい式なのです。</p>
+
+    <pre class="prettyprint source">&lt;evaluator&gt;
+  &lt;expression&gt;
+    if(logger.startsWith("org.apache.http"))
+      return true;
+
+    if(mdc == null || mdc.get("entity") == null)
+      return false;
+
+    String payee = (String) mdc.get("entity");
+
+    if(logger.equals("org.apache.http.wire") &amp;amp;&amp;amp; &lt;!-- &amp; encoded as &amp;amp; --&gt;
+        payee.contains("someSpecialValue") &amp;amp;&amp;amp;
+        !message.contains("someSecret")) {
+      return true;
+    }
+
+    return false;
+  &lt;/expression&gt;
+&lt;/evaluator&gt;</pre>
+
+
+ 	  <h2 class="doAnchor" name="matcher">マッチャー</h2>
+
+    <p><code>String</code>の<a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/String.html#matches%28java.lang.String%29">matchs()</a>メソッドを使えば文字列のパターンマッチをすることができます。ですが、毎回<code>Pattern</code>（正規表現）オブジェクトをコンパイルするコストがかかるので、つまりフィルターが呼び出されるたびにコストがかかることになってしまいます。このオーバーヘッドを無くすため、<a href="http://logback.qos.ch/xref/ch/qos/logback/core/boolex/Matcher.html">Matcher</a>オブジェクトを事前に複数用意することができます。定義したマッチャーオブジェクトは評価式の中から名前で参照できるようになります。</p>
+
+    <p>マッチャーの使用例を見てみましょう。</p>
+
+    <p class="example">例：マッチャーの定義（<a href="http://logback.qos.ch/xref/chapters/filters/evaluatorWithMatcher.xml">logback-examples/src/main/java/chapters/filters/evaluatorWithMatcher.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;evaluatorWithMatcher&#39;);">Groovyとして表示</span>
+
+    <pre id="evaluatorWithMatcher" class="prettyprint source">&lt;configuration debug="true"&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt;
+      &lt;evaluator&gt;        
+        <b>&lt;matcher&gt;
+          &lt;Name&gt;odd&lt;/Name&gt;
+          &lt;!-- filter out odd numbered statements --&gt;
+          &lt;regex&gt;statement [13579]&lt;/regex&gt;
+        &lt;/matcher&gt;
+        
+        &lt;expression&gt;odd.matches(formattedMessage)&lt;/expression&gt;</b>
+      &lt;/evaluator&gt;
+      &lt;OnMismatch&gt;NEUTRAL&lt;/OnMismatch&gt;
+      &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+    &lt;/filter&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%-4relative [%thread] %-5level %logger - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+    <p><em>evaluatorWithMatcher.xml</em>の設定を使ってみましょう。</p>
+    <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/evaluatorWithMatcher.xml</p>
+    <p>コンソールには次のように出力されます。</p>
+		
+    <p class="source">260  [main] INFO  chapters.filters.FilterEvents - logging statement 0
+264  [main] INFO  chapters.filters.FilterEvents - logging statement 2
+264  [main] INFO  chapters.filters.FilterEvents - logging statement 4
+266  [main] ERROR chapters.filters.FilterEvents - billing statement 6
+266  [main] INFO  chapters.filters.FilterEvents - logging statement 8</p>
+
+    <p>マッチャーを追加したければ、<code>matcher要素</code>を追加すればよいでしょう。</p>
+
+
+
+
+
+    <!-- ================================================================ -->
+    <!-- ===================== TURBO FILTER ============================= -->
+    <!-- ================================================================ -->
+
+    <h2 class="doAnchor" name="TurboFilter">TurboFilters</h2>
+    
+    <p><code>ターボフィルター</code>とは、<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/turbo/TurboFilter.html"><code>TurboFilter</code></a>抽象クラスを継承したオブジェクトのことです。通常フィルターと同様に、三値論理でロギングイベントを評価します。
+    </p>
+    
+    <p>全体的に前に説明したフィルターと同じように動作します。ただし、<code>Filter</code>と<code>TurboFilter</code>には大きな違いが2つあります。
+    </p>
+    
+   	<p><code>TurboFilter</code>はロギングコンテキストに紐付けられています。したがって、アペンダーが使用されたときにだけ呼ばれるのではなく、ロギング要求が発生するたびに呼ばれることになります。つまり、ターボフィルターの有効範囲はアペンダーに割り当てられたフィルターよりも広いのです。
+   	</p>
+   	
+   	<p>さらに重要なのは、ターボフィルターが呼ばれるのは<code>LoggingEvent</code>オブジェクトが作成される前だということです。
+   	<code>TurboFilter</code>オブジェクトは、ロギング要求をフィルタリングするのにロギングイベントを必要としません。つまり、ターボフィルターはロギングイベントの高速なフィルタリングを意図したものなのです。
+    </p>
+
+   	
+   	<h3 class="doAnchor" name="yourOwnTurboFilter">ターボフィルターを自作する</h3>
+    
+    <p><code>ターボフィルター</code>を自作するには、<code>TurboFilter</code>抽象クラスを継承するだけです。前述のとおり、フィルターを自作するには<code>decide()</code>メソッドを実装するだけでいいのです。少し複雑なフィルターの実装例を見てみましょう。</p>
+    
+    <p class="example">例：基本的な自作<code>TurboFilter</code>（<a href="http://logback.qos.ch/xref/chapters/filters/SampleTurboFilter.html">logback-examples/src/main/java/chapters/filters/SampleTurboFilter.java</a>）</p>
+
+<pre class="prettyprint source">package chapters.filters;
+
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.turbo.TurboFilter;
+import ch.qos.logback.core.spi.FilterReply;
+
+public class SampleTurboFilter extends TurboFilter {
+
+  String marker;
+  Marker markerToAccept;
+
+  @Override
+  public FilterReply decide(Marker marker, Logger logger, Level level,
+      String format, Object[] params, Throwable t) {
+
+    if (!isStarted()) {
+      return FilterReply.NEUTRAL;
+    }
+
+    if ((markerToAccept.equals(marker))) {
+      return FilterReply.ACCEPT;
+    } else {
+      return FilterReply.NEUTRAL;
+    }
+  }
+
+  public String getMarker() {
+    return marker;
+  }
+
+  public void setMarker(String markerStr) {
+    this.marker = markerStr;
+  }
+
+  @Override
+  public void start() {
+    if (marker != null &amp;&amp; marker.trim().length() &gt; 0) {
+      markerToAccept = MarkerFactory.getMarker(marker);
+      super.start(); 
+    }
+  }
+}
+</pre>
+
+		<p>この<code>ターボフィルター</code>は、特定のマーカーが含まれているロギングイベントを受け付けます。マーカーが見つからなかったら、チェーン内の次のフィルターに引き継ぎます。
+		</p>
+		
+		<p>柔軟性を考慮して、チェックするマーカーを設定ファイルで指定できるよう、アクセサメソッドが定義されています。他にも、設定ファイルの解釈中に、指定されたオプションをチェックするため、<code>start()</code>メソッドを実装しています。
+		</p>
+		
+		<p>自作した<code>ターボフィルター</code>を使う設定ファイルは次のとおりです。
+		</p>
+		
+    <p class="example">例：基本的な自作<code>TurboFilter</code>の設定（<a href="http://logback.qos.ch/xref/chapters/filters/sampleTurboFilterConfig.xml">logback-examples/src/main/java/chapters/filters/sampleTurboFilterConfig.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;sampleTurboFilterConfig&#39;);">Groovyとして表示</span>
+
+    <pre id="sampleTurboFilterConfig" class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;turboFilter class="chapters.filters.SampleTurboFilter"&gt;
+    &lt;Marker&gt;sample&lt;/Marker&gt;
+  &lt;/turboFilter&gt;</b>
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level %logger - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>  
+
+   	<p>logback-classicの配布物にはいくつか<code>TurboFilter</code>の実装クラスが含まれています。<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/turbo/MDCFilter.html"><code>MDCFilter</code></a>を使うとMDC内の指定された値の存在をチェックすることができますし、<a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/turbo/DynamicThresholdFilter.html"><code>DynamicThresholdFilter</code></a>を使うとMDCのキーまたはレベルをしきい値でフィルタリングすることができます。また、<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/turbo/MarkerFilter.html"><code>MarkerFilter</code></a>を使うとロギング要求に関連付けられた特定のマーカーの存在をチェックすることができます。</p>
+   	
+   	<p><code>MDCFilter</code>と<code>MarkerFilter</code>の両方を使う設定を見てみましょう。
+   	</p>
+   	
+    <p class="example">例：<code>MDCFilter</code>と<code>MarkerFilter</code>の設定例（<a href="http://logback.qos.ch/xref/chapters/filters/turboFilters.xml">logback-examples/src/main/java/chapters/filters/turboFilters.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;turboFilters&#39;);">Groovyとして表示</span>
+    <pre id="turboFilters" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;turboFilter class="ch.qos.logback.classic.turbo.MDCFilter"&gt;
+    &lt;MDCKey&gt;username&lt;/MDCKey&gt;
+    &lt;Value&gt;sebastien&lt;/Value&gt;
+    &lt;OnMatch&gt;ACCEPT&lt;/OnMatch&gt;
+  &lt;/turboFilter&gt;
+	
+  &lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter"&gt;
+    &lt;Marker&gt;billing&lt;/Marker&gt;
+    &lt;OnMatch&gt;DENY&lt;/OnMatch&gt;
+  &lt;/turboFilter&gt;
+
+  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%date [%thread] %-5level %logger - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="console" /&gt;
+  &lt;/root&gt;  
+&lt;/configuration&gt;</pre>
+
+		<p>次のコマンドを実行してみましょう。</p>
+    
+    <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/turboFilters.xml</p>
+
+		<p>前に見たように、<a href="http://logback.qos.ch/xref/chapters/filters/FilterEvents.html"><code>FilterEvents</code></a>アプリケーションは0〜9の連番を付けて10個のロギング要求を生成します。3番目と6番目を除く他のロギング要求のログレベルは<em>INFO</em>です。これはルートロガーに割り当てたログレベルと同じです。3番目のロギング要求のログレベルは<em>DEBUGレベル</em>で、これは有効レベルを下回っています。ですが、3番目のロギング要求を生成する直前に、MDCのキー"username"には値"sebastien"が設定され、直後に取り除かれています。そして、<code>MDCFIlter</code>はこのロギング要求だけを受け入れるようになっています。6番目のロギング要求はログレベル<em>ERROR</em>で、かつ、"billing" というマーカーが指定されています。このロギング要求はMarkerFilter（二つ目のターボフィルター）によって拒否されます。
+		</p>
+		
+		<p>結果として、<code>FilterEvents</code>アプリケーションに<em>turboFilters.xml</em>を指定した場合は次のように出力されます。</p>
+
+    <p class="source">2006-12-04 15:17:22,859 [main] INFO  chapters.filters.FilterEvents - logging statement 0
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 1
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 2
+2006-12-04 15:17:22,875 [main] DEBUG chapters.filters.FilterEvents - logging statement 3
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 4
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 5
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 7
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 8
+2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
+			
+			
+		<p>有効レベルは<em>INFO</em>なのに、3番目のロギング要求、つまり、ログレベルがDEBUGのロギング要求が出力されています。これは最初の<code>TurboFilter</code>が受け入れたからです。
+		</p>    
+		
+		<p>また、6番目のロギング要求はログレベルが<em>ERROR</em>なのに出力されていません。二つ目の<code>TurboFilter</code>の<span class="option">OnMatch</span>プロパティに<em>DENY</em>が指定されていたからです。
+		</p>
+		
+
+
+		  
+    <h3 class="doAnchor" name="DuplicateMessageFilter">DuplicateMessageFilter</h3>
+
+    <p><code>DuplicateMessageFilter</code>の利点は異なる見え方をします。メッセージの重複を検出し、一定回数以上繰り返す場合は、メッセージを破棄します。
+    </p>
+
+    <p>繰り返しの検出は、単純に文字列が一致するかどうかを見ています。数文字違うだけでそれは別のメッセージとして扱われるので、重複メッセージとしては検出しません。たとえばこんな風に書いたとしましょう。</p>
+
+    <pre class="prettyprint source">logger.debug("Hello "+name0);
+logger.debug("Hello "+name1);</pre>
+  
+    <p><code>name0</code>と<code>name1</code>が別の値だとしたら、これらのメッセージは別のものであるとみなされます。利用者のニーズによりますが、将来のリリースでは文字列の類似度をチェックすることになりそうです。完全に同一ではないけどよく似ているメッセージの繰り返しを排除するたｍです。
+    </p>
+
+    <p>ロギングメッセージに引数を指定している場合、書式化される前のメッセージが判定対象になるので注意してください。たとえば次の二つのロギング式のメッセージ部分はどちらも同じ "Hello {}." なので、これは重複メッセージと判定されます。
+    </p>
+
+    <pre class="prettyprint source">logger.debug("Hello {}.", name0);
+logger.debug("Hello {}.", name1);</pre>
+  
+    <p>繰り返しを許容する回数は<span class="option">AllowedRepetitions</span>プロパティで指定します。allowedRepetitionsプロパティに1を指定した場合、最初のメッセージは出力されて、2番目のメッセージは破棄されます。同様に、2を指定したら、1番目、2番目のメッセージは出力されて、三番目以降のメッセージは破棄されます。デフォルトは5が設定されています。
+    </p>
+
+    <p>繰り返しを検出するには、内部的に古いメッセージへの参照をキャッシュしておかなければなりません。このキャッシュのサイズは<span class="option">CacheSize</span>プロパティによって決まります。デフォルトは100（個）が設定されています。
+    </p>
+
+    
+    <p class="example">例：<code>DuplicateMessageFilter</code>の設定例（<a href="http://logback.qos.ch/xref/chapters/filters/duplicateMessage.xml">logback-examples/src/main/java/chapters/filters/duplicateMessage.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;duplicateMessage&#39;);">Groovyとして表示</span>
+    <pre id="duplicateMessage" class="prettyprint source">&lt;configuration&gt;
+
+  <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/&gt;</b>
+
+  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%date [%thread] %-5level %logger - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="console" /&gt;
+  &lt;/root&gt;  
+&lt;/configuration&gt;</pre>
+
+  <p><code>FilterEvents</code>アプリケーションに<em>duplicateMessage.xml</em>を指定した場合の出力は次のようになります。</p>
+
+    <p class="source">2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 0
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 1
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 2
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 4
+2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 5
+2008-12-19 15:04:26,171 [main] ERROR chapters.filters.FilterEvents - billing statement 6</p>
+
+    <p>"logging statement 0" は、書式化する前のメッセージ"logging statement {}" によって出力された<em>最初</em>のメッセージです。"logging statement 1"が1回目の<em>繰り返し</em>、"logging statement 2"が2回目の繰り返しとなります。<em>3回目</em>の繰り返しとなる"logging statement 3"はログレベルがDEBUGのはずなので、<a href="http://logback.qos.ch/manual/architecture.html#basic_selection">基本的な選択ルール</a>によって破棄されました。つまり、ターボフィルターは基本的な選択ルールを含む他のフィルターに先駆けて呼び出されるということなのです。したがって、後続の処理チェインの中で破棄されてしまうのですが、<code>DuplicateMessageFilter</code>は"logging statement 3"を繰り返しメッセージだと判断したはずです。したがって "logging statement 4" は4回目の繰り返し、"logging statement 5" は5回目の繰り返しになります。デフォルトで許されている繰り返しは5回なので、"logging statement 5"より後は出てきませんでした。
+    </p>
+
+    <h1 class="doAnchor" name="logbac-access">logback-access モジュール</h1>
+    
+    <p>logback-access モジュールは logback-classic モジュールとほとんど同じ機能を提供します。具体的には、<code>Filter</code>オブジェクトはlogback-classic と同じように利用可能できますし、同じように動作します。一点だけ大きく違うころがあって、それは<code>LoggingEvent</code>のインスタンスではなく <a href="http://logback.qos.ch/xref/ch/qos/logback/access/spi/AccessEvent.html"><code>AccessEvent</code></a>のインスタンスを使うということです。現時点では、logback-access の配布物に含まれているフィルターの数はそれほど多くありません。追加のフィルターを提案したいときは、logback-dev メーリングリスト宛に連絡してください。
+    </p>
+
+		<h2 class="doAnchor" name="countingFilter"><code>CountingFilter</code></h2>
+		
+		<p>logback-access では、<a href="http://logback.qos.ch/manual/xref/ch/qos/logback/access/filter/CountingFilter.html"><code>CountingFilter</code></a>を使ってWebサーバへのアクセス統計情報を集めることができます。<code>CountingFilter</code>は、初期化時に実行プラットフォームの JMX サーバーに自身を MBean として登録します。その後は、MBean に統計情報を問い合わせることができるようになります。分平均、時間平均、日平均、週平均、月平均などです。他にも、集計単位の一つ前の情報と全体の合計を参照することができます。
+		</p>
+		
+		<p><code>CountingFilter</code>を使用する設定ファイルを見てみましょう。</p>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /&gt;
+
+  <b>&lt;filter class="ch.qos.logback.access.filter.CountingFilter"&gt;
+    &lt;name&gt;countingFilter&lt;/name&gt;
+  &lt;/filter&gt;</b>
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%h %l %u %t \"%r\" %s %b&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;appender-ref ref="STDOUT" /&gt;
+&lt;/configuration&gt;</pre>
+
+    <p><code>CountingFilter</code>の収集する統計情報は、例えば<code>jconsole</code>から JMX サーバにアクセスして参照することができます。</p>
+
+
+    <img alt="jconsoleを経由してCountingFilterにアクセス" src="images/chapters/filters/countingFilter.png">
+	
+
+    <h3 class="doAnchor" name="access_EvalutorFilter">EvaluatorFilter</h3>
+
+    
+    <p><a href="http://logback.qos.ch/xref/ch/qos/logback/core/filter/EvaluatorFilter.html"><code>EvaluatorFilter</code></a>は<code>EventEvaluator</code>をカプセル化した汎用的なフィルターです。名前が示すように、 <code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/boolex/EventEvaluator.html">EventEvaluator</a></code>は指定された条件を評価して、イベントがその条件を満たすかどうかを判定します。条件を満たす場合もそうでない場合も、<code>EvaluatorFilter</code>の<span class="option">onMatch</span>プロパティ、または、<span class="option">onMismatch</span>プロパティに指定された値を返します。<code>EvaluatorFilter</code>についてはlogback-classicモジュールの章で説明してあるので思い出してください（<a href="http://logback.qos.ch/manual/filters.html#evalutatorFilter">上記参照</a>）。ここの説明は前の章に記載した内容の繰り返しです。</p>
+
+
+    <p><code>EventEvaluator</code>は抽象クラスです。
+つまり、<code>EventEvaluator</code>を継承すれば、独自のイベント評価ロジックを実装することができます。
+logback-accessの配布物には<a href="http://logback.qos.ch/xref/ch/qos/logback/access/boolex/JaninoEventEvaluator.html">JaninoEventEvaluator</a>という実装クラスが含まれています。これは、booleanを返す任意のJava言語のブロックを評価するものです。私たちはこのJava言語で書かれた式のことを"<em>Java評価式</em>”と呼んでいます。
+Java評価式を使うとロギングイベントを柔軟にフィルタリングできるようになります。
+<code>JaninoEventEvaluator</code>を使用するには<a href="http://docs.codehaus.org/display/JANINO/Home">Janinoライブラリ</a>が必要です。
+設定方法は設定ドキュメントの<a href="http://logback.qos.ch/setup.html#janino">対応するセクション</a>を参照してください。
+
+    </p>
+
+    <p>Java評価式は設定ファイルを解釈する間にコンパイルされます。
+どのように呼び出すのか、利用者は気にすることはありません。
+ですが、Java言語の式が真偽値を返すものであることを保証するのは利用者の責任です。
+</p>
+
+
+    <p>Java評価式は一度に1つのイベントを扱います。logback-accessは、<code>AccessEvent</code>を<b><code>event</code></b>という名前の変数として公開します。<code>event</code>変数を介して、HTTPリクエストやHTTP応答に関連付けられたさまざまなデータを参照することができます。正確なところは<a href="http://logback.qos.ch/xref/ch/qos/logback/access/spi/AccessEvent.html">AccessEvent</a>クラスの<code>ソースコード</code>を読んでください。
+    </p>
+    
+    <p>次の設定ファイルでは、応答コード<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404（Not Found）</a>をひっかけます。つまり、応答コードが404になったHTTPリクエストをすべてコンソールに出力するのです。</p>
+   	
+    <p class="example">例：Access Evaluator（<a href="http://logback.qos.ch/xref/chapters/filters/accessEventEvaluator.xml">logback-examples/src/main/java/chapters/filters/accessEventEvaluator.xml</a>）</p>
+
+<pre class="prettyprint source">&lt;configuration&gt;
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt;
+      &lt;evaluator&gt;
+        &lt;expression&gt;event.getStatusCode() == 404&lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;/filter&gt;</b>
+   &lt;encoder&gt;&lt;pattern&gt;%h %l %u %t %r %s %b&lt;/pattern&gt;&lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;appender-ref ref="STDOUT" /&gt;
+&lt;/configuration&gt;</pre>
+
+		<p>次の設定ファイルでは、やはり404エラーをひっかけているのですが、CSSファイルを要求したものだけをひっかけています。
+		</p>	
+
+
+    <p class="example">例6.10：Access Evaluator（<a href="http://logback.qos.ch/xref/chapters/filters/accessEventEvaluator2.xml">logback-examples/src/main/java/chapters/filters/accessEventEvaluator2.xml</a>）</p>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /&gt;
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter"&gt;
+      &lt;evaluator name="Eval404"&gt;
+        &lt;expression&gt;
+         <b>(event.getStatusCode() == 404)</b>
+           <b>&amp;amp;&amp;amp;</b>  &lt;!-- ampersand characters need to be escaped --&gt;
+         <b>!(event.getRequestURI().contains(".css"))</b>
+        &lt;/expression&gt;
+      &lt;/evaluator&gt;
+      &lt;onMismatch&gt;DENY&lt;/onMismatch&gt;
+    &lt;/filter&gt;
+
+   &lt;encoder&gt;&lt;pattern&gt;%h %l %u %t %r %s %b&lt;/pattern&gt;&lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;appender-ref ref="STDOUT" /&gt;
+&lt;/configuration&gt;
+    </pre>
+	
+    <script src="../templates/footer.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

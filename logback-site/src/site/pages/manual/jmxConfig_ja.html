@@ -1,0 +1,290 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第10章 JMXコンフィギュレーター</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+	
+    <h1>第10章 JMXコンフィギュレーター</h1>
+    
+		<p>名前のとおり、<code>JMXConfigurator</code>を使うとJMX経由でlogbackを設定することができます。つまり、デフォルトの設定ファイルで設定されたlogbackを、指定したパスやURLに配置した設定ファイルの内容で再設定したり、ロガーの一覧を取得したり、ロガーのレベルを変更することができるのです。
+		</p>
+		
+		<h3>JMXコンフィギュレーターを使用する</h3>
+    
+    
+		<p>サーバーを実行しているJVMがJDK1.6以降なら、コマンドラインから<code>jconsole</code>コマンドを実行するだけで、実行中のサーバーのMBeanServerにアクセスすることができます。古いJVMで実行している場合は<a href="./10-jmxConfig.html#jmxEnablingServer">サーバーでJMXを有効化する</a>のセクションを読んでおいてください。
+    </p>
+
+    <p>次のように設定ファイルに1行追加するだけで<code>JMXConfigurator</code>が有効になります。</p>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;jmxConfigurator /&gt;</b>
+  
+  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;layout class="ch.qos.logback.classic.PatternLayout"&gt;
+      &lt;Pattern&gt;%date [%thread] %-5level %logger{25} - %msg%n&lt;/Pattern&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="console" /&gt;
+  &lt;/root&gt;  
+&lt;/configuration&gt;</pre>
+		
+    <p><em>jconsole</em>でサーバーに接続すれば、MBeans タブに表示される "ch.qos.logback.classic.jmx.Configurator" フォルダの下にいろいろなコマンドがぶら下がっているのが確認できます。スクリーンショットを見てください。</p>
+    
+    <h3 class="doAnchor" name="jmxConfigurator"><code>jconsole</code>で<code>JMXConfigurator</code>を表示している様子</h3>
+
+    <img src="images/chapters/jmxConfigurator/jmxConfigurator.gif" alt="jmxConfigurator">   
+
+		<p>次のような操作を実行することができます。</p>
+		
+		<ul>
+      <li>デフォルトの設定ファイルを使用してlogbackを再設定します。</li>
+
+      <li>URLに配置された設定ファイルを使用して再設定します。</li>
+      <li>ファイルパスに配置された設定ファイルを使用して再設定します。</li>
+
+			<li>指定したロガーのレベルを設定します。nullを設定するには文字列"null"を指定します。</li>
+      <li>指定したロガーのレベルを取得します。nullになることがあります。</li>
+			<li>指定したロガーの<a href="./01-architecture.html#effectiveLevel">有効レベル</a>を取得します。</li>
+		</ul>
+		
+    <p><code>JMXConfigurator</code>はAttributesとして存在しているロガーの一覧と、ステータスの一覧を公開します。</p>
+    
+    <p>ステータスの一覧は、logbackの内部状態を診断するのに役立ちます。</p>
+
+    <img src="images/chapters/jmxConfigurator/statusList.gif" alt="statusList.gif">   
+
+    <h3 class="doAnchor" name="leak">メモリリークを避ける</h3>
+
+    <p>アプリケーションがWebサーバーやアプリケーションサーバにデプロイされているときは、<code>JMXConfigurator</code>のインスタンスをJVMのMBeanサーバーに登録すると、システムクラスローダーの参照をアプリケーションが持つようになってしまいます。これはアプリケーションが停止したり再デプロイされたときにJMXConfiguratorがガベージコレクションされてしまうのを防ぐためですが、そのせいで深刻なメモリリークが生じてしまいます。</p>
+
+    <p>したがって、スタンドアローンなJavaアプリケーションではないときは、必ず<code>JMXConfigurator</code>のインスタンスの登録をJVMのMBeanサーバーから解除しなければなりません。適切な<code>LoggerContetext</code>の<code>reset()</code>メソッドを呼べば、すべてのJMXConfiguratorのインスタンスは自動的に解除されるはずです。ロガーコンテキストを初期化するなら、<code>javax.servlet.ServletContextListener</code>の<code>contextDestroyed()</code>メソッドがちょうど良い場所です。サンプルコードを見てみましょう。</p>
+
+    <pre class="prettyprint source">import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+
+public class MyContextListener implements ServletContextListener {
+
+  public void contextDestroyed(ServletContextEvent sce) {
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+    <b>lc.stop();</b>
+  }
+
+  public void contextInitialized(ServletContextEvent sce) {
+  }
+} </pre>
+
+
+    <!-- ============ Multiple web-applications  ================== -->
+
+    
+    <h2 class="doAnchor" name="multiple">複数のWebアプリケーションで<code>JMXConfigurator</code>を使用する</h2>
+
+    <p>複数のアプリケーションを同じサーバーにデプロイしている、<a href="./09-loggingSeparation.html#contextSelectors">コンテキストセレクタ</a>を上書きせずデフォルトのまま使っている、それぞれのアプリケーションの<em>WEB-INF/lib</em>フォルダに<em>logback-*.jar</em>と<em>slf4j-api.jar</em>を置いている、これらが全て当てはまるなら、それぞれのアプリケーションの<code>JMXConfigurator</code>のインスタンスは同じ名前（"ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator"）で登録されてしまうでしょう。言い換えると、何もしなければそれぞれのアプリケーションのロガーコンテキストに関連付けられた<code>JMXConfigurator</code>のインスタンスは衝突してしまうのです。
+    </p>
+    
+    <p>衝突を避けるには、単に<a href="./03-configuration.html#contextName">アプリケーションのロガーコンテキストに名前を付ける</a>だけでよいのです。そうすれば、<code>JMXConfigurator</code>には自動的にその名前が設定されます。
+    </p>
+
+    <p>たとえば、それぞれ"コアラ"と"コウモリ"という名前のアプリケーションをデプロイしているものとします。そして、コアラのlogback.xmlには次のような設定がされているとしましょう。</p>
+    
+    <pre class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;contextName&gt;Koala&lt;/contextName&gt;</b>
+  &lt;jmxConfigurator/&gt;
+  ...
+&lt;configuration&gt;</pre>
+
+    <p>また、コウモリのlogback.xmlには次のように設定がされていることにします。</p>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;contextName&gt;Wombat&lt;/contextName&gt;</b>x
+  &lt;jmxConfigurator/&gt;
+  ...
+&lt;configuration&gt;</pre>
+
+    <p>そうすると、jconsoleのMBeanタブには、次のように二つの独立した<code>JMXConfigurator</code>のインスタンスが表示されるはずです。</p>
+
+    <img src="images/chapters/jmxConfigurator/multiple.gif" alt="multiple.gif">   
+
+    <p>MBeanサーバーに登録されるJMXConfiguratorの名前は、<code>jmxConfigurator要素</code>の"objectName"属性で指定することができます。</p>
+    
+    <!-- ============ JMX enabling your  server ================== -->
+
+    <h3 class="doAnchor" name="jmxEnablingServer">JMXを有効化する</h3>
+
+    <p>JDK1.6以降のJVMでサーバーを実行している場合はデフォルトでJMXが有効になっています。</p>
+
+		<p>JDK1.6以前の古いJVMを使っている場合は、サーバーのJMX関連のドキュメントを確認することをおすすめします。たとえば<a href="http://tomcat.apache.org/tomcat-6.0-doc/monitoring.html">Tomcat</a>や<a href="http://docs.codehaus.org/display/JETTY/JMX">Jetty</a>にはドキュメントがあります。それはさておき、このドキュメントではTomcatとJettyの設定方法を簡単に説明していきます。
+		</p>
+
+    <!-- ================ Configuring Jetty ================== -->
+
+		<h4>JettyでJMXを有効にする（JDK 1.5およびJDK 1.6で動作確認済み）</h4>
+		
+		<p>以降の設定はJDK1.5とJDK1.6で動作確認しています。JDK1.6以降のJVMでは、デフォルトでJMXが有効になっています。以降の設定をしてもよいですが、特に何も変わりません。JDK1.5のJVMで実行するJettyでJMXを有効にするには、設定ファイル<em>$JETTY_HOME/etc/jetty.xml</em>にいくつか設定を追加する必要があります。追加するのは次の設定です。</p>
+
+    <pre class="prettyprint source">&lt;Call id="MBeanServer" class="java.lang.management.ManagementFactory" 
+      name="getPlatformMBeanServer"/&gt;
+
+&lt;Get id="Container" name="container"&gt;
+  &lt;Call name="addEventListener"&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.mortbay.management.MBeanContainer"&gt;
+        &lt;Arg&gt;&lt;Ref id="MBeanServer"/&gt;&lt;/Arg&gt;
+        &lt;Call name="start" /&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/Call&gt;
+&lt;/Get&gt; </pre>
+
+    <p>Jettyの公開するMBeanに<code>jconsole</code>でアクセスしたいときは、Jettyを実行するJVMにシステムプロパティ"com.sun.management.jmxremote"を指定しておかなければなりません。
+    </p>
+
+    <p>スタンドアローン版のJettyなら次のように実行します。</p>
+
+    
+    <p class="source">java <b>-Dcom.sun.management.jmxremote</b> -jar start.jar [config files]</p>
+
+    <p>MavenのプラグインからJettyを実行する場合は、システムプロパティ"com.sun.management.jmxremote"をシェル変数<code>MAVEN_OPTS</code>で指定しなければなりません。</p>
+
+    <p class="source"><b>MAVEN_OPTS="-Dcom.sun.management.jmxremote</b>" mvn jetty:run</p>
+
+    <p>そうすれば、<code>jconsole</code>でJettyの公開するMBeanとして<code>JMXConfigurator</code>にアクセスすることができます。</p>
+
+    <img src="images/chapters/jmxConfigurator/jconsole15_jetty.gif" alt="jconsole15_jetty.gif">   
+
+    <p>接続したら、<a href="./10-jmxConfig.html#jmxConfigurator">前のスクリーンショット</a>のように<code>JMXConfigurator</code>にアクセスできるはずです。</p>
+
+    <h4>JettyにMX4Jを入れる（JDK 1.5およびJDK 1.6で動作確認済み）</h4>
+
+    <p>MX4JのHTTPインターフェイスを経由して<code>JMXConfigurator</code>にアクセスしたいときは、前に説明した設定ファイルに管理ポート番号の設定を追加します。<a href="http://mx4j.sourceforge.net/">MX4J</a>はすでにダウンロード済みであることにします。
+    </p>
+    
+    <pre class="prettyprint source">&lt;Call id="MBeanServer"
+    class="java.lang.management.ManagementFactory"
+    name="getPlatformMBeanServer"/&gt;
+
+&lt;Get id="Container" name="container"&gt;
+  &lt;Call name="addEventListener"&gt;
+    &lt;Arg&gt;
+      &lt;New class="org.mortbay.management.MBeanContainer"&gt;
+        &lt;Arg&gt;&lt;Ref id="MBeanServer"/&gt;&lt;/Arg&gt;
+        <b>&lt;Set name="managementPort"&gt;8082&lt;/Set&gt;</b>
+        &lt;Call name="start" /&gt;
+      &lt;/New&gt;
+    &lt;/Arg&gt;
+  &lt;/Call&gt;
+&lt;/Get&gt; 
+    </pre>
+    
+    <p>なお、<em>mx4j-tools.jar</em>はJettyのクラスパス上に配置しておいてください。
+    </p>
+
+    <p>MavenのプラグインからJettyを実行する場合は、依存関係に<em>mx4j-tools</em>を追加してください。</p>
+
+    <pre class="prettyprint source">&lt;plugin&gt;
+  &lt;groupId&gt;org.mortbay.jetty&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-jetty-plugin&lt;/artifactId&gt;
+  &lt;configuration&gt;
+    &lt;jettyConfig&gt;path/to/jetty.xml&lt;/jettyConfig&gt;
+    ...
+  &lt;/configuration&gt;
+  <b>&lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;mx4j&lt;/groupId&gt;
+      &lt;artifactId&gt;mx4j-tools&lt;/artifactId&gt;
+      &lt;version&gt;3.0.1&lt;/version&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;</b>
+&lt;/plugin&gt;</pre>
+
+		<p>この設定でJettyを起動すると、ブラウザで次のURLから<code>JMXConfigurator</code>にアクセスできるようになります。アクセスした後は "ch.qos.logback.classic" を探してください。</p>
+
+    <p class="source"><a href="http://localhost:8082/">http://localhost:8082/</a></p>
+
+    <p>MX4Jにアクセスしているところのスクリーンショットです。</p>
+
+    <img src="images/chapters/jmxConfigurator/mx4j_jetty.gif" alt="mx4j_jetty.gif">   
+
+
+    <!-- ================ Tomcat ================== -->
+		
+		<h4>Tomcat用のJMXの設定（JDK 1.5およびJDK 1.6で動作確認済み）</h4>
+    
+    <p>JDK1.6以降のJVMを使用しているならJMXはデフォルトで有効になっているので以降の設定をする必要はありません。JDK1.5の場合は<em>$TOMCAT_HOME/bin/catalina.sh（Windowsの場合はcatalina.bat）</em>の適切な場所に次の設定を追加する必要があります。</p>
+		
+    <p class="source">CATALINA_OPTS="-Dcom.sun.management.jmxremote"</p>
+
+		<p>そうすれば、<code>jconsole</code>を使ってTomcatの公開するMBeanとして<code>JMXConfigurator</code>にアクセスできるようになります。</p>
+    
+    <p class="source"></p>
+
+    <img src="images/chapters/jmxConfigurator/jconsole15_tomcat.gif" alt="jconsole15_tomcat.gif">   
+
+    <p>接続したら、<a href="./10-jmxConfig.html#jmxConfigurator">前のスクリーンショット</a>のように<code>JMXConfigurator</code>にアクセスできるはずです。
+</p>
+
+
+    <h4>TomcatにMX4Jを入れる（JDK 1.5およびJDK 1.6で動作確認済み）</h4>
+    
+		<p>MX4JのWebインターフェイスを使ってJMXのコンポーネントにアクセスしたくなるかもしれません。そうするために必要な設定方法を説明します。</p>
+		
+    <p><a href="http://mx4j.sourceforge.net/">MX4J</a>はすでにダウンロードしてあることにしましょう。<em>mx4j-tools.jar</em>を<em>$TOMCAT_HOME/bin</em>フォルダーにおいてください。それから、<em>$TOMCAT_HOME/bin/catalina.sh（Windowsの場合はcatalina.bat）</em>の適切な場所に次の設定を追加します。</p>
+
+    <p class="source">&lt;!-- at the beginning of the file --&gt;
+CATALINA_OPTS="-Dcom.sun.management.jmxremote"
+
+&lt;!-- in the "Add on extra jar files to CLASSPATH" section --&gt;
+CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/bin/mx4j-tools.jar</p>
+
+		<p>最後に、<em>$TOMCAT_HOME/conf/server.xmlで新しい<code>Connector要素</code>を宣言します。</em></p>
+
+		
+    <pre class="prettyprint source">&lt;Connector port="0" 
+  handler.list="mx"
+  mx.enabled="true" 
+  mx.httpHost="localhost" 
+  mx.httpPort="8082" 
+  protocol="AJP/1.3" /&gt;</pre>
+  
+  	<p>Tomcatを起動したら、ブラウザで次のURLからJMXConfiguratorにアクセスできるようになります。アクセスした後は "ch.qos.logback.classic" を探してください。</p>
+
+    <p class="source"><a href="http://localhost:8082">http://localhost:8082/</a></p>
+
+    <p>MX4Jにアクセスしているところのスクリーンショットです。
+</p>
+
+    <img src="images/chapters/jmxConfigurator/mx4j_tomcat.gif" alt="mx4j_tomcat.gif">   
+
+		
+	
+	
+    <script src="../templates/footer.js" type="text/javascript"></script>
+   
+  </div>
+</body>
+</html>

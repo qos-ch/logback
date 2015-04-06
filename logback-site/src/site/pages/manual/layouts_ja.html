@@ -1,0 +1,1645 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=iso-8859-1"></meta>
+    <title>第6章 レイアウト</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+
+    <h1>第6章 レイアウト</h1>
+
+    <div class="quote">
+      <p>TCPの実装は頑健性の一般原則に従う。つまり、自分自身の行動は保守的に、他者から行われる行動については寛容さを持って受け入れるということだ。
+      </p>
+      <p>-JON POSTEL、RFC 793</p>
+    </div>
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+    <script src="../templates/setup.js" type="text/javascript"></script>
+
+    <h2 class="doAnchor">レイアウトとは何か</h2>
+
+    <p>レイアウトといってもフロリダ州の大規模集合住宅とは何の関係もありません。レイアウトはlogbackのコンポーネントであり、受け取ったロギングイベントを文字列に変換する役割を担っています。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/Layout.html"><code>Layout</code></a>インターフェイスの<code>format()</code>メソッドは、引数としてロギングイベントとみなされる（任意の型の）オブジェクトを受け取り、文字列を返します。<code>Layout</code>インターフェイスの概要を次に示します。
+    </p>
+
+    <pre class="prettyprint source">public interface Layout&lt;E&gt; extends ContextAware, LifeCycle {
+
+  String doLayout(E event);
+  String getFileHeader();
+  String getPresentationHeader();
+  String getFileFooter();
+  String getPresentationFooter();
+  String getContentType();
+}</pre>
+
+    <p>このインターフェイスは簡潔ですが、あらゆる書式化のニーズを十分に満たしています。<em>Catch-22</em>に登場するテキサス育ちの開拓者であるジョセフ・ヘラーならこう叫んでいるところです。「レイアウトを実装しようにもたったの5つしかメソッドがない！！？ナンデ？！」
+    </p>
+
+    <h2>Logback-classic モジュール</h2>
+
+    <p>logback-classic モジュールは<code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/spi/ILoggingEvent.html">ch.qos.logback.classic.spi.ILoggingEvent</a></code>だけを扱うようになっています。この節を読み進めていけば理由が明らかになります。</p>
+
+    <h2 class="doAnchor" name="writingYourOwnLayout">レイアウトを自作する</h2>
+
+    <p>logback-classic モジュールで使うために、簡潔で十分な機能性のあるレイアウトを自作してみましょう。出力したいのは次のようなものです。アプリケーションが起動してから経過した時間、ロギングイベントのログレベル、ブラケットで囲んだ呼び出しスレッド名、ロガー名、ダッシュ（-のこと）とそれに続くロギングイベントのメッセージ、最後に改行文字も加えておきましょう。
+    </p>
+
+    <p>出力例は次のようになります。</p>
+
+    <div class="source">10489 DEBUG [main] com.marsupial.Pouch - Hello world.</div>
+
+    <p>テキサスの開拓者が実装したレイアウトのコードを見てましょう。</p>
+    <p class="example">例：自作レイアウトのサンプル実装（<a href="http://logback.qos.ch/xref/chapters/layouts/MySampleLayout.html">logback-examples/src/main/java/chapters/layouts/MySampleLayout.java</a>）</p>
+
+    <pre class="prettyprint source">package chapters.layouts;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.LayoutBase;
+
+public class MySampleLayout extends LayoutBase&lt;ILoggingEvent&gt; {
+
+  public String doLayout(ILoggingEvent event) {
+    StringBuffer sbuf = new StringBuffer(128);
+    sbuf.append(event.getTimeStamp() - event.getLoggingContextVO.getBirthTime());
+    sbuf.append(" ");
+    sbuf.append(event.getLevel());
+    sbuf.append(" [");
+    sbuf.append(event.getThreadName());
+    sbuf.append("] ");
+    sbuf.append(event.getLoggerName();
+    sbuf.append(" - ");
+    sbuf.append(event.getFormattedMessage());
+    sbuf.append(CoreConstants.LINE_SEP);
+    return sbuf.toString();
+  }
+}</pre>
+
+    <p><code>MySampleLayout</code>は<a href="http://logback.qos.ch/xref/ch/qos/logback/core/LayoutBase.html"><code>LayoutBase</code></a>を継承しているのに気付きましたか。このクラスは全てのレイアウトのインスタンスに共通する内部状態を管理するものです。例えば、レイアウトが開始しているか、停止しているか、ヘッダーはあるか、フッターはあるか、コンテンツタイプはあるか、といったものです。おかげで、開発者は書式化の方法にだけ集中することができるのです。<code>LayoutBase</code>はジェネリッククラスです。上記のコードでは、<code>MySampleLayout</code>は<code>LayoutBase&lt;ILoggingEvent&gt;</code>を継承しています。
+    </p>
+
+    <p><code>doLayout(ILoggingEvent event)</code>メソッド（<code>MySampleLayout</code>の実装する唯一のメソッドです）では、最初に空の<code>StringBuffer</code>を生成して、ロギングイベントのパラメータを付け足していきます。開拓者らしく、慎重に書式化したようです。ロギング要求で1つ以上のパラメータが渡されることを考えればこれは大事なことです。</p>
+
+    <p><code>doLayout()</code>メソッドでは、StringBufferにいろいろな文字列を追加したあとで1つの文字列に変換して、その文字列を呼び出し元に返します。
+    </p>
+
+    <p>上記の<code>doLayout</code>メソッドでは、ロギングイベントに含まれる可能性のあるあらゆる例外を無視します。実際のレイアウトの実装では、ほぼ確実に例外の内容を出力したいはずです。
+    </p>
+
+    <h3 class="doAnchor" name="configuringYourOwnLayout">自作レイアウトの設定</h3>
+
+    <p>自作レイアウトは、他のコンポーネントと同じように設定されます。前述したように<code>FileAppender</code>とその派生クラスにはエンコーダーが必要です。<code>FileAppender</code>のニーズを満たすため、<code>LayoutWrappingEncoder</code>に自作した<code>MySampleLayout</code>をラップしてみましょう。次のような設定になります。</p>
+
+  <p class="example">例：MySampleLayoutの設定（<a href="http://logback.qos.ch/xref/chapters/layouts/sampleLayoutConfig.xml">logback-examples/src/main/java/chapters/layouts/sampleLayoutConfig.xml</a>）</p>
+  <span class="asGroovy" onclick="return asGroovy(&#39;logback_Console&#39;);">Groovyで表示</span>
+<pre id="sampleLayoutConfig" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    <b>&lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;</b>
+      <b>&lt;layout class="chapters.layouts.MySampleLayout" /&gt;</b>
+    <b>&lt;/encoder&gt;</b>
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+    <p>サンプルアプリケーションの<code><a href="http://logback.qos.ch/xref/chapters/layouts/SampleLogging.html">chapters.layouts.SampleLogging</a></code>は、一つ目の引数で指定された設定ファイルを使ってlogbackを設定します。そして、デバッグメッセージとエラーメッセージを1つづつロギングします。</p>
+
+    <p><em>logback-examples</em>ディレクトリに移動して、次のコマンドを実行してみましょう。
+    </p>
+
+    <p class="command">java chapters.layouts.SampleLogging src/main/java/chapters/layouts/sampleLayoutConfig.xml</p>
+
+    <p>コンソールには次のように出力されます。</p>
+
+<div class="source"><pre>0 DEBUG [main] chapters.layouts.SampleLogging - Everything's going well
+0 ERROR [main] chapters.layouts.SampleLogging - maybe not quite...</pre></div>
+
+    <p>簡単でしょう？エレア派の懐疑論者ピュロンは、それ自体が不確実であるということ以外に確実なことは無い、と主張しました。つまり、確かなことなど何もないというのです。彼はきっとこう質問するでしょう。「それでレイアウトのオプションについてはどうなっているの？」上記の自作レイアウトを少し変更したバージョンが<a href="http://logback.qos.ch/xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2.java</code></a>です。このマニュアル全体を通じて言えることですが、レイアウトでもlogbackの他のコンポーネントでも、単にセッターメソッドを設定するだけでプロパティを指定できるようになります。
+    </p>
+
+    <p><a href="http://logback.qos.ch/xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2</code></a>クラスには、2つのプロパティがあります。一つ目は、出力されるメッセージの先頭に追加する接頭辞です。二つ目は、ロギング要求を送信したスレッドの名前を表示するかどうかを選択する真偽値です。
+    </p>
+
+    <p><a href="http://logback.qos.ch/xref/chapters/layouts/MySampleLayout2.html"><code>MySampleLayout2</code></a>のコードを見てみましょう。</p>
+
+    <pre class="prettyprint source">package chapters.layouts;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.LayoutBase;
+
+public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent&gt; {
+
+  String prefix = null;
+  boolean printThreadName = true;
+
+  <b>public void setPrefix(String prefix) {
+    this.prefix = prefix;
+  }
+
+  public void setPrintThreadName(boolean printThreadName) {
+    this.printThreadName = printThreadName;
+  }</b>
+
+  public String doLayout(ILoggingEvent event) {
+    StringBuffer sbuf = new StringBuffer(128);
+    <b>if (prefix != null) {
+      sbuf.append(prefix + ": ");
+    }</b>
+    sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());
+    sbuf.append(" ");
+    sbuf.append(event.getLevel());
+    <b>if (printThreadName) {
+      sbuf.append(" [");
+      sbuf.append(event.getThreadName());
+      sbuf.append("] ");
+    } else {
+      sbuf.append(" ");
+    }</b>
+    sbuf.append(event.getLoggerName());
+    sbuf.append(" - ");
+    sbuf.append(event.getFormattedMessage());
+    sbuf.append(LINE_SEP);
+    return sbuf.toString();
+  }
+}</pre>
+
+
+    <p>プロパティのセッターメソッドを追加すれば設定ファイルから指定できるようになります。<code>printThreadName</code>プロパティの型は真偽値（boolean）であって文字列（<code>String</code>）ではないので注意してください。logbackのコンポーネントの設定については、<a href="http://logback.qos.ch/manual/configuration.html">設定に関する章</a>で詳しく説明しています。<a href="http://logback.qos.ch/manual/onJoran.html">Joranの章</a>にはより詳細な説明があります。<code>MySampleLayout2</code>のために特別に誂えた設定ファイルは次のとおりです。
+    </p>
+
+
+    <span class="asGroovy" onclick="return asGroovy(&#39;MySampleLayout2&#39;);">Groovyとして表示</span>
+    <pre id="MySampleLayout2" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+      &lt;layout class="chapters.layouts.MySampleLayout2"&gt;
+        <b>&lt;prefix&gt;MyPrefix&lt;/prefix&gt;</b>
+        <b>&lt;printThreadName&gt;false&lt;/printThreadName&gt;</b>
+      &lt;/layout&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+   <p></p>
+
+
+    <h2 class="doAnchor" name="ClassicPatternLayout">PatternLayout</h2>
+
+    <p>logback-classic の配布物には、<code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/PatternLayout.html">PatternLayout</a></code>と呼ばれる柔軟性のあるレイアウトが含まれています。他のレイアウトと同じく、<code>PatternLayout</code>はロギングイベントを受け取って<code>文字列</code>を返します。<code>文字列</code>は、変換パターン文字列を調整してカスタマイズすることができます。
+    </p>
+
+    <p><code>PatternLayout</code>の変換パターン文字列はC言語の<code>printf()</code>関数と非常によく似たもので、文字列リテラルと<em>変換指定</em>と呼ばれる書式制御式で構成されています。変換パターン文字列には、どんな文字列リテラルでも入れることができます。変換指定はパーセント記号"%"で始まり、オプションの<em>書式修飾子</em>、<em>変換指定子</em>、括弧で囲まれたパラメータが続いたものです。変換指定子には変換したいデータフィールドを指定します。例えばロガー名、レベル、日付、スレッド名などです。書式修飾子には、フィールド幅、パディング、左揃えや右揃えを指定します。
+    </p>
+
+    <p>既に何度か述べたとおり、<code>FileAppender</code>とその派生クラスにはエンコーダーが必要です。結局、<code>FileAppender</code>やその派生クラスと<code>PatternLayout</code>を一緒に使うには、エンコーダーでラップしなければなりません。<code>FileAppender</code>と<code>PatternLayout</code>を組み合わせることがあまりにも一般的になってしまったことを考慮して、logback の配布物には<code>PatternLayoutEncoder</code>を含めるようになりました。これは単に<code>PatternLayout</code>をラップするだけのエンコーダーなので、エンコーダーであるにも関わらずPatternLayoutのように扱えるようになっています。プログラム的に<code>ConsoleAppender</code>と<code>PatternLayoutEncoder</code>を設定する例を示します。</p>
+
+
+  <p class="example">例：PatternLayoutの使用例（<a href="http://logback.qos.ch/xref/chapters/layouts/PatternSample.html">logback-examples/src/main/java/chapters/layouts/PatternSample.java</a>）</p>
+
+    <pre class="prettyprint source">package chapters.layouts;
+
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.ConsoleAppender;
+
+public class PatternSample {
+
+  static public void main(String[] args) throws Exception {
+    Logger rootLogger = (Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    LoggerContext loggerContext = rootLogger.getLoggerContext();
+    // we are not interested in auto-configuration
+    loggerContext.reset();
+
+    <b>PatternLayoutEncoder encoder = new PatternLayoutEncoder();</b>
+    <b>encoder.setContext(loggerContext);</b>
+    <b>encoder.setPattern("%-5level [%thread]: %message%n");</b>
+    <b>encoder.start();</b>
+
+    ConsoleAppender&lt;ILoggingEvent&gt; appender = new ConsoleAppender&lt;ILoggingEvent&gt;();
+    appender.setContext(loggerContext);
+    appender.setEncoder(encoder);
+    appender.start();
+
+    rootLogger.addAppender(appender);
+
+    rootLogger.debug("Message 1");
+    rootLogger.warn("Message 2");
+  }
+}</pre>
+
+    <p>この例では、変換パターン文字列として<b>"％-5level [％thread] %msg％n"</b>が設定されています。logbackに組み込みの変換指定子については後で簡単に説明します。<code>PatternSample</code>アプリケーションを実行してみましょう。</p>
+
+    <p class="source">java java chapters.layouts.PatternSample</p>
+
+    <p>コンソールにに次のように出力されます。</p>
+
+    <p class="source">DEBUG [main]: Message 1
+WARN  [main]: Message 2</p>
+
+    <p>変換パターン文字列の<b>"%-5level [％thread] %msg%n"</b>には、文字列リテラルと変換指定子を明示的に区切る文字が無いことに気付きましたか。変換パターン文字列を解析する際、<code>PatternLayout</code>は文字列リテラル（空白文字、括弧、コロンなど）と変換指定を分離することができます。上記の例では、変換指定"％-5level"は、ロギングイベントのレベルを5文字の幅に左揃えすることを意味します。書式指定子については後で説明します。
+    </p>
+
+    <p><code>PatternLayout</code>は変換パターン文字列をグループ化するために括弧を使います。<b>つまり '（'と '）'には特別な意味があるので、リテラル文字列として使うときはエスケープしなければならないということです。</b> 括弧の特殊な性質について詳しくは<a href="http://logback.qos.ch/manual/layouts.html#Parentheses">後で説明</a>します。
+    </p>
+
+    <p>前述のとおり、変換指定によっては括弧で囲んでオプションの引数を指定することができます。例えばこういう書き方です。<code>%logger{10}</code>"logger" が変換指定子で、10が引数です。オプションの指定の仕方について詳しくは<a href="http://logback.qos.ch/manual/layouts.html#cwOptions">後で説明</a>します。
+    </p>
+
+    <p>利用できる変換指定とオプションを表にまとめました。1つのセルに複数の変換指定子が登場する場合、それらは別名という意味です。
+    </p>
+
+    <table class="bodyTable properties striped" border="0">
+      <tr>
+        <th><a name="conversionWord" href="http://logback.qos.ch/manual/layouts.html#conversionWord">変換指定子</a></th>
+        <th>効果</th>
+      </tr>
+
+      <tr>
+        <td class="word" name="logger">
+          <a name="logger" href="http://logback.qos.ch/manual/layouts.html#logger"><span class="anchor"></span></a>
+          <b>c</b>{<em>length</em>} <br>
+          <b>lo</b>{<em>length</em>} <br>
+          <b>logger</b>{<em>length</em>} <br>
+        </td>
+
+        <td>ロギングイベントを生成する一番元になったロガーの名前を出力します。
+
+          <p>この変換指定子に指定できるオプションは整数値だけです。ロガー名は省略アルゴリズムに従って、意味が通る程度に短縮されます。0を指定すると特別な振る舞いをします。ロガー名文字列の中で一番右端のドット（.）から右側だけを残すようになります。省略アルゴリズムの例を表にまとめました。
+          </p>
+
+          <table class="bodyTable dark" border="0" cellpadding="8">
+            <tr>
+              <th>変換指定</th>
+              <th>ロガー名</th>
+              <th>結果</th>
+            </tr>
+            <tr>
+              <td>%logger</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>mainPackage.sub.sample.Bar</td>
+            </tr>
+
+            <tr>
+              <td>%logger{0}</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>Bar</td>
+            </tr>
+
+            <tr>
+              <td>%logger{5}</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>m.s.s.Bar</td>
+            </tr>
+
+            <tr>
+              <td>%logger{10}</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>m.s.s.Bar</td>
+            </tr>
+
+            <tr>
+              <td>%logger{15}</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>m.s.sample.Bar</td>
+            </tr>
+
+            <tr>
+              <td>%logger{16}</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>m.sub.sample.Bar</td>
+            </tr>
+
+            <tr>
+              <td>%logger{26}</td>
+              <td>mainPackage.sub.sample.Bar</td>
+              <td>mainPackage.sub.sample.Bar</td>
+            </tr>
+          </table>
+
+          <p>オプションで指定した長さを越えるとしても、一番右側のドット（.）から後ろは省略されないので気をつけてください。それ以外の部分は最短で1文字になりますが、削除することはありません。</p>
+
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="class">
+          <b>C</b>{<em>length</em>} <br>
+          <b>class</b>{<em>length</em>} <br>
+        </td>
+
+        <td>
+          <p>ロギング要求を生成した呼び出し元のクラスの完全名を出力します。</p>
+
+          <p><em>%logger</em>と同じように、引数の整数値に合わせて名前を短縮します。0には特別な意味があり、パッケージ名を除いた単純クラス名を出力するようになります。デフォルトでは、完全クラス名が出力されます。
+          </p>
+
+          <p>送信側のクラス情報を生成するのはとても高速とは言えません。実行速度が問題にならない場合にだけ使うほうが良いでしょう。
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="contextName">
+          <b>contextName</b><br>
+          <b>cn</b><br></td>
+          <td>ロギングイベントを生成したロガーの割り当てられたロギングコンテキストの名前。</td>
+      </tr>
+      <tr>
+        <td class="word" name="date">
+          <b>d</b>{<em>pattern</em>} <br>
+          <b>date</b>{<em>pattern</em>} <br>
+          <b>d</b>{<em>pattern</em>, <em>timezone</em>} <br>
+          <b>date</b>{<em>pattern</em>, <em>timezone</em>} <br>
+        </td>
+        <td>
+         <p>ロギングイベントの日時を出力するために使います。引数として日時パターン文字列を指定することができます。日時パターン文字列は<a href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>と互換性があります。</p>
+
+         <p>引数に<em>"ISO8601"</em>と指定すると ISO8601 の書式になります。日時パターン文字列が指定されなかった場合、デフォルトは<a href="http://en.wikipedia.org/wiki/ISO_8601">ISO8601書式</a>になるので注意してください。</p>
+
+         <p>いくつかサンプルを見てください。ここでは日時が2006年10月20日（金曜日）であることを想定しています。これはこのマニュアルを書いた人が昼食から戻ってきた日時です。</p>
+
+         <table class="bodyTable dark" cellpadding="8">
+           <tr>
+             <th>変換パターン</th>
+            <th>結果</th>
+           </tr>
+           <tr>
+             <td>%d</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date{ISO8601}</td>
+             <td>2006-10-20 14:06:49,812</td>
+           </tr>
+           <tr>
+             <td>%date{HH:mm:ss.SSS}</td>
+             <td>14:06:49.812</td>
+           </tr>
+           <tr>
+             <td>%date{dd MMM yyyy;HH:mm:ss.SSS}</td>
+             <td>20 oct. 2006;14:06:49.812  </td>
+           </tr>
+         </table>
+
+          <p>二番目の引数にはタイムゾーンを指定します。たとえば、'%date{HH:mm:ss.SSS, Australia/Perth}' と指定すると、世界中で一番孤立しているオーストラリアのパースの時刻を出力するようになります。タイムゾーンが指定されなかった場合、JVMのタイムゾーンが使用されます。指定したタイムゾーンが未知のものであったりタイプミスだった場合、<a href="http://docs.oracle.com/javase/6/docs/api/java/util/TimeZone.html#getTimeZone(java.lang.String)">TimeZone.getTimeZone(String)</a>メソッドの仕様に基づいてGMTが指定されたものとして解釈します。
+          </p>
+
+          <p><span class="label">よくある間違い</span>は、カンマ（,）が引数の区切り文字として解釈されてしまうことです。<code>HH:mm:ss,SSS</code>というパターン文字列は<code>HM:mm:ss</code>というパターン文字列<code>SSS</code>というタイムゾーンが指定されたものとして解釈されてしまいます。日時パターン文字列にカンマ（,）を入れたければ、パターン文字列をクォートで囲んでください。たとえば次のようにします。%date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="file">
+          <b>F</b><br /><b>
+file</b>
+        </td>
+
+        <td>
+          <p>ロギング要求を発行したクラスのソースコードファイル名を出力します。
+          </p>
+
+          <p>ファイル情報を生成するのはとても高速であるとは言えません。実行速度が問題にならない場合にだけ使うほうが良いでしょう。
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="caller">
+          <b>caller{depth}</b><br />
+<b>caller{depth, evaluator-1, ... evaluator-n}</b>
+        </td>
+
+        <td>
+          <p>ロギングイベントを生成した呼び出し元の位置情報（スタックの深さ、ソースコードファイルの行番号）。
+          </p>
+
+          <p>位置情報の中身はJVM実装によって変わりますが、普通ならロギングイベントを生成したメソッドの定義されたクラスの完全名、ソースコードファイル名、行番号が含まれます。
+          </p>
+
+          <p>表示されるメソッド呼び出しの深さを指定するため、オプションとして整数値を指定できます。
+          </p>
+
+          <p>例えば、<b>%caller{2}</b>と書いたら次のように出力されます。</p>
+
+<pre class="source white_bg">0    [main] DEBUG - logging statement
+Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
+Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
+
+          <p>そして<b>%caller{3}</b>と書いたら次のように出力されます。</p>
+
+<pre class="source white_bg">16   [main] DEBUG - logging statement
+Caller+0   at mainPackage.sub.sample.Bar.sampleMethodName(Bar.java:22)
+Caller+1   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)
+Caller+2   at mainPackage.ConfigTester.main(ConfigTester.java:38)</pre>
+
+          <p>ロギングイベントの送信元情報を計算するかどうかを判定するため、オプションとして評価器を指定できるようになっています。たとえば、<b>%caller{3,CALLER_DISPLAY_EVAL}</b>と指定すると評価器の<em>CALLER_DISPLAY_EVAL</em>が<b>真</b>を返す場合にだけ、3行分のスタックトレースを出力することになります。
+        </p>
+
+         <p>評価器の種類は後で紹介します。</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="line">
+          <b>L</b><br /><b>
+line</b>
+        </td>
+
+        <td><p>ロギング要求が生成されたソースコードファイル中の行番号を出力します。</p>
+
+          <p>行番号を算出するのは決して高速とは言えません。実行速度が問題にならない場合にだけ使うほうが良いでしょう。
+
+          </p>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td class="word" name="message">
+          <b>m</b><br /><b>
+msg</b><br /><b>
+message</b>
+        </td>
+        <td>
+          <p>アプリケーションがロギングイベントに関連付けたメッセージを出力します。
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="method">
+          <b>M</b><br /><b>
+method</b>
+        </td>
+
+        <td>
+          <p>ロギング要求が生成されたメソッド名を出力します。</p>
+          <p>メソッド名を生成するのは決して高速とは言えません。実行速度が問題にならない場合にだけ使うほうが良いでしょう。
+</p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="newline">
+          <b>n</b>
+        </td>
+
+        <td>
+          <p>プラットフォーム依存の行区切り文字を出力します。</p>
+          <p>この変換指定子を使っても、行区切り文字として可搬性の無い"\n" や"\r\n" を指定した場合と性能は変わりません。したがって、どんなときでも行区切り文字そのものではなく、この変換指定子を使うべきです。
+          </p>
+        </td>
+
+      </tr>
+
+      <tr>
+        <td class="word" name="level">
+          <b>p</b><br /><b>
+le</b><br /><b>
+level</b>
+        </td>
+        <td>ロギングイベントのレベルを出力します。</td>
+      </tr>
+
+      <tr>
+
+        <td class="word" name="relative">
+          <b>r</b><br /><b>
+relative</b>
+        </td>
+
+        <td>アプリケーションが開始してから、ロギングイベントを生成するまでの経過時間をミリ秒単位で出力します。
+        </td>
+      </tr>
+
+
+      <tr>
+        <td class="word" name="relative">
+          <b>t</b><br /><b>
+thread</b>
+        </td>
+
+        <td>ロギングイベントを生成したスレッドの名前を出力します。
+        </td>
+
+      </tr>
+
+      <tr>
+        <td class="word" name="mdc">
+          <b>X</b>{<em>key:-defaultVal</em>} <br>
+          <b>mdc</b>{<em>key:-defaultVal</em>} <br>
+        </td>
+
+        <td>
+
+          <p>ロギングイベントを生成したスレッドに関連付けられていたMDC（診断コンテキスト）の値を出力します。
+          </p>
+
+          <p><b>%mdc{uesrid}</b>のように<b>mdc</b>オプションにキーが指定されている場合、対応するMDCの値が出力されます。MDCの値がnullの場合、 <b>:-</b>演算子で指定したデフォルト値が出力されます。デフォルト値が無かったら空文字列が出力されます。
+          </p>
+
+          <p>キーが未指定のときは、MDCの内容がすべて出力されます。そのときの書式は"key1=val1,key2=val2"のようになります。
+          </p>
+
+          <p>詳しくは<a href="http://logback.qos.ch/manual/mdc.html">MDCの章</a>を参照してください。</p>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="ex">
+          <b>ex</b>{<em>depth</em>} <br>
+            <b>exception</b>{<em>depth</em>} <br>
+          <b>throwable</b>{<em>depth</em>} <br>
+          <br>
+          <b>ex</b>{depth, evaluator-1, ..., evaluator-n} <br>
+          <b>exception</b>{depth, evaluator-1, ..., evaluator-n} <br>
+          <b>throwable</b>{depth, evaluator-1, ..., evaluator-n}
+        </td>
+
+        <td>
+          <p>ロギングイベントに例外オブジェクトが関連付けられていたら、その例外オブジェクトのスタックトレースを出力します。デフォルトでは完全なスタックトレースを出力します。
+         </p>
+
+         <p><em></em>throwable変換指定子に指定できるオプションは次のとおりです。</p>
+         <ul>
+           <li><em>short</em> ：スタックトレースの一行目だけを出力します</li>
+           <li><em>full</em> ：完全なスタックトレースを出力します</li>
+           <li>任意の整数：スタックトレースの先頭から数えて指定した行数を出力します</li>
+         </ul>
+
+         <p>いくつか例を見てみましょう。</p>
+
+         <table class="bodyTable">
+            <tr class="a">
+              <th>変換指定</th>
+              <th>結果</th>
+            </tr>
+            <tr class="b">
+              <td>%ex</td>
+              <td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
+  at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)
+  at mainPackage.ExceptionLauncher.main(ExceptionLauncher.java:38)</pre></td>
+            </tr>
+            <tr class="a">
+              <td>%ex{short}</td>
+              <td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)</pre></td>
+            </tr>
+            <tr class="b">
+              <td>%ex{full}</td>
+              <td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
+  at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)
+  at mainPackage.ExceptionLauncher.main(ExceptionLauncher.java:38)</pre></td>
+            </tr>
+            <tr class="a">
+              <td>%ex{2}</td>
+              <td><pre>mainPackage.foo.bar.TestException: Houston we have a problem
+  at mainPackage.foo.bar.TestThrower.fire(TestThrower.java:22)
+  at mainPackage.foo.bar.TestThrower.readyToLaunch(TestThrower.java:17)</pre></td>
+            </tr>
+         </table>
+
+          <p>スタックトレースを出力するかどうかを判定するため、オプションとして評価器を指定できるようになっています。例えば、<b>%ex{full,EX_DISPLAY_EVAL}</b>と指定した場合、評価器<em>EX_DISPLAY_EVAL</em>が<b>偽</b>を返すときだけ例外オブジェクトの完全なスタックトレースが出力されます。評価器についてはこのドキュメントの後のほうで説明しています。
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="xThrowable">
+          <b>xEx</b>{<em>depth</em>} <br>
+          <b>xException</b>{<em>depth</em>} <br>
+          <b>xThrowable</b>{<em>depth</em>} <br>
+          <br>
+          <b>xEx</b>{depth, evaluator-1, ..., evaluator-n} <br>
+          <b>xException</b>{depth, evaluator-1, ..., evaluator-n} <br>
+          <b>xThrowable</b>{depth, evaluator-1, ..., evaluator-n}
+        </td>
+
+        <td>
+          <p>クラスのパッケージングに関する情報が追加されていること以外は%throwableと同様です。</p>
+
+          <p>変換パターン文字列に%xThrowableや他のthrowable関連の変換指定子を指定しなかった場合、<code>PatternLayout</code>は末尾に%xThrowableを自動的に追加します。スタックトレースの情報は非常に重要だからです。スタックトレースを出力したくなければ、%xThrowableの代わりに%nopexを指定すればよいです。％nopexの説明も参照してください。
+         </p>
+
+          <p>例外のスタックトレースの各行の終わりに、そのクラスが含まれるjarファイル名とMANIFEST.MFに書かれた"Implementation-Version"が追加されます。この画期的なテクニックを考案したのは<a href="http://macstrac.blogspot.com/2008/09/better-stack-traces-in-java-with-log4j.html">James Strachan</a>です。パッケージングの情報が不確かな場合、先頭にチルダ（~）が付きます。
+          </p>
+
+          <p>例を見てみましょう。</p>
+
+          <p class="source small">java.lang.NullPointerException
+  at com.xyz.Wombat(Wombat.java:57) <b><span class="red">~</span>[wombat-1.3.jar:1.3]</b>
+  at  com.xyz.Wombat(Wombat.java:76) ~[wombat-1.3.jar:1.3]
+  at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.5.0_06]
+  at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39) ~[na:1.5.0_06]
+  at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25) ~[na:1.5.0_06]
+  at java.lang.reflect.Method.invoke(Method.java:585) ~[na:1.5.0_06]
+  at org.junit.internal.runners.TestMethod.invoke(TestMethod.java:59) [junit-4.4.jar:na]
+  at org.junit.internal.runners.MethodRoadie.runTestMethod(MethodRoadie.java:98) [junit-4.4.jar:na]
+  ...etc </p>
+
+          <p>logbackはパッケージング情報が正しく出力されるよう、適切な幅を確保します。どれだけクラスローダーの階層が複雑になっていても頑張ります。残念ながら正確性が担保できないときは先頭にチルダ（~）を付けます。従って、理屈の上では実際のパッケージング情報とは異なる内容を出力させることも可能です。ですから、前の例で Wombat クラスのパッケージング情報の先頭にはチルダ（~）があるので、本当は [wombat.jar:1.7] となるはずだったかもしれないのです。
+          </p>
+
+          <p><a href="http://jira.qos.ch/browse/LBCLASSIC-212">利用者からのフィードバックによると</a>、NetBeansはパッケージング情報を縮めてしまうそうです。Netbeansのユーザーは、変換パターン文字列の最後に"%ex"を追加して、スタックトレースにパッケージング情報が出てこないようにしたほうが良いでしょう。たとえば、"%d %logger - %m%n" という変換パターン文字列を使っているなら、"%d %logger - %m%n<b>%ex</b>" と書き換えればよいのです。</p>
+        </td>
+
+      </tr>
+
+      <tr>
+        <td class="word" name="nopex">
+          <b>nopex</b> <br>
+          <b>nopexception</b>
+        </td>
+
+        <td>
+          <p>スタックトレースの情報を<em>扱うように見えます</em>が、実際は何も出力しません。つまり、うまく例外を無視できるのです。
+          </p>
+
+          <p>％nopex変換指定子を使うと、<code>PatternLayout</code>が内部的に実装している安全弁を無かったことにします。安全弁とは、変換パターン文字列に例外を扱う変換指定子が含まれていなかったらこっそり最後に%xThrowableを追加することです。
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="marker">
+          <b>marker</b>
+        </td>
+
+        <td>
+          <p>ロギング要求に関連付けられたマーカーを出力します。</p>
+
+          <p>マーカーに子マーカーがある場合、次のような書式で両方のマーカーを出力します。
+          </p>
+          <p>
+            <em>parentName [ child1, child2 ]</em>
+          </p>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td class="word" name="property">
+          <b>property{key}</b>
+        </td>
+
+        <td><p><em>キー</em>という名前のプロパティに設定された値を出力します。関連するドキュメントは<a href="http://logback.qos.ch/manual/configuration.html#variableSubstitution">変数の定義</a>と<a href="http://logback.qos.ch/manual/configuration.html#scopes">変数のスコープ</a>です。
+
+        <em>キー</em>がロガーコンテキストのプロパティではなかったら、システムプロパティを探します。</p>
+
+
+         <p><em>キー</em>に対するデフォルト値はありません。プロパティが見つからなかったら、"Property_HAS_NO_KEY"という文字列が値になります。エラーであることがすぐにわかりますね。</p>
+
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="replace">
+          <b>replace(<em>p</em>){r, t}</b>
+        </td>
+
+        <td>
+          <p>変換パターン文字列"p"について、正規表現'r'にマッチした部分を文字列't'で置き換えます。たとえば、"%replace(%msg){'\s',''}" とすると、ロギングイベントに設定されたメッセージに含まれるすべての空白文字を削除します。
+          </p>
+
+          <p>変換パターン文字列"p"はどれだけ複雑になってもいいですし、複数の変換指定を含めることもできます。たとえば、"%replace(%logger %msg)'\.','/'}" とすると、ロガー名とメッセージに含まれる全てのドット（.）をスラッシュ（/）で置き換えます。
+          </p>
+
+        </td>
+      </tr>
+
+
+      <tr>
+        <td class="word" name="rootException">
+          <b>rEx</b>{<em>depth</em>} <br>
+          <b>rootException</b>{<em>depth</em>} <br>
+          <br>
+          <b>rEx</b>{depth, evaluator-1, ..., evaluator-n} <br>
+          <b>rootException</b>{depth, evaluator-1, ..., evaluator-n}
+        </td>
+
+        <td>
+          <p>ロギングイベントに例外オブジェクトが関連付けられていたら、その例外オブジェクトのスタックトレースを出力します。
+標準とは逆に、例外の発生元から順番にスタックトレースを出力します。こんな出力になります（サンプルなのでだいぶ削っています）。</p>
+
+         <pre class="small">java.lang.NullPointerException
+  at com.xyz.Wombat(Wombat.java:57) ~[wombat-1.3.jar:1.3]
+  at com.xyz.Wombat(Wombat.java:76) ~[wombat-1.3.jar:1.3]
+Wrapped by: org.springframework.BeanCreationException: Error creating bean with name 'wombat':
+  at org.springframework.AbstractBeanFactory.getBean(AbstractBeanFactory.java:248) [spring-2.0.jar:2.0]
+  at org.springframework.AbstractBeanFactory.getBean(AbstractBeanFactory.java:170) [spring-2.0.jar:2.0]
+  at org.apache.catalina.StandardContext.listenerStart(StandardContext.java:3934) [tomcat-6.0.26.jar:6.0.26]
+</pre>
+
+         <p>%rootExceptionには、%xExceptionと同じオプションを指定できます。それに、パッケージング情報も出力します。簡単に言うと、%rootException は %xException とほとんど変わりませんが、スタックトレースの出力順だけが逆になっているのです。
+         </p>
+
+         <p>％のrootExceptionの作者であるTomasz Nurkiewiczは、自身のブログエントリ<a href="http://nurkiewicz.blogspot.com/2011/09/logging-exceptions-root-cause-first.html">"Logging eceptions root cause first"</a>で解説しています。</p>
+        </td>
+      </tr>
+
+    </table>
+
+
+    <h4 class="doAnchor" name="percentIsSpecial">%文字の特別な意味</h4>
+
+    <p>変換パターン文字列というコンテキストにおいて、%文字には特別な意味があります。文字列リテラルとして使用するにはバックスラッシュ（\）を前につけてエスケープしなければなりません。たとえば "%d %p \%%m%n" といったようにします。
+    </p>
+
+    <h4 class="doAnchor" name="restrictionsOnLiterals">変換指定子の直後の文字列リテラルの制限</h4>
+
+    <p>ほとんどの場合文字列リテラルにはスペースや他の区切り文字が含まれるので、変換指定子と混同されることはありません。例えば、変換パターン文字列"%level [%thread] - %mmessage%n" には文字列リテラル <code>" ["</code>と<code>"] - "</code>が含まれています。しかし、Javaの識別子に使える文字リテラルが変換指定子の直後に現れると、logbackの文字列パターン解析器はその文字リテラルも変換指定子の一部だと勘違いしてしまいます。例えば、変換パターン文字列 "%date<b>%nHello</b>" は、%date と %nHello という二つの変換指定子として解釈されてしまいます。もちろん、%nHello は変換指定子に存在しないため、logback は %PARSER_ERROR[nHello] というエラーを出力するでしょう。%nのすぐ後に文字列リテラル "Hello" を出したければ、%nに空の引数リストを指定すればよいでしょう。たとえば、"%date<b>%n{}</b>Hello" とすれば、%date %n 文字列リテラル "Hello" という順に解釈させることができるでしょう。
+
+    </p>
+
+    <h2 class="doAnchor" name="formatModifiers">書式修飾子</h2>
+
+    <p>デフォルトでは、関連する情報はそのまま出力されます。しかし、書式修飾子を使えばそれぞれのデータを出力する幅の最小値と最大値、それに文字揃えを変えることが出来ます。
+    </p>
+
+    <p>書式修飾子のオプションは%記号と修飾文字の間に入れます。
+    </p>
+
+    <p>最初に紹介する書式修飾子のオプションは<em>左揃え</em>です。これはただのマイナス（-）を指定します。次は<em>最小幅</em>です。整数値で出力する文字数を指定します。出力する文字列長が指定した文字数より小さい時は、最小幅を全てうめるまで右側か左側のどちらかをパディングします。デフォルトは右揃えなので左側にパディングしますが、左揃えにして右側にパディングさせることもできます。パディング文字は半角スペースです。出力する文字列長が指定した文字数より大きい時は、全て出力できるように幅を広げます。後ろを切り捨てることはありません。
+    </p>
+
+    <p>この振る舞いは最大幅を指定すれば変えられます。<em>最大幅</em>はドット（.）の後に整数値で指定します。出力する文字列長が指定した文字数より大きい時は、溢れた分だけ出力する文字列の<em>先頭</em>から削除されます。たとえば、最大幅を8にしたとき、出力する文字列長が10だったら、先頭の2文字が削除されることになります。C言語のprintf関数なら文字列の後ろのほうが削除されるので、逆の振る舞いをすることになります。
+    </p>
+
+    <p>ドット（.）に続けてマイナス文字（-）を指定すれば、後ろから削除することもできます。その場合、最大幅が8として、出力する文字列長が10だったら、末尾の2文字が削除されることになります。
+    </p>
+
+    <p>書式修飾子の例をいくつか見ていきましょう。
+    </p>
+
+    <table class="bodyTable" border="0" cellpadding="8">
+      <tr>
+        <th>書式修飾子</th>
+        <th>左寄せ</th>
+        <th>最小幅</th>
+        <th>最大幅</th>
+        <th>コメント</th>
+      </tr>
+      <tr class="a">
+        <td align="center">%20logger</td>
+        <td align="center">しない</td>
+        <td align="center">20</td>
+        <td align="center">なし</td>
+        <td>ロガー名が20文字未満であれば半角スペースで左側にパディングします。
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center">%-20logger</td>
+        <td align="center">する</td>
+        <td align="center">20</td>
+        <td align="center">なし</td>
+        <td>ロガー名が20文字未満であれば半角スペースで右側にパディングします。
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center">%.30logger</td>
+        <td align="center">指定できない</td>
+        <td align="center">なし</td>
+        <td align="center">30</td>
+        <td>ロガー名が30文字を超える場合、先頭から切り捨てます。
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center">%20.30logger</td>
+        <td align="center">しない</td>
+        <td align="center">20</td>
+        <td align="center">30</td>
+        <td>ロガー名が20文字未満であれば半角スペースで左側にパディングします。ロガー名が30文字を超える場合、先頭から切り捨てます。
+        </td>
+      </tr>
+      <tr class="a">
+        <td align="center">%-20.30logger</td>
+        <td align="center">する</td>
+        <td align="center">20</td>
+        <td align="center">30</td>
+        <td>ロガー名が20文字未満であれば半角スペースで右側にパディングします。ロガー名が30文字を超える場合、<em>先頭</em>から切り捨てます。
+        </td>
+      </tr>
+      <tr class="b">
+        <td align="center">%.-30logger</td>
+        <td align="center">指定できない</td>
+        <td align="center">なし</td>
+        <td align="center">30</td>
+        <td>ロガー名が30文字を超える場合、<em>末尾</em>から切り捨てます。
+        </td>
+      </tr>
+    </table>
+
+    <p>書式修飾子による文字列の切り捨ての例を表にまとめました。角括弧"[]"は出力される文字列ではなく、出力幅を示しているだけなので注意してください。</p>
+
+
+    <table class="bodyTable" border="0" cellpadding="8">
+      <tr>
+        <th>書式修飾子</th>
+        <th>ロガー名</th>
+        <th>結果</th>
+      </tr>
+      <tr class="b">
+        <td align="center">[%20.20logger]</td>
+        <td align="center">main.Name</td>
+        <td align="center"><pre>[           main.Name]</pre></td>
+      </tr>
+      <tr class="a">
+        <td align="center">[%-20.20logger]</td>
+        <td align="center">main.Name</td>
+        <td align="center"><pre>[main.Name           ]</pre></td>
+      </tr>
+      <tr class="a">
+        <td align="center">[%10.10logger]</td>
+        <td align="center">main.foo.foo.bar.Name</td>
+        <td align="center"><pre>[o.bar.Name]</pre></td>
+      </tr>
+      <tr class="b">
+        <td align="center">[%10.-10logger]</td>
+        <td align="center">main.foo.foo.bar.Name</td>
+        <td align="center"><pre>[main.foo.f]</pre></td>
+      </tr>
+    </table>
+
+    <h3 class="doAnchor" name="oneLetterLevel">レベルを1文字で出力する</h3>
+
+    <p>ロギングレベルをTRACE、DEBUG、WARN、INFO、ERRORのような文字列として出力するのではなく、T、D、W、I、Eのように一文字だけ出力したい場合もあるでしょう。<a href="http://logback.qos.ch/manual/layouts.html#customConversionSpecifier">カスタムコンバーター</a>を実装してもできるでしょうし、書式修飾子を使うこともできます。書式修飾子を使うなら<code>"%.-1level"</code>とすればよいでしょう。
+    </p>
+
+    <h2 class="doAnchor" name="cwOptions">変換指定子のオプション</h2>
+
+    <p>変換指定子にはオプションを指定することができます。オプションは必ず中括弧で囲むようにします。オプションで何ができるのか、すでに目にしてきたものがあります。たとえば、<em>％mdc{someKey}</em>のようにMDC変換指定子と組み合わせることができます。
+    </p>
+
+    <p>変換指定子のオプションは複数になるかもしれません。たとえば、評価器を使う変換指定子があります。すぐ後で説明しますが、こんな風に評価器の名前を複数並べることがあるかもしれません。</p>
+
+    <pre class="prettyprint source">&lt;pattern&gt;%-4relative [%thread] %-5level - %msg%n \
+  <b>%caller{2, DISP_CALLER_EVAL, OTHER_EVAL_NAME, THIRD_EVAL_NAME}</b>&lt;/pattern&gt;</pre>
+
+    <p>指定するオプションに括弧、スペース、カンマなどの特別な文字が含まれるときは、シングルクォートやダブルクォートで囲みます。たとえば、次のような変換パターン文字列になります。</p>
+
+    <pre class="prettyprint source">&lt;pattern&gt;%-5level - %replace(%msg)<b>{'\d{14,16}', 'XXXX'}</b>%n&lt;/pattern&gt;</pre>
+
+
+    <p>この例では、<code>replace</code>変換指定子にオプションとして<code>\d{14,16}</code>と<code>XXXX</code>を指定しています。これは、メッセージ中に14桁から16桁の数字文字列があったらそれをXXXXで置き換えるものです。クレジットカード番号をマスクするのに役立ちます。"\d"は一桁の数字を表す正規表現の省略形です。後ろに"{14,16}"をつけているので、一つ前の文字、つまり一桁の数字が14個から16個繰り返される場合にマッチすることになります。
+    </p>
+
+    <h2 class="doAnchor" name="Parentheses">括弧は特別扱い</h2>
+
+    <p>logbackでは、パターン文字列の中の括弧は、トークンをグループ化するものとして扱います。それぞれのグループはそれ自体を1つのパターン文字列として扱うことができます。logback0.9.27から、<a href="http://logback.qos.ch/manual/layouts.html#replace">%replace</a>のような変換指定子を組み合わせて部分パターン文字列を作れるようになりました。
+    </p>
+
+    <p>こんなパターン文字列があるとします。</p>
+
+    <p class="source"><b>%-30(</b>%d{HH:mm:ss.SSS} [%thread]<b>)</b> %-5level %logger{32} - %msg%n</p>
+
+    <p>これは、部分パターン文字列"%d{HH:mm:ss.SSS} [%thread]" によって生成された出力をグループ化します。つまり、この部分パターン文字列によって生成された出力が30文字未満の文字列だった場合、右側にパディングされるのです。
+    </p>
+
+    <p>グループ化しなかった場合はこういう出力になります。</p>
+
+    <p class="source">13:09:30 [main] DEBUG c.q.logback.demo.ContextListener - Classload hashcode is 13995234
+13:09:30 [main] DEBUG c.q.logback.demo.ContextListener - Initializing for ServletContext
+13:09:30 [main] DEBUG c.q.logback.demo.ContextListener - Trying platform Mbean server
+13:09:30 [pool-1-thread-1] INFO  ch.qos.logback.demo.LoggingTask - Howdydy-diddly-ho - 0
+13:09:38 [btpool0-7] INFO c.q.l.demo.lottery.LotteryAction - Number: 50 was tried.
+13:09:40 [btpool0-7] INFO c.q.l.d.prime.NumberCruncherImpl - Beginning to factor.
+13:09:40 [btpool0-7] DEBUG c.q.l.d.prime.NumberCruncherImpl - Trying 2 as a factor.
+13:09:40 [btpool0-7] INFO c.q.l.d.prime.NumberCruncherImpl - Found factor 2
+    </p>
+
+    <p>"％-30()" でグループ化するとこうなります。</p>
+
+    <p class="source">13:09:30 [main]            DEBUG c.q.logback.demo.ContextListener - Classload hashcode is 13995234
+13:09:30 [main]            DEBUG c.q.logback.demo.ContextListener - Initializing for ServletContext
+13:09:30 [main]            DEBUG c.q.logback.demo.ContextListener - Trying platform Mbean server
+13:09:30 [pool-1-thread-1] INFO  ch.qos.logback.demo.LoggingTask - Howdydy-diddly-ho - 0
+13:09:38 [btpool0-7]       INFO  c.q.l.demo.lottery.LotteryAction - Number: 50 was tried.
+13:09:40 [btpool0-7]       INFO  c.q.l.d.prime.NumberCruncherImpl - Beginning to factor.
+13:09:40 [btpool0-7]       DEBUG c.q.l.d.prime.NumberCruncherImpl - Trying 2 as a factor.
+13:09:40 [btpool0-7]       INFO  c.q.l.d.prime.NumberCruncherImpl - Found factor 2
+    </p>
+
+
+    <p>後者のほうが読みやすいんじゃないでしょうか。</p>
+
+    <p>括弧を文字列リテラルとして扱いたいときは、バックスラッシュ（\）でエスケープしなければなりません。こんな感じです。
+"<b>\(</b>%d{HH:mm:ss.SSS} [%thread]<b>\)</b>"
+    </p>
+
+    <h2 class="doAnchor" name="coloring">カラー化</h2>
+
+    <p><a href="http://logback.qos.ch/manual/layouts.html#Parentheses">括弧</a>でグループ化した部分パターン文字列には色を指定することができます。logback1.0.5から<code>PatternLayout</code>で指定できるようになった色付け用の変換指定子は次のとおりです。
+    <ul>
+      <li>"%black"</li>
+      <li>"%red"</li>
+      <li>"%green"</li>
+      <li>"%yellow"</li>
+      <li>"%blue"</li>
+      <li>"%magenta"</li>
+      <li>"%cyan"</li>
+      <li>"%white"</li>
+      <li>"%gray"</li>
+      <li>"%boldRed"</li>
+      <li>"%boldGreen"</li>
+      <li>"%boldYellow"</li>
+      <li>"%boldBlue"</li>
+      <li>"%boldMagenta"</li>
+      <li>"%boldCyan"</li>
+      <li>"%boldWhite"</li>
+      <li>"%highlight"</li>
+    </ul>
+    これらの変換指定子にはオプションとして部分パターン文字列を指定することが想定されています。そしてその部分パターン文字列から生成された出力には色が付きます。
+    </p>
+
+    <p>色付けをわかりやすく説明する設定ファイルを次に示します。%cyan変換指定子には部分パターン文字列として"%logger{15}"を指定してあるのがわかりますか。こうすると、ロガー名は15文字に短縮されるだけでなく、文字色がシアンになります。%highlight変換指定子を使うと、部分パターン文字列の文字色が、ログレベルがERRORなら赤太字、ログレベルがWARNなら赤字、ログレベルがINFOなら青字、それ以外のログレベルならデフォルトの色になります。</p>
+
+  <p class="example">例：ログレベルに応じた強調表示（<a href="http://logback.qos.ch/xref/chapters/layouts/highlighed.xml">logback-examples/src/main/java/chapters/layouts/highlighed.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;highlighted&#39;);">Groovyとして表示</span>
+
+
+<pre id="highlighted" class="prettyprint">&lt;configuration debug="true"&gt;
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;!-- On Windows machines setting withJansi to true enables ANSI
+         color code interpretation by the Jansi library. This requires
+         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
+         Unix-based operating systems such as Linux and Mac OS X
+         support ANSI color codes by default. --&gt;
+    <b>&lt;withJansi&gt;true&lt;/withJansi&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;[%thread] <b>%highlight(%-5level)</b> <b>%cyan(%logger{15})</b> - %msg %n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+     <p>この設定ファイルを使うと次のように出力されます。</p>
+
+<pre class="source">[main] <span style="color:#611">WARN</span>  <span style="color:#2bd">c.l.TrivialMain</span> - a warning message 0
+[main] DEBUG <span style="color:#2bd">c.l.TrivialMain</span> - hello world number1
+[main] DEBUG <span style="color:#2bd">c.l.TrivialMain</span> - hello world number2
+[main] <span style="color:#00f">INFO</span>  <span style="color:#2bd">c.l.TrivialMain</span> - hello world number3
+[main] DEBUG <span style="color:#2bd">c.l.TrivialMain</span> - hello world number4
+[main] <span style="color:#611">WARN</span>  <span style="color:#2bd">c.l.TrivialMain</span> - a warning message 5
+[main] <span style="color:#f00">ERROR</span> <span style="color:#2bd">c.l.TrivialMain</span> - Finish off with fireworks</pre>
+
+    <p>色付け用変換指定子を使うとパターン文字列が複数行になってしまうこともあります。<a href="http://logback.qos.ch/manual/layouts.html#customConversionSpecifier">変換指定を自作する</a>では設定ファイルで使用できる変換指定子を登録する手順について議論しています。</p>
+
+    <h2 class="doAnchor" name="Evaluators">評価器</h2>
+
+    <p>前述したように、オプションをリストで指定できると、変換指定子に<a href="http://logback.qos.ch/xref/ch/qos/logback/core/boolex/EventEvaluator.html">EventEvaluator</a>に基づく動的な振る舞いを複数指定できる必要があるときは便利です。
+    <code>EventEvaluator</code>の役割は、ロギングイベントが基準に合致するかどうかを判定することです。
+    </p>
+
+    <p>早速<code>EventEvaluator</code>の例を見てみましょう。次の設定ファイルは、ロギングイベントの日付、スレッド、レベル、メッセージと送信者情報をコンソールに出力するものです。ロギングイベントの送信者情報を抽出するのはとてもコストが高いので、特定のロガーが生成したロギング要求の場合だけに限定しています。さらに、メッセージに特定の文字列が含まれている場合だけにしています。ですので、特定のロギングイベントについてだけ、送信者情報の生成と出力を行うことになります。そうすれば、送信者情報のいらないケースではアプリケーションの性能ペナルティが発生しません。
+    </p>
+
+    <p>評価器と<em>具体的な評価式</em>については、<a href="http://logback.qos.ch/manual/filters.html#evalutatorFilter">フィルタの章の独立したセクション</a>で紹介しています。もし評価器を実戦投入しようとしているなら必ず読んでおいてください。この後で紹介する例では、明示的に書いていませんが<code>JaninoEventEvaluator</code>を使用しています。ですので実行するには<a href="http://docs.codehaus.org/display/JANINO/Home">Jainoライブラリ</a>が必要になります。設定方法をまとめたドキュメントの<a href="http://logback.qos.ch/setup.html#janino">該当するセクション</a>を読んでください。</p>
+
+  <p class="example">例：EventEvaluatorsの使用例（<a href="http://logback.qos.ch/xref/chapters/callerEvaluatorConfig.xml">logback-examples/src/main/java/chapters/callerEvaluatorConfig.xml</a>）</p>
+<span class="asGroovy" onclick="return asGroovy(&#39;callerEvaluatorConfig&#39;);">Groovyとして表示</span>
+
+
+    <pre id="callerEvaluatorConfig" class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;evaluator name="DISP_CALLER_EVAL"&gt;
+    &lt;expression&gt;logger.contains("chapters.layouts") &amp;amp;&amp;amp; \
+      message.contains("who calls thee")&lt;/expression&gt;
+  &lt;/evaluator&gt;</b>
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %-4relative [%thread] %-5level - %msg%n<b>%caller{2, DISP_CALLER_EVAL}</b>
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+    <p>この設定ファイル中の評価式は、ロガー名に"chapters.layouts" が含まれており、かつ、メッセージに"who clals thee" が含まれているロギングイベントにマッチするものです。XMLのエンコーディングルールに従うため、&amp;文字は&amp;amp;のようにエスケープしなければなりません。</p>
+
+    <p>この設定ファイルを使用するクラスを見てみましょう。</p>
+
+  <p class="example">例：EventEvaluatorsの使用例（<a href="http://logback.qos.ch/xref/chapters/CallerEvaluatorExample.html">logback-examples/src/main/java/chapters/CallerEvaluatorExample.java</a>）</p>
+    <pre class="prettyprint source">package <b>chapters.layouts</b>;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
+public class CallerEvaluatorExample {
+
+  public static void main(String[] args)  {
+    Logger logger = LoggerFactory.getLogger(CallerEvaluatorExample.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+    try {
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(lc);
+      configurator.doConfigure(args[0]);
+    } catch (JoranException je) {
+      // StatusPrinter will handle this
+    }
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+    for (int i = 0; i &lt; 5; i++) {
+      if (i == 3) {
+        logger.debug(<b>"who calls thee</b>?");
+      } else {
+        logger.debug("I know me " + i);
+      }
+    }
+  }
+}</pre>
+
+    <p>このアプリケーションは特別何もしません。forループでロギング要求を5回生成します。三回目だけ "who calls thee?" というメッセージを出力します。
+    </p>
+
+    <p>次のコマンドで実行します。</p>
+
+    <p class="source">java chapters.layouts.CallerEvaluatorExample src/main/java/chapters/layouts/callerEvaluatorConfig.xml</p>
+
+    <p>そうすると、コンソールに次のように出力されます。</p>
+
+    <div class="source"><pre>0    [main] DEBUG - I know me 0
+0    [main] DEBUG - I know me 1
+0    [main] DEBUG - I know me 2
+0    [main] DEBUG - who calls thee?
+Caller+0   at chapters.layouts.CallerEvaluatorExample.main(CallerEvaluatorExample.java:28)
+0    [main] DEBUG - I know me 4</pre></div>
+
+
+    <p>ロギング要求が生成されたら、そのロギングイベントが評価されます。三回目のロギングイベントだけが評価条件にマッチするので、送信者情報が出力されます。他のロギングイベントは評価基準とマッチしないので送信者情報が出力されていません。
+    </p>
+
+
+    <p>現実世界のシナリオに対応できるように評価式を変更することにしましょう。例えばロガー名とロギング要求のレベルを組み合わせることもできます。そうすれば、ロギング要求のレベルが<em>WARN</em>より高くて、かつ、アプリケーションの重要部品、例えばお金に絡むトランザクションを処理するモジュールで生成された場合にだけ送信者情報を出力する、といったことができるでしょう。
+    </p>
+
+    <p><b>重要：</b> <em>caller変換指定</em>によって送信者情報が出力されるのは、評価式が<b>true</b>と<em>評価された</em>ときだけです。</p>
+
+    <p>別の状況を考えてみましょう。ロギング要求に例外オブジェクトが設定されていると、スタックトレースも出力されます。しかし、特定の例外オブジェクトのスタックトレースは出力したくないこともあります。
+    </p>
+
+    <p>次のコードでは、例外オブジェクトを指定したロギング要求を3つ生成しています。二つ目の例外オブジェクトは他のものと違ってメッセージに "do not display this" という文字列が含まれていますし、例外クラスが <code>chapters.layouts.TestException</code>になっています。このメッセージを指示とみなして、二つ目の例外オブジェクトのスタックトレースが出力されないようにしてみましょう。</p>
+
+  <p class="example">例：ExceptionEventEvaluatorsの使用例（<a href="http://logback.qos.ch/xref/chapters/ExceptionEvaluatorExample.html">logback-examples/src/main/java/chapters/ExceptionEvaluatorExample.java</a>）</p>
+<pre class="prettyprint source">package chapters.layouts;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
+public class ExceptionEvaluatorExample {
+
+  public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger(ExceptionEvaluatorExample.class);
+    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+    try {
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(lc);
+      lc.reset();
+      configurator.doConfigure(args[0]);
+    } catch (JoranException je) {
+       // StatusPrinter will handle this
+    }
+    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+    for (int i = 0; i &lt; 3; i++) {
+      if (i == 1) {
+        logger.debug("logging statement " + i, new TestException(
+            "do not display this"));
+      } else {
+        logger.debug("logging statement " + i, new Exception("display"));
+      }
+    }
+  }
+}</pre>
+
+    <p>次の設定ファイルで指定した評価式は、<code>chapters.layouts.TextException</code>の例外オブジェクトが設定されたロギングイベントにマッチします。この例外型はスタックトレースの出力を抑止したい型そのものです。
+    </p>
+
+  <p class="example">例：ExceptionEventEvaluatorsの使用例（<a href="http://logback.qos.ch/xref/chapters/exceptionEvaluatorConfig.xml">logback-examples/src/main/java/chapters/exceptionEvaluatorConfig.xml</a>）</p>
+    <pre class="prettyprint source">&lt;configuration&gt;
+
+  <b>&lt;evaluator name="DISPLAY_EX_EVAL"&gt;
+    &lt;expression&gt;throwable != null &amp;amp;&amp;amp; throwable instanceof  \
+      chapters.layouts.TestException&lt;/expression&gt;
+  &lt;/evaluator&gt;</b>
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n<b>%ex{full, DISPLAY_EX_EVAL}</b>&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+    <p>この設定は、<em>chapters.layouts.TestException</em>のインスタンスが設定されたロギング要求については、常にスタックトレースの出力を抑止します。
+    </p>
+
+    <p>実行してみましょう。</p>
+
+    <p class="source">java chapters.layouts.ExceptionEvaluatorExample src/main/java/chapters/layouts/exceptionEvaluatorConfig.xml</p>
+
+    <p>そうすると、次のような出力になります。</p>
+
+<p class="source">logging statement 0
+java.lang.Exception: display
+  at chapters.layouts.ExceptionEvaluatorExample.main(ExceptionEvaluatorExample.java:43) [logback-examples-0.9.19.jar:na]
+logging statement 1
+logging statement 2
+java.lang.Exception: display
+  at chapters.layouts.ExceptionEvaluatorExample.main(ExceptionEvaluatorExample.java:43) [logback-examples-0.9.19.jar:na]</p>
+
+
+    <p>二つ目のロギング要求による出力にはスタックトレースが含まれていないことがわかりますか。うまく<code>TestException</code>のスタックトレースを出力しないようにできました。スタックトレースの各行の最後にある角括弧で囲まれた部分は<a href="http://logback.qos.ch/manual/layouts.html#xThrowable">パッケージング情報</a>です。</p>
+
+    <p><b><em>%ex</em></b>変換指定があるので、<em>評価式</em>の結果が<b>false</b>になったときだけスタックトレースが出力されるようになっています。</p>
+
+
+
+    <h2 class="doAnchor" name="customConversionSpecifier">変換指定子を自作する</h2>
+
+    <p>ここまでに、<code>PatternLayout</code>に組み込みの変換指定子を見てきました。ですが、変換指定子を自作することもできるのです。</p>
+
+    <p>カスタム変換指定子を作るには2つの手順を踏みます。
+    </p>
+
+    <h4>ステップ1</h4>
+
+    <p>まず、<code>ClassicConverter</code>を継承したクラスを作ります。<code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/pattern/ClassicConverter.html">ClassicConverter</a></code>の役割は、<code>ILoggingEvent</code>から情報を抽出して出力する文字列を生成することです。たとえば、 %logger変換指定子を実装した<code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/pattern/LoggerConverter.html">LoggerConverter</a></code>は、<code>ILoggingEvent</code>から抽出したロガーの名前を文字列として返します。ロガー名の省略はこの手順で行います。</p>
+
+    <p>アプリケーションが起動してからの経過時間をナノ秒単位で返すカスタム変換指定子の実装を見てみましょう。</p>
+
+  <p class="example">例：自作コンバーターの例（<a href="http://logback.qos.ch/xref/chapters/MySampleConverter.html">logback-examples/src/main/java/chapters/MySampleConverter.java</a>）</p>
+<pre class="prettyprint source">public class MySampleConverter extends ClassicConverter {
+
+  long start = System.nanoTime();
+
+  <b>@Override</b>
+  <b>public String convert(ILoggingEvent event) {</b>
+    <b>long nowInNanos = System.nanoTime();</b>
+    <b>return Long.toString(nowInNanos-start);</b>
+  <b>}</b>
+}</pre>
+
+    <p>この実装は非常に簡単です。<code>MySampleConverter</code>クラスは<code>ClassicConverter</code>を継承しており、<code>convert(ILoggingEvent)</code>メソッドはアプリケーションが起動してからの経過時間をナノ秒単位で計算して、それを文字列化しているだけです。
+    </p>
+
+    <h4>ステップ2</h4>
+
+    <p>logback に自作した<code>Converter</code>のことを教えなければいけません。そのためには、設定ファイルで新しい変換指定子を宣言する必要があります。</p>
+
+  <p class="example">例：自作コンバーターの設定例（<a href="http://logback.qos.ch/xref/chapters/mySampleConverterConfig.xml">logback-examples/src/main/java/chapters/mySampleConverterConfig.xml</a>）</p>
+<span class="asGroovy" onclick="return asGroovy(&#39;mySampleConverterConfig&#39;);">Groovyとして表示</span>
+<pre id="mySampleConverterConfig" class="prettyprint source">&lt;configuration&gt;
+
+  <b>&lt;conversionRule conversionWord="nanos"
+                  converterClass="chapters.layouts.MySampleConverter" /&gt;</b>
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;<b>%-6nanos</b> [%thread] - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+    <p>設定ファイルで宣言した新しい変換指定子は、<code>PatternLayout</code>に指定する変換パターン文字列の中で他の変換指定と同じように使うことが出来ます。</p>
+
+    <p>実行してみましょう。</p>
+
+    <div class="source">java chapters.layouts.SampleLogging src/main/java/chapters/layouts/mySampleConverterConfig.xml </div>
+
+    <p>次のような出力になるはずです。</p>
+
+    <pre class="source">4868695 [main] DEBUG - Everything's going well
+5758748 [main] ERROR - maybe not quite...</pre>
+
+
+    <p>オプションの扱い方や、もっと複雑な振る舞いをさせるやり方を知りたければ、<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/pattern/MDCConverter.html"><code>MDCConverter</code></a>などの既存の<code>Converter</code>実装を見てみるとよいでしょう。独自の色付けをしたければ<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/pattern/color/HighlightingCompositeConverter.html"><code>HighlightingCompositeConverter</code></a>を参考にするとよいでしょう。
+    </p>
+
+
+
+    <h2 class="doAnchor" name="ClassicHTMLLayout">HTMLLayout</h2>
+
+    <p><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/html/HTMLLayout.html"><code>HTMLLayout</code></a>はHTML形式のログを出力します（logback-classicに含まれています）。<code>HTMLLayout</code>はHTMLのテーブルを出力します。それぞれの行がロギングイベントに対応しています。</p>
+
+    <p>デフォルトのCSSを使った<code>HTMLLayout</code>の出力例を見てください。</p>
+    <img src="images/chapters/layouts/htmlLayout0.gif" alt="HTMLレイアウトサンプル画像">
+
+    <p>テーブルの列は変換パターン文字列で指定します。<a href="http://logback.qos.ch/manual/layouts.html#ClassicPatternLayout"><code>PatternLayout</code></a>のドキュメントに書かれた変換パターン文字列の説明を見てください。テーブルの形も内容も全て制御することができます。<code>PatternLayout</code>で使えるあらゆるコンバーターを使うことができます。
+    </p>
+
+    <p>自由に使えるとはいえ一つだけ例外的な制限があります。<code>PatternLayout</code>と<code>HTMLLayout</code>を使うときは、変換パターン文字列中で変換指定を半角スペースで区切ってはいけません。もっというと文字列リテラルを使わないようにしてください。変換パターン文字列中の変換指定はそれぞれがテーブルの列になるからです。同様に、変換指定を区切るつもりの文字列リテラルはそれぞれが列になってしまいます。下手をすると、横に超長いテーブルが出力されてしまうかもしれません。</p>
+
+    <p><code>HTMLLayout</code>の使い方を説明する設定ファイルを見てください。
+    </p>
+
+  <p class="example">例：HTMLLayoutの設定例（<a href="http://logback.qos.ch/xref/chapters/htmlLayoutConfig1.xml">logback-examples/src/main/java/chapters/htmlLayoutConfig1.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;htmlLayoutConfig1&#39;);">Groovyとして表示</span>
+<pre id="htmlLayoutConfig1" class="prettyprint source">&lt;configuration debug="true"&gt;
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+      &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+        <b>&lt;pattern&gt;%relative%thread%mdc%level%logger%msg&lt;/pattern&gt;</b>
+      &lt;/layout&gt;
+    &lt;/encoder&gt;
+    &lt;file&gt;test.html&lt;/file&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;
+</pre>
+
+   <p><a href="http://logback.qos.ch/xref/chapters/layouts/TrivialMain.html">TrivialMain</a>アプリケーションは、いくつかログを出力してから最後に例外オブジェクトを指定したログを出力します。実行してみましょう。</p>
+
+   <p class="source">java chapters.layouts.TrivialMain src/main/java/chapters/layouts/htmlLayoutConfig1.xml</p>
+
+    <p>すると、カレントフォルダに<em>test.html</em>というファイルが作成されます。<em>test.html</em>をブラウザで見ると次のようになっているでしょう。</p>
+    <img src="images/chapters/layouts/htmlLayout1.png" alt="HTMLレイアウトサンプル画像">
+
+    <h3>スタックトレース</h3>
+
+    <p>スタックトレースを出力するには<em>%ex変換指定</em>を指定します。そうすると専用の列が追加されます。ほとんどの場合スタックトレースの列は空なので、無駄に画面を専有することでしょう。さらに、スタックトレースを専用の列に出力したところで読みやすくはならないです。なお、スタックトレースを出力するには、<em>%ex変換指定</em>を指定する以外の方法があります。
+    </p>
+
+    <p>よりよい解決策は、自分で<code>IThrowableRenderer</code>インターフェイスを実装することです。実装したクラスは、例外オブジェクトに関係する情報を出力するため、<code>HTMLLayout</code>に割り当てることができます。デフォルトでは、<code>HTMLLayout</code>インスタンスに<code><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/html/DefaultThrowableRenderer.html">DefaultThrowableRenderer</a></code>が割り当てられています。これは例外オブジェクトのスタックトレースを<em>新しい行</em>に出力します。前の図を見るとわかりますが多少読みやすいです。
+    </p>
+
+    <p>それでも理由があって<em>%ex</em>を使いたいときは、設定ファイルに<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/html/NOPThrowableRenderer.html">NOPThrowableRenderer</a></code>を指定すればスタックトレースを別々の行に出力しないようにできます。あなたの望み通りに全てが上手くいくようなアイデアはありません。それでも、こうしたいという気持ちがあればきっと実現できます。
+    </p>
+
+    <h3>CSS</h3>
+
+    <p><code>HTMLLayout</code>で生成したHTMLの見た目はCSSで調整することができます。特別な指定がなければ、<code>HTMLLayout</code>は組み込みのCSSを使います。しかし、外部のCSSを使うようにも指定できます。そのためには、<code>layout要素</code>に<code>cssBuilder要素</code>をネストさせればよいです。
+    </p>
+
+<pre class="prettyprint source">&lt;layout class="ch.qos.logback.classic.html.HTMLLayout"&gt;
+  &lt;pattern&gt;%relative...%msg&lt;/pattern&gt;
+  &lt;cssBuilder class="ch.qos.logback.classic.html.UrlCssBuilder"&gt;
+    &lt;!-- url where the css file is located --&gt;
+    &lt;url&gt;http://...&lt;/url&gt;
+  &lt;/cssBuilder&gt;
+&lt;/layout&gt;</pre>
+
+
+    <p><code>HTMLLayout</code>は<code>SMTPAppender</code>と組み合わせて使われることがあります。そうするとメールの内容がHTMLで綺麗に飾られたものになります。</p>
+
+
+    <h2 class="doAnchor" name="log4jXMLLayout">Log4jのXMLLayout</h2>
+
+    <p><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/log4j/XMLLayout.html">XMLLayout</a> （logback-classicに含まれています）を使うとlog4j.dtdに準拠した書式で出力できるようになります。つまり、<a href="http://logging.apache.org/chainsaw/index.html">Chainsaw</a>や<a href="http://vigilog.sourceforge.net/">Vigilog</a>などの、<a href="http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/XMLLayout.html">log4jのXML書式</a>を入力とするツールと相互運用できるのです。
+    </p>
+
+
+    <p>オリジナルのXMLLayoutはlog4j1.2.15で導入されたものです。logback-classic の XMLLayoutには<span class="option">locationInfo</span>と<span class="option">properties</span>という二つのプロパティが指定できます。<span class="option">locationInfo</span>プロパティにtrueを指定すると、ロギングイベントの位置情報（送信者情報）を含められるようになります。<span class="option">property</span>プロパティにtrueを指定すると、MDCの情報を含められるようになります。どちらのプロパティもデフォルトはfalseです。
+    </p>
+
+    <p>設定例を見てみましょう。</p>
+
+  <p class="example">例：Log4jXMLLayoutの例（<a href="http://logback.qos.ch/xref/chapters/log4jXMLLayout.xml">logback-examples/src/main/java/chapters/log4jXMLLayout.xml</a>）</p>
+
+<span class="asGroovy" onclick="return asGroovy(&#39;log4jXMLLayout&#39;);">Groovyとして表示</span>
+    <pre id="log4jXMLLayout" class="prettyprint source">&lt;configuration&gt;
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;file&gt;test.xml&lt;/file&gt;
+    &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+      &lt;layout class="ch.qos.logback.classic.log4j.XMLLayout"&gt;
+        &lt;locationInfo&gt;true&lt;/locationInfo&gt;
+      &lt;/layout&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt; </pre>
+
+    <h1 class="doAnchor" name="logback-access">logback access モジュール</h1>
+
+    <p>logback-access モジュールのほとんどのレイアウトは、logback-classic モジュールのレイアウトをそのまま移植しただけです。logback-classic モジュールと logback-access モジュールは用途が違うのですが、だいたい同じ機能を提供しています。</p>
+
+    <h2>レイアウトを自作する</h2>
+
+    <p>logback-access 用の<code>レイアウト</code>を自作するのは、logback-classic の<code>レイアウト</code>を自作するのとほとんど変わりありません。</p>
+
+
+    <h3 class="doAnchor" name="AccessPatternLayout">PatternLayout</h3>
+
+    <p>logback-access の<code><a href="http://logback.qos.ch/xref/ch/qos/logback/access/PatternLayout.html">PatternLayout</a></code>は、logback-classic とほとんど同じように設定することができます。ですが、HTTPリクエストやHTTPレスポンスにしか無い、ロギングに適した情報のための変換指定が追加されています。
+    </p>
+
+    <p>logback-accessの<code>PatternLayout</code>で使える変換指定を表にまとめました。</p>
+
+    <table class="bodyTable striped" border="0" cellpadding="8">
+      <tr>
+        <th align="center">変換指定</th>
+        <th align="center">効果</th>
+      </tr>
+      <tr>
+        <td class="word" name="remoteIP">
+          <b>a</b><br /><b>
+remoteIP</b>
+        </td>
+        <td>
+          <p>リモートIPアドレス。</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="localIP"><b>A</b><br /><b>
+localIP</b></td>
+        <td>
+          <p>ローカルIPアドレス。</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="bytesSent"><b>b</b><br /><b>
+B</b><br /><b>
+bytesSent</b></td>
+        <td>
+          <p>レスポンスのコンテンツ長。
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="clientHost"><b>h</b><br /><b>
+clientHost</b></td>
+        <td>
+          <p>リモートホスト名。
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="protocol"><b>H</b><br /><b>
+protocol</b></td>
+        <td>
+          <p>リクエストプロトコル。</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="remoteLogName"><b>l</b></td>
+        <td>
+          <p>リモートログ名。logback-accessではこのコンバーターの値は常に "-" です。
+          </p>
+        </td>
+      </tr>
+
+      <tr>
+        <td class="word" name="reqParameter"><b>reqParameter{paramName}</b></td>
+        <td>
+          <p>リクエストパラメータ。</p>
+          <p>この変換指定子は、オプションで指定されたリクエストパラメータを探します。</p>
+          <p><b>%reqParameter{input_data}</b>とすると、リクエストパラメータのinput_dataの値を出力します。</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="header"><b>i{header}</b><br /><b>
+header{header}</b></td>
+        <td>
+          <p>リクエストヘッダ。</p>
+          <p>この変換指定子はオプションで指定されたリクエストヘッダを探します。</p>
+          <p><b>％header{Referer}</b>とすると、リクエストヘッダのRefererの値を出力します。</p>
+          <p>オプションを指定しなかったら、利用可能なヘッダを全て出力します。
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="requestMethod"><b>m</b><br /><b>
+requestMethod</b></td>
+        <td>
+          <p>リクエストメソッド。</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="requestURL"><b>r</b><br /><b>
+requestURL</b></td>
+        <td>
+          <p>要求されたURL。
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="statusCode"><b>s</b><br /><b>
+statusCode</b></td>
+        <td>
+          <p>レスポンスのステータスコード。</p>
+        </td>
+      </tr>
+      <tr>
+          <td class="word" name="elapsedTime"><b>D</b><br /><b>
+elapsedTime</b></td>
+          <td>
+              <p>リクエストを処理するのにかかった時間。ミリ秒単位です。
+              </p>
+          </td>
+      </tr>
+      <tr>
+        <td class="word" name="dateAccess"><b>t</b><br /><b>
+date</b></td>
+        <td>
+          <p>ロギングイベントの日時を出力します。オプションとして、<code>java.text.SimpleDateFormat</code>で使用できる日時パターン文字列を指定します。<em>ISO8601</em>も有効な値です。
+          </p>
+          <p>具体的には、<b>％t {HH:mm:ss,SSS} </b>や、<b>%t{dd MMM yyyy;HH:mm:ss,SSS}</b>などです。日時パターン文字列が指定されなかったら、共通ログ書式の日時パターン文字列である<b>T6{dd/MMM/yyyy:HH:mm:ss Z}</b>が指定されたものとして扱います。
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="httpUser"><b>u</b><br /><b>
+user</b></td>
+        <td>
+          <p>リモートユーザー。
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="requestURI"><b>U</b><br /><b>
+requestURI</b></td>
+        <td>
+          <p>要求されたURI。</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="server"><b>v</b><br /><b>
+server</b></td>
+        <td>
+          <p>サーバー名。</p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td class="word" name="localPort"><b>localPort</b></td>
+        <td>
+          <p>ローカルポート番号。</p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td class="word" name="reqAttribute"><b>reqAttribute{attributeName}</b></td>
+        <td>
+          <p>リクエストの属性。</p>
+          <p>この変換指定子はオプションで指定された属性を探します。
+</p>
+          <p><b>％reqAttribute{SOME_ATTRIBUTE}</b>とすると、リクエスト属性SOME_ATTRIBUTEの値を出力します。</p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td class="word" name="reqCookie"><b>reqCookie{cookie}</b></td>
+        <td>
+          <p>リクエストクッキー。</p>
+          <p>この変換指定子はオプションで指定されたリクエストクッキーを探します。
+</p>
+          <p><b>％cookie{COOKIE_NAME}</b>とすると、クッキーCOOKIE_NAMEの値を出力します。</p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td class="word" name="responseHeader"><b>responseHeader{header}</b></td>
+        <td>
+          <p>レスポンスヘッダー。
+          </p>
+          <p>この変換指定子はオプションで指定されたレスポンスヘッダを探します。
+</p>
+          <p><b>%responseHeader{Server}</b>とすると、レスポンスヘッダServerの値を出力します。</p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td class="word" name="requestContent"><b>requestContent</b></td>
+        <td>
+          <p>この変換指定はリクエストの中身、つまり、リクエストの<code>InputStream</code>を出力します。実際は、<code><a href="http://logback.qos.ch/xref/ch/qos/logback/access/servlet/TeeFilter.html">TeeFilter</a></code>によって元の<code>HttpServletRequest</code>を<code>TeeHttpServletRequest</code>に置き換えます。だから、データを失わずに何度でもリクエストの<code>InputStream</code>にアクセスできるのです。
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td class="word" name="fullRequest"><b>fullRequest</b></td>
+        <td>
+          <p>リクエストに関連するヘッダ、コンテンツを全て出力します。
+          </p>
+        </td>
+      </tr>
+      <tr class="b">
+        <td class="word" name="responseContent"><b>responseContent</b></td>
+        <td>
+          <p>レスポンスの中身、つまり、レsポンスの<code>InputStream</code>を出力します。実際は、<code>TeeFilter</code>によって元の<code>HttpServletResponse</code>を<code>TeeHttpServletResponse</code>に置き換えます。だから、データを失わずに何度でもレスポンスの<code>InputStream</code>にアクセスできるのです。
+          </p>
+        </td>
+      </tr>
+      <tr class="a">
+        <td class="word" name="fullResponse"><b>fullResponse</b></td>
+        <td>
+          <p>レスポンスに関連するヘッダ、コンテンツを全て出力します。
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <p>logback-accessの<code>PatternLayout</code>ではさらに3つのキーワードが利用できます。これはいわゆるショートカットです。</p>
+
+    <table class="bodyTable">
+      <tr>
+        <th>キーワード</th>
+        <th>等価な変換パターン文字列</th>
+      </tr>
+      <tr class="a">
+        <td><em>common</em>
+<em>CLF</em></td>
+        <td><em>%h %l %u [%t] "%r" %s %b</em></td>
+      </tr>
+      <tr class="b">
+        <td><em>combined</em></td>
+        <td><em>%h %l %u [%t] "%r" %s %b "%i{Referer}" "%i{User-Agent}"</em></td>
+      </tr>
+
+    </table>
+
+
+    <p>キーワード<em>common</em>は変換文字列パターン<em>'%h %l %u [%t] "%r" %s %b'</em>と同じ意味になります。先頭から順番に、クライアントホスト、リモートログ名、ユーザー名、日時、リクエストURL、ステータスコード、レスポンスのコンテンツ長が出力されます。</p>
+
+    <p>キーワード<em>combined</em>は変換文字列パターン<em>'%h %l %u [%t]
+    "%r" %s %b "%i{Referer}" "%i{User-Agent}"'</em>のショートカットです。先頭は<em>common</em>キーワードの変換パターン文字列とほとんど代わりませんが、referer、user-agent というリクエストヘッダが追加されているのが違います。</p>
+
+    <h3 class="doAnchor" name="AccessHTMLLayout">HTMLLayout</h3>
+
+    <p>logback-accessモジュールの<a href="http://logback.qos.ch/xref/ch/qos/logback/access/html/HTMLLayout.html"><code>HTMLLayout</code></a>は、logback-classicモジュールの<a href="http://logback.qos.ch/manual/layouts.html#ClassicHTMLLayout"><code>HTMLLayout</code></a>とほとんど変わりません。
+    </p>
+
+    <p>デフォルトでは次の項目を含む表を作ります。</p>
+
+    <ul>
+      <li>リモートIP</li>
+      <li>日付</li>
+      <li>リクエストURL</li>
+      <li>レスポンスのステータスコード</li>
+      <li>コンテンツ長</li>
+    </ul>
+
+    <p>logack-accessの<code>HTMLLayout</code>による出力例を見てください。</p>
+    <img src="images/chapters/layouts/htmlLayoutAccess.gif" alt="アクセスHTMLレイアウトサンプル画像">
+
+    <p>実際に使うと上でもっと良くするにはどうしたらいいでしょうか？log4j.properties for logback <a href="http://logback.qos.ch/translator/">translator</a>は、logback-access の<code>RollingFileAppender</code>と<code>HTMLLayout</code>を使ってリアルタイム出力をするようになっています。</p>
+
+
+    <p>Webアプリケーションの<a href="http://logback.qos.ch/translator/">translator</a>に対するユーザーからのリクエストに対して、都度新しいアクセスログが出力されます。<a href="http://logback.qos.ch/translator/logs/access.html">このリンク先</a>でそれを見ることが出来ます。</p>
+
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>

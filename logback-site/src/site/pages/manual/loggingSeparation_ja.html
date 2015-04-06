@@ -1,0 +1,270 @@
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第9章 ログの分離</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content">	
+	
+    <h1>第9章 ログの分離</h1>
+      
+    <div class="quote">
+      <p><em>知識ではなくそれを学ぼうとする行為、所持することではなく得ようとする行為、それこそが最上の娯楽なのです。私は課題を研究し尽くしてしまうと、誰にも見つからないようにそこから離れてしまいます。私という決して満足できない人間は、何かを成し遂げた後平和裏に過ごすのではなく、すぐに違うことを始めてしまう奇人なのです。1つの国を征服したそばから、次の国に手を出そうとする、世界を征服するというのはこういうことなんだという確信があります。</em></p>
+
+      <p>-カール・フレデリッヒ・ガウス、1808年に記されたボヨイへの手紙</p>
+
+      <p><em>薄い絹のような洋服であってもほとんどの湿疹は隠れてしまう。</em></p>
+      
+      <p>-アルベール・カミュ、 <em>秋</em></p>
+
+    </div>
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+    <script src="../templates/setup.js" type="text/javascript"></script>
+
+    <h2>問題：ログの分離</h2>
+
+    <p>本章では、同じWebコンテナあるいはEJBコンテナ上で稼働する複数のアプリケーションで、ログを分離するにはどうすればいいのか検討します。文中で"application"という言葉を使う時は、WebアプリケーションかJ2EEアプリケーションのどちらかを表しています。分離されたログ環境では、それぞれのアプリケーションは独立したlogback環境になります。したがって、アプリケーションのlogbackの設定は、他の設定には影響しません。技術的な言葉で言うと、それぞれのWebアプリケーションは専用の独立した<code>LoggerContext</code>を使用します。logbackに話を戻します。<code>LoggerContext</code>に生成されたロガーオブジェクトは、メモリ上に残っている間はLoggerContextに割り当てられたままです。類似の問題として、アプリケーションのロギングとコンテナのロギングの分離、というものがあります。
+    </p>
+
+    <h2 class="doAnchor" name="easy">一番簡単でわかりやすい方法</h2>
+
+    <p>コンテナが子孫優先クラスローディングをサポートしていることにしましょう。その場合 slf4j と logback の jar ファイルをアプリケーション自体に含めるようにすればログを分離することができます。Webアプリケーションなら<em>WEB-INF/lib</em>ディレクトリの下に置くだけで、アプリケーションごとのロギングを分離するには十分です。logbackがメモリにロードされるとき、<em>WEB-INF/classes</em>に置かれた<em>logback.xml</em>のコピーが選ばれます。
+    </p>
+
+    <p>コンテナがクラスローダーを別々にしてくれるので、Webアプリケーションは自分の<code>LoggerContext</code>に自分の<em>logback.xml</em>を選ばせることができます。</p>
+    
+    <p>朝飯前です。</p>
+
+    <p>少し正確さにかけますね・・・SLF4Jとlogbackを全てのアプリケーションからアクセスできる場所に置かなければならないこともあるでしょう。共有ライブラリがSLF4Jを使っている場合などです。そうすると、全てのアプリケーションは同じlogback環境を共有することになってしまいます。他にも、全てのアプリケーションから参照できる場所にSLF4Jとlogbackを置かなければならないような状況はあるでしょう。そして、それはクラスローダー分離に基づくログの分離を不可能にしてしまいます。絶望しなくてもいいですよ。まだ希望は残されています。読み進めてください。
+    </p>
+
+    <h2 class="doAnchor" name="contextSelectors">コンテキストセレクタ</h2>
+
+    <p>logbackにはメモリにロードされている単一のインスタンスによって複数のLoggerContextを扱う仕組みがあります。次のように書いたとしましょう。</p>
+
+    <pre class="prettyprint source">Logger logger = LoggerFactory.getLogger("foo");</pre>
+
+    <p><code>LoggerFactory</code>の<code>getLogger()</code>メソッドは、SLF4Jのバインディングに<code>ILoggerFactory</code>を問い合わせます。SLF4Jがlogbackにバインドされているときは、<code>ILoggerFactory</code>を返すというタスクが、<a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/selector/ContextSelector.html">ContextSelector</a>に委譲されるのです。<code>ContextSelector</code>は常に<code>LoggerContext</code>のインスタンスを返すので気をつけておきましょう。ContextSelectorは、<code>ILoggerFactory</code>インターフェイスを実装しています。言い換えると、コンテキストセレクタは独自の基準に従って<code>LoggerContext</code>のインスタンスを返すことができるのです。だから<em>コンテキストセレクタ</em>という名前なのです。
+    </p>
+
+    <p>デフォルトでは、logbackバインディングは<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/selector/DefaultContextSelector.html">DefaultContextSelector</a>を使います。これは、デフォルトのロガーコンテキストと呼ばれる常に同じ<code>LoggerContext</code>を返します。</p>
+
+    <p>システムプロパティの<em>logback.ContextSelector</em>を使うと、別のコンテキストセレクタを指定することができます。コンテキストセレクタに<code>myPackage.myContextSelector</code>を指定したければ、次のように指定すればよいのです。</p>
+
+    <p class="source">-Dlogback.ContextSelector=myPackage.myContextSelector</p>
+
+    <p>コンテキストセレクタは、<code>ContextSelector</code>インターフェイスを実装しなければなりません。そして、<code>LoggerContext</code>を唯一の引数とするコンストラクタが必要です。
+    </p>
+
+
+    <h3 class="doAnchor" name="ContextJNDISelector">ContextJNDISelector</h3>
+
+    <p>logback-classic の配布物には<code>ContextJNDISelector</code>というコンテキストセレクタが含まれています。これは JNDI を介して参照できるロガーコンテキストを選択できるようにするものです。これは J2EE の仕様にある JNDI のデータ分離に基づいています。したがって、同じ環境変数を使って、アプリケーションごとに異なる値を渡すことが出来るようになります。言い換えると、単独のLoggerFactoryを全てのアプリケーションで共有している状態でも、それぞれのアプリケーションによる<code>LoggerFactory.getLogger()</code>の呼び出しに対して、独立したロガーコンテキストに割り当てられたロガーを返すようになるのです。これでログを分離することができるでしょう。
+    </p>
+
+    <p><code>ContextJNDISelector</code>を有効化するには、システムプロパティの<em>logback.ContextSelector</em>に"JNDI"を指定します。</p>
+
+    <p class="source">-Dlogback.ContextSelector=JNDI</p>
+
+    <p><code>JNDI</code>という値は、<code>ch.qos.logback.classic.selector.ContextJNDISelector</code>の省略形です。</p>
+
+    <h3 class="doAnchor" name="settingJNDIVariables">JNDI変数の設定</h3>
+    
+    <p>それぞれのアプリケーションが、専用のコンテキスト名を設定しなければなりません。Webアプリケーションの場合、JNDI環境変数は<em>web.xml</em>で指定します。アプリケーション名が "knobi" なら、web.xml に次のような設定を追加すればよいでしょう。</p>
+
+    <pre class="prettyprint source">&lt;env-entry&gt;
+  &lt;env-entry-name&gt;logback/context-name&lt;/env-entry-name&gt;
+  &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+  &lt;env-entry-value&gt;kenobi&lt;/env-entry-value&gt;
+&lt;/env-entry&gt;</pre>
+
+    <p><code>ContextJNDISelector</code>が有効になっているとしたら、kenobiアプリケーションのロガーは"kenobi"ロガーコンテキストに割り当てられたものになっているでしょう。また、"kenobi"ロガーコンテキストの設定ファイルは、<em>命名規約</em>にしたがって <em>logback-kenobi.xml</em>という名前になります。スレッドコンテキストクラスローダーの<em>リソース</em>から見つけて初期化に使われます。つまり、kenobiアプリケーションの<em>WEB-INF/classes</em>の下に<em>logback-kenobi.xml</em>を配置しておかなければなりません。
+    </p>
+
+    <p>"logback/configuration-resource" という JNDI 環境変数を使えば、命名規約に関わらず他の名前の設定ファイルを使うこともできます。例えば、kenobiアプリケーションで命名規約に従った<em>logback-kenobi.xml</em>ではなく<em>aFolder/my_config.xml</em>を使うとしたら、次のような設定をweb.xmlに追加することになります。</p>
+
+
+   <pre class="prettyprint source">&lt;env-entry&gt;
+  &lt;env-entry-name&gt;logback/configuration-resource&lt;/env-entry-name&gt;
+  &lt;env-entry-type&gt;java.lang.String&lt;/env-entry-type&gt;
+  &lt;env-entry-value&gt;aFolder/my_config.xml&lt;/env-entry-value&gt;
+&lt;/env-entry&gt;</pre> 
+
+    <p><em>my_config.xml</em>は、<em>WEB-INF/classes/aFolder/</em>の下に置かなければなりません。設定ファイルは、現在のスレッドのコンテキストクラスローダーによってJavaのリソースと同じように探索されるということを覚えておいてください。
+    </p>
+    
+
+    <h3 class="doAnchor" name="jndiTomcat">ContextJNDISelectorを使うためのTomcatの設定</h3>
+
+    <p>まず、logback.jar（logback-classic-1.1.2.jar logback-core-1.1.1.jar slf4j-api-1.7.6.jar）をTomcatのグローバルな共有クラスフォルダ（shared）に置きましょう。Tomcat 6.x の場合は、<em>$TOMCAT_HOME/lib</em> の下に置いてください。
+    </p>
+
+    <p>そして、<em>$TOMCAT_HOME/bin/catalina.sh（Windows の場合は catalina.bat）</em>の適切な場所で、次のようにシステムプロパティの<em>logback.ContextSelector</em>を設定してください。</p>
+
+    <p class="source">JAVA_OPTS="$JAVA_OPTS -Dlogback.ContextSelector=JNDI"</p>
+
+
+    <h3 class="doAnchor" name="hotDeploy">ホットデプロイ</h3>
+
+    <p>アプリケーションがリサイクルされるとき、あるいは、シャットダウンするとき、利用中の<code>LoggerContext</code>はクローズしましょう。確実にガベージコレクションされるためには欠かせません。声を大にしておすすめします。logbackの配布物には<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/selector/servlet/ContextDetachingSCL.html"><code>ContextDetachingSCL</code></a>という<code>ServletContextListener</code>が含まれています。これは古いアプリケーションのインスタンスに関連付けられている<code>ContextSelector</code>をデタッチするためだけに用意されたものです。<em>web.xml</em>に次のような設定を追加すれば有効になります。</p>
+
+    <pre class="prettyprint source">&lt;listener&gt;
+  &lt;listener-class&gt;ch.qos.logback.classic.selector.servlet.ContextDetachingSCL&lt;/listener-class&gt;
+&lt;/listener&gt;</pre>
+
+    <p>ほぼ全てのコンテナ実装は、web.xml に記載された順番でリスナーの<code>contextInitialized()</code>メソッドを呼び出します。ですが、<code>contextDestroyed()</code>メソッドの呼び出される順番は記載された順番の<span class="label notice">逆順</span>です。つまり、<em>web.xml</em>に複数の<code>ServletContextListener</code>を宣言している場合は、<code>ContextDetachingSCL</code>を<em>先頭</em>で宣言しなければならないということです。そうすれば、<code>contextDestroyed()</code>メソッドは<em>一番最後</em>に呼び出されるようになります。</p>
+
+    <h3 class="doAnchor" name="betterPerf">パフォーマンスの改善</h3>
+
+    <p><code>ContextJNDISelector</code>が有効になっていると、ロガーを取得するたびにJNDIの検索が行われるようになります。このことが、性能に悪影響を及ぼす可能性があります。特に静的変数ではない（インスタンス変数の）ロガーを使っている場合はその可能性は高まります。logbackの配布物には<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/selector/servlet/LoggerContextFilter.html">LoggerContextFilter</a>というサーブレットフィルターが含まれています。これはJNDIの検索にかかるコストを解消するために設計されたものです。web.xmlに次のような設定を追加すれば有効になります。
+</p>
+
+ <pre class="prettyprint source">&lt;filter&gt;
+  &lt;filter-name&gt;LoggerContextFilter&lt;/filter-name&gt;
+  &lt;filter-class&gt;ch.qos.logback.classic.selector.servlet.LoggerContextFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+&lt;filter-mapping&gt;
+  &lt;filter-name&gt;LoggerContextFilter&lt;/filter-name&gt;
+  &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;</pre>
+
+   <p>HTTPリクエストを受け付けたら、まず初めに<code>LoggerContextFilter</code>はアプリケーションに関連付けられたロガーコンテキストを取得して、<code>ThreadLocal</code>に保存します。<code>ContextJNDISelector</code>は、最初に<code>ThreadLocal</code>変数が設定されているかどうかをチェックします。設定されているときは、JNDIの検索をスキップします。HTTPリクエストの処理の最後に、<code>ThreadLocal</code>変数はnullにされるので気をつけてください。<code>LoggerContextFilter</code>を使うようにすると、ロギングの性能は大幅に改善します。
+   </p>
+
+   <p><code>ThreadLocal</code>の変数はnullになるので、アプリケーションがリサイクルされるときや停止するときのガベージコレクションでちゃんと回収されます。</p>
+
+
+   <h2 class="doAnchor" name="tamingStaticRefs">共有ライブラリ内部の静的参照を飼いならす</h2>
+
+   <p>全てのアプリケーションでSLF4Jとlogbackを共有しているとき、<code>ContextJNDISelector</code>を使うとうまくログを分離できます。<code>ContextJNDISelector</code>が有効なら、それぞれのアプリケーションの<code>LoggerFactory.getLogger()</code>メソッドの呼び出しは、アプリケーションに関連付けられたロガーコンテキストに割り当てられたロガーを返してくれます。</p>
+
+   <p>静的変数としてロガーを参照するのが一般的なイディオムです。</p>
+
+   <pre class="prettyprint source">public class Foo {
+  <b>static</b> Logger logger = LoggerFactory.getLogger(Foo.class);
+  ...
+}</pre>
+
+    <p>静的変数でロガーを参照するのは、メモリとCPUのどちらにとっても効率的です。そのクラスの全てのインスタンスは、ただ一つの参照を使いまわせるからです。また、ロガーのインスタンスを取得するのは、クラスがメモリにロードされたときだけです。ロガー静的変数を持っているクラスが kenobi アプリケーションに含まれているなら、そのロガーのインスタンスは<code>ContextJNDISelector</code>から取得したkenobi用のロガーコンテキストに割り当てられることになります。同様に、別のアプリケーション yoda に含まれているクラスのロガーインスタンスは、やはり<code>ContextJNDISelector</code>から取得した yoda用のロガーコンテキストに割り当てられることになります。
+    </p>
+    
+    <p>もし<em>kenobi</em>アプリケーションと<em>yoda</em>アプリケーションの両方で共有しているライブラリに含まれる<code>Mustafar</code>クラスだったら、ただし<code>Mustafar</code>クラスではインスタンス変数やローカル変数でロガーを参照していたらどうなるでしょうか。<code>LoggerFactory.getLogger()</code>メソッドは、それが呼ばれたアプリケーションに関連付けられたロガーコンテキストに割り当てられたロガーを返してくれるでしょう。しかし、<code>Mustafar</code>クラスが静的変数でロガーを参照していたらどうなるでしょう。その場合、最初にそのクラスを参照したアプリケーションに関連付けられたロガーコンテキストに割り当てられたロガーになってしまいます。つまり、<code>ContextJNDISelector</code>は、共有ライブラリのクラスが保持する静的変数のロガーについては、ログの分離ができないのです。このような状況は特に限定的なもので、長い間解決策が望まれつつも今に至ります。</p>
+
+
+    <p>この問題を文句のつけようもないくらいに完全に解決するには、別の観点でロガーの内部事情に切り込まなければなりません。たとえば、ロガーは実際の仕事をするロガーを内包するものとして、ロガーに対するメッセージは内包するロガーに委譲するようにします。そして、内包されたロガーは適切なロガーコンテキストを参照するようにするのです。このアプローチは実装が大変だし、オーバーヘッドが非常に高くなってしまうでしょう。取りかかる気にはなれません。
+    </p>
+
+    <p>クラスの共有を止めて、アプリケーションの内部に移動してしまうのが、"共有クラスの静的ロガー"問題に対するお手軽な解決方法の1つであることは言うまでもありません。共有しないようにするのが不可能なら、<a href="http://logback.qos.ch/manual/appenders.html#SiftingAppender"><code>SiftingAppender</code></a>の魔法を使ってログの分離を実現するしかないでしょう。
+    </p>
+
+    <p>logbackの配布物には<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/sift/JNDIBasedContextDiscriminator.html">JNDIBasedContextDiscriminator</a>という弁別器が含まれています。これは<code>ContextJNDISelector</code>の返すロガーコンテキストの名前を返すものです。<code>SiftingAppender</code>と<code>JNDIBasedContextDiscriminator</code>を組み合わせると、アプリケーションごとに別々のアペンダーインスタンスを生成することができます。
+    </p>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /&gt;  
+
+  &lt;appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender"&gt;
+    &lt;discriminator class="ch.qos.logback.classic.sift.JNDIBasedContextDiscriminator"&gt;
+      &lt;defaultValue&gt;unknown&lt;/defaultValue&gt;
+    &lt;/discriminator&gt;
+    &lt;sift&gt;
+      &lt;appender name="FILE-${contextName}" class="ch.qos.logback.core.FileAppender"&gt;
+        &lt;file&gt;<b>${contextName}.log</b>&lt;/file&gt;
+        &lt;encoder&gt;
+          &lt;pattern&gt;%-50(%level %logger{35}) cn=%contextName - %msg%n&lt;/pattern&gt;
+         &lt;/encoder&gt;
+      &lt;/appender&gt;
+     &lt;/sift&gt;
+    &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="SIFT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+
+   <p>kenobi と yoda というWebアプリケーションがあるとして、この設定ファイルを使うと yoda のログは <em>yoda.log</em>に、kenobi のログは<em>kenobi.log</em>に出力されるようになります。これは共有クラスの静的ロガーでも有効です。</p>
+ 
+   <p><a href="http://github.com/ceki/logback-starwars">logback-starwars</a>プロジェクトを使えば、ここで説明したテクニックを実際に試してみることができます。
+   </p>
+ 
+ 
+   <p>上記のアプローチは、ログの分離問題を解決できますがかなり複雑です。適切な<code>ContextJNDISelector</code>の設定や、アペンダーを<code>SiftingAppender</code>でラップするこは、手傷を負った猛獣のように手が付けられません。
+   </p>
+ 
+   <p>それぞれのロギングコンテキストは、同じ設定ファイルでも、それぞれ別の設定ファイルでも設定できることを忘れないようにしましょう。選ぶのはあなたです。コンテキストごとに設定ファイルをメンテナンスするよりは、全て同じ設定ファイルを使うようにするほうが簡単です。アプリケーションごとに設定ファイルをメンテナンスするのは大変ですが、柔軟性はあります。</p>
+ 
+   <p>これで終わりでしょうか？勝どきを上げて、気持ちよく我が家に帰れるのでしょうか？実はまだ続くんです。</p>
+ 
+   <p><code>yoda</code>が<code>kenobi</code>より前に初期化されるとしましょう。<code>yoda</code>を初期化するため、<code>http://localhost:port/yoda/servlet</code>を参照して<code>YodaServlet</code>を呼び出します。このサーブレットは単に挨拶を返すだけです。ただし、ログを取得してから<code>Mustafar</code>の<code>foo()</code>メソッドを呼び出します。このメソッドは単純にログを取得するだけのものです。
+   </p>
+ 
+   <p><code>YodaServlet</code>が呼び出された後、<em>yoda.log</em>の内容は次のようになります。</p>
+ 
+   <pre class="source">DEBUG ch.qos.starwars.yoda.YodaServlet             cn=yoda - in doGet()
+DEBUG ch.qos.starwars.shared.Mustafar              cn=yoda - in foo()</pre>
+ 
+   <p>どちらのログも、"yoda"アプリケーションに関連付けられたロガーコンテキストによるものであることが分かりますか。ここからサーバーが停止するまで、<code>ch.qos.starwars.shared.Mustafar</code>のロガーは、"yoda"コンテキストに割り当てられたものになります。
+   </p>
+
+   <p><code>http://localhost:port/kenobi/servlet</code>にアクセスした後の<em>kenobi.log</em>の内容は次のようになります。</p>
+
+   <pre class="source">DEBUG ch.qos.starwars.kenobi.KenobiServlet          <b>cn=kenobi</b> - in doGet()
+DEBUG ch.qos.starwars.shared.Mustafar               <b>cn=yoda</b> - in foo()</pre>
+
+   <p>なんと、<code>ch.qos.starwars.shared.Mustafar</code>のロガーは<em>kenobi.log</em>に出力しているのに、"yoda"コンテキストに割り当てられているロガーのままです。つまり、別のロガーコンテキストに割り当てられたロガーが同じファイル（この場合は<em>kenobi.log</em>）に出力してしまうのです。それぞれのコンテキストが参照している<code>FileAppender</code>のインスタンスは、別々の<code>SiftingAppender</code>のインスタンスに内包されたもので、同じファイルにログを出力しています。ログの分離は思った通りに機能しているように見えますが、<span class="option">prudent</span>モードを有効化しない限り、FileAppender は同じファイルへのログの書き込みを安全に行うことができません。そうしないとファイルの内容が壊れてしまいます。</p>
+   
+   <p>prudent モードを有効にした設定ファイルを見てください。</p>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+
+  &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /&gt;  
+
+  &lt;appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender"&gt;
+    &lt;discriminator class="ch.qos.logback.classic.sift.JNDIBasedContextDiscriminator"&gt;
+      &lt;defaultValue&gt;unknown&lt;/defaultValue&gt;
+    &lt;/discriminator&gt;
+    &lt;sift&gt;
+      &lt;appender name="FILE-${contextName}" class="ch.qos.logback.core.FileAppender"&gt;
+        &lt;file&gt;${contextName}.log&lt;/file&gt;
+        <b>&lt;prudent&gt;true&lt;/prudent&gt;</b>
+        &lt;encoder&gt;
+          &lt;pattern&gt;%-50(%level %logger{35}) cn=%contextName - %msg%n&lt;/pattern&gt;
+         &lt;/encoder&gt;
+      &lt;/appender&gt;
+     &lt;/sift&gt;
+    &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="SIFT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+
+   <p>ここまでの議論を読み解いてきて、その上で logback-starwars プロジェクトを試してみたのなら、きっともうロギングのことが頭から離れなくなっていると思います。これ以上のことは<a href="http://www.qos.ch/shop/products/professionalSupport">専門家の助け</a>を借りるしかないでしょう。</p>
+
+
+
+    <script src="../templates/footer.js" type="text/javascript"></script>
+   
+   </body> 
+</html>

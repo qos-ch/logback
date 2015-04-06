@@ -1,0 +1,1273 @@
+﻿<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"></meta>
+    <title>第3章 logbackの設定</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css"></link>
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen"></link>
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print"></link>
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"></link>
+  </head>
+  <body dir="ltr" onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"></script>
+    <script type="text/javascript" src="../js/dsl.js"></script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu_ja.js" type="text/javascript"></script>
+    </div>
+    <div id="content" class="chapter">
+      
+      <h1>第3章 logbackの設定</h1>
+      
+    <div class="quote">
+      <p><em>物事の本質を正確に表現するときは、記号を使うのが最も適している。また、記号によって表現されたものがあれば、思考に費やす労力が驚くほど軽減されるのだ。</em>
+      </p>
+      <p>—GOTTFRIED WILHELM LEIBNIZ</p>
+    </div>
+
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+
+
+    <p>設定スクリプトの例を示しながら、logback の設定方法を説明していきます。logback は Joran という設定フレームワークを利用しています。Joran については<a href="./11-onJoran.html">後の章</a>で紹介します。
+    </p>
+
+
+    <h2 class="doAnchor" name="auto_configuration">logback の設定</h2>
+    
+    <p>アプリケーションコードにロギング要求を埋め込むには、かなりの計画と作業が必要です。調査したところ、だいたいコード全体の4%ほどがロギングのために使われていました。したがって、そこそこの規模のアプリケーションであっても、数千行のロギング行が含まれることになるのです。その数を考えれば、私たちにロギング式を管理するためのツールが必要となる理由が理解できるのではないでしょうか。
+    </p>
+
+    <p>logback はプログラム的に設定することもできるし、XML や Groovy で記述された設定スクリプトで設定することもできます。なお、log4jユーザーのために、<em>log4j.propertiesファイル</em>を<em>logback.xml</em>に変換する<a href="http://logback.qos.ch/translator/">PropertiesTranslator</a>を用意しています。
+
+    </p>
+
+    <p>さて、logback が設定するところを順番に見ていきましょう。</p>
+
+    <ol>
+      <li>
+        <p>logback は<a href="./faq.html#configFileLocation">クラスパス</a>上で<em>logback.groovy</em>というファイルを探します。</p>
+      </li>
+
+      <li>
+        <p>見つからなかったら、今度は<a href="./faq.html#configFileLocation">クラスパス</a>上で<em>logback-test.xml</em>というファイルを探します。</p>
+      </li>
+
+      <li><p>見つからなかったら、今度は<a href="./faq.html#configFileLocation">クラスパス</a>上で<em>logback.xml</em>というファイルを探します。</p>
+      </li>
+      
+      <li><p>何も見つからなかったら、自動的に<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>を使って設定します。ロギング出力は直接コンソールに出力されるようになります。
+      </p> 
+      </li> 
+
+    </ol>
+
+    <p>四番目のステップは、設定ファイルが見つからなかった場合デフォルトの（ごく基本的な）設定をする、ということです。
+    </p>
+
+
+    <p>もし Maven を使用しているなら、<em>src/test/resources</em> フォルダの下に <em>logback-test.xml</em>を置いている場合でも、それがアーティファクトに入り込まないことは Maven によって保証されます。したがって、テスト用と実際の環境用で、<em>logback-test.xml</em>と<em>logback.xml</em>を使い分けることができます。Antでも原則的に同じことができます。
+    </p>
+
+
+    <h3 class="doAnchor" name="automaticConf">logback の自動設定</h3>
+
+    <p>logback を設定する一番簡単な方法は、デフォルト設定を使わせることです。仮に<code>MyApp1</code>というアプリケーションがあるつもりで、これがどのように行われるのか詳しく見てみましょう。
+    </p>
+
+    <p class="example">例：<code>BasicConfigurator</code>の使用例（<a href="http://logback.qos.ch/xref/chapters/configuration/MyApp1.html">logback-examples/src/main/java/chapters/configuration/MyApp1.java</a>）</p>
+
+    <pre class="prettyprint source">package manual.configuration;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class MyApp1 {
+  final static Logger logger = LoggerFactory.getLogger(MyApp1.class);
+
+  public static void main(String[] args) {
+    logger.info("Entering application.");
+
+    Foo foo = new Foo();
+    foo.doIt();
+    logger.info("Exiting application.");
+  }
+}</pre>
+
+  <p>このクラスでは、ロガーを静的クラスメンバ変数として定義しています。その後、<code>Foo</code>クラスのオブジェクトを生成します。<code>Foo</code>クラスの定義は次のとおりです。</p>
+
+  <p class="example">例：ロギングするクラスの例（<a href="http://logback.qos.ch/xref/chapters/configuration/Foo.html">logback-examples/src/main/java/chapters/configuration/Foo.java</a>）
+  </p>
+
+  <pre class="prettyprint source">package chapters.configuration;
+  
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+   
+public class Foo {
+  static final Logger logger = LoggerFactory.getLogger(Foo.class);
+  
+  public void doIt() {
+    logger.debug("Did it again!");
+  }
+}</pre>
+
+
+    <p>この章で紹介しているサンプルプログラムを実行するには、クラスパスに所定のjarファイルを置いておかなければなりません。詳しくは<a href="http://logback.qos.ch/setup.html">セットアップ</a>の説明をを参照してください。
+    </p>
+
+    <p><em>logback-test.xml</em>も<em>logback.xml</em>も無い場合、logback は<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>によって最小限の設定を行います。最小限の設定としてやることは、ルートロガーに<code>ConsoleAppender</code>を割り当てることだけです。出力は<code>PatternLayoutEncoder</code>によって書式化されます。<code>PatternLayoutEncoder</code>には、<em>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</em>という書式化パターンが設定されています。また、ルートロガーにはデフォルトで<code>DEBUG</code>レベルが割り当てられます。
+    </p>
+
+    <p><em>java chapters.configuration.MyApp1</em>を実行すると次のような出力が得られます。</p>
+
+    <p class="source">16:06:09.031 [main] INFO  chapters.configuration.MyApp1 - Entering application.
+16:06:09.046 [main] DEBUG chapters.configuration.Foo - Did it again!
+16:06:09.046 [main] INFO  chapters.configuration.MyApp1 - Exiting application.</p>
+
+
+   <p class="highlight">（あるとしたら）logback を設定するコード以外に、クライアントコードは一切logbackに依存しません。ロギングフレームワークとしてlogbackを使用するアプリケーションがコンパイル時に依存するのはSLF4Jであって、logbackではありません。
+   </p>
+
+   <p><code>MyApp1</code>アプリケーションとlogbackのリンクは、アプリケーションが呼び出した<code>org.slf4j.LoggerFactory</code>クラスと<code>org.slf4j.Logger</code>クラスによって行われます。これらのクラスは、使用するロガーを（クラスローダーから？）取得し、つなぎあわせます。<code>Foo</code>クラスからlogbackへの依存は、<code>org.slf4j.LoggerFactory</code>と<code>org.slf4j.Logger</code>のimportを介した間接的なものであることに注意しましょう。SLF4Jはあらゆるロギングフレームワークから利用するための抽象層を備えています。おかで、ほとんどのコードをあるロギングフレームワークから別のロギングフレームワークに移行するのがとても簡単になっています。
+   </p>
+
+   <h3><em>logback-test.xml</em>または<em>logback.xml</em>による自動設定</h3>
+
+   <p>前述したとおり、logback はクラスパス上で<em>logback-test.xml</em>や<em>logback.xml</em>を探して自分を設定しようとします。次に示す設定ファイルは、<code>BasicConfigurator</code>によって行われるのとまったく同じ内容の設定です。
+   </p>
+
+   <p class="example">例：基本的な設定ファイル（<a href="http://logback.qos.ch/xref/chapters/configuration/sample0.xml">logback-examples/src/main/java/chapters/configuration/sample0.xml</a>）</p>
+   <span class="asGroovy" onclick="return asGroovy(&#39;sample0&#39;);">Groovyで見る</span>
+
+
+  <pre id="sample0" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default --&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+   <p>ファイル名を<em>sample0.xml</em>から<em>logback.xml</em>（または<em>logback-test.xml</em>）に変更して、クラスパスに含まれるフォルダに置きましょう。そして<em>MyApp1</em>アプリケーションを実行すると、前の実行例と同じ出力結果が得られるはずです。</p>
+
+   <h4 class="doAnchor" name="automaticStatusPrinting">警告やエラーが発生した際、ステータスメッセージを自動的に出力する</h4>
+
+   <p class="highlight">設定ファイルを解析している間に警告やエラーが発生した場合、logback は内部状態を表すメッセージを自動的にコンソールに出力します。</p>
+ 
+   <p>出力が重複することを避けるため、利用者が明示的にステータスリスナーを登録していた場合（後で例を示します）ステータスの自動出力は無効になります。</p>
+
+   <p>警告やエラーが起きていなくても logback の内部状態を出力させたければ、<code>StatusPrinter</code>クラスの<code>print()</code>メソッドを使えばよいです。次の<em>MyApp2</em>アプリケーションは、内部状態を出力するためのコードが二行追加されていることを除いて<em>MyApp1</em>とまったく同じです。</p>
+
+    <p class="example">例：logbackの内部状態を出力する（<a href="http://logback.qos.ch/xref/chapters/configuration/MyApp2.html">logback-examples/src/main/java/chapters/configuration/MyApp2.java</a>）</p>
+
+  
+<pre class="prettyprint lang-java source">
+  public static void main(String[] args) {
+    // SLF4J が logback を使うようになっていると想定
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+    // logback の内部状態を出力
+    <b>StatusPrinter.print(lc);</b>
+    ...
+  }</pre>
+
+  <p>何も問題が無ければ、コンソールに次のような出力が表示されます。</p>
+
+   <div class="source longline"><pre>17:44:58,578 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-test.xml]
+17:44:58,671 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
+17:44:58,671 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+17:44:58,687 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
+17:44:58,812 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Popping appender named [STDOUT] from the object stack
+17:44:58,812 |-INFO in ch.qos.logback.classic.joran.action.LevelAction - root level set to DEBUG
+17:44:58,812 |-INFO in ch.qos.logback.core.joran.action.AppenderRefAction - Attaching appender named [STDOUT] to Logger[root]
+
+17:44:58.828 [main] INFO  chapters.configuration.MyApp2 - Entering application.
+17:44:58.828 [main] DEBUG chapters.configuration.Foo - Did it again!
+17:44:58.828 [main] INFO  chapters.configuration.MyApp2 - Exiting application.
+</pre></div>
+
+  <p>出力結果の最後の方に、前の例で出力されたものと同じ行があることが分かるでしょう。logback の内部メッセージには気をつけるようにしてください。<code>Status</code>オブジェクトを使うと内部状態に簡単にアクセスできます。
+  </p>
+
+   <p>コード中で<code>StatusPrinter</code>をプログラム的に呼び出す代わりに、設定ファイルで内部ステータスを出力するように指定することができます。警告やエラーが起きなくてもです。そのためには<em>configuration</em>要素の<span class="attr">debug</span>属性を設定します。この要素はXML形式の設定ファイルにおける最上位要素です。後で例を示します。<span class="attr">debug</span>属性はステータス情報にだけしか影響しないことは覚えておいてください。繰り返しますが、logback の他の設定には<em>影響しません</em>。ロガーレベルについても同様です。（たとえそうなっていて欲しくても、ルートロガーのログレベルは<code>DEBUG</code>に<em>なりません</em>。）
+   </p>
+
+
+   <p class="example">例：基本的な設定ファイルをデバッグモードにする（<a href="http://logback.qos.ch/xref/chapters/configuration/sample1.xml">logbackexamples/src/main/java/chapters/configuration/sample1.xml</a>）</p>
+   <span class="asGroovy" onclick="return asGroovy(&#39;sample1&#39;);">Groovyで見る</span>
+
+   <pre id="sample1" class="prettyprint source">
+&lt;configuration <span class="big bold">debug="true"</span>&gt; 
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt; 
+    &lt;!-- encoders are  by default assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder --&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+  
+   <p>configuration 要素の<code>debug</code>属性が設定されていると、次のような内部ステータスが出力されます。</p>
+   <ol>
+     <li>設定ファイルが見つかったかどうか</li>
+     <li>設定ファイルのXML文法が適格かどうか</li>
+   </ol>
+     
+   <p>これらのいずれかの条件が満たされなかった場合、設定ファイルを読み込むことができないので、Joran には<span class="attr">debug</span>属性を理解することができません。見つかった設定ファイルがXMLとして不適格な場合、logback はエラーと判断し、自動的に内部状態をコンソールに出力します。ですが、設定ファイルが見つからなかった場合、logback は内部状態を自動的に出力することはありません。それだけではエラーと見做すには不十分だからです。<a href="http://logback.qos.ch/xref/chapters/configuration/MyApp2.html"><em>MyApp2</em></a>アプリケーションの例で示したように、<code>StatusPrinter.print()</code>をプログラム的に呼び出していれば、どんな場合でも内部ステータス情報を確実に出力するようになります。</p>
+
+ 
+   <p>ステータスメッセージが無くても<span class="label">強制的に</span>内部ステータス情報を出力させていると、不正な<em>logback.xml</em>がどこにあるのか突き止めるのが難しくなります。アプリケーションのソースコードを簡単に変更できない商用環境においては特にそうです。不正な設定ファイルの場所を見つけやすくするには、システムプロパティの"logback.statusListenerClass"（<a href="./03-configuration.html#logback.statusLC">すぐ後で説明します</a>）に<code>StatusListener</code>を指定するとよいでしょう。そうすれば、強制的にステータスメッセージを出力させることができます。"logback.statusListenerClass" システムプロパティを使うと、エラーが発生したときに自動的に出力されるメッセージを抑止することもできます。
+   </p>
+
+   <h3 class="doAnchor" name="configFileProperty">システムプロパティでデフォルトの設定ファイルの場所を指定する</h3>
+
+   <p>システムプロパティの<code>"logback.configurationFile"</code>を使えば、デフォルトの設定ファイルの場所を指定することができます。このプロパティにはURL形式の値を指定します。クラスパス上のリソースやアプリケーションの外部のファイルを指定することができます。
+   </p>
+
+   <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapters.configuration.MyApp1</p>
+
+   <p>ファイルの拡張子は ".xml" か ".groovy" でなければならないので注意してください。他の拡張子の場合は無視します。<a href="./03-configuration.html#logback.statusLC">ステータスリスナーを明示的に登録</a>しておくと、設定ファイルの場所を突き止めるのに役立つでしょう。</p>
+
+
+   <h3 class="doAnchor" name="autoScan">設定ファイルが変更されたら自動的に再読み込みする</h3>
+
+   <p class="highlight">logback-classic は設定ファイルの変更を監視することができます。そして、なんらか変更があった場合は自動的に再読み込みすることができます。</p>
+
+   <p><code>configuration</code>要素の<span class="attr">scan</span>属性を設定すると、設定ファイルの監視と自動的な再読み込みができるようになります。
+
+   </p>
+  
+   <p class="example">例：設定ファイルの変更の監視と自動的な再読み込み（<a href="http://logback.qos.ch/xref/chapters/configuration/scan1.xml">logback-examples/src/main/java/chapters/configuration/scan1.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return asGroovy(&#39;scan1&#39;);">Groovyで見る</span>
+<pre id="scan1" class="prettyprint source">
+&lt;configuration <b>scan="true"</b>&gt; 
+  ... 
+&lt;/configuration&gt; </pre>
+
+
+   <p>デフォルトでは、設定ファイルを一分毎に監視します。<code>configuration</code>要素の<span class="attr">scanPeriod</span>属性に、監視周期を設定することができます。設定値はミリ秒、秒、分または時間単位で指定することができます。以下に例を示します。</p>
+
+  <p class="example">例：デフォルトとは異なる監視周期を指定する（<a href="http://logback.qos.ch/xref/chapters/configuration/scan2.xml">logback-examples/src/main/java/chapters/configuration/scan2.xml</a>）</p>
+  <span class="asGroovy" onclick="return asGroovy(&#39;scan2&#39;);">Groovyで見る</span>
+  <pre id="scan2" class="prettyprint source">
+&lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> &gt; 
+  ...
+&lt;/configuration&gt; </pre>
+
+   <p>時間の単位を指定しなかった場合ミリ秒として扱われますが、たいていの場合不適切だと思いますので<span class="label">注意</span>してください。時間単位を指定することを忘れないでください。
+   </p>
+
+   <p>舞台裏で起きていることを説明しましょう。scan 属性に true を指定すると、<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/turbo/ReconfigureOnChangeFilter.html">ReconfigureOnChangeFilter</a>という<code>TurboFilter</code>の派生クラスがインストールされます。TurboFiltersについては<a href="./filters.html#TurboFilter">後の章</a> で説明します。設定ファイルのスキャンは「内部スレッド」で行います。ロガーの出力メソッドが呼び出されるときは常にスキャンされるということです。（訳注：正確には、出力メソッドが呼び出されるたびにフィルタが評価されるので、その都度 logback のコンテキストに指定された ThreadExecutor にファイルをスキャンするタスクが投入されます。そして、ThreadExecutor の管理するスレッドによって実行されます。）例えば、scan 属性に true が設定されている場合、<code>myLogger</code>というロガーを使った「myLoger.debug("hello");」というロギング式があったら、このロギング式が実行されるたびに<code>ReconfigureOnChangeFilter</code>が呼び出されることになります。さらに言うと、<code>myLogger</code>でDEBUGレベルが無効になっているとしてもフィルターはその都度呼び出されることになります。
+   </p>
+
+   <p class="highlight">設定ファイルを変更すると、何回かロギング処理を実行した後で、かつ、監視周期に基いて決定した遅延時間が経過したら、自動的に再読み込みします。
+   </p>
+
+   <p><em>どんな</em>ロガーであれ、ロガーレベルがどうであれ、出力メソッドを呼び出すと<code>ReconfigureOnChangeFilter</code>も呼び出すことになるので、間違いなく致命的な性能影響があります。したがって、監視周期が経過していようともいまいとも、とてもコストの高い処理になります。性能を改善するため、実際に<code>ReconfigureOnChangeFilter</code>が有効になるのは、<em>N</em>回のロギングごとに一回だけです。あなたのアプリケーションがどれくらいの頻度でロギングするのかにもよるのですが、logback は<em>N</em>の値を実行している環境に合わせて調整します。Nのデフォルト値は16です。CPUを占有するアプリケーションの場合最大で2^16(=65536)にまで増えます。
+   </p>
+   
+   <p>簡単に言うとこうなります。設定ファイルを変更すると、何回かロギング処理を実行した後で、かつ、監視周期に基いて決定した遅延時間が経過したら、自動的に再読み込みします。
+   </p>
+
+   
+
+   <h3 class="doAnchor" name="joranDirectly"><code>JoranConfigurator</code>を直接呼び出す</h3>
+
+   <p>logback は、logbac-core に含まれる Joran という設定用ライブラリを利用しています。logback のデフォルトの設定の仕組みでは、<code>JoranConfigurator</code>を呼び出して、クラスパス上で見つけたデフォルトの設定ファイルを渡すようになっています。何か理由があってデフォルトの設定の仕組みを上書きしたい場合、<code>JoranConfigurator</code>を直接呼び出すことができます。次に示す<em>MyApp3</em>アプリケーションでは、設定ファイルを引数としてJoranConfiguratorを呼び出しています。</p>
+   
+   <p class="example">例：<code>JoranConfigurator</code>を直接呼び出す（<a href="http://logback.qos.ch/xref/chapters/configuration/MyApp3.html">logback-examples/src/mian/java/chapters/configuration/MyApp3.java</a>）</p>
+
+<pre class="prettyprint source">package chapters.configuration;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
+
+public class MyApp3 {
+  final static Logger logger = LoggerFactory.getLogger(MyApp3.class);
+
+  public static void main(String[] args) {
+    // SLF4J が logback を使うようになっていると想定
+    <b>LoggerContext context = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+    
+    <b>try {
+      JoranConfigurator configurator = new JoranConfigurator();
+      configurator.setContext(context);
+      // デフォルト設定を取り消すために context.reset() を呼び出す
+      // 複数の設定を積み重ねる場合は呼ばないようにする
+      context.reset(); 
+      configurator.doConfigure(args[0]);
+    } catch (JoranException je) {
+      // StatusPrinter will handle this
+    }
+    StatusPrinter.printInCaseOfErrorsOrWarnings(context);</b>
+
+    logger.info("Entering application.");
+
+    Foo foo = new Foo();
+    foo.doIt();
+    logger.info("Exiting application.");
+  }
+}</pre>
+
+   <p>アプリケーションは、新しく生成した<code>JoranConfigurator</code>を、有効な<code>LoggerContext</code>に設定してから、ロガーコンテキストを初期化します。そして、アプリケーションの引数として渡された設定ファイルを使ってconfiguratorに設定させています。警告やエラーが発生した場合、内部ステータスが出力されます。複数の設定を積み重ねる場合は、<code>context.reset()</code>を呼び出さないようにしなければなりません。</p>
+
+   <h3 class="doAnchor" name="viewingStatusMessages">ステータスメッセージの内容</h3>
+
+   <p>logback は <code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/StatusManager.html">StatusManager</a></code>オブジェクトに内部ステータス情報を蓄積しています。このオブジェクトは<code>LoggerContext</code>からアクセスすることができます。
+   </p>
+
+   <p><code>StatusManager</code>があれば、logbackのコンテキストに関連付けられた全てのステータス情報にアクセスすることができます。メモリ使用量を妥当なレベルで抑えるため、<code>StatusManager</code>のデフォルト実装ではステータスメッセージを先頭と末尾に分けて格納しています。先頭には最初の<em>H</em>個のステータスメッセージを格納し、末尾には最後の<em>T</em>個のステータスメッセージを格納します。今のところ<em>H</em>も<em>T</em>も150になっていますが、将来的にこの値は変更されるかもしれません。</p>
+
+   <p>logback-classic の配布物には、ViewStatusMessagesServlet というサーブレットが含まれています。このサーブレットは、<code>LoggerContext</code>に関連付けられた<code>StatusManager</code>の持つステータスメッセージを、HTML の表で描画します。出力サンプルは次のようになります。
+   </p>
+   
+   <a href="./lbClassicStatus.jpg">
+     <img src="images/chapters/configuration/lbClassicStatus.jpg" alt="クリックすると拡大します" width="90%">
+   </a>
+
+   <p>Webアプリケーションにこのサーブレットを追加するには、<em>WEB-INF/web.xml</em>に次の行を追加します。</p>
+
+   <pre class="prettyprint source">  &lt;servlet&gt;
+    &lt;servlet-name&gt;ViewStatusMessages&lt;/servlet-name&gt;
+    &lt;servlet-class&gt;ch.qos.logback.classic.ViewStatusMessagesServlet&lt;/servlet-class&gt;
+  &lt;/servlet&gt;
+
+  &lt;servlet-mapping&gt;
+    &lt;servlet-name&gt;ViewStatusMessages&lt;/servlet-name&gt;
+    &lt;url-pattern&gt;/lbClassicStatus&lt;/url-pattern&gt;
+  &lt;/servlet-mapping&gt;</pre>
+   
+   <p><code>ViewStatusMessages</code>サーブレットにアクセスするためのURLは次のようになります。
+<code>http://host/yourWebapp/lbClassicStatus</code>
+   </p>
+
+   <h3 class="doAnchor" name="statusListener">ステータスメッセージの待ち受け</h3>
+
+   <p><code>StatusManager</code>に<code>StatusListener</code>を割り当てて、ステータスメッセージを受け取った応答として直ちに何らかの処理を実行させることができます。ただし、ステータスメッセージを受け取ることができるのは logback の設定が完了した後になります。ステータスリスナーを登録しておくと、人間が介入しなくてもlogbackの内部状態を監視できるようになるので便利です。
+   </p>
+
+   <p>logback の配布物には<code>StatusListener</code>を実装した<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a></code>というクラスが含まれています。名前が表すとおり、<em>到着した</em>ステータスメッセージを全てコンソールに出力します。
+   </p>
+
+   <p>これは、StatusManager に<code>OnConsoleStatusListenerを登録する<a href="http://logback.qos.ch/xref/chapters/configuration/AddStatusListenerApp.html">サンプルコード</a>です。</code>
+   </p>
+
+   <pre class="prettyprint source">   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
+   StatusManager statusManager = lc.getStatusManager();
+   OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
+   statusManager.add(onConsoleListener);</pre>
+
+   <p>ステータスリスナーは、登録された後に発生したステータスメッセージだけしか受け取らないので気をつけてください。それより前のステータスメッセージは受け取りません。ですので、ステータスリスナーの登録を設定ファイルの一番最初の方に置いて、他のディレクティブよりも先に評価されるようにするとよいでしょう。</p>
+
+   <p>また、これは一つ以上のステータスリスナーを登録できるということでもあります。例を示します。</p>
+
+   <p class="example">例：ステータスリスナーの登録（<a href="http://logback.qos.ch/xref/chapters/configuration/onConsoleStatusListener.xml">logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml</a>）</p>
+
+   <span class="asGroovy" onclick="return asGroovy(&#39;onConsoleStatusListener&#39;);">Groovyで見る</span>
+   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /&gt;</b>  
+
+  ... the rest of the configuration file  
+&lt;/configuration&gt;</pre>
+
+   <h3 class="doAnchor" name="logback.statusLC">システムプロパティ "logback.statusListenerClass"</h3>
+
+   <p>ステータスリスナーを登録するには、システムプロパティの "logback.statusListenerClass" に、リスナークラス名を設定する方法もあります。例を示します。</p>
+
+   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener ...</p>
+   
+   <p>logback の配布物にはいくつかのステータスリスナー実装が含まれています。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a> は、受け取ったステータスメッセージを、コンソール（例えばSystem.out）に出力します。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/OnErrorConsoleStatusListener.html">OnErrorConsoleStatusListener</a> は、受け取ったステータスメッセージをSystem.errに出力します。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/NopStatusListener.html">NopStatusListener</a>は、受け取ったステータスメッセージをそのまま捨ててしまいます。</p>
+   
+
+   <p>設定の途中でステータスリスナーを登録したり、システムプロパティの"logback.statusListenerClass" でステータスリスナーを指定した場合は、<a href="./03-configuration.html#automaticStatusPrinting">メッセージステータスの自動出力（エラー発生時）</a>が無効になるので気をつけてください。つまり、<code>NopStatusListener</code>を使うように設定すると、内部ステータスの出力を完全に止めることが出来るのです。</p>
+   
+   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.NopStatusListener ...</p>
+
+
+   <h3 class="doAnchor" name="stopContext">logback-classic を止める</h3>
+
+   <p>logback-classic が使用しているリソースを解放するには、どんな場合でもlogbackコンテキストを停止することをお勧めします。コンテキストを停止すると、コンテキストに定義されたロガーに割り当てられている全てのアペンダーを閉じて、すべてのアクティブなスレッドを停止します。
+   </p>
+
+<pre class="prettyprint lang-java source">
+import org.sflf4j.LoggerFactory;
+import ch.qos.logback.classic.LoggerContext;
+...
+
+// SLF4J が logback を使うようになっていると想定
+<b>LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
+<b>loggerContext.stop();</b></pre>
+
+   <p>Webアプリケーションの場合、logback-classic を停止してリソースを開放するために、<code>ServletContextListener</code>の<a href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)">contextDestroyed</a>メソッドから上記のようなコードを実行します。
+
+   <h2 class="doAnchor" name="syntax">設定ファイルの構文</h2>
+
+   <p>ここまでに、たくさんのわかりやすい例を見てきてお分かりのとおり、logback はコードを再コンパイルすること無く、ロギングの振る舞いを変えることができます。アプリケーションの特定の部分でロギングを無効にする、UNIX Syslog デーモンに直接出力する、データベースに出力する、ログの可視化ツールに出力する、別の logback サーバにロギングイベントを転送する、こういった色んな設定が実に簡単にできるようになっています。ロギングイベントの転送について補足すると、ログの転送はローカルサーバーのポリシーに従って行われます。例えば、ロギングイベントを二つ目のリモートlogbackサーバーに転送する、というようなものです。
+   </p>
+	
+   <p>このセクションの残りの部分では、設定ファイルの構文を紹介します。
+   </p>
+
+   <p>すでに何度か読んできたとおり、logback の設定ファイル構文はとても柔軟になっています。そのため、DTD や XML スキーマによって定義することができません。そうは言っても設定ファイルの基本的な構成要素について説明しないと始まらないでしょう。次のように定義されています。<code>configuration</code>要素は、0以上の<code>appender</code>要素、0以上の<code>logger</code>要素、1つの<code>root</code>要素によって構成されています。次の図は、この基本構造を図示したものです。</p>
+
+  
+  <p align="left">
+    <img src="images/chapters/configuration/basicSyntax.png" alt="基本的な構文" title="基本構成ファイルの構造">
+  </p>
+
+
+    <p class="highlight">タグ名に大文字と小文字のどちらを使うべきなのかわからないときは、<a href="http://en.wikipedia.org/wiki/CamelCase">キャメルケース規約</a>に従ってもらえれば、ほとんどの場合は合っていると思います。</p>
+
+    <h4 class="doAnchor" name="caseSensitivity">タグ名の大文字小文字の区別</h4>
+   
+    <p>logback 0.9.17 以降のリリースから、タグ名の大文字小文字は区別しないと明記されるようになりました。例えば、<code>&lt;logger&gt;</code>と<code>&lt;Logger&gt;</code>と<code>&lt;LOGGER&gt;</code>はどれもconfiguration要素の子要素として正しく、同じように解釈されます。XMLとしての適格性ルールは有効なままなので、開きタグを<code>&lt;xyz&gt;</code>として書いたら、閉じタグは<code>&lt;/xyz&gt;</code>でなければなりません。<code>&lt;/XyZ&gt;</code>ではダメです。<a href="./onJoran.html#implicit">暗黙的なルール</a>として、タグ名については最初の一文字以外は大文字小文字を区別するようになっています。したがって、<code>&lt;xyz&gt;</code>と<code>&lt;Xyz&gt;</code>は同じものとみなされますが、<code>&lt;xYz&gt;</code>はダメです。暗黙のルールとは言っても大体は<a href="http://en.wikipedia.org/wiki/CamelCase">キャメルケース</a>に従っています。Javaの世界では一般的な規則です。タグが明示的なアクションと暗黙的なアクションのどちらにも関連付けられていると、それを説明するのは決して簡単なことではありません。ですので、XML タグ名の最初の一文字が大文字小文字を区別するかどうかについて言及しておくことはとても重要なのです。
+    </p>
+
+    <h4 class="doAnchor" name="loggerElement">ロガーの設定について、あるいは、<code>logger</code>要素について</h4>
+
+    <p>ここでは、少なくとも<a href="./architecture.html#effectiveLevel">レベルの継承</a>と<a href="./architecture.html#basic_selection">基本的な選択ルール</a>についてある程度理解しておかなければなりません。そうでなければ、あなたがエジブト語の学者でも無い限り、logback の設定ファイルはヒエログラフよりも意味の無いものでしかないでしょう。
+    </p>
+
+    <p>ロガーは<code>logger</code>要素で設定します。<code>logger</code>要素には少なくとも一つの<span class="attr">name属性</span>が必要です。<span class="attr">level属性</span>、そして<em>true</em>または<em>false</em>を指定できる<span class="attr">additivity属性</span>は任意です。<span class="attr">level属性</span>にはTRACE、DEBUG、INFO、WARN、ERROR、ALLまたはOFFのいずれかの文字列を指定できます。大文字小文字は区別しません。大文字小文字を区別しない特別な値として<em>INHERITED</em>またはその同義語として<em>NULL</em>を指定すると、祖先から継承したロガーのレベルを強制的に使用することができます。ロガーのレベルを設定した後で、祖先ロガーのレベルを継承するべきだったことがわかった場合に便利です。
+    </p>
+
+    <p class="highlight">
+    log4jとは違って、logback-classic はロガーを設定した時に割り当てたどんなアペンダーもくクローズ<em>しない</em>し削除もしないので注意してください。
+    </p>
+
+    <p><code>logger要素</code>には任意個の<code>appender-ref要素</code>を含めることができます。参照しているアペンダーがロガーに割り当てられます。log4jとは違って、logback-classic はロガーを設定した時に割り当てたどんなアペンダーもくクローズ<em>しない</em>し削除もしないので注意してください。
+    </p>
+
+
+
+   <h4 class="doAnchor" name="rootElement">ルートロガー、あるいは、<code>root</code>要素について</h4>
+
+   <p>ルートロガーは<code>root</code>要素で設定します。たった一つ、<span class="attr">level属性</span>だけを指定できます。ルートロガーにはadditivity属性などの他の属性を指定することはできません。さらに、ルートロガーの名前は予め"ROOT"になっているので、name属性も指定することはできません。level属性にはTRACE、DEBUG、INFO、WARN、ERROR、ALLまたはOFFのいずれかの文字列を指定できます。大文字小文字は区別しません。ルートロガーにはINHERITEDまたはその同義語であるNULLを指定することはできません。</p>
+
+   <p class="highlight">log4jとは違って、logback-classic はルートロガーを設定した時に割り当てたどんなアペンダーもくクローズ<em>しない</em>し削除もしないので注意してください。</p>
+
+   <p><code>logger要素</code>と同じく、<code>root要素</code>には任意個の<code>appender-ref要素</code>を含めることができます。参照しているアペンダーがロガーに割り当てられます。log4jとは違って、logback-classic はルートロガーを設定した時に割り当てたどんなアペンダーもくクローズ<em>しない</em>し削除もしないので注意してください。
+</p>
+
+   <h4>例</h4>
+
+   <p>ロガーあるいはルートロガーにレベルを設定するのは非常に簡単です。例を示します。"chapters.configuration" パッケージのコンポーネントから出力されていたDEBUGメッセージが不要になったとしましょう。次の設定ファイルはそれを実現するための例です。
+   </p>
+
+   <p class="example">例：ロガーのレベルを設定する（<a href="http://logback.qos.ch/xref/chapters/configuration/sample2.xml">logback-examples/src/main/java/chapters/configuration/sample2.xml</a>）</p>
+
+   <span class="asGroovy" onclick="return asGroovy(&#39;sample2&#39;);">Groovyで見る</span>
+   <pre id="sample2" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;!-- encoders are assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder by default --&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  <b>&lt;logger name="chapters.configuration" level="INFO"/&gt;</b>
+
+  &lt;!-- 厳密にはここでルートロガーのlevel要素を設定する必要はありません --&gt;
+  &lt;!-- デフォルトでDEBUGが指定されるからです       --&gt;
+  &lt;root level="DEBUG"&gt;		
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;  
+  
+&lt;/configuration&gt;</pre>
+
+  <p>この設定ファイルを<em>MyApp3</em>アプリケーションの引数として渡すと、次のような出力が得られます。</p>
+
+<pre class="source">17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</pre>
+
+  <p><a href="http://logback.qos.ch/xref/chapters/configuration/Foo.html">"chapters.configuration.Foo</a>"のロガーが出力していたDEBUGメッセージが抑止されていることに気づきましたか。気になるならFooクラスを見なおしてください。</p>
+
+  <p>あらゆるロガーのレベルを思った通りに設定することができます。次の設定ファイルでは、<em>chapters.configuration</em>ロガーのレベルをINFOに設定していますが、同時に<em>chapters.configuration.Foo</em>のレベルを<code>DEBUG</code>に設定しています。</p>
+
+  <p class="example">例：複数のロガーのレベルを設定する（<a href="http://logback.qos.ch/xref/chapters/configuration/sample3.xml">logback-examples/src/main/java/chapters/configuration/sample3.xml</a>）</p>
+  
+  <span class="asGroovy" onclick="return asGroovy(&#39;sample3&#39;);">Groovyで見る</span>
+  <pre id="sample3" class="source prettyprint">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+     &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  <b>&lt;logger name="chapters.configuration" level="INFO" /&gt;</b>
+  <b>&lt;logger name="chapters.configuration.Foo" level="DEBUG" /&gt;</b>
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+
+&lt;/configuration&gt;</pre>
+
+  <p><code>MyApp3</code>アプリケーションの引数にこの設定ファイルを指定して実行すると、コンソールには次のように出力されます。</p>
+
+<p class="prettyprint source">17:39:27.593 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+17:39:27.593 [main] DEBUG chapters.configuration.Foo - Did it again!
+17:39:27.593 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</p>
+
+   <p><code>JoranConfiguration</code>が<em>sample3.xml</em>を設定した後のロガーとそのレベルを表にまとめました。
+   </p>
+
+   <table class="bodyTable">
+     <tr>
+       <th>ロガー名</th>
+       <th>割り当てられたレベル</th>
+       <th>有効レベル</th>
+     </tr>
+     <tr>
+       <td>root</td>
+       <td><code>DEBUG</code></td>
+       <td><code>DEBUG</code></td>
+     </tr>
+     <tr class="alt">
+       <td>chapters.configuration</td>
+       <td><code>INFO</code></td>
+       <td><code>INFO</code></td>
+     </tr>
+     <tr>
+       <td>chapters.configuration.MyApp3</td>
+       <td><code>null</code></td>
+       <td><code>INFO</code></td>
+     </tr>
+     <tr class="alt">
+       <td>chapters.configuration.Foo</td>
+       <td><code>DEBUG</code></td>
+       <td><code>DEBUG</code></td>
+     </tr>
+   </table>
+
+  <p>これは、<code>MyApp3</code>クラスの<code>INFO</code>レベルのロギング式2つと、<code>Foo</code>クラスのdoIt()メソッドにあるDEBUGレベルのロギング式がいずれも有効であるということです。ルートロガーのレベルは常に非null値が指定されること、デフォルトではDEBUGが指定されていることに注意しましょう。
+  </p>
+
+  <p><a href="./architecture.html#basic_selection">基本的な選択ルール</a>についても考えてみましょう。ロギング要求が呼び出されるかどうかは、アペンダーを割り当てられたロガーに指定されたレベルそのものではなく、ロガーの有効レベルによって決定されるというものです。logback はまず最初にロギング式が有効かどうかを判定します。有効な場合は、ロガーのレベルに依らず、ロガー階層で見つかったアペンダーを呼び出します。設定ファイル<em>sample4.xml</em>でその点を確認しましょう。</p>
+
+  <p class="example">例：ロガーレベルのサンプル（<a href="http://logback.qos.ch/xref/chapters/configuration/sample4.xml">logback-examples/src/main/java/chapters/configuration/sample4.xml</a>）</p>
+  <span class="asGroovy" onclick="return asGroovy(&#39;sample4&#39;);">Groovyで見る</span>
+  <pre id="sample4" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT"
+   class="ch.qos.logback.core.ConsoleAppender"&gt;
+   &lt;encoder&gt;
+     &lt;pattern&gt;
+        %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+      &lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  <b>&lt;logger name="chapters.configuration" level="INFO" /&gt;</b>
+
+  &lt;!-- turn OFF all logging (children can override) --&gt;
+  &lt;root <b>level="OFF"</b>&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+
+&lt;/configuration&gt;</pre>
+
+  <p><em>sample4.xml</em>を設定した後のロガーとそのレベルを表にまとめました。
+  </p>
+
+  <table class="bodyTable">
+    <tr>
+      <th>ロガー名</th>
+      <th>割り当てられたレベル</th>
+      <th>有効レベル</th>
+    </tr>
+    <tr>
+      <td>root</td>
+      <td><code>OFF</code></td>
+      <td><code>OFF</code></td>
+    </tr>
+    <tr class="alt">
+      <td>chapters.configuration</td>
+      <td><code>INFO</code></td>
+      <td><code>INFO</code></td>
+    </tr>
+    <tr>
+      <td>chapters.configuration.MyApp3</td>
+      <td><code>null</code></td>
+      <td><code>INFO</code></td>
+    </tr>
+    <tr class="alt">
+      <td>chapters.configuration.Foo</td>
+      <td><code>null</code></td>
+      <td><code>INFO</code></td>
+    </tr>
+  </table>
+
+  <p><em>sample4.xml</em>では、ConsoleAppenderに<em>STDOUT</em>という名前を付けて、ルートロガーに割り当てています。ルートロガーのレベルは<code>OFF</code>です。しかし、<em>MyApp3</em>の引数として<em>sample4.xml</em>を指定して実行すると次のような出力になってしまいます。</p>
+
+  <div class="source"><pre>17:52:23.609 [main] INFO chapters.configuration.MyApp3 - Entering application.
+17:52:23.609 [main] INFO chapters.configuration.MyApp3 - Exiting application.</pre></div>
+
+  <p>つまり、<code>INFO</code>レベルが有効レベルとなっているロガーである<code>chapters.configuration.MyApp3</code>と<code>chapters.configuration.Foo</code>のどちらも、ルートロガーのレベルによる影響を受けていないのです。蛇足ですが、Java実装の中では<em>chapters.configuration</em>ロガーを直接参照しているところはありませんが、実際に存在しています。設定ファイルで宣言されいるからです。
+  </p>
+
+  <h4 class="doAnchor" name="configuringAppenders">アペンダーの設定</h4>
+
+  <p>アペンダーの設定は<code>appender要素</code>で行います。この要素には<span class="attr">name属性</span>と<span class="attr">class属性</span>という二つの必須属性があります。<span class="attr">name属性</span>にはアペンダーの名前を、<span class="attr">class属性</span>にはアペンダーのクラスの完全名を指定します。<code>appender要素</code>には任意個の<code>layout要素</code>と<code>encoder要素</code>と<code>filter要素</code>を含めることができます。<code>appender要素</code>には、これらの一般的な要素とは別に、アペンダークラスのJavaBean規約に従ったプロパティを任意の数だけ含めることができます。logbackのコンポーネントのどんなプロパティでも違和感無く設定できるのは、<a href="./onJoran.html">Joran設定フレームワーク</a>の主な長所です。詳しくは後の章で説明します。一般的な構造を図示したのが次の図です。JavaBeanプロパティをサポートしているようには見えないことがわかるでしょう。
+  </p>
+
+  <p align="left">
+    <img src="images/chapters/configuration/appenderSyntax.png" alt="アペンダの構文" title="アペンダー要素構文">
+  </p>
+
+  <p><code>layout要素</code>にはclass属性が必須です。レイアウトクラスの完全名を指定します。<code>appender要素</code>と同じく、<code>layout要素</code>にはレイアウトクラスのプロパティを含めることができます。レイアウトクラスとして<code>PatternLayout</code>を指定するのが一般的なので、その場合class属性は省略できるようになっています。これは<a href="./onJoran.html#defaultClassMapping">デフォルトのクラスマッピングルール</a>で定義されています。
+  </p>
+
+  <p><code>encoder要素</code>にはclass属性が必須です。エンコーダクラスの完全名を指定します。エンコーダクラスとして<code>PaternLayoutEncoder</code>を指定するのが一般的なので、その場合class属性を省略できるようになっています。これは<a href="./onJoran.html#defaultClassMapping">デフォルトのクラスマッピングルール</a>で定義されています。
+  </p>
+
+  <p>複数のアペンダーにログを出力するのも、さまざまなアペンダーを定義してロガーから参照するのも簡単です。設定ファイルの例を示しましょう。</p>
+
+  <p class="example">例：複数のロガー（<a href="http://logback.qos.ch/xref/chapters/configuration/multiple.xml">logback-examples/src/main/java/chapters/configuration/multiple.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return asGroovy(&#39;multiple&#39;);">Groovyで見る</span>
+  <pre id="multiple" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;file&gt;myApp.log&lt;/file&gt;
+
+    &lt;encoder&gt;
+      &lt;pattern&gt;%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;appender name="<b>STDOUT</b>" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    <b>&lt;appender-ref ref="FILE" /&gt;</b>
+    <b>&lt;appender-ref ref="STDOUT" /&gt;</b>
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>この設定スクリプトでは、<em>FILE</em>と<em>STDOUT</em>というアペンダーを定義しています。<em>FILE</em>は<em>myApp.log</em>というファイルへログを出力するアペンダーです。このアペンダーのエンコーダーは<code>PatternLayoutEncoder</code>で、日付、ログレベル、スレッド名、ロガー名、ソースコードファイル名、ロギング式の書かれたソースコードファイル中の行番号、メッセージ、改行文字を出力します。二つ目のアペンダーは<code></code>STDOUT[/0}という名前です。これはコンソールにログを出力するアペンダーです。このアペンダーのエンコーダーは、メッセージと改行文字だけを出力します。
+  </p>
+
+  <p>二つのアペンダーはルートロガーに割り当てられています。それぞれ<em>appender-ref要素</em>から名前で参照されています。それぞれのアペンダーにエンコーダーを指定していることに気づきましたか。普通エンコーダーは複数のアペンダーから共有できるように設計されていません。レイアウトにも同じことが言えます。このように、logbackの設定ファイルは、エンコーダーやレイアウトを共有するためのいかなる構文上の手段も提供しません。
+  </p>
+
+  <h4 class="doAnchor" name="cumulative">アペンダーの積み重ね</h4>
+
+  <p>デフォルトでは<b>アペンダーは積み重ねられていきます</b>。つまり、ロガーに割り当てられたアペンダーにログを出力するのとまったく同様に、祖先ロガーに割り当てられたアペンダーにもログが出力されます。従って、同じアペンダーを複数のロガーに割り当てると、ログ出力が重複することになります。
+  </p>
+
+  <p class="example">例：アペンダーの重複（<a href="http://logback.qos.ch/xref/chapters/configuration/duplicate.xml">logback-examples/src/main/java/chapters/configuration/duplicate.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return asGroovy(&#39;duplicate&#39;);">Groovyで見る</span>
+  <pre id="duplicate" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;logger name="chapters.configuration"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/logger&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p><code>MyApp3</code>アプリケーションの引数に<em>duplicate.xml</em>を指定して実行すると、次のような出力が得られます。</p>
+
+<p class="source">14:25:36.343 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+14:25:36.343 [main] INFO  chapters.configuration.MyApp3 - Entering application.
+14:25:36.359 [main] DEBUG chapters.configuration.Foo - Did it again!
+14:25:36.359 [main] DEBUG chapters.configuration.Foo - Did it again!
+14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application.
+14:25:36.359 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</p>
+
+  <p>ログ出力の重複には気をつけましょう。<em>STDOUT</em>という名前のアペンダーは、ルートロガーと<em>chapters.configuration</em>ロガーに割り当てられています。ルートロガーは全てのロガーの祖先ロガーです。<em>chapters.configuration</em>ロガーは<em>chapters.configuration.MyApp3</em>ロガーと<em>chapters.configuration.Foo</em>ロガーの親ロガーです。子孫にあたるこれら二つのロガーによるロギング要求は二重に出力されます。なぜなら、<em>STDOUT</em>アペンダーが、<em>chapters.configuration</em>ロガーと<em>ルート</em>ロガーの両方に割り当てられているからです。
+  </p>
+
+  <p>アペンダーが積み重ねられるようになっているのは、決して新しい利用者を罠にかけるためではありません。これは非常に便利なフィーチャなのです。例えば、システム中の全てのロガーによるメッセージをコンソールに出力させつつ、特定のロガーのメッセージだけを特別なアペンダーに出力させるように設定することができるのです。
+  </p>
+
+  <p class="example">例：複数のアペンダー（<a href="http://logback.qos.ch/xref/chapters/configuration/restricted.xml">logback-examples/src/main/java/chapters/configuration/restricted.xml</a>）</p>
+  <span class="asGroovy" onclick="return asGroovy(&#39;restricted&#39;);">Groovyで見る</span>
+  <pre id="restricted" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;file&gt;myApp.log&lt;/file&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%date %level [%thread] %logger{10} [%file:%line] %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;logger name="chapters.configuration"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/logger&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>この例では、システム中の全てのロガーのメッセージはコンソールアペンダーに出力されます。そして、<em>chapters.configuration</em>ロガーとその子孫ロガーからのロギング要求は<em>myApp.log</em>ファイルにも出力されます。
+  </p>
+	
+  <h4 class="doAnchor" name="overrridingCumulativity">デフォルトの積み重ねを止める</h4>
+
+  <p>デフォルトの積み重ねがニーズに合わない場合は、aditivity フラグに false を設定して止めることができます。そうすれば、ロガーツリーのある枝から下の部分では、ツリーの他の部分と違って、ロガーに割り当てられたアペンダーにだけ出力するようになります。
+  </p>
+
+  <p class="example">例：aditivity フラグ（<a href="http://logback.qos.ch/xref/chapters/configuration/aditivityFlag.xml">logback-examples/src/main/java/chapters/configuration/aditivityFlag.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return asGroovy(&#39;additivityFlag&#39;);">Groovyで見る</span>
+  <pre id="additivityFlag" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;file&gt;foo.log&lt;/file&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%date %level [%thread] %logger{10} [%file : %line] %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;logger name="chapters.configuration.Foo" <b>additivity="false"</b>&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/logger&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>この例では<em>chapters.configuration.Foo</em>ロガーに<em>FILE</em>というアペンダーが割り当てられています。また、<em>chapters.configuration.Foo</em>ロガーのaditivityフラグにfalseが指定されているので、ログは<em>FILE</em>アペンダーにだけ出力されて、ログ階層の先祖に割り当てられているアペンダーには出力されません。他のロガーが<em>chapters.configuration.Foo</em>ロガーのaditivityフラグの設定に気づくことはありません。<code>MyApp3</code>アプリケーションを<em>aditivityFlag.xml</em>を引数として実行すると、コンソールに<em>chapters.configuration.MyApp3</em>ロガーからの出力が表示されます。しかし、<em>chapters.configuration.Foo</em>ロガーの出力が<em>foo.log</em>以外に表れることはありません。
+  </p>
+
+  <h3 class="doAnchor" name="contextName">コンテキスト名の設定</h3>
+
+  <p><a href="./architecture.html#LoggerContext">前の章</a>で述べたように、全てのロガーはロガーコンテキストに割り当てられます。ロガーコンテキストのデフォルトの名前は「default」です。しかし、<code>contextNameディレクティブ</code>を使えば別の名前を付けることが出来ます。ロガーコンテキストの名前は一度設定したら<a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/ContextBase.html#setName(java.lang.String)">変更できない</a>ので注意してください。複数のアプリケーションが同じ対象にロギングする場合、アプリケーションを区別しやすくするには、コンテキストに名前を付けるのが簡単でわかりやすい方法です。
+  </p>
+  
+  <p class="example">例：コンテキスト名を設定して表示する（<a href="http://logback.qos.ch/xref/chapters/configuration/contextName.xml">logback-examples/src/main/java/chapters/configuration/contextName.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return asGroovy(&#39;contextName&#39;);">Groovyで見る</span>
+  <pre id="contextName" class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;contextName&gt;myAppName&lt;/contextName&gt;</b>
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d <b>%contextName</b> [%t] %level %logger{36} - %msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="STDOUT" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>これはロガーコンテキストに名前を付ける例です。レイアウトのパターンに変換指示語として<a href="./layouts.html#conversionWord">contextName</a>を指定すると、コンテキスト名が出力されます。</p>
+  
+  <!-- =============================================================== -->
+ 
+  <h3 class="doAnchor" name="variableSubstitution">変数の置換</h3>
+
+  <p>このドキュメントの以前のバージョンでは、「変数の置換」ではなく「プロパティの置換」と呼んでいました。<span class="label"></span>どちらも相互に置き換えられるくらい同じ意味の言葉ですが、前者のほうが明確に意味を表していると思います。
+  </p>
+
+  <p>よくあるスクリプト言語のように、logbackの設定ファイルは変数を定義して、値と置き換えられるようになっています。変数は設定ファイルの中で定義することもできるし、外部のファイルで定義することもできます。そして外部リソースでも定義することもできるし、何らか計算することさえできます。また、<a href="./03-configuration.html#definingPropsOnTheFly">実行時に定義する</a>こともできます。
+  </p>
+
+  <p class="highlight">値を指定できるところなら設定ファイル中のどこでも変数を置換することができます。</p>
+
+  <p>値を指定できるところなら設定ファイル中のどこでも変数を置換することができます。
+変数の置換をする構文はUnixシェルとよく似ています。<em>${</em>から始まり<em>}</em>で終わる文字列は、<em>プロパティの値</em>への参照と見做されます。<em>aName</em>というプロパティの場合文字列の"${aName}"は、その値に置き換えられます。<em></em>
+  </p>
+
+  <p>変数には<a href="./03-configuration.html#scopes">スコープ</a>があります（後で説明します）。</p>
+
+  <p>HOSTNAME変数とCONTEXT_NAME変数はよく使われるので、コンテキストスコープを持つ変数として自動的に定義されます。</p>
+
+   <h4 class="doAnchor" name="definingProps">変数の定義</h4>
+
+  <p>変数は、設定ファイルや外部のプロパティファイル、あるいは外部リソースを読み込むとき、それぞれで一度だけ定義することができます。歴史的な理由により、<code>property</code>XML要素を使って変数を定義することになっていますが、logback 1.0.7以降では<code>variable要素</code>を使うことも出来ます。これらの要素は完全に互換性があります。</p>
+
+  <p>設定ファイルの先頭で変数を定義する例を見てみましょう。定義された変数は、設定ファイルの後半のほうでログ出力用ファイルの位置を指定するために使われています。
+  </p>
+
+  <p class="example">例：変数の置換（<a href="http://logback.qos.ch/xref/chapters/configuration/variableSubstitution1.xml">logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return asGroovy(&#39;variableSubstitution1&#39;);">Groovyで見る</span>
+  <pre id="variableSubstitution1" class="prettyprint source">&lt;configuration&gt;
+
+  <b>&lt;property name="USER_HOME" value="/home/sebastien" /&gt;</b>
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    <b>&lt;file&gt;${USER_HOME}/myApp.log&lt;/file&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>次は、システムプロパティを使って同じことをしてみましょう。設定ファイル中にproperty要素が宣言されていないので、logback はそれをシステムプロパティから探します。Javaのシステムプロパティはコマンドラインで次のように指定します。</p>
+  
+  <p class="source">java -DUSER_HOME="/home/sebastien" MyApp2</p>
+
+  <p class="example">例：システム変数の置換（<a href="http://logback.qos.ch/xref/chapters/configuration/variableSubstitution2.xml">logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml</a>）</p>
+  <span class="asGroovy" onclick="return asGroovy(&#39;variableSubstitution2&#39;);">Groovyで見る</span>
+  <pre id="variableSubstitution2" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    <b>&lt;file&gt;${USER_HOME}/myApp.log&lt;/file&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  
+  <p>複数の変数が必要なときは、変数の定義だけを含むファイルを別に用意したほうが便利な場合もあります。構成例を示します。
+  </p>
+
+  <p class="example">例：別ファイルを使用する変数の置換（<a href="http://logback.qos.ch/xref/chapters/configuration/variableSubstitution3.xml">logback-examples/src/main/java/chapters/configuration/variableSubstitution3.xml</a>）</p>
+  <span class="asGroovy" onclick="return asGroovy(&#39;variableSubstitution3&#39;);">Groovyで見る</span>
+  <pre id="variableSubstitution3" class="prettyprint source">&lt;configuration&gt;
+
+  <b>&lt;property file="src/main/java/chapters/configuration/variables1.properties" /&gt;</b>
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+     <b>&lt;file&gt;${USER_HOME}/myApp.log&lt;/file&gt;</b>
+     &lt;encoder&gt;
+       &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+     &lt;/encoder&gt;
+   &lt;/appender&gt;
+
+   &lt;root level="debug"&gt;
+     &lt;appender-ref ref="FILE" /&gt;
+   &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+   <p>この設定ファイルでは<em>variables1.properties</em>という名前のファイルを参照しています。指定されたファイルで定義された変数がローカルスコープに定義されます。<em>variable.properties</em>の内容は次のようなものです。
+   </p>
+
+   <em>例：変数定義ファイル（logback-examples/src/main/java/chapters/configuration/variables1.properties）</em>
+
+   <pre class="source">USER_HOME=/home/sebastien</pre>
+
+   <p>ファイルの代わりにクラスパス上のリソースを指定することもできます。</p>
+
+  <pre class="prettyprint source">&lt;configuration&gt;
+
+  <b>&lt;property resource="resource1.properties" /&gt;</b>
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+     <b>&lt;file&gt;${USER_HOME}/myApp.log&lt;/file&gt;</b>
+     &lt;encoder&gt;
+       &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+     &lt;/encoder&gt;
+   &lt;/appender&gt;
+
+   &lt;root level="debug"&gt;
+     &lt;appender-ref ref="FILE" /&gt;
+   &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+
+   <h4 class="doAnchor" name="scopes">スコープ</h4>
+
+   <p><em>ローカルスコープ</em>、<em>コンテキストスコープ</em>、<em>システムスコープ</em>のそれぞれで変数を定義することができます。デフォルトのスコープはローカルスコープです。OSの提供する環境変数の読み込みはできますが、書き込みは出来ません。</p>
+
+
+   <p><span class="label">ローカルスコープ</span>。ローカルスコープで定義された変数は、その変数が定義されている設定ファイルの解釈、実行が終了するまで有効です。当然ながら、設定ファイルを解釈、実行するたびに、ローカルスコープの変数は新しく定義されることになります。</p>
+
+   <p><span class="label">コンテキストスコープ</span>。コンテキストスコープで定義された変数は、コンテキストに登録されます。コンテキストが破棄されるまで、あるいは、コンテキストが初期化されるまで有効です。つまり、一度コンテキストスコープで定義された変数はコンテキストの一部となるのです。ですので、全てのロギングイベントから利用できますし、そのイベントをシリアライズして送信した先のリモートホストでも利用できます。
+   </p>
+
+   <p><span class="label">システムスコープ</span>。システムスコープで定義された変数は、JVMのシステムプロパティに登録されます。JVMが停止するか、初期化されるまで有効です。
+   </p>
+ 
+   <p class="highlight">最初にローカルスコープで変数を検索します。そしてコンテキストスコープ、システムスコープの順に検索し、最後に<a href="http://docs.oracle.com/javase/tutorial/essential/environment/env.html">OSの環境変数</a>を検索します。
+   </p>
+
+   <p>変数を置換する際、最初にローカルスコープで変数を検索します。そしてコンテキストスコープ、システムスコープの順に検索し、最後に<a href="http://docs.oracle.com/javase/tutorial/essential/environment/env.html">OSの環境変数</a>を検索します。
+
+   </p>
+
+   <p>変数のスコープは、<code>property要素</code>、<code>define要素</code>、<code>insertFromJNDI要素</code>の<span class="attr">scope属性</span>で指定します。<span class="attr">scope属性</span>に指定できるのは、"local"、"context"、"system" のいずれかの文字列です。scope属性を指定しなかった場合、スコープは常に"local"と見做されます。
+   </p>
+
+   <p class="example">例：変数をコンテキストスコープで定義する（<a href="http://logback.qos.ch/xref/chapters/configuration/contextScopedVariable.xml">logback-examples/src/main/java/chapters/configuration/contextScopedVariable.xml</a>）</p>
+
+  <span class="asGroovy" onclick="return
+  asGroovy(&#39;contextScopedVariable&#39;);">Groovyで見る</span>
+  <pre id="contextScopedVariable" class="prettyprint source">&lt;configuration&gt;
+
+  &lt;property <b class="big">scope="context"</b> name="nodeId" value="firstNode" /&gt;
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    <b>&lt;file&gt;/opt/${nodeId}/myApp.log&lt;/file&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+   <p>この例では<em>nodeId変数</em>をコンテキストスコープで定義しています。この変数は全てのロギングイベントで有効であり、シリアライズ化して送信した先のリモートホストでも利用できます。</p>
+
+
+  <h3 class="doAnchor" name="defaultValuesForVariables">変数のデフォルト値</h3>
+
+  <p>特定の状況では、変数が宣言されていなかったり、値がnullの場合、デフォルト値が使えるようになっているほうが望ましいことがあります。<a href="http://tldp.org/LDP/abs/html/parameter-substitution.html">Bash</a>と同じく、<b>":-"</b>演算子を使ってデフォルト値を指定することができます。例えば、 <em>aName</em>という名前の変数が定義されていない場合、<code>"${aName <b>:-golden</b> }"</code>という文字列を変数置換した結果は"goleden"になります。</p>
+
+   <h3 class="doAnchor" name="nestedSubst">変数のネスト</h3>
+
+   <p>変数はネストすることができます。変数の名前として、デフォルト値として、値として、他の変数を指定することができます。</p>
+
+
+   <h4>値のネスト</h4>
+   <p>変数の値を定義するとき、他の変数を指定することができます。例えば、宛先のディレクトリだけでなく、ファイル名も変数で指定したい場合、それぞれの変数をまとめた第三の変数"destination"を定義して、それを利用できるのです。プロパティファイルの例を示します。
+   </p>
+
+   <p class="example">例：変数のネスト（<a href="http://logback.qos.ch/xref/chapters/configuration/variables2.properties">logback-examples/src/main/java/chapters/configuration/variables2.properties</a>）</p>
+
+   <pre class="source">USER_HOME=/home/sebastien
+fileName=myApp.log
+<b>destination=${USER_HOME}/${fileName}</b></pre>
+
+    <p>"destination"変数の定義で、"USER_HOME"変数と"fileName"変数を組み合わせていることが分かりますか。
+    </p>
+    
+    <em>例：別のファイルを使用した変数の置換（logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml）</em>
+
+    <pre class="prettyprint source">&lt;configuration&gt;
+
+  &lt;property file="variables2.properties" /&gt;
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    <b>&lt;file&gt;${destination}&lt;/file&gt;</b>
+    &lt;encoder&gt;
+      &lt;pattern&gt;%msg%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="debug"&gt;
+    &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+
+   <h4>名前のネスト</h4>
+
+   <p>変数を参照するとき、変数の名前として、他の変数を指定することができます。たとえば、"uesrid"変数に"alice"という文字列が指定されていることにしましょう。そうすると、"${${userid}.password}"という文字列は、"alice.password"変数を参照することになるのです。</p>
+
+   <h4>デフォルト値のネスト</h4>
+
+   <p>変数のデフォルト値に他の変数を指定することができます。たとえば、'id'変数に値が割り当てられておらず、'userid'変数には"alice"という文字列が指定されていることにしましょう。そうすると、"${id<b>:-</b>${userid}}" という文字列は"alice"という文字列になるのです。
+   </p>
+
+
+  <!-- ==============================================================
+       -->
+  <h3 class="doAnchor" name="hostname">HOSTNAME変数</h3>
+
+  <p>あると便利なので、<code>HOSTNAME</code>変数は自動的にコンテキストスコープに定義されるようになっています。</p>
+
+  <!-- ============================================================== -->
+  <h3 class="doAnchor" name="context_name">CONTEXT_NAME変数</h3>
+
+  <p>変数名のとおり、<code>CONTEXT_NAME</code>変数には、現在のロギングコンテキストの名前が設定されています。</p>
+
+  <!-- ============================================================== -->
+  
+  <h3 class="doAnchor" name="timestamp">タイムスタンプを設定する</h3>
+
+  <p><em>timestamp要素</em>を使うと、現在の日付と時刻に応じた値を持つプロパティを定義することができます。<em>timestamp要素</em>については<a href="./appenders.html#uniquelyNamed">後続の章</a>で説明します。</p>
+
+  <!-- ============================================================== -->
+  <h3 class="doAnchor" name="definingPropsOnTheFly">実行時に変数を定義する</h3>
+
+  <p><code>define要素</code>を使うと動的に変数を定義できます。define要素には二つの必須属性<span class="attr">name属性</span>と<span class="attr">class属性</span>があります。<span class="attr">name属性</span>には変数の名前を指定します。<span class="attr">class属性</span>には<a href="http://logback.qos.ch/xref/ch/qos/logback/core/spi/PropertyDefiner.html">PropertyDefiner</a>インターフェイスを実装したクラスの完全名を指定します。<code>PropertyDefiner</code>の<code>getPropertyValue()</code>メソッドの返す値が、変数の値になります。<span class="attr">scope属性</span>で<a href="./03-configuration.html#scopes">スコープ</a>を指定することもできます。
+  </p>
+
+  <p>以下に例を示します。</p>
+
+  <pre class="prettyprint source">&lt;configuration&gt;
+
+  &lt;define name="rootLevel" class="a.class.implementing.PropertyDefiner"&gt;
+    &lt;shape&gt;round&lt;/shape&gt;
+    &lt;color&gt;brown&lt;/color&gt;
+    &lt;size&gt;24&lt;/size&gt;
+  &lt;/define&gt;
+ 
+  &lt;root level="${rootLevel}"/&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>この例では、"a.class.implementing.PropertyDefiner"クラスのプロパティとして、shape、color、sizeを指定しています。指定したプロパティのセッターメソッドが<code>PropertyDefiner</code>クラスに定義されていれば、logback は設定ファイルで指定されたプロパティの値をインスタンスに設定することができます。</p>
+
+ 
+
+  <p>logback の配布物には現在のところ非常に単純な二つの<code>PropertyDefiner</code>実装クラスが含まれてます。
+  </p>
+
+  <table class="bodyTable striped">
+    <tr>
+      <th>実装クラス名</th>
+      <th>説明</th>
+    </tr>
+
+    <tr>
+      <td><a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html"><code>FileExistsPropertyDefiner</code></a>
+      </td>
+      <td><span class="prop">path</span>プロパティに指定したファイルが存在していれば"true"を、そうでなければ"false"を返します。
+      </td>
+    </tr>
+    <tr>
+      <td><a href="http://logback.qos.ch/apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html"><code>ResourceExistsPropertyDefiner</code></a>
+      </td>
+      <td>クラスパス上に指定された<span class="prop">リソース</span>が存在すれば"true"を、そうでなければ"false"を返します。
+      </td>
+    </tr>
+  </table>
+
+  <!-- ============================================================== -->
+
+  <h3 class="doAnchor" name="conditional">設定ファイル内の条件分岐</h3>
+  
+  <p>開発環境、テスト環境、本番環境のような環境ごとに用意されたlogback設定ファイルと格闘しなければならないことがよくあります。これらの設定ファイルの内容はほとんど同じですが、少しだけ異なる箇所があります。同じような設定ファイルの重複を避けるため、logback は設定ファイル中で条件分岐できるようになっています。<code>if要素</code>、<code>then要素</code>、<code>else要素</code>を使えば、さまざまな環境用のファイルを一つにまとめることができるのです。条件分岐できるようにするため、<a href="http://logback.qos.ch/setup.html#janino">Jainoライブラリ</a>を使用しています。
+  </p>
+
+  <p>条件分岐式の一般的な形式を次に示します。</p>
+
+  <pre class="prettyprint source">
+   &lt;!-- if-then form --&gt;
+   &lt;if condition="some conditional expression"&gt;
+    &lt;then&gt;
+      ...
+    &lt;/then&gt;
+  &lt;/if&gt;
+  
+  &lt;!-- if-then-else form --&gt;
+  &lt;if condition="some conditional expression"&gt;
+    &lt;then&gt;
+      ...
+    &lt;/then&gt;
+    &lt;else&gt;
+      ...
+    &lt;/else&gt;    
+  &lt;/if&gt;</pre>  
+
+  <p>condition属性に指定するのはJavaの条件式です。コンテキストスコープとシステムスコープの変数が利用できます。<code>property()</code>メソッドか、その省略形である<code>p()</code>メソッドの引数としてヘンス名を渡すと、その値を文字列として返します。たとえば、"k"という値の変数の値にアクセスするには、<code>property("k")</code>あるいは<code>p("k")</code>という書き方をします。変数"k"が未定義ならproperty()メソッドは空文字列を返します。nullではありません。つまり、nullチェックは不要です。</p>
+
+  <p><code>isDefined()</code>メソッドを使うと、変数が定義されているかどうかを確かめることが出来ます。たとえば、変数"k"が定義されているかどうかをチェックするには<code>isDefined("k")</code>と書けばよいです。他にも、nullチェックをするための<code>isNull()</code>メソッドが用意されています。
+
+例： <code>isNull("k")</code></p>
+
+  <pre class="prettyprint source">&lt;configuration debug="true"&gt;
+
+  <b>&lt;if condition='property("HOSTNAME").contains("torino")'&gt;</b>
+    <b>&lt;then&gt;</b>
+      &lt;appender name="CON" class="ch.qos.logback.core.ConsoleAppender"&gt;
+        &lt;encoder&gt;
+          &lt;pattern&gt;%d %-5level %logger{35} - %msg %n&lt;/pattern&gt;
+        &lt;/encoder&gt;
+      &lt;/appender&gt;
+      &lt;root&gt;
+        &lt;appender-ref ref="CON" /&gt;
+      &lt;/root&gt;
+    <b>&lt;/then&gt;</b>
+  <b>&lt;/if&gt;</b>
+
+  &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
+    &lt;file&gt;${randomOutputDir}/conditional.log&lt;/file&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d %-5level %logger{35} - %msg %n&lt;/pattern&gt;
+   &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="ERROR"&gt;
+     &lt;appender-ref ref="FILE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  
+  <p><code>configuratoin要素</code>の中なら<em>どこにでも</em>条件分岐を置くことが出来ます。if-then-else式をネストすることもできます。しかし、XML文法は非常に面倒ですし、汎用プログラミング言語の基盤には不適切です。したがって、条件分岐が多すぎると、設定ファイルはあっという間に他の人には理解できないものになってしまいます。ましてや、後で自分が読み返しても理解できないでしょう。
+  </p>
+
+
+  <!-- ============================================================== -->
+
+   <h3 class="doAnchor" name="insertFromJNDI">JNDIから変数を取得する</h3>
+
+   <p>特定の状況下では、JNDIに格納されたenvの内容を参照したいこともあるでしょう。<code>insertFromJNDIディレクティブ</code>を使うと、JNDIに格納されたenvを取得して、ローカルスコープの変数<span class="attr">として</span>取り込むことができます。他の変数と同じく、<em>scope属性</em>に指定した<a href="./03-configuration.html#scopes">別のスコープ</a>に新しい変数を登録することができます。
+   </p>
+
+   <p class="example">例：JNDI経由で取得したenvを変数として登録する（<a href="http://logback.qos.ch/xref/chapters/configuration/insertFromJNDI.xml">logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml</a>）</p>
+
+   <pre class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /&gt;</b>
+  <b>&lt;contextName&gt;<span class="green">${appName}</span>&lt;/contextName&gt;</b>
+
+  &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;%d ${CONTEXT_NAME} %level %msg %logger{50}%n&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="CONSOLE" /&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</pre>
+
+  <p>この例は、env の "java:comp/env/appName"を<span class="variable">appName</span>という名前の変数として登録するものです。<code>contextNameディレクティブ</code>で指定しているコンテキスト名には、その前に定義されている<code>insertFromJNDIディレクティブ</code>で登録した変数を使用していることがわかりますか。
+  </p>
+
+  <h3 class="doAnchor" name="fileInclusion">ファイルの取り込み</h3>
+
+  <p>Joranは、設定ファイルの一部として別のファイルを読み込むことができます。そのためには、<code>include要素</code>として宣言します。</p>
+
+  <p class="example">例：ファイルの取り込み（<a href="http://logback.qos.ch/xref/chapters/configuration/containingConfig.xml">logback-examples/src/main/java/chapters/configuration/containingConfig.xml</a>）</p>
+
+  <pre class="prettyprint source">&lt;configuration&gt;
+  <b>&lt;include file="src/main/java/chapters/configuration/includedConfig.xml"/&gt;</b>
+
+  &lt;root level="DEBUG"&gt;
+    &lt;appender-ref ref="includedConsole" /&gt;
+  &lt;/root&gt;
+
+&lt;/configuration&gt;</pre>
+
+  <p>取り込まれるファイルでは、全ての要素が<code>included要素</code>の中に入っていなければなりません。<code>ConsoleAppender</code>を宣言する例を示します。</p>
+
+  <p class="example">例：ファイルの取り込み（<a href="http://logback.qos.ch/xref/chapters/configuration/includedConfig.xml">logback-examples/src/main/java/chapters/configuration/includedConfig.xml</a>）</p>
+
+  <pre class="source"><b class="green big">&lt;included&gt;</b>
+  &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder&gt;
+      &lt;pattern&gt;"%d - %m%n"&lt;/pattern&gt;
+    &lt;/encoder&gt;
+  &lt;/appender&gt;
+<b class="green big">&lt;/included&gt;</b></pre>
+
+
+  <p>繰り返しになりますが、取り込まれるファイルでは、<code class="big green">included要素</code>が必須です。</p>
+
+  <p>include する対象として指定するのは、外部ファイルだけではなく、クラスパス上のリソースでも、URLでもよいです。</p>
+
+  <ul>
+
+    <li><b>ファイルの場合：</b><br>ファイルを取り込むには<span class="attr">file属性</span>を使用します。相対パスを指定できますが、カレントディレクトリとして使われるのはアプリケーションが設定したものになります。設定ファイルのパスとは無関係なので注意してください。</li>
+
+    <li><p><b>リソースの場合：</b><br>クラスパス上のファイルなどのリソースを取り込むには<span class="attr">resource属性</span>を使用します。</p>
+
+    <pre class="prettyprint source">&lt;include resource="includedConfig.xml"/&gt;</pre>
+    
+    </li>
+
+    <li><p><b>URLの場合：</b><br>URLから取得できるコンテンツを取り込むには<span class="attr">url属性</span>を使用します。</p>
+
+    <pre class="prettyprint source">&lt;include url="http://some.host.com/includedConfig.xml"/&gt;</pre>
+
+    </li>
+  </ul>
+
+  <p>指定されたファイルが存在しなかった場合、logback はステータスメッセージを出力してそのことを報告します。取り込もうとしているファイルが<span class="attr">任意の</span>ものである場合、<code>include要素のoptional属性に<code>true</code>を指定しておけば、エラーメッセージを抑止することができます。</code></p>
+
+
+  <pre class="prettyprint source">&lt;include optional="true" ..../&gt;</pre>
+
+  <!-- ==================== ContextListener =================== -->
+  <h2 class="doAnchor" name="contextListener">コンテキストリスナーを追加する</h2>
+
+  <p><a href="http://logback.qos.ch/xref/ch/qos/logback/classic/spi/LoggerContextListener.html">LoggerContextListener</a>インターフェイスのインスタンスは、ロガーコンテキストのライフサイクルに関連するイベントを待ち受けます。
+  </p>
+
+
+  <p><code>JMXConfigurator</code>は<code>LoggerContextListener</code>インターフェイスの実装の一つです。詳しくは<a href="./jmxConfig.html">後の章</a>で説明します。
+  </p>
+
+  <h3 class="doAnchor" name="LevelChangePropagator">LevelChangePropagator</h3>
+
+  <p>バージョン0.9.25から、logback-classic の配布物には<code>LoggerContextListener</code>インターフェイスの実装である<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/jul/LevelChangePropagator.html">LevelChangePropagator</a>が含まれるようになりました。これは、logback-classic のあらゆるロガーのレベルの変更を捉えて、java.util.logging フレームワークに伝播します。ログレベルの変化を伝播するのはコストが高いので、ロギング式を無効にすることで改善されたはずの性能が台無しになってしまいます。<a href="http://download.oracle.com/javase/1.5.0/docs/api/java/util/logging/LogRecord.html?is-external=true">LogRecord</a>のインスタンスはロギング式が有効な場合にだけ、SLF4Jを介してlogbackに渡されます。したがって、実際のアプリケーションでは<a href="http://www.slf4j.org/legacy.html#jul-to-slf4j">jul-to-slf4j</a>ブリッジを使うのが合理的です。
+  </p>
+
+
+  <p>contextListener要素に<code>LevelChangePropagator</code>を登録するには次のようにします。</p>
+  
+  <pre class="prettyprint source">&lt;configuration debug="true"&gt;
+  <b>&lt;contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"/&gt;</b>
+  .... 
+&lt;/configuration&gt;</pre>
+
+  <p>LevelChangePropagatorのプロパティ<span class="option">resetJUL</span>を指定すると、j.u.l.loggers に指定されていたレベルがすべて初期化されます。ただし、ハンドラーはそのまま残ります。</p>
+
+  <pre class="prettyprint source">&lt;configuration debug="true"&gt;
+  &lt;contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator"&gt;
+    <b>&lt;resetJUL&gt;true&lt;/resetJUL&gt;</b>
+  &lt;/contextListener&gt;
+  ....
+&lt;/configuration&gt;</pre>
+  <p>
+  </p>
+  
+
+
+  <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>
