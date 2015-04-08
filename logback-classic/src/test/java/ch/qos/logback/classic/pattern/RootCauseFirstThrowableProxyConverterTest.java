@@ -45,6 +45,7 @@ public class RootCauseFirstThrowableProxyConverterTest {
 
   @Before
   public void setUp() throws Exception {
+    context.setPackagingDataEnabled(true);
     converter.setContext(context);
     converter.start();
   }
