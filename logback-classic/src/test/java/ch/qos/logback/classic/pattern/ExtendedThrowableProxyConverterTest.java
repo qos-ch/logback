@@ -56,7 +56,7 @@ public class ExtendedThrowableProxyConverterTest {
         null);
   }
 
-  @Test
+ @Test
   public void integration() {
     PatternLayout pl = new PatternLayout();
     pl.setContext(lc);
