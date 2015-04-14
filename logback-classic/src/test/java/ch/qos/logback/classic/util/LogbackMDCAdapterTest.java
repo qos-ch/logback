@@ -16,6 +16,7 @@ package ch.qos.logback.classic.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
@@ -70,8 +71,9 @@ public class LogbackMDCAdapterTest {
     Map<String, String> map0 = mdcAdapter.copyOnInheritThreadLocal.get();
     mdcAdapter.get("k0");  // point 0
     mdcAdapter.put("k0", "v1");
-    // verify that map0 is that in point 0
-    assertEquals("v0", map0.get("k0"));
+    // verify that map0 is the same instance and that value was updated
+    assertSame(map0, mdcAdapter.copyOnInheritThreadLocal.get());
+    assertEquals("v1", map0.get("k0"));
   }
 
   @Test
