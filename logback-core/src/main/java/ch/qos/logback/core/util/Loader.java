@@ -121,7 +121,10 @@ public class Loader {
 
   public static Class<?> loadClass(String clazz, Context context)
           throws ClassNotFoundException {
-    ClassLoader cl = getClassLoaderOfObject(context);
+    ClassLoader cl = getTCL();
+    if(cl == null){
+      cl = getClassLoaderOfObject(context);
+    }
     return cl.loadClass(clazz);
   }
 
