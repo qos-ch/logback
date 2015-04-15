@@ -13,20 +13,16 @@
  */
 package ch.qos.logback.access.testUtil;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.AppenderBase;
 
 public class NotifyingListAppender extends AppenderBase<IAccessEvent> {
 
-  public List<IAccessEvent> list = new ArrayList<IAccessEvent>();
+  public final LinkedBlockingQueue<IAccessEvent> list = new LinkedBlockingQueue<IAccessEvent>();
   
   protected void append(IAccessEvent e) {
     list.add(e);
-    synchronized (this) {
-      this.notify();
-    }
   }
 }
