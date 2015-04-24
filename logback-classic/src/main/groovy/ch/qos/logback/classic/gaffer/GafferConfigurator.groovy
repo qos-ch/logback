@@ -69,10 +69,22 @@ class GafferConfigurator {
     new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
 
     Script dslScript = new GroovyShell(binding, configuration).parse(dslText)
+    binding.setProperty("master", dslScript) //can be used in slaves
 
     dslScript.metaClass.mixin(ConfigurationDelegate)
     dslScript.setContext(context)
     dslScript.metaClass.getDeclaredOrigin = { dslScript }
+
+    dslScript.setProperty("include", { file ->
+      Script s = new GroovyShell(binding, configuration).parse(file instanceof CharSequence
+          ? new File(file.toString()) /* fileName ~ '/opt/foo/logback.gvy' */ : file/* File, URI, etc */)
+
+      s.metaClass.mixin(ConfigurationDelegate)
+      s.setContext(context)
+      s.metaClass.getDeclaredOrigin = { s }
+
+      s.run()
+    })
 
     dslScript.run()
   }
