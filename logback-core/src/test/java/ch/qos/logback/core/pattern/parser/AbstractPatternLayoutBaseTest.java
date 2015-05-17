@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2009, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -47,7 +47,7 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
 
   /**
    * This test checks that the pattern layout implementation starts its
-   * converters. ExceptionalConverter throws an exception if it's convert
+   * converters. ExceptionalConverter throws an exception if its convert
    * method is called before being started.
    */
   @Test
@@ -79,28 +79,12 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
     PatternLayoutBase<E> plb = getPatternLayoutBase();
     Context context = new ContextBase();
     plb.setContext(context);
-    plb.setPattern(null);
     plb.start();
     String s = plb.doLayout(getEventObject());
     assertEquals("", s);
     StatusChecker checker = new StatusChecker(context.getStatusManager());
-    //StatusPrinter.print(context);
-    checker.assertContainsMatch("Empty or null pattern.");
-  }
-
-  @Test
-  public void testEmptyPattern() {
-    //System.out.println("testNullPattern");
-    PatternLayoutBase<E> plb = getPatternLayoutBase();
-    Context context = new ContextBase();
-    plb.setContext(context);
-    plb.setPattern("");
-    plb.start();
-    String s = plb.doLayout(getEventObject());
-    assertEquals("", s);
-    StatusChecker checker = new StatusChecker(context.getStatusManager());
-    //StatusPrinter.print(context);
-    checker.assertContainsMatch("Empty or null pattern.");
+    //StatusPrinter.print(context.getStatusManager());
+    assertTrue(checker.containsMatch("Failed to parse pattern \"null\""));
   }
 
 }
