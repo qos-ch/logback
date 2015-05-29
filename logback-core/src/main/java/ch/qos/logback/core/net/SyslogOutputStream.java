@@ -35,12 +35,14 @@ public class SyslogOutputStream extends OutputStream {
   private static final int MAX_LEN = 1024;
 
   private InetAddress address;
+  private String syslogHost;
   private DatagramSocket ds;
   private ByteArrayOutputStream baos = new ByteArrayOutputStream();
   final private int port;
 
   public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException,
       SocketException {
+    this.syslogHost = syslogHost;
     this.address = InetAddress.getByName(syslogHost);
     this.port = port;
     this.ds = new DatagramSocket();
@@ -52,7 +54,7 @@ public class SyslogOutputStream extends OutputStream {
 
   public void flush() throws IOException {
     byte[] bytes = baos.toByteArray();
-    DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address,
+    DatagramPacket packet = new DatagramPacket(bytes, bytes.length, InetAddress.getByName(this.syslogHost),
         port);
 
     // clean up for next round
@@ -61,7 +63,7 @@ public class SyslogOutputStream extends OutputStream {
     } else {
       baos.reset();
     }
-    
+
     // after a failure, it can happen that bytes.length is zero
     // in that case, there is no point in sending out an empty message/
     if(bytes.length == 0) {
@@ -70,7 +72,7 @@ public class SyslogOutputStream extends OutputStream {
     if (this.ds != null) {
       ds.send(packet);
     }
-  
+
   }
 
   public void close() {
