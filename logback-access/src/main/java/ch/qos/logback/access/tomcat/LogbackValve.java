@@ -77,7 +77,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
       + "logback-access.xml";
 
   private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
-  
+
   private long birthTime = System.currentTimeMillis();
   LogbackLock configurationLock = new LogbackLock();
 
@@ -97,7 +97,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   boolean started;
   boolean alreadySetLogbackStatusManager = false;
 
-  private ExecutorService executorService; 
+  private ExecutorService executorService;
 
   public LogbackValve() {
     putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
@@ -111,21 +111,21 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   public void startInternal() throws LifecycleException {
     executorService = ExecutorServiceUtil.newExecutorService();
     if (filename == null) {
-    	String tomcatBaseProperty = OptionHelper
+      String tomcatBaseProperty = OptionHelper
           .getSystemProperty("catalina.base");
 
       filename = tomcatBaseProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
-      
-    	File baseConfigFile = new File(filename);
-    	if (!baseConfigFile.exists()) {
-    	
+
+      File baseConfigFile = new File(filename);
+      if (!baseConfigFile.exists()) {
+
         String tomcatHomeProperty = OptionHelper
             .getSystemProperty("catalina.home");
 
         filename = tomcatHomeProperty + File.separatorChar
             + DEFAULT_CONFIG_FILE;
       }
-      
+
       getStatusManager().add(
           new InfoStatus("filename property not set. Assuming [" + filename
               + "]", this));
@@ -313,7 +313,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   @Override
   public ExecutorService getExecutorService() {
-    return  executorService;
+    return executorService;
   }
 
   @Override
