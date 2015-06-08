@@ -653,14 +653,14 @@
           <th>Description</th>
         </tr>
         <tr>
-          <td><a name="parameters.excludedCipherSpecs"></a>
-              <span class="prop" container="parameters">excludedCipherSpecs</span></td>
+          <td><a name="parameters.excludedCipherSuites"></a>
+              <span class="prop" container="parameters">excludedCipherSuites</span></td>
           <td><code>String</code></td>
           <td>
-            <p>Specifies a comma-separated list of SSL cipher spec names or
+            <p>Specifies a comma-separated list of SSL cipher suite names or
                patterns to disable during session negotiation.  This property is
                used to filter the cipher suites supported by the SSL engine, 
-               such that any cipher spec matched by this property is disabled.
+               such that any cipher suite matched by this property is disabled.
             </p>
             <p>Each field in the comma-separated list specified for this 
                property may be a simple string or a regular expression.
@@ -668,16 +668,16 @@
             <p>See the <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">
               Standard Names</a> specification in the 
               <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">
-              JSSE Reference Guide</a> for a list of cipher spec names.
+              JSSE Reference Guide</a> for a list of cipher suite names.
             </p>
           </td>
         </tr>
         <tr>
-          <td><a name="parameters.includedCipherSpecs"></a>
-              <span class="prop" container="parameters">includedCipherSpecs</span></td>
+          <td><a name="parameters.includedCipherSuites"></a>
+              <span class="prop" container="parameters">includedCipherSuites</span></td>
           <td><code>String</code></td>
           <td>
-            <p>Specifies a comma-separated list of SSL cipher spec names or
+            <p>Specifies a comma-separated list of SSL cipher suite names or
                patterns to enable during session negotiation.  This property is
                used to filter the cipher suites supported by the SSL engine, 
                such that only those cipher suites matched by this property are 
@@ -689,7 +689,7 @@
             <p>See the <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#AppA">
               Standard Names</a> specification in the 
               <a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">
-              JSSE Reference Guide</a> for a list of cipher spec names.
+              JSSE Reference Guide</a> for a list of cipher suite names.
             </p>
           </td>
         </tr>
@@ -1261,8 +1261,8 @@ Trust this certificate? [no]:  &lt;Enter "yes">
       <h3>Client and Server Cannot Agree on a Cipher Suite</h3>
       <p>NOTE: <strong>This problem usually occurs only when you are
          explicitly 
-         <a href="#parameters.excludedCipherSuites">excluding</a> or 
-         <a href="#parameters.includedCipherSuites">including</a> SSL 
+         <a href="#parameters.excludedCipherSuites">excluding</a> or
+         <a href="#parameters.includedCipherSuites">including</a> SSL
          cipher suites in your configuration</strong>.
       </p>
       
