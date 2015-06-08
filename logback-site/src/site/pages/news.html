@@ -38,10 +38,15 @@
 
     <h3> 2015, Release of version 1.1.4</h3>
 
+    <p>Fixed a bug in <code>TimeBasedFileNamingAndTriggeringPolicyBase</code>
+    causing time-based rolling policies to always rollover according
+    to the local system time and ignore the time zone passed in the file
+    name pattern.</p>
+
     <p><code>AsyncAppenderBase</code> now restores the current
-    thread's inrerupt flag when catching a
-    <code>InterruptedException</code>. See . The issue, i.e. <a
-    href="http://jira.qos.ch/browse/LOGBACK-910">LOGBACK-910</a>, was
+    thread's interrupt flag when catching an
+    <code>InterruptedException</code>. The issue
+    (<a href="http://jira.qos.ch/browse/LOGBACK-910">LOGBACK-910</a>) was
     raised by Henrik Nordvik who also provided the relevant fix.</p>
     
 
