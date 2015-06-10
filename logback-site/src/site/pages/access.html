@@ -107,6 +107,14 @@
     configuration section</a> further below.
     </p>
 
+    <p>If the <code>LogbackValve</code> is not able to read a configuration file
+    from the filesystem, it will attempt to load it as a resource (i.e.
+    getClassLoader().getResourceAsStream()). This might be helpful in scenarios
+    where your application is embedding Tomcat (e.g. using Spring Boot.) As
+    mentioned above, if no filename is set, it defaults to looking for a
+    resource named logback-access.xml.
+    </p>
+
     <p>In order to help with troubleshooting, by default, the
     <code>LogbackValve</code> will print its internal status at its
     initialization. Typical output would look as:
