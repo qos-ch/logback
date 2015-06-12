@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.core.util;
 
-import java.lang.reflect.Constructor;
-import java.util.Properties;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.subst.NodeToStringTransformer;
+
+import java.lang.reflect.Constructor;
+import java.util.Properties;
 
 /**
  * @author Ceki Gulcu
@@ -32,14 +32,24 @@ public class OptionHelper {
                                               Class<?> superClass, Context context) throws IncompatibleClassException,
           DynamicClassLoadingException {
     ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
-    return instantiateByClassName(className, superClass, classLoader);
+    try {
+      return instantiateByClassName(className, superClass, classLoader);
+    } catch (DynamicClassLoadingException d) {
+      //try from tcl
+      return instantiateByClassName(className, superClass, Loader.getTCL());
+    }
   }
 
   public static Object instantiateByClassNameAndParameter(String className,
                                                           Class<?> superClass, Context context, Class<?> type, Object param) throws IncompatibleClassException,
           DynamicClassLoadingException {
     ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
-    return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
+    try {
+      return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
+    } catch (DynamicClassLoadingException d) {
+      //try from tcl
+      return instantiateByClassNameAndParameter(className, superClass, Loader.getTCL(), type, param);
+    }
   }
 
   public static Object instantiateByClassName(String className,

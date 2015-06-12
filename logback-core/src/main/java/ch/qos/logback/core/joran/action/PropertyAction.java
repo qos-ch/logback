@@ -79,7 +79,12 @@ public class PropertyAction extends Action {
     } else if (checkResourceAttributeSanity(attributes)) {
       String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
       resource = ec.subst(resource);
-      URL resourceURL = Loader.getResourceBySelfClassLoader(resource);
+
+      URL resourceURL = Loader.getResource(resource, Loader.getTCL());
+      if (resourceURL == null) {
+        resourceURL = Loader.getResourceBySelfClassLoader(resource);
+      }
+
       if (resourceURL == null) {
         addError("Could not find resource [" + resource + "].");
       } else {

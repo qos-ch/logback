@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.spi.PropertyContainer;
+import ch.qos.logback.core.util.Loader;
 import org.codehaus.commons.compiler.CompileException;
 import org.codehaus.janino.ClassBodyEvaluator;
 
@@ -47,7 +48,8 @@ public class PropertyEvalScriptBuilder extends ContextAwareBase {
     ClassBodyEvaluator cbe = new ClassBodyEvaluator();
     cbe.setImplementedInterfaces(new Class[]{Condition.class});
     cbe.setExtendedClass(PropertyWrapperForScripts.class);
-    cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
+    ClassLoader tcl = Loader.getTCL();
+    cbe.setParentClassLoader(tcl != null ? tcl : ClassBodyEvaluator.class.getClassLoader());
     cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
 
     Class<?> clazz = cbe.getClazz();
