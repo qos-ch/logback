@@ -60,7 +60,8 @@ public class Tokenizer {
         addLiteralToken(tokenList, buf);
         break;
       case START_STATE:
-        throw new ScanException("Unexpected end of pattern string");
+        buf.append(CoreConstants.DOLLAR);
+        addLiteralToken(tokenList, buf);
     }
     return tokenList;
   }

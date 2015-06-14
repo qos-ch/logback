@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class TokenizerTest {
 
@@ -51,6 +52,25 @@ public class TokenizerTest {
     assertEquals(witnessList, tokenList);
   }
 
+  @Test
+  public void scalaObjectLogger() {
+    /*
+     * logger name of scala object is like "a.b.o$" which
+     * should make dollar sign at tail a valid token.
+     */
+    try {
+      String input0 = "package.object";
+      String input1 = "$";
+      String input = input0 + input1;
+      Tokenizer tokenizer = new Tokenizer(input);
+      List<Token> tokenList = tokenizer.tokenize();
+      witnessList.add(new Token(Token.Type.LITERAL, input0));
+      witnessList.add(new Token(Token.Type.LITERAL, input1));
+      assertEquals(witnessList, tokenList);
+    } catch (ScanException e) {
+      fail("This should be a valid token");
+    }
+  }
 
   @Test
   public void simleVariable() throws ScanException {
