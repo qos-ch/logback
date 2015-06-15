@@ -43,7 +43,6 @@ public class SyslogOutputStream extends OutputStream {
   public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException,
       SocketException {
     this.syslogHost = syslogHost;
-    this.address = InetAddress.getByName(syslogHost);
     this.port = port;
     this.ds = new DatagramSocket();
   }
