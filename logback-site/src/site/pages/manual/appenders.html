@@ -4077,6 +4077,41 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
   &lt;/root>
 &lt;/configuration></pre>
   
+    <h3 class="doAnchor" name="DelegateAppender">DelegateAppender</h3>
+    
+    <p>DelegateAppender, as its name suggests, delegates <a
+    href="../apidocs/ch/qos/logback/classic/spi/ILoggingEvent.html">ILoggingEvent</a>s
+    to underlying appenders. It acts solely as an event dispatcher and must
+    therefore reference one or more appenders in order to do anything
+    useful.</p>
+    
+    <p class="example">Example: <code>DelegateAppender</code> configuration</p>
+
+    <span class="asGroovy" onclick="return asGroovy('delegateAppender');">View as .groovy</span>
+
+    <pre id="delegateAppender" class="prettyprint source">&lt;configuration>
+  &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
+    &lt;file>myapp.log&lt;/file>
+    &lt;encoder>
+      &lt;pattern>%logger{35} - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+  
+  &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg %n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  <b>&lt;appender name="DELEGATE" class="ch.qos.logback.classic.DelegateAppender"></b>
+    <b>&lt;appender-ref ref="FILE" /></b>
+    <b>&lt;appender-ref ref="STDOUT" /></b>
+  <b>&lt;/appender></b>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="<b>DELEGATE</b>" />
+  &lt;/root>
+&lt;/configuration></pre>
 
 		<h3 class="doAnchor" name="WriteYourOwnAppender">Writing your own
 		Appender</h3>
