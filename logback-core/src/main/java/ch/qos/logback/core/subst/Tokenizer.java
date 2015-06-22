@@ -23,45 +23,45 @@ public class Tokenizer {
 
   enum TokenizerState {LITERAL_STATE, START_STATE, DEFAULT_VAL_STATE}
 
-  final String pattern;
-  final int patternLength;
+  private final String pattern;
+  private final int patternLength;
+  private TokenizerState state = TokenizerState.LITERAL_STATE;
+  private int pointer = 0;
 
-  public Tokenizer(String pattern) {
+  Tokenizer(String pattern) {
     this.pattern = pattern;
     patternLength = pattern.length();
   }
 
-  TokenizerState state = TokenizerState.LITERAL_STATE;
-  int pointer = 0;
+
 
   List<Token> tokenize() throws ScanException {
-    List<Token> tokenList = new ArrayList<Token>();
-    StringBuilder buf = new StringBuilder();
-
-    while (pointer < patternLength) {
-      char c = pattern.charAt(pointer);
-      pointer++;
-
+    final List<Token> tokenList = new ArrayList<Token>();
+    if (patternLength > 0) {
+      final StringBuilder buf = new StringBuilder();
+      boolean notEOP;
+      do {
+        char c = pattern.charAt(pointer++);
+        notEOP = pointer < patternLength;
+        switch (state) {
+          case LITERAL_STATE:
+            handleLiteralState(c, tokenList, buf, notEOP);
+            break;
+          case START_STATE:
+            handleStartState(c, tokenList, buf);
+            break;
+          case DEFAULT_VAL_STATE:
+            handleDefaultValueState(c, tokenList, buf);
+        }
+      } while (notEOP);
+      // EOP
       switch (state) {
         case LITERAL_STATE:
-          handleLiteralState(c, tokenList, buf);
+          addLiteralToken(tokenList, buf);
           break;
         case START_STATE:
-          handleStartState(c, tokenList, buf);
-          break;
-        case DEFAULT_VAL_STATE:
-          handleDefaultValueState(c, tokenList, buf);
-        default:
+          throw new ScanException("Unexpected end of pattern string");
       }
-    }
-    // EOS
-    switch (state) {
-      case LITERAL_STATE:
-        addLiteralToken(tokenList, buf);
-        break;
-      case START_STATE:
-        buf.append(CoreConstants.DOLLAR);
-        addLiteralToken(tokenList, buf);
     }
     return tokenList;
   }
@@ -75,7 +75,6 @@ public class Tokenizer {
       case CoreConstants.DOLLAR:
         stringBuilder.append(CoreConstants.COLON_CHAR);
         addLiteralToken(tokenList, stringBuilder);
-        stringBuilder.setLength(0);
         state = TokenizerState.START_STATE;
         break;
       default:
@@ -94,36 +93,36 @@ public class Tokenizer {
     state = TokenizerState.LITERAL_STATE;
   }
 
-  private void handleLiteralState(char c, List<Token> tokenList, StringBuilder stringBuilder) {
-    if (c == CoreConstants.DOLLAR) {
-      addLiteralToken(tokenList, stringBuilder);
-      stringBuilder.setLength(0);
-      state = TokenizerState.START_STATE;
-    } else if (c == CoreConstants.COLON_CHAR) {
-      addLiteralToken(tokenList, stringBuilder);
-      stringBuilder.setLength(0);
-      state = TokenizerState.DEFAULT_VAL_STATE;
-    } else if (c == CoreConstants.CURLY_LEFT) {
-      addLiteralToken(tokenList, stringBuilder);
-      tokenList.add(Token.CURLY_LEFT_TOKEN);
-      stringBuilder.setLength(0);
-    } else  if (c == CoreConstants.CURLY_RIGHT) {
-      addLiteralToken(tokenList, stringBuilder);
-      tokenList.add(Token.CURLY_RIGHT_TOKEN);
-      stringBuilder.setLength(0);
-    } else {
-      stringBuilder.append(c);
+  private void handleLiteralState(char c, List<Token> tokenList, StringBuilder stringBuilder, boolean notEOP) {
+    switch (c) {
+      case CoreConstants.COLON_CHAR:
+        addLiteralToken(tokenList, stringBuilder);
+        state = TokenizerState.DEFAULT_VAL_STATE;
+        break;
+      case CoreConstants.CURLY_LEFT:
+        addLiteralToken(tokenList, stringBuilder);
+        tokenList.add(Token.CURLY_LEFT_TOKEN);
+        break;
+      case CoreConstants.CURLY_RIGHT:
+        addLiteralToken(tokenList, stringBuilder);
+        tokenList.add(Token.CURLY_RIGHT_TOKEN);
+        break;
+      case CoreConstants.DOLLAR:
+        if (notEOP) {
+          addLiteralToken(tokenList, stringBuilder);
+          state = TokenizerState.START_STATE;
+          break;
+        }
+      default:
+        stringBuilder.append(c);
     }
-
   }
 
   private void addLiteralToken(List<Token> tokenList, StringBuilder stringBuilder) {
     if (stringBuilder.length() == 0)
       return;
     tokenList.add(new Token(Token.Type.LITERAL, stringBuilder.toString()));
+    stringBuilder.setLength(0);
   }
 
-
 }
-
-
