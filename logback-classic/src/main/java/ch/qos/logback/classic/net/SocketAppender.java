@@ -27,6 +27,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
+ * @author Krzysztof Otrebski
  */
 
 public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
