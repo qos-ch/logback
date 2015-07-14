@@ -4009,6 +4009,14 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html#join(long)">Thread.join(long)</a>.
         </td>
       </tr>
+      <tr>
+        <td><span class="prop" container="async">neverBlock</span></td>
+        <td><code>boolean</code></td>
+        <td>If <code>false</code> (the default) the appender will block on
+        appending to a full queue rather than losing the message. Set to
+        <code>true</code> and the appender will just drop the message and
+        will not block your application.</td>
+      </tr>
     </table>
 
     <p>By default, event queue is configured with a maximum capacity
