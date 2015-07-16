@@ -17,6 +17,9 @@ import ch.qos.logback.core.CoreConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 public class ThrowableProxy implements IThrowableProxy {
 
@@ -28,7 +31,7 @@ public class ThrowableProxy implements IThrowableProxy {
   // package-private because of ThrowableProxyUtil
   int commonFrames;
   private ThrowableProxy cause;
-  private ThrowableProxy[] suppressed=NO_SUPPRESSED;
+  private ThrowableProxy[] suppressed = NO_SUPPRESSED;
 
   private transient PackagingDataCalculator packagingDataCalculator;
   private boolean calculatedPackageData = false;
@@ -45,9 +48,14 @@ public class ThrowableProxy implements IThrowableProxy {
     GET_SUPPRESSED_METHOD = method;
   }
 
-  private static final ThrowableProxy[] NO_SUPPRESSED=new ThrowableProxy[0];
+  private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
+  private static final StackTraceElementProxy[] NO_STACK_TRACE = new StackTraceElementProxy[0];
 
   public ThrowableProxy(Throwable throwable) {
+    this(throwable, Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>(1)));
+  }
+
+  private ThrowableProxy(Throwable throwable, Set<Throwable> visited) {
    
     this.throwable = throwable;
     this.className = throwable.getClass().getName();
@@ -55,34 +63,41 @@ public class ThrowableProxy implements IThrowableProxy {
     this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable
         .getStackTrace());
     
-    Throwable nested = throwable.getCause();
-    
-    if (nested != null) {
-      this.cause = new ThrowableProxy(nested);
-      this.cause.commonFrames = ThrowableProxyUtil
-          .findNumberOfCommonFrames(nested.getStackTrace(),
-              stackTraceElementProxyArray);
-    }
-    if(GET_SUPPRESSED_METHOD != null) {
-      // this will only execute on Java 7
-      try {
-        Object obj = GET_SUPPRESSED_METHOD.invoke(throwable);
-        if(obj instanceof Throwable[]) {
-          Throwable[] throwableSuppressed = (Throwable[]) obj;
-          if(throwableSuppressed.length > 0) {
-            suppressed = new ThrowableProxy[throwableSuppressed.length];
-            for(int i=0;i<throwableSuppressed.length;i++) {
-              this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i]);
-              this.suppressed[i].commonFrames = ThrowableProxyUtil
-                  .findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
-                      stackTraceElementProxyArray);
+    if (visited.contains(throwable)) {
+      this.className = "CIRCULAR REFERENCE:" + throwable.getClass().getName();
+      this.stackTraceElementProxyArray = NO_STACK_TRACE;
+    } else {
+      visited.add(throwable);
+
+      Throwable nested = throwable.getCause();
+      if (nested != null) {
+        this.cause = new ThrowableProxy(nested, visited);
+        this.cause.commonFrames = ThrowableProxyUtil
+            .findNumberOfCommonFrames(nested.getStackTrace(),
+                stackTraceElementProxyArray);
+      }
+
+      if (GET_SUPPRESSED_METHOD != null) {
+        // this will only execute on Java >= 7
+        try {
+          Object obj = GET_SUPPRESSED_METHOD.invoke(throwable);
+          if (obj instanceof Throwable[]) {
+            Throwable[] throwableSuppressed = (Throwable[]) obj;
+            if (throwableSuppressed.length > 0) {
+              suppressed = new ThrowableProxy[throwableSuppressed.length];
+              for (int i = 0; i < throwableSuppressed.length; i++) {
+                this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i], visited);
+                this.suppressed[i].commonFrames = ThrowableProxyUtil
+                    .findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
+                        stackTraceElementProxyArray);
+              }
             }
           }
+        } catch (IllegalAccessException e) {
+          // ignore
+        } catch (InvocationTargetException e) {
+          // ignore
         }
-      } catch (IllegalAccessException e) {
-        // ignore
-      } catch (InvocationTargetException e) {
-        // ignore
       }
     }
 

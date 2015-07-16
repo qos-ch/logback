@@ -15,13 +15,12 @@ package ch.qos.logback.classic.spi;
 
 import static ch.qos.logback.classic.util.TeztHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import ch.qos.logback.classic.util.TeztHelper;
 import org.junit.After;
@@ -58,6 +57,13 @@ public class ThrowableProxyTest {
     System.out.println(result);
 
     assertEquals(expected, result);
+  }
+
+  public void verifyContains(Throwable t, String expected) {
+    IThrowableProxy tp = new ThrowableProxy(t);
+    String result = ThrowableProxyUtil.asString(tp);
+
+    assertTrue("Did not find '" + expected + "' in \n" + result, result.contains(expected));
   }
 
   @Test
@@ -157,6 +163,30 @@ public class ThrowableProxyTest {
       w = new Exception("wrapping", e);
     }
     verify(w);
+  }
+
+  @Test
+  public void circularCause() {
+    Exception ex1 = new Exception("Foo");
+    Exception ex2 = new Exception("Bar");
+
+    ex1.initCause(ex2);
+    ex2.initCause(ex1);
+
+    verifyContains(ex1, "Caused by: CIRCULAR REFERENCE:java.lang.Exception: Foo");
+    verifyContains(ex2, "Caused by: CIRCULAR REFERENCE:java.lang.Exception: Bar");
+  }
+
+  @Test
+  public void circularSuppressed() {
+    Exception ex1 = new Exception("Foo");
+    Exception ex2 = new Exception("Bar");
+
+    ex1.addSuppressed(ex2);
+    ex2.addSuppressed(ex1);
+
+    verifyContains(ex1, "Suppressed: CIRCULAR REFERENCE:java.lang.Exception: Foo");
+    verifyContains(ex2, "Suppressed: CIRCULAR REFERENCE:java.lang.Exception: Bar");
   }
 
   void someMethod() throws Exception {
