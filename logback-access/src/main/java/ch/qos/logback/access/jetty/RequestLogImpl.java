@@ -26,6 +26,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.component.LifeCycle;
 
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
@@ -112,7 +113,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author S&eacute;bastien Pennec
  */
 public class RequestLogImpl extends ContextBase implements RequestLog,
-        AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
+        AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent>, LifeCycle {
 
   public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar
           + "logback-access.xml";
