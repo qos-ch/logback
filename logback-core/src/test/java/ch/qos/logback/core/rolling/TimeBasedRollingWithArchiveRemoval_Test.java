@@ -25,6 +25,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -108,6 +110,13 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity + numInactivityPeriods));
   }
 
+  void generateDailyRolloverWithCompression(long now, int maxHistory, int simulatedNumberOfPeriods, int startInactivity,
+                             int numInactivityPeriods, String fileExtension) {
+    slashCount = computeSlashCount(DAILY_DATE_PATTERN);
+    logOverMultiplePeriods(now, randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}." + fileExtension, MILLIS_IN_DAY, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
+    check(expectedCountWithoutFoldersWithInactivity(maxHistory, simulatedNumberOfPeriods, startInactivity + numInactivityPeriods));
+  }
+
   @Test
   public void basicDailyRollover() {
     int maxHistory = 20;
@@ -115,6 +124,16 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     int startInactivity = 0;
     int numInactivityPeriods = 0;
     generateDailyRollover(currentTime, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods);
+  }
+
+  @Test
+  public void tmpFileDeletedWhenGzipFails() throws IOException {
+    assertTmpFileDeletedWhenCompressionFails("gz");
+  }
+
+  @Test
+  public void tmpFileDeletedWhenZipFails() throws IOException {
+    assertTmpFileDeletedWhenCompressionFails("zip");
   }
 
   // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
@@ -347,7 +366,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     return actualHistory;
   }
 
-  void genericFindMatching(final FileMatchFunction matchFunc, File dir, List<File> fileList, final String pattern, boolean includeDirs) {
+  private static void genericFindMatching(final FileMatchFunction matchFunc, File dir, List<File> fileList, final String pattern, boolean includeDirs) {
     if (dir.isDirectory()) {
       File[] matchArray = dir.listFiles(new FileFilter() {
         public boolean accept(File f) {
@@ -376,13 +395,15 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
   private void findAllDirsOrStringContainsFilesRecursively(File dir, List<File> fileList, String pattern) {
     FileMatchFunction matchFunction = new FileMatchFunction() {
       public boolean match(File f, String pattern) {
-        return f.getName().contains(pattern);
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(f.getName());
+        return m.find();
       }
     };
     genericFindMatching(matchFunction, dir, fileList, pattern, true);
   }
 
-  void findFilesInFolderRecursivelyByPatterMatch(File dir, List<File> fileList, String pattern) {
+  private static void findFilesInFolderRecursivelyByPatterMatch(File dir, List<File> fileList, String pattern) {
     FileMatchFunction matchByPattern = new FileMatchFunction() {
       public boolean match(File f, String pattern) {
         return f.getName().matches(pattern);
@@ -422,5 +443,33 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
       assertTrue(f.list().length >= 1);
     }
     assertEquals(expectedClassCount, fileList.size());
+  }
+
+  private void assertTmpFileDeletedWhenCompressionFails(String fileExtension) throws IOException {
+    int maxHistory = 3;
+    int simulatedNumberOfPeriods = maxHistory * 3;
+    int startInactivity = 0;
+    int numInactivityPeriods = 0;
+    String logFilename = "tmpFileDeletedWhenCompressionFails_" + fileExtension + ".log";
+
+    rfa.setFile(randomOutputDir + logFilename);
+    createFirstRolloverFile(fileExtension);
+    generateDailyRolloverWithCompression(currentTime, maxHistory, simulatedNumberOfPeriods, startInactivity, numInactivityPeriods, fileExtension);
+
+    assertNoTmpFiles(randomOutputDir, logFilename);
+  }
+
+  private static void assertNoTmpFiles(String dir, String basename) {
+    List<File> fileList = new ArrayList<File>();
+    findFilesInFolderRecursivelyByPatterMatch(new File(dir), fileList, basename + ".*\\.tmp");
+    assertTrue("rollover should've deleted .tmp files from " + dir, fileList.isEmpty());
+  }
+
+  private void createFirstRolloverFile(String fileExtension) throws IOException {
+    SimpleDateFormat sdf = new SimpleDateFormat(DAILY_DATE_PATTERN);
+    String firstLogFilename = String.format("%sclean-%s.%s", randomOutputDir, sdf.format(new Date()), fileExtension);
+    File f = new File(firstLogFilename);
+    f.mkdirs();
+    f.createNewFile();
   }
 }
