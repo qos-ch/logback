@@ -87,5 +87,14 @@ public class BasicStatusManagerTest {
     }
   }
 
-
+  @Test
+  public void testFireStatusAddEventConcurrentModificationException() {
+    bsm.add(new StatusListener(){
+      @Override
+      public void addStatusEvent(Status status) {
+        bsm.remove(this);
+      }
+    });
+    bsm.add(new ErrorStatus("testFireStatusAddEvent", this));
+  }
 }

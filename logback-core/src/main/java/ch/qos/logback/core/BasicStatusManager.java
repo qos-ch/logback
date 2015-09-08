@@ -84,7 +84,10 @@ public class BasicStatusManager implements StatusManager {
 
   private void fireStatusAddEvent(Status status) {
     synchronized (statusListenerListLock) {
-      for (StatusListener sl : statusListenerList) {
+      // use copy instead of the original listenerList
+      // to avoid possible ConcurrentModificationException
+      // cfr. http://jira.qos.ch/browse/LOGBACK-1087
+      for (StatusListener sl : getCopyOfStatusListenerList()) {
         sl.addStatusEvent(status);
       }
     }
