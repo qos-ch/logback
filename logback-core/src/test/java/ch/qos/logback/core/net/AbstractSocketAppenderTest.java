@@ -24,6 +24,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.core.net.mock.MockContext;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.Duration;
 import org.junit.After;
@@ -65,20 +66,21 @@ public class AbstractSocketAppenderTest {
 
   private ThreadPoolExecutor executorService = spy((ThreadPoolExecutor) Executors.newCachedThreadPool());
   private MockContext mockContext = new MockContext(executorService);
-  private PreSerializationTransformer<String> preSerializationTransformer = spy(new StringPreSerializationTransformer());
+  private PreSerializationTransformer<Event> preSerializationTransformer = spy(new StringPreSerializationTransformer());
   private Socket socket = mock(Socket.class);
   private SocketConnector socketConnector = mock(SocketConnector.class);
   private AutoFlushingObjectWriter objectWriter = mock(AutoFlushingObjectWriter.class);
   private ObjectWriterFactory objectWriterFactory = mock(ObjectWriterFactory.class);
-  private LinkedBlockingDeque<String> deque = spy(new LinkedBlockingDeque<String>(1));
+  private LinkedBlockingDeque<Event> deque = spy(new LinkedBlockingDeque<Event>(1));
   private QueueFactory queueFactory = mock(QueueFactory.class);
   private InstrumentedSocketAppender appender = spy(new InstrumentedSocketAppender(preSerializationTransformer, queueFactory, objectWriterFactory, socketConnector));
+  private Event event = mock(Event.class);
 
   @Before
   public void setupValidAppenderWithMockDependencies() throws Exception {
 
     doReturn(objectWriter).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
-    doReturn(deque).when(queueFactory).<String>newLinkedBlockingDeque(anyInt());
+    doReturn(deque).when(queueFactory).<Event>newLinkedBlockingDeque(anyInt());
 
     appender.setContext(mockContext);
     appender.setRemoteHost("localhost");
@@ -207,8 +209,7 @@ public class AbstractSocketAppenderTest {
     doThrow(new IOException()).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
     appender.start();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(appender, timeout(TIMEOUT).atLeastOnce()).addInfo(contains("connection failed"));
@@ -222,8 +223,7 @@ public class AbstractSocketAppenderTest {
     doThrow(new IOException()).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
     appender.start();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(socket, timeout(TIMEOUT).atLeastOnce()).close();
@@ -237,8 +237,7 @@ public class AbstractSocketAppenderTest {
     doThrow(new IOException()).when(objectWriterFactory).newAutoFlushingObjectWriter(any(OutputStream.class));
     appender.start();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(appender, timeout(TIMEOUT).atLeastOnce()).addInfo(contains("connection closed"));
@@ -290,11 +289,10 @@ public class AbstractSocketAppenderTest {
     // given
     appender.start();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
-    verify(deque).offer(eq("some event"), anyLong(), any(TimeUnit.class));
+    verify(deque).offer(eq(event), anyLong(), any(TimeUnit.class));
   }
 
   @Test
@@ -304,8 +302,7 @@ public class AbstractSocketAppenderTest {
     appender.start();
     appender.stop();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verifyZeroInteractions(deque);
@@ -316,12 +313,11 @@ public class AbstractSocketAppenderTest {
 
     // given
     long eventDelayLimit = 42;
-    doReturn(false).when(deque).offer("some event", eventDelayLimit, TimeUnit.MILLISECONDS);
+    doReturn(false).when(deque).offer(event, eventDelayLimit, TimeUnit.MILLISECONDS);
     appender.setEventDelayLimit(new Duration(eventDelayLimit));
     appender.start();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(appender).addInfo("Dropping event due to timeout limit of [" + eventDelayLimit + " milliseconds] being exceeded");
@@ -335,8 +331,7 @@ public class AbstractSocketAppenderTest {
     appender.start();
     awaitStartOfEventDispatching();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(deque, timeout(TIMEOUT).atLeastOnce()).takeFirst();
@@ -351,11 +346,10 @@ public class AbstractSocketAppenderTest {
     appender.start();
     awaitStartOfEventDispatching();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
-    verify(deque, timeout(TIMEOUT).atLeastOnce()).offerFirst("some event");
+    verify(deque, timeout(TIMEOUT).atLeastOnce()).offerFirst(event);
   }
 
   @Test
@@ -363,11 +357,10 @@ public class AbstractSocketAppenderTest {
 
     // given
     final InterruptedException interruptedException = new InterruptedException();
-    doThrow(interruptedException).when(deque).offer(eq("some event"), anyLong(), any(TimeUnit.class));
+    doThrow(interruptedException).when(deque).offer(eq(event), anyLong(), any(TimeUnit.class));
     appender.start();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(appender).addError("Interrupted while appending event to SocketAppender", interruptedException);
@@ -381,14 +374,30 @@ public class AbstractSocketAppenderTest {
     appender.start();
     awaitStartOfEventDispatching();
 
-    // when
-    appender.append("some event");
+    appendEvent();
     awaitAtLeastOneEventToBeDispatched();
 
     // then
     InOrder inOrder = inOrder(appender, preSerializationTransformer);
-    inOrder.verify(appender).postProcessEvent("some event");
-    inOrder.verify(preSerializationTransformer).transform("some event");
+    inOrder.verify(appender).postProcessEvent(event);
+    inOrder.verify(preSerializationTransformer).transform(event);
+  }
+
+  @Test
+  public void prepareEventsForDeferredProcessingBeforeTransferingToDeque() throws Exception {
+
+      // given
+      mockOneSuccessfulSocketConnection();
+      appender.start();
+      awaitStartOfEventDispatching();
+
+      appendEvent();
+      awaitAtLeastOneEventToBeDispatched();
+
+      // then
+      InOrder inOrder = inOrder(deque, event);
+      inOrder.verify(event).prepareForDeferredProcessing();
+      inOrder.verify(deque).offer(event, appender.getEventDelayLimit().getMilliseconds(), TimeUnit.MILLISECONDS);
   }
 
   @Test
@@ -396,12 +405,11 @@ public class AbstractSocketAppenderTest {
 
     // given
     mockOneSuccessfulSocketConnection();
-    when(preSerializationTransformer.transform("some event")).thenReturn("some serialized event");
+    when(preSerializationTransformer.transform(event)).thenReturn("some serialized event");
     appender.start();
     awaitStartOfEventDispatching();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(objectWriter, timeout(TIMEOUT)).write("some serialized event");
@@ -413,13 +421,12 @@ public class AbstractSocketAppenderTest {
     // given
     mockOneSuccessfulSocketConnection();
     doThrow(new IOException()).when(objectWriter).write(anyObject());
-    doReturn(false).when(deque).offerFirst("some event");
+    doReturn(false).when(deque).offerFirst(event);
     appender.start();
     awaitStartOfEventDispatching();
     reset(appender);
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(appender, timeout(TIMEOUT)).addInfo("Dropping event due to socket connection error and maxed out deque capacity");
@@ -434,8 +441,7 @@ public class AbstractSocketAppenderTest {
     appender.start();
     awaitStartOfEventDispatching();
 
-    // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(objectWriterFactory, timeout(TIMEOUT).atLeast(2)).newAutoFlushingObjectWriter(any(OutputStream.class));
@@ -450,7 +456,7 @@ public class AbstractSocketAppenderTest {
     appender.start();
 
     // when
-    appender.append("some event");
+    appendEvent();
 
     // then
     verify(socketConnector, timeout(TIMEOUT).atLeast(2)).call();
@@ -487,12 +493,19 @@ public class AbstractSocketAppenderTest {
     doReturn(socket).doReturn(socket).doReturn(null).when(socketConnector).call();
   }
 
-  private static class InstrumentedSocketAppender extends AbstractSocketAppender<String> {
+  private void appendEvent() {
+      appender.append(event);
+  }
 
-    private PreSerializationTransformer<String> preSerializationTransformer;
+  private static interface Event extends Serializable, DeferredProcessingAware {
+  }
+
+  private static class InstrumentedSocketAppender extends AbstractSocketAppender<Event> {
+
+    private PreSerializationTransformer<Event> preSerializationTransformer;
     private SocketConnector socketConnector;
 
-    public InstrumentedSocketAppender(PreSerializationTransformer<String> preSerializationTransformer,
+    public InstrumentedSocketAppender(PreSerializationTransformer<Event> preSerializationTransformer,
                                       QueueFactory queueFactory,
                                       ObjectWriterFactory objectWriterFactory,
                                       SocketConnector socketConnector) {
@@ -502,11 +515,11 @@ public class AbstractSocketAppenderTest {
     }
 
     @Override
-    protected void postProcessEvent(String event) {
+    protected void postProcessEvent(Event event) {
     }
 
     @Override
-    protected PreSerializationTransformer<String> getPST() {
+    protected PreSerializationTransformer<Event> getPST() {
       return preSerializationTransformer;
     }
 
@@ -516,10 +529,10 @@ public class AbstractSocketAppenderTest {
     }
   }
 
-  private static class StringPreSerializationTransformer implements PreSerializationTransformer<String> {
+  private static class StringPreSerializationTransformer implements PreSerializationTransformer<Event> {
 
     @Override
-    public Serializable transform(String event) {
+    public Serializable transform(Event event) {
       return event;
     }
   }

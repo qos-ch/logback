@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import javax.net.SocketFactory;
 
 import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.CloseUtil;
 import ch.qos.logback.core.util.Duration;
@@ -174,6 +175,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E>
   @Override
   protected void append(E event) {
     if (event == null || !isStarted()) return;
+
+    //Adding MDC, Thread and FormattedMessage data to the LoggingEvent
+    if (event instanceof DeferredProcessingAware) {
+       ((DeferredProcessingAware) event).prepareForDeferredProcessing();
+    }
 
     try {
       final boolean inserted = deque.offer(event, eventDelayLimit.getMilliseconds(), TimeUnit.MILLISECONDS);
