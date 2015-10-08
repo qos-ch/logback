@@ -211,55 +211,55 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-junit</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-          <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-          </dependency>
-        </dependencies>
+<!--       <plugin> -->
+<!--         <groupId>org.apache.maven.plugins</groupId> -->
+<!--         <artifactId>maven-antrun-plugin</artifactId> -->
+<!--         <version>1.7</version> -->
+<!--         <dependencies> -->
+<!--           <dependency> -->
+<!--             <groupId>org.apache.ant</groupId> -->
+<!--             <artifactId>ant-junit</artifactId> -->
+<!--             <version>1.8.1</version> -->
+<!--           </dependency> -->
+<!--           <dependency> -->
+<!--             <groupId>junit</groupId> -->
+<!--             <artifactId>junit</artifactId> -->
+<!--             <version>${junit.version}</version> -->
+<!--           </dependency> -->
+<!--         </dependencies> -->
 
-        <executions>
-          <execution>
-            <id>ant-osgi-test</id>
-            <phase>package</phase>
-            <configuration>
-              <target>
-                <property name="currentVersion" value="${project.version}"/>
-                <property name="slf4j.version" value="${slf4j.version}"/>
-                <property name="basedir" value="${basedir}"/>
-                <ant antfile="${basedir}/osgi-build.xml"/>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
+<!--         <executions> -->
+<!--           <execution> -->
+<!--             <id>ant-osgi-test</id> -->
+<!--             <phase>package</phase> -->
+<!--             <configuration> -->
+<!--               <target> -->
+<!--                 <property name="currentVersion" value="${project.version}"/> -->
+<!--                 <property name="slf4j.version" value="${slf4j.version}"/> -->
+<!--                 <property name="basedir" value="${basedir}"/> -->
+<!--                 <ant antfile="${basedir}/osgi-build.xml"/> -->
+<!--               </target> -->
+<!--             </configuration> -->
+<!--             <goals> -->
+<!--               <goal>run</goal> -->
+<!--             </goals> -->
+<!--           </execution> -->
 
-          <execution>
-            <id>ant-integration-test</id>
-            <phase>package</phase>
-            <configuration>
-              <target>
-                <property name="slf4j.version" value="${slf4j.version}"/>
-                <ant antfile="${basedir}/integration.xml"/>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
+<!--           <execution> -->
+<!--             <id>ant-integration-test</id> -->
+<!--             <phase>package</phase> -->
+<!--             <configuration> -->
+<!--               <target> -->
+<!--                 <property name="slf4j.version" value="${slf4j.version}"/> -->
+<!--                 <ant antfile="${basedir}/integration.xml"/> -->
+<!--               </target> -->
+<!--             </configuration> -->
+<!--             <goals> -->
+<!--               <goal>run</goal> -->
+<!--             </goals> -->
+<!--           </execution> -->
+<!--         </executions> -->
+<!--       </plugin> -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
