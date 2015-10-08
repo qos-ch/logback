@@ -27,6 +27,12 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+		<groupId>com.lmax</groupId>
+		<artifactId>disruptor</artifactId>
+		<version>3.3.2</version>
+	</dependency>
+    
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
       <version>${slf4j.version}</version>

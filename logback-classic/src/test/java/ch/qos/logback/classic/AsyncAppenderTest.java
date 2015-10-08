@@ -13,17 +13,20 @@
  */
 package ch.qos.logback.classic;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.MDC;
+
 import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventBuilderInContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.MDC;
-
-import static org.junit.Assert.*;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -52,7 +55,7 @@ public class AsyncAppenderTest {
   }
 
   @Test
-  public void eventWasPreparedForDeferredProcessing() {
+  public void eventWasPreparedForDeferredProcessing() throws InterruptedException {
     asyncAppender.addAppender(listAppender);
     asyncAppender.start();
 
@@ -60,7 +63,7 @@ public class AsyncAppenderTest {
     MDC.put(k, "v");
     asyncAppender.doAppend(builder.build(diff));
     MDC.clear();
-
+    Thread.sleep(1000);
     asyncAppender.stop();
     assertFalse(asyncAppender.isStarted());
 
@@ -75,13 +78,14 @@ public class AsyncAppenderTest {
 
 
   @Test
-  public void settingIncludeCallerDataPropertyCausedCallerDataToBeIncluded() {
+  public void settingIncludeCallerDataPropertyCausedCallerDataToBeIncluded()throws InterruptedException {
     asyncAppender.addAppender(listAppender);
     asyncAppender.setIncludeCallerData(true);
     asyncAppender.start();
 
 
     asyncAppender.doAppend(builder.build(diff));
+    Thread.sleep(1000);
     asyncAppender.stop();
 
     // check the event
