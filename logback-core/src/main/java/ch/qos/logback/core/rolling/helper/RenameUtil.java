@@ -91,7 +91,7 @@ public class RenameUtil extends ContextAwareBase {
     if (!EnvUtil.isJDK7OrHigher())
       return false;
 
-    File parentOfTarget = targetFile.getParentFile();
+    File parentOfTarget = targetFile.getAbsoluteFile().getParentFile();
 
     try {
       boolean onSameFileStore = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);

@@ -27,6 +27,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -96,6 +97,23 @@ public class RenameUtilTest {
     fis.close();
 
     renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
+    StatusPrinter.print(context);
+    assertTrue(statusChecker.isErrorFree(0));
+  }
+
+  @Test
+  public void renameLockedAbstractFile() throws IOException, RolloverFailure {
+    RenameUtil renameUtil = new RenameUtil();
+    renameUtil.setContext(context);
+
+    String src = "abstract_pathname.txt";
+    FileOutputStream fos = new FileOutputStream(src);
+    fos.write(("hello" + diff).getBytes());
+    fos.close();
+    
+    FileInputStream fisLock = new FileInputStream(src);
+
+    renameUtil.rename(src, src+"."+ diff );
     StatusPrinter.print(context);
     assertTrue(statusChecker.isErrorFree(0));
   }
