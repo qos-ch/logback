@@ -14,20 +14,23 @@
 package ch.qos.logback.core.rolling.helper;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 
 public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
 
+  boolean historyAsFileCount = false;
+
   public SizeAndTimeBasedArchiveRemover(FileNamePattern fileNamePattern,
-      RollingCalendar rc) {
+      RollingCalendar rc, boolean historyAsFileCount) {
     super(fileNamePattern, rc);
+    this.historyAsFileCount = historyAsFileCount;
   }
 
   public void cleanByPeriodOffset(Date now, int periodOffset) {
     Date dateOfPeriodToClean = rc.getRelativeDate(now, periodOffset);
 
-    String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean);
-    String stemRegex = FileFilterUtil.afterLastSlash(regex);
     File archive0 = new File(fileNamePattern.convertMultipleArguments(
         dateOfPeriodToClean, 0));
     // in case the file has no directory part, i.e. if it's written into the
@@ -35,6 +38,17 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
     archive0 = archive0.getAbsoluteFile();
 
     File parentDir = archive0.getAbsoluteFile().getParentFile();
+
+    if (historyAsFileCount) {
+      cleanByFile(now, dateOfPeriodToClean, -periodOffset - 1, parentDir);
+    } else {
+      cleanByPeriod(dateOfPeriodToClean, parentDir);
+    }
+  }
+
+  private void cleanByPeriod(final Date dateOfPeriodToClean, final File parentDir) {
+    String stemRegex = createStemRegex(dateOfPeriodToClean);
+
     File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(
         parentDir, stemRegex);
 
@@ -52,5 +66,45 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
     }
   }
 
+  private void cleanByFile(final Date cleanFrom, final Date cleanTo, final int maxFilesToRetain, final File parentDir) {
+    int periodOffset = 0;
+    int filesToRetain = maxFilesToRetain;
+    Date dateOfPeriodToClean = rc.getRelativeDate(cleanFrom, periodOffset);
+    while (dateOfPeriodToClean.after(cleanTo) || dateOfPeriodToClean.equals(cleanTo)) {
+      // Find all the files for the period to clean
+      String stemRegex = createStemRegex(dateOfPeriodToClean);
+      File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(
+              parentDir, stemRegex);
+
+      // Sort the files to delete the oldest first (smallest last modified time)
+      Arrays.sort(matchingFileArray, new Comparator<File>() {
+        @Override
+        public int compare(final File f1, final File f2) {
+          return Long.compare(f1.lastModified(), f2.lastModified());
+        }
+      });
+
+      // Delete files from this period if there are more than should be retained
+      for (int i = 0; i <= matchingFileArray.length - filesToRetain - 1; ++i) {
+          final File file = matchingFileArray[i];
+          addInfo("deleting " + file);
+          file.delete();
+      }
+
+      // Allow each period to be in a separate folder
+      if (parentClean && matchingFileArray.length != 0) {
+        removeFolderIfEmpty(matchingFileArray[0].getAbsoluteFile().getParentFile());
+      }
+
+      // Update remaining files to retain and move back a time period
+      filesToRetain = Math.max(0, filesToRetain - matchingFileArray.length);
+      dateOfPeriodToClean = rc.getRelativeDate(cleanFrom, --periodOffset);
+    }
+  }
+
+  private String createStemRegex(final Date dateOfPeriodToClean) {
+    String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean);
+    return FileFilterUtil.afterLastSlash(regex);
+  }
 
 }

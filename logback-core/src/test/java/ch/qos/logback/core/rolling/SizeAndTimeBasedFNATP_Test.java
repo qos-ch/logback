@@ -14,17 +14,22 @@
 package ch.qos.logback.core.rolling;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
+import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.testUtil.FileToBufferUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import static org.junit.Assert.assertEquals;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
   private SizeAndTimeBasedFNATP sizeAndTimeBasedFNATP = null;
@@ -55,10 +60,13 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
   private void initPolicies(RollingFileAppender<Object> rfa,
                             TimeBasedRollingPolicy<Object> tbrp,
                             String filenamePattern, int sizeThreshold,
-                            long givenTime, long lastCheck) {
+                            long givenTime, long lastCheck,
+                            int maxHistory, boolean historyAsFileCount) {
     sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
     tbrp.setContext(context);
     sizeAndTimeBasedFNATP.setMaxFileSize("" + sizeThreshold);
+    sizeAndTimeBasedFNATP.setHistoryAsFileCount(historyAsFileCount);
+    tbrp.setMaxHistory(maxHistory);
     tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
@@ -94,7 +102,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     String file = (stem != null) ? randomOutputDir + stem : null;
     initRollingFileAppender(rfa1, file);
     sizeThreshold = 300;
-    initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+    initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0, 0, false);
     addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
     incCurrentTime(100);
     tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
@@ -142,7 +150,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
 
     initRollingFileAppender(rfa2, file);
     initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
-            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0, 0, false);
 
     for (int i = runLength; i < runLength * 2; i++) {
       incCurrentTime(100);
@@ -192,5 +200,33 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     generic("test7", "toto.log", FIRST_PHASE_ONLY, ".zip");
     List<String> zipFiles = filterElementsInListBySuffix(".zip");
     checkZipEntryMatchesZipFilename(zipFiles);
+  }
+
+  @Test
+  public void testHistoryAsFileCount() throws IOException {
+    String testId = "testHistoryAsFileCount";
+    int maxHistory = 10;
+    initRollingFileAppender(rfa1, randomOutputDir + "~" + testId );
+    sizeThreshold = 50;
+    initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold, currentTime, 0, maxHistory, true);
+
+    incCurrentTime(100);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+    int runLength = 1000;
+
+    for (int i = 0; i < runLength; i++) {
+      String msg = "" + i;
+      rfa1.doAppend(msg);
+      incCurrentTime(20);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      add(tbrp1.future);
+    }
+
+    Thread.yield();
+    // wait for compression to finish
+    waitForJobsToComplete();
+
+    assertEquals(maxHistory + 1, getFilesInDirectory(randomOutputDir).length);
+    sortedContentCheck(randomOutputDir, 1000, "", 863);
   }
 }

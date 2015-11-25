@@ -81,6 +81,11 @@ public class ScaffoldingForRollingTests {
 
   public static void fileContentCheck(File[] fileArray, int runLength,
                                       String prefix) throws IOException {
+    fileContentCheck(fileArray, runLength, prefix, 0);
+  }
+
+  public static void fileContentCheck(File[] fileArray, int runLength,
+                                      String prefix, int runStart) throws IOException {
     List<String> stringList = new ArrayList<String>();
     for (File file : fileArray) {
       FileToBufferUtil.readIntoList(file, stringList);
@@ -88,7 +93,7 @@ public class ScaffoldingForRollingTests {
 
     List<String> witnessList = new ArrayList<String>();
 
-    for (int i = 0; i < runLength; i++) {
+    for (int i = runStart; i < runLength; i++) {
       witnessList.add(prefix + i);
     }
     assertEquals(witnessList, stringList);
@@ -96,9 +101,14 @@ public class ScaffoldingForRollingTests {
 
   public static void sortedContentCheck(String outputDirStr, int runLength,
                                         String prefix) throws IOException {
+    sortedContentCheck(outputDirStr, runLength, prefix, 0);
+  }
+
+  public static void sortedContentCheck(String outputDirStr, int runLength,
+                                        String prefix, int runStart) throws IOException {
     File[] fileArray = getFilesInDirectory(outputDirStr);
     FileFilterUtil.sortFileArrayByName(fileArray);
-    fileContentCheck(fileArray, runLength, prefix);
+    fileContentCheck(fileArray, runLength, prefix, runStart);
   }
 
   public static void reverseSortedContentCheck(String outputDirStr,
