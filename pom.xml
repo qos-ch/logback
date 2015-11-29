@@ -66,7 +66,7 @@
     <!--<jetty.version>9.2.9.v20150224</jetty.version>-->
     <jansi.version>1.9</jansi.version>
     <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
-    <cobertura.maven.plugin.version>2.6</cobertura.maven.plugin.version>
+    <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
   </properties>
 
