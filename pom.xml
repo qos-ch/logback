@@ -66,7 +66,7 @@
     <jansi.version>1.9</jansi.version>
     <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
-    <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
+    <maven-license-plugin.version>3.0</maven-license-plugin.version>
   </properties>
 
   <developers>
@@ -451,9 +451,9 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>com.mycila.maven-license-plugin</groupId>
-            <artifactId>maven-license-plugin</artifactId>
-            <version>1.9.0</version>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>${maven-license-plugin.version}</version>
             <configuration>
               <header>src/main/licenseHeader.txt</header>
               <quiet>false</quiet>
