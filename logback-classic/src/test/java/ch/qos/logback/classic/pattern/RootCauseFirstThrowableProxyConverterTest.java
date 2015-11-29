@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 import static ch.qos.logback.classic.util.TestHelper.makeNestedException;
 import static ch.qos.logback.classic.util.TestHelper.positionOf;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Tomasz Nurkiewicz
