@@ -65,7 +65,7 @@
     <jetty.version>8.2.0.v20160908</jetty.version>
     <!--<jetty.version>9.2.9.v20150224</jetty.version>-->
     <jansi.version>1.9</jansi.version>
-    <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
+    <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
   </properties>
@@ -382,7 +382,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.10.1</version>
+              <version>2.10.4</version>
               <configuration>
                 <aggregate>true</aggregate>
                 <linksource>true</linksource>
