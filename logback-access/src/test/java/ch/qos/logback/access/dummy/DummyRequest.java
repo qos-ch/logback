@@ -33,7 +33,7 @@ public class DummyRequest implements HttpServletRequest {
     public static final String DUMMY_RESPONSE_CONTENT_STRING = "response contents";
     public static final byte[] DUMMY_RESPONSE_CONTENT_BYTES = DUMMY_RESPONSE_CONTENT_STRING.getBytes();
 
-    Hashtable<String, String> headerNames;
+    Hashtable<String, String[]> headerNames;
     String uri;
     Map<String, Object> attributes;
 
@@ -44,9 +44,9 @@ public class DummyRequest implements HttpServletRequest {
     }
 
     public DummyRequest() {
-        headerNames = new Hashtable<String, String>();
-        headerNames.put("headerName1", "headerValue1");
-        headerNames.put("headerName2", "headerValue2");
+        headerNames = new Hashtable<String, String[]>();
+        headerNames.put("headerName1", new String[]{"headerValue11", "headerValue12"});
+        headerNames.put("headerName2", new String[]{"headerValue2"});
 
         attributes = new HashMap<String, Object>(DUMMY_DEFAULT_ATTR_MAP);
     }
@@ -61,7 +61,7 @@ public class DummyRequest implements HttpServletRequest {
 
     public Cookie[] getCookies() {
         Cookie cookie = new Cookie("testName", "testCookie");
-        return new Cookie[] { cookie };
+        return new Cookie[]{cookie};
     }
 
     public long getDateHeader(String arg0) {
@@ -69,7 +69,7 @@ public class DummyRequest implements HttpServletRequest {
     }
 
     public String getHeader(String key) {
-        return headerNames.get(key);
+        return headerNames.get(key)[0];
     }
 
     public Enumeration getHeaderNames() {
@@ -77,7 +77,7 @@ public class DummyRequest implements HttpServletRequest {
     }
 
     public Enumeration getHeaders(String arg0) {
-        return null;
+        return Collections.enumeration(Arrays.asList(headerNames.get(arg0)));
     }
 
     public int getIntHeader(String arg0) {

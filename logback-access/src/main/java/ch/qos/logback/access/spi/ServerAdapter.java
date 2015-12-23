@@ -30,5 +30,5 @@ public interface ServerAdapter {
 
     int getStatusCode();
 
-    Map<String, String> buildResponseHeaderMap();
+    Map<String, String[]> buildResponseHeaderMap();
 }

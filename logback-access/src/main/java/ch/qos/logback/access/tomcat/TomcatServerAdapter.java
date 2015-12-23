@@ -14,10 +14,10 @@
 package ch.qos.logback.access.tomcat;
 
 import ch.qos.logback.access.spi.ServerAdapter;
-
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,11 +52,13 @@ public class TomcatServerAdapter implements ServerAdapter {
     }
 
     @Override
-    public Map<String, String> buildResponseHeaderMap() {
-        Map<String, String> responseHeaderMap = new HashMap<String, String>();
+    public Map<String, String[]> buildResponseHeaderMap() {
+        Map<String, String[]> responseHeaderMap = new HashMap<String, String[]>();
         for (String key : response.getHeaderNames()) {
-            String value = response.getHeader(key);
-            responseHeaderMap.put(key, value);
+            Collection<String> values = response.getHeaders(key);
+            if (values != null) {
+                responseHeaderMap.put(key, (String[]) values.toArray());
+            }
         }
         return responseHeaderMap;
     }

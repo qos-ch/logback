@@ -21,15 +21,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.Vector;
+import java.util.*;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -66,9 +59,9 @@ public class AccessEvent implements Serializable, IAccessEvent {
     String sessionID;
     long elapsedTime;
 
-    Map<String, String> requestHeaderMap;
+    Map<String, String[]> requestHeaderMap;
     Map<String, String[]> requestParameterMap;
-    Map<String, String> responseHeaderMap;
+    Map<String, String[]> responseHeaderMap;
     Map<String, Object> attributeMap;
 
     long contentLength = SENTINEL;
@@ -286,10 +279,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
         if (requestHeaderMap == null) {
             if (httpRequest != null) {
                 buildRequestHeaderMap();
-                result = requestHeaderMap.get(key);
+                result = getFirstArrayItemOrNull(requestHeaderMap.get(key));
             }
         } else {
-            result = requestHeaderMap.get(key);
+            result = getFirstArrayItemOrNull(requestHeaderMap.get(key));
         }
 
         if (result != null) {
@@ -297,6 +290,13 @@ public class AccessEvent implements Serializable, IAccessEvent {
         } else {
             return NA;
         }
+    }
+
+    private String getFirstArrayItemOrNull(String[] array) {
+        if (array == null || array.length == 0) {
+            return null;
+        }
+        return array[0];
     }
 
     @Override
@@ -310,7 +310,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
 
     @Override
-    public Map<String, String> getRequestHeaderMap() {
+    public Map<String, String[]> getRequestHeaderMap() {
         if (requestHeaderMap == null) {
             buildRequestHeaderMap();
         }
@@ -320,14 +320,19 @@ public class AccessEvent implements Serializable, IAccessEvent {
     public void buildRequestHeaderMap() {
         // according to RFC 2616 header names are case insensitive
         // latest versions of Tomcat return header names in lower-case
-        requestHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-        Enumeration<String> e = httpRequest.getHeaderNames();
+        requestHeaderMap = new TreeMap<String, String[]>(String.CASE_INSENSITIVE_ORDER);
+        Enumeration e = httpRequest.getHeaderNames();
         if (e == null) {
             return;
         }
         while (e.hasMoreElements()) {
-            String key = e.nextElement();
-            requestHeaderMap.put(key, httpRequest.getHeader(key));
+            String key = (String) e.nextElement();
+            Enumeration<String> headers = httpRequest.getHeaders(key);
+            if (headers != null) {
+                ArrayList<String> list = Collections.list(headers);
+                String[] values = list.toArray(new String[list.size()]);
+                requestHeaderMap.put(key, values);
+            }
         }
     }
 
@@ -403,12 +408,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
         if (httpRequest != null) {
             String[] value = httpRequest.getParameterValues(key);
             if (value == null) {
-                return new String[] { NA };
+                return new String[]{NA};
             } else {
                 return value;
             }
         } else {
-            return new String[] { NA };
+            return new String[]{NA};
         }
     }
 
@@ -554,7 +559,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     public String getResponseHeader(String key) {
         buildResponseHeaderMap();
-        return responseHeaderMap.get(key);
+        return getFirstArrayItemOrNull(responseHeaderMap.get(key));
     }
 
     void buildResponseHeaderMap() {
@@ -563,7 +568,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         }
     }
 
-    public Map<String, String> getResponseHeaderMap() {
+    public Map<String, String[]> getResponseHeaderMap() {
         buildResponseHeaderMap();
         return responseHeaderMap;
     }

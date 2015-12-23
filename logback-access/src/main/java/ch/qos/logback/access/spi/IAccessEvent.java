@@ -66,8 +66,8 @@ public interface IAccessEvent extends DeferredProcessingAware {
     long getElapsedTime();
 
     /**
-    * The number of seconds elapsed between receiving the request and logging it.
-    */
+     * The number of seconds elapsed between receiving the request and logging it.
+     */
     long getElapsedSeconds();
 
     String getRequestURI();
@@ -90,17 +90,18 @@ public interface IAccessEvent extends DeferredProcessingAware {
     String getSessionID();
 
     void setThreadName(String threadName);
+
     String getThreadName();
-    
+
     String getQueryString();
-    
+
     String getRemoteAddr();
 
     String getRequestHeader(String key);
 
-    Enumeration getRequestHeaderNames();
+    Enumeration<String> getRequestHeaderNames();
 
-    Map<String, String> getRequestHeaderMap();
+    Map<String, String[]> getRequestHeaderMap();
 
     Map<String, String[]> getRequestParameterMap();
 
@@ -124,7 +125,7 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
     String getResponseHeader(String key);
 
-    Map<String, String> getResponseHeaderMap();
+    Map<String, String[]> getResponseHeaderMap();
 
     List<String> getResponseHeaderNameList();
 }
