@@ -38,8 +38,7 @@ class ComponentDelegate extends ContextAwareBase {
   void methodMissing(String name, def args) {
     NestingType nestingType = PropertyUtil.nestingType(component, name);
     if (nestingType == NestingType.NA) {
-      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
-      return;
+      throw new MissingMethodException(name, component.getClass(), args)
     }
 
     String subComponentName
@@ -88,8 +87,7 @@ class ComponentDelegate extends ContextAwareBase {
   void propertyMissing(String name, def value) {
     NestingType nestingType = PropertyUtil.nestingType(component, name);
     if (nestingType == NestingType.NA) {
-      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
-      return;
+      throw new MissingPropertyException("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
     }
     PropertyUtil.attach(nestingType, component, value, name)
   }
