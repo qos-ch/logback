@@ -247,7 +247,7 @@ public class SMTPAppender_GreenTest {
     }
   }
 
-  private byte[] getAsByteArray(InputStream inputStream) throws IOException {
+  private static byte[] getAsByteArray(InputStream inputStream) throws IOException {
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     byte[] buffer = new byte[1024];

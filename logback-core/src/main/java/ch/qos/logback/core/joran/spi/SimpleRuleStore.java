@@ -154,7 +154,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
   }
 
-  private boolean isKleeneStar(String last) {
+  private static boolean isKleeneStar(String last) {
     return KLEENE_STAR.equals(last);
   }
 

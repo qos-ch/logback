@@ -150,13 +150,13 @@ public class TrivialConfiguratorTest {
             + ".jar");
   }
 
-  private void fillInJarFile(File jarFile, String jarEntryName)
+  private static void fillInJarFile(File jarFile, String jarEntryName)
           throws IOException {
     fillInJarFile(jarFile, jarEntryName, null);
   }
 
-  private void fillInJarFile(File jarFile, String jarEntryName1,
-                             String jarEntryName2) throws IOException {
+  private static void fillInJarFile(File jarFile, String jarEntryName1,
+                                    String jarEntryName2) throws IOException {
     JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
     jos.putNextEntry(new ZipEntry(jarEntryName1));
     jos.write("<x/>".getBytes());

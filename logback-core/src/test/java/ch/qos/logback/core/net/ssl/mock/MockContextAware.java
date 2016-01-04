@@ -58,7 +58,7 @@ public class MockContextAware extends ContextAwareBase
     return hasMatching(info, regex);
   }
   
-  private boolean hasMatching(List<String> messages, String regex) {
+  private static boolean hasMatching(List<String> messages, String regex) {
     for (String message : messages) {
       if (message.matches(regex)) return true;
     }

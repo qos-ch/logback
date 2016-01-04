@@ -65,7 +65,7 @@ public final class LogbackMDCAdapter implements MDCAdapter {
     return lastOp;
   }
 
-  private boolean wasLastOpReadOrNull(Integer lastOp) {
+  private static boolean wasLastOpReadOrNull(Integer lastOp) {
     return lastOp == null || lastOp.intValue() == READ_OPERATION;
   }
 

@@ -115,7 +115,7 @@ public class TimeUtilTest  {
     assertEquals(expected, computed);
   }
   
-  private long correctBasedOnTimeZone(long gmtLong) {
+  private static long correctBasedOnTimeZone(long gmtLong) {
     int offset = TimeZone.getDefault().getRawOffset();
     return gmtLong - offset;
   }

@@ -143,7 +143,7 @@ public class PackagingDataCalculator {
     return cpd;
   }
 
-  String getImplementationVersion(Class type) {
+  static String getImplementationVersion(Class type) {
     if (type == null) {
       return "na";
     }
@@ -184,7 +184,7 @@ public class PackagingDataCalculator {
     return "na";
   }
 
-  private String getCodeLocation(String locationStr, char separator) {
+  private static String getCodeLocation(String locationStr, char separator) {
     int idx = locationStr.lastIndexOf(separator);
     if (isFolder(idx, locationStr)) {
       idx = locationStr.lastIndexOf(separator, idx - 1);
@@ -195,11 +195,11 @@ public class PackagingDataCalculator {
     return null;
   }
 
-  private boolean isFolder(int idx, String text) {
+  private static boolean isFolder(int idx, String text) {
     return (idx != -1 && idx + 1 == text.length());
   }
 
-  private Class loadClass(ClassLoader cl, String className) {
+  private static Class loadClass(ClassLoader cl, String className) {
     if (cl == null) {
       return null;
     }
@@ -221,8 +221,8 @@ public class PackagingDataCalculator {
    * @param className
    * @return
    */
-  private Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader,
-                                    String className) {
+  private static Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader,
+                                           String className) {
     Class result = loadClass(lastGuaranteedClassLoader, className);
     if (result != null) {
       return result;

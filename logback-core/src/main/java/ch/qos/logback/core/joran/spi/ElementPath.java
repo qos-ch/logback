@@ -84,7 +84,7 @@ public class ElementPath {
     return true;
   }
 
-  private boolean equalityCheck(String x, String y) {
+  private static boolean equalityCheck(String x, String y) {
     return x.equalsIgnoreCase(y);
   }
 

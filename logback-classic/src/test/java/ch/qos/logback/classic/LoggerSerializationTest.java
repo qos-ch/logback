@@ -120,11 +120,11 @@ public class LoggerSerializationTest {
   Foo readFooObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
     return (Foo) readObject(inputStream);
   }
-  private Object readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
+  private static Object readObject(ObjectInputStream inputStream) throws IOException, ClassNotFoundException {
     return inputStream.readObject();
   }
 
-  private void writeObject(ObjectOutputStream oos, Object o) throws IOException {
+  private static void writeObject(ObjectOutputStream oos, Object o) throws IOException {
     oos.writeObject(o);
     oos.flush();
     oos.close();

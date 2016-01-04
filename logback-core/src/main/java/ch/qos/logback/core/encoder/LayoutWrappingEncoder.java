@@ -155,7 +155,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
   }
 
-  private void appendIfNotNull(StringBuilder sb, String s) {
+  private static void appendIfNotNull(StringBuilder sb, String s) {
     if (s != null) {
       sb.append(s);
     }

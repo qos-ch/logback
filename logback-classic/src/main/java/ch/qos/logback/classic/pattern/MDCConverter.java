@@ -64,7 +64,7 @@ public class MDCConverter extends ClassicConverter {
   /**
    * if no key is specified, return all the values present in the MDC, in the format "k1=v1, k2=v2, ..."
    */
-  private String outputMDCForAllKeys(Map<String, String> mdcPropertyMap) {
+  private static String outputMDCForAllKeys(Map<String, String> mdcPropertyMap) {
     StringBuilder buf = new StringBuilder();
     boolean first = true;
     for (Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {

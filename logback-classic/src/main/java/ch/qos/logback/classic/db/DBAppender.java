@@ -171,14 +171,14 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     stmt.setString(CALLER_LINE_INDEX, Integer.toString(caller.getLineNumber()));
   }
 
-  private StackTraceElement extractFirstCaller(StackTraceElement[] callerDataArray) {
+  private static StackTraceElement extractFirstCaller(StackTraceElement[] callerDataArray) {
     StackTraceElement caller = EMPTY_CALLER_DATA;
     if(hasAtLeastOneNonNullElement(callerDataArray))
       caller = callerDataArray[0];
     return caller;
   }
 
-  private boolean hasAtLeastOneNonNullElement(StackTraceElement[] callerDataArray) {
+  private static boolean hasAtLeastOneNonNullElement(StackTraceElement[] callerDataArray) {
     return callerDataArray != null && callerDataArray.length > 0 && callerDataArray[0] != null;
   }
 
