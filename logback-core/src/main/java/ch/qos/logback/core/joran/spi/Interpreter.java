@@ -186,7 +186,7 @@ public class Interpreter {
     // given that an action list is always pushed for every startElement, we
     // need
     // to always pop for every endElement
-    List<Action> applicableActionList = (List<Action>) actionListStack.pop();
+    List<Action> applicableActionList = actionListStack.pop();
 
     if (skip != null) {
       if (skip.equals(elementPath)) {
@@ -232,7 +232,7 @@ public class Interpreter {
     int len = implicitActions.size();
 
     for (int i = 0; i < len; i++) {
-      ImplicitAction ia = (ImplicitAction) implicitActions.get(i);
+      ImplicitAction ia = implicitActions.get(i);
 
       if (ia.isApplicable(elementPath, attributes, ec)) {
         List<Action> actionList = new ArrayList<Action>(1);
@@ -268,7 +268,7 @@ public class Interpreter {
 
     Iterator<Action> i = applicableActionList.iterator();
     while (i.hasNext()) {
-      Action action = (Action) i.next();
+      Action action = i.next();
       // now let us invoke the action. We catch and report any eventual
       // exceptions
       try {

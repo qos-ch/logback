@@ -134,7 +134,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     } else {
       int len = this.childrenList.size();
       for (int i = 0; i < len; i++) {
-        final Logger childLogger_i = (Logger) childrenList.get(i);
+        final Logger childLogger_i = childrenList.get(i);
         final String childName_i = childLogger_i.getName();
 
         if (childName.equals(childName_i)) {
@@ -167,7 +167,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     if (childrenList != null) {
       int len = childrenList.size();
       for (int i = 0; i < len; i++) {
-        Logger child = (Logger) childrenList.get(i);
+        Logger child = childrenList.get(i);
         // tell child to handle parent levelInt change
         child.handleParentLevelChange(effectiveLevelInt);
       }
@@ -192,7 +192,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
       if (childrenList != null) {
         int len = childrenList.size();
         for (int i = 0; i < len; i++) {
-          Logger child = (Logger) childrenList.get(i);
+          Logger child = childrenList.get(i);
           child.handleParentLevelChange(newParentLevelInt);
         }
       }

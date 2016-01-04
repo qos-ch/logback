@@ -97,7 +97,7 @@ public class ElementPath {
   }
 
   public String get(int i) {
-    return (String) partList.get(i);
+    return partList.get(i);
   }
 
   public void pop() {
@@ -109,7 +109,7 @@ public class ElementPath {
   public String peekLast() {
     if (!partList.isEmpty()) {
       int size = partList.size();
-      return (String) partList.get(size - 1);
+      return partList.get(size - 1);
     } else {
       return null;
     }

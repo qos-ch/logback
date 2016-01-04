@@ -273,7 +273,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
   @Override
   public String getProperty(String key) {
-    return (String) this.propertyMap.get(key);
+    return this.propertyMap.get(key);
   }
 
   @Override

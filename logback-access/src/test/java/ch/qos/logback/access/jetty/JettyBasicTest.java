@@ -98,7 +98,7 @@ public class JettyBasicTest {
     // this line is necessary to make the stream aware of when the message is
     // over.
     connection.setFixedLengthStreamingMode(msg.getBytes().length);
-    ((HttpURLConnection) connection).setRequestMethod("POST");
+    connection.setRequestMethod("POST");
     connection.setDoOutput(true);
     connection.setDoInput(true);
     connection.setUseCaches(false);

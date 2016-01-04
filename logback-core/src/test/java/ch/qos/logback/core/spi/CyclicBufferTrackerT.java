@@ -205,7 +205,7 @@ public class CyclicBufferTrackerT<E> implements ComponentTracker<CyclicBuffer<E>
         throw new IllegalArgumentException("arguments must be of type " + TEntry.class);
       }
 
-      TEntry<?> other = (TEntry<?>) o;
+      TEntry<?> other = o;
       if (timestamp > other.timestamp) {
         return 1;
       }
