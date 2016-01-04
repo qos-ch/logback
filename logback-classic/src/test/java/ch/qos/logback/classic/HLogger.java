@@ -215,9 +215,9 @@ public class HLogger extends MarkerIgnoringBase {
    * Remove the appender passed as parameter form the list of appenders.
    */
   public synchronized void removeAppender(Appender<ILoggingEvent> appender) {
-    if ((appender == null) || (appenderList == null)) {
+    if (appender != null && appenderList != null) {
+      appenderList.remove(appender);
     }
-    appenderList.remove(appender);
   }
 
   /**
