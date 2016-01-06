@@ -15,13 +15,24 @@ package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public abstract class NamedConverter extends ClassicConverter {
 
   Abbreviator abbreviator = null;
 
   /**
-   * Gets fully qualified name from event.
-   * 
+   * Cache size of the cache. In some circumstances some more entries could exist in the cache due racing conditions.
+   */
+  private static final int CACHE_SIZE = 25000;
+
+  private final Map<String, String> abbrvCache = new ConcurrentHashMap<String, String>(CACHE_SIZE / 20, 0.9f,
+          Runtime.getRuntime().availableProcessors());
+
+  /**
+   * * Gets fully qualified name from event.
+   *
    * @param event
    *          The LoggingEvent to process, cannot not be null.
    * @return name, must not be null.
@@ -45,12 +56,21 @@ public abstract class NamedConverter extends ClassicConverter {
   }
 
   public String convert(ILoggingEvent event) {
-    String fqn = getFullyQualifiedName(event);
+    final String fqn = getFullyQualifiedName(event);
 
     if (abbreviator == null) {
       return fqn;
     } else {
-      return abbreviator.abbreviate(fqn);
+      final String str = abbrvCache.get(fqn);
+      if (str != null) {
+        return str;
+      } else {
+        final String newStr = abbreviator.abbreviate(fqn);
+        if (abbrvCache.size() < CACHE_SIZE) {
+          abbrvCache.put(fqn, newStr);
+        }
+        return newStr;
+      }
     }
   }
 }

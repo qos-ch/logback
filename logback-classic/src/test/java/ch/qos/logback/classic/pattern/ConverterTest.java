@@ -13,28 +13,32 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.MDC;
-import org.slf4j.MarkerFactory;
-
 import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.MDC;
+import org.slf4j.MarkerFactory;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ConverterTest {
 
@@ -397,5 +401,24 @@ public class ConverterTest {
 
     String result = converter.convert(event);
     assertEquals("v", result);
+  }
+
+  @Test
+  @Ignore
+  public void performanceTest() {
+    final LoggerConverter converter = new LoggerConverter();
+    converter.setOptionList(Collections.singletonList("0"));
+    converter.start();
+    final LoggingEvent event = makeLoggingEvent(null);
+    for (int i = 0; i < 100000; i++) {
+      converter.convert(event);
+    }
+    for (int run = 0; run < 10; run++) {
+      long startTime = System.nanoTime();
+      for (int i = 0; i < 200000000; i++) {
+        converter.convert(event);
+      }
+      System.out.println("Time: " + (System.nanoTime() - startTime) / 1000000);
+    }
   }
 }
