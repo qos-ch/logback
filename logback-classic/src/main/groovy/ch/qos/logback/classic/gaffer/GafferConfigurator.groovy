@@ -28,6 +28,7 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer
 class GafferConfigurator {
 
   LoggerContext context
+  GroovyShell gsh
                          
   static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
 
@@ -35,26 +36,12 @@ class GafferConfigurator {
     this.context = context
   }
 
-  protected void informContextOfURLUsedForConfiguration(URL url) {
-    ConfigurationWatchListUtil.setMainWatchURL(context, url);
+  void run(File file) {
+    run(file.toURI().toURL());
   }
 
   void run(URL url) {
-    informContextOfURLUsedForConfiguration(url);
-    run(url.text);
-  }
-
-  void run(File file) {
-    informContextOfURLUsedForConfiguration(file.toURI().toURL());
-    run(file.text);
-  }
-
-  void run(String dslText) {
-    Binding binding = new Binding();
-    binding.setProperty("hostname", ContextUtil.localHostName);
-
-    def configuration = new CompilerConfiguration()
-    configuration.addCompilationCustomizers(importCustomizer())
+    ConfigurationWatchListUtil.setMainWatchURL(context, url)
 
     String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
     if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
@@ -68,13 +55,30 @@ class GafferConfigurator {
     // caller data should take into account groovy frames
     new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
 
-    Script dslScript = new GroovyShell(binding, configuration).parse(dslText)
+    Script dslScript = parseScript(url)
+	
+    dslScript.run()
+  }
+
+  protected Script parseScript(URL url) {
+    if (gsh == null) {
+      Binding binding = new Binding()
+      binding.setProperty("hostname", ContextUtil.localHostName);
+  
+      def configuration = new CompilerConfiguration()
+      configuration.addCompilationCustomizers(importCustomizer())
+ 
+      gsh = new GroovyShell(binding, configuration)
+    }
+
+    Script dslScript = gsh.parse(url.toURI())
 
     dslScript.metaClass.mixin(ConfigurationDelegate)
     dslScript.setContext(context)
+    dslScript.setConfigurator(this)
     dslScript.metaClass.getDeclaredOrigin = { dslScript }
 
-    dslScript.run()
+    return dslScript
   }
 
   protected ImportCustomizer importCustomizer() {
@@ -86,6 +90,7 @@ class GafferConfigurator {
             "ch.qos.logback.classic.net")
 
     customizer.addImports(PatternLayoutEncoder.class.name)
+    customizer.addImports("groovy.transform.Field")
 
     customizer.addStaticStars(Level.class.name)
 

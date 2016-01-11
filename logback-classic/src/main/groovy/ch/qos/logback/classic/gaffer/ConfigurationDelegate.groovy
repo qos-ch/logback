@@ -31,6 +31,8 @@ import ch.qos.logback.core.util.CachingDateFormatter
 import ch.qos.logback.core.util.Duration
 import ch.qos.logback.core.spi.LifeCycle
 import ch.qos.logback.core.spi.ContextAware
+import ch.qos.logback.core.util.Loader
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 
 import javax.management.MalformedObjectNameException
 import javax.management.ObjectName
@@ -47,6 +49,9 @@ import java.util.concurrent.TimeUnit;
 public class ConfigurationDelegate extends ContextAwareBase {
 
     List<Appender> appenderList = [];
+
+    GafferConfigurator configurator;
+    Script parent;
 
     Object getDeclaredOrigin() {
         return this;
@@ -68,6 +73,69 @@ public class ConfigurationDelegate extends ContextAwareBase {
                 addError("Error while converting [" + scanPeriodStr + "] to long", nfe);
             }
         }
+    }
+
+    Script include(config, boolean optional = false) {
+
+        def tempconfig;
+        URL configurl;
+
+        if (config instanceof CharSequence) {
+            try {
+                // first: assume string is a URL
+                tempconfig = new URL(config);
+            } catch (MalformedURLException e) {
+                // second: attempt to find the string as a resource from the class path, returns as URL
+                tempconfig = Loader.getResourceBySelfClassLoader(config);
+                if (tempconfig == null) {
+                    // third: assume the string is a file
+                    tempconfig = new File(config);
+                }
+            }
+        }
+        else {
+            tempconfig = config;
+        }
+
+        if (tempconfig instanceof URL) {
+            configurl = tempconfig;
+        }
+        else if (tempconfig instanceof File) {
+            try {
+                configurl = tempconfig.toURI().toURL();
+            } catch (MalformedURLException e) {
+                // impossible to get here
+                e.printStackTrace();
+	        return null;
+            }
+        }
+        else {
+            addError("Configuration of type [" + tempconfig.class.getName() + "] not supported for include");
+            return null;
+        }
+
+        // ensure that any changes in included scripts trigger a reload of the configuration
+        ConfigurationWatchListUtil.addToWatchList(context, configurl);
+
+        try {
+            configurl.openStream();
+        } catch (IOException e) {
+            if (!optional) 
+            addWarn("Failed to open [" + configurl.toString() + "]");
+            return null;
+        }
+
+        Script s = configurator.parseScript(configurl);
+
+        s.setParent(this.getDeclaredOrigin());
+        // Ensure that the same top-level appenderList is used in all included scripts as well
+        // Maybe the appenderList should move to GafferConfigurator instead, which then acts as
+        // a central context (e.g. compared to JoranConfiguratorBase, InterpretationContext, APPENDER_BAG)
+        s.setAppenderList(this.appenderList);
+
+        s.run();
+
+        return s;
     }
 
     void statusListener(Class listenerClass) {
