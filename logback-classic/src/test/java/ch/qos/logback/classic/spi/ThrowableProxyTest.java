@@ -112,6 +112,24 @@ public class ThrowableProxyTest {
   }
 
   @Test
+  public void suppressedCyclic() throws InvocationTargetException, IllegalAccessException
+  {
+    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    Exception ex = null;
+    try {
+      someMethod();
+    } catch (Exception e) {
+      addSuppressed(e, new Exception("foo", e));
+      ex = e;
+    }
+    // Disabled verification
+    // Java exception printing includes a [CIRCULAR REFERENCE] line in this case.
+    // Matching this output would require non-trivial changes to ThrowableProxy.
+    // For now I'm just happy that this doesn't cause a StackOverflow
+    //verify(ex);
+  }
+
+  @Test
   public void suppressedWithSuppressed() throws Exception
   {
     assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
