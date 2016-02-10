@@ -43,7 +43,7 @@ public class EnsureExceptionHandling implements
     }
     if (!chainHandlesThrowable(head)) {
       Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
-      Converter<ILoggingEvent> exConverter = new ExtendedThrowableProxyConverter();
+      Converter<ILoggingEvent> exConverter = new ThrowableProxyConverter();
       tail.setNext(exConverter);
     }
   }

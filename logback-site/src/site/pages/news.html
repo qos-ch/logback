@@ -38,6 +38,19 @@
 
     <h3> 2015, Release of version 1.1.4</h3>
 
+    <p>PackageDataCalculation is 
+    </p>
+
+    <p>In case an application throws lots of exceptions, then
+    computing packaging data can be very costly and will cause the
+    application to run slower. Making bad worse. To alleviate this
+    problem, PatternLayout now adds exception tracing without
+    packaging data. It other words, in the absence of a converter
+    handling exceptions, PatternLayout in logback-classic will add %ex
+    as a suffix of instead of %xEx earlier version. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-966">LOGBACK-966</a>.
+    </p>
+
     <p>Fixed a bug in <code>TimeBasedFileNamingAndTriggeringPolicyBase</code>
     causing time-based rolling policies to always rollover according
     to the local system time and ignore the time zone passed in the file
@@ -185,7 +198,7 @@
     </p>
 
     <p>Fixed <code>NullPointerException</code> when substituting blank variables
-    (<a href="http://jira.qos.ch/browse/LOGBACK-959">LOGBACK-959</a>)
+    (<a href="http://jira.qos.ch/browse/LOGBACK-959">LOGBACK-959</a>)</p>
 
     <p>Fixed <code>NullPointerException</code> that occurs when stopping a
     <code>SyslogAppender</code> that did not properly initialize, e.g.,
@@ -200,7 +213,7 @@
 
     <p>In case of missing included files, IncludeAction no longer
     prints a stack trace but prints a warning instead. (<a
-    href="http://jira.qos.ch/browse/LOGBACK-954">LOGBACK-954</a>)
+    href="http://jira.qos.ch/browse/LOGBACK-954">LOGBACK-954</a>)</p>
 
     <p>Fixed character escaping in XMLLayout
     (<a href="http://jira.qos.ch/browse/LOGBACK-728">LOGBACK-728</a>)
