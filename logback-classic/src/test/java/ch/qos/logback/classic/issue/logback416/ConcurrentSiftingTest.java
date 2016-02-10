@@ -11,16 +11,18 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.issue.lbclassic203;
+package ch.qos.logback.classic.issue.logback416;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
+import ch.qos.logback.classic.issue.logback416.InstanceCountingAppender;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.joran.spi.JoranException;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -54,8 +56,8 @@ public class ConcurrentSiftingTest {
 
   @Test
   public void concurrentAccess() throws JoranException, InterruptedException {
-    configure(FOLDER_PREFIX + "lbclassic203.xml");
+    configure(FOLDER_PREFIX + "logback_416.xml");
     harness.execute(runnableArray);
-    assertEquals(1, InstanceCountingAppender.INSTANCE_COUNT);
+    assertEquals(1, InstanceCountingAppender.INSTANCE_COUNT.get());
   }
 }

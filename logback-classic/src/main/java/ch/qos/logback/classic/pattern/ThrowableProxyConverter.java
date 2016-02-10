@@ -65,14 +65,14 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
       }
     }
 
-    final List optionList = getOptionList();
+    final List<String> optionList = getOptionList();
 
     if (optionList != null && optionList.size() > 1) {
       final int optionListSize = optionList.size();
       for (int i = 1; i < optionListSize; i++) {
         String evaluatorOrIgnoredStackTraceLine = (String) optionList.get(i);
         Context context = getContext();
-        Map evaluatorMap = (Map) context.getObject(CoreConstants.EVALUATOR_MAP);
+        Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context.getObject(CoreConstants.EVALUATOR_MAP);
         EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap
                 .get(evaluatorOrIgnoredStackTraceLine);
         if (ee != null) {

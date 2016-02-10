@@ -14,7 +14,7 @@
     </discriminator>
     <sift>
       <appender name="list-${userid}"
-        class="ch.qos.logback.classic.issue.lbclassic203.InstanceCountingAppender" />
+        class="ch.qos.logback.classic.issue.logback416.InstanceCountingAppender" />
     </sift>
   </appender>
 

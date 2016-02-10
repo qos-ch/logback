@@ -15,6 +15,7 @@ package ch.qos.logback.classic.joran;
 
 import ch.qos.logback.classic.joran.action.*;
 import ch.qos.logback.classic.sift.SiftAction;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
@@ -59,9 +60,9 @@ public class JoranConfigurator extends JoranConfiguratorBase {
     rs.addRule(new ElementSelector("configuration/root"), new RootLoggerAction());
     rs.addRule(new ElementSelector("configuration/root/level"), new LevelAction());
     rs.addRule(new ElementSelector("configuration/logger/appender-ref"),
-        new AppenderRefAction());
+        new AppenderRefAction<ILoggingEvent>());
     rs.addRule(new ElementSelector("configuration/root/appender-ref"),
-        new AppenderRefAction());
+        new AppenderRefAction<ILoggingEvent>());
     
     // add if-then-else support
     rs.addRule(new ElementSelector("*/if"), new IfAction());

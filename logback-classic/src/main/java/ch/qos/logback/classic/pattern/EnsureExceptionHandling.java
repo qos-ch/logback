@@ -13,7 +13,9 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.PostCompileProcessor;
@@ -36,14 +38,20 @@ public class EnsureExceptionHandling implements
    * 
    * 
    */
-  public void process(Converter<ILoggingEvent> head) {
+  public void process(Context context, Converter<ILoggingEvent> head) {
     if(head == null) {
       // this should never happen
       throw new IllegalArgumentException("cannot process empty chain");
     }
     if (!chainHandlesThrowable(head)) {
       Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
-      Converter<ILoggingEvent> exConverter = new ThrowableProxyConverter();
+      Converter<ILoggingEvent> exConverter = null;
+      LoggerContext loggerContext = (LoggerContext) context;
+      if(loggerContext.isPackagingDataEnabled()) {
+        exConverter = new ExtendedThrowableProxyConverter();
+      } else {
+        exConverter = new ThrowableProxyConverter();
+      }
       tail.setNext(exConverter);
     }
   }
@@ -56,8 +64,8 @@ public class EnsureExceptionHandling implements
    *                The first element of the chain
    * @return true if can handle throwables contained in logging events
    */
-  public boolean chainHandlesThrowable(Converter head) {
-    Converter c = head;
+  public boolean chainHandlesThrowable(Converter<ILoggingEvent> head) {
+    Converter<ILoggingEvent> c = head;
     while (c != null) {
       if (c instanceof ThrowableHandlingConverter) {
         return true;

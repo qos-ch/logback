@@ -32,7 +32,7 @@ public class LB139_DeadlockTest {
   @Test //(timeout=3000)
   public void test() throws Exception {
     Worker worker = new Worker(loggerContext);
-    Accessor accessor = new Accessor(worker, loggerContext);
+    Accessor accessor = new Accessor(worker, loggerContext); 
     
     Thread workerThread = new Thread(worker, "WorkerThread");
     Thread accessorThread = new Thread(accessor, "AccessorThread");

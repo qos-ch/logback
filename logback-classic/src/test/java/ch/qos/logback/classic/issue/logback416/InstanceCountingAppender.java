@@ -11,17 +11,19 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.issue.lbclassic203;
+package ch.qos.logback.classic.issue.logback416;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 public class InstanceCountingAppender extends AppenderBase<ILoggingEvent> {
   
-  static public volatile int INSTANCE_COUNT = 0;
+  static public AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
 
   public InstanceCountingAppender() {
-    INSTANCE_COUNT++;
+    INSTANCE_COUNT.getAndIncrement();
   }
 
   protected void append(ILoggingEvent e) {

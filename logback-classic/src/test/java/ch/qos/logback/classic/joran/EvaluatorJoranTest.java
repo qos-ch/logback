@@ -32,6 +32,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
+import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 
@@ -45,7 +46,7 @@ public class EvaluatorJoranTest  {
     jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleEvaluator.xml");
     
     
-    Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+    Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
     assertNotNull(evalMap);
     JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
     assertNotNull(evaluator);
@@ -65,7 +66,7 @@ public class EvaluatorJoranTest  {
     jc.setContext(loggerContext);
     jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
     
-    Map evalMap = (Map) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+    Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
     assertNotNull(evalMap);
     
     Logger logger = loggerContext.getLogger("xx");

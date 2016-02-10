@@ -14,6 +14,7 @@
 package ch.qos.logback.access.pattern;
 
 import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.PostCompileProcessor;
@@ -25,7 +26,7 @@ public class EnsureLineSeparation implements PostCompileProcessor<IAccessEvent> 
    * line.
    */
     @Override
-  public void process(Converter<IAccessEvent> head) {
+  public void process(Context context, Converter<IAccessEvent> head) {
     if(head == null)
       throw new IllegalArgumentException("Empty converter chain");
 

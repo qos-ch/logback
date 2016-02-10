@@ -85,7 +85,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
       Node t = p.parse();
       this.head = p.compile(t, getEffectiveConverterMap());
       if (postCompileProcessor != null) {
-        postCompileProcessor.process(head);
+        postCompileProcessor.process(context, head);
       }
       ConverterUtil.setContextForConverters(getContext(), head);
       ConverterUtil.startConverters(this.head);
