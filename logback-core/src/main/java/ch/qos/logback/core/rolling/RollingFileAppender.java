@@ -19,6 +19,8 @@ import ch.qos.logback.core.rolling.helper.FileNamePattern;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import static ch.qos.logback.core.CoreConstants.CODES_URL;
 
@@ -167,16 +169,22 @@ public class RollingFileAppender<E> extends FileAppender<E> {
    * This method differentiates RollingFileAppender from its super class.
    */
   @Override
-  protected void subAppend(E event) {
+  protected void subAppend(final E event) {
     // The roll-over check must precede actual writing. This is the
     // only correct behavior for time driven triggers.
 
     // We need to synchronize on triggeringPolicy so that only one rollover
     // occurs at a time
     synchronized (triggeringPolicy) {
-      if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
-        rollover();
-      }
+      AccessController.doPrivileged(new PrivilegedAction<Void>() {
+        @Override
+        public Void run() {
+          if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
+            rollover();
+          }
+          return null;
+        }
+      });
     }
 
     super.subAppend(event);
