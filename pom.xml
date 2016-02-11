@@ -359,19 +359,6 @@
             </plugin>
             
             <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>cobertura-maven-plugin</artifactId>
-              <version>${cobertura.maven.plugin.version}</version>
-              <configuration>
-                <formats>
-                  <format>html</format>
-                </formats>
-                <aggregate>true</aggregate>
-              </configuration>
-            </plugin>
-
-
-            <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
               <version>2.10.1</version>
@@ -418,9 +405,10 @@
   </build>
 
   <distributionManagement>
+
     <site>
-      <id>pixie</id>
-      <url>scp://pixie.qos.ch/var/www/logback.qos.ch/htdocs/</url>
+      <id>tao</id>
+      <url>scp://tao.qos.ch/var/www/logback.qos.ch/htdocs/</url>
     </site>
 
     <repository>
@@ -514,6 +502,38 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>cobertura</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <configuration>
+              <reportPlugins>
+                
+                
+            
+                <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>cobertura-maven-plugin</artifactId>
+                  <version>${cobertura.maven.plugin.version}</version>
+                  <configuration>
+                    <formats>
+                      <format>html</format>
+                    </formats>
+                    <aggregate>true</aggregate>
+                  </configuration>
+                </plugin>
+              </reportPlugins>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+
   </profiles>
 
 </project>
