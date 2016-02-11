@@ -6,7 +6,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.1.4</version>
   <packaging>pom</packaging>
   <name>Logback-Parent</name>
   <description>logback project pom.xml file</description>
@@ -50,7 +50,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd -->
-    <slf4j.version>1.7.15</slf4j.version>
+    <slf4j.version>1.7.16</slf4j.version>
     <junit.version>4.10</junit.version>
     <javax.mail.version>1.4</javax.mail.version>
     <janino.version>2.7.8</janino.version>
@@ -277,7 +277,25 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>2.5.3</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.14</version>
+          <configuration>
+            <ignores>
+              <ignore>sun.reflect.Reflection</ignore>
+            </ignores>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java16</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+        </plugin>
+
       </plugins>
+
     </pluginManagement>
 
     <plugins>

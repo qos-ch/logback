@@ -85,7 +85,7 @@
 
 
    <!-- for some reason if mvn is invoked from the parent directory, junit gets
-        invoked from the parent dir, which messes up theses tests. Hence, the
+        invoked from the parent dir, which messes up theseg tests. Hence, the
         fork="yes" dir="${basedir}" -->
 
 	<target name="logback" unless="maven.test.skip">

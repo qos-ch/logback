@@ -454,7 +454,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, null, Level.TRACE, format, arg1, arg2, null);
   }
 
-  public void trace(String format, Object[] argArray) {
+  public void trace(String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, format, argArray, null);
   }
 
@@ -474,7 +474,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, marker, Level.TRACE, format, arg1, arg2, null);
   }
 
-  public void trace(Marker marker, String format, Object[] argArray) {
+  public void trace(Marker marker, String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, format, argArray, null);
   }
 
@@ -511,7 +511,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, null, Level.DEBUG, format, arg1, arg2, null);
   }
 
-  public void debug(String format, Object[] argArray) {
+  public void debug(String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, format, argArray, null);
   }
 
@@ -531,7 +531,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, marker, Level.DEBUG, format, arg1, arg2, null);
   }
 
-  public void debug(Marker marker, String format, Object[] argArray) {
+  public void debug(Marker marker, String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, format, argArray, null);
   }
 
@@ -551,7 +551,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, null, Level.ERROR, format, arg1, arg2, null);
   }
 
-  public void error(String format, Object[] argArray) {
+  public void error(String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, format, argArray, null);
   }
 
@@ -571,7 +571,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, marker, Level.ERROR, format, arg1, arg2, null);
   }
 
-  public void error(Marker marker, String format, Object[] argArray) {
+  public void error(Marker marker, String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, format, argArray, null);
   }
 
@@ -608,7 +608,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, null, Level.INFO, format, arg1, arg2, null);
   }
 
-  public void info(String format, Object[] argArray) {
+  public void info(String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, format, argArray, null);
   }
 
@@ -628,7 +628,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, marker, Level.INFO, format, arg1, arg2, null);
   }
 
-  public void info(Marker marker, String format, Object[] argArray) {
+  public void info(Marker marker, String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, format, argArray, null);
   }
 
@@ -721,7 +721,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_2(FQCN, null, Level.WARN, format, arg1, arg2, null);
   }
 
-  public void warn(String format, Object[] argArray) {
+  public void warn(String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, format, argArray, null);
   }
 
@@ -733,7 +733,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_1(FQCN, marker, Level.WARN, format, arg, null);
   }
 
-  public void warn(Marker marker, String format, Object[] argArray) {
+  public void warn(Marker marker, String format, Object... argArray) {
     filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, format, argArray, null);
   }
 
@@ -788,6 +788,16 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     filterAndLog_0_Or3Plus(fqcn, marker, level, message, argArray, t);
   }
 
+  /**
+   * Support SLF4J interception during initialization as introduced in SLF4J version 1.7.15
+   * @since 1.1.4 
+   * @param slf4jEvent
+   */
+  public void log(org.slf4j.event.LoggingEvent slf4jEvent) {
+    Level level = Level.fromLocationAwareLoggerInteger(slf4jEvent.getLevel().toInt());
+    filterAndLog_0_Or3Plus(FQCN, slf4jEvent.getMarker(), level, slf4jEvent.getMessage(), slf4jEvent.getArgumentArray(), slf4jEvent.getThrowable());
+  }
+  
   /**
    * After serialization, the logger instance does not know its LoggerContext.
    * The best we can do here, is to return a logger with the same name
