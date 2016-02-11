@@ -14,6 +14,9 @@
 package ch.qos.logback.core.rolling;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
@@ -105,7 +108,15 @@ public class SizeAndTimeBasedFNATP<E> extends
       invocationMask = (invocationMask << 1) + 1;
     }
 
-    if (activeFile.length() >= maxFileSize.getSize()) {
+    long activeLength;
+    try {
+      activeLength = Files
+          .readAttributes(activeFile.toPath(), BasicFileAttributes.class)
+          .size();
+    } catch (IOException ignored) {
+      activeLength = maxFileSize.getSize();
+    }
+    if (activeLength >= maxFileSize.getSize()) {
       elapsedPeriodsFileName = tbrp.fileNamePatternWCS
               .convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
       currentPeriodsCounter++;

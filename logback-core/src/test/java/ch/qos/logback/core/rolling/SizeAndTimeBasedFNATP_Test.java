@@ -193,4 +193,35 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     List<String> zipFiles = filterElementsInListBySuffix(".zip");
     checkZipEntryMatchesZipFilename(zipFiles);
   }
+
+  @Test
+  public void rotateIfFileRemoved_Fileset_NoRestart_8() throws Exception {
+    String file = randomOutputDir + "toto.log";
+    initRollingFileAppender(rfa1, file);
+    sizeThreshold = 300;
+    initPolicies(rfa1, tbrp1, randomOutputDir + "test8" + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + DEFAULT_COMPRESSION_SUFFIX, sizeThreshold, currentTime, 0);
+    addExpectedFileName_ByFileIndexCounter(randomOutputDir, "test8", getMillisOfCurrentPeriodsStart(), fileIndexCounter,
+        DEFAULT_COMPRESSION_SUFFIX);
+    incCurrentTime(100);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+    int runLength = 10;
+    String prefix = "Hello -----------------";
+
+    rfa1.doAppend(prefix);
+    new File(file).delete();
+
+    for (int i = 0; i < runLength; i++) {
+      String msg = prefix + i;
+      rfa1.doAppend(msg);
+      fileIndexCounter = fileIndexCounter + 1;
+      fileSize = 0;      incCurrentTime(20);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      add(tbrp1.future);
+    }
+
+    massageExpectedFilesToCorresponToCurrentTarget(file, true);
+
+    StatusPrinter.print(context);
+    existenceCheck(expectedFilenameList);
+  }
 }
