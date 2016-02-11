@@ -362,7 +362,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger,
     }
 
     if (childrenList == null) {
-      childrenList = new ArrayList<Logger>(DEFAULT_CHILD_ARRAY_SIZE);
+      childrenList = Collections.synchronizedList(new ArrayList<Logger>(DEFAULT_CHILD_ARRAY_SIZE));
     }
     Logger childLogger;
     childLogger = new Logger(childName, this, this.loggerContext);
