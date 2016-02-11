@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.io.PrintWriter;
@@ -72,7 +72,7 @@ public class ExtendedThrowableProxyConverterTest {
     while(m.find()) {
       i++;
     }
-    assertThat(i).isGreaterThan(0);
+    assertThat(i).isGreaterThan(5);
   }
 
   @Test

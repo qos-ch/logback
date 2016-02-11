@@ -43,7 +43,7 @@ public class LogbackMDCAdapterTest {
    * @throws InterruptedException
    */
   @Test
-  public void lbclassic77Test() throws InterruptedException {
+  public void LOGBACK_442() throws InterruptedException {
     Map<String, String> parentHM = getMapFromMDCAdapter(mdcAdapter);
     assertNull(parentHM);
 
@@ -64,27 +64,39 @@ public class LogbackMDCAdapterTest {
     mdcAdapter.remove("abcdlw0");
   }
 
-
   @Test
   public void sequenceWithGet() {
     mdcAdapter.put("k0", "v0");
     Map<String, String> map0 = mdcAdapter.copyOnInheritThreadLocal.get();
-    mdcAdapter.get("k0");  // point 0
-    mdcAdapter.put("k0", "v1");
+    mdcAdapter.get("k0");  
+    mdcAdapter.put("k1", "v1"); // no map copy required
+    
     // verify that map0 is the same instance and that value was updated
     assertSame(map0, mdcAdapter.copyOnInheritThreadLocal.get());
-    assertEquals("v1", map0.get("k0"));
   }
 
+  
   @Test
   public void sequenceWithGetPropertyMap() {
     mdcAdapter.put("k0", "v0");
     Map<String, String> map0 = mdcAdapter.getPropertyMap();  // point 0
-    mdcAdapter.put("k0", "v1");
+    mdcAdapter.put("k0", "v1"); // new map should be created
     // verify that map0 is that in point 0
     assertEquals("v0", map0.get("k0"));
   }
 
+  @Test
+  public void sequenceWithCopyContextMap() {
+    mdcAdapter.put("k0", "v0");
+    Map<String, String> map0 = mdcAdapter.copyOnInheritThreadLocal.get();
+    mdcAdapter.getCopyOfContextMap();  
+    mdcAdapter.put("k1", "v1"); // no map copy required
+    
+    // verify that map0 is the same instance and that value was updated
+    assertSame(map0, mdcAdapter.copyOnInheritThreadLocal.get());
+  }
+
+  
   // =================================================
 
   /**

@@ -45,7 +45,6 @@ public class RootCauseFirstThrowableProxyConverterTest {
 
   @Before
   public void setUp() throws Exception {
-    context.setPackagingDataEnabled(true);
     converter.setContext(context);
     converter.start();
   }
@@ -59,6 +58,7 @@ public class RootCauseFirstThrowableProxyConverterTest {
   @Test
   public void integration() {
     //given
+    context.setPackagingDataEnabled(true);
     PatternLayout pl = new PatternLayout();
     pl.setContext(context);
     pl.setPattern("%m%rEx%n");
