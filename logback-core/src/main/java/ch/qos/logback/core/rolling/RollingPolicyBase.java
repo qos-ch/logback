@@ -32,7 +32,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements
   // fileNamePatternStr is always slashified, see setter
   protected String fileNamePatternStr;
 
-  private FileAppender parent;
+  private FileAppender<?> parent;
 
   // use to name files within zip file, i.e. the zipEntry
   FileNamePattern zipEntryFileNamePattern;
@@ -82,7 +82,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements
     started = false;
   }
 
-  public void setParent(FileAppender appender) {
+  public void setParent(FileAppender<?> appender) {
     this.parent = appender;
   }
 

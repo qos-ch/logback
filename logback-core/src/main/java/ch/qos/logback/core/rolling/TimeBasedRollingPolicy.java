@@ -15,13 +15,18 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.*;
+import ch.qos.logback.core.rolling.helper.ArchiveRemover;
+import ch.qos.logback.core.rolling.helper.AsynchronousCompressor;
+import ch.qos.logback.core.rolling.helper.CompressionMode;
+import ch.qos.logback.core.rolling.helper.Compressor;
+import ch.qos.logback.core.rolling.helper.FileFilterUtil;
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.rolling.helper.RenameUtil;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
@@ -165,13 +170,13 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
-  Future asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName)
+  Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName)
       throws RolloverFailure {
     AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
     return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
   }
 
-  Future renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName)
+  Future<?> renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName)
       throws RolloverFailure {
     String parentsRawFile = getParentsRawFileProperty();
     String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";

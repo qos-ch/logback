@@ -13,17 +13,17 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.testUtil.EnvUtilForTests;
-import ch.qos.logback.core.util.StatusPrinter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import ch.qos.logback.core.encoder.EchoEncoder;
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A rather exhaustive set of tests. Tests include leaving the file option

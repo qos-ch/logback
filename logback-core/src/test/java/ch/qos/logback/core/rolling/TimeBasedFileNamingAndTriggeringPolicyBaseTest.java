@@ -13,14 +13,14 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.logging.Logger;
-
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -28,11 +28,12 @@ import static org.junit.Assert.assertEquals;
 public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 
   static long MILLIS_IN_MINUTE = 60*1000;
-
+  static long MILLIS_IN_HOUR = 60*MILLIS_IN_MINUTE;
+  
   Context context = new ContextBase();
-  RollingFileAppender rfa = new RollingFileAppender();
-  TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-  DefaultTimeBasedFileNamingAndTriggeringPolicy timeBasedFNATP = new DefaultTimeBasedFileNamingAndTriggeringPolicy();
+  RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
+  TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
+  DefaultTimeBasedFileNamingAndTriggeringPolicy<Object> timeBasedFNATP = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
 
   @Before
   public void setUp() {
@@ -76,9 +77,28 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
     timeBasedFNATP.start();
 
     timeBasedFNATP.setCurrentTime(startTime+MILLIS_IN_MINUTE);
-    timeBasedFNATP.isTriggeringEvent(null, null);
+    boolean triggerred = timeBasedFNATP.isTriggeringEvent(null, null);
+    assertTrue(triggerred);
     String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
     assertEquals("foo-2011-12/59.log", elapsedPeriodsFileName);
+  }
+  
+  @Test
+  public void withTimeZone() {
+    // Tuesday December 20th 17:59:01 CET 2011
+    long startTime = 1324400341553L; 
+    tbrp.setFileNamePattern("foo-%d{yyyy-MM-dd, GMT+5}.log");
+    tbrp.start();
+    
+    timeBasedFNATP.setCurrentTime(startTime);
+    timeBasedFNATP.start();
+    
+    timeBasedFNATP.setCurrentTime(startTime+MILLIS_IN_MINUTE+2*MILLIS_IN_HOUR);
+    boolean triggerred = timeBasedFNATP.isTriggeringEvent(null, null);
+    assertTrue(triggerred);
+    String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
+    assertEquals("foo-2011-12-20.log", elapsedPeriodsFileName);
+    
   }
 
 }

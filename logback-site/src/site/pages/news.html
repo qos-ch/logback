@@ -54,10 +54,12 @@
     <a href="http://jira.qos.ch/browse/LOGBACK-966">LOGBACK-966</a>.
     </p>
 
-    <p>Fixed a bug in <code>TimeBasedFileNamingAndTriggeringPolicyBase</code>
-    causing time-based rolling policies to always rollover according
-    to the local system time and ignore the time zone passed in the file
-    name pattern.</p>
+    <p>Fixed a bug in
+    <code>TimeBasedFileNamingAndTriggeringPolicyBase</code> causing
+    time-based rolling policies to always rollover according to the
+    local system time and ignore the time zone passed in the file name
+    pattern. The issue was reported by Lukasz Sanek who also provided
+    the the relevant fix. </p>
 
     <p><code>AsyncAppenderBase</code> now restores the current
     thread's interrupt flag when catching an
