@@ -51,6 +51,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
   static final int UNDEFINED = -1;
   int discardingThreshold = UNDEFINED;
+  boolean neverBlock = false;
 
   Worker worker = new Worker();
   
@@ -152,12 +153,16 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
   }
 
   private void put(E eventObject) {
-    try {
-      blockingQueue.put(eventObject);
-    } catch (InterruptedException e) {
-      // Interruption of current thread when in doAppend method should not be consumed
-      // by AsyncAppender
-      Thread.currentThread().interrupt();  	
+    if (neverBlock) {
+      blockingQueue.offer(eventObject);
+    } else {
+      try {
+        blockingQueue.put(eventObject);
+      } catch (InterruptedException e) {
+        // Interruption of current thread when in doAppend method should not be consumed
+        // by AsyncAppender
+        Thread.currentThread().interrupt();
+      }
     }
   }
 
@@ -192,6 +197,15 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
    */
   public int getNumberOfElementsInQueue() {
     return blockingQueue.size();
+  }
+
+
+  public void setNeverBlock(boolean neverBlock) {
+    this.neverBlock = neverBlock;
+  }
+
+  public boolean isNeverBlock() {
+    return neverBlock;
   }
 
   /**

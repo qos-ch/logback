@@ -20,6 +20,10 @@ public class DelayingListAppender<E> extends ListAppender<E> {
   public int delay = 5;
   public boolean interrupted = false;
 
+  public void setDelay(int ms) {
+    delay = ms;
+  }
+
   @Override
   public void append(E e) {
     try {
