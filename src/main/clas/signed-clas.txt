@@ -37,6 +37,11 @@ Adam Gent                MA, USA               2014-04-01
 Sebastian Groebler       Berlin, Germany       2014-07-17
 Alexander Dorokhine      CA, USA               2014-12-07
 Yuji Okazawa             Tokyo, Japan          2015-04-01
+Lukasz Cwik              WA, USA               2015-06-11
+Juan Pablo Santos        Madrid, Spain         2015-06-15
+Gareth Davis             Cambridge, UK         2015-07-15
+Marek Szalik             Warszawa, Poland      2015-11-25
+Christoph Zauner         Ennsdorf, Austria     2016-01-11
 
 Justification for CLAs
 ----------------------
