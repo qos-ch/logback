@@ -228,7 +228,7 @@ public class SSLContextFactoryBean {
    * @return URL for the location specified in the property or {@code null}
    *    if no value is defined for the property
    */
-  private String locationFromSystemProperty(String name) {
+  private static String locationFromSystemProperty(String name) {
     String location = System.getProperty(name);
     if (location != null && !location.startsWith("file:")) {
       location = "file:" + location;

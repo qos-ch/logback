@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -138,7 +137,7 @@ public class ElementSelector extends ElementPath {
     return match;
   }
 
-  private boolean equalityCheck(String x, String y) {
+  private static boolean equalityCheck(String x, String y) {
     return x.equalsIgnoreCase(y);
   }
 

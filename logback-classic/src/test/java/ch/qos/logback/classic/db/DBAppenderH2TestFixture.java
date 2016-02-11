@@ -128,7 +128,7 @@ public class DBAppenderH2TestFixture  {
     executeQuery(connection, buf.toString());
   }
 
-  private  void executeQuery(Connection conn, String expression) throws SQLException {
+  private static void executeQuery(Connection conn, String expression) throws SQLException {
     Statement st = null;
     st = conn.createStatement();
     int i = st.executeUpdate(expression);

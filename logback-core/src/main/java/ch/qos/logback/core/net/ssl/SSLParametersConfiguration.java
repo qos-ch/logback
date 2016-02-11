@@ -141,7 +141,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
    * @param s the subject string
    * @return array of values contained in {@code s}
    */
-  private String[] stringToArray(String s) {
+  private static String[] stringToArray(String s) {
     return s.split("\\s*,\\s*");
   }
   

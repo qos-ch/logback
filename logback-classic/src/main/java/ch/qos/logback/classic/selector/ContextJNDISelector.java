@@ -118,7 +118,7 @@ public class ContextJNDISelector implements ContextSelector {
     }
   }
 
-  private String conventionalConfigFileName(String contextName) {
+  private static String conventionalConfigFileName(String contextName) {
     return "logback-" + contextName + ".xml";
   }
 

@@ -232,7 +232,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
   }
 
-  private void printIgnoredCount(StringBuilder buf, int ignoredCount) {
+  private static void printIgnoredCount(StringBuilder buf, int ignoredCount) {
     buf.append(" [").append(ignoredCount).append(" skipped]");
   }
 

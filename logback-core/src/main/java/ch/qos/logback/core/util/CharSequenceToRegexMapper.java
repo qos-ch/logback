@@ -81,7 +81,7 @@ class CharSequenceToRegexMapper {
     }
   }
 
-  private String number(int occurrences) {
+  private static String number(int occurrences) {
     return "\\d{" + occurrences + "}";
   }
 
@@ -105,7 +105,7 @@ class CharSequenceToRegexMapper {
     return symbolArrayToRegex(symbols.getShortMonths());
   }
 
-  private String symbolArrayToRegex(String[] symbolArray) {
+  private static String symbolArrayToRegex(String[] symbolArray) {
     int[] minMax = findMinMaxLengthsInSymbols(symbolArray);
     return ".{" + minMax[0] + "," + minMax[1] + "}";
   }

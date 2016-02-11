@@ -125,7 +125,7 @@ public class CompressTest {
     // + "witness/compress3.txt.zip"));
   }
 
-  private void copy(File src, File dst) throws IOException {
+  private static void copy(File src, File dst) throws IOException {
     InputStream in = new FileInputStream(src);
     OutputStream out = new FileOutputStream(dst);
     byte[] buf = new byte[1024];

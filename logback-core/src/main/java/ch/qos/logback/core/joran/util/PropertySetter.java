@@ -213,7 +213,7 @@ public class PropertySetter extends ContextAwareBase {
     }
   }
 
-  private Class<?> getParameterClassForMethod(Method method) {
+  private static Class<?> getParameterClassForMethod(Method method) {
     if (method == null) {
       return null;
     }
@@ -244,7 +244,7 @@ public class PropertySetter extends ContextAwareBase {
    *          The class to test for instantiability
    * @return true if clazz can be instantiated, and false otherwise.
    */
-  private boolean isUnequivocallyInstantiable(Class<?> clazz) {
+  private static boolean isUnequivocallyInstantiable(Class<?> clazz) {
     if (clazz.isInterface()) {
       return false;
     }
@@ -384,7 +384,7 @@ public class PropertySetter extends ContextAwareBase {
     return true;
   }
 
-  private String capitalizeFirstLetter(String name) {
+  private static String capitalizeFirstLetter(String name) {
     return name.substring(0, 1).toUpperCase() + name.substring(1);
   }
 

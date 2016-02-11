@@ -42,7 +42,7 @@ public class CaseCombinator {
 
   }
 
-  private char permute(char c, int permutation, int position) {
+  private static char permute(char c, int permutation, int position) {
     int mask = 1 << position;
     boolean shouldBeInUpperCase = (permutation & mask) != 0;
     boolean isEffectivelyUpperCase = isUpperCase(c);
@@ -53,7 +53,7 @@ public class CaseCombinator {
     return c;
   }
 
-  private int computeTotalNumerOfCombinations(String in, int length) {
+  private static int computeTotalNumerOfCombinations(String in, int length) {
     int count = 0;
     for (int i = 0; i < length; i++) {
       char c = in.charAt(i);
@@ -64,7 +64,7 @@ public class CaseCombinator {
     return (1 << count);
   }
 
-  private char toUpperCase(char c) {
+  private static char toUpperCase(char c) {
     if ('A' <= c && c <= 'Z') {
       return c;
     }
@@ -75,7 +75,7 @@ public class CaseCombinator {
     return c;
   }
 
-  private char toLowerCase(char c) {
+  private static char toLowerCase(char c) {
     if ('a' <= c && c <= 'z') {
       return c;
     }
@@ -86,7 +86,7 @@ public class CaseCombinator {
     return c;
   }
 
-  private boolean isEnglishLetter(char c) {
+  private static boolean isEnglishLetter(char c) {
     if ('a' <= c && c <= 'z')
       return true;
 
@@ -95,7 +95,7 @@ public class CaseCombinator {
     return false;
   }
 
-  private boolean isUpperCase(char c) {
+  private static boolean isUpperCase(char c) {
     return ('A' <= c && c <= 'Z');
   }
 }

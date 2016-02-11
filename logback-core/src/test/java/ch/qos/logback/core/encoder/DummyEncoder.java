@@ -45,7 +45,7 @@ public class DummyEncoder<E> extends EncoderBase<E> {
     writeOut(val);
   }
 
-  private void appendIfNotNull(StringBuilder sb, String s) {
+  private static void appendIfNotNull(StringBuilder sb, String s) {
     if (s != null) {
       sb.append(s);
     }

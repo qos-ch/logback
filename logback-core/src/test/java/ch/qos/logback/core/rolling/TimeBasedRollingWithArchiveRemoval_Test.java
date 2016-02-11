@@ -13,12 +13,7 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,7 +21,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +54,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
   }
 
 
-  private int computeSlashCount(String datePattern) {
+  private static int computeSlashCount(String datePattern) {
     if (datePattern == null)
       return 0;
     else {

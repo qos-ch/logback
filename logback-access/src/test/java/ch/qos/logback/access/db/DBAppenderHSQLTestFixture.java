@@ -114,7 +114,7 @@ public class DBAppenderHSQLTestFixture {
     query(conn, buf.toString());
   }
 
-  private  void query(Connection conn, String expression) throws SQLException {
+  private static void query(Connection conn, String expression) throws SQLException {
     Statement st = null;
     st = conn.createStatement();
 
