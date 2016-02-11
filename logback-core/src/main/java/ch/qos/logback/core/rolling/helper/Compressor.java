@@ -45,37 +45,60 @@ public class Compressor extends ContextAwareBase {
   }
 
   /**
-   * @param nameOfFile2Compress
-   * @param nameOfCompressedFile
-   * @param innerEntryName       The name of the file within the zip file. Use for ZIP compression.
+   * Compresses a file and deletes it afterward if successful
+   * @param nameOfFile2Compress   File to be compressed
+   * @param nameOfCompressedFile  Destination filename
+   * @param innerEntryName        The name of the file within the zip file. Use for ZIP compression.
    */
   public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
-    switch (compressionMode) {
-      case GZ:
-        gzCompress(nameOfFile2Compress, nameOfCompressedFile);
-        break;
-      case ZIP:
-        zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-        break;
-      case NONE:
-        throw new UnsupportedOperationException(
-                "compress method called in NONE compression mode");
+    compress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName, false);
+  }
+
+  /**
+   * Compresses a file and deletes it
+   * @param nameOfFile2Compress   File to be compressed
+   * @param nameOfCompressedFile  Destination filename
+   * @param innerEntryName        The name of the file within the zip file. Use for ZIP compression.
+   * @param alwaysDelete          Flag to force file deletion even if file couldn't be compressed
+   */
+  public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName, boolean alwaysDelete) {
+    if (compressionMode == CompressionMode.NONE) {
+      throw new UnsupportedOperationException(
+          "compress method called in NONE compression mode");
+    }
+
+    boolean compressed = false;
+    try {
+      switch (compressionMode) {
+        case GZ:
+          compressed = gzCompress(nameOfFile2Compress, nameOfCompressedFile);
+          break;
+        case ZIP:
+          compressed = zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+          break;
+      }
+    } finally {
+      if (alwaysDelete || compressed) {
+        if (!new File(nameOfFile2Compress).delete()) {
+          addWarn("Could not delete [" + nameOfFile2Compress + "]");
+        }
+      }
     }
   }
 
-  private void zipCompress(String nameOfFile2zip, String nameOfZippedFile, String innerEntryName) {
+  private boolean zipCompress(String nameOfFile2zip, String nameOfZippedFile, String innerEntryName) {
     File file2zip = new File(nameOfFile2zip);
 
     if (!file2zip.exists()) {
       addStatus(new WarnStatus("The file to compress named [" + nameOfFile2zip
               + "] does not exist.", this));
 
-      return;
+      return false;
     }
 
     if (innerEntryName == null) {
       addStatus(new WarnStatus("The innerEntryName parameter cannot be null", this));
-      return;
+      return false;
     }
 
     if (!nameOfZippedFile.endsWith(".zip")) {
@@ -88,12 +111,13 @@ public class Compressor extends ContextAwareBase {
       addStatus(new WarnStatus("The target compressed file named ["
               + nameOfZippedFile + "] exist already.", this));
 
-      return;
+      return false;
     }
 
-    addInfo("ZIP compressing [" + file2zip + "] as ["+zippedFile+"]");
+    addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
     createMissingTargetDirsIfNecessary(zippedFile);
 
+    boolean isCompressed = false;
     BufferedInputStream bis = null;
     ZipOutputStream zos = null;
     try {
@@ -115,10 +139,7 @@ public class Compressor extends ContextAwareBase {
       zos.close();
       zos = null;
 
-      if (!file2zip.delete()) {
-        addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].",
-                this));
-      }
+      isCompressed = true;
     } catch (Exception e) {
       addStatus(new ErrorStatus("Error occurred while compressing ["
               + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
@@ -139,7 +160,7 @@ public class Compressor extends ContextAwareBase {
       }
     }
 
-
+    return isCompressed;
   }
 
   // http://jira.qos.ch/browse/LBCORE-98
@@ -167,14 +188,14 @@ public class Compressor extends ContextAwareBase {
   }
 
 
-  private void gzCompress(String nameOfFile2gz, String nameOfgzedFile) {
+  private boolean gzCompress(String nameOfFile2gz, String nameOfgzedFile) {
     File file2gz = new File(nameOfFile2gz);
 
     if (!file2gz.exists()) {
       addStatus(new WarnStatus("The file to compress named [" + nameOfFile2gz
               + "] does not exist.", this));
 
-      return;
+      return false;
     }
 
 
@@ -187,12 +208,13 @@ public class Compressor extends ContextAwareBase {
     if (gzedFile.exists()) {
       addWarn("The target compressed file named ["
               + nameOfgzedFile + "] exist already. Aborting file compression.");
-      return;
+      return false;
     }
 
     addInfo("GZ compressing [" + file2gz + "] as ["+gzedFile+"]");
     createMissingTargetDirsIfNecessary(gzedFile);
 
+    boolean isCompressed = false;
     BufferedInputStream bis = null;
     GZIPOutputStream gzos = null;
     try {
@@ -210,10 +232,7 @@ public class Compressor extends ContextAwareBase {
       gzos.close();
       gzos = null;
 
-      if (!file2gz.delete()) {
-        addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].",
-                this));
-      }
+      isCompressed = true;
     } catch (Exception e) {
       addStatus(new ErrorStatus("Error occurred while compressing ["
               + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
@@ -233,6 +252,8 @@ public class Compressor extends ContextAwareBase {
         }
       }
     }
+
+    return isCompressed;
   }
 
   static public String computeFileNameStr_WCS(String fileNamePatternStr,

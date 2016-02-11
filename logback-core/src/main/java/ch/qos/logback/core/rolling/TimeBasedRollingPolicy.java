@@ -15,7 +15,6 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -165,16 +164,17 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements
     }
   }
 
-  Future asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName)
+  private Future asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName)
       throws RolloverFailure {
     AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
-    return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+    final boolean ALWAYS_DELETE_FILE = true;
+    return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile, innerEntryName, ALWAYS_DELETE_FILE);
   }
 
-  Future renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName)
+  private Future renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName)
       throws RolloverFailure {
     String parentsRawFile = getParentsRawFileProperty();
-    String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
+    final String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
     renameUtil.rename(parentsRawFile, tmpTarget);
     return asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
   }
