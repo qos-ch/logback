@@ -252,7 +252,7 @@ public class SyslogAppenderTest {
 
     // Use a string that can be encoded in a somewhat odd encoding (ISO-8859-4) to minimize
     // the probability of the encoding test to work by accident
-    String logMsg = "Rīga";
+    String logMsg = "R\u0129ga";  // Riga spelled with the i having a tilda on top
 
     Charset ISO_8859_4 = Charset.forName("ISO-8859-4");
     sa.setCharset(ISO_8859_4);
@@ -271,6 +271,7 @@ public class SyslogAppenderTest {
         + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
     assertTrue(msg.startsWith(expected));
 
+    System.out.println(logMsg);
     checkRegexMatch(msg, SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " "
         + logMsg);
 
