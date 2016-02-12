@@ -59,9 +59,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>1</forkCount>
+          <forkCount>2.5C</forkCount>
           <reuseForks>true</reuseForks>
-          <!--<forkMode>once</forkMode>-->
+          <parallel>classes</parallel>
+          <threadCount>20</threadCount>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <excludes>

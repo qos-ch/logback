@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
-  private SizeAndTimeBasedFNATP sizeAndTimeBasedFNATP = null;
+  private SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = null;
   private RollingFileAppender<Object> rfa1 = new RollingFileAppender<Object>();
   private TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<Object>();
   private RollingFileAppender<Object> rfa2 = new RollingFileAppender<Object>();
