@@ -16,8 +16,8 @@ package ch.qos.logback.classic.pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import static java.util.regex.Pattern.quote;
 
+import static java.util.regex.Pattern.quote;
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
@@ -77,7 +77,7 @@ public class CallerDataConverter extends ClassicConverter {
         String evaluatorStr = (String) optionList.get(i);
         Context context = getContext();
         if (context != null) {
-          Map evaluatorMap = (Map) context
+          Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
               .getObject(CoreConstants.EVALUATOR_MAP);
           EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap
               .get(evaluatorStr);

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.util.FileUtil;
@@ -33,6 +34,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -125,7 +127,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog,
   boolean quiet = false;
 
   public RequestLogImpl() {
-    putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
+    putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
   }
 
   @Override

@@ -71,7 +71,6 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     if (name == null) {
       return null;
     }
-    Appender<E> found = null;
     for (Appender<E> appender : appenderList) {
       if (name.equals(appender.getName())) {
         return appender;

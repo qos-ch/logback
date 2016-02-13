@@ -24,8 +24,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public abstract class RollingPolicyBase extends ContextAwareBase implements
-    RollingPolicy {
+public abstract class RollingPolicyBase extends ContextAwareBase implements RollingPolicy {
   protected CompressionMode compressionMode = CompressionMode.NONE;
 
   FileNamePattern fileNamePattern;

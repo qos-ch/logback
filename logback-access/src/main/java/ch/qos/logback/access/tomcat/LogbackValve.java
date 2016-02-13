@@ -41,6 +41,7 @@ import ch.qos.logback.core.BasicStatusManager;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LifeCycleManager;
+import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -100,7 +101,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   private ExecutorService executorService;
 
   public LogbackValve() {
-    putObject(CoreConstants.EVALUATOR_MAP, new HashMap());
+    putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
   }
 
   public boolean isStarted() {

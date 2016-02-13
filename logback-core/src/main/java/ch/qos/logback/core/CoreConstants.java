@@ -130,6 +130,7 @@ public class CoreConstants {
   public static final char DOLLAR = '$';
 
   public static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
+  public static final String SEE_MISSING_INTEGER_TOKEN = "See also http://logback.qos.ch/codes.html#sat_missing_integer_token";
 
   public static final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
   public static final String CONFIGURATION_WATCH_LIST_RESET = "CONFIGURATION_WATCH_LIST_RESET";
