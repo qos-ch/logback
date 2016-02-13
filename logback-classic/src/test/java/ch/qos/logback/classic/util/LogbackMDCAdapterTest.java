@@ -35,7 +35,6 @@ public class LogbackMDCAdapterTest {
 
   private final LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
 
-
   /**
    * Test that CopyOnInheritThreadLocal does not barf when the
    * MDC hashmap is null
@@ -67,12 +66,12 @@ public class LogbackMDCAdapterTest {
   @Test
   public void sequenceWithGet() {
     mdcAdapter.put("k0", "v0");
-    Map<String, String> map0 = mdcAdapter.copyOnInheritThreadLocal.get();
+    Map<String, String> map0 = mdcAdapter.copyOnThreadLocal.get();
     mdcAdapter.get("k0");  
     mdcAdapter.put("k1", "v1"); // no map copy required
     
     // verify that map0 is the same instance and that value was updated
-    assertSame(map0, mdcAdapter.copyOnInheritThreadLocal.get());
+    assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
   }
 
   
@@ -88,25 +87,25 @@ public class LogbackMDCAdapterTest {
   @Test
   public void sequenceWithCopyContextMap() {
     mdcAdapter.put("k0", "v0");
-    Map<String, String> map0 = mdcAdapter.copyOnInheritThreadLocal.get();
+    Map<String, String> map0 = mdcAdapter.copyOnThreadLocal.get();
     mdcAdapter.getCopyOfContextMap();  
     mdcAdapter.put("k1", "v1"); // no map copy required
     
     // verify that map0 is the same instance and that value was updated
-    assertSame(map0, mdcAdapter.copyOnInheritThreadLocal.get());
+    assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
   }
 
   
   // =================================================
 
   /**
-   * Test that LogbackMDCAdapter copies its hashmap when a child
+   * Test that LogbackMDCAdapter does not copy its hashmap when a child
    * thread inherits it.
    *
    * @throws InterruptedException
    */
   @Test
-  public void copyOnInheritenceTest() throws InterruptedException {
+  public void noCopyOnInheritenceTest() throws InterruptedException {
     CountDownLatch countDownLatch = new CountDownLatch(1);
     String firstKey = "x" + diff;
     String secondKey = "o" + diff;
@@ -129,7 +128,6 @@ public class LogbackMDCAdapterTest {
     assertEquals(parentHMWitness, parentHM);
 
     HashMap<String, String> childHMWitness = new HashMap<String, String>();
-    childHMWitness.put(firstKey, firstKey + A_SUFFIX);
     childHMWitness.put(secondKey, secondKey + A_SUFFIX);
     assertEquals(childHMWitness, childThread.childHM);
 
@@ -195,8 +193,8 @@ public class LogbackMDCAdapterTest {
 
 
   Map<String, String> getMapFromMDCAdapter(LogbackMDCAdapter lma) {
-    InheritableThreadLocal<Map<String, String>> copyOnInheritThreadLocal = lma.copyOnInheritThreadLocal;
-    return copyOnInheritThreadLocal.get();
+    ThreadLocal<Map<String, String>> copyOnThreadLocal = lma.copyOnThreadLocal;
+    return copyOnThreadLocal.get();
   }
 
   // ==========================    various thread classes
@@ -247,10 +245,11 @@ public class LogbackMDCAdapterTest {
     @Override
     public void run() {
       logbackMDCAdapter.put(secondKey, secondKey + A_SUFFIX);
-      assertNotNull(logbackMDCAdapter.get(firstKey));
-      assertEquals(firstKey + A_SUFFIX, logbackMDCAdapter.get(firstKey));
+      assertNull(logbackMDCAdapter.get(firstKey));
       if (countDownLatch != null) countDownLatch.countDown();
+      assertNotNull(logbackMDCAdapter.get(secondKey));
       assertEquals(secondKey + A_SUFFIX, logbackMDCAdapter.get(secondKey));
+      
       successful = true;
       childHM = getMapFromMDCAdapter(logbackMDCAdapter);
     }

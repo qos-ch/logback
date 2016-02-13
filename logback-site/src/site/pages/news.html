@@ -32,6 +32,33 @@
     <h3>2016, Release of version 1.1.5</h3>
 
 
+    <div class="breaking">
+      <h4>MDC values are no longer inherited by child threads.</h4>
+    </div>
+
+    <p>Child threads no longer inherit MDC values. In previous
+    versions of logback as well as log4j 1.x, MDC values were
+    inherited by child threads. Several users have argued convincingly
+    that MDC inheritance by child threads was unhelpful and even
+    dangerous. This change fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-422">LOGBACK-422</a> and <a
+    href="http://jira.qos.ch/browse/LOGBACK-624">LOGBACK-624</a>
+    </p>
+
+    <p>When the <code>FileNamePattern</code> string for
+    <code>RollingFileAppender/SizeAndTimeBasedFNATP</code> lacks a %i
+    token, then compression for the second archive in the same period
+    cannot occur as the target file already exists. Under those
+    circumstances, logback leaves behind .tmp files as reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-992">LOGBACK-992</a>, <a
+    href="http://jira.qos.ch/browse/LOGBACK-173">LOGBACK-173</a> and
+    <a
+    href="http://jira.qos.ch/browse/LOGBACK-920">LOGBACK-920</a>. In
+    this release, this particular condition is detected by
+    <code>RollingFileAppender</code> which will not start but alert
+    the user instead.
+    </p>
+
     <p>AsyncAppender is now configurable to never block. This feature
     was requested by Jeff Wartes in <a
     href="http://jira.qos.ch/browse/LOGBACK-898">LOGBACK-898</a> with

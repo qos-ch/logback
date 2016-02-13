@@ -13,11 +13,10 @@
  */
 package ch.qos.logback.classic.util;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Collections;
 import java.util.Set;
-
 
 import org.slf4j.spi.MDCAdapter;
 
@@ -53,7 +52,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
   // Initially the contents of the thread local in parent and child threads
   // reference the same map. However, as soon as a thread invokes the put()
   // method, the maps diverge as they should.
-  final InheritableThreadLocal<Map<String, String>> copyOnInheritThreadLocal = new InheritableThreadLocal<Map<String, String>>();
+  final ThreadLocal<Map<String, String>> copyOnThreadLocal = new ThreadLocal<Map<String, String>>();
 
   private static final int WRITE_OPERATION = 1;
   private static final int MAP_COPY_OPERATION = 2;
@@ -81,7 +80,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
         }
     }
 
-    copyOnInheritThreadLocal.set(newMap);
+    copyOnThreadLocal.set(newMap);
     return newMap;
   }
 
@@ -101,7 +100,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
       throw new IllegalArgumentException("key cannot be null");
     }
 
-    Map<String, String> oldMap = copyOnInheritThreadLocal.get();
+    Map<String, String> oldMap = copyOnThreadLocal.get();
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
 
     if (wasLastOpReadOrNull(lastOp) || oldMap == null) {
@@ -120,7 +119,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     if (key == null) {
       return;
     }
-    Map<String, String> oldMap = copyOnInheritThreadLocal.get();
+    Map<String, String> oldMap = copyOnThreadLocal.get();
     if (oldMap == null) return;
 
     Integer lastOp = getAndSetLastOperation(WRITE_OPERATION);
@@ -139,7 +138,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    */
   public void clear() {
     lastOperation.set(WRITE_OPERATION);
-    copyOnInheritThreadLocal.remove();
+    copyOnThreadLocal.remove();
   }
 
   /**
@@ -147,7 +146,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * <p/>
    */
   public String get(String key) {
-    final Map<String, String> map = copyOnInheritThreadLocal.get();
+    final Map<String, String> map = copyOnThreadLocal.get();
     if ((map != null) && (key != null)) {
          return map.get(key);
     } else {
@@ -161,7 +160,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    */
   public Map<String, String> getPropertyMap() {
     lastOperation.set(MAP_COPY_OPERATION);
-    return copyOnInheritThreadLocal.get();
+    return copyOnThreadLocal.get();
   }
 
   /**
@@ -183,7 +182,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
    * null.
    */
   public Map<String, String> getCopyOfContextMap() {
-    Map<String, String> hashMap = copyOnInheritThreadLocal.get();
+    Map<String, String> hashMap = copyOnThreadLocal.get();
     if (hashMap == null) {
       return null;
     } else {
@@ -198,6 +197,6 @@ public class LogbackMDCAdapter implements MDCAdapter {
     newMap.putAll(contextMap);
 
     // the newMap replaces the old one for serialisation's sake
-    copyOnInheritThreadLocal.set(newMap);
+    copyOnThreadLocal.set(newMap);
   }
 }
