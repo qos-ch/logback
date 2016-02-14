@@ -15,6 +15,7 @@ package ch.qos.logback.access.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -143,8 +144,22 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
         e.printStackTrace();
       }
     } else {
-      getStatusManager().add(
-          new WarnStatus("[" + filename + "] does not exist", this));
+      URL filenameURL = Thread.currentThread().getContextClassLoader().getResource(filename);
+      if(filenameURL != null){
+        try {
+          JoranConfigurator jc = new JoranConfigurator();
+          jc.setContext(this);
+          jc.doConfigure(filenameURL.openStream());
+        } catch (JoranException e) {
+          // TODO can we do better than printing a stack trace on syserr?
+          e.printStackTrace();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      } else {
+        getStatusManager().add(
+                new WarnStatus("[" + filename + "] does not exist", this));
+      }
     }
 
     if (!quiet) {
