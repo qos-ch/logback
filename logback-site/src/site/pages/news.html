@@ -112,7 +112,12 @@
     <code>InterruptedException</code>. The issue
     (<a href="http://jira.qos.ch/browse/LOGBACK-910">LOGBACK-910</a>) was
     raised by Henrik Nordvik who also provided the relevant fix.</p>
-    
+
+    <p><code>LogbackValve</code> now attempts to load the configuration file as
+    a resource if it cannot be found on the filesystem
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1069">LOGBACK-1069</a>). This
+    is helpful in scenarios where applications are using an embedded Tomcat
+    server.</p>
 
     <hr width="80%" align="center" />
     

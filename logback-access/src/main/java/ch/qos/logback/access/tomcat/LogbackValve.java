@@ -15,6 +15,7 @@ package ch.qos.logback.access.tomcat;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -74,8 +75,9 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class LogbackValve extends ValveBase implements Lifecycle, Context,
     AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
+  public final static String DEFAULT_FILENAME = "logback-access.xml";
   public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar
-      + "logback-access.xml";
+      + DEFAULT_FILENAME;
 
   private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
 
@@ -111,7 +113,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
   @Override
   public void startInternal() throws LifecycleException {
     executorService = ExecutorServiceUtil.newExecutorService();
-    if (filename == null) {
+
+    boolean useDefaultFilename = filename == null;
+
+    if (useDefaultFilename) {
       String tomcatBaseProperty = OptionHelper
           .getSystemProperty("catalina.base");
 
@@ -144,7 +149,32 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
       }
     } else {
       getStatusManager().add(
-          new WarnStatus("[" + filename + "] does not exist", this));
+          new InfoStatus("Could not read [" + filename + "] from filesystem. "
+              + "Attempting to read as resource.", this));
+
+      String resourceName = useDefaultFilename ? DEFAULT_FILENAME : filename;
+
+      InputStream configResource = getClass().getClassLoader()
+          .getResourceAsStream(resourceName);
+      if (configResource != null) {
+        try {
+          JoranConfigurator jc = new JoranConfigurator();
+          jc.setContext(this);
+          jc.doConfigure(configResource);
+        } catch (JoranException e) {
+          e.printStackTrace();
+        }
+
+        try {
+          configResource.close();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      } else {
+        getStatusManager().add(
+            new WarnStatus("failed to find config [" + resourceName + "]",
+                this));
+      }
     }
 
     if (!quiet) {
