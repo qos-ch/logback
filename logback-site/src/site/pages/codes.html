@@ -283,7 +283,21 @@
   <code>RollingPolicy</code> at the same time.
   </p>
       
+  <!-- ============================================================= -->
+
+  <h3 class="doAnchor" name="#sat_missing_integer_token">Missing
+  integer token, that is %i, in FileNamePattern [...].
+    
+  </h3>
   
+  <p>The %i conversion token is mandatory for <a
+  href="manual/appenders.html#SizeAndTimeBasedFNATP">size and time
+  based archiving</a>. In case the %i token is missing,
+  <code>SizeAndTimeBasedFNATP</code> attached to
+  <code>RollingFileAppender</code> will detect the omission and will
+  not start.
+  </p>
+
       
   <!-- ============================================================= -->
 

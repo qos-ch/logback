@@ -1419,11 +1419,11 @@ public interface RollingPolicy extends LifeCycle {
 
 &lt;/configuration></pre>
     
-    <p>Note the "%i" conversion token in addition to "%d". Each time
-    the current log file reaches <span
-    class="prop">maxFileSize</span> before the current time period
-    ends, it will be archived with an increasing index, starting at
-    0.</p>
+    <p>Note the "%i" conversion token in addition to "%d". <b>Both the
+    %i and %d tokens are mandatory.</b> Each time the current log file
+    reaches <span class="prop">maxFileSize</span> before the current
+    time period ends, it will be archived with an increasing index,
+    starting at 0.</p>
 
     <p>Size and time based archiving supports deletion of old archive
     files. You need to specify the number of periods to preserve with
