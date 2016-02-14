@@ -43,6 +43,8 @@ Gareth Davis             Cambridge, UK         2015-07-15
 Marek Szalik             Warszawa, Poland      2015-11-25
 Pavel Boldyrev           Ontario, Canada       2015-12-22
 Christoph Zauner         Ennsdorf, Austria     2016-01-11
+David Roberge            Maine, USA            2016-02-14
+
 
 Justification for CLAs
 ----------------------
