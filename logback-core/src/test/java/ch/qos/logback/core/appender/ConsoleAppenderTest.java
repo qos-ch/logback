@@ -72,8 +72,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     return ca;
   }
 
-  @org.junit.Test
-  public void testBasic() {
+  @Test
+  public void smoke() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     ca.setEncoder(new DummyEncoder<Object>());
     ca.start();
@@ -81,8 +81,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     assertEquals(DummyLayout.DUMMY, tee.toString());
   }
 
-  @org.junit.Test
-  public void testOpen() {
+  @Test
+  public void open() {
     ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
     DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
     dummyEncoder.setFileHeader("open");
@@ -148,11 +148,11 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     ca.start();
     ca.doAppend("a");
     StatusChecker checker = new StatusChecker(context);
-    //21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [SystemOut, SystemErr]
+    //21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [System.out, System.err]
     //21:28:01,246   |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using previously set target, System.out by default.
 //    StatusPrinter.print(context);
 
-    checker.assertContainsMatch(Status.WARN, "\\[foo\\] should be one of \\[SystemOut, SystemErr\\]");
+    checker.assertContainsMatch(Status.WARN, "\\[foo\\] should be one of \\[System.out, System.err\\]");
 
   }
 
