@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.List;
 
 import ch.qos.logback.core.status.StatusChecker;
+
 import org.junit.Test;
 
 import ch.qos.logback.core.Appender;
@@ -31,6 +32,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -127,5 +129,30 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
     appender.stop();
     assertTrue(file.exists());
     assertTrue("failed to delete " + file.getAbsolutePath(), file.delete());
+  }
+  
+  @Test
+  public void fileNameCollision() {
+      FileAppender<Object> appender0 = new FileAppender<Object>();
+      appender0.setName("FA0");
+      appender0.setFile("X");
+      appender0.setContext(context);
+      appender0.setEncoder(new DummyEncoder<Object>());
+      appender0.start();
+      assertTrue(appender0.isStarted());
+      
+      FileAppender<Object> appender1 = new FileAppender<Object>();
+      appender1.setName("FA1");
+      appender1.setFile("X");
+      appender1.setContext(context);
+      appender1.setEncoder(new DummyEncoder<Object>());
+      appender1.start();
+
+      assertFalse(appender1.isStarted());
+      
+      StatusPrinter.print(context);
+      StatusChecker checker = new StatusChecker(context);
+      checker.assertContainsMatch(Status.ERROR, "'File' option has the same value");
+      
   }
 }

@@ -14,6 +14,8 @@
 package ch.qos.logback.core;
 
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
+import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
+import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,10 @@ public class ContextBase implements Context, LifeCycle {
   private volatile ExecutorService executorService;
   private LifeCycleManager lifeCycleManager;
   private boolean started;
+  
+  public ContextBase() {
+      initCollisionMaps();
+  }
   
   public StatusManager getStatusManager() {
     return sm;
@@ -72,6 +78,10 @@ public class ContextBase implements Context, LifeCycle {
     this.propertyMap.put(key, val);
   }
 
+  protected void initCollisionMaps() {
+      putObject(FA_FILENAME_COLLISION_MAP, new HashMap<String, String>());
+      putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, String>());
+  }
   /**
    * Given a key, return the corresponding property value. If invoked with
    * the special key "CONTEXT_NAME", the name of the context is returned.

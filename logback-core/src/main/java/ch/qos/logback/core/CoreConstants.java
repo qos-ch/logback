@@ -64,6 +64,21 @@ public class CoreConstants {
    */
   public static final String EVALUATOR_MAP = "EVALUATOR_MAP";
 
+  
+  /**
+   * Key used to locate a collision map for FileAppender instances in context's object map.
+   * 
+   * The collision map consists of enties of the type (appender name, File option) 
+   */
+  public static final String FA_FILENAME_COLLISION_MAP = "RFA_FILENAME_COLLISION_MAP";
+  
+  /**
+   * Key used to locate a collision map for RollingFileAppender instances in context's object map.
+   * 
+   * The collision map consists of entities of the type (appender name, FileNamePattern option)
+   */
+  public static final String RFA_FILENAME_PATTERN_COLLISION_MAP = "RFA_FILENAME_PATTERN_COLLISION_MAP";
+  
   /**
    * By convention, we assume that the static method named "valueOf" taking
    * a string argument can restore a given object from its string

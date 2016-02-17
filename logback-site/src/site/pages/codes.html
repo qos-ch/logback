@@ -415,6 +415,28 @@
   possible collisions and will not start if any collisions are
   detected.</p>
 
+  <!-- ============================================================= -->  
+
+  <h3 class="doAnchor" name="earlier_fa_collision"><span
+  class="option">File</span>/<span
+  class="option">FileNamePattern</span> option has the same value "..." as
+  that given for appender [...] defined earlier.
+  </h3>
+
+
+  <p>If a <code>FileAppender</code>/<code>RollingFileAppender</code>
+  defined earlier has the same <span class="option">File</span> option
+  as the current appender, then those two appenders are in collision
+  as <code>FileAppender</code> instances cannot share the same output
+  target. To prevent loss of data, the current appender will not
+  start. Make sure that each appender has a unique <span
+  class="option">File</span> option.
+  </p>
+
+  <p>By analogy the same restriction applies to the <span
+  class="option">FileNamePattern</span> option of
+  RollingFileAppender. Make sure that each RollingFileAppender has a
+  unique <span class="option">FileNamePattern</span> option</p>
   
   <!-- =============================================================
        -->

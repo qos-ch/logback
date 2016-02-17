@@ -13,10 +13,15 @@
  */
 package ch.qos.logback.core;
 
+import static ch.qos.logback.core.CoreConstants.CODES_URL;
+import static ch.qos.logback.core.CoreConstants.MORE_INFO_PREFIX;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.util.FileUtil;
@@ -31,6 +36,8 @@ import ch.qos.logback.core.util.FileUtil;
  */
 public class FileAppender<E> extends OutputStreamAppender<E> {
 
+  static protected String COLLISION_WITH_EARLIER_APPENDER_URL = CODES_URL + "#earlier_fa_collision";
+    
   /**
    * Append to or truncate the file? The default value for this variable is
    * <code>true</code>, meaning that by default a <code>FileAppender</code> will
@@ -96,7 +103,13 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     int errors = 0;
     if (getFile() != null) {
       addInfo("File property is set to [" + fileName + "]");
-
+      
+      if(checkForFileCollisionInPreviousFileAppenders()) {
+          addError("Collisions detected with FileAppender/RollingAppender instances defined earlier. Aborting.");
+          addError(MORE_INFO_PREFIX+COLLISION_WITH_EARLIER_APPENDER_URL);
+          errors++;
+      }
+      
       if (prudent) {
         if (!isAppend()) {
           setAppend(true);
@@ -117,6 +130,32 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     if (errors == 0) {
       super.start();
     }
+  }
+  
+  protected boolean checkForFileCollisionInPreviousFileAppenders() {
+      boolean collisionsDetected = false;
+      if (fileName == null) {
+          return false;
+      }
+      @SuppressWarnings("unchecked")
+      Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+      if (map == null) {
+          return collisionsDetected;
+      }
+      for (Entry<String, String> entry : map.entrySet()) {
+          if (fileName.equals(entry.getValue())) {
+              addErrorForCollision("File", entry.getValue(), entry.getKey());
+              collisionsDetected = true;
+          }
+      }
+      if (name != null) {
+          map.put(getName(), fileName);
+      }
+      return collisionsDetected;
+  }
+
+  protected void addErrorForCollision(String optionName, String optionValue, String appenderName) {
+    addError("'"+optionName+"' option has the same value \""+optionValue+"\" as that given for appender [" + appenderName+"] defined earlier.");
   }
 
   /**
