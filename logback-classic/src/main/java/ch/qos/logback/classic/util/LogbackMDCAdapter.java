@@ -193,8 +193,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
   public void setContextMap(Map<String, String> contextMap) {
     lastOperation.set(WRITE_OPERATION);
 
-    Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
-    newMap.putAll(contextMap);
+    Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>(contextMap));
 
     // the newMap replaces the old one for serialisation's sake
     copyOnThreadLocal.set(newMap);
