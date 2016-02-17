@@ -37,6 +37,11 @@
     is helpful in scenarios where applications are using an embedded Tomcat
     server.</p>
 
+    <p><code>RollingFileAppender</code> will output an error message
+    if the date time pattern in the %d token within the <span
+    class="option">fileNamePattern</span> is not collision free. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-1137">LOGBACK-1137</a>.</p>
 
     <hr width="80%" align="center" />
     
