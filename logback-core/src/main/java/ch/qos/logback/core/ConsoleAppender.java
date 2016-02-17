@@ -13,18 +13,14 @@
  */
 package ch.qos.logback.core;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.DynamicClassLoadingException;
 import ch.qos.logback.core.util.EnvUtil;
-import ch.qos.logback.core.util.IncompatibleClassException;
 import ch.qos.logback.core.util.OptionHelper;
-import org.fusesource.jansi.WindowsAnsiOutputStream;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
