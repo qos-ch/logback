@@ -220,14 +220,14 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
       logOncePeriod(now, fileNamePattern, maxHistory);
       now = now + MILLIS_IN_DAY;
     }
-    StatusPrinter.print(context);
+    //StatusPrinter.print(context);
     check(expectedCountWithoutFolders(maxHistory));
   }
 
   @Test
   public void cleanHistoryOnStartWithDayPattern() {
     long now = this.currentTime;
-    String fileNamePattern = randomOutputDir + "clean-%d{dd}.txt";
+    String fileNamePattern = randomOutputDir + "clean-%d{yyyy-MM-dd}.txt";
     int maxHistory = 3;
     for (int i = 0; i <= 5; i++) {
       logOncePeriod(now, fileNamePattern, maxHistory);
@@ -246,7 +246,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
       logOncePeriod(now, fileNamePattern, maxHistory);
       now = now + MILLIS_IN_HOUR;
     }
-    StatusPrinter.print(context);
+    //StatusPrinter.print(context);
     check(expectedCountWithoutFolders(maxHistory));
   }
 

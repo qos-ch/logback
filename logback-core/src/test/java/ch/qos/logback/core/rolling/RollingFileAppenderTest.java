@@ -221,7 +221,8 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     StatusChecker checker = new StatusChecker(context);
     assertFalse(rfa.isStarted());
     assertEquals(Status.ERROR, checker.getHighestLevel(0));
-    checker.assertContainsMatch("The date pattern has collisions");
+    StatusPrinter.print(context);
+    checker.assertContainsMatch("The date format in FileNamePattern will result");
   }
 
 }

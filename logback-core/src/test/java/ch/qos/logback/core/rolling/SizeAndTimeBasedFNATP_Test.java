@@ -220,6 +220,6 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         //StatusPrinter.print(context);
         assertFalse(rfa1.isStarted());
         StatusChecker checker = new StatusChecker(context);
-        checker.assertContainsMatch("The date pattern has collisions"); 
+        checker.assertContainsMatch("The date format in FileNamePattern"); 
     }
 }
