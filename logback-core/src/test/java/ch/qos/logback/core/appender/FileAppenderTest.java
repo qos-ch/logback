@@ -133,9 +133,11 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
   
   @Test
   public void fileNameCollision() {
+      String fileName = CoreTestConstants.OUTPUT_DIR_PREFIX + diff+ "fileNameCollision";
+      
       FileAppender<Object> appender0 = new FileAppender<Object>();
       appender0.setName("FA0");
-      appender0.setFile("X");
+      appender0.setFile(fileName);
       appender0.setContext(context);
       appender0.setEncoder(new DummyEncoder<Object>());
       appender0.start();
@@ -143,7 +145,7 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
       
       FileAppender<Object> appender1 = new FileAppender<Object>();
       appender1.setName("FA1");
-      appender1.setFile("X");
+      appender1.setFile(fileName);
       appender1.setContext(context);
       appender1.setEncoder(new DummyEncoder<Object>());
       appender1.start();

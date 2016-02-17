@@ -13,10 +13,18 @@
  */
 package ch.qos.logback.core.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.appender.AbstractAppenderTest;
 import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.status.Status;
@@ -24,12 +32,6 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -229,13 +231,15 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
   @Test
   public void collidingFileNamePattern() {
+    String filenamePattern = CoreTestConstants.OUTPUT_DIR_PREFIX + diff+ "-collision-%d.log.zip";
+      
     RollingFileAppender<Object> appender0 = new RollingFileAppender<Object>();
     appender0.setName("FA0");
     appender0.setContext(context);
     appender0.setEncoder(new DummyEncoder<Object>());
     TimeBasedRollingPolicy<Object> tbrp0 = new TimeBasedRollingPolicy<Object>();
     tbrp0.setContext(context);
-    tbrp0.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "collision-%d.log.zip");
+    tbrp0.setFileNamePattern(filenamePattern);
     tbrp0.setParent(appender0);
     tbrp0.start();
     appender0.setRollingPolicy(tbrp0);
@@ -251,7 +255,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     appender1.setEncoder(new DummyEncoder<Object>());
     TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<Object>();
     tbrp1.setContext(context);
-    tbrp1.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "collision-%d.log.zip");
+    tbrp1.setFileNamePattern(filenamePattern);
     tbrp1.setParent(appender1);
     tbrp1.start();
     appender1.setRollingPolicy(tbrp1);
