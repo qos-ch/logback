@@ -41,14 +41,12 @@
     if the date time pattern in the %d token within the <span
     class="option">fileNamePattern</span> is not collision free. This
     fixes <a
-    href="http://jira.qos.ch/browse/LOGBACK-1137">LOGBACK-1137</a>.</p>
-
-    <p>In a similar vein, every instance of <code>FileAppender</code>
-    will now detect if it shares the same <span
-    class="option">File</span> option value as given for an appender
-    defined earlier. In addition, <code>RollingFileAppender</code>
-    instances now check for colliding <span
-    class="option">FileNamePattern</span> values.</p>
+    href="http://jira.qos.ch/browse/LOGBACK-1137">LOGBACK-1137</a>. In
+    a similar vein, every instance of <code>FileAppender</code> will
+    now detect if it shares the same <span class="option">File</span>
+    option value as given for an appender defined earlier. In
+    addition, <code>RollingFileAppender</code> instances now check for
+    colliding <span class="option">FileNamePattern</span> values.</p>
 
     <hr width="80%" align="center" />
     
