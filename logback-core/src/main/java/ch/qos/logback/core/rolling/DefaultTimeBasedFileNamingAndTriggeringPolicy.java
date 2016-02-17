@@ -24,12 +24,13 @@ import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
  * 
  * @param <E>
  */
-public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends
-    TimeBasedFileNamingAndTriggeringPolicyBase<E> {
+public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
   @Override
   public void start() {
     super.start();
+    if(!super.isErrorFree())
+        return;
     archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
     archiveRemover.setContext(context);
     started = true;

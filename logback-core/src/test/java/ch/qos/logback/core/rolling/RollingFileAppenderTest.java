@@ -133,8 +133,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     // if ')' is not escaped, the test throws
     // java.lang.IllegalStateException: FileNamePattern [.../program(x86)/toto-%d.log] does not contain a valid DateToken
     rfa.setContext(context);
-    tbrp
-            .setFileNamePattern(randomOutputDir + "program(x86)/toto-%d.log");
+    tbrp.setFileNamePattern(randomOutputDir + "program(x86)/toto-%d.log");
     tbrp.start();
     rfa.setRollingPolicy(tbrp);
     rfa.start();
@@ -169,7 +168,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     fwRollingPolicy.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-%i.log.zip");
     fwRollingPolicy.setParent(rfa);
     fwRollingPolicy.start();
-    SizeBasedTriggeringPolicy sbTriggeringPolicy = new SizeBasedTriggeringPolicy();
+    SizeBasedTriggeringPolicy<Object> sbTriggeringPolicy = new SizeBasedTriggeringPolicy<Object>();
     sbTriggeringPolicy.setContext(context);
     sbTriggeringPolicy.start();
 
@@ -205,6 +204,24 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     final String msg = "File property collides with fileNamePattern. Aborting.";
     boolean containsMatch = statusChecker.containsMatch(Status.ERROR, msg);
     assertTrue("Missing error: " + msg, containsMatch);
+  }
+  
+  @Test
+  public void collidingTimeformat() {
+    rfa.setContext(context);
+    rfa.setAppend(false);
+    rfa.setPrudent(true);
+
+    tbrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "toto-%d{dd}.log.zip");
+    tbrp.start();
+    rfa.setRollingPolicy(tbrp);
+
+    rfa.start();
+
+    StatusChecker checker = new StatusChecker(context);
+    assertFalse(rfa.isStarted());
+    assertEquals(Status.ERROR, checker.getHighestLevel(0));
+    checker.assertContainsMatch("The date pattern has collisions");
   }
 
 }

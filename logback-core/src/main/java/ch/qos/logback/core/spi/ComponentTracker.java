@@ -37,7 +37,7 @@ public interface ComponentTracker<C> {
   /**
    * The default timeout duration is 30 minutes
    */
-  public final int DEFAULT_TIMEOUT = 30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND; // 30 minutes
+  public final int DEFAULT_TIMEOUT = (int) (30 * 60 * CoreConstants.MILLIS_IN_ONE_SECOND); // 30 minutes
 
   /**
    * By default an unlimited number of elements can be tracked.

@@ -63,10 +63,10 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
   static InternetAddress[] EMPTY_IA_ARRAY = new InternetAddress[0];
   // ~ 14 days
-  static final int MAX_DELAY_BETWEEN_STATUS_MESSAGES = 1228800 * CoreConstants.MILLIS_IN_ONE_SECOND;
+  static final long MAX_DELAY_BETWEEN_STATUS_MESSAGES = 1228800 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
   long lastTrackerStatusPrint = 0;
-  int delayBetweenStatusMessages = 300 * CoreConstants.MILLIS_IN_ONE_SECOND;
+  long delayBetweenStatusMessages = 300 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
   protected Layout<E> subjectLayout;
   protected Layout<E> layout;

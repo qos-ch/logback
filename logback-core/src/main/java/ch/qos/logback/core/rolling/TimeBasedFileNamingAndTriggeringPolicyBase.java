@@ -13,10 +13,13 @@
  */
 package ch.qos.logback.core.rolling;
 
+import static ch.qos.logback.core.CoreConstants.CODES_URL;
+
 import java.io.File;
 import java.util.Date;
 import java.util.Locale;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
@@ -24,6 +27,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
+    static private String COLLIDING_DATE_FORMAT_URL = CODES_URL + "#rfa_collision_in_dateFormat";
+    
     protected TimeBasedRollingPolicy<E> tbrp;
 
     protected ArchiveRemover archiveRemover = null;
@@ -35,7 +40,8 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
     protected long nextCheck;
     protected boolean started = false;
-
+    protected boolean errorFree = true;
+    
     public boolean isStarted() {
         return started;
     }
@@ -47,14 +53,20 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
         }
 
         if (dtc.getTimeZone() != null) {
-            rc = new RollingCalendar(dtc.getTimeZone(), Locale.getDefault());
+            rc = new RollingCalendar(dtc.getDatePattern(), dtc.getTimeZone(), Locale.getDefault());
         } else {
-            rc = new RollingCalendar();
+            rc = new RollingCalendar(dtc.getDatePattern());
         }
-        rc.init(dtc.getDatePattern());
         addInfo("The date pattern is '" + dtc.getDatePattern() + "' from file name pattern '" + tbrp.fileNamePattern.getPattern() + "'.");
         rc.printPeriodicity(this);
-
+        
+        if(!rc.isCollisionFree()) {
+            addError("The date format in FileNamePattern will result in collisions in the names of archived log files.");
+            addError(CoreConstants.MORE_INFO_PREFIX+COLLIDING_DATE_FORMAT_URL);
+            errorFree = false;
+            return;
+        }
+        
         setDateInCurrentPeriod(new Date(getCurrentTime()));
         if (tbrp.getParentsRawFileProperty() != null) {
             File currentFile = new File(tbrp.getParentsRawFileProperty());
@@ -62,7 +74,6 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
                 setDateInCurrentPeriod(new Date(currentFile.lastModified()));
             }
         }
-
         addInfo("Setting initial period to " + dateInCurrentPeriod);
         computeNextCheck();
     }
@@ -72,7 +83,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     }
 
     protected void computeNextCheck() {
-        nextCheck = rc.getNextTriggeringMillis(dateInCurrentPeriod);
+        nextCheck = rc.getNextTriggeringDate(dateInCurrentPeriod).getTime();
     }
 
     protected void setDateInCurrentPeriod(long now) {
@@ -113,6 +124,10 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
     public ArchiveRemover getArchiveRemover() {
         return archiveRemover;
+    }
+
+    protected boolean isErrorFree() {
+        return errorFree;
     }
 
 }

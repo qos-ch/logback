@@ -36,10 +36,12 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
     
     @Override
     public void start() {
-        // we depend on certain fields having been initialized
-        // in super.start()
+        // we depend on certain fields having been initialized in super class
         super.start();
 
+        if(!super.isErrorFree())
+            return;
+        
         if (!validDateAndIntegerTokens()) {
             started = false;
             return;

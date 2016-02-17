@@ -13,26 +13,26 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.rolling.helper.RollingCalendar;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import ch.qos.logback.core.rolling.helper.RollingCalendar;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRollingTests {
   String MONTHLY_DATE_PATTERN = "yyyy-MM";

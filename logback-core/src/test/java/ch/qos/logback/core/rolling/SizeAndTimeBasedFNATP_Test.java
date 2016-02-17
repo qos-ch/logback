@@ -13,21 +13,21 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static org.junit.Assert.*;
-import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.StatusPrinter;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import ch.qos.logback.core.encoder.EchoEncoder;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.status.StatusManager;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     private SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = null;
@@ -119,7 +119,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         // wait for compression to finish
         waitForJobsToComplete();
 
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         existenceCheck(expectedFilenameList);
         sortedContentCheck(randomOutputDir, runLength, prefix);
     }
@@ -192,7 +192,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     @Test
     public void checkMissingIntToken() {
         String stem = "toto.log";
-        String testId = "test8";
+        String testId = "checkMissingIntToken";
         String compressionSuffix = "gz";
 
         String file = (stem != null) ? randomOutputDir + stem : null;
@@ -200,11 +200,26 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         sizeThreshold = 300;
         initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
         
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         assertFalse(rfa1.isStarted());
         StatusChecker checker = new StatusChecker(context);
-        checker.assertContainsMatch("Missing integer token");
-       
+        checker.assertContainsMatch("Missing integer token"); 
+    }
+    
+    @Test
+    public void checkDateCollision() {
+        String stem = "toto.log";
+        String testId = "checkDateCollision";
+        String compressionSuffix = "gz";
+
+        String file = (stem != null) ? randomOutputDir + stem : null;
+        initRollingFileAppender(rfa1, file);
+        sizeThreshold = 300;
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{EE}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
         
+        //StatusPrinter.print(context);
+        assertFalse(rfa1.isStarted());
+        StatusChecker checker = new StatusChecker(context);
+        checker.assertContainsMatch("The date pattern has collisions"); 
     }
 }

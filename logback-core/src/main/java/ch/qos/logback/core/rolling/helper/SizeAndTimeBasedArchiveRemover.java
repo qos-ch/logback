@@ -24,7 +24,7 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
   }
 
   public void cleanByPeriodOffset(Date now, int periodOffset) {
-    Date dateOfPeriodToClean = rc.getRelativeDate(now, periodOffset);
+    Date dateOfPeriodToClean = rc.getEndOfNextNthPeriod(now, periodOffset);
 
     String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean);
     String stemRegex = FileFilterUtil.afterLastSlash(regex);
@@ -39,7 +39,7 @@ public class SizeAndTimeBasedArchiveRemover extends DefaultArchiveRemover {
         parentDir, stemRegex);
 
     for (File f : matchingFileArray) {
-      Date fileLastModified = rc.getRelativeDate(new Date(f.lastModified()), -1);
+      Date fileLastModified = rc.getEndOfNextNthPeriod(new Date(f.lastModified()), -1);
 
       if (fileLastModified.compareTo(dateOfPeriodToClean) <= 0) {
         addInfo("deleting " + f);

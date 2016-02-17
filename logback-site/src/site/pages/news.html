@@ -29,8 +29,18 @@
 
     <hr width="80%" align="center" />
     
-    <h3>February 13th, 2016, Release of version 1.1.5</h3>
+    <h3>2016, Release of version 1.1.6</h3>
 
+    <p><code>LogbackValve</code> now attempts to load the configuration file as
+    a resource if it cannot be found on the filesystem
+    (<a href="http://jira.qos.ch/browse/LOGBACK-1069">LOGBACK-1069</a>). This
+    is helpful in scenarios where applications are using an embedded Tomcat
+    server.</p>
+
+
+    <hr width="80%" align="center" />
+    
+    <h3>February 13th, 2016, Release of version 1.1.5</h3>
 
     <div class="breaking">
       <h4>MDC values are no longer inherited by child threads.</h4>
@@ -112,12 +122,6 @@
     <code>InterruptedException</code>. The issue
     (<a href="http://jira.qos.ch/browse/LOGBACK-910">LOGBACK-910</a>) was
     raised by Henrik Nordvik who also provided the relevant fix.</p>
-
-    <p><code>LogbackValve</code> now attempts to load the configuration file as
-    a resource if it cannot be found on the filesystem
-    (<a href="http://jira.qos.ch/browse/LOGBACK-1069">LOGBACK-1069</a>). This
-    is helpful in scenarios where applications are using an embedded Tomcat
-    server.</p>
 
     <hr width="80%" align="center" />
     

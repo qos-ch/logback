@@ -394,7 +394,30 @@
   <code>RollingFileAppender</code> will emit an error message and
   refuse to start.</p>
 
-  <!-- ============================================================= -->
+  <!-- ============================================================= -->  
+
+  <h3 class="doAnchor" name="rfa_collision_in_dateFormat">The date
+  format in <span class="option">fileNamePattern</span> will result in
+  collisions in the names of archived log files.
+  </h3>
+
+  <p>This error message is output when the date time pattern in the %d
+  token within the <span class="option">fileNamePattern</span> is not
+  collision free. For example, the following
+  code>fileNamePattern</code> will result in the same log archive
+  every day of the week after the first week of the month.
+  </p>
+
+  <pre class="source">myapp-%d{yyyy-MM-<span class="bold red">uu</span>}.log.zip</pre>
+
+  <p>As such collisions will result in log data loss,
+  <code>RollingFileAppender</code> will check for a variety of such
+  possible collisions and will not start if any collisions are
+  detected.</p>
+
+  
+  <!-- =============================================================
+       -->
   <h3 class="doAnchor" name="renamingError">Failed to rename file [x]
   as [y].</h3>
 
