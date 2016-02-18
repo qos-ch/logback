@@ -21,6 +21,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import ch.qos.logback.core.util.CloseUtil;
 
 /**
  * SyslogOutputStream is a wrapper around the {@link DatagramSocket} class so that it
@@ -75,6 +76,7 @@ public class SyslogOutputStream extends OutputStream {
 
   public void close() {
     address = null;
+	CloseUtil.closeQuietly(ds);
     ds = null;
   }
 
