@@ -93,7 +93,7 @@ public class ContextBase implements Context, LifeCycle {
     if (CONTEXT_NAME_KEY.equals(key))
       return getName();
 
-    return (String) this.propertyMap.get(key);
+    return this.propertyMap.get(key);
   }
 
   public Object getObject(String key) {

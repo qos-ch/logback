@@ -106,7 +106,7 @@ public class HLogger extends MarkerIgnoringBase {
     if (childrenMap == null) {
       return null;
     } else {
-      return (HLogger) childrenMap.get(suffix);
+      return childrenMap.get(suffix);
     }
   }
 
@@ -120,7 +120,7 @@ public class HLogger extends MarkerIgnoringBase {
     effectiveLevel = newLevel;
     if (childrenMap != null) {
       for (Iterator<HLogger> i = childrenMap.values().iterator(); i.hasNext();) {
-        HLogger child = (HLogger) i.next();
+        HLogger child = i.next();
 
         // tell child to handle parent levelInt change
         child.handleParentLevelChange(effectiveLevel);
@@ -143,7 +143,7 @@ public class HLogger extends MarkerIgnoringBase {
       // propagate the parent levelInt change to this logger's children
       if (childrenMap != null) {
         for (Iterator<HLogger> i = childrenMap.values().iterator(); i.hasNext();) {
-          HLogger child = (HLogger) i.next();
+          HLogger child = i.next();
           // tell child to handle parent levelInt change
           child.handleParentLevelChange(effectiveLevel);
         }

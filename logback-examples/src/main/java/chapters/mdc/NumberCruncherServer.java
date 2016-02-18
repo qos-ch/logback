@@ -101,7 +101,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
     int[] result = new int[len];
 
     for (int i = 0; i < len; i++) {
-      result[i] = ((Integer) factors.elementAt(i)).intValue();
+      result[i] = factors.elementAt(i).intValue();
     }
 
     // clean up

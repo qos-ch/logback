@@ -61,7 +61,7 @@ public class ScenarioMaker {
         System.out.println("count=" + count);
       }
 
-      String loggerName = (String) queue.removeFirst();
+      String loggerName = queue.removeFirst();
       int randomChildrenCount = ScenarioRandomUtil
           .randomChildrenCount(loggerName);
 

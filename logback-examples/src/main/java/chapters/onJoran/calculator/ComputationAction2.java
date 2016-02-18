@@ -73,7 +73,7 @@ public class ComputationAction2 extends Action {
 
   public void end(InterpretationContext ec, String name) {
     // pop nameStr value from the special stack
-    String nameStr = (String) nameStrStack.pop();
+    String nameStr = nameStrStack.pop();
     
     if (OptionHelper.isEmpty(nameStr)) {
       // nothing to do
