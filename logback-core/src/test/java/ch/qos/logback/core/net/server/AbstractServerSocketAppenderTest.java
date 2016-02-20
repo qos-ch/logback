@@ -13,27 +13,40 @@
  */
 package ch.qos.logback.core.net.server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.net.mock.MockContext;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.Status;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
+import static org.hamcrest.core.IsNull.nullValue;
+import org.junit.After;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.net.ServerSocket;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import ch.qos.logback.core.net.mock.MockContext;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.Status;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 /**
  * Unit tests for {@link AbstractServerSocketAppender}.
  *
  * @author Carl Harris
+ * @author Sebastian Gr&ouml;bler
  */
 public class AbstractServerSocketAppenderTest {
 
@@ -100,4 +113,86 @@ public class AbstractServerSocketAppenderTest {
     assertEquals(0, runner.getStartCount());
   }
 
+  @Test
+  public void providesDefaultValueForMaxPoolSize() throws Exception {
+    assertThat(appender.getMaxPoolSize(), is(CoreConstants.MAX_POOL_SIZE));
+  }
+
+  @Test
+  public void providesDefaultValueForCorePoolSize() throws Exception {
+    assertThat(appender.getCorePoolSize(), is(CoreConstants.CORE_POOL_SIZE));
+  }
+
+  @Test
+  public void allowsCustomValueForMaxPoolSize() throws Exception {
+    final int customValue = 128;
+    appender.setMaxPoolSize(customValue);
+
+    assertThat(appender.getMaxPoolSize(), is(customValue));
+  }
+
+  @Test
+  public void allowsCustomValueForCorePoolSize() throws Exception {
+    final int customValue = 128;
+    appender.setCorePoolSize(128);
+
+    assertThat(appender.getCorePoolSize(), is(customValue));
+  }
+
+  @Test
+  public void stopShutsDownConnectionPoolExecutorServiceWhenPresent() {
+    final ExecutorService executorService = mock(ExecutorService.class);
+
+    appender.start();
+    appender.connectionPoolExecutorService = executorService;
+    appender.stop();
+
+    verify(executorService).shutdownNow();
+    assertThat(appender.connectionPoolExecutorService, is(nullValue()));
+  }
+
+  @Test
+  public void testStartUsesConnectionPoolExecutorService() {
+
+    // given
+    final AbstractServerSocketAppender serverSocketAppender = spy(new MockServerSocketAppender());
+    final int corePoolSize = 21;
+    final int maxPoolSize = 42;
+    serverSocketAppender.setCorePoolSize(corePoolSize);
+    serverSocketAppender.setMaxPoolSize(maxPoolSize);
+
+    // when
+    serverSocketAppender.start();
+
+    // then
+    final ArgumentCaptor<Executor> captor = ArgumentCaptor.forClass(Executor.class);
+
+    verify(serverSocketAppender).createServerRunner(any(ServerListener.class), captor.capture());
+
+    final Executor executor = captor.getValue();
+
+    assertThat(executor, instanceOf(ExecutorService.class));
+
+    final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
+
+    assertThat(threadPoolExecutor.getCorePoolSize(), is(corePoolSize));
+    assertThat(threadPoolExecutor.getMaximumPoolSize(), is(maxPoolSize));
+  }
+
+  /**
+   * Simple NOP implementation of abstract methods of {@link AbstractServerSocketAppender}.
+   */
+  private static class MockServerSocketAppender extends AbstractServerSocketAppender<Object> {
+
+    @Override
+    protected void postProcessEvent(Object event) {
+      // NOP
+    }
+
+    @Override
+    protected PreSerializationTransformer<Object> getPST() {
+      final PreSerializationTransformer<Object> pst = mock(PreSerializationTransformer.class);
+      return pst;
+    }
+  }
 }

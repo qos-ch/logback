@@ -173,6 +173,18 @@
               the receiver, as described in <a href="usingSSL.html">Using SSL</a>.
           </td>
         </tr>
+        <tr>
+          <td><span class="prop" container="serverSocketReceiver">corePoolSize</span></td>
+          <td><code>int</code></td>
+          <td>The minimum number of workers to keep alive for handling connections. The
+              default is 1 for JDK 1.5 and 0 for JDK 1.6 or higher.
+          </td>
+        </tr>
+        <tr>
+          <td><span class="prop" container="serverSocketReceiver">maxPoolSize</span></td>
+          <td><code>int</code></td>
+          <td>The maximum number of workers for handling connections. The default is 32.</td>
+        </tr>
       </table>
     
       <h3 class="doAnchor" name="usingServerSocketReceiver">Using

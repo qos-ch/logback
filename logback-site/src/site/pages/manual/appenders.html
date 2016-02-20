@@ -2059,6 +2059,18 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
             the appender, as described in <a href="usingSSL.html">Using SSL</a>.
         </td>
       </tr>
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">corePoolSize</span></td>
+        <td><code>int</code></td>
+        <td>The minimum number of workers to keep alive for handling connections. The
+            default value is 0.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="prop" container="serverSocketAppender">maxPoolSize</span></td>
+        <td><code>int</code></td>
+        <td>The maximum number of workers for handling connections. The default is 32.</td>
+      </tr>
     </table>
     
     <p>The following example illustrates a configuration that uses
