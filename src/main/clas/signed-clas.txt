@@ -45,6 +45,7 @@ Pavel Boldyrev           Ontario, Canada       2015-12-22
 Christoph Zauner         Ennsdorf, Austria     2016-01-11
 David Roberge            Maine, USA            2016-02-14
 Adam Batkin              Connecticut, USA      2016-02-14
+Ville Koskela            Washington, USA       2016-02-19
 
 Justification for CLAs
 ----------------------
