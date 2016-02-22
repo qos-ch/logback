@@ -14,8 +14,6 @@
 // Contributors: Dan MacDonald <dan@redknee.com>
 package ch.qos.logback.classic.net;
 
-import java.net.InetAddress;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
@@ -29,6 +27,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
+ * @author Krzysztof Otrebski
  */
 
 public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
@@ -43,10 +42,19 @@ public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
 
 
   @Override
-  protected void postProcessEvent(ILoggingEvent event) {
-    if (includeCallerData) {
+  protected void append(ILoggingEvent event) {
+    if (event == null || !isStarted()) return;
+    //To have right stacktrace, need to call getCollectData in append method.
+    // posProcessEvent() is called in other thread
+    if (includeCallerData){
       event.getCallerData();
     }
+    super.append(event);
+  }
+
+  @Override
+  protected void postProcessEvent(ILoggingEvent event) {
+    //Do nothing
   }
 
   public void setIncludeCallerData(boolean includeCallerData) {
