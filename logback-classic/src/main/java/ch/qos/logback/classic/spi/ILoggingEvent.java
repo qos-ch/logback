@@ -33,10 +33,18 @@ public interface ILoggingEvent extends DeferredProcessingAware {
 
   Level getLevel();
 
+  /**
+   *  Ex: "Request failed for id={}"
+   * @return Event message (with argument placeholders, if provided)
+   */
   String getMessage();
 
   Object[] getArgumentArray();
 
+  /**
+   * Ex: "Request failed for id=123"
+   * @return Rendered event message (with placeholders replaced, if any).
+   */
   String getFormattedMessage();
 
   String getLoggerName();
