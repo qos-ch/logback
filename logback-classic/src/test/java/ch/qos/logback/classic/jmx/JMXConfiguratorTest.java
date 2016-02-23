@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2016, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -152,6 +152,22 @@ public class JMXConfiguratorTest {
     configurator.setLoggerLevel(testLogger.getName(), "null");
     assertNull(testLogger.getLevel());
        
+    MBeanUtil.unregister(lc, mbs, on, this);
+  }
+
+  @Test
+  public void testReloadDefaultConfiguration() throws Exception {
+    String objectNameAsStr = "ch.qos"+diff + ":Name=" + lc.getName()
+            + ",Type=" + this.getClass().getName();
+
+    ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+    JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
+    configurator.setLoggerLevel(testLogger.getName(), "DEBUG");
+    assertEquals(Level.DEBUG,  testLogger.getLevel());
+
+    configurator.reloadDefaultConfiguration();
+    assertNull(testLogger.getLevel());
+
     MBeanUtil.unregister(lc, mbs, on, this);
   }
 
