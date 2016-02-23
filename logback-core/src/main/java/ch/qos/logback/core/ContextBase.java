@@ -136,7 +136,7 @@ public class ContextBase implements Context, LifeCycle {
    * shutdown hook
    */
   public void reset() {
-	  removeShutdownHook();
+    removeShutdownHook();
     getLifeCycleManager().reset();
     propertyMap.clear();
     objectMap.clear();
