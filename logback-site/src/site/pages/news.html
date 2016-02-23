@@ -37,6 +37,12 @@
     is helpful in scenarios where applications are using an embedded Tomcat
     server.</p>
 
+    <p><code>JMXConfigurator.reloadDefaultConfiguration()</code>
+    method now tolerates programmatic configuration without a
+    URL. This change was provided by Vedran Pavic in <a
+    href="https://github.com/qos-ch/logback/pull/302">PR 302</a>.
+    </p>
+
     <p><code>RollingFileAppender</code> will output an error message
     if the date time pattern in the %d token within the <span
     class="option">fileNamePattern</span> is not collision free. This

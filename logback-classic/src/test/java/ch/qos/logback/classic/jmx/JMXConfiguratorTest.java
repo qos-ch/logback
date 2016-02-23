@@ -35,6 +35,8 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
+import static org.slf4j.Logger.ROOT_LOGGER_NAME;
+
 public class JMXConfiguratorTest {
 
   MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -157,8 +159,7 @@ public class JMXConfiguratorTest {
 
   @Test
   public void testReloadDefaultConfiguration() throws Exception {
-    String objectNameAsStr = "ch.qos"+diff + ":Name=" + lc.getName()
-            + ",Type=" + this.getClass().getName();
+    String objectNameAsStr = "ch.qos"+diff + ":Name=" + lc.getName()  + ",Type=" + this.getClass().getName();
 
     ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
     JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
@@ -167,7 +168,7 @@ public class JMXConfiguratorTest {
 
     configurator.reloadDefaultConfiguration();
     assertNull(testLogger.getLevel());
-
+    assertEquals(Level.DEBUG, lc.getLogger(ROOT_LOGGER_NAME).getLevel());
     MBeanUtil.unregister(lc, mbs, on, this);
   }
 
