@@ -56,7 +56,7 @@ public class EnvUtil {
   static public boolean isJaninoAvailable() {
     ClassLoader classLoader = EnvUtil.class.getClassLoader();
     try {
-      Class<?> bindingClass = classLoader.loadClass("org.codehaus.janino.ScriptEvaluator");
+      Class<?> bindingClass = Class.forName("org.codehaus.janino.ScriptEvaluator", false, classLoader);
       return (bindingClass != null);
     } catch (ClassNotFoundException e) {
       return false;
