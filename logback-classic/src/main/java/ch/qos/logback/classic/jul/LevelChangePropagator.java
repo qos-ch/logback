@@ -32,7 +32,7 @@ import java.util.logging.LogManager;
  */
 public class LevelChangePropagator extends ContextAwareBase implements LoggerContextListener, LifeCycle {
 
-  private Set julLoggerSet = new HashSet();
+  private Set<java.util.logging.Logger> julLoggerSet = new HashSet<java.util.logging.Logger>();
   boolean isStarted = false;
   boolean resetJUL = false;
 
@@ -70,9 +70,9 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
   public void resetJULLevels() {
     LogManager lm = LogManager.getLogManager();
 
-    Enumeration e = lm.getLoggerNames();
+    Enumeration<String> e = lm.getLoggerNames();
     while (e.hasMoreElements()) {
-      String loggerName = (String) e.nextElement();
+      String loggerName = e.nextElement();
       java.util.logging.Logger julLogger = lm.getLogger(loggerName);
       if (JULHelper.isRegularNonRootLogger(julLogger) && julLogger.getLevel() != null) {
         addInfo("Setting level of jul logger [" + loggerName + "] to null");
