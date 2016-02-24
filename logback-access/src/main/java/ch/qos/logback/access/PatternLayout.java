@@ -15,6 +15,7 @@ package ch.qos.logback.access;
 
 import ch.qos.logback.access.pattern.ContentLengthConverter;
 import ch.qos.logback.access.pattern.DateConverter;
+import ch.qos.logback.access.pattern.ElapsedSecondsConverter;
 import ch.qos.logback.access.pattern.ElapsedTimeConverter;
 import ch.qos.logback.access.pattern.EnsureLineSeparation;
 import ch.qos.logback.access.pattern.FullRequestConverter;
@@ -23,6 +24,7 @@ import ch.qos.logback.access.pattern.LineSeparatorConverter;
 import ch.qos.logback.access.pattern.LocalIPAddressConverter;
 import ch.qos.logback.access.pattern.LocalPortConverter;
 import ch.qos.logback.access.pattern.NAConverter;
+import ch.qos.logback.access.pattern.QueryStringConverter;
 import ch.qos.logback.access.pattern.RemoteHostConverter;
 import ch.qos.logback.access.pattern.RemoteIPAddressConverter;
 import ch.qos.logback.access.pattern.RemoteUserConverter;
@@ -37,8 +39,10 @@ import ch.qos.logback.access.pattern.RequestURIConverter;
 import ch.qos.logback.access.pattern.RequestURLConverter;
 import ch.qos.logback.access.pattern.ResponseContentConverter;
 import ch.qos.logback.access.pattern.ResponseHeaderConverter;
+import ch.qos.logback.access.pattern.SessionIDConverter;
 import ch.qos.logback.access.pattern.ServerNameConverter;
 import ch.qos.logback.access.pattern.StatusCodeConverter;
+import ch.qos.logback.access.pattern.ThreadNameConverter;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.color.*;
@@ -98,17 +102,26 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     defaultConverterMap.put("i", RequestHeaderConverter.class.getName());
     defaultConverterMap.put("header", RequestHeaderConverter.class.getName());
 
+    defaultConverterMap.put("I", ThreadNameConverter.class.getName());
+    defaultConverterMap.put("threadName", ThreadNameConverter.class.getName());
+
     defaultConverterMap.put("l", NAConverter.class.getName());
 
     defaultConverterMap.put("m", RequestMethodConverter.class.getName());
     defaultConverterMap.put("requestMethod", RequestMethodConverter.class
         .getName());
 
+    defaultConverterMap.put("q", QueryStringConverter.class.getName());
+    defaultConverterMap.put("queryString", QueryStringConverter.class.getName());
+
     defaultConverterMap.put("r", RequestURLConverter.class.getName());
     defaultConverterMap.put("requestURL", RequestURLConverter.class.getName());
 
     defaultConverterMap.put("s", StatusCodeConverter.class.getName());
     defaultConverterMap.put("statusCode", StatusCodeConverter.class.getName());
+
+    defaultConverterMap.put("S", SessionIDConverter.class.getName());
+    defaultConverterMap.put("sessionID", SessionIDConverter.class.getName());
 
     defaultConverterMap.put("t", DateConverter.class.getName());
     defaultConverterMap.put("date", DateConverter.class.getName());
@@ -150,6 +163,9 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
     defaultConverterMap.put("fullRequest", FullRequestConverter.class.getName());
     defaultConverterMap.put("fullResponse", FullResponseConverter.class.getName());
+
+    defaultConverterMap.put("elapsedSeconds", ElapsedSecondsConverter.class.getName());
+    defaultConverterMap.put("T", ElapsedSecondsConverter.class.getName());
 
     defaultConverterMap.put("elapsedTime", ElapsedTimeConverter.class.getName());
     defaultConverterMap.put("D", ElapsedTimeConverter.class.getName());

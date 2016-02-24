@@ -20,6 +20,7 @@ import ch.qos.logback.access.servlet.Util;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -51,14 +52,17 @@ public class AccessEvent implements Serializable, IAccessEvent {
   private transient final HttpServletRequest httpRequest;
   private transient final HttpServletResponse httpResponse;
 
+  String queryString;
   String requestURI;
   String requestURL;
   String remoteHost;
   String remoteUser;
   String remoteAddr;
+  String threadName;
   String protocol;
   String method;
   String serverName;
+  String sessionID;
   String requestContent;
   String responseContent;
   long elapsedTime;
@@ -125,6 +129,18 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
   }
 
+  /**
+   * @param threadName The threadName to set.
+   */
+  public void setThreadName(String threadName) {
+    this.threadName = threadName;
+  }
+
+  @Override
+  public String getThreadName() {
+    return threadName == null ? NA : threadName;
+  }
+
   @Override
   public String getRequestURI() {
     if (requestURI == null) {
@@ -135,6 +151,24 @@ public class AccessEvent implements Serializable, IAccessEvent {
       }
     }
     return requestURI;
+  }
+
+  @Override
+  public String getQueryString() {
+    if (queryString == null) {
+      if (httpRequest != null) {
+        StringBuilder buf = new StringBuilder();
+        final String qStr = httpRequest.getQueryString();
+        if (qStr != null) {
+          buf.append(AccessConverter.QUESTION_CHAR);
+          buf.append(qStr);
+        }
+        queryString = buf.toString();
+      } else {
+        queryString = NA;
+      }
+    }
+    return queryString;
   }
 
   /**
@@ -148,11 +182,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         buf.append(httpRequest.getMethod());
         buf.append(AccessConverter.SPACE_CHAR);
         buf.append(httpRequest.getRequestURI());
-        final String qStr = httpRequest.getQueryString();
-        if (qStr != null) {
-          buf.append(AccessConverter.QUESTION_CHAR);
-          buf.append(qStr);
-        }
+        buf.append(getQueryString());
         buf.append(AccessConverter.SPACE_CHAR);
         buf.append(httpRequest.getProtocol());
         requestURL = buf.toString();
@@ -211,6 +241,21 @@ public class AccessEvent implements Serializable, IAccessEvent {
       }
     }
     return method;
+  }
+
+  @Override
+  public String getSessionID() {
+    if (sessionID == null) {
+      if (httpRequest != null) {
+        final HttpSession session = httpRequest.getSession();
+        if (session != null) {
+          sessionID = session.getId();
+        }
+      } else {
+        sessionID = NA;
+      }
+    }
+    return sessionID;
   }
 
   @Override
@@ -406,6 +451,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
       }
     }
     return statusCode;
+  }
+
+  public long getElapsedSeconds() {
+    return elapsedTime < 0 ? elapsedTime : elapsedTime / 1000;
   }
 
   public long getElapsedTime() {
