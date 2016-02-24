@@ -4056,7 +4056,7 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     <code>AsyncAppender</code> will drop events of level TRACE, DEBUG
     and INFO keeping only events of level WARN and ERROR. This
     strategy ensures non-blocking handling of logging events (hence
-    excellent performance) at the cost loosing events of level TRACE,
+    excellent performance) at the cost of losing events of level TRACE,
     DEBUG and INFO when the queue has less than 20% capacity. Event
     loss can be prevented by setting the <span
     class="prop">discardingThreshold</span> property to 0 (zero).
