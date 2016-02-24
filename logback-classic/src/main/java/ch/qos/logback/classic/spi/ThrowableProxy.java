@@ -15,6 +15,7 @@ package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.core.CoreConstants;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -33,6 +34,7 @@ public class ThrowableProxy implements IThrowableProxy {
   private transient PackagingDataCalculator packagingDataCalculator;
   private boolean calculatedPackageData = false;
 
+  private static final Field CAUSE_FIELD;
   private static final Method GET_SUPPRESSED_METHOD;
 
   static {
@@ -43,6 +45,13 @@ public class ThrowableProxy implements IThrowableProxy {
       // ignore, will get thrown in Java < 7
     }
     GET_SUPPRESSED_METHOD = method;
+
+    try {
+      CAUSE_FIELD = Throwable.class.getDeclaredField("cause");
+      CAUSE_FIELD.setAccessible(true);
+    } catch (Exception e) {
+      throw new Error(e);
+    }
   }
 
   private static final ThrowableProxy[] NO_SUPPRESSED=new ThrowableProxy[0];
@@ -72,7 +81,22 @@ public class ThrowableProxy implements IThrowableProxy {
           if(throwableSuppressed.length > 0) {
             suppressed = new ThrowableProxy[throwableSuppressed.length];
             for(int i=0;i<throwableSuppressed.length;i++) {
-              this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i]);
+              // It is possible for a suppressed exception to have as cause
+              // the exception which suppresses it.
+              //
+              // This is for instance caused by HttpURLConnection when SSL
+              // is used and the connection is broken unexpectedly. Closing
+              // the input stream in the finally block of the try-with-resource
+              // will throw and that exception will be suppressed but its cause
+              // will be the original exception that aborted the read.
+              //
+              // To avoid StackOverflow, reset the cause when it matches the
+              // suppressing exception.
+              Throwable suppressed = throwableSuppressed[i];
+              if (suppressed.getCause() == throwable) {
+                  CAUSE_FIELD.set(suppressed, null);
+              }
+              this.suppressed[i] = new ThrowableProxy(suppressed);
               this.suppressed[i].commonFrames = ThrowableProxyUtil
                   .findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
                       stackTraceElementProxyArray);
