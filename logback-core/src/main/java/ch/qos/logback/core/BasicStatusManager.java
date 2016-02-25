@@ -110,15 +110,16 @@ public class BasicStatusManager implements StatusManager {
    * This implementation does not allow duplicate installations of OnConsoleStatusListener
    * @param listener
    */
-  public void add(StatusListener listener) {
+  public boolean add(StatusListener listener) {
     synchronized (statusListenerListLock) {
       if(listener instanceof OnConsoleStatusListener) {
         boolean alreadyPresent =  checkForPresence(statusListenerList, listener.getClass());
         if(alreadyPresent)
-          return;
+          return false;
       }
       statusListenerList.add(listener);
     }
+    return false;
   }
 
   private boolean checkForPresence(List<StatusListener> statusListenerList, Class<?> aClass) {

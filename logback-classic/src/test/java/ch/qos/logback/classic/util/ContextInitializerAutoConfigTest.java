@@ -13,19 +13,21 @@
  */
 package ch.qos.logback.classic.util;
 
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.ConsoleAppender;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.CoreConstants;
 
 public class ContextInitializerAutoConfigTest {
 
@@ -40,7 +42,7 @@ public class ContextInitializerAutoConfigTest {
   @After
   public void tearDown() throws Exception {
     System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
-    System.clearProperty(ContextInitializer.STATUS_LISTENER_CLASS);
+    System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS);
   }
 
   @Test

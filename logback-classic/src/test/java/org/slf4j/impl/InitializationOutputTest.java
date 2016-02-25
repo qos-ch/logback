@@ -15,9 +15,11 @@ package org.slf4j.impl;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.NopStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.TeeOutputStream;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,14 +56,14 @@ public class InitializationOutputTest {
   public void tearDown()  {
     System.setOut(original);
     System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
-    System.clearProperty(ContextInitializer.STATUS_LISTENER_CLASS);
+    System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS);
   }
 
 
   @Test
   public void noOutputIfContextHasAStatusListener() {
     System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
-    System.setProperty(ContextInitializer.STATUS_LISTENER_CLASS, NopStatusListener.class.getName());
+    System.setProperty(CoreConstants.STATUS_LISTENER_CLASS, NopStatusListener.class.getName());
 
     StaticLoggerBinderFriend.reset();
     assertEquals(0, tee.baos.size());

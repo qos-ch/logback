@@ -69,7 +69,7 @@ public class MockContext extends ContextBase {
       throw new UnsupportedOperationException();
     }
 
-    public void add(StatusListener listener) {
+    public boolean add(StatusListener listener) {
       throw new UnsupportedOperationException();
     }
 

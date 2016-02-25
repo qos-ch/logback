@@ -17,6 +17,9 @@ import ch.qos.logback.core.util.EnvUtil;
 
 public class CoreConstants {
 
+   final public static String STATUS_LISTENER_CLASS = "logback.statusListenerClass";
+   final public static String SYSOUT = "SYSOUT";
+    
   /**
    * Number of idle threads to retain in a context's executor service.
    */

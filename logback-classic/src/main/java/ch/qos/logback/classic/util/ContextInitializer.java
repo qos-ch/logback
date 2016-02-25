@@ -32,6 +32,7 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
@@ -47,8 +48,7 @@ public class ContextInitializer {
   final public static String AUTOCONFIG_FILE = "logback.xml";
   final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
   final public static String CONFIG_FILE_PROPERTY = "logback.configurationFile";
-  final public static String STATUS_LISTENER_CLASS = "logback.statusListenerClass";
-  final public static String SYSOUT = "SYSOUT";
+
 
   final LoggerContext loggerContext;
 

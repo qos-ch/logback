@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.classic.spi;
 
-import static ch.qos.logback.classic.util.TeztHelper.addSuppressed;
+import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
@@ -23,7 +23,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import ch.qos.logback.classic.util.TeztHelper;
+import ch.qos.logback.classic.util.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -80,7 +80,7 @@ public class ThrowableProxyTest {
   @Test
   public void suppressed() throws InvocationTargetException, IllegalAccessException
   {
-    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
     Exception ex = null;
     try {
       someMethod();
@@ -97,7 +97,7 @@ public class ThrowableProxyTest {
   @Test
   public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException
   {
-    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
     Exception ex = null;
     try {
       someMethod();
@@ -114,7 +114,7 @@ public class ThrowableProxyTest {
   @Test
   public void suppressedWithSuppressed() throws Exception
   {
-    assumeTrue(TeztHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
+    assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make sense.
     Exception ex = null;
     try {
       someMethod();

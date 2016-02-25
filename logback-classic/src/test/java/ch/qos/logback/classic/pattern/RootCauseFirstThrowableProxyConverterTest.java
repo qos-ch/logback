@@ -28,8 +28,8 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ch.qos.logback.classic.util.TeztHelper.makeNestedException;
-import static ch.qos.logback.classic.util.TeztHelper.positionOf;
+import static ch.qos.logback.classic.util.TestHelper.makeNestedException;
+import static ch.qos.logback.classic.util.TestHelper.positionOf;
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
