@@ -69,8 +69,7 @@ public class Loader {
    * @throws IOException
    */
 
-  public static Set<URL> getResourceOccurrenceCount(String resource,
-                                                    ClassLoader classLoader) throws IOException {
+  public static Set<URL> getResources(String resource, ClassLoader classLoader) throws IOException {
     // See LBCLASSIC-159
     Set<URL> urlSet = new HashSet<URL>();
     Enumeration<URL> urlEnum = classLoader.getResources(resource);

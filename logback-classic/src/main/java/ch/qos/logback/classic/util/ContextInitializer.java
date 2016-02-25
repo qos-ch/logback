@@ -166,25 +166,6 @@ public class ContextInitializer {
     }
   }
 
-  private void multiplicityWarning(String resourceName, ClassLoader classLoader) {
-    Set<URL> urlSet = null;
-    StatusManager sm = loggerContext.getStatusManager();
-    try {
-      urlSet = Loader.getResourceOccurrenceCount(resourceName, classLoader);
-    } catch (IOException e) {
-      sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]",
-              loggerContext, e));
-    }
-    if (urlSet != null && urlSet.size() > 1) {
-      sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.",
-              loggerContext));
-      for (URL url : urlSet) {
-        sm.add(new WarnStatus("Resource [" + resourceName + "] occurs at [" + url.toString() + "]",
-                loggerContext));
-      }
-    }
-  }
-
   private void statusOnResourceSearch(String resourceName, ClassLoader classLoader, URL url) {
     StatusManager sm = loggerContext.getStatusManager();
     if (url == null) {
@@ -197,4 +178,22 @@ public class ContextInitializer {
     }
   }
 
+  private void multiplicityWarning(String resourceName, ClassLoader classLoader) {
+      Set<URL> urlSet = null;
+      StatusManager sm = loggerContext.getStatusManager();
+      try {
+        urlSet = Loader.getResources(resourceName, classLoader);
+      } catch (IOException e) {
+        sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]",
+                loggerContext, e));
+      }
+      if (urlSet != null && urlSet.size() > 1) {
+        sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.",
+                loggerContext));
+        for (URL url : urlSet) {
+          sm.add(new WarnStatus("Resource [" + resourceName + "] occurs at [" + url.toString() + "]",
+                  loggerContext));
+        }
+      }
+    }
 }

@@ -82,7 +82,7 @@ abstract public class StatusBase implements Status {
     int result = level;
     int effLevel;
 
-    Iterator it = iterator();
+    Iterator<Status> it = iterator();
     Status s;
     while (it.hasNext()) {
       s = (Status) it.next();

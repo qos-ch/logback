@@ -22,7 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.access.TeztConstants;
+import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -49,7 +49,7 @@ public class JoranConfiguratorTest {
 
   @Test
   public void smoke() throws Exception {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/smoke.xml");
+    configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/smoke.xml");
 
     ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context
         .getAppender("LIST");
@@ -65,7 +65,7 @@ public class JoranConfiguratorTest {
 
   @Test
   public void defaultLayout() throws Exception {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/defaultLayout.xml");
+    configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/defaultLayout.xml");
     StringListAppender<IAccessEvent> listAppender = (StringListAppender<IAccessEvent>) context
         .getAppender("STR_LIST");
     IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();

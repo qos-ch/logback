@@ -20,6 +20,7 @@ import ch.qos.logback.core.joran.spi.*;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
+
 import org.xml.sax.InputSource;
 
 import java.io.File;
@@ -163,6 +164,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
   /**
    * Recall the event list previously registered as a safe point.
    */
+  @SuppressWarnings("unchecked")
   public List<SaxEvent> recallSafeConfiguration() {
     return (List<SaxEvent>) context.getObject(SAFE_JORAN_CONFIGURATION);
   }

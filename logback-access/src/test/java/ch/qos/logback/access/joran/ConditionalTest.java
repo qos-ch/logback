@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.access.joran;
 
-import ch.qos.logback.access.TeztConstants;
+import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -62,7 +62,7 @@ public class ConditionalTest {
 
   @Test
   public void conditionalConsoleApp_IF_THEN_True() throws JoranException, UnknownHostException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
+    configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
     ConsoleAppender consoleAppender = (ConsoleAppender) context.getAppender("CON");
     assertNotNull(consoleAppender);
     assertTrue(checker.isErrorFree(0));
@@ -72,7 +72,7 @@ public class ConditionalTest {
   public void conditionalConsoleApp_IF_THEN_False() throws JoranException,
           IOException, InterruptedException {
     context.putProperty("aHost", null);
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
+    configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
 
     ConsoleAppender consoleAppender = (ConsoleAppender) context.getAppender("CON");
     assertNull(consoleAppender);
@@ -84,7 +84,7 @@ public class ConditionalTest {
   @Test
   public void conditionalConsoleApp_ELSE() throws JoranException,
           IOException, InterruptedException {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole_ELSE.xml");
+    configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole_ELSE.xml");
     ConsoleAppender consoleAppender = (ConsoleAppender) context.getAppender("CON");
     assertNull(consoleAppender);
 
