@@ -190,20 +190,15 @@
    <h3 class="doAnchor" name="eclipse">Building with Eclipse</h3>
 
    <p>Building logback under Eclipse is a little trickier. Here are
-   instructions for building logback under Eclipse in 61 easy steps.
+   instructions for building logback under Eclipse using the maven
+   eclipse:eclipse plugin.
    </p>
+   
 
-   <p>The author does not wish to unduly disparage
-   <code>m2eclipse</code>. However, as of this writing, that is
-   October 2011, it appears that the key to building logback under
-   Eclipse is to avoid using <code>m2eclipse</code>. If you have
-   <code>m2eclipse</code> installed, you can disable it by removing
-   the Maven Nature for a given project. In later versions of Eclipse,
-   m2eclipse is installed bu default. As of logback version 1.0.7, the
-   <em>pom.xml</em> file for logback-core now deactivates m2eclipse as
-   explained in <a
-   href="http://wiki.eclipse.org/M2E_plugin_execution_not_covered#ignore_plugin_goal">M2E
-   plugin wiki</a>.
+   <p>The procedure outlines below assumes that M2Eclipse is not
+   active.  If you have <code>m2eclipse</code> installed, you can
+   disable it by removing the Maven Nature for a given project. In
+   later versions of Eclipse, m2eclipse is installed by default. 
    </p>
 
    <p>And without further ado here are the steps:
@@ -224,13 +219,10 @@
            <p>You first need to determine the update site appropriate
            for your version of Eclipse. The list of available update
            sites is available from <a
-           href="http://groovy.codehaus.org/Eclipse+Plugin">Groovy
-           project documentation</a>.
+           href="https://github.com/groovy/groovy-eclipse/wiki">Groovy
+           Eclipse Wiki</a>.
            </p>
-           <p>For example, for Eclipse 4.2 (Juno) the URL of the
-           update site is
-           "http://dist.springsource.org/release/GRECLIPSE/e4.2/".
-           </p>
+         
          </li>
          
          <li>In Eclipse, select Help &rarr; Intall new Software &rarr;
@@ -257,7 +249,8 @@
      General&rarr; Existing Projects into Workspace, select
      $LOGBACK_HOME folder for the import
      </li>   
-     
+
+     <!--
      <li>In Eclipse, remove the 
       "**/EvaluatorTemplate.groovy" inclusion pattern from 
       the 
@@ -267,8 +260,9 @@
      <p><img src="images/setup/remove_evaluator_template.jpg"/> </p>
 
      </li>   
+     -->
 
-
+     <!--
     <li>In Eclipse, remove the
      logback-classic/target/generated-sources/groovy-stubs/main
      directory from the list of source folders (logback-classic&rarr;
@@ -277,6 +271,7 @@
      <p><img src="images/setup/remove_gen_src.jpg"/> </p>
 
      </li>   
+     -->
 
      <li>In Eclipse, clean all projects in Eclipse (Project &rarr;
      Clean)
@@ -291,7 +286,15 @@
 
 
    <p>The above listed procedure has been last tested by the author
-   using Eclipse Luna on February 10th, 2016.</p>
+   using Eclipse Luna on February 25th, 2016.</p>
+
+   
+   <p><span class="label notice">Call for volunteers</span> Given that many
+   users prefer M2Eclipse for building projects under Eclipse IDE, we
+   are looking for volunteers to help work out the steps for building
+   logback with M2Eclipse.
+   </p>
+   
 
    <script src="templates/footer.js" type="text/javascript"></script>
 </div>
