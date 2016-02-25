@@ -19,7 +19,6 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -249,7 +248,15 @@ public class OptionHelperTest {
     public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException {
         context.putProperty("var", "");
         OptionHelper.substVars("${var}", context);
-
     }
 
+    @Test
+    public void trailingColon_LOGBACK_1140() {
+        String prefix = "c:";
+        String suffix = "/tmp";
+        context.putProperty("var", prefix);
+        String r = OptionHelper.substVars("${var}"+suffix, context);
+        assertEquals(prefix+suffix, r);
+    }
+    
 }

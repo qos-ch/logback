@@ -61,6 +61,11 @@ public class Tokenizer {
         case LITERAL_STATE:
             addLiteralToken(tokenList, buf);
             break;
+        case DEFAULT_VAL_STATE:
+            // trailing colon. see also LOGBACK-1140
+            buf.append(CoreConstants.COLON_CHAR);
+            addLiteralToken(tokenList, buf);
+            break;
         case START_STATE:
             throw new ScanException("Unexpected end of pattern string");
         }
