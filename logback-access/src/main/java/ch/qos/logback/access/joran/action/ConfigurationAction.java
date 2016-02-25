@@ -15,6 +15,7 @@ package ch.qos.logback.access.joran.action;
 
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 import org.xml.sax.Attributes;
 
@@ -41,7 +42,7 @@ public class ConfigurationAction extends Action {
     if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equals("false") || debugAttrib.equals("null")) {
       addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
-      OnConsoleStatusListener.addNewInstanceToContext(context);
+      StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
     }
 
     new ContextUtil(context).addHostNameAsProperty();

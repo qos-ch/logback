@@ -15,14 +15,14 @@ package ch.qos.logback.core;
 
 import static ch.qos.logback.core.BasicStatusManager.MAX_HEADER_COUNT;
 import static ch.qos.logback.core.BasicStatusManager.TAIL_SIZE;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.StatusListener;
+
 import org.junit.Test;
 
 import ch.qos.logback.core.status.ErrorStatus;
@@ -73,14 +73,14 @@ public class BasicStatusManagerTest {
     OnConsoleStatusListener sl1 = new OnConsoleStatusListener();
     sl1.start();
 
-    bsm.add(sl0);
+    assertTrue(bsm.add(sl0));
 
     {
       List<StatusListener> listeners = bsm.getCopyOfStatusListenerList();
       assertEquals(1, listeners.size());
     }
 
-    bsm.add(sl1);
+    assertFalse(bsm.add(sl1));
     {
       List<StatusListener> listeners = bsm.getCopyOfStatusListenerList();
       assertEquals(1, listeners.size());

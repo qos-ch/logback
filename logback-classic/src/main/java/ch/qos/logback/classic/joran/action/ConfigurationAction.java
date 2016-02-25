@@ -14,16 +14,18 @@
 package ch.qos.logback.classic.joran.action;
 
 import ch.qos.logback.classic.util.EnvUtil;
-import ch.qos.logback.core.status.OnConsoleStatusListener;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 public class ConfigurationAction extends Action {
   static final String INTERNAL_DEBUG_ATTR = "debug";
@@ -49,7 +51,7 @@ public class ConfigurationAction extends Action {
             || debugAttrib.equalsIgnoreCase("null")) {
       addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
     } else {
-      OnConsoleStatusListener.addNewInstanceToContext(context);
+      StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
     }
 
     processScanAttrib(ic, attributes);

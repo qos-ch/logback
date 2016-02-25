@@ -119,7 +119,7 @@ public class BasicStatusManager implements StatusManager {
       }
       statusListenerList.add(listener);
     }
-    return false;
+    return true;
   }
 
   private boolean checkForPresence(List<StatusListener> statusListenerList, Class<?> aClass) {

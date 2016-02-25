@@ -26,68 +26,76 @@ import java.util.List;
  */
 abstract class OnPrintStreamStatusListenerBase extends ContextAwareBase implements StatusListener, LifeCycle {
 
-  boolean isStarted = false;
+    boolean isStarted = false;
 
-  static final long DEFAULT_RETROSPECTIVE = 300;
-  long retrospective = DEFAULT_RETROSPECTIVE;
+    static final long DEFAULT_RETROSPECTIVE = 300;
+    long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
 
+    /**
+     * The PrintStream used by derived classes
+     * @return
+     */
+    abstract protected PrintStream getPrintStream();
 
-  /**
-   * The PrintStream used by derived classes
-   * @return
-   */
-  abstract protected PrintStream getPrintStream();
+    private void print(Status status) {
+        StringBuilder sb = new StringBuilder();
+        StatusPrinter.buildStr(sb, "", status);
+        getPrintStream().print(sb);
+    }
 
-  private void print(Status status) {
-    StringBuilder sb = new StringBuilder();
-    StatusPrinter.buildStr(sb, "", status);
-    getPrintStream().print(sb);
-  }
-
-  public void addStatusEvent(Status status) {
-    if (!isStarted)
-      return;
-    print(status);
-  }
-
-  /**
-   * Print status messages retrospectively
-   */
-  private void retrospectivePrint() {
-    if(context == null)
-      return;
-    long now = System.currentTimeMillis();
-    StatusManager sm = context.getStatusManager();
-    List<Status> statusList = sm.getCopyOfStatusList();
-    for (Status status : statusList) {
-      long timestamp = status.getDate();
-      if (now - timestamp < retrospective) {
+    public void addStatusEvent(Status status) {
+        if (!isStarted)
+            return;
         print(status);
-      }
     }
-  }
 
-  public void start() {
-    isStarted = true;
-    if (retrospective > 0) {
-      retrospectivePrint();
+    /**
+     * Print status messages retrospectively
+     */
+    private void retrospectivePrint() {
+        if (context == null)
+            return;
+        long now = System.currentTimeMillis();
+        StatusManager sm = context.getStatusManager();
+        List<Status> statusList = sm.getCopyOfStatusList();
+        for (Status status : statusList) {
+            long timestampOfStatusMesage = status.getDate();
+            if (isElapsedTimeLongerThanThreshold(now, timestampOfStatusMesage)) {
+                print(status);
+            }
+        }
     }
-  }
 
-  public void setRetrospective(long retrospective) {
-    this.retrospective = retrospective;
-  }
+    private boolean isElapsedTimeLongerThanThreshold(long now, long timestamp) {
+        long elapsedTime = now - timestamp;
+        return elapsedTime < retrospectiveThresold;
+    }
 
-  public long getRetrospective() {
-    return retrospective;
-  }
+    /**
+     * Invoking the start method can cause the instance to print status messages created less than 
+     * value of retrospectiveThresold. 
+     */
+    public void start() {
+        isStarted = true;
+        if (retrospectiveThresold > 0) {
+            retrospectivePrint();
+        }
+    }
 
-  public void stop() {
-    isStarted = false;
-  }
+    public void setRetrospective(long retrospective) {
+        this.retrospectiveThresold = retrospective;
+    }
 
-  public boolean isStarted() {
-    return isStarted;
-  }
+    public long getRetrospective() {
+        return retrospectiveThresold;
+    }
+
+    public void stop() {
+        isStarted = false;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
+    }
 
 }
