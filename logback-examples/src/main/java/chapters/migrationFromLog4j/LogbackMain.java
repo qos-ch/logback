@@ -30,19 +30,18 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class LogbackMain {
 
-  static Logger logger = LoggerFactory.getLogger(LogbackMain.class);
+    static Logger logger = LoggerFactory.getLogger(LogbackMain.class);
 
-  public static void main(String[] args) throws JoranException {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(String[] args) throws JoranException {
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    JoranConfigurator configurator = new JoranConfigurator();
-    configurator.setContext(lc);
-    lc.reset();
-    configurator.doConfigure("src/main/java/chapters/migrationFromLog4j/logback-trivial.xml");
-    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
-    
-    
-    logger.debug("Hello world");
-  }
+        JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(lc);
+        lc.reset();
+        configurator.doConfigure("src/main/java/chapters/migrationFromLog4j/logback-trivial.xml");
+        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+        logger.debug("Hello world");
+    }
 
 }

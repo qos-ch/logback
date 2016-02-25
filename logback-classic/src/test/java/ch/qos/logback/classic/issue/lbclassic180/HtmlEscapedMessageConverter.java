@@ -19,7 +19,7 @@ import ch.qos.logback.core.helpers.Transform;
 
 public class HtmlEscapedMessageConverter extends ClassicConverter {
 
-  public String convert(ILoggingEvent event) {
-    return Transform.escapeTags(event.getFormattedMessage());
-  }
+    public String convert(ILoggingEvent event) {
+        return Transform.escapeTags(event.getFormattedMessage());
+    }
 }

@@ -18,45 +18,42 @@ import java.nio.channels.FileChannel;
 
 public class ResilientFileOutputStream extends ResilientOutputStreamBase {
 
-  private File file;
-  private FileOutputStream fos;
+    private File file;
+    private FileOutputStream fos;
 
-
-  public ResilientFileOutputStream(File file, boolean append)
-      throws FileNotFoundException {
-    this.file = file;
-    fos = new FileOutputStream(file, append);
-    this.os = new BufferedOutputStream(fos);
-    this.presumedClean = true;
-  }
-
-  public FileChannel getChannel() {
-    if (os == null) {
-      return null;
+    public ResilientFileOutputStream(File file, boolean append) throws FileNotFoundException {
+        this.file = file;
+        fos = new FileOutputStream(file, append);
+        this.os = new BufferedOutputStream(fos);
+        this.presumedClean = true;
     }
-    return fos.getChannel();
-  }
 
-  public File getFile() {
-    return file;
-  }
+    public FileChannel getChannel() {
+        if (os == null) {
+            return null;
+        }
+        return fos.getChannel();
+    }
 
-  @Override
-  String getDescription() {
-    return "file ["+file+"]";
-  }
+    public File getFile() {
+        return file;
+    }
 
-  @Override
-  OutputStream openNewOutputStream() throws IOException {
-    // see LOGBACK-765
-    fos = new FileOutputStream(file, true);
-    return new BufferedOutputStream(fos);
-  }
-  
-  @Override
-  public String toString() {
-    return "c.q.l.c.recovery.ResilientFileOutputStream@"
-        + System.identityHashCode(this);
-  }
+    @Override
+    String getDescription() {
+        return "file [" + file + "]";
+    }
+
+    @Override
+    OutputStream openNewOutputStream() throws IOException {
+        // see LOGBACK-765
+        fos = new FileOutputStream(file, true);
+        return new BufferedOutputStream(fos);
+    }
+
+    @Override
+    public String toString() {
+        return "c.q.l.c.recovery.ResilientFileOutputStream@" + System.identityHashCode(this);
+    }
 
 }

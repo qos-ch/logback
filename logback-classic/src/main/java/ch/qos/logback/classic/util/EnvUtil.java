@@ -23,37 +23,33 @@ import ch.qos.logback.core.util.Loader;
  */
 public class EnvUtil {
 
+    /*
+     * Used to replace the ClassLoader that the ServiceLoader uses for unit testing. We need this to mock the resources
+     * the ServiceLoader attempts to load from /META-INF/services thus keeping the projects src/test/resources clean
+     * (see src/test/resources/README.txt).
+     */
+    static ClassLoader testServiceLoaderClassLoader = null;
 
-  /*
-   * Used to replace the ClassLoader that the ServiceLoader uses for unit testing.
-   * We need this to mock the resources the ServiceLoader attempts to load from 
-   * /META-INF/services thus keeping the projects src/test/resources clean 
-   * (see src/test/resources/README.txt).
-   */
-  static ClassLoader testServiceLoaderClassLoader = null;
-  
-  static public boolean isGroovyAvailable() {
-    ClassLoader classLoader = Loader.getClassLoaderOfClass(EnvUtil.class);
-    try {
-      Class<?> bindingClass = classLoader.loadClass("groovy.lang.Binding");
-      return (bindingClass != null);
-    } catch (ClassNotFoundException e) {
-      return false;
+    static public boolean isGroovyAvailable() {
+        ClassLoader classLoader = Loader.getClassLoaderOfClass(EnvUtil.class);
+        try {
+            Class<?> bindingClass = classLoader.loadClass("groovy.lang.Binding");
+            return (bindingClass != null);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
-  }
-  
-  
-  private static ClassLoader getServiceLoaderClassLoader() {
-    return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(EnvUtil.class) : testServiceLoaderClassLoader;
-  }
-  
-  public static <T> T loadFromServiceLoader(Class<T> c) {
-      ServiceLoader<T> loader = ServiceLoader.load(c, getServiceLoaderClassLoader() );
-      Iterator<T> it = loader.iterator();  
-      if (it.hasNext())
-        return it.next();
-    return null;
-  }
-  
+
+    private static ClassLoader getServiceLoaderClassLoader() {
+        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(EnvUtil.class) : testServiceLoaderClassLoader;
+    }
+
+    public static <T> T loadFromServiceLoader(Class<T> c) {
+        ServiceLoader<T> loader = ServiceLoader.load(c, getServiceLoaderClassLoader());
+        Iterator<T> it = loader.iterator();
+        if (it.hasNext())
+            return it.next();
+        return null;
+    }
 
 }

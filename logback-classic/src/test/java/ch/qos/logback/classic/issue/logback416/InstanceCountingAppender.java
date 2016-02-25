@@ -19,14 +19,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
 public class InstanceCountingAppender extends AppenderBase<ILoggingEvent> {
-  
-  static public AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
 
-  public InstanceCountingAppender() {
-    INSTANCE_COUNT.getAndIncrement();
-  }
+    static public AtomicInteger INSTANCE_COUNT = new AtomicInteger(0);
 
-  protected void append(ILoggingEvent e) {
-  }
-  
+    public InstanceCountingAppender() {
+        INSTANCE_COUNT.getAndIncrement();
+    }
+
+    protected void append(ILoggingEvent e) {
+    }
+
 }

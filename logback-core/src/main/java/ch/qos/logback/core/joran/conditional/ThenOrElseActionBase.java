@@ -27,62 +27,64 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 abstract public class ThenOrElseActionBase extends Action {
 
-  Stack<ThenActionState> stateStack = new Stack<ThenActionState>();
+    Stack<ThenActionState> stateStack = new Stack<ThenActionState>();
 
-  @Override
-  public void begin(InterpretationContext ic, String name, Attributes attributes)
-      throws ActionException {
+    @Override
+    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
 
-    if(!weAreActive(ic)) return;
+        if (!weAreActive(ic))
+            return;
 
-    ThenActionState state = new ThenActionState();
-    if (ic.isListenerListEmpty()) {
-      ic.addInPlayListener(state);
-      state.isRegistered = true;
+        ThenActionState state = new ThenActionState();
+        if (ic.isListenerListEmpty()) {
+            ic.addInPlayListener(state);
+            state.isRegistered = true;
+        }
+        stateStack.push(state);
     }
-    stateStack.push(state);
-  }
 
-  boolean weAreActive(InterpretationContext ic) {
-    Object o = ic.peekObject();
-    if(!(o instanceof IfAction)) return false;
-    IfAction ifAction = (IfAction) o;
-    return ifAction.isActive();
-  }
-
-  @Override
-  public void end(InterpretationContext ic, String name) throws ActionException {
-    if(!weAreActive(ic)) return;
-
-    ThenActionState state = stateStack.pop();
-    if (state.isRegistered) {
-      ic.removeInPlayListener(state);
-      Object o = ic.peekObject();
-      if (o instanceof IfAction) {
+    boolean weAreActive(InterpretationContext ic) {
+        Object o = ic.peekObject();
+        if (!(o instanceof IfAction))
+            return false;
         IfAction ifAction = (IfAction) o;
-        removeFirstAndLastFromList(state.eventList);
-        registerEventList(ifAction, state.eventList);
-      } else {
-        throw new IllegalStateException("Missing IfAction on top of stack");
-      }
+        return ifAction.isActive();
     }
-  }
-  
-  abstract void registerEventList(IfAction ifAction, List<SaxEvent> eventList);
 
-  void removeFirstAndLastFromList(List<SaxEvent> eventList) {
-    eventList.remove(0);
-    eventList.remove(eventList.size() - 1);
-  }
+    @Override
+    public void end(InterpretationContext ic, String name) throws ActionException {
+        if (!weAreActive(ic))
+            return;
+
+        ThenActionState state = stateStack.pop();
+        if (state.isRegistered) {
+            ic.removeInPlayListener(state);
+            Object o = ic.peekObject();
+            if (o instanceof IfAction) {
+                IfAction ifAction = (IfAction) o;
+                removeFirstAndLastFromList(state.eventList);
+                registerEventList(ifAction, state.eventList);
+            } else {
+                throw new IllegalStateException("Missing IfAction on top of stack");
+            }
+        }
+    }
+
+    abstract void registerEventList(IfAction ifAction, List<SaxEvent> eventList);
+
+    void removeFirstAndLastFromList(List<SaxEvent> eventList) {
+        eventList.remove(0);
+        eventList.remove(eventList.size() - 1);
+    }
 
 }
 
 class ThenActionState implements InPlayListener {
 
-  List<SaxEvent> eventList = new ArrayList<SaxEvent>();
-  boolean isRegistered = false;
-  
-  public void inPlay(SaxEvent event) {
-    eventList.add(event);
-  }
+    List<SaxEvent> eventList = new ArrayList<SaxEvent>();
+    boolean isRegistered = false;
+
+    public void inPlay(SaxEvent event) {
+        eventList.add(event);
+    }
 }

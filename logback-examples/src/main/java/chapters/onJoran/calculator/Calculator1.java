@@ -31,25 +31,25 @@ import chapters.onJoran.SimpleConfigurator;
  */
 public class Calculator1 {
 
-  public static void main(String[] args) throws Exception {
-    Context context = new ContextBase();
+    public static void main(String[] args) throws Exception {
+        Context context = new ContextBase();
 
-    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
-    // Associate "/computation" pattern with ComputationAction1
-    ruleMap.put(new ElementSelector("/computation"), new ComputationAction1());
+        // Associate "/computation" pattern with ComputationAction1
+        ruleMap.put(new ElementSelector("/computation"), new ComputationAction1());
 
-    // Other associations
-    ruleMap.put(new ElementSelector("/computation/literal"), new LiteralAction());
-    ruleMap.put(new ElementSelector("/computation/add"), new AddAction());
-    ruleMap.put(new ElementSelector("/computation/multiply"), new MultiplyAction());
+        // Other associations
+        ruleMap.put(new ElementSelector("/computation/literal"), new LiteralAction());
+        ruleMap.put(new ElementSelector("/computation/add"), new AddAction());
+        ruleMap.put(new ElementSelector("/computation/multiply"), new MultiplyAction());
 
-    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
-    // link the configurator with its context
-    simpleConfigurator.setContext(context);
+        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        // link the configurator with its context
+        simpleConfigurator.setContext(context);
 
-    simpleConfigurator.doConfigure(args[0]);
-    // Print any errors that might have occured.
-    StatusPrinter.print(context);
-  }
+        simpleConfigurator.doConfigure(args[0]);
+        // Print any errors that might have occured.
+        StatusPrinter.print(context);
+    }
 }

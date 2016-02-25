@@ -31,64 +31,65 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ObjectStreamEncoder<E> extends EncoderBase<E> {
 
-  static public final int START_PEBBLE = 1853421169;
-  static public final int STOP_PEBBLE = 640373619;
+    static public final int START_PEBBLE = 1853421169;
+    static public final int STOP_PEBBLE = 640373619;
 
-  private int MAX_BUFFER_SIZE = 100;
+    private int MAX_BUFFER_SIZE = 100;
 
-  List<E> bufferList = new ArrayList<E>(MAX_BUFFER_SIZE);
+    List<E> bufferList = new ArrayList<E>(MAX_BUFFER_SIZE);
 
-  public void doEncode(E event) throws IOException {
-    bufferList.add(event);
-    if (bufferList.size() == MAX_BUFFER_SIZE) {
-      writeBuffer();
+    public void doEncode(E event) throws IOException {
+        bufferList.add(event);
+        if (bufferList.size() == MAX_BUFFER_SIZE) {
+            writeBuffer();
+        }
     }
-  }
 
-  void writeHeader(ByteArrayOutputStream baos, int bufferSize) {
-    ByteArrayUtil.writeInt(baos, START_PEBBLE);
-    ByteArrayUtil.writeInt(baos, bufferSize);
-    ByteArrayUtil.writeInt(baos, 0);
-    ByteArrayUtil.writeInt(baos, START_PEBBLE^bufferSize);
-  }
-  
-  void writeFooter(ByteArrayOutputStream baos, int bufferSize) {
-    ByteArrayUtil.writeInt(baos, STOP_PEBBLE);
-    ByteArrayUtil.writeInt(baos, STOP_PEBBLE ^ bufferSize);
-  }
-  void writeBuffer() throws IOException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream(10000);
-    
-    int size = bufferList.size();
-    writeHeader(baos, size);
-    ObjectOutputStream oos = new ObjectOutputStream(baos);
-    for (E e : bufferList) {
-      oos.writeObject(e);
+    void writeHeader(ByteArrayOutputStream baos, int bufferSize) {
+        ByteArrayUtil.writeInt(baos, START_PEBBLE);
+        ByteArrayUtil.writeInt(baos, bufferSize);
+        ByteArrayUtil.writeInt(baos, 0);
+        ByteArrayUtil.writeInt(baos, START_PEBBLE ^ bufferSize);
     }
-    bufferList.clear();
-    oos.flush();
 
-    writeFooter(baos, size);
+    void writeFooter(ByteArrayOutputStream baos, int bufferSize) {
+        ByteArrayUtil.writeInt(baos, STOP_PEBBLE);
+        ByteArrayUtil.writeInt(baos, STOP_PEBBLE ^ bufferSize);
+    }
 
-    byte[] byteArray = baos.toByteArray();
-    oos.close();
-    writeEndPosition(byteArray);
-    outputStream.write(byteArray);
-    
-  }
-  
-  void writeEndPosition(byte[] byteArray) {
-    int offset = 2*CoreConstants.BYTES_PER_INT;
-    ByteArrayUtil.writeInt(byteArray,offset, byteArray.length-offset);
-  }
+    void writeBuffer() throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(10000);
 
-  @Override
-  public void init(OutputStream os) throws IOException {
-    super.init(os);
-    bufferList.clear();
-  }
+        int size = bufferList.size();
+        writeHeader(baos, size);
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        for (E e : bufferList) {
+            oos.writeObject(e);
+        }
+        bufferList.clear();
+        oos.flush();
 
-  public void close() throws IOException {
-    writeBuffer();
-  }
+        writeFooter(baos, size);
+
+        byte[] byteArray = baos.toByteArray();
+        oos.close();
+        writeEndPosition(byteArray);
+        outputStream.write(byteArray);
+
+    }
+
+    void writeEndPosition(byte[] byteArray) {
+        int offset = 2 * CoreConstants.BYTES_PER_INT;
+        ByteArrayUtil.writeInt(byteArray, offset, byteArray.length - offset);
+    }
+
+    @Override
+    public void init(OutputStream os) throws IOException {
+        super.init(os);
+        bufferList.clear();
+    }
+
+    public void close() throws IOException {
+        writeBuffer();
+    }
 }

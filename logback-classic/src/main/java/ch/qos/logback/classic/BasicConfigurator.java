@@ -31,32 +31,32 @@ import ch.qos.logback.core.status.StatusManager;
  */
 public class BasicConfigurator {
 
-  final static BasicConfigurator hiddenSingleton = new BasicConfigurator();
-    
-  private BasicConfigurator() {
-  }
-  
-  public static void configure(LoggerContext lc) {
-    StatusManager sm = lc.getStatusManager();
-    if(sm != null)  {
-     sm.add(new InfoStatus("Setting up default configuration.", lc));
+    final static BasicConfigurator hiddenSingleton = new BasicConfigurator();
+
+    private BasicConfigurator() {
     }
-    ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
-    ca.setContext(lc);
-    ca.setName("console");
-    PatternLayoutEncoder pl = new PatternLayoutEncoder();
-    pl.setContext(lc);
-    pl.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
-    pl.start();
 
-    ca.setEncoder(pl);
-    ca.start();
-    Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    rootLogger.addAppender(ca);
-  }
+    public static void configure(LoggerContext lc) {
+        StatusManager sm = lc.getStatusManager();
+        if (sm != null) {
+            sm.add(new InfoStatus("Setting up default configuration.", lc));
+        }
+        ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
+        ca.setContext(lc);
+        ca.setName("console");
+        PatternLayoutEncoder pl = new PatternLayoutEncoder();
+        pl.setContext(lc);
+        pl.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
+        pl.start();
 
-  public static void configureDefaultContext() {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    configure(lc);
-  }
+        ca.setEncoder(pl);
+        ca.start();
+        Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        rootLogger.addAppender(ca);
+    }
+
+    public static void configureDefaultContext() {
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        configure(lc);
+    }
 }

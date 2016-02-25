@@ -15,8 +15,6 @@ package ch.qos.logback.core.net.server;
 
 import ch.qos.logback.core.net.server.Client;
 
-
-
 /**
  *
  * A mock {@link Client} that notifies waiting thread when it has started,
@@ -26,38 +24,37 @@ import ch.qos.logback.core.net.server.Client;
  */
 class MockClient implements Client {
 
-  private boolean running;
-  private boolean closed;
-  
-  public void run() {
-    synchronized (this) {
-      running = true;
-      notifyAll();
-      while (running && !Thread.currentThread().isInterrupted()) {
-        try {
-          wait();
+    private boolean running;
+    private boolean closed;
+
+    public void run() {
+        synchronized (this) {
+            running = true;
+            notifyAll();
+            while (running && !Thread.currentThread().isInterrupted()) {
+                try {
+                    wait();
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
-        catch (InterruptedException ex) {
-          Thread.currentThread().interrupt();
+    }
+
+    public void close() {
+        synchronized (this) {
+            running = false;
+            closed = true;
+            notifyAll();
         }
-      }
     }
-  }
 
-  public void close() {
-    synchronized (this) {
-      running = false;
-      closed = true;
-      notifyAll();
+    public synchronized boolean isRunning() {
+        return running;
     }
-  }
 
-  public synchronized boolean isRunning() {
-    return running;
-  }
-
-  public synchronized boolean isClosed() {
-    return closed;
-  }
+    public synchronized boolean isClosed() {
+        return closed;
+    }
 
 }

@@ -33,64 +33,64 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  */
 public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
 
-  static final String DEFAULT_SUBJECT_PATTERN = "%m";
+    static final String DEFAULT_SUBJECT_PATTERN = "%m";
 
-  /**
-   * The default constructor will instantiate the appender with a
-   * {@link EventEvaluator} that will trigger on events with level
-   * ERROR or higher.
-   */
-  public SMTPAppender() {
-  }
-
-  /**
-   * Use <code>evaluator</code> passed as parameter as the {@link
-   * EventEvaluator} for this SMTPAppender.
-   */
-  public SMTPAppender(EventEvaluator<IAccessEvent> evaluator) {
-    this.eventEvaluator = evaluator;
-  }
-
-  /**
-   * Perform SMTPAppender specific appending actions, mainly adding the event to
-   * the appropriate cyclic buffer.
-   */
-  @Override
-  protected void subAppend(CyclicBuffer<IAccessEvent> cb, IAccessEvent event) {
-    cb.add(event);
-  }
-
-  @Override
-  protected void fillBuffer(CyclicBuffer<IAccessEvent> cb, StringBuffer sbuf) {
-    int len = cb.length();
-    for (int i = 0; i < len; i++) {
-      // sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
-      IAccessEvent event = cb.get();
-      sbuf.append(layout.doLayout(event));
+    /**
+     * The default constructor will instantiate the appender with a
+     * {@link EventEvaluator} that will trigger on events with level
+     * ERROR or higher.
+     */
+    public SMTPAppender() {
     }
-  }
 
-  @Override
-  protected Layout<IAccessEvent> makeSubjectLayout(String subjectStr) {
-    if(subjectStr == null) {
-      subjectStr = DEFAULT_SUBJECT_PATTERN;
+    /**
+     * Use <code>evaluator</code> passed as parameter as the {@link
+     * EventEvaluator} for this SMTPAppender.
+     */
+    public SMTPAppender(EventEvaluator<IAccessEvent> evaluator) {
+        this.eventEvaluator = evaluator;
     }
-    PatternLayout pl = new PatternLayout();
-    pl.setPattern(subjectStr);
-    pl.start();
-    return pl;
-  }
 
-  @Override
-  protected PatternLayout makeNewToPatternLayout(String toPattern) {
-    PatternLayout pl = new PatternLayout();
-    pl.setPattern(toPattern);
-    return pl;
-  }
+    /**
+     * Perform SMTPAppender specific appending actions, mainly adding the event to
+     * the appropriate cyclic buffer.
+     */
+    @Override
+    protected void subAppend(CyclicBuffer<IAccessEvent> cb, IAccessEvent event) {
+        cb.add(event);
+    }
 
-  @Override
-  protected boolean eventMarksEndOfLife(IAccessEvent eventObject) {
-    return false;
-  }
+    @Override
+    protected void fillBuffer(CyclicBuffer<IAccessEvent> cb, StringBuffer sbuf) {
+        int len = cb.length();
+        for (int i = 0; i < len; i++) {
+            // sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
+            IAccessEvent event = cb.get();
+            sbuf.append(layout.doLayout(event));
+        }
+    }
+
+    @Override
+    protected Layout<IAccessEvent> makeSubjectLayout(String subjectStr) {
+        if (subjectStr == null) {
+            subjectStr = DEFAULT_SUBJECT_PATTERN;
+        }
+        PatternLayout pl = new PatternLayout();
+        pl.setPattern(subjectStr);
+        pl.start();
+        return pl;
+    }
+
+    @Override
+    protected PatternLayout makeNewToPatternLayout(String toPattern) {
+        PatternLayout pl = new PatternLayout();
+        pl.setPattern(toPattern);
+        return pl;
+    }
+
+    @Override
+    protected boolean eventMarksEndOfLife(IAccessEvent eventObject) {
+        return false;
+    }
 
 }

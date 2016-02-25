@@ -135,7 +135,6 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
                         eCount >= 4 && eCount > expectedFilenameList.size() / 2);
     }
 
-
     @Test
     public void timeAndSizeWithoutIntegerToken() throws Exception {
         String testId = "timeAndSizeWithoutIntegerToken";
@@ -144,12 +143,12 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
         StatusPrinter.print(lc);
-       
+
         statusChecker.assertContainsMatch("Missing integer token");
         assertFalse(rfa.isStarted());
-        
+
     }
-    
+
     void addExpectedFileNamedIfItsTime(String testId, String msg, boolean gzExtension) {
         fileSize += msg.getBytes().length;
 

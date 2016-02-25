@@ -28,35 +28,34 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class FruitConfigurator extends GenericConfigurator {
 
-  FruitFactory ff;
-  public FruitConfigurator(FruitFactory ff) {
-    this.ff = ff;
-  }
+    FruitFactory ff;
 
-  @Override
-  final public void doConfigure(final List<SaxEvent> eventList)
-      throws JoranException {
-    buildInterpreter();
-    interpreter.getInterpretationContext().pushObject(ff);
-    EventPlayer player = new EventPlayer(interpreter);
-    player.play(eventList);
-  }
+    public FruitConfigurator(FruitFactory ff) {
+        this.ff = ff;
+    }
 
-  @Override
-  protected void addImplicitRules(Interpreter interpreter) {
-    NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
-    nestedIA.setContext(context);
-    interpreter.addImplicitAction(nestedIA);
-    
-    NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
-    nestedIA.setContext(context);
-    interpreter.addImplicitAction(nestedSimpleIA);
-  }
+    @Override
+    final public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
+        buildInterpreter();
+        interpreter.getInterpretationContext().pushObject(ff);
+        EventPlayer player = new EventPlayer(interpreter);
+        player.play(eventList);
+    }
 
-  
-  @Override
-  protected void addInstanceRules(RuleStore rs) {
-    rs.addRule(new ElementSelector("fruitShell"), new NOPAction());
-  }
+    @Override
+    protected void addImplicitRules(Interpreter interpreter) {
+        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
+        nestedIA.setContext(context);
+        interpreter.addImplicitAction(nestedIA);
+
+        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
+        nestedIA.setContext(context);
+        interpreter.addImplicitAction(nestedSimpleIA);
+    }
+
+    @Override
+    protected void addInstanceRules(RuleStore rs) {
+        rs.addRule(new ElementSelector("fruitShell"), new NOPAction());
+    }
 
 }

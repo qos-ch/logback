@@ -25,66 +25,64 @@ import org.codehaus.groovy.control.CompilationFailedException;
  */
 public class GEventEvaluator extends EventEvaluatorBase<ILoggingEvent> {
 
-  String expression;
+    String expression;
 
-  IEvaluator delegateEvaluator;
-  Script script;
+    IEvaluator delegateEvaluator;
+    Script script;
 
-  public String getExpression() {
-    return expression;
-  }
-
-  public void setExpression(String expression) {
-    this.expression = expression;
-  }
-
-  public void start() {
-    int errors = 0;
-    if (expression == null || expression.length() == 0) {
-      addError("Empty expression");
-      return;
-    } else {
-      addInfo("Expression to evaluate [" + expression + "]");
+    public String getExpression() {
+        return expression;
     }
 
-
-    ClassLoader classLoader = getClass().getClassLoader();
-    String currentPackageName = this.getClass().getPackage().getName();
-    currentPackageName = currentPackageName.replace('.', '/');
-
-    FileUtil fileUtil = new FileUtil(getContext());
-    String scriptText = fileUtil.resourceAsString(classLoader, currentPackageName + "/EvaluatorTemplate.groovy");
-    if (scriptText == null) {
-      return;
+    public void setExpression(String expression) {
+        this.expression = expression;
     }
 
-    // insert the expression into script text
-    scriptText = scriptText.replace("//EXPRESSION", expression);
+    public void start() {
+        int errors = 0;
+        if (expression == null || expression.length() == 0) {
+            addError("Empty expression");
+            return;
+        } else {
+            addInfo("Expression to evaluate [" + expression + "]");
+        }
 
-    GroovyClassLoader gLoader = new GroovyClassLoader(classLoader);
-    try {
-      Class scriptClass = gLoader.parseClass(scriptText);
+        ClassLoader classLoader = getClass().getClassLoader();
+        String currentPackageName = this.getClass().getPackage().getName();
+        currentPackageName = currentPackageName.replace('.', '/');
 
-      GroovyObject goo = (GroovyObject) scriptClass.newInstance();
-      delegateEvaluator = (IEvaluator) goo;
+        FileUtil fileUtil = new FileUtil(getContext());
+        String scriptText = fileUtil.resourceAsString(classLoader, currentPackageName + "/EvaluatorTemplate.groovy");
+        if (scriptText == null) {
+            return;
+        }
 
-    } catch (CompilationFailedException cfe) {
-      addError("Failed to compile expression [" + expression + "]", cfe);
-      errors++;
-    } catch (Exception e) {
-      addError("Failed to compile expression [" + expression + "]", e);
-      errors++;
+        // insert the expression into script text
+        scriptText = scriptText.replace("//EXPRESSION", expression);
+
+        GroovyClassLoader gLoader = new GroovyClassLoader(classLoader);
+        try {
+            Class scriptClass = gLoader.parseClass(scriptText);
+
+            GroovyObject goo = (GroovyObject) scriptClass.newInstance();
+            delegateEvaluator = (IEvaluator) goo;
+
+        } catch (CompilationFailedException cfe) {
+            addError("Failed to compile expression [" + expression + "]", cfe);
+            errors++;
+        } catch (Exception e) {
+            addError("Failed to compile expression [" + expression + "]", e);
+            errors++;
+        }
+        if (errors == 0)
+            super.start();
     }
-    if (errors == 0)
-      super.start();
-  }
 
-  public boolean evaluate(ILoggingEvent event) throws NullPointerException, EvaluationException {
-    if (delegateEvaluator == null) {
-      return false;
+    public boolean evaluate(ILoggingEvent event) throws NullPointerException, EvaluationException {
+        if (delegateEvaluator == null) {
+            return false;
+        }
+        return delegateEvaluator.doEvaluate(event);
     }
-    return delegateEvaluator.doEvaluate(event);
-  }
-
 
 }

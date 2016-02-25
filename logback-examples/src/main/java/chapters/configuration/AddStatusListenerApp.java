@@ -23,19 +23,18 @@ import ch.qos.logback.core.status.StatusManager;
 
 public class AddStatusListenerApp {
 
-  public static void main(String[] args) throws JoranException {
-    
-  
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
-    StatusManager statusManager = lc.getStatusManager();
-    OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
-    statusManager.add(onConsoleListener);
+    public static void main(String[] args) throws JoranException {
 
-    Logger logger = LoggerFactory.getLogger("myApp");
-    logger.info("Entering application.");
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        StatusManager statusManager = lc.getStatusManager();
+        OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
+        statusManager.add(onConsoleListener);
 
-    Foo foo = new Foo();
-    foo.doIt();
-    logger.info("Exiting application.");
-  }
+        Logger logger = LoggerFactory.getLogger("myApp");
+        logger.info("Entering application.");
+
+        Foo foo = new Foo();
+        foo.doIt();
+        logger.info("Exiting application.");
+    }
 }

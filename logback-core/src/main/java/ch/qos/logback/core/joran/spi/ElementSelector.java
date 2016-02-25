@@ -27,157 +27,155 @@ import java.util.List;
  */
 public class ElementSelector extends ElementPath {
 
-  public ElementSelector() {
-    super();
-  }
-
-  public ElementSelector(List<String> list) {
-    super(list);
-  }
-
-  /**
-   * Build an elementPath from a string.
-   *
-   * Note that "/x" is considered equivalent to "x" and to "x/"
-   *
-   */
-  public ElementSelector(String p) {
-    super(p);
-  }
-
-  public boolean fullPathMatch(ElementPath path) {
-    if (path.size() != size()) {
-      return false;
+    public ElementSelector() {
+        super();
     }
 
-    int len = size();
-    for (int i = 0; i < len; i++) {
-      if (!equalityCheck(get(i), path.get(i))) {
-        return false;
-      }
-    }
-    // if everything matches, then the two patterns are equal
-    return true;
-  }
-
-  /**
-   * Returns the number of "tail" components that this pattern has in common
-   * with the pattern p passed as parameter. By "tail" components we mean the
-   * components at the end of the pattern.
-   */
-  public int getTailMatchLength(ElementPath p) {
-    if (p == null) {
-      return 0;
+    public ElementSelector(List<String> list) {
+        super(list);
     }
 
-    int lSize = this.partList.size();
-    int rSize = p.partList.size();
-
-    // no match possible for empty sets
-    if ((lSize == 0) || (rSize == 0)) {
-      return 0;
+    /**
+     * Build an elementPath from a string.
+     *
+     * Note that "/x" is considered equivalent to "x" and to "x/"
+     *
+     */
+    public ElementSelector(String p) {
+        super(p);
     }
 
-    int minLen = (lSize <= rSize) ? lSize : rSize;
-    int match = 0;
+    public boolean fullPathMatch(ElementPath path) {
+        if (path.size() != size()) {
+            return false;
+        }
 
-    // loop from the end to the front
-    for (int i = 1; i <= minLen; i++) {
-      String l = this.partList.get(lSize - i);
-      String r = p.partList.get(rSize - i);
-
-      if (equalityCheck(l, r)) {
-        match++;
-      } else {
-        break;
-      }
-    }
-    return match;
-  }
-
-  public boolean isContainedIn(ElementPath p) {
-    if(p == null) {
-      return false;
-    }
-    return p.toStableString().contains(toStableString());
-  }
-
-
-  /**
-   * Returns the number of "prefix" components that this pattern has in common
-   * with the pattern p passed as parameter. By "prefix" components we mean the
-   * components at the beginning of the pattern.
-   */
-  public int getPrefixMatchLength(ElementPath p) {
-    if (p == null) {
-      return 0;
+        int len = size();
+        for (int i = 0; i < len; i++) {
+            if (!equalityCheck(get(i), path.get(i))) {
+                return false;
+            }
+        }
+        // if everything matches, then the two patterns are equal
+        return true;
     }
 
-    int lSize = this.partList.size();
-    int rSize = p.partList.size();
+    /**
+     * Returns the number of "tail" components that this pattern has in common
+     * with the pattern p passed as parameter. By "tail" components we mean the
+     * components at the end of the pattern.
+     */
+    public int getTailMatchLength(ElementPath p) {
+        if (p == null) {
+            return 0;
+        }
 
-    // no match possible for empty sets
-    if ((lSize == 0) || (rSize == 0)) {
-      return 0;
+        int lSize = this.partList.size();
+        int rSize = p.partList.size();
+
+        // no match possible for empty sets
+        if ((lSize == 0) || (rSize == 0)) {
+            return 0;
+        }
+
+        int minLen = (lSize <= rSize) ? lSize : rSize;
+        int match = 0;
+
+        // loop from the end to the front
+        for (int i = 1; i <= minLen; i++) {
+            String l = this.partList.get(lSize - i);
+            String r = p.partList.get(rSize - i);
+
+            if (equalityCheck(l, r)) {
+                match++;
+            } else {
+                break;
+            }
+        }
+        return match;
     }
 
-    int minLen = (lSize <= rSize) ? lSize : rSize;
-    int match = 0;
-
-    for (int i = 0; i < minLen; i++) {
-      String l = this.partList.get(i);
-      String r = p.partList.get(i);
-
-      if (equalityCheck(l, r)) {
-        match++;
-      } else {
-        break;
-      }
+    public boolean isContainedIn(ElementPath p) {
+        if (p == null) {
+            return false;
+        }
+        return p.toStableString().contains(toStableString());
     }
 
-    return match;
-  }
+    /**
+     * Returns the number of "prefix" components that this pattern has in common
+     * with the pattern p passed as parameter. By "prefix" components we mean the
+     * components at the beginning of the pattern.
+     */
+    public int getPrefixMatchLength(ElementPath p) {
+        if (p == null) {
+            return 0;
+        }
 
-  private boolean equalityCheck(String x, String y) {
-    return x.equalsIgnoreCase(y);
-  }
+        int lSize = this.partList.size();
+        int rSize = p.partList.size();
 
-  @Override
-  public boolean equals(Object o) {
-    if ((o == null) || !(o instanceof ElementSelector)) {
-      return false;
+        // no match possible for empty sets
+        if ((lSize == 0) || (rSize == 0)) {
+            return 0;
+        }
+
+        int minLen = (lSize <= rSize) ? lSize : rSize;
+        int match = 0;
+
+        for (int i = 0; i < minLen; i++) {
+            String l = this.partList.get(i);
+            String r = p.partList.get(i);
+
+            if (equalityCheck(l, r)) {
+                match++;
+            } else {
+                break;
+            }
+        }
+
+        return match;
     }
 
-    ElementSelector r = (ElementSelector) o;
-
-    if (r.size() != size()) {
-      return false;
+    private boolean equalityCheck(String x, String y) {
+        return x.equalsIgnoreCase(y);
     }
 
-    int len = size();
+    @Override
+    public boolean equals(Object o) {
+        if ((o == null) || !(o instanceof ElementSelector)) {
+            return false;
+        }
 
-    for (int i = 0; i < len; i++) {
-      if (!equalityCheck(get(i), r.get(i))) {
-        return false;
-      }
+        ElementSelector r = (ElementSelector) o;
+
+        if (r.size() != size()) {
+            return false;
+        }
+
+        int len = size();
+
+        for (int i = 0; i < len; i++) {
+            if (!equalityCheck(get(i), r.get(i))) {
+                return false;
+            }
+        }
+
+        // if everything matches, then the two patterns are equal
+        return true;
     }
 
-    // if everything matches, then the two patterns are equal
-    return true;
-  }
+    @Override
+    public int hashCode() {
+        int hc = 0;
+        int len = size();
 
-  @Override
-  public int hashCode() {
-    int hc = 0;
-    int len = size();
-
-    for (int i = 0; i < len; i++) {
-      // make Pattern comparisons case insensitive
-      // http://jira.qos.ch/browse/LBCORE-76
-      hc ^= get(i).toLowerCase().hashCode();
+        for (int i = 0; i < len; i++) {
+            // make Pattern comparisons case insensitive
+            // http://jira.qos.ch/browse/LBCORE-76
+            hc ^= get(i).toLowerCase().hashCode();
+        }
+        return hc;
     }
-    return hc;
-  }
-
 
 }

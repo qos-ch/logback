@@ -18,8 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ConverterTest.class})
-public class PackageTest  {
-
+@SuiteClasses({ ConverterTest.class })
+public class PackageTest {
 
 }

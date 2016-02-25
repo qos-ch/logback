@@ -17,15 +17,9 @@ package ch.qos.logback.core.net.ssl;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({KeyManagerFactoryFactoryBeanTest.class,
-        KeyStoreFactoryBeanTest.class,
-        SecureRandomFactoryBeanTest.class,
-        SSLConfigurationTest.class,
-        SSLContextFactoryBeanTest.class,
-        SSLParametersConfigurationTest.class,
-        TrustManagerFactoryFactoryBeanTest.class})
+@Suite.SuiteClasses({ KeyManagerFactoryFactoryBeanTest.class, KeyStoreFactoryBeanTest.class, SecureRandomFactoryBeanTest.class, SSLConfigurationTest.class,
+        SSLContextFactoryBeanTest.class, SSLParametersConfigurationTest.class, TrustManagerFactoryFactoryBeanTest.class })
 public class PackageTest {
 
 }

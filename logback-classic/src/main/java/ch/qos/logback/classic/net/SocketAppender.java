@@ -33,28 +33,26 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
 
-  private static final PreSerializationTransformer<ILoggingEvent> pst = 
-      new LoggingEventPreSerializationTransformer();
-  
-  private boolean includeCallerData = false;
+    private static final PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
 
-  public SocketAppender() {
-  }
+    private boolean includeCallerData = false;
 
-
-  @Override
-  protected void postProcessEvent(ILoggingEvent event) {
-    if (includeCallerData) {
-      event.getCallerData();
+    public SocketAppender() {
     }
-  }
 
-  public void setIncludeCallerData(boolean includeCallerData) {
-    this.includeCallerData = includeCallerData;
-  }
-  
-  public PreSerializationTransformer<ILoggingEvent> getPST() {
-    return pst;
-  }
-  
+    @Override
+    protected void postProcessEvent(ILoggingEvent event) {
+        if (includeCallerData) {
+            event.getCallerData();
+        }
+    }
+
+    public void setIncludeCallerData(boolean includeCallerData) {
+        this.includeCallerData = includeCallerData;
+    }
+
+    public PreSerializationTransformer<ILoggingEvent> getPST() {
+        return pst;
+    }
+
 }

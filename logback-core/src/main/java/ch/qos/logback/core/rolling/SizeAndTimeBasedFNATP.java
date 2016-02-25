@@ -33,20 +33,20 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
     static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
-    
+
     @Override
     public void start() {
         // we depend on certain fields having been initialized in super class
         super.start();
 
-        if(!super.isErrorFree())
+        if (!super.isErrorFree())
             return;
-        
+
         if (!validDateAndIntegerTokens()) {
             started = false;
             return;
         }
-        
+
         archiveRemover = createArchiveRemover();
         archiveRemover.setContext(context);
 
@@ -63,16 +63,16 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     private boolean validDateAndIntegerTokens() {
         boolean inError = false;
-        if(tbrp.fileNamePattern.getIntegerTokenConverter() == null) {
+        if (tbrp.fileNamePattern.getIntegerTokenConverter() == null) {
             inError = true;
-            addError(MISSING_INT_TOKEN+tbrp.fileNamePatternStr+"]");
+            addError(MISSING_INT_TOKEN + tbrp.fileNamePatternStr + "]");
             addError(CoreConstants.SEE_MISSING_INTEGER_TOKEN);
         }
-        if(tbrp.fileNamePattern.getPrimaryDateTokenConverter() == null) {
+        if (tbrp.fileNamePattern.getPrimaryDateTokenConverter() == null) {
             inError = true;
-            addError(MISSING_DATE_TOKEN+tbrp.fileNamePatternStr+"]");
+            addError(MISSING_DATE_TOKEN + tbrp.fileNamePatternStr + "]");
         }
-        
+
         return !inError;
     }
 

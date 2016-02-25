@@ -27,14 +27,14 @@ import ch.qos.logback.core.AppenderBase;
 
 public class LoggingAppender extends AppenderBase<ILoggingEvent> {
 
-  Logger logger;
+    Logger logger;
 
-  public void start() {
-    super.start();
-    logger = ((LoggerContext) getContext()).getLogger("Ignore");
-  }
+    public void start() {
+        super.start();
+        logger = ((LoggerContext) getContext()).getLogger("Ignore");
+    }
 
-  protected void append(ILoggingEvent eventObject) {
-    logger.debug("Ignore this");
-  }
+    protected void append(ILoggingEvent eventObject) {
+        logger.debug("Ignore this");
+    }
 }

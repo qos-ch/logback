@@ -31,37 +31,37 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  */
 public class LevelAction extends Action {
 
-  boolean inError = false;
+    boolean inError = false;
 
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    Object o = ec.peekObject();
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        Object o = ec.peekObject();
 
-    if (!(o instanceof Logger)) {
-      inError = true;
-      addError("For element <level>, could not find a logger at the top of execution stack.");
-      return;
+        if (!(o instanceof Logger)) {
+            inError = true;
+            addError("For element <level>, could not find a logger at the top of execution stack.");
+            return;
+        }
+
+        Logger l = (Logger) o;
+
+        String loggerName = l.getName();
+
+        String levelStr = ec.subst(attributes.getValue(ActionConst.VALUE_ATTR));
+        // addInfo("Encapsulating logger name is [" + loggerName
+        // + "], level value is  [" + levelStr + "].");
+
+        if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
+            l.setLevel(null);
+        } else {
+            l.setLevel(Level.toLevel(levelStr, Level.DEBUG));
+        }
+
+        addInfo(loggerName + " level set to " + l.getLevel());
     }
 
-    Logger l = (Logger) o;
-
-    String loggerName = l.getName();
-
-    String levelStr = ec.subst(attributes.getValue(ActionConst.VALUE_ATTR));
-    //addInfo("Encapsulating logger name is [" + loggerName
-    //    + "], level value is  [" + levelStr + "].");
-
-    if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
-      l.setLevel(null);
-    } else {
-      l.setLevel(Level.toLevel(levelStr, Level.DEBUG));
+    public void finish(InterpretationContext ec) {
     }
 
-    addInfo(loggerName + " level set to " + l.getLevel());
-  }
-
-  public void finish(InterpretationContext ec) {
-  }
-
-  public void end(InterpretationContext ec, String e) {
-  }
+    public void end(InterpretationContext ec, String e) {
+    }
 }

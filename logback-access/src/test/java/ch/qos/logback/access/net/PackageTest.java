@@ -20,6 +20,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({URLEvaluatorTest.class})
+@SuiteClasses({ URLEvaluatorTest.class })
 public class PackageTest extends TestCase {
 }

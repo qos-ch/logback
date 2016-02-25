@@ -31,47 +31,47 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class PatternLayoutEncoderTest {
 
-  PatternLayoutEncoder ple = new PatternLayoutEncoder();
-  LoggerContext context = new LoggerContext();
-  ByteArrayOutputStream baos = new ByteArrayOutputStream();
-  Logger logger = context.getLogger(PatternLayoutEncoderTest.class);
-  Charset utf8Charset = Charset.forName("UTF-8");
-  
-  @Before
-  public void setUp() {
-    ple.setPattern("%m");
-    ple.setContext(context);
-  }
+    PatternLayoutEncoder ple = new PatternLayoutEncoder();
+    LoggerContext context = new LoggerContext();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Logger logger = context.getLogger(PatternLayoutEncoderTest.class);
+    Charset utf8Charset = Charset.forName("UTF-8");
 
-  ILoggingEvent makeLoggingEvent(String message) {
-    return new LoggingEvent("", logger, Level.DEBUG, message, null, null);
-  }
+    @Before
+    public void setUp() {
+        ple.setPattern("%m");
+        ple.setContext(context);
+    }
 
-  @Test
-  public void smoke() throws IOException {
-    init(baos);
-    String msg = "hello";
-    ILoggingEvent event = makeLoggingEvent(msg);
-    ple.doEncode(event);
-    ple.close();
-    assertEquals(msg, baos.toString());
-  }
+    ILoggingEvent makeLoggingEvent(String message) {
+        return new LoggingEvent("", logger, Level.DEBUG, message, null, null);
+    }
 
-  void init(ByteArrayOutputStream baos) throws IOException {
-    ple.start();
-    ((PatternLayout) ple.getLayout()).setOutputPatternAsHeader(false);
-    ple.init(baos);
-  }
+    @Test
+    public void smoke() throws IOException {
+        init(baos);
+        String msg = "hello";
+        ILoggingEvent event = makeLoggingEvent(msg);
+        ple.doEncode(event);
+        ple.close();
+        assertEquals(msg, baos.toString());
+    }
 
-  @Test
-  public void charset() throws IOException {
-    ple.setCharset(utf8Charset);
-    init(baos);
-    String msg = "\u03b1";
-    ILoggingEvent event = makeLoggingEvent(msg);
-    ple.doEncode(event);
-    ple.close();
-    assertEquals(msg, new String(baos.toByteArray(), utf8Charset.name()));
-  }
+    void init(ByteArrayOutputStream baos) throws IOException {
+        ple.start();
+        ((PatternLayout) ple.getLayout()).setOutputPatternAsHeader(false);
+        ple.init(baos);
+    }
+
+    @Test
+    public void charset() throws IOException {
+        ple.setCharset(utf8Charset);
+        init(baos);
+        String msg = "\u03b1";
+        ILoggingEvent event = makeLoggingEvent(msg);
+        ple.doEncode(event);
+        ple.close();
+        assertEquals(msg, new String(baos.toByteArray(), utf8Charset.name()));
+    }
 
 }

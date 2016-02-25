@@ -18,17 +18,17 @@ import org.apache.log4j.spi.LoggingEvent;
 
 public class TrivialLog4jAppender extends AppenderSkeleton {
 
-  protected void append(LoggingEvent loggingevent) {
-    String s = this.layout.format(loggingevent);
-    System.out.println(s);
-  }
+    protected void append(LoggingEvent loggingevent) {
+        String s = this.layout.format(loggingevent);
+        System.out.println(s);
+    }
 
-  public void close() {
-    // nothing to do
-  }
+    public void close() {
+        // nothing to do
+    }
 
-  public boolean requiresLayout() {
-    return true;
-  }
+    public boolean requiresLayout() {
+        return true;
+    }
 
 }

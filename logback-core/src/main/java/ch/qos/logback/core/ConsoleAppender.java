@@ -37,80 +37,78 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
-  protected ConsoleTarget target = ConsoleTarget.SystemOut;
-  protected boolean withJansi = false;
+    protected ConsoleTarget target = ConsoleTarget.SystemOut;
+    protected boolean withJansi = false;
 
-  private final static String WindowsAnsiOutputStream_CLASS_NAME = "org.fusesource.jansi.WindowsAnsiOutputStream";
+    private final static String WindowsAnsiOutputStream_CLASS_NAME = "org.fusesource.jansi.WindowsAnsiOutputStream";
 
-  /**
-   * Sets the value of the <b>Target</b> option. Recognized values are
-   * "System.out" and "System.err". Any other value will be ignored.
-   */
-  public void setTarget(String value) {
-    ConsoleTarget t = ConsoleTarget.findByName(value.trim());
-    if (t == null) {
-      targetWarn(value);
-    } else {
-      target = t;
+    /**
+     * Sets the value of the <b>Target</b> option. Recognized values are
+     * "System.out" and "System.err". Any other value will be ignored.
+     */
+    public void setTarget(String value) {
+        ConsoleTarget t = ConsoleTarget.findByName(value.trim());
+        if (t == null) {
+            targetWarn(value);
+        } else {
+            target = t;
+        }
     }
-  }
 
-  /**
-   * Returns the current value of the <b>target</b> property. The default value
-   * of the option is "System.out".
-   * <p/>
-   * See also {@link #setTarget}.
-   */
-  public String getTarget() {
-    return target.getName();
-  }
-
-  private void targetWarn(String val) {
-    Status status = new WarnStatus("[" + val + "] should be one of "
-            + Arrays.toString(ConsoleTarget.values()), this);
-    status.add(new WarnStatus(
-            "Using previously set target, System.out by default.", this));
-    addStatus(status);
-  }
-
-  @Override
-  public void start() {
-    OutputStream targetStream = target.getStream();
-    // enable jansi only on Windows and only if withJansi set to true
-    if (EnvUtil.isWindows() && withJansi) {
-      targetStream = getTargetStreamForWindows(targetStream);
+    /**
+     * Returns the current value of the <b>target</b> property. The default value
+     * of the option is "System.out".
+     * <p/>
+     * See also {@link #setTarget}.
+     */
+    public String getTarget() {
+        return target.getName();
     }
-    setOutputStream(targetStream);
-    super.start();
-  }
 
-  private OutputStream getTargetStreamForWindows(OutputStream targetStream) {
-    try {
-      addInfo("Enabling JANSI WindowsAnsiOutputStream for the console.");
-      Object windowsAnsiOutputStream = OptionHelper.instantiateByClassNameAndParameter(WindowsAnsiOutputStream_CLASS_NAME, Object.class, context,
-              OutputStream.class, targetStream);
-      return (OutputStream) windowsAnsiOutputStream;
-    } catch (Exception e) {
-      addWarn("Failed to create WindowsAnsiOutputStream. Falling back on the default stream.", e);
+    private void targetWarn(String val) {
+        Status status = new WarnStatus("[" + val + "] should be one of " + Arrays.toString(ConsoleTarget.values()), this);
+        status.add(new WarnStatus("Using previously set target, System.out by default.", this));
+        addStatus(status);
     }
-    return targetStream;
-  }
 
-  /**
-   * @return
-   */
-  public boolean isWithJansi() {
-    return withJansi;
-  }
+    @Override
+    public void start() {
+        OutputStream targetStream = target.getStream();
+        // enable jansi only on Windows and only if withJansi set to true
+        if (EnvUtil.isWindows() && withJansi) {
+            targetStream = getTargetStreamForWindows(targetStream);
+        }
+        setOutputStream(targetStream);
+        super.start();
+    }
 
-  /**
-   * If true, this appender will output to a stream which
-   *
-   * @param withJansi
-   * @since 1.0.5
-   */
-  public void setWithJansi(boolean withJansi) {
-    this.withJansi = withJansi;
-  }
+    private OutputStream getTargetStreamForWindows(OutputStream targetStream) {
+        try {
+            addInfo("Enabling JANSI WindowsAnsiOutputStream for the console.");
+            Object windowsAnsiOutputStream = OptionHelper.instantiateByClassNameAndParameter(WindowsAnsiOutputStream_CLASS_NAME, Object.class, context,
+                            OutputStream.class, targetStream);
+            return (OutputStream) windowsAnsiOutputStream;
+        } catch (Exception e) {
+            addWarn("Failed to create WindowsAnsiOutputStream. Falling back on the default stream.", e);
+        }
+        return targetStream;
+    }
+
+    /**
+     * @return
+     */
+    public boolean isWithJansi() {
+        return withJansi;
+    }
+
+    /**
+     * If true, this appender will output to a stream which
+     *
+     * @param withJansi
+     * @since 1.0.5
+     */
+    public void setWithJansi(boolean withJansi) {
+        this.withJansi = withJansi;
+    }
 
 }

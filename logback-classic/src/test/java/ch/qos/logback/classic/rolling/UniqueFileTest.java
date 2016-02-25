@@ -37,23 +37,23 @@ import ch.qos.logback.core.util.CoreTestConstants;
  */
 public class UniqueFileTest {
     static String UNIK_DIFF = "UNIK_DIFF";
-    
+
     LoggerContext lc = new LoggerContext();
     StatusChecker sc = new StatusChecker(lc);
     Logger logger = lc.getLogger(this.getClass());
-    int diff = RandomUtil.getPositiveInt()%1000;
+    int diff = RandomUtil.getPositiveInt() % 1000;
     String diffAsStr = Integer.toString(diff);
-    
-    
+
     @Before
     public void setUp() {
         System.setProperty(UNIK_DIFF, diffAsStr);
     }
+
     @After
     public void tearDown() {
         System.clearProperty(UNIK_DIFF);
     }
-    
+
     void loadConfig(String confifFile) throws JoranException {
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(lc);

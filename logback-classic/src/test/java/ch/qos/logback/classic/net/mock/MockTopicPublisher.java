@@ -24,117 +24,105 @@ import javax.jms.TopicPublisher;
 
 public class MockTopicPublisher implements TopicPublisher {
 
-  List<Message> messageList = new ArrayList<Message>();
-  Topic topic;
-  
-  public MockTopicPublisher(Topic topic) {
-    this.topic = topic;
-  }
-  
-  public void publish(Message message) throws JMSException {
-    messageList.add(message);
-  }
-  
-  public List<Message> getMessageList() {
-    return messageList;
-  }
-  
-  public Topic getTopic() throws JMSException {
-    return topic;
-  }
+    List<Message> messageList = new ArrayList<Message>();
+    Topic topic;
 
-  public void publish(Message arg0, int arg1, int arg2, long arg3) throws JMSException {
-     
-  }
+    public MockTopicPublisher(Topic topic) {
+        this.topic = topic;
+    }
 
-  public void publish(Topic arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
-    
-    
-  }
+    public void publish(Message message) throws JMSException {
+        messageList.add(message);
+    }
 
-  public void publish(Topic arg0, Message arg1) throws JMSException {
-    
-    
-  }
+    public List<Message> getMessageList() {
+        return messageList;
+    }
 
-  public void close() throws JMSException {
-    
-    
-  }
+    public Topic getTopic() throws JMSException {
+        return topic;
+    }
 
-  public int getDeliveryMode() throws JMSException {
-    
-    return 0;
-  }
+    public void publish(Message arg0, int arg1, int arg2, long arg3) throws JMSException {
 
-  public Destination getDestination() throws JMSException {
-    
-    return null;
-  }
+    }
 
-  public boolean getDisableMessageID() throws JMSException {
-    
-    return false;
-  }
+    public void publish(Topic arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
 
-  public boolean getDisableMessageTimestamp() throws JMSException {
-    
-    return false;
-  }
+    }
 
-  public int getPriority() throws JMSException {
-    
-    return 0;
-  }
+    public void publish(Topic arg0, Message arg1) throws JMSException {
 
-  public long getTimeToLive() throws JMSException {
-    
-    return 0;
-  }
+    }
 
-  public void send(Destination arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
-    
-    
-  }
+    public void close() throws JMSException {
 
-  public void send(Destination arg0, Message arg1) throws JMSException {
-    
-    
-  }
+    }
 
-  public void send(Message arg0, int arg1, int arg2, long arg3) throws JMSException {
-    
-    
-  }
+    public int getDeliveryMode() throws JMSException {
 
-  public void send(Message arg0) throws JMSException {
-    
-    
-  }
+        return 0;
+    }
 
-  public void setDeliveryMode(int arg0) throws JMSException {
-    
-    
-  }
+    public Destination getDestination() throws JMSException {
 
-  public void setDisableMessageID(boolean arg0) throws JMSException {
-    
-    
-  }
+        return null;
+    }
 
-  public void setDisableMessageTimestamp(boolean arg0) throws JMSException {
-    
-    
-  }
+    public boolean getDisableMessageID() throws JMSException {
 
-  public void setPriority(int arg0) throws JMSException {
-    
-    
-  }
+        return false;
+    }
 
-  public void setTimeToLive(long arg0) throws JMSException {
-    
-    
-  }
+    public boolean getDisableMessageTimestamp() throws JMSException {
+
+        return false;
+    }
+
+    public int getPriority() throws JMSException {
+
+        return 0;
+    }
+
+    public long getTimeToLive() throws JMSException {
+
+        return 0;
+    }
+
+    public void send(Destination arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
+
+    }
+
+    public void send(Destination arg0, Message arg1) throws JMSException {
+
+    }
+
+    public void send(Message arg0, int arg1, int arg2, long arg3) throws JMSException {
+
+    }
+
+    public void send(Message arg0) throws JMSException {
+
+    }
+
+    public void setDeliveryMode(int arg0) throws JMSException {
+
+    }
+
+    public void setDisableMessageID(boolean arg0) throws JMSException {
+
+    }
+
+    public void setDisableMessageTimestamp(boolean arg0) throws JMSException {
+
+    }
+
+    public void setPriority(int arg0) throws JMSException {
+
+    }
+
+    public void setTimeToLive(long arg0) throws JMSException {
+
+    }
 
 }

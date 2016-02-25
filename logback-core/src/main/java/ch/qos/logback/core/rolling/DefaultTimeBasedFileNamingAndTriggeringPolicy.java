@@ -26,33 +26,32 @@ import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
  */
 public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
-  @Override
-  public void start() {
-    super.start();
-    if(!super.isErrorFree())
-        return;
-    archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
-    archiveRemover.setContext(context);
-    started = true;
-  }
-
-  public boolean isTriggeringEvent(File activeFile, final E event) {
-    long time = getCurrentTime();
-    if (time >= nextCheck) {
-      Date dateOfElapsedPeriod = dateInCurrentPeriod;
-      addInfo("Elapsed period: "+dateOfElapsedPeriod);
-      elapsedPeriodsFileName = tbrp.fileNamePatternWCS
-          .convert(dateOfElapsedPeriod);
-      setDateInCurrentPeriod(time);
-      computeNextCheck();
-      return true;
-    } else {
-      return false;
+    @Override
+    public void start() {
+        super.start();
+        if (!super.isErrorFree())
+            return;
+        archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+        archiveRemover.setContext(context);
+        started = true;
     }
-  }
 
-  @Override
-  public String toString() {
-    return "c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy";
-  }
+    public boolean isTriggeringEvent(File activeFile, final E event) {
+        long time = getCurrentTime();
+        if (time >= nextCheck) {
+            Date dateOfElapsedPeriod = dateInCurrentPeriod;
+            addInfo("Elapsed period: " + dateOfElapsedPeriod);
+            elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convert(dateOfElapsedPeriod);
+            setDateInCurrentPeriod(time);
+            computeNextCheck();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy";
+    }
 }

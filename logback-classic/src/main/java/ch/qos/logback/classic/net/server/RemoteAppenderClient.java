@@ -17,7 +17,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.net.server.Client;
 import ch.qos.logback.core.net.server.ServerRunner;
 
-
 /**
  * A client of a {@link ServerRunner} that receives events from a remote
  * appender.
@@ -26,16 +25,16 @@ import ch.qos.logback.core.net.server.ServerRunner;
  */
 interface RemoteAppenderClient extends Client {
 
-  /**
-   * Sets the client's logger context.
-   * <p>
-   * This provides the local logging context to the client's service thread,
-   * and is used as the destination for logging events received from the
-   * client.
-   * <p>
-   * This method <em>must</em> be invoked before the {@link #run()} method.
-   * @param lc the logger context to set
-   */
-  void setLoggerContext(LoggerContext lc);
-  
+    /**
+     * Sets the client's logger context.
+     * <p>
+     * This provides the local logging context to the client's service thread,
+     * and is used as the destination for logging events received from the
+     * client.
+     * <p>
+     * This method <em>must</em> be invoked before the {@link #run()} method.
+     * @param lc the logger context to set
+     */
+    void setLoggerContext(LoggerContext lc);
+
 }

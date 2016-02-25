@@ -53,442 +53,421 @@ import ch.qos.logback.core.util.PropertySetterException;
  */
 public class PropertySetter extends ContextAwareBase {
 
-  protected Object obj;
-  protected Class<?> objClass;
-  protected PropertyDescriptor[] propertyDescriptors;
-  protected MethodDescriptor[] methodDescriptors;
+    protected Object obj;
+    protected Class<?> objClass;
+    protected PropertyDescriptor[] propertyDescriptors;
+    protected MethodDescriptor[] methodDescriptors;
 
-  /**
-   * Create a new PropertySetter for the specified Object. This is done in
-   * preparation for invoking {@link #setProperty} one or more times.
-   * 
-   * @param obj
-   *          the object for which to set properties
-   */
-  public PropertySetter(Object obj) {
-    this.obj = obj;
-    this.objClass = obj.getClass();
-  }
-
-  /**
-   * Uses JavaBeans {@link Introspector} to computer setters of object to be
-   * configured.
-   */
-  protected void introspect() {
-    try {
-      BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
-      propertyDescriptors = bi.getPropertyDescriptors();
-      methodDescriptors = bi.getMethodDescriptors();
-    } catch (IntrospectionException ex) {
-      addError("Failed to introspect " + obj + ": " + ex.getMessage());
-      propertyDescriptors = new PropertyDescriptor[0];
-      methodDescriptors = new MethodDescriptor[0];
-    }
-  }
-
-  /**
-   * Set a property on this PropertySetter's Object. If successful, this method
-   * will invoke a setter method on the underlying Object. The setter is the one
-   * for the specified property name and the value is determined partly from the
-   * setter argument type and partly from the value specified in the call to
-   * this method.
-   * 
-   * <p>
-   * If the setter expects a String no conversion is necessary. If it expects an
-   * int, then an attempt is made to convert 'value' to an int using new
-   * Integer(value). If the setter expects a boolean, the conversion is by new
-   * Boolean(value).
-   * 
-   * @param name
-   *          name of the property
-   * @param value
-   *          String value of the property
-   */
-  public void setProperty(String name, String value) {
-    if (value == null) {
-      return;
+    /**
+     * Create a new PropertySetter for the specified Object. This is done in
+     * preparation for invoking {@link #setProperty} one or more times.
+     * 
+     * @param obj
+     *          the object for which to set properties
+     */
+    public PropertySetter(Object obj) {
+        this.obj = obj;
+        this.objClass = obj.getClass();
     }
 
-    name = Introspector.decapitalize(name);
-
-    PropertyDescriptor prop = getPropertyDescriptor(name);
-
-    if (prop == null) {
-      addWarn("No such property [" + name + "] in " + objClass.getName() + ".");
-    } else {
-      try {
-        setProperty(prop, name, value);
-      } catch (PropertySetterException ex) {
-        addWarn("Failed to set property [" + name + "] to value \"" + value
-            + "\". ", ex);
-      }
-    }
-  }
-
-  /**
-   * Set the named property given a {@link PropertyDescriptor}.
-   * 
-   * @param prop
-   *          A PropertyDescriptor describing the characteristics of the
-   *          property to set.
-   * @param name
-   *          The named of the property to set.
-   * @param value
-   *          The value of the property.
-   */
-  public void setProperty(PropertyDescriptor prop, String name, String value)
-      throws PropertySetterException {
-    Method setter = prop.getWriteMethod();
-
-    if (setter == null) {
-      throw new PropertySetterException("No setter for property [" + name
-          + "].");
+    /**
+     * Uses JavaBeans {@link Introspector} to computer setters of object to be
+     * configured.
+     */
+    protected void introspect() {
+        try {
+            BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
+            propertyDescriptors = bi.getPropertyDescriptors();
+            methodDescriptors = bi.getMethodDescriptors();
+        } catch (IntrospectionException ex) {
+            addError("Failed to introspect " + obj + ": " + ex.getMessage());
+            propertyDescriptors = new PropertyDescriptor[0];
+            methodDescriptors = new MethodDescriptor[0];
+        }
     }
 
-    Class<?>[] paramTypes = setter.getParameterTypes();
+    /**
+     * Set a property on this PropertySetter's Object. If successful, this method
+     * will invoke a setter method on the underlying Object. The setter is the one
+     * for the specified property name and the value is determined partly from the
+     * setter argument type and partly from the value specified in the call to
+     * this method.
+     * 
+     * <p>
+     * If the setter expects a String no conversion is necessary. If it expects an
+     * int, then an attempt is made to convert 'value' to an int using new
+     * Integer(value). If the setter expects a boolean, the conversion is by new
+     * Boolean(value).
+     * 
+     * @param name
+     *          name of the property
+     * @param value
+     *          String value of the property
+     */
+    public void setProperty(String name, String value) {
+        if (value == null) {
+            return;
+        }
 
-    if (paramTypes.length != 1) {
-      throw new PropertySetterException("#params for setter != 1");
+        name = Introspector.decapitalize(name);
+
+        PropertyDescriptor prop = getPropertyDescriptor(name);
+
+        if (prop == null) {
+            addWarn("No such property [" + name + "] in " + objClass.getName() + ".");
+        } else {
+            try {
+                setProperty(prop, name, value);
+            } catch (PropertySetterException ex) {
+                addWarn("Failed to set property [" + name + "] to value \"" + value + "\". ", ex);
+            }
+        }
     }
 
-    Object arg;
+    /**
+     * Set the named property given a {@link PropertyDescriptor}.
+     * 
+     * @param prop
+     *          A PropertyDescriptor describing the characteristics of the
+     *          property to set.
+     * @param name
+     *          The named of the property to set.
+     * @param value
+     *          The value of the property.
+     */
+    public void setProperty(PropertyDescriptor prop, String name, String value) throws PropertySetterException {
+        Method setter = prop.getWriteMethod();
 
-    try {
-      arg = StringToObjectConverter.convertArg(this, value, paramTypes[0]);
-    } catch (Throwable t) {
-      throw new PropertySetterException("Conversion to type [" + paramTypes[0]
-          + "] failed. ", t);
+        if (setter == null) {
+            throw new PropertySetterException("No setter for property [" + name + "].");
+        }
+
+        Class<?>[] paramTypes = setter.getParameterTypes();
+
+        if (paramTypes.length != 1) {
+            throw new PropertySetterException("#params for setter != 1");
+        }
+
+        Object arg;
+
+        try {
+            arg = StringToObjectConverter.convertArg(this, value, paramTypes[0]);
+        } catch (Throwable t) {
+            throw new PropertySetterException("Conversion to type [" + paramTypes[0] + "] failed. ", t);
+        }
+
+        if (arg == null) {
+            throw new PropertySetterException("Conversion to type [" + paramTypes[0] + "] failed.");
+        }
+        try {
+            setter.invoke(obj, arg);
+        } catch (Exception ex) {
+            throw new PropertySetterException(ex);
+        }
     }
 
-    if (arg == null) {
-      throw new PropertySetterException("Conversion to type [" + paramTypes[0]
-          + "] failed.");
-    }
-    try {
-      setter.invoke(obj, arg);
-    } catch (Exception ex) {
-      throw new PropertySetterException(ex);
-    }
-  }
+    public AggregationType computeAggregationType(String name) {
+        String cName = capitalizeFirstLetter(name);
 
-  public AggregationType computeAggregationType(String name) {
-    String cName = capitalizeFirstLetter(name);
+        Method addMethod = findAdderMethod(cName);
 
-    Method addMethod = findAdderMethod(cName);
+        // if the
+        if (addMethod != null) {
+            AggregationType type = computeRawAggregationType(addMethod);
+            switch (type) {
+            case NOT_FOUND:
+                return AggregationType.NOT_FOUND;
+            case AS_BASIC_PROPERTY:
+                return AggregationType.AS_BASIC_PROPERTY_COLLECTION;
+            case AS_COMPLEX_PROPERTY:
+                return AggregationType.AS_COMPLEX_PROPERTY_COLLECTION;
+            }
+        }
 
-    // if the
-    if (addMethod != null) {
-      AggregationType type = computeRawAggregationType(addMethod);
-      switch (type) {
-      case NOT_FOUND:
-        return AggregationType.NOT_FOUND;
-      case AS_BASIC_PROPERTY:
-        return AggregationType.AS_BASIC_PROPERTY_COLLECTION;
-      case AS_COMPLEX_PROPERTY:
-        return AggregationType.AS_COMPLEX_PROPERTY_COLLECTION;
-      }
+        Method setterMethod = findSetterMethod(name);
+        if (setterMethod != null) {
+            return computeRawAggregationType(setterMethod);
+        } else {
+            // we have failed
+            return AggregationType.NOT_FOUND;
+        }
     }
 
-    Method setterMethod = findSetterMethod(name);
-    if (setterMethod != null) {
-      return computeRawAggregationType(setterMethod);
-    } else {
-      // we have failed
-      return AggregationType.NOT_FOUND;
+    private Method findAdderMethod(String name) {
+        name = capitalizeFirstLetter(name);
+        return getMethod("add" + name);
     }
-  }
 
-  private Method findAdderMethod(String name) {
-    name = capitalizeFirstLetter(name);
-    return getMethod("add" + name);
-  }
+    private Method findSetterMethod(String name) {
+        String dName = Introspector.decapitalize(name);
+        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
+        if (propertyDescriptor != null) {
+            return propertyDescriptor.getWriteMethod();
+        } else {
+            return null;
+        }
+    }
 
-  private Method findSetterMethod(String name) {
-    String dName = Introspector.decapitalize(name);
-    PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
-    if (propertyDescriptor != null) {
-      return propertyDescriptor.getWriteMethod();
-    } else {
-      return null;
+    private Class<?> getParameterClassForMethod(Method method) {
+        if (method == null) {
+            return null;
+        }
+        Class<?>[] classArray = method.getParameterTypes();
+        if (classArray.length != 1) {
+            return null;
+        } else {
+            return classArray[0];
+        }
     }
-  }
 
-  private Class<?> getParameterClassForMethod(Method method) {
-    if (method == null) {
-      return null;
+    private AggregationType computeRawAggregationType(Method method) {
+        Class<?> parameterClass = getParameterClassForMethod(method);
+        if (parameterClass == null) {
+            return AggregationType.NOT_FOUND;
+        }
+        if (StringToObjectConverter.canBeBuiltFromSimpleString(parameterClass)) {
+            return AggregationType.AS_BASIC_PROPERTY;
+        } else {
+            return AggregationType.AS_COMPLEX_PROPERTY;
+        }
     }
-    Class<?>[] classArray = method.getParameterTypes();
-    if (classArray.length != 1) {
-      return null;
-    } else {
-      return classArray[0];
-    }
-  }
 
-  private AggregationType computeRawAggregationType(Method method) {
-    Class<?> parameterClass = getParameterClassForMethod(method);
-    if (parameterClass == null) {
-      return AggregationType.NOT_FOUND;
+    /**
+     * Can the given clazz instantiable with certainty?
+     * 
+     * @param clazz
+     *          The class to test for instantiability
+     * @return true if clazz can be instantiated, and false otherwise.
+     */
+    private boolean isUnequivocallyInstantiable(Class<?> clazz) {
+        if (clazz.isInterface()) {
+            return false;
+        }
+        // checking for constructors would be more elegant, but in
+        // classes without any declared constructors, Class.getConstructor()
+        // returns null.
+        Object o;
+        try {
+            o = clazz.newInstance();
+            if (o != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (InstantiationException e) {
+            return false;
+        } catch (IllegalAccessException e) {
+            return false;
+        }
     }
-    if (StringToObjectConverter.canBeBuiltFromSimpleString(parameterClass)) {
-      return AggregationType.AS_BASIC_PROPERTY;
-    } else {
-      return AggregationType.AS_COMPLEX_PROPERTY;
-    }
-  }
 
-  /**
-   * Can the given clazz instantiable with certainty?
-   * 
-   * @param clazz
-   *          The class to test for instantiability
-   * @return true if clazz can be instantiated, and false otherwise.
-   */
-  private boolean isUnequivocallyInstantiable(Class<?> clazz) {
-    if (clazz.isInterface()) {
-      return false;
+    public Class<?> getObjClass() {
+        return objClass;
     }
-    // checking for constructors would be more elegant, but in
-    // classes without any declared constructors, Class.getConstructor()
-    // returns null.
-    Object o;
-    try {
-      o = clazz.newInstance();
-      if (o != null) {
+
+    public void addComplexProperty(String name, Object complexProperty) {
+        Method adderMethod = findAdderMethod(name);
+        // first let us use the addXXX method
+        if (adderMethod != null) {
+            Class<?>[] paramTypes = adderMethod.getParameterTypes();
+            if (!isSanityCheckSuccessful(name, adderMethod, paramTypes, complexProperty)) {
+                return;
+            }
+            invokeMethodWithSingleParameterOnThisObject(adderMethod, complexProperty);
+        } else {
+            addError("Could not find method [" + "add" + name + "] in class [" + objClass.getName() + "].");
+        }
+    }
+
+    void invokeMethodWithSingleParameterOnThisObject(Method method, Object parameter) {
+        Class<?> ccc = parameter.getClass();
+        try {
+            method.invoke(this.obj, parameter);
+        } catch (Exception e) {
+            addError("Could not invoke method " + method.getName() + " in class " + obj.getClass().getName() + " with parameter of type " + ccc.getName(), e);
+        }
+    }
+
+    public void addBasicProperty(String name, String strValue) {
+
+        if (strValue == null) {
+            return;
+        }
+
+        name = capitalizeFirstLetter(name);
+        Method adderMethod = findAdderMethod(name);
+
+        if (adderMethod == null) {
+            addError("No adder for property [" + name + "].");
+            return;
+        }
+
+        Class<?>[] paramTypes = adderMethod.getParameterTypes();
+        isSanityCheckSuccessful(name, adderMethod, paramTypes, strValue);
+
+        Object arg;
+        try {
+            arg = StringToObjectConverter.convertArg(this, strValue, paramTypes[0]);
+        } catch (Throwable t) {
+            addError("Conversion to type [" + paramTypes[0] + "] failed. ", t);
+            return;
+        }
+        if (arg != null) {
+            invokeMethodWithSingleParameterOnThisObject(adderMethod, strValue);
+        }
+    }
+
+    public void setComplexProperty(String name, Object complexProperty) {
+        String dName = Introspector.decapitalize(name);
+        PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
+
+        if (propertyDescriptor == null) {
+            addWarn("Could not find PropertyDescriptor for [" + name + "] in " + objClass.getName());
+
+            return;
+        }
+
+        Method setter = propertyDescriptor.getWriteMethod();
+
+        if (setter == null) {
+            addWarn("Not setter method for property [" + name + "] in " + obj.getClass().getName());
+
+            return;
+        }
+
+        Class<?>[] paramTypes = setter.getParameterTypes();
+
+        if (!isSanityCheckSuccessful(name, setter, paramTypes, complexProperty)) {
+            return;
+        }
+        try {
+            invokeMethodWithSingleParameterOnThisObject(setter, complexProperty);
+
+        } catch (Exception e) {
+            addError("Could not set component " + obj + " for parent component " + obj, e);
+        }
+    }
+
+    private boolean isSanityCheckSuccessful(String name, Method method, Class<?>[] params, Object complexProperty) {
+        Class<?> ccc = complexProperty.getClass();
+        if (params.length != 1) {
+            addError("Wrong number of parameters in setter method for property [" + name + "] in " + obj.getClass().getName());
+
+            return false;
+        }
+
+        if (!params[0].isAssignableFrom(complexProperty.getClass())) {
+            addError("A \"" + ccc.getName() + "\" object is not assignable to a \"" + params[0].getName() + "\" variable.");
+            addError("The class \"" + params[0].getName() + "\" was loaded by ");
+            addError("[" + params[0].getClassLoader() + "] whereas object of type ");
+            addError("\"" + ccc.getName() + "\" was loaded by [" + ccc.getClassLoader() + "].");
+            return false;
+        }
+
         return true;
-      } else {
-        return false;
-      }
-    } catch (InstantiationException e) {
-      return false;
-    } catch (IllegalAccessException e) {
-      return false;
-    }
-  }
-
-  public Class<?> getObjClass() {
-    return objClass;
-  }
-
-  public void addComplexProperty(String name, Object complexProperty) {
-    Method adderMethod = findAdderMethod(name);
-    // first let us use the addXXX method
-    if (adderMethod != null) {
-      Class<?>[] paramTypes = adderMethod.getParameterTypes();
-      if (!isSanityCheckSuccessful(name, adderMethod, paramTypes,
-          complexProperty)) {
-        return;
-      }
-      invokeMethodWithSingleParameterOnThisObject(adderMethod, complexProperty);
-    } else {
-      addError("Could not find method [" + "add" + name + "] in class ["
-          + objClass.getName() + "].");
-    }
-  }
-
-  void invokeMethodWithSingleParameterOnThisObject(Method method,
-      Object parameter) {
-    Class<?> ccc = parameter.getClass();
-    try {
-      method.invoke(this.obj, parameter);
-    } catch (Exception e) {
-      addError("Could not invoke method " + method.getName() + " in class "
-          + obj.getClass().getName() + " with parameter of type "
-          + ccc.getName(), e);
-    }
-  }
-
-  public void addBasicProperty(String name, String strValue) {
-
-    if (strValue == null) {
-      return;
     }
 
-    name = capitalizeFirstLetter(name);
-    Method adderMethod = findAdderMethod(name);
-
-    if (adderMethod == null) {
-      addError("No adder for property [" + name + "].");
-      return;
+    private String capitalizeFirstLetter(String name) {
+        return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
-    Class<?>[] paramTypes = adderMethod.getParameterTypes();
-    isSanityCheckSuccessful(name, adderMethod, paramTypes, strValue);
+    protected Method getMethod(String methodName) {
+        if (methodDescriptors == null) {
+            introspect();
+        }
 
-    Object arg;
-    try {
-      arg = StringToObjectConverter.convertArg(this, strValue, paramTypes[0]);
-    } catch (Throwable t) {
-      addError("Conversion to type [" + paramTypes[0] + "] failed. ", t);
-      return;
-    }
-    if (arg != null) {
-      invokeMethodWithSingleParameterOnThisObject(adderMethod, strValue);
-    }
-  }
+        for (int i = 0; i < methodDescriptors.length; i++) {
+            if (methodName.equals(methodDescriptors[i].getName())) {
+                return methodDescriptors[i].getMethod();
+            }
+        }
 
-  public void setComplexProperty(String name, Object complexProperty) {
-    String dName = Introspector.decapitalize(name);
-    PropertyDescriptor propertyDescriptor = getPropertyDescriptor(dName);
-
-    if (propertyDescriptor == null) {
-      addWarn("Could not find PropertyDescriptor for [" + name + "] in "
-          + objClass.getName());
-
-      return;
+        return null;
     }
 
-    Method setter = propertyDescriptor.getWriteMethod();
+    protected PropertyDescriptor getPropertyDescriptor(String name) {
+        if (propertyDescriptors == null) {
+            introspect();
+        }
 
-    if (setter == null) {
-      addWarn("Not setter method for property [" + name + "] in "
-          + obj.getClass().getName());
+        for (int i = 0; i < propertyDescriptors.length; i++) {
+            // System.out.println("Comparing " + name + " against "
+            // + propertyDescriptors[i].getName());
+            if (name.equals(propertyDescriptors[i].getName())) {
+                // System.out.println("matched");
+                return propertyDescriptors[i];
+            }
+        }
 
-      return;
+        return null;
     }
 
-    Class<?>[] paramTypes = setter.getParameterTypes();
-
-    if (!isSanityCheckSuccessful(name, setter, paramTypes, complexProperty)) {
-      return;
-    }
-    try {
-      invokeMethodWithSingleParameterOnThisObject(setter, complexProperty);
-
-    } catch (Exception e) {
-      addError("Could not set component " + obj + " for parent component "
-          + obj, e);
-    }
-  }
-
-  private boolean isSanityCheckSuccessful(String name, Method method,
-      Class<?>[] params, Object complexProperty) {
-    Class<?> ccc = complexProperty.getClass();
-    if (params.length != 1) {
-      addError("Wrong number of parameters in setter method for property ["
-          + name + "] in " + obj.getClass().getName());
-
-      return false;
+    public Object getObj() {
+        return obj;
     }
 
-    if (!params[0].isAssignableFrom(complexProperty.getClass())) {
-      addError("A \"" + ccc.getName() + "\" object is not assignable to a \""
-          + params[0].getName() + "\" variable.");
-      addError("The class \"" + params[0].getName() + "\" was loaded by ");
-      addError("[" + params[0].getClassLoader() + "] whereas object of type ");
-      addError("\"" + ccc.getName() + "\" was loaded by ["
-          + ccc.getClassLoader() + "].");
-      return false;
+    Method getRelevantMethod(String name, AggregationType aggregationType) {
+        String cName = capitalizeFirstLetter(name);
+        Method relevantMethod;
+        if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY_COLLECTION) {
+            relevantMethod = findAdderMethod(cName);
+        } else if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY) {
+            relevantMethod = findSetterMethod(cName);
+        } else {
+            throw new IllegalStateException(aggregationType + " not allowed here");
+        }
+        return relevantMethod;
     }
 
-    return true;
-  }
+    <T extends Annotation> T getAnnotation(String name, Class<T> annonationClass, Method relevantMethod) {
 
-  private String capitalizeFirstLetter(String name) {
-    return name.substring(0, 1).toUpperCase() + name.substring(1);
-  }
-
-  protected Method getMethod(String methodName) {
-    if (methodDescriptors == null) {
-      introspect();
+        if (relevantMethod != null) {
+            return relevantMethod.getAnnotation(annonationClass);
+        } else {
+            return null;
+        }
     }
 
-    for (int i = 0; i < methodDescriptors.length; i++) {
-      if (methodName.equals(methodDescriptors[i].getName())) {
-        return methodDescriptors[i].getMethod();
-      }
+    Class<?> getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
+        DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class, relevantMethod);
+        if (defaultClassAnnon != null) {
+            return defaultClassAnnon.value();
+        }
+        return null;
     }
 
-    return null;
-  }
+    Class<?> getByConcreteType(String name, Method relevantMethod) {
 
-  protected PropertyDescriptor getPropertyDescriptor(String name) {
-    if (propertyDescriptors == null) {
-      introspect();
+        Class<?> paramType = getParameterClassForMethod(relevantMethod);
+        if (paramType == null) {
+            return null;
+        }
+
+        boolean isUnequivocallyInstantiable = isUnequivocallyInstantiable(paramType);
+        if (isUnequivocallyInstantiable) {
+            return paramType;
+        } else {
+            return null;
+        }
+
     }
 
-    for (int i = 0; i < propertyDescriptors.length; i++) {
-      // System.out.println("Comparing " + name + " against "
-      // + propertyDescriptors[i].getName());
-      if (name.equals(propertyDescriptors[i].getName())) {
-        // System.out.println("matched");
-        return propertyDescriptors[i];
-      }
+    public Class<?> getClassNameViaImplicitRules(String name, AggregationType aggregationType, DefaultNestedComponentRegistry registry) {
+
+        Class<?> registryResult = registry.findDefaultComponentType(obj.getClass(), name);
+        if (registryResult != null) {
+            return registryResult;
+        }
+        // find the relevant method for the given property name and aggregationType
+        Method relevantMethod = getRelevantMethod(name, aggregationType);
+        if (relevantMethod == null) {
+            return null;
+        }
+        Class<?> byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
+        if (byAnnotation != null) {
+            return byAnnotation;
+        }
+        return getByConcreteType(name, relevantMethod);
     }
-
-    return null;
-  }
-
-  public Object getObj() {
-    return obj;
-  }
-
-  Method getRelevantMethod(String name, AggregationType aggregationType) {
-    String cName = capitalizeFirstLetter(name);
-    Method relevantMethod;
-    if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY_COLLECTION) {
-      relevantMethod = findAdderMethod(cName);
-    } else if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY) {
-      relevantMethod = findSetterMethod(cName);
-    } else {
-      throw new IllegalStateException(aggregationType + " not allowed here");
-    }
-    return relevantMethod;
-  }
-
-  <T extends Annotation> T getAnnotation(String name, Class<T> annonationClass,
-      Method relevantMethod) {
-
-    if (relevantMethod != null) {
-      return relevantMethod.getAnnotation(annonationClass);
-    } else {
-      return null;
-    }
-  }
-
-  Class<?> getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
-    DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class,
-        relevantMethod);
-    if (defaultClassAnnon != null) {
-      return defaultClassAnnon.value();
-    }
-    return null;
-  }
-
-  Class<?> getByConcreteType(String name, Method relevantMethod) {
-
-    Class<?> paramType = getParameterClassForMethod(relevantMethod);
-    if (paramType == null) {
-      return null;
-    }
-
-    boolean isUnequivocallyInstantiable = isUnequivocallyInstantiable(paramType);
-    if (isUnequivocallyInstantiable) {
-      return paramType;
-    } else {
-      return null;
-    }
-
-  }
-
-  public Class<?> getClassNameViaImplicitRules(String name,
-      AggregationType aggregationType, DefaultNestedComponentRegistry registry) {
-
-    Class<?> registryResult = registry.findDefaultComponentType(obj.getClass(),
-        name);
-    if (registryResult != null) {
-      return registryResult;
-    }
-    // find the relevant method for the given property name and aggregationType
-    Method relevantMethod = getRelevantMethod(name, aggregationType);
-    if (relevantMethod == null) {
-      return null;
-    }
-    Class<?> byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
-    if (byAnnotation != null) {
-      return byAnnotation;
-    }
-    return getByConcreteType(name, relevantMethod);
-  }
 
 }

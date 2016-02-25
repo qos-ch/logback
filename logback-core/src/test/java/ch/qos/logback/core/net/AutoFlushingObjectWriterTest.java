@@ -30,84 +30,84 @@ import static org.mockito.Mockito.verify;
  */
 public class AutoFlushingObjectWriterTest {
 
-  private InstrumentedObjectOutputStream objectOutputStream;
+    private InstrumentedObjectOutputStream objectOutputStream;
 
-  @Before
-  public void beforeEachTest() throws IOException {
-    objectOutputStream = spy(new InstrumentedObjectOutputStream());
-  }
-
-  @Test
-  public void writesToUnderlyingObjectOutputStream() throws IOException {
-
-    // given
-    ObjectWriter objectWriter = new AutoFlushingObjectWriter(objectOutputStream, 2);
-    String object = "foo";
-
-    // when
-    objectWriter.write(object);
-
-    // then
-    verify(objectOutputStream).writeObjectOverride(object);
-  }
-
-  @Test
-  public void flushesAfterWrite() throws IOException {
-
-    // given
-    ObjectWriter objectWriter = new AutoFlushingObjectWriter(objectOutputStream, 2);
-    String object = "foo";
-
-    // when
-    objectWriter.write(object);
-
-    // then
-    InOrder inOrder = inOrder(objectOutputStream);
-    inOrder.verify(objectOutputStream).writeObjectOverride(object);
-    inOrder.verify(objectOutputStream).flush();
-  }
-
-  @Test
-  public void resetsObjectOutputStreamAccordingToGivenResetFrequency() throws IOException {
-
-    // given
-    ObjectWriter objectWriter = new AutoFlushingObjectWriter(objectOutputStream, 2);
-    String object = "foo";
-
-    // when
-    objectWriter.write(object);
-    objectWriter.write(object);
-    objectWriter.write(object);
-    objectWriter.write(object);
-
-    // then
-    InOrder inOrder = inOrder(objectOutputStream);
-    inOrder.verify(objectOutputStream).writeObjectOverride(object);
-    inOrder.verify(objectOutputStream).writeObjectOverride(object);
-    inOrder.verify(objectOutputStream).reset();
-    inOrder.verify(objectOutputStream).writeObjectOverride(object);
-    inOrder.verify(objectOutputStream).writeObjectOverride(object);
-    inOrder.verify(objectOutputStream).reset();
-  }
-
-  private static class InstrumentedObjectOutputStream extends ObjectOutputStream {
-
-    protected InstrumentedObjectOutputStream() throws IOException, SecurityException {
+    @Before
+    public void beforeEachTest() throws IOException {
+        objectOutputStream = spy(new InstrumentedObjectOutputStream());
     }
 
-    @Override
-    protected void writeObjectOverride(final Object obj) throws IOException {
-      // nop
+    @Test
+    public void writesToUnderlyingObjectOutputStream() throws IOException {
+
+        // given
+        ObjectWriter objectWriter = new AutoFlushingObjectWriter(objectOutputStream, 2);
+        String object = "foo";
+
+        // when
+        objectWriter.write(object);
+
+        // then
+        verify(objectOutputStream).writeObjectOverride(object);
     }
 
-    @Override
-    public void flush() throws IOException {
-      // nop
+    @Test
+    public void flushesAfterWrite() throws IOException {
+
+        // given
+        ObjectWriter objectWriter = new AutoFlushingObjectWriter(objectOutputStream, 2);
+        String object = "foo";
+
+        // when
+        objectWriter.write(object);
+
+        // then
+        InOrder inOrder = inOrder(objectOutputStream);
+        inOrder.verify(objectOutputStream).writeObjectOverride(object);
+        inOrder.verify(objectOutputStream).flush();
     }
 
-    @Override
-    public void reset() throws IOException {
-      // nop
+    @Test
+    public void resetsObjectOutputStreamAccordingToGivenResetFrequency() throws IOException {
+
+        // given
+        ObjectWriter objectWriter = new AutoFlushingObjectWriter(objectOutputStream, 2);
+        String object = "foo";
+
+        // when
+        objectWriter.write(object);
+        objectWriter.write(object);
+        objectWriter.write(object);
+        objectWriter.write(object);
+
+        // then
+        InOrder inOrder = inOrder(objectOutputStream);
+        inOrder.verify(objectOutputStream).writeObjectOverride(object);
+        inOrder.verify(objectOutputStream).writeObjectOverride(object);
+        inOrder.verify(objectOutputStream).reset();
+        inOrder.verify(objectOutputStream).writeObjectOverride(object);
+        inOrder.verify(objectOutputStream).writeObjectOverride(object);
+        inOrder.verify(objectOutputStream).reset();
     }
-  }
+
+    private static class InstrumentedObjectOutputStream extends ObjectOutputStream {
+
+        protected InstrumentedObjectOutputStream() throws IOException, SecurityException {
+        }
+
+        @Override
+        protected void writeObjectOverride(final Object obj) throws IOException {
+            // nop
+        }
+
+        @Override
+        public void flush() throws IOException {
+            // nop
+        }
+
+        @Override
+        public void reset() throws IOException {
+            // nop
+        }
+    }
 }

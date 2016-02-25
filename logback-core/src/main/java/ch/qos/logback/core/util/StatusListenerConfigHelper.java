@@ -72,7 +72,7 @@ public class StatusListenerConfigHelper {
     static public void addOnConsoleListenerInstance(Context context, OnConsoleStatusListener onConsoleStatusListener) {
         onConsoleStatusListener.setContext(context);
         boolean effectivelyAdded = context.getStatusManager().add(onConsoleStatusListener);
-        if(effectivelyAdded) {
+        if (effectivelyAdded) {
             onConsoleStatusListener.start();
         }
     }

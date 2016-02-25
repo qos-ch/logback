@@ -63,7 +63,6 @@ import ch.qos.logback.core.util.ExecutorServiceUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
-import ch.qos.logback.core.util.StatusPrinter;
 
 //import org.apache.catalina.Lifecycle;
 

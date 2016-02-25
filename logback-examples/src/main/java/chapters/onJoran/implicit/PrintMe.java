@@ -37,25 +37,24 @@ import chapters.onJoran.SimpleConfigurator;
  */
 public class PrintMe {
 
-  public static void main(String[] args) throws Exception {
-    Context context = new ContextBase();
+    public static void main(String[] args) throws Exception {
+        Context context = new ContextBase();
 
-    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
-    // we start with the rule for the top-most (root) element
-    ruleMap.put(new ElementSelector("*/foo"), new NOPAction());
+        // we start with the rule for the top-most (root) element
+        ruleMap.put(new ElementSelector("*/foo"), new NOPAction());
 
-    // Add an implicit action. 
-    List<ImplicitAction> iaList = new ArrayList<ImplicitAction>();
-    iaList.add(new PrintMeImplicitAction());
-    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap,
-        iaList); 
+        // Add an implicit action.
+        List<ImplicitAction> iaList = new ArrayList<ImplicitAction>();
+        iaList.add(new PrintMeImplicitAction());
+        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap, iaList);
 
-    // link the configurator with its context
-    simpleConfigurator.setContext(context);
+        // link the configurator with its context
+        simpleConfigurator.setContext(context);
 
-    simpleConfigurator.doConfigure(args[0]);
-    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-    
-  }
+        simpleConfigurator.doConfigure(args[0]);
+        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+
+    }
 }

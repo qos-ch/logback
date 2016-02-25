@@ -28,90 +28,85 @@ import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 public class ConfigurationAction extends Action {
-  static final String INTERNAL_DEBUG_ATTR = "debug";
-  static final String PACKAGING_DATA_ATTR = "packagingData";
-  static final String SCAN_ATTR = "scan";
-  static final String SCAN_PERIOD_ATTR = "scanPeriod";
-  static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
+    static final String INTERNAL_DEBUG_ATTR = "debug";
+    static final String PACKAGING_DATA_ATTR = "packagingData";
+    static final String SCAN_ATTR = "scan";
+    static final String SCAN_PERIOD_ATTR = "scanPeriod";
+    static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
 
-  long threshold = 0;
+    long threshold = 0;
 
-  public void begin(InterpretationContext ic, String name, Attributes attributes) {
-    threshold = System.currentTimeMillis();
+    public void begin(InterpretationContext ic, String name, Attributes attributes) {
+        threshold = System.currentTimeMillis();
 
-    // See LOGBACK-527 (the system property is looked up first. Thus, it overrides
-    // the equivalent property in the config file. This reversal of scope priority is justified
-    // by the use case: the admin trying to chase rogue config file
-    String debugAttrib = getSystemProperty(DEBUG_SYSTEM_PROPERTY_KEY);
-    if (debugAttrib == null) {
-      debugAttrib = ic.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
-    }
-
-    if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
-            || debugAttrib.equalsIgnoreCase("null")) {
-      addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
-    } else {
-      StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
-    }
-
-    processScanAttrib(ic, attributes);
-
-    ContextUtil contextUtil = new ContextUtil(context);
-    contextUtil.addHostNameAsProperty();
-
-    LoggerContext lc = (LoggerContext) context;
-    boolean packagingData = OptionHelper.toBoolean(
-                                    ic.subst(attributes.getValue(PACKAGING_DATA_ATTR)),
-                                    LoggerContext.DEFAULT_PACKAGING_DATA);
-    lc.setPackagingDataEnabled(packagingData);
-
-    if (EnvUtil.isGroovyAvailable()) {
-      contextUtil.addGroovyPackages(lc.getFrameworkPackages());
-    }
-
-    // the context is turbo filter attachable, so it is pushed on top of the
-    // stack
-    ic.pushObject(getContext());
-  }
-
-  String getSystemProperty(String name) {
-    /*
-     * LOGBACK-743: accessing a system property in the presence of a
-     * SecurityManager (e.g. applet sandbox) can result in a SecurityException.
-     */
-    try {
-      return System.getProperty(name);
-    } catch (SecurityException ex) {
-      return null;
-    }
-  }
-
-  void processScanAttrib(InterpretationContext ic, Attributes attributes) {
-    String scanAttrib = ic.subst(attributes.getValue(SCAN_ATTR));
-    if (!OptionHelper.isEmpty(scanAttrib)
-            && !"false".equalsIgnoreCase(scanAttrib)) {
-      ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
-      rocf.setContext(context);
-      String scanPeriodAttrib = ic.subst(attributes.getValue(SCAN_PERIOD_ATTR));
-      if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
-        try {
-          Duration duration = Duration.valueOf(scanPeriodAttrib);
-          rocf.setRefreshPeriod(duration.getMilliseconds());
-          addInfo("Setting ReconfigureOnChangeFilter scanning period to "
-                  + duration);
-        } catch (NumberFormatException nfe) {
-          addError("Error while converting [" + scanAttrib + "] to long", nfe);
+        // See LOGBACK-527 (the system property is looked up first. Thus, it overrides
+        // the equivalent property in the config file. This reversal of scope priority is justified
+        // by the use case: the admin trying to chase rogue config file
+        String debugAttrib = getSystemProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+        if (debugAttrib == null) {
+            debugAttrib = ic.subst(attributes.getValue(INTERNAL_DEBUG_ATTR));
         }
-      }
-      rocf.start();
-      LoggerContext lc = (LoggerContext) context;
-      addInfo("Adding ReconfigureOnChangeFilter as a turbo filter");
-      lc.addTurboFilter(rocf);
-    }
-  }
 
-  public void end(InterpretationContext ec, String name) {
-    addInfo("End of configuration.");
-    ec.popObject();
-  }
+        if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false") || debugAttrib.equalsIgnoreCase("null")) {
+            addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
+        } else {
+            StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
+        }
+
+        processScanAttrib(ic, attributes);
+
+        ContextUtil contextUtil = new ContextUtil(context);
+        contextUtil.addHostNameAsProperty();
+
+        LoggerContext lc = (LoggerContext) context;
+        boolean packagingData = OptionHelper.toBoolean(ic.subst(attributes.getValue(PACKAGING_DATA_ATTR)), LoggerContext.DEFAULT_PACKAGING_DATA);
+        lc.setPackagingDataEnabled(packagingData);
+
+        if (EnvUtil.isGroovyAvailable()) {
+            contextUtil.addGroovyPackages(lc.getFrameworkPackages());
+        }
+
+        // the context is turbo filter attachable, so it is pushed on top of the
+        // stack
+        ic.pushObject(getContext());
+    }
+
+    String getSystemProperty(String name) {
+        /*
+         * LOGBACK-743: accessing a system property in the presence of a SecurityManager (e.g. applet sandbox) can
+         * result in a SecurityException.
+         */
+        try {
+            return System.getProperty(name);
+        } catch (SecurityException ex) {
+            return null;
+        }
+    }
+
+    void processScanAttrib(InterpretationContext ic, Attributes attributes) {
+        String scanAttrib = ic.subst(attributes.getValue(SCAN_ATTR));
+        if (!OptionHelper.isEmpty(scanAttrib) && !"false".equalsIgnoreCase(scanAttrib)) {
+            ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
+            rocf.setContext(context);
+            String scanPeriodAttrib = ic.subst(attributes.getValue(SCAN_PERIOD_ATTR));
+            if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
+                try {
+                    Duration duration = Duration.valueOf(scanPeriodAttrib);
+                    rocf.setRefreshPeriod(duration.getMilliseconds());
+                    addInfo("Setting ReconfigureOnChangeFilter scanning period to " + duration);
+                } catch (NumberFormatException nfe) {
+                    addError("Error while converting [" + scanAttrib + "] to long", nfe);
+                }
+            }
+            rocf.start();
+            LoggerContext lc = (LoggerContext) context;
+            addInfo("Adding ReconfigureOnChangeFilter as a turbo filter");
+            lc.addTurboFilter(rocf);
+        }
+    }
+
+    public void end(InterpretationContext ec, String name) {
+        addInfo("End of configuration.");
+        ec.popObject();
+    }
 }

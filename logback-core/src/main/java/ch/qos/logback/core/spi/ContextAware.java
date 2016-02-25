@@ -16,28 +16,27 @@ package ch.qos.logback.core.spi;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.status.Status;
 
-
 /**
  * An object which has a context and add methods for updating internal status messages.
  */
 public interface ContextAware {
 
-  void setContext(Context context);
+    void setContext(Context context);
 
-  Context getContext();
+    Context getContext();
 
-  void addStatus(Status status);
+    void addStatus(Status status);
 
-  void addInfo(String msg);
+    void addInfo(String msg);
 
-  void addInfo(String msg, Throwable ex);
+    void addInfo(String msg, Throwable ex);
 
-  void addWarn(String msg);
+    void addWarn(String msg);
 
-  void addWarn(String msg, Throwable ex);
+    void addWarn(String msg, Throwable ex);
 
-  void addError(String msg);
+    void addError(String msg);
 
-  void addError(String msg, Throwable ex);
+    void addError(String msg, Throwable ex);
 
 }

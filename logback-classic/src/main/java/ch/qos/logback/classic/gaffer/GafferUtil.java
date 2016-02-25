@@ -28,53 +28,52 @@ import java.net.URL;
  */
 public class GafferUtil {
 
-  private static String ERROR_MSG = "Failed to instantiate " + ClassicConstants.GAFFER_CONFIGURATOR_FQCN;
+    private static String ERROR_MSG = "Failed to instantiate " + ClassicConstants.GAFFER_CONFIGURATOR_FQCN;
 
-  public static void runGafferConfiguratorOn(LoggerContext loggerContext, Object origin, File configFile) {
-    GafferConfigurator gafferConfigurator = GafferUtil.newGafferConfiguratorInstance(loggerContext, origin);
-    if (gafferConfigurator != null) {
-      gafferConfigurator.run(configFile);
+    public static void runGafferConfiguratorOn(LoggerContext loggerContext, Object origin, File configFile) {
+        GafferConfigurator gafferConfigurator = GafferUtil.newGafferConfiguratorInstance(loggerContext, origin);
+        if (gafferConfigurator != null) {
+            gafferConfigurator.run(configFile);
+        }
     }
-  }
 
-  public static void runGafferConfiguratorOn(LoggerContext loggerContext, Object origin, URL configFile) {
-    GafferConfigurator gafferConfigurator = GafferUtil.newGafferConfiguratorInstance(loggerContext, origin);
-    if (gafferConfigurator != null) {
-      gafferConfigurator.run(configFile);
+    public static void runGafferConfiguratorOn(LoggerContext loggerContext, Object origin, URL configFile) {
+        GafferConfigurator gafferConfigurator = GafferUtil.newGafferConfiguratorInstance(loggerContext, origin);
+        if (gafferConfigurator != null) {
+            gafferConfigurator.run(configFile);
+        }
     }
-  }
 
-  private static GafferConfigurator newGafferConfiguratorInstance(LoggerContext loggerContext, Object origin) {
+    private static GafferConfigurator newGafferConfiguratorInstance(LoggerContext loggerContext, Object origin) {
 
-    try {
-      Class gcClass = Class.forName(ClassicConstants.GAFFER_CONFIGURATOR_FQCN);
-      Constructor c = gcClass.getConstructor(LoggerContext.class);
-      return (GafferConfigurator) c.newInstance(loggerContext);
-    } catch (ClassNotFoundException e) {
-      addError(loggerContext, origin, ERROR_MSG, e);
-    } catch (NoSuchMethodException e) {
-      addError(loggerContext, origin, ERROR_MSG, e);
-    } catch (InvocationTargetException e) {
-      addError(loggerContext, origin, ERROR_MSG, e);
-    } catch (InstantiationException e) {
-      addError(loggerContext, origin, ERROR_MSG, e);
-    } catch (IllegalAccessException e) {
-      addError(loggerContext, origin, ERROR_MSG, e);
+        try {
+            Class gcClass = Class.forName(ClassicConstants.GAFFER_CONFIGURATOR_FQCN);
+            Constructor c = gcClass.getConstructor(LoggerContext.class);
+            return (GafferConfigurator) c.newInstance(loggerContext);
+        } catch (ClassNotFoundException e) {
+            addError(loggerContext, origin, ERROR_MSG, e);
+        } catch (NoSuchMethodException e) {
+            addError(loggerContext, origin, ERROR_MSG, e);
+        } catch (InvocationTargetException e) {
+            addError(loggerContext, origin, ERROR_MSG, e);
+        } catch (InstantiationException e) {
+            addError(loggerContext, origin, ERROR_MSG, e);
+        } catch (IllegalAccessException e) {
+            addError(loggerContext, origin, ERROR_MSG, e);
+        }
+        return null;
     }
-    return null;
-  }
 
-  private static void addError(LoggerContext context, Object origin, String msg) {
-    addError(context, origin, msg, null);
-  }
-
-  private static void addError(LoggerContext context, Object origin, String msg, Throwable t) {
-    StatusManager sm = context.getStatusManager();
-    if (sm == null) {
-      return;
+    private static void addError(LoggerContext context, Object origin, String msg) {
+        addError(context, origin, msg, null);
     }
-    sm.add(new ErrorStatus(msg, origin, t));
-  }
 
+    private static void addError(LoggerContext context, Object origin, String msg, Throwable t) {
+        StatusManager sm = context.getStatusManager();
+        if (sm == null) {
+            return;
+        }
+        sm.add(new ErrorStatus(msg, origin, t));
+    }
 
 }

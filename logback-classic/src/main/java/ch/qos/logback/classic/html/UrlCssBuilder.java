@@ -15,7 +15,6 @@ package ch.qos.logback.classic.html;
 
 import ch.qos.logback.core.html.CssBuilder;
 
-
 /**
  * This class helps the HTMLLayout build the CSS link.
  * It either provides the HTMLLayout with a default css file,
@@ -25,19 +24,19 @@ import ch.qos.logback.core.html.CssBuilder;
  */
 public class UrlCssBuilder implements CssBuilder {
 
-  String url = "http://logback.qos.ch/css/classic.css";
-  
-  public String getUrl() {
-    return url;
-  }
-  
-  public void setUrl(String url) {
-    this.url = url;
-  }
-  
-  public void addCss(StringBuilder sbuf) {
-    sbuf.append("<link REL=StyleSheet HREF=\"");
-    sbuf.append(url);
-    sbuf.append("\" TITLE=\"Basic\" />");
-  }
+    String url = "http://logback.qos.ch/css/classic.css";
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void addCss(StringBuilder sbuf) {
+        sbuf.append("<link REL=StyleSheet HREF=\"");
+        sbuf.append(url);
+        sbuf.append("\" TITLE=\"Basic\" />");
+    }
 }

@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { ReconfigureOnChangeTest.class, MarkerFilterTest.class,
-    DuplicateMessageFilterTest.class })
+@SuiteClasses({ ReconfigureOnChangeTest.class, MarkerFilterTest.class, DuplicateMessageFilterTest.class })
 public class PackageTest {
 }

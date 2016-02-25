@@ -16,12 +16,8 @@ package ch.qos.logback.core.net.server;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ConcurrentServerRunnerTest.class,
-        RemoteReceiverStreamClientTest.class,
-        ServerSocketAppenderBaseFunctionalTest.class,
-        AbstractServerSocketAppenderTest.class,
-        SSLServerSocketAppenderBaseTest.class})
+@Suite.SuiteClasses({ ConcurrentServerRunnerTest.class, RemoteReceiverStreamClientTest.class, ServerSocketAppenderBaseFunctionalTest.class,
+        AbstractServerSocketAppenderTest.class, SSLServerSocketAppenderBaseTest.class })
 public class PackageTest {
 }

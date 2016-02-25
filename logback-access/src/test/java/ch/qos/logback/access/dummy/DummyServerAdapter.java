@@ -19,28 +19,28 @@ import java.util.Map;
 
 public class DummyServerAdapter implements ServerAdapter {
 
-  DummyRequest request;
-  DummyResponse response;
+    DummyRequest request;
+    DummyResponse response;
 
-  public DummyServerAdapter(DummyRequest dummyRequest, DummyResponse dummyResponse) {
-    this.request = dummyRequest;
-    this.response = dummyResponse;
-  }
+    public DummyServerAdapter(DummyRequest dummyRequest, DummyResponse dummyResponse) {
+        this.request = dummyRequest;
+        this.response = dummyResponse;
+    }
 
-  public long getContentLength() {
-    return response.getContentCount();
-  }
+    public long getContentLength() {
+        return response.getContentCount();
+    }
 
-  public int getStatusCode() {
-    return response.getStatus();
-  }
+    public int getStatusCode() {
+        return response.getStatus();
+    }
 
-  public long getRequestTimestamp() {
-    return -1;
-  }
+    public long getRequestTimestamp() {
+        return -1;
+    }
 
-  public Map<String, String> buildResponseHeaderMap() {
-    return response.headerMap;
-  }
+    public Map<String, String> buildResponseHeaderMap() {
+        return response.headerMap;
+    }
 
 }

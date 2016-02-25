@@ -103,21 +103,21 @@ public class RollingCalendar extends GregorianCalendar {
 
         case TOP_OF_DAY:
             // EE or uu
-            if(collision(7 * MILLIS_IN_ONE_DAY))
+            if (collision(7 * MILLIS_IN_ONE_DAY))
                 return false;
             // isolated dd
-            if(collision(31 * MILLIS_IN_ONE_DAY))
+            if (collision(31 * MILLIS_IN_ONE_DAY))
                 return false;
             // DD
-            if(collision(365 * MILLIS_IN_ONE_DAY))
+            if (collision(365 * MILLIS_IN_ONE_DAY))
                 return false;
             return true;
         case TOP_OF_WEEK:
             // WW
-            if(collision(31 * MILLIS_IN_ONE_DAY))
+            if (collision(31 * MILLIS_IN_ONE_DAY))
                 return false;
             // isolated ww
-            if(collision(365 * MILLIS_IN_ONE_DAY))
+            if (collision(365 * MILLIS_IN_ONE_DAY))
                 return false;
             return true;
         default:
@@ -216,7 +216,7 @@ public class RollingCalendar extends GregorianCalendar {
     static private Date innerGetEndOfThisPeriod(Calendar cal, PeriodicityType periodicityType, Date now) {
         return innerGetEndOfNextNthPeriod(cal, periodicityType, now, 1);
     }
-    
+
     static private Date innerGetEndOfNextNthPeriod(Calendar cal, PeriodicityType periodicityType, Date now, int numPeriods) {
         cal.setTime(now);
         switch (periodicityType) {

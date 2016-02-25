@@ -21,20 +21,20 @@ import ch.qos.logback.core.pattern.PostCompileProcessor;
 
 public class EnsureLineSeparation implements PostCompileProcessor<IAccessEvent> {
 
-  /**
-   * Add a line separator converter so that access event appears on a separate
-   * line.
-   */
+    /**
+     * Add a line separator converter so that access event appears on a separate
+     * line.
+     */
     @Override
-  public void process(Context context, Converter<IAccessEvent> head) {
-    if(head == null)
-      throw new IllegalArgumentException("Empty converter chain");
+    public void process(Context context, Converter<IAccessEvent> head) {
+        if (head == null)
+            throw new IllegalArgumentException("Empty converter chain");
 
-    // if head != null, then tail != null as well
-    Converter<IAccessEvent> tail = ConverterUtil.findTail(head);
-    Converter<IAccessEvent> newLineConverter = new LineSeparatorConverter();
-    if (!(tail instanceof LineSeparatorConverter)) {
-        tail.setNext(newLineConverter);
+        // if head != null, then tail != null as well
+        Converter<IAccessEvent> tail = ConverterUtil.findTail(head);
+        Converter<IAccessEvent> newLineConverter = new LineSeparatorConverter();
+        if (!(tail instanceof LineSeparatorConverter)) {
+            tail.setNext(newLineConverter);
+        }
     }
-  }
 }

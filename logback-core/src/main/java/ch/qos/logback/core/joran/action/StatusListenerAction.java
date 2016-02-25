@@ -22,64 +22,59 @@ import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.util.OptionHelper;
 
-
 public class StatusListenerAction extends Action {
 
+    boolean inError = false;
+    Boolean effectivelyAdded = null;
+    StatusListener statusListener = null;
 
-  boolean inError = false;
-  Boolean effectivelyAdded = null;
-  StatusListener statusListener = null;
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+        inError = false;
+        effectivelyAdded = null;
+        String className = attributes.getValue(CLASS_ATTRIBUTE);
+        if (OptionHelper.isEmpty(className)) {
+            addError("Missing class name for statusListener. Near [" + name + "] line " + getLineNumber(ec));
+            inError = true;
+            return;
+        }
 
-  public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
-    inError = false;
-    effectivelyAdded = null;
-    String className = attributes.getValue(CLASS_ATTRIBUTE);
-    if (OptionHelper.isEmpty(className)) {
-      addError("Missing class name for statusListener. Near ["
-              + name + "] line " + getLineNumber(ec));
-      inError = true;
-      return;
+        try {
+            statusListener = (StatusListener) OptionHelper.instantiateByClassName(className, StatusListener.class, context);
+            effectivelyAdded = ec.getContext().getStatusManager().add(statusListener);
+            if (statusListener instanceof ContextAware) {
+                ((ContextAware) statusListener).setContext(context);
+            }
+            addInfo("Added status listener of type [" + className + "]");
+            ec.pushObject(statusListener);
+        } catch (Exception e) {
+            inError = true;
+            addError("Could not create an StatusListener of type [" + className + "].", e);
+            throw new ActionException(e);
+        }
+
     }
 
-    try {
-      statusListener = (StatusListener) OptionHelper.instantiateByClassName(
-              className, StatusListener.class, context);
-      effectivelyAdded = ec.getContext().getStatusManager().add(statusListener);
-      if (statusListener instanceof ContextAware) {
-        ((ContextAware) statusListener).setContext(context);
-      }
-      addInfo("Added status listener of type [" + className + "]");
-      ec.pushObject(statusListener);
-    } catch (Exception e) {
-      inError = true;
-      addError(
-              "Could not create an StatusListener of type [" + className + "].", e);
-      throw new ActionException(e);
+    public void finish(InterpretationContext ec) {
     }
 
-  }
-
-  public void finish(InterpretationContext ec) {
-  }
-
-  public void end(InterpretationContext ec, String e) {
-    if (inError) {
-      return;
+    public void end(InterpretationContext ec, String e) {
+        if (inError) {
+            return;
+        }
+        if (isEffectivelyAdded() && statusListener instanceof LifeCycle) {
+            ((LifeCycle) statusListener).start();
+        }
+        Object o = ec.peekObject();
+        if (o != statusListener) {
+            addWarn("The object at the of the stack is not the statusListener pushed earlier.");
+        } else {
+            ec.popObject();
+        }
     }
-    if (isEffectivelyAdded() && statusListener instanceof LifeCycle) {
-      ((LifeCycle) statusListener).start();
-    }
-    Object o = ec.peekObject();
-    if (o != statusListener) {
-      addWarn("The object at the of the stack is not the statusListener pushed earlier.");
-    } else {
-      ec.popObject();
-    }
-  }
 
-  private boolean isEffectivelyAdded() {
-    if(effectivelyAdded == null)
-        return false;
-    return effectivelyAdded;
-  }
+    private boolean isEffectivelyAdded() {
+        if (effectivelyAdded == null)
+            return false;
+        return effectivelyAdded;
+    }
 }

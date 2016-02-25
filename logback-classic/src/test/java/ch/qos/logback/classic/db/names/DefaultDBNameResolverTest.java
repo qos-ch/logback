@@ -24,47 +24,47 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class DefaultDBNameResolverTest {
 
-  private DefaultDBNameResolver resolver;
+    private DefaultDBNameResolver resolver;
 
-  @Before
-  public void setUp() throws Exception {
-    resolver = new DefaultDBNameResolver();
-  }
+    @Before
+    public void setUp() throws Exception {
+        resolver = new DefaultDBNameResolver();
+    }
 
-  @Test
-  public void testGetLoggingEventColumnName() throws Exception {
-    //when
-    String columnName = resolver.getColumnName(ColumnName.LOGGER_NAME);
+    @Test
+    public void testGetLoggingEventColumnName() throws Exception {
+        // when
+        String columnName = resolver.getColumnName(ColumnName.LOGGER_NAME);
 
-    //then
-    assertThat(columnName).isEqualTo("logger_name");
-  }
+        // then
+        assertThat(columnName).isEqualTo("logger_name");
+    }
 
-  @Test
-  public void testGetLoggingEventPropertyColumnName() throws Exception {
-    //when
-    String columnName = resolver.getColumnName(ColumnName.MAPPED_KEY);
+    @Test
+    public void testGetLoggingEventPropertyColumnName() throws Exception {
+        // when
+        String columnName = resolver.getColumnName(ColumnName.MAPPED_KEY);
 
-    //then
-    assertThat(columnName).isEqualTo("mapped_key");
-  }
+        // then
+        assertThat(columnName).isEqualTo("mapped_key");
+    }
 
-  @Test
-  public void testGetLoggingEventExceptionColumnName() throws Exception {
-    //when
-    String columnName = resolver.getColumnName(ColumnName.TRACE_LINE);
+    @Test
+    public void testGetLoggingEventExceptionColumnName() throws Exception {
+        // when
+        String columnName = resolver.getColumnName(ColumnName.TRACE_LINE);
 
-    //then
-    assertThat(columnName).isEqualTo("trace_line");
-  }
+        // then
+        assertThat(columnName).isEqualTo("trace_line");
+    }
 
-  @Test
-  public void testGetTableName() throws Exception {
-    //when
-    String tableName = resolver.getTableName(TableName.LOGGING_EVENT_EXCEPTION);
+    @Test
+    public void testGetTableName() throws Exception {
+        // when
+        String tableName = resolver.getTableName(TableName.LOGGING_EVENT_EXCEPTION);
 
-    //then
-    assertThat(tableName).isEqualTo("logging_event_exception");
-  }
+        // then
+        assertThat(tableName).isEqualTo("logging_event_exception");
+    }
 
 }

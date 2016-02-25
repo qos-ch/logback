@@ -21,7 +21,7 @@ public class RecoveryCoordinatorTest {
 
     long now = System.currentTimeMillis();
     RecoveryCoordinator rc = new RecoveryCoordinator(now);
-    
+
     @Test
     public void recoveryNotNeededAfterInit() {
         RecoveryCoordinator rc = new RecoveryCoordinator();

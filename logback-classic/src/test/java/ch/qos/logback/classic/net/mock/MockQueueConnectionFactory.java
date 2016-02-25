@@ -20,23 +20,23 @@ import javax.jms.QueueConnectionFactory;
 
 public class MockQueueConnectionFactory implements QueueConnectionFactory {
 
-  MockQueueConnection cnx = new MockQueueConnection();
-  
-  public QueueConnection createQueueConnection() throws JMSException {
-    return cnx;
-  }
+    MockQueueConnection cnx = new MockQueueConnection();
 
-  public QueueConnection createQueueConnection(String user, String pass) throws JMSException {
-    
-    return cnx;
-  }
+    public QueueConnection createQueueConnection() throws JMSException {
+        return cnx;
+    }
 
-  public Connection createConnection() throws JMSException {
-    return null;
-  }
+    public QueueConnection createQueueConnection(String user, String pass) throws JMSException {
 
-  public Connection createConnection(String arg0, String arg1) throws JMSException {
-    return null;
-  }
+        return cnx;
+    }
+
+    public Connection createConnection() throws JMSException {
+        return null;
+    }
+
+    public Connection createConnection(String arg0, String arg1) throws JMSException {
+        return null;
+    }
 
 }

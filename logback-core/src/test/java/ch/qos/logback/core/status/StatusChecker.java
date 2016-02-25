@@ -22,29 +22,28 @@ import static org.junit.Assert.assertTrue;
  */
 public class StatusChecker extends StatusUtil {
 
-  public StatusChecker(StatusManager sm) {
-    super(sm);
-  }
+    public StatusChecker(StatusManager sm) {
+        super(sm);
+    }
 
-  public StatusChecker(Context context) {
-    super(context);
-  }
+    public StatusChecker(Context context) {
+        super(context);
+    }
 
-  public void assertContainsMatch(int level, String regex) {
-    assertTrue(containsMatch(level, regex));
-  }
+    public void assertContainsMatch(int level, String regex) {
+        assertTrue(containsMatch(level, regex));
+    }
 
-  public void assertContainsMatch(String regex) {
-    assertTrue(containsMatch(regex));
-  }
+    public void assertContainsMatch(String regex) {
+        assertTrue(containsMatch(regex));
+    }
 
-  public void asssertContainsException(Class<?> scanExceptionClass) {
-    assertTrue(containsException(scanExceptionClass));
-  }
+    public void asssertContainsException(Class<?> scanExceptionClass) {
+        assertTrue(containsException(scanExceptionClass));
+    }
 
-  public void assertIsErrorFree() {
-    assertTrue(isErrorFree(0));
-  }
-
+    public void assertIsErrorFree() {
+        assertTrue(isErrorFree(0));
+    }
 
 }

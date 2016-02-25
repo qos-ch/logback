@@ -18,17 +18,16 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-
 /**
  * No operation (NOP) action that does strictly nothing. 
  *  
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NOPAction extends Action {
-  
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-  }
 
-  public void end(InterpretationContext ec, String name) {
-  }
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    }
+
+    public void end(InterpretationContext ec, String name) {
+    }
 }

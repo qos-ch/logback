@@ -24,51 +24,49 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class LoggerContextDeadlockTest {
 
-  LoggerContext loggerContext = new LoggerContext();
-  JoranConfigurator jc = new JoranConfigurator();
-  GetLoggerThread getLoggerThread = new GetLoggerThread(loggerContext);
+    LoggerContext loggerContext = new LoggerContext();
+    JoranConfigurator jc = new JoranConfigurator();
+    GetLoggerThread getLoggerThread = new GetLoggerThread(loggerContext);
 
-  @Before
-  public void setUp() throws Exception {
-    jc.setContext(loggerContext);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-  }
-
-  @Test(timeout = 20000)
-  public void testLBCLASSIC_81() throws JoranException {
-
-
-    getLoggerThread.start();
-    for (int i = 0; i < 500; i++) {
-      ByteArrayInputStream baos = new ByteArrayInputStream(
-              "<configuration><root level=\"DEBUG\"/></configuration>".getBytes());
-      jc.doConfigure(baos);
-    }
-  }
-
-  class GetLoggerThread extends Thread {
-
-    final LoggerContext loggerContext;
-
-    GetLoggerThread(LoggerContext loggerContext) {
-      this.loggerContext = loggerContext;
+    @Before
+    public void setUp() throws Exception {
+        jc.setContext(loggerContext);
     }
 
-    @Override
-    public void run() {
-      for (int i = 0; i < 10000; i++) {
-        if (i % 100 == 0) {
-          try {
-            Thread.sleep(1);
-          } catch (InterruptedException e) {
-          }
+    @After
+    public void tearDown() throws Exception {
+    }
+
+    @Test(timeout = 20000)
+    public void testLBCLASSIC_81() throws JoranException {
+
+        getLoggerThread.start();
+        for (int i = 0; i < 500; i++) {
+            ByteArrayInputStream baos = new ByteArrayInputStream("<configuration><root level=\"DEBUG\"/></configuration>".getBytes());
+            jc.doConfigure(baos);
         }
-        loggerContext.getLogger("a" + i);
-      }
     }
-  }
+
+    class GetLoggerThread extends Thread {
+
+        final LoggerContext loggerContext;
+
+        GetLoggerThread(LoggerContext loggerContext) {
+            this.loggerContext = loggerContext;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 10000; i++) {
+                if (i % 100 == 0) {
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                    }
+                }
+                loggerContext.getLogger("a" + i);
+            }
+        }
+    }
 
 }

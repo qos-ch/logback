@@ -26,33 +26,32 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class FruitFactoryAction extends Action implements InPlayListener {
 
-  List<SaxEvent> seList = new ArrayList<SaxEvent>();
+    List<SaxEvent> seList = new ArrayList<SaxEvent>();
 
-  @Override
-  public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
-    ec.addInPlayListener(this);
-  }
-
-  @Override
-  public void end(InterpretationContext ec, String name) throws ActionException {
-    ec.removeInPlayListener(this);
-    
-    Object o = ec.peekObject();
-    if(o instanceof FruitShell) {
-      FruitShell fs = (FruitShell) o;
-      FruitFactory fruitFactory = new FruitFactory();
-      fruitFactory.setEventList(new ArrayList<SaxEvent>(seList));
-      fs.setFruitFactory(fruitFactory);
+    @Override
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+        ec.addInPlayListener(this);
     }
-  }
 
-  public void inPlay(SaxEvent event) {
-    seList.add(event);
-  }
+    @Override
+    public void end(InterpretationContext ec, String name) throws ActionException {
+        ec.removeInPlayListener(this);
 
-  public List<SaxEvent> getSeList() {
-    return seList;
-  }
+        Object o = ec.peekObject();
+        if (o instanceof FruitShell) {
+            FruitShell fs = (FruitShell) o;
+            FruitFactory fruitFactory = new FruitFactory();
+            fruitFactory.setEventList(new ArrayList<SaxEvent>(seList));
+            fs.setFruitFactory(fruitFactory);
+        }
+    }
+
+    public void inPlay(SaxEvent event) {
+        seList.add(event);
+    }
+
+    public List<SaxEvent> getSeList() {
+        return seList;
+    }
 
 }

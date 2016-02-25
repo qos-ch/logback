@@ -48,81 +48,81 @@ import static org.mockito.Mockito.when;
  */
 public class AbstractSocketAppenderIntegrationTest {
 
-  private static final int TIMEOUT = 2000;
+    private static final int TIMEOUT = 2000;
 
-  private ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-  private MockContext mockContext = new MockContext(executorService);
-  private AutoFlushingObjectWriter objectWriter;
-  private ObjectWriterFactory objectWriterFactory = new SpyProducingObjectWriterFactory();
-  private LinkedBlockingDeque<String> deque = spy(new LinkedBlockingDeque<String>(1));
-  private QueueFactory queueFactory = mock(QueueFactory.class);
-  private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender(queueFactory, objectWriterFactory);
+    private ThreadPoolExecutor executorService = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+    private MockContext mockContext = new MockContext(executorService);
+    private AutoFlushingObjectWriter objectWriter;
+    private ObjectWriterFactory objectWriterFactory = new SpyProducingObjectWriterFactory();
+    private LinkedBlockingDeque<String> deque = spy(new LinkedBlockingDeque<String>(1));
+    private QueueFactory queueFactory = mock(QueueFactory.class);
+    private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender(queueFactory, objectWriterFactory);
 
-  @Before
-  public void setUp() throws Exception {
-    when(queueFactory.<String>newLinkedBlockingDeque(anyInt())).thenReturn(deque);
-    instrumentedAppender.setContext(mockContext);
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    instrumentedAppender.stop();
-    assertFalse(instrumentedAppender.isStarted());
-    executorService.shutdownNow();
-    assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
-  }
-
-  @Test
-  public void dispatchesEvents() throws Exception {
-
-    // given
-    ServerSocket serverSocket = ServerSocketUtil.createServerSocket();
-    instrumentedAppender.setRemoteHost(serverSocket.getInetAddress().getHostAddress());
-    instrumentedAppender.setPort(serverSocket.getLocalPort());
-    instrumentedAppender.start();
-
-    Socket appenderSocket = serverSocket.accept();
-    serverSocket.close();
-
-    // when
-    instrumentedAppender.append("some event");
-
-    // wait for event to be taken from deque and being written into the stream
-    verify(deque, timeout(TIMEOUT).atLeastOnce()).takeFirst();
-    verify(objectWriter, timeout(TIMEOUT)).write("some event");
-
-    // then
-    ObjectInputStream ois = new ObjectInputStream(appenderSocket.getInputStream());
-    assertEquals("some event", ois.readObject());
-    appenderSocket.close();
-  }
-
-  private static class InstrumentedSocketAppender extends AbstractSocketAppender<String> {
-
-    public InstrumentedSocketAppender(QueueFactory queueFactory, ObjectWriterFactory objectWriterFactory) {
-      super(queueFactory, objectWriterFactory);
+    @Before
+    public void setUp() throws Exception {
+        when(queueFactory.<String> newLinkedBlockingDeque(anyInt())).thenReturn(deque);
+        instrumentedAppender.setContext(mockContext);
     }
 
-    @Override
-    protected void postProcessEvent(String event) {
+    @After
+    public void tearDown() throws Exception {
+        instrumentedAppender.stop();
+        assertFalse(instrumentedAppender.isStarted());
+        executorService.shutdownNow();
+        assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
     }
 
-    @Override
-    protected PreSerializationTransformer<String> getPST() {
-      return new PreSerializationTransformer<String>() {
-        public Serializable transform(String event) {
-          return event;
+    @Test
+    public void dispatchesEvents() throws Exception {
+
+        // given
+        ServerSocket serverSocket = ServerSocketUtil.createServerSocket();
+        instrumentedAppender.setRemoteHost(serverSocket.getInetAddress().getHostAddress());
+        instrumentedAppender.setPort(serverSocket.getLocalPort());
+        instrumentedAppender.start();
+
+        Socket appenderSocket = serverSocket.accept();
+        serverSocket.close();
+
+        // when
+        instrumentedAppender.append("some event");
+
+        // wait for event to be taken from deque and being written into the stream
+        verify(deque, timeout(TIMEOUT).atLeastOnce()).takeFirst();
+        verify(objectWriter, timeout(TIMEOUT)).write("some event");
+
+        // then
+        ObjectInputStream ois = new ObjectInputStream(appenderSocket.getInputStream());
+        assertEquals("some event", ois.readObject());
+        appenderSocket.close();
+    }
+
+    private static class InstrumentedSocketAppender extends AbstractSocketAppender<String> {
+
+        public InstrumentedSocketAppender(QueueFactory queueFactory, ObjectWriterFactory objectWriterFactory) {
+            super(queueFactory, objectWriterFactory);
         }
-      };
-    }
-  }
 
-  private class SpyProducingObjectWriterFactory extends ObjectWriterFactory {
+        @Override
+        protected void postProcessEvent(String event) {
+        }
 
-    @Override
-    public AutoFlushingObjectWriter newAutoFlushingObjectWriter(OutputStream outputStream) throws IOException {
-      objectWriter = spy(super.newAutoFlushingObjectWriter(outputStream));
-      return objectWriter;
+        @Override
+        protected PreSerializationTransformer<String> getPST() {
+            return new PreSerializationTransformer<String>() {
+                public Serializable transform(String event) {
+                    return event;
+                }
+            };
+        }
     }
-  }
+
+    private class SpyProducingObjectWriterFactory extends ObjectWriterFactory {
+
+        @Override
+        public AutoFlushingObjectWriter newAutoFlushingObjectWriter(OutputStream outputStream) throws IOException {
+            objectWriter = spy(super.newAutoFlushingObjectWriter(outputStream));
+            return objectWriter;
+        }
+    }
 }

@@ -25,16 +25,16 @@ public class RecoveryCoordinator {
     // tests can set the time directly independently of system clock
     private long currentTime = UNSET;
     private long next;
-    
+
     public RecoveryCoordinator() {
         next = getCurrentTime() + getBackoffCoefficient();
     }
-    
+
     public RecoveryCoordinator(long currentTime) {
         this.currentTime = currentTime;
         next = getCurrentTime() + getBackoffCoefficient();
     }
-    
+
     public boolean isTooSoon() {
         long now = getCurrentTime();
         if (now > next) {

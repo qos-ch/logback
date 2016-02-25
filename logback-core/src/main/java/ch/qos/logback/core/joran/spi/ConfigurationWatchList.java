@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 import java.io.File;
@@ -27,69 +26,69 @@ import java.util.List;
  */
 public class ConfigurationWatchList extends ContextAwareBase {
 
-  URL mainURL;
-  List<File> fileWatchList = new ArrayList<File>();
-  List<Long> lastModifiedList = new ArrayList<Long>();
+    URL mainURL;
+    List<File> fileWatchList = new ArrayList<File>();
+    List<Long> lastModifiedList = new ArrayList<Long>();
 
-  public void clear() {
-    this.mainURL = null;
-    lastModifiedList.clear();
-    fileWatchList.clear();
-  }
-
-  /**
-   * The mainURL for the configuration file. Null values are allowed.
-   * @param mainURL
-   */
-  public void setMainURL(URL mainURL) {
-    // main url can be null
-    this.mainURL = mainURL;
-    if (mainURL != null)
-      addAsFileToWatch(mainURL);
-  }
-
-  private void addAsFileToWatch(URL url) {
-    File file = convertToFile(url);
-    if (file != null) {
-      fileWatchList.add(file);
-      lastModifiedList.add(file.lastModified());
+    public void clear() {
+        this.mainURL = null;
+        lastModifiedList.clear();
+        fileWatchList.clear();
     }
-  }
 
-  public void addToWatchList(URL url) {
-    addAsFileToWatch(url);
-  }
-
-  public URL getMainURL() {
-    return mainURL;
-  }
-
-  public List<File> getCopyOfFileWatchList() {
-    return new ArrayList<File>(fileWatchList);
-  }
-
-  public boolean changeDetected() {
-    int len = fileWatchList.size();
-    for (int i = 0; i < len; i++) {
-      long lastModified = lastModifiedList.get(i);
-      File file = fileWatchList.get(i);
-      if (lastModified != file.lastModified()) {
-        return true;
-      }
+    /**
+     * The mainURL for the configuration file. Null values are allowed.
+     * @param mainURL
+     */
+    public void setMainURL(URL mainURL) {
+        // main url can be null
+        this.mainURL = mainURL;
+        if (mainURL != null)
+            addAsFileToWatch(mainURL);
     }
-    return false;
-    //return (lastModified != fileToScan.lastModified() && lastModified != SENTINEL);
-  }
 
-  @SuppressWarnings("deprecation")
-  File convertToFile(URL url) {
-    String protocol = url.getProtocol();
-    if ("file".equals(protocol)) {
-      return new File(URLDecoder.decode(url.getFile()));
-    } else {
-      addInfo("URL [" + url + "] is not of type file");
-      return null;
+    private void addAsFileToWatch(URL url) {
+        File file = convertToFile(url);
+        if (file != null) {
+            fileWatchList.add(file);
+            lastModifiedList.add(file.lastModified());
+        }
     }
-  }
+
+    public void addToWatchList(URL url) {
+        addAsFileToWatch(url);
+    }
+
+    public URL getMainURL() {
+        return mainURL;
+    }
+
+    public List<File> getCopyOfFileWatchList() {
+        return new ArrayList<File>(fileWatchList);
+    }
+
+    public boolean changeDetected() {
+        int len = fileWatchList.size();
+        for (int i = 0; i < len; i++) {
+            long lastModified = lastModifiedList.get(i);
+            File file = fileWatchList.get(i);
+            if (lastModified != file.lastModified()) {
+                return true;
+            }
+        }
+        return false;
+        // return (lastModified != fileToScan.lastModified() && lastModified != SENTINEL);
+    }
+
+    @SuppressWarnings("deprecation")
+    File convertToFile(URL url) {
+        String protocol = url.getProtocol();
+        if ("file".equals(protocol)) {
+            return new File(URLDecoder.decode(url.getFile()));
+        } else {
+            addInfo("URL [" + url + "] is not of type file");
+            return null;
+        }
+    }
 
 }

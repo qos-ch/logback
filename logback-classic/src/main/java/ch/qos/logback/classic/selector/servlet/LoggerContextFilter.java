@@ -50,32 +50,31 @@ import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
  */
 public class LoggerContextFilter implements Filter {
 
-  public void destroy() {
-    //do nothing
-  }
-
-  public void doFilter(ServletRequest request, ServletResponse response,
-      FilterChain chain) throws IOException, ServletException {
-
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
-    ContextJNDISelector sel = null;
-
-    if (selector instanceof ContextJNDISelector) {
-      sel = (ContextJNDISelector)selector;
-      sel.setLocalContext(lc);
+    public void destroy() {
+        // do nothing
     }
 
-    try {
-      chain.doFilter(request, response);
-    } finally {
-      if (sel != null) {
-        sel.removeLocalContext();
-      }
-    }
-  }
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-  public void init(FilterConfig arg0) throws ServletException {
-    //do nothing
-  }
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        ContextJNDISelector sel = null;
+
+        if (selector instanceof ContextJNDISelector) {
+            sel = (ContextJNDISelector) selector;
+            sel.setLocalContext(lc);
+        }
+
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            if (sel != null) {
+                sel.removeLocalContext();
+            }
+        }
+    }
+
+    public void init(FilterConfig arg0) throws ServletException {
+        // do nothing
+    }
 }

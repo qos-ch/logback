@@ -25,8 +25,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
  */
 public class GrayCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return BOLD + BLACK_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return BOLD + BLACK_FG;
+    }
 }

@@ -108,7 +108,7 @@ public class FileNamePattern extends ContextAwareBase {
         }
         return null;
     }
-    
+
     public String convertMultipleArguments(Object... objectList) {
         StringBuilder buf = new StringBuilder();
         Converter<Object> c = headTokenConverter;

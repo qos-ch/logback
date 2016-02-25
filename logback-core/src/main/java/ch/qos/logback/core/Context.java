@@ -28,101 +28,99 @@ import ch.qos.logback.core.status.StatusManager;
  */
 public interface Context extends PropertyContainer {
 
-  /**
-   * Return the StatusManager instance in use.
-   * 
-   * @return the {@link StatusManager} instance in use.
-   */
-  StatusManager getStatusManager();
+    /**
+     * Return the StatusManager instance in use.
+     * 
+     * @return the {@link StatusManager} instance in use.
+     */
+    StatusManager getStatusManager();
 
-  /**
-   * A Context can act as a store for various objects used by LOGBack
-   * components.
-   * 
-   * @return The object stored under 'key'.
-   */
-  Object getObject(String key);
+    /**
+     * A Context can act as a store for various objects used by LOGBack
+     * components.
+     * 
+     * @return The object stored under 'key'.
+     */
+    Object getObject(String key);
 
-  /**
-   * Store an object under 'key'. If no object can be found, null is returned.
-   * 
-   * @param key
-   * @param value
-   */
-  void putObject(String key, Object value);
+    /**
+     * Store an object under 'key'. If no object can be found, null is returned.
+     * 
+     * @param key
+     * @param value
+     */
+    void putObject(String key, Object value);
 
-  /**
-   * Get all the properties for this context as a Map. Note that the returned
-   * cop might be a copy not the original. Thus, modifying the returned Map will
-   * have no effect (on the original.)
-   * 
-   * @return
-   */
-  // public Map<String, String> getPropertyMap();
-  /**
-   * Get the property of this context.
-   */
-  String getProperty(String key);
+    /**
+     * Get all the properties for this context as a Map. Note that the returned
+     * cop might be a copy not the original. Thus, modifying the returned Map will
+     * have no effect (on the original.)
+     * 
+     * @return
+     */
+    // public Map<String, String> getPropertyMap();
+    /**
+     * Get the property of this context.
+     */
+    String getProperty(String key);
 
-  /**
-   * Set a property of this context.
-   */
-  void putProperty(String key, String value);
+    /**
+     * Set a property of this context.
+     */
+    void putProperty(String key, String value);
 
-  
-  /**
-   * Get a copy of the property map
-   * @return
-   * @since 0.9.20
-   */
-  Map<String, String> getCopyOfPropertyMap();
-  
-  /**
-   * Contexts are named objects.
-   * 
-   * @return the name for this context
-   */
-  String getName();
+    /**
+     * Get a copy of the property map
+     * @return
+     * @since 0.9.20
+     */
+    Map<String, String> getCopyOfPropertyMap();
 
-  /**
-   * The name of the context can be set only once.
-   * 
-   * @param name
-   */
-  void setName(String name);
-  
-  /**
-   * The time at which this context was created, expressed in
-   * millisecond elapsed since the epoch (1.1.1970).
-   * 
-   * @return The time as measured when this class was created.
-   */
-  long getBirthTime();
-  
-  /**
-   * Object used for synchronization purposes. 
-   * INTENDED FOR INTERNAL USAGE.
-   */
-  Object getConfigurationLock();
+    /**
+     * Contexts are named objects.
+     * 
+     * @return the name for this context
+     */
+    String getName();
 
+    /**
+     * The name of the context can be set only once.
+     * 
+     * @param name
+     */
+    void setName(String name);
 
-  /**
-   * Every context has an ExecutorService which be invoked to execute certain
-   * tasks in a separate thread.
-   *
-   * @return the executor for this context.
-   * @since 1.0.0
-   */
-  ExecutorService getExecutorService();
-  
-  /**
-   * Register a component that participates in the context's life cycle.
-   * <p>
-   * All components registered via this method will be stopped and removed
-   * from the context when the context is reset.
-   * 
-   * @param component the subject component
-   */
-  void register(LifeCycle component);
-  
+    /**
+     * The time at which this context was created, expressed in
+     * millisecond elapsed since the epoch (1.1.1970).
+     * 
+     * @return The time as measured when this class was created.
+     */
+    long getBirthTime();
+
+    /**
+     * Object used for synchronization purposes. 
+     * INTENDED FOR INTERNAL USAGE.
+     */
+    Object getConfigurationLock();
+
+    /**
+     * Every context has an ExecutorService which be invoked to execute certain
+     * tasks in a separate thread.
+     *
+     * @return the executor for this context.
+     * @since 1.0.0
+     */
+    ExecutorService getExecutorService();
+
+    /**
+     * Register a component that participates in the context's life cycle.
+     * <p>
+     * All components registered via this method will be stopped and removed
+     * from the context when the context is reset.
+     * 
+     * @param component the subject component
+     */
+    void register(LifeCycle component);
+
 }

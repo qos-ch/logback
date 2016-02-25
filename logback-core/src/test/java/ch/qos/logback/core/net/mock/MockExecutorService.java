@@ -27,35 +27,34 @@ import java.util.concurrent.TimeUnit;
  */
 public class MockExecutorService extends AbstractExecutorService {
 
-  private Runnable lastCommand;
-  
-  public Runnable getLastCommand() {
-    return lastCommand;
-  }
-  
-  public void shutdown() {
-  }
+    private Runnable lastCommand;
 
-  public List<Runnable> shutdownNow() {
-    return Collections.emptyList();
-  }
+    public Runnable getLastCommand() {
+        return lastCommand;
+    }
 
-  public boolean isShutdown() {
-    return true;
-  }
+    public void shutdown() {
+    }
 
-  public boolean isTerminated() {
-    return true;
-  }
+    public List<Runnable> shutdownNow() {
+        return Collections.emptyList();
+    }
 
-  public boolean awaitTermination(long timeout, TimeUnit unit)
-      throws InterruptedException {
-    return true;
-  }
+    public boolean isShutdown() {
+        return true;
+    }
 
-  public void execute(Runnable command) {
-    command.run();
-    lastCommand = command;
-  }
-  
+    public boolean isTerminated() {
+        return true;
+    }
+
+    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
+        return true;
+    }
+
+    public void execute(Runnable command) {
+        command.run();
+        lastCommand = command;
+    }
+
 }

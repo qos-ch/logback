@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 
-
 /**
  *  FileLockSimulator is a small application intended to simulate FileAppender in prudent mode.
  * In this mode, the application obtains an exclusive lock on the file, writes to the file and
@@ -43,60 +42,61 @@ import java.nio.channels.FileLock;
  * lock to the point of appearing deadlocked.
  *
  */
-public class FileLockSimulator  {
+public class FileLockSimulator {
 
-  static String LINE_SEPARATOR = System.getProperty("line.separator");
-  static final int DOT_FREQ = 128;
-  static final int DOT_WITH_NEW_LINE_FREQ = DOT_FREQ * 80;
+    static String LINE_SEPARATOR = System.getProperty("line.separator");
+    static final int DOT_FREQ = 128;
+    static final int DOT_WITH_NEW_LINE_FREQ = DOT_FREQ * 80;
 
-  static String instanceName;
-  static int delay;
-  static FileOutputStream fos;
-  static FileChannel fileChannel;
+    static String instanceName;
+    static int delay;
+    static FileOutputStream fos;
+    static FileChannel fileChannel;
 
-  public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
-    String instanceName = args[0];
-    System.out.println("Instance named as [" + instanceName + "]");
+        String instanceName = args[0];
+        System.out.println("Instance named as [" + instanceName + "]");
 
-    String fileStr = args[1];
-    System.out.println("Output target specified as [" + fileStr + "]");
+        String fileStr = args[1];
+        System.out.println("Output target specified as [" + fileStr + "]");
 
-    int delay = Integer.parseInt(args[2]);
-    System.out.println("Sleep delay specified as [" + delay + "] milliseconds");
+        int delay = Integer.parseInt(args[2]);
+        System.out.println("Sleep delay specified as [" + delay + "] milliseconds");
 
-    fos = new FileOutputStream(fileStr, true);
-    fileChannel = fos.getChannel();
+        fos = new FileOutputStream(fileStr, true);
+        fileChannel = fos.getChannel();
 
-    for (int i = 1; ; i++) {
-      printDotAndSleep(i);
-      lockAndWrite(i);
+        for (int i = 1;; i++) {
+            printDotAndSleep(i);
+            lockAndWrite(i);
+        }
     }
-  }
 
-  static void lockAndWrite(int i) throws InterruptedException, IOException {
-    FileLock fileLock = null;
-    try {
-      fileLock = fileChannel.lock();
-      long position = fileChannel.position();
-      long size = fileChannel.size();
-      if (size != position) {
-        fileChannel.position(size);
-      }
-      String msg = "hello from" + instanceName + " " + i + LINE_SEPARATOR;
-      fos.write(msg.getBytes());
-    } finally {
-      if (fileLock != null) {
-        fileLock.release();
-      }
+    static void lockAndWrite(int i) throws InterruptedException, IOException {
+        FileLock fileLock = null;
+        try {
+            fileLock = fileChannel.lock();
+            long position = fileChannel.position();
+            long size = fileChannel.size();
+            if (size != position) {
+                fileChannel.position(size);
+            }
+            String msg = "hello from" + instanceName + " " + i + LINE_SEPARATOR;
+            fos.write(msg.getBytes());
+        } finally {
+            if (fileLock != null) {
+                fileLock.release();
+            }
+        }
     }
-  }
 
-  static void printDotAndSleep(int i) throws InterruptedException {
-    if (i % DOT_FREQ == 0) {
-      System.out.print(".");
-      Thread.sleep(delay);
+    static void printDotAndSleep(int i) throws InterruptedException {
+        if (i % DOT_FREQ == 0) {
+            System.out.print(".");
+            Thread.sleep(delay);
+        }
+        if (i % DOT_WITH_NEW_LINE_FREQ == 0)
+            System.out.println("");
     }
-    if (i % DOT_WITH_NEW_LINE_FREQ == 0) System.out.println("");
-  }
 }

@@ -25,8 +25,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.CYAN_FG;
  */
 public class BoldCyanCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return BOLD + CYAN_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return BOLD + CYAN_FG;
+    }
 }

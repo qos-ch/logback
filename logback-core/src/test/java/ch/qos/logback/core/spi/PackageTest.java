@@ -16,10 +16,8 @@ package ch.qos.logback.core.spi;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AppenderAttachableImplTest.class, AppenderAttachableImplLockTest.class,
-        CyclicBufferTrackerTest.class, ScenarioBasedCyclicBufferTrackerTest.class})
-
+@Suite.SuiteClasses({ AppenderAttachableImplTest.class, AppenderAttachableImplLockTest.class, CyclicBufferTrackerTest.class,
+        ScenarioBasedCyclicBufferTrackerTest.class })
 public class PackageTest {
 }

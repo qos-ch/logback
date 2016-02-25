@@ -21,111 +21,108 @@ import ch.qos.logback.core.db.dialect.DBUtil;
 import ch.qos.logback.core.db.dialect.SQLDialectCode;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class ConnectionSourceBase extends ContextAwareBase implements ConnectionSource {
-  
-  private boolean started;
-  
-  private String user = null;
-  private String password = null;
 
-  // initially we have an unknown dialect
-  private SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
-  private boolean supportsGetGeneratedKeys = false;
-  private boolean supportsBatchUpdates = false;
+    private boolean started;
 
+    private String user = null;
+    private String password = null;
 
-  /**
-   * Learn relevant information about this connection source.
-   *
-   */
-  public void discoverConnectionProperties() {
-    Connection connection = null;
-    try {
-      connection = getConnection();
-      if (connection == null) {
-        addWarn("Could not get a connection");
-        return;
-      }
-      DatabaseMetaData meta = connection.getMetaData();
-      DBUtil util = new DBUtil();
-      util.setContext(getContext());
-      supportsGetGeneratedKeys = util.supportsGetGeneratedKeys(meta);
-      supportsBatchUpdates = util.supportsBatchUpdates(meta);
-      dialectCode = DBUtil.discoverSQLDialect(meta);
-      addInfo("Driver name="+meta.getDriverName());
-      addInfo("Driver version="+meta.getDriverVersion());
-      addInfo("supportsGetGeneratedKeys="+supportsGetGeneratedKeys);
-      
-    } catch (SQLException se) {
-      addWarn("Could not discover the dialect to use.", se);
-    } finally {
-      DBHelper.closeConnection(connection);
+    // initially we have an unknown dialect
+    private SQLDialectCode dialectCode = SQLDialectCode.UNKNOWN_DIALECT;
+    private boolean supportsGetGeneratedKeys = false;
+    private boolean supportsBatchUpdates = false;
+
+    /**
+     * Learn relevant information about this connection source.
+     *
+     */
+    public void discoverConnectionProperties() {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            if (connection == null) {
+                addWarn("Could not get a connection");
+                return;
+            }
+            DatabaseMetaData meta = connection.getMetaData();
+            DBUtil util = new DBUtil();
+            util.setContext(getContext());
+            supportsGetGeneratedKeys = util.supportsGetGeneratedKeys(meta);
+            supportsBatchUpdates = util.supportsBatchUpdates(meta);
+            dialectCode = DBUtil.discoverSQLDialect(meta);
+            addInfo("Driver name=" + meta.getDriverName());
+            addInfo("Driver version=" + meta.getDriverVersion());
+            addInfo("supportsGetGeneratedKeys=" + supportsGetGeneratedKeys);
+
+        } catch (SQLException se) {
+            addWarn("Could not discover the dialect to use.", se);
+        } finally {
+            DBHelper.closeConnection(connection);
+        }
     }
-  }
 
-  /**
-   * Does this connection support the JDBC Connection.getGeneratedKeys method?
-   */
-  public final boolean supportsGetGeneratedKeys() {
-    return supportsGetGeneratedKeys;
-  }
+    /**
+     * Does this connection support the JDBC Connection.getGeneratedKeys method?
+     */
+    public final boolean supportsGetGeneratedKeys() {
+        return supportsGetGeneratedKeys;
+    }
 
-  public final SQLDialectCode getSQLDialectCode() {
-    return dialectCode;
-  }
+    public final SQLDialectCode getSQLDialectCode() {
+        return dialectCode;
+    }
 
-  /**
-   * Get the password for this connection source.
-   */
-  public final String getPassword() {
-    return password;
-  }
+    /**
+     * Get the password for this connection source.
+     */
+    public final String getPassword() {
+        return password;
+    }
 
-  /**
-   * Sets the password.
-   * @param password The password to set
-   */
-  public final void setPassword(final String password) {
-    this.password = password;
-  }
+    /**
+     * Sets the password.
+     * @param password The password to set
+     */
+    public final void setPassword(final String password) {
+        this.password = password;
+    }
 
-  /**
-   * Get the user for this connection source.
-   */
-  public final String getUser() {
-    return user;
-  }
+    /**
+     * Get the user for this connection source.
+     */
+    public final String getUser() {
+        return user;
+    }
 
-  /**
-   * Sets the username.
-   * @param username The username to set
-   */
-  public final void setUser(final String username) {
-    this.user = username;
-  }
+    /**
+     * Sets the username.
+     * @param username The username to set
+     */
+    public final void setUser(final String username) {
+        this.user = username;
+    }
 
-  /**
-   * Does this connection support batch updates?
-   */
-  public final boolean supportsBatchUpdates() {
-    return supportsBatchUpdates;
-  }
+    /**
+     * Does this connection support batch updates?
+     */
+    public final boolean supportsBatchUpdates() {
+        return supportsBatchUpdates;
+    }
 
-  public boolean isStarted() {
-    return started;
-  }
+    public boolean isStarted() {
+        return started;
+    }
 
-  public void start() {
-    started = true;
-  }
+    public void start() {
+        started = true;
+    }
 
-  public void stop() {
-    started = false;
-  }
-  
-  
+    public void stop() {
+        started = false;
+    }
+
 }

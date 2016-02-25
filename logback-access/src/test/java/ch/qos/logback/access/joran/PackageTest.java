@@ -20,6 +20,6 @@ import org.junit.runners.Suite;
  * @author Ceki G&uuml;c&uuml;
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({JoranConfiguratorTest.class, ConditionalTest.class})
+@Suite.SuiteClasses({ JoranConfiguratorTest.class, ConditionalTest.class })
 public class PackageTest {
 }

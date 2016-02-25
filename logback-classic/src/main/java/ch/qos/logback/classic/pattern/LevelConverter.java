@@ -22,8 +22,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class LevelConverter extends ClassicConverter {
 
-  public String convert(ILoggingEvent le) {
-    return le.getLevel().toString();
-  }
+    public String convert(ILoggingEvent le) {
+        return le.getLevel().toString();
+    }
 
 }

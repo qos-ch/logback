@@ -24,56 +24,52 @@ import static junit.framework.Assert.assertNotNull;
  */
 public class CyclicBufferTrackerTest {
 
+    CyclicBufferTracker<Object> tracker = new CyclicBufferTracker<Object>();
+    String key = "a";
 
-  CyclicBufferTracker<Object> tracker = new CyclicBufferTracker<Object>();
-  String key = "a";
+    @Test
+    public void empty0() {
+        long now = 3000;
+        tracker.removeStaleComponents(now);
+        assertEquals(0, tracker.liveKeysAsOrderedList().size());
+        assertEquals(0, tracker.getComponentCount());
+    }
 
-  @Test
-  public void empty0() {
-    long now = 3000;
-    tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.liveKeysAsOrderedList().size());
-    assertEquals(0, tracker.getComponentCount());
-  }
+    @Test
+    public void empty1() {
+        long now = 3000;
+        assertNotNull(tracker.getOrCreate(key, now++));
+        now += ComponentTracker.DEFAULT_TIMEOUT + 1000;
+        tracker.removeStaleComponents(now);
+        assertEquals(0, tracker.liveKeysAsOrderedList().size());
+        assertEquals(0, tracker.getComponentCount());
 
-  @Test
-  public void empty1() {
-    long now = 3000;
-    assertNotNull(tracker.getOrCreate(key, now++));
-    now += ComponentTracker.DEFAULT_TIMEOUT + 1000;
-    tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.liveKeysAsOrderedList().size());
-    assertEquals(0, tracker.getComponentCount());
+        assertNotNull(tracker.getOrCreate(key, now++));
+    }
 
-    assertNotNull(tracker.getOrCreate(key, now++));
-  }
+    @Test
+    public void smoke() {
+        long now = 3000;
+        CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
+        assertEquals(cb, tracker.getOrCreate(key, now++));
+        now += CyclicBufferTracker.DEFAULT_TIMEOUT + 1000;
+        tracker.removeStaleComponents(now);
+        assertEquals(0, tracker.liveKeysAsOrderedList().size());
+        assertEquals(0, tracker.getComponentCount());
+    }
 
-  @Test
-  public void smoke() {
-    long now = 3000;
-    CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
-    assertEquals(cb, tracker.getOrCreate(key, now++));
-    now += CyclicBufferTracker.DEFAULT_TIMEOUT + 1000;
-    tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.liveKeysAsOrderedList().size());
-    assertEquals(0, tracker.getComponentCount());
-  }
-
-  @Test
-  public void destroy() {
-    long now = 3000;
-    CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
-    cb.add(new Object());
-    assertEquals(1, cb.length());
-    tracker.endOfLife(key);
-    now += CyclicBufferTracker.LINGERING_TIMEOUT + 10;
-    tracker.removeStaleComponents(now);
-    assertEquals(0, tracker.liveKeysAsOrderedList().size());
-    assertEquals(0, tracker.getComponentCount());
-    assertEquals(0, cb.length());
-  }
-
-
-
+    @Test
+    public void destroy() {
+        long now = 3000;
+        CyclicBuffer<Object> cb = tracker.getOrCreate(key, now);
+        cb.add(new Object());
+        assertEquals(1, cb.length());
+        tracker.endOfLife(key);
+        now += CyclicBufferTracker.LINGERING_TIMEOUT + 10;
+        tracker.removeStaleComponents(now);
+        assertEquals(0, tracker.liveKeysAsOrderedList().size());
+        assertEquals(0, tracker.getComponentCount());
+        assertEquals(0, cb.length());
+    }
 
 }

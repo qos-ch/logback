@@ -27,13 +27,12 @@ public class LogbackValveTest {
     LogbackValve valve = new LogbackValve();
     StatusChecker checker = new StatusChecker(valve);
 
-    
-    @After 
+    @After
     public void tearDown() {
-        System.clearProperty(LogbackValve.CATALINA_BASE_KEY); 
-        System.clearProperty(LogbackValve.CATALINA_HOME_KEY); 
+        System.clearProperty(LogbackValve.CATALINA_BASE_KEY);
+        System.clearProperty(LogbackValve.CATALINA_HOME_KEY);
     }
-    
+
     @Test
     public void nonExistingConfigFileShouldResultInWarning() throws LifecycleException {
         final String resourceName = "logback-test2-config.xml";
@@ -44,7 +43,7 @@ public class LogbackValveTest {
 
     @Test
     public void fileUnderCatalinaBaseShouldBeFound() throws LifecycleException {
-        System.setProperty(LogbackValve.CATALINA_BASE_KEY, AccessTestConstants.JORAN_INPUT_PREFIX+"tomcat/");
+        System.setProperty(LogbackValve.CATALINA_BASE_KEY, AccessTestConstants.JORAN_INPUT_PREFIX + "tomcat/");
         final String fileName = "logback-access.xml";
         setupValve(fileName);
         valve.start();
@@ -52,27 +51,27 @@ public class LogbackValveTest {
         checker.assertContainsMatch("Done configuring");
         checker.assertIsErrorFree();
     }
-    
+
     @Test
     public void fileUnderCatalinaHomeShouldBeFound() throws LifecycleException {
-        System.setProperty(LogbackValve.CATALINA_HOME_KEY, AccessTestConstants.JORAN_INPUT_PREFIX+"tomcat/");
+        System.setProperty(LogbackValve.CATALINA_HOME_KEY, AccessTestConstants.JORAN_INPUT_PREFIX + "tomcat/");
         final String fileName = "logback-access.xml";
         setupValve(fileName);
         valve.start();
         checker.assertContainsMatch("Found configuration file");
         checker.assertContainsMatch("Done configuring");
         checker.assertIsErrorFree();
-    }    
-    
+    }
+
     @Test
     public void resourceShouldBeFound() throws LifecycleException {
         final String fileName = "logback-asResource.xml";
         setupValve(fileName);
         valve.start();
-        checker.assertContainsMatch("Found ."+fileName+". as a resource.");
+        checker.assertContainsMatch("Found ." + fileName + ". as a resource.");
         checker.assertContainsMatch("Done configuring");
         checker.assertIsErrorFree();
-    }    
+    }
 
     private void setupValve(final String resourceName) {
         valve.setFilename(resourceName);

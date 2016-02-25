@@ -17,8 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-
 @RunWith(Suite.class)
-@SuiteClasses( { ConditionalTest.class})
+@SuiteClasses({ ConditionalTest.class })
 public class PackageTest {
 }

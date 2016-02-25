@@ -15,10 +15,10 @@ package ch.qos.logback.classic.net.testObjectBuilders;
 
 public interface Builder<E> {
 
-  // 45 characters message
-  String MSG_PREFIX = "aaaaabbbbbcccccdddddaaaaabbbbbcccccdddddaaaa";
+    // 45 characters message
+    String MSG_PREFIX = "aaaaabbbbbcccccdddddaaaaabbbbbcccccdddddaaaa";
 
-  // final String MSG_PREFIX = "a";
+    // final String MSG_PREFIX = "a";
 
-  E build(int i);
+    E build(int i);
 }

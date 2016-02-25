@@ -29,58 +29,59 @@ import ch.qos.logback.core.spi.DeferredProcessingAware;
  */
 public interface ILoggingEvent extends DeferredProcessingAware {
 
-  String getThreadName();
+    String getThreadName();
 
-  Level getLevel();
+    Level getLevel();
 
-  String getMessage();
+    String getMessage();
 
-  Object[] getArgumentArray();
+    Object[] getArgumentArray();
 
-  String getFormattedMessage();
+    String getFormattedMessage();
 
-  String getLoggerName();
+    String getLoggerName();
 
-  LoggerContextVO getLoggerContextVO();
+    LoggerContextVO getLoggerContextVO();
 
-  IThrowableProxy getThrowableProxy();
+    IThrowableProxy getThrowableProxy();
 
-  /**
-   * Return caller data associated with this event. Note that calling this event
-   * may trigger the computation of caller data.
-   * 
-   * @return the caller data associated with this event.
-   * 
-   * @see #hasCallerData()
-   */
-  StackTraceElement[] getCallerData();
+    /**
+     * Return caller data associated with this event. Note that calling this event
+     * may trigger the computation of caller data.
+     * 
+     * @return the caller data associated with this event.
+     * 
+     * @see #hasCallerData()
+     */
+    StackTraceElement[] getCallerData();
 
-  /**
-   * If this event has caller data, then true is returned. Otherwise the
-   * returned value is null.
-   * 
-   * <p>Logback components wishing to use caller data if available without
-   * causing it to be computed can invoke this method before invoking
-   * {@link #getCallerData()}.
-   * 
-   * @return whether this event has caller data
-   */
-  boolean hasCallerData();
+    /**
+     * If this event has caller data, then true is returned. Otherwise the
+     * returned value is null.
+     * 
+     * <p>Logback components wishing to use caller data if available without
+     * causing it to be computed can invoke this method before invoking
+     * {@link #getCallerData()}.
+     * 
+     * @return whether this event has caller data
+     */
+    boolean hasCallerData();
 
-  Marker getMarker();
+    Marker getMarker();
 
-  /**
-   * Returns the MDC map. The returned value can be an empty map but not null.
-   */
-  Map<String, String> getMDCPropertyMap();
+    /**
+     * Returns the MDC map. The returned value can be an empty map but not null.
+     */
+    Map<String, String> getMDCPropertyMap();
 
-  /**
-   * Synonym for [@link #getMDCPropertyMap}.
-   * @deprecated  Replaced by [@link #getMDCPropertyMap}
-   */
-  Map<String, String> getMdc();
-  long getTimeStamp();
+    /**
+     * Synonym for [@link #getMDCPropertyMap}.
+     * @deprecated  Replaced by [@link #getMDCPropertyMap}
+     */
+    Map<String, String> getMdc();
 
-  void prepareForDeferredProcessing();
+    long getTimeStamp();
+
+    void prepareForDeferredProcessing();
 
 }

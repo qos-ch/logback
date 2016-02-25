@@ -23,13 +23,12 @@ import static org.junit.Assert.assertEquals;
 
 public class TeeFilterTest {
 
-
     @Test
     public void extractNameList() {
-        assertEquals(Arrays.asList(new String[]{"a"}), TeeFilter.extractNameList("a"));
-        assertEquals(Arrays.asList(new String[]{"a", "b"}), TeeFilter.extractNameList("a, b"));
-        assertEquals(Arrays.asList(new String[]{"a", "b"}), TeeFilter.extractNameList("a; b"));
-        assertEquals(Arrays.asList(new String[]{"a", "b", "c"}), TeeFilter.extractNameList("a; b, c"));
+        assertEquals(Arrays.asList(new String[] { "a" }), TeeFilter.extractNameList("a"));
+        assertEquals(Arrays.asList(new String[] { "a", "b" }), TeeFilter.extractNameList("a, b"));
+        assertEquals(Arrays.asList(new String[] { "a", "b" }), TeeFilter.extractNameList("a; b"));
+        assertEquals(Arrays.asList(new String[] { "a", "b", "c" }), TeeFilter.extractNameList("a; b, c"));
     }
 
     @Test
@@ -46,7 +45,6 @@ public class TeeFilterTest {
         assertFalse(TeeFilter.computeActivation("a", "b, c", null));
     }
 
-
     @Test
     public void withExcludesOnly() {
         assertFalse(TeeFilter.computeActivation("a", null, "a"));
@@ -54,7 +52,6 @@ public class TeeFilterTest {
         assertTrue(TeeFilter.computeActivation("a", null, "b"));
         assertTrue(TeeFilter.computeActivation("a", null, "b, c"));
     }
-
 
     @Test
     public void withIncludesAndExcludes() {

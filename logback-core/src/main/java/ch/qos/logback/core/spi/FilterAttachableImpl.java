@@ -26,38 +26,38 @@ import ch.qos.logback.core.filter.Filter;
  */
 final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
 
-  CopyOnWriteArrayList<Filter<E>> filterList = new CopyOnWriteArrayList<Filter<E>>();
+    CopyOnWriteArrayList<Filter<E>> filterList = new CopyOnWriteArrayList<Filter<E>>();
 
-  /**
-   * Add a filter to end of the filter list.
-   */
-  public void addFilter(Filter<E> newFilter) {
-    filterList.add(newFilter);
-  }
-
-  /**
-   * Clear the filter chain
-   */
-  public void clearAllFilters() {
-    filterList.clear();
-  }
-
-  /**
-   * Loop through the filters in the list. As soon as a filter decides on
-   * ACCEPT or DENY, then that value is returned. If all of the filters return
-   * NEUTRAL, then NEUTRAL is returned.
-   */
-  public FilterReply getFilterChainDecision(E event) {
-    for (Filter<E> f : filterList) {
-      final FilterReply r = f.decide(event);
-      if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
-        return r;
-      }
+    /**
+     * Add a filter to end of the filter list.
+     */
+    public void addFilter(Filter<E> newFilter) {
+        filterList.add(newFilter);
     }
-    return FilterReply.NEUTRAL;
-  }
 
-  public List<Filter<E>> getCopyOfAttachedFiltersList() {
-    return new ArrayList<Filter<E>>(filterList);
-  }
+    /**
+     * Clear the filter chain
+     */
+    public void clearAllFilters() {
+        filterList.clear();
+    }
+
+    /**
+     * Loop through the filters in the list. As soon as a filter decides on
+     * ACCEPT or DENY, then that value is returned. If all of the filters return
+     * NEUTRAL, then NEUTRAL is returned.
+     */
+    public FilterReply getFilterChainDecision(E event) {
+        for (Filter<E> f : filterList) {
+            final FilterReply r = f.decide(event);
+            if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
+                return r;
+            }
+        }
+        return FilterReply.NEUTRAL;
+    }
+
+    public List<Filter<E>> getCopyOfAttachedFiltersList() {
+        return new ArrayList<Filter<E>>(filterList);
+    }
 }

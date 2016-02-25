@@ -19,13 +19,13 @@ import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 
 public class ExtendedThrowableProxyConverter extends ThrowableProxyConverter {
 
-  @Override
-  protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
-    ThrowableProxyUtil.subjoinPackagingData(builder, step);
-  }
+    @Override
+    protected void extraData(StringBuilder builder, StackTraceElementProxy step) {
+        ThrowableProxyUtil.subjoinPackagingData(builder, step);
+    }
 
-  protected void prepareLoggingEvent(ILoggingEvent event) {
-    
-  }
+    protected void prepareLoggingEvent(ILoggingEvent event) {
+
+    }
 
 }

@@ -23,160 +23,158 @@ import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 
 public class House {
-  Door mainDoor;
-  int count;
-  Double temperature;
-  boolean open;
-  String name;
-  String camelCase;
-  SwimmingPool pool;
-  Duration duration;
-  FileSize fs;
-  HouseColor houseColor;
-  FilterReply reply;
-  
-  
-  Charset charset;
+    Door mainDoor;
+    int count;
+    Double temperature;
+    boolean open;
+    String name;
+    String camelCase;
+    SwimmingPool pool;
+    Duration duration;
+    FileSize fs;
+    HouseColor houseColor;
+    FilterReply reply;
 
-  List<String> adjectiveList = new ArrayList<String>();
-  List<Window> windowList = new ArrayList<Window>();
-  List<SwimmingPool> largePoolList = new ArrayList<SwimmingPool>();
+    Charset charset;
 
-  public String getCamelCase() {
-    return camelCase;
-  }
+    List<String> adjectiveList = new ArrayList<String>();
+    List<Window> windowList = new ArrayList<Window>();
+    List<SwimmingPool> largePoolList = new ArrayList<SwimmingPool>();
 
-  public void setCamelCase(String camelCase) {
-    this.camelCase = camelCase;
-  }
+    public String getCamelCase() {
+        return camelCase;
+    }
 
-  public int getCount() {
-    return count;
-  }
+    public void setCamelCase(String camelCase) {
+        this.camelCase = camelCase;
+    }
 
-  public void setCount(int c) {
-    this.count = c;
-  }
+    public int getCount() {
+        return count;
+    }
 
-  
-  public Double getTemperature() {
-    return temperature;
-  }
+    public void setCount(int c) {
+        this.count = c;
+    }
 
-  public void setTemperature(Double temperature) {
-    this.temperature = temperature;
-  }
+    public Double getTemperature() {
+        return temperature;
+    }
 
-  public Door getDoor() {
-    return mainDoor;
-  }
+    public void setTemperature(Double temperature) {
+        this.temperature = temperature;
+    }
 
-  public void setDoor(Door door) {
-    this.mainDoor = door;
-  }
+    public Door getDoor() {
+        return mainDoor;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setDoor(Door door) {
+        this.mainDoor = door;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public boolean isOpen() {
-    return open;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setOpen(boolean open) {
-    this.open = open;
-  }
+    public boolean isOpen() {
+        return open;
+    }
 
-  @DefaultClass(LargeSwimmingPoolImpl.class)
-  public void addLargeSwimmingPool(SwimmingPool pool) {
-    this.pool = pool;
-  }
+    public void setOpen(boolean open) {
+        this.open = open;
+    }
 
-  @DefaultClass(SwimmingPoolImpl.class)
-  public void setSwimmingPool(SwimmingPool pool) {
-    this.pool = pool;
-  }
+    @DefaultClass(LargeSwimmingPoolImpl.class)
+    public void addLargeSwimmingPool(SwimmingPool pool) {
+        this.pool = pool;
+    }
 
-  public SwimmingPool getSwimmingPool() {
-    return pool;
-  }
+    @DefaultClass(SwimmingPoolImpl.class)
+    public void setSwimmingPool(SwimmingPool pool) {
+        this.pool = pool;
+    }
 
-  public void addWindow(Window w) {
-    windowList.add(w);
-  }
+    public SwimmingPool getSwimmingPool() {
+        return pool;
+    }
 
-  public void addAdjective(String s) {
-    adjectiveList.add(s);
-  }
+    public void addWindow(Window w) {
+        windowList.add(w);
+    }
 
-  public Duration getDuration() {
-    return duration;
-  }
+    public void addAdjective(String s) {
+        adjectiveList.add(s);
+    }
 
-  public void setDuration(Duration duration) {
-    this.duration = duration;
-  }
+    public Duration getDuration() {
+        return duration;
+    }
 
-  public FileSize getFs() {
-    return fs;
-  }
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
 
-  public void setFs(FileSize fs) {
-    this.fs = fs;
-  }
+    public FileSize getFs() {
+        return fs;
+    }
 
-  public void setHouseColor(HouseColor color) {
-    this.houseColor = color;
-  }
+    public void setFs(FileSize fs) {
+        this.fs = fs;
+    }
 
-  public HouseColor getHouseColor() {
-    return houseColor;
-  }
+    public void setHouseColor(HouseColor color) {
+        this.houseColor = color;
+    }
 
-  public void setFilterReply(FilterReply reply) {
-    this.reply = reply;
-  }
+    public HouseColor getHouseColor() {
+        return houseColor;
+    }
 
-  public FilterReply getFilterReply() {
-    return reply;
-  }
+    public void setFilterReply(FilterReply reply) {
+        this.reply = reply;
+    }
 
-  public Charset getCharset() {
-    return charset;
-  }
+    public FilterReply getFilterReply() {
+        return reply;
+    }
 
-  public void setCharset(Charset charset) {
-    this.charset = charset;
-  }
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
 }
 
 class Door {
-  int handle;
+    int handle;
 }
 
 class Window {
-  int handle;
+    int handle;
 }
 
 interface SwimmingPool {
 }
 
 class SwimmingPoolImpl implements SwimmingPool {
-  int length;
-  int width;
-  int depth;
+    int length;
+    int width;
+    int depth;
 }
 
 class LargeSwimmingPoolImpl implements SwimmingPool {
-  int length;
-  int width;
-  int depth;
+    int length;
+    int width;
+    int depth;
 }
 
 enum HouseColor {
-  WHITE, BLUE
+    WHITE, BLUE
 }

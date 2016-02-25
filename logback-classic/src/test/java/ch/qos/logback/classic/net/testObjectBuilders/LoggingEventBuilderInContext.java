@@ -21,21 +21,19 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class LoggingEventBuilderInContext implements Builder<ILoggingEvent> {
 
+    LoggerContext loggerContext;
+    Logger logger;
+    String fqcn;
 
-  LoggerContext loggerContext;
-  Logger logger;
-  String fqcn;
-  public LoggingEventBuilderInContext(LoggerContext loggerContext, String loggerName, String fqcn) {
-    this.loggerContext = loggerContext;
-    logger = loggerContext.getLogger(loggerName);
-    this.fqcn = fqcn;
-  }
+    public LoggingEventBuilderInContext(LoggerContext loggerContext, String loggerName, String fqcn) {
+        this.loggerContext = loggerContext;
+        logger = loggerContext.getLogger(loggerName);
+        this.fqcn = fqcn;
+    }
 
-
-  public ILoggingEvent build(int i) {
-    LoggingEvent le = new LoggingEvent(fqcn, logger, Level.DEBUG, "hello " + i,
-            null, null);
-    return le;
-  }
+    public ILoggingEvent build(int i) {
+        LoggingEvent le = new LoggingEvent(fqcn, logger, Level.DEBUG, "hello " + i, null, null);
+        return le;
+    }
 
 }

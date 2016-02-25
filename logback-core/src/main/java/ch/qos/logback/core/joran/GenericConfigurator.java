@@ -35,137 +35,135 @@ import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-  protected Interpreter interpreter;
+    protected Interpreter interpreter;
 
-  public final void doConfigure(URL url) throws JoranException {
-    InputStream in = null;
-    try {
-      informContextOfURLUsedForConfiguration(getContext(), url);
-      URLConnection urlConnection = url.openConnection();
-      // per http://jira.qos.ch/browse/LBCORE-105
-      // per http://jira.qos.ch/browse/LBCORE-127
-      urlConnection.setUseCaches(false);
-
-      in = urlConnection.getInputStream();
-      doConfigure(in);
-    } catch (IOException ioe) {
-      String errMsg = "Could not open URL [" + url + "].";
-      addError(errMsg, ioe);
-      throw new JoranException(errMsg, ioe);
-    } finally {
-      if (in != null) {
+    public final void doConfigure(URL url) throws JoranException {
+        InputStream in = null;
         try {
-          in.close();
+            informContextOfURLUsedForConfiguration(getContext(), url);
+            URLConnection urlConnection = url.openConnection();
+            // per http://jira.qos.ch/browse/LBCORE-105
+            // per http://jira.qos.ch/browse/LBCORE-127
+            urlConnection.setUseCaches(false);
+
+            in = urlConnection.getInputStream();
+            doConfigure(in);
         } catch (IOException ioe) {
-          String errMsg = "Could not close input stream";
-          addError(errMsg, ioe);
-          throw new JoranException(errMsg, ioe);
+            String errMsg = "Could not open URL [" + url + "].";
+            addError(errMsg, ioe);
+            throw new JoranException(errMsg, ioe);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException ioe) {
+                    String errMsg = "Could not close input stream";
+                    addError(errMsg, ioe);
+                    throw new JoranException(errMsg, ioe);
+                }
+            }
         }
-      }
     }
-  }
 
-  public final void doConfigure(String filename) throws JoranException {
-    doConfigure(new File(filename));
-  }
+    public final void doConfigure(String filename) throws JoranException {
+        doConfigure(new File(filename));
+    }
 
-  public final void doConfigure(File file) throws JoranException {
-    FileInputStream fis = null;
-    try {
-      informContextOfURLUsedForConfiguration(getContext(), file.toURI().toURL());
-      fis = new FileInputStream(file);
-      doConfigure(fis);
-    } catch (IOException ioe) {
-      String errMsg = "Could not open [" + file.getPath() + "].";
-      addError(errMsg, ioe);
-      throw new JoranException(errMsg, ioe);
-    } finally {
-      if (fis != null) {
+    public final void doConfigure(File file) throws JoranException {
+        FileInputStream fis = null;
         try {
-          fis.close();
-        } catch (java.io.IOException ioe) {
-          String errMsg = "Could not close [" + file.getName() + "].";
-          addError(errMsg, ioe);
-          throw new JoranException(errMsg, ioe);
+            informContextOfURLUsedForConfiguration(getContext(), file.toURI().toURL());
+            fis = new FileInputStream(file);
+            doConfigure(fis);
+        } catch (IOException ioe) {
+            String errMsg = "Could not open [" + file.getPath() + "].";
+            addError(errMsg, ioe);
+            throw new JoranException(errMsg, ioe);
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (java.io.IOException ioe) {
+                    String errMsg = "Could not close [" + file.getName() + "].";
+                    addError(errMsg, ioe);
+                    throw new JoranException(errMsg, ioe);
+                }
+            }
         }
-      }
     }
-  }
 
-  public static void informContextOfURLUsedForConfiguration(Context context, URL url) {
-    ConfigurationWatchListUtil.setMainWatchURL(context, url);
-  }
-
-  public final void doConfigure(InputStream inputStream) throws JoranException {
-    doConfigure(new InputSource(inputStream));
-  }
-
-  protected abstract void addInstanceRules(RuleStore rs);
-
-  protected abstract void addImplicitRules(Interpreter interpreter);
-
-  protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-
-  }
-
-  protected ElementPath initialElementPath() {
-    return new ElementPath();
-  }
-
-  protected void buildInterpreter() {
-    RuleStore rs = new SimpleRuleStore(context);
-    addInstanceRules(rs);
-    this.interpreter = new Interpreter(context, rs, initialElementPath());
-    InterpretationContext interpretationContext = interpreter.getInterpretationContext();
-    interpretationContext.setContext(context);
-    addImplicitRules(interpreter);
-    addDefaultNestedComponentRegistryRules(interpretationContext.getDefaultNestedComponentRegistry());
-  }
-
-  // this is the most inner form of doConfigure whereto other doConfigure
-  // methods ultimately delegate
-  public final void doConfigure(final InputSource inputSource)
-          throws JoranException {
-
-    long threshold = System.currentTimeMillis();
-    if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
-      informContextOfURLUsedForConfiguration(getContext(), null);
+    public static void informContextOfURLUsedForConfiguration(Context context, URL url) {
+        ConfigurationWatchListUtil.setMainWatchURL(context, url);
     }
-    SaxEventRecorder recorder = new SaxEventRecorder(context);
-    recorder.recordEvents(inputSource);
-    doConfigure(recorder.saxEventList);
-    // no exceptions a this level
-    StatusUtil statusUtil = new StatusUtil(context);
-    if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
-      addInfo("Registering current configuration as safe fallback point");
-      registerSafeConfiguration();
+
+    public final void doConfigure(InputStream inputStream) throws JoranException {
+        doConfigure(new InputSource(inputStream));
     }
-  }
 
-  public void doConfigure(final List<SaxEvent> eventList)
-          throws JoranException {
-    buildInterpreter();
-    // disallow simultaneous configurations of the same context
-    synchronized (context.getConfigurationLock()) {
-      interpreter.getEventPlayer().play(eventList);
+    protected abstract void addInstanceRules(RuleStore rs);
+
+    protected abstract void addImplicitRules(Interpreter interpreter);
+
+    protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
+
     }
-  }
 
-  /**
-   * Register the current event list in currently in the interpreter as a safe
-   * configuration point.
-   *
-   * @since 0.9.30
-   */
-  public void registerSafeConfiguration() {
-    context.putObject(SAFE_JORAN_CONFIGURATION, interpreter.getEventPlayer().getCopyOfPlayerEventList());
-  }
+    protected ElementPath initialElementPath() {
+        return new ElementPath();
+    }
 
-  /**
-   * Recall the event list previously registered as a safe point.
-   */
-  @SuppressWarnings("unchecked")
-  public List<SaxEvent> recallSafeConfiguration() {
-    return (List<SaxEvent>) context.getObject(SAFE_JORAN_CONFIGURATION);
-  }
+    protected void buildInterpreter() {
+        RuleStore rs = new SimpleRuleStore(context);
+        addInstanceRules(rs);
+        this.interpreter = new Interpreter(context, rs, initialElementPath());
+        InterpretationContext interpretationContext = interpreter.getInterpretationContext();
+        interpretationContext.setContext(context);
+        addImplicitRules(interpreter);
+        addDefaultNestedComponentRegistryRules(interpretationContext.getDefaultNestedComponentRegistry());
+    }
+
+    // this is the most inner form of doConfigure whereto other doConfigure
+    // methods ultimately delegate
+    public final void doConfigure(final InputSource inputSource) throws JoranException {
+
+        long threshold = System.currentTimeMillis();
+        if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
+            informContextOfURLUsedForConfiguration(getContext(), null);
+        }
+        SaxEventRecorder recorder = new SaxEventRecorder(context);
+        recorder.recordEvents(inputSource);
+        doConfigure(recorder.saxEventList);
+        // no exceptions a this level
+        StatusUtil statusUtil = new StatusUtil(context);
+        if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
+            addInfo("Registering current configuration as safe fallback point");
+            registerSafeConfiguration();
+        }
+    }
+
+    public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
+        buildInterpreter();
+        // disallow simultaneous configurations of the same context
+        synchronized (context.getConfigurationLock()) {
+            interpreter.getEventPlayer().play(eventList);
+        }
+    }
+
+    /**
+     * Register the current event list in currently in the interpreter as a safe
+     * configuration point.
+     *
+     * @since 0.9.30
+     */
+    public void registerSafeConfiguration() {
+        context.putObject(SAFE_JORAN_CONFIGURATION, interpreter.getEventPlayer().getCopyOfPlayerEventList());
+    }
+
+    /**
+     * Recall the event list previously registered as a safe point.
+     */
+    @SuppressWarnings("unchecked")
+    public List<SaxEvent> recallSafeConfiguration() {
+        return (List<SaxEvent>) context.getObject(SAFE_JORAN_CONFIGURATION);
+    }
 }

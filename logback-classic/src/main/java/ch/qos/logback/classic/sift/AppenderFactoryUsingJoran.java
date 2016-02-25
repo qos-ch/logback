@@ -26,13 +26,12 @@ import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
  */
 public class AppenderFactoryUsingJoran extends AbstractAppenderFactoryUsingJoran<ILoggingEvent> {
 
+    AppenderFactoryUsingJoran(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
+        super(eventList, key, parentPropertyMap);
+    }
 
-  AppenderFactoryUsingJoran(List<SaxEvent> eventList, String key, Map<String, String> parentPropertyMap) {
-    super(eventList, key, parentPropertyMap);
-  }
-
-  public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String discriminatingValue) {
-    return new SiftingJoranConfigurator(key, discriminatingValue, parentPropertyMap);
-  }
+    public SiftingJoranConfiguratorBase<ILoggingEvent> getSiftingJoranConfigurator(String discriminatingValue) {
+        return new SiftingJoranConfigurator(key, discriminatingValue, parentPropertyMap);
+    }
 
 }

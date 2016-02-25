@@ -21,10 +21,10 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
  * @author  Ceki G&uuml;lc&uuml;
  * @since 1.0.5
  */
-public class BoldRedCompositeConverter <E> extends ForegroundCompositeConverterBase<E> {
+public class BoldRedCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return BOLD+RED_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return BOLD + RED_FG;
+    }
 }

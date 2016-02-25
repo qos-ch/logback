@@ -20,14 +20,14 @@ package ch.qos.logback.core.net.ssl;
  */
 public interface SSLTestConstants {
 
-  String KEYSTORE_JKS_RESOURCE = "net/ssl/keystore.jks";
-  
-  String KEYSTORE_PKCS12_RESOURCE = "net/ssl/keystore.p12";
+    String KEYSTORE_JKS_RESOURCE = "net/ssl/keystore.jks";
 
-  String PKCS12_TYPE = "PKCS12";
+    String KEYSTORE_PKCS12_RESOURCE = "net/ssl/keystore.p12";
 
-  String FAKE_ALGORITHM_NAME = "A_FAKE_ALGORITHM_NAME";
+    String PKCS12_TYPE = "PKCS12";
 
-  String FAKE_PROVIDER_NAME = "A_FAKE_PROVIDER_NAME";
+    String FAKE_ALGORITHM_NAME = "A_FAKE_ALGORITHM_NAME";
+
+    String FAKE_PROVIDER_NAME = "A_FAKE_PROVIDER_NAME";
 
 }

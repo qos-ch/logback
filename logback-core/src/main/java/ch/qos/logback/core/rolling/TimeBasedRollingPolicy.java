@@ -90,7 +90,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         timeBasedFileNamingAndTriggeringPolicy.setTimeBasedRollingPolicy(this);
         timeBasedFileNamingAndTriggeringPolicy.start();
 
-        if(!timeBasedFileNamingAndTriggeringPolicy.isStarted()) {
+        if (!timeBasedFileNamingAndTriggeringPolicy.isStarted()) {
             addWarn("Subcomponent did not start. TimeBasedRollingPolicy will not start.");
             return;
         }

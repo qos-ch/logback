@@ -35,190 +35,183 @@ import static org.junit.Assert.*;
 
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
-  private PatternLayout pl = new PatternLayout();
-  private LoggerContext lc = new LoggerContext();
-  Logger logger = lc.getLogger(ConverterTest.class);
-  Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    private PatternLayout pl = new PatternLayout();
+    private LoggerContext lc = new LoggerContext();
+    Logger logger = lc.getLogger(ConverterTest.class);
+    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
-  ILoggingEvent le;
+    ILoggingEvent le;
 
-	public PatternLayoutTest() {
-    super();
-    Exception ex = new Exception("Bogus exception");
-    le = makeLoggingEvent(ex);
-  }
-
-  @Before
-  public void setUp() {
-    pl.setContext(lc);
-  }
-
-  ILoggingEvent makeLoggingEvent(Exception ex) {
-    return new LoggingEvent(
-            ch.qos.logback.core.pattern.FormattingConverter.class.getName(),
-            logger, Level.INFO, "Some message", ex, null);
-  }
-
-  @Override
-  public ILoggingEvent getEventObject() {
-    return makeLoggingEvent(null);
-  }
-
-  public PatternLayoutBase<ILoggingEvent> getPatternLayoutBase() {
-    return new PatternLayout();
-  }
-
-  @Test
-  public void testOK() {
-    pl.setPattern("%d %le [%t] %lo{30} - %m%n");
-    pl.start();
-    String val = pl.doLayout(getEventObject());
-    // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
-    // message
-    //2010-12-29 19:04:26,137 INFO [pool-1-thread-47] c.q.l.c.pattern.ConverterTest - Some message
-    String regex = ISO_REGEX + " INFO " + MAIN_REGEX
-            + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
-
-    assertTrue("val="+val, val.matches(regex));
-  }
-
-  @Test
-  public void testNoExeptionHandler() {
-    pl.setPattern("%m%n");
-    pl.start();
-    String val = pl.doLayout(le);
-    assertTrue(val.contains("java.lang.Exception: Bogus exception"));
-  }
-
-  @Test
-  public void testCompositePattern() {
-    pl.setPattern("%-56(%d %lo{20}) - %m%n");
-    pl.start();
-    String val = pl.doLayout(getEventObject());
-    // 2008-03-18 21:55:54,250 c.q.l.c.pattern.ConverterTest - Some message
-    String regex = ISO_REGEX
-            + " c.q.l.c.p.ConverterTest          - Some message\\s*";
-    assertTrue(val.matches(regex));
-  }
-
-  @Test
-  public void contextProperty() {
-    pl.setPattern("%property{a}");
-    pl.start();
-    lc.putProperty("a", "b");
-
-    String val = pl.doLayout(getEventObject());
-    assertEquals("b", val);
-  }
-
-  @Test
-  public void testNopExeptionHandler() {
-    pl.setPattern("%nopex %m%n");
-    pl.start();
-    String val = pl.doLayout(le);
-    assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
-  }
-
-  @Test
-  public void testWithParenthesis() {
-    pl.setPattern("\\(%msg:%msg\\) %msg");
-    pl.start();
-    le = makeLoggingEvent(null);
-    String val = pl.doLayout(le);
-    // System.out.println("VAL == " + val);
-    assertEquals("(Some message:Some message) Some message", val);
-  }
-
-  @Test
-  public void testWithLettersComingFromLog4j() {
-    // Letters: p = level and c = logger
-    pl.setPattern("%d %p [%t] %c{30} - %m%n");
-    pl.start();
-    String val = pl.doLayout(getEventObject());
-    // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
-    // message
-    String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
-            + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
-    assertTrue(val.matches(regex));
-  }
-
-  @Test
-  public void mdcWithDefaultValue() {
-    String pattern = "%msg %mdc{foo} %mdc{bar:-[null]}";
-    pl.setPattern(OptionHelper.substVars(pattern, lc));
-    pl.start();
-    MDC.put("foo", "foo");
-    try {
-      String val = pl.doLayout(getEventObject());
-      assertEquals("Some message foo [null]", val);
-    } finally {
-      MDC.remove("foo");
+    public PatternLayoutTest() {
+        super();
+        Exception ex = new Exception("Bogus exception");
+        le = makeLoggingEvent(ex);
     }
-  }
 
+    @Before
+    public void setUp() {
+        pl.setContext(lc);
+    }
 
-  @Test
-  public void contextNameTest() {
-    pl.setPattern("%contextName");
-    lc.setName("aValue");
-    pl.start();
-    String val = pl.doLayout(getEventObject());
-    assertEquals("aValue", val);
-  }
+    ILoggingEvent makeLoggingEvent(Exception ex) {
+        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, "Some message", ex, null);
+    }
 
-  @Test
-  public void cnTest() {
-    pl.setPattern("%cn");
-    lc.setName("aValue");
-    pl.start();
-    String val = pl.doLayout(getEventObject());
-    assertEquals("aValue", val);
-  }
+    @Override
+    public ILoggingEvent getEventObject() {
+        return makeLoggingEvent(null);
+    }
 
-  @Override
-  public Context getContext() {
-    return lc;
-  }
+    public PatternLayoutBase<ILoggingEvent> getPatternLayoutBase() {
+        return new PatternLayout();
+    }
 
-  void configure(String file) throws JoranException {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.setContext(lc);
-    jc.doConfigure(file);
-  }
+    @Test
+    public void testOK() {
+        pl.setPattern("%d %le [%t] %lo{30} - %m%n");
+        pl.start();
+        String val = pl.doLayout(getEventObject());
+        // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
+        // message
+        // 2010-12-29 19:04:26,137 INFO [pool-1-thread-47] c.q.l.c.pattern.ConverterTest - Some message
+        String regex = ISO_REGEX + " INFO " + MAIN_REGEX + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
 
-  @Test
-  public void testConversionRuleSupportInPatternLayout() throws JoranException {
-    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/patternLayout0.xml");
-    root.getAppender("LIST");
-    String msg = "Simon says";
-    logger.debug(msg);
-    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
-    assertNotNull(sla);
-    assertEquals(1, sla.strList.size());
-    assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
-  }
+        assertTrue("val=" + val, val.matches(regex));
+    }
 
-  @Test
-  public void somekeReplace() {
-    pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");
-    pl.start();
-    StatusPrinter.print(lc);
-    String val = pl.doLayout(getEventObject());
-    assertEquals("aXXXXb", val);
-  }
+    @Test
+    public void testNoExeptionHandler() {
+        pl.setPattern("%m%n");
+        pl.start();
+        String val = pl.doLayout(le);
+        assertTrue(val.contains("java.lang.Exception: Bogus exception"));
+    }
 
-  @Test
-  public void replaceWithJoran() throws JoranException {
-    configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replace0.xml");
-    StatusPrinter.print(lc);
-    root.getAppender("LIST");
-    String msg = "And the number is 4111111111110000, expiring on 12/2010";
-    logger.debug(msg);
-    StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
-    assertNotNull(sla);
-    assertEquals(1, sla.strList.size());
-    assertEquals("And the number is XXXX, expiring on 12/2010", sla.strList.get(0));
-  }
+    @Test
+    public void testCompositePattern() {
+        pl.setPattern("%-56(%d %lo{20}) - %m%n");
+        pl.start();
+        String val = pl.doLayout(getEventObject());
+        // 2008-03-18 21:55:54,250 c.q.l.c.pattern.ConverterTest - Some message
+        String regex = ISO_REGEX + " c.q.l.c.p.ConverterTest          - Some message\\s*";
+        assertTrue(val.matches(regex));
+    }
 
+    @Test
+    public void contextProperty() {
+        pl.setPattern("%property{a}");
+        pl.start();
+        lc.putProperty("a", "b");
+
+        String val = pl.doLayout(getEventObject());
+        assertEquals("b", val);
+    }
+
+    @Test
+    public void testNopExeptionHandler() {
+        pl.setPattern("%nopex %m%n");
+        pl.start();
+        String val = pl.doLayout(le);
+        assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
+    }
+
+    @Test
+    public void testWithParenthesis() {
+        pl.setPattern("\\(%msg:%msg\\) %msg");
+        pl.start();
+        le = makeLoggingEvent(null);
+        String val = pl.doLayout(le);
+        // System.out.println("VAL == " + val);
+        assertEquals("(Some message:Some message) Some message", val);
+    }
+
+    @Test
+    public void testWithLettersComingFromLog4j() {
+        // Letters: p = level and c = logger
+        pl.setPattern("%d %p [%t] %c{30} - %m%n");
+        pl.start();
+        String val = pl.doLayout(getEventObject());
+        // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
+        // message
+        String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
+        assertTrue(val.matches(regex));
+    }
+
+    @Test
+    public void mdcWithDefaultValue() {
+        String pattern = "%msg %mdc{foo} %mdc{bar:-[null]}";
+        pl.setPattern(OptionHelper.substVars(pattern, lc));
+        pl.start();
+        MDC.put("foo", "foo");
+        try {
+            String val = pl.doLayout(getEventObject());
+            assertEquals("Some message foo [null]", val);
+        } finally {
+            MDC.remove("foo");
+        }
+    }
+
+    @Test
+    public void contextNameTest() {
+        pl.setPattern("%contextName");
+        lc.setName("aValue");
+        pl.start();
+        String val = pl.doLayout(getEventObject());
+        assertEquals("aValue", val);
+    }
+
+    @Test
+    public void cnTest() {
+        pl.setPattern("%cn");
+        lc.setName("aValue");
+        pl.start();
+        String val = pl.doLayout(getEventObject());
+        assertEquals("aValue", val);
+    }
+
+    @Override
+    public Context getContext() {
+        return lc;
+    }
+
+    void configure(String file) throws JoranException {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(lc);
+        jc.doConfigure(file);
+    }
+
+    @Test
+    public void testConversionRuleSupportInPatternLayout() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "conversionRule/patternLayout0.xml");
+        root.getAppender("LIST");
+        String msg = "Simon says";
+        logger.debug(msg);
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(1, sla.strList.size());
+        assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
+    }
+
+    @Test
+    public void somekeReplace() {
+        pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");
+        pl.start();
+        StatusPrinter.print(lc);
+        String val = pl.doLayout(getEventObject());
+        assertEquals("aXXXXb", val);
+    }
+
+    @Test
+    public void replaceWithJoran() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replace0.xml");
+        StatusPrinter.print(lc);
+        root.getAppender("LIST");
+        String msg = "And the number is 4111111111110000, expiring on 12/2010";
+        logger.debug(msg);
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(1, sla.strList.size());
+        assertEquals("And the number is XXXX, expiring on 12/2010", sla.strList.get(0));
+    }
 
 }

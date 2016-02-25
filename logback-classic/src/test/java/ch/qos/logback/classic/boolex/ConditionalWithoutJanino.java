@@ -31,31 +31,30 @@ import static org.junit.Assert.*;
  */
 public class ConditionalWithoutJanino {
 
-  LoggerContext loggerContext = new LoggerContext();
-  Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    LoggerContext loggerContext = new LoggerContext();
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-  void configure(String file) throws JoranException {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.setContext(loggerContext);
-    jc.doConfigure(file);
-  }
-
-  // assume that janino.jar ia NOT on the classpath
-  @Test
-  public void conditionalWithoutJanino() throws JoranException {
-    String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/withoutJanino.xml";
-    String currentDir = System.getProperty("user.dir");
-    if(!currentDir.contains("logback-classic")) {
-         configFile =  "logback-classic/"+configFile;
+    void configure(String file) throws JoranException {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        jc.doConfigure(file);
     }
-    configure(configFile);
-    StatusPrinter.print(loggerContext);
-    StatusChecker checker = new StatusChecker(loggerContext);
-    checker.assertContainsMatch(IfAction.MISSING_JANINO_MSG);
 
-    assertSame(Level.WARN, loggerContext.getLogger("a").getLevel());
-    assertSame(Level.WARN, root.getLevel());
-  }
+    // assume that janino.jar ia NOT on the classpath
+    @Test
+    public void conditionalWithoutJanino() throws JoranException {
+        String configFile = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/withoutJanino.xml";
+        String currentDir = System.getProperty("user.dir");
+        if (!currentDir.contains("logback-classic")) {
+            configFile = "logback-classic/" + configFile;
+        }
+        configure(configFile);
+        StatusPrinter.print(loggerContext);
+        StatusChecker checker = new StatusChecker(loggerContext);
+        checker.assertContainsMatch(IfAction.MISSING_JANINO_MSG);
+
+        assertSame(Level.WARN, loggerContext.getLogger("a").getLevel());
+        assertSame(Level.WARN, root.getLevel());
+    }
 
 }
-

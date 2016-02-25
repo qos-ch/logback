@@ -35,29 +35,29 @@ import chapters.onJoran.calculator.ComputationAction1;
  * @author Ceki G&uuml;ulc&uuml;
  */
 public class NewRuleCalculator {
-  public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-    Context context = new ContextBase();
+        Context context = new ContextBase();
 
-    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
-    // we start with the rule for the top-most (root) element
-    ruleMap.put(new ElementSelector("*/computation"), new ComputationAction1());
+        // we start with the rule for the top-most (root) element
+        ruleMap.put(new ElementSelector("*/computation"), new ComputationAction1());
 
-    // Associate "/new-rule" pattern with NewRuleAction from the
-    // org.apache.joran.action package.
-    // 
-    // We will let the XML file to teach the Joran interpreter about new rules
-    ruleMap.put(new ElementSelector("/computation/newRule"), new NewRuleAction());
+        // Associate "/new-rule" pattern with NewRuleAction from the
+        // org.apache.joran.action package.
+        //
+        // We will let the XML file to teach the Joran interpreter about new rules
+        ruleMap.put(new ElementSelector("/computation/newRule"), new NewRuleAction());
 
-    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
-    // link the configurator with its context
-    simpleConfigurator.setContext(context);
+        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        // link the configurator with its context
+        simpleConfigurator.setContext(context);
 
-    simpleConfigurator.doConfigure(args[0]);
+        simpleConfigurator.doConfigure(args[0]);
 
-    // Print any errors that might have occured.
-    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-  }
+        // Print any errors that might have occured.
+        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+    }
 
 }

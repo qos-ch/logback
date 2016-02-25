@@ -23,85 +23,84 @@ import ch.qos.logback.core.read.ListAppender;
 
 public class MultithreadedInitializationTest {
 
-  final static int THREAD_COUNT = 4 + Runtime.getRuntime().availableProcessors() * 2;
-  private static AtomicLong EVENT_COUNT = new AtomicLong(0);
-  final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
-
-  int diff = new Random().nextInt(10000);
-  String loggerName = "org.slf4j.impl.MultithreadedInitializationTest";
-
-  @Before
-  public void setUp() throws Exception {
-    System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
-    LoggerFactoryFriend.reset();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
-  }
-  
-  @Test
-  public void multiThreadedInitialization() throws InterruptedException, BrokenBarrierException {
-    LoggerAccessingThread[] accessors = harness();
-
-    for (LoggerAccessingThread accessor : accessors) {
-      EVENT_COUNT.getAndIncrement();
-      accessor.logger.info("post harness");
-    }
-
-    Logger logger = LoggerFactory.getLogger(loggerName + ".slowInitialization-" + diff);
-    logger.info("hello");
-    EVENT_COUNT.getAndIncrement();
-
-    List<ILoggingEvent> events = getRecordedEvents();
-    assertEquals(EVENT_COUNT.get(), events.size());
-  }
-
-  private List<ILoggingEvent> getRecordedEvents() {
-    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
-        .getLogger(Logger.ROOT_LOGGER_NAME);
-
-    ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
-    assertNotNull(la);
-    return la.list;
-  }
-
-  private static LoggerAccessingThread[] harness() throws InterruptedException, BrokenBarrierException {
-    LoggerAccessingThread[] threads = new LoggerAccessingThread[THREAD_COUNT];
+    final static int THREAD_COUNT = 4 + Runtime.getRuntime().availableProcessors() * 2;
+    private static AtomicLong EVENT_COUNT = new AtomicLong(0);
     final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
-    for (int i = 0; i < THREAD_COUNT; i++) {
-      threads[i] = new LoggerAccessingThread(barrier, i);
-      threads[i].start();
+
+    int diff = new Random().nextInt(10000);
+    String loggerName = "org.slf4j.impl.MultithreadedInitializationTest";
+
+    @Before
+    public void setUp() throws Exception {
+        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
+        LoggerFactoryFriend.reset();
     }
 
-    barrier.await();
-    for (int i = 0; i < THREAD_COUNT; i++) {
-      threads[i].join();
-    }
-    return threads;
-  }
-
-  static class LoggerAccessingThread extends Thread {
-    final CyclicBarrier barrier;
-    Logger logger;
-    int count;
-
-    LoggerAccessingThread(CyclicBarrier barrier, int count) {
-      this.barrier = barrier;
-      this.count = count;
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
     }
 
-    public void run() {
-      try {
+    @Test
+    public void multiThreadedInitialization() throws InterruptedException, BrokenBarrierException {
+        LoggerAccessingThread[] accessors = harness();
+
+        for (LoggerAccessingThread accessor : accessors) {
+            EVENT_COUNT.getAndIncrement();
+            accessor.logger.info("post harness");
+        }
+
+        Logger logger = LoggerFactory.getLogger(loggerName + ".slowInitialization-" + diff);
+        logger.info("hello");
+        EVENT_COUNT.getAndIncrement();
+
+        List<ILoggingEvent> events = getRecordedEvents();
+        assertEquals(EVENT_COUNT.get(), events.size());
+    }
+
+    private List<ILoggingEvent> getRecordedEvents() {
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+        ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(la);
+        return la.list;
+    }
+
+    private static LoggerAccessingThread[] harness() throws InterruptedException, BrokenBarrierException {
+        LoggerAccessingThread[] threads = new LoggerAccessingThread[THREAD_COUNT];
+        final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            threads[i] = new LoggerAccessingThread(barrier, i);
+            threads[i].start();
+        }
+
         barrier.await();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + count);
-      logger.info("in run method");
-      EVENT_COUNT.getAndIncrement();
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            threads[i].join();
+        }
+        return threads;
     }
-  };
+
+    static class LoggerAccessingThread extends Thread {
+        final CyclicBarrier barrier;
+        Logger logger;
+        int count;
+
+        LoggerAccessingThread(CyclicBarrier barrier, int count) {
+            this.barrier = barrier;
+            this.count = count;
+        }
+
+        public void run() {
+            try {
+                barrier.await();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + count);
+            logger.info("in run method");
+            EVENT_COUNT.getAndIncrement();
+        }
+    };
 
 }

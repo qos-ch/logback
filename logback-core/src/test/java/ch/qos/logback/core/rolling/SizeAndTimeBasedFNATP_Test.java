@@ -119,7 +119,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         // wait for compression to finish
         waitForJobsToComplete();
 
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
         existenceCheck(expectedFilenameList);
         sortedContentCheck(randomOutputDir, runLength, prefix);
     }
@@ -199,13 +199,13 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         initRollingFileAppender(rfa1, file);
         sizeThreshold = 300;
         initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
-        
-        //StatusPrinter.print(context);
+
+        // StatusPrinter.print(context);
         assertFalse(rfa1.isStarted());
         StatusChecker checker = new StatusChecker(context);
-        checker.assertContainsMatch("Missing integer token"); 
+        checker.assertContainsMatch("Missing integer token");
     }
-    
+
     @Test
     public void checkDateCollision() {
         String stem = "toto.log";
@@ -216,10 +216,10 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         initRollingFileAppender(rfa1, file);
         sizeThreshold = 300;
         initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{EE}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
-        
-        //StatusPrinter.print(context);
+
+        // StatusPrinter.print(context);
         assertFalse(rfa1.isStarted());
         StatusChecker checker = new StatusChecker(context);
-        checker.assertContainsMatch("The date format in FileNamePattern"); 
+        checker.assertContainsMatch("The date format in FileNamePattern");
     }
 }

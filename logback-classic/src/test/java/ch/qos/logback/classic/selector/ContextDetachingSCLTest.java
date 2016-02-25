@@ -28,62 +28,61 @@ import ch.qos.logback.classic.util.MockInitialContextFactory;
 import org.slf4j.LoggerFactoryFriend;
 import org.slf4j.impl.StaticLoggerBinderFriend;
 
-public class ContextDetachingSCLTest  {
-  
-  static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
+public class ContextDetachingSCLTest {
 
-  ContextDetachingSCL contextDetachingSCL;
-  
-  @Before
-  public void setUp() throws Exception {
+    static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
 
-    System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
+    ContextDetachingSCL contextDetachingSCL;
 
-    contextDetachingSCL = new ContextDetachingSCL();
-    
-    MockInitialContextFactory.initialize();
-    MockInitialContext mic = MockInitialContextFactory.getContext();
-    mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
-    
-    //The property must be set after we setup the Mock
-    System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
+    @Before
+    public void setUp() throws Exception {
 
-    // reinitialize the LoggerFactory, These reset methods are reserved for internal use
-    StaticLoggerBinderFriend.reset();
-    LoggerFactoryFriend.reset();
+        System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
 
-    //this call will create the context "toto"
-    LoggerFactory.getLogger(ContextDetachingSCLTest.class);
-  }
+        contextDetachingSCL = new ContextDetachingSCL();
 
-  @After
-  public void tearDown() throws Exception {
-    System.clearProperty(INITIAL_CONTEXT_KEY);
-    // reinitialize the LoggerFactory, These resets method are reserved for internal use
-    StaticLoggerBinderFriend.reset();
-    LoggerFactoryFriend.reset();
-  }
+        MockInitialContextFactory.initialize();
+        MockInitialContext mic = MockInitialContextFactory.getContext();
+        mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
 
-  @Test
-  public void testDetach() {
-    ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
-    contextDetachingSCL.contextDestroyed(null);
-    assertEquals(0, selector.getCount());
-  }
-  
+        // The property must be set after we setup the Mock
+        System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
 
-  @Test
-  public void testDetachWithMissingContext() {
-    MockInitialContext mic = MockInitialContextFactory.getContext();
-    mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "tata");
-    ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
-    assertEquals("tata", selector.getLoggerContext().getName());
+        // reinitialize the LoggerFactory, These reset methods are reserved for internal use
+        StaticLoggerBinderFriend.reset();
+        LoggerFactoryFriend.reset();
 
-    mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "titi");
-    assertEquals("titi", selector.getLoggerContext().getName());
-    contextDetachingSCL.contextDestroyed(null);
+        // this call will create the context "toto"
+        LoggerFactory.getLogger(ContextDetachingSCLTest.class);
+    }
 
-    assertEquals(2, selector.getCount());
-  }
-  
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty(INITIAL_CONTEXT_KEY);
+        // reinitialize the LoggerFactory, These resets method are reserved for internal use
+        StaticLoggerBinderFriend.reset();
+        LoggerFactoryFriend.reset();
+    }
+
+    @Test
+    public void testDetach() {
+        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        contextDetachingSCL.contextDestroyed(null);
+        assertEquals(0, selector.getCount());
+    }
+
+    @Test
+    public void testDetachWithMissingContext() {
+        MockInitialContext mic = MockInitialContextFactory.getContext();
+        mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "tata");
+        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        assertEquals("tata", selector.getLoggerContext().getName());
+
+        mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "titi");
+        assertEquals("titi", selector.getLoggerContext().getName());
+        contextDetachingSCL.contextDestroyed(null);
+
+        assertEquals(2, selector.getCount());
+    }
+
 }

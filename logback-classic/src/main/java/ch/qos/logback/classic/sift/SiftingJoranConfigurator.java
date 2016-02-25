@@ -28,52 +28,49 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.sift.SiftingJoranConfiguratorBase;
 
-public class SiftingJoranConfigurator  extends SiftingJoranConfiguratorBase<ILoggingEvent> {
+public class SiftingJoranConfigurator extends SiftingJoranConfiguratorBase<ILoggingEvent> {
 
-
-  SiftingJoranConfigurator(String key, String value, Map<String, String> parentPropertyMap) {
-    super(key, value, parentPropertyMap);
-  }
-  
-  @Override
-  protected ElementPath initialElementPath() {
-    return new ElementPath("configuration");
-  }
-  
-  @Override
-  protected void addInstanceRules(RuleStore rs) {
-    super.addInstanceRules(rs);
-    rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
-  }
-
-
-  @Override
-  protected void addDefaultNestedComponentRegistryRules(
-      DefaultNestedComponentRegistry registry) {
-    DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
-  }
-    
-  @Override
-  protected void buildInterpreter() {
-    super.buildInterpreter();
-    Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-    omap.put(ActionConst.APPENDER_BAG, new HashMap());
-    omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
-    Map<String, String> propertiesMap = new HashMap<String, String>();
-    propertiesMap.putAll(parentPropertyMap);
-    propertiesMap.put(key, value);
-    interpreter.setInterpretationContextPropertiesMap(propertiesMap);
-  }
-
-  @SuppressWarnings("unchecked")
-  public Appender<ILoggingEvent> getAppender() {
-    Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-    HashMap appenderMap = (HashMap) omap.get(ActionConst.APPENDER_BAG);
-    oneAndOnlyOneCheck(appenderMap);
-    Collection values = appenderMap.values();
-    if(values.size() == 0) {
-      return null;
+    SiftingJoranConfigurator(String key, String value, Map<String, String> parentPropertyMap) {
+        super(key, value, parentPropertyMap);
     }
-    return (Appender<ILoggingEvent>) values.iterator().next();
-  }
+
+    @Override
+    protected ElementPath initialElementPath() {
+        return new ElementPath("configuration");
+    }
+
+    @Override
+    protected void addInstanceRules(RuleStore rs) {
+        super.addInstanceRules(rs);
+        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
+    }
+
+    @Override
+    protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
+        DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
+    }
+
+    @Override
+    protected void buildInterpreter() {
+        super.buildInterpreter();
+        Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+        omap.put(ActionConst.APPENDER_BAG, new HashMap());
+        omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+        Map<String, String> propertiesMap = new HashMap<String, String>();
+        propertiesMap.putAll(parentPropertyMap);
+        propertiesMap.put(key, value);
+        interpreter.setInterpretationContextPropertiesMap(propertiesMap);
+    }
+
+    @SuppressWarnings("unchecked")
+    public Appender<ILoggingEvent> getAppender() {
+        Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+        HashMap appenderMap = (HashMap) omap.get(ActionConst.APPENDER_BAG);
+        oneAndOnlyOneCheck(appenderMap);
+        Collection values = appenderMap.values();
+        if (values.size() == 0) {
+            return null;
+        }
+        return (Appender<ILoggingEvent>) values.iterator().next();
+    }
 }

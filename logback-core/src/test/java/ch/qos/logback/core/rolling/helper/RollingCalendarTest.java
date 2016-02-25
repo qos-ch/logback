@@ -94,10 +94,10 @@ public class RollingCalendarTest {
 
         checkCollisionFreeness("yyyy-MM-dd HH", true);
         checkCollisionFreeness("yyyy-MM-dd kk", true);
-        
+
         checkCollisionFreeness("yyyy-MM-dd KK", false);
         checkCollisionFreeness("yyyy-MM-dd KK a", true);
-        
+
         // daily
         checkCollisionFreeness("yyyy-MM-dd", true);
         checkCollisionFreeness("yyyy-dd", false);
@@ -109,7 +109,7 @@ public class RollingCalendarTest {
 
         checkCollisionFreeness("yyyy-MM-dd-uu", true);
         checkCollisionFreeness("yyyy-MM-uu", false);
-    
+
         // weekly
         checkCollisionFreeness("yyyy-MM-WW", true);
         checkCollisionFreeness("yyyy-WW", false);

@@ -32,111 +32,107 @@ import ch.qos.logback.core.util.CloseUtil;
  */
 class RemoteAppenderStreamClient implements RemoteAppenderClient {
 
-  private final String id;
-  private final Socket socket;
-  private final InputStream inputStream;
-  
-  private LoggerContext lc;
-  private Logger logger;
-  
-  /**
-   * Constructs a new client.  
-   * @param id a display name for the client
-   * @param inputStream input stream from which events will be read
-   */
-  public RemoteAppenderStreamClient(String id, Socket socket) {
-    this.id = id;
-    this.socket = socket;
-    this.inputStream = null;
-  }
+    private final String id;
+    private final Socket socket;
+    private final InputStream inputStream;
 
-  /**
-   * Constructs a new client.
-   * <p>
-   * This constructor is provided primarily to support unit tests for which
-   * it is inconvenient to create a socket.
-   *  
-   * @param id a display name for the client
-   * @param inputStream input stream from which events will be read
-   */
-  public RemoteAppenderStreamClient(String id, InputStream inputStream) {
-    this.id = id;
-    this.socket = null;
-    this.inputStream = inputStream;
-  }
+    private LoggerContext lc;
+    private Logger logger;
 
-  /**
-   * {@inheritDoc}
-   */
-  public void setLoggerContext(LoggerContext lc) {
-    this.lc = lc;
-    this.logger = lc.getLogger(getClass().getPackage().getName());
-  }
+    /**
+     * Constructs a new client.  
+     * @param id a display name for the client
+     * @param inputStream input stream from which events will be read
+     */
+    public RemoteAppenderStreamClient(String id, Socket socket) {
+        this.id = id;
+        this.socket = socket;
+        this.inputStream = null;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void close() {
-    if (socket == null) return;
-    CloseUtil.closeQuietly(socket);
-  }
+    /**
+     * Constructs a new client.
+     * <p>
+     * This constructor is provided primarily to support unit tests for which
+     * it is inconvenient to create a socket.
+     *  
+     * @param id a display name for the client
+     * @param inputStream input stream from which events will be read
+     */
+    public RemoteAppenderStreamClient(String id, InputStream inputStream) {
+        this.id = id;
+        this.socket = null;
+        this.inputStream = inputStream;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  public void run() {
-    logger.info(this + ": connected"); 
-    ObjectInputStream ois = null;
-    try {
-      ois = createObjectInputStream();
-      while (true) {
-        // read an event from the wire
-        ILoggingEvent event = (ILoggingEvent) ois.readObject();
-        // get a logger from the hierarchy. The name of the logger is taken to
-        // be the name contained in the event.
-        Logger remoteLogger = lc.getLogger(event.getLoggerName());
-        // apply the logger-level filter
-        if (remoteLogger.isEnabledFor(event.getLevel())) {
-          // finally log the event as if was generated locally
-          remoteLogger.callAppenders(event);
+    /**
+     * {@inheritDoc}
+     */
+    public void setLoggerContext(LoggerContext lc) {
+        this.lc = lc;
+        this.logger = lc.getLogger(getClass().getPackage().getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void close() {
+        if (socket == null)
+            return;
+        CloseUtil.closeQuietly(socket);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void run() {
+        logger.info(this + ": connected");
+        ObjectInputStream ois = null;
+        try {
+            ois = createObjectInputStream();
+            while (true) {
+                // read an event from the wire
+                ILoggingEvent event = (ILoggingEvent) ois.readObject();
+                // get a logger from the hierarchy. The name of the logger is taken to
+                // be the name contained in the event.
+                Logger remoteLogger = lc.getLogger(event.getLoggerName());
+                // apply the logger-level filter
+                if (remoteLogger.isEnabledFor(event.getLevel())) {
+                    // finally log the event as if was generated locally
+                    remoteLogger.callAppenders(event);
+                }
+            }
+        } catch (EOFException ex) {
+            // this is normal and expected
+            assert true;
+        } catch (IOException ex) {
+            logger.info(this + ": " + ex);
+        } catch (ClassNotFoundException ex) {
+            logger.error(this + ": unknown event class");
+        } catch (RuntimeException ex) {
+            logger.error(this + ": " + ex);
+        } finally {
+            if (ois != null) {
+                CloseUtil.closeQuietly(ois);
+            }
+            close();
+            logger.info(this + ": connection closed");
         }
-      }
     }
-    catch (EOFException ex) {
-      // this is normal and expected
-      assert true;    
-    }
-    catch (IOException ex) {
-      logger.info(this + ": " + ex);
-    }
-    catch (ClassNotFoundException ex) {
-      logger.error(this + ": unknown event class");      
-    }
-    catch (RuntimeException ex) {
-      logger.error(this + ": " + ex);
-    }
-    finally {
-      if (ois != null) {
-        CloseUtil.closeQuietly(ois);
-      }
-      close();
-      logger.info(this + ": connection closed");
-    }
-  }
 
-  private ObjectInputStream createObjectInputStream() throws IOException {
-    if (inputStream != null) {
-      return new ObjectInputStream(inputStream);
+    private ObjectInputStream createObjectInputStream() throws IOException {
+        if (inputStream != null) {
+            return new ObjectInputStream(inputStream);
+        }
+        return new ObjectInputStream(socket.getInputStream());
     }
-    return new ObjectInputStream(socket.getInputStream());
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString() {
-    return "client " + id;
-  }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "client " + id;
+    }
 
 }
