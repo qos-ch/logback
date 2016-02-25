@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.access.tomcat;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.ContainerBase;
 import org.junit.After;
@@ -68,7 +63,6 @@ public class LogbackValveTest {
         checker.assertContainsMatch("Done configuring");
         checker.assertIsErrorFree();
     }    
-
     
     @Test
     public void resourceShouldBeFound() throws LifecycleException {
@@ -78,36 +72,7 @@ public class LogbackValveTest {
         checker.assertContainsMatch("Found ."+fileName+". as a resource.");
         checker.assertContainsMatch("Done configuring");
         checker.assertIsErrorFree();
-        
-        //avoid double printing of status messages
     }    
-
-    
-    // // assertFalse("configuration failed for resource '" + errorDetected + "'", resultStatus.get());
-    // }
-    //
-    // @Test
-    // public void testNonExistingClasspathResourceWithExistingFile() throws LifecycleException, IOException {
-    // File tmpFile = File.createTempFile(getClass().getName(), "valve");
-    // copyStreamToFile(Thread.currentThread().getContextClassLoader().getResourceAsStream("logback-test-config.xml"),
-    // tmpFile);
-    // final String resourceName = tmpFile.getAbsolutePath();
-    // setupValve(resourceName);
-    // valve.start();
-    //
-    // // assertFalse("configuration succeeded for resource '" + resourceName + "'", errorDetected.get());
-    // }
-
-    private void copyStreamToFile(InputStream stream, File file) throws IOException {
-        FileOutputStream output = new FileOutputStream(file);
-        byte[] buffer = new byte[1024]; // Adjust if you want
-        int bytesRead;
-        while ((bytesRead = stream.read(buffer)) != -1) {
-            output.write(buffer, 0, bytesRead);
-        }
-        output.flush();
-        output.close();
-    }
 
     private void setupValve(final String resourceName) {
         valve.setFilename(resourceName);
