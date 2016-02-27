@@ -256,6 +256,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
             TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
             IAccessEvent accessEvent = new AccessEvent(request, response, adapter);
 
+            addThreadName(accessEvent);
+
             if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
                 return;
             }
@@ -266,6 +268,16 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
             request.removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
         }
     }
+
+    private void addThreadName(IAccessEvent accessEvent) {
+        try {
+            final String threadName = Thread.currentThread().getName();
+            if (threadName != null) {
+                accessEvent.setThreadName(threadName);
+            }
+        } catch (Exception ignored) {
+        }
+    }   
 
     @Override
     protected void stopInternal() throws LifecycleException {
