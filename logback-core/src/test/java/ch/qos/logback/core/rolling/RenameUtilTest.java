@@ -22,14 +22,18 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RenameUtilTest {
@@ -66,6 +70,28 @@ public class RenameUtilTest {
         assertTrue(statusChecker.isErrorFree(0));
     }
 
+    
+    @Test //  LOGBACK-1054 
+    public void renameLockedAbstractFile_LOGBACK_1054 () throws IOException, RolloverFailure {
+        RenameUtil renameUtil = new RenameUtil();
+        renameUtil.setContext(context);
+
+        String abstractFileName = "abstract_pathname-"+diff;
+        
+        String src = CoreTestConstants.OUTPUT_DIR_PREFIX+abstractFileName;
+        String target = abstractFileName + ".target";
+        
+        makeFile(src);
+        
+        FileInputStream fisLock = new FileInputStream(src);
+        renameUtil.rename(src,  target);
+        // release the lock
+        fisLock.close();
+        
+        StatusPrinter.print(context);
+        assertEquals(0, statusChecker.matchCount("Parent of target file ."+target+". is null"));
+    }
+
     @Test
     @Ignore
     public void MANUAL_renamingOnDifferentVolumesOnLinux() throws IOException, RolloverFailure {
@@ -73,32 +99,32 @@ public class RenameUtilTest {
         renameUtil.setContext(context);
 
         String src = "/tmp/ramdisk/foo.txt";
-        FileOutputStream fis = new FileOutputStream(src);
-        fis.write(("hello" + diff).getBytes());
+        makeFile(src);
 
         renameUtil.rename(src, "/tmp/foo" + diff + ".txt");
         StatusPrinter.print(context);
     }
 
+
     @Test
-    @Ignore
     public void MANUAL_renamingOnDifferentVolumesOnWindows() throws IOException, RolloverFailure {
         RenameUtil renameUtil = new RenameUtil();
         renameUtil.setContext(context);
 
-        String src = "c:/tmp/foo.txt";
-        FileOutputStream fis = new FileOutputStream(src);
-        fis.write(("hello" + diff).getBytes());
-        fis.close();
-
+        String src = "c:/tmp/foo.txt"; 
+        makeFile(src);
+        
         renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
         StatusPrinter.print(context);
         assertTrue(statusChecker.isErrorFree(0));
     }
 
-    @Test
-    public void renameByCopying() {
-
+    private void makeFile(String src) throws FileNotFoundException, IOException {
+        
+        FileOutputStream fos = new FileOutputStream(src);
+        fos.write(("hello" + diff).getBytes());
+        fos.close();
     }
 
+   
 }
