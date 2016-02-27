@@ -469,18 +469,22 @@
   permission which is different than the permission to "write" to the
   file.</p>
 
+  <p class="highlight">File rename operations during rollover can be
+  avoided altogether by omitting the <span class="option">file</span>
+  property in RollingFileAppender.</p>
 
   <p>In practice, it can be hard to set the right permissions or to
-  ensure that there are no file handle references to log files. Under
-  such circumstances, it can be easier to avoid file renaming
-  altogether. File renaming can be avoided by omitting the <span
-  class="option">file</span> property in
-  <code>TimeBasedRollingPolicy</code>, as shown in the next
-  configuration snippet.
+  ensure that there are no file handle references to log files.</p>
+
+  <p>Under many circumstances, it can be more robust to avoid file
+  renaming during rollover altogether. This is as easy as omitting the
+  <span class="option">file</span> property in
+  <code>RollingFileAppender</code>, as shown in the next configuration
+  snippet.
   </p>
 
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-  &lt;!-- <span class="option">file</span> property left unset/blank -->
+  <b>&lt;!-- <span class="option">file</span> property left unset/blank --></b>
   &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
     &lt;fileNamePattern>mylog.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
   &lt;/rollingPolicy>
@@ -499,8 +503,8 @@
    <p>On the Unix platform, the basic/quick rename method supplied by
    the JDK does not work if the source and target files are located on
    different file systems. In order to deal with this contingency,
-   logback will resort to renaming by copying if all following three
-   conditions are met:</p>
+   logback will resort to renaming by copying if all of the following
+   three conditions are met:</p>
 
    <ol>
      <li>quick renaming fails, </li>
@@ -514,6 +518,10 @@
    <p>The code for determining the file system of a file requires Java
    7. No rename by copying will be performed on Java 6 or earlier.</p>
    
+   <p>As explained in the Windows section above, renaming can be
+   avoided altogether by omitting the <span class="option">file</span>
+   property.
+   </p>
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="fwrp_parentFileName_not_set">The <span

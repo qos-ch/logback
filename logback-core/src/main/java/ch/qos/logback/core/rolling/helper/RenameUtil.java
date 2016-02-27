@@ -57,7 +57,8 @@ public class RenameUtil extends ContextAwareBase {
 
             if (!result) {
                 addWarn("Failed to rename file [" + srcFile + "] as [" + targetFile + "].");
-                if (areOnDifferentVolumes(srcFile, targetFile)) {
+                Boolean areOnDifferentVolumes = areOnDifferentVolumes(srcFile, targetFile);
+                if (Boolean.TRUE.equals(areOnDifferentVolumes)) {
                     addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
                     renameByCopying(src, target);
                     return;
@@ -71,26 +72,38 @@ public class RenameUtil extends ContextAwareBase {
         }
     }
 
+    
+    
     /**
-     * Attempts tp determine whether both files are on different volumes. Returns true if we could determine that
+     * Attempts to determine whether both files are on different volumes. Returns true if we could determine that
      * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
      *
      * @param srcFile
      * @param targetFile
      * @return true if on different volumes, false otherwise or if an error occurred
      */
-    boolean areOnDifferentVolumes(File srcFile, File targetFile) throws RolloverFailure {
+    Boolean areOnDifferentVolumes(File srcFile, File targetFile) throws RolloverFailure {
         if (!EnvUtil.isJDK7OrHigher())
             return false;
 
-        File parentOfTarget = targetFile.getParentFile();
-
+        // target file is not certain to exist but its parent has to exist given the call hierarchy of this method
+        File parentOfTarget = targetFile.getAbsoluteFile().getParentFile();
+        
+        if(parentOfTarget == null) {
+            addWarn("Parent of target file ["+targetFile+"] is null");
+            return null;
+        }
+        if(!parentOfTarget.exists()) {
+            addWarn("Parent of target file ["+targetFile+"] does not exist");
+            return null;
+        }
+        
         try {
             boolean onSameFileStore = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
             return !onSameFileStore;
         } catch (RolloverFailure rf) {
             addWarn("Error while checking file store equality", rf);
-            return false;
+            return null;
         }
     }
 
