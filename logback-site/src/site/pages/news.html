@@ -56,6 +56,13 @@
     addition, <code>RollingFileAppender</code> instances now check for
     colliding <span class="option">FileNamePattern</span> values.</p>
 
+    <p>Fixed <code>NullPointerException</code> thrown by
+    <code>RollingFileAppender</code> if the name of the rollover
+    target path did not contain a parent. This issue was reported in
+    <a href="http://jira.qos.ch/browse/LOGBACK-1054">LOGBACK-1054</a>
+    by Paulius Matulionis. Analysis of the problem and the relevant PR
+    was provided by Ferenc Palkovics.</p>
+
     <p>Fixed issue with variable substitution with the value ending in
     a colon. This problem was reported in <a
     href="http://jira.qos.ch/browse/LOGBACK-1140">LOGBACK-1140</a> by
