@@ -30,9 +30,9 @@
 
     <hr width="80%" align="center" />
     
-    <h3>2016, Release of version 1.1.6</h3>
+    <h3>uary 29th, 2016, Release of version 1.1.6</h3>
 
-    <p><code>LogbackValve</code> (in logback-access) now attempts to
+     <p><code>LogbackValve</code> (in logback-access) now attempts to
     load the configuration file as a resource if it cannot be found on
     the filesystem (<a
     href="http://jira.qos.ch/browse/LOGBACK-1069">LOGBACK-1069</a>). This
@@ -62,6 +62,15 @@
     <a href="http://jira.qos.ch/browse/LOGBACK-1054">LOGBACK-1054</a>
     by Paulius Matulionis. Analysis of the problem and the relevant PR
     was provided by Ferenc Palkovics.</p>
+
+    <p><code>BasicConfigurator.configure</code> method call executes
+    significatly faster. Improved documentation for configuration
+    using JDK 1.6 service-provider facility. These changes are in
+    response to <a
+    href="http://jira.qos.ch/browse/LOGBACK-1141">LOGBACK-1141</a>
+    requesting faster logback start-up time.
+    </p>
+
 
     <p>Fixed issue with variable substitution with the value ending in
     a colon. This problem was reported in <a

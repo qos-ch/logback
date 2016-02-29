@@ -151,7 +151,6 @@ public class ContextInitializer {
         } else {
             Configurator c = EnvUtil.loadFromServiceLoader(Configurator.class);
             if (c != null) {
-                System.out.println("loadFromServiceLoader");
                 try {
                     c.setContext(loggerContext);
                     c.configure(loggerContext);

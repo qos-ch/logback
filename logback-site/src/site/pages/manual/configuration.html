@@ -101,14 +101,18 @@
         classpath</a>..</p>
       </li>
       
-      <li><p>If no such file is found, and the executing JVM has the  
-      <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
-      ServiceLoader</a> (JDK 6 and above) the ServiceLoader will be used to resolve an 
-      implementation of <a href="../xref/ch/qos/logback/classic/spi/Configurator.html">
-      <code>com.qos.logback.classic.spi.Configurator</code></a>.
-      The first implementation found will be used. 
-      See <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
-      ServiceLoader documentation for more details</a>.
+      <li><p>If no such file is found, <a
+      href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
+      service-provider loading facility</a> (introduced in JDK 1.6) is
+      used to resolve the implementation of <a
+      href="../xref/ch/qos/logback/classic/spi/Configurator.html">
+      <code>com.qos.logback.classic.spi.Configurator</code></a>
+      interface by looking up the file
+      <em>META-INF\services\ch.qos.logback.classic.spi.Configurator</em>
+      in the class path. Its contents should specify the fully
+      qualified class name of the desired <code>Configurator</code>
+      implementation. 
+      </p>
       </li>
       
       <li><p>If none of the above succeeds, logback configures itself
@@ -120,20 +124,27 @@
 
     </ol>
 
-    <p>The fourth and last step is meant to provide a default (but
-    very basic) logging functionality in the absence of a
+    <p>The last step is meant as last-ditch effort to provide a
+    default (but very basic) logging functionality in the absence of a
     configuration file.
     </p>
 
 
     <p>If you are using Maven and if you place the
-    <em>logback-test.xml</em> under the
-    <em>src/test/resources</em> folder, Maven will ensure that it
-    won't be included in the artifact produced. Thus, you can use a
-    different configuration file, namely <em>logback-test.xml</em>
-    during testing, and another file, namely, <em>logback.xml</em>, in
-    production. The same principle applies by analogy for Ant.
+    <em>logback-test.xml</em> under the <em>src/test/resources</em>
+    folder, Maven will ensure that it won't be included in the
+    artifact produced. Thus, you can use a different configuration
+    file, namely <em>logback-test.xml</em> during testing, and another
+    file, namely, <em>logback.xml</em>, in production. 
     </p>
+
+    <p><span class="label">Fast start-up</span> It takes about 100
+    miliseconds for Joran to parse a given logback configuration
+    file. To shave off those miliseconds at aplication start up, you
+    can use the service-provider loading facility (item 4 above) to
+    load your own custom <code>Configurator</code> class with <a
+    href="../xref/ch/qos/logback/classic/BasicConfigurator.html">BasicConfigrator</a>
+    serving as a good starting point.</p>
 
 
     <h3 class="doAnchor" name="automaticConf">Automatically
