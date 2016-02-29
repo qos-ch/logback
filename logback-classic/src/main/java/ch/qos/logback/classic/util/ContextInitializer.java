@@ -151,6 +151,7 @@ public class ContextInitializer {
         } else {
             Configurator c = EnvUtil.loadFromServiceLoader(Configurator.class);
             if (c != null) {
+                System.out.println("loadFromServiceLoader");
                 try {
                     c.setContext(loggerContext);
                     c.configure(loggerContext);
@@ -159,7 +160,9 @@ public class ContextInitializer {
                                     .getCanonicalName() : "null"), e);
                 }
             } else {
-                BasicConfigurator.configure(loggerContext);
+                BasicConfigurator basicConfigurator = new BasicConfigurator();
+                basicConfigurator.setContext(loggerContext);
+                basicConfigurator.configure(loggerContext);
             }
         }
     }

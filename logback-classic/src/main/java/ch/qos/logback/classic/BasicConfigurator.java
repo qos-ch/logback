@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.classic;
 
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 
@@ -29,14 +29,14 @@ import ch.qos.logback.core.status.StatusManager;
  * 
  * @author Ceki Gulcu
  */
-public class BasicConfigurator {
+public class BasicConfigurator extends ContextAwareBase implements Configurator {
 
-    final static BasicConfigurator hiddenSingleton = new BasicConfigurator();
+    //final static BasicConfigurator hiddenSingleton = new BasicConfigurator();
 
-    private BasicConfigurator() {
+    public BasicConfigurator() {
     }
 
-    public static void configure(LoggerContext lc) {
+    public void configure(LoggerContext lc) {
         StatusManager sm = lc.getStatusManager();
         if (sm != null) {
             sm.add(new InfoStatus("Setting up default configuration.", lc));
@@ -53,10 +53,5 @@ public class BasicConfigurator {
         ca.start();
         Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.addAppender(ca);
-    }
-
-    public static void configureDefaultContext() {
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        configure(lc);
     }
 }
