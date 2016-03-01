@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 import java.util.Date;
 
+import ch.qos.logback.core.joran.spi.NoAutoStart;
 import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
 
 /**
@@ -24,6 +25,7 @@ import ch.qos.logback.core.rolling.helper.TimeBasedArchiveRemover;
  * 
  * @param <E>
  */
+@NoAutoStart
 public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
     @Override
@@ -31,6 +33,11 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
         super.start();
         if (!super.isErrorFree())
             return;
+        if(tbrp.fileNamePattern.hasIntegerTokenCOnverter()) {
+            addError("Filename pattern ["+tbrp.fileNamePattern+"] contains an integer token converter, i.e. %i, INCOMPATIBLE with this configuration. Remove it.");
+            return;
+        }
+        
         archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
         archiveRemover.setContext(context);
         started = true;

@@ -262,4 +262,5 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         StatusChecker checker = new StatusChecker(context);
         checker.assertContainsMatch(Status.ERROR, "'FileNamePattern' option has the same value");
     }
+    
 }

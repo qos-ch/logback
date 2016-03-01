@@ -109,6 +109,11 @@ public class FileNamePattern extends ContextAwareBase {
         return null;
     }
 
+    public boolean hasIntegerTokenCOnverter() {
+        IntegerTokenConverter itc = getIntegerTokenConverter();
+        return itc != null;
+    }
+    
     public String convertMultipleArguments(Object... objectList) {
         StringBuilder buf = new StringBuilder();
         Converter<Object> c = headTokenConverter;
