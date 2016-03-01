@@ -14,7 +14,7 @@
 package ch.qos.logback.core.rolling;
 
 import static org.junit.Assert.assertFalse;
-
+import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -57,10 +57,13 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
 
   private void initPolicies(RollingFileAppender<Object> rfa,
           TimeBasedRollingPolicy<Object> tbrp, String filenamePattern,
-          int sizeThreshold, long givenTime, long lastCheck) {
+          int sizeThreshold, long givenTime, long lastCheck, int maxHistory,
+          boolean historyAsFileCount) {
     sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
     tbrp.setContext(context);
     sizeAndTimeBasedFNATP.setMaxFileSize("" + sizeThreshold);
+    sizeAndTimeBasedFNATP.setHistoryAsFileCount(historyAsFileCount);
+    tbrp.setMaxHistory(maxHistory);
     tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
     tbrp.setFileNamePattern(filenamePattern);
     tbrp.setParent(rfa);
@@ -100,9 +103,10 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     String file = (stem != null) ? randomOutputDir + stem : null;
     initRollingFileAppender(rfa1, file);
     sizeThreshold = 300;
+
     initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
             + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix,
-            sizeThreshold, currentTime, 0);
+            sizeThreshold, currentTime, 0, 0, false);
     addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId,
             getMillisOfCurrentPeriodsStart(), fileIndexCounter,
             compressionSuffix);
@@ -155,7 +159,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     initRollingFileAppender(rfa2, file);
     initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{"
             + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix,
-            sizeThreshold, currentTime, 0);
+            sizeThreshold, currentTime, 0, 0, false);
 
     for (int i = runLength; i < runLength * 2; i++) {
       incCurrentTime(100);
@@ -220,7 +224,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     sizeThreshold = 300;
     initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
             + DATE_PATTERN_WITH_SECONDS + "}.txt" + compressionSuffix,
-            sizeThreshold, currentTime, 0);
+            sizeThreshold, currentTime, 0, 0, false);
 
     // StatusPrinter.print(context);
     assertFalse(rfa1.isStarted());
@@ -238,11 +242,40 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     initRollingFileAppender(rfa1, file);
     sizeThreshold = 300;
     initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{EE}.txt"
-            + compressionSuffix, sizeThreshold, currentTime, 0);
+            + compressionSuffix, sizeThreshold, currentTime, 0, 0, false);
 
     // StatusPrinter.print(context);
     assertFalse(rfa1.isStarted());
     StatusChecker checker = new StatusChecker(context);
     checker.assertContainsMatch("The date format in FileNamePattern");
+  }
+
+  public void testHistoryAsFileCount() throws IOException {
+    String testId = "testHistoryAsFileCount";
+    int maxHistory = 10;
+    initRollingFileAppender(rfa1, randomOutputDir + "~" + testId);
+    sizeThreshold = 50;
+    initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{"
+            + DATE_PATTERN_WITH_SECONDS + "}-%i.txt", sizeThreshold,
+            currentTime, 0, maxHistory, true);
+
+    incCurrentTime(100);
+    tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+    int runLength = 1000;
+
+    for (int i = 0; i < runLength; i++) {
+      String msg = "" + i;
+      rfa1.doAppend(msg);
+      incCurrentTime(20);
+      tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+      add(tbrp1.future);
+    }
+
+    Thread.yield();
+    // wait for compression to finish
+    waitForJobsToComplete();
+
+    assertEquals(maxHistory + 1, getFilesInDirectory(randomOutputDir).length);
+    sortedContentCheck(randomOutputDir, 1000, "", 863);
   }
 }

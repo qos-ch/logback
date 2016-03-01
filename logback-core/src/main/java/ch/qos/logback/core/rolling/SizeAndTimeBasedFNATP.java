@@ -31,6 +31,7 @@ public class SizeAndTimeBasedFNATP<E> extends
   int currentPeriodsCounter = 0;
   FileSize maxFileSize;
   String maxFileSizeAsString;
+  boolean historyAsFileCount = false;
 
   static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
   static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
@@ -79,7 +80,7 @@ public class SizeAndTimeBasedFNATP<E> extends
   }
 
   protected ArchiveRemover createArchiveRemover() {
-    return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+    return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc, historyAsFileCount);
   }
 
   void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
@@ -158,5 +159,9 @@ public class SizeAndTimeBasedFNATP<E> extends
   public void setMaxFileSize(String maxFileSize) {
     this.maxFileSizeAsString = maxFileSize;
     this.maxFileSize = FileSize.valueOf(maxFileSize);
+  }
+
+  public void setHistoryAsFileCount(boolean historyAsFileCount) {
+    this.historyAsFileCount = historyAsFileCount;
   }
 }
