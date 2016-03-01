@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
@@ -98,7 +99,7 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
     protected void buildInterpreter() {
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-        omap.put(ActionConst.APPENDER_BAG, new HashMap());
+        omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 

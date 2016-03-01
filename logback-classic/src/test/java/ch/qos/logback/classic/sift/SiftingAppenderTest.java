@@ -19,10 +19,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
 
@@ -31,13 +34,19 @@ import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.rolling.RollingFileAppender;
+import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP;
+import ch.qos.logback.core.rolling.TimeBasedRollingPolicy;
+import ch.qos.logback.core.sift.AppenderFactory;
 import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.spi.AbstractComponentTracker;
 import ch.qos.logback.core.spi.ComponentTracker;
@@ -45,6 +54,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
@@ -107,11 +117,10 @@ public class SiftingAppenderTest {
         logger.debug("hello");
         logger.debug("hello");
         logger.debug("hello");
-        SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
-
-        Appender<ILoggingEvent> appender = getAppenderTracker().find("zeroDefault");
-        assertNotNull(appender);
-        NOPAppender<ILoggingEvent> nopa = (NOPAppender<ILoggingEvent>) appender;
+        
+        Appender<ILoggingEvent> nopa = getAppenderTracker().find("zeroDefault");
+        assertNotNull(nopa);
+        assertThat(nopa).isInstanceOf(NOPAppender.class);
         StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
         statusChecker.assertContainsMatch(ErrorStatus.ERROR, "No nested appenders found");
@@ -282,4 +291,75 @@ public class SiftingAppenderTest {
         statusChecker.assertIsErrorFree();
     }
 
+    
+    // LOGBACK-1127
+    @Ignore
+    @Test 
+    public void programmicSiftingAppender() {
+        
+        SiftingAppender connectorAppender = new SiftingAppender();
+        connectorAppender.setContext(loggerContext);
+        connectorAppender.setName("SIFTING_APPENDER");
+                        
+        MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
+        discriminator.setKey("SKEY");
+        discriminator.setDefaultValue("DEF_KEY");
+        discriminator.start();
+        connectorAppender.setDiscriminator(discriminator);
+
+        connectorAppender.setAppenderFactory(new AppenderFactory<ILoggingEvent>() {
+
+                @Override
+                public Appender<ILoggingEvent> buildAppender(Context context, String discriminatingValue) throws JoranException {
+
+                        RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<ILoggingEvent>();
+                        appender.setName("ROLLING_APPENDER_"+discriminatingValue);
+                        appender.setContext(context);
+                        appender.setFile("/var/logs/active_"+discriminatingValue+".log");
+
+                        TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<ILoggingEvent>();
+                        policy.setContext(context);
+                        policy.setMaxHistory(365);
+                        policy.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX+"/logback1127/"+discriminatingValue+"_%d{yyyy_MM_dd}_%i.log");
+                        policy.setParent(appender);
+                        policy.setCleanHistoryOnStart(true);
+
+                        SizeAndTimeBasedFNATP<ILoggingEvent> innerpolicy = new SizeAndTimeBasedFNATP<ILoggingEvent>();
+                        innerpolicy.setContext(context);
+                        innerpolicy.setMaxFileSize("5KB");
+                        innerpolicy.setTimeBasedRollingPolicy(policy);
+
+                        policy.setTimeBasedFileNamingAndTriggeringPolicy(innerpolicy);
+                        policy.start();
+                        appender.setRollingPolicy(policy);
+
+                        PatternLayoutEncoder pl = new PatternLayoutEncoder();
+                        pl.setContext(context);
+                        pl.setPattern("%d{yyyy/MM/dd'T'HH:mm:ss} %-5level - %msg\n");
+
+                        pl.start();
+                        appender.setEncoder(pl);
+
+                        appender.start();
+                        return appender;
+                }
+        });
+        connectorAppender.start();
+                
+        ch.qos.logback.classic.Logger logger = loggerContext.getLogger("org.test");
+        logger.addAppender(connectorAppender);
+        logger.setLevel(Level.DEBUG);
+        logger.setAdditive(false);
+
+        MDC.put("SKEY", "K1");
+        logger.info("bla1");
+        MDC.clear();
+                
+        MDC.put("SKEY", "K2");
+        logger.info("bla2");
+        MDC.clear();
+
+        StatusPrinter.print(loggerContext);
+        
+    }
 }
