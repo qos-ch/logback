@@ -105,6 +105,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
             incCurrentTime(20);
             tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
             add(tbrp1.compressionFuture);
+            add(tbrp1.cleanUpFuture);
         }
 
         if (withSecondPhase) {

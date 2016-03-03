@@ -114,6 +114,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
             incCurrentTime(500);
             tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
             add(tbrp1.compressionFuture);
+            add(tbrp1.cleanUpFuture);
         }
         rfa1.stop();
         waitForJobsToComplete();
@@ -152,6 +153,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
             incCurrentTime(100);
             tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
             add(tbrp2.compressionFuture);
+            add(tbrp1.cleanUpFuture);
         }
         rfa2.stop();
     }

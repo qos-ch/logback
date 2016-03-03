@@ -300,6 +300,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
             }
             tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime(), tickDuration));
             add(tbrp.compressionFuture);
+            add(tbrp.cleanUpFuture);
             waitForJobsToComplete();
         }
         rfa.stop();
