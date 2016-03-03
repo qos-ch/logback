@@ -16,9 +16,12 @@ package ch.qos.logback.core.rolling.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+
 import java.util.Date;
 
 import org.junit.Test;
+
+import ch.qos.logback.core.util.EnvUtil;
 
 public class RollingCalendarTest {
 
@@ -107,8 +110,11 @@ public class RollingCalendarTest {
         checkCollisionFreeness("yyyy-DDD", true);
         checkCollisionFreeness("DDD", false);
 
-        checkCollisionFreeness("yyyy-MM-dd-uu", true);
-        checkCollisionFreeness("yyyy-MM-uu", false);
+        // 'u' is new to JDK 7
+        if (EnvUtil.isJDK7OrHigher()) {
+            checkCollisionFreeness("yyyy-MM-dd-uu", true);
+            checkCollisionFreeness("yyyy-MM-uu", false);
+        }
 
         // weekly
         checkCollisionFreeness("yyyy-MM-WW", true);
