@@ -22,7 +22,6 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
@@ -47,7 +46,8 @@ public class Compressor extends ContextAwareBase {
     /**
      * @param nameOfFile2Compress
      * @param nameOfCompressedFile
-     * @param innerEntryName       The name of the file within the zip file. Use for ZIP compression.
+     * @param innerEntryName 
+     *            The name of the file within the zip file. Use for ZIP compression.
      */
     public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
         switch (compressionMode) {

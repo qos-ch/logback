@@ -138,7 +138,7 @@ public class AsyncAppenderBaseTest {
     }
 
     @Test(timeout = 2000)
-    public void lossyAppenderShouldOnlyLooseCertainEvents() {
+    public void lossyAppenderShouldOnlyLoseCertainEvents() {
         int bufferSize = 5;
         int loopLen = bufferSize * 2;
         lossyAsyncAppender.addAppender(delayingListAppender);
@@ -241,8 +241,7 @@ public class AsyncAppenderBaseTest {
     }
 
     // Interruption of current thread when in doAppend method should not be
-    // consumed
-    // by async appender. See also http://jira.qos.ch/browse/LOGBACK-910
+    // consumed by async appender. See also http://jira.qos.ch/browse/LOGBACK-910
     @Test
     public void verifyInterruptionIsNotSwallowed() {
         asyncAppenderBase.addAppender(delayingListAppender);
@@ -268,11 +267,24 @@ public class AsyncAppenderBaseTest {
         statusChecker.assertIsErrorFree();
         statusChecker.assertContainsMatch("Worker thread will flush remaining events before exiting.");
     }
-
+    
     static class LossyAsyncAppender extends AsyncAppenderBase<Integer> {
         @Override
         protected boolean isDiscardable(Integer i) {
             return (i % 3 == 0);
         }
+    }
+    
+    @Test
+    public void checkThatStartMethodIsIdempotent() {
+        asyncAppenderBase.addAppender(lossyAsyncAppender);
+        asyncAppenderBase.start();
+        
+        // we don't need mockito for this test, but if we did here is how it would look
+        //AsyncAppenderBase<Integer>  spied = Mockito.spy(asyncAppenderBase);
+        //Mockito.doThrow(new IllegalStateException("non idempotent start")).when((UnsynchronizedAppenderBase<Integer>) spied).start();
+        
+        // a second invocation of start will cause a IllegalThreadStateException thrown by the asyncAppenderBase.worker thread
+        asyncAppenderBase.start();
     }
 }

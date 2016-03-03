@@ -15,14 +15,16 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
-import ch.qos.logback.core.rolling.helper.AsynchronousCompressor;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
+import ch.qos.logback.core.rolling.helper.CompressionRunnable;
 import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
@@ -41,15 +43,19 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
 public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements TriggeringPolicy<E> {
     static final String FNP_NOT_SET = "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
     static final int INFINITE_HISTORY = 0;
+    static final long INFINITE_TOTAL_SIZE = -1;
 
     // WCS: without compression suffix
     FileNamePattern fileNamePatternWCS;
 
     private Compressor compressor;
     private RenameUtil renameUtil = new RenameUtil();
-    Future<?> future;
-
+    Future<?> compressionFuture;
+    Future<?> cleanUpFuture;
+    
     private int maxHistory = INFINITE_HISTORY;
+    private long maxTotalSize = INFINITE_TOTAL_SIZE;
+    
     private ArchiveRemover archiveRemover;
 
     TimeBasedFileNamingAndTriggeringPolicy<E> timeBasedFileNamingAndTriggeringPolicy;
@@ -100,9 +106,11 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         if (maxHistory != INFINITE_HISTORY) {
             archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
             archiveRemover.setMaxHistory(maxHistory);
+            archiveRemover.setMaxTotalSize(maxTotalSize);
             if (cleanHistoryOnStart) {
                 addInfo("Cleaning on start up");
-                archiveRemover.clean(new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
+                Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+                cleanUpFuture = archiveRemover.cleanAsynchronously(now);
             }
         }
 
@@ -113,18 +121,19 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     public void stop() {
         if (!isStarted())
             return;
-        waitForAsynchronousJobToStop();
+        waitForAsynchronousJobToStop(compressionFuture, "compression");
+        waitForAsynchronousJobToStop(cleanUpFuture, "clean-up");
         super.stop();
     }
 
-    private void waitForAsynchronousJobToStop() {
-        if (future != null) {
+    private void waitForAsynchronousJobToStop(Future<?> aFuture, String jobDescription) {
+        if (aFuture != null) {
             try {
-                future.get(CoreConstants.SECONDS_TO_WAIT_FOR_COMPRESSION_JOBS, TimeUnit.SECONDS);
+                aFuture.get(CoreConstants.SECONDS_TO_WAIT_FOR_COMPRESSION_JOBS, TimeUnit.SECONDS);
             } catch (TimeoutException e) {
-                addError("Timeout while waiting for compression job to finish", e);
+                addError("Timeout while waiting for "+jobDescription+" job to finish", e);
             } catch (Exception e) {
-                addError("Unexpected exception while waiting for compression job to finish", e);
+                addError("Unexpected exception while waiting for "+jobDescription+" job to finish", e);
             }
         }
     }
@@ -157,20 +166,23 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
             } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
         } else {
             if (getParentsRawFileProperty() == null) {
-                future = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
+                compressionFuture = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
             } else {
-                future = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
+                compressionFuture = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
             }
         }
 
         if (archiveRemover != null) {
-            archiveRemover.clean(new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
+            Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+            archiveRemover.cleanAsynchronously(now);
         }
     }
 
     Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
-        AsynchronousCompressor ac = new AsynchronousCompressor(compressor);
-        return ac.compressAsynchronously(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+        CompressionRunnable runnable = new CompressionRunnable(compressor, nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+        ExecutorService executorService = context.getExecutorService();
+        Future<?> future = executorService.submit(runnable);
+        return future;
     }
 
     Future<?> renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
