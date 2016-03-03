@@ -116,7 +116,14 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         Arrays.sort(matchingFileArray, new Comparator<File>() {
             @Override
             public int compare(final File f1, final File f2) {
-                return Long.compare(f1.lastModified(), f2.lastModified());
+                long l1 = f1.lastModified();
+                long l2 = f2.lastModified();
+                if(l1 == l2)
+                    return 0;
+                if(l1 < l2)
+                    return -1;
+                else 
+                    return 1;
             }
         });
     }
