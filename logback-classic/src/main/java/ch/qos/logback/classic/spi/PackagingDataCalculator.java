@@ -160,18 +160,11 @@ public class PackagingDataCalculator {
     String getCodeLocation(Class type) {
         try {
             if (type != null) {
-                // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
                 CodeSource codeSource = type.getProtectionDomain().getCodeSource();
                 if (codeSource != null) {
                     URL resource = codeSource.getLocation();
                     if (resource != null) {
-                        String locationStr = resource.toString();
-                        // now lets remove all but the file name
-                        String result = getCodeLocation(locationStr, '/');
-                        if (result != null) {
-                            return result;
-                        }
-                        return getCodeLocation(locationStr, '\\');
+                        return getCodeLocation(resource.toString());
                     }
                 }
             }
@@ -181,13 +174,28 @@ public class PackagingDataCalculator {
         return "na";
     }
 
-    private String getCodeLocation(String locationStr, char separator) {
-        int idx = locationStr.lastIndexOf(separator);
+    String getCodeLocation(String locationStr) {
+        // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
+        // jar:file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar!/com/icegreen/greenmail/Config.class
+        int upperIdx = locationStr.startsWith("jar:") ? locationStr.lastIndexOf("!/") : -1;
+        if (upperIdx == -1) {
+            upperIdx = locationStr.length();
+        }
+        // now lets remove all but the file name
+        String result = getCodeLocation(locationStr, '/', upperIdx);
+        if (result != null) {
+            return result;
+        }
+        return getCodeLocation(locationStr, '\\', upperIdx);
+    }
+
+    private String getCodeLocation(String locationStr, char separator, int upperIdx) {
+        int idx = locationStr.lastIndexOf(separator, upperIdx);
         if (isFolder(idx, locationStr)) {
             idx = locationStr.lastIndexOf(separator, idx - 1);
             return locationStr.substring(idx + 1);
         } else if (idx > 0) {
-            return locationStr.substring(idx + 1);
+            return locationStr.substring(idx + 1, upperIdx);
         }
         return null;
     }
