@@ -20,6 +20,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.util.TestHelper;
@@ -74,6 +75,7 @@ public class PackagingDataCalculatorTest {
         return (1.0 * System.nanoTime() - start) / len / 1000;
     }
 
+    @Ignore
     @Test
     public void perfTest() {
         int len = 1000;
