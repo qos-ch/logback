@@ -15,8 +15,6 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -24,7 +22,6 @@ import java.util.concurrent.TimeoutException;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
-import ch.qos.logback.core.rolling.helper.CompressionRunnable;
 import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
@@ -166,7 +163,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
             } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
         } else {
             if (getParentsRawFileProperty() == null) {
-                compressionFuture = asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
+                compressionFuture = compressor.asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
             } else {
                 compressionFuture = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
             }
@@ -178,18 +175,11 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
     }
 
-    Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
-        CompressionRunnable runnable = new CompressionRunnable(compressor, nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-        ExecutorService executorService = context.getExecutorService();
-        Future<?> future = executorService.submit(runnable);
-        return future;
-    }
-
     Future<?> renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         String parentsRawFile = getParentsRawFileProperty();
         String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
         renameUtil.rename(parentsRawFile, tmpTarget);
-        return asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
+        return compressor.asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
     }
 
     /**

@@ -18,10 +18,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.WarnStatus;
@@ -248,10 +251,36 @@ public class Compressor extends ContextAwareBase {
             addError("Failed to create parent directories for [" + file.getAbsolutePath() + "]");
         }
     }
-
+    
     @Override
     public String toString() {
         return this.getClass().getName();
     }
 
+    
+    public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
+        CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+        ExecutorService executorService = context.getExecutorService();
+        Future<?> future = executorService.submit(runnable);
+        return future;
+    }
+
+
+    class CompressionRunnable implements Runnable {
+        final String nameOfFile2Compress;
+        final String nameOfCompressedFile;
+        final String innerEntryName;
+
+        public CompressionRunnable(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
+            this.nameOfFile2Compress = nameOfFile2Compress;
+            this.nameOfCompressedFile = nameOfCompressedFile;
+            this.innerEntryName = innerEntryName;
+        }
+
+        public void run() {
+            Compressor.this.compress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+        }
+    }
+
+  
 }
