@@ -188,4 +188,6 @@ public class CoreConstants {
 
     public static final String LEFT_ACCOLADE = new String(new char[] { CURLY_LEFT });
     public static final String RIGHT_ACCOLADE = new String(new char[] { CURLY_RIGHT });
+    public static final long UNBOUND_TOTAL_SIZE = 0;
+    public static final int UNBOUND_HISTORY = 0;
 }

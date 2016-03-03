@@ -15,12 +15,17 @@ package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -56,56 +61,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     ConfigParameters cp; // initialized in setup
 
-    static class ConfigParameters {
-
-        long simulatedTime;
-        int maxHistory;
-        int simulatedNumberOfPeriods;
-        int startInactivity;
-        int numInactivityPeriods;
-        String fileNamePattern;
-        long periodDurationInMillis = MILLIS_IN_DAY;
-
-        ConfigParameters(long simulatedTime) {
-            this.simulatedTime = simulatedTime;
-        }
-
-        ConfigParameters maxHistory(int maxHistory) {
-            this.maxHistory = maxHistory;
-            return this;
-        }
-
-        ConfigParameters simulatedNumberOfPeriods(int simulatedNumberOfPeriods) {
-            this.simulatedNumberOfPeriods = simulatedNumberOfPeriods;
-            return this;
-        }
-
-        ConfigParameters startInactivity(int startInactivity) {
-            this.startInactivity = startInactivity;
-            return this;
-        }
-
-        ConfigParameters numInactivityPeriods(int numInactivityPeriods) {
-            this.numInactivityPeriods = numInactivityPeriods;
-            return this;
-        }
-
-        ConfigParameters fileNamePattern(String fileNamePattern) {
-            this.fileNamePattern = fileNamePattern;
-            return this;
-        }
-
-        ConfigParameters periodDurationInMillis(long periodDurationInMillis) {
-            this.periodDurationInMillis = periodDurationInMillis;
-            return this;
-        }
-    }
-
     @Before
     public void setUp() {
         super.setUp();
         this.cp = new ConfigParameters(currentTime);
-
     }
 
     private int computeSlashCount(String datePattern) {
@@ -152,19 +111,34 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
         cp.fileNamePattern(randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt");
         logOverMultiplePeriods(cp);
+    }
+
+    void generateDailyRolloverAndCheckFileCount(ConfigParameters cp) {
+        generateDailyRollover(cp);
         checkFileCount(expectedCountWithoutFoldersWithInactivity(cp.maxHistory, cp.simulatedNumberOfPeriods, cp.startInactivity + cp.numInactivityPeriods));
     }
 
     @Test
     public void checkCleanupForBasicDailyRollover() {
         cp.maxHistory(20).simulatedNumberOfPeriods(20 * 3).startInactivity(0).numInactivityPeriods(0);
+        generateDailyRolloverAndCheckFileCount(cp);
+    }
+
+    @Test
+    public void checkCleanupForBasicDailyRolloverWithSizeCap() {
+        long sizeOfOuputPerPeriod = 36 * 1024;
+        int sizeInUnitsOfPeriodCount = 2;
+
+        cp.maxHistory(20).simulatedNumberOfPeriods(20 * 3).startInactivity(0).numInactivityPeriods(0).sizeCap(sizeInUnitsOfPeriodCount * sizeOfOuputPerPeriod);
         generateDailyRollover(cp);
+        checkFileCount(sizeInUnitsOfPeriodCount + 1);
+        StatusPrinter.print(context);
     }
 
     @Test
     public void checkCleanupForBasicDailyRolloverWithMaxSize() {
         cp.maxHistory(6).simulatedNumberOfPeriods(70).startInactivity(30).numInactivityPeriods(1);
-        generateDailyRollover(cp);
+        generateDailyRolloverAndCheckFileCount(cp);
     }
 
     // Since the duration of a month (in seconds) varies from month to month, tests with inactivity period must
@@ -172,19 +146,19 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     @Test
     public void checkCleanupForDailyRollover_15Periods() {
         cp.maxHistory(5).simulatedNumberOfPeriods(15).startInactivity(6).numInactivityPeriods(3);
-        generateDailyRollover(cp);
+        generateDailyRolloverAndCheckFileCount(cp);
     }
 
     @Test
     public void checkCleanupForDailyRolloverWithInactivity_70Periods() {
         cp.maxHistory(6).simulatedNumberOfPeriods(70).startInactivity(30).numInactivityPeriods(1);
-        generateDailyRollover(cp);
+        generateDailyRolloverAndCheckFileCount(cp);
     }
 
     @Test
     public void checkCleanupForDailyRolloverWithInactivity_10Periods() {
         cp.maxHistory(6).simulatedNumberOfPeriods(10).startInactivity(3).numInactivityPeriods(4);
-        generateDailyRollover(cp);
+        generateDailyRolloverAndCheckFileCount(cp);
     }
 
     @Test
@@ -227,6 +201,34 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     @Test
+    public void dailySizeBasedRolloverWithSizeCap()  {
+        SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
+        int fileSize = 12 * 1024;
+        int sizeCap = 4 * fileSize + 100;
+        sizeAndTimeBasedFNATP.setMaxFileSize(Integer.toString(fileSize));
+        tbfnatp = sizeAndTimeBasedFNATP;
+        this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
+        String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i";
+        cp.maxHistory(6).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(10).sizeCap(sizeCap);
+        logOverMultiplePeriods(cp);
+
+        List<File> foundFiles = findFilesByPattern("\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)");
+        Collections.sort(foundFiles, new Comparator<File>() {
+            public int compare(File f0, File f1) {
+                String s0 = f0.getName().toString();
+                String s1 = f1.getName().toString();
+                return s0.compareTo(s1);
+            }
+        });
+        String oldest = foundFiles.get(0).getName();
+        // the oldest file must end with a suffix other than 0
+        assertFalse(oldest.endsWith("0"));
+        System.out.println(oldest);
+        StatusPrinter.print(context);
+        checkFileCount(sizeCap / fileSize + 1);
+    }
+
+    @Test
     public void dailyChronologSizeBasedRollover() {
         SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
         sizeAndTimeBasedFNATP.setMaxFileSize("10000");
@@ -257,19 +259,20 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     void logOncePeriod(long currentTime, String fileNamePattern, int maxHistory) {
-        buildRollingFileAppender(currentTime, fileNamePattern, maxHistory, DO_CLEAN_HISTORY_ON_START);
+        ConfigParameters params = new ConfigParameters(currentTime).fileNamePattern(fileNamePattern).maxHistory(maxHistory);
+        buildRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START);
         rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
         rfa.stop();
     }
 
     @Test
     public void cleanHistoryOnStart() {
-        long now = this.currentTime;
+        long simulatedTime = this.currentTime;
         String fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logOncePeriod(now, fileNamePattern, maxHistory);
-            now = now + MILLIS_IN_DAY;
+            logOncePeriod(simulatedTime, fileNamePattern, maxHistory);
+            simulatedTime += MILLIS_IN_DAY;
         }
         // StatusPrinter.print(context);
         checkFileCount(expectedCountWithoutFolders(maxHistory));
@@ -277,12 +280,12 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     @Test
     public void cleanHistoryOnStartWithDayPattern() {
-        long now = this.currentTime;
+        long simulatedTime = this.currentTime;
         String fileNamePattern = randomOutputDir + "clean-%d{yyyy-MM-dd}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logOncePeriod(now, fileNamePattern, maxHistory);
-            now = now + MILLIS_IN_DAY;
+            logOncePeriod(simulatedTime, fileNamePattern, maxHistory);
+            simulatedTime += MILLIS_IN_DAY;
         }
         StatusPrinter.print(context);
         checkFileCount(expectedCountWithoutFolders(maxHistory));
@@ -319,16 +322,17 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         return result;
     }
 
-    void buildRollingFileAppender(long currentTime, String fileNamePattern, int maxHistory, boolean cleanHistoryOnStart) {
+    void buildRollingFileAppender(ConfigParameters cp, boolean cleanHistoryOnStart) {
         rfa.setContext(context);
         rfa.setEncoder(encoder);
         tbrp.setContext(context);
-        tbrp.setFileNamePattern(fileNamePattern);
-        tbrp.setMaxHistory(maxHistory);
+        tbrp.setFileNamePattern(cp.fileNamePattern);
+        tbrp.setMaxHistory(cp.maxHistory);
+        tbrp.setTotalSizeCap(cp.sizeCap);
         tbrp.setParent(rfa);
         tbrp.setCleanHistoryOnStart(cleanHistoryOnStart);
         tbrp.timeBasedFileNamingAndTriggeringPolicy = tbfnatp;
-        tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+        tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(cp.simulatedTime);
         tbrp.start();
         rfa.setRollingPolicy(tbrp);
         rfa.start();
@@ -349,7 +353,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     // int startInactivity, int numInactivityPeriods) {
     long logOverMultiplePeriods(ConfigParameters cp) {
 
-        buildRollingFileAppender(cp.simulatedTime, cp.fileNamePattern, cp.maxHistory, DO_NOT_CLEAN_HISTORY_ON_START);
+        buildRollingFileAppender(cp, DO_NOT_CLEAN_HISTORY_ON_START);
         int ticksPerPeriod = 512;
         int runLength = cp.simulatedNumberOfPeriods * ticksPerPeriod;
         int startInactivityIndex = 1 + cp.startInactivity * ticksPerPeriod;
@@ -461,11 +465,21 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     void checkPatternCompliance(int expectedClassCount, String regex) {
+        Set<String> set = findFilesByPatternClass(regex);
+        assertEquals(expectedClassCount, set.size());
+    }
+
+    private List<File> findFilesByPattern(String regex) {
         File dir = new File(randomOutputDir);
         List<File> fileList = new ArrayList<File>();
         findFilesInFolderRecursivelyByPatterMatch(dir, fileList, regex);
+        return fileList;
+    }
+
+    private Set<String> findFilesByPatternClass(String regex) {
+        List<File> fileList = findFilesByPattern(regex);
         Set<String> set = groupByClass(fileList, regex);
-        assertEquals(expectedClassCount, set.size());
+        return set;
     }
 
     void checkDirPatternCompliance(int expectedClassCount) {
