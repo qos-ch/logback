@@ -27,6 +27,7 @@ public class MockSSLConfigurable implements SSLConfigurable {
     private String[] enabledCipherSuites = EMPTY;
     private boolean needClientAuth;
     private boolean wantClientAuth;
+    private Boolean disableHostnameVerification;
 
     public String[] getDefaultProtocols() {
         return defaultProtocols;
@@ -92,4 +93,11 @@ public class MockSSLConfigurable implements SSLConfigurable {
         this.wantClientAuth = wantClientAuth;
     }
 
+    public boolean isDisableHostnameVerification() {
+        return disableHostnameVerification;
+    }
+
+    public void setDisableHostnameVerification(boolean disableHostnameVerification) {
+        this.disableHostnameVerification = disableHostnameVerification;
+    }
 }

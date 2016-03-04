@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.net.ssl;
 
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 
 /**
@@ -60,4 +61,12 @@ public class SSLConfigurableSocket implements SSLConfigurable {
         delegate.setWantClientAuth(state);
     }
 
+    public void setDisableHostnameVerification(boolean disableHostnameVerification) {
+        if (disableHostnameVerification) {
+            return;
+        }
+        SSLParameters sslParameters = delegate.getSSLParameters();
+        sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+        delegate.setSSLParameters(sslParameters);
+    }
 }
