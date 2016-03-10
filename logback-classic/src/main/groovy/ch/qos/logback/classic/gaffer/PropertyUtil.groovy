@@ -14,7 +14,7 @@
 package ch.qos.logback.classic.gaffer
 
 import java.lang.reflect.Method
-import java.beans.Introspector
+import ch.qos.logback.core.joran.util.java.beans.Introspector
 
 /**
  * @author Ceki G&uuml;c&uuml;
