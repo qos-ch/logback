@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
@@ -221,9 +222,17 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         initCollisionMaps();
         root.recursiveReset();
         resetTurboFilterList();
+        cancelScheduledTasks();
         fireOnReset();
         resetListenersExceptResetResistant();
         resetStatusListeners();
+    }
+
+    private void cancelScheduledTasks() {
+        for(ScheduledFuture<?> sf: scheduledFutures) {
+            sf.cancel(false);
+        }
+        scheduledFutures.clear();
     }
 
     private void resetStatusListeners() {

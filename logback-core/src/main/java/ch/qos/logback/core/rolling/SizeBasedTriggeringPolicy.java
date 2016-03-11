@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling;
 import java.io.File;
 
 import ch.qos.logback.core.util.FileSize;
+import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
 
 /**
@@ -47,13 +48,14 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         setMaxFileSize(maxFileSize);
     }
 
-    private InvocationGate invocationGate = new InvocationGate();
+    InvocationGate invocationGate = new DefaultInvocationGate();
 
     public boolean isTriggeringEvent(final File activeFile, final E event) {
-        if (invocationGate.skipFurtherWork())
-            return false;
 
         long now = System.currentTimeMillis();
+        if (invocationGate.isTooSoon(now))
+            return false;
+
         invocationGate.updateMaskIfNecessary(now);
 
         return (activeFile.length() >= maxFileSize.getSize());

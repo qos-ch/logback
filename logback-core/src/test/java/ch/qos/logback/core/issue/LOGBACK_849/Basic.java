@@ -25,7 +25,7 @@ import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 public class Basic {
 
-    ExecutorService executor = ExecutorServiceUtil.newExecutorService();
+    ExecutorService executor = ExecutorServiceUtil.newScheduledExecutorService();
     Context context = new ContextBase();
 
     @Test(timeout = 100)

@@ -48,6 +48,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
+@Ignore
 public class ReconfigureOnChangeTest {
     final static int THREAD_COUNT = 5;
     final static int LOOP_LEN = 1000 * 1000;

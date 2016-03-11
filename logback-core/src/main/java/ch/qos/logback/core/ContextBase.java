@@ -17,9 +17,13 @@ import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
 import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
@@ -40,7 +44,9 @@ public class ContextBase implements Context, LifeCycle {
 
     LogbackLock configurationLock = new LogbackLock();
 
-    private volatile ExecutorService executorService;
+    private ExecutorService executorService;
+    private ScheduledExecutorService scheduledExecutorService;
+    protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
     private boolean started;
 
@@ -123,7 +129,7 @@ public class ContextBase implements Context, LifeCycle {
     public void stop() {
         // We don't check "started" here, because the executor service uses
         // lazy initialization, rather than being created in the start method
-        stopExecutorService();
+        stopExecutorServices();
         started = false;
     }
 
@@ -168,21 +174,31 @@ public class ContextBase implements Context, LifeCycle {
         return configurationLock;
     }
 
-    public ExecutorService getExecutorService() {
-        if (executorService == null) {
-            synchronized (this) {
-                if (executorService == null) {
-                    executorService = ExecutorServiceUtil.newExecutorService();
-                }
-            }
-        }
-        return executorService;
+    @Override
+    public synchronized ExecutorService getExecutorService() {
+        return getScheduledExecutorService();
+        //        if (executorService == null) {
+//            executorService = ExecutorServiceUtil.newExecutorService();
+//        }
+//        return executorService;
     }
 
-    private synchronized void stopExecutorService() {
+    @Override
+    public synchronized ScheduledExecutorService getScheduledExecutorService() {
+        if (scheduledExecutorService == null) {
+            scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
+        }
+        return scheduledExecutorService;
+    }
+
+    private synchronized void stopExecutorServices() {
         if (executorService != null) {
             ExecutorServiceUtil.shutdown(executorService);
             executorService = null;
+        }
+        if (scheduledExecutorService != null) {
+            ExecutorServiceUtil.shutdown(scheduledExecutorService);
+            scheduledExecutorService = null;
         }
     }
 
@@ -226,5 +242,16 @@ public class ContextBase implements Context, LifeCycle {
     public String toString() {
         return name;
     }
+
+    @Override
+    public void addScheduledFuture(ScheduledFuture<?> scheduledFuture) {
+        scheduledFutures.add(scheduledFuture);
+    }
+
+    public List<ScheduledFuture<?>> getScheduledFutures() {
+        return new ArrayList<ScheduledFuture<?>>(scheduledFutures);
+    }
+    
+    
 
 }

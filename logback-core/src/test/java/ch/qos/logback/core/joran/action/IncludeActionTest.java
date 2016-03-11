@@ -18,16 +18,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
-import ch.qos.logback.core.testUtil.FileTestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,10 +34,11 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.ext.StackAction;
-import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.FileTestUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -157,6 +155,7 @@ public class IncludeActionTest {
         System.setProperty(INCLUDE_KEY, tmpOut);
         tc.doConfigure(TOP_BY_FILE);
         assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
+        StatusPrinter.print(context);
         assertTrue(statusChecker.containsException(SAXParseException.class));
 
         // we like to erase the temp file in order to see

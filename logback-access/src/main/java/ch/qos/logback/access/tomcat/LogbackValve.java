@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -277,7 +279,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
             }
         } catch (Exception ignored) {
         }
-    }   
+    }
 
     @Override
     protected void stopInternal() throws LifecycleException {
@@ -443,5 +445,15 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
         sb.append(getName());
         sb.append(']');
         return sb.toString();
+    }
+
+    @Override
+    public ScheduledExecutorService getScheduledExecutorService() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void addScheduledFuture(ScheduledFuture<?> scheduledFuture) {
+        throw new UnsupportedOperationException();
     }
 }

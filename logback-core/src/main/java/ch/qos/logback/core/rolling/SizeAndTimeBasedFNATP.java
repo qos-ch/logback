@@ -23,14 +23,18 @@ import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import ch.qos.logback.core.util.FileSize;
+import ch.qos.logback.core.util.DefaultInvocationGate;
+import ch.qos.logback.core.util.InvocationGate;
 
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
+    private static final long NEXT_SIZE_CHECK_DELAY = 600*1000;
+    
     int currentPeriodsCounter = 0;
     FileSize maxFileSize;
     String maxFileSizeAsString;
-
+    long nextSizeCheck = 0;
     static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
     static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
 
@@ -100,15 +104,10 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         }
     }
 
-    // IMPORTANT: This field can be updated by multiple threads. It follows that
-    // its values may *not* be incremented sequentially. However, we don't care
-    // about the actual value of the field except that from time to time the
-    // expression (invocationCounter++ & invocationMask) == invocationMask)
-    // should
-    // be true.
-    private int invocationCounter;
-    private int invocationMask = 0x1;
 
+    InvocationGate invocationGate = new DefaultInvocationGate();
+    int getSizeInvocations = 0;
+    
     public boolean isTriggeringEvent(File activeFile, final E event) {
 
         long time = getCurrentTime();
@@ -121,16 +120,15 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             return true;
         }
 
-        // for performance reasons, check for changes every 16,invocationMask
-        // invocations
-        if (((++invocationCounter) & invocationMask) != invocationMask) {
+        
+        if (invocationGate.isTooSoon(time)) {
             return false;
         }
-        if (invocationMask < 0x0F) {
-            invocationMask = (invocationMask << 1) + 1;
-        }
-
+        
+        invocationGate.updateMaskIfNecessary(time);
+        getSizeInvocations++;
         if (activeFile.length() >= maxFileSize.getSize()) {
+        
             elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
             currentPeriodsCounter++;
             return true;
@@ -138,6 +136,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
         return false;
     }
+
 
     @Override
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {

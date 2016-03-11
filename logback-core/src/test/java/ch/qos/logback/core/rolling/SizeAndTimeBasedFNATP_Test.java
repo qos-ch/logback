@@ -57,7 +57,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
                     long lastCheck) {
         sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
         tbrp.setContext(context);
-        sizeAndTimeBasedFNATP.setMaxFileSize("" + sizeThreshold);
+        sizeAndTimeBasedFNATP.setMaxFileSize(Integer.toString(sizeThreshold));
         tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
         tbrp.setFileNamePattern(filenamePattern);
         tbrp.setParent(rfa);
@@ -77,9 +77,8 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
             return;
         }
 
-        // windows can delay file size changes, so we only allow for
-        // fileIndexCounter 0
-        if ((fileIndexCounter < 1) && fileSize > sizeThreshold) {
+        // windows can delay file size changes, so we only allow for fileIndexCounter 0
+        if ((fileIndexCounter == 0) && fileSize > sizeThreshold) {
             addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
             fileIndexCounter = fileIndexCounter + 1;
             fileSize = 0;
@@ -151,7 +150,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
 
     static final boolean FIRST_PHASE_ONLY = false;
     static final boolean WITH_SECOND_PHASE = true;
-    static String DEFAULT_COMPRESSION_SUFFIX = "";
+    static final String DEFAULT_COMPRESSION_SUFFIX = "";
 
     @Test
     public void noCompression_FileSet_NoRestart_1() throws InterruptedException, ExecutionException, IOException {
@@ -165,7 +164,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
 
     @Test
     public void noCompression_FileBlank_WithStopStart_3() throws Exception {
-        generic("test3", null, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
+        generic("test3", null, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX); 
     }
 
     @Test

@@ -27,7 +27,7 @@ public class LoggingRunnable extends RunnableWithCounterAndDone {
     }
 
     public LoggingRunnable(Logger logger) {
-        this(logger, 100);
+        this(logger, 10);
     }
 
     public void run() {

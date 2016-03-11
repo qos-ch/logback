@@ -17,7 +17,7 @@ abstract public class AbstractMultiThreadedHarness {
 
     RunnableWithCounterAndDone[] runnableArray;
 
-    abstract void waitUntilEndCondition() throws InterruptedException;
+    abstract public void waitUntilEndCondition() throws InterruptedException;
 
     public void execute(RunnableWithCounterAndDone[] runnableArray) throws InterruptedException {
         this.runnableArray = runnableArray;

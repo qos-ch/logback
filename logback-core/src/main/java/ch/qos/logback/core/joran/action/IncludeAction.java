@@ -14,7 +14,6 @@
 package ch.qos.logback.core.joran.action;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -22,7 +21,6 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.event.SaxEvent;
@@ -30,6 +28,7 @@ import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -113,15 +112,6 @@ public class IncludeAction extends Action {
         throw new IllegalStateException("Count value [" + count + "] is not expected");
     }
 
-    private InputStream getInputStreamByFilePath(String pathToFile) {
-        try {
-            return new FileInputStream(pathToFile);
-        } catch (IOException ioe) {
-            optionalWarning("File [" + pathToFile + "] does not exist.");
-            return null;
-        }
-    }
-
     URL attributeToURL(String urlAttribute) {
         try {
             return new URL(urlAttribute);
@@ -130,10 +120,6 @@ public class IncludeAction extends Action {
             addError(errMsg, mue);
             return null;
         }
-    }
-
-    private InputStream getInputStreamByUrl(URL url) {
-        return openURL(url);
     }
 
     InputStream openURL(URL url) {
@@ -169,10 +155,6 @@ public class IncludeAction extends Action {
             e.printStackTrace();
             return null;
         }
-    }
-
-    private InputStream getInputStreamByResource(URL url) {
-        return openURL(url);
     }
 
     URL getInputURL(InterpretationContext ec, Attributes attributes) {

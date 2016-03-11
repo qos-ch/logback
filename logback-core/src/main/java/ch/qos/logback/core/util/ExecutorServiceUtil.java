@@ -15,6 +15,8 @@ package ch.qos.logback.core.util;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -45,6 +47,11 @@ public class ExecutorServiceUtil {
             return thread;
         }
     };
+
+    static public ScheduledExecutorService newScheduledExecutorService() {
+        return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE, THREAD_FACTORY);
+    }
+
 
     /**
      * Creates an executor service suitable for use by logback components.

@@ -69,13 +69,7 @@ class ConfigurationDelegateTest {
   @Test
   void scan() {
     configurationDelegate.scan("10seconds")
-    assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeFilter"))
-    assertTrue(statusChecker.containsMatch("Adding ReconfigureOnChangeFilter as a turbo filter"))
-
-    TurboFilter filter = context.turboFilterList[0]
-    assertTrue(filter instanceof ReconfigureOnChangeFilter)
-    ReconfigureOnChangeFilter rocf = (ReconfigureOnChangeFilter) filter;
-    assertEquals(10 * 1000, rocf.refreshPeriod)
+    assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeTask"))
   }
 
   @Test

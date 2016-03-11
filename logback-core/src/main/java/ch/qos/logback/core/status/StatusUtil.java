@@ -154,8 +154,11 @@ public class StatusUtil {
         while (stati.hasNext()) {
             Status status = stati.next();
             Throwable t = status.getThrowable();
-            if (t != null && t.getClass().getName().equals(exceptionType.getName())) {
-                return true;
+            while (t != null) {
+                if (t.getClass().getName().equals(exceptionType.getName())) {
+                    return true;
+                }
+                t = t.getCause();
             }
         }
         return false;

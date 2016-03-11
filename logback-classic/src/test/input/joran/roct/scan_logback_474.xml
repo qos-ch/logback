@@ -1,5 +1,5 @@
 
-<configuration scan="true" scanPeriod="50 millisecond">
+<configuration scan="true" scanPeriod="5 millisecond">
 
   <appender name="default" class="ch.qos.logback.classic.issue.logback474.LoggingAppender">
   </appender>

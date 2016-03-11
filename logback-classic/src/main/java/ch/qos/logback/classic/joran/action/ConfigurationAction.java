@@ -13,14 +13,20 @@
  */
 package ch.qos.logback.classic.joran.action;
 
-import ch.qos.logback.classic.util.EnvUtil;
+import java.net.URL;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter;
+import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
+import ch.qos.logback.classic.util.EnvUtil;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
@@ -86,23 +92,50 @@ public class ConfigurationAction extends Action {
     void processScanAttrib(InterpretationContext ic, Attributes attributes) {
         String scanAttrib = ic.subst(attributes.getValue(SCAN_ATTR));
         if (!OptionHelper.isEmpty(scanAttrib) && !"false".equalsIgnoreCase(scanAttrib)) {
-            ReconfigureOnChangeFilter rocf = new ReconfigureOnChangeFilter();
-            rocf.setContext(context);
-            String scanPeriodAttrib = ic.subst(attributes.getValue(SCAN_PERIOD_ATTR));
-            if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
-                try {
-                    Duration duration = Duration.valueOf(scanPeriodAttrib);
-                    rocf.setRefreshPeriod(duration.getMilliseconds());
-                    addInfo("Setting ReconfigureOnChangeFilter scanning period to " + duration);
-                } catch (NumberFormatException nfe) {
-                    addError("Error while converting [" + scanAttrib + "] to long", nfe);
-                }
+
+            ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
+            URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
+            if (mainURL == null) {
+                addWarn("Due to missing top level configuration file, reconfiguration on change (configuration file scanning) cannot be done.");
+                return;
             }
-            rocf.start();
-            LoggerContext lc = (LoggerContext) context;
-            addInfo("Adding ReconfigureOnChangeFilter as a turbo filter");
-            lc.addTurboFilter(rocf);
+            ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
+            rocTask.setContext(context);
+
+            context.putObject(CoreConstants.RECONFIGURE_ON_CHANGE_TASK, rocTask);
+
+            String scanPeriodAttrib = ic.subst(attributes.getValue(SCAN_PERIOD_ATTR));
+            Duration duration = getDuration(scanAttrib, scanPeriodAttrib);
+
+            if (duration == null) {
+                return;
+            }
+
+            addInfo("Will scan for changes in [" + mainURL + "] ");
+            // Given that included files are encountered at a later phase, the complete list of files 
+            // to scan can only be determined when the configuration is loaded in full.
+            // However, scan can be active if mainURL is set. Otherwise, when changes are detected
+            // the top level config file cannot be accessed.
+            addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
+ 
+            ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(), duration.getMilliseconds(),
+                            TimeUnit.MILLISECONDS);
+            context.addScheduledFuture(scheduledFuture);
         }
+    }
+
+    private Duration getDuration(String scanAttrib, String scanPeriodAttrib) {
+        Duration duration = null;
+
+        if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
+            try {
+                duration = Duration.valueOf(scanPeriodAttrib);
+
+            } catch (NumberFormatException nfe) {
+                addError("Error while converting [" + scanAttrib + "] to long", nfe);
+            }
+        }
+        return duration;
     }
 
     public void end(InterpretationContext ec, String name) {

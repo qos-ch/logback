@@ -113,8 +113,9 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
             while (!Thread.currentThread().isInterrupted()) {
                 SocketConnector connector = createConnector(address, port, 0, reconnectionDelay);
                 connectorTask = activateConnector(connector);
-                if (connectorTask == null)
+                if (connectorTask == null) {
                     break;
+                }
                 socket = waitForConnectorToReturnASocket();
                 if (socket == null)
                     break;

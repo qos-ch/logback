@@ -37,7 +37,7 @@ public class MultiThreadedHarness extends AbstractMultiThreadedHarness {
         System.out.println("os.version           = " + System.getProperty("os.version"));
     }
 
-    void waitUntilEndCondition() throws InterruptedException {
+    public void waitUntilEndCondition() throws InterruptedException {
         Thread.sleep(overallDurationInMillis);
     }
 }
