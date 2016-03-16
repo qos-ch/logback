@@ -181,9 +181,9 @@ public class ReconfigureOnChangeTaskTest {
         File topLevelFile = new File(path);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         configure(topLevelFile);
-        CountDownLatch changeDetectedLatch = waitForTaskAndAttachReconfigDoneListener(null);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>");
+        CountDownLatch changeDetectedLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
+        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>");
         changeDetectedLatch.await();
 
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
@@ -191,7 +191,7 @@ public class ReconfigureOnChangeTaskTest {
 
         loggerContext.getStatusManager().clear();
 
-        CountDownLatch secondDoneLatch = waitForTaskAndAttachReconfigDoneListener(oldRoct);
+        CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         secondDoneLatch.await();
 
@@ -211,9 +211,9 @@ public class ReconfigureOnChangeTaskTest {
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
         configure(topLevelFile);
 
-        CountDownLatch doneLatch = waitForTaskAndAttachReconfigDoneListener(null);
-        writeToFile(innerFile, "<included>\n<root>\n</included>");
+        CountDownLatch doneLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
+        writeToFile(innerFile, "<included>\n<root>\n</included>");
         doneLatch.await();
 
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
@@ -221,7 +221,7 @@ public class ReconfigureOnChangeTaskTest {
 
         loggerContext.getStatusManager().clear();
 
-        CountDownLatch secondDoneLatch = waitForTaskAndAttachReconfigDoneListener(oldRoct);
+        CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
         secondDoneLatch.await();
 
@@ -285,7 +285,7 @@ public class ReconfigureOnChangeTaskTest {
         return roct;
     }
 
-    private CountDownLatch waitForTaskAndAttachReconfigDoneListener(ReconfigureOnChangeTask oldTask) throws InterruptedException {
+    private CountDownLatch waitForReconfigurationToBeDone(ReconfigureOnChangeTask oldTask) throws InterruptedException {
         ReconfigureOnChangeTask roct = oldTask;
         while (roct == oldTask) {
             roct = getRegisteredReconfigureTask();
@@ -294,7 +294,6 @@ public class ReconfigureOnChangeTaskTest {
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
         roct.addListener(new ReconfigurationDoneListener(countDownLatch));
-        System.out.println("added ReconfigurationDoneListener");
         return countDownLatch;
     }
 
