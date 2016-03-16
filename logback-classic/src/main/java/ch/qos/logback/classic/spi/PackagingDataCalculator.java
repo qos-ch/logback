@@ -17,7 +17,7 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.util.HashMap;
 
-import sun.reflect.Reflection;
+import ch.qos.logback.core.joran.util.sun.reflect.Reflection;
 
 // import java.security.AccessControlException; import java.security.AccessController;import java.security.PrivilegedAction;
 /**

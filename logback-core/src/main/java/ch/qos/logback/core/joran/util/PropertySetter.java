@@ -14,17 +14,16 @@
 // Contributors:  Georg Lundesgaard
 package ch.qos.logback.core.joran.util;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-
-import java.beans.MethodDescriptor;
-import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
+import ch.qos.logback.core.joran.util.java.beans.BeanInfo;
+import ch.qos.logback.core.joran.util.java.beans.IntrospectionException;
+import ch.qos.logback.core.joran.util.java.beans.Introspector;
+import ch.qos.logback.core.joran.util.java.beans.MethodDescriptor;
+import ch.qos.logback.core.joran.util.java.beans.PropertyDescriptor;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.PropertySetterException;
@@ -34,21 +33,21 @@ import ch.qos.logback.core.util.PropertySetterException;
  * {@link #setProperty setProperty(name,value)} in order to invoke setters on
  * the Object specified in the constructor. This class relies on the JavaBeans
  * {@link Introspector} to analyze the given Object Class using reflection.
- * 
+ *
  * <p>
  * Usage:
- * 
+ *
  * <pre>
  * PropertySetter ps = new PropertySetter(anObject);
  * ps.set(&quot;name&quot;, &quot;Joe&quot;);
  * ps.set(&quot;age&quot;, &quot;32&quot;);
  * ps.set(&quot;isMale&quot;, &quot;true&quot;);
  * </pre>
- * 
+ *
  * will cause the invocations anObject.setName("Joe"), anObject.setAge(32), and
  * setMale(true) if such methods exist with those signatures. Otherwise an
  * {@link IntrospectionException} are thrown.
- * 
+ *
  * @author Anders Kristensen
  * @author Ceki Gulcu
  */
@@ -62,7 +61,7 @@ public class PropertySetter extends ContextAwareBase {
     /**
      * Create a new PropertySetter for the specified Object. This is done in
      * preparation for invoking {@link #setProperty} one or more times.
-     * 
+     *
      * @param obj
      *          the object for which to set properties
      */
@@ -93,13 +92,13 @@ public class PropertySetter extends ContextAwareBase {
      * for the specified property name and the value is determined partly from the
      * setter argument type and partly from the value specified in the call to
      * this method.
-     * 
+     *
      * <p>
      * If the setter expects a String no conversion is necessary. If it expects an
      * int, then an attempt is made to convert 'value' to an int using new
      * Integer(value). If the setter expects a boolean, the conversion is by new
      * Boolean(value).
-     * 
+     *
      * @param name
      *          name of the property
      * @param value
@@ -127,7 +126,7 @@ public class PropertySetter extends ContextAwareBase {
 
     /**
      * Set the named property given a {@link PropertyDescriptor}.
-     * 
+     *
      * @param prop
      *          A PropertyDescriptor describing the characteristics of the
      *          property to set.
@@ -235,7 +234,7 @@ public class PropertySetter extends ContextAwareBase {
 
     /**
      * Can the given clazz instantiable with certainty?
-     * 
+     *
      * @param clazz
      *          The class to test for instantiability
      * @return true if clazz can be instantiated, and false otherwise.
