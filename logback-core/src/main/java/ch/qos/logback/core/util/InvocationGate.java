@@ -14,7 +14,4 @@ public interface InvocationGate {
      */
     public abstract boolean isTooSoon(long currentTime);
 
-    // update the mask so as to execute change detection code about once every 100 to 8000 milliseconds.
-    public abstract void updateMaskIfNecessary(long currentTime);
-
 }

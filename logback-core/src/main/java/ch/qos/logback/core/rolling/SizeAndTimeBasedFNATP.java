@@ -29,8 +29,6 @@ import ch.qos.logback.core.util.InvocationGate;
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
-    private static final long NEXT_SIZE_CHECK_DELAY = 600*1000;
-    
     int currentPeriodsCounter = 0;
     FileSize maxFileSize;
     String maxFileSizeAsString;
@@ -111,6 +109,8 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
     public boolean isTriggeringEvent(File activeFile, final E event) {
 
         long time = getCurrentTime();
+        
+        //  first check for roll-over based on time
         if (time >= nextCheck) {
             Date dateInElapsedPeriod = dateInCurrentPeriod;
             elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
@@ -121,11 +121,11 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         }
 
         
+        // next check for roll-over based on size
         if (invocationGate.isTooSoon(time)) {
             return false;
         }
         
-        invocationGate.updateMaskIfNecessary(time);
         getSizeInvocations++;
         if (activeFile.length() >= maxFileSize.getSize()) {
         

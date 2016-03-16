@@ -56,8 +56,6 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         if (invocationGate.isTooSoon(now))
             return false;
 
-        invocationGate.updateMaskIfNecessary(now);
-
         return (activeFile.length() >= maxFileSize.getSize());
     }
 

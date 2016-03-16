@@ -15,7 +15,6 @@ package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -37,6 +36,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.pattern.SpacePadder;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
+import ch.qos.logback.core.util.FixedRateInvocationGate;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRollingTests {
@@ -57,9 +57,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     static int MONTHS_IN_YEAR = 12;
 
     int slashCount = 0;
-
+    int ticksPerPeriod = 216;
     ConfigParameters cp; // initialized in setup
-
+    FixedRateInvocationGate fixedRateInvocationGate = new FixedRateInvocationGate(ticksPerPeriod/2);
+    
     @Before
     public void setUp() {
         super.setUp();
@@ -87,7 +88,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     public void monthlyRolloverOverManyPeriods() {
         this.slashCount = computeSlashCount(MONTHLY_CRONOLOG_DATE_PATTERN);
         int maxHistory = 2;
-        int simulatedNumberOfPeriods = 40;
+        int simulatedNumberOfPeriods = 30;
         String fileNamePattern = randomOutputDir + "/%d{" + MONTHLY_CRONOLOG_DATE_PATTERN + "}/clean.txt.zip";
 
         cp.maxHistory(maxHistory).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(simulatedNumberOfPeriods).periodDurationInMillis(MILLIS_IN_MONTH);
@@ -137,7 +138,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     @Test
     public void checkCleanupForBasicDailyRolloverWithMaxSize() {
-        cp.maxHistory(6).simulatedNumberOfPeriods(70).startInactivity(30).numInactivityPeriods(1);
+        cp.maxHistory(6).simulatedNumberOfPeriods(30).startInactivity(10).numInactivityPeriods(1);
         generateDailyRolloverAndCheckFileCount(cp);
     }
 
@@ -150,8 +151,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     @Test
-    public void checkCleanupForDailyRolloverWithInactivity_70Periods() {
-        cp.maxHistory(6).simulatedNumberOfPeriods(70).startInactivity(30).numInactivityPeriods(1);
+    public void checkCleanupForDailyRolloverWithInactivity_30Periods() {
+        cp.maxHistory(6).simulatedNumberOfPeriods(30).startInactivity(10).numInactivityPeriods(1);
         generateDailyRolloverAndCheckFileCount(cp);
     }
 
@@ -189,8 +190,9 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     @Test
-    public void dailySizeBasedRollover() {
+    public void dailySizeBasedRolloverWithoutCap() {
         SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
+        sizeAndTimeBasedFNATP.invocationGate = fixedRateInvocationGate;
         
         sizeAndTimeBasedFNATP.setMaxFileSize("10000");
         tbfnatp = sizeAndTimeBasedFNATP;
@@ -205,10 +207,11 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     @Test
     public void dailySizeBasedRolloverWithSizeCap()  {
         SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
-        
-        long bytesPerPeriod = 38893;
-        long fileSize = (bytesPerPeriod-8000)/3;
-        long sizeCap = 5 * fileSize;
+        sizeAndTimeBasedFNATP.invocationGate = new FixedRateInvocationGate(ticksPerPeriod/8);
+        long bytesPerPeriod = 17000;
+        long fileSize = (bytesPerPeriod)/5;
+        int expectedFileCount = 10;
+        long sizeCap = expectedFileCount * fileSize;
         sizeAndTimeBasedFNATP.setMaxFileSize(Long.toString(fileSize));
         tbfnatp = sizeAndTimeBasedFNATP;
         this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
@@ -228,22 +231,20 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
                 return s0.compareTo(s1);
             }
         });
-        String oldest = foundFiles.get(0).getName();
-        // the oldest file must end with a suffix other than 0
-        assertFalse(oldest.endsWith("0"));
-        System.out.println(oldest);
+        System.out.print(foundFiles);
         StatusPrinter.print(context);
-        checkFileCount((int)(sizeCap / fileSize) + 1);
+        checkFileCount(expectedFileCount - 1);
     }
 
     @Test
     public void dailyChronologSizeBasedRollover() {
         SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
         sizeAndTimeBasedFNATP.setMaxFileSize("10000");
+        sizeAndTimeBasedFNATP.invocationGate = fixedRateInvocationGate;
         tbfnatp = sizeAndTimeBasedFNATP;
         slashCount = 1;
         String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i.zip";
-        cp.maxHistory(5).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(5 * 4);
+        cp.maxHistory(5).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(5 * 3);
         logOverMultiplePeriods(cp);
         checkDirPatternCompliance(6);
     }
@@ -252,6 +253,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     public void dailyChronologSizeBasedRolloverWithSecondPhase() {
         SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
         sizeAndTimeBasedFNATP.setMaxFileSize("10000");
+        sizeAndTimeBasedFNATP.invocationGate = fixedRateInvocationGate;
         tbfnatp = sizeAndTimeBasedFNATP;
         this.slashCount = 1;
         String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}/clean.%i";
@@ -349,20 +351,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     boolean DO_CLEAN_HISTORY_ON_START = true;
     boolean DO_NOT_CLEAN_HISTORY_ON_START = false;
 
-    // long logOverMultiplePeriodsContinuously(long simulatedTime, String fileNamePattern, long periodDurationInMillis,
-    // int maxHistory,
-    // int simulatedNumberOfPeriods) {
-    // return logOverMultiplePeriods(simulatedTime, fileNamePattern, periodDurationInMillis, maxHistory,
-    // simulatedNumberOfPeriods, 0, 0);
-    // }
-
-    // long logOverMultiplePeriods(long simulatedTime, String fileNamePattern, long periodDurationInMillis, int
-    // maxHistory, int simulatedNumberOfPeriods,
-    // int startInactivity, int numInactivityPeriods) {
     long logOverMultiplePeriods(ConfigParameters cp) {
 
         buildRollingFileAppender(cp, DO_NOT_CLEAN_HISTORY_ON_START);
-        int ticksPerPeriod = 512;
+        
         int runLength = cp.simulatedNumberOfPeriods * ticksPerPeriod;
         int startInactivityIndex = 1 + cp.startInactivity * ticksPerPeriod;
         int endInactivityIndex = startInactivityIndex + cp.numInactivityPeriods * ticksPerPeriod;

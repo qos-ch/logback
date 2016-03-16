@@ -13,31 +13,8 @@
  */
 package ch.qos.logback.core.net;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import ch.qos.logback.core.net.mock.MockContext;
-import ch.qos.logback.core.spi.PreSerializationTransformer;
-import ch.qos.logback.core.util.Duration;
-import ch.qos.logback.core.util.ExecutorServiceUtil;
-
-import org.junit.After;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InOrder;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
@@ -55,6 +32,25 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+
+import ch.qos.logback.core.net.mock.MockContext;
+import ch.qos.logback.core.spi.PreSerializationTransformer;
+import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 /**
  * Unit tests for {@link AbstractSocketAppender}.

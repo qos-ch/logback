@@ -98,12 +98,4 @@ public class DefaultInvocationGate implements InvocationGate {
     public long getInvocationCounter() {
         return invocationCounter;
     }
-
-
-
-    @Override
-    public void updateMaskIfNecessary(long currentTime) {
-        // TODO Auto-generated method stub
-        
-    }
 }
