@@ -19,6 +19,7 @@ import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.FALLING_BACK_
 import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION;
 import static ch.qos.logback.core.CoreConstants.RECONFIGURE_ON_CHANGE_TASK;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -175,7 +176,7 @@ public class ReconfigureOnChangeTaskTest {
         assertEquals(0, loggerContext.getScheduledFutures().size());
     }
 
-    @Test(timeout = 4000L)
+    @Test(timeout = 3000L)
     public void fallbackToSafe_FollowedByRecovery() throws IOException, JoranException, InterruptedException {
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
@@ -183,9 +184,9 @@ public class ReconfigureOnChangeTaskTest {
         configure(topLevelFile);
         CountDownLatch changeDetectedLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
+        assertNotNull(oldRoct);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>");
         changeDetectedLatch.await();
-
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
 
@@ -194,7 +195,6 @@ public class ReconfigureOnChangeTaskTest {
         CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         secondDoneLatch.await();
-
         statusChecker.assertIsErrorFree();
         statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
     }
@@ -356,9 +356,12 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     void writeToFile(File file, String contents) throws IOException {
-        FileWriter fw = new FileWriter(file);
+    	FileWriter fw = new FileWriter(file);
         fw.write(contents);
         fw.close();
+        // on linux changes to last modified are not propagated if the
+        // time stamp is near the previous time stamp hence the random delta
+        file.setLastModified(System.currentTimeMillis()+RandomUtil.getPositiveInt());
     }
 
     class Harness extends AbstractMultiThreadedHarness {
