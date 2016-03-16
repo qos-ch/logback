@@ -175,12 +175,11 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     @Override
+    /**
+     * @deprecated
+     */
     public synchronized ExecutorService getExecutorService() {
         return getScheduledExecutorService();
-        //        if (executorService == null) {
-//            executorService = ExecutorServiceUtil.newExecutorService();
-//        }
-//        return executorService;
     }
 
     @Override

@@ -277,6 +277,7 @@ public class JoranConfiguratorTest {
     @Test
     public void autoscanShouldReconfigureOnFileChange() throws Exception {
 
+        fail();
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "scan1.xml";
         configure(configFileAsStr);
 
@@ -289,8 +290,8 @@ public class JoranConfiguratorTest {
             logger.debug("after " + i);
         }
 
-        loggerContext.getExecutorService().shutdown();
-        loggerContext.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
+        loggerContext.getScheduledExecutorService().shutdown();
+        loggerContext.getScheduledExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
 
         StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertIsErrorFree();

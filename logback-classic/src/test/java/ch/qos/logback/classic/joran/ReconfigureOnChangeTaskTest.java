@@ -145,7 +145,7 @@ public class ReconfigureOnChangeTaskTest {
         File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
         configure(topLevelFile);
-        StatusPrinter.print(loggerContext);
+        waitForReconfigureOnChangeTaskToRun();
         List<File> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, topLevelFile);
         assertThatListContainsFile(fileList, innerFile);

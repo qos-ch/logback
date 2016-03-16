@@ -114,7 +114,7 @@ public interface Context extends PropertyContainer {
      */
     // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be submitted from 
     // within a running task. ThreadPoolExecutor does not have this limitation.
-    // This causes tests failutes in SocketReceiverTest.testDispatchEventForEnabledLevel and
+    // This causes tests failures in SocketReceiverTest.testDispatchEventForEnabledLevel and
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
     ScheduledExecutorService getScheduledExecutorService();
 
@@ -124,6 +124,7 @@ public interface Context extends PropertyContainer {
      *
      * @return the executor for this context.
      * @since 1.0.0
+     * @deprecated use {@link#getScheduledExecutorService()} instead
      */
     ExecutorService getExecutorService();
     /**

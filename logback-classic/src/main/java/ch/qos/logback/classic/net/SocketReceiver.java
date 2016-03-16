@@ -136,7 +136,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
 
     private Future<Socket> activateConnector(SocketConnector connector) {
         try {
-            return getContext().getExecutorService().submit(connector);
+            return getContext().getScheduledExecutorService().submit(connector);
         } catch (RejectedExecutionException ex) {
             return null;
         }
