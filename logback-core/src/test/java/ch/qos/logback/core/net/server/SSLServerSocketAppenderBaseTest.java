@@ -16,12 +16,14 @@ package ch.qos.logback.core.net.server;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 /**
  * Unit tests for {@link SSLServerSocketAppenderBase}.
@@ -30,7 +32,7 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  */
 public class SSLServerSocketAppenderBaseTest {
 
-    private MockContext context = new MockContext(Executors.newCachedThreadPool());
+    private MockContext context = new MockContext(ExecutorServiceUtil.newScheduledExecutorService());
 
     private SSLServerSocketAppenderBase appender = new InstrumentedSSLServerSocketAppenderBase();
 

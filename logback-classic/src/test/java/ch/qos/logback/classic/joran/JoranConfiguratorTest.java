@@ -13,18 +13,16 @@
  */
 package ch.qos.logback.classic.joran;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
-import ch.qos.logback.classic.jul.JULHelper;
-import ch.qos.logback.core.pattern.parser.Parser;
-import ch.qos.logback.core.spi.ScanException;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CachingDateFormatter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -33,6 +31,7 @@ import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.jul.JULHelper;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
@@ -41,11 +40,14 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
-
-import static org.junit.Assert.*;
+import ch.qos.logback.core.util.CachingDateFormatter;
 
 public class JoranConfiguratorTest {
 
@@ -271,31 +273,6 @@ public class JoranConfiguratorTest {
         assertEquals("hello user1", le.getMessage());
         le = (ILoggingEvent) listAppender.list.get(1);
         assertEquals("hello user2", le.getMessage());
-    }
-
-    // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
-    @Test
-    public void autoscanShouldReconfigureOnFileChange() throws Exception {
-
-        fail();
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "scan1.xml";
-        configure(configFileAsStr);
-
-        File file = new File(configFileAsStr);
-        file.setLastModified(System.currentTimeMillis());
-
-        Thread.sleep(10);
-        // scanning requires 16 logs
-        for (int i = 0; i < 16; i++) {
-            logger.debug("after " + i);
-        }
-
-        loggerContext.getScheduledExecutorService().shutdown();
-        loggerContext.getScheduledExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
-
-        StatusChecker checker = new StatusChecker(loggerContext);
-        checker.assertIsErrorFree();
-        checker.assertContainsMatch(CoreConstants.RESET_MSG_PREFIX);
     }
 
     @Test

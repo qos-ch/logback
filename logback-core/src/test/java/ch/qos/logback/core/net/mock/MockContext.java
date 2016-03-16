@@ -14,7 +14,7 @@
 package ch.qos.logback.core.net.mock;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -29,22 +29,22 @@ import ch.qos.logback.core.status.StatusManager;
  */
 public class MockContext extends ContextBase {
 
-    private final ExecutorService executorService;
+    private final ScheduledExecutorService scheduledExecutorService;
 
     private Status lastStatus;
 
     public MockContext() {
-        this(new MockExecutorService());
+        this(new MockScheduledExecutorService());
     }
 
-    public MockContext(ExecutorService executorService) {
+    public MockContext(ScheduledExecutorService executorService) {
         this.setStatusManager(new MockStatusManager());
-        this.executorService = executorService;
+        this.scheduledExecutorService = executorService;
     }
 
     @Override
-    public ExecutorService getExecutorService() {
-        return executorService;
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
     }
 
     public Status getLastStatus() {

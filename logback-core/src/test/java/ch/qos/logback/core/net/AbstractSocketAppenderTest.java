@@ -20,18 +20,24 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.Duration;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
+
 import org.junit.After;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InOrder;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
@@ -63,7 +69,7 @@ public class AbstractSocketAppenderTest {
      */
     private static final int TIMEOUT = 1000;
 
-    private ThreadPoolExecutor executorService = spy((ThreadPoolExecutor) Executors.newCachedThreadPool());
+    private ScheduledExecutorService executorService = spy((ScheduledExecutorService) ExecutorServiceUtil.newScheduledExecutorService());
     private MockContext mockContext = new MockContext(executorService);
     private PreSerializationTransformer<String> preSerializationTransformer = spy(new StringPreSerializationTransformer());
     private Socket socket = mock(Socket.class);
