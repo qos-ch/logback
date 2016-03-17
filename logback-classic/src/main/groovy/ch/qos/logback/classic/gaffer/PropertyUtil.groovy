@@ -14,7 +14,7 @@
 package ch.qos.logback.classic.gaffer
 
 import java.lang.reflect.Method
-import java.beans.Introspector
+import ch.qos.logback.core.joran.util.beans.BeanUtil
 
 /**
  * @author Ceki G&uuml;c&uuml;
@@ -27,7 +27,7 @@ class PropertyUtil {
   }
 
   static NestingType nestingType(Object obj, String name) {
-    def decapitalizedName = Introspector.decapitalize(name)
+    def decapitalizedName = BeanUtil.convertToLowerCamelCase(name)
     if (obj.hasProperty(decapitalizedName)) {
       return NestingType.SINGLE;
     }
@@ -40,7 +40,7 @@ class PropertyUtil {
   static void attach(NestingType nestingType, Object component, Object subComponent, String name) {
     switch (nestingType) {
       case NestingType.SINGLE:
-        name = Introspector.decapitalize(name)
+        name = BeanUtil.convertToLowerCamelCase(name)
         component."${name}" = subComponent;
         break;
       case NestingType.AS_COLLECTION:
