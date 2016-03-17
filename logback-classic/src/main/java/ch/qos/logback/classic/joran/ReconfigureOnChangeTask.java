@@ -32,7 +32,6 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         if(listeners==null)
             listeners = new ArrayList<ReconfigureOnChangeTaskListener>();
         listeners.add(listener);
-        System.out.println(this.toString() +", num listeners "+listeners.size());
     }
     
     @Override
