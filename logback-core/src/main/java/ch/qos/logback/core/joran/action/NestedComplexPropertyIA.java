@@ -16,11 +16,13 @@ package ch.qos.logback.core.joran.action;
 import java.util.Stack;
 
 import ch.qos.logback.core.joran.spi.ElementPath;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.util.PropertySetter;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.AggregationType;
@@ -30,7 +32,7 @@ import ch.qos.logback.core.util.OptionHelper;
 /**
  * This action is responsible for tying together a parent object with a child
  * element for which there is no explicit rule.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NestedComplexPropertyIA extends ImplicitAction {
@@ -44,6 +46,11 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     // be followed by a corresponding pop.
     Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
 
+	private final BeanDescriptionCache beanDescriptionCache;
+	public NestedComplexPropertyIA(BeanDescriptionCache beanDescriptionCache) {
+		this.beanDescriptionCache=beanDescriptionCache;
+	}
+
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ic) {
 
         String nestedElementTagName = elementPath.peekLast();
@@ -54,7 +61,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         }
 
         Object o = ic.peekObject();
-        PropertySetter parentBean = new PropertySetter(o);
+        PropertySetter parentBean = new PropertySetter(beanDescriptionCache,o);
         parentBean.setContext(context);
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
@@ -138,7 +145,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
             return;
         }
 
-        PropertySetter nestedBean = new PropertySetter(actionData.getNestedComplexProperty());
+        PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,actionData.getNestedComplexProperty());
         nestedBean.setContext(context);
 
         // have the nested element point to its parent if possible

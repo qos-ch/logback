@@ -47,7 +47,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  * <p>
  * A JoranConfiguratorBase instance should not be used more than once to
  * configure a Context.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class JoranConfiguratorBase extends GenericConfigurator {
@@ -80,17 +80,17 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
         rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
         rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction());
         rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
-        rs.addRule(new ElementSelector("*/param"), new ParamAction());
+        rs.addRule(new ElementSelector("*/param"), new ParamAction(getBeanDescriptionCache()));
     }
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
         // The following line adds the capability to parse nested components
-        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA();
+        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
         nestedComplexPropertyIA.setContext(context);
         interpreter.addImplicitAction(nestedComplexPropertyIA);
 
-        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA();
+        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
         nestedBasicIA.setContext(context);
         interpreter.addImplicitAction(nestedBasicIA);
     }

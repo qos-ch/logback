@@ -21,7 +21,16 @@ public class BeanUtil {
 	 * @return true if the given method is an 'adder' method.
 	 */
 	public boolean isAdder(Method method) {
-		return method.getName().startsWith(PREFIX_ADDER);
+		int parameterCount = getParameterCount(method);
+		if(parameterCount!=1){
+			return false;
+		}
+		Class<?> returnType = method.getReturnType();
+		if(returnType!=void.class){
+			return false;
+		}
+		String methodName = method.getName();
+		return methodName.startsWith(PREFIX_ADDER);
 	}
 
 	/**
@@ -30,7 +39,7 @@ public class BeanUtil {
 	 * @return true if the given method is a standard java beans getter.
 	 */
 	public boolean isGetter(Method method) {
-		int parameterCount = method.getParameterTypes().length;
+		int parameterCount = getParameterCount(method);
 		if(parameterCount>0){
 			return false;
 		}
@@ -50,13 +59,17 @@ public class BeanUtil {
 		return true;
 	}
 
+	private int getParameterCount(Method method) {
+		return method.getParameterTypes().length;
+	}
+
 	/**
 	 *
 	 * @param method to check if it is a standard java beans setter.
 	 * @return true if the given method is a standard java beans setter.
 	 */
 	public boolean isSetter(Method method){
-		int parameterCount = method.getParameterTypes().length;
+		int parameterCount = getParameterCount(method);
 		if(parameterCount!=1){
 			return false;
 		}
@@ -119,18 +132,6 @@ public class BeanUtil {
 			return wholeString.substring(prefix.length());
 		}
 		return null;
-	}
-
-	/**
-	 * Converts the given String into lower camel case form.
-	 * @param string to decapitalize.
-	 * @return null if the given String is null.
-	 * Emtpy string if the given string is empty.
-	 * The given string if the first two consecutive letters are in upper case.
-	 * The given string with the first letter in lower case otherwise, which might be the given string.
-	 */
-	public static final String convertToLowerCamelCase(String string){
-		return BeanUtil.INSTANCE.toLowerCamelCase(string);
 	}
 
 }

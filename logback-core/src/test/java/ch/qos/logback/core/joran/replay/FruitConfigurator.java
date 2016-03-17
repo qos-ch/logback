@@ -25,6 +25,7 @@ import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
 public class FruitConfigurator extends GenericConfigurator {
 
@@ -44,11 +45,12 @@ public class FruitConfigurator extends GenericConfigurator {
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
-        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
+    	BeanDescriptionCache beanDescriptionCache=new BeanDescriptionCache();
+        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(beanDescriptionCache);
         nestedIA.setContext(context);
         interpreter.addImplicitAction(nestedIA);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
+        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(beanDescriptionCache);
         nestedIA.setContext(context);
         interpreter.addImplicitAction(nestedSimpleIA);
     }

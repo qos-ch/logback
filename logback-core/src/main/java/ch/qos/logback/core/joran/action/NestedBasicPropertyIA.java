@@ -16,20 +16,23 @@ package ch.qos.logback.core.joran.action;
 import java.util.Stack;
 
 import ch.qos.logback.core.joran.spi.ElementPath;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.PropertySetter;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.util.AggregationType;
 
 /**
  * This action is responsible for tying together a parent object with one of its
  * <em>simple</em> properties specified as an element but for which there is
  * no explicit rule.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NestedBasicPropertyIA extends ImplicitAction {
+
 
     // We use a stack of IADataForBasicProperty objects in order to
     // support nested elements which are handled by the same NestedBasicPropertyIA instance.
@@ -38,6 +41,11 @@ public class NestedBasicPropertyIA extends ImplicitAction {
     // The XML well-formedness property will guarantee that a push will eventually
     // be followed by the corresponding pop.
     Stack<IADataForBasicProperty> actionDataStack = new Stack<IADataForBasicProperty>();
+
+	private final BeanDescriptionCache beanDescriptionCache;
+	public NestedBasicPropertyIA(BeanDescriptionCache beanDescriptionCache) {
+		this.beanDescriptionCache=beanDescriptionCache;
+	}
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
         // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
@@ -50,7 +58,7 @@ public class NestedBasicPropertyIA extends ImplicitAction {
         }
 
         Object o = ec.peekObject();
-        PropertySetter parentBean = new PropertySetter(o);
+        PropertySetter parentBean = new PropertySetter(beanDescriptionCache,o);
         parentBean.setContext(context);
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);

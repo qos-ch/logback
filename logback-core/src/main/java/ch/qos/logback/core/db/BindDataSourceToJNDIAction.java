@@ -22,10 +22,11 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.PropertySetter;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * 
+ *
  * @author Ceki Gulcu
  *
  */
@@ -35,8 +36,13 @@ public class BindDataSourceToJNDIAction extends Action {
     static final String URL = "url";
     static final String USER = "user";
     static final String PASSWORD = "password";
+	private final BeanDescriptionCache beanDescriptionCache;
 
-    /**
+    public BindDataSourceToJNDIAction(BeanDescriptionCache beanDescriptionCache) {
+		this.beanDescriptionCache = beanDescriptionCache;
+	}
+
+	/**
      * Instantiates an a data source and bind it to JNDI
      * Most of the required parameters are placed in the ec.substitutionProperties
      */
@@ -57,7 +63,7 @@ public class BindDataSourceToJNDIAction extends Action {
         try {
             DataSource ds = (DataSource) OptionHelper.instantiateByClassName(dsClassName, DataSource.class, context);
 
-            PropertySetter setter = new PropertySetter(ds);
+            PropertySetter setter = new PropertySetter(beanDescriptionCache,ds);
             setter.setContext(context);
 
             if (!OptionHelper.isEmpty(urlStr)) {

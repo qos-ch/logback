@@ -20,7 +20,7 @@ import java.lang.reflect.Method;
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescription;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionFactory;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
@@ -62,10 +62,10 @@ public class PropertySetter extends ContextAwareBase {
      * @param obj
      *          the object for which to set properties
      */
-    public PropertySetter(Object obj) {
+    public PropertySetter(BeanDescriptionCache beanDescriptionCache,Object obj) {
         this.obj = obj;
         this.objClass = obj.getClass();
-    	this.beanDescription = BeanDescriptionFactory.INSTANCE.create(obj.getClass());
+    	this.beanDescription = beanDescriptionCache.getBeanDescription(objClass);
     }
 
 
@@ -333,12 +333,11 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     Method getRelevantMethod(String name, AggregationType aggregationType) {
-        String cName = capitalizeFirstLetter(name);
         Method relevantMethod;
         if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY_COLLECTION) {
-            relevantMethod = findAdderMethod(cName);
+            relevantMethod = findAdderMethod(name);
         } else if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY) {
-            relevantMethod = findSetterMethod(cName);
+            relevantMethod = findSetterMethod(name);
         } else {
             throw new IllegalStateException(aggregationType + " not allowed here");
         }

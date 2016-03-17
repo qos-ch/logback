@@ -28,6 +28,7 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
@@ -38,7 +39,7 @@ public class PropertySetterTest {
 
     Context context = new ContextBase();
     House house = new House();
-    PropertySetter setter = new PropertySetter(house);
+    PropertySetter setter = new PropertySetter(new BeanDescriptionCache(),house);
 
     @Before
     public void setUp() {
@@ -74,7 +75,7 @@ public class PropertySetterTest {
     public void testSetProperty() {
         {
             House house = new House();
-            PropertySetter setter = new PropertySetter(house);
+            PropertySetter setter = new PropertySetter(new BeanDescriptionCache(),house);
             setter.setProperty("count", "10");
             setter.setProperty("temperature", "33.1");
 
@@ -89,7 +90,7 @@ public class PropertySetterTest {
 
         {
             House house = new House();
-            PropertySetter setter = new PropertySetter(house);
+            PropertySetter setter = new PropertySetter(new BeanDescriptionCache(),house);
             setter.setProperty("Count", "10");
             setter.setProperty("Name", "jack");
             setter.setProperty("Open", "true");
