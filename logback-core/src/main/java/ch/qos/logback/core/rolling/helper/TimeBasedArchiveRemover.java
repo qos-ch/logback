@@ -142,10 +142,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         long periodsElapsed = 0;
         if (lastHeartBeat == UNINITIALIZED) {
             addInfo("first clean up after appender initialization");
-            periodsElapsed = rc.periodsElapsed(nowInMillis, nowInMillis + INACTIVITY_TOLERANCE_IN_MILLIS);
+            periodsElapsed = rc.periodBarriersCrossed(nowInMillis, nowInMillis + INACTIVITY_TOLERANCE_IN_MILLIS);
             periodsElapsed = Math.min(periodsElapsed, MAX_VALUE_FOR_INACTIVITY_PERIODS);
         } else {
-            periodsElapsed = rc.periodsElapsed(lastHeartBeat, nowInMillis);
+            periodsElapsed = rc.periodBarriersCrossed(lastHeartBeat, nowInMillis);
             if (periodsElapsed < 1) {
                 addWarn("Unexpected periodsElapsed value " + periodsElapsed);
                 periodsElapsed = 1;
@@ -230,7 +230,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     
     public Future<?> cleanAsynchronously(Date now) {
         ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
-        ExecutorService executorService = context.getExecutorService();
+        ExecutorService executorService = context.getScheduledExecutorService();
         Future<?> future = executorService.submit(runnable);
         return future;
     }

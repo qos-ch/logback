@@ -175,11 +175,15 @@ public class RollingCalendar extends GregorianCalendar {
         }
     }
 
-    public long periodsElapsed(long start, long end) {
+    public long periodBarriersCrossed(long start, long end) {
         if (start > end)
             throw new IllegalArgumentException("Start cannot come before end");
 
-        long diff = end - start;
+        Date startFloored = getsStartOfCurrentPeriod(start);
+        Date endFloored = getsStartOfCurrentPeriod(end);
+        
+        long diff = endFloored.getTime() - startFloored.getTime();
+        
         switch (periodicityType) {
 
         case TOP_OF_MILLISECOND:
@@ -191,6 +195,8 @@ public class RollingCalendar extends GregorianCalendar {
         case TOP_OF_HOUR:
             return (int) diff / CoreConstants.MILLIS_IN_ONE_HOUR;
         case TOP_OF_DAY:
+            // add 1 hours in compensation of daylight savings time
+            diff += CoreConstants.MILLIS_IN_ONE_HOUR; 
             return diff / CoreConstants.MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
             return diff / CoreConstants.MILLIS_IN_ONE_WEEK;
@@ -281,5 +287,11 @@ public class RollingCalendar extends GregorianCalendar {
 
     public Date getNextTriggeringDate(Date now) {
         return getEndOfNextNthPeriod(now, 1);
+    }
+    
+    public Date getsStartOfCurrentPeriod(long now) {
+        Calendar aCal = Calendar.getInstance(getTimeZone());
+        aCal.setTimeInMillis(now);
+        return getEndOfNextNthPeriod(aCal.getTime(), 0);
     }
 }

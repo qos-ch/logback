@@ -104,7 +104,6 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
 
     InvocationGate invocationGate = new DefaultInvocationGate();
-    int getSizeInvocations = 0;
     
     public boolean isTriggeringEvent(File activeFile, final E event) {
 
@@ -126,7 +125,6 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             return false;
         }
         
-        getSizeInvocations++;
         if (activeFile.length() >= maxFileSize.getSize()) {
         
             elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);

@@ -56,6 +56,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     static long MILLIS_IN_MONTH = (long) ((365.242199 / 12) * MILLIS_IN_DAY);
     static int MONTHS_IN_YEAR = 12;
 
+    // Wed Mar 23 23:07:05 CET 2016
+    static final long WED_2016_03_23_T_230705_CET = 1458770825333L;
+
+    
     int slashCount = 0;
     int ticksPerPeriod = 216;
     ConfigParameters cp; // initialized in setup
@@ -125,15 +129,14 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     @Test
-    @Ignore
     public void checkCleanupForBasicDailyRolloverWithSizeCap() {
-        long sizeOfOuputPerPeriod = 37888;
-        int sizeInUnitsOfPeriodCount = 2;
+        long bytesOutputPerPeriod = 15984;
+        int sizeInUnitsOfBytesPerPeriod = 2;
 
-        cp.maxHistory(20).simulatedNumberOfPeriods(20 * 3).sizeCap(sizeInUnitsOfPeriodCount * sizeOfOuputPerPeriod);
+        cp.maxHistory(5).simulatedNumberOfPeriods(10).sizeCap(sizeInUnitsOfBytesPerPeriod * bytesOutputPerPeriod);
         generateDailyRollover(cp);
-        checkFileCount(sizeInUnitsOfPeriodCount + 1);
         StatusPrinter.print(context);
+        checkFileCount(sizeInUnitsOfBytesPerPeriod);
     }
 
     @Test
@@ -152,7 +155,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     @Test
     public void checkCleanupForDailyRolloverWithInactivity_30Periods() {
-        cp.maxHistory(6).simulatedNumberOfPeriods(30).startInactivity(10).numInactivityPeriods(1);
+        /// -------
+        cp.maxHistory(2).simulatedNumberOfPeriods(30).startInactivity(3).numInactivityPeriods(1);
         generateDailyRolloverAndCheckFileCount(cp);
     }
 
@@ -201,7 +205,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         cp.maxHistory(5).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(5 * 4);
         logOverMultiplePeriods(cp);
         checkPatternCompliance(5 + 1 + slashCount, "\\d{4}-\\d{2}-\\d{2}-clean(\\.\\d)(.zip)?");
-        System.out.println("getSIze invocations "+sizeAndTimeBasedFNATP.getSizeInvocations);
     }
 
     @Test
@@ -268,33 +271,41 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         checkDirPatternCompliance(maxHistory + 1);
     }
 
-    void logOncePeriod(long currentTime, String fileNamePattern, int maxHistory) {
+    void logTwiceAndStop(long currentTime, String fileNamePattern, int maxHistory) {
         ConfigParameters params = new ConfigParameters(currentTime).fileNamePattern(fileNamePattern).maxHistory(maxHistory);
         buildRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START);
+        rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
+        currentTime += MILLIS_IN_DAY/2;
+        add(tbrp.compressionFuture);
+        add(tbrp.cleanUpFuture);
+        waitForJobsToComplete();
+        tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
         rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
         rfa.stop();
     }
 
     @Test
     public void cleanHistoryOnStart() {
-        long simulatedTime = this.currentTime;
+        long simulatedTime = WED_2016_03_23_T_230705_CET;
+        System.out.println(new Date(simulatedTime));
+        
         String fileNamePattern = randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logOncePeriod(simulatedTime, fileNamePattern, maxHistory);
+            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory);
             simulatedTime += MILLIS_IN_DAY;
         }
-        // StatusPrinter.print(context);
+        StatusPrinter.print(context);
         checkFileCount(expectedCountWithoutFolders(maxHistory));
     }
 
     @Test
     public void cleanHistoryOnStartWithDayPattern() {
-        long simulatedTime = this.currentTime;
+        long simulatedTime = WED_2016_03_23_T_230705_CET;
         String fileNamePattern = randomOutputDir + "clean-%d{yyyy-MM-dd}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logOncePeriod(simulatedTime, fileNamePattern, maxHistory);
+            logTwiceAndStop(simulatedTime, fileNamePattern, maxHistory);
             simulatedTime += MILLIS_IN_DAY;
         }
         StatusPrinter.print(context);
@@ -312,7 +323,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         String fileNamePattern = randomOutputDir + "clean-%d{HH}.txt";
         int maxHistory = 3;
         for (int i = 0; i <= 5; i++) {
-            logOncePeriod(now, fileNamePattern, maxHistory);
+            logTwiceAndStop(now, fileNamePattern, maxHistory);
             now = now + MILLIS_IN_HOUR;
         }
         StatusPrinter.print(context);
@@ -367,7 +378,11 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
                 String iAsString = Integer.toString(i);
                 SpacePadder.spacePad(sb, 66+(6-iAsString.length()));
                 rfa.doAppend(sb.toString());
+            } else {
+                @SuppressWarnings("unused")
+                Date d = new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
             }
+            
             tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime(), tickDuration));
             add(tbrp.compressionFuture);
             add(tbrp.cleanUpFuture);
