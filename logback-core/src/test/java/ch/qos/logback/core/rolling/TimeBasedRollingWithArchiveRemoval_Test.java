@@ -133,10 +133,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         long bytesOutputPerPeriod = 15984;
         int sizeInUnitsOfBytesPerPeriod = 2;
 
-        cp.maxHistory(5).simulatedNumberOfPeriods(10).sizeCap(sizeInUnitsOfBytesPerPeriod * bytesOutputPerPeriod);
+        cp.maxHistory(5).simulatedNumberOfPeriods(10).sizeCap(sizeInUnitsOfBytesPerPeriod * bytesOutputPerPeriod+1000);
         generateDailyRollover(cp);
         StatusPrinter.print(context);
-        checkFileCount(sizeInUnitsOfBytesPerPeriod);
+        checkFileCount(sizeInUnitsOfBytesPerPeriod+1);
     }
 
     @Test
