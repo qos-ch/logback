@@ -71,6 +71,7 @@ public class RollingCalendar extends GregorianCalendar {
     public PeriodicityType computePeriodicityType() {
 
         GregorianCalendar calendar = new GregorianCalendar(GMT_TIMEZONE, Locale.getDefault());
+                        
 
         // set sate to 1970-01-01 00:00:00 GMT
         Date epoch = new Date(0);
@@ -114,10 +115,10 @@ public class RollingCalendar extends GregorianCalendar {
             return true;
         case TOP_OF_WEEK:
             // WW
-            if (collision(31 * MILLIS_IN_ONE_DAY))
+            if (collision(34 * MILLIS_IN_ONE_DAY))
                 return false;
             // isolated ww
-            if (collision(365 * MILLIS_IN_ONE_DAY))
+            if (collision(368 * MILLIS_IN_ONE_DAY))
                 return false;
             return true;
         default:
@@ -264,7 +265,7 @@ public class RollingCalendar extends GregorianCalendar {
             cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.WEEK_OF_YEAR, numPeriods);
             break;
-
+            
         case TOP_OF_MONTH:
             cal.set(Calendar.DATE, 1);
             cal.set(Calendar.HOUR_OF_DAY, 0);

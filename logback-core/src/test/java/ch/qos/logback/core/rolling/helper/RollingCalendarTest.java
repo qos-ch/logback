@@ -14,8 +14,8 @@
 package ch.qos.logback.core.rolling.helper;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -56,6 +56,16 @@ public class RollingCalendarTest {
             RollingCalendar rc = new RollingCalendar("yyyy-MM");
             assertEquals(PeriodicityType.TOP_OF_MONTH, rc.getPeriodicityType());
         }
+        
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-ww");
+            assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+        }
+        
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-WW");
+            assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+        }
     }
 
     @Test
@@ -89,6 +99,7 @@ public class RollingCalendarTest {
         }
     }
 
+    
     @Test
     public void testCollisionFreenes() {
         // hourly
