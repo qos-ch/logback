@@ -27,16 +27,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.Chronology;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
-import org.joda.time.Duration;
-import org.joda.time.Instant;
-import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -137,23 +132,32 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     @Test
-    public void checkCrossedPeriods() {
+    public void checkCrossedPeriodsWithDSTBarrier() {
         long SAT_2016_03_26_T_230705_CET = WED_2016_03_23_T_230705_CET+3*CoreConstants.MILLIS_IN_ONE_DAY;
         System.out.println("SAT_2016_03_26_T_230705_CET "+new Date(SAT_2016_03_26_T_230705_CET));
         long MON_2016_03_28_T_000705_CET = SAT_2016_03_26_T_230705_CET+CoreConstants.MILLIS_IN_ONE_DAY;
         System.out.println("MON_2016_03_28_T_000705_CET "+new Date(MON_2016_03_28_T_000705_CET));
             
-        int result = computeCrossedDayBarriers(SAT_2016_03_26_T_230705_CET, MON_2016_03_28_T_000705_CET);
+        int result = computeCrossedDayBarriers(SAT_2016_03_26_T_230705_CET, MON_2016_03_28_T_000705_CET, "CET");
         assertEquals(2, result);
     }
    
     private int computeCrossedDayBarriers(long currentTime, long millisAtEnd) {
-        LocalDate startInstant = new LocalDate(currentTime, DateTimeZone.getDefault());
-        LocalDate endInstant = new LocalDate(millisAtEnd, DateTimeZone.getDefault());
+        return computeCrossedDayBarriers(currentTime, millisAtEnd, null);
+    }
+
+
+    private int computeCrossedDayBarriers(long currentTime, long millisAtEnd, String timeZoneID) {
+        DateTimeZone dateTimeZone = DateTimeZone.getDefault();
+        if(timeZoneID != null) {
+            dateTimeZone = DateTimeZone.forID(timeZoneID);
+        }
+        LocalDate startInstant = new LocalDate(currentTime, dateTimeZone);
+        LocalDate endInstant = new LocalDate(millisAtEnd, dateTimeZone);
         Days days = Days.daysBetween(startInstant, endInstant);
         return days.getDays();
     }
-
+    
     @Test
     public void checkCleanupForBasicDailyRollover() {
         cp.maxHistory(20).simulatedNumberOfPeriods(20 * 3).startInactivity(0).numInactivityPeriods(0);

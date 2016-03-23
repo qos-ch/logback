@@ -195,6 +195,7 @@ public class ReconfigureOnChangeTaskTest {
         CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         secondDoneLatch.await();
+        StatusPrinter.print(loggerContext);
         statusChecker.assertIsErrorFree();
         statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
     }
