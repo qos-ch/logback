@@ -27,13 +27,22 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.joda.time.Chronology;
+import org.joda.time.DateTimeZone;
+import org.joda.time.Days;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
+import org.joda.time.Interval;
+import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.SpacePadder;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.util.FixedRateInvocationGate;
@@ -58,10 +67,12 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
 
     // Wed Mar 23 23:07:05 CET 2016
     static final long WED_2016_03_23_T_230705_CET = 1458770825333L;
+    static final long THU_2016_03_17_T_230330_CET = 1458252210975L;
 
     
     int slashCount = 0;
-    int ticksPerPeriod = 216;
+    int ticksPerPeriod = 216; 
+    
     ConfigParameters cp; // initialized in setup
     FixedRateInvocationGate fixedRateInvocationGate = new FixedRateInvocationGate(ticksPerPeriod/2);
     
@@ -111,15 +122,36 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         checkFileCount(expectedCountWithFolders(maxHistory, withExtraFolder));
     }
 
-    void generateDailyRollover(ConfigParameters cp) {
+    long generateDailyRollover(ConfigParameters cp) {
         this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
         cp.fileNamePattern(randomOutputDir + "clean-%d{" + DAILY_DATE_PATTERN + "}.txt");
-        logOverMultiplePeriods(cp);
+        return logOverMultiplePeriods(cp);
     }
 
-    void generateDailyRolloverAndCheckFileCount(ConfigParameters cp) {
-        generateDailyRollover(cp);
-        checkFileCount(expectedCountWithoutFoldersWithInactivity(cp.maxHistory, cp.simulatedNumberOfPeriods, cp.startInactivity + cp.numInactivityPeriods));
+    long generateDailyRolloverAndCheckFileCount(ConfigParameters cp) {
+        long millisAtEnd = generateDailyRollover(cp);
+        int periodBarriersCrossed= computeCrossedDayBarriers(currentTime, millisAtEnd); 
+        System.out.println("**** "+periodBarriersCrossed);
+        checkFileCount(expectedCountWithoutFoldersWithInactivity(cp.maxHistory, periodBarriersCrossed, cp.startInactivity + cp.numInactivityPeriods));
+        return millisAtEnd;
+    }
+
+    @Test
+    public void checkCrossedPeriods() {
+        long SAT_2016_03_26_T_230705_CET = WED_2016_03_23_T_230705_CET+3*CoreConstants.MILLIS_IN_ONE_DAY;
+        System.out.println("SAT_2016_03_26_T_230705_CET "+new Date(SAT_2016_03_26_T_230705_CET));
+        long MON_2016_03_28_T_000705_CET = SAT_2016_03_26_T_230705_CET+CoreConstants.MILLIS_IN_ONE_DAY;
+        System.out.println("MON_2016_03_28_T_000705_CET "+new Date(MON_2016_03_28_T_000705_CET));
+            
+        int result = computeCrossedDayBarriers(SAT_2016_03_26_T_230705_CET, MON_2016_03_28_T_000705_CET);
+        assertEquals(2, result);
+    }
+   
+    private int computeCrossedDayBarriers(long currentTime, long millisAtEnd) {
+        LocalDate startInstant = new LocalDate(currentTime, DateTimeZone.getDefault());
+        LocalDate endInstant = new LocalDate(millisAtEnd, DateTimeZone.getDefault());
+        Days days = Days.daysBetween(startInstant, endInstant);
+        return days.getDays();
     }
 
     @Test
@@ -160,9 +192,12 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         generateDailyRolloverAndCheckFileCount(cp);
     }
 
+    
+    
     @Test
     public void checkCleanupForDailyRolloverWithInactivity_10Periods() {
-        cp.maxHistory(6).simulatedNumberOfPeriods(10).startInactivity(3).numInactivityPeriods(4);
+        this.currentTime = THU_2016_03_17_T_230330_CET;
+        cp.maxHistory(6).simulatedNumberOfPeriods(10).startInactivity(2).numInactivityPeriods(2);
         generateDailyRolloverAndCheckFileCount(cp);
     }
 
@@ -381,6 +416,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
             } else {
                 @SuppressWarnings("unused")
                 Date d = new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+                System.out.print("");
             }
             
             tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(addTime(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime(), tickDuration));
@@ -389,6 +425,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
             waitForJobsToComplete();
         }
         rfa.stop();
+        
+        System.out.println(new Date( tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
         return tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
     }
 

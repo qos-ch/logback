@@ -118,7 +118,7 @@ public class RollingCalendar extends GregorianCalendar {
             if (collision(34 * MILLIS_IN_ONE_DAY))
                 return false;
             // isolated ww
-            if (collision(368 * MILLIS_IN_ONE_DAY))
+            if (collision(366 * MILLIS_IN_ONE_DAY))
                 return false;
             return true;
         default:
