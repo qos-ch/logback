@@ -20,11 +20,14 @@ package ch.qos.logback.core.util;
  */
 public class DefaultInvocationGate implements InvocationGate {
 
+    static final int MASK_DECREASE_RIGHT_SHIFT_COUNT = 2;
+
     // experiments indicate that even for the most CPU intensive applications with 200 or more threads MASK
     // values in the order of 0xFFFF is appropriate
     private static final int MAX_MASK = 0xFFFF;
+    static final int DEFAULT_MASK = 0xF;
 
-    private volatile long mask = 0xF;
+    private volatile long mask = DEFAULT_MASK;
     //private volatile long lastMaskCheck = System.currentTimeMillis();
 
     // IMPORTANT: This field can be updated by multiple threads. It follows that
@@ -69,22 +72,31 @@ public class DefaultInvocationGate implements InvocationGate {
         boolean maskMatch = ((invocationCounter++) & mask) == mask;
 
         if (maskMatch) {
-            if (currentTime < lowerLimitForMaskMatch) {
+            if (currentTime < this.lowerLimitForMaskMatch) {
                 increaseMask();
             }
-            this.lowerLimitForMaskMatch = currentTime + minDelayThreshold;
+            updateLimits(currentTime);
         } else {
-            if (currentTime > upperLimitForNoMaskMatch) {
+            if (currentTime > this.upperLimitForNoMaskMatch) {
                 decreaseMask();
-                upperLimitForNoMaskMatch = currentTime + maxDelayThreshold;
+                updateLimits(currentTime);
                 return false;
             }
         }
         return !maskMatch;
     }
 
+    private void updateLimits(long currentTime) {
+        this.lowerLimitForMaskMatch = currentTime + minDelayThreshold;
+        this.upperLimitForNoMaskMatch = currentTime + maxDelayThreshold;
+    }
 
 
+    // package private, for testing purposes only
+    long getMask() {
+        return mask;
+    }
+    
     private void increaseMask() {
         if (mask >= MAX_MASK)
             return;
@@ -92,7 +104,7 @@ public class DefaultInvocationGate implements InvocationGate {
     }
 
     private void decreaseMask() {
-        mask = mask >>> 2;
+        mask = mask >>> MASK_DECREASE_RIGHT_SHIFT_COUNT;
     }
 
     public long getInvocationCounter() {
