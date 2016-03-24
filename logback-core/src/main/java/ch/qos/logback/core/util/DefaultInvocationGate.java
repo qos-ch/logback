@@ -68,7 +68,7 @@ public class DefaultInvocationGate implements InvocationGate {
      * @see ch.qos.logback.core.util.InvocationGate#skipFurtherWork()
      */
     @Override
-    public boolean isTooSoon(long currentTime) {
+    final public boolean isTooSoon(long currentTime) {
         boolean maskMatch = ((invocationCounter++) & mask) == mask;
 
         if (maskMatch) {
