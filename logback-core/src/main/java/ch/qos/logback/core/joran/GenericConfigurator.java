@@ -18,6 +18,7 @@ import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.*;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
@@ -34,6 +35,8 @@ import java.util.List;
 import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
+
+	private final BeanDescriptionCache beanDescriptionCache=new BeanDescriptionCache();
 
     protected Interpreter interpreter;
 
@@ -100,7 +103,12 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         doConfigure(new InputSource(inputStream));
     }
 
-    protected abstract void addInstanceRules(RuleStore rs);
+
+    protected BeanDescriptionCache getBeanDescriptionCache() {
+		return beanDescriptionCache;
+	}
+
+	protected abstract void addInstanceRules(RuleStore rs);
 
     protected abstract void addImplicitRules(Interpreter interpreter);
 

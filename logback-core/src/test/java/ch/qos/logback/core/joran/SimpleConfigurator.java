@@ -21,6 +21,7 @@ import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
@@ -32,11 +33,11 @@ public class SimpleConfigurator extends GenericConfigurator {
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
-        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
+        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(new BeanDescriptionCache());
         nestedIA.setContext(context);
         interpreter.addImplicitAction(nestedIA);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
+        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(new BeanDescriptionCache());
         nestedSimpleIA.setContext(context);
         interpreter.addImplicitAction(nestedSimpleIA);
     }

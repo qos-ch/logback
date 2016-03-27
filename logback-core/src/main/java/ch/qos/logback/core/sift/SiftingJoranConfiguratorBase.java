@@ -34,7 +34,7 @@ public abstract class SiftingJoranConfiguratorBase<E> extends GenericConfigurato
     protected final Map<String, String> parentPropertyMap;
 
     protected SiftingJoranConfiguratorBase(String key, String value, Map<String, String> parentPropertyMap) {
-        this.key = key;
+		this.key = key;
         this.value = value;
         this.parentPropertyMap = parentPropertyMap;
     }
@@ -43,11 +43,11 @@ public abstract class SiftingJoranConfiguratorBase<E> extends GenericConfigurato
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
-        NestedComplexPropertyIA nestedComplexIA = new NestedComplexPropertyIA();
+        NestedComplexPropertyIA nestedComplexIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
         nestedComplexIA.setContext(context);
         interpreter.addImplicitAction(nestedComplexIA);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
+        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
         nestedSimpleIA.setContext(context);
         interpreter.addImplicitAction(nestedSimpleIA);
     }

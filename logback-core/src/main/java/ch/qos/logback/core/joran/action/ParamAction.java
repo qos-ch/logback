@@ -17,11 +17,17 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.PropertySetter;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
 public class ParamAction extends Action {
     static String NO_NAME = "No name attribute in <param> element";
     static String NO_VALUE = "No name attribute in <param> element";
     boolean inError = false;
+
+	private final BeanDescriptionCache beanDescriptionCache;
+	public ParamAction(BeanDescriptionCache beanDescriptionCache) {
+		this.beanDescriptionCache=beanDescriptionCache;
+	}
 
     public void begin(InterpretationContext ec, String localName, Attributes attributes) {
         String name = attributes.getValue(NAME_ATTRIBUTE);
@@ -43,7 +49,7 @@ public class ParamAction extends Action {
         value = value.trim();
 
         Object o = ec.peekObject();
-        PropertySetter propSetter = new PropertySetter(o);
+        PropertySetter propSetter = new PropertySetter(beanDescriptionCache,o);
         propSetter.setContext(context);
         value = ec.subst(value);
 
