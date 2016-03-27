@@ -205,15 +205,14 @@ public class AsyncAppenderBaseTest {
         verify(la, loopLen);
     }
 
-    @SuppressWarnings("deprecation")
+    // @SuppressWarnings("deprecation")
     @Test
     public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
-        int maxRuntime = 1; // runtime of 0 means wait forever, so use 1 ms
-        // instead
+        int maxFlushTime = 1; // runtime of 0 means wait forever, so use 1 ms instead
         int loopLen = 10;
         ListAppender<Integer> la = delayingListAppender;
         asyncAppenderBase.addAppender(la);
-        asyncAppenderBase.setMaxFlushTime(maxRuntime);
+        asyncAppenderBase.setMaxFlushTime(maxFlushTime);
         asyncAppenderBase.start();
 
         for (int i = 0; i < loopLen; i++) {
@@ -222,24 +221,12 @@ public class AsyncAppenderBaseTest {
 
         asyncAppenderBase.stop();
 
-        // suspend the thread so that we can make the following assertions
-        // without race conditions
-        asyncAppenderBase.worker.suspend();
-
         // confirms that stop exited when runtime reached
-        statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxRuntime + " ms\\) exceeded.");
-
-        // confirms that the number of events posted are the number of events
-        // removed from the queue
-        assertEquals(la.list.size(), loopLen - asyncAppenderBase.getNumberOfElementsInQueue());
-
-        // resume the thread to let it finish processing
-        asyncAppenderBase.worker.resume();
+        statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxFlushTime + " ms\\) exceeded.");
 
         asyncAppenderBase.worker.join();
 
-        // confirms that all entries do end up being flushed if we wait long
-        // enough
+        // confirms that all entries do end up being flushed if we wait long enough
         verify(la, loopLen);
     }
 
@@ -266,28 +253,30 @@ public class AsyncAppenderBaseTest {
 
     private void verify(ListAppender<Integer> la, int atLeast) {
         assertFalse(la.isStarted());
-        assertTrue(atLeast+ " <= "+la.list.size(), atLeast <= la.list.size());
+        assertTrue(atLeast + " <= " + la.list.size(), atLeast <= la.list.size());
         statusChecker.assertIsErrorFree();
         statusChecker.assertContainsMatch("Worker thread will flush remaining events before exiting.");
     }
-    
+
     static class LossyAsyncAppender extends AsyncAppenderBase<Integer> {
         @Override
         protected boolean isDiscardable(Integer i) {
             return (i % 3 == 0);
         }
     }
-    
+
     @Test
     public void checkThatStartMethodIsIdempotent() {
         asyncAppenderBase.addAppender(lossyAsyncAppender);
         asyncAppenderBase.start();
-        
+
         // we don't need mockito for this test, but if we did here is how it would look
-        //AsyncAppenderBase<Integer>  spied = Mockito.spy(asyncAppenderBase);
-        //Mockito.doThrow(new IllegalStateException("non idempotent start")).when((UnsynchronizedAppenderBase<Integer>) spied).start();
-        
-        // a second invocation of start will cause a IllegalThreadStateException thrown by the asyncAppenderBase.worker thread
+        // AsyncAppenderBase<Integer> spied = Mockito.spy(asyncAppenderBase);
+        // Mockito.doThrow(new IllegalStateException("non idempotent start")).when((UnsynchronizedAppenderBase<Integer>)
+        // spied).start();
+
+        // a second invocation of start will cause a IllegalThreadStateException thrown by the asyncAppenderBase.worker
+        // thread
         asyncAppenderBase.start();
     }
 }

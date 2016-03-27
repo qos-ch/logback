@@ -56,7 +56,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
         lastHeartBeat = nowInMillis;
         if (periodsElapsed > 1) {
-            addInfo("periodsElapsed = " + periodsElapsed);
+            addInfo("Multiple periods, i.e. " + periodsElapsed + " periods, seem to have elapsed. This is expected at application start.");
         }
         for (int i = 0; i < periodsElapsed; i++) {
             int offset = getPeriodOffsetForDeletionTarget() - i;
@@ -149,10 +149,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             periodsElapsed = Math.min(periodsElapsed, MAX_VALUE_FOR_INACTIVITY_PERIODS);
         } else {
             periodsElapsed = rc.periodBarriersCrossed(lastHeartBeat, nowInMillis);
-            if (periodsElapsed < 1) {
-                addWarn("Unexpected periodsElapsed value " + periodsElapsed);
-                periodsElapsed = 1;
-            }
+            // periodsElapsed of zero is possible for Size and time based policies
         }
         return (int) periodsElapsed;
     }
