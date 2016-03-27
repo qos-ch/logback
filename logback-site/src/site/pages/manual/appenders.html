@@ -1280,14 +1280,15 @@ public interface RollingPolicy extends LifeCycle {
     period.
     </p>
 
-    <p>In logback version prior to 1.1.7, this document mentioned a
-    component called <code>SizeAndTimeBasedFNATP</code> but not
-    anymore in order to offer a simpler configuration path. However,
-    earlier configuration files using
-    <code>SizeAndTimeBasedFNATP</code> will continue to work just
-    fine. In fact, <code>SizeAndTimeBasedRollingPolicy</code> is
-    implemented with a <code>SizeAndTimeBasedFNATP</code>
-    subcomponent.</p>
+    <p>In versions prior to 1.1.7, this document mentioned a component
+    called <code>SizeAndTimeBasedFNATP</code>. However, given that
+    <code>SizeAndTimeBasedFNATP</code> offers a simpler configuration
+    structure, we no longer document
+    <code>SizeAndTimeBasedFNATP</code>.  Nevertheless, earlier
+    configuration files using <code>SizeAndTimeBasedFNATP</code> will
+    continue to work just fine. In fact,
+    <code>SizeAndTimeBasedRollingPolicy</code> is implemented with a
+    <code>SizeAndTimeBasedFNATP</code> subcomponent.</p>
 
    <h4 class="doAnchor" name="FixedWindowRollingPolicy">FixedWindowRollingPolicy</h4>
 
