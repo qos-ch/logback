@@ -258,7 +258,7 @@ public class Foo {
    </p>
 
    <p class="example">Example: Basic configuration file
-   (logback-examples/src/main/java/chapters/configuration/sample0.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/sample0.xml)</p>
    <span class="asGroovy" onclick="return asGroovy('sample0');">View as .groovy</span>
 
 
@@ -353,7 +353,7 @@ public static void main(String[] args) {
 
    <p class="example">Example: Basic configuration file using debug
    mode
-   (logback-examples/src/main/java/chapters/configuration/sample1.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/sample1.xml)</p>
    <span class="asGroovy" onclick="return asGroovy('sample1');">View as .groovy</span>
 
    <pre id="sample1" class="prettyprint source">
@@ -445,7 +445,7 @@ public static void main(String[] args) {
   
    <p class="example">Example: Scanning for changes in configuration
    file and automatic re-configuration
-   (logback-examples/src/main/java/chapters/configuration/scan1.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/scan1.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('scan1');">View as .groovy</span>
 <pre id="scan1" class="prettyprint source">
@@ -462,7 +462,7 @@ public static void main(String[] args) {
    example:</p>
 
   <p class="example">Example: Specifying a different scanning period
-  (logback-examples/src/main/java/chapters/configuration/scan2.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/scan2.xml)</p>
   <span class="asGroovy" onclick="return asGroovy('scan2');">View as .groovy</span>
   <pre id="scan2" class="prettyprint source">
 &lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> > 
@@ -708,7 +708,7 @@ public class MyApp3 {
    within a configuration file. Here is an example.</p>
 
    <p class="example">Example: Registering a status listener
-   (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
    <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
@@ -933,7 +933,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <p class="example">Example: Setting the level of a logger
-   (logback-examples/src/main/java/chapters/configuration/sample2.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/sample2.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('sample2');">View as .groovy</span>
    <pre id="sample2" class="prettyprint source">&lt;configuration>
@@ -974,7 +974,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Setting the level of multiple loggers
-  (logback-examples/src/main/java/chapters/configuration/sample3.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/sample3.xml)</p>
   
   <span class="asGroovy" onclick="return asGroovy('sample3');">View as .groovy</span>
   <pre id="sample3" class="source prettyprint">&lt;configuration>
@@ -1056,7 +1056,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Logger level sample
-  (logback-examples/src/main/java/chapters/configuration/sample4.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/sample4.xml)</p>
   <span class="asGroovy" onclick="return asGroovy('sample4');">View as .groovy</span>
   <pre id="sample4" class="prettyprint source">&lt;configuration>
 
@@ -1181,7 +1181,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Multiple loggers
-  (logback-examples/src/main/java/chapters/configuration/multiple.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/multiple.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('multiple');">View as .groovy</span>
   <pre id="multiple" class="prettyprint source">&lt;configuration>
@@ -1236,7 +1236,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Duplicate appender
-  (logback-examples/src/main/java/chapters/configuration/duplicate.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/duplicate.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('duplicate');">View as .groovy</span>
   <pre id="duplicate" class="prettyprint source">&lt;configuration>
@@ -1286,7 +1286,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Multiple appender
-  (logback-examples/src/main/java/chapters/configuration/restricted.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/restricted.xml)</p>
   <span class="asGroovy" onclick="return asGroovy('restricted');">View as .groovy</span>
   <pre id="restricted" class="prettyprint source">&lt;configuration>
 
@@ -1329,7 +1329,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Additivity flag
-  (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/additivityFlag.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('additivityFlag');">View as .groovy</span>
   <pre id="additivityFlag" class="prettyprint source">&lt;configuration>
@@ -1385,7 +1385,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
   
   <p class="example">Example: Set the context name and display it
-  (logback-examples/src/main/java/chapters/configuration/contextName.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/contextName.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('contextName');">View as .groovy</span>
   <pre id="contextName" class="prettyprint source">&lt;configuration>
@@ -1456,7 +1456,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Simple Variable substitution
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml)
+  (logback-examples/src/main/resources/chapters/configuration/variableSubstitution1.xml)
   </p>
 
   <span class="asGroovy" onclick="return asGroovy('variableSubstitution1');">View as .groovy</span>
@@ -1485,7 +1485,7 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="source">java -DUSER_HOME="/home/sebastien" MyApp2</p>
 
   <p class="example">Example: System Variable substitution
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml)
+  (logback-examples/src/main/resources/chapters/configuration/variableSubstitution2.xml)
   </p>
   <span class="asGroovy" onclick="return asGroovy('variableSubstitution2');">View as .groovy</span>
   <pre id="variableSubstitution2" class="prettyprint source">&lt;configuration>
@@ -1510,7 +1510,7 @@ import ch.qos.logback.classic.LoggerContext;
 
   <p class="example">Example: Variable substitution using a
   separate file
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution3.xml)
+  (logback-examples/src/main/resources/chapters/configuration/variableSubstitution3.xml)
   </p>
   <span class="asGroovy" onclick="return asGroovy('variableSubstitution3');">View as .groovy</span>
   <pre id="variableSubstitution3" class="prettyprint source">&lt;configuration>
@@ -1536,7 +1536,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <em>Example: Variable file
-   (logback-examples/src/main/java/chapters/configuration/variables1.properties)</em>
+   (logback-examples/src/main/resources/chapters/configuration/variables1.properties)</em>
 
    <pre class="source">USER_HOME=/home/sebastien</pre>
 
@@ -1610,7 +1610,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <p class="example">Example: A variable defined in "context" scope
-   (logback-examples/src/main/java/chapters/configuration/contextScopedVariable.xml)
+   (logback-examples/src/main/resources/chapters/configuration/contextScopedVariable.xml)
    </p>
 
   <span class="asGroovy" onclick="return
@@ -1664,7 +1664,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <p class="example">Example: Nested variable references
-   (logback-examples/src/main/java/chapters/configuration/variables2.properties)</p>
+   (logback-examples/src/main/resources/chapters/configuration/variables2.properties)</p>
 
    <pre class="source">USER_HOME=/home/sebastien
 fileName=myApp.log
@@ -1677,7 +1677,7 @@ fileName=myApp.log
     
     <em>Example: Variable substitution using
     a separate file
-    (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)</em>
+    (logback-examples/src/main/resources/chapters/configuration/variableSubstitution4.xml)</em>
 
     <pre class="prettyprint source">&lt;configuration>
 
@@ -1913,7 +1913,7 @@ fileName=myApp.log
 
    <p class="example">Example: Insert as properties env-entries
    obtained via JNDI
-   (logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/insertFromJNDI.xml)</p>
 
    <pre class="prettyprint source">&lt;configuration>
   <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
@@ -1946,7 +1946,7 @@ fileName=myApp.log
   </p>
 
   <p class="example">Example: File include
-  (logback-examples/src/main/java/chapters/configuration/containingConfig.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/containingConfig.xml)</p>
 
   <pre class="prettyprint source">&lt;configuration>
   <b>&lt;include file="src/main/java/chapters/configuration/includedConfig.xml"/></b>
@@ -1963,7 +1963,7 @@ fileName=myApp.log
   </p>
 
   <p class="example">Example: File include
-  (logback-examples/src/main/java/chapters/configuration/includedConfig.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/includedConfig.xml)</p>
 
   <pre class="source"><b class="green big">&lt;included></b>
   &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender">

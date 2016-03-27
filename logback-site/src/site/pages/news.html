@@ -32,6 +32,16 @@
 
     <h3>March Xth, 2016, Release of version 1.1.7</h3>
     
+    <p><code>TimeBasedRollingPolicy</code> now supports the <a
+    href="manual/appenders.html#tbrpTotalSizeCap"><span
+    class="option">totalSizeCap</span></a> property which allows the
+    user to limit the total size of archived logs.
+    </p>
+    
+
+    <p>Archive removal by <code>RollingFileAppender</code> is now
+    performed asynchronously.</p>
+
     <p>Unneccessary and incompatible %i token in <span
     class="option">fileNamePattern</span> option with
     <code>RolliRollingFileAppender/TimeBasedRollingPolicy</code> is

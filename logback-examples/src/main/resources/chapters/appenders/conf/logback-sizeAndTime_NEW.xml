@@ -6,11 +6,10 @@
     <file>mylog.txt</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <!-- rollover daily -->
-      <fileNamePattern>mylog-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
-      <!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
-      <maxFileSize>100MB</maxFileSize>
-      <maxHistory>60</maxHistory>
-      <totalSizeCap>20GB</totalSizeCap>
+      <fileNamePattern>mylog-%d{yyyy-MM-dd'T'HHmmss}.%i.txt</fileNamePattern>
+      <maxFileSize>100</maxFileSize>
+      <maxHistory>2</maxHistory>
+      <totalSizeCap>200</totalSizeCap>
     </rollingPolicy>
     <encoder>
       <pattern>%msg%n</pattern>
