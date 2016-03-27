@@ -196,8 +196,6 @@ public class RollingCalendar extends GregorianCalendar {
         case TOP_OF_HOUR:
             return (int) diff / CoreConstants.MILLIS_IN_ONE_HOUR;
         case TOP_OF_DAY:
-            // add 1 hours in compensation of daylight savings time
-            diff += CoreConstants.MILLIS_IN_ONE_HOUR; 
             return diff / CoreConstants.MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
             return diff / CoreConstants.MILLIS_IN_ONE_WEEK;

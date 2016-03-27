@@ -5,7 +5,7 @@ class ConfigParameters {
     long simulatedTime;
     int maxHistory;
     int simulatedNumberOfPeriods;
-    int startInactivity;
+    int startInactivity = -1;
     int numInactivityPeriods;
     String fileNamePattern;
     long periodDurationInMillis = TimeBasedRollingWithArchiveRemoval_Test.MILLIS_IN_DAY;

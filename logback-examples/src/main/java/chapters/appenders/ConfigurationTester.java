@@ -20,12 +20,12 @@ import org.slf4j.MDC;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
 import chapters.appenders.sub.sample.Bar;
 
 /**
  * 
- * This class can be used to check the result of a configuration file.
+ * This java "application" configures logback using a configuration file
+ * supplied on the class path and logs a few times.
  * 
  * @author S&eacute;bastien Pennec
  */
@@ -43,15 +43,14 @@ public class ConfigurationTester {
         } catch (JoranException je) {
             je.printStackTrace();
         }
-        // After we've called Joran, let's print information about the
-        // internal status of logback
-        StatusPrinter.print(lc);
+        // Next call forces status messages to be printed on the console
+        // StatusPrinter.print(lc);
 
         logger.debug("**Hello {}", new Bar());
         MDC.put("testKey", "testValueFromMDC");
         MDC.put("testKey2", "value2");
-        for (int i = 0; i < 10; i++) {
-            logger.debug("logging statement " + i);
+        for (int i = 0; i < 64; i++) {
+            logger.debug("logging statement {}", i);
             Thread.sleep(100);
         }
         Bar bar = new Bar();

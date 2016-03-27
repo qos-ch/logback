@@ -30,9 +30,11 @@ import ch.qos.logback.core.util.FileSize;
 
 public class TimeBasedArchiveRemover extends ContextAwareBase implements ArchiveRemover {
 
+    // we wish to leave two archive files alone even if their total is over totalSizeCap
+    private static final int UNTOUCHABLE_ARCHIVE_FILE_COUNT = 2;
     static protected final long UNINITIALIZED = -1;
     // aim for 64 days, except in case of hourly rollover
-    static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 64L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
+    static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 32L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
     static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
     final FileNamePattern fileNamePattern;
@@ -62,8 +64,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             cleanPeriod(dateOfPeriodToClean);
         }
     }
-    
-    
+
     protected File[] getFilesInPeriod(Date dateOfPeriodToClean) {
         String filenameToDelete = fileNamePattern.convert(dateOfPeriodToClean);
         File file2Delete = new File(filenameToDelete);
@@ -93,8 +94,6 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
     }
 
- 
-
     void capTotalSize(Date now) {
         int totalSize = 0;
         int totalRemoved = 0;
@@ -105,28 +104,32 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             for (File f : matchingFileArray) {
                 long size = f.length();
                 if (totalSize + size > totalSizeCap) {
-                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
-                    totalRemoved += size;
-                    f.delete();
+                    if (offset >= UNTOUCHABLE_ARCHIVE_FILE_COUNT) {
+                        addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
+                        totalRemoved += size;
+                        f.delete();
+                    } else {
+                        addWarn("Skipping [" + f + "]" + " of size " + new FileSize(size) + " as it is one of the two newest log achives.");
+                    }
                 }
                 totalSize += size;
             }
         }
-        addInfo("Removed  "+ new FileSize(totalRemoved) + " of files");
+        addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
     }
-    
+
     private void descendingSortByLastModified(File[] matchingFileArray) {
         Arrays.sort(matchingFileArray, new Comparator<File>() {
             @Override
             public int compare(final File f1, final File f2) {
                 long l1 = f1.lastModified();
                 long l2 = f2.lastModified();
-                if(l1 == l2)
+                if (l1 == l2)
                     return 0;
                 // descending sort, i.e. newest files first
-                if(l2 < l1) 
+                if (l2 < l1)
                     return -1;
-                else 
+                else
                     return 1;
             }
         });
@@ -223,11 +226,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         this.totalSizeCap = totalSizeCap;
     }
 
-
     public String toString() {
         return "c.q.l.core.rolling.helper.TimeBasedArchiveRemover";
     }
-    
+
     public Future<?> cleanAsynchronously(Date now) {
         ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
         ExecutorService executorService = context.getScheduledExecutorService();
@@ -237,14 +239,15 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     public class ArhiveRemoverRunnable implements Runnable {
         Date now;
+
         ArhiveRemoverRunnable(Date now) {
             this.now = now;
         }
-        
+
         @Override
         public void run() {
             clean(now);
-            if(totalSizeCap != UNBOUND_TOTAL_SIZE && totalSizeCap > 0) {
+            if (totalSizeCap != UNBOUND_TOTAL_SIZE && totalSizeCap > 0) {
                 capTotalSize(now);
             }
         }
