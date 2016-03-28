@@ -20,7 +20,6 @@
       <script type="text/javascript" src="templates/left.js" ></script>
     </div>
     <div id="right">
-      <noscript>Please turn on Javascript to view this menu</noscript>
       <script type="text/javascript" src="templates/right.js" ></script>
     </div>
 
