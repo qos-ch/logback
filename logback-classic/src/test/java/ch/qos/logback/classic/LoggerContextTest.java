@@ -258,7 +258,7 @@ public class LoggerContextTest {
             lc.putProperty("a" + i, "val");
             Thread.yield();
         }
-
     }
 
+  
 }

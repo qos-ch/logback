@@ -33,8 +33,22 @@
 
     <hr width="80%" align="center" />
 
-    <h3>March Xth, 2016, Release of version 1.1.7</h3>
+    <h3>March 29th, 2016, Release of version 1.1.7</h3>
     
+    <p>Logback is now <a href="
+    http://docs.oracle.com/javase/8/docs/technotes/guides/compactprofiles/compactprofiles.html">compact3
+    profile</a> compatible. This improvement was requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1071">LOGBACK-1071</a> by
+    Axel Fontaine with Max Urech providing the relevant pull-request.
+    </p>
+
+    <p>Fixed <code>ConcurrentModificationException</code> being thrown
+    when the <code>reset()</code> method is invoked on the
+    <code>LoggerContext</code> instance. This issue was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-397">LOGBACK-397</a> by
+    Szczepan Faber with Ross Sargant providing the relevant test case.
+    </p>
+
     <p><code>TimeBasedRollingPolicy</code> now supports the <a
     href="manual/appenders.html#tbrpTotalSizeCap"><span
     class="option">totalSizeCap</span></a> property which allows the

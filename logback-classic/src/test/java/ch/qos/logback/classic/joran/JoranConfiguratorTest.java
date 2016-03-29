@@ -430,7 +430,7 @@ public class JoranConfiguratorTest {
     
     
     @Test
-    public void valueOfConvetion() throws JoranException {
+    public void valueOfConvention() throws JoranException {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "valueOfConvention.xml";
         configure(configFileAsStr);
         checker.assertIsWarningOrErrorFree();
