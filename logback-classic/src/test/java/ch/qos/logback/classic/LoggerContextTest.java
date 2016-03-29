@@ -210,6 +210,21 @@ public class LoggerContextTest {
     }
 
     @Test
+    public void loggerNameEndingInDotOrDollarShouldWork() {
+        {
+            String loggerName = "toto.x.";
+            Logger logger = lc.getLogger(loggerName);
+            assertEquals(loggerName, logger.getName());
+        }
+        
+        {
+            String loggerName = "toto.x$";
+            Logger logger = lc.getLogger(loggerName);
+            assertEquals(loggerName, logger.getName());
+        }
+    }
+
+    @Test
     public void levelResetTest() {
         Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.TRACE);
@@ -237,7 +252,6 @@ public class LoggerContextTest {
         Map<String, String> filenamePatternCollisionMap = (Map<String, String>) lc.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         assertNotNull(filenamePatternCollisionMap);
         assertTrue(filenamePatternCollisionMap.isEmpty());
-
     }
 
     // http://jira.qos.ch/browse/LOGBACK-142
@@ -260,5 +274,4 @@ public class LoggerContextTest {
         }
     }
 
-  
 }

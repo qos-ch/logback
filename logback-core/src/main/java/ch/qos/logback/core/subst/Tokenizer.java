@@ -67,7 +67,10 @@ public class Tokenizer {
             addLiteralToken(tokenList, buf);
             break;
         case START_STATE:
-            throw new ScanException("Unexpected end of pattern string");
+         // trailing $. see also LOGBACK-1149
+            buf.append(CoreConstants.DOLLAR);
+            addLiteralToken(tokenList, buf);
+            break;
         }
         return tokenList;
     }

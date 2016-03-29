@@ -161,4 +161,14 @@ public class TokenizerTest {
         witnessList.add(new Token(Token.Type.LITERAL, ":"));
         assertEquals(witnessList, tokenList);
     }
+    
+    @Test
+    public void literalEndingWithDollar_LOGBACK_1149() throws ScanException {
+        String input = "a$";
+        Tokenizer tokenizer = new Tokenizer(input);
+        List<Token> tokenList = tokenizer.tokenize();
+        witnessList.add(new Token(Token.Type.LITERAL, "a"));
+        witnessList.add(new Token(Token.Type.LITERAL, "$"));
+        assertEquals(witnessList, tokenList);
+    }
 }
