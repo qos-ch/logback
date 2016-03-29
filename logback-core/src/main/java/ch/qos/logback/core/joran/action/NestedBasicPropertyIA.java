@@ -33,7 +33,6 @@ import ch.qos.logback.core.util.AggregationType;
  */
 public class NestedBasicPropertyIA extends ImplicitAction {
 
-
     // We use a stack of IADataForBasicProperty objects in order to
     // support nested elements which are handled by the same NestedBasicPropertyIA instance.
     // We push a IADataForBasicProperty instance in the isApplicable method (if the
@@ -42,10 +41,11 @@ public class NestedBasicPropertyIA extends ImplicitAction {
     // be followed by the corresponding pop.
     Stack<IADataForBasicProperty> actionDataStack = new Stack<IADataForBasicProperty>();
 
-	private final BeanDescriptionCache beanDescriptionCache;
-	public NestedBasicPropertyIA(BeanDescriptionCache beanDescriptionCache) {
-		this.beanDescriptionCache=beanDescriptionCache;
-	}
+    private final BeanDescriptionCache beanDescriptionCache;
+
+    public NestedBasicPropertyIA(BeanDescriptionCache beanDescriptionCache) {
+        this.beanDescriptionCache = beanDescriptionCache;
+    }
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
         // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
@@ -58,7 +58,7 @@ public class NestedBasicPropertyIA extends ImplicitAction {
         }
 
         Object o = ec.peekObject();
-        PropertySetter parentBean = new PropertySetter(beanDescriptionCache,o);
+        PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
         parentBean.setContext(context);
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);

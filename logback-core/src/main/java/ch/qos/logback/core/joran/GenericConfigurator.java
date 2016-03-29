@@ -36,7 +36,7 @@ import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-	private final BeanDescriptionCache beanDescriptionCache=new BeanDescriptionCache();
+    private final BeanDescriptionCache beanDescriptionCache = new BeanDescriptionCache();
 
     protected Interpreter interpreter;
 
@@ -103,12 +103,11 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         doConfigure(new InputSource(inputStream));
     }
 
-
     protected BeanDescriptionCache getBeanDescriptionCache() {
-		return beanDescriptionCache;
-	}
+        return beanDescriptionCache;
+    }
 
-	protected abstract void addInstanceRules(RuleStore rs);
+    protected abstract void addInstanceRules(RuleStore rs);
 
     protected abstract void addImplicitRules(Interpreter interpreter);
 
@@ -135,9 +134,9 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     public final void doConfigure(final InputSource inputSource) throws JoranException {
 
         long threshold = System.currentTimeMillis();
-//        if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
-//            informContextOfURLUsedForConfiguration(getContext(), null);
-//        }
+        // if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
+        // informContextOfURLUsedForConfiguration(getContext(), null);
+        // }
         SaxEventRecorder recorder = new SaxEventRecorder(context);
         recorder.recordEvents(inputSource);
         doConfigure(recorder.saxEventList);
