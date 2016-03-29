@@ -427,4 +427,12 @@ public class JoranConfiguratorTest {
         configure(configFileAsStr);
         assertTrue(loggerContext.isPackagingDataEnabled());
     }
+    
+    
+    @Test
+    public void valueOfConvetion() throws JoranException {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "valueOfConvention.xml";
+        configure(configFileAsStr);
+        checker.assertIsWarningOrErrorFree();
+    }
 }

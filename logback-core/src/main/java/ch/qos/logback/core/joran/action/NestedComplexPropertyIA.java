@@ -46,10 +46,11 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     // be followed by a corresponding pop.
     Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
 
-	private final BeanDescriptionCache beanDescriptionCache;
-	public NestedComplexPropertyIA(BeanDescriptionCache beanDescriptionCache) {
-		this.beanDescriptionCache=beanDescriptionCache;
-	}
+    private final BeanDescriptionCache beanDescriptionCache;
+
+    public NestedComplexPropertyIA(BeanDescriptionCache beanDescriptionCache) {
+        this.beanDescriptionCache = beanDescriptionCache;
+    }
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ic) {
 
@@ -61,7 +62,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         }
 
         Object o = ic.peekObject();
-        PropertySetter parentBean = new PropertySetter(beanDescriptionCache,o);
+        PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
         parentBean.setContext(context);
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
@@ -145,7 +146,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
             return;
         }
 
-        PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,actionData.getNestedComplexProperty());
+        PropertySetter nestedBean = new PropertySetter(beanDescriptionCache, actionData.getNestedComplexProperty());
         nestedBean.setContext(context);
 
         // have the nested element point to its parent if possible
@@ -174,8 +175,9 @@ public class NestedComplexPropertyIA extends ImplicitAction {
                 break;
             case AS_COMPLEX_PROPERTY_COLLECTION:
                 actionData.parentBean.addComplexProperty(tagName, actionData.getNestedComplexProperty());
-
                 break;
+            default:
+                addError("Unexpected aggregationType " + actionData.aggregationType);
             }
         }
     }

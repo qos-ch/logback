@@ -103,6 +103,10 @@ public class StatusUtil {
         return Status.ERROR > getHighestLevel(threshold);
     }
 
+    public boolean isWarningOrErrorFree(long threshold) {
+        return Status.WARN > getHighestLevel(threshold);
+    }
+    
     public boolean containsMatch(long threshold, int level, String regex) {
         List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
         Pattern p = Pattern.compile(regex);

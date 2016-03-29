@@ -29,6 +29,7 @@ import ch.qos.logback.core.rolling.helper.Compressor;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.rolling.helper.RenameUtil;
+import ch.qos.logback.core.util.FileSize;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
@@ -51,7 +52,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     Future<?> cleanUpFuture;
 
     private int maxHistory = UNBOUND_HISTORY;
-    private long totalSizeCap = UNBOUND_TOTAL_SIZE;
+    private FileSize totalSizeCap = new FileSize(UNBOUND_TOTAL_SIZE);
 
     private ArchiveRemover archiveRemover;
 
@@ -104,13 +105,13 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         if (maxHistory != UNBOUND_HISTORY) {
             archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
             archiveRemover.setMaxHistory(maxHistory);
-            archiveRemover.setTotalSizeCap(totalSizeCap);
+            archiveRemover.setTotalSizeCap(totalSizeCap.getSize());
             if (cleanHistoryOnStart) {
                 addInfo("Cleaning on start up");
                 Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
                 cleanUpFuture = archiveRemover.cleanAsynchronously(now);
             }
-        } else if (totalSizeCap != UNBOUND_TOTAL_SIZE) {
+        } else if (totalSizeCap.getSize() != UNBOUND_TOTAL_SIZE) {
             addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value ["+totalSizeCap+"]");
         }
 
@@ -255,8 +256,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         return "c.q.l.core.rolling.TimeBasedRollingPolicy@"+this.hashCode();
     }
 
-    public void setTotalSizeCap(long totalSizeCap) {
+    public void setTotalSizeCap(FileSize totalSizeCap) {
         this.totalSizeCap = totalSizeCap;
-
     }
 }
