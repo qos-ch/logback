@@ -47,7 +47,7 @@ David Roberge            Maine, USA            2016-02-14
 Adam Batkin              Connecticut, USA      2016-02-14
 Ville Koskela            Washington, USA       2016-02-19
 Vedran Pavic             Croatia               2016-02-23
-
+Max Urech                AG, Swizerland        2016-03-17
 
 Justification for CLAs
 ----------------------
