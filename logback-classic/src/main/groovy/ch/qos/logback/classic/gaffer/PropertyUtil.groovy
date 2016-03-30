@@ -27,7 +27,7 @@ class PropertyUtil {
   }
 
   static NestingType nestingType(Object obj, String name) {
-    def decapitalizedName = BeanUtil.INSTANCE.toLowerCamelCase(name);
+    def decapitalizedName = BeanUtil.SINGLETON.toLowerCamelCase(name);
     if (obj.hasProperty(decapitalizedName)) {
       return NestingType.SINGLE;
     }
@@ -40,7 +40,7 @@ class PropertyUtil {
   static void attach(NestingType nestingType, Object component, Object subComponent, String name) {
     switch (nestingType) {
       case NestingType.SINGLE:
-        name = BeanUtil.INSTANCE.toLowerCamelCase(name);
+        name = BeanUtil.SINGLETON.toLowerCamelCase(name);
         component."${name}" = subComponent;
         break;
       case NestingType.AS_COLLECTION:
