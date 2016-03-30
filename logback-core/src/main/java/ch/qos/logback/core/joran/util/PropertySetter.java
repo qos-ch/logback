@@ -151,6 +151,8 @@ public class PropertySetter extends ContextAwareBase {
                 return AggregationType.AS_BASIC_PROPERTY_COLLECTION;
             case AS_COMPLEX_PROPERTY:
                 return AggregationType.AS_COMPLEX_PROPERTY_COLLECTION;
+            case AS_COMPLEX_PROPERTY_COLLECTION:
+                addError("Unexpected AggregationType " + type);
             }
         }
 
@@ -164,12 +166,12 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     private Method findAdderMethod(String name) {
-    	String propertyName = BeanUtil.INSTANCE.toLowerCamelCase(name);
+    	String propertyName = BeanUtil.SINGLETON.toLowerCamelCase(name);
     	return beanDescription.getAdder(propertyName);
     }
 
     private Method findSetterMethod(String name) {
-        String propertyName = BeanUtil.INSTANCE.toLowerCamelCase(name);
+        String propertyName = BeanUtil.SINGLETON.toLowerCamelCase(name);
         return beanDescription.getSetter(propertyName);
     }
 

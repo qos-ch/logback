@@ -50,7 +50,9 @@ public class EMail {
         }
 
         logger.error("At last an error.", new Exception("Just testing"));
-
+        
+        lc.stop();
+        
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     }
 
