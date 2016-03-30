@@ -356,7 +356,7 @@ public interface Appender&lt;E&gt; extends LifeCycle, ContextAware, FilterAttach
 &lt;/configuration&gt;</pre>
 
 
-   <p>timestamp要素には、<span class="attr">key属性</span>および<span class="attr">datePattern属性</span>という2つの必須属性と、<span class="attr">timeReference属性</span>という任意属性があります。<span class="attr">key属性</span>には、<a href="./configuration.html#variableSubstitution">変数</a>と同じく、他の設定要素からタイムスタンプを参照するときの名前を指定します。<span class="attr">datePattern</span>属性には、設定ファイルを解釈した時点の日時を文字列に変換するための日付パターン文字列を指定します。日付パターン文字列に指定できるのは、<a href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>で利用できるものと同じです。<span class="attr">timeReference属性</span>には、タイムスタンプの基準時間を指定します。デフォルトでは、現在の日時、つまり、設定ファイルを解析、解釈した時点の日時になります。ですが、コンテキストを生成した時間を基準時間としたほうが便利な場合もあるでしょう。そういう場合は、<span class="attr">timeReference属性</span>に<code>"contextBirth"</code>を指定すればよいです。
+   <p>timestamp要素には、<span class="attr">key属性</span>および<span class="attr">datePattern属性</span>という2つの必須属性と、<span class="attr">timeReference属性</span>という任意属性があります。<span class="attr">key属性</span>には、<a href="./configuration.html#variableSubstitution">変数</a>と同じく、他の設定要素からタイムスタンプを参照するときの名前を指定します。<span class="attr">datePattern</span>属性には、設定ファイルを解釈した時点の日時を文字列に変換するための日付パターン文字列を指定します。日付パターン文字列に指定できるのは、<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>で利用できるものと同じです。<span class="attr">timeReference属性</span>には、タイムスタンプの基準時間を指定します。デフォルトでは、現在の日時、つまり、設定ファイルを解析、解釈した時点の日時になります。ですが、コンテキストを生成した時間を基準時間としたほうが便利な場合もあるでしょう。そういう場合は、<span class="attr">timeReference属性</span>に<code>"contextBirth"</code>を指定すればよいです。
    </p>
 
    <p>次のコマンドを実行して、<code>timestamp要素</code>がどうなるのか試してみましょう。</p>
@@ -1371,7 +1371,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       <tr>
         <td><span class="prop" container="smtp">charsetEncoding</span></td>
         <td><code>String</code></td>
-        <td>送信されるメッセージは指定された<a href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">文字セット</a>でエンコードされます。デフォルトの文字セットは"UTF-8"ですが、ほとんどの場合十分でしょう。
+        <td>送信されるメッセージは指定された<a href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html">文字セット</a>でエンコードされます。デフォルトの文字セットは"UTF-8"ですが、ほとんどの場合十分でしょう。
         </td>
       </tr>
 
