@@ -104,12 +104,6 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         if (getFile() != null) {
             addInfo("File property is set to [" + fileName + "]");
 
-            if (checkForFileCollisionInPreviousFileAppenders()) {
-                addError("Collisions detected with FileAppender/RollingAppender instances defined earlier. Aborting.");
-                addError(MORE_INFO_PREFIX + COLLISION_WITH_EARLIER_APPENDER_URL);
-                errors++;
-            }
-
             if (prudent) {
                 if (!isAppend()) {
                     setAppend(true);
@@ -117,11 +111,18 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
                 }
             }
 
-            try {
-                openFile(getFile());
-            } catch (java.io.IOException e) {
+            if (checkForFileCollisionInPreviousFileAppenders()) {
+                addError("Collisions detected with FileAppender/RollingAppender instances defined earlier. Aborting.");
+                addError(MORE_INFO_PREFIX + COLLISION_WITH_EARLIER_APPENDER_URL);
                 errors++;
-                addError("openFile(" + fileName + "," + append + ") call failed.", e);
+            } else {
+                // file should be opened only if collision free
+                try {
+                    openFile(getFile());
+                } catch (java.io.IOException e) {
+                    errors++;
+                    addError("openFile(" + fileName + "," + append + ") call failed.", e);
+                }
             }
         } else {
             errors++;
