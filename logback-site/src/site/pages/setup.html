@@ -43,15 +43,15 @@
     </p>
     
 
-
     <h3 class="doAnchor" name="commandLine">Running from the command
     line</h3>
     
-    <p>Assuming your current directory is
+    <p>You can launch the first sample application,
+    <em>chapters.introduction.HelloWord1</em> with the following
+    command. This assumes that your current directory is
     <em>$LOGBACK_HOME/logback-examples</em>, where
     <em>$LOGBACK_HOME</em> stands for the directory where you
-    installed logback, you can launch the first sample application,
-    <em>chapters.introduction.HelloWord1</em> with the following command:
+    installed logback:
     </p>
 
     <p class="source">java -cp lib/slf4j-api-${slf4j.version}.jar;../logback-core-${project.version}.jar;\
@@ -77,6 +77,76 @@
    issue the commands from within the
    <em>$LOGBACK_HOME/logback-examples</em> directory.
    </p>
+
+    
+   <h2 class="doAnchor" name="mavenBuild">Maven dependency
+    declaration</h2>
+
+    <p>To use logback-classic in your Maven project, declare the
+    following dependency in your project's <em>pom</em> file.</p>
+
+    <pre class="prettyprint source">&lt;dependency>
+  &lt;groupId>ch.qos.logback&lt;/groupId>
+  &lt;artifactId>logback-classic&lt;/artifactId>
+  &lt;version>${project.version}&lt;/version>
+&lt;/dependency></pre>
+
+    <p><span class="label notice">TRANSITIVITY</span> Note that in
+    addition to <em>logback-classic.jar</em>, the above declaration
+    will automatically pull-in <em>slf4j-api.jar</em> and
+    <em>logback-core.jar</em> into your project by virtue of Maven's
+    transitivity rules.</p>
+
+
+   <p>To include logback-access in your Maven project, declare the following
+    dependency in your project's <em>pom</em> file.</p>
+
+    <pre class="prettyprint source">&lt;dependency>
+  &lt;groupId>ch.qos.logback&lt;/groupId>
+  &lt;artifactId>logback-access&lt;/artifactId>
+  &lt;version>${project.version}&lt;/version>
+&lt;/dependency></pre>
+
+    <h4>Maven "Bill of materials" (useful for large teams)</h4>
+
+    <p>To facilitate the synchronization of logback and slf4j modules,
+    we provide a "Bill of materials" pom file. It can be imported in
+    the <code>dependencyManagement</code> section of your parent
+    <code>pom</code> file, as shown below.
+    </p>
+
+    <pre class="prettyprint source">&lt;dependencyManagement>
+  &lt;dependencies>
+     &lt;dependency>
+       &lt;groupId>ch.qos.logback&lt;/groupId>
+       &lt;artifactId>logback-bom&lt;/artifactId>
+       &lt;version>${project.version}&lt;/version>
+       &lt;type>pom&lt;/type>
+       &lt;scope>import&lt;/scope>
+       &lt;dependency>
+       ...
+  &lt;/dependencies>
+&lt;/dependencyManagement></pre>
+     
+    <p>Importing logback-bom as shown above allows you to declare the
+    version for logback/slf4j modules in one step and keep them in
+    sync. This can be convenient particularly in larger software
+    teams.</p>
+
+    <p>Note that you still need to declare a dependency on
+    logback-classic (or logback-access). However, you no longer will
+    have to specify the version.</p>
+    
+    <p>After logback-bom is imported, the previous dependency declaration
+    becomes:</p>
+
+   <pre class="prettyprint source">&lt;dependency>
+  &lt;groupId>ch.qos.logback&lt;/groupId>
+  &lt;artifactId>logback-classic&lt;/artifactId>
+  &lt;!-- Look mom, no version! -->
+&lt;/dependency></pre>
+
+   <h2 class="doAnchor" name="optionalDeps">Optional dependencies</h2>
 
    <h3 class="doAnchor" name="SMTP"><code>SMTPAppender</code> requires
    JavaMail API</h3>
@@ -156,7 +226,7 @@
    
     
 
-   <h3 class="doAnchor" name="ide">Building with an IDE</h3>
+   <h2 class="doAnchor" name="ide">Building with an IDE</h2>
    
    <p>If you wish to contribute to the project or just hack for fun,
    you will probably want to import logback as a project into your

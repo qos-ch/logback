@@ -1,5 +1,3 @@
-# memory aid 
-
 mvn versions:set -DgenerateBackupPoms=false -DnewVersion=${VERSION_NUMBER} 
 
 mvn clean
