@@ -17,7 +17,6 @@ import ch.qos.logback.core.CoreConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.IdentityHashMap;
 
 public class ThrowableProxy implements IThrowableProxy {
 
@@ -30,7 +29,6 @@ public class ThrowableProxy implements IThrowableProxy {
     int commonFrames;
     private ThrowableProxy cause;
     private ThrowableProxy[] suppressed = NO_SUPPRESSED;
-    private boolean circular;
 
     private transient PackagingDataCalculator packagingDataCalculator;
     private boolean calculatedPackageData = false;
@@ -48,77 +46,39 @@ public class ThrowableProxy implements IThrowableProxy {
     }
 
     private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
-    
-    private static final StackTraceElementProxy[] NO_STACKTRACE = new StackTraceElementProxy[0];
 
     public ThrowableProxy(Throwable throwable) {
-        this(throwable, null, false);
-    }
-    
-    private ThrowableProxy(Throwable throwable, IdentityHashMap<Throwable, Boolean> all, boolean circular) {
 
         this.throwable = throwable;
         this.className = throwable.getClass().getName();
         this.message = throwable.getMessage();
+        this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
 
-        /*
-        If throwable is circular, referenced somewhere else in the cause/suppressed chain, 
-        do not process its own cause/suppresed exceptions.  If this is not done, a StackOverflowError will be thrown.
-        */
-        if (circular) {
-            this.circular = circular;
-            this.stackTraceElementProxyArray = NO_STACKTRACE;
-        } else {
-            this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
-            /*
-            When using printStackTrace, suppressed exceptions appear above the cause.
-            If an exception is circular and is found both in the cause and suppressed chains,
-            it should be processed in the suppressed chain before the cause chain.
-            This will mimic the behaviour of the JVM by classifying the suppressed
-            chain version to be non-circular, rather than the cause chain version.
-            */
-            if (GET_SUPPRESSED_METHOD != null) {
-                // this will only execute on Java 7
-                try {
-                    Object obj = GET_SUPPRESSED_METHOD.invoke(throwable);
-                    if (obj instanceof Throwable[]) {
-                        Throwable[] throwableSuppressed = (Throwable[]) obj;
-                        if (throwableSuppressed.length > 0) {
-                            if (all == null) {
-                                all = new IdentityHashMap<Throwable, Boolean>();
-                                all.put(throwable, Boolean.TRUE);
-                            }
-                            suppressed = new ThrowableProxy[throwableSuppressed.length];
-                            for (int i = 0; i < throwableSuppressed.length; i++) {
-                                if (all.put(throwableSuppressed[i], Boolean.TRUE) == null) {
-                                    this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i], all, false);
-                                    this.suppressed[i].commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
-                                                    stackTraceElementProxyArray);
-                                } else {
-                                    this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i], all, true);
-                                }
-                            }
+        Throwable nested = throwable.getCause();
+
+        if (nested != null) {
+            this.cause = new ThrowableProxy(nested);
+            this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
+        }
+        if (GET_SUPPRESSED_METHOD != null) {
+            // this will only execute on Java 7
+            try {
+                Object obj = GET_SUPPRESSED_METHOD.invoke(throwable);
+                if (obj instanceof Throwable[]) {
+                    Throwable[] throwableSuppressed = (Throwable[]) obj;
+                    if (throwableSuppressed.length > 0) {
+                        suppressed = new ThrowableProxy[throwableSuppressed.length];
+                        for (int i = 0; i < throwableSuppressed.length; i++) {
+                            this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i]);
+                            this.suppressed[i].commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
+                                            stackTraceElementProxyArray);
                         }
                     }
-                } catch (IllegalAccessException e) {
-                    // ignore
-                } catch (InvocationTargetException e) {
-                    // ignore
                 }
-            }
-            Throwable nested = throwable.getCause();
-
-            if (nested != null) {
-                if (all == null) {
-                    all = new IdentityHashMap<Throwable, Boolean>();
-                    all.put(throwable, Boolean.TRUE);
-                }
-                if (all.put(nested, Boolean.TRUE) == null) {
-                    this.cause = new ThrowableProxy(nested, all, false);
-                    this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
-                } else {
-                    this.cause = new ThrowableProxy(nested, all, true);
-                }
+            } catch (IllegalAccessException e) {
+                // ignore
+            } catch (InvocationTargetException e) {
+                // ignore
             }
         }
 
@@ -160,10 +120,6 @@ public class ThrowableProxy implements IThrowableProxy {
 
     public IThrowableProxy[] getSuppressed() {
         return suppressed;
-    }
-    
-    public boolean isCircular() {
-        return circular;
     }
 
     public PackagingDataCalculator getPackagingDataCalculator() {
