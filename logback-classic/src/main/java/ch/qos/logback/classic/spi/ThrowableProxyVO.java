@@ -26,6 +26,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     private StackTraceElementProxy[] stackTraceElementProxyArray;
     private IThrowableProxy cause;
     private IThrowableProxy[] suppressed;
+    private boolean circular;
 
     public String getMessage() {
         return message;
@@ -49,6 +50,10 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
 
     public IThrowableProxy[] getSuppressed() {
         return suppressed;
+    }
+    
+    public boolean isCircular() {
+        return circular;
     }
 
     @Override
@@ -110,6 +115,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
                 tpvo.suppressed[i] = ThrowableProxyVO.build(suppressed[i]);
             }
         }
+        tpvo.circular = throwableProxy.isCircular();
         return tpvo;
     }
 }

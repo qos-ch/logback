@@ -148,36 +148,57 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     protected String throwableProxyToString(IThrowableProxy tp) {
         StringBuilder sb = new StringBuilder(BUILDER_CAPACITY);
 
-        recursiveAppend(sb, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, tp);
+        if (tp != null) {
+            recursiveAppend(sb, null, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, tp);
+        }
 
         return sb.toString();
     }
 
-    private void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {
-        if (tp == null)
-            return;
-        subjoinFirstLine(sb, prefix, indent, tp);
+    private void recursiveAppend(StringBuilder sb, String prefix, String suffix, int indent, IThrowableProxy tp) {
+        subjoinFirstLine(sb, prefix, suffix, indent, tp);
         sb.append(CoreConstants.LINE_SEPARATOR);
         subjoinSTEPArray(sb, indent, tp);
         IThrowableProxy[] suppressed = tp.getSuppressed();
         if (suppressed != null) {
             for (IThrowableProxy current : suppressed) {
-                recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + ThrowableProxyUtil.SUPPRESSED_EXCEPTION_INDENT, current);
+                if (current.isCircular()) {
+                    recursiveAppend(sb, CoreConstants.CIRCULAR_START, CoreConstants.CIRCULAR_END, ThrowableProxyUtil.CIRCULAR_EXCEPTION_INDENT, current);
+                } else {
+                    recursiveAppend(sb, CoreConstants.SUPPRESSED, null, indent + ThrowableProxyUtil.SUPPRESSED_EXCEPTION_INDENT, current);
+                }
             }
         }
-        recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
+        tp = tp.getCause();
+        if (tp != null) {
+            if (tp.isCircular()) {
+                recursiveAppend(sb, CoreConstants.CIRCULAR_START, CoreConstants.CIRCULAR_END, ThrowableProxyUtil.CIRCULAR_EXCEPTION_INDENT, tp);
+            } else {
+                recursiveAppend(sb, CoreConstants.CAUSED_BY, null, indent, tp);
+            }
+        }
     }
 
-    private void subjoinFirstLine(StringBuilder buf, String prefix, int indent, IThrowableProxy tp) {
+    private void subjoinFirstLine(StringBuilder buf, String prefix, String suffix, int indent, IThrowableProxy tp) {
         ThrowableProxyUtil.indent(buf, indent - 1);
         if (prefix != null) {
             buf.append(prefix);
         }
         subjoinExceptionMessage(buf, tp);
+        if (suffix != null) {
+            buf.append(suffix);
+        }
     }
 
     private void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        /*
+        The printStackTrace method does not output a null message.
+        */
+        buf.append(tp.getClassName());
+        String msg = tp.getMessage();
+        if (msg!=null) {
+            buf.append(": ").append(tp.getMessage());
+        }
     }
 
     protected void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {
@@ -211,9 +232,12 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
             buf.append(CoreConstants.LINE_SEPARATOR);
         }
 
+        /*
+        Do not output common frame number for circular exceptions.
+        */
         if (commonFrames > 0 && unrestrictedPrinting) {
             ThrowableProxyUtil.indent(buf, indent);
-            buf.append("... ").append(tp.getCommonFrames()).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+            buf.append("... ").append(commonFrames).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
         }
     }
 
