@@ -158,6 +158,100 @@ public class ThrowableProxyTest {
         }
         verify(w);
     }
+    
+    @Test
+    public void nullMessage() {
+        /*
+        Ensures that a null message is not sent to the output.
+        */
+        Exception t = new Exception();
+        verify(t);
+    }
+
+    @Test
+    public void circular() {
+        Exception w = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            w = new Exception("Wrapper", e);
+            e.initCause(w);
+        }
+        verify(w);
+    }
+
+    @Test
+    public void suppressedCircular() throws Exception {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+           
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            ex = new Exception("Wrapper");
+            addSuppressed(ex, e);
+            addSuppressed(e, ex);
+        }
+        
+        verify(ex);
+    }
+
+    @Test
+    public void suppressedWithCauseCircular() throws InvocationTargetException, IllegalAccessException {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            ex = new Exception("Wrapper", e);
+            Exception fooException = new Exception("Foo", ex);
+            addSuppressed(e, fooException);
+            addSuppressed(fooException, e);
+        }
+        verify(ex);
+    }
+
+    @Test
+    public void suppressedWithSuppressedCircular() throws Exception {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            ex = new Exception("Wrapper");
+            addSuppressed(ex, e);
+            Exception fooException = new Exception("Foo");
+            addSuppressed(e, fooException);
+            addSuppressed(fooException, ex);
+        }
+        verify(ex);
+    }
+
+    @Test
+    public void circularSuppressedBeforeCause() throws Exception {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        
+        /*
+        Tests to ensure that the suppressed exceptions are processed before the cause, making any circular
+        exceptions that appear in both to be classified as "circular" in the cause, not the suppressed chain.
+        */
+        Exception a = new Exception("a");
+        Exception b = new Exception("b");
+        Exception c = new Exception("c");
+        Exception d = new Exception("d");
+        
+        a.initCause(c);
+        c.initCause(d);
+        d.initCause(b);
+        
+        addSuppressed(a, b);
+        addSuppressed(b, d);
+        
+        verify(a);
+    }
 
     void someMethod() throws Exception {
         throw new Exception("someMethod");

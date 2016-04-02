@@ -25,6 +25,7 @@ public class ThrowableProxyUtil {
 
     public static final int REGULAR_EXCEPTION_INDENT = 1;
     public static final int SUPPRESSED_EXCEPTION_INDENT = 1;
+    public static final int CIRCULAR_EXCEPTION_INDENT = 2;
     private static final int BUILDER_CAPACITY = 2048;
 
     public static void build(ThrowableProxy nestedTP, Throwable nestedThrowable, ThrowableProxy parentTP) {
@@ -76,24 +77,35 @@ public class ThrowableProxyUtil {
     public static String asString(IThrowableProxy tp) {
         StringBuilder sb = new StringBuilder(BUILDER_CAPACITY);
 
-        recursiveAppend(sb, null, REGULAR_EXCEPTION_INDENT, tp);
+        if (tp != null) {
+            recursiveAppend(sb, null, null, REGULAR_EXCEPTION_INDENT, tp);
+        }
 
         return sb.toString();
     }
 
-    private static void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {
-        if (tp == null)
-            return;
-        subjoinFirstLine(sb, prefix, indent, tp);
+    private static void recursiveAppend(StringBuilder sb, String prefix, String suffix, int indent, IThrowableProxy tp) {
+        subjoinFirstLine(sb, prefix, suffix, indent, tp);
         sb.append(CoreConstants.LINE_SEPARATOR);
         subjoinSTEPArray(sb, indent, tp);
         IThrowableProxy[] suppressed = tp.getSuppressed();
         if (suppressed != null) {
             for (IThrowableProxy current : suppressed) {
-                recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + SUPPRESSED_EXCEPTION_INDENT, current);
+                if (current.isCircular()) {
+                    recursiveAppend(sb, CoreConstants.CIRCULAR_START, CoreConstants.CIRCULAR_END, CIRCULAR_EXCEPTION_INDENT, current);
+                } else {
+                    recursiveAppend(sb, CoreConstants.SUPPRESSED, null, indent + SUPPRESSED_EXCEPTION_INDENT, current);
+                }
             }
         }
-        recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
+        tp = tp.getCause();
+        if (tp != null) {
+            if (tp.isCircular()) {
+                recursiveAppend(sb, CoreConstants.CIRCULAR_START, CoreConstants.CIRCULAR_END, ThrowableProxyUtil.CIRCULAR_EXCEPTION_INDENT, tp);
+            } else {
+                recursiveAppend(sb, CoreConstants.CAUSED_BY, null, indent, tp);
+            }
+        }
     }
 
     public static void indent(StringBuilder buf, int indent) {
@@ -102,12 +114,15 @@ public class ThrowableProxyUtil {
         }
     }
 
-    private static void subjoinFirstLine(StringBuilder buf, String prefix, int indent, IThrowableProxy tp) {
+    private static void subjoinFirstLine(StringBuilder buf, String prefix, String suffix, int indent, IThrowableProxy tp) {
         indent(buf, indent - 1);
         if (prefix != null) {
             buf.append(prefix);
         }
         subjoinExceptionMessage(buf, tp);
+        if (suffix != null) {
+            buf.append(suffix);
+        }
     }
 
     public static void subjoinPackagingData(StringBuilder builder, StackTraceElementProxy step) {
@@ -179,6 +194,13 @@ public class ThrowableProxyUtil {
     }
 
     private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        /*
+        The printStackTrace method does not output a null message.
+        */
+        buf.append(tp.getClassName());
+        String msg = tp.getMessage();
+        if (msg!=null) {
+            buf.append(": ").append(tp.getMessage());
+        }
     }
 }
