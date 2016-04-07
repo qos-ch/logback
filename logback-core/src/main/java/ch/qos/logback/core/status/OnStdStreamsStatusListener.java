@@ -16,15 +16,18 @@ package ch.qos.logback.core.status;
 import java.io.PrintStream;
 
 /**
- * Print all new incoming status messages on the console (System.out).
+ * Print all new incoming INFO status messages on System.out, WARN and ERROR on System.err.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * @author Ceki G&uuml;c&uuml;, Arnout Engelen
  */
-public class OnConsoleStatusListener extends OnPrintStreamStatusListenerBase {
+public class OnStdStreamsStatusListener extends OnPrintStreamStatusListenerBase {
 
     @Override
     protected PrintStream getPrintStream(Status status) {
-        return System.out;
+        if (status.getLevel() == Status.INFO) {
+            return System.out;
+        } else {
+            return System.err;
+        }
     }
-
 }
