@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.status;
 
-import ch.qos.logback.core.Context;
-
 import java.io.PrintStream;
 
 /**
