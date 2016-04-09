@@ -149,9 +149,9 @@ public class ConfigurationDelegate extends ContextAwareBase {
         }
     }
 
-    void receiver(String name, Class aClass, Closure closure = null) {
+    void receiver(String name, Class clazz, Closure closure = null) {
         addInfo("About to instantiate receiver of type [" + clazz.name + "]");
-        ReceiverBase receiver = aClass.newInstance();
+        ReceiverBase receiver = clazz.newInstance();
         receiver.context = context;
         if(closure != null) {
             ComponentDelegate componentDelegate = new ComponentDelegate(receiver);
@@ -163,7 +163,7 @@ public class ConfigurationDelegate extends ContextAwareBase {
         try {
             receiver.start()
         } catch (RuntimeException e) {
-            addError("Failed to start receiver of type [" + aClass.getName() + "]", e)
+            addError("Failed to start receiver of type [" + clazz.getName() + "]", e)
         }
     }
 
