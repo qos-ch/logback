@@ -39,9 +39,9 @@ import com.lmax.disruptor.dsl.ProducerType;
  */
 public class AsyncAppender extends AsyncAppenderBase<ILoggingEvent> {
 
-	boolean includeCallerData = false;
-	Disruptor<LogValueEvent> disruptor;
-	RingBuffer<LogValueEvent> ringBuffer;
+	private boolean includeCallerData = false;
+	private Disruptor<LogValueEvent> disruptor;
+	private RingBuffer<LogValueEvent> ringBuffer;
 
 	@SuppressWarnings("unchecked")
 	@Override
