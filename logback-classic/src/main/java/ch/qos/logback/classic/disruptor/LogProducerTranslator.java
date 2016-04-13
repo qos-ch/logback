@@ -13,9 +13,6 @@ import com.lmax.disruptor.EventTranslatorTwoArg;
 
 public class LogProducerTranslator {
 
-	public LogProducerTranslator() {
-
-	}
 
 	public static final EventTranslatorTwoArg<LogValueEvent, ILoggingEvent, AppenderAttachableImpl<ILoggingEvent>> TRANSLATOR = new EventTranslatorTwoArg<LogValueEvent, ILoggingEvent, AppenderAttachableImpl<ILoggingEvent>>() {
 		@Override

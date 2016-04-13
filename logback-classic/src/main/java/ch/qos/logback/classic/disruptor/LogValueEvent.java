@@ -12,11 +12,16 @@ import com.lmax.disruptor.EventFactory;
  */
 
 public class LogValueEvent {
-	public LogValueEvent() {
-
-	}
+	
+	/**
+	 *Log information.
+	 */
 	private ILoggingEvent eventObject;
+	/**
+	 * Interface for attaching appenders to objects.
+	 */
 	private AppenderAttachableImpl<ILoggingEvent> parent;
+	
 	public ILoggingEvent getEventObject() {
 		return eventObject;
 	}
@@ -31,8 +36,6 @@ public class LogValueEvent {
 	public void setParent(AppenderAttachableImpl<ILoggingEvent> parent) {
 		this.parent = parent;
 	}
-
-	
 	/**
 	 * Due to the need to let the Disruptor to create an event for us,We also declare a EventFactory to instantiate the Event object.
 	 */
