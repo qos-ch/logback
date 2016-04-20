@@ -30,7 +30,7 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
  */
 public class DelegateAppender extends AppenderBase<ILoggingEvent> implements AppenderAttachable<ILoggingEvent> {
 
-  AppenderAttachableImpl<ILoggingEvent> aai = new AppenderAttachableImpl<ILoggingEvent>();
+  private AppenderAttachableImpl<ILoggingEvent> aai = new AppenderAttachableImpl<ILoggingEvent>();
 
   /**
    * {@inheritDoc}
