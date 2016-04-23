@@ -44,7 +44,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     protected String insertPropertiesSQL;
     protected String insertExceptionSQL;
     protected String insertSQL;
-    protected static final Method GET_GENERATED_KEYS_METHOD;
 
     private DBNameResolver dbNameResolver;
 
@@ -65,18 +64,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     static final int EVENT_ID_INDEX = 15;
 
     static final StackTraceElement EMPTY_CALLER_DATA = CallerData.naInstance();
-
-    static {
-        // PreparedStatement.getGeneratedKeys() method was added in JDK 1.4
-        Method getGeneratedKeysMethod;
-        try {
-            // the
-            getGeneratedKeysMethod = PreparedStatement.class.getMethod("getGeneratedKeys", (Class[]) null);
-        } catch (Exception ex) {
-            getGeneratedKeysMethod = null;
-        }
-        GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
-    }
 
     public void setDbNameResolver(DBNameResolver dbNameResolver) {
         this.dbNameResolver = dbNameResolver;
@@ -191,11 +178,6 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
         }
 
         return mergedMap;
-    }
-
-    @Override
-    protected Method getGeneratedKeysMethod() {
-        return GET_GENERATED_KEYS_METHOD;
     }
 
     @Override

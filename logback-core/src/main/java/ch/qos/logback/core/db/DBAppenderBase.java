@@ -38,8 +38,6 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
     protected boolean cnxSupportsBatchUpdates = false;
     protected SQLDialect sqlDialect;
 
-    protected abstract Method getGeneratedKeysMethod();
-
     protected abstract String getInsertSQL();
 
     @Override
@@ -50,11 +48,7 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
         }
 
         sqlDialect = DBUtil.getDialectFromCode(connectionSource.getSQLDialectCode());
-        if (getGeneratedKeysMethod() != null) {
-            cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
-        } else {
-            cnxSupportsGetGeneratedKeys = false;
-        }
+        cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
         cnxSupportsBatchUpdates = connectionSource.supportsBatchUpdates();
         if (!cnxSupportsGetGeneratedKeys && (sqlDialect == null)) {
             throw new IllegalStateException(
@@ -126,18 +120,8 @@ public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
         try {
             boolean gotGeneratedKeys = false;
             if (cnxSupportsGetGeneratedKeys) {
-                try {
-                    rs = (ResultSet) getGeneratedKeysMethod().invoke(insertStatement, (Object[]) null);
-                    gotGeneratedKeys = true;
-                } catch (InvocationTargetException ex) {
-                    Throwable target = ex.getTargetException();
-                    if (target instanceof SQLException) {
-                        throw (SQLException) target;
-                    }
-                    throw ex;
-                } catch (IllegalAccessException ex) {
-                    addWarn("IllegalAccessException invoking PreparedStatement.getGeneratedKeys", ex);
-                }
+                rs = insertStatement.getGeneratedKeys();
+                gotGeneratedKeys = true;
             }
 
             if (!gotGeneratedKeys) {
