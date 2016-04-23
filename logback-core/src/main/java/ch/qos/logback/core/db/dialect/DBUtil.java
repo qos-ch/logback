@@ -113,10 +113,7 @@ public class DBUtil extends ContextAwareBase {
      */
     public boolean supportsGetGeneratedKeys(DatabaseMetaData meta) {
         try {
-            //
-            // invoking JDBC 1.4 method by reflection
-            //
-            return ((Boolean) DatabaseMetaData.class.getMethod("supportsGetGeneratedKeys", (Class[]) null).invoke(meta, (Object[]) null)).booleanValue();
+            return meta.supportsGetGeneratedKeys();
         } catch (Throwable e) {
             addInfo("Could not call supportsGetGeneratedKeys method. This may be recoverable");
             return false;
