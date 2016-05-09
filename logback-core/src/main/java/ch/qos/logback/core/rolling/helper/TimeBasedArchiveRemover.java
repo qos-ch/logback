@@ -97,6 +97,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     void capTotalSize(Date now) {
         int totalSize = 0;
         int totalRemoved = 0;
+        int fileCount = 0;
         for (int offset = 0; offset < maxHistory; offset++) {
             Date date = rc.getEndOfNextNthPeriod(now, -offset);
             File[] matchingFileArray = getFilesInPeriod(date);
@@ -104,15 +105,16 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             for (File f : matchingFileArray) {
                 long size = f.length();
                 if (totalSize + size > totalSizeCap) {
-                    if (offset >= UNTOUCHABLE_ARCHIVE_FILE_COUNT) {
+                    if (fileCount >= UNTOUCHABLE_ARCHIVE_FILE_COUNT) {
                         addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
                         totalRemoved += size;
                         f.delete();
                     } else {
-                        addWarn("Skipping [" + f + "]" + " of size " + new FileSize(size) + " as it is one of the two newest log achives.");
+                        addWarn("Skipping [" + f + "]" + " of size " + new FileSize(size) + " as it is one of the two newest log archives.");
                     }
                 }
                 totalSize += size;
+                fileCount ++;
             }
         }
         addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
