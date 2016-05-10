@@ -91,8 +91,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
             }
             contextSelectorBinder.init(defaultLoggerContext, KEY);
             initialized = true;
-        } catch (Exception t) {//do not swallow Errors
-            // we should never get here
+        } catch (Exception t) { // see LOGBACK-1159
             Util.report("Failed to instantiate [" + LoggerContext.class.getName() + "]", t);
         }
     }
