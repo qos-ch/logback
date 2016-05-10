@@ -30,8 +30,6 @@ import ch.qos.logback.core.util.FileSize;
 
 public class TimeBasedArchiveRemover extends ContextAwareBase implements ArchiveRemover {
 
-    // we wish to leave two archive files alone even if their total is over totalSizeCap
-    private static final int UNTOUCHABLE_ARCHIVE_FILE_COUNT = 2;
     static protected final long UNINITIALIZED = -1;
     // aim for 64 days, except in case of hourly rollover
     static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 32L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
@@ -104,13 +102,9 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             for (File f : matchingFileArray) {
                 long size = f.length();
                 if (totalSize + size > totalSizeCap) {
-                    if (offset >= UNTOUCHABLE_ARCHIVE_FILE_COUNT) {
-                        addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
-                        totalRemoved += size;
-                        f.delete();
-                    } else {
-                        addWarn("Skipping [" + f + "]" + " of size " + new FileSize(size) + " as it is one of the two newest log achives.");
-                    }
+                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
+                    totalRemoved += size;
+                    f.delete();
                 }
                 totalSize += size;
             }
