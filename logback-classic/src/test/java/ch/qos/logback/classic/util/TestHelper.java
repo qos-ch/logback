@@ -15,6 +15,7 @@ package ch.qos.logback.classic.util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 
 public class TestHelper {
 
@@ -30,14 +31,33 @@ public class TestHelper {
         ADD_SUPPRESSED_METHOD = method;
     }
 
-    public static boolean suppressedSupported() {
-        return ADD_SUPPRESSED_METHOD != null;
-    }
-
     public static void addSuppressed(Throwable outer, Throwable suppressed) throws InvocationTargetException, IllegalAccessException {
         if (suppressedSupported()) {
             ADD_SUPPRESSED_METHOD.invoke(outer, suppressed);
         }
+    }
+
+    private static final Method GET_SUPPRESSED_METHOD;
+
+    static {
+        Method method = null;
+        try {
+            method = Throwable.class.getMethod("getSuppressed");
+        } catch (NoSuchMethodException e) {
+            // ignore, will get thrown in Java < 7
+        }
+        GET_SUPPRESSED_METHOD = method;
+    }
+
+    public static Throwable[] getSuppressed(Throwable outer) throws InvocationTargetException, IllegalAccessException {
+        if (suppressedSupported()) {
+            return (Throwable[]) GET_SUPPRESSED_METHOD.invoke(outer);
+        }
+        return new Throwable[0];
+    }
+
+    public static boolean suppressedSupported() {
+        return ADD_SUPPRESSED_METHOD != null;
     }
 
     static public Throwable makeNestedException(int level) {

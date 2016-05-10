@@ -14,14 +14,17 @@
 package ch.qos.logback.classic.spi;
 
 import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
+import static ch.qos.logback.classic.util.TestHelper.getSuppressed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 
 import ch.qos.logback.classic.util.TestHelper;
 import org.junit.After;
@@ -29,20 +32,17 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ThrowableProxyTest {
+    /** Caption  for labeling causative exception stack traces */
+    private static final String CAUSE_CAPTION = "Caused by: ";
 
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
+    /** Caption for labeling suppressed exception stack traces */
+    private static final String SUPPRESSED_CAPTION = "Suppressed: ";
 
-    @Before
-    public void setUp() throws Exception {
-    }
+    private void verify(Throwable t) throws InvocationTargetException, IllegalAccessException {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
 
-    @After
-    public void tearDown() throws Exception {
-    }
-
-    public void verify(Throwable t) {
-        t.printStackTrace(pw);
+        printStackTrace(pw, t);
 
         IThrowableProxy tp = new ThrowableProxy(t);
 
@@ -60,14 +60,88 @@ public class ThrowableProxyTest {
         assertEquals(expected, result);
     }
 
+    private static void printStackTrace(PrintWriter pw, Throwable t) throws InvocationTargetException, IllegalAccessException {
+        // Guard against malicious overrides of Throwable.equals by
+        // using a Set with identity equality semantics.
+        Set<Throwable> dejaVu = Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
+        dejaVu.add(t);
+
+        // Print our stack trace
+        pw.println(t);
+        StackTraceElement[] trace = t.getStackTrace();
+        for (StackTraceElement traceElement : trace)
+            pw.println("\tat " + traceElement);
+
+        // Print suppressed exceptions, if any
+        for (Throwable se : getSuppressed(t))
+            printEnclosedStackTrace(pw, se, trace, SUPPRESSED_CAPTION, "\t", dejaVu);
+
+        // Print cause, if any
+        Throwable cause = getNested(t);
+        if (cause != null)
+            printEnclosedStackTrace(pw, cause, trace, CAUSE_CAPTION, "", dejaVu);
+    }
+
+    private static void printEnclosedStackTrace(
+            PrintWriter pw, Throwable t, StackTraceElement[] enclosingTrace, String caption, String prefix, Set<Throwable> dejaVu)
+            throws InvocationTargetException, IllegalAccessException {
+        if (dejaVu.contains(t)) {
+            pw.println("\t[CIRCULAR REFERENCE:" + t + "]");
+            return;
+        }
+
+        dejaVu.add(t);
+        // Compute number of frames in common between this and enclosing trace
+        StackTraceElement[] trace = t.getStackTrace();
+        int m = trace.length - 1;
+        int n = enclosingTrace.length - 1;
+        while (m >= 0 && n >= 0 && trace[m].equals(enclosingTrace[n])) {
+            m--;
+            n--;
+        }
+        int framesInCommon = trace.length - 1 - m;
+
+        // Print our stack trace
+        pw.println(prefix + caption + t);
+        for (int i = 0; i <= m; i++)
+            pw.println(prefix + "\tat " + trace[i]);
+
+        if (framesInCommon != 0)
+            pw.println(prefix + "\t... " + framesInCommon + " more");
+
+        // Print suppressed exceptions, if any
+        for (Throwable se : getSuppressed(t))
+            printEnclosedStackTrace(pw, se, trace, SUPPRESSED_CAPTION, prefix + "\t", dejaVu);
+
+        // Print cause, if any
+        Throwable cause = getNested(t);
+        if (cause != null)
+            printEnclosedStackTrace(pw, cause, trace, CAUSE_CAPTION, prefix, dejaVu);
+    }
+
+    private static Throwable getNested(Throwable t) {
+        if (t instanceof InvocationTargetException) {
+            return ((InvocationTargetException) t).getTargetException();
+        }
+        return t instanceof SQLException ? ((SQLException) t).getNextException() : t.getCause();
+    }
+
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @After
+    public void tearDown() throws Exception {
+    }
+
     @Test
-    public void smoke() {
+    public void smoke() throws InvocationTargetException, IllegalAccessException {
         Exception e = new Exception("smoke");
         verify(e);
     }
 
     @Test
-    public void nested() {
+    public void nested() throws InvocationTargetException, IllegalAccessException {
         Exception w = null;
         try {
             someMethod();
@@ -149,12 +223,35 @@ public class ThrowableProxyTest {
     }
 
     @Test
-    public void multiNested() {
+    public void multiNested() throws InvocationTargetException, IllegalAccessException {
         Exception w = null;
         try {
             someOtherMethod();
         } catch (Exception e) {
             w = new Exception("wrapping", e);
+        }
+        verify(w);
+    }
+
+    @Test
+    public void nestedSqlException() throws InvocationTargetException, IllegalAccessException {
+        SQLException w = null;
+        try {
+            someMethodSqlException();
+        } catch (SQLException e) {
+            w = new SQLException("wrapping");
+            w.setNextException(e);
+        }
+        verify(w);
+    }
+
+    @Test
+    public void multiNestedInvocationTargetException() throws InvocationTargetException, IllegalAccessException {
+        InvocationTargetException w = null;
+        try {
+            someOtherMethod();
+        } catch (Exception e) {
+            w = new InvocationTargetException(e, "multiNestedInvocationTargetException");
         }
         verify(w);
     }
@@ -178,5 +275,9 @@ public class ThrowableProxyTest {
         } catch (Exception e) {
             throw new Exception("someOtherMethod", e);
         }
+    }
+
+    void someMethodSqlException() throws SQLException {
+        throw new SQLException("someMethodSqlException");
     }
 }
