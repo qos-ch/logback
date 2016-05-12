@@ -31,7 +31,8 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     int currentPeriodsCounter = 0;
     FileSize maxFileSize;
-    String maxFileSizeAsString;
+    // String maxFileSizeAsString;
+
     long nextSizeCheck = 0;
     static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
     static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
@@ -44,8 +45,13 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         if (!super.isErrorFree())
             return;
 
+        if (maxFileSize == null) {
+            addError("maxFileSize property is mandatory.");
+            withErrors();
+        }
+
         if (!validateDateAndIntegerTokens()) {
-            started = false;
+            withErrors();
             return;
         }
 
@@ -60,7 +66,9 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
         computeCurrentPeriodsHighestCounterValue(stemRegex);
 
-        started = true;
+        if (isErrorFree()) {
+            started = true;
+        }
     }
 
     private boolean validateDateAndIntegerTokens() {
@@ -102,14 +110,13 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         }
     }
 
-
     InvocationGate invocationGate = new DefaultInvocationGate();
-    
+
     public boolean isTriggeringEvent(File activeFile, final E event) {
 
         long time = getCurrentTime();
-        
-        //  first check for roll-over based on time
+
+        // first check for roll-over based on time
         if (time >= nextCheck) {
             Date dateInElapsedPeriod = dateInCurrentPeriod;
             elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
@@ -119,14 +126,19 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             return true;
         }
 
-        
         // next check for roll-over based on size
         if (invocationGate.isTooSoon(time)) {
             return false;
         }
-        
+
+        if (activeFile == null) {
+            addWarn("activeFile == null");
+        }
+        if (maxFileSize == null) {
+            addWarn("maxFileSize = null");
+        }
         if (activeFile.length() >= maxFileSize.getSize()) {
-        
+
             elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
             currentPeriodsCounter++;
             return true;
@@ -135,19 +147,13 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         return false;
     }
 
-
     @Override
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
         return tbrp.fileNamePatternWCS.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
     }
 
-    public String getMaxFileSize() {
-        return maxFileSizeAsString;
-    }
-
-    public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSizeAsString = maxFileSize;
-        this.maxFileSize = FileSize.valueOf(maxFileSize);
+    public void setMaxFileSize(FileSize aMaxFileSize) {
+        this.maxFileSize = aMaxFileSize;
     }
 
 }

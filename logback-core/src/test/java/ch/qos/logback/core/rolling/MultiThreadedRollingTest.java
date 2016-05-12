@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class MultiThreadedRollingTest {
@@ -105,7 +107,7 @@ public class MultiThreadedRollingTest {
     public void setUpSizeBasedTriggeringPolicy(RollingFileAppender<Object> rfa) {
         SizeBasedTriggeringPolicy<Object> zbtp = new SizeBasedTriggeringPolicy<Object>();
         zbtp.setContext(context);
-        zbtp.setMaxFileSize("100KB");
+        zbtp.setMaxFileSize(FileSize.valueOf("100KB"));
 
         zbtp.start();
         rfa.setTriggeringPolicy(zbtp);

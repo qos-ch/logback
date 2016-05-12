@@ -1,22 +1,24 @@
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.util.FileSize;
+
 
 
 public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> {
 
-    String maxFileSizeAsString;
+    FileSize maxFileSize;
     
     @Override
     public void start() {
         SizeAndTimeBasedFNATP<E> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<E>(); 
-        if(maxFileSizeAsString == null) {
+        if(maxFileSize == null) {
             addError("MaxFileSize property must be set");
             return;
         } else {
-            addInfo("Achive files will be limied to ["+maxFileSizeAsString+"] each.");
+            addInfo("Achive files will be limied to ["+maxFileSize+"] each.");
         }
         
-        sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSizeAsString);
+        sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
         timeBasedFileNamingAndTriggeringPolicy = sizeAndTimeBasedFNATP;
         
         // most work is done by the parent
@@ -24,8 +26,8 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
     }
     
     
-    public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSizeAsString = maxFileSize;
+    public void setMaxFileSize(FileSize aMaxFileSize) {
+        this.maxFileSize = aMaxFileSize;
     }
     
     @Override

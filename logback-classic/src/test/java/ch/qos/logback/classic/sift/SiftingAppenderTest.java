@@ -18,7 +18,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -55,6 +54,7 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
@@ -326,7 +326,7 @@ public class SiftingAppenderTest {
 
                         SizeAndTimeBasedFNATP<ILoggingEvent> innerpolicy = new SizeAndTimeBasedFNATP<ILoggingEvent>();
                         innerpolicy.setContext(context);
-                        innerpolicy.setMaxFileSize("5KB");
+                        innerpolicy.setMaxFileSize(FileSize.valueOf("5KB"));
                         innerpolicy.setTimeBasedRollingPolicy(policy);
 
                         policy.setTimeBasedFileNamingAndTriggeringPolicy(innerpolicy);

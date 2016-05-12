@@ -149,6 +149,23 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
 
     }
 
+
+    // see also LOGBACK-1176
+    @Test
+    public void timeAndSizeWithoutMaxFileSize() throws Exception {
+        String testId = "timeAndSizeWithoutMaxFileSize";
+        loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
+        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        //expectedFilenameList.add(randomOutputDir + "z" + testId);
+        RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
+      
+
+        //statusChecker.assertContainsMatch("Missing integer token");
+        assertFalse(rfa.isStarted());
+        StatusPrinter.print(lc);
+    }
+    
+    
     void addExpectedFileNamedIfItsTime(String testId, String msg, boolean gzExtension) {
         fileSize += msg.getBytes().length;
 

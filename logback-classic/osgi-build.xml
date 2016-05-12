@@ -11,14 +11,25 @@
 		define the currentVersion property on the command line, e.g.:
 		
 		ant  -DcurrentVersion=1.5.4-SNAPSHOT	
+
+    See test results in target/unit-reports 
 	-->
 	
   <!-- We skip the test if the maven.test.skip system property is set
        to true. See also http://jira.qos.ch/browse/LBCLASSIC-191 -->
 
+<!--
+  <property name="slf4j.version" value="1.7.20"/>
+  <property name="org.slf4j:slf4j-api:jar" value="c:/Users/ceki/.m2/repository/org/slf4j/slf4j-api/1.7.20/slf4j-api-1.7.20.jar"/>
+
+  <property name="org.apache.felix:org.apache.felix.main:jar" value="c:/Users/ceki/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar" />
+-->
+
 	<echo message="compile classpath: ${currentVersion}" />
   <echo message="slfj4:  ${org.slf4j:slf4j-api:jar}" />
   <echo message="felix:  ${org.apache.felix:org.apache.felix.main:jar}" />
+
+
 
   <property name="iBundleJar" value="target/iBundle.jar"/>
   <property name="bundlesDir" value="bundle"/>

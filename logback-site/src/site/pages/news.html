@@ -34,13 +34,21 @@
  
     <hr width="80%" align="center" />
 
-    <h3>April xxx, 2016, Release of version 1.1.8</h3>
+    <h3>May xxx, 2016, Release of version 1.1.8</h3>
     
     <p>Fixed issue with Joran incorrectly reporting "Unexpected
     aggregationType AS_BASIC_PROPERTY_COLLECTION". This issue was
     raised in <a
     href="http://jira.qos.ch/browse/LOGBACK-1158">LOGBACK-1158</a> by
     Christian H&uuml;bner.
+    </p>
+
+    <p>The <code>org.slf4j.impl.StaticLoggerBinder</code> class
+    shipping in logback-classic no longer catches
+    <code>Throwable</code> but <code>Exception</code>. This change was
+    requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1159">LOGBACK-1159</a> by
+    David J. M. Karlsen.
     </p>
 
     <p>Added logback-bom module for use as a Maven "Bill of Materials"

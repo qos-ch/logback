@@ -38,20 +38,14 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
      */
     public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-    String maxFileSizeAsString = Long.toString(DEFAULT_MAX_FILE_SIZE);
-    FileSize maxFileSize;
+    FileSize maxFileSize = new FileSize(DEFAULT_MAX_FILE_SIZE);
 
     public SizeBasedTriggeringPolicy() {
-    }
-
-    public SizeBasedTriggeringPolicy(final String maxFileSize) {
-        setMaxFileSize(maxFileSize);
     }
 
     InvocationGate invocationGate = new DefaultInvocationGate();
 
     public boolean isTriggeringEvent(final File activeFile, final E event) {
-
         long now = System.currentTimeMillis();
         if (invocationGate.isTooSoon(now))
             return false;
@@ -59,41 +53,8 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         return (activeFile.length() >= maxFileSize.getSize());
     }
 
-    public String getMaxFileSize() {
-        return maxFileSizeAsString;
+    public void setMaxFileSize(FileSize aMaxFileSize) {
+        this.maxFileSize = aMaxFileSize;
     }
 
-    public void setMaxFileSize(String maxFileSize) {
-        this.maxFileSizeAsString = maxFileSize;
-        this.maxFileSize = FileSize.valueOf(maxFileSize);
-    }
-
-    long toFileSize(String value) {
-        if (value == null)
-            return DEFAULT_MAX_FILE_SIZE;
-
-        String s = value.trim().toUpperCase();
-        long multiplier = 1;
-        int index;
-
-        if ((index = s.indexOf("KB")) != -1) {
-            multiplier = 1024;
-            s = s.substring(0, index);
-        } else if ((index = s.indexOf("MB")) != -1) {
-            multiplier = 1024 * 1024;
-            s = s.substring(0, index);
-        } else if ((index = s.indexOf("GB")) != -1) {
-            multiplier = 1024 * 1024 * 1024;
-            s = s.substring(0, index);
-        }
-        if (s != null) {
-            try {
-                return Long.valueOf(s).longValue() * multiplier;
-            } catch (NumberFormatException e) {
-                addError("[" + s + "] is not in proper int format. Please refer to " + SEE_SIZE_FORMAT);
-                addError("[" + value + "] not in expected format.", e);
-            }
-        }
-        return DEFAULT_MAX_FILE_SIZE;
-    }
 }
