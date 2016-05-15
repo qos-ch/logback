@@ -43,7 +43,6 @@ abstract public class AbstractEventEvaluatorAction extends Action {
         }
 
         if (OptionHelper.isEmpty(className)) {
-            className = defaultClassName();
             inError = true;
             addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute not set for <evaluator>");
             return;

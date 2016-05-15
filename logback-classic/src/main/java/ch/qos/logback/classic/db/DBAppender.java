@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import ch.qos.logback.classic.db.names.DBNameResolver;
 import ch.qos.logback.classic.db.names.DefaultDBNameResolver;
@@ -204,18 +203,15 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
     }
 
     protected void insertProperties(Map<String, String> mergedMap, Connection connection, long eventId) throws SQLException {
-        Set<String> propertiesKeys = mergedMap.keySet();
-        if (propertiesKeys.size() > 0) {
+        if (mergedMap.size() > 0) {
             PreparedStatement insertPropertiesStatement = null;
             try {
                 insertPropertiesStatement = connection.prepareStatement(insertPropertiesSQL);
 
-                for (String key : propertiesKeys) {
-                    String value = mergedMap.get(key);
-
+                for (Map.Entry<String, String> entry : mergedMap.entrySet()) {
                     insertPropertiesStatement.setLong(1, eventId);
-                    insertPropertiesStatement.setString(2, key);
-                    insertPropertiesStatement.setString(3, value);
+                    insertPropertiesStatement.setString(2, entry.getKey());
+                    insertPropertiesStatement.setString(3, entry.getValue());
 
                     if (cnxSupportsBatchUpdates) {
                         insertPropertiesStatement.addBatch();

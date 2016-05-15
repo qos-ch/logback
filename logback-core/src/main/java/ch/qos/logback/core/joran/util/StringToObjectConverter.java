@@ -58,13 +58,13 @@ public class StringToObjectConverter {
         if (String.class.isAssignableFrom(type)) {
             return v;
         } else if (Integer.TYPE.isAssignableFrom(type)) {
-            return new Integer(v);
+            return Integer.valueOf(v);
         } else if (Long.TYPE.isAssignableFrom(type)) {
-            return new Long(v);
+            return Long.valueOf(v);
         } else if (Float.TYPE.isAssignableFrom(type)) {
-            return new Float(v);
+            return Float.valueOf(v);
         } else if (Double.TYPE.isAssignableFrom(type)) {
-            return new Double(v);
+            return Double.valueOf(v);
         } else if (Boolean.TYPE.isAssignableFrom(type)) {
             if ("true".equalsIgnoreCase(v)) {
                 return Boolean.TRUE;

@@ -61,7 +61,7 @@ public class FileSize {
             String lenStr = matcher.group(DOUBLE_GROUP);
             String unitStr = matcher.group(UNIT_GROUP);
 
-            long lenValue = Long.valueOf(lenStr);
+            long lenValue = Long.parseLong(lenStr);
             if (unitStr.equalsIgnoreCase("")) {
                 coefficient = 1;
             } else if (unitStr.equalsIgnoreCase("kb")) {

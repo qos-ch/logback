@@ -213,14 +213,9 @@ public class PropertySetter extends ContextAwareBase {
         // checking for constructors would be more elegant, but in
         // classes without any declared constructors, Class.getConstructor()
         // returns null.
-        Object o;
         try {
-            o = clazz.newInstance();
-            if (o != null) {
-                return true;
-            } else {
-                return false;
-            }
+            clazz.newInstance();
+            return true;
         } catch (InstantiationException e) {
             return false;
         } catch (IllegalAccessException e) {
