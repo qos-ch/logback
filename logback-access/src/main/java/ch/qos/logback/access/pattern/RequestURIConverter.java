@@ -22,9 +22,9 @@ import ch.qos.logback.access.spi.IAccessEvent;
  */
 public class RequestURIConverter extends AccessConverter {
 
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-    return accessEvent.getRequestURI();
-  }
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        return accessEvent.getRequestURI();
+    }
 
 }

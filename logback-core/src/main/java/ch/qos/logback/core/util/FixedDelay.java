@@ -21,39 +21,39 @@ package ch.qos.logback.core.util;
  */
 public class FixedDelay implements DelayStrategy {
 
-  private final long subsequentDelay;
-  private long nextDelay;
+    private final long subsequentDelay;
+    private long nextDelay;
 
-  /**
-   * Initialize a new {@code FixedDelay} with a given {@code initialDelay} and
-   * {@code subsequentDelay}.
-   *
-   * @param initialDelay    value for the initial delay
-   * @param subsequentDelay value for all other delays
-   */
-  public FixedDelay(long initialDelay, long subsequentDelay) {
-    String s = new String();
-    this.nextDelay = initialDelay;
-    this.subsequentDelay = subsequentDelay;
-  }
+    /**
+     * Initialize a new {@code FixedDelay} with a given {@code initialDelay} and
+     * {@code subsequentDelay}.
+     *
+     * @param initialDelay    value for the initial delay
+     * @param subsequentDelay value for all other delays
+     */
+    public FixedDelay(long initialDelay, long subsequentDelay) {
+        String s = new String();
+        this.nextDelay = initialDelay;
+        this.subsequentDelay = subsequentDelay;
+    }
 
-  /**
-   * Initialize a new {@code FixedDelay} with fixed delay value given by {@code delay}
-   * parameter.
-   *
-   * @param delay value for all delays
-   */
-  public FixedDelay(int delay) {
-    this(delay, delay);
-  }
+    /**
+     * Initialize a new {@code FixedDelay} with fixed delay value given by {@code delay}
+     * parameter.
+     *
+     * @param delay value for all delays
+     */
+    public FixedDelay(int delay) {
+        this(delay, delay);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  public long nextDelay() {
-    long delay = nextDelay;
-    nextDelay = subsequentDelay;
-    return delay;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public long nextDelay() {
+        long delay = nextDelay;
+        nextDelay = subsequentDelay;
+        return delay;
+    }
 
 }

@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.appender;
 
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -25,44 +24,41 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
+abstract public class AbstractAppenderTest<E> {
 
+    abstract protected Appender<E> getAppender();
 
-abstract public class AbstractAppenderTest<E>  {
-  
-  
-  abstract protected Appender<E> getAppender();
-  abstract protected Appender<E> getConfiguredAppender();
-  Context context = new ContextBase();
-  
-  @Test
-  public void testNewAppender() {
-    // new appenders should be inactive
-    Appender<E> appender = getAppender();
-    assertFalse( appender.isStarted()); 
-  }
-  
-  @Test
-  public void testConfiguredAppender() {
-    Appender<E> appender = getConfiguredAppender();
-    appender.start();
-    assertTrue(appender.isStarted());
-   
-    appender.stop();
-    assertFalse(appender.isStarted());
-    
-  }
-  
-  @Test
-  public void testNoStart() {
-    Appender<E> appender = getAppender();
-    appender.setContext(context);
-    appender.setName("doh");
-    // is null OK?
-    appender.doAppend(null);
-    StatusChecker checker = new StatusChecker(context.getStatusManager());
-    StatusPrinter.print(context);
-    checker.assertContainsMatch("Attempted to append to non started appender \\[doh\\].");
-  }
+    abstract protected Appender<E> getConfiguredAppender();
+
+    Context context = new ContextBase();
+
+    @Test
+    public void testNewAppender() {
+        // new appenders should be inactive
+        Appender<E> appender = getAppender();
+        assertFalse(appender.isStarted());
+    }
+
+    @Test
+    public void testConfiguredAppender() {
+        Appender<E> appender = getConfiguredAppender();
+        appender.start();
+        assertTrue(appender.isStarted());
+
+        appender.stop();
+        assertFalse(appender.isStarted());
+
+    }
+
+    @Test
+    public void testNoStart() {
+        Appender<E> appender = getAppender();
+        appender.setContext(context);
+        appender.setName("doh");
+        // is null OK?
+        appender.doAppend(null);
+        StatusChecker checker = new StatusChecker(context.getStatusManager());
+        StatusPrinter.print(context);
+        checker.assertContainsMatch("Attempted to append to non started appender \\[doh\\].");
+    }
 }
-
-

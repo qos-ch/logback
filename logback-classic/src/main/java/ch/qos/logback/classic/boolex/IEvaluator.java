@@ -21,6 +21,5 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  * @author Ceki G&uuml;c&uuml;
  */
 public interface IEvaluator {
-  boolean doEvaluate(ILoggingEvent event);
+    boolean doEvaluate(ILoggingEvent event);
 }
- 

@@ -33,30 +33,29 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class LayoutInsteadOfEncoderTest {
 
-  // TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml"
-  JoranConfigurator jc = new JoranConfigurator();
-  LoggerContext loggerContext = new LoggerContext();
+    // TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml"
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
 
-  @Before
-  public void setUp() {
-    jc.setContext(loggerContext);
+    @Before
+    public void setUp() {
+        jc.setContext(loggerContext);
 
-  }
+    }
 
-  // jc.doConfigure(TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml");
+    // jc.doConfigure(TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml");
 
-  @Test
-  public void layoutInsteadOfEncoer() throws JoranException {
-    jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "compatibility/layoutInsteadOfEncoder.xml");
-    StatusPrinter.print(loggerContext);
-    StatusChecker checker = new StatusChecker(loggerContext);
-    checker.assertContainsMatch(Status.WARN, "This appender no longer admits a layout as a sub-component");
-    checker.assertContainsMatch(Status.WARN, "See also "+CODES_URL+"#layoutInsteadOfEncoder for details");
-    
-    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-    FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
-    assertTrue(fileAppender.isStarted());
-    assertTrue(fileAppender.getEncoder() instanceof LayoutWrappingEncoder);
-  }
+    @Test
+    public void layoutInsteadOfEncoer() throws JoranException {
+        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "compatibility/layoutInsteadOfEncoder.xml");
+        StatusPrinter.print(loggerContext);
+        StatusChecker checker = new StatusChecker(loggerContext);
+        checker.assertContainsMatch(Status.WARN, "This appender no longer admits a layout as a sub-component");
+        checker.assertContainsMatch(Status.WARN, "See also " + CODES_URL + "#layoutInsteadOfEncoder for details");
+
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
+        assertTrue(fileAppender.isStarted());
+        assertTrue(fileAppender.getEncoder() instanceof LayoutWrappingEncoder);
+    }
 }

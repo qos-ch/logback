@@ -29,33 +29,31 @@ import static org.junit.Assert.assertTrue;
 
 public class FileStoreUtilTest {
 
+    int diff = RandomUtil.getPositiveInt();
+    String pathPrefix = CoreTestConstants.OUTPUT_DIR_PREFIX + "fs" + diff + "/";
 
-  int diff = RandomUtil.getPositiveInt();
-  String pathPrefix = CoreTestConstants.OUTPUT_DIR_PREFIX+"fs"+diff+"/";
+    @Test
+    public void filesOnSameFolderShouldBeOnTheSameFileStore() throws RolloverFailure, IOException {
+        if (!EnvUtil.isJDK7OrHigher())
+            return;
 
-  @Test
-  public void filesOnSameFolderShouldBeOnTheSameFileStore() throws RolloverFailure, IOException {
-    if(!EnvUtil.isJDK7OrHigher())
-      return;
+        File parent = new File(pathPrefix);
+        File file = new File(pathPrefix + "filesOnSameFolderShouldBeOnTheSameFileStore");
+        FileUtil.createMissingParentDirectories(file);
+        file.createNewFile();
+        assertTrue(FileStoreUtil.areOnSameFileStore(parent, file));
+    }
 
-    File parent = new File(pathPrefix);
-    File file = new File(pathPrefix+"filesOnSameFolderShouldBeOnTheSameFileStore");
-    FileUtil.createMissingParentDirectories(file);
-    file.createNewFile();
-    assertTrue(FileStoreUtil.areOnSameFileStore(parent, file));
-  }
+    // test should be run manually
+    @Ignore
+    @Test
+    public void manual_filesOnDifferentVolumesShouldBeDetectedAsSuch() throws RolloverFailure {
+        if (!EnvUtil.isJDK7OrHigher())
+            return;
 
-
-  // test should be run manually
-  @Ignore
-  @Test
-  public void manual_filesOnDifferentVolumesShouldBeDetectedAsSuch() throws RolloverFailure {
-    if(!EnvUtil.isJDK7OrHigher())
-      return;
-
-    // author's computer has two volumes
-    File c = new File("c:/tmp/");
-    File d = new File("d:/");
-    assertFalse(FileStoreUtil.areOnSameFileStore(c, d));
-  }
+        // author's computer has two volumes
+        File c = new File("c:/tmp/");
+        File d = new File("d:/");
+        assertFalse(FileStoreUtil.areOnSameFileStore(c, d));
+    }
 }

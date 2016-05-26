@@ -13,14 +13,11 @@
  */
 package ch.qos.logback.classic.util;
 
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ContextInitializerTest.class, ContextInitializerAutoConfigTest.class,
-        LogbackMDCAdapterTest.class, LevelToSyslogSeverityTest.class})
-
+@SuiteClasses({ ContextInitializerTest.class, ContextInitializerAutoConfigTest.class, LogbackMDCAdapterTest.class, LevelToSyslogSeverityTest.class })
 public class PackageTest {
 }

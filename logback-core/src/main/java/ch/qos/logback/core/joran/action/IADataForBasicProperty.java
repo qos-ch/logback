@@ -22,14 +22,14 @@ import ch.qos.logback.core.util.AggregationType;
  * @author Ceki Gulcu
  */
 class IADataForBasicProperty {
-  final PropertySetter parentBean;
-  final AggregationType aggregationType;
-  final String propertyName;
-  boolean inError;
+    final PropertySetter parentBean;
+    final AggregationType aggregationType;
+    final String propertyName;
+    boolean inError;
 
-  IADataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
-    this.parentBean = parentBean;
-    this.aggregationType = aggregationType;
-    this.propertyName = propertyName;
-  }
+    IADataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
+        this.parentBean = parentBean;
+        this.aggregationType = aggregationType;
+        this.propertyName = propertyName;
+    }
 }

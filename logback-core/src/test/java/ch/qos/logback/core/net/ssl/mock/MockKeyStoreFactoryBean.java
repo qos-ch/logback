@@ -27,17 +27,16 @@ import ch.qos.logback.core.net.ssl.KeyStoreFactoryBean;
  */
 public class MockKeyStoreFactoryBean extends KeyStoreFactoryBean {
 
-  private boolean keyStoreCreated;
-  
-  @Override
-  public KeyStore createKeyStore() throws NoSuchProviderException,
-      NoSuchAlgorithmException, KeyStoreException {
-    keyStoreCreated = true;
-    return super.createKeyStore();
-  }
+    private boolean keyStoreCreated;
 
-  public boolean isKeyStoreCreated() {
-    return keyStoreCreated;
-  }
+    @Override
+    public KeyStore createKeyStore() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException {
+        keyStoreCreated = true;
+        return super.createKeyStore();
+    }
+
+    public boolean isKeyStoreCreated() {
+        return keyStoreCreated;
+    }
 
 }

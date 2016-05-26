@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
@@ -46,69 +47,63 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  * <p>
  * A JoranConfiguratorBase instance should not be used more than once to
  * configure a Context.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class JoranConfiguratorBase extends GenericConfigurator {
 
-  public List getErrorList() {
-    return null;
-  }
+    public List getErrorList() {
+        return null;
+    }
 
-  @Override
-  protected void addInstanceRules(RuleStore rs) {
+    @Override
+    protected void addInstanceRules(RuleStore rs) {
 
-    // is "configuration/variable" referenced in the docs?
-    rs.addRule(new ElementSelector("configuration/variable"), new PropertyAction());
-    rs.addRule(new ElementSelector("configuration/property"), new PropertyAction());
+        // is "configuration/variable" referenced in the docs?
+        rs.addRule(new ElementSelector("configuration/variable"), new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/property"), new PropertyAction());
 
-    rs.addRule(new ElementSelector("configuration/substitutionProperty"),
-        new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/substitutionProperty"), new PropertyAction());
 
-    rs.addRule(new ElementSelector("configuration/timestamp"), new TimestampAction());
-    rs.addRule(new ElementSelector("configuration/shutdownHook"), new ShutdownHookAction());
-    rs.addRule(new ElementSelector("configuration/define"), new DefinePropertyAction());
+        rs.addRule(new ElementSelector("configuration/timestamp"), new TimestampAction());
+        rs.addRule(new ElementSelector("configuration/shutdownHook"), new ShutdownHookAction());
+        rs.addRule(new ElementSelector("configuration/define"), new DefinePropertyAction());
 
-    // the contextProperty pattern is deprecated. It is undocumented
-    // and will be dropped in future versions of logback
-    rs.addRule(new ElementSelector("configuration/contextProperty"),
-        new ContextPropertyAction());
+        // the contextProperty pattern is deprecated. It is undocumented
+        // and will be dropped in future versions of logback
+        rs.addRule(new ElementSelector("configuration/contextProperty"), new ContextPropertyAction());
 
-    rs.addRule(new ElementSelector("configuration/conversionRule"),
-        new ConversionRuleAction());
+        rs.addRule(new ElementSelector("configuration/conversionRule"), new ConversionRuleAction());
 
-    rs.addRule(new ElementSelector("configuration/statusListener"),
-        new StatusListenerAction());
+        rs.addRule(new ElementSelector("configuration/statusListener"), new StatusListenerAction());
 
-    rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
-    rs.addRule(new ElementSelector("configuration/appender/appender-ref"),
-        new AppenderRefAction());
-    rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
-    rs.addRule(new ElementSelector("*/param"), new ParamAction());
-  }
+        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
+        rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
+        rs.addRule(new ElementSelector("*/param"), new ParamAction(getBeanDescriptionCache()));
+    }
 
-  @Override
-  protected void addImplicitRules(Interpreter interpreter) {
-    // The following line adds the capability to parse nested components
-    NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA();
-    nestedComplexPropertyIA.setContext(context);
-    interpreter.addImplicitAction(nestedComplexPropertyIA);
+    @Override
+    protected void addImplicitRules(Interpreter interpreter) {
+        // The following line adds the capability to parse nested components
+        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
+        nestedComplexPropertyIA.setContext(context);
+        interpreter.addImplicitAction(nestedComplexPropertyIA);
 
-    NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA();
-    nestedBasicIA.setContext(context);
-    interpreter.addImplicitAction(nestedBasicIA);
-  }
+        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
+        nestedBasicIA.setContext(context);
+        interpreter.addImplicitAction(nestedBasicIA);
+    }
 
-  @Override
-  protected void buildInterpreter() {
-    super.buildInterpreter();
-    Map<String, Object> omap = interpreter.getInterpretationContext()
-        .getObjectMap();
-    omap.put(ActionConst.APPENDER_BAG, new HashMap());
-    omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
-  }
+    @Override
+    protected void buildInterpreter() {
+        super.buildInterpreter();
+        Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+        omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
+        omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+    }
 
-  public InterpretationContext getInterpretationContext() {
-    return interpreter.getInterpretationContext();
-  }
+    public InterpretationContext getInterpretationContext() {
+        return interpreter.getInterpretationContext();
+    }
 }

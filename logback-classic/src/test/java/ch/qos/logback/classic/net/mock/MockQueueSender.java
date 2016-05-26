@@ -24,111 +24,98 @@ import javax.jms.QueueSender;
 
 public class MockQueueSender implements QueueSender {
 
-  List<Message> messageList = new ArrayList<Message>();
-  Queue queue;
-  
-  public MockQueueSender(Queue queue) {
-    this.queue = queue;
-  }
-  
-  public List<Message> getMessageList() {
-    return messageList;
-  }
-  
-  public Queue getQueue() throws JMSException {
-    return queue;
-  }
+    List<Message> messageList = new ArrayList<Message>();
+    Queue queue;
 
-  public void send(Message message) throws JMSException {
-    messageList.add(message);
-    
-  }
+    public MockQueueSender(Queue queue) {
+        this.queue = queue;
+    }
 
-  public void send(Queue arg0, Message arg1) throws JMSException {
+    public List<Message> getMessageList() {
+        return messageList;
+    }
 
-    
-  }
+    public Queue getQueue() throws JMSException {
+        return queue;
+    }
 
-  public void send(Message arg0, int arg1, int arg2, long arg3) throws JMSException {
+    public void send(Message message) throws JMSException {
+        messageList.add(message);
 
-    
-  }
+    }
 
-  public void send(Queue arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
+    public void send(Queue arg0, Message arg1) throws JMSException {
 
-    
-  }
+    }
 
-  public void close() throws JMSException {
+    public void send(Message arg0, int arg1, int arg2, long arg3) throws JMSException {
 
-    
-  }
+    }
 
-  public int getDeliveryMode() throws JMSException {
+    public void send(Queue arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
 
-    return 0;
-  }
+    }
 
-  public Destination getDestination() throws JMSException {
+    public void close() throws JMSException {
 
-    return null;
-  }
+    }
 
-  public boolean getDisableMessageID() throws JMSException {
+    public int getDeliveryMode() throws JMSException {
 
-    return false;
-  }
+        return 0;
+    }
 
-  public boolean getDisableMessageTimestamp() throws JMSException {
+    public Destination getDestination() throws JMSException {
 
-    return false;
-  }
+        return null;
+    }
 
-  public int getPriority() throws JMSException {
+    public boolean getDisableMessageID() throws JMSException {
 
-    return 0;
-  }
+        return false;
+    }
 
-  public long getTimeToLive() throws JMSException {
+    public boolean getDisableMessageTimestamp() throws JMSException {
 
-    return 0;
-  }
+        return false;
+    }
 
-  public void send(Destination arg0, Message arg1) throws JMSException {
+    public int getPriority() throws JMSException {
 
-    
-  }
+        return 0;
+    }
 
-  public void send(Destination arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
+    public long getTimeToLive() throws JMSException {
 
-    
-  }
+        return 0;
+    }
 
-  public void setDeliveryMode(int arg0) throws JMSException {
+    public void send(Destination arg0, Message arg1) throws JMSException {
 
-    
-  }
+    }
 
-  public void setDisableMessageID(boolean arg0) throws JMSException {
+    public void send(Destination arg0, Message arg1, int arg2, int arg3, long arg4) throws JMSException {
 
-    
-  }
+    }
 
-  public void setDisableMessageTimestamp(boolean arg0) throws JMSException {
+    public void setDeliveryMode(int arg0) throws JMSException {
 
-    
-  }
+    }
 
-  public void setPriority(int arg0) throws JMSException {
+    public void setDisableMessageID(boolean arg0) throws JMSException {
 
-    
-  }
+    }
 
-  public void setTimeToLive(long arg0) throws JMSException {
+    public void setDisableMessageTimestamp(boolean arg0) throws JMSException {
 
-    
-  }
-  
-  
+    }
+
+    public void setPriority(int arg0) throws JMSException {
+
+    }
+
+    public void setTimeToLive(long arg0) throws JMSException {
+
+    }
 
 }

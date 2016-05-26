@@ -18,19 +18,17 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-
 public class NoAutoStartUtilTest {
 
-  
-  @Test
-  public void commonObject() {
-    Object o = new Object();
-    assertTrue(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
-  }
-  
-  @Test
-  public void markedWithNoAutoStart() {
-    DoNotAutoStart o = new DoNotAutoStart();
-    assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
-  }
+    @Test
+    public void commonObject() {
+        Object o = new Object();
+        assertTrue(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
+
+    @Test
+    public void markedWithNoAutoStart() {
+        DoNotAutoStart o = new DoNotAutoStart();
+        assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
 }

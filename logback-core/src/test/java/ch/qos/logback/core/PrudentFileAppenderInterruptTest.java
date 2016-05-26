@@ -30,63 +30,64 @@ import ch.qos.logback.core.util.CoreTestConstants;
 
 public class PrudentFileAppenderInterruptTest {
 
-  FileAppender<Object> fa = new FileAppender<Object>();
-  Context context = new ContextBase();
-  int diff = RandomUtil.getPositiveInt();
-  String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "resilience-" + diff + "/";
-  String logfileStr = outputDirStr + "output.log";
+    FileAppender<Object> fa = new FileAppender<Object>();
+    Context context = new ContextBase();
+    int diff = RandomUtil.getPositiveInt();
+    String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "resilience-" + diff + "/";
+    String logfileStr = outputDirStr + "output.log";
 
-  @Before
-  public void setUp() throws InterruptedException {
-    context.getStatusManager().add(new OnConsoleStatusListener());
+    @Before
+    public void setUp() throws InterruptedException {
+        context.getStatusManager().add(new OnConsoleStatusListener());
 
-    File outputDir = new File(outputDirStr);
-    outputDir.mkdirs();
+        File outputDir = new File(outputDirStr);
+        outputDir.mkdirs();
 
-    fa.setContext(context);
-    fa.setName("FILE");
-    fa.setPrudent(true);
-    fa.setEncoder(new EchoEncoder<Object>());
-    fa.setFile(logfileStr);
-    fa.start();
-  }
-
-  @Test
-  public void smoke() throws InterruptedException, IOException {
-    Runner runner = new Runner(fa);
-    Thread t = new Thread(runner);
-    t.start();
-
-    runner.latch.await();
-
-    fa.doAppend("hello not interrupted");
-
-    FileReader fr = new FileReader(logfileStr);
-    BufferedReader br = new BufferedReader(fr);
-
-    int totalLines = 0;
-    while (br.readLine() != null) {
-      totalLines++; // In this test, the content of the file does not matter
-    }
-    fr.close();
-    br.close();
-
-    assertEquals("Incorrect number of logged lines", 2, totalLines);
-  }
-
-  class Runner extends RunnableWithCounterAndDone {
-    FileAppender<Object> fa;
-    CountDownLatch latch = new CountDownLatch(1); // Just to make sure this is executed before we log in the test method
-
-    Runner(FileAppender<Object> fa) {
-      this.fa = fa;
+        fa.setContext(context);
+        fa.setName("FILE");
+        fa.setPrudent(true);
+        fa.setEncoder(new EchoEncoder<Object>());
+        fa.setFile(logfileStr);
+        fa.start();
     }
 
-    public void run() {
-      Thread.currentThread().interrupt();
-      fa.doAppend("hello interrupted");
-      latch.countDown();
+    @Test
+    public void smoke() throws InterruptedException, IOException {
+        Runner runner = new Runner(fa);
+        Thread t = new Thread(runner);
+        t.start();
+
+        runner.latch.await();
+
+        fa.doAppend("hello not interrupted");
+
+        FileReader fr = new FileReader(logfileStr);
+        BufferedReader br = new BufferedReader(fr);
+
+        int totalLines = 0;
+        while (br.readLine() != null) {
+            totalLines++; // In this test, the content of the file does not matter
+        }
+        fr.close();
+        br.close();
+
+        assertEquals("Incorrect number of logged lines", 2, totalLines);
     }
-  }
+
+    class Runner extends RunnableWithCounterAndDone {
+        FileAppender<Object> fa;
+        CountDownLatch latch = new CountDownLatch(1); // Just to make sure this is executed before we log in the test
+                                                      // method
+
+        Runner(FileAppender<Object> fa) {
+            this.fa = fa;
+        }
+
+        public void run() {
+            Thread.currentThread().interrupt();
+            fa.doAppend("hello interrupted");
+            latch.countDown();
+        }
+    }
 
 }

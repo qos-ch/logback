@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
@@ -40,106 +39,104 @@ import static org.junit.Assert.*;
 
 public class IfThenElseTest {
 
-  Context context = new ContextBase();
-  StatusChecker checker = new StatusChecker(context);
-  TrivialConfigurator tc;
-  int diff = RandomUtil.getPositiveInt();
-  static final String CONDITIONAL_DIR_PREFIX = CoreTestConstants.JORAN_INPUT_PREFIX
-  + "conditional/";
+    Context context = new ContextBase();
+    StatusChecker checker = new StatusChecker(context);
+    TrivialConfigurator tc;
+    int diff = RandomUtil.getPositiveInt();
+    static final String CONDITIONAL_DIR_PREFIX = CoreTestConstants.JORAN_INPUT_PREFIX + "conditional/";
 
-  String ki1 = "ki1";
-  String val1 = "val1";
-  String sysKey = "sysKey";
-  String dynaKey = "dynaKey";
+    String ki1 = "ki1";
+    String val1 = "val1";
+    String sysKey = "sysKey";
+    String dynaKey = "dynaKey";
 
-  StackAction stackAction = new StackAction();
+    StackAction stackAction = new StackAction();
 
-  @Before
-  public void setUp() throws Exception {
-    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-    rulesMap.put(new ElementSelector("x"), new NOPAction());
-    rulesMap.put(new ElementSelector("x/stack"), stackAction);
-    rulesMap.put(new ElementSelector("x/property"), new PropertyAction());
-    rulesMap.put(new ElementSelector("*/if"), new IfAction());
-    rulesMap.put(new ElementSelector("*/if/then"), new ThenAction());
-    rulesMap.put(new ElementSelector("*/if/then/*"), new NOPAction());
-    rulesMap.put(new ElementSelector("*/if/else"), new ElseAction());
-    rulesMap.put(new ElementSelector("*/if/else/*"), new NOPAction());
+    @Before
+    public void setUp() throws Exception {
+        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+        rulesMap.put(new ElementSelector("x"), new NOPAction());
+        rulesMap.put(new ElementSelector("x/stack"), stackAction);
+        rulesMap.put(new ElementSelector("x/property"), new PropertyAction());
+        rulesMap.put(new ElementSelector("*/if"), new IfAction());
+        rulesMap.put(new ElementSelector("*/if/then"), new ThenAction());
+        rulesMap.put(new ElementSelector("*/if/then/*"), new NOPAction());
+        rulesMap.put(new ElementSelector("*/if/else"), new ElseAction());
+        rulesMap.put(new ElementSelector("*/if/else/*"), new NOPAction());
 
-    tc = new TrivialConfigurator(rulesMap);
-    tc.setContext(context);
-  }
+        tc = new TrivialConfigurator(rulesMap);
+        tc.setContext(context);
+    }
 
-  @After
-  public void tearDown() throws Exception {
-    StatusPrinter.printIfErrorsOccured(context);
-    System.clearProperty(sysKey);
-  }
+    @After
+    public void tearDown() throws Exception {
+        StatusPrinter.printIfErrorsOccured(context);
+        System.clearProperty(sysKey);
+    }
 
-  @Test
-  public void whenContextPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
-    context.putProperty(ki1, val1);
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"if0.xml");
-    verifyConfig(new String[] {"BEGIN", "a", "END"});
-  }
+    @Test
+    public void whenContextPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
+        context.putProperty(ki1, val1);
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "if0.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "END" });
+    }
 
-  @Test
-  public void whenLocalPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"if_localProperty.xml");
-    verifyConfig(new String[] {"BEGIN", "a", "END"});
-  }
+    @Test
+    public void whenLocalPropertyIsSet_IfThenBranchIsEvaluated() throws JoranException {
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "if_localProperty.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "END" });
+    }
 
+    @Test
+    public void whenNoPropertyIsDefined_ElseBranchIsEvaluated() throws JoranException {
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "if0.xml");
+        verifyConfig(new String[] { "BEGIN", "b", "END" });
+    }
 
-  @Test
-  public void whenNoPropertyIsDefined_ElseBranchIsEvaluated() throws JoranException {
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"if0.xml");
-    verifyConfig(new String[] {"BEGIN", "b", "END"});
-  }
+    @Test
+    public void whenContextPropertyIsSet_IfThenBranchIsEvaluated_NO_ELSE_DEFINED() throws JoranException {
+        context.putProperty(ki1, val1);
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "END" });
+    }
 
-  @Test
-  public void whenContextPropertyIsSet_IfThenBranchIsEvaluated_NO_ELSE_DEFINED() throws JoranException {
-    context.putProperty(ki1, val1);
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifWithoutElse.xml");
-    verifyConfig(new String[] {"BEGIN", "a", "END"});
-  }
+    @Test
+    public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED() throws JoranException {
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse.xml");
+        verifyConfig(new String[] { "BEGIN", "END" });
+        assertTrue(checker.isErrorFree(0));
+    }
 
-  @Test
-  public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED() throws JoranException {
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifWithoutElse.xml");
-    verifyConfig(new String[] {"BEGIN", "END"});
-    assertTrue(checker.isErrorFree(0));
-  }
+    @Test
+    public void nestedIf() throws JoranException {
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf.xml");
+        verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
+        assertTrue(checker.isErrorFree(0));
+    }
 
-  @Test
-  public void nestedIf() throws JoranException {
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"nestedIf.xml");
-    verifyConfig(new String[] {"BEGIN", "a", "c", "END"});
-    assertTrue(checker.isErrorFree(0));
-  }
+    @Test
+    public void useNonExistenceOfSystemPropertyToDefineAContextProperty() throws JoranException {
+//        assertNull(System.getProperty(sysKey));
+//        assertNull(context.getProperty(dynaKey));
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem.xml");
+        System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
+//        assertNotNull(context.getProperty(dynaKey));
+    }
 
-  @Test
-  public void useNonExistenceOfSystemPropertyToDefineAContextProperty() throws JoranException {
-    assertNull(System.getProperty(sysKey));
-    assertNull(context.getProperty(dynaKey));
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifSystem.xml");
-    System.out.println(dynaKey+"="+context.getProperty(dynaKey));
-    assertNotNull(context.getProperty(dynaKey));
-  }
+    @Test
+    public void noContextPropertyShouldBeDefinedIfSystemPropertyExists() throws JoranException {
+        System.setProperty(sysKey, "a");
+        assertNull(context.getProperty(dynaKey));
+        System.out.println("before " + dynaKey + "=" + context.getProperty(dynaKey));
+        tc.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem.xml");
+        System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
+        assertNull(context.getProperty(dynaKey));
+    }
 
-  @Test
-  public void noContextPropertyShouldBeDefinedIfSystemPropertyExists() throws JoranException {
-    System.setProperty(sysKey, "a");
-    assertNull(context.getProperty(dynaKey));
-    System.out.println("before "+dynaKey+"="+context.getProperty(dynaKey));
-    tc.doConfigure(CONDITIONAL_DIR_PREFIX+"ifSystem.xml");
-    System.out.println(dynaKey+"="+context.getProperty(dynaKey));
-    assertNull(context.getProperty(dynaKey));
-  }
-
-  private void verifyConfig(String[] expected) {
-    Stack<String> witness = new Stack<String>();
-    witness.addAll(Arrays.asList(expected));
-    assertEquals(witness, stackAction.getStack());
-  }
+    private void verifyConfig(String[] expected) {
+        Stack<String> witness = new Stack<String>();
+        witness.addAll(Arrays.asList(expected));
+        assertEquals(witness, stackAction.getStack());
+    }
 
 }

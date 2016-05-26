@@ -22,48 +22,48 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class FruitFactory {
 
-  static int count = 0;
-  
-  private List<SaxEvent> eventList;
-  Fruit fruit;
-  
-  public void setFruit(Fruit fruit) {
-    this.fruit = fruit;
-  }
+    static int count = 0;
 
-  public Fruit buildFruit() {
-    
-    Context context = new ContextBase();
-    this.fruit = null;
-    context.putProperty("fruitKey", "orange-"+count);
-    // for next round
-    count++;
-    FruitConfigurator fruitConfigurator = new FruitConfigurator(this);
-    fruitConfigurator.setContext(context);
-    try {
-      fruitConfigurator.doConfigure(eventList);
-    } catch(JoranException je) {
-      je.printStackTrace();
+    private List<SaxEvent> eventList;
+    Fruit fruit;
+
+    public void setFruit(Fruit fruit) {
+        this.fruit = fruit;
     }
-    return fruit;
-  }
 
-  public String toString() {
-    final String TAB = " ";
+    public Fruit buildFruit() {
 
-    StringBuilder retValue = new StringBuilder();
-
-    retValue.append("FruitFactory ( ");
-    if (eventList != null && eventList.size() > 0) {
-      retValue.append("event1 = ").append(eventList.get(0)).append(TAB);
+        Context context = new ContextBase();
+        this.fruit = null;
+        context.putProperty("fruitKey", "orange-" + count);
+        // for next round
+        count++;
+        FruitConfigurator fruitConfigurator = new FruitConfigurator(this);
+        fruitConfigurator.setContext(context);
+        try {
+            fruitConfigurator.doConfigure(eventList);
+        } catch (JoranException je) {
+            je.printStackTrace();
+        }
+        return fruit;
     }
-    retValue.append(" )");
 
-    return retValue.toString();
-  }
+    public String toString() {
+        final String TAB = " ";
 
-  public void setEventList(List<SaxEvent> eventList) {
-    this.eventList = eventList;
-  }
+        StringBuilder retValue = new StringBuilder();
+
+        retValue.append("FruitFactory ( ");
+        if (eventList != null && eventList.size() > 0) {
+            retValue.append("event1 = ").append(eventList.get(0)).append(TAB);
+        }
+        retValue.append(" )");
+
+        return retValue.toString();
+    }
+
+    public void setEventList(List<SaxEvent> eventList) {
+        this.eventList = eventList;
+    }
 
 }

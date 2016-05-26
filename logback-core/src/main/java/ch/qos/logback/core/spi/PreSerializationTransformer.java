@@ -24,5 +24,5 @@ import java.io.Serializable;
  * @param <E>
  */
 public interface PreSerializationTransformer<E> {
-  Serializable transform(E event);
+    Serializable transform(E event);
 }

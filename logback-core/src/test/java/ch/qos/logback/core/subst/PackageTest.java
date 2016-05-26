@@ -16,9 +16,7 @@ package ch.qos.logback.core.subst;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TokenizerTest.class, ParserTest.class, NodeToStringTransformerTest.class})
-
+@Suite.SuiteClasses({ TokenizerTest.class, ParserTest.class, NodeToStringTransformerTest.class })
 public class PackageTest {
 }

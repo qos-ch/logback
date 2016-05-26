@@ -16,33 +16,32 @@ package ch.qos.logback.classic.multiJVM;
 import org.slf4j.Logger;
 
 public class LoggingThread extends Thread {
-  static String msgLong = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    static String msgLong = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
-  final long len;
-  final Logger logger;
-  private double durationPerLog;
+    final long len;
+    final Logger logger;
+    private double durationPerLog;
 
-  public LoggingThread(Logger logger, long len) {
-    this.logger = logger;
-    this.len = len;
-  }
-
-  public void run() {
-    long before = System.nanoTime();
-    for (int i = 0; i < len; i++) {
-      logger.debug(msgLong + " " + i);
-//      try {
-//        Thread.sleep(100);
-//      } catch (InterruptedException e) {
-//      }
+    public LoggingThread(Logger logger, long len) {
+        this.logger = logger;
+        this.len = len;
     }
-    // in microseconds
-    durationPerLog = (System.nanoTime() - before) / (len * 1000.0);
-  }
 
-  public double getDurationPerLogInMicroseconds() {
-    return durationPerLog;
-  }
-  
-  
+    public void run() {
+        long before = System.nanoTime();
+        for (int i = 0; i < len; i++) {
+            logger.debug(msgLong + " " + i);
+            // try {
+            // Thread.sleep(100);
+            // } catch (InterruptedException e) {
+            // }
+        }
+        // in microseconds
+        durationPerLog = (System.nanoTime() - before) / (len * 1000.0);
+    }
+
+    public double getDurationPerLogInMicroseconds() {
+        return durationPerLog;
+    }
+
 }

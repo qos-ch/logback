@@ -25,63 +25,53 @@ import ch.qos.logback.core.util.OptionHelper;
  * */
 public class FruitShellAction extends Action {
 
-  FruitShell fruitShell;
-  private boolean inError = false;
+    FruitShell fruitShell;
+    private boolean inError = false;
 
-  
-  @Override
-  public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
+    @Override
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
 
-    // We are just beginning, reset variables
-    fruitShell = new FruitShell();
-    inError = false;
-    
-    try {
+        // We are just beginning, reset variables
+        fruitShell = new FruitShell();
+        inError = false;
 
+        try {
 
-      fruitShell.setContext(context);
+            fruitShell.setContext(context);
 
-      String shellName = attributes.getValue(NAME_ATTRIBUTE);
+            String shellName = attributes.getValue(NAME_ATTRIBUTE);
 
-      if (OptionHelper.isEmpty(shellName)) {
-        addWarn(
-          "No appender name given for fruitShell].");
-      } else {
-        fruitShell.setName(shellName);
-        addInfo("FruitShell named as [" + shellName + "]");
-      }
+            if (OptionHelper.isEmpty(shellName)) {
+                addWarn("No appender name given for fruitShell].");
+            } else {
+                fruitShell.setName(shellName);
+                addInfo("FruitShell named as [" + shellName + "]");
+            }
 
-      ec.pushObject(fruitShell);
-    } catch (Exception oops) {
-      inError = true;
-      addError(
-        "Could not create an FruitShell", oops);
-      throw new ActionException(oops);
-    }
-  }
-
-  @Override
-  public void end(InterpretationContext ec, String name) throws ActionException {
-    if (inError) {
-      return;
+            ec.pushObject(fruitShell);
+        } catch (Exception oops) {
+            inError = true;
+            addError("Could not create an FruitShell", oops);
+            throw new ActionException(oops);
+        }
     }
 
-    Object o = ec.peekObject();
+    @Override
+    public void end(InterpretationContext ec, String name) throws ActionException {
+        if (inError) {
+            return;
+        }
 
-    if (o != fruitShell) {
-      addWarn(
-        "The object at the of the stack is not the fruitShell named ["
-        + fruitShell.getName() + "] pushed earlier.");
-    } else {
-      addInfo(
-        "Popping fruitSHell named [" + fruitShell.getName()
-        + "] from the object stack");
-      ec.popObject();
-      FruitContext fruitContext = (FruitContext) ec.getContext();
-      fruitContext.addFruitShell(fruitShell);
+        Object o = ec.peekObject();
+
+        if (o != fruitShell) {
+            addWarn("The object at the of the stack is not the fruitShell named [" + fruitShell.getName() + "] pushed earlier.");
+        } else {
+            addInfo("Popping fruitSHell named [" + fruitShell.getName() + "] from the object stack");
+            ec.popObject();
+            FruitContext fruitContext = (FruitContext) ec.getContext();
+            fruitContext.addFruitShell(fruitShell);
+        }
     }
-  }
 
-  
 }

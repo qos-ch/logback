@@ -25,25 +25,23 @@ import ch.qos.logback.core.net.server.ServerSocketListener;
  *
  * @author Carl Harris
  */
-class RemoteAppenderServerListener
-    extends ServerSocketListener<RemoteAppenderClient>  {
+class RemoteAppenderServerListener extends ServerSocketListener<RemoteAppenderClient> {
 
-  /**
-   * Constructs a new listener.
-   * @param serverSocket the {@link ServerSocket} from which to accept
-   *    new client connections
-   */
-  public RemoteAppenderServerListener(ServerSocket serverSocket) {
-    super(serverSocket);
-  }
+    /**
+     * Constructs a new listener.
+     * @param serverSocket the {@link ServerSocket} from which to accept
+     *    new client connections
+     */
+    public RemoteAppenderServerListener(ServerSocket serverSocket) {
+        super(serverSocket);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected RemoteAppenderClient createClient(String id, Socket socket) 
-      throws IOException {
-    return new RemoteAppenderStreamClient(id, socket);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected RemoteAppenderClient createClient(String id, Socket socket) throws IOException {
+        return new RemoteAppenderStreamClient(id, socket);
+    }
 
 }

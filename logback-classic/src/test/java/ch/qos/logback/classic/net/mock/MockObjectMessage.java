@@ -22,239 +22,216 @@ import javax.jms.ObjectMessage;
 
 public class MockObjectMessage implements ObjectMessage {
 
-  Serializable object; 
-  
-  public Serializable getObject() throws JMSException {
-    return object;
-  }
+    Serializable object;
 
-  public void setObject(Serializable object) throws JMSException {
-    this.object = object;
-  }
+    public Serializable getObject() throws JMSException {
+        return object;
+    }
 
-  public void acknowledge() throws JMSException {
-    
-    
-  }
+    public void setObject(Serializable object) throws JMSException {
+        this.object = object;
+    }
 
-  public void clearBody() throws JMSException {
-    
-    
-  }
+    public void acknowledge() throws JMSException {
 
-  public void clearProperties() throws JMSException {
-    
-    
-  }
+    }
 
-  public boolean getBooleanProperty(String arg0) throws JMSException {
-    
-    return false;
-  }
+    public void clearBody() throws JMSException {
 
-  public byte getByteProperty(String arg0) throws JMSException {
-    
-    return 0;
-  }
+    }
 
-  public double getDoubleProperty(String arg0) throws JMSException {
-    
-    return 0;
-  }
+    public void clearProperties() throws JMSException {
 
-  public float getFloatProperty(String arg0) throws JMSException {
-    
-    return 0;
-  }
+    }
 
-  public int getIntProperty(String arg0) throws JMSException {
-    
-    return 0;
-  }
+    public boolean getBooleanProperty(String arg0) throws JMSException {
 
-  public String getJMSCorrelationID() throws JMSException {
-    
-    return null;
-  }
+        return false;
+    }
 
-  public byte[] getJMSCorrelationIDAsBytes() throws JMSException {
-    
-    return null;
-  }
+    public byte getByteProperty(String arg0) throws JMSException {
 
-  public int getJMSDeliveryMode() throws JMSException {
-    
-    return 0;
-  }
+        return 0;
+    }
 
-  public Destination getJMSDestination() throws JMSException {
-    
-    return null;
-  }
+    public double getDoubleProperty(String arg0) throws JMSException {
 
-  public long getJMSExpiration() throws JMSException {
-    
-    return 0;
-  }
+        return 0;
+    }
 
-  public String getJMSMessageID() throws JMSException {
-    
-    return null;
-  }
+    public float getFloatProperty(String arg0) throws JMSException {
 
-  public int getJMSPriority() throws JMSException {
-    
-    return 0;
-  }
+        return 0;
+    }
 
-  public boolean getJMSRedelivered() throws JMSException {
-    
-    return false;
-  }
+    public int getIntProperty(String arg0) throws JMSException {
 
-  public Destination getJMSReplyTo() throws JMSException {
-    
-    return null;
-  }
+        return 0;
+    }
 
-  public long getJMSTimestamp() throws JMSException {
-    
-    return 0;
-  }
+    public String getJMSCorrelationID() throws JMSException {
 
-  public String getJMSType() throws JMSException {
-    
-    return null;
-  }
+        return null;
+    }
 
-  public long getLongProperty(String arg0) throws JMSException {
-    
-    return 0;
-  }
+    public byte[] getJMSCorrelationIDAsBytes() throws JMSException {
 
-  public Object getObjectProperty(String arg0) throws JMSException {
-    
-    return null;
-  }
+        return null;
+    }
 
-  public Enumeration getPropertyNames() throws JMSException {
-    
-    return null;
-  }
+    public int getJMSDeliveryMode() throws JMSException {
 
-  public short getShortProperty(String arg0) throws JMSException {
-    
-    return 0;
-  }
+        return 0;
+    }
 
-  public String getStringProperty(String arg0) throws JMSException {
-    
-    return null;
-  }
+    public Destination getJMSDestination() throws JMSException {
 
-  public boolean propertyExists(String arg0) throws JMSException {
-    
-    return false;
-  }
+        return null;
+    }
 
-  public void setBooleanProperty(String arg0, boolean arg1) throws JMSException {
-    
-    
-  }
+    public long getJMSExpiration() throws JMSException {
 
-  public void setByteProperty(String arg0, byte arg1) throws JMSException {
-    
-    
-  }
+        return 0;
+    }
 
-  public void setDoubleProperty(String arg0, double arg1) throws JMSException {
-    
-    
-  }
+    public String getJMSMessageID() throws JMSException {
 
-  public void setFloatProperty(String arg0, float arg1) throws JMSException {
-    
-    
-  }
+        return null;
+    }
 
-  public void setIntProperty(String arg0, int arg1) throws JMSException {
-    
-    
-  }
+    public int getJMSPriority() throws JMSException {
 
-  public void setJMSCorrelationID(String arg0) throws JMSException {
-    
-    
-  }
+        return 0;
+    }
 
-  public void setJMSCorrelationIDAsBytes(byte[] arg0) throws JMSException {
-    
-    
-  }
+    public boolean getJMSRedelivered() throws JMSException {
 
-  public void setJMSDeliveryMode(int arg0) throws JMSException {
-    
-    
-  }
+        return false;
+    }
 
-  public void setJMSDestination(Destination arg0) throws JMSException {
-    
-    
-  }
+    public Destination getJMSReplyTo() throws JMSException {
 
-  public void setJMSExpiration(long arg0) throws JMSException {
-    
-    
-  }
+        return null;
+    }
 
-  public void setJMSMessageID(String arg0) throws JMSException {
-    
-    
-  }
+    public long getJMSTimestamp() throws JMSException {
 
-  public void setJMSPriority(int arg0) throws JMSException {
-    
-    
-  }
+        return 0;
+    }
 
-  public void setJMSRedelivered(boolean arg0) throws JMSException {
-    
-    
-  }
+    public String getJMSType() throws JMSException {
 
-  public void setJMSReplyTo(Destination arg0) throws JMSException {
-    
-    
-  }
+        return null;
+    }
 
-  public void setJMSTimestamp(long arg0) throws JMSException {
-    
-    
-  }
+    public long getLongProperty(String arg0) throws JMSException {
 
-  public void setJMSType(String arg0) throws JMSException {
-    
-    
-  }
+        return 0;
+    }
 
-  public void setLongProperty(String arg0, long arg1) throws JMSException {
-    
-    
-  }
+    public Object getObjectProperty(String arg0) throws JMSException {
 
-  public void setObjectProperty(String arg0, Object arg1) throws JMSException {
-    
-    
-  }
+        return null;
+    }
 
-  public void setShortProperty(String arg0, short arg1) throws JMSException {
-    
-    
-  }
+    public Enumeration getPropertyNames() throws JMSException {
 
-  public void setStringProperty(String arg0, String arg1) throws JMSException {
-    
-    
-  }
+        return null;
+    }
+
+    public short getShortProperty(String arg0) throws JMSException {
+
+        return 0;
+    }
+
+    public String getStringProperty(String arg0) throws JMSException {
+
+        return null;
+    }
+
+    public boolean propertyExists(String arg0) throws JMSException {
+
+        return false;
+    }
+
+    public void setBooleanProperty(String arg0, boolean arg1) throws JMSException {
+
+    }
+
+    public void setByteProperty(String arg0, byte arg1) throws JMSException {
+
+    }
+
+    public void setDoubleProperty(String arg0, double arg1) throws JMSException {
+
+    }
+
+    public void setFloatProperty(String arg0, float arg1) throws JMSException {
+
+    }
+
+    public void setIntProperty(String arg0, int arg1) throws JMSException {
+
+    }
+
+    public void setJMSCorrelationID(String arg0) throws JMSException {
+
+    }
+
+    public void setJMSCorrelationIDAsBytes(byte[] arg0) throws JMSException {
+
+    }
+
+    public void setJMSDeliveryMode(int arg0) throws JMSException {
+
+    }
+
+    public void setJMSDestination(Destination arg0) throws JMSException {
+
+    }
+
+    public void setJMSExpiration(long arg0) throws JMSException {
+
+    }
+
+    public void setJMSMessageID(String arg0) throws JMSException {
+
+    }
+
+    public void setJMSPriority(int arg0) throws JMSException {
+
+    }
+
+    public void setJMSRedelivered(boolean arg0) throws JMSException {
+
+    }
+
+    public void setJMSReplyTo(Destination arg0) throws JMSException {
+
+    }
+
+    public void setJMSTimestamp(long arg0) throws JMSException {
+
+    }
+
+    public void setJMSType(String arg0) throws JMSException {
+
+    }
+
+    public void setLongProperty(String arg0, long arg1) throws JMSException {
+
+    }
+
+    public void setObjectProperty(String arg0, Object arg1) throws JMSException {
+
+    }
+
+    public void setShortProperty(String arg0, short arg1) throws JMSException {
+
+    }
+
+    public void setStringProperty(String arg0, String arg1) throws JMSException {
+
+    }
 
 }

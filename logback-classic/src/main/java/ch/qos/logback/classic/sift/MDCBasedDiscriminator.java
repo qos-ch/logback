@@ -29,71 +29,71 @@ import java.util.Map;
  */
 public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
-  private String key;
-  private String defaultValue;
+    private String key;
+    private String defaultValue;
 
-  /**
-   * Return the value associated with an MDC entry designated by the Key
-   * property. If that value is null, then return the value assigned to the
-   * DefaultValue property.
-   */
-  public String getDiscriminatingValue(ILoggingEvent event) {
-    // http://jira.qos.ch/browse/LBCLASSIC-213
-    Map<String, String> mdcMap = event.getMDCPropertyMap();
-    if (mdcMap == null) {
-      return defaultValue;
+    /**
+     * Return the value associated with an MDC entry designated by the Key
+     * property. If that value is null, then return the value assigned to the
+     * DefaultValue property.
+     */
+    public String getDiscriminatingValue(ILoggingEvent event) {
+        // http://jira.qos.ch/browse/LBCLASSIC-213
+        Map<String, String> mdcMap = event.getMDCPropertyMap();
+        if (mdcMap == null) {
+            return defaultValue;
+        }
+        String mdcValue = mdcMap.get(key);
+        if (mdcValue == null) {
+            return defaultValue;
+        } else {
+            return mdcValue;
+        }
     }
-    String mdcValue = mdcMap.get(key);
-    if (mdcValue == null) {
-      return defaultValue;
-    } else {
-      return mdcValue;
+
+    @Override
+    public void start() {
+        int errors = 0;
+        if (OptionHelper.isEmpty(key)) {
+            errors++;
+            addError("The \"Key\" property must be set");
+        }
+        if (OptionHelper.isEmpty(defaultValue)) {
+            errors++;
+            addError("The \"DefaultValue\" property must be set");
+        }
+        if (errors == 0) {
+            started = true;
+        }
     }
-  }
 
-  @Override
-  public void start() {
-    int errors = 0;
-    if (OptionHelper.isEmpty(key)) {
-      errors++;
-      addError("The \"Key\" property must be set");
+    public String getKey() {
+        return key;
     }
-    if (OptionHelper.isEmpty(defaultValue)) {
-      errors++;
-      addError("The \"DefaultValue\" property must be set");
+
+    public void setKey(String key) {
+        this.key = key;
     }
-    if (errors == 0) {
-      started = true;
+
+    /**
+     * @return
+     * @see #setDefaultValue(String)
+     */
+    public String getDefaultValue() {
+        return defaultValue;
     }
-  }
 
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(String key) {
-    this.key = key;
-  }
-
-  /**
-   * @return
-   * @see #setDefaultValue(String)
-   */
-  public String getDefaultValue() {
-    return defaultValue;
-  }
-
-  /**
-   * The default MDC value in case the MDC is not set for
-   * {@link #setKey(String) mdcKey}.
-   * <p/>
-   * <p> For example, if {@link #setKey(String) Key} is set to the value
-   * "someKey", and the MDC is not set for "someKey", then this appender will
-   * use the default value, which you can set with the help of this method.
-   *
-   * @param defaultValue
-   */
-  public void setDefaultValue(String defaultValue) {
-    this.defaultValue = defaultValue;
-  }
+    /**
+     * The default MDC value in case the MDC is not set for
+     * {@link #setKey(String) mdcKey}.
+     * <p/>
+     * <p> For example, if {@link #setKey(String) Key} is set to the value
+     * "someKey", and the MDC is not set for "someKey", then this appender will
+     * use the default value, which you can set with the help of this method.
+     *
+     * @param defaultValue
+     */
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 }

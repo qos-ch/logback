@@ -13,9 +13,8 @@
  */
 package ch.qos.logback.core.html;
 
-
 public interface IThrowableRenderer<E> {
-  
-  void render(StringBuilder sbuf, E event);
-  
+
+    void render(StringBuilder sbuf, E event);
+
 }

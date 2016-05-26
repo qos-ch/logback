@@ -13,83 +13,150 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Date;
 
-import junit.framework.TestCase;
+import org.junit.Test;
 
-public class RollingCalendarTest extends TestCase {
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.EnvUtil;
 
-  public RollingCalendarTest(String arg0) {
-    super(arg0);
-  }
+public class RollingCalendarTest {
 
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
+    @Test
+    public void testPeriodicity() {
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH_mm_ss");
+            assertEquals(PeriodicityType.TOP_OF_SECOND, rc.getPeriodicityType());
+        }
 
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH_mm");
+            assertEquals(PeriodicityType.TOP_OF_MINUTE, rc.getPeriodicityType());
+        }
 
-  public void testPeriodicity() {
-    {
-      RollingCalendar rc = new RollingCalendar();
-      assertEquals(PeriodicityType.TOP_OF_SECOND, rc
-          .computePeriodicityType("yyyy-MM-dd_HH_mm_ss"));
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH");
+            assertEquals(PeriodicityType.TOP_OF_HOUR, rc.getPeriodicityType());
+        }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_hh");
+            assertEquals(PeriodicityType.TOP_OF_HOUR, rc.getPeriodicityType());
+        }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd");
+            assertEquals(PeriodicityType.TOP_OF_DAY, rc.getPeriodicityType());
+        }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM");
+            assertEquals(PeriodicityType.TOP_OF_MONTH, rc.getPeriodicityType());
+        }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-ww");
+            assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+        }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-WW");
+            assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+        }
     }
 
-    {
-      RollingCalendar rc = new RollingCalendar();
-      assertEquals(PeriodicityType.TOP_OF_MINUTE, rc
-          .computePeriodicityType("yyyy-MM-dd_HH_mm"));
+    @Test
+    public void testVaryingNumberOfHourlyPeriods() {
+        RollingCalendar rc = new RollingCalendar("yyyy-MM-dd_HH");
+
+        long MILLIS_IN_HOUR = 3600 * 1000;
+
+        for (int p = 100; p > -100; p--) {
+            long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
+            Date result = rc.getEndOfNextNthPeriod(new Date(now), p);
+            long expected = now - (now % (MILLIS_IN_HOUR)) + p * MILLIS_IN_HOUR;
+            assertEquals(expected, result.getTime());
+        }
     }
 
-    {
-      RollingCalendar rc = new RollingCalendar();
-      assertEquals(PeriodicityType.TOP_OF_HOUR, rc
-          .computePeriodicityType("yyyy-MM-dd_HH"));
+    @Test
+    public void testVaryingNumberOfDailyPeriods() {
+        RollingCalendar rc = new RollingCalendar("yyyy-MM-dd");
+        final long MILLIS_IN_DAY = 24 * 3600 * 1000;
+
+        for (int p = 20; p > -100; p--) {
+            long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
+            Date nowDate = new Date(now);
+            Date result = rc.getEndOfNextNthPeriod(nowDate, p);
+            long offset = rc.getTimeZone().getRawOffset() + rc.getTimeZone().getDSTSavings();
+
+            long origin = now - ((now + offset) % (MILLIS_IN_DAY));
+            long expected = origin + p * MILLIS_IN_DAY;
+            assertEquals("p=" + p, expected, result.getTime());
+        }
     }
 
-    {
-      RollingCalendar rc = new RollingCalendar();
-      assertEquals(PeriodicityType.TOP_OF_DAY, rc
-          .computePeriodicityType("yyyy-MM-dd"));
+    // Wed Mar 23 23:07:05 CET 2016
+    final long WED_2016_03_23_T_230705_CET = 1458770825333L;
+
+    @Test
+    public void testBarrierCrossingComputation() {
+        checkPeriodBarriersCrossed("yyyy-MM-dd'T'HHmmss", WED_2016_03_23_T_230705_CET, WED_2016_03_23_T_230705_CET + 3*CoreConstants.MILLIS_IN_ONE_SECOND, 3);
+        checkPeriodBarriersCrossed("yyyy-MM-dd'T'HHmm", WED_2016_03_23_T_230705_CET, WED_2016_03_23_T_230705_CET + 3*CoreConstants.MILLIS_IN_ONE_MINUTE, 3);
+        checkPeriodBarriersCrossed("yyyy-MM-dd'T'HH", WED_2016_03_23_T_230705_CET, WED_2016_03_23_T_230705_CET + 3*CoreConstants.MILLIS_IN_ONE_HOUR, 3);
+        checkPeriodBarriersCrossed("yyyy-MM-dd", WED_2016_03_23_T_230705_CET, WED_2016_03_23_T_230705_CET + 3*CoreConstants.MILLIS_IN_ONE_DAY, 3);
     }
 
-    {
-      RollingCalendar rc = new RollingCalendar();
-      assertEquals(PeriodicityType.TOP_OF_MONTH, rc
-          .computePeriodicityType("yyyy-MM"));
+    private void checkPeriodBarriersCrossed(String pattern, long start, long end, int count) {
+        RollingCalendar rc = new RollingCalendar(pattern);
+        assertEquals(count, rc.periodBarriersCrossed(start, end));
     }
-  }
 
-  public void testVaryingNumberOfHourlyPeriods() {
-    RollingCalendar rc = new RollingCalendar();
-    rc.init("yyyy-MM-dd_HH");
-    long MILLIS_IN_HOUR = 3600*1000;
+    @Test
+    public void testCollisionFreenes() {
+        // hourly
+        checkCollisionFreeness("yyyy-MM-dd hh", false);
+        checkCollisionFreeness("yyyy-MM-dd hh a", true);
 
-    for (int p = 100; p > -100; p--) {
-      long now = 1223325293589L;  // Mon Oct 06 22:34:53 CEST 2008
-      Date result = rc.getRelativeDate(new Date(now), p);
-      long expected = now - (now % (MILLIS_IN_HOUR)) + p * MILLIS_IN_HOUR;
-      assertEquals(expected, result.getTime());
+        checkCollisionFreeness("yyyy-MM-dd HH", true);
+        checkCollisionFreeness("yyyy-MM-dd kk", true);
+
+        checkCollisionFreeness("yyyy-MM-dd KK", false);
+        checkCollisionFreeness("yyyy-MM-dd KK a", true);
+
+        // daily
+        checkCollisionFreeness("yyyy-MM-dd", true);
+        checkCollisionFreeness("yyyy-dd", false);
+        checkCollisionFreeness("dd", false);
+        checkCollisionFreeness("MM-dd", false);
+
+        checkCollisionFreeness("yyyy-DDD", true);
+        checkCollisionFreeness("DDD", false);
+
+        // 'u' is new to JDK 7
+        if (EnvUtil.isJDK7OrHigher()) {
+            checkCollisionFreeness("yyyy-MM-dd-uu", true);
+            checkCollisionFreeness("yyyy-MM-uu", false);
+        }
+
+        // weekly
+        checkCollisionFreeness("yyyy-MM-WW", true);
+        checkCollisionFreeness("yyyy-WW", false);
+        checkCollisionFreeness("yyyy-ww", true);
+        checkCollisionFreeness("ww", false);
     }
-  }
 
-  public void testVaryingNumberOfDailyPeriods() {
-    RollingCalendar rc = new RollingCalendar();
-    rc.init("yyyy-MM-dd");
-    final long MILLIS_IN_DAY = 24*3600*1000;
-    
-    for (int p = 20; p > -100; p--) {
-      long now = 1223325293589L;  // Mon Oct 06 22:34:53 CEST 2008
-      Date nowDate = new Date(now);
-      Date result = rc.getRelativeDate(nowDate, p);
-      long offset = rc.getTimeZone().getRawOffset()+rc.getTimeZone().getDSTSavings();
-    
-      long origin = now - ((now + offset) % (MILLIS_IN_DAY));      
-      long expected = origin + p * MILLIS_IN_DAY;
-      assertEquals("p="+p, expected, result.getTime());
+    private void checkCollisionFreeness(String pattern, boolean expected) {
+        RollingCalendar rc = new RollingCalendar(pattern);
+        if (expected) {
+            assertTrue(rc.isCollisionFree());
+        } else {
+            assertFalse(rc.isCollisionFree());
+        }
     }
-  }
+
 }

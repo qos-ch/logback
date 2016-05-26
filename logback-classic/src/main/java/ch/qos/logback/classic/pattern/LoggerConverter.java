@@ -17,7 +17,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class LoggerConverter extends NamedConverter {
 
-  protected String getFullyQualifiedName(ILoggingEvent event) {
-    return event.getLoggerName();
-  }
+    protected String getFullyQualifiedName(ILoggingEvent event) {
+        return event.getLoggerName();
+    }
 }

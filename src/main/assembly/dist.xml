@@ -66,6 +66,15 @@
 				<exclude>*.bak</exclude>
 			</excludes>
 		</fileSet>
+    <fileSet>
+			<directory>logback-bom/</directory>
+			<outputDirectory>logback-bom/</outputDirectory>
+			<includes>
+				<include>
+					pom.xml
+				</include>
+			</includes>
+		</fileSet>
 		<!-- Module Source directories -->
 		<fileSet>
 			<directory>logback-core/src/</directory>

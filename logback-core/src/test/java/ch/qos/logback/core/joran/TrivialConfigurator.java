@@ -22,22 +22,22 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class TrivialConfigurator extends GenericConfigurator {
 
-  HashMap<ElementSelector, Action> rulesMap;
-  
-  public TrivialConfigurator(HashMap<ElementSelector, Action> rules) {
-    this.rulesMap = rules;
-  }
-  
-  @Override
-  protected void addImplicitRules(Interpreter interpreter) {
-  }
+    HashMap<ElementSelector, Action> rulesMap;
 
-  @Override
-  protected void addInstanceRules(RuleStore rs) {
-    for(ElementSelector elementSelector : rulesMap.keySet()) {
-      Action action = rulesMap.get(elementSelector);
-      rs.addRule(elementSelector, action);
+    public TrivialConfigurator(HashMap<ElementSelector, Action> rules) {
+        this.rulesMap = rules;
     }
-  }
+
+    @Override
+    protected void addImplicitRules(Interpreter interpreter) {
+    }
+
+    @Override
+    protected void addInstanceRules(RuleStore rs) {
+        for (ElementSelector elementSelector : rulesMap.keySet()) {
+            Action action = rulesMap.get(elementSelector);
+            rs.addRule(elementSelector, action);
+        }
+    }
 
 }

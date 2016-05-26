@@ -42,88 +42,87 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class SocketNode implements Runnable {
 
-  Socket socket;
-  LoggerContext context;
-  ObjectInputStream ois;
-  SocketAddress remoteSocketAddress;
-  
-  Logger logger;
-  boolean closed = false;
-  SimpleSocketServer socketServer;
-  
-  public SocketNode(SimpleSocketServer socketServer, Socket socket, LoggerContext context) {
-    this.socketServer = socketServer;
-    this.socket = socket;
-    remoteSocketAddress = socket.getRemoteSocketAddress();
-    this.context = context;
-    logger = context.getLogger(SocketNode.class);
-  }
+    Socket socket;
+    LoggerContext context;
+    ObjectInputStream ois;
+    SocketAddress remoteSocketAddress;
 
-  // public
-  // void finalize() {
-  // System.err.println("-------------------------Finalize called");
-  // System.err.flush();
-  // }
+    Logger logger;
+    boolean closed = false;
+    SimpleSocketServer socketServer;
 
-  public void run() {
-
-    try {
-      ois = new ObjectInputStream(new BufferedInputStream(socket
-          .getInputStream()));
-    } catch (Exception e) {
-      logger.error("Could not open ObjectInputStream to " + socket, e);
-      closed = true;
+    public SocketNode(SimpleSocketServer socketServer, Socket socket, LoggerContext context) {
+        this.socketServer = socketServer;
+        this.socket = socket;
+        remoteSocketAddress = socket.getRemoteSocketAddress();
+        this.context = context;
+        logger = context.getLogger(SocketNode.class);
     }
 
-    ILoggingEvent event;
-    Logger remoteLogger;
+    // public
+    // void finalize() {
+    // System.err.println("-------------------------Finalize called");
+    // System.err.flush();
+    // }
 
-    try {
-      while (!closed) {
-        // read an event from the wire
-        event = (ILoggingEvent) ois.readObject();
-        // get a logger from the hierarchy. The name of the logger is taken to
-        // be the name contained in the event.
-        remoteLogger = context.getLogger(event.getLoggerName());
-        // apply the logger-level filter
-        if (remoteLogger.isEnabledFor(event.getLevel())) {
-          // finally log the event as if was generated locally
-          remoteLogger.callAppenders(event);
+    public void run() {
+
+        try {
+            ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+        } catch (Exception e) {
+            logger.error("Could not open ObjectInputStream to " + socket, e);
+            closed = true;
         }
-      }
-    } catch (java.io.EOFException e) {
-      logger.info("Caught java.io.EOFException closing connection.");
-    } catch (java.net.SocketException e) {
-      logger.info("Caught java.net.SocketException closing connection.");
-    } catch (IOException e) {
-      logger.info("Caught java.io.IOException: " + e);
-      logger.info("Closing connection.");
-    } catch (Exception e) {
-      logger.error("Unexpected exception. Closing connection.", e);
+
+        ILoggingEvent event;
+        Logger remoteLogger;
+
+        try {
+            while (!closed) {
+                // read an event from the wire
+                event = (ILoggingEvent) ois.readObject();
+                // get a logger from the hierarchy. The name of the logger is taken to
+                // be the name contained in the event.
+                remoteLogger = context.getLogger(event.getLoggerName());
+                // apply the logger-level filter
+                if (remoteLogger.isEnabledFor(event.getLevel())) {
+                    // finally log the event as if was generated locally
+                    remoteLogger.callAppenders(event);
+                }
+            }
+        } catch (java.io.EOFException e) {
+            logger.info("Caught java.io.EOFException closing connection.");
+        } catch (java.net.SocketException e) {
+            logger.info("Caught java.net.SocketException closing connection.");
+        } catch (IOException e) {
+            logger.info("Caught java.io.IOException: " + e);
+            logger.info("Closing connection.");
+        } catch (Exception e) {
+            logger.error("Unexpected exception. Closing connection.", e);
+        }
+
+        socketServer.socketNodeClosing(this);
+        close();
     }
 
-    socketServer.socketNodeClosing(this);
-    close();
-  }
-  
-  void close() {
-    if(closed) {
-      return;
+    void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
+        if (ois != null) {
+            try {
+                ois.close();
+            } catch (IOException e) {
+                logger.warn("Could not close connection.", e);
+            } finally {
+                ois = null;
+            }
+        }
     }
-    closed = true;
-    if (ois != null) {
-      try {
-        ois.close();
-      } catch (IOException e) {
-        logger.warn("Could not close connection.", e);
-      } finally {
-        ois = null;
-      }
+
+    @Override
+    public String toString() {
+        return this.getClass().getName() + remoteSocketAddress.toString();
     }
-  }
-  
-  @Override
-  public String toString() {
-    return this.getClass().getName()+remoteSocketAddress.toString();
-  }
 }

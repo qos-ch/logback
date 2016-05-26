@@ -5,7 +5,7 @@ document.write('        <td>        ');
 document.write('          <p class="author">');
 document.write('            Authors: Ceki G&#252;lc&#252;, S&#233;bastien Pennec, Carl Harris');
 document.write('          <br/>');
-document.write('          Copyright &#169; 2000-2012, QOS.ch</p>');
+document.write('          Copyright &#169; 2000-2016, QOS.ch</p>');
 document.write('        </td>');
 document.write('        <td>');
 document.write('            <a rel="license"');

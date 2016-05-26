@@ -21,19 +21,19 @@ package ch.qos.logback.core.contention;
  */
 abstract public class RunnableWithCounterAndDone implements Runnable {
 
-  protected boolean done = false;
-  protected long counter = 0;
-  
-  public long getCounter() {
-    return counter;
-  }
+    protected boolean done = false;
+    protected long counter = 0;
 
-  public void setDone(boolean done) {
-    this.done = done;
-  }
+    public long getCounter() {
+        return counter;
+    }
 
-  public boolean isDone() {
-    return done;
-  }
-  
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
 }

@@ -15,13 +15,12 @@ package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.util.concurrent.Executors;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
+import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 /**
  * Unit tests for {@link SSLServerSocketAppenderBase}.
@@ -30,37 +29,35 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  */
 public class SSLServerSocketAppenderBaseTest {
 
-  private MockContext context = new MockContext(Executors.newCachedThreadPool());
-  
-  private SSLServerSocketAppenderBase appender =
-      new InstrumentedSSLServerSocketAppenderBase();
-  
-  @Before
-  public void setUp() throws Exception {
-    appender.setContext(context);
-  }
-  
-  @Test
-  public void testUsingDefaultConfig() throws Exception {
-    // should be able to start successfully with no SSL configuration at all
-    appender.start();
-    assertNotNull(appender.getServerSocketFactory());
-    appender.stop();
-  }
+    private MockContext context = new MockContext(ExecutorServiceUtil.newScheduledExecutorService());
 
-  private static class InstrumentedSSLServerSocketAppenderBase 
-      extends SSLServerSocketAppenderBase<Object> {
+    private SSLServerSocketAppenderBase appender = new InstrumentedSSLServerSocketAppenderBase();
 
-    @Override
-    protected void postProcessEvent(Object event) {
-      throw new UnsupportedOperationException();
+    @Before
+    public void setUp() throws Exception {
+        appender.setContext(context);
     }
 
-    @Override
-    protected PreSerializationTransformer<Object> getPST() {
-      throw new UnsupportedOperationException();
+    @Test
+    public void testUsingDefaultConfig() throws Exception {
+        // should be able to start successfully with no SSL configuration at all
+        appender.start();
+        assertNotNull(appender.getServerSocketFactory());
+        appender.stop();
     }
-    
-  }
-  
+
+    private static class InstrumentedSSLServerSocketAppenderBase extends SSLServerSocketAppenderBase<Object> {
+
+        @Override
+        protected void postProcessEvent(Object event) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected PreSerializationTransformer<Object> getPST() {
+            throw new UnsupportedOperationException();
+        }
+
+    }
+
 }

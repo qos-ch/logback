@@ -27,29 +27,29 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public class LifeCycleManager {
 
-  private final Set<LifeCycle> components = new HashSet<LifeCycle>();
-  
-  /**
-   * Registers a component with this manager.  
-   * <p>
-   * @param component the component whose life cycle is to be managed
-   */
-  public void register(LifeCycle component) {
-    components.add(component);
-  }
-  
-  /**
-   * Resets this manager.
-   * <p>
-   * All registered components are stopped and removed from the manager.
-   */
-  public void reset() {
-    for (LifeCycle component : components) {
-      if (component.isStarted()) {
-        component.stop();
-      }
+    private final Set<LifeCycle> components = new HashSet<LifeCycle>();
+
+    /**
+     * Registers a component with this manager.  
+     * <p>
+     * @param component the component whose life cycle is to be managed
+     */
+    public void register(LifeCycle component) {
+        components.add(component);
     }
-    components.clear();
-  }
- 
+
+    /**
+     * Resets this manager.
+     * <p>
+     * All registered components are stopped and removed from the manager.
+     */
+    public void reset() {
+        for (LifeCycle component : components) {
+            if (component.isStarted()) {
+                component.stop();
+            }
+        }
+        components.clear();
+    }
+
 }

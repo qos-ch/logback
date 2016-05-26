@@ -25,7 +25,6 @@ import org.junit.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 
-
 /**
  * Unit tests for {@link RemoteReceiverStreamClient}.
  *
@@ -33,56 +32,52 @@ import ch.qos.logback.core.net.mock.MockContext;
  */
 public class RemoteReceiverStreamClientTest {
 
-  private static final String TEST_EVENT = "test event";
+    private static final String TEST_EVENT = "test event";
 
-  private MockContext context = new MockContext();
-  
-  private MockEventQueue queue = new MockEventQueue();
-  
-  private ByteArrayOutputStream outputStream = 
-      new ByteArrayOutputStream();
-  
-  private RemoteReceiverStreamClient client = 
-      new RemoteReceiverStreamClient("someId", outputStream);
-  
-  @Before
-  public void setUp() throws Exception {
-    client.setContext(context);
-    client.setQueue(queue);
-  }
-  
-  @Test
-  public void testOfferEventAndRun() throws Exception {
-    client.offer(TEST_EVENT);
+    private MockContext context = new MockContext();
 
-    Thread thread = new Thread(client);
-    thread.start();
-    
-    // MockEventQueue will interrupt the thread when the queue is drained
-    thread.join(1000);
-    assertFalse(thread.isAlive());
-   
-    ObjectInputStream ois = new ObjectInputStream(
-        new ByteArrayInputStream(outputStream.toByteArray()));
-    assertEquals(TEST_EVENT, ois.readObject());
-  }
+    private MockEventQueue queue = new MockEventQueue();
 
-  @Test
-  public void testOfferEventSequenceAndRun() throws Exception {
-    for (int i = 0; i < 10; i++) {
-      client.offer(TEST_EVENT + i);
+    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+    private RemoteReceiverStreamClient client = new RemoteReceiverStreamClient("someId", outputStream);
+
+    @Before
+    public void setUp() throws Exception {
+        client.setContext(context);
+        client.setQueue(queue);
     }
 
-    Thread thread = new Thread(client);
-    thread.start();
-    thread.join(1000);
-    assertFalse(thread.isAlive());
-   
-    ObjectInputStream ois = new ObjectInputStream(
-        new ByteArrayInputStream(outputStream.toByteArray()));
-    for (int i = 0; i < 10; i++) {
-      assertEquals(TEST_EVENT + i, ois.readObject());
+    @Test
+    public void testOfferEventAndRun() throws Exception {
+        client.offer(TEST_EVENT);
+
+        Thread thread = new Thread(client);
+        thread.start();
+
+        // MockEventQueue will interrupt the thread when the queue is drained
+        thread.join(1000);
+        assertFalse(thread.isAlive());
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
+        assertEquals(TEST_EVENT, ois.readObject());
     }
-  }
+
+    @Test
+    public void testOfferEventSequenceAndRun() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            client.offer(TEST_EVENT + i);
+        }
+
+        Thread thread = new Thread(client);
+        thread.start();
+        thread.join(1000);
+        assertFalse(thread.isAlive());
+
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(outputStream.toByteArray()));
+        for (int i = 0; i < 10; i++) {
+            assertEquals(TEST_EVENT + i, ois.readObject());
+        }
+    }
 
 }

@@ -13,13 +13,12 @@
  */
 package ch.qos.logback.classic.jmx;
 
-
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses(JMXConfiguratorTest.class)
-public class PackageTest  {
-  
+public class PackageTest {
+
 }

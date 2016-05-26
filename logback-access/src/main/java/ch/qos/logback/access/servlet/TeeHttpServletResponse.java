@@ -23,52 +23,52 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 public class TeeHttpServletResponse extends HttpServletResponseWrapper {
 
-  TeeServletOutputStream teeServletOutputStream;
-  PrintWriter teeWriter;
+    TeeServletOutputStream teeServletOutputStream;
+    PrintWriter teeWriter;
 
-  public TeeHttpServletResponse(HttpServletResponse httpServletResponse) {
-    super(httpServletResponse);
-  }
+    public TeeHttpServletResponse(HttpServletResponse httpServletResponse) {
+        super(httpServletResponse);
+    }
 
-  @Override
-  public ServletOutputStream getOutputStream() throws IOException {
-    if (teeServletOutputStream == null) {
-      teeServletOutputStream = new TeeServletOutputStream(this.getResponse());
+    @Override
+    public ServletOutputStream getOutputStream() throws IOException {
+        if (teeServletOutputStream == null) {
+            teeServletOutputStream = new TeeServletOutputStream(this.getResponse());
+        }
+        return teeServletOutputStream;
     }
-    return teeServletOutputStream;
-  }
 
-  @Override
-  public PrintWriter getWriter() throws IOException {
-    if (this.teeWriter == null) {
-      this.teeWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), this.getResponse().getCharacterEncoding()), true);
+    @Override
+    public PrintWriter getWriter() throws IOException {
+        if (this.teeWriter == null) {
+            this.teeWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), this.getResponse().getCharacterEncoding()), true);
+        }
+        return this.teeWriter;
     }
-    return this.teeWriter;
-  }
 
-  @Override
-  public void flushBuffer() {
-    if (this.teeWriter != null) {
-      this.teeWriter.flush();
+    @Override
+    public void flushBuffer() {
+        if (this.teeWriter != null) {
+            this.teeWriter.flush();
+        }
     }
-  }
 
-  byte[] getOutputBuffer() {
-    // teeServletOutputStream can be null if the getOutputStream method is never
-    // called.
-    if (teeServletOutputStream != null) {
-      return teeServletOutputStream.getOutputStreamAsByteArray();
-    } else {
-      return null;
+    byte[] getOutputBuffer() {
+        // teeServletOutputStream can be null if the getOutputStream method is never
+        // called.
+        if (teeServletOutputStream != null) {
+            return teeServletOutputStream.getOutputStreamAsByteArray();
+        } else {
+            return null;
+        }
     }
-  }
 
-  void finish() throws IOException {
-    if (this.teeWriter != null) {
-      this.teeWriter.close();
+    void finish() throws IOException {
+        if (this.teeWriter != null) {
+            this.teeWriter.close();
+        }
+        if (this.teeServletOutputStream != null) {
+            this.teeServletOutputStream.close();
+        }
     }
-    if (this.teeServletOutputStream != null) {
-      this.teeServletOutputStream.close();
-    }
-  }
 }

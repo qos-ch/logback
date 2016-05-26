@@ -17,19 +17,21 @@ import ch.qos.logback.core.read.ListAppender;
 
 public class DelayingListAppender<E> extends ListAppender<E> {
 
-  public int delay = 5;
-  public boolean interrupted = false;
+    public int delay = 1;
+    public boolean interrupted = false;
 
-  @Override
-  public void append(E e) {
-    try {
-      Thread.yield();
-      Thread.sleep(delay);
-      Thread.yield();
-    } catch (InterruptedException ie) {
-      interrupted = true;
+    public void setDelay(int ms) {
+        delay = ms;
     }
-    super.append(e);
-  }
+
+    @Override
+    public void append(E e) {
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException ie) {
+            interrupted = true;
+        }
+        super.append(e);
+    }
 }
 

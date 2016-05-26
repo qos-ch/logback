@@ -1,0 +1,26 @@
+<configuration debug="true">
+	<appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>target/test-output/valueOfConvention_${diff}/infoLog.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>target/test-output/valueOfConvention_${diff}/infoLogs.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+
+
+	<root level="DEBUG">
+		<appender-ref ref="FILE_INFO" />
+	</root>
+</configuration>

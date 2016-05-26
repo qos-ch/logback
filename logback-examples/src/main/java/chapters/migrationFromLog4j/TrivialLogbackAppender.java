@@ -21,40 +21,40 @@ import ch.qos.logback.core.AppenderBase;
 
 public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
 
-  PatternLayoutEncoder encoder;
-  
-  public PatternLayoutEncoder getEncoder() {
-    return encoder;
-  }
+    PatternLayoutEncoder encoder;
 
-  public void setEncoder(PatternLayoutEncoder encoder) {
-    this.encoder = encoder;
-  }
+    public PatternLayoutEncoder getEncoder() {
+        return encoder;
+    }
 
-  @Override
-  public void start() {
-    if (this.encoder == null) {
-      addError("No encoder set for the appender named [" + name + "].");
-      return;
+    public void setEncoder(PatternLayoutEncoder encoder) {
+        this.encoder = encoder;
     }
-    try {
-      encoder.init(System.out);
-    } catch (IOException e) {
-    }
-    super.start();
-  }
 
-  @Override
-  protected void append(ILoggingEvent loggingevent) {
-    // note that AppenderBase.doAppend will invoke this method only if
-    // this appender was successfully started.
-    try {
-      this.encoder.doEncode(loggingevent);
-    } catch (IOException e) {
-      // we can't do much with the exception except halting
-      super.stop();
-      addError("Failed to write to the console");
+    @Override
+    public void start() {
+        if (this.encoder == null) {
+            addError("No encoder set for the appender named [" + name + "].");
+            return;
+        }
+        try {
+            encoder.init(System.out);
+        } catch (IOException e) {
+        }
+        super.start();
     }
-  }
+
+    @Override
+    protected void append(ILoggingEvent loggingevent) {
+        // note that AppenderBase.doAppend will invoke this method only if
+        // this appender was successfully started.
+        try {
+            this.encoder.doEncode(loggingevent);
+        } catch (IOException e) {
+            // we can't do much with the exception except halting
+            super.stop();
+            addError("Failed to write to the console");
+        }
+    }
 
 }

@@ -1,0 +1,17 @@
+<configuration debug="true">
+
+  <appender name="STDOUT"
+    class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <Pattern>TEST %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</Pattern>
+    </encoder>
+  </appender>
+
+                                               
+  <appender name="LIST"  class="ch.qos.logback.core.read.ListAppender"/>
+    
+  <root level="DEBUG" >
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>

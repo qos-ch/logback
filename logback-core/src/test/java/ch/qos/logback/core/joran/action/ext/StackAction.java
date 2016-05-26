@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.action.ext;
 
-
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
@@ -21,9 +20,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-
 public class StackAction extends Action {
-
 
     Stack<String> stack = new Stack<String>();
 
@@ -38,7 +35,7 @@ public class StackAction extends Action {
     public void end(InterpretationContext ec, String name) {
     }
 
-//  static public void reset() {
-//    stack.clear();
-//  }
+    // static public void reset() {
+    // stack.clear();
+    // }
 }

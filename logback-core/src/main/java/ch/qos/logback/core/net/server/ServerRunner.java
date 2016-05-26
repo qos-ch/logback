@@ -28,26 +28,26 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public interface ServerRunner<T extends Client> extends ContextAware, Runnable {
 
-  /**
-   * Gets a flag indicating whether the server is currently running.
-   * @return flag state
-   */
-  boolean isRunning();
-  
-  /**
-   * Stops execution of the runner.
-   * <p>
-   * This method must cause all I/O and thread resources associated with
-   * the runner to be released.  If the receiver has not been started, this
-   * method must have no effect.
-   * @throws IOException
-   */
-  void stop() throws IOException;
+    /**
+     * Gets a flag indicating whether the server is currently running.
+     * @return flag state
+     */
+    boolean isRunning();
 
-  /**
-   * Presents each connected client to the given visitor.   
-   * @param visitor the subject visitor
-   */
-  void accept(ClientVisitor<T> visitor);
-  
+    /**
+     * Stops execution of the runner.
+     * <p>
+     * This method must cause all I/O and thread resources associated with
+     * the runner to be released.  If the receiver has not been started, this
+     * method must have no effect.
+     * @throws IOException
+     */
+    void stop() throws IOException;
+
+    /**
+     * Presents each connected client to the given visitor.   
+     * @param visitor the subject visitor
+     */
+    void accept(ClientVisitor<T> visitor);
+
 }

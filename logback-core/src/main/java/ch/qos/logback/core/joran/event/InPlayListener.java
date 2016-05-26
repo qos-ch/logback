@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.event;
 
-
 public interface InPlayListener {
-  void inPlay(SaxEvent event);
-} 
+    void inPlay(SaxEvent event);
+}

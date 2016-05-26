@@ -17,7 +17,6 @@ import org.slf4j.spi.MDCAdapter;
 
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 
-
 /**
  * This implementation is bound to {@link LogbackMDCAdapter}.
  *
@@ -25,24 +24,23 @@ import ch.qos.logback.classic.util.LogbackMDCAdapter;
  */
 public class StaticMDCBinder {
 
-  
-  /**
-   * The unique instance of this class.
-   */
-  public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
+    /**
+     * The unique instance of this class.
+     */
+    public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
 
-  private StaticMDCBinder() {
-  }
-  
-  /**
-   * Currently this method always returns an instance of 
-   * {@link StaticMDCBinder}.
-   */
-  public MDCAdapter getMDCA() {
-     return new LogbackMDCAdapter();
-  }
-  
-  public String  getMDCAdapterClassStr() {
-    return LogbackMDCAdapter.class.getName();
-  }
+    private StaticMDCBinder() {
+    }
+
+    /**
+     * Currently this method always returns an instance of 
+     * {@link StaticMDCBinder}.
+     */
+    public MDCAdapter getMDCA() {
+        return new LogbackMDCAdapter();
+    }
+
+    public String getMDCAdapterClassStr() {
+        return LogbackMDCAdapter.class.getName();
+    }
 }

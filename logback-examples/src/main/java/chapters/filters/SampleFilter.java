@@ -19,12 +19,12 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class SampleFilter extends Filter<ILoggingEvent> {
 
-  @Override
-  public FilterReply decide(ILoggingEvent event) {
-    if (event.getMessage() != null && event.getMessage().contains("sample")) {
-      return FilterReply.ACCEPT;
-    } else {
-      return FilterReply.NEUTRAL;
+    @Override
+    public FilterReply decide(ILoggingEvent event) {
+        if (event.getMessage() != null && event.getMessage().contains("sample")) {
+            return FilterReply.ACCEPT;
+        } else {
+            return FilterReply.NEUTRAL;
+        }
     }
-  }
 }

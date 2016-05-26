@@ -17,13 +17,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class NopEncoder<E> extends EncoderBase<E> {
-  
-  public void close() throws IOException {
-  }
 
-  public void doEncode(E event) throws IOException {
-  }
+    public void close() throws IOException {
+    }
 
-  public void init(OutputStream os) throws IOException {
-  }
+    public void doEncode(E event) throws IOException {
+    }
+
+    public void init(OutputStream os) throws IOException {
+    }
 }

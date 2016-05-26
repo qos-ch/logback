@@ -30,39 +30,38 @@ import static org.junit.Assert.assertArrayEquals;
 @RunWith(Parameterized.class)
 public class TeeHttpServletResponseTest {
 
-  String characterEncoding;
-  String testString;
-  byte[] expectedBytes;
+    String characterEncoding;
+    String testString;
+    byte[] expectedBytes;
 
-  public TeeHttpServletResponseTest(String characterEncoding, String testString, byte[] expectedBytes) {
-    this.characterEncoding = characterEncoding;
-    this.testString = testString;
-    this.expectedBytes = expectedBytes;
-  }
+    public TeeHttpServletResponseTest(String characterEncoding, String testString, byte[] expectedBytes) {
+        this.characterEncoding = characterEncoding;
+        this.testString = testString;
+        this.expectedBytes = expectedBytes;
+    }
 
-  @Parameterized.Parameters
-  public static Collection inputValues() {
-    return Arrays.asList(new Object[][]{
-      { "utf-8", "Gülcü", new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3, (byte) 0xBC }},
-      { "iso-8859-1", "Gülcü", new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC }}
-    });
-  }
+    @Parameterized.Parameters
+    public static Collection<?> inputValues() {
+        return Arrays.asList(new Object[][] {
+                { "utf-8", "Gülcü", new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3, (byte) 0xBC } },
+                { "iso-8859-1", "Gülcü", new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC } } });
+    }
 
-  @Test
-  public void testWriterEncoding() throws IOException {
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    @Test
+    public void testWriterEncoding() throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-    DummyResponse dummyResponse = new DummyResponse();
-    dummyResponse.setCharacterEncoding(characterEncoding);
-    dummyResponse.setOutputStream(new DummyServletOutputStream(byteArrayOutputStream));
+        DummyResponse dummyResponse = new DummyResponse();
+        dummyResponse.setCharacterEncoding(characterEncoding);
+        dummyResponse.setOutputStream(new DummyServletOutputStream(byteArrayOutputStream));
 
-    TeeHttpServletResponse teeServletResponse = new TeeHttpServletResponse(dummyResponse);
+        TeeHttpServletResponse teeServletResponse = new TeeHttpServletResponse(dummyResponse);
 
-    PrintWriter writer = teeServletResponse.getWriter();
-    writer.write(testString);
-    writer.flush();
+        PrintWriter writer = teeServletResponse.getWriter();
+        writer.write(testString);
+        writer.flush();
 
-    assertArrayEquals(expectedBytes, byteArrayOutputStream.toByteArray());
-  }
+        assertArrayEquals(expectedBytes, byteArrayOutputStream.toByteArray());
+    }
 
 }

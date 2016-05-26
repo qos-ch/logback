@@ -20,87 +20,87 @@ import ch.qos.logback.core.CoreConstants;
 
 public class DummyEncoder<E> extends EncoderBase<E> {
 
-  public static final String DUMMY = "dummy" + CoreConstants.LINE_SEPARATOR;
-  String val = DUMMY;
-  String fileHeader;
-  String fileFooter;
-  String encodingName;
+    public static final String DUMMY = "dummy" + CoreConstants.LINE_SEPARATOR;
+    String val = DUMMY;
+    String fileHeader;
+    String fileFooter;
+    String encodingName;
 
-  public String getEncodingName() {
-    return encodingName;
-  }
-
-  public void setEncodingName(String encodingName) {
-    this.encodingName = encodingName;
-  }
-
-  public DummyEncoder() {
-  }
-
-  public DummyEncoder(String val) {
-    this.val = val;
-  }
-
-  public void doEncode(E event) throws IOException {
-    writeOut(val);
-  }
-
-  private void appendIfNotNull(StringBuilder sb, String s) {
-    if (s != null) {
-      sb.append(s);
+    public String getEncodingName() {
+        return encodingName;
     }
-  }
 
-  void writeOut(String s) throws IOException {
-    if (encodingName == null) {
-      outputStream.write(s.getBytes());
-    } else {
-      outputStream.write(s.getBytes(encodingName));
+    public void setEncodingName(String encodingName) {
+        this.encodingName = encodingName;
     }
-  }
 
-  void writeHeader() throws IOException {
-    StringBuilder sb = new StringBuilder();
-    appendIfNotNull(sb, fileHeader);
-    if (sb.length() > 0) {
-      sb.append(CoreConstants.LINE_SEPARATOR);
-      // If at least one of file header or presentation header were not
-      // null, then append a line separator.
-      // This should be useful in most cases and should not hurt.
-      writeOut(sb.toString());
+    public DummyEncoder() {
     }
-  }
 
-  public void init(OutputStream os) throws IOException {
-    super.init(os);
-    writeHeader();
-  }
-
-  public void close() throws IOException {
-    if (fileFooter == null) {
-      return;
+    public DummyEncoder(String val) {
+        this.val = val;
     }
-    if (encodingName == null) {
-      outputStream.write(fileFooter.getBytes());
-    } else {
-      outputStream.write(fileFooter.getBytes(encodingName));
+
+    public void doEncode(E event) throws IOException {
+        writeOut(val);
     }
-  }
 
-  public String getFileHeader() {
-    return fileHeader;
-  }
+    private void appendIfNotNull(StringBuilder sb, String s) {
+        if (s != null) {
+            sb.append(s);
+        }
+    }
 
-  public void setFileHeader(String fileHeader) {
-    this.fileHeader = fileHeader;
-  }
+    void writeOut(String s) throws IOException {
+        if (encodingName == null) {
+            outputStream.write(s.getBytes());
+        } else {
+            outputStream.write(s.getBytes(encodingName));
+        }
+    }
 
-  public String getFileFooter() {
-    return fileFooter;
-  }
+    void writeHeader() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, fileHeader);
+        if (sb.length() > 0) {
+            sb.append(CoreConstants.LINE_SEPARATOR);
+            // If at least one of file header or presentation header were not
+            // null, then append a line separator.
+            // This should be useful in most cases and should not hurt.
+            writeOut(sb.toString());
+        }
+    }
 
-  public void setFileFooter(String fileFooter) {
-    this.fileFooter = fileFooter;
-  }
+    public void init(OutputStream os) throws IOException {
+        super.init(os);
+        writeHeader();
+    }
+
+    public void close() throws IOException {
+        if (fileFooter == null) {
+            return;
+        }
+        if (encodingName == null) {
+            outputStream.write(fileFooter.getBytes());
+        } else {
+            outputStream.write(fileFooter.getBytes(encodingName));
+        }
+    }
+
+    public String getFileHeader() {
+        return fileHeader;
+    }
+
+    public void setFileHeader(String fileHeader) {
+        this.fileHeader = fileHeader;
+    }
+
+    public String getFileFooter() {
+        return fileFooter;
+    }
+
+    public void setFileFooter(String fileFooter) {
+        this.fileFooter = fileFooter;
+    }
 
 }

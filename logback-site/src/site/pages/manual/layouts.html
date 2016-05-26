@@ -162,7 +162,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		<code>MySampleLayout</code>. Here is the configuration file:</p>
 		
 		<em>Example: Configuration of MySampleLayout
-		(logback-examples/src/main/java/chapters/layouts/sampleLayoutConfig.xml)</em>
+		(logback-examples/src/main/resources/chapters/layouts/sampleLayoutConfig.xml)</em>
     <span class="asGroovy" onclick="return asGroovy('sampleLayoutConfig');">View as .groovy</span>
 <pre id="sampleLayoutConfig" class="prettyprint source">&lt;configuration>
 
@@ -543,7 +543,7 @@ WARN  [main]: Message 2</p>
          <p>Used to output the date of the logging event.  The date
          conversion word admits a pattern string as a parameter. The
          pattern syntax is compatible with the format accepted by <a
-         href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
+         href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
 
          <p>You can specify the string <em>"ISO8601"</em> for the
          ISO8601 date format. Note that the %date conversion word
@@ -1381,7 +1381,7 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 
 		<em>
 			Example: Highlighting levels
-			(logback-examples/src/main/java/chapters/layouts/highlighted.xml)
+			(logback-examples/src/main/resources/chapters/layouts/highlighted.xml)
 		</em>
 
     <span class="asGroovy" onclick="return asGroovy('highlighted');">View as .groovy</span>
@@ -1458,7 +1458,7 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 
 		<em>
 			Example: Sample usage of EventEvaluators
-			(logback-examples/src/main/java/chapters/layouts/callerEvaluatorConfig.xml)
+			(logback-examples/src/main/resources/chapters/layouts/callerEvaluatorConfig.xml)
 		</em>
 
     <span class="asGroovy" onclick="return asGroovy('callerEvaluatorConfig');">View as .groovy</span>
@@ -1636,7 +1636,7 @@ public class ExceptionEvaluatorExample {
 
 		<em>
 			Example: Sample usage of EventEvaluators
-			(logback-examples/src/main/java/chapters/layouts/exceptionEvaluatorConfig.xml)
+			(logback-examples/src/main/resources/chapters/layouts/exceptionEvaluatorConfig.xml)
 		</em>
 		<pre class="prettyprint source">&lt;configuration>
 
@@ -2083,6 +2083,14 @@ java.lang.Exception: display
           </td>
       </tr>
       <tr>
+        <td class="word" name="elapsedSeconds"><b>T / elapsedSeconds</b></td>
+        <td>
+          <p>
+            The time taken to serve the request, in seconds.
+          </p>
+        </td>
+      </tr>
+      <tr>
         <td class="word" name="dateAccess"><b>t / date</b></td>
         <td>
           <p>Outputs the date of the logging event.  The date
@@ -2107,6 +2115,14 @@ java.lang.Exception: display
         </td>
       </tr>		
       <tr>
+        <td class="word" name="queryString"><b>q / queryString</b></td>
+        <td>
+          <p>
+            Request query string, prepended with a '?'.
+          </p>
+        </td>
+      </tr>
+      <tr>
         <td class="word" name="requestURI"><b>U / requestURI</b></td>
         <td>
           <p>
@@ -2114,10 +2130,22 @@ java.lang.Exception: display
           </p>
         </td>
       </tr>		
+      <tr>
+        <td class="word" name="sessionID"><b>S / sessionID</b></td>
+        <td>
+          <p>Session ID.</p>
+        </td>
+      </tr>
       <tr >
         <td class="word" name="server"><b>v / server</b></td>
         <td>
           <p>Server name.</p>
+        </td>
+      </tr>
+      <tr>
+        <td class="word" name="threadName"><b>I / threadName</b></td>
+        <td>
+          <p>Name of the thread which processed the request.</p>
         </td>
       </tr>
       <tr class="b">

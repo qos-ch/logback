@@ -28,4 +28,4 @@ document.write('</div>');
 
 document.write('<p/>');
 
-document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');
+//document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');

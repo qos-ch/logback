@@ -27,43 +27,41 @@ import javax.net.ServerSocketFactory;
  */
 public class ServerSocketUtil {
 
-  /**
-   * Creates a new {@link ServerSocket} bound to a random unused port.
-   * <p>
-   * This method is a convenience overload for 
-   * {@link #createServerSocket(ServerSocketFactory)} using the platform's
-   * default {@link ServerSocketFactory}.
-   * @return socket
-   * @throws IOException
-   */
-  public static ServerSocket createServerSocket() throws IOException {
-    return createServerSocket(ServerSocketFactory.getDefault());
-  }
-  
-  /**
-   * Creates a new {@link ServerSocket} bound to a random unused port.
-   * @param socketFactory socket factory that will be used to create the 
-   *    socket
-   * @return socket
-   * @throws IOException
-   */
-  public static ServerSocket createServerSocket(
-      ServerSocketFactory socketFactory) throws IOException {
-    ServerSocket socket = null;
-    int retries = 10;
-    while (retries-- > 0 && socket == null) {
-      int port = (int)((65536 - 1024) * Math.random()) + 1024;
-      try {
-        socket = socketFactory.createServerSocket(port);
-      }
-      catch (BindException ex) {
-        // try again with different port
-      }
+    /**
+     * Creates a new {@link ServerSocket} bound to a random unused port.
+     * <p>
+     * This method is a convenience overload for 
+     * {@link #createServerSocket(ServerSocketFactory)} using the platform's
+     * default {@link ServerSocketFactory}.
+     * @return socket
+     * @throws IOException
+     */
+    public static ServerSocket createServerSocket() throws IOException {
+        return createServerSocket(ServerSocketFactory.getDefault());
     }
-    if (socket == null) {
-      throw new BindException("cannot find an unused port to bind");
+
+    /**
+     * Creates a new {@link ServerSocket} bound to a random unused port.
+     * @param socketFactory socket factory that will be used to create the 
+     *    socket
+     * @return socket
+     * @throws IOException
+     */
+    public static ServerSocket createServerSocket(ServerSocketFactory socketFactory) throws IOException {
+        ServerSocket socket = null;
+        int retries = 10;
+        while (retries-- > 0 && socket == null) {
+            int port = (int) ((65536 - 1024) * Math.random()) + 1024;
+            try {
+                socket = socketFactory.createServerSocket(port);
+            } catch (BindException ex) {
+                // try again with different port
+            }
+        }
+        if (socket == null) {
+            throw new BindException("cannot find an unused port to bind");
+        }
+        return socket;
     }
-    return socket;
-  }
-  
+
 }

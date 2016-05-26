@@ -13,12 +13,10 @@
  */
 package ch.qos.logback.core.joran.action;
 
-
 import ch.qos.logback.core.joran.spi.ElementPath;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-
 
 /**
  * ImplcitActions are like normal (explicit) actions except that are applied
@@ -30,18 +28,16 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class ImplicitAction extends Action {
-  
-  /**
-   * Check whether this implicit action is appropriate in the current context.
-   * 
-   * @param currentElementPath This pattern contains the tag name of the current
-   * element being parsed at the top of the stack.
-   * @param attributes The attributes of the current element to process.
-   * @param ec
-   * @return Whether the implicit action is applicable in the current context
-   */
-  public abstract boolean isApplicable(
-    ElementPath currentElementPath, Attributes attributes, InterpretationContext ec);
-  
-  
+
+    /**
+     * Check whether this implicit action is appropriate in the current context.
+     * 
+     * @param currentElementPath This pattern contains the tag name of the current
+     * element being parsed at the top of the stack.
+     * @param attributes The attributes of the current element to process.
+     * @param ec
+     * @return Whether the implicit action is applicable in the current context
+     */
+    public abstract boolean isApplicable(ElementPath currentElementPath, Attributes attributes, InterpretationContext ec);
+
 }

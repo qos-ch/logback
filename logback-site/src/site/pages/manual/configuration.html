@@ -101,14 +101,18 @@
         classpath</a>..</p>
       </li>
       
-      <li><p>If no such file is found, and the executing JVM has the  
-      <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
-      ServiceLoader</a> (JDK 6 and above) the ServiceLoader will be used to resolve an 
-      implementation of <a href="../xref/ch/qos/logback/classic/spi/Configurator.html">
-      <code>com.qos.logback.classic.spi.Configurator</code></a>.
-      The first implementation found will be used. 
-      See <a href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
-      ServiceLoader documentation for more details</a>.
+      <li><p>If no such file is found, <a
+      href="http://docs.oracle.com/javase/6/docs/api/java/util/ServiceLoader.html">
+      service-provider loading facility</a> (introduced in JDK 1.6) is
+      used to resolve the implementation of <a
+      href="../xref/ch/qos/logback/classic/spi/Configurator.html">
+      <code>com.qos.logback.classic.spi.Configurator</code></a>
+      interface by looking up the file
+      <em>META-INF\services\ch.qos.logback.classic.spi.Configurator</em>
+      in the class path. Its contents should specify the fully
+      qualified class name of the desired <code>Configurator</code>
+      implementation. 
+      </p>
       </li>
       
       <li><p>If none of the above succeeds, logback configures itself
@@ -120,20 +124,27 @@
 
     </ol>
 
-    <p>The fourth and last step is meant to provide a default (but
-    very basic) logging functionality in the absence of a
+    <p>The last step is meant as last-ditch effort to provide a
+    default (but very basic) logging functionality in the absence of a
     configuration file.
     </p>
 
 
     <p>If you are using Maven and if you place the
-    <em>logback-test.xml</em> under the
-    <em>src/test/resources</em> folder, Maven will ensure that it
-    won't be included in the artifact produced. Thus, you can use a
-    different configuration file, namely <em>logback-test.xml</em>
-    during testing, and another file, namely, <em>logback.xml</em>, in
-    production. The same principle applies by analogy for Ant.
+    <em>logback-test.xml</em> under the <em>src/test/resources</em>
+    folder, Maven will ensure that it won't be included in the
+    artifact produced. Thus, you can use a different configuration
+    file, namely <em>logback-test.xml</em> during testing, and another
+    file, namely, <em>logback.xml</em>, in production. 
     </p>
+
+    <p><span class="label">Fast start-up</span> It takes about 100
+    miliseconds for Joran to parse a given logback configuration
+    file. To shave off those miliseconds at aplication start up, you
+    can use the service-provider loading facility (item 4 above) to
+    load your own custom <code>Configurator</code> class with <a
+    href="../xref/ch/qos/logback/classic/BasicConfigurator.html">BasicConfigrator</a>
+    serving as a good starting point.</p>
 
 
     <h3 class="doAnchor" name="automaticConf">Automatically
@@ -247,7 +258,7 @@ public class Foo {
    </p>
 
    <p class="example">Example: Basic configuration file
-   (logback-examples/src/main/java/chapters/configuration/sample0.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/sample0.xml)</p>
    <span class="asGroovy" onclick="return asGroovy('sample0');">View as .groovy</span>
 
 
@@ -270,51 +281,6 @@ public class Foo {
    <em>logback.xml</em> (or <em>logback-test.xml</em>) place it into a
    directory accessible from the class path. Running the <em>MyApp1</em>
    application should give identical results to its previous run.</p>
-
-   <h4 class="doAnchor" name="packageTrace">Enabling packaging
-   detail in stacktraces</h4>
-
-   <p>logback can include packaging data in stacktraces to help track
-   down the culprit JAR(s) of an exception, as shown in the following
-   example:</p>
-
-   <pre>14:28:48.835 [btpool0-7] INFO  c.q.l.demo.prime.PrimeAction - 99 is not a valid value
-java.lang.Exception: 99 is invalid
-  at ch.qos.logback.demo.prime.PrimeAction.execute(PrimeAction.java:28) [classes/:na]
-  at org.apache.struts.action.RequestProcessor.processActionPerform(RequestProcessor.java:431) [struts-1.2.9.jar:1.2.9]
-  at org.apache.struts.action.RequestProcessor.process(RequestProcessor.java:236) [struts-1.2.9.jar:1.2.9]
-  at org.apache.struts.action.ActionServlet.doPost(ActionServlet.java:432) [struts-1.2.9.jar:1.2.9]
-  at javax.servlet.http.HttpServlet.service(HttpServlet.java:820) [servlet-api-2.5-6.1.12.jar:6.1.12]
-  at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:502) [jetty-6.1.12.jar:6.1.12]
-  at ch.qos.logback.demo.UserServletFilter.doFilter(UserServletFilter.java:44) [classes/:na]
-  at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1115) [jetty-6.1.12.jar:6.1.12]
-  at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:361) [jetty-6.1.12.jar:6.1.12]
-  at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:417) [jetty-6.1.12.jar:6.1.12]
-  at org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:230) [jetty-6.1.12.jar:6.1.12]</pre>
-
-  <p class="highlight">While stacktrace packaging detail can be helpful in
-  many situations, it is rather expensive to compute, especially for
-  deep stacktraces. Consider avoiding this option in performance-critical
-  code.</p>
-
-   <p>To enable this lookup programmatically, set the context's
-   <a href="http://logback.qos.ch/apidocs/ch/qos/logback/classic/LoggerContext.html#setPackagingDataEnabled(boolean)">
-   <code>setPackagingDataEnabled(boolean)</code></a>:<p>
-
-<pre class="prettyprint lang-java source">
-public static void main(String[] args) {
-  <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();</b>
-  // enable packaging detail for stacktraces
-  <b>lc.setPackagingDataEnabled(true);</b>
-  ...
-}</pre>
-
-   <p>This can also be enabled from <code>logback.xml</code> with:</p>
-
-<pre class="prettyprint source">
-&lt;configuration <span class="big bold">packageTrace="true"</span>>
-  ...
-&lt;/configuration></pre>
 
    <h4 class="doAnchor" name="automaticStatusPrinting">Automatic
    printing of status messages in case of warning or errors</h4>
@@ -387,7 +353,7 @@ public static void main(String[] args) {
 
    <p class="example">Example: Basic configuration file using debug
    mode
-   (logback-examples/src/main/java/chapters/configuration/sample1.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/sample1.xml)</p>
    <span class="asGroovy" onclick="return asGroovy('sample1');">View as .groovy</span>
 
    <pre id="sample1" class="prettyprint source">
@@ -479,7 +445,7 @@ public static void main(String[] args) {
   
    <p class="example">Example: Scanning for changes in configuration
    file and automatic re-configuration
-   (logback-examples/src/main/java/chapters/configuration/scan1.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/scan1.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('scan1');">View as .groovy</span>
 <pre id="scan1" class="prettyprint source">
@@ -496,7 +462,7 @@ public static void main(String[] args) {
    example:</p>
 
   <p class="example">Example: Specifying a different scanning period
-  (logback-examples/src/main/java/chapters/configuration/scan2.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/scan2.xml)</p>
   <span class="asGroovy" onclick="return asGroovy('scan2');">View as .groovy</span>
   <pre id="scan2" class="prettyprint source">
 &lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> > 
@@ -547,6 +513,55 @@ public static void main(String[] args) {
    </p>
 
    
+   <h4 class="doAnchor" name="packagingData">Enabling packaging data in stack traces</h4>
+
+   <p class="highlight">While useful, packaging data is expensive to
+   compute, especially in applications with frequent exceptions.</p>
+
+   <p><span class="label notice">NOTE</span> As of version 1.1.4,
+   packaging data is disabled by default. </p>
+
+   <p>If instructed to do so, logback can include packaging data for
+   each line of the stack trace lines it outputs. Packaging data
+   consists of the name and version of the jar file whence the class
+   of the stack trace line originated. Packaging data can be very
+   useful in identifying software versioning issues. However, it is
+   rather expensive to compute, especially in application where
+   exceptions are thrown frequently. Here is a sample output:</p>
+
+   <pre>14:28:48.835 [btpool0-7] INFO  c.q.l.demo.prime.PrimeAction - 99 is not a valid value
+java.lang.Exception: 99 is invalid
+  at ch.qos.logback.demo.prime.PrimeAction.execute(PrimeAction.java:28) [classes/:na]
+  at org.apache.struts.action.RequestProcessor.processActionPerform(RequestProcessor.java:431) <b>[struts-1.2.9.jar:1.2.9]</b>
+  at org.apache.struts.action.RequestProcessor.process(RequestProcessor.java:236) [struts-1.2.9.jar:1.2.9]
+  at org.apache.struts.action.ActionServlet.doPost(ActionServlet.java:432) [struts-1.2.9.jar:1.2.9]
+  at javax.servlet.http.HttpServlet.service(HttpServlet.java:820) <b>[servlet-api-2.5-6.1.12.jar:6.1.12]</b>
+  at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:502) [jetty-6.1.12.jar:6.1.12]
+  at ch.qos.logback.demo.UserServletFilter.doFilter(UserServletFilter.java:44) [classes/:na]
+  at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1115) <b>[jetty-6.1.12.jar:6.1.12]</b>
+  at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:361) [jetty-6.1.12.jar:6.1.12]
+  at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:417) [jetty-6.1.12.jar:6.1.12]
+  at org.mortbay.jetty.handler.ContextHandlerCollection.handle(ContextHandlerCollection.java:230) [jetty-6.1.12.jar:6.1.12]</pre>
+
+
+  <p>Packaging data is disabled by default but can be enabled by
+  configuration:</p>
+
+<pre class="prettyprint source">
+&lt;configuration <span class="big bold">packagingData="true"</span>>
+  ...
+&lt;/configuration></pre>
+
+   <p>Alternatively, packaging data can be enabled/disabled
+   programmatically by invoking the <a
+   href="../apidocs/ch/qos/logback/classic/LoggerContext.html#setPackagingDataEnabled(boolean)">setPackagingDataEnabled(boolean)</a>
+   method in <code>LoggerContext</code>, as shown next:</p>
+
+
+<pre class="prettyprint lang-java source">
+  LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+  <b>lc.setPackagingDataEnabled(true);</b>
+</pre>
 
    <h3 class="doAnchor" name="joranDirectly">Invoking
    <code>JoranConfigurator</code> directly</h3>
@@ -693,7 +708,7 @@ public class MyApp3 {
    within a configuration file. Here is an example.</p>
 
    <p class="example">Example: Registering a status listener
-   (logback-examples/src/main/java/chapters/configuration/onConsoleStatusListener.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
    <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
@@ -918,7 +933,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <p class="example">Example: Setting the level of a logger
-   (logback-examples/src/main/java/chapters/configuration/sample2.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/sample2.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('sample2');">View as .groovy</span>
    <pre id="sample2" class="prettyprint source">&lt;configuration>
@@ -959,7 +974,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Setting the level of multiple loggers
-  (logback-examples/src/main/java/chapters/configuration/sample3.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/sample3.xml)</p>
   
   <span class="asGroovy" onclick="return asGroovy('sample3');">View as .groovy</span>
   <pre id="sample3" class="source prettyprint">&lt;configuration>
@@ -1041,7 +1056,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Logger level sample
-  (logback-examples/src/main/java/chapters/configuration/sample4.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/sample4.xml)</p>
   <span class="asGroovy" onclick="return asGroovy('sample4');">View as .groovy</span>
   <pre id="sample4" class="prettyprint source">&lt;configuration>
 
@@ -1166,7 +1181,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Multiple loggers
-  (logback-examples/src/main/java/chapters/configuration/multiple.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/multiple.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('multiple');">View as .groovy</span>
   <pre id="multiple" class="prettyprint source">&lt;configuration>
@@ -1221,7 +1236,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Duplicate appender
-  (logback-examples/src/main/java/chapters/configuration/duplicate.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/duplicate.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('duplicate');">View as .groovy</span>
   <pre id="duplicate" class="prettyprint source">&lt;configuration>
@@ -1271,7 +1286,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Multiple appender
-  (logback-examples/src/main/java/chapters/configuration/restricted.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/restricted.xml)</p>
   <span class="asGroovy" onclick="return asGroovy('restricted');">View as .groovy</span>
   <pre id="restricted" class="prettyprint source">&lt;configuration>
 
@@ -1314,7 +1329,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Additivity flag
-  (logback-examples/src/main/java/chapters/configuration/additivityFlag.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/additivityFlag.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('additivityFlag');">View as .groovy</span>
   <pre id="additivityFlag" class="prettyprint source">&lt;configuration>
@@ -1370,7 +1385,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
   
   <p class="example">Example: Set the context name and display it
-  (logback-examples/src/main/java/chapters/configuration/contextName.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/contextName.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('contextName');">View as .groovy</span>
   <pre id="contextName" class="prettyprint source">&lt;configuration>
@@ -1441,7 +1456,7 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p class="example">Example: Simple Variable substitution
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution1.xml)
+  (logback-examples/src/main/resources/chapters/configuration/variableSubstitution1.xml)
   </p>
 
   <span class="asGroovy" onclick="return asGroovy('variableSubstitution1');">View as .groovy</span>
@@ -1470,7 +1485,7 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="source">java -DUSER_HOME="/home/sebastien" MyApp2</p>
 
   <p class="example">Example: System Variable substitution
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution2.xml)
+  (logback-examples/src/main/resources/chapters/configuration/variableSubstitution2.xml)
   </p>
   <span class="asGroovy" onclick="return asGroovy('variableSubstitution2');">View as .groovy</span>
   <pre id="variableSubstitution2" class="prettyprint source">&lt;configuration>
@@ -1495,7 +1510,7 @@ import ch.qos.logback.classic.LoggerContext;
 
   <p class="example">Example: Variable substitution using a
   separate file
-  (logback-examples/src/main/java/chapters/configuration/variableSubstitution3.xml)
+  (logback-examples/src/main/resources/chapters/configuration/variableSubstitution3.xml)
   </p>
   <span class="asGroovy" onclick="return asGroovy('variableSubstitution3');">View as .groovy</span>
   <pre id="variableSubstitution3" class="prettyprint source">&lt;configuration>
@@ -1521,7 +1536,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <em>Example: Variable file
-   (logback-examples/src/main/java/chapters/configuration/variables1.properties)</em>
+   (logback-examples/src/main/resources/chapters/configuration/variables1.properties)</em>
 
    <pre class="source">USER_HOME=/home/sebastien</pre>
 
@@ -1595,7 +1610,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <p class="example">Example: A variable defined in "context" scope
-   (logback-examples/src/main/java/chapters/configuration/contextScopedVariable.xml)
+   (logback-examples/src/main/resources/chapters/configuration/contextScopedVariable.xml)
    </p>
 
   <span class="asGroovy" onclick="return
@@ -1649,7 +1664,7 @@ import ch.qos.logback.classic.LoggerContext;
    </p>
 
    <p class="example">Example: Nested variable references
-   (logback-examples/src/main/java/chapters/configuration/variables2.properties)</p>
+   (logback-examples/src/main/resources/chapters/configuration/variables2.properties)</p>
 
    <pre class="source">USER_HOME=/home/sebastien
 fileName=myApp.log
@@ -1662,7 +1677,7 @@ fileName=myApp.log
     
     <em>Example: Variable substitution using
     a separate file
-    (logback-examples/src/main/java/chapters/configuration/variableSubstitution4.xml)</em>
+    (logback-examples/src/main/resources/chapters/configuration/variableSubstitution4.xml)</em>
 
     <pre class="prettyprint source">&lt;configuration>
 
@@ -1898,7 +1913,7 @@ fileName=myApp.log
 
    <p class="example">Example: Insert as properties env-entries
    obtained via JNDI
-   (logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml)</p>
+   (logback-examples/src/main/resources/chapters/configuration/insertFromJNDI.xml)</p>
 
    <pre class="prettyprint source">&lt;configuration>
   <b>&lt;insertFromJNDI env-entry-name="java:comp/env/appName" as="<span class="green">appName"</span> /></b>
@@ -1931,7 +1946,7 @@ fileName=myApp.log
   </p>
 
   <p class="example">Example: File include
-  (logback-examples/src/main/java/chapters/configuration/containingConfig.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/containingConfig.xml)</p>
 
   <pre class="prettyprint source">&lt;configuration>
   <b>&lt;include file="src/main/java/chapters/configuration/includedConfig.xml"/></b>
@@ -1948,7 +1963,7 @@ fileName=myApp.log
   </p>
 
   <p class="example">Example: File include
-  (logback-examples/src/main/java/chapters/configuration/includedConfig.xml)</p>
+  (logback-examples/src/main/resources/chapters/configuration/includedConfig.xml)</p>
 
   <pre class="source"><b class="green big">&lt;included></b>
   &lt;appender name="includedConsole" class="ch.qos.logback.core.ConsoleAppender">

@@ -33,6 +33,7 @@ import ch.qos.logback.core.helpers.NOPAppender
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import ch.qos.logback.classic.PatternLayout
+import ch.qos.logback.core.util.FileSize
 import ch.qos.logback.core.util.StatusPrinter
 import ch.qos.logback.classic.net.SMTPAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
@@ -69,13 +70,7 @@ class ConfigurationDelegateTest {
   @Test
   void scan() {
     configurationDelegate.scan("10seconds")
-    assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeFilter"))
-    assertTrue(statusChecker.containsMatch("Adding ReconfigureOnChangeFilter as a turbo filter"))
-
-    TurboFilter filter = context.turboFilterList[0]
-    assertTrue(filter instanceof ReconfigureOnChangeFilter)
-    ReconfigureOnChangeFilter rocf = (ReconfigureOnChangeFilter) filter;
-    assertEquals(10 * 1000, rocf.refreshPeriod)
+    assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeTask"))
   }
 
   @Test
@@ -241,7 +236,7 @@ class ConfigurationDelegateTest {
   }
 
 
-  // See LBCLASSIC-231
+  // See LBCLASSIC-231/LOGBACK-458
   @Test
   void withSizeAndTimeBasedFNATP() {
     String logFile = randomOutputDir + "log.txt";
@@ -250,7 +245,7 @@ class ConfigurationDelegateTest {
       rollingPolicy(TimeBasedRollingPolicy) {
         fileNamePattern = "mylog-%d{yyyy-MM-dd}.%i.txt"
         timeBasedFileNamingAndTriggeringPolicy(SizeAndTimeBasedFNATP) {
-          maxFileSize = "100MB"
+          maxFileSize = FileSize.valueOf("100MB")
         }
       }
       encoder(PatternLayoutEncoder) {

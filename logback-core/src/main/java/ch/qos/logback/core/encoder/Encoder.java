@@ -36,33 +36,33 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public interface Encoder<E> extends ContextAware, LifeCycle {
 
-  /**
-   * This method is called when the owning appender starts or whenever output
-   * needs to be directed to a new OutputStream, for instance as a result of a
-   * rollover. Implementing encoders should at the very least remember the
-   * OutputStream passed as argument and use it in future operations.
-   * 
-   * @param os
-   * @throws IOException
-   */
-  void init(OutputStream os) throws IOException;
+    /**
+     * This method is called when the owning appender starts or whenever output
+     * needs to be directed to a new OutputStream, for instance as a result of a
+     * rollover. Implementing encoders should at the very least remember the
+     * OutputStream passed as argument and use it in future operations.
+     * 
+     * @param os
+     * @throws IOException
+     */
+    void init(OutputStream os) throws IOException;
 
-  /**
-   * Encode and write an event to the appropriate {@link OutputStream}.
-   * Implementations are free to differ writing out of the encoded event and
-   * instead write in batches.
-   * 
-   * @param event
-   * @throws IOException
-   */
-  void doEncode(E event) throws IOException;
+    /**
+     * Encode and write an event to the appropriate {@link OutputStream}.
+     * Implementations are free to differ writing out of the encoded event and
+     * instead write in batches.
+     * 
+     * @param event
+     * @throws IOException
+     */
+    void doEncode(E event) throws IOException;
 
-  /**
-   * This method is called prior to the closing of the underling
-   * {@link OutputStream}. Implementations MUST not close the underlying
-   * {@link OutputStream} which is the responsibility of the owning appender.
-   * 
-   * @throws IOException
-   */
-  void close() throws IOException;
+    /**
+     * This method is called prior to the closing of the underling
+     * {@link OutputStream}. Implementations MUST not close the underlying
+     * {@link OutputStream} which is the responsibility of the owning appender.
+     * 
+     * @throws IOException
+     */
+    void close() throws IOException;
 }

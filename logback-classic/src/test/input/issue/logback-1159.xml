@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="true">
+
+	<statusListener
+		class="ch.qos.logback.classic.issue.logback1159.LogbackListener" />
+
+	<property name="logback.rollingPattern" value="%d{yyyy-MM-dd}.gz" />
+
+
+	<appender name="JOURNAL"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+		<file>target/test.log</file>
+
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<fileNamePattern>target/test.${logback.rollingPattern}.log
+			</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%m%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="DEBUG">
+		<appender-ref ref="JOURNAL" />
+	</root>
+
+</configuration>

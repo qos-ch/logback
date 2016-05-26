@@ -351,7 +351,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 
   <p class="example">Example: ConsoleAppender configuration
-  (logback-examples/src/main/java/chapters/appenders/conf/logback-Console.xml)</p>
+  (logback-examples/src/main/resources/chapters/appenders/conf/logback-Console.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('logback_Console');">View as .groovy</span>
 
@@ -520,7 +520,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 	 </p>
 
    <p class="example">Example: FileAppender configuration
-   (logback-examples/src/main/java/chapters/appenders/conf/logback-fileAppender.xml)</p>
+   (logback-examples/src/main/resources/chapters/appenders/conf/logback-fileAppender.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('logback-fileAppender');">View as .groovy</span>
    <pre id="logback-fileAppender"  class="prettyprint source">&lt;configuration>
@@ -561,7 +561,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
    <p class="example">Example: Uniquely named FileAppender
    configuration by timestamp
-   (logback-examples/src/main/java/chapters/appenders/conf/logback-timestamp.xml)</p>
+   (logback-examples/src/main/resources/chapters/appenders/conf/logback-timestamp.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('logback-timestamp');">View as .groovy</span>
    <pre id="logback-timestamp" class="prettyprint source">&lt;configuration>
@@ -597,7 +597,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    denotes the date pattern used to convert the current time (at which
    the configuration file is parsed) into a string. The date pattern
    should follow the conventions defined in <a
-   href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>. The
+   href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>. The
    <span class="attr">timeReference</span> attribute denotes the time
    reference for the time stamp. The default is the
    interpretation/parsing time of the configuration file, i.e. the
@@ -610,7 +610,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <p>Experiment with the <code>&lt;timestamp></code> element by
    running the command:</p>
 
-   <p class="command">java chapters.appenders.ConfigurationTester src/main/java/chapters/appenders/conf/logback-timestamp.xml</p>
+   <p class="command">java chapters.appenders.ConfigurationTester src/main/resources/chapters/appenders/conf/logback-timestamp.xml</p>
 
    <p>To use the logger context birth date as time reference, you
    would set the <span class="attr">timeReference</span> attribute to
@@ -618,7 +618,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
 
 
    <p class="example">Example: Timestamp using context birth date as time reference
-   (logback-examples/src/main/java/chapters/appenders/conf/logback-timestamp-contextBirth.xml)</p>
+   (logback-examples/src/main/resources/chapters/appenders/conf/logback-timestamp-contextBirth.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('logback-timestamp-contextBirth');">View as .groovy</span>   
    <pre id="logback-timestamp-contextBirth" class="prettyprint source">&lt;configuration>
@@ -874,19 +874,34 @@ public interface RollingPolicy extends LifeCycle {
      <tr>
        <td><span class="prop" container="tbrp">maxHistory</span></td>
        <td>int</td>
-       <td>The optional <span class="prop">maxHistory</span>
-       property controls the maximum number of archive files to keep,
-       deleting older files. For example, if you specify monthly
-       rollover, and set maxHistory to 6, then 6 months worth of
-       archives files will be kept with files older than 6 months
-       deleted. Note as old archived log files are removed, any
-       folders which were created for the purpose of log file
-       archiving will be removed as appropriate.
+       <td>The optional <span class="prop">maxHistory</span> property
+       controls the maximum number of archive files to keep,
+       asynchronously deleting older files. For example, if you
+       specify monthly rollover, and set maxHistory to 6, then 6
+       months worth of archives files will be kept with files older
+       than 6 months deleted. Note as old archived log files are
+       removed, any folders which were created for the purpose of log
+       file archiving will be removed as appropriate.
+       </td>
+     </tr>
+
+     <tr>
+       <td><span class="prop" container="tbrp">totalSizeCap</span></td>
+       <td>int</td>
+       <td><p>The optional <span class="prop">totalSizeCap</span>
+       property controls the total size of all archive files. Oldest
+       archives are deleted asynchronously when the total size cap is
+       exceeded. The <span class="prop">totalSizeCap</span> property
+       requires <span class="option">maxHistory</span> property to be
+       set as well.  Moreover, the "max history" restriction is always
+       applied first and the "total size cap" restriction applied
+       second. </p>
        </td>
      </tr>
 
      <tr >
-       <td><span class="prop" container="tbrp">cleanHistoryOnStart</span></td>
+       <td><span class="prop"
+       container="tbrp">cleanHistoryOnStart</span></td>
        <td>boolean</td>
        <td>
          <p>If set to true, archive removal will be executed on
@@ -1043,8 +1058,7 @@ public interface RollingPolicy extends LifeCycle {
    </p>
 
 
- 	 <p>Just like <code>FixedWindowRollingPolicy</code>,
- 	 <code>TimeBasedRollingPolicy</code> supports automatic file
+ 	 <p><code>TimeBasedRollingPolicy</code> supports automatic file
  	 compression.  This feature is enabled if the value of the <span
  	 class="prop">fileNamePattern</span> option ends with <em>.gz</em>
  	 or <em>.zip</em>.
@@ -1142,7 +1156,7 @@ public interface RollingPolicy extends LifeCycle {
    <p class="example">Example: Sample configuration of a
    <code>RollingFileAppender</code> using a
    <code>TimeBasedRollingPolicy</code>
-   (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingTimeBased.xml)</p>
+   (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingTimeBased.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('logback-RollingTimeBased');">View as .groovy</span>
    <pre id="logback-RollingTimeBased" class="prettyprint source">&lt;configuration>
@@ -1152,8 +1166,10 @@ public interface RollingPolicy extends LifeCycle {
       &lt;!-- daily rollover -->
       &lt;fileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
 
-      &lt;!-- keep 30 days' worth of history -->
+      &lt;!-- keep 30 days' worth of history capped at 3GB total size -->
       &lt;maxHistory>30&lt;/maxHistory>
+      &lt;totalSizeCap>3GB&lt;/totalSizeCap>
+
     &lt;/rollingPolicy></b>
 
     &lt;encoder>
@@ -1175,7 +1191,7 @@ public interface RollingPolicy extends LifeCycle {
    <p class="example">Example: Sample configuration of a
    <code>RollingFileAppender</code> using a
    <code>TimeBasedRollingPolicy</code>
-   (logback-examples/src/main/java/chapters/appenders/conf/logback-PrudentTimeBasedRolling.xml)</p>
+   (logback-examples/src/main/resources/chapters/appenders/conf/logback-PrudentTimeBasedRolling.xml)</p>
 
   <span class="asGroovy" onclick="return asGroovy('logback-PrudentTimeBasedRolling');">View as .groovy</span>
   <pre id="logback-PrudentTimeBasedRolling" class="prettyprint source">&lt;configuration>
@@ -1185,6 +1201,7 @@ public interface RollingPolicy extends LifeCycle {
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       &lt;fileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
       &lt;maxHistory>30&lt;/maxHistory> 
+      &lt;totalSizeCap>3GB&lt;/totalSizeCap>
     &lt;/rollingPolicy>
 
     &lt;encoder>
@@ -1197,6 +1214,81 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre>
 
+  
+
+    <h3 class="doAnchor" name="SizeAndTimeBasedRollingPolicy">Size and
+    time based rolling policy</h3>
+
+    
+     <p>Sometimes you may wish to archive files essentially by date but
+    at the same time limit the size of each log file, in particular if
+    post-processing tools impose size limits on the log files. In
+    order to address this requirement, logback ships with
+    <code>SizeAndTimeBasedRollingPolicy</code>.</p>
+
+    <p>Note that <code>TimeBasedRollingPolicy</code> already allows
+    limiting the combined size of archived log files. If you only wish
+    to limit the combined size of log archives, then
+    <code>TimeBasedRollingPolicy</code> described above and setting
+    the <a href="#tbrpTotalSizeCap"><span
+    class="option">totalSizeCap</span></a> property should be amply
+    sufficent.
+    </p>
+
+    <p>Here is a sample configuration file demonstrating time and size
+    based log file archiving.</p>
+    
+  <p class="example">Example: Sample configuration for
+  <code>SizeAndTimeBasedFNATP</code> 
+  (logback-examples/src/main/resources/chapters/appenders/conf/logback-sizeAndTime.xml)</p>
+
+  <span class="asGroovy" onclick="return asGroovy('logback-sizeAndTime');">View as .groovy</span>
+  <pre id="logback-sizeAndTime" class="prettyprint source">&lt;configuration>
+  &lt;appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    &lt;file>mylog.txt&lt;/file>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      &lt;!-- rollover daily -->
+      &lt;fileNamePattern><b>mylog-%d{yyyy-MM-dd}.<span class="big">%i</span>.txt</b>&lt;/fileNamePattern>
+       <b>&lt;!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB --></b>
+       <b>&lt;maxFileSize>100MB&lt;/maxFileSize></b>    
+       &lt;maxHistory>60&lt;/maxHistory>
+       &lt;totalSizeCap>20GB&lt;/totalSizeCap>
+    &lt;/rollingPolicy>
+    &lt;encoder>
+      &lt;pattern>%msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="ROLLING" />
+  &lt;/root>
+
+&lt;/configuration></pre>
+    
+    <p>Note the "%i" conversion token in addition to "%d". <b>Both the
+    %i and %d tokens are mandatory.</b> Each time the current log file
+    reaches <span class="prop">maxFileSize</span> before the current
+    time period ends, it will be archived with an increasing index,
+    starting at 0.</p>
+
+    <p>Size and time based archiving supports deletion of old archive
+    files. You need to specify the number of periods to preserve with
+    the <span class="prop">maxHistory</span> property. When your
+    application is stopped and restarted, logging will continue at the
+    correct location, i.e. at the largest index number for the current
+    period.
+    </p>
+
+    <p>In versions prior to 1.1.7, this document mentioned a component
+    called <code>SizeAndTimeBasedFNATP</code>. However, given that
+    <code>SizeAndTimeBasedFNATP</code> offers a simpler configuration
+    structure, we no longer document
+    <code>SizeAndTimeBasedFNATP</code>.  Nevertheless, earlier
+    configuration files using <code>SizeAndTimeBasedFNATP</code> will
+    continue to work just fine. In fact,
+    <code>SizeAndTimeBasedRollingPolicy</code> is implemented with a
+    <code>SizeAndTimeBasedFNATP</code> subcomponent.</p>
 
    <h4 class="doAnchor" name="FixedWindowRollingPolicy">FixedWindowRollingPolicy</h4>
 
@@ -1348,7 +1440,7 @@ public interface RollingPolicy extends LifeCycle {
    </p>
 	
    <p class="example">Example: Sample configuration of a <code>RollingFileAppender</code> using a 
-   <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingFixedWindow.xml)</p>
+   <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingFixedWindow.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('logback-RollingFixedWindow');">View as .groovy</span>
    <pre id="logback-RollingFixedWindow" class="prettyprint source">&lt;configuration>
@@ -1374,64 +1466,6 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre>
 
-
-    <h3 class="doAnchor" name="SizeAndTimeBasedFNATP">Size <b>and</b>
-    time based archiving
-    </h3>
-
-    <p>Sometimes you may wish to archive files essentially by date but
-    at the same time limit the size of each log file, in particular if
-    post-processing tools impose size limits on the log files. In
-    order to address this requirement, logback ships with a
-    sub-component for <code>TimeBasedRollingPolicy</code> called
-    <code>SizeAndTimeBasedFNATP</code>, where FNATP stands for File
-    Naming And Triggering Policy.</p>
-
-    <p>Here is a sample configuration file demonstrating time and size
-    based log file archiving.</p>
-    
-  <p class="example">Example: Sample configuration for
-  <code>SizeAndTimeBasedFNATP</code> 
-  (logback-examples/src/main/java/chapters/appenders/conf/logback-sizeAndTime.xml)</p>
-
-  <span class="asGroovy" onclick="return asGroovy('logback-sizeAndTime');">View as .groovy</span>
-  <pre id="logback-sizeAndTime" class="prettyprint source">&lt;configuration>
-  &lt;appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    &lt;file>mylog.txt&lt;/file>
-    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      &lt;!-- rollover daily -->
-      &lt;fileNamePattern><b>mylog-%d{yyyy-MM-dd}.<span class="big">%i</span>.txt</b>&lt;/fileNamePattern>
-      <b>&lt;timeBasedFileNamingAndTriggeringPolicy</b>
-            <b>class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP"></b>
-        &lt;!-- or whenever the file size reaches 100MB -->
-        <b>&lt;maxFileSize>100MB&lt;/maxFileSize></b>
-      <b>&lt;/timeBasedFileNamingAndTriggeringPolicy></b>
-    &lt;/rollingPolicy>
-    &lt;encoder>
-      &lt;pattern>%msg%n&lt;/pattern>
-    &lt;/encoder>
-  &lt;/appender>
-
-
-  &lt;root level="DEBUG">
-    &lt;appender-ref ref="ROLLING" />
-  &lt;/root>
-
-&lt;/configuration></pre>
-    
-    <p>Note the "%i" conversion token in addition to "%d". Each time
-    the current log file reaches <span
-    class="prop">maxFileSize</span> before the current time period
-    ends, it will be archived with an increasing index, starting at
-    0.</p>
-
-    <p>Size and time based archiving supports deletion of old archive
-    files. You need to specify the number of periods to preserve with
-    the <span class="prop">maxHistory</span> property. When your
-    application is stopped and restarted, logging will continue at the
-    correct location, i.e. at the largest index number for the current
-    period.
-    </p>
 
 		<h2>
       <a name="TriggeringPolicy" href="#TriggeringPolicy">Overview of
@@ -1501,7 +1535,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <p class="example">Example: Sample configuration of a
     <code>RollingFileAppender</code> using a
     <code>SizeBasedTriggeringPolicy</code>
-    (logback-examples/src/main/java/chapters/appenders/conf/logback-RollingSizeBased.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingSizeBased.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('logback-RollingSizeBased');">View as .groovy</span>
     <pre id="logback-RollingSizeBased" class="prettyprint source">&lt;configuration>
@@ -1795,7 +1829,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>
 
 		<p class="example">Example: SocketAppender configuration
-		(logback-examples/src/main/java/chapters/appenders/socket/client1.xml)</p>
+		(logback-examples/src/main/resources/chapters/appenders/socket/client1.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('client1');">View as .groovy</span>
 <pre id="client1" class="prettyprint source">&lt;configuration>
 	  
@@ -1908,7 +1942,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
       
    	<p class="example">Example: SSLSocketAppender configuration
-		(logback-examples/src/main/java/chapters/appenders/socket/ssl/client.xml)</p>
+		(logback-examples/src/main/resources/chapters/appenders/socket/ssl/client.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('sslclient');">View as .groovy</span>
 <pre id="sslclient" class="prettyprint source">&lt;configuration debug="true">
 	  
@@ -2066,7 +2100,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
 
     <p class="example">Example: Basic ServerSocketAppender Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/server4.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/socket/server4.xml)</p>
 <pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="SERVER" 
     class="ch.qos.logback.classic.net.server.ServerSocketAppender">
@@ -2092,7 +2126,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <code>SSLServerSocketAppender</code>.</p>
         
      <p class="example">Example: Basic SSLServerSocketAppender Configuration
-    (logback-examples/src/main/java/chapters/appenders/socket/ssl/server3.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/socket/ssl/server3.xml)</p>
 <pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="SERVER" 
     class="ch.qos.logback.classic.net.server.SSLServerSocketAppender">
@@ -2330,7 +2364,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         <td><code>String</code></td>
         <td>The outgoing email message will be encoded in the
         designated <a
-        href="http://java.sun.com/j2se/1.4.2/docs/api/java/nio/charset/Charset.html">charset</a>. The
+        href="https://docs.oracle.com/javase/8/docs/api/java/nio/charset/Charset.html">charset</a>. The
         default charset encoding is "UTF-8" which works well for most
         purposes.
         </td>
@@ -2453,7 +2487,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		<code>Email</code> application:
 		</p>	
 		
-    <p class="example">Example: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/mail/mail1.xml)</p>	
+    <p class="example">Example: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/mail/mail1.xml)</p>	
     <span class="asGroovy" onclick="return asGroovy('mail1');">View as .groovy</span>	
     <pre id="mail1" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2553,7 +2587,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     desires, you may set a different buffer size as shown in the next example.
     </p>
 
-   <p class="example">Example:  <code>SMTPAppender</code> configuration with a custom bufer size (logback-examples/src/main/java/chapters/appenders/mail/customBufferSize.xml)</p>	
+   <p class="example">Example:  <code>SMTPAppender</code> configuration with a custom bufer size (logback-examples/src/main/resources/chapters/appenders/mail/customBufferSize.xml)</p>	
     <pre class="prettyprint source">&lt;configuration>   
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>${smtpHost}&lt;/smtpHost>
@@ -2651,7 +2685,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 		</p>
 
     <p class="example">Example: <code>SMTPAppender</code> with custom 
-    <code>Evaluator</code> and buffer size (logback-examples/src/main/java/chapters/appenders/mail/mail3.xml)</p>
+    <code>Evaluator</code> and buffer size (logback-examples/src/main/resources/chapters/appenders/mail/mail3.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('mail3');">View as .groovy</span>	
     <pre id="mail3" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2701,7 +2735,7 @@ logger.error(<b>notifyAdmin</b>,
    </p>
 
    <p class="example">Example: <code>SMTPAppender</code> with 
-   <code>OnMarkerEvaluator</code> (logback-examples/src/main/java/chapters/appenders/mail/mailWithMarker.xml)</p>
+   <code>OnMarkerEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('mailWithMarker');">View as .groovy</span>	
    <pre id="mailWithMarker" class="prettyprint source">&lt;configuration>
@@ -2745,7 +2779,7 @@ logger.error(<b>notifyAdmin</b>,
     </p>
 
     <p class="example">Example: <code>SMTPAppender</code> with 
-   <code>JaninoEventEvaluator</code> (logback-examples/src/main/java/chapters/appenders/mail/mailWithMarker_Janino.xml)</p>
+   <code>JaninoEventEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker_Janino.xml)</p>
 
    <span class="asGroovy" onclick="return asGroovy('mailWithMarker_Janino');">View as .groovy</span>	
     <pre id="mailWithMarker_Janino" class="prettyprint source">&lt;configuration>
@@ -2767,7 +2801,7 @@ logger.error(<b>notifyAdmin</b>,
     href="filters.html#GEventEvaluator">GEventEvaluator</a>.</p>
 
     <p class="example">Example: the same with 
-   <code>GEventEvaluator</code> (logback-examples/src/main/java/chapters/appenders/mail/mailWithMarker_GEvent.xml)</p>
+   <code>GEventEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker_GEvent.xml)</p>
    <span class="asGroovy" onclick="return asGroovy('mailWithMarker_GEventEvaluator');">View as .groovy</span>	
 
    <pre id="mailWithMarker_GEventEvaluator" class="prettyprint source">&lt;configuration>
@@ -2807,7 +2841,7 @@ logger.error(<b>notifyAdmin</b>,
     
     <p class="example">Example:: <code>SMTPAppender</code> to Gmail
     using SSL
-    (logback-examples/src/main/java/chapters/appenders/mail/gmailSSL.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/mail/gmailSSL.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('gmailSSLExample');">View as .groovy</span>	
     <pre id="gmailSSLExample" class="prettyprint source">&lt;configuration>
@@ -2839,7 +2873,7 @@ logger.error(<b>notifyAdmin</b>,
     <p>The next example shows you how to configure
     <code>SMTPAppender</code> for Gmail for the STARTTLS protocol. </p>
 
-    <p class="example">Example: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/java/chapters/appenders/mail/gmailSTARTTLS.xml)</p>
+    <p class="example">Example: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/resources/chapters/appenders/mail/gmailSTARTTLS.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('gmailSTARTTLSExample');">View as .groovy</span>	
     <pre id="gmailSTARTTLSExample" class="prettyprint source">&lt;configuration>	  
@@ -2885,7 +2919,7 @@ logger.error(<b>notifyAdmin</b>,
 
     <p class="example">Example: <code>SMTPAppender</code> with
     MDCBasedDsicriminator
-    (logback-examples/src/main/java/chapters/appenders/mail/mailWithMDCBasedDiscriminator.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMDCBasedDiscriminator.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('mailWithMDCBasedDiscriminator');">View as .groovy</span>	
     <pre id="mailWithMDCBasedDiscriminator" class="prettyprint source">&lt;configuration>	  
@@ -3277,7 +3311,7 @@ logger.error(<b>notifyAdmin</b>,
 			The following configuration file is what one would need.
 		</p>
 		
-    <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-driverManager.xml)</p>
+    <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-driverManager.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-driverManager');">View as .groovy</span>	
     <pre id="append-toMySQL-with-driverManager" class="prettyprint source">&lt;configuration>
 
@@ -3297,7 +3331,7 @@ logger.error(<b>notifyAdmin</b>,
 
 		<p>
 			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
-			class is used. The <span class="prop">url</span> must begin with <em>jdbc:myslq://</em>.
+			class is used. The <span class="prop">url</span> must begin with <em>jdbc:mysql://</em>.
 		</p>
 		
 		<p>
@@ -3357,7 +3391,7 @@ logger.error(<b>notifyAdmin</b>,
 		<code>javax.sql.DataSource</code>.
 		</p>
 	
-    <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/db/append-with-datasource.xml)</p>	
+    <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/db/append-with-datasource.xml)</p>	
 
 
     <span class="asGroovy" onclick="return asGroovy('append-with-datasource');">View as .groovy</span>	
@@ -3466,7 +3500,7 @@ logger.error(<b>notifyAdmin</b>,
    
    <p class="example">Example: <code>DBAppender</code> configuration
    by <code>JNDIConnectionSource</code>
-   (logback-examples/src/main/java/chapters/appenders/db/append-via-jndi.xml)</p>
+   (logback-examples/src/main/resources/chapters/appenders/db/append-via-jndi.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('append-via-jndi');">View as .groovy</span>	
  
@@ -3510,7 +3544,7 @@ logger.error(<b>notifyAdmin</b>,
     
     <p class="example">Example: <code>DBAppender</code> configuration
     without pooling
-    (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-datasource.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-datasource.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-datasource');">View as .groovy</span>	
     <pre id="append-toMySQL-with-datasource" class="prettyprint source">&lt;configuration>
@@ -3547,7 +3581,7 @@ logger.error(<b>notifyAdmin</b>,
 
     <p class="example">Example: <code>DBAppender</code> configuration
     with pooling
-    (logback-examples/src/main/java/chapters/appenders/db/append-toMySQL-with-datasource-and-pooling.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-datasource-and-pooling.xml)</p>
     <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-datasource-and-pooling');">View as .groovy</span>	
     <pre id="append-toMySQL-with-datasource-and-pooling" class="prettyprint source">&lt;configuration>
 
@@ -3676,7 +3710,7 @@ logger.error(<b>notifyAdmin</b>,
 		<p>Here is a sample configuration using a
 		<code>SyslogAppender</code>.</p>
 		
-    <p class="example">Example: <code>SyslogAppender</code> configuration (logback-examples/src/main/java/chapters/appenders/conf/logback-syslog.xml)</p>	
+    <p class="example">Example: <code>SyslogAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/conf/logback-syslog.xml)</p>	
     <span class="asGroovy" onclick="return asGroovy('logback-syslog');">View as .groovy</span>	
     <pre id="logback-syslog" class="prettyprint source">&lt;configuration>
 
@@ -3775,7 +3809,7 @@ logger.debug("Alice says hello"); </p>
 
     <p class="example">Example: <code>SiftingAppender</code>
     configuration
-    (logback-examples/src/main/java/chapters/appenders/sift/byUserid.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/sift/byUserid.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('byUserid');">View as .groovy</span>
 
@@ -4009,6 +4043,14 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
         <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Thread.html#join(long)">Thread.join(long)</a>.
         </td>
       </tr>
+      <tr>
+        <td><span class="prop" container="async">neverBlock</span></td>
+        <td><code>boolean</code></td>
+        <td>If <code>false</code> (the default) the appender will block on
+        appending to a full queue rather than losing the message. Set to
+        <code>true</code> and the appender will just drop the message and
+        will not block your application.</td>
+      </tr>
     </table>
 
     <p>By default, event queue is configured with a maximum capacity
@@ -4056,7 +4098,7 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
 
     <p class="example">Example: <code>AsyncAppender</code>
     configuration
-    (logback-examples/src/main/java/chapters/appenders/conc/logback-async.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/conc/logback-async.xml)</p>
 
     <span class="asGroovy" onclick="return asGroovy('asyncAppender');">View as .groovy</span>
 
@@ -4192,7 +4234,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		href="../xref/chapters/appenders/CountingConsoleAppender.html"><code>CountingConsoleAppender</code></a>
 		can be configured like any other appender.  See sample
 		configuration file
-		<em>logback-examples/src/main/java/chapters/appenders/countingConsole.xml</em>
+		<em>logback-examples/src/main/resources/chapters/appenders/countingConsole.xml</em>
 		for an example.
 		</p>
   
@@ -4274,7 +4316,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		</p>
     <p class="example">Example: <code>SMTPAppender</code>
     configuration
-    (logback-examples/src/main/java/chapters/appenders/conf/access/logback-smtp.xml)</p>
+    (logback-examples/src/main/resources/chapters/appenders/conf/access/logback-smtp.xml)</p>
 
 <pre class="prettyprint source">&lt;appender name="SMTP"
   class="ch.qos.logback.access.net.SMTPAppender">
@@ -4439,7 +4481,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 
 		<p>Here is a sample configuration that uses <code>DBAppender</code>.</p>
 
-    <p class="example">Example: DBAppender configuration <em>(logback-examples/src/main/java/chapters/appenders/conf/access/logback-DB.xml)</em></p>
+    <p class="example">Example: DBAppender configuration <em>(logback-examples/src/main/resources/chapters/appenders/conf/access/logback-DB.xml)</em></p>
     
     <pre class="prettyprint source">&lt;configuration>
 
@@ -4479,7 +4521,7 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
     
     <p>Below is an example configuration file.</p>
 
-    <p class="example">Example: SiftingAppender configuration (logback-examples/src/main/java/chapters/appenders/conf/sift/access-siftingFile.xml)</p>
+    <p class="example">Example: SiftingAppender configuration (logback-examples/src/main/resources/chapters/appenders/conf/sift/access-siftingFile.xml)</p>
     
     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="SIFTING" class="ch.qos.logback.access.sift.SiftingAppender">

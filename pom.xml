@@ -6,8 +6,9 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.1.4-SNAPSHOT</version>
+  <version>1.1.8-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <name>Logback-Parent</name>
   <description>logback project pom.xml file</description>
 
@@ -42,20 +43,24 @@
     <module>logback-access</module>
     <module>logback-site</module>
     <module>logback-examples</module>
+    <module>logback-bom</module>
   </modules>
 
   <properties>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <!-- slf4j.version property is used below, in
-         logback-classic/pom.xml and in setClasspath.cmd -->
-    <slf4j.version>1.7.7</slf4j.version>
     <junit.version>4.10</junit.version>
     <javax.mail.version>1.4</javax.mail.version>
     <janino.version>2.7.8</janino.version>
     <groovy.version>2.4.0</groovy.version>
+    <!-- slf4j.version property is used below, in
+         logback-classic/pom.xml and in setClasspath.cmd 
 
+         BEWARE: Any change to slf4j.version must be manually propagated
+         in logback-bom/pom.xml
+    -->    
+    <slf4j.version>1.7.20</slf4j.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
     <tomcat.version>7.0.59</tomcat.version>
     <jetty.version>7.5.1.v20110908</jetty.version>
@@ -87,19 +92,34 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert</artifactId>
-      <version>1.2</version>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>1.7.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <dependencyManagement>
     <dependencies>
-      <!-- Project modules -->
+      <!-- start of dependencies duplicated from logback-bom/pom.xml -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-access</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -108,21 +128,8 @@
         <version>${project.version}</version>
         <type>test-jar</type>
       </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-access</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
+      <!-- end of dependencies duplicated from logback-bom/pom.xml -->
+    
       <dependency>
         <groupId>org.codehaus.janino</groupId>
         <artifactId>janino</artifactId>
@@ -193,8 +200,14 @@
         <artifactId>servlet-api</artifactId>
         <version>2.5</version>
       </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.9.2</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
+
 
   <build>
     <extensions>
@@ -215,7 +228,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.2</version>
+          <version>3.5.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -240,7 +253,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.18.1</version>
+          <version>2.19.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -277,7 +290,25 @@
           <artifactId>maven-bundle-plugin</artifactId>
           <version>2.5.3</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>animal-sniffer-maven-plugin</artifactId>
+          <version>1.14</version>
+          <configuration>
+            <ignores>
+              <ignore>sun.reflect.Reflection</ignore>
+            </ignores>
+            <signature>
+              <groupId>org.codehaus.mojo.signature</groupId>
+              <artifactId>java16</artifactId>
+              <version>1.0</version>
+            </signature>
+          </configuration>
+        </plugin>
+
       </plugins>
+
     </pluginManagement>
 
     <plugins>
@@ -341,19 +372,6 @@
             </plugin>
             
             <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>cobertura-maven-plugin</artifactId>
-              <version>${cobertura.maven.plugin.version}</version>
-              <configuration>
-                <formats>
-                  <format>html</format>
-                </formats>
-                <aggregate>true</aggregate>
-              </configuration>
-            </plugin>
-
-
-            <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
               <version>2.10.1</version>
@@ -400,9 +418,10 @@
   </build>
 
   <distributionManagement>
+
     <site>
-      <id>pixie</id>
-      <url>scp://pixie.qos.ch/var/www/logback.qos.ch/htdocs/</url>
+      <id>tao</id>
+      <url>scp://tao.qos.ch/var/www/logback.qos.ch/htdocs/</url>
     </site>
 
     <repository>
@@ -496,6 +515,38 @@
         </plugins>
       </build>
     </profile>
+
+    <profile>
+      <id>cobertura</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <configuration>
+              <reportPlugins>
+                
+                
+            
+                <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>cobertura-maven-plugin</artifactId>
+                  <version>${cobertura.maven.plugin.version}</version>
+                  <configuration>
+                    <formats>
+                      <format>html</format>
+                    </formats>
+                    <aggregate>true</aggregate>
+                  </configuration>
+                </plugin>
+              </reportPlugins>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+
   </profiles>
 
 </project>

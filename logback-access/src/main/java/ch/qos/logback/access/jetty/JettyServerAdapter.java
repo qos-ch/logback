@@ -31,40 +31,40 @@ import java.util.Map;
  */
 public class JettyServerAdapter implements ServerAdapter {
 
-  Request request;
-  Response response;
+    Request request;
+    Response response;
 
-  public JettyServerAdapter(Request jettyRequest, Response jettyResponse) {
-    this.request = jettyRequest;
-    this.response = jettyResponse;
-  }
-
-  @Override
-  public long getContentLength() {
-    return response.getContentCount();
-  }
-
-  @Override
-  public int getStatusCode() {
-    return response.getStatus();
-  }
-
-  @Override
-  public long getRequestTimestamp() {
-    return request.getTimeStamp();
-  }
-
-  @Override
-  public Map<String, String> buildResponseHeaderMap() {
-    Map<String, String> responseHeaderMap = new HashMap<String, String>();
-    HttpFields httpFields = response.getHttpFields();
-    Enumeration e = httpFields.getFieldNames();
-    while (e.hasMoreElements()) {
-      String key = (String) e.nextElement();
-      String value = response.getHeader(key);
-      responseHeaderMap.put(key, value);
+    public JettyServerAdapter(Request jettyRequest, Response jettyResponse) {
+        this.request = jettyRequest;
+        this.response = jettyResponse;
     }
-    return responseHeaderMap;
-  }
+
+    @Override
+    public long getContentLength() {
+        return response.getContentCount();
+    }
+
+    @Override
+    public int getStatusCode() {
+        return response.getStatus();
+    }
+
+    @Override
+    public long getRequestTimestamp() {
+        return request.getTimeStamp();
+    }
+
+    @Override
+    public Map<String, String> buildResponseHeaderMap() {
+        Map<String, String> responseHeaderMap = new HashMap<String, String>();
+        HttpFields httpFields = response.getHttpFields();
+        Enumeration e = httpFields.getFieldNames();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            String value = response.getHeader(key);
+            responseHeaderMap.put(key, value);
+        }
+        return responseHeaderMap;
+    }
 
 }

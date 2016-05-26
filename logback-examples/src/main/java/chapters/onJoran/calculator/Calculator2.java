@@ -24,7 +24,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 
-
 /**
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
@@ -37,28 +36,27 @@ import chapters.onJoran.SimpleConfigurator;
  * @author Ceki G&uuml;ulc&uuml;
  */
 public class Calculator2 {
-  public static void main(String[] args) throws Exception {
-    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
-   
-    
-    // Note the wild card character '*', in the paterns, signifying any level 
-    // of nesting.
-    ruleMap.put(new ElementSelector("*/computation"), new ComputationAction2());
+    public static void main(String[] args) throws Exception {
+        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
-    ruleMap.put(new ElementSelector("*/computation/literal"), new LiteralAction());
-    ruleMap.put(new ElementSelector("*/computation/add"), new AddAction());
-    ruleMap.put(new ElementSelector("*/computation/multiply"), new MultiplyAction());
-    
-    Context context = new ContextBase();
-    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
-    // link the configurator with its context
-    simpleConfigurator.setContext(context);
+        // Note the wild card character '*', in the paterns, signifying any level
+        // of nesting.
+        ruleMap.put(new ElementSelector("*/computation"), new ComputationAction2());
 
-    try {
-      simpleConfigurator.doConfigure(args[0]);
-    } catch (JoranException e) {
-      // Print any errors that might have occured.
-      StatusPrinter.print(context);
+        ruleMap.put(new ElementSelector("*/computation/literal"), new LiteralAction());
+        ruleMap.put(new ElementSelector("*/computation/add"), new AddAction());
+        ruleMap.put(new ElementSelector("*/computation/multiply"), new MultiplyAction());
+
+        Context context = new ContextBase();
+        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        // link the configurator with its context
+        simpleConfigurator.setContext(context);
+
+        try {
+            simpleConfigurator.doConfigure(args[0]);
+        } catch (JoranException e) {
+            // Print any errors that might have occured.
+            StatusPrinter.print(context);
+        }
     }
-  }
 }

@@ -35,184 +35,181 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  */
 public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
-  /**
-   * Default {@link ServerSocket} backlog
-   */
-  public static final int DEFAULT_BACKLOG = 50;
+    /**
+     * Default {@link ServerSocket} backlog
+     */
+    public static final int DEFAULT_BACKLOG = 50;
 
-  /** 
-   * Default queue size used for each client
-   */
-  public static final int DEFAULT_CLIENT_QUEUE_SIZE = 100;
-  
-  private int port = AbstractSocketAppender.DEFAULT_PORT;
-  private int backlog = DEFAULT_BACKLOG;
-  private int clientQueueSize = DEFAULT_CLIENT_QUEUE_SIZE;
-  
-  private String address;
+    /** 
+     * Default queue size used for each client
+     */
+    public static final int DEFAULT_CLIENT_QUEUE_SIZE = 100;
 
-  private ServerRunner<RemoteReceiverClient> runner;
+    private int port = AbstractSocketAppender.DEFAULT_PORT;
+    private int backlog = DEFAULT_BACKLOG;
+    private int clientQueueSize = DEFAULT_CLIENT_QUEUE_SIZE;
 
-  @Override
-  public void start() {
-    if (isStarted()) return;
-    try {
-      ServerSocket socket = getServerSocketFactory().createServerSocket(
-          getPort(), getBacklog(), getInetAddress());    
-      ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
-      
-      runner = createServerRunner(listener, getContext().getExecutorService());
-      runner.setContext(getContext());
-      getContext().getExecutorService().execute(runner);
-      super.start();
-    } catch (Exception ex) {
-      addError("server startup error: " + ex, ex);
+    private String address;
+
+    private ServerRunner<RemoteReceiverClient> runner;
+
+    @Override
+    public void start() {
+        if (isStarted())
+            return;
+        try {
+            ServerSocket socket = getServerSocketFactory().createServerSocket(getPort(), getBacklog(), getInetAddress());
+            ServerListener<RemoteReceiverClient> listener = createServerListener(socket);
+
+            runner = createServerRunner(listener, getContext().getExecutorService());
+            runner.setContext(getContext());
+            getContext().getExecutorService().execute(runner);
+            super.start();
+        } catch (Exception ex) {
+            addError("server startup error: " + ex, ex);
+        }
     }
-  }
-  
-  protected ServerListener<RemoteReceiverClient> createServerListener(
-      ServerSocket socket) {
-    return new RemoteReceiverServerListener(socket);
-  }
-  
-  protected ServerRunner<RemoteReceiverClient> createServerRunner(
-      ServerListener<RemoteReceiverClient> listener,
-      Executor executor) {
-    return new RemoteReceiverServerRunner(listener, executor, 
-        getClientQueueSize());
-  }
-  
-  @Override
-  public void stop() {
-    if (!isStarted()) return;
-    try {
-      runner.stop();
-      super.stop();
+
+    protected ServerListener<RemoteReceiverClient> createServerListener(ServerSocket socket) {
+        return new RemoteReceiverServerListener(socket);
     }
-    catch (IOException ex) {
-      addError("server shutdown error: " + ex, ex);
+
+    protected ServerRunner<RemoteReceiverClient> createServerRunner(ServerListener<RemoteReceiverClient> listener, Executor executor) {
+        return new RemoteReceiverServerRunner(listener, executor, getClientQueueSize());
     }
-  }
 
-  @Override
-  protected void append(E event) {
-    if (event == null) return;
-    postProcessEvent(event);
-    final Serializable serEvent = getPST().transform(event);
-    runner.accept(new ClientVisitor<RemoteReceiverClient>() {
-      public void visit(RemoteReceiverClient client) {
-        client.offer(serEvent);
-      }      
-    });
-  }
+    @Override
+    public void stop() {
+        if (!isStarted())
+            return;
+        try {
+            runner.stop();
+            super.stop();
+        } catch (IOException ex) {
+            addError("server shutdown error: " + ex, ex);
+        }
+    }
 
-  /**
-   * Post process an event received via {@link #append(E)}.
-   * @param event
-   */
-  protected abstract void postProcessEvent(E event);
+    @Override
+    protected void append(E event) {
+        if (event == null)
+            return;
+        postProcessEvent(event);
+        final Serializable serEvent = getPST().transform(event);
+        runner.accept(new ClientVisitor<RemoteReceiverClient>() {
+            public void visit(RemoteReceiverClient client) {
+                client.offer(serEvent);
+            }
+        });
+    }
 
-  /**
-   * Gets a transformer that will be used to convert a received event
-   * to a {@link Serializable} form.
-   * @return
-   */
-  protected abstract PreSerializationTransformer<E> getPST();
+    /**
+     * Post process an event received via {@link #append(E)}.
+     * @param event
+     */
+    protected abstract void postProcessEvent(E event);
 
-  /**
-   * Gets the factory used to create {@link ServerSocket} objects.
-   * <p>
-   * The default implementation delegates to 
-   * {@link ServerSocketFactory#getDefault()}.  Subclasses may override to
-   * private a different socket factory implementation.
-   * 
-   * @return socket factory.
-   */
-  protected ServerSocketFactory getServerSocketFactory() throws Exception {
-    return ServerSocketFactory.getDefault();
-  }
+    /**
+     * Gets a transformer that will be used to convert a received event
+     * to a {@link Serializable} form.
+     * @return
+     */
+    protected abstract PreSerializationTransformer<E> getPST();
 
-  /**
-   * Gets the local address for the listener.
-   * @return an {@link InetAddress} representation of the local address.
-   * @throws UnknownHostException
-   */
-  protected InetAddress getInetAddress() throws UnknownHostException {
-    if (getAddress() == null) return null;
-    return InetAddress.getByName(getAddress());
-  }
-  
-  /**
-   * Gets the local port for the listener.
-   * @return local port
-   */
-  public int getPort() {
-    return port;
-  }
+    /**
+     * Gets the factory used to create {@link ServerSocket} objects.
+     * <p>
+     * The default implementation delegates to 
+     * {@link ServerSocketFactory#getDefault()}.  Subclasses may override to
+     * private a different socket factory implementation.
+     * 
+     * @return socket factory.
+     */
+    protected ServerSocketFactory getServerSocketFactory() throws Exception {
+        return ServerSocketFactory.getDefault();
+    }
 
-  /**
-   * Sets the local port for the listener.
-   * @param port the local port to set
-   */
-  public void setPort(int port) {
-    this.port = port;
-  }
+    /**
+     * Gets the local address for the listener.
+     * @return an {@link InetAddress} representation of the local address.
+     * @throws UnknownHostException
+     */
+    protected InetAddress getInetAddress() throws UnknownHostException {
+        if (getAddress() == null)
+            return null;
+        return InetAddress.getByName(getAddress());
+    }
 
-  /**
-   * Gets the listener queue depth.
-   * <p>
-   * This represents the number of connected clients whose connections 
-   * have not yet been accepted.
-   * @return queue depth
-   * @see java.net.ServerSocket
-   */
-  public int getBacklog() {
-    return backlog;
-  }
+    /**
+     * Gets the local port for the listener.
+     * @return local port
+     */
+    public int getPort() {
+        return port;
+    }
 
-  /**
-   * Sets the listener queue depth.
-   * <p>
-   * This represents the number of connected clients whose connections 
-   * have not yet been accepted.
-   * @param backlog the queue depth to set
-   * @see java.net.ServerSocket
-   */
-  public void setBacklog(int backlog) {
-    this.backlog = backlog;
-  }
+    /**
+     * Sets the local port for the listener.
+     * @param port the local port to set
+     */
+    public void setPort(int port) {
+        this.port = port;
+    }
 
-  /**
-   * Gets the local address for the listener.
-   * @return a string representation of the local address
-   */
-  public String getAddress() {
-    return address;
-  }
+    /**
+     * Gets the listener queue depth.
+     * <p>
+     * This represents the number of connected clients whose connections 
+     * have not yet been accepted.
+     * @return queue depth
+     * @see java.net.ServerSocket
+     */
+    public int getBacklog() {
+        return backlog;
+    }
 
-  /**
-   * Sets the local address for the listener.
-   * @param address a host name or a string representation of an IP address
-   */
-  public void setAddress(String address) {
-    this.address = address;
-  }
-  
-  /**
-   * Gets the event queue size used for each client connection. 
-   * @return queue size
-   */
-  public int getClientQueueSize() {
-    return clientQueueSize;
-  }
+    /**
+     * Sets the listener queue depth.
+     * <p>
+     * This represents the number of connected clients whose connections 
+     * have not yet been accepted.
+     * @param backlog the queue depth to set
+     * @see java.net.ServerSocket
+     */
+    public void setBacklog(int backlog) {
+        this.backlog = backlog;
+    }
 
-  /**
-   * Sets the event queue size used for each client connection.
-   * @param clientQueueSize the queue size to set
-   */
-  public void setClientQueueSize(int clientQueueSize) {
-    this.clientQueueSize = clientQueueSize;
-  }
+    /**
+     * Gets the local address for the listener.
+     * @return a string representation of the local address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * Sets the local address for the listener.
+     * @param address a host name or a string representation of an IP address
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * Gets the event queue size used for each client connection. 
+     * @return queue size
+     */
+    public int getClientQueueSize() {
+        return clientQueueSize;
+    }
+
+    /**
+     * Sets the event queue size used for each client connection.
+     * @param clientQueueSize the queue size to set
+     */
+    public void setClientQueueSize(int clientQueueSize) {
+        this.clientQueueSize = clientQueueSize;
+    }
 
 }
-

@@ -21,36 +21,37 @@ import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
-  HashMap<ElementSelector, Action> rulesMap;
-  
-  public SimpleConfigurator(HashMap<ElementSelector, Action> rules) {
-    this.rulesMap = rules;
-  }
-  
-  @Override
-  protected void addImplicitRules(Interpreter interpreter) {
-    NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA();
-    nestedIA.setContext(context);
-    interpreter.addImplicitAction(nestedIA);
+    HashMap<ElementSelector, Action> rulesMap;
 
-    NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA();
-    nestedSimpleIA.setContext(context);
-    interpreter.addImplicitAction(nestedSimpleIA);
-  }
-
-  public Interpreter getInterpreter() {
-    return interpreter;
-  }
-
-  @Override
-  protected void addInstanceRules(RuleStore rs) {
-    for(ElementSelector elementSelector : rulesMap.keySet()) {
-      Action action = rulesMap.get(elementSelector);
-      rs.addRule(elementSelector, action);
+    public SimpleConfigurator(HashMap<ElementSelector, Action> rules) {
+        this.rulesMap = rules;
     }
-  }
+
+    @Override
+    protected void addImplicitRules(Interpreter interpreter) {
+        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(new BeanDescriptionCache());
+        nestedIA.setContext(context);
+        interpreter.addImplicitAction(nestedIA);
+
+        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(new BeanDescriptionCache());
+        nestedSimpleIA.setContext(context);
+        interpreter.addImplicitAction(nestedSimpleIA);
+    }
+
+    public Interpreter getInterpreter() {
+        return interpreter;
+    }
+
+    @Override
+    protected void addInstanceRules(RuleStore rs) {
+        for (ElementSelector elementSelector : rulesMap.keySet()) {
+            Action action = rulesMap.get(elementSelector);
+            rs.addRule(elementSelector, action);
+        }
+    }
 
 }

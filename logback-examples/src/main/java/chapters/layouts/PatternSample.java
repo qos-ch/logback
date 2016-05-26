@@ -23,24 +23,24 @@ import ch.qos.logback.core.ConsoleAppender;
 
 public class PatternSample {
 
-  static public void main(String[] args) throws Exception {
-    Logger rootLogger = (Logger) LoggerFactory.getLogger("root");
-    LoggerContext loggerContext = rootLogger.getLoggerContext();
-    loggerContext.reset();
-    
-    PatternLayoutEncoder encoder = new PatternLayoutEncoder();
-    encoder.setContext(loggerContext);
-    encoder.setPattern("%-5level [%thread]: %message%n");
-    encoder.start();
-    
-    ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
-    appender.setContext(loggerContext);
-    appender.setEncoder(encoder);
-    appender.start();
-    
-    rootLogger.addAppender(appender);
+    static public void main(String[] args) throws Exception {
+        Logger rootLogger = (Logger) LoggerFactory.getLogger("root");
+        LoggerContext loggerContext = rootLogger.getLoggerContext();
+        loggerContext.reset();
 
-    rootLogger.debug("Message 1");
-    rootLogger.warn("Message 2");
-  }
+        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        encoder.setContext(loggerContext);
+        encoder.setPattern("%-5level [%thread]: %message%n");
+        encoder.start();
+
+        ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
+        appender.setContext(loggerContext);
+        appender.setEncoder(encoder);
+        appender.start();
+
+        rootLogger.addAppender(appender);
+
+        rootLogger.debug("Message 1");
+        rootLogger.warn("Message 2");
+    }
 }

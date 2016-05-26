@@ -20,20 +20,20 @@ import java.util.List;
 import ch.qos.logback.core.joran.spi.JoranException;
 
 public interface JMXConfiguratorMBean {
-  
-  void reloadDefaultConfiguration() throws JoranException;
-  
-  void reloadByFileName(String fileName) throws JoranException, FileNotFoundException;
-  
-  void reloadByURL(URL url) throws JoranException;
-  
-  void setLoggerLevel(String loggerName, String levelStr);
-  
-  String getLoggerLevel(String loggerName);
-  
-  String getLoggerEffectiveLevel(String loggerName);
 
-  List<String> getLoggerList();
-  
-  List<String> getStatuses();
+    void reloadDefaultConfiguration() throws JoranException;
+
+    void reloadByFileName(String fileName) throws JoranException, FileNotFoundException;
+
+    void reloadByURL(URL url) throws JoranException;
+
+    void setLoggerLevel(String loggerName, String levelStr);
+
+    String getLoggerLevel(String loggerName);
+
+    String getLoggerEffectiveLevel(String loggerName);
+
+    List<String> getLoggerList();
+
+    List<String> getStatuses();
 }

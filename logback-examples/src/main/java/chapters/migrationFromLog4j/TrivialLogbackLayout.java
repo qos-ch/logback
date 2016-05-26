@@ -16,7 +16,6 @@ package chapters.migrationFromLog4j;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
 
-
 /**
  * 
  * A very simple logback-classic layout which formats a logging event
@@ -27,7 +26,7 @@ import ch.qos.logback.core.LayoutBase;
  */
 public class TrivialLogbackLayout extends LayoutBase<ILoggingEvent> {
 
-  public String doLayout(ILoggingEvent loggingEvent) {
-    return loggingEvent.getMessage();
-  }
+    public String doLayout(ILoggingEvent loggingEvent) {
+        return loggingEvent.getMessage();
+    }
 }

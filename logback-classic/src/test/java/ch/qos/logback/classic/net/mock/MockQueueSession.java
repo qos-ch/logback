@@ -38,171 +38,163 @@ import javax.jms.TopicSubscriber;
 
 public class MockQueueSession implements QueueSession {
 
-  public ObjectMessage createObjectMessage() throws JMSException {
-    return new MockObjectMessage();
-  }
-  
-  public QueueSender createSender(Queue queue) throws JMSException {
-    if (queue == null) {
-      return null;
+    public ObjectMessage createObjectMessage() throws JMSException {
+        return new MockObjectMessage();
     }
-    return new MockQueueSender(queue);
-  }
 
-  public QueueBrowser createBrowser(Queue arg0) throws JMSException {
+    public QueueSender createSender(Queue queue) throws JMSException {
+        if (queue == null) {
+            return null;
+        }
+        return new MockQueueSender(queue);
+    }
 
-    return null;
-  }
+    public QueueBrowser createBrowser(Queue arg0) throws JMSException {
 
-  public QueueBrowser createBrowser(Queue arg0, String arg1) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public QueueBrowser createBrowser(Queue arg0, String arg1) throws JMSException {
 
-  public Queue createQueue(String arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public Queue createQueue(String arg0) throws JMSException {
 
-  public QueueReceiver createReceiver(Queue arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public QueueReceiver createReceiver(Queue arg0) throws JMSException {
 
-  public QueueReceiver createReceiver(Queue arg0, String arg1) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public QueueReceiver createReceiver(Queue arg0, String arg1) throws JMSException {
 
-  public TemporaryQueue createTemporaryQueue() throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public TemporaryQueue createTemporaryQueue() throws JMSException {
 
-  public void close() throws JMSException {
+        return null;
+    }
 
-    
-  }
+    public void close() throws JMSException {
 
-  public void commit() throws JMSException {
+    }
 
-    
-  }
+    public void commit() throws JMSException {
 
-  public BytesMessage createBytesMessage() throws JMSException {
+    }
 
-    return null;
-  }
+    public BytesMessage createBytesMessage() throws JMSException {
 
-  public MessageConsumer createConsumer(Destination arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public MessageConsumer createConsumer(Destination arg0) throws JMSException {
 
-  public MessageConsumer createConsumer(Destination arg0, String arg1) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public MessageConsumer createConsumer(Destination arg0, String arg1) throws JMSException {
 
-  public MessageConsumer createConsumer(Destination arg0, String arg1, boolean arg2) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public MessageConsumer createConsumer(Destination arg0, String arg1, boolean arg2) throws JMSException {
 
-  public TopicSubscriber createDurableSubscriber(Topic arg0, String arg1) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public TopicSubscriber createDurableSubscriber(Topic arg0, String arg1) throws JMSException {
 
-  public TopicSubscriber createDurableSubscriber(Topic arg0, String arg1, String arg2, boolean arg3) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public TopicSubscriber createDurableSubscriber(Topic arg0, String arg1, String arg2, boolean arg3) throws JMSException {
 
-  public MapMessage createMapMessage() throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public MapMessage createMapMessage() throws JMSException {
 
-  public Message createMessage() throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public Message createMessage() throws JMSException {
 
-  public ObjectMessage createObjectMessage(Serializable arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public ObjectMessage createObjectMessage(Serializable arg0) throws JMSException {
 
-  public MessageProducer createProducer(Destination arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public MessageProducer createProducer(Destination arg0) throws JMSException {
 
-  public StreamMessage createStreamMessage() throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public StreamMessage createStreamMessage() throws JMSException {
 
-  public TemporaryTopic createTemporaryTopic() throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public TemporaryTopic createTemporaryTopic() throws JMSException {
 
-  public TextMessage createTextMessage() throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public TextMessage createTextMessage() throws JMSException {
 
-  public TextMessage createTextMessage(String arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public TextMessage createTextMessage(String arg0) throws JMSException {
 
-  public Topic createTopic(String arg0) throws JMSException {
+        return null;
+    }
 
-    return null;
-  }
+    public Topic createTopic(String arg0) throws JMSException {
 
-  public int getAcknowledgeMode() throws JMSException {
+        return null;
+    }
 
-    return 0;
-  }
+    public int getAcknowledgeMode() throws JMSException {
 
-  public MessageListener getMessageListener() throws JMSException {
+        return 0;
+    }
 
-    return null;
-  }
+    public MessageListener getMessageListener() throws JMSException {
 
-  public boolean getTransacted() throws JMSException {
+        return null;
+    }
 
-    return false;
-  }
+    public boolean getTransacted() throws JMSException {
 
-  public void recover() throws JMSException {
+        return false;
+    }
 
-    
-  }
+    public void recover() throws JMSException {
 
-  public void rollback() throws JMSException {
+    }
 
-    
-  }
+    public void rollback() throws JMSException {
 
-  public void run() {
+    }
 
-    
-  }
+    public void run() {
 
-  public void setMessageListener(MessageListener arg0) throws JMSException {
+    }
 
-    
-  }
+    public void setMessageListener(MessageListener arg0) throws JMSException {
 
-  public void unsubscribe(String arg0) throws JMSException {
+    }
 
-    
-  }
-  
+    public void unsubscribe(String arg0) throws JMSException {
+
+    }
 
 }

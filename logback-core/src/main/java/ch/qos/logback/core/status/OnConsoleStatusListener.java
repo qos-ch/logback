@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.status;
 
-import ch.qos.logback.core.Context;
-
 import java.io.PrintStream;
 
 /**
@@ -24,24 +22,9 @@ import java.io.PrintStream;
  */
 public class OnConsoleStatusListener extends OnPrintStreamStatusListenerBase {
 
-  @Override
-  protected PrintStream getPrintStream() {
-    return System.out;
-  }
-
-  /**
-   * This utility method adds a new OnConsoleStatusListener to the context
-   * passed as parameter.
-   *
-   * @param context
-   * @since 1.0.1
-   */
-  static public void addNewInstanceToContext(Context context) {
-    OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
-    onConsoleStatusListener.setContext(context);
-    onConsoleStatusListener.start();
-    context.getStatusManager().add(onConsoleStatusListener);
-  }
-
+    @Override
+    protected PrintStream getPrintStream() {
+        return System.out;
+    }
 
 }

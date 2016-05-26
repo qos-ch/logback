@@ -34,65 +34,64 @@ import ch.qos.logback.core.testUtil.RandomUtil;
  */
 public class AsyncAppenderTest {
 
-  String thisClassName = this.getClass().getName();
-  LoggerContext context = new LoggerContext();
-  AsyncAppender asyncAppender = new AsyncAppender();
-  ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
-  OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
-  LoggingEventBuilderInContext builder = new LoggingEventBuilderInContext(context, thisClassName, UnsynchronizedAppenderBase.class.getName());
-  int diff = RandomUtil.getPositiveInt();
+	String thisClassName = this.getClass().getName();
+	LoggerContext context = new LoggerContext();
+	AsyncAppender asyncAppender = new AsyncAppender();
+	ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
+	OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
+	LoggingEventBuilderInContext builder = new LoggingEventBuilderInContext(context, thisClassName,
+			UnsynchronizedAppenderBase.class.getName());
+	int diff = RandomUtil.getPositiveInt();
 
-  @Before
-  public void setUp() {
-    onConsoleStatusListener.setContext(context);
-    context.getStatusManager().add(onConsoleStatusListener);
-    onConsoleStatusListener.start();
+	@Before
+	public void setUp() {
+		onConsoleStatusListener.setContext(context);
+		context.getStatusManager().add(onConsoleStatusListener);
+		onConsoleStatusListener.start();
 
-    asyncAppender.setContext(context);
-    listAppender.setContext(context);
-    listAppender.setName("list");
-    listAppender.start();
-  }
+		asyncAppender.setContext(context);
+		listAppender.setContext(context);
+		listAppender.setName("list");
+		listAppender.start();
+	}
 
-  @Test
-  public void eventWasPreparedForDeferredProcessing() throws InterruptedException {
-    asyncAppender.addAppender(listAppender);
-    asyncAppender.start();
+	@Test
+	public void eventWasPreparedForDeferredProcessing() {
+		asyncAppender.addAppender(listAppender);
+		asyncAppender.start();
 
-    String k = "k" + diff;
-    MDC.put(k, "v");
-    asyncAppender.doAppend(builder.build(diff));
-    MDC.clear();
-    Thread.sleep(1000);
-    asyncAppender.stop();
-    assertFalse(asyncAppender.isStarted());
+		String k = "k" + diff;
+		MDC.put(k, "v");
+		asyncAppender.doAppend(builder.build(diff));
+		MDC.clear();
 
-    // check the event
-    assertEquals(1, listAppender.list.size());
-    ILoggingEvent e = listAppender.list.get(0);
+		asyncAppender.stop();
+		assertFalse(asyncAppender.isStarted());
 
-    // check that MDC values were correctly retained
-    assertEquals("v", e.getMDCPropertyMap().get(k));
-    assertFalse(e.hasCallerData());
-  }
+		// check the event
+		assertEquals(1, listAppender.list.size());
+		ILoggingEvent e = listAppender.list.get(0);
 
+		// check that MDC values were correctly retained
+		assertEquals("v", e.getMDCPropertyMap().get(k));
+		assertFalse(e.hasCallerData());
+	}
 
-  @Test
-  public void settingIncludeCallerDataPropertyCausedCallerDataToBeIncluded()throws InterruptedException {
-    asyncAppender.addAppender(listAppender);
-    asyncAppender.setIncludeCallerData(true);
-    asyncAppender.start();
+	@Test
+	public void settingIncludeCallerDataPropertyCausedCallerDataToBeIncluded() {
+		asyncAppender.addAppender(listAppender);
+		asyncAppender.setIncludeCallerData(true);
+		asyncAppender.start();
 
+		asyncAppender.doAppend(builder.build(diff));
+		asyncAppender.stop();
 
-    asyncAppender.doAppend(builder.build(diff));
-    Thread.sleep(1000);
-    asyncAppender.stop();
+		// check the event
+		assertEquals(1, listAppender.list.size());
+		ILoggingEvent e = listAppender.list.get(0);
+		assertTrue(e.hasCallerData());
+		StackTraceElement ste = e.getCallerData()[0];
+		assertEquals(thisClassName, ste.getClassName());
+	}
 
-    // check the event
-    assertEquals(1, listAppender.list.size());
-    ILoggingEvent e = listAppender.list.get(0);
-    assertTrue(e.hasCallerData());
-    StackTraceElement ste = e.getCallerData()[0];
-    assertEquals(thisClassName, ste.getClassName());
-  }
 }

@@ -20,28 +20,28 @@ import ch.qos.logback.core.CoreConstants;
 
 public class EchoEncoder<E> extends EncoderBase<E> {
 
-  String fileHeader;
-  String fileFooter;
+    String fileHeader;
+    String fileFooter;
 
-  public void doEncode(E event) throws IOException {
-    String val = event + CoreConstants.LINE_SEPARATOR;
-    outputStream.write(val.getBytes());
-    // necessary if ResilientFileOutputStream is buffered
-    outputStream.flush();
-  }
-
-  public void close() throws IOException {
-    if (fileFooter == null) {
-      return;
+    public void doEncode(E event) throws IOException {
+        String val = event + CoreConstants.LINE_SEPARATOR;
+        outputStream.write(val.getBytes());
+        // necessary if ResilientFileOutputStream is buffered
+        outputStream.flush();
     }
-    outputStream.write(fileFooter.getBytes());
-  }
 
-  public void init(OutputStream os) throws IOException {
-    super.init(os);
-    if (fileHeader == null) {
-      return;
+    public void close() throws IOException {
+        if (fileFooter == null) {
+            return;
+        }
+        outputStream.write(fileFooter.getBytes());
     }
-    outputStream.write(fileHeader.getBytes());
-  }
+
+    public void init(OutputStream os) throws IOException {
+        super.init(os);
+        if (fileHeader == null) {
+            return;
+        }
+        outputStream.write(fileHeader.getBytes());
+    }
 }

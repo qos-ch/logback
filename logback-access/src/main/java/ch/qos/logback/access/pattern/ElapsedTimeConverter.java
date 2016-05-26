@@ -17,9 +17,9 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class ElapsedTimeConverter extends AccessConverter {
 
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-    return Long.toString(accessEvent.getElapsedTime());
-  }
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        return Long.toString(accessEvent.getElapsedTime());
+    }
 
 }

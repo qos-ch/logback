@@ -21,8 +21,8 @@ package ch.qos.logback.core.pattern.color;
  */
 public class CyanCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return ANSIConstants.CYAN_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return ANSIConstants.CYAN_FG;
+    }
 }
