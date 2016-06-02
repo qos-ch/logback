@@ -148,7 +148,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         put(eventObject);
     }
 
-    private boolean isQueueBelowDiscardingThreshold() {
+    public boolean isQueueBelowDiscardingThreshold() {
         return (blockingQueue.remainingCapacity() < discardingThreshold);
     }
 
