@@ -132,6 +132,14 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             super.start();
         }
     }
+    
+    @Override
+    public void stop() {
+        @SuppressWarnings("unchecked")
+        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        map.remove(getName());
+        super.stop();
+    }
 
     protected boolean checkForFileCollisionInPreviousFileAppenders() {
         boolean collisionsDetected = false;
