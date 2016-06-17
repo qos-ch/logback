@@ -136,7 +136,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     @Override
     public void stop() {
         @SuppressWarnings("unchecked")
-        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         map.remove(getName());
         super.stop();
     }
