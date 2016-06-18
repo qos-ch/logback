@@ -161,6 +161,8 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         sbuf.append(LINE_SEPARATOR);
         sbuf.append("  <head>");
         sbuf.append(LINE_SEPARATOR);
+        sbuf.append("    <meta charset=\"UTF-8\"/>");
+        sbuf.append(LINE_SEPARATOR);
         sbuf.append("    <title>");
         sbuf.append(title);
         sbuf.append("</title>");
