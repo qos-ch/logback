@@ -13,6 +13,11 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import ch.qos.logback.core.rolling.RolloverFailure;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.WarnStatus;
+import ch.qos.logback.core.util.FileUtil;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,12 +28,7 @@ import java.util.concurrent.Future;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import ch.qos.logback.core.rolling.RolloverFailure;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.FileUtil;
+import org.apache.commons.compress.compressors1.bzip2.BZip2CompressorOutputStream;
 
 /**
  * The <code>Compression</code> class implements ZIP and GZ file
@@ -49,7 +49,7 @@ public class Compressor extends ContextAwareBase {
     /**
      * @param nameOfFile2Compress
      * @param nameOfCompressedFile
-     * @param innerEntryName 
+     * @param innerEntryName
      *            The name of the file within the zip file. Use for ZIP compression.
      */
     public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
@@ -60,8 +60,75 @@ public class Compressor extends ContextAwareBase {
         case ZIP:
             zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
             break;
+        case BZIP2:
+            bzip2Compress(nameOfFile2Compress, nameOfCompressedFile);
+            break;
         case NONE:
             throw new UnsupportedOperationException("compress method called in NONE compression mode");
+        }
+    }
+
+    private void bzip2Compress(String nameOfFile2bz2, String nameOfbz2edFile) {
+        File file2bz2 = new File(nameOfFile2bz2);
+
+        if (!file2bz2.exists()) {
+            addStatus(new WarnStatus("The file to compress named [" + nameOfFile2bz2 + "] does not exist.", this));
+
+            return;
+        }
+
+        if (!nameOfbz2edFile.endsWith(".bz2")) {
+            nameOfbz2edFile = nameOfbz2edFile + ".bz2";
+        }
+
+        File bz2edFile = new File(nameOfbz2edFile);
+
+        if (bz2edFile.exists()) {
+            addWarn("The target compressed file named [" + nameOfbz2edFile + "] exist already. Aborting file compression.");
+            return;
+        }
+
+        addInfo("BZIP2 compressing [" + file2bz2 + "] as [" + bz2edFile + "]");
+        createMissingTargetDirsIfNecessary(bz2edFile);
+
+        BufferedInputStream bis = null;
+
+        BZip2CompressorOutputStream bz2os = null;
+        try {
+            bis = new BufferedInputStream(new FileInputStream(nameOfFile2bz2));
+            bz2os = new BZip2CompressorOutputStream(new FileOutputStream(nameOfbz2edFile));
+            byte[] inbuf = new byte[BUFFER_SIZE];
+            int n;
+
+            while ((n = bis.read(inbuf)) != -1) {
+                bz2os.write(inbuf, 0, n);
+            }
+
+            bis.close();
+            bis = null;
+            bz2os.close();
+            bz2os = null;
+
+            if (!file2bz2.delete()) {
+                addStatus(new WarnStatus("Could not delete [" + nameOfFile2bz2 + "].", this));
+            }
+        } catch (Exception e) {
+            addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2bz2 + "] into [" + nameOfbz2edFile + "].", this, e));
+        } finally {
+            if (bis != null) {
+                try {
+                    bis.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+            if (bz2os != null) {
+                try {
+                    bz2os.close();
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
         }
     }
 
@@ -239,6 +306,11 @@ public class Compressor extends ContextAwareBase {
                 return fileNamePatternStr.substring(0, len - 4);
             else
                 return fileNamePatternStr;
+        case BZIP2:
+            if (fileNamePatternStr.endsWith(".bz2"))
+                return fileNamePatternStr.substring(0, len - 4);
+            else
+                return fileNamePatternStr;
         case NONE:
             return fileNamePatternStr;
         }
@@ -251,13 +323,13 @@ public class Compressor extends ContextAwareBase {
             addError("Failed to create parent directories for [" + file.getAbsolutePath() + "]");
         }
     }
-    
+
     @Override
     public String toString() {
         return this.getClass().getName();
     }
 
-    
+
     public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
         ExecutorService executorService = context.getExecutorService();
@@ -282,5 +354,5 @@ public class Compressor extends ContextAwareBase {
         }
     }
 
-  
+
 }
