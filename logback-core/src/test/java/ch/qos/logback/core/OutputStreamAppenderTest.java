@@ -13,10 +13,14 @@
  */
 package ch.qos.logback.core;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
+import ch.qos.logback.core.encoder.EncoderBase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -81,6 +85,28 @@ public class OutputStreamAppenderTest {
         headerFooterCheck(FILE_HEADER, PRESENTATION_HEADER, PRESENTATION_FOOTER, FILE_FOOTER);
     }
 
+    @Test
+    public void encoderIsInitializedWithOutputStream() throws IOException {
+        TestEncoderBase<Object> encoder = new TestEncoderBase<Object>();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        OutputStreamAppender<Object> wa = new OutputStreamAppender<Object>();
+        wa.setEncoder(encoder);
+        wa.setOutputStream(baos);
+
+        assertNotNull(encoder.getOutputStream());
+
+        // reset the output stream of the TestEncoder
+        encoder.init(null);
+
+        // now initialize the encoder in different order
+        wa = new OutputStreamAppender<Object>();
+        wa.setOutputStream(baos);
+        wa.setEncoder(encoder);
+
+        assertNotNull(encoder.getOutputStream());
+    }
+
     public void headerFooterCheck(String fileHeader, String presentationHeader, String presentationFooter, String fileFooter) {
         OutputStreamAppender<Object> wa = new OutputStreamAppender<Object>();
         wa.setContext(context);
@@ -117,5 +143,18 @@ public class OutputStreamAppenderTest {
 
     String emtptyIfNull(String s) {
         return s == null ? "" : s;
+    }
+
+    private static class TestEncoderBase<E> extends EncoderBase<E> {
+
+        @Override
+        public void doEncode(E event) throws IOException { }
+
+        @Override
+        public void close() throws IOException { }
+
+        public OutputStream getOutputStream() {
+            return outputStream;
+        }
     }
 }

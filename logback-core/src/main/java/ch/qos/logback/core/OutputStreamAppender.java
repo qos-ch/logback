@@ -227,6 +227,8 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     public void setEncoder(Encoder<E> encoder) {
         this.encoder = encoder;
+
+        encoderInit();
     }
 
 }
