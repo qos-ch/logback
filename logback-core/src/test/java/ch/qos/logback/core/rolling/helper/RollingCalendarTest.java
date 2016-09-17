@@ -90,13 +90,15 @@ public class RollingCalendarTest {
 
         for (int p = 20; p > -100; p--) {
             long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
-            Date nowDate = new Date(now);
-            Date result = rc.getEndOfNextNthPeriod(nowDate, p);
-            long offset = rc.getTimeZone().getRawOffset() + rc.getTimeZone().getDSTSavings();
+            Date startDate = new Date(now);
+            Date endDate = rc.getEndOfNextNthPeriod(startDate, p);
+            long startDateOffset = rc.getTimeZone().getOffset(now);
+            long endDateOffset = rc.getTimeZone().getOffset(endDate.getTime());
+            long deltaOffset = endDateOffset - startDateOffset;
 
-            long origin = now - ((now + offset) % (MILLIS_IN_DAY));
-            long expected = origin + p * MILLIS_IN_DAY;
-            assertEquals("p=" + p, expected, result.getTime());
+            long origin = now - ((now + startDateOffset) % (MILLIS_IN_DAY));
+            long expected = origin + p * MILLIS_IN_DAY - deltaOffset;
+            assertEquals("p=" + p, expected, endDate.getTime());
         }
     }
 
