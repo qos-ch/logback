@@ -1,5 +1,15 @@
+(function() {
+  var rightEl = document.getElementById('right');
+  var rightOpenEl = document.createElement('a');
+  rightOpenEl.href = '#right';
+  rightOpenEl.className = 'handle right_handle';
+  rightOpenEl.id = 'right_open';
+  rightOpenEl.innerHTML = 'Chapter Index'
+  rightEl.parentNode.insertBefore(rightOpenEl, rightEl.nextSibling);
+})();
+document.write('<a href="#right_close" class="slide_close" id="right_close"></a>');
 
-document.write('<p class="menu_header">Chapter Index</p>')
+document.write('<p class="menu_header">Chapter Index</p>');
 document.write('<p class="menu"><a href="introduction.html"><b>Ch1: Introduction to logback</b></a></p>');
 document.write('<p class="menu"><a href="architecture.html"><b>Ch2: Architecture</b></a></p>');
 document.write('<p class="menu"><a href="configuration.html"><b>Ch3: Configuration</b></a></p>');

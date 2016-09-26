@@ -22,7 +22,7 @@ body {
 }
 
 #job img {
-   border:1px solid #DDDDDD;
+  border:1px solid #DDDDDD;
 }
 
 #job:hover img {
@@ -30,11 +30,11 @@ body {
 }
 
 p.menu {
- padding-top: 0px;
- padding-bottom: 0px; 
- margin-top: 0px;
- margin-bottom: 0px;
- font-size: smaller;
+  padding-top: 0px;
+  padding-bottom: 0px; 
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: smaller;
 }
 
 
@@ -73,7 +73,7 @@ p.menu {
   border-radius: 3px;
 }
 
-#left a, #right a {
+#left p a, #right p a {
   display: block; 
   width: 95.5%; 
   margin: 0px; 
@@ -130,22 +130,22 @@ p.menu_header {
 
 #right {
   position: absolute;
-  right: 0px;        
+  right: 0px;
   width: 12em;
   color: #564b47;
   margin: 4px 4px 0px 0px; 
   padding: 0px;
-  background-color: #ffffff;    
+  background-color: #ffffff;
   border: 1px solid #cccccc;
   font-size: 80%;
 }
 
 #left img {
-	display: block;
-	margin: 20px 0 20px 17px;
-	border: none;
-	width: 90px;
-	height: 30px;
+  display: block;
+  margin: 20px 0 20px 17px;
+  border: none;
+  width: 90px;
+  height: 30px;
 }
 
 #headerLine {
@@ -160,36 +160,36 @@ p.menu_header {
   min-width:50em;
   margin: 0px 15em 0px 15em;
   padding: 0px;
-  background-color: #ffffff;  
+  background-color: #ffffff;
   line-height: 130%;
 }
 
 #content img {
-	border:none;
-	margin-left: auto;
-	margin-right: auto;
-	display: block;
+  border:none;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 span.asGroovy {
-   background: #fff; 
-   color: #0079C5;   
-   font-family: "Comic Sans MS", sans-serif;
-   white-space: nowrap;
-   font-size: 80%;
+  background: #fff; 
+  color: #0079C5;   
+  font-family: "Comic Sans MS", sans-serif;
+  white-space: nowrap;
+  font-size: 80%;
 
-   border-top:    2px solid #DDD;  
-   border-left:   2px solid #DDD;  
-   border-right:  2px solid #888;  
-   border-bottom: 2px solid #888;    
-   padding: 0px 1em 0px 1em;
-   margin:  -4px 4px 0 4px; 
-   float: right;
+  border-top:    2px solid #DDD;
+  border-left:   2px solid #DDD;
+  border-right:  2px solid #888;
+  border-bottom: 2px solid #888;
+  padding: 0px 1em 0px 1em;
+  margin:  -4px 4px 0 4px; 
+  float: right;
 }
- 
+
 span.asGroovy:hover {
-   background: #E0E0EF;
-   cursor: pointer;
+  background: #E0E0EF;
+  cursor: pointer;
 }
 
 /* ------------------------------------ */
@@ -217,4 +217,54 @@ td:hover .anchor {
   text-decoration: none;
 }
 
+/**
+ * Code added for mobile compatibility
+ */
+.slide_close { display: none; }
+.handle { display: none; }
 
+@media only screen
+and (max-width: 1175px) {
+  #right,#left {
+    display: none;
+    position: fixed;
+  }
+  #right:target,#left:target {
+    display: block;
+  }
+  #right:target+#right_open::after,#left:target+#left_open::after {
+    content: '';
+  }
+  .handle {
+    display: inline-block;
+    width: 50%;
+    height: 1.5em;
+    background-color: #FFE0B0;
+    border: thin solid #cccccc;
+    top: 0;
+    position: fixed;
+    text-align: center;
+  }
+  .handle::after {
+    content: '\25BC';
+  }
+  .slide_close::after {
+    content: '\25B2';
+  }
+  a.handle {
+    color: #505050;
+  }
+  #right_open {
+    right: 0;
+  }
+  body #content {
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+  .slide_close {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 4px;
+  }
+}
