@@ -365,6 +365,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
       String subjectStr = "Undefined subject";
       if (subjectLayout != null) {
         subjectStr = subjectLayout.doLayout(lastEventObject);
+        int firstNewLine = (subjectStr != null) ? subjectStr.indexOf('\n') : -1;
+        if(firstNewLine > 0) // Subject contains line break; will cause error in SMTP protocol
+          subjectStr = subjectStr.substring(0, firstNewLine);
       }
       mimeMsg.setSubject(subjectStr, charsetEncoding);
 
