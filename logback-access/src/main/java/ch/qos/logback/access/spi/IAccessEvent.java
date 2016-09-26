@@ -79,6 +79,8 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
   String getRemoteAddr();
 
+  long getRequestDuration();
+
   String getRequestHeader(String key);
 
   Enumeration getRequestHeaderNames();

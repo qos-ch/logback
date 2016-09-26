@@ -177,8 +177,12 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context,
 
       getNext().invoke(request, response);
 
-      TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
-      IAccessEvent accessEvent = new AccessEvent(request, response, adapter);
+      long now = System.currentTimeMillis();
+
+      long duration = now - request.getCoyoteRequest().getStartTime();
+
+        TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
+      IAccessEvent accessEvent = new AccessEvent(request, response, adapter, duration);
 
       if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
         return;

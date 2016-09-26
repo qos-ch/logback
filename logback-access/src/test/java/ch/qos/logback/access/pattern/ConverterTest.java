@@ -194,7 +194,7 @@ public class ConverterTest  {
 
   private IAccessEvent createEvent() {
     DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
-    return new AccessEvent(request, response, dummyAdapter);
+    return new AccessEvent(request, response, dummyAdapter, 100);
   }
 
 }

@@ -52,7 +52,7 @@ public class JaninoEventEvaluatorTest {
   public void smoke() throws EvaluationException {
     evaluator.setExpression("event.getProtocol().equals(\"testProtocol\")");
     evaluator.start();
-    IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    IAccessEvent ae = new AccessEvent(request, response, serverAdapter, 100);
     assertTrue( evaluator.evaluate(ae));
   }
 
@@ -61,7 +61,7 @@ public class JaninoEventEvaluatorTest {
     evaluator.setExpression("String protocol = event.getProtocol();" +
             "return protocol.equals(\"testProtocol\");");
     evaluator.start();
-    IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    IAccessEvent ae = new AccessEvent(request, response, serverAdapter, 100);
     assertTrue(evaluator.evaluate(ae));
   }
 
@@ -69,7 +69,7 @@ public class JaninoEventEvaluatorTest {
   public void invalidExpression() throws EvaluationException {
     evaluator.setExpression("return true");
     evaluator.start();
-    IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
+    IAccessEvent ae = new AccessEvent(request, response, serverAdapter, 100);
    try {
      evaluator.evaluate(ae);
      fail("Was expecting an exception");

@@ -78,15 +78,22 @@ public class AccessEvent implements Serializable, IAccessEvent {
    */
   private long timeStamp = 0;
 
-  public AccessEvent(HttpServletRequest httpRequest,
-      HttpServletResponse httpResponse, ServerAdapter adapter) {
-    this.httpRequest = httpRequest;
-    this.httpResponse = httpResponse;
-    this.timeStamp = System.currentTimeMillis();
-    this.serverAdapter = adapter;
-  }
+    /**
+     * The number of milliseconds elapsed from the inception of the request until the creation of the log event.
+     */
+    private long duration = 0;
 
-  /**
+    public AccessEvent(HttpServletRequest httpRequest,
+                       HttpServletResponse httpResponse, ServerAdapter adapter, long duration) {
+        this.httpRequest = httpRequest;
+        this.httpResponse = httpResponse;
+        this.timeStamp = System.currentTimeMillis();
+        this.serverAdapter = adapter;
+
+        this.duration = duration;
+    }
+
+    /**
    * Returns the underlying HttpServletRequest. After serialization the returned 
    * value will be null. 
    * 
@@ -222,6 +229,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
     return remoteAddr;
   }
+
+    public long getRequestDuration() {
+        return duration;
+    }
 
   public String getRequestHeader(String key) {
     String result = null;
