@@ -171,7 +171,7 @@ public class FileNamePattern extends ContextAwareBase {
             if (p instanceof LiteralConverter) {
                 buf.append(p.convert(null));
             } else if (p instanceof IntegerTokenConverter) {
-                buf.append("(\\d{1,3})");
+                buf.append("(\\d{1,5})");
             } else if (p instanceof DateTokenConverter) {
                 buf.append(p.convert(date));
             }
