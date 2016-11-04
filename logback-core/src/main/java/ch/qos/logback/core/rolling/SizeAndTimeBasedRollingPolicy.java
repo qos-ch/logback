@@ -15,7 +15,7 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
             addError("maxFileSize property is mandatory.");
             return;
         } else {
-            addInfo("Achive files will be limied to ["+maxFileSize+"] each.");
+            addInfo("Archive files will be limited to ["+maxFileSize+"] each.");
         }
         
         sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
