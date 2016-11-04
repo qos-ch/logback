@@ -12,7 +12,7 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
     public void start() {
         SizeAndTimeBasedFNATP<E> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<E>(); 
         if(maxFileSize == null) {
-            addError("MaxFileSize property must be set");
+            addError("maxFileSize property is mandatory.");
             return;
         } else {
             addInfo("Achive files will be limied to ["+maxFileSize+"] each.");

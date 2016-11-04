@@ -42,9 +42,12 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         // we depend on certain fields having been initialized in super class
         super.start();
 
+        addWarn("SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead");
+        
         if (!super.isErrorFree())
             return;
 
+        
         if (maxFileSize == null) {
             addError("maxFileSize property is mandatory.");
             withErrors();
