@@ -15,7 +15,7 @@ package org.slf4j.impl;
 
 import org.slf4j.spi.MDCAdapter;
 
-import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.util.LogbackMDCAdapter;
 
 /**
  * This implementation is bound to {@link LogbackMDCAdapter}.

@@ -11,68 +11,68 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.pattern;
+package ch.qos.logback.core.pattern;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.spi.MDCAware;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.MDC;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.util.SystemInfo;
 
 public class MDCConverterTest {
-
-    LoggerContext lc;
     MDCConverter converter;
-    int diff = RandomUtil.getPositiveInt();
 
     @Before
     public void setUp() throws Exception {
-        lc = new LoggerContext();
         converter = new MDCConverter();
         converter.start();
-        MDC.clear();
     }
 
     @After
     public void tearDown() throws Exception {
-        lc = null;
         converter.stop();
         converter = null;
-        MDC.clear();
     }
 
     @Test
     public void testConvertWithOneEntry() {
-        String k = "MDCConverterTest_k" + diff;
-        String v = "MDCConverterTest_v" + diff;
+        String k = "MDCConverterTest_k";
+        String v = "MDCConverterTest_v";
 
-        MDC.put(k, v);
-        ILoggingEvent le = createLoggingEvent();
-        String result = converter.convert(le);
+        Event event = new Event();
+        event.putMDC(k, v);
+
+        String result = converter.convert(event);
         assertEquals(k + "=" + v, result);
     }
 
     @Test
     public void testConvertWithMultipleEntries() {
-        MDC.put("testKey", "testValue");
-        MDC.put("testKey2", "testValue2");
-        ILoggingEvent le = createLoggingEvent();
-        String result = converter.convert(le);
+        Event event = new Event();
+        event.putMDC("testKey", "testValue");
+        event.putMDC("testKey2", "testValue2");
+
+        String result = converter.convert(event);
         boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
         assertTrue(result + " is not conform", isConform);
     }
 
-    private ILoggingEvent createLoggingEvent() {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+    private static class Event implements MDCAware {
+
+        private Map<String, String> mdc = new HashMap<String, String>();
+
+        public void putMDC(String key, String value) {
+            mdc.put(key, value);
+        }
+
+        @Override
+        public Map<String, String> getMDCPropertyMap() {
+            return mdc;
+        }
     }
 }

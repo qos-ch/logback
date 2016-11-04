@@ -19,6 +19,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ DurationTest.class, FileSizeTest.class, FileUtilTest.class, OptionHelperTest.class, StatusPrinterTest.class, TimeUtilTest.class,
-        ContentTypeUtilTest.class, CharSequenceToRegexMapperTest.class })
+        ContentTypeUtilTest.class, CharSequenceToRegexMapperTest.class, LogbackMDCAdapterTest.class  })
 public class PackageTest {
 }

@@ -32,6 +32,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
+import ch.qos.logback.core.pattern.MDCConverter;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -71,7 +72,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("72", buf.toString());
+            assertEquals("73", buf.toString());
         }
     }
 

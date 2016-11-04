@@ -44,6 +44,7 @@ import ch.qos.logback.access.pattern.SessionIDConverter;
 import ch.qos.logback.access.pattern.StatusCodeConverter;
 import ch.qos.logback.access.pattern.ThreadNameConverter;
 import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.core.pattern.MDCConverter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.color.*;
 import ch.qos.logback.core.pattern.parser.Parser;
@@ -158,6 +159,9 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
         defaultConverterMap.put("T", ElapsedSecondsConverter.class.getName());
         
         defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
+
+        defaultConverterMap.put("X", MDCConverter.class.getName());
+        defaultConverterMap.put("mdc", MDCConverter.class.getName());
 
         defaultConverterMap.put("black", BlackCompositeConverter.class.getName());
         defaultConverterMap.put("red", RedCompositeConverter.class.getName());

@@ -20,6 +20,7 @@ import ch.qos.logback.classic.pattern.*;
 import ch.qos.logback.classic.pattern.color.HighlightingCompositeConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.pattern.MDCConverter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.color.*;
 import ch.qos.logback.core.pattern.parser.Parser;

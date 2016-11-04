@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ SpacePadderTest.class, ch.qos.logback.core.pattern.parser.PackageTest.class })
+@SuiteClasses({ SpacePadderTest.class, ch.qos.logback.core.pattern.parser.PackageTest.class, MDCConverterTest.class })
 public class PackageTest {
 }

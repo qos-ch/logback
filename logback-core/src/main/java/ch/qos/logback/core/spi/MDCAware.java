@@ -11,13 +11,14 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.util;
+package ch.qos.logback.core.spi;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Map;
 
-@RunWith(Suite.class)
-@SuiteClasses({ ContextInitializerTest.class, ContextInitializerAutoConfigTest.class, LevelToSyslogSeverityTest.class })
-public class PackageTest {
+public interface MDCAware {
+
+    /**
+     * Returns the MDC map. The returned value can be an empty map but not null.
+     */
+    Map<String, String> getMDCPropertyMap();
 }
