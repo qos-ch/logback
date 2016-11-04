@@ -34,7 +34,15 @@
  
     <hr width="80%" align="center" />
 
-    <h3>May xxx, 2016, Release of version 1.1.8</h3>
+    <h3>November, 2016, Release of version 1.1.8</h3>
+
+    <p>Removed the two period safeguard, aka untouchable periods, for
+    archive removal beyond the size specified by <span
+    class="option">totalSizeCap</span> in
+    <code>TimeBasedRollingPolicy</code>. It turns out the safegaurd is
+    not required and is unexpected as attested by <a
+    href="http://jira.qos.ch/browse/LOGBACK-1166">LOGBACK-1166</a>.
+    </p>
     
     <p>Fixed issue with Joran incorrectly reporting "Unexpected
     aggregationType AS_BASIC_PROPERTY_COLLECTION". This issue was
@@ -50,6 +58,8 @@
     href="http://jira.qos.ch/browse/LOGBACK-1159">LOGBACK-1159</a> by
     David J. M. Karlsen.
     </p>
+
+
 
     <p>Added logback-bom module for use as a Maven "Bill of Materials"
     <em>pom</em> file. This was requested in <a

@@ -337,6 +337,13 @@ public static void main(String[] args) {
   which allow convenient access to logback's internal state.
   </p>
 
+   <h4 class="doAnchor" name="dumpingStatusData">Status data</h4>
+
+   <p class="highlight">Enabling output of status data usually goes a
+   long way in the diagnosis of issues with logback. As such, it is
+   highly recommended and should be considered as a recourse of
+   <b>first</b> resort.</p>
+
    <p>Instead of invoking <code>StatusPrinter</code> programmatically
    from your code, you can instruct the configuration file to dump
    status data, even in the absence of errors. To achieve this, you
@@ -349,7 +356,6 @@ public static void main(String[] args) {
    asking, no, the root logger will <em>not</em> be set to
    <code>DEBUG</code>.)
    </p>
-
 
    <p class="example">Example: Basic configuration file using debug
    mode
@@ -372,7 +378,7 @@ public static void main(String[] args) {
   &lt;/root>
 &lt;/configuration></pre>
   
-   <p>Setting the <code>debug</code> attribute within the
+   <p>Setting <code>debug="true"</code> within the
    &lt;configuration&gt; element will output status information,
    assuming that:
    </p>
@@ -395,6 +401,7 @@ public static void main(String[] args) {
    every case.</p>
 
  
+ 
    <p><span class="label">Forcing status output</span> In the absence
    of status messages, tracking down a rogue <em>logback.xml</em>
    configuration file can be difficult, especially in production where
@@ -405,6 +412,29 @@ public static void main(String[] args) {
    force output of status messages. The "logback.statusListenerClass"
    system property can also be used to silence output automatically
    generated in case of errors.
+   </p>
+
+   <p>By the way, setting <code>debug="true"</code> is strictly
+   equivalent to installing an
+   <code>OnConsoleStatusListener</code>. Status listeners are
+   disccussed further below. The installation of
+   <code>OnConsoleStatusListener</code> is shown next. </p>
+
+   <p class="example">Example: Registering a status listener
+   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
+   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
+   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
+  <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
+
+  ... the rest of the configuration file  
+&lt;/configuration></pre>
+
+
+   <p>Enabling output of status data, either via the debug attribute
+   or equivalently by installing <code>OnConsoleStatusListener</code>,
+   will go a long way in helping you diagnose logback issues. As such,
+   enabling logback status data is very highly recommended and should
+   be considered as a recourse of <b>first</b> resort.
    </p>
 
    <h3 class="doAnchor" name="configFileProperty">Specifying the

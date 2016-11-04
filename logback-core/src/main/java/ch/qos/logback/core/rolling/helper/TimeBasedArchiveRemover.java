@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static ch.qos.logback.core.CoreConstants.UNBOUND_TOTAL_SIZE;
+import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     final FileNamePattern fileNamePattern;
     final RollingCalendar rc;
     private int maxHistory = CoreConstants.UNBOUND_HISTORY;
-    private long totalSizeCap = CoreConstants.UNBOUND_TOTAL_SIZE;
+    private long totalSizeCap = CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
     final boolean parentClean;
     long lastHeartBeat = UNINITIALIZED;
 
@@ -238,7 +238,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         @Override
         public void run() {
             clean(now);
-            if (totalSizeCap != UNBOUND_TOTAL_SIZE && totalSizeCap > 0) {
+            if (totalSizeCap != UNBOUNDED_TOTAL_SIZE_CAP && totalSizeCap > 0) {
                 capTotalSize(now);
             }
         }

@@ -21,6 +21,11 @@ public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> 
         sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
         timeBasedFileNamingAndTriggeringPolicy = sizeAndTimeBasedFNATP;
         
+        if(!isUnboundedTotalSizeCap() && totalSizeCap.getSize() < maxFileSize.getSize()) {
+            addError("totalSizeCap of ["+totalSizeCap+"] is smaller than maxFileSize ["+maxFileSize+"] which is non-sensical");
+            return;
+        }
+        
         // most work is done by the parent
         super.start();
     }

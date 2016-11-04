@@ -130,6 +130,7 @@ public class ContextBase implements Context, LifeCycle {
         // We don't check "started" here, because the executor service uses
         // lazy initialization, rather than being created in the start method
         stopExecutorServices();
+        
         started = false;
     }
 
@@ -142,6 +143,7 @@ public class ContextBase implements Context, LifeCycle {
      * shutdown hook
      */
     public void reset() {
+        
         removeShutdownHook();
         getLifeCycleManager().reset();
         propertyMap.clear();
