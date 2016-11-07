@@ -61,7 +61,7 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * unreliable. Last but not least, Joran is quite tiny and is expected to remain
  * so.
  * 
- * @author Ceki G&uuml;lcu&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  * 
  */
 public class Interpreter {

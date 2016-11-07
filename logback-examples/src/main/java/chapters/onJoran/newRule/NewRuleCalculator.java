@@ -32,7 +32,7 @@ import chapters.onJoran.calculator.ComputationAction1;
  * <p>This example relies heavily on the code from the joran.calculator
  * package.
  * 
- * @author Ceki G&uuml;ulc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class NewRuleCalculator {
     public static void main(String[] args) throws Exception {

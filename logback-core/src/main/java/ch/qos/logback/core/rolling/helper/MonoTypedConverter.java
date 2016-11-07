@@ -16,7 +16,7 @@ package ch.qos.logback.core.rolling.helper;
 /**
  * Converters which can deal only with one type should implement this interface.
  * 
- * @author Ceki G&ulcu;lc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  * 
  */
 public interface MonoTypedConverter {

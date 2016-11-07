@@ -18,7 +18,7 @@ import ch.qos.logback.classic.Level;
 /**
  * Bean pairing an MDC value with a log level.
  * 
- * @author Raplh Goers
+ * @author Ralph Goers
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MDCValueLevelPair {

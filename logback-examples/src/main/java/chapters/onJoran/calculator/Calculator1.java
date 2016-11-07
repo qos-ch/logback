@@ -27,7 +27,7 @@ import chapters.onJoran.SimpleConfigurator;
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
  * 
- * @author Ceki G&uuml;ulc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class Calculator1 {
 

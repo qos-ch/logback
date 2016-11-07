@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class SelectionRule {
 

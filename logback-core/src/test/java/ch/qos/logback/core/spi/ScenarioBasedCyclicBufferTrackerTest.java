@@ -21,7 +21,7 @@ import static junit.framework.Assert.assertEquals;
 /**
  * A
  *
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class ScenarioBasedCyclicBufferTrackerTest {
 

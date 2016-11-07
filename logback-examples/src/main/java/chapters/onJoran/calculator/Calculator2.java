@@ -33,7 +33,7 @@ import chapters.onJoran.SimpleConfigurator;
  * 
  * You can test this application with the sample XML file <em>calculator3.xml</em>.
  * 
- * @author Ceki G&uuml;ulc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class Calculator2 {
     public static void main(String[] args) throws Exception {

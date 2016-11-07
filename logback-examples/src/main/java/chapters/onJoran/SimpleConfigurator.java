@@ -27,7 +27,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 /**
  * A minimal configurator extending GenericConfigurator.
  * 
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  *
  */
 public class SimpleConfigurator extends GenericConfigurator {

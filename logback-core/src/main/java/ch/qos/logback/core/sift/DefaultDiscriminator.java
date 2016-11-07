@@ -14,7 +14,7 @@
 package ch.qos.logback.core.sift;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class DefaultDiscriminator<E> extends AbstractDiscriminator<E> {
 
