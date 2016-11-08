@@ -20,7 +20,7 @@ import java.util.TimeZone;
 /**
  * A synchronized implementation of  SimpleDateFormat which uses caching internally.
  *
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  * @since 0.9.29
  */
 public class CachingDateFormatter {

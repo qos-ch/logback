@@ -31,7 +31,7 @@ import org.osgi.framework.Constants;
  * Runs a hosted version of Felix for testing purposes. Any bundle errors are
  * reported via the FrameworkListener passed to the constructor.
  * 
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class FelixHost {
 

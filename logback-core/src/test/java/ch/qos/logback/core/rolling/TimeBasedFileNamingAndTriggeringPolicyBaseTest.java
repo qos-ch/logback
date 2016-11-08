@@ -29,7 +29,7 @@ import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 

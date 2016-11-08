@@ -27,7 +27,7 @@ import ch.qos.logback.core.spi.LifeCycle;
  * 
  * 
  * @author Ceki G&uuml;lc&uuml;
- * @author Joen Huxhorn
+ * @author Joern Huxhorn
  * @author Maarten Bosteels
  * 
  * @param <E>

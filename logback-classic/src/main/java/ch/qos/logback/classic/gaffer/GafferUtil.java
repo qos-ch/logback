@@ -24,7 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class GafferUtil {
 

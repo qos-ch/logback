@@ -21,7 +21,7 @@ import java.util.*;
 /**
  * Another tracker implementtion for testing purposes only.
  *
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class CyclicBufferTrackerT<E> implements ComponentTracker<CyclicBuffer<E>> {
 

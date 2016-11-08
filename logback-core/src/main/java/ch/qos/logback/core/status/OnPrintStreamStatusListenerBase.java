@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  *  Print all new incoming status messages on the on the designated PrintStream.
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 abstract class OnPrintStreamStatusListenerBase extends ContextAwareBase implements StatusListener, LifeCycle {
 

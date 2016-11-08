@@ -25,7 +25,7 @@ import ch.qos.logback.core.util.DatePatternToRegexUtil;
 /**
  * Returns a date formatted by SimpleDateFormatter.
  * 
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTypedConverter {
 
