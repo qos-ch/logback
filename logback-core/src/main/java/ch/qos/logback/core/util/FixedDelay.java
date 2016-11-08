@@ -32,7 +32,6 @@ public class FixedDelay implements DelayStrategy {
      * @param subsequentDelay value for all other delays
      */
     public FixedDelay(long initialDelay, long subsequentDelay) {
-        String s = new String();
         this.nextDelay = initialDelay;
         this.subsequentDelay = subsequentDelay;
     }
