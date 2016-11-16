@@ -39,7 +39,7 @@ import org.junit.Test;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferConfigurator;
+//import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
@@ -98,8 +98,8 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     void gConfigure(File file) throws JoranException {
-        GafferConfigurator gc = new GafferConfigurator(loggerContext);
-        gc.run(file);
+//        GafferConfigurator gc = new GafferConfigurator(loggerContext);
+//        gc.run(file);
     }
 
     @Test(timeout = 4000L)

@@ -55,18 +55,18 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
     public List<SaxEvent> recordEvents(InputSource inputSource) throws JoranException {
         SAXParser saxParser = buildSaxParser();
-        try {
-            saxParser.parse(inputSource, this);
+//        try {
+//            saxParser.parse(inputSource, this);
             return saxEventList;
-        } catch (IOException ie) {
-            handleError("I/O error occurred while parsing xml file", ie);
-        } catch (SAXException se) {
-            // Exception added into StatusManager via Sax error handling. No need to add it again
-            throw new JoranException("Problem parsing XML document. See previously reported errors.", se);
-        } catch (Exception ex) {
-            handleError("Unexpected exception while parsing XML document.", ex);
-        }
-        throw new IllegalStateException("This point can never be reached");
+//        } catch (IOException ie) {
+//            handleError("I/O error occurred while parsing xml file", ie);
+//        } catch (SAXException se) {
+//            // Exception added into StatusManager via Sax error handling. No need to add it again
+//            throw new JoranException("Problem parsing XML document. See previously reported errors.", se);
+//        } catch (Exception ex) {
+//            handleError("Unexpected exception while parsing XML document.", ex);
+//        }
+//        throw new IllegalStateException("This point can never be reached");
     }
 
     private void handleError(String errMsg, Throwable t) throws JoranException {

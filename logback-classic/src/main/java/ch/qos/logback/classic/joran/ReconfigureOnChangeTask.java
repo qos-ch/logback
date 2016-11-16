@@ -68,7 +68,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
                 lc.reset();
                 // avoid directly referring to GafferConfigurator so as to avoid
                 // loading groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-                GafferUtil.runGafferConfiguratorOn(lc, this, mainConfigurationURL);
+//                GafferUtil.runGafferConfiguratorOn(lc, this, mainConfigurationURL);
             } else {
                 addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
             }

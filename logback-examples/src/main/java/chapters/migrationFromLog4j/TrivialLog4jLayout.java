@@ -24,19 +24,19 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public class TrivialLog4jLayout extends Layout {
+public class TrivialLog4jLayout{
 
     public void activateOptions() {
         // there are no options to activate
     }
 
-    public String format(LoggingEvent loggingEvent) {
-        return loggingEvent.getRenderedMessage();
-    }
+//    public String format(LoggingEvent loggingEvent) {
+////        return loggingEvent.getRenderedMessage();
+//    }
 
-    @Override
-    public boolean ignoresThrowable() {
-        return true;
-    }
+//    @Override
+//    public boolean ignoresThrowable() {
+//        return true;
+//    }
 
 }
