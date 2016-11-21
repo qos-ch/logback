@@ -302,7 +302,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.14</version>
+          <version>1.15</version>
           <configuration>
             <ignores>
               <ignore>sun.reflect.Reflection</ignore>
