@@ -13,12 +13,12 @@
  */
 package ch.qos.logback.classic.util;
 
+import org.slf4j.spi.MDCAdapter;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.slf4j.spi.MDCAdapter;
 
 /**
  * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument for
@@ -193,10 +193,14 @@ public class LogbackMDCAdapter implements MDCAdapter {
     public void setContextMap(Map<String, String> contextMap) {
         lastOperation.set(WRITE_OPERATION);
 
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
-        newMap.putAll(contextMap);
+        if (contextMap == null) {
+            copyOnThreadLocal.remove();
+        } else {
+            Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
+            newMap.putAll(contextMap);
 
-        // the newMap replaces the old one for serialisation's sake
-        copyOnThreadLocal.set(newMap);
+            // the newMap replaces the old one for serialisation's sake
+            copyOnThreadLocal.set(newMap);
+        }
     }
 }
