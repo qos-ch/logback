@@ -3,6 +3,7 @@ package ch.qos.logback.core.joran.util.beans;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -20,6 +21,10 @@ public class BeanDescriptionCache extends ContextAwareBase {
 
     private Map<Class<?>, BeanDescription> classToBeanDescription = new HashMap<Class<?>, BeanDescription>();
     private BeanDescriptionFactory beanDescriptionFactory;
+
+    public BeanDescriptionCache(Context context) {
+        setContext(context);
+    }
 
     private BeanDescriptionFactory getBeanDescriptionFactory() {
         if (beanDescriptionFactory == null) {

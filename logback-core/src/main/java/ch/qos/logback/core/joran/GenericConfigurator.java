@@ -36,7 +36,7 @@ import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-    private final BeanDescriptionCache beanDescriptionCache = new BeanDescriptionCache();
+    private BeanDescriptionCache beanDescriptionCache;
 
     protected Interpreter interpreter;
 
@@ -104,6 +104,9 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     }
 
     protected BeanDescriptionCache getBeanDescriptionCache() {
+        if (beanDescriptionCache == null) {
+            beanDescriptionCache = new BeanDescriptionCache(getContext());
+        }
         return beanDescriptionCache;
     }
 

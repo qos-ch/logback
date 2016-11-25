@@ -17,15 +17,14 @@ import java.util.List;
 
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.NOPAction;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
+import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.EventPlayer;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
 public class FruitConfigurator extends GenericConfigurator {
 
@@ -45,12 +44,11 @@ public class FruitConfigurator extends GenericConfigurator {
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
-    	BeanDescriptionCache beanDescriptionCache=new BeanDescriptionCache();
-        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(beanDescriptionCache);
+        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
         nestedIA.setContext(context);
         interpreter.addImplicitAction(nestedIA);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(beanDescriptionCache);
+        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
         nestedIA.setContext(context);
         interpreter.addImplicitAction(nestedSimpleIA);
     }

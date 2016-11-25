@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,6 +33,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertySetterTest {
 
@@ -39,11 +41,17 @@ public class PropertySetterTest {
 
     Context context = new ContextBase();
     House house = new House();
-    PropertySetter setter = new PropertySetter(new BeanDescriptionCache(),house);
+    
+    PropertySetter setter; // = new PropertySetter(new BeanDescriptionCache(context), basket);
 
     @Before
     public void setUp() {
-        setter.setContext(context);
+        //setter.setContext(context);
+    }
+
+    @After
+    public void tearDown() {
+        StatusPrinter.print(context);
     }
 
     @Test
@@ -73,7 +81,7 @@ public class PropertySetterTest {
     public void testSetProperty() {
         {
             House house = new House();
-            PropertySetter setter = new PropertySetter(new BeanDescriptionCache(),house);
+            PropertySetter setter = new PropertySetter(new BeanDescriptionCache(context), house);
             setter.setProperty("count", "10");
             setter.setProperty("temperature", "33.1");
 
@@ -88,7 +96,7 @@ public class PropertySetterTest {
 
         {
             House house = new House();
-            PropertySetter setter = new PropertySetter(new BeanDescriptionCache(),house);
+            PropertySetter setter = new PropertySetter(new BeanDescriptionCache(context), house);
             setter.setProperty("Count", "10");
             setter.setProperty("Name", "jack");
             setter.setProperty("Open", "true");
@@ -217,5 +225,13 @@ public class PropertySetterTest {
 
         StatusChecker checker = new StatusChecker(context);
         checker.containsException(UnsupportedCharsetException.class);
+    }
+
+    // see also http://jira.qos.ch/browse/LOGBACK-1164
+    @Test
+    public void bridgeMethodsShouldBeIgnored() {
+        FruitBasket fruitBasket = new FruitBasket();
+        PropertySetter fruitBasketSetter = new PropertySetter(new BeanDescriptionCache(context), fruitBasket);
+        fruitBasketSetter.computeAggregationType("orange");
     }
 }
