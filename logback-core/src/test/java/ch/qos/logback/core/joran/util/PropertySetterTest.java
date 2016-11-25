@@ -67,8 +67,6 @@ public class PropertySetterTest {
 
         assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("filterReply"));
         assertEquals(AggregationType.AS_BASIC_PROPERTY, setter.computeAggregationType("houseColor"));
-
-        System.out.println();
     }
 
     @Test

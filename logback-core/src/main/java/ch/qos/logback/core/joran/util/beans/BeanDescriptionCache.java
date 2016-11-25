@@ -3,6 +3,8 @@ package ch.qos.logback.core.joran.util.beans;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.spi.ContextAwareBase;
+
 /**
  *
  * Cache for {@link BeanDescription} instances. All the cache users which use
@@ -14,9 +16,17 @@ import java.util.Map;
  * @author urechm
  *
  */
-public class BeanDescriptionCache {
+public class BeanDescriptionCache extends ContextAwareBase {
 
     private Map<Class<?>, BeanDescription> classToBeanDescription = new HashMap<Class<?>, BeanDescription>();
+    private BeanDescriptionFactory beanDescriptionFactory;
+
+    private BeanDescriptionFactory getBeanDescriptionFactory() {
+        if (beanDescriptionFactory == null) {
+            beanDescriptionFactory = new BeanDescriptionFactory(getContext());
+        }
+        return beanDescriptionFactory;
+    }
 
     /**
      * Returned bean descriptions are hold in a cache. If the cache does not
@@ -29,7 +39,7 @@ public class BeanDescriptionCache {
      */
     public BeanDescription getBeanDescription(Class<?> clazz) {
         if (!classToBeanDescription.containsKey(clazz)) {
-            BeanDescription beanDescription = BeanDescriptionFactory.INSTANCE.create(clazz);
+            BeanDescription beanDescription = getBeanDescriptionFactory().create(clazz);
             classToBeanDescription.put(clazz, beanDescription);
         }
         return classToBeanDescription.get(clazz);
