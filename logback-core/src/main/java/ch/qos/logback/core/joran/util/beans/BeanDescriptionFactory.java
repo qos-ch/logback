@@ -18,8 +18,6 @@ public class BeanDescriptionFactory {
 
     public static final BeanDescriptionFactory INSTANCE = new BeanDescriptionFactory();
 
-    private BeanUtil beanUtil = BeanUtil.SINGLETON;
-
     /**
      *
      * @param clazz to create a {@link BeanDescription} for.
@@ -31,8 +29,8 @@ public class BeanDescriptionFactory {
         Map<String, Method> propertyNameToAdder = new HashMap<String, Method>();
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
-            if (beanUtil.isGetter(method)) {
-                String propertyName = beanUtil.getPropertyName(method);
+            if (BeanUtil.isGetter(method)) {
+                String propertyName = BeanUtil.getPropertyName(method);
                 Method oldGetter = propertyNameToGetter.put(propertyName, method);
                 if (oldGetter != null) {
                     if (oldGetter.getName().startsWith(BeanUtil.PREFIX_GETTER_IS)) {
@@ -42,16 +40,16 @@ public class BeanDescriptionFactory {
                                     propertyName);
                     System.err.println(message);
                 }
-            } else if (beanUtil.isSetter(method)) {
-                String propertyName = beanUtil.getPropertyName(method);
+            } else if (BeanUtil.isSetter(method)) {
+                String propertyName = BeanUtil.getPropertyName(method);
                 Method oldSetter = propertyNameToSetter.put(propertyName, method);
                 if (oldSetter != null) {
                     String message = String.format("Warning: Class '%s' contains multiple setters for the same property '%s'.", clazz.getCanonicalName(),
                                     propertyName);
                     System.err.println(message);
                 }
-            } else if (beanUtil.isAdder(method)) {
-                String propertyName = beanUtil.getPropertyName(method);
+            } else if (BeanUtil.isAdder(method)) {
+                String propertyName = BeanUtil.getPropertyName(method);
                 Method oldAdder = propertyNameToAdder.put(propertyName, method);
                 if (oldAdder != null) {
                     String message = String.format("Warning: Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(),

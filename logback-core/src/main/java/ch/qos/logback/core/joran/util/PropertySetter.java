@@ -166,12 +166,12 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     private Method findAdderMethod(String name) {
-    	String propertyName = BeanUtil.SINGLETON.toLowerCamelCase(name);
+    	String propertyName = BeanUtil.toLowerCamelCase(name);
     	return beanDescription.getAdder(propertyName);
     }
 
     private Method findSetterMethod(String name) {
-        String propertyName = BeanUtil.SINGLETON.toLowerCamelCase(name);
+        String propertyName = BeanUtil.toLowerCamelCase(name);
         return beanDescription.getSetter(propertyName);
     }
 

@@ -24,10 +24,10 @@ class PropertyUtil {
   static boolean hasAdderMethod(Object obj, String name) {
     String addMethod = "add${upperCaseFirstLetter(name)}";
     return obj.metaClass.respondsTo(obj, addMethod);
-  }
+  } 
 
   static NestingType nestingType(Object obj, String name) {
-    def decapitalizedName = BeanUtil.SINGLETON.toLowerCamelCase(name);
+    def decapitalizedName = BeanUtil.toLowerCamelCase(name);
     if (obj.hasProperty(decapitalizedName)) {
       return NestingType.SINGLE;
     }
@@ -40,7 +40,7 @@ class PropertyUtil {
   static void attach(NestingType nestingType, Object component, Object subComponent, String name) {
     switch (nestingType) {
       case NestingType.SINGLE:
-        name = BeanUtil.SINGLETON.toLowerCamelCase(name);
+        name = BeanUtil.toLowerCamelCase(name);
         component."${name}" = subComponent;
         break;
       case NestingType.AS_COLLECTION:

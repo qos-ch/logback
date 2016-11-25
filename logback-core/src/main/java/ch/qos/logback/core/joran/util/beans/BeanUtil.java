@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  */
 public class BeanUtil {
 
-    public static final BeanUtil SINGLETON = new BeanUtil();
+    //public static final BeanUtil SINGLETON = new BeanUtil();
 
     public static final String PREFIX_GETTER_IS = "is";
     public static final String PREFIX_GETTER_GET = "get";
@@ -20,7 +20,7 @@ public class BeanUtil {
      * @param method to check if it is an 'adder' method.
      * @return true if the given method is an 'adder' method.
      */
-    public boolean isAdder(Method method) {
+    static public boolean isAdder(Method method) {
         int parameterCount = getParameterCount(method);
         if (parameterCount != 1) {
             return false;
@@ -38,7 +38,7 @@ public class BeanUtil {
      * @param method to check if it is a standard java beans getter.
      * @return true if the given method is a standard java beans getter.
      */
-    public boolean isGetter(Method method) {
+    static public boolean isGetter(Method method) {
         int parameterCount = getParameterCount(method);
         if (parameterCount > 0) {
             return false;
@@ -59,7 +59,7 @@ public class BeanUtil {
         return true;
     }
 
-    private int getParameterCount(Method method) {
+    static private int getParameterCount(Method method) {
         return method.getParameterTypes().length;
     }
 
@@ -68,7 +68,7 @@ public class BeanUtil {
      * @param method to check if it is a standard java beans setter.
      * @return true if the given method is a standard java beans setter.
      */
-    public boolean isSetter(Method method) {
+    static public boolean isSetter(Method method) {
         int parameterCount = getParameterCount(method);
         if (parameterCount != 1) {
             return false;
@@ -88,7 +88,7 @@ public class BeanUtil {
      * @param method to get the associated property name for.
      * @return The property name of the associated property if the given method matches a standard java beans getter or setter.
      */
-    public String getPropertyName(Method method) {
+    static public String getPropertyName(Method method) {
         String methodName = method.getName();
         String rawPropertyName = getSubstringIfPrefixMatches(methodName, PREFIX_GETTER_GET);
         if (rawPropertyName == null) {
@@ -111,7 +111,7 @@ public class BeanUtil {
      * The given string if the first two consecutive letters are in upper case.
      * The given string with the first letter in lower case otherwise, which might be the given string.
      */
-    public String toLowerCamelCase(String string) {
+    static public String toLowerCamelCase(String string) {
         if (string == null) {
             return null;
         }
@@ -126,7 +126,7 @@ public class BeanUtil {
         return new String(chars);
     }
 
-    private String getSubstringIfPrefixMatches(String wholeString, String prefix) {
+    static private String getSubstringIfPrefixMatches(String wholeString, String prefix) {
         if (wholeString.startsWith(prefix)) {
             return wholeString.substring(prefix.length());
         }
