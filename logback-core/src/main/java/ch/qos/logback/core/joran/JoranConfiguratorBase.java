@@ -95,7 +95,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
         omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
-        omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+        //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 
     public InterpretationContext getInterpretationContext() {

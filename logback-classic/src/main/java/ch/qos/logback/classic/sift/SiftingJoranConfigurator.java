@@ -55,7 +55,7 @@ public class SiftingJoranConfigurator extends SiftingJoranConfiguratorBase<ILogg
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
         omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
-        omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+        //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
         Map<String, String> propertiesMap = new HashMap<String, String>();
         propertiesMap.putAll(parentPropertyMap);
         propertiesMap.put(key, value);
