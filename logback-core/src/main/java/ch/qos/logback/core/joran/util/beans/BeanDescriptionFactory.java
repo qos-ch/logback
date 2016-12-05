@@ -34,6 +34,10 @@ public class BeanDescriptionFactory extends ContextAwareBase {
         Map<String, Method> propertyNameToAdder = new HashMap<String, Method>();
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
+            if(method.isBridge()) {
+                // we can safely ignore bridge methods
+                continue;
+            }
             if (BeanUtil.isGetter(method)) {
                 String propertyName = BeanUtil.getPropertyName(method);
                 Method oldGetter = propertyNameToGetter.put(propertyName, method);
@@ -55,8 +59,7 @@ public class BeanDescriptionFactory extends ContextAwareBase {
                 String propertyName = BeanUtil.getPropertyName(method);
                 Method oldAdder = propertyNameToAdder.put(propertyName, method);
                 if (oldAdder != null) {
-                    String message = String.format("Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(),
-                                    propertyName);
+                    String message = String.format("Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(), propertyName);
                     addWarn(message);
                 }
             }
