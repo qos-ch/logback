@@ -28,7 +28,7 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public class StringToObjectConverter {
 
-    private static final Class<?>[] STING_CLASS_PARAMETER = new Class[] { String.class };
+    private static final Class<?>[] STRING_CLASS_PARAMETER = new Class[] { String.class };
 
     static public boolean canBeBuiltFromSimpleString(Class<?> parameterClass) {
         Package p = parameterClass.getPackage();
@@ -97,7 +97,7 @@ public class StringToObjectConverter {
 
     static private boolean followsTheValueOfConvention(Class<?> parameterClass) {
         try {
-            Method valueOfMethod = parameterClass.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
+            Method valueOfMethod = parameterClass.getMethod(CoreConstants.VALUE_OF, STRING_CLASS_PARAMETER);
             int mod = valueOfMethod.getModifiers();
             if (Modifier.isStatic(mod)) {
                 return true;
@@ -112,7 +112,7 @@ public class StringToObjectConverter {
 
     private static Object convertByValueOfMethod(ContextAware ca, Class<?> type, String val) {
         try {
-            Method valueOfMethod = type.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
+            Method valueOfMethod = type.getMethod(CoreConstants.VALUE_OF, STRING_CLASS_PARAMETER);
             return valueOfMethod.invoke(null, val);
         } catch (Exception e) {
             ca.addError("Failed to invoke " + CoreConstants.VALUE_OF + "{} method in class [" + type.getName() + "] with value [" + val + "]");
