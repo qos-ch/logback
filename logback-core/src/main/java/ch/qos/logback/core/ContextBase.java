@@ -44,7 +44,6 @@ public class ContextBase implements Context, LifeCycle {
 
     LogbackLock configurationLock = new LogbackLock();
 
-    private ExecutorService executorService;
     private ScheduledExecutorService scheduledExecutorService;
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
@@ -129,7 +128,7 @@ public class ContextBase implements Context, LifeCycle {
     public void stop() {
         // We don't check "started" here, because the executor service uses
         // lazy initialization, rather than being created in the start method
-        stopExecutorServices();
+        stopExecutorService();
         
         started = false;
     }
@@ -192,11 +191,7 @@ public class ContextBase implements Context, LifeCycle {
         return scheduledExecutorService;
     }
 
-    private synchronized void stopExecutorServices() {
-        if (executorService != null) {
-            ExecutorServiceUtil.shutdown(executorService);
-            executorService = null;
-        }
+    private synchronized void stopExecutorService() {
         if (scheduledExecutorService != null) {
             ExecutorServiceUtil.shutdown(scheduledExecutorService);
             scheduledExecutorService = null;

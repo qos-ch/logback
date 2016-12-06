@@ -260,7 +260,7 @@ public class Compressor extends ContextAwareBase {
     
     public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-        ExecutorService executorService = context.getExecutorService();
+        ExecutorService executorService = context.getScheduledExecutorService();
         Future<?> future = executorService.submit(runnable);
         return future;
     }
