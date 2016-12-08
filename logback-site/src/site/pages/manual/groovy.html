@@ -403,6 +403,99 @@ appender("FILE", FileAppender) {
 root(DEBUG, ["FILE"])</pre>
 
 
+    <h3 class="doAnchor" name="varescope">Variable scope</h3>
+
+    <p>Normal Groovy script scoping rules apply. There are 3 types of variables. See also <a href="http://docs.groovy-lang.org/latest/html/documentation/index.html#_variables">Groovy documentation</a>.</p>
+
+    <h4 class="doAnchor" name="declaredvar">Declared variables</h4>
+	
+    <p>Variables declared via the <code>def</code> keyword or using an explicit type will become local variables within the run method of the compiled script class. Therefore, these variables are accessible from code at the top-level of the script, but they are not accessible in methods defined in the script. Here is an example.</p>
+
+    <pre class="prettyprint source">// declare the USER_HOME variable setting its value 
+// to that of the "user.home" system property
+<b>def USER_HOME = System.getProperty("user.home")</b>
+
+// this method definition becomes a
+// member of the compiled script class
+void printUserHome() {
+  // this would give a <b>runtime error</b> as USER_HOME
+  // is not in scope of this method
+  <b>println "USER_HOME=${USER_HOME}"</b>
+}
+
+// this code becomes part of the run method of the script class
+appender("FILE", FileAppender) {
+  // make use of the USER_HOME variable, which is a local variable
+  // in the run method and therefore in scope
+  <b>file = "${USER_HOME}/myApp.log"</b>
+  encoder(PatternLayoutEncoder) {
+    pattern = "%msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+    <h4 class="doAnchor" name="declaredfield">Declared fields</h4>
+
+    <p>To make a declared variable more accessible, it can be changed into a field of the compiled script class by using the @Field annotation. Here is a slightly altered example.</p>
+
+    <pre class="prettyprint source">//import of annotation is needed
+import groovy.transform.Field;
+
+// annotate and declare the USER_HOME variable setting its value
+// to that of the "user.home" system property
+<b>@Field</b>
+<b>String USER_HOME = System.getProperty("user.home")</b>
+
+// this method definition becomes a
+// member of the compiled script class
+void printUserHome() {
+  // this will work as USER_HOME is a field of the compiled
+  // script class and therefore in scope
+  <b>println "USER_HOME=${USER_HOME}"</b>
+}
+
+// this code becomes part of the run method of the script class
+appender("FILE", FileAppender) {
+  // make use of the USER_HOME variable, which is a field of
+  // the compiled script class and therefore in scope
+  <b>file = "${USER_HOME}/myApp.log"</b>
+  encoder(PatternLayoutEncoder) {
+    pattern = "%msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+    <p>It is possible to explicitly address fields via the <code>this</code> keyword, e.g. <code>this.USER_HOME</code> would also access the same field in the example above.</p>
+
+    <h4 class="doAnchor" name="undeclaredvar">Undeclared variables</h4>
+
+    <p>It is allowed to use a variable without declaring it. Such a variable is treated specially in Groovy scripts and is added to the script binding.</p>
+
+    <pre class="prettyprint source">// directly set the value of an undeclared variable
+// to that of the "user.home" system property
+<b>USER_HOME = System.getProperty("user.home")</b>
+
+// this method definition becomes a
+// member of the compiled script class
+void printUserHome() {
+  // this will work as USER_HOME is in the script binding
+  // and is resolved at runtime
+  <b>println "USER_HOME=${USER_HOME}"</b>
+}
+
+// this code becomes part of the run method of the script class
+appender("FILE", FileAppender) {
+  // make use of the USER_HOME variable, which is in the script
+  // binding and therefore in scope
+  <b>file = "${USER_HOME}/myApp.log"</b>
+  encoder(PatternLayoutEncoder) {
+    pattern = "%msg%n"
+  }
+}
+root(DEBUG, ["FILE"])</pre>
+
+    <p>It is possible to explicitly address fields via the <code>binding</code> variable (a field of the Script class), e.g. <code>binding.USER_HOME</code> would also access the same variable in the example above.</p>
+
     <h3 class="doAnchor" name="printing">Printing on the console</h3>
 
     <p>You can invoke Groovy's <code>println</code> method to print on
@@ -427,32 +520,15 @@ root(DEBUG, ["FILE"])</pre>
    <h4 class="doAnchor" name="hostname">'hostname' variable</h4>
 
    <p>The 'hostname' variable contains the name of the current
-   host. However, due to scoping rules that the authors cannot fully
-   explain, the 'hostname' variable is available only at the topmost
-   scope but not in nested scopes. The next example should get the
-   point across.
+   host.
    </p>
 
  <pre class="prettyprint source">// will print "hostname is x" where x is the current host's name
 println "Hostname is ${hostname}"
 
 appender("STDOUT", ConsoleAppender) {
-  <b>// will print "hostname is null"</b>
-  <b>println "Hostname is ${hostname}" </b>
-}</pre>
-
-   <p>If you wish to have the hostname variable be seen in all scopes,
-   you need to define another variable and assign it the value of
-   'hostname' as shown next.</p>
-
- <pre class="prettyprint source">// define HOSTNAME by assigning it hostname
-def HOSTNAME=hostname
-// will print "hostname is x" where x is the current host's name
-println "Hostname is ${HOSTNAME}"
-
-appender("STDOUT", ConsoleAppender) {
   // will print "hostname is x" where x is the current host's name
-  println "Hostname is ${HOSTNAME}" 
+  println "Hostname is ${hostname}"
 }</pre>
 
 
