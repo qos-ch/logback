@@ -11,20 +11,32 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-import ch.qos.logback.classic.AsyncAppender
-import ch.qos.logback.classic.PatternLayout
+//
+// Built on Wed May 19 20:51:44 CEST 2010 by logback-translator
+// For more information on configuration files in Groovy
+// please see http://logback.qos.ch/manual/groovy.html
+//
+
 import ch.qos.logback.core.ConsoleAppender
+
+import static ch.qos.logback.classic.Level.DEBUG
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
+import ch.qos.logback.classic.PatternLayout
+
+def HOSTNAME = hostname
+assert HOSTNAME != null
 
 appender("STDOUT", ConsoleAppender) {
+  assert hostname == HOSTNAME
+
   encoder(LayoutWrappingEncoder) {
+    assert hostname == HOSTNAME
+
     layout(PatternLayout) {
+      assert hostname == HOSTNAME
+
       pattern = "%m%n"
     }
   }
 }
-appender("STDOUT-ASYNC", AsyncAppender) {
-  appenderRef('STDOUT')
-}
-root(DEBUG, ["STDOUT-ASYNC"])
-
+root(DEBUG, ["STDOUT"])
