@@ -43,7 +43,6 @@
     <module>logback-access</module>
     <module>logback-site</module>
     <module>logback-examples</module>
-    <module>logback-bom</module>
   </modules>
 
   <properties>
