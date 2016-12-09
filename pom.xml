@@ -6,7 +6,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.1.8-SNAPSHOT</version>
+  <version>1.1.8</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -420,16 +420,13 @@
   <distributionManagement>
 
     <site>
-      <id>tao</id>
-      <url>scp://tao.qos.ch/var/www/logback.qos.ch/htdocs/</url>
+      <id>qos_ch</id>
+      <url>scp://te.qos.ch/var/www/logback.qos.ch/htdocs/</url>
     </site>
 
     <repository>
       <id>sonatype-nexus-staging</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-
-      <!--<id>pixie</id>-->
-      <!--<url>scp://pixie.qos.ch/var/mvnrepo/</url>-->
     </repository>
 
   </distributionManagement>
