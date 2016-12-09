@@ -72,7 +72,7 @@ public class StringToObjectConverter {
                 return Boolean.FALSE;
             }
         } else if (type.isEnum()) {
-            return convertToEnum(ca, v, (Class<? extends Enum>) type);
+            return convertToEnum(ca, v, (Class<? extends Enum<?>>) type);
         } else if (StringToObjectConverter.followsTheValueOfConvention(type)) {
             return convertByValueOfMethod(ca, type, v);
         } else if (isOfTypeCharset(type)) {
@@ -95,19 +95,24 @@ public class StringToObjectConverter {
         }
     }
 
-    static private boolean followsTheValueOfConvention(Class<?> parameterClass) {
+    // returned value may be null and in most cases it is null.
+    public static Method getValueOfMethod(Class<?> type) {
         try {
-            Method valueOfMethod = parameterClass.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
-            int mod = valueOfMethod.getModifiers();
-            if (Modifier.isStatic(mod)) {
-                return true;
-            }
-        } catch (SecurityException e) {
-            // nop
+            return type.getMethod(CoreConstants.VALUE_OF, STING_CLASS_PARAMETER);
         } catch (NoSuchMethodException e) {
-            // nop
+            return null;
+        } catch (SecurityException e) {
+            return null;
         }
-        return false;
+    }
+
+    static private boolean followsTheValueOfConvention(Class<?> parameterClass) {
+        Method valueOfMethod = getValueOfMethod(parameterClass);
+        if (valueOfMethod == null)
+            return false;
+
+        int mod = valueOfMethod.getModifiers();
+        return Modifier.isStatic(mod);
     }
 
     private static Object convertByValueOfMethod(ContextAware ca, Class<?> type, String val) {
@@ -120,7 +125,7 @@ public class StringToObjectConverter {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Object convertToEnum(ContextAware ca, String val, Class<? extends Enum> enumType) {
         return Enum.valueOf(enumType, val);
     }

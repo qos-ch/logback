@@ -236,16 +236,29 @@ class ConfigurationDelegateTest {
   }
 
 
-  // See LBCLASSIC-231/LOGBACK-458
+  // See LOGBACK-458
   @Test
   void withSizeAndTimeBasedFNATP() {
+      withSizeAndTimeBasedFNATP(false);
+  }
+
+  // See LOGBACK-1232
+  @Test
+  void withSizeAndTimeBasedFNATP_AsString() {
+      withSizeAndTimeBasedFNATP(true);
+  }
+  
+  void withSizeAndTimeBasedFNATP(boolean asString) {
     String logFile = randomOutputDir + "log.txt";
     configurationDelegate.appender("ROLLING", RollingFileAppender) {
       file = logFile
       rollingPolicy(TimeBasedRollingPolicy) {
         fileNamePattern = "mylog-%d{yyyy-MM-dd}.%i.txt"
         timeBasedFileNamingAndTriggeringPolicy(SizeAndTimeBasedFNATP) {
-          maxFileSize = FileSize.valueOf("100MB")
+          if(asString)   
+            maxFileSize = "100MB"
+          else 
+           maxFileSize = FileSize.valueOf("100MB")
         }
       }
       encoder(PatternLayoutEncoder) {
@@ -253,6 +266,7 @@ class ConfigurationDelegateTest {
       }
     }
     RollingFileAppender back = configurationDelegate.appenderList.find {it.name = "ROLLING"}
+    StatusPrinter.print(context)
     assertNotNull(back)
     assertEquals(logFile, back.rollingPolicy.getParentsRawFileProperty())
     assertTrue(back.rollingPolicy.timeBasedFileNamingAndTriggeringPolicy.isStarted())

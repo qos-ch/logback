@@ -14,6 +14,10 @@
 package ch.qos.logback.classic.gaffer
 
 import java.lang.reflect.Method
+
+import com.sun.org.apache.xpath.internal.axes.SubContextList;
+
+import ch.qos.logback.core.joran.util.StringToObjectConverter;
 import ch.qos.logback.core.joran.util.beans.BeanUtil
 
 /**
@@ -21,52 +25,72 @@ import ch.qos.logback.core.joran.util.beans.BeanUtil
  */
 class PropertyUtil {
 
-  static boolean hasAdderMethod(Object obj, String name) {
-    String addMethod = "add${upperCaseFirstLetter(name)}";
-    return obj.metaClass.respondsTo(obj, addMethod);
-  } 
-
-  static NestingType nestingType(Object obj, String name) {
-    def decapitalizedName = BeanUtil.toLowerCamelCase(name);
-    if (obj.hasProperty(decapitalizedName)) {
-      return NestingType.SINGLE;
+    static boolean hasAdderMethod(Object obj, String name) {
+        String addMethod = "add${upperCaseFirstLetter(name)}";
+        return obj.metaClass.respondsTo(obj, addMethod);
     }
-    if (hasAdderMethod(obj, name)) {
-      return NestingType.AS_COLLECTION;
+
+
+    static NestingType nestingType(Object obj, String name, Object value) {
+        def decapitalizedName = BeanUtil.toLowerCamelCase(name);
+        MetaProperty metaProperty = obj.hasProperty(decapitalizedName);
+
+        if(metaProperty != null) {
+            boolean VALUE_IS_A_STRING = value instanceof String;
+            
+            if(VALUE_IS_A_STRING && StringToObjectConverter.followsTheValueOfConvention(metaProperty.getType())) {
+                return NestingType.SINGLE_WITH_VALUE_OF_CONVENTION;
+            } else {
+                return NestingType.SINGLE;
+            }
+        }
+        if (hasAdderMethod(obj, name)) {
+            return NestingType.AS_COLLECTION;
+        }
+        return NestingType.NA;
     }
-    return NestingType.NA;
-  }
 
-  static void attach(NestingType nestingType, Object component, Object subComponent, String name) {
-    switch (nestingType) {
-      case NestingType.SINGLE:
-        name = BeanUtil.toLowerCamelCase(name);
-        component."${name}" = subComponent;
-        break;
-      case NestingType.AS_COLLECTION:
-        String firstUpperName = PropertyUtil.upperCaseFirstLetter(name)
-        component."add${firstUpperName}"(subComponent);
-        break;
+    static Object convertByValueMethod(Object component, String name, String value) {
+        def decapitalizedName = BeanUtil.toLowerCamelCase(name);
+        MetaProperty metaProperty = component.hasProperty(decapitalizedName);
+        Method valueOfMethod = StringToObjectConverter.getValueOfMethod(metaProperty.getType());
+        return valueOfMethod.invoke(null, value);
     }
-  }
+    
+    static void attach(NestingType nestingType, Object component, Object subComponent, String name) {
+        switch (nestingType) {
+            case NestingType.SINGLE_WITH_VALUE_OF_CONVENTION:
+                name = BeanUtil.toLowerCamelCase(name);
+                Object value = convertByValueMethod(component, name, subComponent);
+                component."${name}" = value;
+                break;
+            case NestingType.SINGLE:
+                name = BeanUtil.toLowerCamelCase(name);
+                component."${name}" = subComponent;
+                break;
 
-  static String transformFirstLetter(String s, Closure closure) {
-    if (s == null || s.length() == 0)
-      return s;
+            case NestingType.AS_COLLECTION:
+                String firstUpperName = PropertyUtil.upperCaseFirstLetter(name)
+                component."add${firstUpperName}"(subComponent);
+                break;
+        }
+    }
 
-    String firstLetter = new String(s.getAt(0));
+    static String transformFirstLetter(String s, Closure closure) {
+        if (s == null || s.length() == 0)
+            return s;
 
-    String modifiedFistLetter = closure(firstLetter);
+        String firstLetter = new String(s.getAt(0));
 
-    if (s.length() == 1)
-      return modifiedFistLetter
-    else
-      return modifiedFistLetter + s.substring(1);
+        String modifiedFistLetter = closure(firstLetter);
 
-  }
+        if (s.length() == 1)
+            return modifiedFistLetter
+        else
+            return modifiedFistLetter + s.substring(1);
+    }
 
-  static String upperCaseFirstLetter(String s) {
-    return transformFirstLetter(s, {String it -> it.toUpperCase()})
-  }
-
+    static String upperCaseFirstLetter(String s) {
+        return transformFirstLetter(s, {String it -> it.toUpperCase()})
+    }
 }
