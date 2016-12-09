@@ -173,7 +173,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
             if (getParentsRawFileProperty() == null) {
                 compressionFuture = compressor.asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
             } else {
-                compressionFuture = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
+                compressionFuture = renameRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
             }
         }
 
@@ -183,9 +183,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
     }
 
-    Future<?> renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
+    Future<?> renameRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         String parentsRawFile = getParentsRawFileProperty();
-        String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
+        String tmpTarget = nameOfCompressedFile + System.nanoTime() + ".tmp";
         renameUtil.rename(parentsRawFile, tmpTarget);
         return compressor.asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
     }
