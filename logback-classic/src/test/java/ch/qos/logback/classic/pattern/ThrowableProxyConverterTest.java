@@ -160,34 +160,37 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void skipSelectedLine() throws Exception {
+        String nameOfContainingMethod = "skipSelectedLine";
         // given
         final Throwable t = TestHelper.makeNestedException(0);
         t.printStackTrace(pw);
         final ILoggingEvent le = createLoggingEvent(t);
-        tpc.setOptionList(Arrays.asList("full", "skipSelectedLines"));
+        tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod));
         tpc.start();
 
         // when
         final String result = tpc.convert(le);
 
         // then
-        assertThat(result).doesNotContain("skipSelectedLines");
+        assertThat(result).doesNotContain(nameOfContainingMethod);
+        
     }
 
     @Test
     public void skipMultipleLines() throws Exception {
+        String nameOfContainingMethod = "skipMultipleLines";
         // given
         final Throwable t = TestHelper.makeNestedException(0);
         t.printStackTrace(pw);
         final ILoggingEvent le = createLoggingEvent(t);
-        tpc.setOptionList(Arrays.asList("full", "skipMultipleLines", "junit"));
+        tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod, "junit"));
         tpc.start();
 
         // when
         final String result = tpc.convert(le);
 
         // then
-        assertThat(result).doesNotContain("skipSelectedLines").doesNotContain("junit");
+        assertThat(result).doesNotContain(nameOfContainingMethod).doesNotContain("junit");
     }
 
     @Test
