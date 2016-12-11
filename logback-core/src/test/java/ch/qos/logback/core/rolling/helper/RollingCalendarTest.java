@@ -18,7 +18,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.Locale;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.CoreConstants;
@@ -26,6 +29,31 @@ import ch.qos.logback.core.util.EnvUtil;
 
 public class RollingCalendarTest {
 
+   @Before
+   public void setUp() {
+       
+       // Most surprisingly, in certain environments (e.g. Windows 7), setting the default locale
+       // allows certain tests to pass which otherwise fail.
+       //
+       // These tests are:
+       //
+       //  checkCollisionFreeness("yyyy-WW", false);
+       //  checkCollisionFreeness("yyyy-ww", true);
+       //  checkCollisionFreeness("ww", false);
+       //  {
+       //    RollingCalendar rc = new RollingCalendar("yyyy-ww");
+       //    assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
+       //  }
+       // 
+       
+       Locale oldLocale = Locale.getDefault();
+       Locale.setDefault(oldLocale);
+   }
+
+   @After
+   public void tearDown() {
+   }
+   
     @Test
     public void testPeriodicity() {
         {
@@ -145,9 +173,15 @@ public class RollingCalendarTest {
 
         // weekly
         checkCollisionFreeness("yyyy-MM-WW", true);
+        dumpCurrentLocale(Locale.getDefault());
         checkCollisionFreeness("yyyy-WW", false);
         checkCollisionFreeness("yyyy-ww", true);
         checkCollisionFreeness("ww", false);
+    }
+
+    private void dumpCurrentLocale(Locale locale) {
+       System.out.println("***Current default locale is "+locale);
+        
     }
 
     private void checkCollisionFreeness(String pattern, boolean expected) {
