@@ -5,10 +5,6 @@
     <File>${randomOutputDir}z${testId}</File>
     <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <FileNamePattern>${randomOutputDir}${testId}-%d{yyyy-MM-dd_HH_mm_ss}.%i</FileNamePattern>
-<!--  -->      <TimeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-         
-      </TimeBasedFileNamingAndTriggeringPolicy>
-      -->
       <maxFileSize>100</maxFileSize>  
       <maxHistory>4</maxHistory>
       <totalSizeCap>10</totalSizeCap>

@@ -46,6 +46,7 @@ public class CoreConstants {
     public static final int LINE_SEPARATOR_LEN = LINE_SEPARATOR.length();
 
     public static final String CODES_URL = "http://logback.qos.ch/codes.html";
+    public static final String MANUAL_URL_PREFIX = "http://logback.qos.ch/manual/";   
     public static final String MORE_INFO_PREFIX = "For more information, please visit ";
 
     /**
@@ -148,8 +149,8 @@ public class CoreConstants {
     public static final char TAB = '\t';
     public static final char DOLLAR = '$';
 
-    public static final String SEE_FNP_NOT_SET = "See also http://logback.qos.ch/codes.html#tbr_fnp_not_set";
-    public static final String SEE_MISSING_INTEGER_TOKEN = "See also http://logback.qos.ch/codes.html#sat_missing_integer_token";
+    public static final String SEE_FNP_NOT_SET = "See also "+CODES_URL+"#tbr_fnp_not_set";
+    public static final String SEE_MISSING_INTEGER_TOKEN = "See also "+CODES_URL+"#sat_missing_integer_token";
 
     public static final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
     public static final String CONFIGURATION_WATCH_LIST_RESET_X = "CONFIGURATION_WATCH_LIST_RESET";
@@ -198,5 +199,6 @@ public class CoreConstants {
     public static final int UNBOUND_HISTORY = 0;
     
     public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
+    public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
 
 }
