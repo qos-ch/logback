@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.access.tomcat;
 
+import static org.junit.Assert.*;
+
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.ContainerBase;
 import org.junit.After;
@@ -73,6 +75,15 @@ public class LogbackValveTest {
         checker.assertIsErrorFree();
     }
 
+    @Test
+    public void executorServiceShouldBeNotNull() throws LifecycleException {
+        final String fileName = "logback-asResource.xml";
+        setupValve(fileName);
+        valve.start();
+        assertNotNull(valve.getScheduledExecutorService());
+        
+    }
+    
     private void setupValve(final String resourceName) {
         valve.setFilename(resourceName);
         valve.setName("test");
