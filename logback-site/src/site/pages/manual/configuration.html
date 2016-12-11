@@ -1448,10 +1448,11 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p>As in many scripting languages, logback configuration files
-  support definition and substitution of variables. Variables can be
+  support definition and substitution of variables. Variables have a
+  <a href="#scopes">scope</a> (see below). Moreover, variables can be
   defined within the configuration file itself, in an external file,
   in an external resource or even computed and <a
-  href="#definingPropsOnTheFly">defined on the fly</a>. 
+  href="#definingPropsOnTheFly">defined on the fly</a>.
   </p>
 
   <p class="highlight">Variable substitution can occur at any point in
@@ -1466,7 +1467,7 @@ import ch.qos.logback.classic.LoggerContext;
   value held by the <em>aName</em> property.
   </p>
 
-  <p>Variables have a <a href="#scopes">scope</a> (see below).</p>
+  
 
   <p>As they often come in handy, the HOSTNAME and CONTEXT_NAME
   variables are automatically defined and have context scope.</p>
