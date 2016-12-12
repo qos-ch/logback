@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.core.rolling;
 
-import java.io.File;
-
-import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
+import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.InvocationGate;
+
+import java.io.File;
 
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being currently written
@@ -55,6 +55,10 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 
     public void setMaxFileSize(FileSize aMaxFileSize) {
         this.maxFileSize = aMaxFileSize;
+    }
+
+    public void setMaxFileSize(String aMaxFileSize){
+        this.maxFileSize = FileSize.valueOf(aMaxFileSize);
     }
 
 }
