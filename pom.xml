@@ -67,6 +67,7 @@
     <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
     <cobertura.maven.plugin.version>2.6</cobertura.maven.plugin.version>
     <maven-license-plugin.version>1.9.0</maven-license-plugin.version>
+    <testng.version>6.10</testng.version>
   </properties>
 
   <developers>
@@ -203,6 +204,11 @@
         <groupId>joda-time</groupId>
         <artifactId>joda-time</artifactId>
         <version>2.9.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>${testng.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
