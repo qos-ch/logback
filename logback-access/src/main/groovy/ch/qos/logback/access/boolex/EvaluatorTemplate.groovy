@@ -11,28 +11,19 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.boolex
+package ch.qos.logback.access.boolex
 
-import ch.qos.logback.classic.spi.ILoggingEvent
+import ch.qos.logback.access.spi.IAccessEvent
 import ch.qos.logback.core.boolex.IEvaluator
-
-import static ch.qos.logback.classic.Level.TRACE;
-import static ch.qos.logback.classic.Level.DEBUG;
-import static ch.qos.logback.classic.Level.INFO;
-import static ch.qos.logback.classic.Level.WARN;
-import static ch.qos.logback.classic.Level.ERROR;
 
 // WARNING
 // If this file is renamed, this should be reflected in
 // logback-classic/pom.xml  resources section.
 
-/**
- * @author Ceki G&uuml;c&uuml;
- */
-public class EvaluatorTemplate implements IEvaluator<ILoggingEvent> {
+public class EvaluatorTemplate implements IEvaluator<IAccessEvent> {
 
-  boolean doEvaluate(ILoggingEvent event) {
-    ILoggingEvent e = event;
+  boolean doEvaluate(IAccessEvent event) {
+    IAccessEvent e = event;
     //EXPRESSION
   }
 

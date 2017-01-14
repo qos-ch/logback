@@ -11,15 +11,15 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.boolex;
+package ch.qos.logback.core.boolex;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.spi.DeferredProcessingAware;
 
 /**
  * An <b>internal</b> interface used by the GEventEvaluator.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
-public interface IEvaluator {
-    boolean doEvaluate(ILoggingEvent event);
+public interface IEvaluator<E extends DeferredProcessingAware> {
+  boolean doEvaluate(E event);
 }
