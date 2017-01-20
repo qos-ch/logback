@@ -1,5 +1,5 @@
 
-var asGroovyURL='http://logback.qos.ch/translator/dsl/asGroovy';
+var asGroovyURL='https://logback.qos.ch/translator/dsl/asGroovy';
 
 function asGroovy(id) {
 
