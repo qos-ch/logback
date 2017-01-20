@@ -149,6 +149,9 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             rollingPolicy.stop();
         if (triggeringPolicy != null)
             triggeringPolicy.stop();
+        @SuppressWarnings("unchecked")
+        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        map.remove(getName());
         super.stop();
     }
 
