@@ -25,6 +25,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.util.ContextUtil;
 
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
@@ -145,11 +146,17 @@ public class RollingFileAppender<E> extends FileAppender<E> {
 
     @Override
     public void stop() {
+        super.stop();
+        
         if (rollingPolicy != null)
             rollingPolicy.stop();
         if (triggeringPolicy != null)
             triggeringPolicy.stop();
-        super.stop();
+
+        Map<String, FileNamePattern> map = ContextUtil.getFilenamePatternCollisionMap(context);
+        if (map != null && getName() != null)
+            map.remove(getName());
+
     }
 
     @Override

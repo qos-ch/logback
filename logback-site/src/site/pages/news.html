@@ -33,7 +33,15 @@
 
     <hr width="80%" align="center" />
 
-    <h3>December 11th, 2016, Release of version 1.1.9</h3>
+    <h3>January 20th, 2016, Release of version 1.1.9</h3>
+
+    <p>Fixed issue with <code>FileAppender</code> instances embedded
+    within <code>SiftingAppender</code> reporting filename collisions
+    after reaching timeout and subsequently restarted. This problem
+    was reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1167">LOGBACK-1167</a> by
+    Michael Edgar.
+    </p>
 
     <p>Fixed <code>SizeAndTimeBasedFNATP</code> deprecation warning
     emitted even the replacement,

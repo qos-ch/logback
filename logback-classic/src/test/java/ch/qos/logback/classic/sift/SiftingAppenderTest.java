@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static ch.qos.logback.core.util.CoreTestConstants.OUTPUT_DIR_PREFIX;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
@@ -66,6 +68,7 @@ public class SiftingAppenderTest {
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     StatusChecker statusChecker = new StatusChecker(loggerContext);
     int diff = RandomUtil.getPositiveInt();
+    String randomOutputDir = OUTPUT_DIR_PREFIX + diff + "/";
     int now = 0;
 
     protected void configure(String file) throws JoranException {
@@ -117,7 +120,7 @@ public class SiftingAppenderTest {
         logger.debug("hello");
         logger.debug("hello");
         logger.debug("hello");
-        
+
         Appender<ILoggingEvent> nopa = getAppenderTracker().find("zeroDefault");
         assertNotNull(nopa);
         assertThat(nopa).isInstanceOf(NOPAppender.class);
@@ -154,6 +157,39 @@ public class SiftingAppenderTest {
     }
 
     @Test
+    public void fileAppenderCollision() throws JoranException, InterruptedException {
+        loggerContext.putProperty("DIR_PREFIX", randomOutputDir);
+        String key = "collision";
+        configure(SIFT_FOLDER_PREFIX + "fileAppender.xml");
+        SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
+
+        long timestamp = System.currentTimeMillis();
+
+        MDC.put(key, "A-"+diff);
+        logNewEventViaSiftingAppender(sa, timestamp);
+        FileAppender<ILoggingEvent> fileAppenderA = (FileAppender<ILoggingEvent>) sa.getAppenderTracker().find("A-"+diff);
+        assertNotNull(fileAppenderA);
+        assertTrue(fileAppenderA.isStarted());
+        timestamp += ComponentTracker.DEFAULT_TIMEOUT + 1;
+        MDC.put(key, "B-"+diff);
+        logNewEventViaSiftingAppender(sa, timestamp);
+        assertFalse(fileAppenderA.isStarted());
+        
+        MDC.put(key, "A-"+diff);
+        timestamp += 1;
+        logNewEventViaSiftingAppender(sa, timestamp);
+        FileAppender<ILoggingEvent> fileAppenderA_2 = (FileAppender<ILoggingEvent>) sa.getAppenderTracker().find("A-"+diff);
+        assertTrue(fileAppenderA_2.isStarted());
+        
+    }
+
+    private void logNewEventViaSiftingAppender(SiftingAppender sa, long timestamp) {
+        LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null, null);
+        le.setTimeStamp(timestamp + ComponentTracker.DEFAULT_TIMEOUT + 1);
+        sa.doAppend(le);
+    }
+
+    @Test
     public void testWholeCycle() throws JoranException {
         String mdcKey = "cycle";
         configure(SIFT_FOLDER_PREFIX + "completeCycle.xml");
@@ -168,9 +204,7 @@ public class SiftingAppenderTest {
         assertEquals("smoke", eventList.get(0).getMessage());
 
         MDC.remove(mdcKey);
-        LoggingEvent le = new LoggingEvent("x", logger, Level.INFO, "hello", null, null);
-        le.setTimeStamp(timestamp + ComponentTracker.DEFAULT_TIMEOUT + 1);
-        sa.doAppend(le);
+        logNewEventViaSiftingAppender(sa, timestamp);
         assertFalse(listAppender.isStarted());
         assertEquals(1, sa.getAppenderTracker().allKeys().size());
         assertTrue(sa.getAppenderTracker().allKeys().contains("cycleDefault"));
@@ -291,16 +325,15 @@ public class SiftingAppenderTest {
         statusChecker.assertIsErrorFree();
     }
 
-    
     // LOGBACK-1127
     @Ignore
-    @Test 
+    @Test
     public void programmicSiftingAppender() {
-        
+
         SiftingAppender connectorAppender = new SiftingAppender();
         connectorAppender.setContext(loggerContext);
         connectorAppender.setName("SIFTING_APPENDER");
-                        
+
         MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
         discriminator.setKey("SKEY");
         discriminator.setDefaultValue("DEF_KEY");
@@ -309,43 +342,43 @@ public class SiftingAppenderTest {
 
         connectorAppender.setAppenderFactory(new AppenderFactory<ILoggingEvent>() {
 
-                @Override
-                public Appender<ILoggingEvent> buildAppender(Context context, String discriminatingValue) throws JoranException {
+            @Override
+            public Appender<ILoggingEvent> buildAppender(Context context, String discriminatingValue) throws JoranException {
 
-                        RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<ILoggingEvent>();
-                        appender.setName("ROLLING_APPENDER_"+discriminatingValue);
-                        appender.setContext(context);
-                        appender.setFile("/var/logs/active_"+discriminatingValue+".log");
+                RollingFileAppender<ILoggingEvent> appender = new RollingFileAppender<ILoggingEvent>();
+                appender.setName("ROLLING_APPENDER_" + discriminatingValue);
+                appender.setContext(context);
+                appender.setFile("/var/logs/active_" + discriminatingValue + ".log");
 
-                        TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<ILoggingEvent>();
-                        policy.setContext(context);
-                        policy.setMaxHistory(365);
-                        policy.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX+"/logback1127/"+discriminatingValue+"_%d{yyyy_MM_dd}_%i.log");
-                        policy.setParent(appender);
-                        policy.setCleanHistoryOnStart(true);
+                TimeBasedRollingPolicy<ILoggingEvent> policy = new TimeBasedRollingPolicy<ILoggingEvent>();
+                policy.setContext(context);
+                policy.setMaxHistory(365);
+                policy.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "/logback1127/" + discriminatingValue + "_%d{yyyy_MM_dd}_%i.log");
+                policy.setParent(appender);
+                policy.setCleanHistoryOnStart(true);
 
-                        SizeAndTimeBasedFNATP<ILoggingEvent> innerpolicy = new SizeAndTimeBasedFNATP<ILoggingEvent>();
-                        innerpolicy.setContext(context);
-                        innerpolicy.setMaxFileSize(FileSize.valueOf("5KB"));
-                        innerpolicy.setTimeBasedRollingPolicy(policy);
+                SizeAndTimeBasedFNATP<ILoggingEvent> innerpolicy = new SizeAndTimeBasedFNATP<ILoggingEvent>();
+                innerpolicy.setContext(context);
+                innerpolicy.setMaxFileSize(FileSize.valueOf("5KB"));
+                innerpolicy.setTimeBasedRollingPolicy(policy);
 
-                        policy.setTimeBasedFileNamingAndTriggeringPolicy(innerpolicy);
-                        policy.start();
-                        appender.setRollingPolicy(policy);
+                policy.setTimeBasedFileNamingAndTriggeringPolicy(innerpolicy);
+                policy.start();
+                appender.setRollingPolicy(policy);
 
-                        PatternLayoutEncoder pl = new PatternLayoutEncoder();
-                        pl.setContext(context);
-                        pl.setPattern("%d{yyyy/MM/dd'T'HH:mm:ss} %-5level - %msg\n");
+                PatternLayoutEncoder pl = new PatternLayoutEncoder();
+                pl.setContext(context);
+                pl.setPattern("%d{yyyy/MM/dd'T'HH:mm:ss} %-5level - %msg\n");
 
-                        pl.start();
-                        appender.setEncoder(pl);
+                pl.start();
+                appender.setEncoder(pl);
 
-                        appender.start();
-                        return appender;
-                }
+                appender.start();
+                return appender;
+            }
         });
         connectorAppender.start();
-                
+
         ch.qos.logback.classic.Logger logger = loggerContext.getLogger("org.test");
         logger.addAppender(connectorAppender);
         logger.setLevel(Level.DEBUG);
@@ -354,12 +387,12 @@ public class SiftingAppenderTest {
         MDC.put("SKEY", "K1");
         logger.info("bla1");
         MDC.clear();
-                
+
         MDC.put("SKEY", "K2");
         logger.info("bla2");
         MDC.clear();
 
         StatusPrinter.print(loggerContext);
-        
+
     }
 }
