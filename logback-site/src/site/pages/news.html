@@ -35,6 +35,17 @@
 
     <h3>January 20th, 2016, Release of version 1.1.9</h3>
 
+
+    <p>Logback's internal executor service had a thread pool size of 2
+    which could be used up rather quickly, e.g. configuration scanning
+    in addition to an active <code>ServerSocketAppender</code>. When
+    both threads where permanently in use, compression could not
+    proceed. To alleviate this problem, the thread pool size has been
+    increased to 8. See issue <a
+    href="https://jira.qos.ch/browse/LOGBACK-1238">LOGBACK-1238</a>
+    for more details.
+    </p>
+
     <p>Fixed issue with <code>FileAppender</code> instances embedded
     within <code>SiftingAppender</code> reporting filename collisions
     after reaching timeout and subsequently restarted. This problem
