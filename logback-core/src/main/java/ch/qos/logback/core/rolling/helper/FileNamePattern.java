@@ -30,7 +30,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 /**
  * After parsing file name patterns, given a number or a date, instances of this
  * class can be used to compute a file name according to the file name pattern
- * and the given integer or date.
+ * and the current date or integer.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -56,7 +56,7 @@ public class FileNamePattern extends ContextAwareBase {
 
     void parse() {
         try {
-            // http://jira.qos.ch/browse/LBCORE-130
+            // http://jira.qos.ch/browse/LOGBACK-197
             // we escape ')' for parsing purposes. Note that the original pattern is preserved
             // because it is shown to the user in status messages. We don't want the escaped version
             // to leak out.

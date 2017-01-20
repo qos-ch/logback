@@ -127,7 +127,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(String fileNamePattern) {
         boolean collisionsDetected = false;
         @SuppressWarnings("unchecked")
-        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.RFA_FILENAME_COLLISION_MAP);
         if (map == null) {
             return collisionsDetected;
         }
