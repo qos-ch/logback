@@ -245,7 +245,7 @@ public class LoggerContextTest {
     public void collisionMapsPostReset() {
         lc.reset();
 
-        Map<String, String> fileCollisions = (Map<String, String>) lc.getObject(CoreConstants.RFA_FILENAME_COLLISION_MAP);
+        Map<String, String> fileCollisions = (Map<String, String>) lc.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
         assertNotNull(fileCollisions);
         assertTrue(fileCollisions.isEmpty());
 

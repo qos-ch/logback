@@ -54,6 +54,7 @@ public class FileNamePattern extends ContextAwareBase {
         ConverterUtil.startConverters(this.headTokenConverter);
     }
 
+    
     void parse() {
         try {
             // http://jira.qos.ch/browse/LOGBACK-197
@@ -78,6 +79,33 @@ public class FileNamePattern extends ContextAwareBase {
     public String toString() {
         return pattern;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FileNamePattern other = (FileNamePattern) obj;
+        if (pattern == null) {
+            if (other.pattern != null)
+                return false;
+        } else if (!pattern.equals(other.pattern))
+            return false;
+        return true;
+    }
+
 
     public DateTokenConverter<Object> getPrimaryDateTokenConverter() {
         Converter<Object> p = headTokenConverter;
