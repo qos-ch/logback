@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -21,8 +21,7 @@ import org.junit.Test;
 
 import java.io.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class AccessEventSerializationTest {
 
@@ -47,10 +46,11 @@ public class AccessEventSerializationTest {
         assertNotNull(o);
         IAccessEvent aeBack = (IAccessEvent) o;
 
-        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP, aeBack.getResponseHeaderMap());
-        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("x"), aeBack.getResponseHeader("x"));
-        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("headerName1"), aeBack.getResponseHeader("headerName1"));
-        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.size(), aeBack.getResponseHeaderNameList().size());
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HEADER_MAP.size(), aeBack.getResponseHeaderMap().size());
+        assertNull(aeBack.getResponseHeader("x"));
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HEADER_MAP.get("headerName1")[0], aeBack.getResponseHeader("headerName1"));
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HEADER_MAP.get("headerName2")[0], aeBack.getResponseHeader("headerName2"));
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HEADER_MAP.size(), aeBack.getResponseHeaderNameList().size());
         assertEquals(DummyResponse.DUMMY_DEFAULT_CONTENT_COUNT, aeBack.getContentLength());
         assertEquals(DummyResponse.DUMMY_DEFAULT_STATUS, aeBack.getStatusCode());
 

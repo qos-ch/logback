@@ -13,10 +13,10 @@
  */
 package ch.qos.logback.access.pattern;
 
-import java.util.List;
-
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
+
+import java.util.List;
 
 public class FullResponseConverter extends AccessConverter {
 
@@ -33,10 +33,13 @@ public class FullResponseConverter extends AccessConverter {
 
         List<String> hnList = ae.getResponseHeaderNameList();
         for (String headerName : hnList) {
-            buf.append(headerName);
-            buf.append(": ");
-            buf.append(ae.getResponseHeader(headerName));
-            buf.append(CoreConstants.LINE_SEPARATOR);
+            String[] values = ae.getResponseHeaderMap().get(headerName);
+            for (String value : values) {
+                buf.append(headerName);
+                buf.append(": ");
+                buf.append(value);
+                buf.append(CoreConstants.LINE_SEPARATOR);
+            }
         }
         buf.append(CoreConstants.LINE_SEPARATOR);
         buf.append(ae.getResponseContent());

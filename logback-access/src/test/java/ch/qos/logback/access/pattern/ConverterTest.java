@@ -13,22 +13,21 @@
  */
 package ch.qos.logback.access.pattern;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.Cookie;
-
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
+import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.access.dummy.DummyRequest;
-import ch.qos.logback.access.dummy.DummyResponse;
-import ch.qos.logback.access.dummy.DummyServerAdapter;
-import ch.qos.logback.access.spi.AccessEvent;
+import javax.servlet.http.Cookie;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class ConverterTest {
 
@@ -172,7 +171,7 @@ public class ConverterTest {
         converter.setOptionList(optionList);
         converter.start();
         String result = converter.convert(event);
-        assertEquals(request.getHeader("headerName1"), result);
+        assertEquals(response.getHeader("headerName1"), result);
     }
 
     @Test
@@ -189,6 +188,26 @@ public class ConverterTest {
         converter.start();
         String result = converter.convert(event);
         assertEquals(Integer.toString(event.getServerAdapter().getStatusCode()), result);
+    }
+
+    @Test
+    public void testFullRequestConverter() {
+        FullRequestConverter converter = new FullRequestConverter();
+        converter.start();
+        String result = converter.convert(event);
+        assertTrue(result.contains("headerName1: headerValue11"));
+        assertTrue(result.contains("headerName1: headerValue12"));
+        assertTrue(result.contains("headerName2: headerValue2"));
+    }
+
+    @Test
+    public void testFullResponseConverter() {
+        FullResponseConverter converter = new FullResponseConverter();
+        converter.start();
+        String result = converter.convert(event);
+        assertTrue(result.contains("headerName1: headerValue1"));
+        assertTrue(result.contains("headerName2: headerValue21"));
+        assertTrue(result.contains("headerName2: headerValue22"));
     }
 
     private IAccessEvent createEvent() {

@@ -39,7 +39,7 @@ public class DummyServerAdapter implements ServerAdapter {
         return -1;
     }
 
-    public Map<String, String> buildResponseHeaderMap() {
+    public Map<String, String[]> buildResponseHeaderMap() {
         return response.headerMap;
     }
 

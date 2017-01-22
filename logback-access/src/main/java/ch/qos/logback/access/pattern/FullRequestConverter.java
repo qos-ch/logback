@@ -13,10 +13,10 @@
  */
 package ch.qos.logback.access.pattern;
 
-import java.util.Enumeration;
-
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
+
+import java.util.Enumeration;
 
 /**
  * This class is tied to the <code>fullRequest</code> conversion word.
@@ -38,10 +38,13 @@ public class FullRequestConverter extends AccessConverter {
         Enumeration headerNames = ae.getRequestHeaderNames();
         while (headerNames.hasMoreElements()) {
             String name = (String) headerNames.nextElement();
-            buf.append(name);
-            buf.append(": ");
-            buf.append(ae.getRequestHeader(name));
-            buf.append(CoreConstants.LINE_SEPARATOR);
+            String[] values = ae.getRequestHeaderMap().get(name);
+            for (String value : values) {
+                buf.append(name);
+                buf.append(": ");
+                buf.append(value);
+                buf.append(CoreConstants.LINE_SEPARATOR);
+            }
         }
         buf.append(CoreConstants.LINE_SEPARATOR);
         buf.append(ae.getRequestContent());
