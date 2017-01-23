@@ -232,8 +232,9 @@ public class AsyncAppenderBaseTest {
 
     // Interruption of current thread when in doAppend method should not be
     // consumed by async appender. See also http://jira.qos.ch/browse/LOGBACK-910
+    // and https://jira.qos.ch/browse/LOGBACK-1247
     @Test
-    public void verifyInterruptionIsNotSwallowed() {
+    public void verifyInterruptionIsNotSwallowedAndEventIsLogged() {
         asyncAppenderBase.addAppender(delayingListAppender);
         asyncAppenderBase.start();
         Thread.currentThread().interrupt();
@@ -241,6 +242,8 @@ public class AsyncAppenderBaseTest {
         assertTrue(Thread.currentThread().isInterrupted());
         // clear flag for next test
         Thread.interrupted();
+        asyncAppenderBase.stop();
+        verify(delayingListAppender, 1);
     }
 
     @Test
