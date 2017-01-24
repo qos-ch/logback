@@ -180,4 +180,9 @@ public class DummyResponse implements HttpServletResponse {
         this.status = status;
     }
 
+    @Override
+    public void setContentLengthLong(long length) {
+        // TODO Auto-generated method stub
+    }
+
 }

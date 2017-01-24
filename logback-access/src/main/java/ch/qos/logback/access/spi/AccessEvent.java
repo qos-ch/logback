@@ -44,6 +44,8 @@ import java.util.Vector;
  */
 public class AccessEvent implements Serializable, IAccessEvent {
 
+    private static final String[] NA_STRING_ARRAY = new String[] { NA };
+
     private static final long serialVersionUID = 866718993618836343L;
 
     private static final String EMPTY = "";
@@ -371,6 +373,11 @@ public class AccessEvent implements Serializable, IAccessEvent {
             return;
         }
 
+        // attributeMap has been copied already. See also LOGBACK-1189
+        if(attributeMap != null) {
+            return;
+        }
+        
         attributeMap = new HashMap<String, Object>();
 
         Enumeration<String> names = httpRequest.getAttributeNames();
@@ -400,16 +407,15 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     @Override
     public String[] getRequestParameter(String key) {
-        if (httpRequest != null) {
-            String[] value = httpRequest.getParameterValues(key);
-            if (value == null) {
-                return new String[] { NA };
-            } else {
-                return value;
-            }
-        } else {
-            return new String[] { NA };
+        String[] value = null;
+        
+        if(requestParameterMap != null) {
+            value = requestParameterMap.get(key);
+        } else if (httpRequest != null) {
+             value = httpRequest.getParameterValues(key);
         }
+
+        return (value != null) ? value: NA_STRING_ARRAY;
     }
 
     @Override

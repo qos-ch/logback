@@ -328,7 +328,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
         return aai.detachAppender(name);
     }
 
-    @Override
     public String getInfo() {
         return "Logback's implementation of ValveBase";
     }

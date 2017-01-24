@@ -14,6 +14,8 @@
 package ch.qos.logback.access.dummy;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -38,5 +40,17 @@ public class DummyServletOutputStream extends ServletOutputStream {
     public void close() throws IOException {
         super.close();
         this.targetStream.close();
+    }
+
+    @Override
+    public boolean isReady() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public void setWriteListener(WriteListener listener) {
+        // TODO Auto-generated method stub
+        
     }
 }
