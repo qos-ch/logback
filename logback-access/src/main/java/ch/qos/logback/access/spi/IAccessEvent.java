@@ -98,7 +98,7 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
     String getRequestHeader(String key);
 
-    Enumeration getRequestHeaderNames();
+    Enumeration<String> getRequestHeaderNames();
 
     Map<String, String> getRequestHeaderMap();
 

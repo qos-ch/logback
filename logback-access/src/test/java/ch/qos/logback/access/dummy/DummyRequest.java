@@ -79,12 +79,12 @@ public class DummyRequest implements HttpServletRequest {
 
 
     @Override
-    public Enumeration getHeaderNames() {
+    public Enumeration<String>  getHeaderNames() {
         return headerMap.keys();
     }
 
     @Override
-    public Enumeration getHeaders(String arg0) {
+    public Enumeration<String> getHeaders(String arg) {
         return null;
     }
 
@@ -189,7 +189,7 @@ public class DummyRequest implements HttpServletRequest {
         return attributes.get(key);
     }
 
-    public Enumeration getAttributeNames() {
+    public Enumeration<String> getAttributeNames() {
         return Collections.enumeration(attributes.keySet());
     }
 
@@ -253,7 +253,8 @@ public class DummyRequest implements HttpServletRequest {
         return null;
     }
 
-    public Enumeration getLocales() {
+    @Override
+    public Enumeration<Locale> getLocales() {
         return null;
     }
 
@@ -270,7 +271,7 @@ public class DummyRequest implements HttpServletRequest {
         return parameterMap;
     }
 
-    public Enumeration getParameterNames() {
+    public Enumeration<String> getParameterNames() {
         return parameterMap.keys();
         //eturn Collections.enumeration(parameterMap.keySet());
     }
@@ -345,13 +346,11 @@ public class DummyRequest implements HttpServletRequest {
 
     @Override
     public String changeSessionId() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass) throws IOException, ServletException {
-        // TODO Auto-generated method stub
         return null;
     }
 }

@@ -86,13 +86,11 @@ public class TeeServletOutputStream extends ServletOutputStream {
 
     @Override
     public boolean isReady() {
-        // TODO Auto-generated method stub
-        return false;
+        throw new RuntimeException("Not yet implemented");
     }
 
     @Override
     public void setWriteListener(WriteListener listener) {
-        // TODO Auto-generated method stub
-        
+        throw new RuntimeException("Not yet implemented");
     }
 }

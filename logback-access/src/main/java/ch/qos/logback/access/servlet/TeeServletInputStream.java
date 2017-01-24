@@ -31,11 +31,6 @@ class TeeServletInputStream extends ServletInputStream {
         duplicateInputStream(request);
     }
 
-    @Override
-    public int read() throws IOException {
-        return in.read();
-    }
-
     private void duplicateInputStream(HttpServletRequest request) {
         ServletInputStream originalSIS = null;
         try {
@@ -45,8 +40,13 @@ class TeeServletInputStream extends ServletInputStream {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            closeStrean(originalSIS);
+            closeStream(originalSIS);
         }
+    }
+
+    @Override
+    public int read() throws IOException {
+        return in.read();
     }
 
     byte[] consumeBufferAndReturnAsByteArray(InputStream is) throws IOException {
@@ -60,7 +60,7 @@ class TeeServletInputStream extends ServletInputStream {
         return baos.toByteArray();
     }
 
-    void closeStrean(ServletInputStream is) {
+    void closeStream(ServletInputStream is) {
         if (is != null) {
             try {
                 is.close();
@@ -75,18 +75,16 @@ class TeeServletInputStream extends ServletInputStream {
 
     @Override
     public boolean isFinished() {
-        // TODO Auto-generated method stub
-        return false;
+        throw new RuntimeException("Not yet implemented");
     }
 
     @Override
     public boolean isReady() {
-        // TODO Auto-generated method stub
-        return false;
+        throw new RuntimeException("Not yet implemented");
     }
 
     @Override
     public void setReadListener(ReadListener listener) {
-        // TODO Auto-generated method stub
+        throw new RuntimeException("Not yet implemented");
     }
 }
