@@ -30,11 +30,22 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+    <hr width="80%" align="center" />
+
+    <h3> 2017, Release of version 1.1.10</h3>
+
+    <p>The <code>AccessEvent.prepareForDeferredProcessing()</code>
+    method was not idempotent. This caused subtle bugs under
+    Jetty. See <a
+    href="https://jira.qos.ch/browse/LOGBACK-1189">LOGBACK-1189</a>
+    for details. Many thanks to Per Olesen, Evan Meagher, Nick Babcock
+    and Mark Elliot for hunting down this bug.
+    </p>
+    
 
     <hr width="80%" align="center" />
 
     <h3>January 20th, 2017, Release of version 1.1.9</h3>
-
 
     <p>Logback's internal executor service had a thread pool size of 2
     which could be used up rather quickly, e.g. configuration scanning
