@@ -4,7 +4,9 @@
 Thank you for your interest in logback, the reliable, generic, fast
 and flexible logging library for Java.
 
-The Logback documentation can be found under the docs/ directory.
+The Logback documentation can be found on the [project
+web-site](https://logback.qos.ch/documentation.html) as well as under
+the docs/ folder of the logback distribution.
 
 #Building logback
 
