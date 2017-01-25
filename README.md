@@ -24,12 +24,12 @@ questions.
 
 #Pull requests 
 
-If you are interested in improving SLF4J, great! The logback community
+If you are interested in improving logbback, great! The logback community
 looks forward to your contribution. Please follow this process:
 
-1. Plkease file a [bug
+1. Please file a [bug
    report](https://logback.qos.ch/bugreport.html). Pull requests with
-   an associated Jira issue will get more attention.
+   an associated JIRA issue will get more attention.
 
    Optional: Start a discussion on the [logback-dev mailing
    list](https://logback.qos.ch/mailinglist.html) about your proposed
