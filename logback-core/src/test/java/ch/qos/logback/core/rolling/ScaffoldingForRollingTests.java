@@ -279,6 +279,6 @@ public class ScaffoldingForRollingTests {
                 new RuntimeException("unexpected exception while testing", e);
             }
         }
-
+        futureList.clear();
     }
 }

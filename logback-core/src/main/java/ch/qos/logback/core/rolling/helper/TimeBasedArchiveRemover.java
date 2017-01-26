@@ -31,7 +31,7 @@ import ch.qos.logback.core.util.FileSize;
 public class TimeBasedArchiveRemover extends ContextAwareBase implements ArchiveRemover {
 
     static protected final long UNINITIALIZED = -1;
-    // aim for 64 days, except in case of hourly rollover
+    // aim for 32 days, except in case of hourly rollover
     static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 32L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
     static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
@@ -48,9 +48,11 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         this.parentClean = computeParentCleaningFlag(fileNamePattern);
     }
 
+    int callCount = 0;
     public void clean(Date now) {
+ 
         long nowInMillis = now.getTime();
-        // for a live appender periodsElapsed is usually one
+        // for a live appender periodsElapsed is expected to be 1
         int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
         lastHeartBeat = nowInMillis;
         if (periodsElapsed > 1) {
@@ -143,7 +145,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             periodsElapsed = Math.min(periodsElapsed, MAX_VALUE_FOR_INACTIVITY_PERIODS);
         } else {
             periodsElapsed = rc.periodBarriersCrossed(lastHeartBeat, nowInMillis);
-            // periodsElapsed of zero is possible for Size and time based policies
+            // periodsElapsed of zero is possible for size and time based policies
         }
         return (int) periodsElapsed;
     }
