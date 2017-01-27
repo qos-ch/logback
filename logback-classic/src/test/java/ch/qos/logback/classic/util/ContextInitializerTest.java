@@ -59,7 +59,7 @@ public class ContextInitializerTest {
     @After
     public void tearDown() throws Exception {
         System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
-        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS);
+        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
         MockConfigurator.context = null;
     }
 
@@ -119,7 +119,7 @@ public class ContextInitializerTest {
 
     @Test
     public void autoStatusListener() throws JoranException {
-        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS, TrivialStatusListener.class.getName());
+        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, TrivialStatusListener.class.getName());
         List<StatusListener> statusListenerList = loggerContext.getStatusManager().getCopyOfStatusListenerList();
         assertEquals(0, statusListenerList.size());
         doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
@@ -132,7 +132,7 @@ public class ContextInitializerTest {
 
     @Test
     public void autoOnConsoleStatusListener() throws JoranException {
-        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS, CoreConstants.SYSOUT);
+        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, CoreConstants.SYSOUT);
         List<StatusListener> sll = loggerContext.getStatusManager().getCopyOfStatusListenerList();
         assertEquals(0, sll.size());
         doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");

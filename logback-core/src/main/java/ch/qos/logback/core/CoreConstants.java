@@ -16,7 +16,8 @@ package ch.qos.logback.core;
 
 public class CoreConstants {
 
-    final public static String STATUS_LISTENER_CLASS = "logback.statusListenerClass";
+    final public static String DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY = "logbackDisableServletContainerInitializer";
+    final public static String STATUS_LISTENER_CLASS_KEY = "logback.statusListenerClass";
     final public static String SYSOUT = "SYSOUT";
 
     /**

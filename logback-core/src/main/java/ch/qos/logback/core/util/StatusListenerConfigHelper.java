@@ -23,7 +23,7 @@ import ch.qos.logback.core.status.StatusListener;
 public class StatusListenerConfigHelper {
 
     public static void installIfAsked(Context context) {
-        String slClass = OptionHelper.getSystemProperty(CoreConstants.STATUS_LISTENER_CLASS);
+        String slClass = OptionHelper.getSystemProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
         if (!OptionHelper.isEmpty(slClass)) {
             addStatusListener(context, slClass);
         }

@@ -42,7 +42,7 @@ public class ContextInitializerAutoConfigTest {
     @After
     public void tearDown() throws Exception {
         System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
-        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS);
+        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
     }
 
     @Test

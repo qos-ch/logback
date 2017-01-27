@@ -33,6 +33,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class PropertySetterTest {
 
@@ -233,8 +234,9 @@ public class PropertySetterTest {
         
         PropertySetter orangeSetter = new PropertySetter(new BeanDescriptionCache(context), orange);
         assertEquals(AggregationType.AS_BASIC_PROPERTY, orangeSetter.computeAggregationType(Citrus.PRECARP_PROPERTY_NAME));
+        assertEquals(AggregationType.AS_BASIC_PROPERTY, orangeSetter.computeAggregationType(Citrus.PREFIX_PROPERTY_NAME));
         
-        
+        StatusPrinter.print(context);
         checker.assertIsWarningOrErrorFree();
     }
 }

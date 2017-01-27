@@ -1,0 +1,2 @@
+ch.qos.logback.classic.servlet.LogbackServletContainerInitializer
+# See javax.servlet.ServletContainerInitializer javadocs

@@ -6,4 +6,8 @@ public class Orange extends Citrus<Integer> {
         System.out.println("Orange.setPericarp");
         super.setPericarp(pericarp);
     }
+
+    @Override
+    public void foo() {
+    }
 }

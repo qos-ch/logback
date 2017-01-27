@@ -34,6 +34,15 @@
 
     <h3> 2017, Release of version 1.1.10</h3>
 
+    <p>In web-applications, logback-classic will <a
+    href="manual/configuration.html#webShutdownHook">automatically
+    install a listener</a> which will stop the logging context and
+    release resources when your web-app is reloaded. This enhancement
+    was requested <a
+    href="https://jira.qos.ch/browse/LOGBACK-1170">LOGBACK-1170</a> by
+    Martin Wegner.
+    </p>
+
     <p>The <code>AccessEvent.prepareForDeferredProcessing()</code>
     method was not idempotent. This caused subtle bugs under
     Jetty. See <a
@@ -42,7 +51,7 @@
     and Mark Elliot for hunting down this bug.
     </p>
     
-    <p>Joran now support external XML entities. This feature was
+    <p>Joran now supports external XML entities. This feature was
     requested in <a
     href="https://jira.qos.ch/browse/LOGBACK-1091">1091</a>.
     </p>
