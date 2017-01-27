@@ -390,7 +390,6 @@ public class JoranConfiguratorTest {
     @Test
     public void properties() throws JoranException {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "properties.xml";
-        assertNull(loggerContext.getProperty(CoreConstants.HOSTNAME_KEY));
         assertNull(System.getProperty("sys"));
 
         configure(configFileAsStr);
@@ -401,6 +400,13 @@ public class JoranConfiguratorTest {
         assertEquals("tem", System.getProperty("sys"));
         assertNotNull(loggerContext.getProperty("path"));
         checker.assertIsErrorFree();
+    }
+
+    @Test
+    public void hostnameProperty() throws JoranException {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "hostnameProperty.xml";
+        configure(configFileAsStr);
+        assertEquals("A", loggerContext.getProperty(CoreConstants.HOSTNAME_KEY));
     }
 
     // see also http://jira.qos.ch/browse/LBCORE-254
@@ -427,8 +433,7 @@ public class JoranConfiguratorTest {
         configure(configFileAsStr);
         assertTrue(loggerContext.isPackagingDataEnabled());
     }
-    
-    
+
     @Test
     public void valueOfConvention() throws JoranException {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "valueOfConvention.xml";

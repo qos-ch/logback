@@ -168,6 +168,8 @@ public class CoreConstants {
      */
     public static final String HOSTNAME_KEY = "HOSTNAME";
 
+    public static final String UNKNOWN_LOCALHOST = "UNKNOWN_LOCALHOST";
+
     /**
      * The key under which the current context name is registered in the logger
      * context.

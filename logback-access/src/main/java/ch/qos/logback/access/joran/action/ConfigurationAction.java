@@ -13,15 +13,13 @@
  */
 package ch.qos.logback.access.joran.action;
 
-import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.util.OptionHelper;
-import ch.qos.logback.core.util.StatusListenerConfigHelper;
-
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.util.ContextUtil;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 public class ConfigurationAction extends Action {
     static final String INTERNAL_DEBUG_ATTR = "debug";
@@ -43,8 +41,6 @@ public class ConfigurationAction extends Action {
         } else {
             StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
         }
-
-        new ContextUtil(context).addHostNameAsProperty();
 
         // the context is appender attachable, so it is pushed on top of the stack
         ec.pushObject(getContext());

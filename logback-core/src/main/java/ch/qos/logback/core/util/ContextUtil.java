@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
-import ch.qos.logback.core.spi.ContextAwareBase;
-
 import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
 
@@ -30,6 +25,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class ContextUtil extends ContextAwareBase {
 
@@ -67,10 +67,10 @@ public class ContextUtil extends ContextAwareBase {
     /**
      * Add the local host's name as a property
      */
-    public void addHostNameAsProperty() {
+    public String safelyGetLocalHostName() {
         try {
             String localhostName = getLocalHostName();
-            context.putProperty(CoreConstants.HOSTNAME_KEY, localhostName);
+            return localhostName;
         } catch (UnknownHostException e) {
             addError("Failed to get local hostname", e);
         } catch (SocketException e) {
@@ -78,6 +78,7 @@ public class ContextUtil extends ContextAwareBase {
         } catch (SecurityException e) {
             addError("Failed to get local hostname", e);
         }
+        return CoreConstants.UNKNOWN_LOCALHOST;
     }
 
     public void addProperties(Properties props) {

@@ -1512,7 +1512,12 @@ import ch.qos.logback.classic.LoggerContext;
   
 
   <p>As they often come in handy, the HOSTNAME and CONTEXT_NAME
-  variables are automatically defined and have context scope.</p>
+  variables are automatically defined and have context scope. Given
+  that in some environments it may take some time to compute the
+  hostname, its value is computed lazily (only when needed). Moreover,
+  HOSTNAME can be set from within the <a
+  href="#definingProps">configuration directly.</a>
+  </p>
 
    <h4 class="doAnchor" name="definingProps">Defining variables</h4>
 
