@@ -29,6 +29,7 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.ResilienceUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class FileAppenderResilienceTest {
 
@@ -87,6 +88,7 @@ public class FileAppenderResilienceTest {
         double lossinessFactor = 0.35;
         double resilianceFactor = (1 - lossinessFactor);
 
+        StatusPrinter.print(context);
         ResilienceUtil.verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * resilianceFactor);
     }
 

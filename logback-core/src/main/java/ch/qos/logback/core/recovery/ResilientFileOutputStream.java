@@ -16,6 +16,8 @@ package ch.qos.logback.core.recovery;
 import java.io.*;
 import java.nio.channels.FileChannel;
 
+import ch.qos.logback.core.util.NIOByteBufferedOutputStream;
+
 public class ResilientFileOutputStream extends ResilientOutputStreamBase {
 
     private File file;
@@ -24,7 +26,7 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
     public ResilientFileOutputStream(File file, boolean append) throws FileNotFoundException {
         this.file = file;
         fos = new FileOutputStream(file, append);
-        this.os = new BufferedOutputStream(fos);
+        this.os = new NIOByteBufferedOutputStream(fos);
         this.presumedClean = true;
     }
 
@@ -48,7 +50,7 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
     OutputStream openNewOutputStream() throws IOException {
         // see LOGBACK-765
         fos = new FileOutputStream(file, true);
-        return new BufferedOutputStream(fos);
+        return new NIOByteBufferedOutputStream(fos);
     }
 
     @Override
