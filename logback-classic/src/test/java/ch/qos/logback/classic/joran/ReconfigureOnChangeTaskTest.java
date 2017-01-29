@@ -19,6 +19,7 @@ import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.FALLING_BACK_
 import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION;
 import static ch.qos.logback.core.CoreConstants.RECONFIGURE_ON_CHANGE_TASK;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -363,8 +364,7 @@ public class ReconfigureOnChangeTaskTest {
         configure(file);
 
         final List<ScheduledFuture<?>> scheduledFutures = loggerContext.getScheduledFutures();
-        final ReconfigureOnChangeTask roct = getRegisteredReconfigureTask();
-        assertTrue(scheduledFutures.contains(roct));
+        assertFalse(scheduledFutures.isEmpty());
     }
 
     enum UpdateType {
