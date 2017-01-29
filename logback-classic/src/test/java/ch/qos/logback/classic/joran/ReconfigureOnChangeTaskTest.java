@@ -76,6 +76,8 @@ public class ReconfigureOnChangeTaskTest {
 
     final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
 
+    final static String SCAN_PERIOD_DEFAULT_FILE_AS_STR = JORAN_INPUT_PREFIX + "roct/scan_period_default.xml";
+
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
     StatusChecker statusChecker = new StatusChecker(loggerContext);
@@ -353,6 +355,16 @@ public class ReconfigureOnChangeTaskTest {
 
     void addInfo(String msg, Object o) {
         loggerContext.getStatusManager().add(new InfoStatus(msg, o));
+    }
+
+    @Test
+    public void checkReconfigureTaskScheduledWhenDefaultScanPeriodUsed() throws JoranException {
+        File file = new File(SCAN_PERIOD_DEFAULT_FILE_AS_STR);
+        configure(file);
+
+        final List<ScheduledFuture<?>> scheduledFutures = loggerContext.getScheduledFutures();
+        final ReconfigureOnChangeTask roct = getRegisteredReconfigureTask();
+        assertTrue(scheduledFutures.contains(roct));
     }
 
     enum UpdateType {
