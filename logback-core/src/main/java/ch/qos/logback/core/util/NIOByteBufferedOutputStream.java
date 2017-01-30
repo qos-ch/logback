@@ -1,19 +1,30 @@
 package ch.qos.logback.core.util;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 public class NIOByteBufferedOutputStream extends OutputStream {
 
-    static final int DEFAULT_BYTE_BUFFER_CAPACITY = 64 * 1024;
+    static final int DEFAULT_BYTE_BUFFER_CAPACITY =  64 * 1024;
 
     final OutputStream os;
     final ByteBuffer byteBuffer;
+    final FileChannel fc;
 
     public NIOByteBufferedOutputStream(OutputStream os, int bufferCapacity) {
         this.os = os;
-        byteBuffer = ByteBuffer.allocate(bufferCapacity);
+        if (os instanceof FileOutputStream) {
+            FileOutputStream rfos = (FileOutputStream) os;
+            fc = rfos.getChannel();
+            byteBuffer = ByteBuffer.allocateDirect(bufferCapacity);
+            System.out.println("FCXX != null");
+        } else {
+            fc = null;
+            byteBuffer = ByteBuffer.allocate(bufferCapacity);
+        }
     }
 
     public NIOByteBufferedOutputStream(OutputStream os) {
@@ -30,7 +41,11 @@ public class NIOByteBufferedOutputStream extends OutputStream {
 
     private void drainBufferIntoOutputStream() throws IOException {
         byteBuffer.flip();
-        os.write(byteBuffer.array(), 0, byteBuffer.limit());
+        if (fc == null) {
+            os.write(byteBuffer.array(), 0, byteBuffer.limit());
+        } else {
+            fc.write(byteBuffer);
+        }
         byteBuffer.clear();
     }
 

@@ -126,13 +126,13 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         }
     }
 
-    static String txt = "abc\r\n";
-    static byte[] txtBytes = txt.getBytes();
+//    static String txt = "abc\r\n";
+//    static byte[] txtBytes = txt.getBytes();
     
     public void doEncode(E event) throws IOException {
-//        String txt = layout.doLayout(event);
-//        outputStream.write(convertToBytes(txt));
-        outputStream.write(txtBytes);
+        String txt = layout.doLayout(event);
+        outputStream.write(convertToBytes(txt));
+        //outputStream.write(txtBytes);
         if (immediateFlush)
             outputStream.flush();
     }
