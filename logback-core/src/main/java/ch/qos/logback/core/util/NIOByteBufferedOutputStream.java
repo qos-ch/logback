@@ -27,6 +27,9 @@ public class NIOByteBufferedOutputStream extends OutputStream {
         }
     }
 
+    public ByteBuffer getByteBuffer() {
+        return byteBuffer;
+    }
     public NIOByteBufferedOutputStream(OutputStream os) {
         this(os, DEFAULT_BYTE_BUFFER_CAPACITY);
     }

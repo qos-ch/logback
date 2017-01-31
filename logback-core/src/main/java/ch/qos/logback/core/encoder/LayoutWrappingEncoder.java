@@ -124,33 +124,26 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         }
     }
 
-    // static String txt = "2017-01-30 21:59:56,357 DEBUG
-    // [org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark.log4j2RAF-jmh-worker-2] TestRandom - This is a debug
-    // message\r\n";
-    // static byte[] txtBytes = txt.getBytes();
-    // static ByteBuffer bb = ByteBuffer.allocateDirect(1024*4);
-    ByteBuffer bb = ByteBuffer.allocate(1024 * 4);
-
     static boolean once = true;
 
     public void doEncode(E event) throws IOException {
-        // String txt = layout.doLayout(event);
-        // outputStream.write(convertToBytes(txt));
 
-        bb.clear();
-        layout.doLayout(event, bb);
-        bb.flip();
         if (outputStream instanceof ResilientFileOutputStream) {
             ResilientFileOutputStream r = (ResilientFileOutputStream) outputStream;
 
             NIOByteBufferedOutputStream nioos = (NIOByteBufferedOutputStream) r.getOS();
+
+            ByteBuffer bb = nioos.getByteBuffer();
+            bb.clear();
+            layout.doLayout(event, bb);
             if (once) {
                 once = false;
                 System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX NIOByteBufferedOutputStream nioos = (NIOByteBufferedOutputStream) outputStream");
             }
             nioos.writeBB(bb);
         } else {
-            outputStream.write(bb.array(), 0, bb.limit());
+             String txt = layout.doLayout(event);
+            outputStream.write(convertToBytes(txt));
         }
         if (immediateFlush)
             outputStream.flush();
