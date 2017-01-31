@@ -819,7 +819,8 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 					full stack trace will be output.
 				 </p>
          
-				 <p>The <em>throwable</em> conversion word can followed by one of
+
+  			 <p>The <em>throwable</em> conversion word can followed by one of
 						the following options:
 				 </p>
 				 <ul>
@@ -870,6 +871,17 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 					<b>negative</b> answer. Evaluators are described further
 					down in this document.
 					</p>
+
+         <p>If you do not specify %throwable or another
+          throwable-related conversion word in the conversion pattern,
+          <code>PatternLayout</code> will automatically add it as the
+          last conversion word, on account of the importance of stack
+          trace information. The $nopex conversion word can be
+          substituted for %throwable, if you do not wish stack trace
+          information to be displayed. See also the %nopex conversion
+          word.
+         </p>
+
 				</td>
 			</tr>
       
@@ -887,16 +899,6 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 				<td>
 					<p>Same as the %throwable conversion word above with the
 					addition of class packaging information.</p>
-
-          <p>If you do not specify %xThrowable or another
-          throwable-related conversion word in the conversion pattern,
-          <code>PatternLayout</code> will automatically add it as the
-          last conversion word, on account of the importance of stack
-          trace information. The $nopex conversion word can be
-          substituted for %xThrowable, if you do not wish stack
-          trace information to be displayed. See also the %nopex
-          conversion word.
-         </p>
 
           <p>At the end of each stack frame of the exception, a string
           consisting of the jar file containing the relevant class
@@ -934,15 +936,18 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
           by a tilde, it is possible that the correct packaging data is
           in reality [wombat.jar:1.7].
           </p>
-          
+
+          <p>Please note that given its potential cost, computation of
+          <a href="configuration.html#packagingData"><b>packaging data
+          is disabled by default</b></a>. When computation of
+          packaging data is enabled, <code>PatternLayout</code> will
+          automatically assume the %xThrowable suffix instead of
+          %throwable suffix at the end of the pattern string.</p>
+
           <p><a
           href="http://jira.qos.ch/browse/LBCLASSIC-212">Feedback from
           users</a> indicates that Netbeans chokes on packaging
-          information. If you are a Netbeans user, then you should
-          disable packaging information in stack traces by adding
-          "%ex" at the end of of your conversion pattern. For example,
-          "%d %logger - %m%n" should be rewritten as "%d %logger -
-          %m%n<b>%ex</b>"
+          information.
           </p>
         </td>
 
