@@ -82,6 +82,7 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
  */
 public class LogbackValve extends ValveBase implements Lifecycle, Context, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
+    final static String CONFIG_FILE_PROPERTY = "logback.access.configurationFile";
     public final static String DEFAULT_FILENAME = "logback-access.xml";
     public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar + DEFAULT_FILENAME;
     final static String CATALINA_BASE_KEY = "catalina.base";
@@ -131,10 +132,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
             filename = DEFAULT_CONFIG_FILE;
         }
 
-        // String catalinaBase = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
-        // String catalinaHome = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
-
-        File configFile = searchForConfigFileTomcatProperty(filename, CATALINA_BASE_KEY);
+        File configFile = searchForConfigFileSystemProperty();
+        if (configFile == null) {
+            configFile = searchForConfigFileTomcatProperty(filename, CATALINA_BASE_KEY);
+        }
         if (configFile == null) {
             configFile = searchForConfigFileTomcatProperty(filename, CATALINA_HOME_KEY);
         }
@@ -178,11 +179,24 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
 
     private File searchForConfigFileTomcatProperty(String filename, String propertyKey) {
         String propertyValue = OptionHelper.getSystemProperty(propertyKey);
-        String candidatePath = propertyValue + File.separatorChar + filename;
         if (propertyValue == null) {
             addInfo("System property \"" + propertyKey + "\" is not set. Skipping configuration file search with ${" + propertyKey + "} path prefix.");
             return null;
         }
+        String candidatePath = propertyValue + File.separatorChar + filename;
+        return searchForFile(propertyKey, candidatePath);
+    }
+
+    private File searchForConfigFileSystemProperty() {
+        String propertyValue = OptionHelper.getSystemProperty(CONFIG_FILE_PROPERTY);
+        if (propertyValue == null) {
+            addInfo("System property \"" + CONFIG_FILE_PROPERTY + "\" is not set.");
+            return null;
+        }
+        return searchForFile(CONFIG_FILE_PROPERTY, propertyValue);
+    }
+
+    private File searchForFile(String propertyKey, String candidatePath) {
         File candidateFile = new File(candidatePath);
         if (candidateFile.exists()) {
             addInfo("Found configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");

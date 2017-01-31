@@ -119,6 +119,12 @@
     resource named logback-access.xml.
     </p>
 
+    <p>The configuration may be overloaded by using the system property
+    <em>logback.access.configurationFile</em>. If this property is set,
+    it takes precedence over the automatic file detection described above.
+    <code>java -Dlogback.access.configurationFile=/path/to/config.xml chapters.configuration.MyApp1</code>
+    </p>
+
     <p>In order to help with troubleshooting, by default, the
     <code>LogbackValve</code> will print its internal status at its
     initialization. Typical output would look as:

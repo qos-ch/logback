@@ -13,8 +13,10 @@
  */
 package ch.qos.logback.access.tomcat;
 
+import static ch.qos.logback.access.tomcat.LogbackValve.CONFIG_FILE_PROPERTY;
 import static org.junit.Assert.*;
 
+import ch.qos.logback.core.util.Loader;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.ContainerBase;
 import org.junit.After;
@@ -23,6 +25,9 @@ import org.junit.Test;
 import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
+
+import java.io.File;
+import java.net.URL;
 
 public class LogbackValveTest {
 
@@ -73,6 +78,24 @@ public class LogbackValveTest {
         checker.assertContainsMatch("Found ." + fileName + ". as a resource.");
         checker.assertContainsMatch("Done configuring");
         checker.assertIsErrorFree();
+    }
+
+    @Test
+    public void fileFromSystemPropertyShouldBeFound() throws LifecycleException {
+        String fileName = "logback-asResource.xml";
+        URL resource = Loader.getResource(fileName, getClass().getClassLoader());
+        File file = new File(resource.getFile());
+
+        String previousValue = System.setProperty(CONFIG_FILE_PROPERTY, file.getAbsolutePath());
+        try {
+            setupValve(null);
+            valve.start();
+            checker.assertContainsMatch("Found configuration file .*? using property \"logback.access.configurationFile\"");
+            checker.assertContainsMatch("Done configuring");
+            checker.assertIsErrorFree();
+        } finally {
+            System.setProperty(CONFIG_FILE_PROPERTY, previousValue != null ? previousValue : "");
+        }
     }
 
     @Test
