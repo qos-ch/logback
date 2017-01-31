@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -134,6 +136,8 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         return defaultConverterMap;
     }
 
+
+    @Override
     public String doLayout(ILoggingEvent event) {
         if (!isStarted()) {
             return CoreConstants.EMPTY_STRING;
@@ -141,6 +145,14 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         return writeLoopOnConverters(event);
     }
 
+    @Override
+    public void doLayout(ILoggingEvent event, ByteBuffer bb) {
+        if (!isStarted()) {
+            return;
+        }
+        writeLoopOnConverters(event, bb);
+    }
+    
     @Override
     protected String getPresentationHeaderPrefix() {
         return HEADER_PREFIX;

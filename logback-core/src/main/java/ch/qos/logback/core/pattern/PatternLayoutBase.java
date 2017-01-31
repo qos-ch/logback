@@ -13,6 +13,10 @@
  */
 package ch.qos.logback.core.pattern;
 
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
@@ -21,9 +25,6 @@ import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
@@ -107,6 +108,16 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         ConverterUtil.setContextForConverters(getContext(), head);
     }
 
+    protected void writeLoopOnConverters(E event, ByteBuffer byteBuffer) {
+        //StringBuilder buf = new StringBuilder(128);
+        Converter<E> c = head;
+        while (c != null) {
+            c.write(byteBuffer, event, charset);
+            c = c.getNext();
+        }
+    }
+
+    
     protected String writeLoopOnConverters(E event) {
         StringBuilder buf = new StringBuilder(128);
         Converter<E> c = head;

@@ -30,6 +30,9 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
         this.presumedClean = true;
     }
 
+    public OutputStream getOS() {
+        return os;
+    }
     public FileChannel getChannel() {
         if (os == null) {
             return null;

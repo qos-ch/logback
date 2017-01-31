@@ -20,7 +20,7 @@ public class NIOByteBufferedOutputStream extends OutputStream {
             FileOutputStream rfos = (FileOutputStream) os;
             fc = rfos.getChannel();
             byteBuffer = ByteBuffer.allocateDirect(bufferCapacity);
-            System.out.println("FCXX != null");
+            System.out.println("*************FC "+DEFAULT_BYTE_BUFFER_CAPACITY);
         } else {
             fc = null;
             byteBuffer = ByteBuffer.allocate(bufferCapacity);
@@ -49,6 +49,12 @@ public class NIOByteBufferedOutputStream extends OutputStream {
         byteBuffer.clear();
     }
 
+    public void writeBB(ByteBuffer bb) throws IOException {
+        bb.flip();
+        fc.write(bb);
+        bb.clear();
+    }
+    
     @Override
     public void write(byte[] byteArray, int offset, int len) throws IOException {
         int bytesToWrite = len - offset;

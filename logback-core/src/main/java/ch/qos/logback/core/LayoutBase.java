@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E> {
@@ -23,7 +26,8 @@ abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E
     String fileFooter;
     String presentationHeader;
     String presentationFooter;
-
+    protected Charset charset;
+    
     public void setContext(Context context) {
         this.context = context;
     }
@@ -33,7 +37,11 @@ abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E
     }
 
     public void start() {
+        if(charset == null) {
+            charset = Charset.defaultCharset();
+        }
         started = true;
+        
     }
 
     public void stop() {
@@ -44,6 +52,14 @@ abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E
         return started;
     }
 
+    public Charset getCharset() {
+        return charset;
+    }
+
+    public void setCharset(Charset charset) {
+        this.charset = charset;
+    }
+    
     public String getFileHeader() {
         return fileHeader;
     }
@@ -78,5 +94,10 @@ abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E
 
     public void setPresentationFooter(String footer) {
         this.presentationFooter = footer;
+    }
+    
+    public void doLayout(E event, ByteBuffer byteBuffer)  {
+        String txt = doLayout(event);
+        byteBuffer.put(txt.getBytes(charset));
     }
 }

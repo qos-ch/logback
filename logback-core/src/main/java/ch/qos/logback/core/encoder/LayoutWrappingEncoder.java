@@ -15,11 +15,13 @@ package ch.qos.logback.core.encoder;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.recovery.ResilientFileOutputStream;
+import ch.qos.logback.core.util.NIOByteBufferedOutputStream;
 
 public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
@@ -32,7 +34,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * <code>null</null> which corresponds to
      * the system's default charset.
      */
-    private Charset charset;
+    protected Charset charset;
 
     private boolean immediateFlush = true;
 
@@ -118,21 +120,38 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         if (charset == null) {
             return s.getBytes();
         } else {
-            try {
-                return s.getBytes(charset.name());
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException("An existing charset cannot possibly be unsupported.");
-            }
+            return s.getBytes(charset);
         }
     }
 
-//    static String txt = "abc\r\n";
-//    static byte[] txtBytes = txt.getBytes();
-    
+    // static String txt = "2017-01-30 21:59:56,357 DEBUG
+    // [org.apache.logging.log4j.perf.jmh.FileAppenderBenchmark.log4j2RAF-jmh-worker-2] TestRandom - This is a debug
+    // message\r\n";
+    // static byte[] txtBytes = txt.getBytes();
+    // static ByteBuffer bb = ByteBuffer.allocateDirect(1024*4);
+    ByteBuffer bb = ByteBuffer.allocate(1024 * 4);
+
+    static boolean once = true;
+
     public void doEncode(E event) throws IOException {
-        String txt = layout.doLayout(event);
-        outputStream.write(convertToBytes(txt));
-        //outputStream.write(txtBytes);
+        // String txt = layout.doLayout(event);
+        // outputStream.write(convertToBytes(txt));
+
+        bb.clear();
+        layout.doLayout(event, bb);
+        bb.flip();
+        if (outputStream instanceof ResilientFileOutputStream) {
+            ResilientFileOutputStream r = (ResilientFileOutputStream) outputStream;
+
+            NIOByteBufferedOutputStream nioos = (NIOByteBufferedOutputStream) r.getOS();
+            if (once) {
+                once = false;
+                System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXXX NIOByteBufferedOutputStream nioos = (NIOByteBufferedOutputStream) outputStream");
+            }
+            nioos.writeBB(bb);
+        } else {
+            outputStream.write(bb.array(), 0, bb.limit());
+        }
         if (immediateFlush)
             outputStream.flush();
     }

@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core.pattern;
 
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+
 /**
  * A minimal converter which sets up the general interface for derived classes. 
  * It also implements the functionality to chain converters in a linked list.
@@ -42,6 +45,11 @@ abstract public class Converter<E> {
         buf.append(convert(event));
     }
 
+    public void write(ByteBuffer bb, E event, Charset charset) {
+        String s = convert(event);
+        bb.put(s.getBytes(charset));
+    }
+    
     public final void setNext(Converter<E> next) {
         if (this.next != null) {
             throw new IllegalStateException("Next converter has been already set");

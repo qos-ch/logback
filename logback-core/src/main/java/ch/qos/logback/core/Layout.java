@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core;
 
+import java.nio.ByteBuffer;
+
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
@@ -30,6 +32,8 @@ public interface Layout<E> extends ContextAware, LifeCycle {
      * @return the event formatted as a String
      */
     String doLayout(E event);
+
+    void doLayout(E event, ByteBuffer byteBuffer);
 
     /**
      * Return the file header for this layout. The returned value may be null.
