@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.spi;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -26,8 +27,10 @@ import ch.qos.logback.core.Appender;
  */
 public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
-    final private CopyOnWriteArrayList<Appender<E>> appenderList = new CopyOnWriteArrayList<Appender<E>>();
+    //final private CopyOnWriteArrayList<Appender<E>> appenderList = new CopyOnWriteArrayList<Appender<E>>();
+    final private ArrayList<Appender<E>> appenderList = new ArrayList<Appender<E>>();
 
+    
     /**
      * Attach an appender. If the appender is already in the list in won't be
      * added again.
@@ -36,7 +39,8 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
         if (newAppender == null) {
             throw new IllegalArgumentException("Null argument disallowed");
         }
-        appenderList.addIfAbsent(newAppender);
+        //appenderList.addIfAbsent(newAppender);
+        appenderList.add(newAppender);
     }
 
     /**
@@ -44,10 +48,14 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      */
     public int appendLoopOnAppenders(E e) {
         int size = 0;
-        for (Appender<E> appender : appenderList) {
-            appender.doAppend(e);
+        for(int i = 0; i < appenderList.size(); i++) {
+            appenderList.get(i).doAppend(e);
             size++;
         }
+//        for (Appender<E> appender : appenderList) {
+//            appender.doAppend(e);
+//            size++;
+//        }
         return size;
     }
 
