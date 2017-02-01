@@ -233,6 +233,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     }
     
     public void setBufferSize(FileSize bufferSize) {
+        addInfo("Setting bufferSize to ["+bufferSize.toString()+"]");
         this.bufferSize = bufferSize;
     }
 
