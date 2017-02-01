@@ -48,6 +48,11 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
      * NEUTRAL, then NEUTRAL is returned.
      */
     public FilterReply getFilterChainDecision(E event) {
+        // avoid Iterator creation if not necessary
+        if(filterList.isEmpty()) {
+            return FilterReply.NEUTRAL;
+        }
+        
         for (Filter<E> f : filterList) {
             final FilterReply r = f.decide(event);
             if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
