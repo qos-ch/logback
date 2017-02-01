@@ -76,9 +76,9 @@ abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase imp
                 return;
             }
 
-            if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
-                return;
-            }
+//            if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
+//                return;
+//            }
 
             // ok, we now invoke derived class' implementation of append
             this.append(eventObject);
