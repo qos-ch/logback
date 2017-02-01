@@ -52,6 +52,7 @@ Kenneth Gendron          CA, USA               2016-04-01
 Espen A. Fossen          Norway                2016-04-07
 Scott Babcock            WA, USA               2016-12-22
 Olivier Bourgain         France                2017-01-31
+Nicolas Maupu            France                2017-01-31
 
 Justification for CLAs
 ----------------------
