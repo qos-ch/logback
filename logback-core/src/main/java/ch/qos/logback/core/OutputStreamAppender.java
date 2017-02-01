@@ -44,7 +44,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     /**
      * All synchronization in this class is done via the lock object.
      */
-    protected final ReentrantLock lock = new ReentrantLock(true);
+    protected final ReentrantLock lock = new ReentrantLock(false);
 
     /**
      * This is the {@link OutputStream outputStream} where output will be written.
