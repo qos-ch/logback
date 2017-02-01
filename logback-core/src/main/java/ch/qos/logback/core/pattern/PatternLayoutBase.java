@@ -28,7 +28,9 @@ import java.util.Map;
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
 
-    static final int INTIAL_STRING_BUILDER_SIZE = 256;
+    static final int INTIAL_STRING_BUILDER_SIZE = 128;
+
+    private static final int MAX_STRING_BUILDER_LENGHT = 16*INTIAL_STRING_BUILDER_SIZE;
     
     Converter<E> head;
     String pattern;
@@ -110,14 +112,26 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         ConverterUtil.setContextForConverters(getContext(), head);
     }
 
+    
+    StringBuilder recycledStringBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
+    
     protected String writeLoopOnConverters(E event) {
-        StringBuilder buf = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
+
         Converter<E> c = head;
+        StringBuilder strBuilder = getRecycledStringBuilder();
         while (c != null) {
-            c.write(buf, event);
+            c.write(strBuilder, event);
             c = c.getNext();
         }
-        return buf.toString();
+        return strBuilder.toString();
+    }
+
+    private StringBuilder getRecycledStringBuilder() {
+        if(recycledStringBuilder.length() > MAX_STRING_BUILDER_LENGHT) {
+            recycledStringBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
+        }
+        recycledStringBuilder.setLength(0);
+        return recycledStringBuilder;
     }
 
     public String getPattern() {

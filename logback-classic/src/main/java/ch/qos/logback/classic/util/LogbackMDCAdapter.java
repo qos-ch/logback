@@ -38,8 +38,6 @@ import org.slf4j.spi.MDCAdapter;
  */
 public class LogbackMDCAdapter implements MDCAdapter {
 
-    // The internal map is copied so as
-
     // We wish to avoid unnecessarily copying of the map. To ensure
     // efficient/timely copying, we have a variable keeping track of the last
     // operation. A copy is necessary on 'put' or 'remove' but only if the last

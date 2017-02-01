@@ -52,10 +52,6 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
             appenderList.get(i).doAppend(e);
             size++;
         }
-//        for (Appender<E> appender : appenderList) {
-//            appender.doAppend(e);
-//            size++;
-//        }
         return size;
     }
 
