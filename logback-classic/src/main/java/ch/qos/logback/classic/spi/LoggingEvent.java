@@ -25,7 +25,7 @@ import org.slf4j.helpers.MessageFormatter;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.util.LogbackMDCAdapter;
 
 import org.slf4j.spi.MDCAdapter;
 

@@ -15,6 +15,7 @@ package ch.qos.logback.access.spi;
 
 import ch.qos.logback.core.spi.DeferredProcessingAware;
 
+import ch.qos.logback.core.spi.MDCAware;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
@@ -33,7 +34,7 @@ import java.util.Map;
  * @author S&eacute;bastien Pennec
  * @author J&ouml;rn Huxhorn
  */
-public interface IAccessEvent extends DeferredProcessingAware {
+public interface IAccessEvent extends DeferredProcessingAware, MDCAware {
 
     String NA = "-";
     int SENTINEL = -1;
@@ -91,9 +92,9 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
     void setThreadName(String threadName);
     String getThreadName();
-    
+
     String getQueryString();
-    
+
     String getRemoteAddr();
 
     String getRequestHeader(String key);

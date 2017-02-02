@@ -11,15 +11,15 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.pattern;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
+package ch.qos.logback.core.pattern;
 
 import java.util.Map;
 
+import ch.qos.logback.core.spi.MDCAware;
+
 import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
 
-public class MDCConverter extends ClassicConverter {
+public class MDCConverter extends DynamicConverter<MDCAware> {
 
     private String key;
     private String defaultValue = "";
@@ -41,7 +41,7 @@ public class MDCConverter extends ClassicConverter {
     }
 
     @Override
-    public String convert(ILoggingEvent event) {
+    public String convert(MDCAware event) {
         Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
         if (mdcPropertyMap == null) {

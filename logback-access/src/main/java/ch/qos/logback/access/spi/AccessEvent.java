@@ -17,6 +17,7 @@ import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
 
+import ch.qos.logback.core.util.LogbackMDCAdapter;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,12 +25,16 @@ import javax.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import org.slf4j.MDC;
+import org.slf4j.spi.MDCAdapter;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -72,6 +77,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
     Map<String, String[]> requestParameterMap;
     Map<String, String> responseHeaderMap;
     Map<String, Object> attributeMap;
+
+    private Map<String, String> mdcPropertyMap;
 
     long contentLength = SENTINEL;
     int statusCode = SENTINEL;
@@ -579,6 +586,24 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return new ArrayList<String>(responseHeaderMap.keySet());
     }
 
+    public Map<String, String> getMDCPropertyMap() {
+        // populate mdcPropertyMap if null
+        if (mdcPropertyMap == null) {
+            MDCAdapter mdc = MDC.getMDCAdapter();
+            if (mdc instanceof LogbackMDCAdapter) {
+                mdcPropertyMap = ((LogbackMDCAdapter) mdc).getPropertyMap();
+            } else {
+                mdcPropertyMap = mdc.getCopyOfContextMap();
+            }
+        }
+        // mdcPropertyMap still null, use emptyMap()
+        if (mdcPropertyMap == null) {
+            mdcPropertyMap = Collections.emptyMap();
+        }
+
+        return mdcPropertyMap;
+    }
+
     public void prepareForDeferredProcessing() {
         getRequestHeaderMap();
         getRequestParameterMap();
@@ -599,6 +624,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
         getContentLength();
         getRequestContent();
         getResponseContent();
+
+        getMDCPropertyMap();
 
         copyAttributeMap();
     }

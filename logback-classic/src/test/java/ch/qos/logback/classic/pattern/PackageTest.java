@@ -17,9 +17,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import ch.qos.logback.core.pattern.MDCConverterTest;
+
 @RunWith(Suite.class)
-@SuiteClasses({ ConverterTest.class, TargetLengthBasedClassNameAbbreviatorTest.class, MDCConverterTest.class, MarkerConverterTest.class,
-        ExtendedThrowableProxyConverterTest.class, ThrowableProxyConverterTest.class, RootCauseFirstThrowableProxyConverterTest.class })
+@SuiteClasses({ConverterTest.class, TargetLengthBasedClassNameAbbreviatorTest.class, MarkerConverterTest.class,
+               ExtendedThrowableProxyConverterTest.class, ThrowableProxyConverterTest.class, RootCauseFirstThrowableProxyConverterTest.class })
 public class PackageTest {
 
 }
