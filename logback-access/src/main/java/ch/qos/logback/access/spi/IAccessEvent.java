@@ -127,4 +127,9 @@ public interface IAccessEvent extends DeferredProcessingAware {
     Map<String, String> getResponseHeaderMap();
 
     List<String> getResponseHeaderNameList();
+
+    /**
+     * Returns the MDC map. The returned value can be an empty map but not null.
+     */
+    Map<String, String> getMDCPropertyMap();
 }

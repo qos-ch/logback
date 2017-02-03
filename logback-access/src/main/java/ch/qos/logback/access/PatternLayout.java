@@ -23,6 +23,7 @@ import ch.qos.logback.access.pattern.FullResponseConverter;
 import ch.qos.logback.access.pattern.LineSeparatorConverter;
 import ch.qos.logback.access.pattern.LocalIPAddressConverter;
 import ch.qos.logback.access.pattern.LocalPortConverter;
+import ch.qos.logback.access.pattern.MDCConverter;
 import ch.qos.logback.access.pattern.NAConverter;
 import ch.qos.logback.access.pattern.QueryStringConverter;
 import ch.qos.logback.access.pattern.RemoteHostConverter;
@@ -156,7 +157,10 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
         defaultConverterMap.put("elapsedSeconds", ElapsedSecondsConverter.class.getName());
         defaultConverterMap.put("T", ElapsedSecondsConverter.class.getName());
-        
+
+        defaultConverterMap.put("X", MDCConverter.class.getName());
+        defaultConverterMap.put("mdc", MDCConverter.class.getName());
+
         defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
 
         defaultConverterMap.put("black", BlackCompositeConverter.class.getName());

@@ -11,15 +11,18 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.pattern;
-
-import ch.qos.logback.classic.spi.ILoggingEvent;
-
-import java.util.Map;
+package ch.qos.logback.access.pattern;
 
 import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
 
-public class MDCConverter extends ClassicConverter {
+import java.util.Map;
+
+import ch.qos.logback.access.spi.IAccessEvent;
+
+/**
+ * @brief supports %mdc{} or %X{} directive
+ */
+public class MDCConverter extends AccessConverter {
 
     private String key;
     private String defaultValue = "";
@@ -37,11 +40,12 @@ public class MDCConverter extends ClassicConverter {
     @Override
     public void stop() {
         key = null;
+        defaultValue = "";
         super.stop();
     }
 
     @Override
-    public String convert(ILoggingEvent event) {
+    public String convert(IAccessEvent event) {
         Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
         if (mdcPropertyMap == null) {
@@ -52,7 +56,7 @@ public class MDCConverter extends ClassicConverter {
             return outputMDCForAllKeys(mdcPropertyMap);
         }
 
-        String value = mdcPropertyMap.get(key);
+        String value = event.getMDCPropertyMap().get(key);
         return (value != null) ? value : defaultValue;
     }
 
