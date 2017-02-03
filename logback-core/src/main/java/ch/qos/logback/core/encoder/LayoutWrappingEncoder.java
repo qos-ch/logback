@@ -146,14 +146,14 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
           //  lock1.unlock();
         //}
 
-        lock2.lock();
-        try {
+        //lock2.lock();
+        //try {
             outputStream.write(bytes);
             if (immediateFlush)
                 outputStream.flush();
-        } finally {
-            lock2.unlock();
-        }
+        //} finally {
+          //  lock2.unlock();
+        //}
     }
 
     public boolean isStarted() {
