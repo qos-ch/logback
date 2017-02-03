@@ -16,6 +16,8 @@ package ch.qos.logback.access.spi;
 import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
+import org.slf4j.MDC;
+import org.slf4j.spi.MDCAdapter;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -72,6 +75,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
     Map<String, String[]> requestParameterMap;
     Map<String, String> responseHeaderMap;
     Map<String, Object> attributeMap;
+
+    private Map<String, String> mdcPropertyMap;
 
     long contentLength = SENTINEL;
     int statusCode = SENTINEL;
@@ -283,16 +288,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     @Override
     public String getRequestHeader(String key) {
-        String result = null;
-        key = key.toLowerCase();
-        if (requestHeaderMap == null) {
-            if (httpRequest != null) {
-                buildRequestHeaderMap();
-                result = requestHeaderMap.get(key);
-            }
-        } else {
-            result = requestHeaderMap.get(key);
-        }
+        //key = key.toLowerCase(); unnecessary, case insensitive map
+        String result = getRequestHeaderMap().get(key);
 
         if (result != null) {
             return result;
@@ -579,6 +576,45 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return new ArrayList<String>(responseHeaderMap.keySet());
     }
 
+    /**
+     * @brief snapshots context map if not already done and return this snapshot
+     * @see ch.qos.logback.classic.spi.LoggingEvent
+     * @return the snapshot context map
+     */
+    @Override
+    public Map<String, String> getMDCPropertyMap() {
+        // populate mdcPropertyMap if null
+        if (mdcPropertyMap == null) {
+            mdcPropertyMap = MDC.getCopyOfContextMap();
+        }
+        // mdcPropertyMap still null, use emptyMap()
+        if (mdcPropertyMap == null)
+            mdcPropertyMap = Collections.emptyMap();
+
+        return mdcPropertyMap;
+    }
+
+    /**
+     * Set the MDC map for this event.
+     *
+     * @param map
+     */
+    public void setMDCPropertyMap(Map<String, String> map) {
+        if (mdcPropertyMap != null) {
+            throw new IllegalStateException("The MDCPropertyMap has been already set for this event.");
+        }
+        this.mdcPropertyMap = map;
+    }
+
+    /**
+     * Synonym for [@link #getMDCPropertyMap}.
+     *
+     * @deprecated Replaced by [@link #getMDCPropertyMap}
+     */
+    public Map<String, String> getMdc() {
+        return getMDCPropertyMap();
+    }
+
     public void prepareForDeferredProcessing() {
         getRequestHeaderMap();
         getRequestParameterMap();
@@ -601,5 +637,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         getResponseContent();
 
         copyAttributeMap();
+
+        getMDCPropertyMap();
     }
 }
