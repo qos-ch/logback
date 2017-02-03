@@ -207,12 +207,12 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             // the synchronization prevents the OutputStream from being closed while we
             // are writing. It also prevents multiple threads from entering the same
             // converter. Converters assume that they are in a synchronized block.
-            lock.lock();
-            try {
+            //lock.lock();
+            //try {
                 writeOut(event);
-            } finally {
-                lock.unlock();
-            }
+            //} finally {
+              //  lock.unlock();
+            //}
         } catch (IOException ioe) {
             // as soon as an exception occurs, move to non-started state
             // and add a single ErrorStatus to the SM.

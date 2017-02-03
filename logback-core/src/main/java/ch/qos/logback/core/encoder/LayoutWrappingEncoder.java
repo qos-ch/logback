@@ -17,6 +17,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
@@ -125,12 +130,30 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
             }
         }
     }
+    
+    ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+    
+    ReadLock lock1 = rwLock.readLock();
+    WriteLock lock2 = rwLock.writeLock();
 
     public void doEncode(E event) throws IOException {
-        String txt = layout.doLayout(event);
-        outputStream.write(convertToBytes(txt));
-        if (immediateFlush)
-            outputStream.flush();
+        //lock1.lock();
+        byte[] bytes = null;
+        //try {
+            String txt = layout.doLayout(event);
+            bytes = convertToBytes(txt);
+        //} finally {
+          //  lock1.unlock();
+        //}
+
+        lock2.lock();
+        try {
+            outputStream.write(bytes);
+            if (immediateFlush)
+                outputStream.flush();
+        } finally {
+            lock2.unlock();
+        }
     }
 
     public boolean isStarted() {

@@ -113,7 +113,8 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     }
 
     protected String writeLoopOnConverters(E event) {
-        StringBuilder strBuilder = getRecycledStringBuilder();
+        //StringBuilder strBuilder = getRecycledStringBuilder();
+        StringBuilder strBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
         Converter<E> c = head;
         while (c != null) {
             c.write(strBuilder, event);
