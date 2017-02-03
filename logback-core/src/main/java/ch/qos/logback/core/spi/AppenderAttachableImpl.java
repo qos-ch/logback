@@ -14,9 +14,9 @@
 package ch.qos.logback.core.spi;
 
 import java.util.Iterator;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.util.COWArrayList;
 
 /**
  * A ReentrantReadWriteLock based implementation of the
@@ -26,7 +26,8 @@ import ch.qos.logback.core.Appender;
  */
 public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
-    final private CopyOnWriteArrayList<Appender<E>> appenderList = new CopyOnWriteArrayList<Appender<E>>();
+    @SuppressWarnings("unchecked")
+    final private COWArrayList<Appender<E>> appenderList = new COWArrayList<Appender<E>>(new Appender[0]);
 
     /**
      * Attach an appender. If the appender is already in the list in won't be
@@ -44,8 +45,10 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      */
     public int appendLoopOnAppenders(E e) {
         int size = 0;
-        for (Appender<E> appender : appenderList) {
-            appender.doAppend(e);
+        final Appender<E>[] appenderArray = appenderList.asTypedArray();
+        final int len = appenderArray.length;
+        for (int i = 0; i < len; i++) {
+            appenderArray[i].doAppend(e);
             size++;
         }
         return size;
