@@ -116,7 +116,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         StringBuilder strBuilder = getRecycledStringBuilder();
         Converter<E> c = head;
         while (c != null) {
-            c.write(strBuilder, event);
+            c.format(strBuilder, event);
             c = c.getNext();
         }
         return strBuilder.toString();

@@ -29,7 +29,9 @@ abstract public class Converter<E> {
      * 
      * @param event
      */
-    public abstract String convert(E event);
+    //public abstract String convert(E event);
+
+    public abstract void gcfConvert(E event, StringBuilder out);
 
     /**
      * In its simplest incarnation, a convert simply appends the data extracted from
@@ -38,8 +40,8 @@ abstract public class Converter<E> {
      * @param buf The input buffer where data is appended
      * @param event The event from where data is extracted
      */
-    public void write(StringBuilder buf, E event) {
-        buf.append(convert(event));
+    public void format(StringBuilder buf, E event) {
+        gcfConvert(event, buf);
     }
 
     public final void setNext(Converter<E> next) {

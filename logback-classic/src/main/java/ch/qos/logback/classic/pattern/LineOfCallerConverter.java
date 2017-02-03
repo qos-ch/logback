@@ -18,12 +18,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class LineOfCallerConverter extends ClassicConverter {
 
-    public String convert(ILoggingEvent le) {
+    public void gcfConvert(ILoggingEvent le, StringBuilder out) {
         StackTraceElement[] cda = le.getCallerData();
         if (cda != null && cda.length > 0) {
-            return Integer.toString(cda[0].getLineNumber());
+            out.append(Integer.toString(cda[0].getLineNumber()));
         } else {
-            return CallerData.NA;
+            out.append(CallerData.NA);
         }
     }
 

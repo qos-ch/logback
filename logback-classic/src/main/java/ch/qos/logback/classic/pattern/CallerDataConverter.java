@@ -109,8 +109,8 @@ public class CallerDataConverter extends ClassicConverter {
         evaluatorList.add(ee);
     }
 
-    public String convert(ILoggingEvent le) {
-        StringBuilder buf = new StringBuilder();
+    @Override
+    public void gcfConvert(ILoggingEvent le, StringBuilder buf) {
 
         if (evaluatorList != null) {
             boolean printCallerData = false;
@@ -136,7 +136,8 @@ public class CallerDataConverter extends ClassicConverter {
             }
 
             if (!printCallerData) {
-                return CoreConstants.EMPTY_STRING;
+                 buf.append(CoreConstants.EMPTY_STRING);
+                 return;
             }
         }
 
@@ -151,9 +152,9 @@ public class CallerDataConverter extends ClassicConverter {
                 buf.append(cda[i]);
                 buf.append(CoreConstants.LINE_SEPARATOR);
             }
-            return buf.toString();
+            return;
         } else {
-            return CallerData.CALLER_DATA_NA;
+            buf.append(CallerData.CALLER_DATA_NA);
         }
     }
 

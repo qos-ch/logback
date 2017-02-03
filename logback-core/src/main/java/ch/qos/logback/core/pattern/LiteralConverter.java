@@ -21,8 +21,9 @@ public final class LiteralConverter<E> extends Converter<E> {
         this.literal = literal;
     }
 
-    public String convert(E o) {
-        return literal;
+    @Override
+    public void gcfConvert(E e, StringBuilder out) {
+        out.append(literal);
     }
 
 }

@@ -25,8 +25,9 @@ public class ContextNameConverter extends ClassicConverter {
     /**
      * Return the name of the logger context's name.
      */
-    public String convert(ILoggingEvent event) {
-        return event.getLoggerContextVO().getName();
+    @Override
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
+        out.append(event.getLoggerContextVO().getName());
     }
 
 }

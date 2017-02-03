@@ -61,9 +61,8 @@ public class SyslogStartConverter extends ClassicConverter {
         }
     }
 
-    public String convert(ILoggingEvent event) {
-        StringBuilder sb = new StringBuilder();
-
+    @Override
+    public void gcfConvert(ILoggingEvent event, StringBuilder sb) {
         int pri = facility + LevelToSyslogSeverity.convert(event);
 
         sb.append("<");
@@ -73,8 +72,6 @@ public class SyslogStartConverter extends ClassicConverter {
         sb.append(' ');
         sb.append(localHostName);
         sb.append(' ');
-
-        return sb.toString();
     }
 
     /**

@@ -21,9 +21,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ThreadConverter extends ClassicConverter {
-
-    public String convert(ILoggingEvent event) {
-        return event.getThreadName();
+    public void gcfConvert(ILoggingEvent event, StringBuilder o) {
+        o.append(event.getThreadName());
     }
 
 }

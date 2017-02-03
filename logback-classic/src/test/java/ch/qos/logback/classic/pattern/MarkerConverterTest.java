@@ -32,6 +32,7 @@ public class MarkerConverterTest {
 
     LoggerContext lc;
     MarkerConverter converter;
+    StringBuilder out = new StringBuilder();
     // use a different facotry for each test so that they are independent
     IMarkerFactory markerFactory = new BasicMarkerFactory();
 
@@ -51,7 +52,8 @@ public class MarkerConverterTest {
 
     @Test
     public void testWithNullMarker() {
-        String result = converter.convert(createLoggingEvent(null));
+        converter.gcfConvert(createLoggingEvent(null), out);
+        String result = out.toString();
         assertEquals("", result);
     }
 
@@ -59,7 +61,9 @@ public class MarkerConverterTest {
     public void testWithMarker() {
         String name = "test";
         Marker marker = markerFactory.getMarker(name);
-        String result = converter.convert(createLoggingEvent(marker));
+
+        converter.gcfConvert(createLoggingEvent(marker), out);
+        String result = out.toString();
         assertEquals(name, result);
     }
 
@@ -68,8 +72,8 @@ public class MarkerConverterTest {
         Marker marker = markerFactory.getMarker("test");
         marker.add(markerFactory.getMarker("child"));
 
-        String result = converter.convert(createLoggingEvent(marker));
-
+        converter.gcfConvert(createLoggingEvent(marker), out);
+        String result = out.toString();
         assertEquals("test [ child ]", result);
     }
 
@@ -80,8 +84,8 @@ public class MarkerConverterTest {
         marker.add(markerFactory.getMarker("child2"));
         marker.add(markerFactory.getMarker("child3"));
 
-        String result = converter.convert(createLoggingEvent(marker));
-
+        converter.gcfConvert(createLoggingEvent(marker), out);
+        String result = out.toString();
         assertEquals("testParent [ child1, child2, child3 ]", result);
     }
 

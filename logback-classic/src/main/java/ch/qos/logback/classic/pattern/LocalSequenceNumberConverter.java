@@ -30,7 +30,7 @@ public class LocalSequenceNumberConverter extends ClassicConverter {
     AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
 
     @Override
-    public String convert(ILoggingEvent event) {
-        return Long.toString(sequenceNumber.getAndIncrement());
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
+        out.append(Long.toString(sequenceNumber.getAndIncrement()));
     }
 }

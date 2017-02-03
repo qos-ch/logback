@@ -16,7 +16,6 @@ package ch.qos.logback.classic.pattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,12 +26,13 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.util.SystemInfo;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class MDCConverterTest {
 
     LoggerContext lc;
     MDCConverter converter;
+    StringBuilder out = new StringBuilder();
     int diff = RandomUtil.getPositiveInt();
 
     @Before
@@ -58,8 +58,8 @@ public class MDCConverterTest {
 
         MDC.put(k, v);
         ILoggingEvent le = createLoggingEvent();
-        String result = converter.convert(le);
-        assertEquals(k + "=" + v, result);
+        converter.gcfConvert(le, out);
+        assertEquals(k + "=" + v, out.toString());
     }
 
     @Test
@@ -67,7 +67,8 @@ public class MDCConverterTest {
         MDC.put("testKey", "testValue");
         MDC.put("testKey2", "testValue2");
         ILoggingEvent le = createLoggingEvent();
-        String result = converter.convert(le);
+        converter.gcfConvert(le, out);
+        String result = out.toString();
         boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
         assertTrue(result + " is not conform", isConform);
     }

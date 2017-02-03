@@ -107,11 +107,13 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         // nop
     }
 
-    public String convert(ILoggingEvent event) {
+    @Override
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
 
         IThrowableProxy tp = event.getThrowableProxy();
         if (tp == null) {
-            return CoreConstants.EMPTY_STRING;
+             out.append(CoreConstants.EMPTY_STRING);
+             return;
         }
 
         // an evaluator match will cause stack printing to be skipped
@@ -138,19 +140,16 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
             }
 
             if (!printStack) {
-                return CoreConstants.EMPTY_STRING;
+                out.append(CoreConstants.EMPTY_STRING);
+                return;
             }
         }
 
-        return throwableProxyToString(tp);
+        throwableProxyToString(tp, out);
     }
 
-    protected String throwableProxyToString(IThrowableProxy tp) {
-        StringBuilder sb = new StringBuilder(BUILDER_CAPACITY);
-
-        recursiveAppend(sb, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, tp);
-
-        return sb.toString();
+    protected void throwableProxyToString(IThrowableProxy tp, StringBuilder out) {
+        recursiveAppend(out, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, tp);
     }
 
     private void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {

@@ -85,8 +85,9 @@ public class RootCauseFirstThrowableProxyConverterTest {
 
         // when
         ILoggingEvent le = createLoggingEvent(exception);
-        String result = converter.convert(le);
-
+        StringBuilder out = new StringBuilder();
+        converter.gcfConvert(le, out);
+        String result = out.toString();
         // then
         result = result.replace("common frames omitted", "more");
         result = result.replaceAll(" ~?\\[.*\\]", "");
@@ -98,11 +99,13 @@ public class RootCauseFirstThrowableProxyConverterTest {
         // given
         Throwable nestedException = makeNestedException(2);
         nestedException.printStackTrace(printWriter);
+        StringBuilder out = new StringBuilder();
 
         // when
         ILoggingEvent le = createLoggingEvent(nestedException);
-        String result = converter.convert(le);
+        converter.gcfConvert(le, out);
 
+        String result = out.toString();
         // then
         assertThat(result).startsWith("java.lang.Exception: nesting level=0");
         assertThat(positionOf("nesting level=0").in(result)).isLessThan(positionOf("nesting level =1").in(result));

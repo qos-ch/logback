@@ -30,17 +30,17 @@ public final class PropertyConverter extends ClassicConverter {
         }
     }
 
-    public String convert(ILoggingEvent event) {
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
         if (key == null) {
-            return "Property_HAS_NO_KEY";
+            out.append("Property_HAS_NO_KEY");
         } else {
             LoggerContextVO lcvo = event.getLoggerContextVO();
             Map<String, String> map = lcvo.getPropertyMap();
             String val = map.get(key);
             if (val != null) {
-                return val;
+                out.append(val);
             } else {
-                return System.getProperty(key);
+                out.append(System.getProperty(key));
             }
         }
     }

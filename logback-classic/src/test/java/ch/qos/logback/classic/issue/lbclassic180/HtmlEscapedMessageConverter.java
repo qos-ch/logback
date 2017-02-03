@@ -18,8 +18,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.helpers.Transform;
 
 public class HtmlEscapedMessageConverter extends ClassicConverter {
-
-    public String convert(ILoggingEvent event) {
-        return Transform.escapeTags(event.getFormattedMessage());
+    
+    @Override
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
+        out.append(Transform.escapeTags(event.getFormattedMessage()));
     }
 }

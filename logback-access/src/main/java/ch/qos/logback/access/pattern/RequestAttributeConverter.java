@@ -39,4 +39,13 @@ public class RequestAttributeConverter extends AccessConverter {
         return accessEvent.getAttribute(key);
     }
 
+    @Override
+    public void gcfConvert(IAccessEvent accessEvent, StringBuilder out) {
+        if (!isStarted()) {
+            out.append("INACTIVE_REQUEST_ATTRIB_CONV");
+        } else {
+            out.append(accessEvent.getAttribute(key));
+        }
+    }
+
 }

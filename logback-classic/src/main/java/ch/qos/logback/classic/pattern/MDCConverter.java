@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
+import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
 
 import java.util.Map;
 
-import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class MDCConverter extends ClassicConverter {
 
@@ -41,22 +41,24 @@ public class MDCConverter extends ClassicConverter {
     }
 
     @Override
-    public String convert(ILoggingEvent event) {
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
         Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
         if (mdcPropertyMap == null) {
-            return defaultValue;
+            out.append(defaultValue);
+            return;
         }
 
         if (key == null) {
-            return outputMDCForAllKeys(mdcPropertyMap);
+            outputMDCForAllKeys(mdcPropertyMap, out);
+            return;
         } else {
 
             String value = event.getMDCPropertyMap().get(key);
             if (value != null) {
-                return value;
+                out.append(value);
             } else {
-                return defaultValue;
+                out.append(defaultValue);
             }
         }
     }
@@ -64,18 +66,17 @@ public class MDCConverter extends ClassicConverter {
     /**
      * if no key is specified, return all the values present in the MDC, in the format "k1=v1, k2=v2, ..."
      */
-    private String outputMDCForAllKeys(Map<String, String> mdcPropertyMap) {
-        StringBuilder buf = new StringBuilder();
+    private String outputMDCForAllKeys(Map<String, String> mdcPropertyMap,  StringBuilder out) {
         boolean first = true;
         for (Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
             if (first) {
                 first = false;
             } else {
-                buf.append(", ");
+                out.append(", ");
             }
             // format: key0=value0, key1=value1
-            buf.append(entry.getKey()).append('=').append(entry.getValue());
+            out.append(entry.getKey()).append('=').append(entry.getValue());
         }
-        return buf.toString();
+        return out.toString();
     }
 }

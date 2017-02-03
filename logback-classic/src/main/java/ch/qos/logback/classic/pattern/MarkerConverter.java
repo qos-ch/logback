@@ -26,12 +26,12 @@ public class MarkerConverter extends ClassicConverter {
 
     private static String EMPTY = "";
 
-    public String convert(ILoggingEvent le) {
+    public void gcfConvert(ILoggingEvent le, StringBuilder out) {
         Marker marker = le.getMarker();
         if (marker == null) {
-            return EMPTY;
+            out.append(EMPTY);
         } else {
-            return marker.toString();
+            out.append(marker.toString());
         }
     }
 

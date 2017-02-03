@@ -18,6 +18,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class RequestCookieConverter extends AccessConverter {
 
+    private static final String INACTIVE_COOKIE_CONVERTER = "INACTIVE_COOKIE_CONVERTER";
     String key;
 
     @Override
@@ -33,9 +34,19 @@ public class RequestCookieConverter extends AccessConverter {
     @Override
     public String convert(IAccessEvent accessEvent) {
         if (!isStarted()) {
-            return "INACTIVE_COOKIE_CONVERTER";
+            return INACTIVE_COOKIE_CONVERTER;
         }
 
         return accessEvent.getCookie(key);
+    }
+
+    @Override
+    public void gcfConvert(IAccessEvent accessEvent, StringBuilder out) {
+        if (!isStarted()) {
+            out.append(INACTIVE_COOKIE_CONVERTER);
+        } else {
+            out.append(accessEvent.getCookie(key));
+        }
+
     }
 }

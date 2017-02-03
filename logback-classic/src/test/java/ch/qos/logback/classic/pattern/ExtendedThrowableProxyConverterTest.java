@@ -89,7 +89,9 @@ public class ExtendedThrowableProxyConverterTest {
         t.printStackTrace(pw);
 
         ILoggingEvent le = createLoggingEvent(t);
-        String result = etpc.convert(le);
+        StringBuilder out = new StringBuilder();
+        etpc.gcfConvert(le, out);
+        String result = out.toString();
         result = result.replace("common frames omitted", "more");
         result = result.replaceAll(" ~?\\[.*\\]", "");
         assertEquals(sw.toString(), result);

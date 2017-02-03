@@ -44,13 +44,14 @@ public abstract class NamedConverter extends ClassicConverter {
         }
     }
 
-    public String convert(ILoggingEvent event) {
+    @Override
+    public void gcfConvert(ILoggingEvent event,StringBuilder out) {
         String fqn = getFullyQualifiedName(event);
 
         if (abbreviator == null) {
-            return fqn;
+            out.append(fqn);
         } else {
-            return abbreviator.abbreviate(fqn);
+            abbreviator.abbreviate(fqn, out);
         }
     }
 }

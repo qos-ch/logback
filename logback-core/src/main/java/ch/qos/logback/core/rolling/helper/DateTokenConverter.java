@@ -71,12 +71,14 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
         return cdf.format(date.getTime());
     }
 
-    public String convert(Object o) {
+    @Override
+    public void gcfConvert(Object o, StringBuilder out) {
         if (o == null) {
             throw new IllegalArgumentException("Null argument forbidden");
         }
         if (o instanceof Date) {
-            return convert((Date) o);
+            out.append(convert((Date) o));
+            return;
         }
         throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
     }

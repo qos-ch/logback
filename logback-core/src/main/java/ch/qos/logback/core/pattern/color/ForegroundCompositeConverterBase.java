@@ -27,14 +27,12 @@ abstract public class ForegroundCompositeConverterBase<E> extends CompositeConve
     final private static String SET_DEFAULT_COLOR = ESC_START + "0;" + DEFAULT_FG + ESC_END;
 
     @Override
-    protected String transform(E event, String in) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(ESC_START);
-        sb.append(getForegroundColorCode(event));
-        sb.append(ESC_END);
-        sb.append(in);
-        sb.append(SET_DEFAULT_COLOR);
-        return sb.toString();
+    protected void transform(E event, String in, StringBuilder out) {
+        out.append(ESC_START);
+        out.append(getForegroundColorCode(event));
+        out.append(ESC_END);
+        out.append(in);
+        out.append(SET_DEFAULT_COLOR);
     }
 
     /**

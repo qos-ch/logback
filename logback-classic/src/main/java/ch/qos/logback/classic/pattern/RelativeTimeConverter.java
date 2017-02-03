@@ -20,7 +20,8 @@ public class RelativeTimeConverter extends ClassicConverter {
     long lastTimestamp = -1;
     String timesmapCache = null;
 
-    public String convert(ILoggingEvent event) {
+    @Override
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
         long now = event.getTimeStamp();
 
         synchronized (this) {
@@ -29,7 +30,7 @@ public class RelativeTimeConverter extends ClassicConverter {
                 lastTimestamp = now;
                 timesmapCache = Long.toString(now - event.getLoggerContextVO().getBirthTime());
             }
-            return timesmapCache;
+            out.append(timesmapCache);
         }
     }
 }

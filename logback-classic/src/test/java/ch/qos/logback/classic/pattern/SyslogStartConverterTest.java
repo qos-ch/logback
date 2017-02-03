@@ -34,6 +34,7 @@ public class SyslogStartConverterTest {
 
     private LoggerContext lc;
     private SyslogStartConverter converter;
+    private StringBuilder out = new StringBuilder();
     private final String HOSTNAME = findHostname();
     private final Calendar calendar = Calendar.getInstance(Locale.US);
 
@@ -57,11 +58,12 @@ public class SyslogStartConverterTest {
         // RFC 3164, section 4.1.2:
         // If the day of the month is less than 10, then it MUST be represented as
         // a space and then the number. For example, the 7th day of August would be
-        // represented as "Aug  7", with two spaces between the "g" and the "7".
+        // represented as "Aug 7", with two spaces between the "g" and the "7".
         LoggingEvent le = createLoggingEvent();
         calendar.set(2012, Calendar.AUGUST, 7, 13, 15, 0);
         le.setTimeStamp(calendar.getTimeInMillis());
-        assertEquals("<191>Aug  7 13:15:00 " + HOSTNAME + " ", converter.convert(le));
+        converter.gcfConvert(le, out);
+        assertEquals("<191>Aug  7 13:15:00 " + HOSTNAME + " ", out.toString());
     }
 
     @Test
@@ -69,7 +71,8 @@ public class SyslogStartConverterTest {
         LoggingEvent le = createLoggingEvent();
         calendar.set(2012, Calendar.OCTOBER, 11, 22, 14, 15);
         le.setTimeStamp(calendar.getTimeInMillis());
-        assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", converter.convert(le));
+        converter.gcfConvert(le, out);
+        assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", out.toString());
     }
 
     @Test
@@ -77,12 +80,19 @@ public class SyslogStartConverterTest {
         LoggingEvent le = createLoggingEvent();
         calendar.set(2012, Calendar.OCTOBER, 11, 22, 14, 15);
         le.setTimeStamp(calendar.getTimeInMillis());
-        assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", converter.convert(le));
-        assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", converter.convert(le));
+        
+        converter.gcfConvert(le, out);
+        assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", out.toString());
+        
+        out.setLength(0);
+        converter.gcfConvert(le, out);
+        assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", out.toString());
 
         calendar.set(2012, Calendar.OCTOBER, 11, 22, 14, 16);
         le.setTimeStamp(calendar.getTimeInMillis());
-        assertEquals("<191>Oct 11 22:14:16 " + HOSTNAME + " ", converter.convert(le));
+        out.setLength(0);
+        converter.gcfConvert(le, out);
+        assertEquals("<191>Oct 11 22:14:16 " + HOSTNAME + " ", out.toString());
     }
 
     @Test
@@ -96,8 +106,8 @@ public class SyslogStartConverterTest {
             LoggingEvent le = createLoggingEvent();
             calendar.set(2012, Calendar.OCTOBER, 11, 22, 14, 15);
             le.setTimeStamp(calendar.getTimeInMillis());
-            String result = converter.convert(le);
-            assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", result);
+            converter.gcfConvert(le, out);
+            assertEquals("<191>Oct 11 22:14:15 " + HOSTNAME + " ", out.toString());
         } finally {
             Locale.setDefault(originalDefaultLocale);
         }
@@ -116,7 +126,8 @@ public class SyslogStartConverterTest {
         LoggingEvent le = createLoggingEvent();
         calendar.set(2012, Calendar.OCTOBER, 11, 22, 14, 15);
         le.setTimeStamp(calendar.getTimeInMillis());
-        assertEquals("<191>Oct 11 22:14:15 " + host + " ", converter.convert(le));
+        converter.gcfConvert(le, out);
+        assertEquals("<191>Oct 11 22:14:15 " + host + " ", out.toString());
     }
 
     private LoggingEvent createLoggingEvent() {

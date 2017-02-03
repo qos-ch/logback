@@ -24,15 +24,18 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
         this.targetLength = targetLength;
     }
 
-    public String abbreviate(String fqClassName) {
-        StringBuilder buf = new StringBuilder(targetLength);
+    public void abbreviate(String fqClassName, StringBuilder out) {
+        //StringBuilder buf = new StringBuilder(targetLength);
         if (fqClassName == null) {
             throw new IllegalArgumentException("Class name may not be null");
         }
 
+        String result;
+        
         int inLen = fqClassName.length();
         if (inLen < targetLength) {
-            return fqClassName;
+            out.append(fqClassName);
+            return;
         }
 
         int[] dotIndexesArray = new int[ClassicConstants.MAX_DOTS];
@@ -46,21 +49,20 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
         // System.out.println("Dot count for [" + className + "] is " + dotCount);
         // if there are not dots than abbreviation is not possible
         if (dotCount == 0) {
-            return fqClassName;
+            out.append(fqClassName);
+            return;
         }
         // printArray("dotArray: ", dotArray);
         computeLengthArray(fqClassName, dotIndexesArray, lengthArray, dotCount);
         // printArray("lengthArray: ", lengthArray);
         for (int i = 0; i <= dotCount; i++) {
             if (i == 0) {
-                buf.append(fqClassName.substring(0, lengthArray[i] - 1));
+                out.append(fqClassName.substring(0, lengthArray[i] - 1));
             } else {
-                buf.append(fqClassName.substring(dotIndexesArray[i - 1], dotIndexesArray[i - 1] + lengthArray[i]));
+                out.append(fqClassName.substring(dotIndexesArray[i - 1], dotIndexesArray[i - 1] + lengthArray[i]));
             }
             // System.out.println("i=" + i + ", buf=" + buf);
         }
-
-        return buf.toString();
     }
 
     static int computeDotIndexes(final String className, int[] dotArray) {

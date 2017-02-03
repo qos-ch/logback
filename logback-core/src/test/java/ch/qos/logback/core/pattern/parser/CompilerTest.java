@@ -44,7 +44,7 @@ public class CompilerTest {
         StringBuilder buf = new StringBuilder();
         Converter<Object> c = head;
         while (c != null) {
-            c.write(buf, event);
+            c.format(buf, event);
             c = c.getNext();
         }
         return buf.toString();

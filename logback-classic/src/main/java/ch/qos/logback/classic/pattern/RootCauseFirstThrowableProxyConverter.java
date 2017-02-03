@@ -24,10 +24,8 @@ import ch.qos.logback.core.CoreConstants;
 public class RootCauseFirstThrowableProxyConverter extends ExtendedThrowableProxyConverter {
 
     @Override
-    protected String throwableProxyToString(IThrowableProxy tp) {
-        StringBuilder buf = new StringBuilder(BUILDER_CAPACITY);
+    protected void throwableProxyToString(IThrowableProxy tp, StringBuilder buf) {
         recursiveAppendRootCauseFirst(buf, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, tp);
-        return buf.toString();
     }
 
     protected void recursiveAppendRootCauseFirst(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {

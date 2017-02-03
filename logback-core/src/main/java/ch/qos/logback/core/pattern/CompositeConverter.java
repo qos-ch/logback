@@ -17,17 +17,18 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
 
     Converter<E> childConverter;
 
-    public String convert(E event) {
-        StringBuilder buf = new StringBuilder();
+    @Override
+    public void gcfConvert(E event, StringBuilder out) {
 
+        StringBuilder buf = new StringBuilder();
         for (Converter<E> c = childConverter; c != null; c = c.next) {
-            c.write(buf, event);
+            c.format(buf, event);
         }
         String intermediary = buf.toString();
-        return transform(event, intermediary);
+        transform(event, intermediary, out);
     }
 
-    abstract protected String transform(E event, String in);
+    abstract protected void transform(E event, String in, StringBuilder out);
 
     public Converter<E> getChildConverter() {
         return childConverter;

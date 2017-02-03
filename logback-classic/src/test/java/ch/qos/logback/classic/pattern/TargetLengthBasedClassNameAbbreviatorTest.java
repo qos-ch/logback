@@ -25,41 +25,54 @@ public class TargetLengthBasedClassNameAbbreviatorTest {
     public void testShortName() {
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(100);
+            StringBuilder sb = new StringBuilder();
+
             String name = "hello";
-            assertEquals(name, abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals(name, sb.toString());
         }
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(100);
+            StringBuilder sb = new StringBuilder();
             String name = "hello.world";
-            assertEquals(name, abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals(name, sb.toString());
         }
     }
 
     @Test
     public void testNoDot() {
         TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+        StringBuilder sb = new StringBuilder();
         String name = "hello";
-        assertEquals(name, abbreviator.abbreviate(name));
+        abbreviator.abbreviate(name, sb);
+        assertEquals(name, sb.toString());
     }
 
     @Test
     public void testOneDot() {
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "hello.world";
-            assertEquals("h.world", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("h.world", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "h.world";
-            assertEquals("h.world", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("h.world", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = ".world";
-            assertEquals(".world", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals(".world", sb.toString());
         }
     }
 
@@ -67,25 +80,33 @@ public class TargetLengthBasedClassNameAbbreviatorTest {
     public void testTwoDot() {
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.Foobar";
-            assertEquals("c.l.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "c.logback.Foobar";
-            assertEquals("c.l.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "c..Foobar";
-            assertEquals("c..Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c..Foobar", sb.toString());
         }
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "..Foobar";
-            assertEquals("..Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("..Foobar", sb.toString());
         }
     }
 
@@ -93,24 +114,32 @@ public class TargetLengthBasedClassNameAbbreviatorTest {
     public void test3Dot() {
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.xyz.Foobar";
-            assertEquals("c.l.x.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.x.Foobar", sb.toString());
         }
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(13);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.xyz.Foobar";
-            assertEquals("c.l.x.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.x.Foobar", sb.toString());
         }
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(14);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.xyz.Foobar";
-            assertEquals("c.l.xyz.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.xyz.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(15);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.alligator.Foobar";
-            assertEquals("c.l.a.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.a.Foobar", sb.toString());
         }
     }
 
@@ -118,32 +147,42 @@ public class TargetLengthBasedClassNameAbbreviatorTest {
     public void testXDot() {
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(21);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.wombat.alligator.Foobar";
-            assertEquals("c.l.w.a.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.w.a.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(22);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.wombat.alligator.Foobar";
-            assertEquals("c.l.w.alligator.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.w.alligator.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(1);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.wombat.alligator.tomato.Foobar";
-            assertEquals("c.l.w.a.t.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.w.a.t.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(21);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.wombat.alligator.tomato.Foobar";
-            assertEquals("c.l.w.a.tomato.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.w.a.tomato.Foobar", sb.toString());
         }
 
         {
             TargetLengthBasedClassNameAbbreviator abbreviator = new TargetLengthBasedClassNameAbbreviator(29);
+            StringBuilder sb = new StringBuilder();
             String name = "com.logback.wombat.alligator.tomato.Foobar";
-            assertEquals("c.l.w.alligator.tomato.Foobar", abbreviator.abbreviate(name));
+            abbreviator.abbreviate(name, sb);
+            assertEquals("c.l.w.alligator.tomato.Foobar", sb.toString());
         }
     }
 }

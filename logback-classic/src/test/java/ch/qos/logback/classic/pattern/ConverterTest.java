@@ -69,7 +69,7 @@ public class ConverterTest {
         {
             DynamicConverter<ILoggingEvent> converter = new LineOfCallerConverter();
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             // the number below should be the line number of the previous line
             assertEquals("72", buf.toString());
         }
@@ -80,14 +80,14 @@ public class ConverterTest {
         {
             DynamicConverter<ILoggingEvent> converter = new LevelConverter();
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             assertEquals("INFO", buf.toString());
         }
         {
             DynamicConverter<ILoggingEvent> converter = new LevelConverter();
             converter.setFormattingInfo(new FormatInfo(1, 1, true, false));
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             assertEquals("I", buf.toString());
         }
     }
@@ -96,7 +96,7 @@ public class ConverterTest {
     public void testThread() {
         DynamicConverter<ILoggingEvent> converter = new ThreadConverter();
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
+        converter.format(buf, le);
         System.out.println(buf.toString());
         String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
         assertTrue(buf.toString().matches(regex));
@@ -106,7 +106,7 @@ public class ConverterTest {
     public void testMessage() {
         DynamicConverter<ILoggingEvent> converter = new MessageConverter();
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
+        converter.format(buf, le);
         assertEquals("Some message", buf.toString());
     }
 
@@ -114,7 +114,7 @@ public class ConverterTest {
     public void testLineSeparator() {
         DynamicConverter<ILoggingEvent> converter = new LineSeparatorConverter();
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
+        converter.format(buf, le);
         assertEquals(CoreConstants.LINE_SEPARATOR, buf.toString());
     }
 
@@ -123,7 +123,7 @@ public class ConverterTest {
         {
             DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
         }
 
         {
@@ -131,7 +131,7 @@ public class ConverterTest {
             this.optionList.add("3");
             converter.setOptionList(this.optionList);
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
         }
     }
 
@@ -140,7 +140,7 @@ public class ConverterTest {
         {
             ClassicConverter converter = new LoggerConverter();
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             assertEquals(this.getClass().getName(), buf.toString());
         }
 
@@ -150,7 +150,7 @@ public class ConverterTest {
             converter.setOptionList(this.optionList);
             converter.start();
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             assertEquals("c.q.l.c.p.ConverterTest", buf.toString());
         }
 
@@ -161,7 +161,7 @@ public class ConverterTest {
             converter.setOptionList(this.optionList);
             converter.start();
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             assertEquals("ConverterTest", buf.toString());
         }
     }
@@ -194,7 +194,7 @@ public class ConverterTest {
         witness.append("zzzzzz");
 
         le.setLoggerName(loggerNameBuf.toString());
-        converter.write(buf, le);
+        converter.format(buf, le);
         assertEquals(witness.toString(), buf.toString());
     }
 
@@ -202,7 +202,7 @@ public class ConverterTest {
     public void testClass() {
         DynamicConverter<ILoggingEvent> converter = new ClassOfCallerConverter();
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
+        converter.format(buf, le);
         assertEquals(this.getClass().getName(), buf.toString());
     }
 
@@ -210,7 +210,7 @@ public class ConverterTest {
     public void testMethodOfCaller() {
         DynamicConverter<ILoggingEvent> converter = new MethodOfCallerConverter();
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
+        converter.format(buf, le);
         assertEquals("testMethodOfCaller", buf.toString());
     }
 
@@ -218,7 +218,7 @@ public class ConverterTest {
     public void testFileOfCaller() {
         DynamicConverter<ILoggingEvent> converter = new FileOfCallerConverter();
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
+        converter.format(buf, le);
         assertEquals("ConverterTest.java", buf.toString());
     }
 
@@ -229,7 +229,7 @@ public class ConverterTest {
             converter.start();
 
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             if (buf.length() < 10) {
                 fail("buf is too short");
             }
@@ -245,7 +245,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             LoggingEvent event = makeLoggingEvent(null);
             event.setMarker(MarkerFactory.getMarker("XXX"));
-            converter.write(buf, event);
+            converter.format(buf, event);
             if (buf.length() < 10) {
                 fail("buf is too short");
             }
@@ -263,7 +263,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             LoggingEvent event = makeLoggingEvent(null);
             event.setMarker(MarkerFactory.getMarker("YYY"));
-            converter.write(buf, event);
+            converter.format(buf, event);
             if (buf.length() < 10) {
                 fail("buf is too short");
             }
@@ -280,7 +280,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             LoggingEvent event = makeLoggingEvent(null);
             event.setMarker(MarkerFactory.getMarker("YYY"));
-            converter.write(buf, event);
+            converter.format(buf, event);
             if (buf.length() < 10) {
                 fail("buf is too short");
             }
@@ -296,7 +296,7 @@ public class ConverterTest {
             converter.start();
 
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             if (buf.length() < 10) {
                 fail("buf is too short");
             }
@@ -311,7 +311,7 @@ public class ConverterTest {
             converter.start();
 
             StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
+            converter.format(buf, le);
             assertTrue("buf is too short", buf.length() >= 10);
 
             String expected = "Caller+4\t at java.lang.reflect.Method.invoke(";
@@ -330,8 +330,8 @@ public class ConverterTest {
         e0.setTimeStamp(timestamp);
         LoggingEvent e1 = makeLoggingEvent(null);
         e1.setTimeStamp(timestamp);
-        converter.write(buf0, e0);
-        converter.write(buf1, e1);
+        converter.format(buf0, e0);
+        converter.format(buf1, e1);
         assertEquals(buf0.toString(), buf1.toString());
     }
 
@@ -346,7 +346,7 @@ public class ConverterTest {
         ILoggingEvent event = makeLoggingEvent(null);
 
         StringBuilder buf = new StringBuilder();
-        converter.write(buf, event);
+        converter.format(buf, event);
 
         String expected = "<" + (SyslogConstants.LOG_MAIL + SyslogConstants.INFO_SEVERITY) + ">";
         assertTrue(buf.toString().startsWith(expected));
@@ -363,9 +363,9 @@ public class ConverterTest {
         converter.start();
 
         ILoggingEvent event = makeLoggingEvent(null);
-
-        String result = converter.convert(event);
-        assertEquals("someValue", result);
+        StringBuilder out = new StringBuilder();
+        converter.gcfConvert(event, out);
+        assertEquals("someValue", out.toString());
     }
 
     @Test
@@ -378,9 +378,9 @@ public class ConverterTest {
 
         lc.setName("aValue");
         ILoggingEvent event = makeLoggingEvent(null);
-
-        String result = converter.convert(event);
-        assertEquals("aValue", result);
+        StringBuilder out = new StringBuilder();
+        converter.gcfConvert(event, out);
+        assertEquals("aValue", out.toString());
     }
 
     @Test
@@ -394,8 +394,8 @@ public class ConverterTest {
         lc.setName("aValue");
         lc.putProperty("k", "v");
         ILoggingEvent event = makeLoggingEvent(null);
-
-        String result = converter.convert(event);
-        assertEquals("v", result);
+        StringBuilder out = new StringBuilder();
+        converter.gcfConvert(event, out);
+        assertEquals("v", out.toString());
     }
 }

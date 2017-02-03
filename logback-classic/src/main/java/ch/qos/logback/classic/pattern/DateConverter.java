@@ -56,8 +56,8 @@ public class DateConverter extends ClassicConverter {
         }
     }
 
-    public String convert(ILoggingEvent le) {
+    public void gcfConvert(ILoggingEvent le, StringBuilder out) {
         long timestamp = le.getTimeStamp();
-        return cachingDateFormatter.format(timestamp);
+        out.append(cachingDateFormatter.format(timestamp));
     }
 }

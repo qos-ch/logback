@@ -171,7 +171,9 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
         while (p != null) {
             if (p instanceof LiteralConverter) {
-                String s = p.convert(null);
+                StringBuilder sb = new StringBuilder();
+                p.gcfConvert(null, sb);
+                String s = sb.toString();
                 if (s.indexOf('/') != -1) {
                     return true;
                 }

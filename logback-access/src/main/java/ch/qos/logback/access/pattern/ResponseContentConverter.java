@@ -31,4 +31,9 @@ public class ResponseContentConverter extends AccessConverter {
         return accessEvent.getResponseContent();
     }
 
+    @Override
+    public void gcfConvert(StringBuilder out, IAccessEvent accessEvent) {
+        out.append(accessEvent.getResponseContent());
+    }
+
 }

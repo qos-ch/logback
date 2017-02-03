@@ -42,6 +42,7 @@ public class ThrowableProxyConverterTest {
 
     LoggerContext lc = new LoggerContext();
     ThrowableProxyConverter tpc = new ThrowableProxyConverter();
+    StringBuilder out = new StringBuilder();
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
@@ -131,9 +132,8 @@ public class ThrowableProxyConverterTest {
         final List<String> optionList = Arrays.asList("1");
         tpc.setOptionList(optionList);
         tpc.start();
-
-        final String result = tpc.convert(le);
-
+        tpc.gcfConvert(le, out);
+        final String result = out.toString();
         final BufferedReader reader = new BufferedReader(new StringReader(result));
         assertTrue(reader.readLine().contains(t.getMessage()));
         assertNotNull(reader.readLine());
@@ -150,8 +150,9 @@ public class ThrowableProxyConverterTest {
         tpc.setOptionList(options);
         tpc.start();
 
-        final String result = tpc.convert(le);
-
+        tpc.gcfConvert(le, out);
+        final String result = out.toString();
+        
         final BufferedReader reader = new BufferedReader(new StringReader(result));
         assertTrue(reader.readLine().contains(t.getMessage()));
         assertNotNull(reader.readLine());
@@ -169,8 +170,8 @@ public class ThrowableProxyConverterTest {
         tpc.start();
 
         // when
-        final String result = tpc.convert(le);
-
+        tpc.gcfConvert(le, out);
+        final String result = out.toString();
         // then
         assertThat(result).doesNotContain(nameOfContainingMethod);
         
@@ -187,7 +188,8 @@ public class ThrowableProxyConverterTest {
         tpc.start();
 
         // when
-        final String result = tpc.convert(le);
+        tpc.gcfConvert(le, out);
+        final String result = out.toString();
 
         // then
         assertThat(result).doesNotContain(nameOfContainingMethod).doesNotContain("junit");
@@ -203,7 +205,8 @@ public class ThrowableProxyConverterTest {
         tpc.start();
 
         // when
-        final String result = tpc.convert(le);
+        tpc.gcfConvert(le, out);
+        final String result = out.toString();
 
         // then
         String[] lines = result.split(CoreConstants.LINE_SEPARATOR);
@@ -218,7 +221,10 @@ public class ThrowableProxyConverterTest {
         t.printStackTrace(pw);
 
         ILoggingEvent le = createLoggingEvent(t);
-        String result = tpc.convert(le);
+      
+        tpc.gcfConvert(le, out);
+        String result = out.toString();
+                   
         System.out.println(result);
         result = result.replace("common frames omitted", "more");
         assertEquals(sw.toString(), result);

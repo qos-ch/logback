@@ -22,4 +22,9 @@ public class RemoteHostConverter extends AccessConverter {
         return accessEvent.getRemoteHost();
     }
 
+    @Override
+    public void gcfConvert(IAccessEvent accessEvent, StringBuilder out) {
+        out.append(accessEvent.getRemoteHost());
+    }
+
 }

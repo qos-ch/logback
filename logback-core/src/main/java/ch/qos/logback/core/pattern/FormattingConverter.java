@@ -32,30 +32,33 @@ abstract public class FormattingConverter<E> extends Converter<E> {
     }
 
     @Override
-    final public void write(StringBuilder buf, E event) {
-        String s = convert(event);
-
+    final public void format(StringBuilder buf, E event) {
+        int start = buf.length();
+        gcfConvert(event, buf);
+        int end = buf.length();
+        
+        int len = end - start;
+        
         if (formattingInfo == null) {
-            buf.append(s);
             return;
         }
 
         int min = formattingInfo.getMin();
         int max = formattingInfo.getMax();
 
-        if (s == null) {
+        if (len == 0) {
             if (0 < min)
                 SpacePadder.spacePad(buf, min);
             return;
         }
 
-        int len = s.length();
+        String s = "";
 
         if (len > max) {
             if (formattingInfo.isLeftTruncate()) {
-                buf.append(s.substring(len - max));
+                buf.delete(start, start+(len - max));
             } else {
-                buf.append(s.substring(0, max));
+                buf.delete(start+max, start+end);
             }
         } else if (len < min) {
             if (formattingInfo.isLeftPad()) {
@@ -63,8 +66,6 @@ abstract public class FormattingConverter<E> extends Converter<E> {
             } else {
                 SpacePadder.rightPad(buf, s, min);
             }
-        } else {
-            buf.append(s);
-        }
+        } 
     }
 }

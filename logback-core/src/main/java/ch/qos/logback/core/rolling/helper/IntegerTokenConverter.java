@@ -29,15 +29,16 @@ public class IntegerTokenConverter extends DynamicConverter<Object> implements M
         return Integer.toString(i);
     }
 
-    public String convert(Object o) {
+    public void gcfConvert(Object o, StringBuilder out) {
         if (o == null) {
             throw new IllegalArgumentException("Null argument forbidden");
         }
         if (o instanceof Integer) {
             Integer i = (Integer) o;
-            return convert(i.intValue());
+            out.append(i.toString());
+        } else {
+            throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
         }
-        throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
     }
 
     public boolean isApplicable(Object o) {

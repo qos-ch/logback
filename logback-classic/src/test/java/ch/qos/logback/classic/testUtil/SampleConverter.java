@@ -21,8 +21,8 @@ public class SampleConverter extends ClassicConverter {
     static public final String SAMPLE_STR = "sample";
 
     @Override
-    public String convert(ILoggingEvent event) {
-        return SAMPLE_STR;
+    public void gcfConvert(ILoggingEvent event, StringBuilder out) {
+        out.append(SAMPLE_STR);
     }
 
 }

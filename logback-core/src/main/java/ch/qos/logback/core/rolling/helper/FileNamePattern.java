@@ -150,11 +150,11 @@ public class FileNamePattern extends ContextAwareBase {
                 MonoTypedConverter monoTyped = (MonoTypedConverter) c;
                 for (Object o : objectList) {
                     if (monoTyped.isApplicable(o)) {
-                        buf.append(c.convert(o));
+                        c.gcfConvert(o, buf);
                     }
                 }
             } else {
-                buf.append(c.convert(objectList));
+                c.gcfConvert(objectList, buf);
             }
             c = c.getNext();
         }
@@ -165,7 +165,7 @@ public class FileNamePattern extends ContextAwareBase {
         StringBuilder buf = new StringBuilder();
         Converter<Object> p = headTokenConverter;
         while (p != null) {
-            buf.append(p.convert(o));
+            p.gcfConvert(o, buf);
             p = p.getNext();
         }
         return buf.toString();
@@ -197,11 +197,11 @@ public class FileNamePattern extends ContextAwareBase {
         Converter<Object> p = headTokenConverter;
         while (p != null) {
             if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
+                p.gcfConvert(null, buf);
             } else if (p instanceof IntegerTokenConverter) {
                 buf.append("(\\d{1,3})");
             } else if (p instanceof DateTokenConverter) {
-                buf.append(p.convert(date));
+                p.gcfConvert(date, buf);
             }
             p = p.getNext();
         }
@@ -216,7 +216,7 @@ public class FileNamePattern extends ContextAwareBase {
         Converter<Object> p = headTokenConverter;
         while (p != null) {
             if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
+                p.gcfConvert(null, buf);
             } else if (p instanceof IntegerTokenConverter) {
                 buf.append("\\d{1,2}");
             } else if (p instanceof DateTokenConverter) {

@@ -52,8 +52,7 @@ public class TTLLLayout extends LayoutBase<ILoggingEvent> {
         sb.append(CoreConstants.LINE_SEPARATOR);
         IThrowableProxy tp = event.getThrowableProxy();
         if (tp != null) {
-            String stackTrace = tpc.convert(event);
-            sb.append(stackTrace);
+            tpc.gcfConvert(event, sb);
         }
         return sb.toString();
     }

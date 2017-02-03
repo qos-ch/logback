@@ -18,12 +18,13 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class FileOfCallerConverter extends ClassicConverter {
 
-    public String convert(ILoggingEvent le) {
+    @Override
+    public void gcfConvert(ILoggingEvent le, StringBuilder out) {
         StackTraceElement[] cda = le.getCallerData();
         if (cda != null && cda.length > 0) {
-            return cda[0].getFileName();
+            out.append(cda[0].getFileName());
         } else {
-            return CallerData.NA;
+            out.append(CallerData.NA);
         }
     }
 
