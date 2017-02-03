@@ -52,7 +52,7 @@ public class MDCConverter extends ClassicConverter {
             return outputMDCForAllKeys(mdcPropertyMap);
         } else {
 
-            String value = event.getMDCPropertyMap().get(key);
+            String value = mdcPropertyMap.get(key);
             if (value != null) {
                 return value;
             } else {
