@@ -45,7 +45,7 @@ public interface Encoder<E> extends ContextAware, LifeCycle {
      * @param os
      * @throws IOException
      */
-    void init(OutputStream os) throws IOException;
+    byte[] init() throws IOException;
 
     /**
      * Encode and write an event to the appropriate {@link OutputStream}.
@@ -55,7 +55,7 @@ public interface Encoder<E> extends ContextAware, LifeCycle {
      * @param event
      * @throws IOException
      */
-    void doEncode(E event) throws IOException;
+    byte[] doEncode(E event) throws IOException;
 
     /**
      * This method is called prior to the closing of the underling
@@ -64,5 +64,5 @@ public interface Encoder<E> extends ContextAware, LifeCycle {
      * 
      * @throws IOException
      */
-    void close() throws IOException;
+    byte[] close() throws IOException;
 }

@@ -14,14 +14,7 @@
 package ch.qos.logback.core.encoder;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
@@ -82,78 +75,51 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         this.charset = charset;
     }
 
-    public void init(OutputStream os) throws IOException {
-        super.init(os);
-        writeHeader();
+    public byte[] init() throws IOException {
+        return headerBytes();
     }
 
-    void writeHeader() throws IOException {
-        if (layout != null && (outputStream != null)) {
-            StringBuilder sb = new StringBuilder();
-            appendIfNotNull(sb, layout.getFileHeader());
-            appendIfNotNull(sb, layout.getPresentationHeader());
-            if (sb.length() > 0) {
-                sb.append(CoreConstants.LINE_SEPARATOR);
-                // If at least one of file header or presentation header were not
-                // null, then append a line separator.
-                // This should be useful in most cases and should not hurt.
-                outputStream.write(convertToBytes(sb.toString()));
-                outputStream.flush();
-            }
+    byte[] headerBytes() throws IOException {
+        if (layout == null)
+            return null;
+
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, layout.getFileHeader());
+        appendIfNotNull(sb, layout.getPresentationHeader());
+        if (sb.length() > 0) {
+            // If at least one of file header or presentation header were not
+            // null, then append a line separator.
+            // This should be useful in most cases and should not hurt.
+            sb.append(CoreConstants.LINE_SEPARATOR);
         }
+        return convertToBytes(sb.toString());
     }
 
-    public void close() throws IOException {
-        writeFooter();
+    public byte[] close() throws IOException {
+        return footerBytes();
     }
 
-    void writeFooter() throws IOException {
-        if (layout != null && outputStream != null) {
-            StringBuilder sb = new StringBuilder();
-            appendIfNotNull(sb, layout.getPresentationFooter());
-            appendIfNotNull(sb, layout.getFileFooter());
-            if (sb.length() > 0) {
-                outputStream.write(convertToBytes(sb.toString()));
-                outputStream.flush();
-            }
-        }
+    byte[] footerBytes() throws IOException {
+        if (layout == null)
+            return null;
+
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, layout.getPresentationFooter());
+        appendIfNotNull(sb, layout.getFileFooter());
+        return convertToBytes(sb.toString());
     }
 
     private byte[] convertToBytes(String s) {
         if (charset == null) {
             return s.getBytes();
         } else {
-            try {
-                return s.getBytes(charset.name());
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException("An existing charset cannot possibly be unsupported.");
-            }
+            return s.getBytes(charset);
         }
     }
-    
-    ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
-    
-    ReadLock lock1 = rwLock.readLock();
-    WriteLock lock2 = rwLock.writeLock();
 
-    public void doEncode(E event) throws IOException {
-        //lock1.lock();
-        byte[] bytes = null;
-        //try {
-            String txt = layout.doLayout(event);
-            bytes = convertToBytes(txt);
-        //} finally {
-          //  lock1.unlock();
-        //}
-
-        //lock2.lock();
-        //try {
-            outputStream.write(bytes);
-            if (immediateFlush)
-                outputStream.flush();
-        //} finally {
-          //  lock2.unlock();
-        //}
+    public byte[] doEncode(E event) throws IOException {
+        String txt = layout.doLayout(event);
+        return convertToBytes(txt);
     }
 
     public boolean isStarted() {
@@ -166,12 +132,6 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
     public void stop() {
         started = false;
-        if (outputStream != null) {
-            try {
-                outputStream.flush();
-            } catch (IOException e) {
-            }
-        }
     }
 
     private void appendIfNotNull(StringBuilder sb, String s) {
