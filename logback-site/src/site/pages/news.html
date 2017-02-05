@@ -32,7 +32,45 @@
 
     <hr width="80%" align="center" />
 
-    <h3> 2017, Release of version 1.1.10</h3>
+    <h3>February 5th, 2017, Release of version 1.1.10</h3>
+
+    <p>Several changes to improve throughput (see <a
+    href="https://docs.google.com/spreadsheets/d/1cpb5D7qnyye4W0RTlHUnXedYK98catNZytYIu5D91m0/edit?usp=sharing">spreadsheet</a>)
+    </p>
+
+    <ol>
+      <li>Most notably, the <code>ReentrantLock</code> in
+      <code>OutputStreamAppender</code> is now "unfair", which is the
+      default. In previous versions of logback, a fair lock was
+      used. Fair lock are much slower and logback has no mandate to
+      influence thread-scheduling on behalf of the user.
+      </li>
+
+      <li><code>FileAppender</code> now offers the <span
+      class="option">bufferSize</span> option. Previously, a 8K
+      fixed-size buffer was used. Increasing the <span
+      class="option">bufferSize</span>, for example to 256K,
+      scientifically reduces thread-contention.
+      </li>
+
+      <li>Critical parts of the code now use
+      <code>COWArrayList</code>, a custom developed allocation-free
+      lock-free thread-safe implementation of the {@link List}
+      interface. It is optimized for cases where iterations over the
+      list vastly outnumber modifications on the list. It is based on
+      <code>CopyOnWriteArrayList</code> but allows allocation-free
+      iterations over the list.
+      </li>
+
+      <li>In <code>PatternLayoutBase</code> the same
+      <code>StringBuilder</code> is used over and over to reduce
+      memory allocation. This is safe as long as the owning appender
+      guarantees serial access to its layout.  In the next version of
+      logback, e.g. 1.2.x, the read-write lock will no longer protect
+      access to the layout and there will be no guarantee of
+      serial-access.
+      </li>
+    </ol>
 
     <p>In web-applications, logback-classic will <a
     href="manual/configuration.html#webShutdownHook">automatically
