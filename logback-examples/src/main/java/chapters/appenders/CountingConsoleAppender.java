@@ -42,7 +42,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
         }
 
         try {
-            encoder.init(System.out);
+            encoder.init();
         } catch (IOException e) {
         }
         super.start();

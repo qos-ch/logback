@@ -38,7 +38,7 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
             return;
         }
         try {
-            encoder.init(System.out);
+            encoder.init();
         } catch (IOException e) {
         }
         super.start();
