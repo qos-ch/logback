@@ -138,7 +138,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     void encoderInit() {
         if (encoder != null && this.outputStream != null) {
             try {
-                byte[] header = encoder.init();
+                byte[] header = encoder.headerBytes();
                 writeBytes(header);
             } catch (IOException ioe) {
                 this.started = false;
@@ -150,7 +150,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     void encoderClose() {
         if (encoder != null && this.outputStream != null) {
             try {
-                byte[] footer = encoder.close();
+                byte[] footer = encoder.footerBytes();
                 writeBytes(footer);
             } catch (IOException ioe) {
                 this.started = false;
@@ -174,7 +174,6 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         try {
             // close any previously opened output stream
             closeOutputStream();
-
             this.outputStream = outputStream;
             if (encoder == null) {
                 addWarn("Encoder has not been set. Cannot invoke its init method.");
@@ -188,11 +187,11 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
 
     protected void writeOut(E event) throws IOException {
-        byte[] byteArray = this.encoder.doEncode(event);
+        byte[] byteArray = this.encoder.encode(event);
         writeBytes(byteArray);
     }
 
-    void writeBytes(byte[] byteArray) throws IOException {
+    private void writeBytes(byte[] byteArray) throws IOException {
         if(byteArray == null)
             return;
         
@@ -229,7 +228,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             // converter. Converters assume that they are in a synchronized block.
             // lock.lock();
 
-            byte[] byteArray = this.encoder.doEncode(event);
+            byte[] byteArray = this.encoder.encode(event);
             writeBytes(byteArray);
 
         } catch (IOException ioe) {

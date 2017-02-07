@@ -13,18 +13,11 @@
  */
 package ch.qos.logback.core.encoder;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
  * Encoders are responsible for transform an incoming event into a byte array
- * *and* writing out the byte array onto the appropriate {@link OutputStream}.
- * Thus, encoders have total control of what and when gets written to the
- * {@link OutputStream} maintained by the owning appender.
- * 
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author Joern Huxhorn
@@ -37,32 +30,25 @@ import ch.qos.logback.core.spi.LifeCycle;
 public interface Encoder<E> extends ContextAware, LifeCycle {
 
     /**
-     * This method is called when the owning appender starts or whenever output
-     * needs to be directed to a new OutputStream, for instance as a result of a
-     * rollover. Implementing encoders should at the very least remember the
-     * OutputStream passed as argument and use it in future operations.
+     * Get header bytes. This method is typically called upon opening of 
+     * an output stream.
      * 
-     * @param os
-     * @throws IOException
+     * @return header bytes. Null values are allowed.
      */
-    byte[] init() throws IOException;
+    byte[] headerBytes();
 
     /**
-     * Encode and write an event to the appropriate {@link OutputStream}.
-     * Implementations are free to differ writing out of the encoded event and
-     * instead write in batches.
-     * 
+     * Encode an event as bytes.
+     *  
      * @param event
-     * @throws IOException
      */
-    byte[] doEncode(E event) throws IOException;
-
+    byte[] encode(E event);
+                    
     /**
-     * This method is called prior to the closing of the underling
-     * {@link OutputStream}. Implementations MUST not close the underlying
-     * {@link OutputStream} which is the responsibility of the owning appender.
+     * Get footer bytes. This method is typically called prior to the closing 
+     * of the stream where events are written.
      * 
-     * @throws IOException
+     * @return footer bytes. Null values are allowed.
      */
-    byte[] close() throws IOException;
+    byte[] footerBytes();
 }

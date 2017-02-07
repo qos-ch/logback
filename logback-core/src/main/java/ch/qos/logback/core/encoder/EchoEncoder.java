@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.encoder;
 
-import java.io.IOException;
-
 import ch.qos.logback.core.CoreConstants;
 
 public class EchoEncoder<E> extends EncoderBase<E> {
@@ -22,19 +20,19 @@ public class EchoEncoder<E> extends EncoderBase<E> {
     String fileHeader;
     String fileFooter;
 
-    public byte[] doEncode(E event) throws IOException {
+    public byte[] encode(E event) {
         String val = event + CoreConstants.LINE_SEPARATOR;
         return val.getBytes();
     }
 
-    public byte[] close() throws IOException {
+    public byte[] footerBytes()  {
         if (fileFooter == null) {
             return null;
         }
         return fileFooter.getBytes();
     }
 
-    public byte[] init()  {
+    public byte[] headerBytes()  {
         if (fileHeader == null) {
             return null;
         }
