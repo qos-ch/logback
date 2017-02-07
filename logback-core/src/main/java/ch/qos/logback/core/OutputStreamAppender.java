@@ -135,18 +135,6 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         }
     }
 
-    void encoderInit() {
-        if (encoder != null && this.outputStream != null) {
-            try {
-                byte[] header = encoder.headerBytes();
-                writeBytes(header);
-            } catch (IOException ioe) {
-                this.started = false;
-                addStatus(new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
-            }
-        }
-    }
-
     void encoderClose() {
         if (encoder != null && this.outputStream != null) {
             try {
@@ -186,6 +174,17 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         }
     }
 
+    void encoderInit() {
+        if (encoder != null && this.outputStream != null) {
+            try {
+                byte[] header = encoder.headerBytes();
+                writeBytes(header);
+            } catch (IOException ioe) {
+                this.started = false;
+                addStatus(new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
+            }
+        }
+    }
     protected void writeOut(E event) throws IOException {
         byte[] byteArray = this.encoder.encode(event);
         writeBytes(byteArray);
