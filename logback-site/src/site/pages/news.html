@@ -30,6 +30,30 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+
+    <hr width="80%" align="center" />
+
+    <h3>February xxx, 2017, Release of version 1.2.0</h3>
+
+    <div class="breaking">
+      <h4><code>Encoder</code> interface has changed and is no longer
+      expected to handle an <code>OutputStream</code>.</h4>
+    </div>
+
+
+    <p><code>Encoder</code> interface has changed and is no longer
+    expected to handle an <code>OutputStream</code>. This
+    simplification allows a finer-grain locking for significantly
+    improved performance.
+    </p>
+
+    <p>In <code>TimeBasedRollingPolicy</code>, fixed issue with <span
+    class="option">totalSizeCap</span> of more than 2^31. This problem
+    was reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1231">1231</a> by Simon
+    Teng.
+    </p>
+
     <hr width="80%" align="center" />
 
     <h3>February 5th, 2017, Release of version 1.1.10</h3>
