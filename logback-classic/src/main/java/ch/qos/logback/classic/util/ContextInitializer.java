@@ -122,12 +122,12 @@ public class ContextInitializer {
             return url;
         }
 
-        url = getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader, updateStatus);
+        url = getResource(TEST_AUTOCONFIG_FILE, myClassLoader, updateStatus);
         if (url != null) {
             return url;
         }
 
-        url = getResource(TEST_AUTOCONFIG_FILE, myClassLoader, updateStatus);
+        url = getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader, updateStatus);
         if (url != null) {
             return url;
         }

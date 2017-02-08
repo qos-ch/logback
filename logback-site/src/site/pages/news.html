@@ -47,12 +47,34 @@
     improved performance.
     </p>
 
+    <p class="highlight">Release 1.2.0 fixes a rather severe
+    serialization vulnerability in <code>SocketServer</code> and
+    <code>ServerSocketReceiver</code>. Users running these components
+    should upgrade immediately.</p>
+
+    
+    <p>This release fixes a rather severe serialization vulnerability
+    in <code>SocketServer</code> and
+    <code>ServerSocketReceiver</code>. Users running these components
+    should upgrade immediately.
+    </p>
+
     <p>In <code>TimeBasedRollingPolicy</code>, fixed issue with <span
     class="option">totalSizeCap</span> of more than 2^31. This problem
     was reported in <a
     href="https://jira.qos.ch/browse/LOGBACK-1231">1231</a> by Simon
     Teng.
     </p>
+
+    <p>Logback-classic now searches for the file
+    <em>logback-test.xml</em> first, <em>logback.groovy</em> second
+    and <em>logback.xml</em> third. In previous versions
+    <em>logback.groovy</em> was looked up first which was non-sensical
+    in presense of <em>logback-test.xml</em>. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-1245">LOGBACK-1245</a>
+    reported by Joern Huxhorn.
+    </p>
+ 
 
     <hr width="80%" align="center" />
 
