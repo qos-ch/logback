@@ -15,13 +15,12 @@ package ch.qos.logback.classic.net;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 
 import ch.qos.logback.classic.Logger;
-
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 // Contributors: Moses Hohman <mmhohman@rainbow.uchicago.edu>
@@ -44,7 +43,7 @@ public class SocketNode implements Runnable {
 
     Socket socket;
     LoggerContext context;
-    ObjectInputStream ois;
+    HardenedLoggingEventInputStream hardenedLoggingEventInputStream;
     SocketAddress remoteSocketAddress;
 
     Logger logger;
@@ -68,7 +67,7 @@ public class SocketNode implements Runnable {
     public void run() {
 
         try {
-            ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+            hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(new BufferedInputStream(socket.getInputStream()));
         } catch (Exception e) {
             logger.error("Could not open ObjectInputStream to " + socket, e);
             closed = true;
@@ -80,7 +79,7 @@ public class SocketNode implements Runnable {
         try {
             while (!closed) {
                 // read an event from the wire
-                event = (ILoggingEvent) ois.readObject();
+                event = (ILoggingEvent) hardenedLoggingEventInputStream.readObject();
                 // get a logger from the hierarchy. The name of the logger is taken to
                 // be the name contained in the event.
                 remoteLogger = context.getLogger(event.getLoggerName());
@@ -110,13 +109,13 @@ public class SocketNode implements Runnable {
             return;
         }
         closed = true;
-        if (ois != null) {
+        if (hardenedLoggingEventInputStream != null) {
             try {
-                ois.close();
+                hardenedLoggingEventInputStream.close();
             } catch (IOException e) {
                 logger.warn("Could not close connection.", e);
             } finally {
-                ois = null;
+                hardenedLoggingEventInputStream = null;
             }
         }
     }

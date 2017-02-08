@@ -1,13 +1,11 @@
 package ch.qos.logback.core.net;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -18,11 +16,10 @@ public class HardenedObjectInputStreamTest {
     ByteArrayOutputStream bos;
     ObjectOutputStream oos;
     HardenedObjectInputStream inputStream;
-    List<String> whitelist = new ArrayList<String>();
+    String[] whitelist = new String[] {Innocent.class.getName()};
     
     @Before
     public void setUp() throws Exception {
-        whitelist.add(Innocent.class.getName());
         bos = new ByteArrayOutputStream();
         oos = new ObjectOutputStream(bos);
     }

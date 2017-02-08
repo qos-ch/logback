@@ -34,11 +34,12 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.LoggingEventPreSerializationTransformer;
+import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class LoggingEventSerializationTest {
 
-    LoggerContext lc;
+    LoggerContext loggerContext;
     Logger logger;
 
     ByteArrayOutputStream bos;
@@ -48,9 +49,9 @@ public class LoggingEventSerializationTest {
 
     @Before
     public void setUp() throws Exception {
-        lc = new LoggerContext();
-        lc.setName("testContext");
-        logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        loggerContext = new LoggerContext();
+        loggerContext.setName("testContext");
+        logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         // create the byte output stream
         bos = new ByteArrayOutputStream();
         oos = new ObjectOutputStream(bos);
@@ -58,7 +59,7 @@ public class LoggingEventSerializationTest {
 
     @After
     public void tearDown() throws Exception {
-        lc = null;
+        loggerContext = null;
         logger = null;
         oos.close();
     }
@@ -72,7 +73,7 @@ public class LoggingEventSerializationTest {
 
     @Test
     public void context() throws Exception {
-        lc.putProperty("testKey", "testValue");
+        loggerContext.putProperty("testKey", "testValue");
         ILoggingEvent event = createLoggingEvent();
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
@@ -140,11 +141,17 @@ public class LoggingEventSerializationTest {
     }
 
     @Test
-    public void _Throwable() throws Exception {
-        LoggingEvent event = createLoggingEvent();
+    public void testWithThrowable() throws Exception {
         Throwable throwable = new Throwable("just testing");
-        ThrowableProxy tp = new ThrowableProxy(throwable);
-        event.setThrowableProxy(tp);
+        LoggingEvent event = createLoggingEventWithThrowable(throwable);
+        ILoggingEvent remoteEvent = writeAndRead(event);
+        checkForEquality(event, remoteEvent);
+    }
+
+    @Test
+    public void testWithCallerData() throws Exception {
+        LoggingEvent event = createLoggingEvent();
+        event.getCallerData();
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
     }
@@ -187,6 +194,10 @@ public class LoggingEventSerializationTest {
         return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, "test message", null, null);
     }
 
+    private LoggingEvent createLoggingEventWithThrowable(Throwable t) {
+        return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, "test message", t, null);
+    }
+
     private void checkForEquality(ILoggingEvent original, ILoggingEvent afterSerialization) {
         assertEquals(original.getLevel(), afterSerialization.getLevel());
         assertEquals(original.getFormattedMessage(), afterSerialization.getFormattedMessage());
@@ -203,8 +214,8 @@ public class LoggingEventSerializationTest {
         Serializable ser = pst.transform(event);
         oos.writeObject(ser);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        inputStream = new ObjectInputStream(bis);
-
+        inputStream = new HardenedLoggingEventInputStream(bis);
+        
         return (ILoggingEvent) inputStream.readObject();
     }
 
