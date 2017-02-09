@@ -15,6 +15,7 @@ package ch.qos.logback.classic.encoder;
 
 import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -82,11 +83,8 @@ public class LayoutInsteadOfEncoderTest {
         ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
         assertTrue(fileAppender.isStarted());
-        assertEquals(immediateFlush.booleanValue(), fileAppender.isImmediateFlush()); 
+        assertEquals(immediateFlush, Boolean.valueOf(fileAppender.isImmediateFlush())); 
     }
 
-    private void assertEquals(boolean immediateFlush) {
-        // TODO Auto-generated method stub
-        
-    }
+  
 }
