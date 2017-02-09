@@ -272,7 +272,24 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
       underlying <code>OutputStreamAppender</code>. Encoders are
       described in a <a href="encoders.html">dedicated chapter</a>.
 			</td>
-		</tr>
+    </tr>
+   <tr>
+     <td><span class="prop" name="immediateFlush">immediateFlush</span></td>
+     <td><code>boolean</code></td>
+     
+     <td>The default value for <span
+     class="option">immediateFlush</span> is 'true'. Immediate
+     flushing of the output stream ensures that logging events are
+     immediately written out and will not be lost in case your
+     application exits without properly closing appenders. On the
+     other hand, setting this property to 'false' is likely to
+     quadruple (your mileage may vary) logging throughput. Again, if
+     <span class="option">immediateFlush</span> is set to 'false' and
+     if appenders are not closed properly when your application exits,
+     then logging events not yet written to disk may be lost.
+     </td>
+    </tr>
+	
 	
 	</table>
     
@@ -435,7 +452,6 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
        </p>
        </td>
      </tr>
-   
 
      <tr>
        <td><span class="prop" name="prudent">prudent</span></td>
@@ -509,11 +525,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    events are not lost in case your application exits without properly
    closing appenders. However, for significantly increased logging
    throughput, you may want to set the <span
-   class="prop">immediateFlush</span> property of the underlying
-   <code>Encoder</code> to <code>false</code> . Encoders and in
-   particular <a
-   href="encoders.html#LayoutWrappingEncoder"><code>LayoutWrappingEncoder</code></a>
-   are described in a separate chapter.</p>
+   class="prop">immediateFlush</span> property to
+   <code>false</code>.</p>
 
    <p>Below is an example of a configuration file for
    <code>FileAppender</code>:
@@ -528,6 +541,8 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>testFile.log&lt;/file>
     &lt;append>true&lt;/append>
+    &lt;!-- set immediateFlush to false for much higher logging throughput -->
+    &lt;immediateFlush>true&lt;/immediateFlush>
     &lt;!-- encoders are assigned the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
     &lt;encoder>

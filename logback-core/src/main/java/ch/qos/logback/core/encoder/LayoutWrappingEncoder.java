@@ -17,6 +17,7 @@ import java.nio.charset.Charset;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.OutputStreamAppender;
 
 public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
@@ -31,22 +32,8 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      */
     private Charset charset;
 
-    private boolean immediateFlush = true;
-
-    /**
-     * Sets the immediateFlush option. The default value for immediateFlush is 'true'. If set to true,
-     * the doEncode() method will immediately flush the underlying OutputStream. Although immediate flushing
-     * is safer, it also significantly degrades logging throughput.
-     *
-     * @since 1.0.3
-     */
-    public void setImmediateFlush(boolean immediateFlush) {
-        this.immediateFlush = immediateFlush;
-    }
-
-    public boolean isImmediateFlush() {
-        return immediateFlush;
-    }
+    OutputStreamAppender<?> parent;
+    Boolean immediateFlush = null;
 
     public Layout<E> getLayout() {
         return layout;
@@ -74,6 +61,19 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         this.charset = charset;
     }
 
+    /**
+     * Sets the immediateFlush option. The default value for immediateFlush is 'true'. If set to true,
+     * the doEncode() method will immediately flush the underlying OutputStream. Although immediate flushing
+     * is safer, it also significantly degrades logging throughput.
+     *
+     * @since 1.0.3
+     */
+    public void setImmediateFlush(boolean immediateFlush) {
+        addWarn("As of version 1.2.0 \"immediateFlush\" property should be set within the enclosing Appender.");
+        addWarn("Please move \"immediateFlush\" property into the enclosing appender.");
+        this.immediateFlush = immediateFlush;
+    }
+
     @Override
     public byte[] headerBytes() {
         if (layout == null)
@@ -90,7 +90,6 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         }
         return convertToBytes(sb.toString());
     }
-
 
     @Override
     public byte[] footerBytes() {
@@ -121,6 +120,16 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     public void start() {
+        if (immediateFlush != null) {
+            if (parent instanceof OutputStreamAppender) {
+                addWarn("Setting the \"immediateFlush\" property of the enclosing appender to " + immediateFlush);
+                @SuppressWarnings("unchecked")
+                OutputStreamAppender<E> parentOutputStreamAppender = (OutputStreamAppender<E>) parent;
+                parentOutputStreamAppender.setImmediateFlush(immediateFlush);
+            } else {
+                addError("Could not set the \"immediateFlush\" property of the enclosing appender.");
+            }
+        }
         started = true;
     }
 
@@ -134,4 +143,13 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         }
     }
 
+    /**
+     * This method allows RollingPolicy implementations to be aware of their
+     * containing appender.
+     * 
+     * @param appender
+     */
+    public void setParent(OutputStreamAppender<?> parent) {
+        this.parent = parent;
+    }
 }
