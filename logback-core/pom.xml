@@ -120,6 +120,7 @@
               org.fusesource.jansi;resolution:=optional,
               org.codehaus.janino;resolution:=optional,
               org.codehaus.commons.compiler;resolution:=optional,
+              
               *
             </Import-Package>
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.6

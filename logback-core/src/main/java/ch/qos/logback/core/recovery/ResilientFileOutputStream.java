@@ -16,15 +16,21 @@ package ch.qos.logback.core.recovery;
 import java.io.*;
 import java.nio.channels.FileChannel;
 
+import ch.qos.logback.core.helpers.AsyncOutputStream;
+import ch.qos.logback.core.helpers.DirectNIOByteBufferedOutputStream;
+import ch.qos.logback.core.helpers.MemMappedBufferedOutputStream;
+import ch.qos.logback.core.helpers.NIOByteBufferedOutputStream;
+
 public class ResilientFileOutputStream extends ResilientOutputStreamBase {
 
     private File file;
     private FileOutputStream fos;
-
-    public ResilientFileOutputStream(File file, boolean append, long bufferSize) throws FileNotFoundException {
+    long bufferSize;
+    
+    public ResilientFileOutputStream(File file, boolean append, long bufferSize) throws IOException {
         this.file = file;
-        fos = new FileOutputStream(file, append);
-        this.os = new BufferedOutputStream(fos, (int) bufferSize);
+        this.bufferSize = bufferSize;
+        this.os = openNewOutputStream(append);
         this.presumedClean = true;
     }
 
@@ -45,10 +51,25 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
     }
 
     @Override
-    OutputStream openNewOutputStream() throws IOException {
+    OutputStream openNewOutputStream(boolean append) throws IOException {
         // see LOGBACK-765
-        fos = new FileOutputStream(file, true);
-        return new BufferedOutputStream(fos);
+//        fos = new FileOutputStream(file, append);
+//        return new BufferedOutputStream(fos, (int) bufferSize);
+//        
+//        RandomAccessFile raf = new  RandomAccessFile(file, "rw");
+//        MemMappedBufferedOutputStream mmbos = new MemMappedBufferedOutputStream(raf.getChannel(), 0);
+//        return mmbos;
+        
+//        fos = new FileOutputStream(file, append);
+//        return new NIOByteBufferedOutputStream(fos);
+
+        //fos = new FileOutputStream(file, append);
+        RandomAccessFile raf = new  RandomAccessFile(file, "rw");
+                        
+        return new DirectNIOByteBufferedOutputStream(raf.getChannel());
+
+//        AsyncOutputStream aos = new AsyncOutputStream(file, (int) bufferSize); 
+//        return aos;
     }
 
     @Override

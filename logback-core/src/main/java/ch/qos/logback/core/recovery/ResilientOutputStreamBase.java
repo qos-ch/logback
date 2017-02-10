@@ -86,7 +86,7 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
 
     abstract String getDescription();
 
-    abstract OutputStream openNewOutputStream() throws IOException;
+    abstract OutputStream openNewOutputStream(boolean appender) throws IOException;
 
     private void postSuccessfulWrite() {
         if (recoveryCoordinator != null) {
@@ -121,7 +121,7 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
 
         // subsequent writes must always be in append mode
         try {
-            os = openNewOutputStream();
+            os = openNewOutputStream(true);
             presumedClean = true;
         } catch (IOException e) {
             addStatusIfCountNotOverLimit(new ErrorStatus("Failed to open " + getDescription(), this, e));

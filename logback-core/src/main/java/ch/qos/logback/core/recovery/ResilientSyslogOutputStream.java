@@ -38,7 +38,7 @@ public class ResilientSyslogOutputStream extends ResilientOutputStreamBase {
     }
 
     @Override
-    OutputStream openNewOutputStream() throws IOException {
+    OutputStream openNewOutputStream(boolean append) throws IOException {
         return new SyslogOutputStream(syslogHost, port);
     }
 

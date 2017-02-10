@@ -58,7 +58,7 @@ public class ResilientOutputStreamTest {
         Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN + 10);
         spy.write("c".getBytes());
         spy.flush();
-        verify(spy).openNewOutputStream();
+        verify(spy).openNewOutputStream(true);
 
     }
 
