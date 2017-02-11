@@ -121,7 +121,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         super.stop();
 
         // interrupt the worker thread so that it can terminate. Note that the interruption can be consumed
-        // by sub-appenders
+        // by the sub-appender
         worker.interrupt();
         try {
             worker.join(maxFlushTime);

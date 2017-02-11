@@ -29,6 +29,7 @@ public class DelayingListAppender<E> extends ListAppender<E> {
         try {
             Thread.sleep(delay);
         } catch (InterruptedException ie) {
+            // consume InterruptedException
             interrupted = true;
         }
         super.append(e);
