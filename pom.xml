@@ -52,6 +52,7 @@
     <junit.version>4.10</junit.version>
     <javax.mail.version>1.4</javax.mail.version>
     <janino.version>2.7.8</janino.version>
+    <compress.version>1.12</compress.version>
     <groovy.version>2.4.0</groovy.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd 
@@ -143,6 +144,11 @@
         <groupId>org.fusesource.jansi</groupId>
         <artifactId>jansi</artifactId>
         <version>${jansi.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>${compress.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
