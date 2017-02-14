@@ -256,10 +256,28 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.doAppend(new Integer(1));
         asyncAppenderBase.doAppend(new Integer(1));
         assertTrue(Thread.currentThread().isInterrupted());
+        // the interruption needs to be consumed
+        Thread.interrupted();
         asyncAppenderBase.stop();
         verify(listAppender, 3);
-        // clear interrupt flag for subsequent tests
+    }
+   
+    @Test
+    public void verifyInterruptionFlagWhenStopping_INTERUPPTED() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        Thread.currentThread().interrupt();
+        asyncAppenderBase.stop();
+        assertTrue(Thread.currentThread().isInterrupted());
         Thread.interrupted();
+    }
+    
+    @Test
+    public void verifyInterruptionFlagWhenStopping_NOT_INTERUPPTED() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.stop();
+        assertFalse(Thread.currentThread().isInterrupted());
     }
     
     

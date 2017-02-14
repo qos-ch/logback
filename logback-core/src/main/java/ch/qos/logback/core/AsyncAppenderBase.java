@@ -15,6 +15,7 @@ package ch.qos.logback.core;
 
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.util.InterruptUtil;
 
 import java.util.Iterator;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -121,9 +122,14 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         super.stop();
 
         // interrupt the worker thread so that it can terminate. Note that the interruption can be consumed
-        // by the sub-appender
+        // by sub-appenders
         worker.interrupt();
+
+        InterruptUtil interruptUtil = new InterruptUtil(context);
+
         try {
+            interruptUtil.maskInterruptFlag();
+
             worker.join(maxFlushTime);
 
             // check to see if the thread ended and if not add a warning message
@@ -135,9 +141,16 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
             }
 
         } catch (InterruptedException e) {
-            addError("Failed to join worker thread. " + blockingQueue.size() + " queued events may be discarded.", e);
+            int remaining = blockingQueue.size();
+            addError("Failed to join worker thread. " + remaining + " queued events may be discarded.", e);
+        } finally {
+            interruptUtil.unmaskInterruptFlag();
         }
     }
+
+
+
+
 
     @Override
     protected void append(E eventObject) {
@@ -156,11 +169,23 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         if (neverBlock) {
             blockingQueue.offer(eventObject);
         } else {
-            try {
-                blockingQueue.put(eventObject);
-            } catch (InterruptedException e) {
-                // Interruption of current thread when in doAppend method should not be consumed
-                // by AsyncAppender
+            putUninterruptibly(eventObject);
+        }
+    }
+
+    private void putUninterruptibly(E eventObject) {
+        boolean interrupted = false;
+        try {
+            while (true) {
+                try {
+                    blockingQueue.put(eventObject);
+                    break;
+                } catch (InterruptedException e) {
+                    interrupted = true;
+                }
+            }
+        } finally {
+            if (interrupted) {
                 Thread.currentThread().interrupt();
             }
         }
@@ -255,6 +280,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     class Worker extends Thread {
 
         public void run() {
+            System.out.println("Worker started");
             AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
             AppenderAttachableImpl<E> aai = parent.aai;
 
