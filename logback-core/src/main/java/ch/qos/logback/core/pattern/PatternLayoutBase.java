@@ -35,8 +35,6 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     Map<String, String> instanceConverterMap = new HashMap<String, String>();
     protected boolean outputPatternAsHeader = false;
     
-    StringBuilder recycledStringBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
-    
     /**
      * Concrete implementations of this class are responsible for elaborating the
      * mapping between pattern words and converters.
