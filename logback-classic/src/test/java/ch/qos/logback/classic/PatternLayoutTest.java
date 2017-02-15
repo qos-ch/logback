@@ -204,7 +204,10 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     @Test
     public void replaceNewline() {
-        pl.setPattern("%replace(A\nB){'\n', '\n\t'}");
+        String pattern = "%replace(A\nB){'\n', '\n\t'}";
+        String substPattern = OptionHelper.substVars(pattern, null, lc);
+        assertEquals(pattern, substPattern);
+        pl.setPattern(substPattern);
         pl.start();
         StatusPrinter.print(lc);
         String val = pl.doLayout(makeLoggingEvent("", null));
@@ -224,4 +227,17 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals("And the number is XXXX, expiring on 12/2010", sla.strList.get(0));
     }
 
+    @Test
+    public void replaceWithJoran_NEWLINE() throws JoranException {
+        lc.putProperty("TAB", "\t");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replaceNewline.xml");
+        StatusPrinter.print(lc);
+        root.getAppender("LIST");
+        String msg = "A\nC";
+        logger.debug(msg);
+        StringListAppender<ILoggingEvent> sla = (StringListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(sla);
+        assertEquals(1, sla.strList.size());
+        assertEquals("A\n\tC", sla.strList.get(0));
+    }
 }
