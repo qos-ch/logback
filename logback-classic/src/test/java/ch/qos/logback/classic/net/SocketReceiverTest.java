@@ -19,12 +19,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -42,6 +40,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.net.SocketConnector;
+import ch.qos.logback.core.net.mock.MockSocketConnector;
+import ch.qos.logback.core.net.mock.MockSocketFactory;
 import ch.qos.logback.core.net.server.ServerSocketUtil;
 import ch.qos.logback.core.status.Status;
 
@@ -222,56 +222,6 @@ public class SocketReceiverTest {
                 wait(delay);
             }
             return connectorCreated;
-        }
-
-    }
-
-    /**
-     * A {@link SocketConnector} with instrumentation for unit testing.
-     */
-    private static class MockSocketConnector implements SocketConnector {
-
-        private final Socket socket;
-
-        public MockSocketConnector(Socket socket) {
-            this.socket = socket;
-        }
-
-        public Socket call() throws InterruptedException {
-            return socket;
-        }
-
-        public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        }
-
-        public void setSocketFactory(SocketFactory socketFactory) {
-        }
-
-    }
-
-    /**
-     * A no-op {@link SocketFactory} to support unit testing.
-     */
-    private static class MockSocketFactory extends SocketFactory {
-
-        @Override
-        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Socket createSocket(InetAddress host, int port) throws IOException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
-            throw new UnsupportedOperationException();
         }
 
     }

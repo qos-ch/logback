@@ -84,7 +84,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
 
     private BlockingDeque<E> deque;
     private String peerId;
-    private SocketConnector connector;
+    protected SocketConnector connector;
     private Future<?> task;
 
     private volatile Socket socket;
@@ -99,7 +99,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     /**
      * Constructs a new appender using the given {@link QueueFactory} and {@link ObjectWriterFactory}.
      */
-    AbstractSocketAppender(QueueFactory queueFactory, ObjectWriterFactory objectWriterFactory) {
+    protected AbstractSocketAppender(QueueFactory queueFactory, ObjectWriterFactory objectWriterFactory) {
         this.objectWriterFactory = objectWriterFactory;
         this.queueFactory = queueFactory;
     }
@@ -144,7 +144,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
             deque = queueFactory.newLinkedBlockingDeque(queueSize);
             peerId = "remote peer " + remoteHost + ":" + port + ": ";
             connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
-            task = getContext().getExecutorService().submit(new Runnable() {
+            task = getContext().getScheduledExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {
                     connectSocketAndDispatchEvents();

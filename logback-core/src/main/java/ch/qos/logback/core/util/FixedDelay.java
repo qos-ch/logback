@@ -54,5 +54,36 @@ public class FixedDelay implements DelayStrategy {
         nextDelay = subsequentDelay;
         return delay;
     }
+    
+    
+    @Override
+    public String toString() {
+        return "FixedDelay [subsequentDelay=" + subsequentDelay + ", nextDelay=" + nextDelay + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (nextDelay ^ (nextDelay >>> 32));
+        result = prime * result + (int) (subsequentDelay ^ (subsequentDelay >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FixedDelay other = (FixedDelay) obj;
+        if (nextDelay != other.nextDelay)
+            return false;
+        if (subsequentDelay != other.subsequentDelay)
+            return false;
+        return true;
+    }
 
 }

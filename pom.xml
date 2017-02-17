@@ -49,14 +49,15 @@
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>4.10</junit.version>
-    <javax.mail.version>1.4</javax.mail.version>
-    <janino.version>2.7.8</janino.version>
-    <groovy.version>2.4.0</groovy.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd 
     -->    
     <slf4j.version>1.7.22</slf4j.version>
+    <junit.version>4.10</junit.version>
+    <javax.mail.version>1.4</javax.mail.version>
+    <janino.version>2.7.8</janino.version>
+    <groovy.version>2.4.0</groovy.version>
+    <mockito.version>2.7.6</mockito.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
     <!--<tomcat.version>7.0.59</tomcat.version>-->
     <tomcat.version>8.5.9</tomcat.version>
@@ -210,7 +211,7 @@
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>1.10.19</version>
+        <version>${mockito.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -235,7 +236,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.5.1</version>
+          <version>3.6.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -260,7 +261,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
+          <!--<version>2.19.1</version>-->
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -285,7 +286,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.4</version>
+          <version>3.0.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

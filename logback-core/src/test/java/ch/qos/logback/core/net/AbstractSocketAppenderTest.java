@@ -415,7 +415,7 @@ public class AbstractSocketAppenderTest {
 
         // given
         mockOneSuccessfulSocketConnection();
-        doThrow(new IOException()).when(objectWriter).write(anyObject());
+        doThrow(new IOException()).when(objectWriter).write(any());
         doReturn(false).when(deque).offerFirst("some event");
         appender.start();
         awaitStartOfEventDispatching();
