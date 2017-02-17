@@ -16,8 +16,6 @@ package ch.qos.logback.access.spi;
 import ch.qos.logback.access.AccessConstants;
 import ch.qos.logback.access.pattern.AccessConverter;
 import ch.qos.logback.access.servlet.Util;
-import org.slf4j.MDC;
-import org.slf4j.spi.MDCAdapter;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -585,7 +583,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     public Map<String, String> getMDCPropertyMap() {
         // populate mdcPropertyMap if null
         if (mdcPropertyMap == null) {
-            mdcPropertyMap = MDC.getCopyOfContextMap();
+            mdcPropertyMap = MDCAdapter.getCopyOfContextMap();
         }
         // mdcPropertyMap still null, use emptyMap()
         if (mdcPropertyMap == null)
