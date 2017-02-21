@@ -22,8 +22,8 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import org.hsqldb.Server;
-import org.hsqldb.ServerConstants;
 import org.hsqldb.jdbcDriver;
+import org.hsqldb.server.ServerConstants;
 
 public class DBAppenderHSQLTestFixture {
 
