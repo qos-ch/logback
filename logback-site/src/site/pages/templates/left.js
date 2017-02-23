@@ -30,7 +30,7 @@ document.write('<p>&nbsp;</p>');
 
 document.write('<div class="pub">');
 document.write('    <a href="http://twitter.com/qos_ch" style="">');
-document.write('      <img alt="Follow @qos_ch" src="images/follow_us.png" />');
+document.write('      <img alt="Follow @qos_ch" src="' + prefix + 'images/follow_us.png" />');
 document.write('    </a>');
 document.write('</div>');
 
