@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.pattern;
 
+import ch.qos.logback.core.Context;
 
 /**
  * Implements this to perform post compile processing for a PatternLayout.
@@ -24,11 +25,11 @@ package ch.qos.logback.core.pattern;
  */
 public interface PostCompileProcessor<E> {
 
-  /**
-   * Post compile processing of the converter chain.
-   * 
-   * @param head
-   *                The first converter in the chain
-   */
-  void process(Converter<E> head);
+    /**
+     * Post compile processing of the converter chain.
+     * 
+     * @param head
+     *                The first converter in the chain
+     */
+    void process(Context context, Converter<E> head);
 }

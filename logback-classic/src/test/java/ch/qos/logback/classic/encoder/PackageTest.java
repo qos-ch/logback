@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { PatternLayoutEncoderTest.class, LayoutInsteadOfEncoderTest.class})
+@SuiteClasses({ PatternLayoutEncoderTest.class, LayoutInsteadOfEncoderTest.class })
 public class PackageTest {
 }

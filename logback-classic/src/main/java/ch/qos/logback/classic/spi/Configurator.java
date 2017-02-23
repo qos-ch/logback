@@ -24,10 +24,10 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public interface Configurator extends ContextAware {
 
-  /**
-   * The context will also be set before this method is called via
-   * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
-   */
-  public void configure(LoggerContext loggerContext);
+    /**
+     * The context will also be set before this method is called via
+     * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
+     */
+    public void configure(LoggerContext loggerContext);
 
 }

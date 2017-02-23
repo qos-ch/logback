@@ -26,66 +26,77 @@ import java.io.OutputStream;
  */
 public enum ConsoleTarget {
 
-  SystemOut("System.out", new OutputStream() {
-    @Override
-    public void write(int b) throws IOException {
-      System.out.write(b);
-    }
-    @Override
-    public void write(byte b[]) throws IOException {
-      System.out.write(b);
-    }
-    @Override
-    public void write(byte b[], int off, int len) throws IOException {
-      System.out.write(b, off, len);
-    }
-    @Override
-    public void flush() throws IOException {
-      System.out.flush();
-    }
-  }),
+    SystemOut("System.out", new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            System.out.write(b);
+        }
 
-  SystemErr("System.err", new OutputStream() {
+        @Override
+        public void write(byte b[]) throws IOException {
+            System.out.write(b);
+        }
+
+        @Override
+        public void write(byte b[], int off, int len) throws IOException {
+            System.out.write(b, off, len);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            System.out.flush();
+        }
+    }),
+
+    SystemErr("System.err", new OutputStream() {
+        @Override
+        public void write(int b) throws IOException {
+            System.err.write(b);
+        }
+
+        @Override
+        public void write(byte b[]) throws IOException {
+            System.err.write(b);
+        }
+
+        @Override
+        public void write(byte b[], int off, int len) throws IOException {
+            System.err.write(b, off, len);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            System.err.flush();
+        }
+    });
+
+    public static ConsoleTarget findByName(String name) {
+        for (ConsoleTarget target : ConsoleTarget.values()) {
+            if (target.name.equalsIgnoreCase(name)) {
+                return target;
+            }
+        }
+        return null;
+    }
+
+    private final String name;
+    private final OutputStream stream;
+
+    private ConsoleTarget(String name, OutputStream stream) {
+        this.name = name;
+        this.stream = stream;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public OutputStream getStream() {
+        return stream;
+    }
+
     @Override
-    public void write(int b) throws IOException {
-      System.err.write(b);
+    public String toString() {
+        return name;
     }
-    @Override
-    public void write(byte b[]) throws IOException {
-      System.err.write(b);
-    }
-    @Override
-    public void write(byte b[], int off, int len) throws IOException {
-      System.err.write(b, off, len);
-    }
-    @Override
-    public void flush() throws IOException {
-      System.err.flush();
-    }
-  });
-
-  public static ConsoleTarget findByName(String name) {
-    for (ConsoleTarget target : ConsoleTarget.values()) {
-      if (target.name.equalsIgnoreCase(name)) {
-        return target;
-      }
-    }
-    return null;
-  }
-
-  private final String name;
-  private final OutputStream stream;
-
-  private ConsoleTarget(String name, OutputStream stream) {
-    this.name = name;
-    this.stream = stream;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public OutputStream getStream() {
-    return stream;
-  }
 }

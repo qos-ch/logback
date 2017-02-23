@@ -16,9 +16,7 @@ package ch.qos.logback.core.status;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({StatusBaseTest.class, StatusUtilTest.class})
-
+@Suite.SuiteClasses({ StatusBaseTest.class, StatusUtilTest.class })
 public class PackageTest {
 }

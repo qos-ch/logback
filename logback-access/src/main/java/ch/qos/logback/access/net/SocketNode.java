@@ -15,7 +15,6 @@ package ch.qos.logback.access.net;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 
 import ch.qos.logback.access.spi.AccessContext;
@@ -40,51 +39,50 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class SocketNode implements Runnable {
 
-  Socket socket;
-  AccessContext context;
-  ObjectInputStream ois;
+    Socket socket;
+    AccessContext context;
+    HardenedAccessEventInputStream hardenedOIS;
 
-  public SocketNode(Socket socket, AccessContext context) {
-    this.socket = socket;
-    this.context = context;
-    try {
-      ois = new ObjectInputStream(new BufferedInputStream(socket
-          .getInputStream()));
-    } catch (Exception e) {
-      System.out.println("Could not open ObjectInputStream to " + socket + e);
-    }
-  }
-
-  @Override
-  public void run() {
-    IAccessEvent event;
-
-    try {
-      while (true) {
-        // read an event from the wire
-        event = (IAccessEvent) ois.readObject();
-        //check that the event should be logged
-        if (context.getFilterChainDecision(event) == FilterReply.DENY) {
-          break;
+    public SocketNode(Socket socket, AccessContext context) {
+        this.socket = socket;
+        this.context = context;
+        try {
+            hardenedOIS = new HardenedAccessEventInputStream(new BufferedInputStream(socket.getInputStream()));
+        } catch (Exception e) {
+            System.out.println("Could not open HardenedObjectInputStream to " + socket + e);
         }
-        //send it to the appenders
-        context.callAppenders(event); 
-      }
-    } catch (java.io.EOFException e) {
-      System.out.println("Caught java.io.EOFException closing connection.");
-    } catch (java.net.SocketException e) {
-      System.out.println("Caught java.net.SocketException closing connection.");
-    } catch (IOException e) {
-      System.out.println("Caught java.io.IOException: " + e);
-      System.out.println("Closing connection.");
-    } catch (Exception e) {
-      System.out.println("Unexpected exception. Closing connection." + e);
     }
+    
+    @Override
+    public void run() {
+        IAccessEvent event;
 
-    try {
-      ois.close();
-    } catch (Exception e) {
-      System.out.println("Could not close connection." + e);
+        try {
+            while (true) {
+                // read an event from the wire
+                event = (IAccessEvent) hardenedOIS.readObject();
+                // check that the event should be logged
+                if (context.getFilterChainDecision(event) == FilterReply.DENY) {
+                    break;
+                }
+                // send it to the appenders
+                context.callAppenders(event);
+            }
+        } catch (java.io.EOFException e) {
+            System.out.println("Caught java.io.EOFException closing connection.");
+        } catch (java.net.SocketException e) {
+            System.out.println("Caught java.net.SocketException closing connection.");
+        } catch (IOException e) {
+            System.out.println("Caught java.io.IOException: " + e);
+            System.out.println("Closing connection.");
+        } catch (Exception e) {
+            System.out.println("Unexpected exception. Closing connection." + e);
+        }
+
+        try {
+            hardenedOIS.close();
+        } catch (Exception e) {
+            System.out.println("Could not close connection." + e);
+        }
     }
-  }
 }

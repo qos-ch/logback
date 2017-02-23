@@ -15,3 +15,17 @@ document.write('<p class="menu"><a href="groovy.html"><b>Ch12: Groovy Configurat
 document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch13: Migration from log4j</b></a></p>');
 document.write('<p class="menu"><a href="receivers.html"><b>Ch14: Receivers</b></a></p>');
 document.write('<p class="menu"><a href="usingSSL.html"><b>Ch15: Using SSL</b></a></p>');
+
+document.write('<p style="border: 1px solid #cccccc;"></p>');
+document.write('<p style="border: 1px solid #cccccc;"></p>');
+document.write('<p/>');
+document.write('<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>');
+//<!-- logback -->
+document.write('<ins class="adsbygoogle"');
+document.write('     style="display:block"');
+document.write('     data-ad-client="ca-pub-7471410671306824"');
+document.write('     data-ad-slot="6377851613"');
+document.write('     data-ad-format="auto"></ins>');
+document.write('<script>');
+document.write('(adsbygoogle = window.adsbygoogle || []).push({});');
+document.write('</script>');

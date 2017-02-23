@@ -23,48 +23,47 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  *
  * @author Carl Harris
  */
-public class MockServerRunner<T extends Client> extends ContextAwareBase 
-    implements ServerRunner<T> {
+public class MockServerRunner<T extends Client> extends ContextAwareBase implements ServerRunner<T> {
 
-  private IOException stopException;
-  private int startCount;
-  private boolean contextInjected;
-  
-  @Override
-  public void setContext(Context context) {
-    contextInjected = true;    
-    super.setContext(context);
-  }
+    private IOException stopException;
+    private int startCount;
+    private boolean contextInjected;
 
-  public void run() {
-    startCount++;
-  }
-
-  public void stop() throws IOException {
-    if (stopException != null) {
-      throw stopException;
+    @Override
+    public void setContext(Context context) {
+        contextInjected = true;
+        super.setContext(context);
     }
-    startCount--;
-  }
 
-  public boolean isRunning() {
-    return startCount > 0;
-  }
-  
-  public void accept(ClientVisitor visitor) {
-    throw new UnsupportedOperationException();
-  }
+    public void run() {
+        startCount++;
+    }
 
-  public int getStartCount() {
-    return startCount;
-  }
+    public void stop() throws IOException {
+        if (stopException != null) {
+            throw stopException;
+        }
+        startCount--;
+    }
 
-  public boolean isContextInjected() {
-    return contextInjected;
-  }
+    public boolean isRunning() {
+        return startCount > 0;
+    }
 
-  public void setStopException(IOException stopException) {
-    this.stopException = stopException;
-  }
-  
+    public void accept(ClientVisitor visitor) {
+        throw new UnsupportedOperationException();
+    }
+
+    public int getStartCount() {
+        return startCount;
+    }
+
+    public boolean isContextInjected() {
+        return contextInjected;
+    }
+
+    public void setStopException(IOException stopException) {
+        this.stopException = stopException;
+    }
+
 }

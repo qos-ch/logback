@@ -27,38 +27,38 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 /**
  * A minimal configurator extending GenericConfigurator.
  * 
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  *
  */
 public class SimpleConfigurator extends GenericConfigurator {
 
-  final Map<ElementSelector, Action> ruleMap;
-  final List<ImplicitAction> iaList;
+    final Map<ElementSelector, Action> ruleMap;
+    final List<ImplicitAction> iaList;
 
-  public SimpleConfigurator(Map<ElementSelector, Action> ruleMap) {
-    this(ruleMap, null);
-  }
-
-  public SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitAction> iaList) {
-    this.ruleMap = ruleMap;
-    this.iaList = iaList;
-  }
-
-  @Override
-  protected void addInstanceRules(RuleStore rs) {
-    for (ElementSelector elementSelector : ruleMap.keySet()) {
-      Action action = ruleMap.get(elementSelector);
-      rs.addRule(elementSelector, action);
+    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap) {
+        this(ruleMap, null);
     }
-  }
 
-  @Override
-  protected void addImplicitRules(Interpreter interpreter) {
-    if(iaList == null) {
-      return;
+    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitAction> iaList) {
+        this.ruleMap = ruleMap;
+        this.iaList = iaList;
     }
-    for (ImplicitAction ia : iaList) {
-      interpreter.addImplicitAction(ia);
+
+    @Override
+    protected void addInstanceRules(RuleStore rs) {
+        for (ElementSelector elementSelector : ruleMap.keySet()) {
+            Action action = ruleMap.get(elementSelector);
+            rs.addRule(elementSelector, action);
+        }
     }
-  }
+
+    @Override
+    protected void addImplicitRules(Interpreter interpreter) {
+        if (iaList == null) {
+            return;
+        }
+        for (ImplicitAction ia : iaList) {
+            interpreter.addImplicitAction(ia);
+        }
+    }
 }

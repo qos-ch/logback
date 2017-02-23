@@ -24,5 +24,5 @@ import java.io.File;
  */
 public interface FileMatchFunction {
 
-  boolean match(File f, String pattern);
+    boolean match(File f, String pattern);
 }

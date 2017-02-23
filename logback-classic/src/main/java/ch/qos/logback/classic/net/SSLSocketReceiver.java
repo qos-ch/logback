@@ -26,59 +26,56 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  *
  * @author Carl Harris
  */
-public class SSLSocketReceiver extends SocketReceiver 
-    implements SSLComponent {
+public class SSLSocketReceiver extends SocketReceiver implements SSLComponent {
 
-  private SSLConfiguration ssl;
-  private SocketFactory socketFactory;
+    private SSLConfiguration ssl;
+    private SocketFactory socketFactory;
 
-  /**
-   * Gets an {@link SocketFactory} that produces SSL sockets using an
-   * {@link SSLContext} that is derived from the receiver's configuration.
-   * @return socket factory
-   */
-  @Override
-  protected SocketFactory getSocketFactory() {
-    return socketFactory;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected boolean shouldStart() {
-    try {
-      SSLContext sslContext = getSsl().createContext(this);
-      SSLParametersConfiguration parameters = getSsl().getParameters();
-      parameters.setContext(getContext());
-      socketFactory = new ConfigurableSSLSocketFactory(parameters, 
-          sslContext.getSocketFactory());
-      return super.shouldStart();
+    /**
+     * Gets an {@link SocketFactory} that produces SSL sockets using an
+     * {@link SSLContext} that is derived from the receiver's configuration.
+     * @return socket factory
+     */
+    @Override
+    protected SocketFactory getSocketFactory() {
+        return socketFactory;
     }
-    catch (Exception ex) {
-      addError(ex.getMessage(), ex);
-      return false;
-    }
-  }
 
-  /**
-   * Gets the SSL configuration.
-   * @return SSL configuration; if no configuration has been set, a
-   *    default configuration is returned
-   */
-  public SSLConfiguration getSsl() {
-    if (ssl == null) {
-      ssl = new SSLConfiguration();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean shouldStart() {
+        try {
+            SSLContext sslContext = getSsl().createContext(this);
+            SSLParametersConfiguration parameters = getSsl().getParameters();
+            parameters.setContext(getContext());
+            socketFactory = new ConfigurableSSLSocketFactory(parameters, sslContext.getSocketFactory());
+            return super.shouldStart();
+        } catch (Exception ex) {
+            addError(ex.getMessage(), ex);
+            return false;
+        }
     }
-    return ssl;
-  }
 
-  /**
-   * Sets the SSL configuration.
-   * @param ssl the SSL configuration to set
-   */
-  public void setSsl(SSLConfiguration ssl) {
-    this.ssl = ssl;
-  }
+    /**
+     * Gets the SSL configuration.
+     * @return SSL configuration; if no configuration has been set, a
+     *    default configuration is returned
+     */
+    public SSLConfiguration getSsl() {
+        if (ssl == null) {
+            ssl = new SSLConfiguration();
+        }
+        return ssl;
+    }
+
+    /**
+     * Sets the SSL configuration.
+     * @param ssl the SSL configuration to set
+     */
+    public void setSsl(SSLConfiguration ssl) {
+        this.ssl = ssl;
+    }
 
 }

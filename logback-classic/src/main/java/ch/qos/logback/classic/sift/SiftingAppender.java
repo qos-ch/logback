@@ -32,23 +32,22 @@ import org.slf4j.Marker;
  */
 public class SiftingAppender extends SiftingAppenderBase<ILoggingEvent> {
 
-  @Override
-  protected long getTimestamp(ILoggingEvent event) {
-    return event.getTimeStamp();
-  }
-  
+    @Override
+    protected long getTimestamp(ILoggingEvent event) {
+        return event.getTimeStamp();
+    }
 
-  @Override
-  @DefaultClass(MDCBasedDiscriminator.class)
-  public void setDiscriminator(Discriminator<ILoggingEvent> discriminator) {
-    super.setDiscriminator(discriminator);
-  }
+    @Override
+    @DefaultClass(MDCBasedDiscriminator.class)
+    public void setDiscriminator(Discriminator<ILoggingEvent> discriminator) {
+        super.setDiscriminator(discriminator);
+    }
 
-  protected boolean eventMarksEndOfLife(ILoggingEvent event) {
-    Marker marker = event.getMarker();
-    if(marker == null)
-      return false;
+    protected boolean eventMarksEndOfLife(ILoggingEvent event) {
+        Marker marker = event.getMarker();
+        if (marker == null)
+            return false;
 
-    return marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER);
-  }
+        return marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER);
+    }
 }

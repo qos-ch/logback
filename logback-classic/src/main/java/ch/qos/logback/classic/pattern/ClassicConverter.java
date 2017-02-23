@@ -22,6 +22,6 @@ import ch.qos.logback.core.pattern.DynamicConverter;
  *
  * @author Ceki Gulcu
  */
-abstract public class ClassicConverter extends DynamicConverter<ILoggingEvent>  {
+abstract public class ClassicConverter extends DynamicConverter<ILoggingEvent> {
 
 }

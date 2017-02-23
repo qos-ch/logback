@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({FruitConfigurationTest.class})
+@SuiteClasses({ FruitConfigurationTest.class })
 public class PackageTest {
 
 }

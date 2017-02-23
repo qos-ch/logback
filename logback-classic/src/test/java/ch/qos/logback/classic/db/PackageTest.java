@@ -18,8 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { DBAppenderHSQLTest.class, DBAppenderH2Test.class,
-    DBAppenderIntegrationTest.class, SQLBuilderTest.class,
-    ch.qos.logback.classic.db.names.PackageTest.class})
+@SuiteClasses({ DBAppenderHSQLTest.class, DBAppenderH2Test.class, DBAppenderIntegrationTest.class, SQLBuilderTest.class,
+        ch.qos.logback.classic.db.names.PackageTest.class })
 public class PackageTest {
 }

@@ -22,7 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.access.TeztConstants;
+import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -31,47 +31,45 @@ import ch.qos.logback.core.testUtil.StringListAppender;
 
 public class JoranConfiguratorTest {
 
-  AccessContext context = new AccessContext();
+    AccessContext context = new AccessContext();
 
-  @Before
-  public void setUp() throws Exception {
-  }
+    @Before
+    public void setUp() throws Exception {
+    }
 
-  @After
-  public void tearDown() throws Exception {
-  }
+    @After
+    public void tearDown() throws Exception {
+    }
 
-  void configure(String file) throws JoranException {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.setContext(context);
-    jc.doConfigure(file);
-  }
+    void configure(String file) throws JoranException {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(context);
+        jc.doConfigure(file);
+    }
 
-  @Test
-  public void smoke() throws Exception {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/smoke.xml");
+    @Test
+    public void smoke() throws Exception {
+        configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/smoke.xml");
 
-    ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context
-        .getAppender("LIST");
-    IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
-    listAppender.doAppend(event);
+        ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context.getAppender("LIST");
+        IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
+        listAppender.doAppend(event);
 
-    assertEquals(1, listAppender.list.size());
+        assertEquals(1, listAppender.list.size());
 
-    assertEquals(1, listAppender.list.size());
-    IAccessEvent ae = listAppender.list.get(0);
-    assertNotNull(ae);
-  }
+        assertEquals(1, listAppender.list.size());
+        IAccessEvent ae = listAppender.list.get(0);
+        assertNotNull(ae);
+    }
 
-  @Test
-  public void defaultLayout() throws Exception {
-    configure(TeztConstants.TEST_DIR_PREFIX + "input/joran/defaultLayout.xml");
-    StringListAppender<IAccessEvent> listAppender = (StringListAppender<IAccessEvent>) context
-        .getAppender("STR_LIST");
-    IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
-    listAppender.doAppend(event);
-    assertEquals(1, listAppender.strList.size());
-    // the result contains a line separator at the end
-    assertTrue(listAppender.strList.get(0).startsWith("testMethod"));
-  }
+    @Test
+    public void defaultLayout() throws Exception {
+        configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/defaultLayout.xml");
+        StringListAppender<IAccessEvent> listAppender = (StringListAppender<IAccessEvent>) context.getAppender("STR_LIST");
+        IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
+        listAppender.doAppend(event);
+        assertEquals(1, listAppender.strList.size());
+        // the result contains a line separator at the end
+        assertTrue(listAppender.strList.get(0).startsWith("testMethod"));
+    }
 }

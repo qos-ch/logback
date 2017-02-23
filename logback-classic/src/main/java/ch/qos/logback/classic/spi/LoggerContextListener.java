@@ -18,16 +18,19 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 
 public interface LoggerContextListener {
-  
 
-  /**
-   * Some listeners should not be removed when the LoggerContext is
-   * reset. Such listeners are said to be reset resistant.
-   * @return whether this listener is reset resistant or not.
-   */
-  boolean isResetResistant();
-  void onStart(LoggerContext context);
-  void onReset(LoggerContext context);
-  void onStop(LoggerContext context);
-  void onLevelChange(Logger logger, Level level);
+    /**
+     * Some listeners should not be removed when the LoggerContext is
+     * reset. Such listeners are said to be reset resistant.
+     * @return whether this listener is reset resistant or not.
+     */
+    boolean isResetResistant();
+
+    void onStart(LoggerContext context);
+
+    void onReset(LoggerContext context);
+
+    void onStop(LoggerContext context);
+
+    void onLevelChange(Logger logger, Level level);
 }

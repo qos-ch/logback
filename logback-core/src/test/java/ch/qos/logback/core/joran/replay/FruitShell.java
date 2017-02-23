@@ -17,46 +17,42 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class FruitShell extends ContextAwareBase {
 
-  FruitFactory fruitFactory;
-  String name;
-  
-  public void setFruitFactory(FruitFactory fruitFactory) {
-    this.fruitFactory = fruitFactory;
-  }
+    FruitFactory fruitFactory;
+    String name;
 
-  void testFruit() {
-    
-    Fruit fruit = fruitFactory.buildFruit();
-    System.out.println(fruit);
-  }
+    public void setFruitFactory(FruitFactory fruitFactory) {
+        this.fruitFactory = fruitFactory;
+    }
 
-  public String getName() {
-    return name;
-  }
+    void testFruit() {
 
-  public void setName(String name) {
-    this.name = name;
-  }
+        Fruit fruit = fruitFactory.buildFruit();
+        System.out.println(fruit);
+    }
 
-  /**
-   * Constructs a <code>String</code> with all attributes
-   * in name = value format.
-   *
-   * @return a <code>String</code> representation 
-   * of this object.
-   */
-  public String toString()
-  {
-      final String TAB = " ";
-      
-      String retValue = "";
-      
-      retValue = "FruitShell ( "
-          + "fruitFactory = " + this.fruitFactory + TAB
-          + "name = " + this.name + TAB
-          + " )";
-      
-      return retValue;
-  }
-  
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Constructs a <code>String</code> with all attributes
+     * in name = value format.
+     *
+     * @return a <code>String</code> representation 
+     * of this object.
+     */
+    public String toString() {
+        final String TAB = " ";
+
+        String retValue = "";
+
+        retValue = "FruitShell ( " + "fruitFactory = " + this.fruitFactory + TAB + "name = " + this.name + TAB + " )";
+
+        return retValue;
+    }
+
 }

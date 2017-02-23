@@ -38,57 +38,51 @@ import ch.qos.logback.classic.ClassicConstants;
  */
 public class MDCInsertingServletFilter implements Filter {
 
-  public void destroy() {
-    // do nothing
-  }
-
-  public void doFilter(ServletRequest request, ServletResponse response,
-                       FilterChain chain) throws IOException, ServletException {
-
-
-    insertIntoMDC(request);
-    try {
-      chain.doFilter(request, response);
-    } finally {
-      clearMDC();
-    }
-  }
-
-  void insertIntoMDC(ServletRequest request) {
-
-    MDC.put(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY, request
-            .getRemoteHost());
-
-    if (request instanceof HttpServletRequest) {
-      HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-      MDC.put(ClassicConstants.REQUEST_REQUEST_URI, httpServletRequest
-              .getRequestURI());
-      StringBuffer requestURL = httpServletRequest.getRequestURL();
-      if (requestURL != null) {
-        MDC.put(ClassicConstants.REQUEST_REQUEST_URL, requestURL.toString());
-      }
-      MDC.put(ClassicConstants.REQUEST_METHOD, httpServletRequest.getMethod());
-      MDC.put(ClassicConstants.REQUEST_QUERY_STRING, httpServletRequest.getQueryString());
-      MDC.put(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY, httpServletRequest
-              .getHeader("User-Agent"));
-      MDC.put(ClassicConstants.REQUEST_X_FORWARDED_FOR, httpServletRequest
-              .getHeader("X-Forwarded-For"));
+    public void destroy() {
+        // do nothing
     }
 
-  }
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-  void clearMDC() {
-    MDC.remove(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY);
-    MDC.remove(ClassicConstants.REQUEST_REQUEST_URI);
-    MDC.remove(ClassicConstants.REQUEST_QUERY_STRING);
-    // removing possibly inexistent item is OK
-    MDC.remove(ClassicConstants.REQUEST_REQUEST_URL);
-    MDC.remove(ClassicConstants.REQUEST_METHOD);
-    MDC.remove(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY);
-    MDC.remove(ClassicConstants.REQUEST_X_FORWARDED_FOR);
-  }
+        insertIntoMDC(request);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            clearMDC();
+        }
+    }
 
-  public void init(FilterConfig arg0) throws ServletException {
-    // do nothing
-  }
+    void insertIntoMDC(ServletRequest request) {
+
+        MDC.put(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY, request.getRemoteHost());
+
+        if (request instanceof HttpServletRequest) {
+            HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+            MDC.put(ClassicConstants.REQUEST_REQUEST_URI, httpServletRequest.getRequestURI());
+            StringBuffer requestURL = httpServletRequest.getRequestURL();
+            if (requestURL != null) {
+                MDC.put(ClassicConstants.REQUEST_REQUEST_URL, requestURL.toString());
+            }
+            MDC.put(ClassicConstants.REQUEST_METHOD, httpServletRequest.getMethod());
+            MDC.put(ClassicConstants.REQUEST_QUERY_STRING, httpServletRequest.getQueryString());
+            MDC.put(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY, httpServletRequest.getHeader("User-Agent"));
+            MDC.put(ClassicConstants.REQUEST_X_FORWARDED_FOR, httpServletRequest.getHeader("X-Forwarded-For"));
+        }
+
+    }
+
+    void clearMDC() {
+        MDC.remove(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY);
+        MDC.remove(ClassicConstants.REQUEST_REQUEST_URI);
+        MDC.remove(ClassicConstants.REQUEST_QUERY_STRING);
+        // removing possibly inexistent item is OK
+        MDC.remove(ClassicConstants.REQUEST_REQUEST_URL);
+        MDC.remove(ClassicConstants.REQUEST_METHOD);
+        MDC.remove(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY);
+        MDC.remove(ClassicConstants.REQUEST_X_FORWARDED_FOR);
+    }
+
+    public void init(FilterConfig arg0) throws ServletException {
+        // do nothing
+    }
 }

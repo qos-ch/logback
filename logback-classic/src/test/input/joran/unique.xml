@@ -1,8 +1,8 @@
 <configuration>
-  <timestamp key="dayTimestamp" datePattern="yyyyMMdd'T'HHmmss" />
+  <timestamp key="dayTimestamp" datePattern="yyyyMMdd'T'HHmm" />
 
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <File>target/test-output/TS_${dayTimestamp}log.txt</File>
+    <File>target/test-output/UNIK_${dayTimestamp}${UNIK_DIFF}log.txt</File>
     <Append>false</Append>
     <encoder>
       <Pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n</Pattern>

@@ -28,78 +28,72 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  *
  * @author Carl Harris
  */
-public class InstrumentedServerSocketAppenderBase
-    extends AbstractServerSocketAppender<Serializable> {
+public class InstrumentedServerSocketAppenderBase extends AbstractServerSocketAppender<Serializable> {
 
-  private final ServerSocket serverSocket;
-  private final ServerListener<RemoteReceiverClient> listener;
-  private final ServerRunner<RemoteReceiverClient> runner;
-  
-  private ServerListener lastListener;
-  
-  public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
-    this(serverSocket, new RemoteReceiverServerListener(serverSocket), null);
-  }
-  
-  public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
-      ServerListener<RemoteReceiverClient> listener, 
-      ServerRunner<RemoteReceiverClient> runner) {
-    this.serverSocket = serverSocket;
-    this.listener = listener;
-    this.runner = runner;
-  }
+    private final ServerSocket serverSocket;
+    private final ServerListener<RemoteReceiverClient> listener;
+    private final ServerRunner<RemoteReceiverClient> runner;
 
-  @Override
-  protected void postProcessEvent(Serializable event) {
-  }
+    private ServerListener lastListener;
 
-  @Override
-  protected PreSerializationTransformer<Serializable> getPST() {
-    return new PreSerializationTransformer<Serializable>() {
-      public Serializable transform(Serializable event) {
-        return event;
-      }
-    };
-  }
-  
-  @Override
-  protected ServerSocketFactory getServerSocketFactory() throws Exception {
-    return new ServerSocketFactory() {
+    public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket) {
+        this(serverSocket, new RemoteReceiverServerListener(serverSocket), null);
+    }
 
-      @Override
-      public ServerSocket createServerSocket(int port) throws IOException {
-        return serverSocket;
-      }
+    public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket, ServerListener<RemoteReceiverClient> listener,
+                    ServerRunner<RemoteReceiverClient> runner) {
+        this.serverSocket = serverSocket;
+        this.listener = listener;
+        this.runner = runner;
+    }
 
-      @Override
-      public ServerSocket createServerSocket(int port, int backlog)
-          throws IOException {
-        return serverSocket;
-      }
+    @Override
+    protected void postProcessEvent(Serializable event) {
+    }
 
-      @Override
-      public ServerSocket createServerSocket(int port, int backlog,
-          InetAddress ifAddress) throws IOException {
-        return serverSocket;
-      }        
-    };
-  }
+    @Override
+    protected PreSerializationTransformer<Serializable> getPST() {
+        return new PreSerializationTransformer<Serializable>() {
+            public Serializable transform(Serializable event) {
+                return event;
+            }
+        };
+    }
 
-  @Override
-  protected ServerRunner<RemoteReceiverClient> createServerRunner(
-      ServerListener<RemoteReceiverClient> listener, Executor executor) {
-    lastListener = listener;
-    return runner != null ? runner : super.createServerRunner(listener, executor);
-  }
+    @Override
+    protected ServerSocketFactory getServerSocketFactory() throws Exception {
+        return new ServerSocketFactory() {
 
-  @Override
-  protected ServerListener<RemoteReceiverClient> createServerListener(
-      ServerSocket socket) {
-    return listener;
-  }
+            @Override
+            public ServerSocket createServerSocket(int port) throws IOException {
+                return serverSocket;
+            }
 
-  public ServerListener getLastListener() {
-    return lastListener;
-  }
+            @Override
+            public ServerSocket createServerSocket(int port, int backlog) throws IOException {
+                return serverSocket;
+            }
+
+            @Override
+            public ServerSocket createServerSocket(int port, int backlog, InetAddress ifAddress) throws IOException {
+                return serverSocket;
+            }
+        };
+    }
+
+    @Override
+    protected ServerRunner<RemoteReceiverClient> createServerRunner(ServerListener<RemoteReceiverClient> listener, Executor executor) {
+        lastListener = listener;
+        return runner != null ? runner : super.createServerRunner(listener, executor);
+    }
+
+    @Override
+    protected ServerListener<RemoteReceiverClient> createServerListener(ServerSocket socket) {
+        return listener;
+    }
+
+    public ServerListener getLastListener() {
+        return lastListener;
+    }
 
 }

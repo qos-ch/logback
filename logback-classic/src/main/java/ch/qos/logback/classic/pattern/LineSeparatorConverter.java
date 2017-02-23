@@ -18,8 +18,8 @@ import ch.qos.logback.core.CoreConstants;
 
 public class LineSeparatorConverter extends ClassicConverter {
 
-  public String convert(ILoggingEvent event) {
-    return CoreConstants.LINE_SEPARATOR;
-  }
+    public String convert(ILoggingEvent event) {
+        return CoreConstants.LINE_SEPARATOR;
+    }
 
 }

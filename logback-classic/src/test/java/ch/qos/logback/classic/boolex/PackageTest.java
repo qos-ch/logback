@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({JaninoEventEvaluatorTest.class, OnMarkerEvaluatorTest.class})
+@SuiteClasses({ JaninoEventEvaluatorTest.class, OnMarkerEvaluatorTest.class })
 public class PackageTest {
 }

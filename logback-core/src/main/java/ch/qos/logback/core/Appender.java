@@ -12,31 +12,30 @@
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.core;
-  
+
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.LifeCycle;
-  
 
 public interface Appender<E> extends LifeCycle, ContextAware, FilterAttachable<E> {
 
-  /**
-   * Get the name of this appender. The name uniquely identifies the appender.
-   */
-  String getName();
+    /**
+     * Get the name of this appender. The name uniquely identifies the appender.
+     */
+    String getName();
 
-  /**
-   * This is where an appender accomplishes its work. Note that the argument 
-   * is of type Object.
-   * @param event
-   */
-  void doAppend(E event) throws LogbackException;
+    /**
+     * This is where an appender accomplishes its work. Note that the argument 
+     * is of type Object.
+     * @param event
+     */
+    void doAppend(E event) throws LogbackException;
 
-  /**
-   * Set the name of this appender. The name is used by other components to
-   * identify this appender.
-   * 
-   */
-  void setName(String name);
-  
+    /**
+     * Set the name of this appender. The name is used by other components to
+     * identify this appender.
+     * 
+     */
+    void setName(String name);
+
 }

@@ -26,7 +26,7 @@ package ch.qos.logback.classic.db.names;
  */
 public interface DBNameResolver {
 
-  <N extends Enum<?>> String getTableName(N tableName);
+    <N extends Enum<?>> String getTableName(N tableName);
 
-  <N extends Enum<?>> String getColumnName(N columnName);
+    <N extends Enum<?>> String getColumnName(N columnName);
 }

@@ -15,10 +15,10 @@ package ch.qos.logback.core.spi;
 
 public interface PropertyDefiner extends ContextAware {
 
-  /**
-   * Get the property value, defined by this property definer
-   * 
-   * @return defined property value
-   */
-  String getPropertyValue();
+    /**
+     * Get the property value, defined by this property definer
+     * 
+     * @return defined property value
+     */
+    String getPropertyValue();
 }

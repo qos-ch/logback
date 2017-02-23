@@ -24,25 +24,24 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class GoMDC {
 
-  public static void main(String[] args)  {
-    Logger logger = LoggerFactory
-        .getLogger(GoMDC.class);
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(String[] args) {
+        Logger logger = LoggerFactory.getLogger(GoMDC.class);
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-    try {
-      JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(lc);
-      lc.reset();
-      configurator.doConfigure("mdcFilter.xml");
-      
-    } catch (JoranException je) {
-      StatusPrinter.print(lc);
+        try {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(lc);
+            lc.reset();
+            configurator.doConfigure("mdcFilter.xml");
+
+        } catch (JoranException je) {
+            StatusPrinter.print(lc);
+        }
+
+        logger.debug("I know me " + 0);
+        MDC.put("key", "val");
+        logger.debug("I know me " + 1);
+
+        StatusPrinter.print(lc);
     }
-
-    logger.debug("I know me " + 0);
-    MDC.put("key", "val");
-    logger.debug("I know me " + 1);
-    
-    StatusPrinter.print(lc);
-  }
 }

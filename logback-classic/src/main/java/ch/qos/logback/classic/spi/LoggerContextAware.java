@@ -16,18 +16,16 @@ package ch.qos.logback.classic.spi;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.spi.ContextAware;
 
-
 public interface LoggerContextAware extends ContextAware {
 
+    /** 
+     * Set owning logger context for this component. This operation can
+     * only be performed once. Once set, the owning context cannot be changed.
+     *   
+     * @param context The context where this component is attached.
+     * @throws IllegalStateException If you try to change the context after it
+     * has been set.
+     **/
+    void setLoggerContext(LoggerContext context);
 
-  /** 
-   * Set owning logger context for this component. This operation can
-   * only be performed once. Once set, the owning context cannot be changed.
-   *   
-   * @param context The context where this component is attached.
-   * @throws IllegalStateException If you try to change the context after it
-   * has been set.
-   **/
-  void setLoggerContext(LoggerContext context);
- 
 }

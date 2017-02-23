@@ -18,9 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { SyslogAppenderTest.class, DilutedSMTPAppenderTest.class,
-        JMSQueueAppenderTest.class, JMSTopicAppenderTest.class,
-        SMTPAppender_GreenTest.class, SMTPAppender_SubethaSMTPTest.class,
-        SocketReceiverTest.class, SSLSocketReceiverTest.class })
+@SuiteClasses({ SyslogAppenderTest.class, DilutedSMTPAppenderTest.class, JMSQueueAppenderTest.class, JMSTopicAppenderTest.class, SMTPAppender_GreenTest.class,
+        SMTPAppender_SubethaSMTPTest.class, SocketReceiverTest.class, SSLSocketReceiverTest.class })
 public class PackageTest {
 }

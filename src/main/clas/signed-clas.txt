@@ -37,6 +37,22 @@ Adam Gent                MA, USA               2014-04-01
 Sebastian Groebler       Berlin, Germany       2014-07-17
 Alexander Dorokhine      CA, USA               2014-12-07
 Yuji Okazawa             Tokyo, Japan          2015-04-01
+Lukasz Cwik              WA, USA               2015-06-11
+Juan Pablo Santos        Madrid, Spain         2015-06-15
+Gareth Davis             Cambridge, UK         2015-07-15
+Marek Szalik             Warszawa, Poland      2015-11-25
+Pavel Boldyrev           Ontario, Canada       2015-12-22
+Christoph Zauner         Ennsdorf, Austria     2016-01-11
+David Roberge            Maine, USA            2016-02-14
+Adam Batkin              Connecticut, USA      2016-02-14
+Ville Koskela            Washington, USA       2016-02-19
+Vedran Pavic             Croatia               2016-02-23
+Max Urech                AG, Swizerland        2016-03-17
+Kenneth Gendron          CA, USA               2016-04-01
+Espen A. Fossen          Norway                2016-04-07
+Scott Babcock            WA, USA               2016-12-22
+Olivier Bourgain         France                2017-01-31
+Nicolas Maupu            France                2017-01-31
 
 Justification for CLAs
 ----------------------
@@ -56,10 +72,11 @@ Public License 1.0 (in addition to LGPL) in logback version
 logback and it was a fairly painless process. Without the CLA on file,
 dual-licensing logback would have been near impossible.
 
-3) by virtue of clause 3 of the CLA, the contributor vouches for
-his/her contributions as his/her own. Thus, QOS.ch takes a lesser risk
-when distributing software because QOS.ch can claim that some vetting
-has been performed (due diligence). 
+3) by virtue of clauses 4 and 5 of the CLA, the contributor vouches
+for his/her contributions as his/her own and that he/she is entitled
+to grant the license. Thus, QOS.ch takes a lesser risk when
+distributing software because QOS.ch can claim that some vetting has
+been performed (due diligence).
 
 A more detailed discussion of CLAs can be found at [2].
 

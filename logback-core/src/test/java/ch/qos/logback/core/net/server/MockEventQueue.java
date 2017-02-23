@@ -23,14 +23,14 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 class MockEventQueue extends LinkedBlockingQueue<Serializable> {
 
-  private static final long serialVersionUID = 1L;
-  
-  @Override
-  public Serializable take() throws InterruptedException {
-    if (isEmpty()) {
-      Thread.currentThread().interrupt();
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public Serializable take() throws InterruptedException {
+        if (isEmpty()) {
+            Thread.currentThread().interrupt();
+        }
+        return super.take();
     }
-    return super.take();    
-  }
 
 }

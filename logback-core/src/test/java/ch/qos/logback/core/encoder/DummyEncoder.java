@@ -13,94 +13,88 @@
  */
 package ch.qos.logback.core.encoder;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import ch.qos.logback.core.CoreConstants;
 
 public class DummyEncoder<E> extends EncoderBase<E> {
 
-  public static final String DUMMY = "dummy" + CoreConstants.LINE_SEPARATOR;
-  String val = DUMMY;
-  String fileHeader;
-  String fileFooter;
-  String encodingName;
+    public static final String DUMMY = "dummy" + CoreConstants.LINE_SEPARATOR;
+    String val = DUMMY;
+    String fileHeader;
+    String fileFooter;
+    Charset charset;
 
-  public String getEncodingName() {
-    return encodingName;
-  }
-
-  public void setEncodingName(String encodingName) {
-    this.encodingName = encodingName;
-  }
-
-  public DummyEncoder() {
-  }
-
-  public DummyEncoder(String val) {
-    this.val = val;
-  }
-
-  public void doEncode(E event) throws IOException {
-    writeOut(val);
-  }
-
-  private void appendIfNotNull(StringBuilder sb, String s) {
-    if (s != null) {
-      sb.append(s);
+    public Charset getCharset() {
+        return charset;
     }
-  }
 
-  void writeOut(String s) throws IOException {
-    if (encodingName == null) {
-      outputStream.write(s.getBytes());
-    } else {
-      outputStream.write(s.getBytes(encodingName));
+    public void setCharset(Charset charset) {
+        this.charset = charset;
     }
-  }
 
-  void writeHeader() throws IOException {
-    StringBuilder sb = new StringBuilder();
-    appendIfNotNull(sb, fileHeader);
-    if (sb.length() > 0) {
-      sb.append(CoreConstants.LINE_SEPARATOR);
-      // If at least one of file header or presentation header were not
-      // null, then append a line separator.
-      // This should be useful in most cases and should not hurt.
-      writeOut(sb.toString());
+    public DummyEncoder() {
     }
-  }
 
-  public void init(OutputStream os) throws IOException {
-    super.init(os);
-    writeHeader();
-  }
-
-  public void close() throws IOException {
-    if (fileFooter == null) {
-      return;
+    public DummyEncoder(String val) {
+        this.val = val;
     }
-    if (encodingName == null) {
-      outputStream.write(fileFooter.getBytes());
-    } else {
-      outputStream.write(fileFooter.getBytes(encodingName));
+
+    public byte[] encode(E event)  {
+        return encodeString(val);
     }
-  }
 
-  public String getFileHeader() {
-    return fileHeader;
-  }
+    byte[] encodeString(String s) {
+        if (charset == null) {
+            return s.getBytes();
+        } else {
+            return s.getBytes(charset);
+        }
+    }
 
-  public void setFileHeader(String fileHeader) {
-    this.fileHeader = fileHeader;
-  }
+    private void appendIfNotNull(StringBuilder sb, String s) {
+        if (s != null) {
+            sb.append(s);
+        }
+    }
 
-  public String getFileFooter() {
-    return fileFooter;
-  }
+    byte[] header() {
+        StringBuilder sb = new StringBuilder();
+        appendIfNotNull(sb, fileHeader);
+        if (sb.length() > 0) {
+            // If at least one of file header or presentation header were not
+            // null, then append a line separator.
+            // This should be useful in most cases and should not hurt.
+            sb.append(CoreConstants.LINE_SEPARATOR);
+        }
+        return encodeString(sb.toString());
+    }
 
-  public void setFileFooter(String fileFooter) {
-    this.fileFooter = fileFooter;
-  }
+    public byte[] headerBytes() {
+        return header();
+    }
+
+    public byte[] footerBytes()  {
+        if (fileFooter == null) {
+            return null;
+        }
+        return encodeString(fileFooter);
+    }
+
+    public String getFileHeader() {
+        return fileHeader;
+    }
+
+    public void setFileHeader(String fileHeader) {
+        this.fileHeader = fileHeader;
+    }
+
+    public String getFileFooter() {
+        return fileFooter;
+    }
+
+    public void setFileFooter(String fileFooter) {
+        this.fileFooter = fileFooter;
+    }
 
 }

@@ -14,7 +14,7 @@
 package ch.qos.logback.core.net.mock;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -29,62 +29,62 @@ import ch.qos.logback.core.status.StatusManager;
  */
 public class MockContext extends ContextBase {
 
-  private final ExecutorService executorService;
-  
-  private Status lastStatus;
-  
-  public MockContext() {
-    this(new MockExecutorService());
-  }
-  
-  public MockContext(ExecutorService executorService) {
-    this.setStatusManager(new MockStatusManager());
-    this.executorService = executorService;
-  }
+    private final ScheduledExecutorService scheduledExecutorService;
 
-  @Override
-  public ExecutorService getExecutorService() {
-    return executorService;
-  }
+    private Status lastStatus;
 
-  public Status getLastStatus() {
-    return lastStatus;
-  }
-
-  public void setLastStatus(Status lastStatus) {
-    this.lastStatus = lastStatus;
-  }
-
-  private class MockStatusManager implements StatusManager {
-
-    public void add(Status status) {
-      lastStatus = status;
+    public MockContext() {
+        this(new MockScheduledExecutorService());
     }
 
-    public List<Status> getCopyOfStatusList() {
-      throw new UnsupportedOperationException();
+    public MockContext(ScheduledExecutorService executorService) {
+        this.setStatusManager(new MockStatusManager());
+        this.scheduledExecutorService = executorService;
     }
 
-    public int getCount() {
-      throw new UnsupportedOperationException();
+    @Override
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
     }
 
-    public void add(StatusListener listener) {
-      throw new UnsupportedOperationException();
+    public Status getLastStatus() {
+        return lastStatus;
     }
 
-    public void remove(StatusListener listener) {
-      throw new UnsupportedOperationException();
+    public void setLastStatus(Status lastStatus) {
+        this.lastStatus = lastStatus;
     }
 
-    public void clear() {
-      throw new UnsupportedOperationException();
+    private class MockStatusManager implements StatusManager {
+
+        public void add(Status status) {
+            lastStatus = status;
+        }
+
+        public List<Status> getCopyOfStatusList() {
+            throw new UnsupportedOperationException();
+        }
+
+        public int getCount() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean add(StatusListener listener) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void remove(StatusListener listener) {
+            throw new UnsupportedOperationException();
+        }
+
+        public void clear() {
+            throw new UnsupportedOperationException();
+        }
+
+        public List<StatusListener> getCopyOfStatusListenerList() {
+            throw new UnsupportedOperationException();
+        }
+
     }
 
-    public List<StatusListener> getCopyOfStatusListenerList() {
-      throw new UnsupportedOperationException();
-    }
-     
-  }
-  
 }

@@ -26,14 +26,14 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ObjectWriterFactory {
 
-  /**
-   * Creates a new {@link ch.qos.logback.core.net.AutoFlushingObjectWriter} instance.
-   *
-   * @param outputStream the underlying {@link java.io.OutputStream} to write to
-   * @return a new {@link ch.qos.logback.core.net.AutoFlushingObjectWriter} instance
-   * @throws IOException if an I/O error occurs while writing stream header
-   */
-  public AutoFlushingObjectWriter newAutoFlushingObjectWriter(OutputStream outputStream) throws IOException {
-    return new AutoFlushingObjectWriter(new ObjectOutputStream(outputStream), CoreConstants.OOS_RESET_FREQUENCY);
-  }
+    /**
+     * Creates a new {@link ch.qos.logback.core.net.AutoFlushingObjectWriter} instance.
+     *
+     * @param outputStream the underlying {@link java.io.OutputStream} to write to
+     * @return a new {@link ch.qos.logback.core.net.AutoFlushingObjectWriter} instance
+     * @throws IOException if an I/O error occurs while writing stream header
+     */
+    public AutoFlushingObjectWriter newAutoFlushingObjectWriter(OutputStream outputStream) throws IOException {
+        return new AutoFlushingObjectWriter(new ObjectOutputStream(outputStream), CoreConstants.OOS_RESET_FREQUENCY);
+    }
 }

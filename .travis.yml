@@ -1,4 +1,4 @@
 language: java
 notifications:
   email:
-      - logback-dev@qos.ch
+      - notification@qos.ch

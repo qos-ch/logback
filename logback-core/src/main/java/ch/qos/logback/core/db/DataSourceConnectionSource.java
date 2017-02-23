@@ -34,43 +34,42 @@ import ch.qos.logback.core.db.dialect.SQLDialectCode;
  */
 public class DataSourceConnectionSource extends ConnectionSourceBase {
 
-  private DataSource dataSource;
+    private DataSource dataSource;
 
-  @Override
-  public void start() {
-    if (dataSource == null) {
-      addWarn("WARNING: No data source specified");
-    } else {
-      discoverConnectionProperties();
-      if (!supportsGetGeneratedKeys()
-          && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
-        addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
-      }
-    }
-    super.start();
-  }
-
-  /**
-   * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
-   */
-  public Connection getConnection() throws SQLException {
-    if (dataSource == null) {
-      addError("WARNING: No data source specified");
-      return null;
+    @Override
+    public void start() {
+        if (dataSource == null) {
+            addWarn("WARNING: No data source specified");
+        } else {
+            discoverConnectionProperties();
+            if (!supportsGetGeneratedKeys() && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
+                addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
+            }
+        }
+        super.start();
     }
 
-    if (getUser() == null) {
-      return dataSource.getConnection();
-    } else {
-      return dataSource.getConnection(getUser(), getPassword());
+    /**
+     * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
+     */
+    public Connection getConnection() throws SQLException {
+        if (dataSource == null) {
+            addError("WARNING: No data source specified");
+            return null;
+        }
+
+        if (getUser() == null) {
+            return dataSource.getConnection();
+        } else {
+            return dataSource.getConnection(getUser(), getPassword());
+        }
     }
-  }
 
-  public DataSource getDataSource() {
-    return dataSource;
-  }
+    public DataSource getDataSource() {
+        return dataSource;
+    }
 
-  public void setDataSource(DataSource dataSource) {
-    this.dataSource = dataSource;
-  }
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 }

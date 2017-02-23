@@ -20,18 +20,18 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class TrivialLoggingEventBuilder implements Builder {
 
-  LoggerContext loggerContext = new LoggerContext();
+    LoggerContext loggerContext = new LoggerContext();
 
-  private Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    private Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-  public Object build(int i) {
-    LoggingEvent le = new LoggingEvent();
-    le.setTimeStamp(System.currentTimeMillis());
-    le.setLevel(Level.DEBUG);
-    le.setLoggerName(logger.getName());
-    le.setLoggerContextRemoteView(loggerContext.getLoggerContextRemoteView());
-    le.setMessage(MSG_PREFIX);
-    le.setThreadName("threadName");
-    return le;
-  } 
+    public Object build(int i) {
+        LoggingEvent le = new LoggingEvent();
+        le.setTimeStamp(System.currentTimeMillis());
+        le.setLevel(Level.DEBUG);
+        le.setLoggerName(logger.getName());
+        le.setLoggerContextRemoteView(loggerContext.getLoggerContextRemoteView());
+        le.setMessage(MSG_PREFIX);
+        le.setThreadName("threadName");
+        return le;
+    }
 }

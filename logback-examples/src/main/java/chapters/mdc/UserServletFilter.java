@@ -37,49 +37,48 @@ import org.slf4j.MDC;
  */
 public class UserServletFilter implements Filter {
 
-  private final String USER_KEY = "username";
-  
-  public void destroy() {
-  }
+    private final String USER_KEY = "username";
 
-  public void doFilter(ServletRequest request, ServletResponse response,
-      FilterChain chain) throws IOException, ServletException {
+    public void destroy() {
+    }
 
-    boolean successfulRegistration = false;
-    HttpServletRequest req = (HttpServletRequest) request;
-    Principal principal = req.getUserPrincipal();
-    // Please note that we also could have used a cookie to 
-    // retrieve the user name
-    
-    if (principal != null) {
-      String username = principal.getName();
-      successfulRegistration = registerUsername(username);
-    }
-    
-    try {
-      chain.doFilter(request, response);
-    } finally {
-      if (successfulRegistration) {
-        MDC.remove(USER_KEY);
-      }
-    }
-  }
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-  public void init(FilterConfig arg0) throws ServletException {
-  }
-  
-  /**
-   * Register the user in the MDC under USER_KEY.
-   * 
-   * @param username
-   * @return true id the user can be successfully registered
-   */
-  private boolean registerUsername(String username) {
-    if (username != null && username.trim().length() > 0) {
-      MDC.put(USER_KEY, username);
-      return true;
+        boolean successfulRegistration = false;
+        HttpServletRequest req = (HttpServletRequest) request;
+        Principal principal = req.getUserPrincipal();
+        // Please note that we also could have used a cookie to
+        // retrieve the user name
+
+        if (principal != null) {
+            String username = principal.getName();
+            successfulRegistration = registerUsername(username);
+        }
+
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            if (successfulRegistration) {
+                MDC.remove(USER_KEY);
+            }
+        }
     }
-    return false;
-  }
+
+    public void init(FilterConfig arg0) throws ServletException {
+    }
+
+    /**
+     * Register the user in the MDC under USER_KEY.
+     * 
+     * @param username
+     * @return true id the user can be successfully registered
+     */
+    private boolean registerUsername(String username) {
+        if (username != null && username.trim().length() > 0) {
+            MDC.put(USER_KEY, username);
+            return true;
+        }
+        return false;
+    }
 
 }

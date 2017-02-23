@@ -33,61 +33,59 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SiftingAppenderTest {
-  static final String PREFIX = "src/test/input/jetty/";
-  static int RANDOM_SERVER_PORT = RandomUtil.getRandomServerPort();
+    static final String PREFIX = "src/test/input/jetty/";
+    static int RANDOM_SERVER_PORT = RandomUtil.getRandomServerPort();
 
-  JettyFixtureBase jettyFixture;
-  RequestLogImpl rli = new RequestLogImpl();
+    JettyFixtureBase jettyFixture;
+    RequestLogImpl rli = new RequestLogImpl();
 
-  @Before
-  public void startServer() throws Exception {
-    jettyFixture = new JettyFixtureBase(rli, RANDOM_SERVER_PORT);
-  }
-
-  @After
-  public void stopServer() throws Exception {
-    if (jettyFixture != null) {
-      jettyFixture.stop();
+    @Before
+    public void startServer() throws Exception {
+        jettyFixture = new JettyFixtureBase(rli, RANDOM_SERVER_PORT);
     }
-  }
 
-  @Test
-  public void invokingDifferentPathShouldBeSiftedAccordingly() throws Exception {
-    rli.setFileName(PREFIX + "sifting.xml");
-    jettyFixture.start();
-    invokeServer("/");
-    invokeServer("/x");
-    invokeServer("/x");
-    invokeServer("/y");
+    @After
+    public void stopServer() throws Exception {
+        if (jettyFixture != null) {
+            jettyFixture.stop();
+        }
+    }
 
-    StatusPrinter.print(rli);
-    SiftingAppender siftingAppender = (SiftingAppender) rli
-        .getAppender("SIFTING");
-    Set<String> keySet = siftingAppender.getAppenderTracker().allKeys();
-    assertEquals(3, keySet.size());
+    @Test
+    public void invokingDifferentPathShouldBeSiftedAccordingly() throws Exception {
+        rli.setFileName(PREFIX + "sifting.xml");
+        jettyFixture.start();
+        invokeServer("/");
+        invokeServer("/x");
+        invokeServer("/x");
+        invokeServer("/y");
 
-    Set<String> witnessSet = new LinkedHashSet<String>();
-    witnessSet.add("NA");
-    witnessSet.add("x");
-    witnessSet.add("y");
-    assertEquals(witnessSet, keySet);
+        StatusPrinter.print(rli);
+        SiftingAppender siftingAppender = (SiftingAppender) rli.getAppender("SIFTING");
+        Set<String> keySet = siftingAppender.getAppenderTracker().allKeys();
+        assertEquals(3, keySet.size());
 
-    check(siftingAppender, "NA", 1);
-    check(siftingAppender, "x", 2);
-    check(siftingAppender, "y", 1);
-  }
+        Set<String> witnessSet = new LinkedHashSet<String>();
+        witnessSet.add("NA");
+        witnessSet.add("x");
+        witnessSet.add("y");
+        assertEquals(witnessSet, keySet);
 
-  private void check(SiftingAppender siftingAppender, String key, int expectedCount) {
-    ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender
-      .getAppenderTracker().find(key);
-    assertEquals(expectedCount, listAppender.list.size());
-  }
+        check(siftingAppender, "NA", 1);
+        check(siftingAppender, "x", 2);
+        check(siftingAppender, "y", 1);
+    }
 
-  void invokeServer(String uri) throws Exception {
-    URL url = new URL("http://localhost:" + RANDOM_SERVER_PORT + uri);
-    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-    connection.setDoInput(true);
-    Util.readToString(connection.getInputStream());
-    Thread.sleep(10);
-  }
+    private void check(SiftingAppender siftingAppender, String key, int expectedCount) {
+        ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) siftingAppender.getAppenderTracker().find(key);
+        assertEquals(expectedCount, listAppender.list.size());
+    }
+
+    void invokeServer(String uri) throws Exception {
+        URL url = new URL("http://localhost:" + RANDOM_SERVER_PORT + uri);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
+        Util.readToString(connection.getInputStream());
+        Thread.sleep(10);
+    }
 }

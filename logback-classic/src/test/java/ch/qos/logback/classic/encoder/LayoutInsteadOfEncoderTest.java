@@ -15,6 +15,7 @@ package ch.qos.logback.classic.encoder;
 
 import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,30 +34,57 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class LayoutInsteadOfEncoderTest {
 
-  // TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml"
-  JoranConfigurator jc = new JoranConfigurator();
-  LoggerContext loggerContext = new LoggerContext();
+    // TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml"
+    JoranConfigurator jc = new JoranConfigurator();
+    LoggerContext loggerContext = new LoggerContext();
 
-  @Before
-  public void setUp() {
-    jc.setContext(loggerContext);
+    @Before
+    public void setUp() {
+        jc.setContext(loggerContext);
 
-  }
+    }
 
-  // jc.doConfigure(TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml");
+    // jc.doConfigure(TeztConstants.TEST_SRC_PREFIX + "input/joran/ignore.xml");
 
-  @Test
-  public void layoutInsteadOfEncoer() throws JoranException {
-    jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX
-        + "compatibility/layoutInsteadOfEncoder.xml");
-    StatusPrinter.print(loggerContext);
-    StatusChecker checker = new StatusChecker(loggerContext);
-    checker.assertContainsMatch(Status.WARN, "This appender no longer admits a layout as a sub-component");
-    checker.assertContainsMatch(Status.WARN, "See also "+CODES_URL+"#layoutInsteadOfEncoder for details");
+    @Test
+    public void layoutInsteadOfEncoer() throws JoranException {
+        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "compatibility/layoutInsteadOfEncoder.xml");
+        StatusPrinter.print(loggerContext);
+        StatusChecker checker = new StatusChecker(loggerContext);
+        checker.assertContainsMatch(Status.WARN, "This appender no longer admits a layout as a sub-component");
+        checker.assertContainsMatch(Status.WARN, "See also " + CODES_URL + "#layoutInsteadOfEncoder for details");
+
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
+        assertTrue(fileAppender.isStarted());
+        assertTrue(fileAppender.getEncoder() instanceof LayoutWrappingEncoder);
+    }
     
-    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-    FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
-    assertTrue(fileAppender.isStarted());
-    assertTrue(fileAppender.getEncoder() instanceof LayoutWrappingEncoder);
-  }
+    @Test
+    public void immediateFlushInEncoder_TRUE() throws JoranException {
+        immediateFlushInEncoder(true);
+    }
+    
+    @Test
+    public void immediateFlushInEncoder_FALSE() throws JoranException {
+        immediateFlushInEncoder(false);
+    }
+    
+    public void immediateFlushInEncoder(Boolean immediateFlush) throws JoranException {
+        loggerContext.putProperty("immediateFlush", immediateFlush.toString());
+        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "compatibility/immediateFlushInEncoder.xml");
+        StatusPrinter.print(loggerContext);
+        StatusChecker checker = new StatusChecker(loggerContext);
+
+        checker.assertContainsMatch(Status.WARN, "As of version 1.2.0 \"immediateFlush\" property should be set within the enclosing Appender.");
+        checker.assertContainsMatch(Status.WARN, "Please move \"immediateFlush\" property into the enclosing appender.");
+        checker.assertContainsMatch(Status.WARN, "Setting the \"immediateFlush\" property of the enclosing appender to "+immediateFlush);
+
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
+        assertTrue(fileAppender.isStarted());
+        assertEquals(immediateFlush, Boolean.valueOf(fileAppender.isImmediateFlush())); 
+    }
+
+  
 }

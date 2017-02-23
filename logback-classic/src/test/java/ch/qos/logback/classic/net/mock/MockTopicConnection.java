@@ -26,70 +26,65 @@ import javax.jms.TopicSession;
 
 public class MockTopicConnection implements TopicConnection {
 
-  MockTopicSession session = new MockTopicSession();
-  
-  public TopicSession createTopicSession(boolean arg0, int arg1) throws JMSException {
-    return session;
-  }
-  
-  public ConnectionConsumer createConnectionConsumer(Topic arg0, String arg1, ServerSessionPool arg2, int arg3) throws JMSException {
-    
-    return null;
-  }
+    MockTopicSession session = new MockTopicSession();
 
-  public ConnectionConsumer createDurableConnectionConsumer(Topic arg0, String arg1, String arg2, ServerSessionPool arg3, int arg4) throws JMSException {
-    
-    return null;
-  }
+    public TopicSession createTopicSession(boolean arg0, int arg1) throws JMSException {
+        return session;
+    }
 
-  public void close() throws JMSException {
-    
-    
-  }
+    public ConnectionConsumer createConnectionConsumer(Topic arg0, String arg1, ServerSessionPool arg2, int arg3) throws JMSException {
 
-  public ConnectionConsumer createConnectionConsumer(Destination arg0, String arg1, ServerSessionPool arg2, int arg3) throws JMSException {
-    
-    return null;
-  }
+        return null;
+    }
 
-  public Session createSession(boolean arg0, int arg1) throws JMSException {
-    
-    return null;
-  }
+    public ConnectionConsumer createDurableConnectionConsumer(Topic arg0, String arg1, String arg2, ServerSessionPool arg3, int arg4) throws JMSException {
 
-  public String getClientID() throws JMSException {
-    
-    return null;
-  }
+        return null;
+    }
 
-  public ExceptionListener getExceptionListener() throws JMSException {
-    
-    return null;
-  }
+    public void close() throws JMSException {
 
-  public ConnectionMetaData getMetaData() throws JMSException {
-    
-    return null;
-  }
+    }
 
-  public void setClientID(String arg0) throws JMSException {
-    
-    
-  }
+    public ConnectionConsumer createConnectionConsumer(Destination arg0, String arg1, ServerSessionPool arg2, int arg3) throws JMSException {
 
-  public void setExceptionListener(ExceptionListener arg0) throws JMSException {
-    
-    
-  }
+        return null;
+    }
 
-  public void start() throws JMSException {
-    
-    
-  }
+    public Session createSession(boolean arg0, int arg1) throws JMSException {
 
-  public void stop() throws JMSException {
-    
-    
-  }
+        return null;
+    }
+
+    public String getClientID() throws JMSException {
+
+        return null;
+    }
+
+    public ExceptionListener getExceptionListener() throws JMSException {
+
+        return null;
+    }
+
+    public ConnectionMetaData getMetaData() throws JMSException {
+
+        return null;
+    }
+
+    public void setClientID(String arg0) throws JMSException {
+
+    }
+
+    public void setExceptionListener(ExceptionListener arg0) throws JMSException {
+
+    }
+
+    public void start() throws JMSException {
+
+    }
+
+    public void stop() throws JMSException {
+
+    }
 
 }

@@ -17,114 +17,114 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public class StatisticalViewImpl implements StatisticalView, LifeCycle {
 
-  final CountingFilter countingFilter;
-  boolean started;
+    final CountingFilter countingFilter;
+    boolean started;
 
-  StatsByMinute statsByMinute = new StatsByMinute();
-  StatsByHour statsByHour = new StatsByHour();
-  StatsByDay statsByDay = new StatsByDay();
-  StatsByWeek statsByWeek = new StatsByWeek();
-  StatsByMonth statsByMonth = new StatsByMonth();
-  
-  StatisticalViewImpl(CountingFilter countingFilter) {
-    this.countingFilter = countingFilter;
-  }
+    StatsByMinute statsByMinute = new StatsByMinute();
+    StatsByHour statsByHour = new StatsByHour();
+    StatsByDay statsByDay = new StatsByDay();
+    StatsByWeek statsByWeek = new StatsByWeek();
+    StatsByMonth statsByMonth = new StatsByMonth();
 
-  @Override
-  public double getDailyAverage() {
-    return statsByDay.getAverage();
-  }
+    StatisticalViewImpl(CountingFilter countingFilter) {
+        this.countingFilter = countingFilter;
+    }
 
-  @Override
-  public long getLastDaysCount() {
-    return statsByDay.getLastCount();
-  }
+    @Override
+    public double getDailyAverage() {
+        return statsByDay.getAverage();
+    }
 
-  @Override
-  public double getMonthlyAverage() {
-    return  statsByMonth.getAverage();
-  }
+    @Override
+    public long getLastDaysCount() {
+        return statsByDay.getLastCount();
+    }
 
-  @Override
-  public long getLastMonthsCount() {
-    return statsByMonth.getLastCount();
-  }
+    @Override
+    public double getMonthlyAverage() {
+        return statsByMonth.getAverage();
+    }
 
-  @Override
-  public long getTotal() {
-    return countingFilter.getTotal();
-  }
+    @Override
+    public long getLastMonthsCount() {
+        return statsByMonth.getLastCount();
+    }
 
-  @Override
-  public double getWeeklyAverage() {
-    return statsByWeek.getAverage();
-  }
+    @Override
+    public long getTotal() {
+        return countingFilter.getTotal();
+    }
 
-  @Override
-  public long getLastWeeksCount() {
-    return statsByWeek.getLastCount();
-  }
+    @Override
+    public double getWeeklyAverage() {
+        return statsByWeek.getAverage();
+    }
 
-  void update(long now) {
-    long total = getTotal();
-    statsByMinute.update(now, total);
-    statsByHour.update(now, total);
-    statsByDay.update(now, total);
-    statsByWeek.update(now, total);
-    statsByMonth.update(now, total);
-    
-  }
+    @Override
+    public long getLastWeeksCount() {
+        return statsByWeek.getLastCount();
+    }
 
-  void update() {
-    long now = System.currentTimeMillis();
-    update(now);
-  }
+    void update(long now) {
+        long total = getTotal();
+        statsByMinute.update(now, total);
+        statsByHour.update(now, total);
+        statsByDay.update(now, total);
+        statsByWeek.update(now, total);
+        statsByMonth.update(now, total);
 
-  @Override
-  public void start() {
-    System.out.println("StatisticalViewImpl start called");
-    started = true;
-    long now = System.currentTimeMillis();
-    statsByMinute = new StatsByMinute(now);
-    statsByHour = new StatsByHour(now);
-    statsByDay = new StatsByDay(now);
-    statsByWeek = new StatsByWeek(now);
-    statsByMonth = new StatsByMonth(now);
-  }
+    }
 
-  @Override
-  public boolean isStarted() {
-    return started;
-  }
+    void update() {
+        long now = System.currentTimeMillis();
+        update(now);
+    }
 
-  @Override
-  public void stop() {
-    started = false;
-    statsByMinute.reset();
-    statsByHour.reset();
-    statsByDay.reset();
-    statsByWeek.reset();
-    statsByMonth.reset();
-  }
+    @Override
+    public void start() {
+        System.out.println("StatisticalViewImpl start called");
+        started = true;
+        long now = System.currentTimeMillis();
+        statsByMinute = new StatsByMinute(now);
+        statsByHour = new StatsByHour(now);
+        statsByDay = new StatsByDay(now);
+        statsByWeek = new StatsByWeek(now);
+        statsByMonth = new StatsByMonth(now);
+    }
 
-  @Override
-  public long getLastMinuteCount() {
-    return statsByMinute.getLastCount();
-  }
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-  @Override
-  public double getMinuteAverage() {
-    return statsByMinute.getAverage();
-  }
+    @Override
+    public void stop() {
+        started = false;
+        statsByMinute.reset();
+        statsByHour.reset();
+        statsByDay.reset();
+        statsByWeek.reset();
+        statsByMonth.reset();
+    }
 
-  @Override
-  public double getHourlyAverage() {
-    return statsByHour.getAverage();
-  }
+    @Override
+    public long getLastMinuteCount() {
+        return statsByMinute.getLastCount();
+    }
 
-  @Override
-  public long getLastHoursCount() {
-    return  statsByHour.getLastCount();
-  }
+    @Override
+    public double getMinuteAverage() {
+        return statsByMinute.getAverage();
+    }
+
+    @Override
+    public double getHourlyAverage() {
+        return statsByHour.getAverage();
+    }
+
+    @Override
+    public long getLastHoursCount() {
+        return statsByHour.getLastCount();
+    }
 
 }

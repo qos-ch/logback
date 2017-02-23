@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,7 +8,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
   </parent>
 
   <artifactId>logback-classic</artifactId>
@@ -24,6 +25,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -66,7 +68,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>hsqldb</groupId>
+      <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
     </dependency>
@@ -123,7 +125,7 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
@@ -151,6 +153,13 @@
       <version>2.0.2</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -159,6 +168,7 @@
         <directory>src/main/groovy</directory>
         <includes>
           <include>**/EvaluatorTemplate.groovy</include>
+          <include>**/*.groovy</include>
         </includes>
       </resource>
       <resource>
@@ -167,10 +177,11 @@
     </resources>
 
     <plugins>
+     
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.1</version>
+        <version>1.5</version>
         <executions>
           <execution>
             <goals>
@@ -208,7 +219,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
+        <version>1.8</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.ant</groupId>
@@ -260,8 +271,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- once, never, pertest, always -->
-          <forkMode>once</forkMode>
-          <!--<parallel>classes</parallel>-->
+          <!--<forkMode>once</forkMode>-->
+          <forkCount>1C</forkCount>
+          <reuseForks>false</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <excludes>
@@ -301,6 +313,7 @@
               javax.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               org.slf4j,
+              org.slf4j.event,
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
               ch.qos.logback.core.util,
@@ -328,7 +341,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.codehaus.gmavenplus</groupId>
                     <artifactId>gmavenplus-plugin</artifactId>
-                    <versionRange>[1.1,)</versionRange>
+                    <versionRange>[1.5,)</versionRange>
                     <goals>
                       <goal>testGenerateStubs</goal>
                       <goal>generateStubs</goal>

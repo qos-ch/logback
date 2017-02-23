@@ -14,8 +14,6 @@
 // Contributors: Dan MacDonald <dan@redknee.com>
 package ch.qos.logback.classic.net;
 
-import java.net.InetAddress;
-
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
@@ -33,28 +31,26 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class SocketAppender extends AbstractSocketAppender<ILoggingEvent> {
 
-  private static final PreSerializationTransformer<ILoggingEvent> pst = 
-      new LoggingEventPreSerializationTransformer();
-  
-  private boolean includeCallerData = false;
+    private static final PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
 
-  public SocketAppender() {
-  }
+    private boolean includeCallerData = false;
 
-
-  @Override
-  protected void postProcessEvent(ILoggingEvent event) {
-    if (includeCallerData) {
-      event.getCallerData();
+    public SocketAppender() {
     }
-  }
 
-  public void setIncludeCallerData(boolean includeCallerData) {
-    this.includeCallerData = includeCallerData;
-  }
-  
-  public PreSerializationTransformer<ILoggingEvent> getPST() {
-    return pst;
-  }
-  
+    @Override
+    protected void postProcessEvent(ILoggingEvent event) {
+        if (includeCallerData) {
+            event.getCallerData();
+        }
+    }
+
+    public void setIncludeCallerData(boolean includeCallerData) {
+        this.includeCallerData = includeCallerData;
+    }
+
+    public PreSerializationTransformer<ILoggingEvent> getPST() {
+        return pst;
+    }
+
 }

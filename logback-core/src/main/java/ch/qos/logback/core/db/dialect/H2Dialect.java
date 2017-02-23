@@ -19,10 +19,10 @@ package ch.qos.logback.core.db.dialect;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class H2Dialect implements SQLDialect {
-  public static final String SELECT_CURRVAL = "CALL IDENTITY()";
+    public static final String SELECT_CURRVAL = "CALL IDENTITY()";
 
-  public String getSelectInsertId() {
-    return SELECT_CURRVAL;
-  }
-  
+    public String getSelectInsertId() {
+        return SELECT_CURRVAL;
+    }
+
 }

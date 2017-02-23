@@ -17,12 +17,12 @@ import java.util.List;
 
 import ch.qos.logback.core.joran.event.SaxEvent;
 
-public class ElseAction  extends ThenOrElseActionBase {
+public class ElseAction extends ThenOrElseActionBase {
 
-  @Override
-  void registerEventList(IfAction ifAction, List<SaxEvent> eventList) {
-   ifAction.setElseSaxEventList(eventList);
-    
-  }
+    @Override
+    void registerEventList(IfAction ifAction, List<SaxEvent> eventList) {
+        ifAction.setElseSaxEventList(eventList);
+
+    }
 
 }

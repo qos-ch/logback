@@ -18,11 +18,8 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({LoggerContextTest.class, LoggerPerfTest.class,
-        ScenarioBasedLoggerContextTest.class, PatternLayoutTest.class,
-        LoggerTest.class, LoggerSerializationTest.class,
-        LoggerMessageFormattingTest.class, MDCTest.class,
-        TurboFilteringInLoggerTest.class,
-        AsyncAppenderTest.class})
+@SuiteClasses({ LoggerContextTest.class, LoggerContextConcurrentResetTest.class, LoggerPerfTest.class, ScenarioBasedLoggerContextTest.class,
+        PatternLayoutTest.class, LoggerTest.class, LoggerSerializationTest.class, LoggerMessageFormattingTest.class, MDCTest.class,
+        TurboFilteringInLoggerTest.class, AsyncAppenderTest.class })
 public class PackageTest {
 }

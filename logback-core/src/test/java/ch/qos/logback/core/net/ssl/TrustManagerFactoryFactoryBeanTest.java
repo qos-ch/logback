@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import ch.qos.logback.core.net.ssl.TrustManagerFactoryFactoryBean;
 
-
 /**
  * Unit tests for {@link TrustManagerFactoryFactoryBean}.
  *
@@ -29,26 +28,24 @@ import ch.qos.logback.core.net.ssl.TrustManagerFactoryFactoryBean;
  */
 public class TrustManagerFactoryFactoryBeanTest {
 
-  private TrustManagerFactoryFactoryBean factoryBean =
-      new TrustManagerFactoryFactoryBean();
-  
-  @Test
-  public void testDefaults() throws Exception {
-    assertNotNull(factoryBean.createTrustManagerFactory());
-  }
+    private TrustManagerFactoryFactoryBean factoryBean = new TrustManagerFactoryFactoryBean();
 
-  @Test
-  public void testExplicitAlgorithm() throws Exception {
-    factoryBean.setAlgorithm(TrustManagerFactory.getDefaultAlgorithm());
-    assertNotNull(factoryBean.createTrustManagerFactory());
-  }
-  
-  @Test
-  public void testExplicitProvider() throws Exception {
-    TrustManagerFactory factory = TrustManagerFactory.getInstance(
-        TrustManagerFactory.getDefaultAlgorithm());
-    factoryBean.setProvider(factory.getProvider().getName());
-    assertNotNull(factoryBean.createTrustManagerFactory());
-  }
-  
+    @Test
+    public void testDefaults() throws Exception {
+        assertNotNull(factoryBean.createTrustManagerFactory());
+    }
+
+    @Test
+    public void testExplicitAlgorithm() throws Exception {
+        factoryBean.setAlgorithm(TrustManagerFactory.getDefaultAlgorithm());
+        assertNotNull(factoryBean.createTrustManagerFactory());
+    }
+
+    @Test
+    public void testExplicitProvider() throws Exception {
+        TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        factoryBean.setProvider(factory.getProvider().getName());
+        assertNotNull(factoryBean.createTrustManagerFactory());
+    }
+
 }

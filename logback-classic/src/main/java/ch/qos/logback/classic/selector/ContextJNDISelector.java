@@ -51,155 +51,149 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class ContextJNDISelector implements ContextSelector {
 
-  private final Map<String, LoggerContext> synchronizedContextMap;
-  private final LoggerContext defaultContext;
+    private final Map<String, LoggerContext> synchronizedContextMap;
+    private final LoggerContext defaultContext;
 
-  private static final ThreadLocal<LoggerContext> threadLocal = new ThreadLocal<LoggerContext>();
+    private static final ThreadLocal<LoggerContext> threadLocal = new ThreadLocal<LoggerContext>();
 
-  public ContextJNDISelector(LoggerContext context) {
-    synchronizedContextMap = Collections
-            .synchronizedMap(new HashMap<String, LoggerContext>());
-    defaultContext = context;
-  }
-
-  public LoggerContext getDefaultLoggerContext() {
-    return defaultContext;
-  }
-
-  public LoggerContext detachLoggerContext(String loggerContextName) {
-    return synchronizedContextMap.remove(loggerContextName);
-  }
-
-  public LoggerContext getLoggerContext() {
-    String contextName = null;
-    Context ctx = null;
-
-    // First check if ThreadLocal has been set already
-    LoggerContext lc = threadLocal.get();
-    if (lc != null) {
-      return lc;
+    public ContextJNDISelector(LoggerContext context) {
+        synchronizedContextMap = Collections.synchronizedMap(new HashMap<String, LoggerContext>());
+        defaultContext = context;
     }
 
-    try {
-      // We first try to find the name of our
-      // environment's LoggerContext
-      ctx = JNDIUtil.getInitialContext();
-      contextName = (String) JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
-    } catch (NamingException ne) {
-      // We can't log here
+    public LoggerContext getDefaultLoggerContext() {
+        return defaultContext;
     }
 
-    if (contextName == null) {
-      // We return the default context
-      return defaultContext;
-    } else {
-      // Let's see if we already know such a context
-      LoggerContext loggerContext = synchronizedContextMap.get(contextName);
+    public LoggerContext detachLoggerContext(String loggerContextName) {
+        return synchronizedContextMap.remove(loggerContextName);
+    }
 
-      if (loggerContext == null) {
-        // We have to create a new LoggerContext
-        loggerContext = new LoggerContext();
-        loggerContext.setName(contextName);
-        synchronizedContextMap.put(contextName, loggerContext);
-        URL url = findConfigFileURL(ctx, loggerContext);
-        if (url != null) {
-          configureLoggerContextByURL(loggerContext, url);
-        } else {
-          try {
-            new ContextInitializer(loggerContext).autoConfig();
-          } catch (JoranException je) {
-          }
+    public LoggerContext getLoggerContext() {
+        String contextName = null;
+        Context ctx = null;
+
+        // First check if ThreadLocal has been set already
+        LoggerContext lc = threadLocal.get();
+        if (lc != null) {
+            return lc;
         }
-        // logback-292
-        if (!StatusUtil.contextHasStatusListener(loggerContext))
-          StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
-      }
-      return loggerContext;
+
+        try {
+            // We first try to find the name of our
+            // environment's LoggerContext
+            ctx = JNDIUtil.getInitialContext();
+            contextName = (String) JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
+        } catch (NamingException ne) {
+            // We can't log here
+        }
+
+        if (contextName == null) {
+            // We return the default context
+            return defaultContext;
+        } else {
+            // Let's see if we already know such a context
+            LoggerContext loggerContext = synchronizedContextMap.get(contextName);
+
+            if (loggerContext == null) {
+                // We have to create a new LoggerContext
+                loggerContext = new LoggerContext();
+                loggerContext.setName(contextName);
+                synchronizedContextMap.put(contextName, loggerContext);
+                URL url = findConfigFileURL(ctx, loggerContext);
+                if (url != null) {
+                    configureLoggerContextByURL(loggerContext, url);
+                } else {
+                    try {
+                        new ContextInitializer(loggerContext).autoConfig();
+                    } catch (JoranException je) {
+                    }
+                }
+                // logback-292
+                if (!StatusUtil.contextHasStatusListener(loggerContext))
+                    StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+            }
+            return loggerContext;
+        }
     }
-  }
 
-  private String conventionalConfigFileName(String contextName) {
-    return "logback-" + contextName + ".xml";
-  }
-
-  private URL findConfigFileURL(Context ctx, LoggerContext loggerContext) {
-    StatusManager sm = loggerContext.getStatusManager();
-
-    String jndiEntryForConfigResource = JNDIUtil.lookup(ctx,
-            JNDI_CONFIGURATION_RESOURCE);
-    // Do we have a dedicated configuration file?
-    if (jndiEntryForConfigResource != null) {
-      sm.add(new InfoStatus("Searching for [" + jndiEntryForConfigResource
-              + "]", this));
-      URL url = urlByResourceName(sm, jndiEntryForConfigResource);
-      if (url == null) {
-        String msg = "The jndi resource [" + jndiEntryForConfigResource
-                + "] for context [" + loggerContext.getName()
-                + "] does not lead to a valid file";
-        sm.add(new WarnStatus(msg, this));
-      }
-      return url;
-    } else {
-      String resourceByConvention = conventionalConfigFileName(loggerContext
-              .getName());
-      return urlByResourceName(sm, resourceByConvention);
+    private String conventionalConfigFileName(String contextName) {
+        return "logback-" + contextName + ".xml";
     }
-  }
 
-  private URL urlByResourceName(StatusManager sm, String resourceName) {
-    sm.add(new InfoStatus("Searching for [" + resourceName + "]",
-            this));
-    URL url = Loader.getResource(resourceName, Loader.getTCL());
-    if (url != null) {
-      return url;
+    private URL findConfigFileURL(Context ctx, LoggerContext loggerContext) {
+        StatusManager sm = loggerContext.getStatusManager();
+
+        String jndiEntryForConfigResource = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
+        // Do we have a dedicated configuration file?
+        if (jndiEntryForConfigResource != null) {
+            sm.add(new InfoStatus("Searching for [" + jndiEntryForConfigResource + "]", this));
+            URL url = urlByResourceName(sm, jndiEntryForConfigResource);
+            if (url == null) {
+                String msg = "The jndi resource [" + jndiEntryForConfigResource + "] for context [" + loggerContext.getName()
+                                + "] does not lead to a valid file";
+                sm.add(new WarnStatus(msg, this));
+            }
+            return url;
+        } else {
+            String resourceByConvention = conventionalConfigFileName(loggerContext.getName());
+            return urlByResourceName(sm, resourceByConvention);
+        }
     }
-    return Loader.getResourceBySelfClassLoader(resourceName);
-  }
 
-  private void configureLoggerContextByURL(LoggerContext context, URL url) {
-    try {
-      JoranConfigurator configurator = new JoranConfigurator();
-      context.reset();
-      configurator.setContext(context);
-      configurator.doConfigure(url);
-    } catch (JoranException e) {
+    private URL urlByResourceName(StatusManager sm, String resourceName) {
+        sm.add(new InfoStatus("Searching for [" + resourceName + "]", this));
+        URL url = Loader.getResource(resourceName, Loader.getTCL());
+        if (url != null) {
+            return url;
+        }
+        return Loader.getResourceBySelfClassLoader(resourceName);
     }
-    StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-  }
 
-  public List<String> getContextNames() {
-    List<String> list = new ArrayList<String>();
-    list.addAll(synchronizedContextMap.keySet());
-    return list;
-  }
+    private void configureLoggerContextByURL(LoggerContext context, URL url) {
+        try {
+            JoranConfigurator configurator = new JoranConfigurator();
+            context.reset();
+            configurator.setContext(context);
+            configurator.doConfigure(url);
+        } catch (JoranException e) {
+        }
+        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+    }
 
-  public LoggerContext getLoggerContext(String name) {
-    return synchronizedContextMap.get(name);
-  }
+    public List<String> getContextNames() {
+        List<String> list = new ArrayList<String>();
+        list.addAll(synchronizedContextMap.keySet());
+        return list;
+    }
 
-  /**
-   * Returns the number of managed contexts Used for testing purposes
-   *
-   * @return the number of managed contexts
-   */
-  public int getCount() {
-    return synchronizedContextMap.size();
-  }
+    public LoggerContext getLoggerContext(String name) {
+        return synchronizedContextMap.get(name);
+    }
 
-  /**
-   * These methods are used by the LoggerContextFilter.
-   * <p/>
-   * They provide a way to tell the selector which context to use, thus saving
-   * the cost of a JNDI call at each new request.
-   *
-   * @param context
-   */
-  public void setLocalContext(LoggerContext context) {
-    threadLocal.set(context);
-  }
+    /**
+     * Returns the number of managed contexts Used for testing purposes
+     *
+     * @return the number of managed contexts
+     */
+    public int getCount() {
+        return synchronizedContextMap.size();
+    }
 
-  public void removeLocalContext() {
-    threadLocal.remove();
-  }
+    /**
+     * These methods are used by the LoggerContextFilter.
+     * <p/>
+     * They provide a way to tell the selector which context to use, thus saving
+     * the cost of a JNDI call at each new request.
+     *
+     * @param context
+     */
+    public void setLocalContext(LoggerContext context) {
+        threadLocal.set(context);
+    }
+
+    public void removeLocalContext() {
+        threadLocal.remove();
+    }
 
 }

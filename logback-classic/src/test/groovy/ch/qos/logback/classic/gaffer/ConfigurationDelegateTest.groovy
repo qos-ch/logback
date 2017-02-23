@@ -33,6 +33,7 @@ import ch.qos.logback.core.helpers.NOPAppender
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 import ch.qos.logback.classic.PatternLayout
+import ch.qos.logback.core.util.FileSize
 import ch.qos.logback.core.util.StatusPrinter
 import ch.qos.logback.classic.net.SMTPAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
@@ -69,13 +70,7 @@ class ConfigurationDelegateTest {
   @Test
   void scan() {
     configurationDelegate.scan("10seconds")
-    assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeFilter"))
-    assertTrue(statusChecker.containsMatch("Adding ReconfigureOnChangeFilter as a turbo filter"))
-
-    TurboFilter filter = context.turboFilterList[0]
-    assertTrue(filter instanceof ReconfigureOnChangeFilter)
-    ReconfigureOnChangeFilter rocf = (ReconfigureOnChangeFilter) filter;
-    assertEquals(10 * 1000, rocf.refreshPeriod)
+    assertTrue(statusChecker.containsMatch("Setting ReconfigureOnChangeTask"))
   }
 
   @Test
@@ -241,16 +236,29 @@ class ConfigurationDelegateTest {
   }
 
 
-  // See LBCLASSIC-231
+  // See LOGBACK-458
   @Test
   void withSizeAndTimeBasedFNATP() {
+      withSizeAndTimeBasedFNATP(false);
+  }
+
+  // See LOGBACK-1232
+  @Test
+  void withSizeAndTimeBasedFNATP_AsString() {
+      withSizeAndTimeBasedFNATP(true);
+  }
+  
+  void withSizeAndTimeBasedFNATP(boolean asString) {
     String logFile = randomOutputDir + "log.txt";
     configurationDelegate.appender("ROLLING", RollingFileAppender) {
       file = logFile
       rollingPolicy(TimeBasedRollingPolicy) {
         fileNamePattern = "mylog-%d{yyyy-MM-dd}.%i.txt"
         timeBasedFileNamingAndTriggeringPolicy(SizeAndTimeBasedFNATP) {
-          maxFileSize = "100MB"
+          if(asString)   
+            maxFileSize = "100MB"
+          else 
+           maxFileSize = FileSize.valueOf("100MB")
         }
       }
       encoder(PatternLayoutEncoder) {
@@ -258,6 +266,7 @@ class ConfigurationDelegateTest {
       }
     }
     RollingFileAppender back = configurationDelegate.appenderList.find {it.name = "ROLLING"}
+    StatusPrinter.print(context)
     assertNotNull(back)
     assertEquals(logFile, back.rollingPolicy.getParentsRawFileProperty())
     assertTrue(back.rollingPolicy.timeBasedFileNamingAndTriggeringPolicy.isStarted())

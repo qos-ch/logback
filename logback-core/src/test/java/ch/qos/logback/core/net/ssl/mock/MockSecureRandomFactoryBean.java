@@ -26,17 +26,16 @@ import ch.qos.logback.core.net.ssl.SecureRandomFactoryBean;
  */
 public class MockSecureRandomFactoryBean extends SecureRandomFactoryBean {
 
-  private boolean secureRandomCreated;
+    private boolean secureRandomCreated;
 
-  @Override
-  public SecureRandom createSecureRandom() throws NoSuchProviderException,
-      NoSuchAlgorithmException {
-    secureRandomCreated = true;
-    return super.createSecureRandom();
-  }
+    @Override
+    public SecureRandom createSecureRandom() throws NoSuchProviderException, NoSuchAlgorithmException {
+        secureRandomCreated = true;
+        return super.createSecureRandom();
+    }
 
-  public boolean isSecureRandomCreated() {
-    return secureRandomCreated;
-  }
-    
+    public boolean isSecureRandomCreated() {
+        return secureRandomCreated;
+    }
+
 }

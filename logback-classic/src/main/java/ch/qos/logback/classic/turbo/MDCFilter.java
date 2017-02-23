@@ -45,28 +45,28 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class MDCFilter extends MatchingFilter {
 
-  String MDCKey;
-  String value;
-  
-  @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-    if (MDCKey == null) {
-      return FilterReply.NEUTRAL;
+    String MDCKey;
+    String value;
+
+    @Override
+    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+        if (MDCKey == null) {
+            return FilterReply.NEUTRAL;
+        }
+
+        String value = MDC.get(MDCKey);
+        if (this.value.equals(value)) {
+            return onMatch;
+        }
+        return onMismatch;
     }
-    
-    String value = MDC.get(MDCKey);
-    if (this.value.equals(value)) {
-      return onMatch;
+
+    public void setValue(String value) {
+        this.value = value;
     }
-    return onMismatch;
-  }
-  
-  public void setValue(String value) {
-    this.value = value;
-  }
-  
-  public void setMDCKey(String MDCKey) {
-    this.MDCKey = MDCKey;
-  }
+
+    public void setMDCKey(String MDCKey) {
+        this.MDCKey = MDCKey;
+    }
 
 }

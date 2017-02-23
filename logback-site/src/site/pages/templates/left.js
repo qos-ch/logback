@@ -20,12 +20,22 @@ document.write('<p class="menu_header">Sister projects</p>');
 document.write('<p class="menu"><a href="http://audit.qos.ch/">Logback-audit</a>');
 
 document.write('<p class="menu_header">Online Tools</p>');
-document.write('<p class="menu"><a href="http://logback.qos.ch/translator/">log4j.properties Translator</a>');
-document.write('<p class="menu"><a href="http://logback.qos.ch/translator/asGroovy.html">logback.XML to Groovy</a>');
+document.write('<p class="menu"><a href="https://logback.qos.ch/translator/">log4j.properties Translator</a>');
+document.write('<p class="menu"><a href="https://logback.qos.ch/translator/asGroovy.html">logback.XML to Groovy</a>');
 
 document.write('</p>');
 document.write('</div>');
 
-document.write('<p/>');
+document.write('<p>&nbsp;</p>');
 
-document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');
+document.write('<div class="pub">');
+document.write('    <a href="http://twitter.com/qos_ch" style="">');
+document.write('      <img alt="Follow @qos_ch" src="images/follow_us.png" />');
+document.write('    </a>');
+document.write('</div>');
+
+document.write('<p>&nbsp;</p>');
+document.write('<div class="pub"><img src="https://travis-ci.org/qos-ch/logback.svg?branch=master"/></div>');
+
+
+//document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');

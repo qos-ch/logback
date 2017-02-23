@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class InitializationIntegrationTest {
 
-  @Test
-  public void smoke() {
-    Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
-    Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-    ListAppender la = (ListAppender) root.getAppender("LIST");
-    assertNotNull(la);
-  }
+    @Test
+    public void smoke() {
+        Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+        Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        ListAppender la = (ListAppender) root.getAppender("LIST");
+        assertNotNull(la);
+    }
 }

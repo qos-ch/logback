@@ -20,10 +20,10 @@ package ch.qos.logback.core.db.dialect;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class OracleDialect implements SQLDialect {
-  public static final String SELECT_CURRVAL = "SELECT logging_event_id_seq.currval from dual";
+    public static final String SELECT_CURRVAL = "SELECT logging_event_id_seq.currval from dual";
 
-  public String getSelectInsertId() {
-    return SELECT_CURRVAL;
-  }
+    public String getSelectInsertId() {
+        return SELECT_CURRVAL;
+    }
 
 }

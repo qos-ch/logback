@@ -22,72 +22,97 @@ import java.util.List;
 
 /**
  *  Print all new incoming status messages on the on the designated PrintStream.
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
-abstract class OnPrintStreamStatusListenerBase extends ContextAwareBase implements StatusListener, LifeCycle {
+abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase implements StatusListener, LifeCycle {
 
-  boolean isStarted = false;
+    boolean isStarted = false;
 
-  static final long DEFAULT_RETROSPECTIVE = 300;
-  long retrospective = DEFAULT_RETROSPECTIVE;
+    static final long DEFAULT_RETROSPECTIVE = 300;
+    long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
+    
+    /**
+     * The prefix to place before each status message
+     * @since 1.1.10
+     */
+    String prefix;
+    
+    /**
+     * The PrintStream used by derived classes
+     * @return
+     */
+    abstract protected PrintStream getPrintStream();
 
+    private void print(Status status) {
+        StringBuilder sb = new StringBuilder();
+        if(prefix != null)
+            sb.append(prefix);
+        
+        StatusPrinter.buildStr(sb, "", status);
+        getPrintStream().print(sb);
+    }
 
-  /**
-   * The PrintStream used by derived classes
-   * @return
-   */
-  abstract protected PrintStream getPrintStream();
-
-  private void print(Status status) {
-    StringBuilder sb = new StringBuilder();
-    StatusPrinter.buildStr(sb, "", status);
-    getPrintStream().print(sb);
-  }
-
-  public void addStatusEvent(Status status) {
-    if (!isStarted)
-      return;
-    print(status);
-  }
-
-  /**
-   * Print status messages retrospectively
-   */
-  private void retrospectivePrint() {
-    if(context == null)
-      return;
-    long now = System.currentTimeMillis();
-    StatusManager sm = context.getStatusManager();
-    List<Status> statusList = sm.getCopyOfStatusList();
-    for (Status status : statusList) {
-      long timestamp = status.getDate();
-      if (now - timestamp < retrospective) {
+    public void addStatusEvent(Status status) {
+        if (!isStarted)
+            return;
         print(status);
-      }
     }
-  }
 
-  public void start() {
-    isStarted = true;
-    if (retrospective > 0) {
-      retrospectivePrint();
+    /**
+     * Print status messages retrospectively
+     */
+    private void retrospectivePrint() {
+        if (context == null)
+            return;
+        long now = System.currentTimeMillis();
+        StatusManager sm = context.getStatusManager();
+        List<Status> statusList = sm.getCopyOfStatusList();
+        for (Status status : statusList) {
+            long timestampOfStatusMesage = status.getDate();
+            if (isElapsedTimeLongerThanThreshold(now, timestampOfStatusMesage)) {
+                print(status);
+            }
+        }
     }
-  }
 
-  public void setRetrospective(long retrospective) {
-    this.retrospective = retrospective;
-  }
+    private boolean isElapsedTimeLongerThanThreshold(long now, long timestamp) {
+        long elapsedTime = now - timestamp;
+        return elapsedTime < retrospectiveThresold;
+    }
 
-  public long getRetrospective() {
-    return retrospective;
-  }
+    /**
+     * Invoking the start method can cause the instance to print status messages created less than 
+     * value of retrospectiveThresold. 
+     */
+    public void start() {
+        isStarted = true;
+        if (retrospectiveThresold > 0) {
+            retrospectivePrint();
+        }
+    }
 
-  public void stop() {
-    isStarted = false;
-  }
+    public String getPrefix() {
+        return prefix;
+    }
 
-  public boolean isStarted() {
-    return isStarted;
-  }
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+    
+    public void setRetrospective(long retrospective) {
+        this.retrospectiveThresold = retrospective;
+    }
+
+    public long getRetrospective() {
+        return retrospectiveThresold;
+    }
+
+    public void stop() {
+        isStarted = false;
+    }
+
+    public boolean isStarted() {
+        return isStarted;
+    }
 
 }

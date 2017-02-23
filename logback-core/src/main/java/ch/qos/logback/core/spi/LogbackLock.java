@@ -17,9 +17,8 @@ package ch.qos.logback.core.spi;
  * This class just makes it easier to identify locks associated with logback
  * when analysing thread dumps.
  *
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class LogbackLock extends Object {
-  
-  
+
 }

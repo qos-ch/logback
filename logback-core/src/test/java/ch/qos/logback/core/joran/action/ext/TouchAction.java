@@ -13,35 +13,32 @@
  */
 package ch.qos.logback.core.joran.action.ext;
 
-
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-
-
 public class TouchAction extends Action {
 
-  public static final String KEY = "touched";
-  
-  /**
-   * Instantiates an layout of the given class and sets its name.
-   *
-   */
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    Integer i = (Integer) ec.getContext().getObject(KEY);
-    if(i == null) {
-      ec.getContext().putObject(KEY, new Integer(1));
-    } else {
-      ec.getContext().putObject(KEY, new Integer(i.intValue()+1));
-    }
-  }
+    public static final String KEY = "touched";
 
-  /**
-   * Once the children elements are also parsed, now is the time to activate
-   * the appender options.
-   */
-  public void end(InterpretationContext ec, String name) {
-  }
+    /**
+     * Instantiates an layout of the given class and sets its name.
+     *
+     */
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        Integer i = (Integer) ec.getContext().getObject(KEY);
+        if (i == null) {
+            ec.getContext().putObject(KEY, new Integer(1));
+        } else {
+            ec.getContext().putObject(KEY, new Integer(i.intValue() + 1));
+        }
+    }
+
+    /**
+     * Once the children elements are also parsed, now is the time to activate
+     * the appender options.
+     */
+    public void end(InterpretationContext ec, String name) {
+    }
 }

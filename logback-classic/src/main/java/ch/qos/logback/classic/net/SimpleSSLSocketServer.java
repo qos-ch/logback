@@ -56,46 +56,43 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  */
 public class SimpleSSLSocketServer extends SimpleSocketServer {
 
-  private final ServerSocketFactory socketFactory;
+    private final ServerSocketFactory socketFactory;
 
-  public static void main(String argv[]) throws Exception {
-    doMain(SimpleSSLSocketServer.class, argv);
-  }
-
-  /**
-   * Creates a new server using the default SSL context.
-   * @param lc logger context for received events
-   * @param port port on which the server is to listen
-   * @throws NoSuchAlgorithmException if the default SSL context cannot be
-   *         created
-   */
-  public SimpleSSLSocketServer(LoggerContext lc, int port)
-      throws NoSuchAlgorithmException {
-    this(lc, port, SSLContext.getDefault());
-  }
-
-  /**
-   * Creates a new server using a custom SSL context.
-   * @param lc logger context for received events
-   * @param port port on which the server is to listen
-   * @param sslContext custom SSL context
-   */
-  public SimpleSSLSocketServer(LoggerContext lc, int port, 
-      SSLContext sslContext) {
-    super(lc, port);
-    if (sslContext == null) {
-      throw new NullPointerException("SSL context required");
+    public static void main(String argv[]) throws Exception {
+        doMain(SimpleSSLSocketServer.class, argv);
     }
-    SSLParametersConfiguration parameters = new SSLParametersConfiguration();
-    
-    parameters.setContext(lc);
-    this.socketFactory = new ConfigurableSSLServerSocketFactory(
-        parameters, sslContext.getServerSocketFactory());
-  }
 
-  @Override
-  protected ServerSocketFactory getServerSocketFactory() {
-    return socketFactory;
-  }
+    /**
+     * Creates a new server using the default SSL context.
+     * @param lc logger context for received events
+     * @param port port on which the server is to listen
+     * @throws NoSuchAlgorithmException if the default SSL context cannot be
+     *         created
+     */
+    public SimpleSSLSocketServer(LoggerContext lc, int port) throws NoSuchAlgorithmException {
+        this(lc, port, SSLContext.getDefault());
+    }
+
+    /**
+     * Creates a new server using a custom SSL context.
+     * @param lc logger context for received events
+     * @param port port on which the server is to listen
+     * @param sslContext custom SSL context
+     */
+    public SimpleSSLSocketServer(LoggerContext lc, int port, SSLContext sslContext) {
+        super(lc, port);
+        if (sslContext == null) {
+            throw new NullPointerException("SSL context required");
+        }
+        SSLParametersConfiguration parameters = new SSLParametersConfiguration();
+
+        parameters.setContext(lc);
+        this.socketFactory = new ConfigurableSSLServerSocketFactory(parameters, sslContext.getServerSocketFactory());
+    }
+
+    @Override
+    protected ServerSocketFactory getServerSocketFactory() {
+        return socketFactory;
+    }
 
 }

@@ -18,11 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({TokenStreamTest.class,
-  OptionTokenizerTest.class,
-  ParserTest.class,
-  FormatInfoTest.class,
-  CompilerTest.class,
-  SamplePatternLayoutTest.class})
+@SuiteClasses({ TokenStreamTest.class, OptionTokenizerTest.class, ParserTest.class, FormatInfoTest.class, CompilerTest.class, SamplePatternLayoutTest.class })
 public class PackageTest {
 }

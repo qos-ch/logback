@@ -25,47 +25,47 @@ import java.net.Socket;
  */
 public class CloseUtil {
 
-  /**
-   * Closes a closeable while suppressing any {@code IOException} that occurs.
-   * @param closeable the socket to close
-   */
-  public static void closeQuietly(Closeable closeable) {
-    if (closeable == null) return;
-    try {
-      closeable.close();
+    /**
+     * Closes a closeable while suppressing any {@code IOException} that occurs.
+     * @param closeable the socket to close
+     */
+    public static void closeQuietly(Closeable closeable) {
+        if (closeable == null)
+            return;
+        try {
+            closeable.close();
+        } catch (IOException ex) {
+            assert true; // avoid an empty catch
+        }
     }
-    catch (IOException ex) {
-      assert true;  // avoid an empty catch
-    }
-  }
 
-  /**
-   * Closes a socket while suppressing any {@code IOException} that occurs.
-   * @param socket the socket to close
-   */
-  public static void closeQuietly(Socket socket) {
-    if (socket == null) return;
-    try {
-      socket.close();
+    /**
+     * Closes a socket while suppressing any {@code IOException} that occurs.
+     * @param socket the socket to close
+     */
+    public static void closeQuietly(Socket socket) {
+        if (socket == null)
+            return;
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            assert true; // avoid an empty catch
+        }
     }
-    catch (IOException ex) {
-      assert true;  // avoid an empty catch
-    }
-  }
 
-  /**
-   * Closes a server socket while suppressing any {@code IOException} that 
-   * occurs.
-   * @param serverSocket the socket to close
-   */
-  public static void closeQuietly(ServerSocket serverSocket) {
-    if (serverSocket == null) return;
-    try {
-      serverSocket.close();
+    /**
+     * Closes a server socket while suppressing any {@code IOException} that 
+     * occurs.
+     * @param serverSocket the socket to close
+     */
+    public static void closeQuietly(ServerSocket serverSocket) {
+        if (serverSocket == null)
+            return;
+        try {
+            serverSocket.close();
+        } catch (IOException ex) {
+            assert true; // avoid an empty catch
+        }
     }
-    catch (IOException ex) {
-      assert true;  // avoid an empty catch
-    }
-  }
 
 }

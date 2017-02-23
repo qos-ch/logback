@@ -1,0 +1,16 @@
+<configuration>
+
+  <appender name="LIOE" class="ch.qos.logback.core.FileAppender">
+    <file>target/test-output/layoutInsteadOfEncoder.log</file>
+    <append>true</append>
+                
+    <encoder>
+      <immediateFlush>${immediateFlush}</immediateFlush>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+        
+  <root level="debug">
+    <appender-ref ref="LIOE" />
+  </root>
+</configuration>

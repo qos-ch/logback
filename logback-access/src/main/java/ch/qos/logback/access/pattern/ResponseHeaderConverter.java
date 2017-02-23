@@ -16,38 +16,37 @@ package ch.qos.logback.access.pattern;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.util.OptionHelper;
 
-
 public class ResponseHeaderConverter extends AccessConverter {
 
-  String key;
+    String key;
 
-  @Override
-  public void start() {
-    key = getFirstOption();
-    if (OptionHelper.isEmpty(key)) {
-      addWarn("Missing key for the response header");
-    } else {
-      super.start();
+    @Override
+    public void start() {
+        key = getFirstOption();
+        if (OptionHelper.isEmpty(key)) {
+            addWarn("Missing key for the response header");
+        } else {
+            super.start();
+        }
     }
-  }
 
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-    if(!isStarted()) {
-      return "INACTIVE_REPONSE_HEADER_CONV";
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        if (!isStarted()) {
+            return "INACTIVE_REPONSE_HEADER_CONV";
+        }
+
+        return accessEvent.getResponseHeader(key);
+        // return null;
+
+        // HttpServletResponse response = accessEvent.getHttpResponse();
+        //
+        // Object value = null; // = response.getHeader(key);
+        // if (value == null) {
+        // return AccessConverter.NA;
+        // } else {
+        // return value.toString();
+        // }
     }
-    
-    return accessEvent.getResponseHeader(key);
-    //return null;
-    
-//    HttpServletResponse response = accessEvent.getHttpResponse();
-//
-//    Object value = null; // = response.getHeader(key);
-//    if (value == null) {
-//      return AccessConverter.NA;
-//    } else {
-//      return value.toString();
-//    }
-  }
 
 }

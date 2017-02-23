@@ -21,33 +21,33 @@ import ch.qos.logback.core.Layout;
 
 public class StringListAppender<E> extends AppenderBase<E> {
 
-  Layout<E> layout;
-  public List<String> strList = new ArrayList<String>();
+    Layout<E> layout;
+    public List<String> strList = new ArrayList<String>();
 
-  public void start() {
-    strList.clear();
+    public void start() {
+        strList.clear();
 
-    if (layout == null || !layout.isStarted()) {
-      return;
+        if (layout == null || !layout.isStarted()) {
+            return;
+        }
+        super.start();
     }
-    super.start();
-  }
 
-  public void stop() {
-    super.stop();
-  }
+    public void stop() {
+        super.stop();
+    }
 
-  @Override
-  protected void append(E eventObject) {
-    String res = layout.doLayout(eventObject);
-    strList.add(res);
-  }
+    @Override
+    protected void append(E eventObject) {
+        String res = layout.doLayout(eventObject);
+        strList.add(res);
+    }
 
-  public Layout<E> getLayout() {
-    return layout;
-  }
+    public Layout<E> getLayout() {
+        return layout;
+    }
 
-  public void setLayout(Layout<E> layout) {
-    this.layout = layout;
-  }
+    public void setLayout(Layout<E> layout) {
+        this.layout = layout;
+    }
 }

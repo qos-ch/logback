@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
- package ch.qos.logback.access.filter;
+package ch.qos.logback.access.filter;
 
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
@@ -23,61 +23,60 @@ import java.lang.management.ManagementFactory;
 
 public class CountingFilter extends Filter {
 
-  long total = 0;
-  final StatisticalViewImpl accessStatsImpl;
-  
-  String domain = "ch.qos.logback.access";
-  
-  public CountingFilter() {
-    accessStatsImpl = new StatisticalViewImpl(this);
-  }
-  
-  @Override
-  public FilterReply decide(Object event) {
-    total++;
-    accessStatsImpl.update();
-    return FilterReply.NEUTRAL;
-  }
+    long total = 0;
+    final StatisticalViewImpl accessStatsImpl;
 
-  public long getTotal() {
-    return total;
-  }
-  
-  
-  @Override
-  public void start() {
-    MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-    try {
-      ObjectName on = new ObjectName(domain+":Name="+getName());
-      StandardMBean mbean = new StandardMBean(accessStatsImpl, StatisticalView.class);
-      if (mbs.isRegistered(on)) {
-          mbs.unregisterMBean(on);
-      }
-      mbs.registerMBean(mbean, on);
-      super.start();
-    } catch (Exception e) {
-      addError("Failed to create mbean", e);
+    String domain = "ch.qos.logback.access";
+
+    public CountingFilter() {
+        accessStatsImpl = new StatisticalViewImpl(this);
     }
-  }
-  
-  @Override
-  public void stop() {
-    super.stop();
-    try {
-      MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-      ObjectName on = new ObjectName("totp:Filter=1");
-      mbs.unregisterMBean(on);
-    } catch(Exception e) {
-      addError("Failed to unregister mbean", e);
+
+    @Override
+    public FilterReply decide(Object event) {
+        total++;
+        accessStatsImpl.update();
+        return FilterReply.NEUTRAL;
     }
-  }
 
-  public String getDomain() {
-    return domain;
-  }
+    public long getTotal() {
+        return total;
+    }
 
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-  
+    @Override
+    public void start() {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        try {
+            ObjectName on = new ObjectName(domain + ":Name=" + getName());
+            StandardMBean mbean = new StandardMBean(accessStatsImpl, StatisticalView.class);
+            if (mbs.isRegistered(on)) {
+                mbs.unregisterMBean(on);
+            }
+            mbs.registerMBean(mbean, on);
+            super.start();
+        } catch (Exception e) {
+            addError("Failed to create mbean", e);
+        }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        try {
+            MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+            ObjectName on = new ObjectName("totp:Filter=1");
+            mbs.unregisterMBean(on);
+        } catch (Exception e) {
+            addError("Failed to unregister mbean", e);
+        }
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
 }

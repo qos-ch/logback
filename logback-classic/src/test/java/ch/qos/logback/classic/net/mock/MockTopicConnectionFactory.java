@@ -20,23 +20,23 @@ import javax.jms.TopicConnectionFactory;
 
 public class MockTopicConnectionFactory implements TopicConnectionFactory {
 
-  MockTopicConnection cnx = new MockTopicConnection();
-  
-  public TopicConnection createTopicConnection() throws JMSException {
-    return cnx;
-  }
+    MockTopicConnection cnx = new MockTopicConnection();
 
-  public TopicConnection createTopicConnection(String user, String pass) throws JMSException {
-    
-    return cnx;
-  }
+    public TopicConnection createTopicConnection() throws JMSException {
+        return cnx;
+    }
 
-  public Connection createConnection() throws JMSException {
-    return null;
-  }
+    public TopicConnection createTopicConnection(String user, String pass) throws JMSException {
 
-  public Connection createConnection(String arg0, String arg1) throws JMSException {
-    return null;
-  }
+        return cnx;
+    }
+
+    public Connection createConnection() throws JMSException {
+        return null;
+    }
+
+    public Connection createConnection(String arg0, String arg1) throws JMSException {
+        return null;
+    }
 
 }
