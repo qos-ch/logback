@@ -24,7 +24,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 /**
  * A minimal application making use of logback-classic. It uses the
  * configuration file logback-trivial.xml which makes use of
- * TivialLogbackAppender.
+ * TrivialLogbackAppender.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

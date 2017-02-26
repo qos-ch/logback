@@ -33,10 +33,10 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
     }
 
     @Override
-    protected void append(ILoggingEvent loggingevent) {
+    protected void append(ILoggingEvent loggingEvent) {
         // note that AppenderBase.doAppend will invoke this method only if
         // this appender was successfully started.
-        String eventAsStr = this.layout.doLayout(loggingevent);
+        String eventAsStr = this.layout.doLayout(loggingEvent);
         System.out.println(eventAsStr);
     }
 
