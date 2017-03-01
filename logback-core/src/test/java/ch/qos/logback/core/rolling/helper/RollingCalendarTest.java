@@ -222,9 +222,23 @@ public class RollingCalendarTest {
         RollingCalendar rc = new RollingCalendar(dailyPattern, TimeZone.getTimeZone("CET"), Locale.US);
         // Sun Oct 29 00:02:03 CEST 2017, GMT offset = -2h
         long start = 1509228123333L;//1490482923333L+217*CoreConstants.MILLIS_IN_ONE_DAY-CoreConstants.MILLIS_IN_ONE_HOUR;
-        System.out.println(start);
         // Mon Oct 30 00:02:03 CET  2017,  GMT offset = -1h
         long end = 1509228123333L+25*CoreConstants.MILLIS_IN_ONE_HOUR;
         assertEquals(1, rc.periodBarriersCrossed(start, end));
+    }
+    
+    @Test
+    public void testPeriodBarriersCrosseJustBeforeEnteringDaylightSaving() {
+        RollingCalendar rc = new RollingCalendar(dailyPattern, TimeZone.getTimeZone("CET"), Locale.US);
+        // Sun Mar 26 22:18:38 CEST 2017, GMT offset = +2h
+        long start = 1490559518333L;
+        System.out.println(new Date(start));
+        
+        // Mon Mar 27 00:05:18 CEST 2017, GMT offset = +2h
+        long end = 1490565918333L;
+        System.out.println(new Date(end));
+        assertEquals(1, rc.periodBarriersCrossed(start, end));
+        
+        
     }
 }

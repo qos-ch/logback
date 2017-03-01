@@ -185,7 +185,7 @@ public class RollingCalendar extends GregorianCalendar {
         long endFloored = getStartOfCurrentPeriodWithGMTOffsetCorrection(end, getTimeZone());
 
         long diff = endFloored - startFloored;
-        
+
         switch (periodicityType) {
 
         case TOP_OF_MILLISECOND:
@@ -291,10 +291,18 @@ public class RollingCalendar extends GregorianCalendar {
     }
 
     public long getStartOfCurrentPeriodWithGMTOffsetCorrection(long now, TimeZone timezone) {
-        Calendar aCal = Calendar.getInstance(timezone);
-        aCal.setTimeInMillis(now);
-        Date d = getEndOfNextNthPeriod(aCal.getTime(), 0);
-        long gmtOffset = aCal.get(Calendar.ZONE_OFFSET) + aCal.get(Calendar.DST_OFFSET);
-        return d.getTime() + gmtOffset;
+        Date toppedDate;
+
+        // there is a bug in Calendar which prevents it from
+        // computing the correct DST_OFFSET when the time changes
+        {
+            Calendar aCal = Calendar.getInstance(timezone);
+            aCal.setTimeInMillis(now);
+            toppedDate = getEndOfNextNthPeriod(aCal.getTime(), 0);
+        }
+        Calendar secondCalendar = Calendar.getInstance(timezone);
+        secondCalendar.setTimeInMillis(toppedDate.getTime());
+        long gmtOffset = secondCalendar.get(Calendar.ZONE_OFFSET) + secondCalendar.get(Calendar.DST_OFFSET);
+        return toppedDate.getTime() + gmtOffset;
     }
 }
