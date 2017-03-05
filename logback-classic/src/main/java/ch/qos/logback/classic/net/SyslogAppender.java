@@ -38,17 +38,21 @@ import ch.qos.logback.core.net.SyslogOutputStream;
  */
 public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
-    static final public String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
-    static final public String DEFAULT_STACKTRACE_PATTERN = "" + CoreConstants.TAB;
+    public static final String SYSLOG_START = "syslogStart";
+	public static final String DEFAULT_SUFFIX_PATTERN = "[%thread] %logger %msg";
+    public static final String DEFAULT_STACKTRACE_PATTERN = Character.toString(CoreConstants.TAB);
 
-    PatternLayout stackTraceLayout = new PatternLayout();
-    String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
+    protected PatternLayout stackTraceLayout = new PatternLayout();
+    private String stackTracePattern = DEFAULT_STACKTRACE_PATTERN;
 
     boolean throwableExcluded = false;
 
+    @Override
     public void start() {
+    	getLayout().start();
         super.start();
         setupStackTraceLayout();
+        stackTraceLayout.start();
     }
 
     String getPrefixPattern() {
@@ -115,29 +119,30 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
         sw.flush();
     }
 
-    boolean stackTraceHeaderLine(StringBuilder sb, boolean topException) {
-
-        return false;
-    }
-
+    @Override
     public Layout<ILoggingEvent> buildLayout() {
         PatternLayout layout = new PatternLayout();
-        layout.getInstanceConverterMap().put("syslogStart", SyslogStartConverter.class.getName());
+        layout.getInstanceConverterMap().put(SYSLOG_START, SyslogStartConverter.class.getName());
         if (suffixPattern == null) {
             suffixPattern = DEFAULT_SUFFIX_PATTERN;
         }
         layout.setPattern(getPrefixPattern() + suffixPattern);
         layout.setContext(getContext());
-        layout.start();
         return layout;
     }
 
-    private void setupStackTraceLayout() {
-        stackTraceLayout.getInstanceConverterMap().put("syslogStart", SyslogStartConverter.class.getName());
-
+    protected void setupStackTraceLayout() {
+    	if (!stackTraceLayout.getEffectiveConverterMap().containsKey(SYSLOG_START)) {
+    		if (getLayout() == null) {
+    			// don't think this can happen
+    			stackTraceLayout.getInstanceConverterMap().put(SYSLOG_START, SyslogStartConverter.class.getName());
+    		} else {
+    			// 
+    			stackTraceLayout.getInstanceConverterMap().put(SYSLOG_START, ((PatternLayout)getLayout()).getEffectiveConverterMap().get(SYSLOG_START));
+    		}
+    	}
         stackTraceLayout.setPattern(getPrefixPattern() + stackTracePattern);
         stackTraceLayout.setContext(getContext());
-        stackTraceLayout.start();
     }
 
     public boolean isThrowableExcluded() {

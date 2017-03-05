@@ -259,7 +259,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     public void setLayout(Layout<E> layout) {
-        addWarn("The layout of a SyslogAppender cannot be set directly. See also " + SYSLOG_LAYOUT_URL);
+        this.layout = layout;
     }
 
     @Override
