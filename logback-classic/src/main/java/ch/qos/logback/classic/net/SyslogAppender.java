@@ -49,8 +49,8 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
     @Override
     public void start() {
+    	super.start();
     	getLayout().start();
-        super.start();
         setupStackTraceLayout();
         stackTraceLayout.start();
     }
