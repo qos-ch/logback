@@ -68,5 +68,10 @@ public class FileSizeTest {
             FileSize fs = new FileSize(8*1024*1024+3*1024);
             assertEquals("8 MB", fs.toString());
         }
+        
+        {
+            FileSize fs = new FileSize(8*1024*1024*1024L);
+            assertEquals("8 GB", fs.toString());
+        }
     }
 }
