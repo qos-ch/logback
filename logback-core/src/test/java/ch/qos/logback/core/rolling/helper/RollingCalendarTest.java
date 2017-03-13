@@ -228,7 +228,7 @@ public class RollingCalendarTest {
     }
     
     @Test
-    public void testPeriodBarriersCrosseJustBeforeEnteringDaylightSaving() {
+    public void testPeriodBarriersCrossedJustBeforeEnteringDaylightSaving() {
         RollingCalendar rc = new RollingCalendar(dailyPattern, TimeZone.getTimeZone("CET"), Locale.US);
         // Sun Mar 26 22:18:38 CEST 2017, GMT offset = +2h
         long start = 1490559518333L;
