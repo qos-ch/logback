@@ -7,7 +7,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>1.2.2</version>
+    <version>1.3.0-SNAPSHPOT</version>
   </parent>
 
   <artifactId>logback-site</artifactId>
