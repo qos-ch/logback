@@ -17,6 +17,9 @@ import ch.qos.logback.core.rolling.RolloverFailure;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.FileStore;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * A utility class using functionality available since JDK 1.7.
@@ -46,26 +49,14 @@ public class FileStoreUtil {
         }
 
         // Implements the following by reflection
-        // Path pathA = a.toPath();
-        // Path pathB = b.toPath();
-        //
-        // FileStore fileStoreA = Files.getFileStore(pathA);
-        // FileStore fileStoreB = Files.getFileStore(pathB);
-        //
-        // return fileStoreA.equals(fileStoreB);
 
         try {
-            Class<?> pathClass = Class.forName(PATH_CLASS_STR);
-            Class<?> filesClass = Class.forName(FILES_CLASS_STR);
+            Path pathA = a.toPath();
+            Path pathB = b.toPath();
 
-            Method toPath = File.class.getMethod("toPath");
-            Method getFileStoreMethod = filesClass.getMethod("getFileStore", pathClass);
+            FileStore fileStoreA = Files.getFileStore(pathA);
+            FileStore fileStoreB = Files.getFileStore(pathB);
 
-            Object pathA = toPath.invoke(a);
-            Object pathB = toPath.invoke(b);
-
-            Object fileStoreA = getFileStoreMethod.invoke(null, pathA);
-            Object fileStoreB = getFileStoreMethod.invoke(null, pathB);
             return fileStoreA.equals(fileStoreB);
         } catch (Exception e) {
             throw new RolloverFailure("Failed to check file store equality for [" + a + "] and [" + b + "]", e);
