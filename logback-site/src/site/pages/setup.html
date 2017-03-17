@@ -107,6 +107,8 @@
   &lt;version>${project.version}&lt;/version>
 &lt;/dependency></pre>
 
+<!--
+
     <h4>Maven "Bill of materials" (useful for large teams)</h4>
 
     <p>To facilitate the synchronization of logback and slf4j modules,
@@ -143,8 +145,10 @@
    <pre class="prettyprint source">&lt;dependency>
   &lt;groupId>ch.qos.logback&lt;/groupId>
   &lt;artifactId>logback-classic&lt;/artifactId>
-  &lt;!-- Look mom, no version! -->
+  &lt;!-- Look mom, no version! --&gt;
 &lt;/dependency></pre>
+
+ -->
 
    <h2 class="doAnchor" name="optionalDeps">Optional dependencies</h2>
 
@@ -257,7 +261,7 @@
    Root directory. The import should finish successfully in a few
    seconds.</p>
 
-   <h3 class="doAnchor" name="eclipse">Building with Eclipse</h3>
+   <h3 class="doAnchor" name="eclipse">Building with Eclipse and "mvn eclipse:eclipse"</h3>
 
    <p>Building logback under Eclipse is a little trickier. Here are
    instructions for building logback under Eclipse using the maven
@@ -276,13 +280,7 @@
    
 
    <ol>
-     <li>Install Eclipse</li>
-
-<!--     <li>in <em>eclipse.ini</em> file modify the parameter "mx",
-     i.e. change -Xmx384m to -Xmx1384m</li>
--->
-
-     <li>Install the Groovy plugin for Eclipse. 
+     <li>Ensure that the Groovy plugin for Eclipse is installed.
 
        <ul>
          <li>
@@ -297,9 +295,7 @@
          
          <li>In Eclipse, select Help &rarr; Intall new Software &rarr;
          Work with the update site you chose in the previous step and
-         then Select "Groovy-Eclipse Feature". Installation of other
-         plugins in particular "m2e Configurator for Groovy-Eclipse"
-         is <b>not</b> necessary
+         then Select "Groovy-Eclipse Feature". 
          </li>
        </ul>
     </li>
@@ -318,30 +314,7 @@
      <li>In Eclipse, import the logback project: Import&rarr;
      General&rarr; Existing Projects into Workspace, select
      $LOGBACK_HOME folder for the import
-     </li>   
-
-     <!--
-     <li>In Eclipse, remove the 
-      "**/EvaluatorTemplate.groovy" inclusion pattern from 
-      the 
-     logback-classic/src/main/groovy build path (logback-classic&rarr;
-     project properties &rarr; Java Build Path) as shown next:
-
-     <p><img src="images/setup/remove_evaluator_template.jpg"/> </p>
-
-     </li>   
-     -->
-
-     <!--
-    <li>In Eclipse, remove the
-     logback-classic/target/generated-sources/groovy-stubs/main
-     directory from the list of source folders (logback-classic&rarr;
-     project properties &rarr; Java Build Path) as shown next.
-     
-     <p><img src="images/setup/remove_gen_src.jpg"/> </p>
-
-     </li>   
-     -->
+     </li>    
 
      <li>In Eclipse, clean all projects in Eclipse (Project &rarr;
      Clean)
@@ -356,13 +329,90 @@
 
 
    <p>The above listed procedure has been last tested by the author
-   using Eclipse Luna on February 25th, 2016.</p>
+   using Eclipse Neon on March 17th, 2017.</p>
 
+   <h3>Building with Eclipse+m2eclipse</h3>
    
-   <p><span class="label notice">Call for volunteers</span> Given that many
-   users prefer M2Eclipse for building projects under Eclipse IDE, we
-   are looking for volunteers to help work out the steps for building
-   logback with M2Eclipse.
+   <p>Building with Eclipse and m2eclipse is a bit more complicated
+   due to the use of Groovy in logback-classic.
+   </p>
+
+   <p>Here are the required steps:</p>
+   
+
+   <ol>
+     <li>Ensure that the Groovy plugin for Eclipse is installed. See
+     above for instructions.</li>
+
+     <li>In Eclipse, import the logback project: Import&rarr;
+     Maven&rarr; Existing Maven Projects, select
+     $LOGBACK_HOME folder for the import
+     </li>
+
+     <li>Install any discovered m2e connections,
+     e.g. "maven-bundle-plugin".
+     <p>
+       <a href="images/setup/discoverM2EConnectors.png">
+         <img src="images/setup/discoverM2EConnectors.png" alt="Click to enlarge" height="400"/>
+       </a>
+     </p>
+
+     <p>You may need to restart Eclipse.</p>.
+
+     </li>
+
+     <li>In Eclipse, select logback-classic project and check that it
+     has "Groovy" nature. If not add it by right clicking on
+     logback-classic project &rarr; Groovy &rarr; Convert Groovy to
+     Project.
+     </li>
+     
+     <li>At this stage Eclipse may complain about
+     <code>GafferConfigurator</code> not being resolved. To fix these
+     errors, select logback-classic project properties, select "Java
+     Build Path" &rarr; Source &rarr; "logback-classic/src/main/groovy".
+     Select "Excluded" and then click on Remove.
+     
+     <p>
+       <a href="images/setup/removeGroovyExclusions.png">
+         <img src="images/setup/removeGroovyExclusions.png" alt="Click to enlarge" height="400"/>
+       </a>
+     </p>
+
+     </li>
+
+     <li>
+       <p>Project &rarr; Clean &rarr; Clean all projects.</p>     
+     </li>
+
+     
+     <li>To fix the errors in the logback-examples project, you need
+     to instruct logback-classic to not export its Maven dependencies.
+     Select logback-classic project properties, select "Java
+     Build Path" &rarr; Order and Export and deselect "Maven Dependencies".
+
+     <p>
+       <a href="images/setup/deselectMavenDependenciesExport.png">
+         <img src="images/setup/deselectMavenDependenciesExport.png" alt="Click to enlarge" height="400"/>
+       </a>
+     </p>
+     </li>
+
+     <li>
+       <p>Project &rarr; Clean &rarr; Clean all projects.</p>     
+     </li>
+     
+     
+
+   </ol>
+   
+   
+   
+   
+   <p><span class="label notice">Call for volunteers</span> Given that
+   many users prefer M2Eclipse for building projects under Eclipse
+   IDE, we are looking for volunteers to help simplify the steps
+   required for building logback with M2Eclipse.
    </p>
    
 
