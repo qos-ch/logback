@@ -12,7 +12,7 @@ the docs/ folder of the logback distribution.
 
 Building logback is documented at:
 
-  http://logback.qos.ch/setup.html#ide
+  https://logback.qos.ch/setup.html#ide
 
 #In case of problems
 
@@ -21,12 +21,12 @@ on the logback-user@qos.ch mailing list.  However, please do not
 directly e-mail logback developers. The answer to your question might
 be useful to other users. Moreover, there are many knowledgeable users
 on the logback-user mailing lists who can quickly answer your
-questions. 
+questions.
 
 
-#Pull requests 
+#Pull requests
 
-If you are interested in improving logbback, great! The logback community
+If you are interested in improving logback, great! The logback community
 looks forward to your contribution. Please follow this process:
 
 1. Please file a [bug
@@ -35,13 +35,13 @@ looks forward to your contribution. Please follow this process:
 
    Optional: Start a discussion on the [logback-dev mailing
    list](https://logback.qos.ch/mailinglist.html) about your proposed
-   change. 
+   change.
 
 2. Fork qos-ch/logback. Ideally, create a new branch from your fork for
    your contribution to make it easier to merge your changes back.
 
 3. Make your changes on the branch you hopefuly created in Step 2. Be
-   sure that your code passes existing unit tests. 
+   sure that your code passes existing unit tests.
 
 4. Please add unit tests for your work if appropriate. It usually is.
 
