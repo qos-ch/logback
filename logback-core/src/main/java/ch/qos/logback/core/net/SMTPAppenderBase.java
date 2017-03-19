@@ -310,6 +310,12 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
+     * Allows extend classes to update mime message (e.g.: Add headers)
+     */
+    protected void updateMimeMsg(MimeMessage mimeMsg, CyclicBuffer<E> cb, E lastEventObject) {
+    }
+
+    /**
      * Send the contents of the cyclic buffer as an e-mail message.
      */
     protected void sendBuffer(CyclicBuffer<E> cb, E lastEventObject) {
@@ -382,6 +388,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
             Multipart mp = new MimeMultipart();
             mp.addBodyPart(part);
             mimeMsg.setContent(mp);
+
+            // Added the feature to update mime message before sending the email
+            updateMimeMsg(mimeMsg, cb, lastEventObject);
 
             mimeMsg.setSentDate(new Date());
             addInfo("About to send out SMTP message \"" + subjectStr + "\" to " + Arrays.toString(toAddressArray));
