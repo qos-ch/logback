@@ -280,7 +280,6 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     class Worker extends Thread {
 
         public void run() {
-            System.out.println("Worker started");
             AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
             AppenderAttachableImpl<E> aai = parent.aai;
 
