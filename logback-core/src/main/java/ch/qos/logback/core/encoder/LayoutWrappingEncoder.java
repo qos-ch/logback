@@ -15,6 +15,7 @@ package ch.qos.logback.core.encoder;
 
 import java.nio.charset.Charset;
 
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.OutputStreamAppender;
@@ -32,7 +33,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      */
     private Charset charset;
 
-    OutputStreamAppender<?> parent;
+    Appender<?> parent;
     Boolean immediateFlush = null;
 
     public Layout<E> getLayout() {
