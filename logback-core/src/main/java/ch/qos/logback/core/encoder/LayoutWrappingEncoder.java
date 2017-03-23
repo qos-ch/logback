@@ -150,7 +150,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * 
      * @param appender
      */
-    public void setParent(OutputStreamAppender<?> parent) {
+    public void setParent(Appender<?> parent) {
         this.parent = parent;
     }
 }
