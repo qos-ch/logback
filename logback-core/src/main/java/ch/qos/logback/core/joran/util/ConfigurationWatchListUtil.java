@@ -38,6 +38,11 @@ public class ConfigurationWatchListUtil {
         context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
     }
     public static void setMainWatchURL(Context context, URL url) {
+        String protocol = url.getProtocol();
+        if (!"file".equals(protocol)) {
+            return ;
+        }
+
         ConfigurationWatchList cwl = getConfigurationWatchList(context);
         if (cwl == null) {
             cwl = new ConfigurationWatchList();
