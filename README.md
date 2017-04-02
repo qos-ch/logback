@@ -1,5 +1,5 @@
 
-#About logback
+#About logback1
 
 Thank you for your interest in logback, the reliable, generic, fast
 and flexible logging library for Java.
