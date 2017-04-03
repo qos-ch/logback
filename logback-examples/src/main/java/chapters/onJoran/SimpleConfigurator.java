@@ -19,7 +19,6 @@ import java.util.Map;
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitAction;
-import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -46,9 +45,8 @@ public class SimpleConfigurator extends GenericConfigurator {
 
     @Override
     protected void addInstanceRules(RuleStore rs) {
-        for (ElementSelector elementSelector : ruleMap.keySet()) {
-            Action action = ruleMap.get(elementSelector);
-            rs.addRule(elementSelector, action);
+        for (Map.Entry<ElementSelector, Action> entry : ruleMap.entrySet()) {
+            rs.addRule(entry.getKey(), entry.getValue());
         }
     }
 

@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran.spi;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
@@ -97,9 +98,9 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     List<Action> fullPathMatch(ElementPath elementPath) {
-        for (ElementSelector selector : rules.keySet()) {
-            if (selector.fullPathMatch(elementPath))
-                return rules.get(selector);
+        for (Map.Entry<ElementSelector, List<Action>> entry : rules.entrySet()) {
+            if (entry.getKey().fullPathMatch(elementPath))
+                return entry.getValue();
         }
         return null;
     }
