@@ -368,8 +368,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
 
     private void copyAttributeMap() {
-
-        if (httpRequest == null) {
+        // when attributeMap is non-null, an attributeMap has already been constructed, do not copy again
+        if (attributeMap != null || httpRequest == null) {
             return;
         }
 
