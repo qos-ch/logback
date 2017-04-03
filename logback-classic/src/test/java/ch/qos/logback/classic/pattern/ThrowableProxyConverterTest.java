@@ -209,6 +209,76 @@ public class ThrowableProxyConverterTest {
         String[] lines = result.split(CoreConstants.LINE_SEPARATOR);
         assertThat(lines).hasSize(3 + 1);
     }
+    
+    @Test
+    public void nullMessage() {
+        /*
+        Ensures that a null message is not sent to the output.
+        */
+        Exception t = new Exception();
+        verify(t);
+    }
+
+    @Test
+    public void circular() {
+        Exception w = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            w = new Exception("Wrapper", e);
+            e.initCause(w);
+        }
+        verify(w);
+    }
+
+    @Test
+    public void suppressedCircular() throws Exception {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+           
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            ex = new Exception("Wrapper");
+            addSuppressed(ex, e);
+            addSuppressed(e, ex);
+        }
+        
+        verify(ex);
+    }
+
+    @Test
+    public void suppressedWithCauseCircular() throws InvocationTargetException, IllegalAccessException {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            ex = new Exception("Wrapper", e);
+            Exception fooException = new Exception("Foo", ex);
+            addSuppressed(e, fooException);
+            addSuppressed(fooException, e);
+        }
+        verify(ex);
+    }
+
+    @Test
+    public void suppressedWithSuppressedCircular() throws Exception {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (Exception e) {
+            ex = new Exception("Wrapper");
+            addSuppressed(ex, e);
+            Exception fooException = new Exception("Foo");
+            addSuppressed(e, fooException);
+            addSuppressed(fooException, ex);
+        }
+        verify(ex);
+    }
 
     void someMethod() throws Exception {
         throw new Exception("someMethod");
@@ -216,11 +286,18 @@ public class ThrowableProxyConverterTest {
 
     void verify(Throwable t) {
         t.printStackTrace(pw);
+        String expected = sw.toString();
 
         ILoggingEvent le = createLoggingEvent(t);
         String result = tpc.convert(le);
+        
+        System.out.println("========expected");
+        System.out.println(expected);
+
+        System.out.println("========result");
         System.out.println(result);
+
         result = result.replace("common frames omitted", "more");
-        assertEquals(sw.toString(), result);
+        assertEquals(expected, result);
     }
 }
