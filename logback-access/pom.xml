@@ -80,6 +80,7 @@
             <exclude>**/PackageTest.java</exclude>
             <exclude>**/SerializationPerfTest.java</exclude>
           </excludes>
+          <argLine>-Duser.country=EN -Duser.language=en -Duser.timezone=CEST</argLine>
         </configuration>
       </plugin>
       <plugin>
