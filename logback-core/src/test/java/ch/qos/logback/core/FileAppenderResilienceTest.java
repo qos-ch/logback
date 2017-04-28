@@ -68,7 +68,7 @@ public class FileAppenderResilienceTest {
         }
     }
 
-    @Test
+    @Test(timeout=2000)
     public void smoke() throws InterruptedException, IOException {
         Runner runner = new Runner(fa);
         Thread t = new Thread(runner);

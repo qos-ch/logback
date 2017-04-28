@@ -20,6 +20,7 @@ import java.io.IOException;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
@@ -27,6 +28,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.ResilienceUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
+@Ignore
 public class FileAppenderResilience_AS_ROOT_Test {
 
     static String MOUNT_POINT = "/mnt/loop/";
@@ -103,7 +105,8 @@ public class FileAppenderResilience_AS_ROOT_Test {
     static int NUM_STEPS = 500;
     static int DELAY = TOTAL_DURATION / NUM_STEPS;
 
-    @Test
+    
+    @Test(timeout=1000)
     public void go() throws IOException, InterruptedException {
         if (!isConformingHost()) {
             return;

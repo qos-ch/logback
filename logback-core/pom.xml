@@ -58,10 +58,10 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <forkCount>1C</forkCount>
-          <reuseForks>true</reuseForks>
+          <forkCount>1</forkCount>
+          <reuseForks>false</reuseForks>
           <parallel>classes</parallel>
-          <threadCount>20</threadCount>
+          <threadCount>1</threadCount>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <excludes>
@@ -78,7 +78,7 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+            <!--<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>-->
           </archive>
         </configuration>
         <executions>
@@ -92,7 +92,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+<!--      <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
@@ -120,7 +120,8 @@
             </Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
-      </plugin>
+</plugin>
+-->
     </plugins>
   </build>
 

@@ -113,12 +113,13 @@
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
-    </dependency>
+</dependency>
+-->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>integration</artifactId>
