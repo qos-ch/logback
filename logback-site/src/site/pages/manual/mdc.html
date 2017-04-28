@@ -639,10 +639,18 @@ public class UserServletFilter implements Filter {
   <code>MDC.getCopyOfContextMap()</code> is invoked on the original
   (master) thread before submitting a task to the executor.  When the
   task runs, as its first action, it should invoke
-  <code>MDC.setContextMapValues()</code> to associate the stored copy
+  <code>MDC.setContextMap(contextMap)</code> to associate the stored copy
   of the original MDC values with the new <code>Executor</code>
-  managed thread.
+  managed thread. Consider this example:
   </p>
+	    
+<pre class="prettyprint source">
+final Map&lt;String, String&gt; contextMap = MDC.getCopyOfContextMap();
+executorService.submit(() -> {
+    MDC.setContextMap(contextMap);
+    // task
+});
+</pre>
 
   <h3 class="doAnchor" name="mis">MDCInsertingServletFilter</h3>
 
