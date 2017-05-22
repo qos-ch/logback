@@ -72,4 +72,39 @@ public class LoggingEventTest {
         assertNull(event.formattedMessage);
         assertEquals(message, event.getFormattedMessage());
     }
+
+    @Test
+    public void testFormattingWithThrowableNotALastArgument() {
+        String message = "{}-{}";
+        Throwable throwable = null;
+        Throwable meaningfulException = new MeaningfulException("description of exception");
+        Object[] argArray = new Object[] { meaningfulException, 42, meaningfulException };
+        LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals("description of exception-42", event.getFormattedMessage() );
+    }
+
+    @Test
+    // Seems strange while I've faced this use case in real codebase
+    public void testFormattingWithThrowableAsLastArgument() {
+        String message = "{}-{}";
+        Throwable throwable = null;
+        Throwable meaningfulException = new MeaningfulException("description of exception");
+        Object[] argArray = new Object[] { 42, meaningfulException, meaningfulException };
+        LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals("42-description of exception", event.getFormattedMessage() );
+    }
+
+    // Sample class with some more-or-less meaningful toString
+    private static final class MeaningfulException extends RuntimeException {
+        private MeaningfulException(String message) {
+            super(message);
+        }
+
+        @Override
+        public String toString() {
+            return getLocalizedMessage();
+        }
+    }
 }
