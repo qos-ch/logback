@@ -96,6 +96,27 @@ public class LoggingEventTest {
         assertEquals("42-description of exception", event.getFormattedMessage() );
     }
 
+    @Test
+    public void testFormattingWithThrowableAsOnlyFormattingArgument() {
+        String message = "{}";
+        Throwable throwable = null;
+        Throwable meaningfulException = new MeaningfulException("description of exception");
+        Object[] argArray = new Object[] { meaningfulException, meaningfulException };
+        LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals("description of exception", event.getFormattedMessage() );
+    }
+
+    @Test
+    public void testFormattingWithThrowableAsOnlyArgument() {
+        String message = "testNoFormatting";
+        Throwable throwable = null;
+        Object[] argArray = new Object[] { new MeaningfulException("description of exception") };
+        LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals("testNoFormatting", event.getFormattedMessage() );
+    }
+
     // Sample class with some more-or-less meaningful toString
     private static final class MeaningfulException extends RuntimeException {
         private MeaningfulException(String message) {

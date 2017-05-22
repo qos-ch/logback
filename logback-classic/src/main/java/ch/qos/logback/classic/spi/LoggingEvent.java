@@ -290,6 +290,12 @@ public class LoggingEvent implements ILoggingEvent {
             return formattedMessage;
         }
         if (argumentArray != null) {
+            if (throwableProxy != null && argumentArray.length > 0) {
+                Object possibleThrowable = argumentArray[argumentArray.length - 1];
+                if (possibleThrowable instanceof Throwable) {
+                    argumentArray[argumentArray.length - 1] = possibleThrowable.toString();
+                }
+            }
             formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
         } else {
             formattedMessage = message;
