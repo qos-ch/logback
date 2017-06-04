@@ -35,12 +35,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-jms_1.1_spec</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
        <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <scope>compile</scope>
