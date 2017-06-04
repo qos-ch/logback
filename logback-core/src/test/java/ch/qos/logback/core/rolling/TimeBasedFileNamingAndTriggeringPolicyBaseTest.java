@@ -16,20 +16,17 @@ package ch.qos.logback.core.rolling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 

@@ -66,6 +66,7 @@
 				<exclude>*.bak</exclude>
 			</excludes>
 		</fileSet>
+    <!--
     <fileSet>
 			<directory>logback-bom/</directory>
 			<outputDirectory>logback-bom/</outputDirectory>
@@ -75,6 +76,7 @@
 				</include>
 			</includes>
 		</fileSet>
+    -->
 		<!-- Module Source directories -->
 		<fileSet>
 			<directory>logback-core/src/</directory>
@@ -134,21 +136,21 @@
 		<!-- Module JARs -->
 		<fileSet>
 			<directory>logback-core/target/</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>./</outputDirectory>
 			<includes>
 				<include>logback-core-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>logback-classic/target/</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>./</outputDirectory>
 			<includes>
 				<include>logback-classic-${project.version}.jar</include>
 			</includes>
 		</fileSet>		
 		<fileSet>
 			<directory>logback-access/target/</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>./</outputDirectory>
 			<includes>
 				<include>logback-access-${project.version}.jar</include>
 			</includes>
@@ -156,21 +158,21 @@
 		<!-- Module Source JARs -->
 		<fileSet>
 			<directory>logback-core/target/</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>./</outputDirectory>
 			<includes>
 				<include>logback-core-${project.version}-sources.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
 			<directory>logback-classic/target/</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>./</outputDirectory>
 			<includes>
 				<include>logback-classic-${project.version}-sources.jar</include>
 			</includes>
 		</fileSet>		
 		<fileSet>
 			<directory>logback-access/target/</directory>
-			<outputDirectory>/</outputDirectory>
+			<outputDirectory>./</outputDirectory>
 			<includes>
 				<include>logback-access-${project.version}-sources.jar</include>
 			</includes>

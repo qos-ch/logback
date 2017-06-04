@@ -42,7 +42,7 @@ public class SiftingJoranConfigurator extends SiftingJoranConfiguratorBase<ILogg
     @Override
     protected void addInstanceRules(RuleStore rs) {
         super.addInstanceRules(rs);
-        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
+        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction<ILoggingEvent>());
     }
 
     @Override
@@ -54,8 +54,8 @@ public class SiftingJoranConfigurator extends SiftingJoranConfiguratorBase<ILogg
     protected void buildInterpreter() {
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-        omap.put(ActionConst.APPENDER_BAG, new HashMap());
-        omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+        omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
+        //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
         Map<String, String> propertiesMap = new HashMap<String, String>();
         propertiesMap.putAll(parentPropertyMap);
         propertiesMap.put(key, value);
@@ -65,9 +65,9 @@ public class SiftingJoranConfigurator extends SiftingJoranConfiguratorBase<ILogg
     @SuppressWarnings("unchecked")
     public Appender<ILoggingEvent> getAppender() {
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-        HashMap appenderMap = (HashMap) omap.get(ActionConst.APPENDER_BAG);
+        HashMap<String, Appender<?>> appenderMap = (HashMap<String, Appender<?>>) omap.get(ActionConst.APPENDER_BAG);
         oneAndOnlyOneCheck(appenderMap);
-        Collection values = appenderMap.values();
+        Collection<Appender<?>> values = appenderMap.values();
         if (values.size() == 0) {
             return null;
         }

@@ -185,7 +185,7 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
 
     @Test
     public void noCompression_FileSet_NoRestart_5() throws IOException {
-        defaultTest("test5", "test6", "", FILE_OPTION_SET, NO_RESTART);
+        defaultTest("test5", "test5", "", FILE_OPTION_SET, NO_RESTART);
     }
 
     @Test
@@ -196,12 +196,12 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
     // LOGBACK-168
     @Test
     public void withMissingTargetDirWithCompression() throws IOException {
-        defaultTest("test7", "%d{yyyy-MM-dd, aux}/", ".gz", FILE_OPTION_SET, NO_RESTART);
+        defaultTest("test7", "%d{yyyy-MM-dd, aux}/test7", ".gz", FILE_OPTION_SET, NO_RESTART);
     }
 
     @Test
     public void withMissingTargetDirWithZipCompression() throws IOException {
-        defaultTest("test8", "%d{yyyy-MM-dd, aux}/", ".zip", FILE_OPTION_SET, NO_RESTART);
+        defaultTest("test8", "%d{yyyy-MM-dd, aux}/test8", ".zip", FILE_OPTION_SET, NO_RESTART);
     }
 
     @Test
@@ -228,55 +228,6 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
         }
     }
 
-    //
-    // @Test
-    // public void withMissingTargetDir() throws Exception {
-    // String testId = "missingTargetDir";
-    //
-    // initRFA(rfa1, testId2FileName(testId));
-    // int secondDiff = RandomUtil.getPositiveInt();
-    // String randomTargetDir = CoreTestConstants.OUTPUT_DIR_PREFIX + secondDiff + '/';
-    //
-    // System.out.println("randomOutputDir" + randomOutputDir);
-    // System.out.println("randomTargetDir" + randomTargetDir);
-    //
-    // initTRBP(rfa1, tbrp1, randomTargetDir + testId + "-%d{"
-    // + DATE_PATTERN_WITH_SECONDS + "}", currentTime);
-    //
-    // addExpectedFileName_ByDate(randomTargetDir, testId, getDateOfCurrentPeriodsStart(), false);
-    //
-    // incCurrentTime(1100);
-    // tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-    //
-    // for (int i = 0; i < 3; i++) {
-    // rfa1.doAppend("Hello---" + i);
-    // addExpectedFileNamedIfItsTime_ByDate(randomTargetDir, testId, false);
-    // incCurrentTime(500);
-    // tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-    // }
-    // massageExpectedFilesToCorresponToCurrentTarget("missingTargetDir.log");
-    // int i = 0;
-    // for (String fn : expectedFilenameList) {
-    // System.out.println("expectedFile=" + fn);
-    // assertTrue(Compare.compare(fn, CoreTestConstants.TEST_SRC_PREFIX
-    // + "witness/rolling/tbr-test5." + i++));
-    // }
-    //
-    // }
-    //
-    // =========================================================================
-    // utility methods
-    // =========================================================================
-    //
-    // void massageExpectedFilesToCorresponToCurrentTarget(String file) {
-    // // we added one too many files by date
-    // expectedFilenameList.remove(expectedFilenameList.size() - 1);
-    // // since file is set, we have to add it
-    // addExpectedFileName_ByFile(file);
-    // }
-    //
-    // void addExpectedFileName_ByFile(String filenameSuffix) {
-    // String fn = randomOutputDir + filenameSuffix;
-    // expectedFilenameList.add(fn);
-    // }
+    
+    
 }

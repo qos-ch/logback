@@ -61,14 +61,12 @@ public class ConfigurationAction extends Action {
 
         processScanAttrib(ic, attributes);
 
-        ContextUtil contextUtil = new ContextUtil(context);
-        contextUtil.addHostNameAsProperty();
-
         LoggerContext lc = (LoggerContext) context;
         boolean packagingData = OptionHelper.toBoolean(ic.subst(attributes.getValue(PACKAGING_DATA_ATTR)), LoggerContext.DEFAULT_PACKAGING_DATA);
         lc.setPackagingDataEnabled(packagingData);
 
         if (EnvUtil.isGroovyAvailable()) {
+            ContextUtil contextUtil = new ContextUtil(context);
             contextUtil.addGroovyPackages(lc.getFrameworkPackages());
         }
 

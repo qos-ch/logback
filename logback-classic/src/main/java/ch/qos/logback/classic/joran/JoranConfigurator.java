@@ -34,7 +34,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class JoranConfigurator extends JoranConfiguratorBase {
+public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
     @Override
     public void addInstanceRules(RuleStore rs) {

@@ -30,7 +30,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 /**
  * After parsing file name patterns, given a number or a date, instances of this
  * class can be used to compute a file name according to the file name pattern
- * and the given integer or date.
+ * and the current date or integer.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -54,9 +54,10 @@ public class FileNamePattern extends ContextAwareBase {
         ConverterUtil.startConverters(this.headTokenConverter);
     }
 
+    
     void parse() {
         try {
-            // http://jira.qos.ch/browse/LBCORE-130
+            // http://jira.qos.ch/browse/LOGBACK-197
             // we escape ')' for parsing purposes. Note that the original pattern is preserved
             // because it is shown to the user in status messages. We don't want the escaped version
             // to leak out.
@@ -78,6 +79,33 @@ public class FileNamePattern extends ContextAwareBase {
     public String toString() {
         return pattern;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FileNamePattern other = (FileNamePattern) obj;
+        if (pattern == null) {
+            if (other.pattern != null)
+                return false;
+        } else if (!pattern.equals(other.pattern))
+            return false;
+        return true;
+    }
+
 
     public DateTokenConverter<Object> getPrimaryDateTokenConverter() {
         Converter<Object> p = headTokenConverter;

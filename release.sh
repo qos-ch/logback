@@ -6,8 +6,8 @@ mvn animal-sniffer:check
 mvn site:site
 
 #mvn javadoc:jar
-mvn assembly:assembly
-mvn deploy -P javadocjar,sign-artifacts
+mvn assembly:single
+mvn deploy -P javadocjar,sign-artifacts -Dgpg.passphrase=passwd
 
 #uncomment diffie-hellman support in /etc/ssh/sshd_config
 mvn site:deploy -N

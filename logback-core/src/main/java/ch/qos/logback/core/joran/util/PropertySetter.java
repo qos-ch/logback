@@ -62,12 +62,11 @@ public class PropertySetter extends ContextAwareBase {
      * @param obj
      *          the object for which to set properties
      */
-    public PropertySetter(BeanDescriptionCache beanDescriptionCache,Object obj) {
+    public PropertySetter(BeanDescriptionCache beanDescriptionCache, Object obj) {
         this.obj = obj;
         this.objClass = obj.getClass();
-    	this.beanDescription = beanDescriptionCache.getBeanDescription(objClass);
+        this.beanDescription = beanDescriptionCache.getBeanDescription(objClass);
     }
-
 
     /**
      * Set a property on this PropertySetter's Object. If successful, this method
@@ -103,8 +102,7 @@ public class PropertySetter extends ContextAwareBase {
         }
     }
 
-
-	/**
+    /**
      * Set the named property given a {@link PropertyDescriptor}.
      *
      * @param prop
@@ -116,7 +114,7 @@ public class PropertySetter extends ContextAwareBase {
      *          The value of the property.
      */
     private void setProperty(Method setter, String name, String value) throws PropertySetterException {
-    	Class<?>[] paramTypes = setter.getParameterTypes();
+        Class<?>[] paramTypes = setter.getParameterTypes();
 
         Object arg;
 
@@ -141,7 +139,6 @@ public class PropertySetter extends ContextAwareBase {
 
         Method addMethod = findAdderMethod(cName);
 
-        // if the
         if (addMethod != null) {
             AggregationType type = computeRawAggregationType(addMethod);
             switch (type) {
@@ -149,8 +146,10 @@ public class PropertySetter extends ContextAwareBase {
                 return AggregationType.NOT_FOUND;
             case AS_BASIC_PROPERTY:
                 return AggregationType.AS_BASIC_PROPERTY_COLLECTION;
+
             case AS_COMPLEX_PROPERTY:
                 return AggregationType.AS_COMPLEX_PROPERTY_COLLECTION;
+            case AS_BASIC_PROPERTY_COLLECTION:
             case AS_COMPLEX_PROPERTY_COLLECTION:
                 addError("Unexpected AggregationType " + type);
             }
@@ -166,12 +165,12 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     private Method findAdderMethod(String name) {
-    	String propertyName = BeanUtil.SINGLETON.toLowerCamelCase(name);
-    	return beanDescription.getAdder(propertyName);
+        String propertyName = BeanUtil.toLowerCamelCase(name);
+        return beanDescription.getAdder(propertyName);
     }
 
     private Method findSetterMethod(String name) {
-        String propertyName = BeanUtil.SINGLETON.toLowerCamelCase(name);
+        String propertyName = BeanUtil.toLowerCamelCase(name);
         return beanDescription.getSetter(propertyName);
     }
 
@@ -285,7 +284,7 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     public void setComplexProperty(String name, Object complexProperty) {
-        Method setter =findSetterMethod(name);
+        Method setter = findSetterMethod(name);
 
         if (setter == null) {
             addWarn("Not setter method for property [" + name + "] in " + obj.getClass().getName());
@@ -328,7 +327,6 @@ public class PropertySetter extends ContextAwareBase {
     private String capitalizeFirstLetter(String name) {
         return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
-
 
     public Object getObj() {
         return obj;

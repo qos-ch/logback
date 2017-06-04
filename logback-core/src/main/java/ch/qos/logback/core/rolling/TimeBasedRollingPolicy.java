@@ -14,7 +14,7 @@
 package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.UNBOUND_HISTORY;
-import static ch.qos.logback.core.CoreConstants.UNBOUND_TOTAL_SIZE;
+import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
 import java.util.Date;
@@ -44,7 +44,7 @@ import ch.qos.logback.core.util.FileSize;
 public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements TriggeringPolicy<E> {
     static final String FNP_NOT_SET = "The FileNamePattern option must be set before using TimeBasedRollingPolicy. ";
     // WCS: without compression suffix
-    FileNamePattern fileNamePatternWCS;
+    FileNamePattern fileNamePatternWithoutCompSuffix;
 
     private Compressor compressor;
     private RenameUtil renameUtil = new RenameUtil();
@@ -52,7 +52,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     Future<?> cleanUpFuture;
 
     private int maxHistory = UNBOUND_HISTORY;
-    private FileSize totalSizeCap = new FileSize(UNBOUND_TOTAL_SIZE);
+    protected FileSize totalSizeCap = new FileSize(UNBOUNDED_TOTAL_SIZE_CAP);
 
     private ArchiveRemover archiveRemover;
 
@@ -78,9 +78,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         compressor.setContext(context);
 
         // wcs : without compression suffix
-        fileNamePatternWCS = new FileNamePattern(Compressor.computeFileNameStr_WCS(fileNamePatternStr, compressionMode), this.context);
+        fileNamePatternWithoutCompSuffix = new FileNamePattern(Compressor.computeFileNameStrWithoutCompSuffix(fileNamePatternStr, compressionMode), this.context);
 
-        addInfo("Will use the pattern " + fileNamePatternWCS + " for the active file");
+        addInfo("Will use the pattern " + fileNamePatternWithoutCompSuffix + " for the active file");
 
         if (compressionMode == CompressionMode.ZIP) {
             String zipEntryFileNamePatternStr = transformFileNamePattern2ZipEntry(fileNamePatternStr);
@@ -111,11 +111,15 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
                 Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
                 cleanUpFuture = archiveRemover.cleanAsynchronously(now);
             }
-        } else if (totalSizeCap.getSize() != UNBOUND_TOTAL_SIZE) {
+        } else if (!isUnboundedTotalSizeCap()) {
             addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value ["+totalSizeCap+"]");
         }
 
         super.start();
+    }
+
+    protected boolean isUnboundedTotalSizeCap() {
+        return totalSizeCap.getSize() == UNBOUNDED_TOTAL_SIZE_CAP;
     }
 
     @Override
@@ -169,19 +173,19 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
             if (getParentsRawFileProperty() == null) {
                 compressionFuture = compressor.asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
             } else {
-                compressionFuture = renamedRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
+                compressionFuture = renameRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
             }
         }
 
         if (archiveRemover != null) {
             Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
-            cleanUpFuture = archiveRemover.cleanAsynchronously(now);
+            this.cleanUpFuture = archiveRemover.cleanAsynchronously(now);
         }
     }
 
-    Future<?> renamedRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
+    Future<?> renameRawAndAsyncCompress(String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         String parentsRawFile = getParentsRawFileProperty();
-        String tmpTarget = parentsRawFile + System.nanoTime() + ".tmp";
+        String tmpTarget = nameOfCompressedFile + System.nanoTime() + ".tmp";
         renameUtil.rename(parentsRawFile, tmpTarget);
         return compressor.asyncCompress(tmpTarget, nameOfCompressedFile, innerEntryName);
     }
@@ -257,6 +261,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     }
 
     public void setTotalSizeCap(FileSize totalSizeCap) {
+        addInfo("setting totalSizeCap to "+totalSizeCap.toString());
         this.totalSizeCap = totalSizeCap;
     }
 }

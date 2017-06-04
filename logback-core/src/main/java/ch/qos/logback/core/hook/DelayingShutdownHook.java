@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.hook;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.util.Duration;
 
 /**
@@ -51,6 +49,7 @@ public class DelayingShutdownHook extends ShutdownHookBase {
     }
 
     public void run() {
+        addInfo("Sleeping for "+delay);
         try {
             Thread.sleep(delay.getMilliseconds());
         } catch (InterruptedException e) {

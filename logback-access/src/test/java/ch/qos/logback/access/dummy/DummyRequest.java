@@ -33,7 +33,9 @@ public class DummyRequest implements HttpServletRequest {
     public static final String DUMMY_RESPONSE_CONTENT_STRING = "response contents";
     public static final byte[] DUMMY_RESPONSE_CONTENT_BYTES = DUMMY_RESPONSE_CONTENT_STRING.getBytes();
 
-    Hashtable<String, String> headerNames;
+    Hashtable<String, String> headerMap;
+    Hashtable<String, String[]> parameterMap;
+    
     String uri;
     Map<String, Object> attributes;
 
@@ -44,10 +46,13 @@ public class DummyRequest implements HttpServletRequest {
     }
 
     public DummyRequest() {
-        headerNames = new Hashtable<String, String>();
-        headerNames.put("headerName1", "headerValue1");
-        headerNames.put("headerName2", "headerValue2");
+        headerMap = new Hashtable<String, String>();
+        headerMap.put("headerName1", "headerValue1");
+        headerMap.put("headerName2", "headerValue2");
 
+        parameterMap =  new Hashtable<String, String[]>();
+        parameterMap.put("param1", new String[] {"value1"});
+        
         attributes = new HashMap<String, Object>(DUMMY_DEFAULT_ATTR_MAP);
     }
 
@@ -69,17 +74,25 @@ public class DummyRequest implements HttpServletRequest {
     }
 
     public String getHeader(String key) {
-        return headerNames.get(key);
+        return headerMap.get(key);
     }
 
-    public Enumeration getHeaderNames() {
-        return headerNames.keys();
+
+    @Override
+    public Enumeration<String>  getHeaderNames() {
+        return headerMap.keys();
     }
 
-    public Enumeration getHeaders(String arg0) {
+    @Override
+    public Enumeration<String> getHeaders(String arg) {
         return null;
     }
 
+    public Map<String, String> getHeaders() {
+        return headerMap;
+    }
+
+    
     public int getIntHeader(String arg0) {
         return 0;
     }
@@ -176,7 +189,7 @@ public class DummyRequest implements HttpServletRequest {
         return attributes.get(key);
     }
 
-    public Enumeration getAttributeNames() {
+    public Enumeration<String> getAttributeNames() {
         return Collections.enumeration(attributes.keySet());
     }
 
@@ -240,24 +253,31 @@ public class DummyRequest implements HttpServletRequest {
         return null;
     }
 
-    public Enumeration getLocales() {
+    @Override
+    public Enumeration<Locale> getLocales() {
         return null;
     }
 
-    public String getParameter(String arg0) {
-        return null;
+    public String getParameter(String arg) {
+        String[] stringArray = parameterMap.get(arg);
+        if(stringArray == null || stringArray.length == 0)
+            return null;
+        else
+            return stringArray[0];
     }
 
-    public Map getParameterMap() {
-        return null;
+    @Override
+    public Map<String, String[]> getParameterMap() {
+        return parameterMap;
     }
 
-    public Enumeration getParameterNames() {
-        return null;
+    public Enumeration<String> getParameterNames() {
+        return parameterMap.keys();
+        //eturn Collections.enumeration(parameterMap.keySet());
     }
 
-    public String[] getParameterValues(String arg0) {
-        return null;
+    public String[] getParameterValues(String arg) {
+        return parameterMap.get(arg);
     }
 
     public String getProtocol() {
@@ -316,5 +336,21 @@ public class DummyRequest implements HttpServletRequest {
 
     public void setRequestUri(String uri) {
         this.uri = uri;
+    }
+
+    @Override
+    public long getContentLengthLong() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public String changeSessionId() {
+        return null;
+    }
+
+    @Override
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass) throws IOException, ServletException {
+        return null;
     }
 }

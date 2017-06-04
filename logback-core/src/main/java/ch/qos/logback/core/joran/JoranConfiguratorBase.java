@@ -14,7 +14,6 @@
 package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.core.Appender;
@@ -50,11 +49,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-abstract public class JoranConfiguratorBase extends GenericConfigurator {
-
-    public List getErrorList() {
-        return null;
-    }
+abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
 
     @Override
     protected void addInstanceRules(RuleStore rs) {
@@ -77,8 +72,8 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
 
         rs.addRule(new ElementSelector("configuration/statusListener"), new StatusListenerAction());
 
-        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
-        rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction<E>());
+        rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction<E>());
         rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
         rs.addRule(new ElementSelector("*/param"), new ParamAction(getBeanDescriptionCache()));
     }
@@ -100,7 +95,7 @@ abstract public class JoranConfiguratorBase extends GenericConfigurator {
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
         omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
-        omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+        //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 
     public InterpretationContext getInterpretationContext() {

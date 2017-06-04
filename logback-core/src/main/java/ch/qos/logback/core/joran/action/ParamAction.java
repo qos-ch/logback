@@ -21,7 +21,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
 public class ParamAction extends Action {
     static String NO_NAME = "No name attribute in <param> element";
-    static String NO_VALUE = "No name attribute in <param> element";
+    static String NO_VALUE = "No value attribute in <param> element";
     boolean inError = false;
 
 	private final BeanDescriptionCache beanDescriptionCache;

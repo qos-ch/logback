@@ -121,7 +121,7 @@ import java.util.HashMap;
  * &lt;/configuration&gt;
  * </pre>
  * 
- * @author Raplh Goers
+ * @author Ralph Goers
  * @author Ceki G&uuml;lc&uuml;
  */
 public class DynamicThresholdFilter extends TurboFilter {

@@ -33,7 +33,7 @@ import chapters.onJoran.SimpleConfigurator;
  * pattern. Moreover, they are added directly to a Joran Interpreter instead of
  * a rule store.
  * 
- * @author Ceki G&uuml;ulc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class PrintMe {
 

@@ -23,11 +23,12 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class ResilientOutputStreamTest {
 
@@ -43,7 +44,7 @@ public class ResilientOutputStreamTest {
     @Test
     public void verifyRecuperationAfterFailure() throws Exception {
         File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "resilient" + diff + ".log");
-        ResilientFileOutputStream rfos = new ResilientFileOutputStream(file, true);
+        ResilientFileOutputStream rfos = new ResilientFileOutputStream(file, true, FileAppender.DEFAULT_BUFFER_SIZE);
         rfos.setContext(context);
 
         ResilientFileOutputStream spy = spy(rfos);

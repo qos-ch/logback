@@ -29,7 +29,7 @@ import java.io.PrintStream;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class InitializationOutputTest {
 
@@ -56,13 +56,13 @@ public class InitializationOutputTest {
     public void tearDown() {
         System.setOut(original);
         System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
-        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS);
+        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
     }
 
     @Test
     public void noOutputIfContextHasAStatusListener() {
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
-        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS, NopStatusListener.class.getName());
+        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
 
         StaticLoggerBinderFriend.reset();
         assertEquals(0, tee.baos.size());

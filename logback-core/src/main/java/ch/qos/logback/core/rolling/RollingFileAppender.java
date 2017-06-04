@@ -25,6 +25,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.util.ContextUtil;
 
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
@@ -117,23 +118,23 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         if (triggeringPolicy instanceof RollingPolicyBase) {
             final RollingPolicyBase base = (RollingPolicyBase) triggeringPolicy;
             final FileNamePattern fileNamePattern = base.fileNamePattern;
-            boolean collisionsDetected = innerCheckForFileNamePatternCollisionInPreviousRFA(fileNamePattern.toString());
+            boolean collisionsDetected = innerCheckForFileNamePatternCollisionInPreviousRFA(fileNamePattern);
             if (collisionsDetected)
                 collisionResult = true;
         }
         return collisionResult;
     }
 
-    private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(String fileNamePattern) {
+    private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
         boolean collisionsDetected = false;
         @SuppressWarnings("unchecked")
-        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         if (map == null) {
             return collisionsDetected;
         }
-        for (Entry<String, String> entry : map.entrySet()) {
+        for (Entry<String, FileNamePattern> entry : map.entrySet()) {
             if (fileNamePattern.equals(entry.getValue())) {
-                addErrorForCollision("FileNamePattern", entry.getValue(), entry.getKey());
+                addErrorForCollision("FileNamePattern", entry.getValue().toString(), entry.getKey());
                 collisionsDetected = true;
             }
         }
@@ -145,11 +146,17 @@ public class RollingFileAppender<E> extends FileAppender<E> {
 
     @Override
     public void stop() {
+        super.stop();
+        
         if (rollingPolicy != null)
             rollingPolicy.stop();
         if (triggeringPolicy != null)
             triggeringPolicy.stop();
-        super.stop();
+
+        Map<String, FileNamePattern> map = ContextUtil.getFilenamePatternCollisionMap(context);
+        if (map != null && getName() != null)
+            map.remove(getName());
+
     }
 
     @Override

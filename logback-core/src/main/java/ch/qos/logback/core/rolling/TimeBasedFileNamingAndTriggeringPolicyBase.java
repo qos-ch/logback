@@ -101,7 +101,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     }
 
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-        return tbrp.fileNamePatternWCS.convert(dateInCurrentPeriod);
+        return tbrp.fileNamePatternWithoutCompSuffix.convert(dateInCurrentPeriod);
     }
 
     public void setCurrentTime(long timeInMillis) {

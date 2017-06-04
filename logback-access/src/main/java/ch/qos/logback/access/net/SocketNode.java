@@ -15,7 +15,6 @@ package ch.qos.logback.access.net;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.Socket;
 
 import ch.qos.logback.access.spi.AccessContext;
@@ -42,18 +41,18 @@ public class SocketNode implements Runnable {
 
     Socket socket;
     AccessContext context;
-    ObjectInputStream ois;
+    HardenedAccessEventInputStream hardenedOIS;
 
     public SocketNode(Socket socket, AccessContext context) {
         this.socket = socket;
         this.context = context;
         try {
-            ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+            hardenedOIS = new HardenedAccessEventInputStream(new BufferedInputStream(socket.getInputStream()));
         } catch (Exception e) {
-            System.out.println("Could not open ObjectInputStream to " + socket + e);
+            System.out.println("Could not open HardenedObjectInputStream to " + socket + e);
         }
     }
-
+    
     @Override
     public void run() {
         IAccessEvent event;
@@ -61,7 +60,7 @@ public class SocketNode implements Runnable {
         try {
             while (true) {
                 // read an event from the wire
-                event = (IAccessEvent) ois.readObject();
+                event = (IAccessEvent) hardenedOIS.readObject();
                 // check that the event should be logged
                 if (context.getFilterChainDecision(event) == FilterReply.DENY) {
                     break;
@@ -81,7 +80,7 @@ public class SocketNode implements Runnable {
         }
 
         try {
-            ois.close();
+            hardenedOIS.close();
         } catch (Exception e) {
             System.out.println("Could not close connection." + e);
         }

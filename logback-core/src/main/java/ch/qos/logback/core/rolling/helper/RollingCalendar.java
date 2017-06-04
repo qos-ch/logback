@@ -14,6 +14,9 @@
 package ch.qos.logback.core.rolling.helper;
 
 import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_HOUR;
+import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_MINUTE;
+import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_SECOND;
+import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_WEEK;
 import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_DAY;
 
 import java.text.SimpleDateFormat;
@@ -23,7 +26,6 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -71,7 +73,6 @@ public class RollingCalendar extends GregorianCalendar {
     public PeriodicityType computePeriodicityType() {
 
         GregorianCalendar calendar = new GregorianCalendar(GMT_TIMEZONE, Locale.getDefault());
-                        
 
         // set sate to 1970-01-01 00:00:00 GMT
         Date epoch = new Date(0);
@@ -180,25 +181,26 @@ public class RollingCalendar extends GregorianCalendar {
         if (start > end)
             throw new IllegalArgumentException("Start cannot come before end");
 
-        Date startFloored = getsStartOfCurrentPeriod(start);
-        Date endFloored = getsStartOfCurrentPeriod(end);
-        
-        long diff = endFloored.getTime() - startFloored.getTime();
-        
+        long startFloored = getStartOfCurrentPeriodWithGMTOffsetCorrection(start, getTimeZone());
+        long endFloored = getStartOfCurrentPeriodWithGMTOffsetCorrection(end, getTimeZone());
+
+        long diff = endFloored - startFloored;
+
         switch (periodicityType) {
 
         case TOP_OF_MILLISECOND:
             return diff;
         case TOP_OF_SECOND:
-            return diff / CoreConstants.MILLIS_IN_ONE_SECOND;
+            return diff / MILLIS_IN_ONE_SECOND;
         case TOP_OF_MINUTE:
-            return diff / CoreConstants.MILLIS_IN_ONE_MINUTE;
+            return diff / MILLIS_IN_ONE_MINUTE;
         case TOP_OF_HOUR:
-            return (int) diff / CoreConstants.MILLIS_IN_ONE_HOUR;
+
+            return (int) diff / MILLIS_IN_ONE_HOUR;
         case TOP_OF_DAY:
-            return diff / CoreConstants.MILLIS_IN_ONE_DAY;
+            return diff / MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
-            return diff / CoreConstants.MILLIS_IN_ONE_WEEK;
+            return diff / MILLIS_IN_ONE_WEEK;
         case TOP_OF_MONTH:
             return diffInMonths(start, end);
         default:
@@ -263,7 +265,7 @@ public class RollingCalendar extends GregorianCalendar {
             cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.WEEK_OF_YEAR, numPeriods);
             break;
-            
+
         case TOP_OF_MONTH:
             cal.set(Calendar.DATE, 1);
             cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -287,10 +289,20 @@ public class RollingCalendar extends GregorianCalendar {
     public Date getNextTriggeringDate(Date now) {
         return getEndOfNextNthPeriod(now, 1);
     }
-    
-    public Date getsStartOfCurrentPeriod(long now) {
-        Calendar aCal = Calendar.getInstance(getTimeZone());
-        aCal.setTimeInMillis(now);
-        return getEndOfNextNthPeriod(aCal.getTime(), 0);
+
+    public long getStartOfCurrentPeriodWithGMTOffsetCorrection(long now, TimeZone timezone) {
+        Date toppedDate;
+
+        // there is a bug in Calendar which prevents it from
+        // computing the correct DST_OFFSET when the time changes
+        {
+            Calendar aCal = Calendar.getInstance(timezone);
+            aCal.setTimeInMillis(now);
+            toppedDate = getEndOfNextNthPeriod(aCal.getTime(), 0);
+        }
+        Calendar secondCalendar = Calendar.getInstance(timezone);
+        secondCalendar.setTimeInMillis(toppedDate.getTime());
+        long gmtOffset = secondCalendar.get(Calendar.ZONE_OFFSET) + secondCalendar.get(Calendar.DST_OFFSET);
+        return toppedDate.getTime() + gmtOffset;
     }
 }

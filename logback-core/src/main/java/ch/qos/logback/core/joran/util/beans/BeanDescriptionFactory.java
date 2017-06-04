@@ -4,6 +4,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.spi.ContextAwareBase;
+
 /**
  * Encapsulates creation of {@link BeanDescription} instances.
  * This factory is kind of a lightweight Introspector as described in the Java Beans API specification.
@@ -14,11 +17,11 @@ import java.util.Map;
  *
  * @author urechm
  */
-public class BeanDescriptionFactory {
+public class BeanDescriptionFactory extends ContextAwareBase {
 
-    public static final BeanDescriptionFactory INSTANCE = new BeanDescriptionFactory();
-
-    private BeanUtil beanUtil = BeanUtil.SINGLETON;
+    BeanDescriptionFactory(Context context) {
+        setContext(context);
+    }
 
     /**
      *
@@ -31,36 +34,36 @@ public class BeanDescriptionFactory {
         Map<String, Method> propertyNameToAdder = new HashMap<String, Method>();
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
-            if (beanUtil.isGetter(method)) {
-                String propertyName = beanUtil.getPropertyName(method);
+            if(method.isBridge()) {
+                // we can safely ignore bridge methods
+                continue;
+            }
+            if (BeanUtil.isGetter(method)) {
+                String propertyName = BeanUtil.getPropertyName(method);
                 Method oldGetter = propertyNameToGetter.put(propertyName, method);
                 if (oldGetter != null) {
                     if (oldGetter.getName().startsWith(BeanUtil.PREFIX_GETTER_IS)) {
                         propertyNameToGetter.put(propertyName, oldGetter);
                     }
-                    String message = String.format("Warning: Class '%s' contains multiple getters for the same property '%s'.", clazz.getCanonicalName(),
-                                    propertyName);
-                    System.err.println(message);
+                    String message = String.format("Class '%s' contains multiple getters for the same property '%s'.", clazz.getCanonicalName(), propertyName);
+                    addWarn(message);
                 }
-            } else if (beanUtil.isSetter(method)) {
-                String propertyName = beanUtil.getPropertyName(method);
+            } else if (BeanUtil.isSetter(method)) {
+                String propertyName = BeanUtil.getPropertyName(method);
                 Method oldSetter = propertyNameToSetter.put(propertyName, method);
                 if (oldSetter != null) {
-                    String message = String.format("Warning: Class '%s' contains multiple setters for the same property '%s'.", clazz.getCanonicalName(),
-                                    propertyName);
-                    System.err.println(message);
+                    String message = String.format("Class '%s' contains multiple setters for the same property '%s'.", clazz.getCanonicalName(), propertyName);
+                    addWarn(message);
                 }
-            } else if (beanUtil.isAdder(method)) {
-                String propertyName = beanUtil.getPropertyName(method);
+            } else if (BeanUtil.isAdder(method)) {
+                String propertyName = BeanUtil.getPropertyName(method);
                 Method oldAdder = propertyNameToAdder.put(propertyName, method);
                 if (oldAdder != null) {
-                    String message = String.format("Warning: Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(),
-                                    propertyName);
-                    System.err.println(message);
+                    String message = String.format("Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(), propertyName);
+                    addWarn(message);
                 }
             }
         }
         return new BeanDescription(clazz, propertyNameToGetter, propertyNameToSetter, propertyNameToAdder);
     }
-
 }

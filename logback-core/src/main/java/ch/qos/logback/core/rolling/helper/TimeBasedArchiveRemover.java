@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static ch.qos.logback.core.CoreConstants.UNBOUND_TOTAL_SIZE;
+import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
 import java.util.Arrays;
@@ -31,14 +31,14 @@ import ch.qos.logback.core.util.FileSize;
 public class TimeBasedArchiveRemover extends ContextAwareBase implements ArchiveRemover {
 
     static protected final long UNINITIALIZED = -1;
-    // aim for 64 days, except in case of hourly rollover
+    // aim for 32 days, except in case of hourly rollover
     static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 32L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
     static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
     final FileNamePattern fileNamePattern;
     final RollingCalendar rc;
     private int maxHistory = CoreConstants.UNBOUND_HISTORY;
-    private long totalSizeCap = CoreConstants.UNBOUND_TOTAL_SIZE;
+    private long totalSizeCap = CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
     final boolean parentClean;
     long lastHeartBeat = UNINITIALIZED;
 
@@ -48,9 +48,11 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         this.parentClean = computeParentCleaningFlag(fileNamePattern);
     }
 
+    int callCount = 0;
     public void clean(Date now) {
+ 
         long nowInMillis = now.getTime();
-        // for a live appender periodsElapsed is usually one
+        // for a live appender periodsElapsed is expected to be 1
         int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
         lastHeartBeat = nowInMillis;
         if (periodsElapsed > 1) {
@@ -93,8 +95,8 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     void capTotalSize(Date now) {
-        int totalSize = 0;
-        int totalRemoved = 0;
+        long totalSize = 0;
+        long totalRemoved = 0;
         for (int offset = 0; offset < maxHistory; offset++) {
             Date date = rc.getEndOfNextNthPeriod(now, -offset);
             File[] matchingFileArray = getFilesInPeriod(date);
@@ -143,7 +145,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             periodsElapsed = Math.min(periodsElapsed, MAX_VALUE_FOR_INACTIVITY_PERIODS);
         } else {
             periodsElapsed = rc.periodBarriersCrossed(lastHeartBeat, nowInMillis);
-            // periodsElapsed of zero is possible for Size and time based policies
+            // periodsElapsed of zero is possible for size and time based policies
         }
         return (int) periodsElapsed;
     }
@@ -238,7 +240,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         @Override
         public void run() {
             clean(now);
-            if (totalSizeCap != UNBOUND_TOTAL_SIZE && totalSizeCap > 0) {
+            if (totalSizeCap != UNBOUNDED_TOTAL_SIZE_CAP && totalSizeCap > 0) {
                 capTotalSize(now);
             }
         }

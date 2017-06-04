@@ -37,5 +37,5 @@ public abstract class ActionConst {
     static final Class<?>[] ONE_STRING_PARAM = new Class[] { String.class };
 
     public static final String APPENDER_BAG = "APPENDER_BAG";
-    public static final String FILTER_CHAIN_BAG = "FILTER_CHAIN_BAG";
+    //public static final String FILTER_CHAIN_BAG = "FILTER_CHAIN_BAG";
 }

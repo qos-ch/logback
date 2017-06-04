@@ -81,19 +81,20 @@
     </p>
 
     <ol>
+
       <li>
         <p>Logback tries to find a file called
+        <em>logback-test.xml</em> <a
+        href="../faq.html#configFileLocation">in the
+        classpath</a>.</p> </li>
+
+      <li>
+        <p>If no such file is found, logback tries to find a file called
         <em>logback.groovy</em> <a
         href="../faq.html#configFileLocation">in the
         classpath</a>.</p>
       </li>
 
-      <li>
-        <p>If no such file is found, logback tries to find a file
-        called <em>logback-test.xml</em> <a
-        href="../faq.html#configFileLocation">in the
-        classpath</a>.</p>
-      </li>
 
       <li><p>If no such file is found, it checks for the file
       <em>logback.xml</em>  <a
@@ -160,7 +161,7 @@
     <code>BasicConfigurator</code> usage <a
     href="../xref/chapters/configuration/MyApp1.html">(logback-examples/src/main/java/chapters/configuration/MyApp1.java)</a></p>
 
-    <pre class="prettyprint source">package manual.configuration;
+    <pre class="prettyprint source">package chapters.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -337,6 +338,13 @@ public static void main(String[] args) {
   which allow convenient access to logback's internal state.
   </p>
 
+   <h4 class="doAnchor" name="dumpingStatusData">Status data</h4>
+
+   <p class="highlight">Enabling output of status data usually goes a
+   long way in the diagnosis of issues with logback. As such, it is
+   highly recommended and should be considered as a recourse of
+   <b>first</b> resort.</p>
+
    <p>Instead of invoking <code>StatusPrinter</code> programmatically
    from your code, you can instruct the configuration file to dump
    status data, even in the absence of errors. To achieve this, you
@@ -349,7 +357,6 @@ public static void main(String[] args) {
    asking, no, the root logger will <em>not</em> be set to
    <code>DEBUG</code>.)
    </p>
-
 
    <p class="example">Example: Basic configuration file using debug
    mode
@@ -372,7 +379,7 @@ public static void main(String[] args) {
   &lt;/root>
 &lt;/configuration></pre>
   
-   <p>Setting the <code>debug</code> attribute within the
+   <p>Setting <code>debug="true"</code> within the
    &lt;configuration&gt; element will output status information,
    assuming that:
    </p>
@@ -395,6 +402,7 @@ public static void main(String[] args) {
    every case.</p>
 
  
+ 
    <p><span class="label">Forcing status output</span> In the absence
    of status messages, tracking down a rogue <em>logback.xml</em>
    configuration file can be difficult, especially in production where
@@ -405,6 +413,29 @@ public static void main(String[] args) {
    force output of status messages. The "logback.statusListenerClass"
    system property can also be used to silence output automatically
    generated in case of errors.
+   </p>
+
+   <p>By the way, setting <code>debug="true"</code> is strictly
+   equivalent to installing an
+   <code>OnConsoleStatusListener</code>. Status listeners are
+   disccussed further below. The installation of
+   <code>OnConsoleStatusListener</code> is shown next. </p>
+
+   <p class="example">Example: Registering a status listener
+   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
+   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
+   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
+  <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
+
+  ... the rest of the configuration file  
+&lt;/configuration></pre>
+
+
+   <p>Enabling output of status data, either via the debug attribute
+   or equivalently by installing <code>OnConsoleStatusListener</code>,
+   will go a long way in helping you diagnose logback issues. As such,
+   enabling logback status data is very highly recommended and should
+   be considered as a recourse of <b>first</b> resort.
    </p>
 
    <h3 class="doAnchor" name="configFileProperty">Specifying the
@@ -748,8 +779,8 @@ public class MyApp3 {
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.NopStatusListener&nbsp;...</p>
 
 
-   <h3 class="doAnchor" name="stopContext">Stopping
-   logback-classic</h3>
+   <h2 class="doAnchor" name="stopContext">Stopping
+   logback-classic</h2>
 
    <p>In order to release the resources used by logback-classic, it is
    always a good idea to stop the logback context. Stopping the
@@ -770,7 +801,9 @@ import ch.qos.logback.classic.LoggerContext;
    the <a
    href="http://docs.oracle.com/javaee/6/api/javax/servlet/ServletContextListener.html#contextDestroyed(javax.servlet.ServletContextEvent)">contextDestroyed</a>
    method of <code>ServletContextListener</code> in order to stop
-   logback-classic and release resources.
+   logback-classic and release resources. Starting with version
+   1.1.10, the appropriate <code>ServletContextListener</code> is
+   installed automatically for you (<a href="#webShutdownHook">see just below</a>).
    </p>
 
    <h4 class="doAnchor" name="shutdownHook">Stopping logback-classic 
@@ -793,8 +826,48 @@ import ch.qos.logback.classic.LoggerContext;
    can delay shutdown by a user specified duration. Note that you may
    install a shutdown hook of your own making by setting the <span
    class="attr">class</span> attribute to correspond to your shutdown
-   hook's class name.</p>.
+   hook's class name.</p>
+
+    <h4 class="doAnchor" name="webShutdownHook">Stopping logback-classic 
+   in web-applications</h4>
+  
+   <p><span class="label">since 1.1.10</span> Logback-classic will
+   <b>automatically</b> ask the web-server to install a <code><a
+   href="../apidocs/ch/qos/logback/classic/servlet/LogbackServletContainerInitializer.html">LogbackServletContainerInitializer</a></code>
+   implementing the <code>ServletContainerInitializer</code> interface
+   (available in servlet-api 3.x and later). This initializer will in
+   turn install and instance of <code><a
+   href="../apidocs/ch/qos/logback/classic/servlet/LogbackServletContextListener.html">LogbackServletContextListener</a></code>.
+   This listener will stop the current logback-classic context when
+   the web-app is stopped or reloaded.
+   </p>
+
+   <p>You may disable the automatic the installation of
+   <code>LogbackServletContextListener</code> by setting a
+   &lt;context-param> named
+   <code>logbackDisableServletContainerInitializer</code> in your
+   web-application's web.xml file. Here is the relevant snippet.</p>
+
    
+<pre class="prettyprint source">&lt;web-app>
+    &lt;context-param>
+        &lt;param-name>logbackDisableServletContainerInitializer&lt;/param-name>
+        &lt;param-value>true&lt;/param-value>
+    &lt;/context-param>
+    .... 
+&lt;/web-app></pre>
+
+    <p>Note that
+    <code>logbackDisableServletContainerInitializer</code> variable
+    can also be set as a Java system property an OS environment
+    variable. The most local setting has priority, i.e. web-app first,
+    system property second and OS environment last.</p>
+
+   
+
+   <!-- =================================================================== -->
+   <!-- =================================================================== -->
+
    <h2 class="doAnchor" name="syntax">Configuration file syntax</h2>
 
    <p>As you have seen thus far in the manual with plenty of examples
@@ -1418,10 +1491,11 @@ import ch.qos.logback.classic.LoggerContext;
   </p>
 
   <p>As in many scripting languages, logback configuration files
-  support definition and substitution of variables. Variables can be
+  support definition and substitution of variables. Variables have a
+  <a href="#scopes">scope</a> (see below). Moreover, variables can be
   defined within the configuration file itself, in an external file,
   in an external resource or even computed and <a
-  href="#definingPropsOnTheFly">defined on the fly</a>. 
+  href="#definingPropsOnTheFly">defined on the fly</a>.
   </p>
 
   <p class="highlight">Variable substitution can occur at any point in
@@ -1436,10 +1510,15 @@ import ch.qos.logback.classic.LoggerContext;
   value held by the <em>aName</em> property.
   </p>
 
-  <p>Variables have a <a href="#scopes">scope</a> (see below).</p>
+  
 
   <p>As they often come in handy, the HOSTNAME and CONTEXT_NAME
-  variables are automatically defined and have context scope.</p>
+  variables are automatically defined and have context scope. Given
+  that in some environments it may take some time to compute the
+  hostname, its value is computed lazily (only when needed). Moreover,
+  HOSTNAME can be set from within the <a
+  href="#definingProps">configuration directly.</a>
+  </p>
 
    <h4 class="doAnchor" name="definingProps">Defining variables</h4>
 

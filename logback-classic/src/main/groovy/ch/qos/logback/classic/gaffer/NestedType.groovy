@@ -18,6 +18,6 @@ package ch.qos.logback.classic.gaffer
  */
 
 enum NestingType {
-  NA, SINGLE, AS_COLLECTION;
+  NA, SINGLE, SINGLE_WITH_VALUE_OF_CONVENTION, AS_COLLECTION;
 }
 

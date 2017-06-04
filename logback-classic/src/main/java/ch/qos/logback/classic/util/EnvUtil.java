@@ -19,7 +19,7 @@ import java.util.ServiceLoader;
 import ch.qos.logback.core.util.Loader;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class EnvUtil {
 

@@ -91,6 +91,12 @@ public class FileSize {
             return inKB + " KB";
         }
         
-        return inMB + " MB";
+        long inGB = size / GB_COEFFICIENT;
+        if(inGB == 0) {
+            return inMB + " MB";
+        }
+        
+        return inGB + " GB";
+        
     }
 }

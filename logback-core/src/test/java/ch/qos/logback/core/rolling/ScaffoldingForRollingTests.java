@@ -47,6 +47,7 @@ import static org.junit.Assert.assertTrue;
 public class ScaffoldingForRollingTests {
 
     static public final String DATE_PATTERN_WITH_SECONDS = "yyyy-MM-dd_HH_mm_ss";
+    static public final String DATE_PATTERN_BY_DAY = "yyyy-MM-dd";
     static public final SimpleDateFormat SDF = new SimpleDateFormat(DATE_PATTERN_WITH_SECONDS);
 
     int diff = RandomUtil.getPositiveInt();
@@ -131,7 +132,6 @@ public class ScaffoldingForRollingTests {
     }
 
     // assuming rollover every second
-
     protected void recomputeRolloverThreshold(long ct) {
         long delta = ct % 1000;
         nextRolloverThreshold = (ct - delta) + 1000;
@@ -279,6 +279,6 @@ public class ScaffoldingForRollingTests {
                 new RuntimeException("unexpected exception while testing", e);
             }
         }
-
+        futureList.clear();
     }
 }

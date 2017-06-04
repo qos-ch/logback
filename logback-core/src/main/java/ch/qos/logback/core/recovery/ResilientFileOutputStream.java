@@ -21,10 +21,10 @@ public class ResilientFileOutputStream extends ResilientOutputStreamBase {
     private File file;
     private FileOutputStream fos;
 
-    public ResilientFileOutputStream(File file, boolean append) throws FileNotFoundException {
+    public ResilientFileOutputStream(File file, boolean append, long bufferSize) throws FileNotFoundException {
         this.file = file;
         fos = new FileOutputStream(file, append);
-        this.os = new BufferedOutputStream(fos);
+        this.os = new BufferedOutputStream(fos, (int) bufferSize);
         this.presumedClean = true;
     }
 

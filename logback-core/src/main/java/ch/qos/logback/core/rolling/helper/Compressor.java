@@ -227,7 +227,7 @@ public class Compressor extends ContextAwareBase {
     }
 
     ZipEntry computeZipEntry(String filename) {
-        String nameOfFileNestedWithinArchive = computeFileNameStr_WCS(filename, compressionMode);
+        String nameOfFileNestedWithinArchive = computeFileNameStrWithoutCompSuffix(filename, compressionMode);
         return new ZipEntry(nameOfFileNestedWithinArchive);
     }
 
@@ -294,7 +294,7 @@ public class Compressor extends ContextAwareBase {
         }
     }
 
-    static public String computeFileNameStr_WCS(String fileNamePatternStr, CompressionMode compressionMode) {
+    static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr, CompressionMode compressionMode) {
         int len = fileNamePatternStr.length();
         switch (compressionMode) {
         case GZ:
@@ -333,7 +333,7 @@ public class Compressor extends ContextAwareBase {
 
     public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
         CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-        ExecutorService executorService = context.getExecutorService();
+        ExecutorService executorService = context.getScheduledExecutorService();
         Future<?> future = executorService.submit(runnable);
         return future;
     }
@@ -351,6 +351,7 @@ public class Compressor extends ContextAwareBase {
         }
 
         public void run() {
+            
             Compressor.this.compress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
         }
     }

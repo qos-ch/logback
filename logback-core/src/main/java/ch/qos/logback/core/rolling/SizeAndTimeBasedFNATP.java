@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.rolling;
 
+import static ch.qos.logback.core.CoreConstants.MANUAL_URL_PREFIX;
+
 import java.io.File;
 import java.util.Date;
 
@@ -29,6 +31,9 @@ import ch.qos.logback.core.util.InvocationGate;
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
+    enum Usage {EMBEDDED, DIRECT};
+
+    
     int currentPeriodsCounter = 0;
     FileSize maxFileSize;
     // String maxFileSizeAsString;
@@ -37,14 +42,30 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
     static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
     static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
 
+    private final Usage usage;
+    
+    public SizeAndTimeBasedFNATP() {
+        this(Usage.DIRECT);
+    }
+    
+    public SizeAndTimeBasedFNATP(Usage usage) {
+        this.usage = usage;
+    }
+    
     @Override
     public void start() {
         // we depend on certain fields having been initialized in super class
         super.start();
-
+        
+        if(usage == Usage.DIRECT) {
+          addWarn(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
+          addWarn("For more information see "+MANUAL_URL_PREFIX+"appenders.html#SizeAndTimeBasedRollingPolicy");
+        }
+        
         if (!super.isErrorFree())
             return;
 
+        
         if (maxFileSize == null) {
             addError("maxFileSize property is mandatory.");
             withErrors();
@@ -112,6 +133,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     InvocationGate invocationGate = new DefaultInvocationGate();
 
+    @Override
     public boolean isTriggeringEvent(File activeFile, final E event) {
 
         long time = getCurrentTime();
@@ -119,7 +141,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         // first check for roll-over based on time
         if (time >= nextCheck) {
             Date dateInElapsedPeriod = dateInCurrentPeriod;
-            elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
+            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
             currentPeriodsCounter = 0;
             setDateInCurrentPeriod(time);
             computeNextCheck();
@@ -133,13 +155,15 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
         if (activeFile == null) {
             addWarn("activeFile == null");
+            return false;
         }
         if (maxFileSize == null) {
             addWarn("maxFileSize = null");
+            return false;
         }
         if (activeFile.length() >= maxFileSize.getSize()) {
 
-            elapsedPeriodsFileName = tbrp.fileNamePatternWCS.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
+            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
             currentPeriodsCounter++;
             return true;
         }
@@ -149,7 +173,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     @Override
     public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-        return tbrp.fileNamePatternWCS.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
+        return tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
     }
 
     public void setMaxFileSize(FileSize aMaxFileSize) {

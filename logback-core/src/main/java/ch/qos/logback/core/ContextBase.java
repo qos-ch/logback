@@ -14,6 +14,7 @@
 package ch.qos.logback.core;
 
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
+import static ch.qos.logback.core.CoreConstants.HOSTNAME_KEY;
 import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
 
@@ -25,9 +26,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 public class ContextBase implements Context, LifeCycle {
@@ -44,7 +47,6 @@ public class ContextBase implements Context, LifeCycle {
 
     LogbackLock configurationLock = new LogbackLock();
 
-    private ExecutorService executorService;
     private ScheduledExecutorService scheduledExecutorService;
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
@@ -81,12 +83,16 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     public void putProperty(String key, String val) {
-        this.propertyMap.put(key, val);
+        if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
+            putHostnameProperty(val);
+        } else {
+            this.propertyMap.put(key, val);
+        }
     }
 
     protected void initCollisionMaps() {
         putObject(FA_FILENAME_COLLISION_MAP, new HashMap<String, String>());
-        putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, String>());
+        putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
     }
 
     /**
@@ -99,8 +105,29 @@ public class ContextBase implements Context, LifeCycle {
     public String getProperty(String key) {
         if (CONTEXT_NAME_KEY.equals(key))
             return getName();
+        if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
+            return lazyGetHostname();
+        }
 
         return (String) this.propertyMap.get(key);
+    }
+
+    private String lazyGetHostname() {
+        String hostname = (String) this.propertyMap.get(HOSTNAME_KEY);
+        if (hostname == null) {
+            hostname = new ContextUtil(this).safelyGetLocalHostName();
+            putHostnameProperty(hostname);
+        }
+        return hostname;
+    }
+
+    private void putHostnameProperty(String hostname) {
+        String existingHostname = (String) this.propertyMap.get(HOSTNAME_KEY);
+        if (existingHostname == null) {
+            this.propertyMap.put(CoreConstants.HOSTNAME_KEY, hostname);
+        } else {
+
+        }
     }
 
     public Object getObject(String key) {
@@ -129,7 +156,8 @@ public class ContextBase implements Context, LifeCycle {
     public void stop() {
         // We don't check "started" here, because the executor service uses
         // lazy initialization, rather than being created in the start method
-        stopExecutorServices();
+        stopExecutorService();
+
         started = false;
     }
 
@@ -142,6 +170,7 @@ public class ContextBase implements Context, LifeCycle {
      * shutdown hook
      */
     public void reset() {
+
         removeShutdownHook();
         getLifeCycleManager().reset();
         propertyMap.clear();
@@ -190,11 +219,7 @@ public class ContextBase implements Context, LifeCycle {
         return scheduledExecutorService;
     }
 
-    private synchronized void stopExecutorServices() {
-        if (executorService != null) {
-            ExecutorServiceUtil.shutdown(executorService);
-            executorService = null;
-        }
+    private synchronized void stopExecutorService() {
         if (scheduledExecutorService != null) {
             ExecutorServiceUtil.shutdown(scheduledExecutorService);
             scheduledExecutorService = null;
@@ -250,7 +275,5 @@ public class ContextBase implements Context, LifeCycle {
     public List<ScheduledFuture<?>> getScheduledFutures() {
         return new ArrayList<ScheduledFuture<?>>(scheduledFutures);
     }
-    
-    
 
 }

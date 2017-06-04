@@ -158,7 +158,7 @@ public class DummyResponse implements HttpServletResponse {
 
     public Collection<String> getHeaders(String name) {
         String val = headerMap.get(name);
-        List list = new ArrayList();
+        List<String> list = new ArrayList<String>();
         if (val != null)
             list.add(val);
         return list;
@@ -178,6 +178,11 @@ public class DummyResponse implements HttpServletResponse {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    @Override
+    public void setContentLengthLong(long length) {
+        // TODO Auto-generated method stub
     }
 
 }

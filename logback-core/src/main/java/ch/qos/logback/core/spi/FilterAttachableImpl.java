@@ -15,9 +15,9 @@ package ch.qos.logback.core.spi;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import ch.qos.logback.core.filter.Filter;
+import ch.qos.logback.core.util.COWArrayList;
 
 /**
  * Implementation of FilterAttachable.
@@ -26,7 +26,8 @@ import ch.qos.logback.core.filter.Filter;
  */
 final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
 
-    CopyOnWriteArrayList<Filter<E>> filterList = new CopyOnWriteArrayList<Filter<E>>();
+    @SuppressWarnings("unchecked")
+    COWArrayList<Filter<E>> filterList = new COWArrayList<Filter<E>>(new Filter[0]);
 
     /**
      * Add a filter to end of the filter list.
@@ -48,12 +49,18 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
      * NEUTRAL, then NEUTRAL is returned.
      */
     public FilterReply getFilterChainDecision(E event) {
-        for (Filter<E> f : filterList) {
-            final FilterReply r = f.decide(event);
+
+        final Filter<E>[] filterArrray = filterList.asTypedArray();
+        final int len = filterArrray.length;
+
+        for (int i = 0; i < len; i++) {
+            final FilterReply r = filterArrray[i].decide(event);
             if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
                 return r;
             }
         }
+
+        // no decision
         return FilterReply.NEUTRAL;
     }
 

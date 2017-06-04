@@ -26,6 +26,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -148,13 +149,13 @@ public class PropertyActionTest {
     }
 
     private boolean checkError() {
-        Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
+        Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
         ErrorStatus es = (ErrorStatus) it.next();
         return PropertyAction.INVALID_ATTRIBUTES.equals(es.getMessage());
     }
 
     private boolean checkFileErrors() {
-        Iterator it = context.getStatusManager().getCopyOfStatusList().iterator();
+        Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
         ErrorStatus es1 = (ErrorStatus) it.next();
         return "Could not find properties file [toto].".equals(es1.getMessage());
     }

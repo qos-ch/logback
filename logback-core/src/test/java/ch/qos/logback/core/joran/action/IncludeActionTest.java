@@ -71,6 +71,8 @@ public class IncludeActionTest {
 
     static final String TOP_BY_URL = INCLUSION_DIR_PREFIX + "topByUrl.xml";
 
+    static final String TOP_BY_ENTITY = INCLUSION_DIR_PREFIX + "topByEntity.xml";
+
     static final String INCLUDE_BY_RESOURCE = INCLUSION_DIR_PREFIX + "topByResource.xml";
 
     static final String INCLUDED_FILE = INCLUSION_DIR_PREFIX + "included.xml";
@@ -213,11 +215,19 @@ public class IncludeActionTest {
         tc.doConfigure(MULTI_INCLUDE_BY_FILE);
         verifyConfig(new String[] { "IA", "IB", "SECOND" });
     }
-
+    
+    @Test
+    public void includeAsEntity() throws JoranException {
+        tc.doConfigure(TOP_BY_ENTITY);
+        verifyConfig(new String[] { "EA", "EB" });  
+    }
+    
     void verifyConfig(String[] expected) {
         Stack<String> witness = new Stack<String>();
         witness.addAll(Arrays.asList(expected));
         assertEquals(witness, stackAction.getStack());
     }
 
+
+    
 }

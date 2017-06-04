@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core.pattern;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
@@ -22,18 +25,16 @@ import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.StatusManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
+    static final int INTIAL_STRING_BUILDER_SIZE = 256;
     Converter<E> head;
     String pattern;
     protected PostCompileProcessor<E> postCompileProcessor;
-
+    
     Map<String, String> instanceConverterMap = new HashMap<String, String>();
     protected boolean outputPatternAsHeader = false;
-
+    
     /**
      * Concrete implementations of this class are responsible for elaborating the
      * mapping between pattern words and converters.
@@ -108,13 +109,13 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     }
 
     protected String writeLoopOnConverters(E event) {
-        StringBuilder buf = new StringBuilder(128);
+        StringBuilder strBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
         Converter<E> c = head;
         while (c != null) {
-            c.write(buf, event);
+            c.write(strBuilder, event);
             c = c.getNext();
         }
-        return buf.toString();
+        return strBuilder.toString();
     }
 
     public String getPattern() {

@@ -108,7 +108,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     boolean started;
     boolean alreadySetLogbackStatusManager = false;
 
-    private ExecutorService executorService;
+    private ScheduledExecutorService scheduledExecutorService;
 
     public LogbackValve() {
         putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
@@ -120,7 +120,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
 
     @Override
     public void startInternal() throws LifecycleException {
-        executorService = ExecutorServiceUtil.newExecutorService();
+        scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
 
         String filename;
 
@@ -286,9 +286,9 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
         started = false;
         setState(LifecycleState.STOPPING);
         lifeCycleManager.reset();
-        if (executorService != null) {
-            ExecutorServiceUtil.shutdown(executorService);
-            executorService = null;
+        if (scheduledExecutorService != null) {
+            ExecutorServiceUtil.shutdown(scheduledExecutorService);
+            scheduledExecutorService = null;
         }
     }
 
@@ -328,7 +328,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
         return aai.detachAppender(name);
     }
 
-    @Override
     public String getInfo() {
         return "Logback's implementation of ValveBase";
     }
@@ -390,7 +389,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
 
     @Override
     public ExecutorService getExecutorService() {
-        return executorService;
+        return getScheduledExecutorService();
     }
 
     @Override
@@ -449,7 +448,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
 
     @Override
     public ScheduledExecutorService getScheduledExecutorService() {
-        throw new UnsupportedOperationException();
+        return scheduledExecutorService;
     }
 
     @Override

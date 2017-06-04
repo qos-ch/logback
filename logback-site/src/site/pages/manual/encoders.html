@@ -142,13 +142,11 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
 
   protected Layout&lt;E> layout;
   private Charset charset;
-  private boolean immediateFlush = true;
-
-  public void doEncode(E event) throws IOException {
-    String txt = layout.doLayout(event);
-    outputStream.write(convertToBytes(txt));
-    if (immediateFlush)
-      outputStream.flush();
+ 
+   // encode a given event as a byte[]
+   public byte[] encode(E event) {
+     String txt = layout.doLayout(event);
+     return convertToBytes(txt);
   }
 
   private byte[] convertToBytes(String s) {
@@ -163,15 +161,7 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     <p>The <code>doEncode</code>() method starts by having the wrapped
     layout convert the incoming event into string. The resulting text
     string is converted to bytes according to the charset encoding
-    chosen by the user. Those bytes are then written to the
-    <code>OutputStream</code> given by the owning appender. By
-    default, the <code>OutputStream</code> is immediately flushed,
-    unless the <span class="prop">immediateFlush</span> property is
-    explicitly set to 'false'.  Setting the <span
-    class="prop">immediateFlush</span> property to false can
-    significantly improve logging throughput. See
-    <code>PatternLayoutEncoder</code> below for sample configuration..
-    </p>
+    chosen by the user.</p>
     
 
     <h2 class="doAnchor">PatternLayoutEncoder</h2>
@@ -194,36 +184,9 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
 
      <h4 class="doAnchor" name="immediateFlush"><span class="prop">immediateFlush</span> property</h4>
 
-     <p>As a sub-class of <a
-     href="../xref/ch/qos/logback/core/encoder/LayoutWrappingEncoder.html"><code>LayoutWrappingEncoder</code></a>,
-     <code>PatternLayoutEncoder</code> admits the <span
-     class="prop">immediateFlush</span> property. The default value
-     for <span class="prop">immediateFlush</span> is 'true'. Immediate
-     flushing of the output stream ensures that logging events are
-     immediately written to disk and will not be lost in case your
-     application exits without properly closing appenders. On the
-     other hand, setting this property to 'false' is likely to
-     quintuple (your mileage may vary) logging throughput. As
-     mentioned previously, if <span class="prop">immediateFlush</span>
-     is set to 'false' and if appenders are not closed properly when
-     your application exits, then logging events not yet written to
-     disk may be lost.
-     </p>
-
-     <p>Below is a sample configuration for a
-     <code>FileAppender</code> containing a
-     <code>PatternLayoutEncoder</code> with its <span
-     class="prop">immediateFlush</span> property set to 'false'.</p>
-
-<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
-  &lt;file>foo.log&lt;/file>
-  &lt;encoder>
-    &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
-    &lt;!-- this quadruples logging throughput --&gt;
-    <b>&lt;immediateFlush>false&lt;/immediateFlush></b>
-  &lt;/encoder> 
-&lt;/appender></pre>
-
+     <p>As of <span class="label notice">logback 1.2.0</span>, the
+     <span class="prop">immediateFlush</span> property is part of the
+     enclosing Appender.</p>
 
     <h4 class="doAnchor" name="outputPatternAsHeader">Output pattern
     string as header</h4>

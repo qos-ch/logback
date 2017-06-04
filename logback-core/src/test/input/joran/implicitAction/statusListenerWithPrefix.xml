@@ -1,0 +1,5 @@
+<context>
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" >
+    <prefix>aPrefix</prefix>
+  </statusListener>  
+</context>
