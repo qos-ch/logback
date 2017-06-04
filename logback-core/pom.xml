@@ -38,7 +38,6 @@
        <groupId>org.apache.commons</groupId>
       <artifactId>commons-compress</artifactId>
       <scope>compile</scope>
-      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
