@@ -112,7 +112,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.argumentArray = argArray;
 
         if (throwable == null) {
-            throwable = extractThrowableAnRearrangeArguments(argArray);
+            throwable = extractThrowableAndRearrangeArguments(argArray);
         }
 
         if (throwable != null) {
@@ -126,7 +126,7 @@ public class LoggingEvent implements ILoggingEvent {
         timeStamp = System.currentTimeMillis();
     }
 
-    private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
+    private Throwable extractThrowableAndRearrangeArguments(Object[] argArray) {
         Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
         if (EventArgUtil.successfulExtraction(extractedThrowable)) {
             this.argumentArray = EventArgUtil.trimmedCopy(argArray);
