@@ -14,6 +14,7 @@
 package ch.qos.logback.core.rolling.helper;
 
 import ch.qos.logback.core.pattern.DynamicConverter;
+import ch.qos.logback.core.pattern.FormatInfo;
 
 /**
  * When asked to convert an integer, <code>IntegerTokenConverter</code> the
@@ -26,7 +27,17 @@ public class IntegerTokenConverter extends DynamicConverter<Object> implements M
     public final static String CONVERTER_KEY = "i";
 
     public String convert(int i) {
-        return Integer.toString(i);
+        String s = Integer.toString(i);
+        FormatInfo formattingInfo = getFormattingInfo();
+        if (formattingInfo == null) {
+            return s;
+        }
+        int min = formattingInfo.getMin();
+        StringBuilder sbuf = new StringBuilder();
+        for (int j = s.length(); j < min; ++j) {
+            sbuf.append('0');
+        }
+        return sbuf.append(s).toString();
     }
 
     public String convert(Object o) {

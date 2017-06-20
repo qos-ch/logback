@@ -54,6 +54,12 @@ public class FileNamePatternTest {
         pp = new FileNamePattern("foo.%i.log", context);
         assertEquals("foo.3.log", pp.convertInt(3));
 
+        pp = new FileNamePattern("foo.%3i.log", context);
+        assertEquals("foo.003.log", pp.convertInt(3));
+
+        pp = new FileNamePattern("foo.%1i.log", context);
+        assertEquals("foo.43.log", pp.convertInt(43));
+
         // pp = new FileNamePattern("%i.foo\\%", context);
         // assertEquals("3.foo%", pp.convertInt(3));
 
