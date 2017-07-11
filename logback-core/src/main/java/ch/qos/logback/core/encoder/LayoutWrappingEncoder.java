@@ -18,6 +18,7 @@ import java.nio.charset.Charset;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.OutputStreamAppender;
+import ch.qos.logback.core.spi.ContextAware;
 
 public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
@@ -32,7 +33,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      */
     private Charset charset;
 
-    private Object parent;
+    private ContextAware parent;
     private Boolean immediateFlush;
 
     public Layout<E> getLayout() {
@@ -148,7 +149,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * 
      * @param parent
      */
-    public void setParent(Object parent) {
+    public void setParent(ContextAware parent) {
         this.parent = parent;
     }
 }
