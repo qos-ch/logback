@@ -162,9 +162,18 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             return false;
         }
         if (activeFile.length() >= maxFileSize.getSize()) {
-
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
-            currentPeriodsCounter++;
+
+            // re-check for roll-over based on time, e.g. fileNamePattern is:
+            // %d{yyyyMMdd}/logback-%d{yyyyMMdd_HHmmss, aux}.txt
+            String newFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(new Date(time), currentPeriodsCounter);
+            if (elapsedPeriodsFileName.equals(newFileName)) {
+                currentPeriodsCounter++;
+            } else {
+                currentPeriodsCounter = 0;
+                setDateInCurrentPeriod(time);
+                computeNextCheck();
+            }
             return true;
         }
 
