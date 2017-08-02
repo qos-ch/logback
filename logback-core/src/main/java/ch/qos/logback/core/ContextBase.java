@@ -84,7 +84,7 @@ public class ContextBase implements Context, LifeCycle {
 
     public void putProperty(String key, String val) {
         if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
-            putHostnameProperty(val);
+            this.propertyMap.put(HOSTNAME_KEY, val);
         } else {
             this.propertyMap.put(key, val);
         }
@@ -116,18 +116,9 @@ public class ContextBase implements Context, LifeCycle {
         String hostname = (String) this.propertyMap.get(HOSTNAME_KEY);
         if (hostname == null) {
             hostname = new ContextUtil(this).safelyGetLocalHostName();
-            putHostnameProperty(hostname);
+            putProperty(HOSTNAME_KEY, hostname);
         }
         return hostname;
-    }
-
-    private void putHostnameProperty(String hostname) {
-        String existingHostname = (String) this.propertyMap.get(HOSTNAME_KEY);
-        if (existingHostname == null) {
-            this.propertyMap.put(CoreConstants.HOSTNAME_KEY, hostname);
-        } else {
-
-        }
     }
 
     public Object getObject(String key) {
