@@ -47,7 +47,10 @@ public class IfAction extends Action {
         }
 
         ic.pushObject(this);
-        if (!EnvUtil.isJaninoAvailable()) {
+        
+        boolean useJavaScript = Boolean.TRUE.equals(ic.getObjectMap().get(PropertyEvalJavaScriptBuilder.CONDITIONAL_JS_ATTR));
+        
+        if (!useJavaScript && !EnvUtil.isJaninoAvailable()) {
             addError(MISSING_JANINO_MSG);
             addError(MISSING_JANINO_SEE);
             return;
@@ -59,10 +62,15 @@ public class IfAction extends Action {
 
         if (!OptionHelper.isEmpty(conditionAttribute)) {
             conditionAttribute = OptionHelper.substVars(conditionAttribute, ic, context);
-            PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(ic);
-            pesb.setContext(context);
+            Evaluation builder;
+            if (useJavaScript) {
+                builder = new PropertyEvalJavaScriptBuilder(ic);
+            } else {
+                builder = new PropertyEvalScriptBuilder(ic);
+            }
+            builder.setContext(context);
             try {
-                condition = pesb.build(conditionAttribute);
+                condition = builder.build(conditionAttribute);
             } catch (Exception e) {
                 addError("Failed to parse condition [" + conditionAttribute + "]", e);
             }
