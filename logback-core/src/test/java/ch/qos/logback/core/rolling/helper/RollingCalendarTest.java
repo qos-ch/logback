@@ -17,11 +17,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,7 +31,8 @@ import ch.qos.logback.core.util.EnvUtil;
 
 public class RollingCalendarTest {
 
-  String dailyPattern = "yyyy-MM-dd";
+   String dailyPattern = "yyyy-MM-dd";
+   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS zzz";
 
    @Before
    public void setUp() {
@@ -56,7 +58,7 @@ public class RollingCalendarTest {
    @After
    public void tearDown() {
    }
-   
+
     @Test
     public void testPeriodicity() {
         {
@@ -98,6 +100,11 @@ public class RollingCalendarTest {
             RollingCalendar rc = new RollingCalendar("yyyy-WW");
             assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
         }
+
+        {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
+            assertEquals(PeriodicityType.HALF_DAY, rc.getPeriodicityType());
+        }
     }
 
     @Test
@@ -128,6 +135,112 @@ public class RollingCalendarTest {
             long origin = now - ((now + offset) % (MILLIS_IN_DAY));
             long expected = origin + p * MILLIS_IN_DAY;
             assertEquals("p=" + p, expected, result.getTime());
+        }
+    }
+
+    @Test
+    public void testHalfDailyWithZeroPeriod() {
+        testHalfDailyWithPeriod("2017-08-15T12:00:00.000 GMT", "2017-08-15T12:00:00.001 GMT", 0);
+        testHalfDailyWithPeriod("2017-08-15T12:00:00.000 GMT", "2017-08-15T12:00:00.000 GMT", 0);
+        testHalfDailyWithPeriod("2017-08-15T12:00:00.000 GMT", "2017-08-15T23:59:59.999 GMT", 0);
+        testHalfDailyWithPeriod("2017-08-15T00:00:00.000 GMT", "2017-08-15T00:00:00.000 GMT", 0);
+        testHalfDailyWithPeriod("2017-08-15T00:00:00.000 GMT", "2017-08-15T00:00:00.001 GMT", 0);
+        testHalfDailyWithPeriod("2017-08-15T00:00:00.000 GMT", "2017-08-15T11:59:59.999 GMT", 0);
+    }
+
+    private void testHalfDailyWithPeriod(String expected, String baseDate, int period) {
+        RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
+        Date date = stringToDate(baseDate);
+        Date result = rc.getEndOfNextNthPeriod(date, period);
+        String message = String.format("When period is %d, %s should result in %s", period, baseDate, expected);
+        Assert.assertEquals(message, expected, dateToString(result));
+    }
+
+    @Test
+    public void testHalfDailyWithPositivePeriods() {
+        String noon = "2017-08-15T12:00:00.000 GMT";
+        String oneMiliBeforeNoon = "2017-08-15T11:59:59.999 GMT";
+        String oneMiliBeforeMidnight = "2017-08-15T23:59:59.999 GMT";
+        String midnight = "2017-08-15T00:00:00.000 GMT";
+
+        testHalfDailyWithPeriod("2017-08-16T00:00:00.000 GMT", noon, 1);
+        testHalfDailyWithPeriod("2017-08-15T12:00:00.000 GMT", oneMiliBeforeNoon, 1);
+        testHalfDailyWithPeriod("2017-08-16T00:00:00.000 GMT", oneMiliBeforeMidnight, 1);
+        testHalfDailyWithPeriod("2017-08-15T12:00:00.000 GMT", midnight, 1);
+
+        testHalfDailyWithPeriod("2017-08-16T12:00:00.000 GMT", noon, 2);
+        testHalfDailyWithPeriod("2017-08-16T00:00:00.000 GMT", oneMiliBeforeNoon, 2);
+        testHalfDailyWithPeriod("2017-08-16T12:00:00.000 GMT", oneMiliBeforeMidnight, 2);
+        testHalfDailyWithPeriod("2017-08-16T00:00:00.000 GMT", midnight, 2);
+
+        testHalfDailyWithPeriod("2017-08-17T00:00:00.000 GMT", noon, 3);
+        testHalfDailyWithPeriod("2017-08-16T12:00:00.000 GMT", oneMiliBeforeNoon, 3);
+        testHalfDailyWithPeriod("2017-08-17T00:00:00.000 GMT", oneMiliBeforeMidnight, 3);
+        testHalfDailyWithPeriod("2017-08-16T12:00:00.000 GMT", midnight, 3);
+    }
+
+    @Test
+    public void testHalfDailyWithNegativePeriods() {
+        testHalfDailyWithPeriod("2017-08-15T00:00:00.000 GMT", "2017-08-15T12:00:00.001 GMT", -1);
+        testHalfDailyWithPeriod("2017-08-15T00:00:00.000 GMT", "2017-08-15T12:00:00.000 GMT", -1);
+        testHalfDailyWithPeriod("2017-08-14T12:00:00.000 GMT", "2017-08-15T11:59:59.999 GMT", -1);
+
+        testHalfDailyWithPeriod("2017-08-14T12:00:00.000 GMT", "2017-08-15T12:00:00.001 GMT", -2);
+        testHalfDailyWithPeriod("2017-08-14T12:00:00.000 GMT", "2017-08-15T12:00:00.000 GMT", -2);
+        testHalfDailyWithPeriod("2017-08-14T00:00:00.000 GMT", "2017-08-15T11:59:59.999 GMT", -2);
+
+        testHalfDailyWithPeriod("2017-08-14T00:00:00.000 GMT", "2017-08-15T12:00:00.001 GMT", -3);
+        testHalfDailyWithPeriod("2017-08-14T00:00:00.000 GMT", "2017-08-15T12:00:00.000 GMT", -3);
+        testHalfDailyWithPeriod("2017-08-13T12:00:00.000 GMT", "2017-08-15T11:59:59.999 GMT", -3);
+    }
+
+    @Test
+    public void testHalfDailyAtTheEdges() {
+        testHalfDailyWithPeriod("2017-09-01T00:00:00.000 GMT","2017-08-31T12:00:00.000 GMT", 1 );
+        testHalfDailyWithPeriod("2017-07-31T12:00:00.000 GMT","2017-08-01T00:00:00.000 GMT", -1 );
+
+        testHalfDailyWithPeriod("2018-01-01T00:00:00.000 GMT", "2017-12-31T12:00:00.000 GMT", 1);
+        testHalfDailyWithPeriod("2016-12-31T12:00:00.000 GMT", "2017-01-01T00:00:00.000 GMT", -1);
+    }
+
+    @Test
+    public void testHalfDailyBarriersCrossed() {
+        RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
+        long barriersCrossed = rc.periodBarriersCrossed(stringToDate("2017-08-13T12:00:00.000 GMT").getTime(),
+                stringToDate("2017-08-14T00:00:00.000 GMT").getTime());
+
+        long barriersCrossed2 = rc.periodBarriersCrossed(stringToDate("2017-08-13T23:59:59.999 GMT").getTime(),
+                stringToDate("2017-08-14T00:00:00.001 GMT").getTime());
+
+        long barriersCrossed3 = rc.periodBarriersCrossed(stringToDate("2017-08-13T23:59:59.999 GMT").getTime(),
+                stringToDate("2017-08-14T12:00:00.001 GMT").getTime());
+
+        long barriersCrossed4 = rc.periodBarriersCrossed(stringToDate("2017-08-13T12:00:00.000 GMT").getTime(),
+                stringToDate("2017-08-14T12:00:00.001 GMT").getTime());
+
+        long barriersCrossed5 = rc.periodBarriersCrossed(stringToDate("2017-08-13T12:00:00.000 GMT").getTime(),
+                stringToDate("2017-08-13T23:59:59.999 GMT").getTime());
+
+        Assert.assertEquals(1, barriersCrossed);
+        Assert.assertEquals(1, barriersCrossed2);
+        Assert.assertEquals(2, barriersCrossed3);
+        Assert.assertEquals(2, barriersCrossed4);
+        Assert.assertEquals(0, barriersCrossed5);
+    }
+
+    private String dateToString(Date date) {
+        final SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        final TimeZone utc = TimeZone.getTimeZone("GMT");
+        sdf.setTimeZone(utc);
+        return sdf.format(date);
+    }
+
+    private Date stringToDate(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        try {
+            return sdf.parse(dateStr);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
         }
     }
 
