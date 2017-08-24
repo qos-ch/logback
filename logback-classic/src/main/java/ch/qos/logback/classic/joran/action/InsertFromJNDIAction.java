@@ -33,52 +33,51 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class InsertFromJNDIAction extends Action {
 
-  public static final String ENV_ENTRY_NAME_ATTR="env-entry-name";
-  public static final String AS_ATTR="as";
-  
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    public static final String ENV_ENTRY_NAME_ATTR = "env-entry-name";
+    public static final String AS_ATTR = "as";
 
-    int errorCount = 0;
-    String envEntryName = ec.subst(attributes.getValue(ENV_ENTRY_NAME_ATTR));
-    String asKey = ec.subst(attributes.getValue(AS_ATTR));
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
 
-    String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
-    Scope scope = ActionUtil.stringToScope(scopeStr);
+        int errorCount = 0;
+        String envEntryName = ec.subst(attributes.getValue(ENV_ENTRY_NAME_ATTR));
+        String asKey = ec.subst(attributes.getValue(AS_ATTR));
 
-    String envEntryValue;
-    
-    if(OptionHelper.isEmpty(envEntryName)) {
-      String lineColStr = getLineColStr(ec);
-      addError("["+ENV_ENTRY_NAME_ATTR+"] missing, around "+lineColStr);
-      errorCount++;
-    }
-    
-    if(OptionHelper.isEmpty(asKey)) {
-      String lineColStr = getLineColStr(ec);
-      addError("["+AS_ATTR+"] missing, around "+lineColStr);
-      errorCount++;
-    }
-    
-    if(errorCount != 0) {
-      return;
-    }
-    
-    try {
-      Context ctx = JNDIUtil.getInitialContext();
-      envEntryValue = JNDIUtil.lookup(ctx, envEntryName);
-      if(OptionHelper.isEmpty(envEntryValue)) {
-        addError("["+envEntryName+"] has null or empty value");
-      } else {
-        addInfo("Setting variable ["+asKey+"] to ["+envEntryValue+"] in ["+scope+"] scope");
-        ActionUtil.setProperty(ec, asKey, envEntryValue, scope);
-      }
-    } catch (NamingException e) {
-      addError("Failed to lookup JNDI env-entry ["+envEntryName+"]");
-    }
-    
-    
-  }
+        String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
+        Scope scope = ActionUtil.stringToScope(scopeStr);
 
-  public void end(InterpretationContext ec, String name) {
-  }
+        String envEntryValue;
+
+        if (OptionHelper.isEmpty(envEntryName)) {
+            String lineColStr = getLineColStr(ec);
+            addError("[" + ENV_ENTRY_NAME_ATTR + "] missing, around " + lineColStr);
+            errorCount++;
+        }
+
+        if (OptionHelper.isEmpty(asKey)) {
+            String lineColStr = getLineColStr(ec);
+            addError("[" + AS_ATTR + "] missing, around " + lineColStr);
+            errorCount++;
+        }
+
+        if (errorCount != 0) {
+            return;
+        }
+
+        try {
+            Context ctx = JNDIUtil.getInitialContext();
+            envEntryValue = JNDIUtil.lookup(ctx, envEntryName);
+            if (OptionHelper.isEmpty(envEntryValue)) {
+                addError("[" + envEntryName + "] has null or empty value");
+            } else {
+                addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");
+                ActionUtil.setProperty(ec, asKey, envEntryValue, scope);
+            }
+        } catch (NamingException e) {
+            addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");
+        }
+
+    }
+
+    public void end(InterpretationContext ec, String name) {
+    }
 }

@@ -26,25 +26,24 @@ import ch.qos.logback.classic.spi.ClassPackagingData;
  */
 public class Util {
 
-  static Map<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
+    static Map<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
 
-  static public boolean match(Marker marker, Marker[] markerArray) {
-    if (markerArray == null) {
-      throw new IllegalArgumentException("markerArray should not be null");
+    static public boolean match(Marker marker, Marker[] markerArray) {
+        if (markerArray == null) {
+            throw new IllegalArgumentException("markerArray should not be null");
+        }
+
+        // System.out.println("event marker="+marker);
+
+        final int size = markerArray.length;
+        for (int i = 0; i < size; i++) {
+            // System.out.println("other:"+markerArray[i]);
+
+            if (marker.contains(markerArray[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    // System.out.println("event marker="+marker);
-
-    final int size = markerArray.length;
-    for (int i = 0; i < size; i++) {
-      // System.out.println("other:"+markerArray[i]);
-
-      if (marker.contains(markerArray[i])) {
-        return true;
-      }
-    }
-    return false;
-  }
-
- 
 }

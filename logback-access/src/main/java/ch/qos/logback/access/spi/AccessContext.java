@@ -31,68 +31,67 @@ import ch.qos.logback.core.spi.FilterReply;
  * 
  * @author S&eacute;bastien Pennec
  */
-public class AccessContext extends ContextBase implements
-    AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
+public class AccessContext extends ContextBase implements AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
-  AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
-  FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
+    AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
+    FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
 
-  public void callAppenders(IAccessEvent event) {
-    aai.appendLoopOnAppenders(event);
-  }
+    public void callAppenders(IAccessEvent event) {
+        aai.appendLoopOnAppenders(event);
+    }
 
-  @Override
-  public void addAppender(Appender<IAccessEvent> newAppender) {
-    aai.addAppender(newAppender);
-  }
+    @Override
+    public void addAppender(Appender<IAccessEvent> newAppender) {
+        aai.addAppender(newAppender);
+    }
 
-  @Override
-  public void detachAndStopAllAppenders() {
-    aai.detachAndStopAllAppenders();
-  }
+    @Override
+    public void detachAndStopAllAppenders() {
+        aai.detachAndStopAllAppenders();
+    }
 
-  @Override
-  public boolean detachAppender(Appender<IAccessEvent> appender) {
-    return aai.detachAppender(appender);
-  }
+    @Override
+    public boolean detachAppender(Appender<IAccessEvent> appender) {
+        return aai.detachAppender(appender);
+    }
 
-  @Override
-  public boolean detachAppender(String name) {
-    return aai.detachAppender(name);
-  }
+    @Override
+    public boolean detachAppender(String name) {
+        return aai.detachAppender(name);
+    }
 
-  @Override
-  public Appender<IAccessEvent> getAppender(String name) {
-    return aai.getAppender(name);
-  }
+    @Override
+    public Appender<IAccessEvent> getAppender(String name) {
+        return aai.getAppender(name);
+    }
 
-  @Override
-  public boolean isAttached(Appender<IAccessEvent> appender) {
-    return aai.isAttached(appender);
-  }
+    @Override
+    public boolean isAttached(Appender<IAccessEvent> appender) {
+        return aai.isAttached(appender);
+    }
 
-  @Override
-  public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
-    return aai.iteratorForAppenders();
-  }
+    @Override
+    public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
+        return aai.iteratorForAppenders();
+    }
 
-  @Override
-  public void addFilter(Filter<IAccessEvent> newFilter) {
-    fai.addFilter(newFilter);
-  }
+    @Override
+    public void addFilter(Filter<IAccessEvent> newFilter) {
+        fai.addFilter(newFilter);
+    }
 
-  @Override
-  public void clearAllFilters() {
-    fai.clearAllFilters();
-  }
+    @Override
+    public void clearAllFilters() {
+        fai.clearAllFilters();
+    }
 
-  @Override
-  public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
-    return fai.getCopyOfAttachedFiltersList();
-  }
+    @Override
+    public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
+        return fai.getCopyOfAttachedFiltersList();
+    }
 
-  @Override
-  public FilterReply getFilterChainDecision(IAccessEvent event) {
-    return fai.getFilterChainDecision(event);
-  }
+    @Override
+    public FilterReply getFilterChainDecision(IAccessEvent event) {
+        return fai.getFilterChainDecision(event);
+    }
 }

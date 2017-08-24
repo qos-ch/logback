@@ -28,17 +28,16 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  */
 public class PrintMeImplicitAction extends ImplicitAction {
 
-  public boolean isApplicable(ElementPath elementPath, Attributes attributes,
-      InterpretationContext ec) {
-    String printmeStr = attributes.getValue("printme");
+    public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
+        String printmeStr = attributes.getValue("printme");
 
-    return Boolean.valueOf(printmeStr).booleanValue();
-  }
+        return Boolean.valueOf(printmeStr).booleanValue();
+    }
 
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    System.out.println("Element [" + name + "] asked to be printed.");
-  }
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        System.out.println("Element [" + name + "] asked to be printed.");
+    }
 
-  public void end(InterpretationContext ec, String name) {
-  }
+    public void end(InterpretationContext ec, String name) {
+    }
 }

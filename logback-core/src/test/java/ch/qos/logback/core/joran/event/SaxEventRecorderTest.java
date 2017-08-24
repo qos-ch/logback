@@ -38,72 +38,68 @@ import ch.qos.logback.core.util.CoreTestConstants;
  */
 public class SaxEventRecorderTest {
 
-  Context context =  new ContextBase();
-  StatusChecker statusChecker = new StatusChecker(context);
+    Context context = new ContextBase();
+    StatusChecker statusChecker = new StatusChecker(context);
 
-  SAXParser createParser() throws Exception {
-    SAXParserFactory spf = SAXParserFactory.newInstance();
-    return spf.newSAXParser();
-  }
-
-  public List<SaxEvent> doTest(String filename) throws Exception {
-    SaxEventRecorder recorder = new SaxEventRecorder(context);
-    FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_SRC_PREFIX
-        + "input/joran/"+ filename);
-    recorder.recordEvents(fis);
-    return  recorder.getSaxEventList();
-    
- 
-  }
- 
-  public void dump(List<SaxEvent> seList) {
-    for (SaxEvent se : seList) {
-      System.out.println(se);
+    SAXParser createParser() throws Exception {
+        SAXParserFactory spf = SAXParserFactory.newInstance();
+        return spf.newSAXParser();
     }
-  }
 
-  @Test
-  public void test1() throws Exception {
-    List<SaxEvent> seList = doTest("event1.xml");
-    assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
-    //dump(seList);  
-    assertEquals(11, seList.size());
-  }
+    public List<SaxEvent> doTest(String filename) throws Exception {
+        SaxEventRecorder recorder = new SaxEventRecorder(context);
+        FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + filename);
+        recorder.recordEvents(fis);
+        return recorder.getSaxEventList();
 
-  @Test
-  public void test2() throws Exception {
-    List<SaxEvent> seList = doTest("ampEvent.xml");
-    StatusManager sm = context.getStatusManager();
-    assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
-    //dump(seList);  
-    assertEquals(3, seList.size());
-    
-    BodyEvent be = (BodyEvent) seList.get(1);
-    assertEquals("xxx & yyy", be.getText());
-  }
+    }
 
-  @Test
-  public void test3() throws Exception {
-    List<SaxEvent> seList = doTest("inc.xml");
-    StatusManager sm = context.getStatusManager();
-    assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
-    //dump(seList);
-    assertEquals(4, seList.size());
-    
-    StartEvent se = (StartEvent) seList.get(1);
-    Attributes attr = se.getAttributes();
-    assertNotNull(attr);
-    assertEquals("1", attr.getValue("increment"));
-  }
-  
-  @Test
-  public void bodyWithSpacesAndQuotes() throws Exception {
-    List<SaxEvent> seList = doTest("spacesAndQuotes.xml");
-    assertEquals(3, seList.size());
-    BodyEvent be = (BodyEvent) seList.get(1);
-    assertEquals("[x][x] \"xyz\"%n", be.getText());
-  }
-  
-  
+    public void dump(List<SaxEvent> seList) {
+        for (SaxEvent se : seList) {
+            System.out.println(se);
+        }
+    }
+
+    @Test
+    public void test1() throws Exception {
+        List<SaxEvent> seList = doTest("event1.xml");
+        assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+        // dump(seList);
+        assertEquals(11, seList.size());
+    }
+
+    @Test
+    public void test2() throws Exception {
+        List<SaxEvent> seList = doTest("ampEvent.xml");
+        StatusManager sm = context.getStatusManager();
+        assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+        // dump(seList);
+        assertEquals(3, seList.size());
+
+        BodyEvent be = (BodyEvent) seList.get(1);
+        assertEquals("xxx & yyy", be.getText());
+    }
+
+    @Test
+    public void test3() throws Exception {
+        List<SaxEvent> seList = doTest("inc.xml");
+        StatusManager sm = context.getStatusManager();
+        assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+        // dump(seList);
+        assertEquals(4, seList.size());
+
+        StartEvent se = (StartEvent) seList.get(1);
+        Attributes attr = se.getAttributes();
+        assertNotNull(attr);
+        assertEquals("1", attr.getValue("increment"));
+    }
+
+    @Test
+    public void bodyWithSpacesAndQuotes() throws Exception {
+        List<SaxEvent> seList = doTest("spacesAndQuotes.xml");
+        assertEquals(3, seList.size());
+        BodyEvent be = (BodyEvent) seList.get(1);
+        assertEquals("[x][x] \"xyz\"%n", be.getText());
+    }
 
 }

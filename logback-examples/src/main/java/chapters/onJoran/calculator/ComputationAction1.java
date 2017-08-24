@@ -13,14 +13,11 @@
  */
 package chapters.onJoran.calculator;
 
-
-
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
-
 
 /**
  * ComputationAction1 will print the result of the compuration made by 
@@ -31,31 +28,30 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ComputationAction1 extends Action {
-  public static final String NAME_ATR = "name";
+    public static final String NAME_ATR = "name";
 
-  String nameStr;
+    String nameStr;
 
-  /**
-   * Store the value of the name attribute for future use.
-   */
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    nameStr = attributes.getValue(NAME_ATR);
-  }
-
-  /**
-   * Children elements have been processed. The sesults should be an integer 
-   * placed at the top of the execution stack.
-   * 
-   * This value will be printed on the console but only if the action is 
-   * named. Anonymous computation will not print their result.
-   */
-  public void end(InterpretationContext ec, String name) {
-    if (OptionHelper.isEmpty(nameStr)) {
-      // nothing to do
-    } else {
-      Integer i = (Integer) ec.peekObject();
-      System.out.println(
-        "The computation named [" + nameStr + "] resulted in the value " + i);
+    /**
+     * Store the value of the name attribute for future use.
+     */
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        nameStr = attributes.getValue(NAME_ATR);
     }
-  }
+
+    /**
+     * Children elements have been processed. The sesults should be an integer 
+     * placed at the top of the execution stack.
+     * 
+     * This value will be printed on the console but only if the action is 
+     * named. Anonymous computation will not print their result.
+     */
+    public void end(InterpretationContext ec, String name) {
+        if (OptionHelper.isEmpty(nameStr)) {
+            // nothing to do
+        } else {
+            Integer i = (Integer) ec.peekObject();
+            System.out.println("The computation named [" + nameStr + "] resulted in the value " + i);
+        }
+    }
 }

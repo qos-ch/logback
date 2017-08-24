@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-
 /**
  * By throwing an exception an action can signal the Interpreter to skip
  * processing of all the nested (child) elements of the element associated with
@@ -23,14 +22,13 @@ package ch.qos.logback.core.joran.spi;
  */
 public class ActionException extends Exception {
 
-  
-  private static final long serialVersionUID = 2743349809995319806L;
+    private static final long serialVersionUID = 2743349809995319806L;
 
-  public ActionException() {
-  }
+    public ActionException() {
+    }
 
-  public ActionException(final Throwable rootCause) {
-    super(rootCause);
-  }
+    public ActionException(final Throwable rootCause) {
+        super(rootCause);
+    }
 
 }

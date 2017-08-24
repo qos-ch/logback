@@ -21,32 +21,31 @@ import org.osgi.framework.FrameworkListener;
 
 public class FrameworkErrorListener implements FrameworkListener {
 
-  public List errorList = new ArrayList();
-  
-  @SuppressWarnings("unchecked")
-  public void frameworkEvent(FrameworkEvent fe) {
-    if (fe.getType() == FrameworkEvent.ERROR) {
-      errorList.add(fe);
-    }
-  }
-  
-  private void dump(FrameworkEvent fe) {
-    Throwable t = fe.getThrowable();
-    String tString = null;
-    if (t != null) {
-      tString = t.toString();
-    }
-    System.out.println("Framework ERROR:" + ", source " + fe.getSource()
-        + ", bundle=" + fe.getBundle() + ", ex=" + tString);
-    if(t != null) {
-      t.printStackTrace();
-    }
-  }
+    public List errorList = new ArrayList();
 
-  public void dumpAll() {
-    for(int i = 0; i < errorList.size(); i++) {
-      FrameworkEvent fe = (FrameworkEvent) errorList.get(i);
-      dump(fe);
+    @SuppressWarnings("unchecked")
+    public void frameworkEvent(FrameworkEvent fe) {
+        if (fe.getType() == FrameworkEvent.ERROR) {
+            errorList.add(fe);
+        }
     }
-  }
+
+    private void dump(FrameworkEvent fe) {
+        Throwable t = fe.getThrowable();
+        String tString = null;
+        if (t != null) {
+            tString = t.toString();
+        }
+        System.out.println("Framework ERROR:" + ", source " + fe.getSource() + ", bundle=" + fe.getBundle() + ", ex=" + tString);
+        if (t != null) {
+            t.printStackTrace();
+        }
+    }
+
+    public void dumpAll() {
+        for (int i = 0; i < errorList.size(); i++) {
+            FrameworkEvent fe = (FrameworkEvent) errorList.get(i);
+            dump(fe);
+        }
+    }
 }

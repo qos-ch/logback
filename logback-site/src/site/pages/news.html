@@ -19,6 +19,9 @@
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="templates/left.js" type="text/javascript"></script>
     </div>
+    <div id="right">
+      <script src="templates/right.js" type="text/javascript"></script>
+    </div>
     <div id="content">
 	
     <h2>Logback News</h2>
@@ -27,8 +30,494 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+    <!--
+    <hr width="80%" align="center" />
+
+    <h3>, 2017, Release of version 1.3.0</h3>
+    
+    <p class="highlight">Version 1.3.x and later require JDK 1.7.</p>
+
+    <p>Version 1.3.x and later require JDK 1.7.</p>
+    -->
+    
+    <hr width="80%" align="center" />
+
+    <h3>March 30th, 2017, Release of version 1.2.3</h3>
+
+    <p>Fix unintentional dependency on
+    <code>OutputStreamAppender</code> in
+    <code>LayoutWrappingEncoder</code> as reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1287">LOGBACK-1287</a>.
+    </p>
+    
+    <p>Fix spurious <code>System.out.println</code> in AsyncAppender's
+    worker thread. This issue was reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1292">LOGBACK-1292</a> by
+    Nikolas Loutas with Thibault Meyer the relevant patch.</p>
+
+    <p>ConsoleAppender exception when run under Java WebStart. This
+    problem was reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1282">LOGBACK-1282</a> by
+    Clas Forsberg.</p>
+    
+    <h3>March 16th, 2017, Release of version 1.2.2</h3>
+
+    <p><code>AsyncAppender</code> no longer drops events when the
+    current thread has its interrupt flag set. This issue was reported
+    in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1247">LOGBACK-1247</a> by
+    Jakob Bergendahl who also provided the relevant pull request.
+    </p>
+
+    <p>Removed <code>JMSQueueAppender</code> and
+    <code>JMSTopicAppender</code>. These appenders were undocumented
+    and had no apparent users.</p>
+    
+    <p>Remove comment in logback-classic's
+    <code>META-INF/services/javax.servlet.ServletContainerInitializer</code>
+    file in order to keep Wildfly 8 happy. This issue was reported in
+    <a href="https://jira.qos.ch/browse/LOGBACK-1265">LOGBACK-1265</a>
+    by Andy Wilkinson.
+    </p>
+
+    <p><code>FileSize.toString()</code> now reports files sizes in GB
+    in addition to sizes in MB and KB and Bytes. This fixes issue <a
+    href="https://jira.qos.ch/browse/LOGBACK-1278">LOGBACK-1278</a>.</p>
+    
+    <hr width="80%" align="center" />
+
+    <h3>March 1st, 2017, Release of version 1.1.11</h3>
+    
+    <p>Fix thread-safety issue with <code>PatternLayoutBase</code>
+    reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1270">LOGBACK-1270</a> by
+    Artem Bilan. Note that the fix was already present in the 1.2.x
+    series and was back-ported to the 1.1.x series.</p>
+
+    <hr width="80%" align="center" />
+
+    <h3>February 9th, 2017, Release of version 1.2.1</h3>
+
+    <p>To ensure backward compatibility of configuration files, the
+    <span class="prop">immediateFlush</span> property set for a
+    <code>LayoutWrappingEncoder</code> is propagated to the enclosing
+    <code>OutputStreamAppender</code>.
+    </p>
+
+    <hr width="80%" align="center" />
+
+    <h3>February 8th, 2017, Release of version 1.2.0</h3>
+
+    <div class="breaking">
+      <h4><code>Encoder</code> interface has changed and is no longer
+      expected to handle an <code>OutputStream</code>.</h4>
+    </div>
+
+
+    <p><code>Encoder</code> interface has changed and is no longer
+    expected to handle an <code>OutputStream</code>. This
+    simplification allows finer-grain locking resulting in <a class="big"
+    href="https://docs.google.com/spreadsheets/d/1cpb5D7qnyye4W0RTlHUnXedYK98catNZytYIu5D91m0/edit?usp=sharing">significantly
+    improved performance</a>.
+    </p>
+
+    <p class="highlight">Release 1.2.0 fixes a rather severe
+    serialization vulnerability in <code>SocketServer</code> and
+    <code>ServerSocketReceiver</code>. Users running these components
+    should upgrade immediately.</p>
+
+    
+    <p>This release fixes a rather severe serialization vulnerability
+    in <code>SocketServer</code> and
+    <code>ServerSocketReceiver</code>. Users running these components
+    should upgrade immediately.
+    </p>
+
+    <p>In <code>TimeBasedRollingPolicy</code>, fixed issue with <span
+    class="option">totalSizeCap</span> of more than 2^31. This problem
+    was reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1231">1231</a> by Simon
+    Teng.
+    </p>
+
+    <p>Logback-classic now searches for the file
+    <em>logback-test.xml</em> first, <em>logback.groovy</em> second
+    and <em>logback.xml</em> third. In previous versions
+    <em>logback.groovy</em> was looked up first which was non-sensical
+    in presense of <em>logback-test.xml</em>. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-1245">LOGBACK-1245</a>
+    reported by Joern Huxhorn.
+    </p>
+ 
+
+    <hr width="80%" align="center" />
+
+    <h3>February 5th, 2017, Release of version 1.1.10</h3>
+
+    <p>Several changes to improve throughput (see <a
+    href="https://docs.google.com/spreadsheets/d/1cpb5D7qnyye4W0RTlHUnXedYK98catNZytYIu5D91m0/edit?usp=sharing"><b>spreadsheet</b></a>)
+    </p>
+
+    <ol>
+      <li>The <code>ReentrantLock</code> in
+      <code>OutputStreamAppender</code> is now "unfair". In previous
+      versions of logback, a fair lock was used. Fair locks are much
+      slower. Just as importanly, logback has no mandate to influence
+      thread scheduling.
+      </li>
+
+      <li><code>FileAppender</code> now offers the <span
+      class="option">bufferSize</span> option. Previously, a
+      fixed-size 8K buffer was used. Increasing the <span
+      class="option">bufferSize</span>, for example to 256K,
+      significantly reduces thread-contention.
+      </li>
+
+      <li>Critical parts of the code now use
+      <code>COWArrayList</code>, a custom developed allocation-free
+      lock-free thread-safe implementation of the {@link List}
+      interface. It is optimized for cases where iterations over the
+      list vastly outnumber modifications on the list. It is based on
+      <code>CopyOnWriteArrayList</code> but allows allocation-free
+      iterations over the list.
+      </li>
+
+      <li>In <code>PatternLayoutBase</code> the same
+      <code>StringBuilder</code> is used over and over to reduce
+      memory allocation. This is safe as long as the owning appender
+      guarantees serial access to its layout.  In the next version of
+      logback, i.e. 1.2.x, the read-write lock will no longer protect
+      access to the layout and there will be no guarantee of
+      serial access.
+      </li>
+    </ol>
+
+    <p>In web-applications, logback-classic will <a
+    href="manual/configuration.html#webShutdownHook">automatically
+    install a listener</a> which will stop the logging context and
+    release resources when your web-app is reloaded. This enhancement
+    was requested <a
+    href="https://jira.qos.ch/browse/LOGBACK-1170">LOGBACK-1170</a> by
+    Martin Wegner.
+    </p>
+
+    <p>The <code>AccessEvent.prepareForDeferredProcessing()</code>
+    method was not idempotent. This caused subtle bugs under
+    Jetty. See <a
+    href="https://jira.qos.ch/browse/LOGBACK-1189">LOGBACK-1189</a>
+    for details. Many thanks to Per Olesen, Evan Meagher, Nick Babcock
+    and Mark Elliot for hunting down this bug.
+    </p>
+    
+    <p>As it may be time consuming in certain environments, the
+    HOSTNAME property is now computed lazily. This optimization
+    requested in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1221">LOGBACK-1221</a> by
+    Eugene Petrenko.
+    </p>
+
+
+    <p>Joran now supports external XML entities. This feature was
+    requested in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1091">1091</a> and the
+    relevant PR graciously provided by Jonas Neukomm.
+    </p>
+
+   <hr width="80%" align="center" />
+
+    <h3>January 20th, 2017, Release of version 1.1.9</h3>
+
+    <p>Logback's internal executor service had a thread pool size of 2
+    which could be used up rather quickly, e.g. configuration scanning
+    in addition to an active <code>ServerSocketAppender</code>. When
+    both threads where permanently in use, compression could not
+    proceed. To alleviate this problem, the thread pool size has been
+    increased to 8. See issue <a
+    href="https://jira.qos.ch/browse/LOGBACK-1238">LOGBACK-1238</a>
+    for more details.
+    </p>
+
+    <p>Fixed issue with <code>FileAppender</code> instances embedded
+    within <code>SiftingAppender</code> reporting filename collisions
+    after reaching timeout and subsequently restarted. This problem
+    was reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1167">LOGBACK-1167</a> by
+    Michael Edgar.
+    </p>
+
+    <p>Fixed <code>SizeAndTimeBasedFNATP</code> deprecation warning
+    emitted even the replacement,
+    i.e. <code>SizeAndTimeBasedRollingPolicy</code>, is in use. See <a
+    href="http://jira.qos.ch/browse/LOGBACK-1236">LOGBACK-1236</a>. This
+    issue was reported by Claudius Nicolae.      
+    </p>
+ 
+    <p>Added proper implementation for
+    <code>LobackValve.getScheduledExecutorService()</code> method. The
+    missing implementation manifested itself in the form of an
+    <code>UnsupportedOperationException</code> thrown by
+    LogbackValve. This problem is further described in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1181">LOGBACK-1181</a>
+    reported by Andreas von Roepenack.
+    </p>
+
+    <hr width="80%" align="center" />
+
+    <h3>December 9th, 2016, Release of version 1.1.8</h3>
+
+    <p>Removed the two period safeguard, aka untouchable periods, for
+    archive removal beyond the size specified by <span
+    class="option">totalSizeCap</span> in
+    <code>TimeBasedRollingPolicy</code>. It turns out the safegaurd is
+    not required and is unexpected as attested by <a
+    href="http://jira.qos.ch/browse/LOGBACK-1166">LOGBACK-1166</a>.
+    </p>
+    
+    <p>Fixed issue with Joran incorrectly reporting "Unexpected
+    aggregationType AS_BASIC_PROPERTY_COLLECTION". This issue was
+    raised in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1158">LOGBACK-1158</a> by
+    Christian H&uuml;bner.
+    </p>
+
+    <p>Gaffer (logback's groovy configurator) now supports the
+    <code>valueOf</code> convention. This issue was raised in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1232">LOGBACK-1232</a> by
+    Frans Orsel.
+    </p>
+
+    <p>The <code>org.slf4j.impl.StaticLoggerBinder</code> class
+    shipping in logback-classic no longer catches
+    <code>Throwable</code> but <code>Exception</code>. This change was
+    requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1159">LOGBACK-1159</a> by
+    David J. M. Karlsen.
+    </p>
+
+    <p><code>BeanDescriptionFactory</code> no longer outputs a
+    superflous warning message in case the class contains bridge
+    methods. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-1164">LOGBACK-1164</a>
+    reported by Phil Clay.
+    </p>
+
+    <!--
+    <p>Added logback-bom module for use as a Maven "Bill of Materials"
+    <em>pom</em> file. This was requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1157">LOGBACK-1157</a>
+    Joerg Sesterhenn.</p>
+    -->    
+
+    <hr width="80%" align="center" />
+
+    <h3>March 29th, 2016, Release of version 1.1.7</h3>
+    
+    <p>Logback is now <a href="
+    http://docs.oracle.com/javase/8/docs/technotes/guides/compactprofiles/compactprofiles.html">compact3
+    profile</a> compatible. This improvement was requested in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1071">LOGBACK-1071</a> by
+    Axel Fontaine with Max Urech providing the relevant pull-request.
+    </p>
+
+    <p>Fixed <code>ConcurrentModificationException</code> being thrown
+    when the <code>reset()</code> method is invoked on the
+    <code>LoggerContext</code> instance. This issue was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-397">LOGBACK-397</a> by
+    Szczepan Faber with Ross Sargant providing the relevant test case.
+    </p>
+
+    <p><code>TimeBasedRollingPolicy</code> now supports the <a
+    href="manual/appenders.html#tbrpTotalSizeCap"><span
+    class="option">totalSizeCap</span></a> property which allows the
+    user to limit the total size of archived logs.
+    </p>
+    
+    <p><a
+    href="manual/appenders.html#SizeAndTimeBasedRollingPolicy"><code>SizeAndTimeBasedRollingPolicy</code></a>
+    offers the same functionality as
+    <code>SizeAndTimeBasedFNATP</code> did previously but with a
+    simpler configuration structure.
+    </p>
+
+    <p>Archive removal by <code>RollingFileAppender</code> is now
+    performed asynchronously.</p>
+
+    <p>Unnecessary and incompatible %i token in <span
+    class="option">fileNamePattern</span> option with
+    <code>RollingFileAppender/TimeBasedRollingPolicy</code> is now
+    detected and the user alerted to the misconfiguration
+    problem. This fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-1143">LOGBACK-1143</a>.
+    </p>
+
+
+    <p>Joran can now handle logger names ending with a $, i.e. the
+    first character in variable substitution. This issue was raised in
+    <a href="http://jira.qos.ch/browse/LOGBACK-1149">LOGBACK-1149</a>
+    by by Stevo Slavic.
+    </p>
+
+
+
     <hr width="80%" align="center" />
     
+    <h3>February 29th, 2016, Release of version 1.1.6</h3>
+
+     <p><code>LogbackValve</code> (in logback-access) now attempts to
+    load the configuration file as a resource if it cannot be found on
+    the filesystem (<a
+    href="http://jira.qos.ch/browse/LOGBACK-1069">LOGBACK-1069</a>). This
+    is helpful in scenarios where applications are using an embedded
+    Tomcat server.</p>
+
+    <p><code>JMXConfigurator.reloadDefaultConfiguration()</code>
+    method now tolerates programmatic configuration without a
+    URL. This change was provided by Vedran Pavic in <a
+    href="https://github.com/qos-ch/logback/pull/302">PR 302</a>.
+    </p>
+
+    <p><code>RollingFileAppender</code> will output an error message
+    if the date time pattern in the %d token within the <span
+    class="option">fileNamePattern</span> is not collision free. This
+    fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-1137">LOGBACK-1137</a>. In
+    a similar vein, every instance of <code>FileAppender</code> will
+    now detect if it shares the same <span class="option">File</span>
+    option value as given for an appender defined earlier. In
+    addition, <code>RollingFileAppender</code> instances now check for
+    colliding <span class="option">FileNamePattern</span> values.</p>
+
+    <p>Fixed <code>NullPointerException</code> thrown by
+    <code>RollingFileAppender</code> if the name of the rollover
+    target path did not contain a parent. This issue was reported in
+    <a href="http://jira.qos.ch/browse/LOGBACK-1054">LOGBACK-1054</a>
+    by Paulius Matulionis. Analysis of the problem and the relevant PR
+    was provided by Ferenc Palkovics.</p>
+
+    <p><code>BasicConfigurator.configure</code> method call executes
+    significatly faster. Improved documentation for configuration
+    using JDK 1.6 service-provider facility. These changes are in
+    response to <a
+    href="http://jira.qos.ch/browse/LOGBACK-1141">LOGBACK-1141</a>
+    requesting faster logback start-up time.
+    </p>
+
+
+    <p>Fixed issue with variable substitution with the value ending in
+    a colon. This problem was reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-1140">LOGBACK-1140</a> by
+    Eric Cook.</p>
+
+    <hr width="80%" align="center" />
+    
+    <h3>February 13th, 2016, Release of version 1.1.5</h3>
+
+    <div class="breaking">
+      <h4>MDC values are no longer inherited by child threads.</h4>
+    </div>
+
+    <p>Child threads no longer inherit MDC values. In previous
+    versions of logback as well as log4j 1.x, MDC values were
+    inherited by child threads. Several users have argued convincingly
+    that MDC inheritance by child threads was unhelpful and even
+    dangerous. This change fixes <a
+    href="http://jira.qos.ch/browse/LOGBACK-422">LOGBACK-422</a> and <a
+    href="http://jira.qos.ch/browse/LOGBACK-624">LOGBACK-624</a>
+    </p>
+
+    <p>When the <code>FileNamePattern</code> string for
+    <code>RollingFileAppender/SizeAndTimeBasedFNATP</code> lacks a %i
+    token, then compression for the second archive in the same period
+    cannot occur as the target file already exists. Under those
+    circumstances, logback leaves behind .tmp files as reported in <a
+    href="http://jira.qos.ch/browse/LOGBACK-992">LOGBACK-992</a>, <a
+    href="http://jira.qos.ch/browse/LOGBACK-173">LOGBACK-173</a> and
+    <a
+    href="http://jira.qos.ch/browse/LOGBACK-920">LOGBACK-920</a>. In
+    this release, this particular condition is detected by
+    <code>RollingFileAppender</code> which will not start but alert
+    the user instead.
+    </p>
+
+    <p>AsyncAppender is now configurable to never block. This feature
+    was requested by Jeff Wartes in <a
+    href="http://jira.qos.ch/browse/LOGBACK-898">LOGBACK-898</a> with
+    Jeff Wartes and Gareth Davis providing the relevant patch.
+    </p>
+  
+
+    <hr width="80%" align="center" />
+    
+    <h3>February 11th, 2016, Release of version 1.1.4</h3>
+
+    <div class="breaking">
+      <h4>Logback 1.1.4 requires SLF4J version 1.7.16 or later.</h4>
+    </div>
+
+    <p>Added event replay support as introduced in SLF4J version
+    1.7.15. In most circumstances, logack-classic should run fine with
+    earlier versions of slf4j-api, including all versions in the 1.6.x
+    and 1.7.x series. However, with a version of slf4j-api.jar earlier
+    than 1.7.15 in the classpath, attempting introspection of a
+    <code>Logger</code> instance will result in a
+    <code>NoClassDefFoundError</code> similar to that shown below.
+    </p>
+
+    <pre class="prettyprint source">Exception in thread "main" java.lang.NoClassDefFoundError: org/slf4j/event/LoggingEvent
+        at java.lang.Class.getDeclaredMethods0(Native Method)
+        at java.lang.Class.privateGetDeclaredMethods(Class.java:2451)
+        at java.lang.Class.privateGetPublicMethods(Class.java:2571)
+        at java.lang.Class.getMethods(Class.java:1429)
+        at java.beans.Introspector.getPublicDeclaredMethods(Introspector.java:1261)
+        at java.beans.Introspector.getTargetMethodInfo(Introspector.java:1122)
+        at java.beans.Introspector.getBeanInfo(Introspector.java:414)
+        at java.beans.Introspector.getBeanInfo(Introspector.java:161)
+    </pre>
+
+    <p>
+    </p>
+
+    <div class="breaking">
+      <h4>Packaging data (as output in stack traces) is now disabled
+      by default.
+      </h4>
+    </div>
+
+    <p>In case an application throws exceptions frequently, then
+    computing packaging data can be very costly and will cause the
+    application to run slower. Making bad worse. To alleviate this
+    problem, packaging data is no longer computed by default. It has
+    to be <a href="manual/configuration.html#packagingData">enabled
+    explicitly</a>. In the absence of explicit instructions, i.e the
+    user has not specified a converter handling exceptions,
+    <code>PatternLayout</code> in logback-classic will follow the
+    settings defining for the logging environment. If packaging data
+    is disabled, then it add %ex as a suffix in the pattern, and if
+    packaging data is enabled then %xEx will be added. These changes
+    fix <a
+    href="http://jira.qos.ch/browse/LOGBACK-730">LOGBACK-730</a> and
+    <a href="http://jira.qos.ch/browse/LOGBACK-966">LOGBACK-966</a>.
+    </p>
+
+   
+    <p>Fixed a bug in
+    <code>TimeBasedFileNamingAndTriggeringPolicyBase</code> causing
+    time-based rolling policies to always rollover according to the
+    local system time and ignore the time zone passed in the file name
+    pattern. The issue was reported by Lukasz Sanek who also provided
+    the the relevant fix. </p>
+
+    <p><code>AsyncAppenderBase</code> now restores the current
+    thread's interrupt flag when catching an
+    <code>InterruptedException</code>. The issue
+    (<a href="http://jira.qos.ch/browse/LOGBACK-910">LOGBACK-910</a>) was
+    raised by Henrik Nordvik who also provided the relevant fix.</p>
+
+    <hr width="80%" align="center" />
+    
+    <h3>24th of March 2015, Release of version 1.1.3</h3>
+
+
     <div class="breaking">
       <h4>As of version 1.1.3, all logback modules require JDK 1.6
       instead of previously JDK 1.5. This change was put to
@@ -36,23 +525,6 @@
       raised.</h4>
     </div>
 
-    <h3> 2015, Release of version 1.1.4</h3>
-
-    <p>Fixed a bug in <code>TimeBasedFileNamingAndTriggeringPolicyBase</code>
-    causing time-based rolling policies to always rollover according
-    to the local system time and ignore the time zone passed in the file
-    name pattern.</p>
-
-    <p><code>AsyncAppenderBase</code> now restores the current
-    thread's interrupt flag when catching an
-    <code>InterruptedException</code>. The issue
-    (<a href="http://jira.qos.ch/browse/LOGBACK-910">LOGBACK-910</a>) was
-    raised by Henrik Nordvik who also provided the relevant fix.</p>
-    
-
-    <hr width="80%" align="center" />
-    
-    <h3>24th of March 2015, Release of version 1.1.3</h3>
 
     <p>Fixed <code>FileAppender</code>'s prudent mode so that it properly recovers
     from IO Errors
@@ -185,7 +657,7 @@
     </p>
 
     <p>Fixed <code>NullPointerException</code> when substituting blank variables
-    (<a href="http://jira.qos.ch/browse/LOGBACK-959">LOGBACK-959</a>)
+    (<a href="http://jira.qos.ch/browse/LOGBACK-959">LOGBACK-959</a>)</p>
 
     <p>Fixed <code>NullPointerException</code> that occurs when stopping a
     <code>SyslogAppender</code> that did not properly initialize, e.g.,
@@ -200,7 +672,7 @@
 
     <p>In case of missing included files, IncludeAction no longer
     prints a stack trace but prints a warning instead. (<a
-    href="http://jira.qos.ch/browse/LOGBACK-954">LOGBACK-954</a>)
+    href="http://jira.qos.ch/browse/LOGBACK-954">LOGBACK-954</a>)</p>
 
     <p>Fixed character escaping in XMLLayout
     (<a href="http://jira.qos.ch/browse/LOGBACK-728">LOGBACK-728</a>)

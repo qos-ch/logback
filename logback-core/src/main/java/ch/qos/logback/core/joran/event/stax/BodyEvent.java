@@ -17,25 +17,23 @@ import javax.xml.stream.Location;
 
 public class BodyEvent extends StaxEvent {
 
+    private String text;
 
-  private String text;
+    BodyEvent(String text, Location location) {
+        super(null, location);
+        this.text = text;
+    }
 
-  BodyEvent(String text, Location location) {
-    super(null, location);
-    this.text = text;
-  }
+    public String getText() {
+        return text;
+    }
 
-  public String getText() {
-    return text;
-  }
+    void append(String txt) {
+        text += txt;
+    }
 
-  void append(String txt) {
-    text += txt;
-  }
-
-  @Override
-  public String toString() {
-    return "BodyEvent(" + getText() + ")" + location.getLineNumber() + ","
-            + location.getColumnNumber();
-  }
+    @Override
+    public String toString() {
+        return "BodyEvent(" + getText() + ")" + location.getLineNumber() + "," + location.getColumnNumber();
+    }
 }

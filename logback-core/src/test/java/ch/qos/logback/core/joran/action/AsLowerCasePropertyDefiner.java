@@ -17,17 +17,17 @@ import ch.qos.logback.core.PropertyDefinerBase;
 
 public class AsLowerCasePropertyDefiner extends PropertyDefinerBase {
 
-  String val;
+    String val;
 
-  public String getPropertyValue() {
-    if (val == null) {
-      return null;
-    } else {
-      return val.toLowerCase();
+    public String getPropertyValue() {
+        if (val == null) {
+            return null;
+        } else {
+            return val.toLowerCase();
+        }
     }
-  }
 
-  public void setValue(String val) {
-    this.val = val;
-  }
+    public void setValue(String val) {
+        this.val = val;
+    }
 }

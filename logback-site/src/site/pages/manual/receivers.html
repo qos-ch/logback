@@ -185,7 +185,7 @@
       to the local console appender.</p>
     
       <p class="example">Example: Basic ServerSocketReceiver Configuration
-      (logback-examples/src/main/java/chapters/receivers/socket/receiver1.xml)</p>
+      (logback-examples/src/main/resources/chapters/receivers/socket/receiver1.xml)</p>
 
       <span class="asGroovy" onclick="return asGroovy('receiver1');">View as .groovy</span>
   <pre id="receiver1" class="prettyprint source">&lt;configuration debug="true">
@@ -245,7 +245,7 @@
       that acts in the server role.</p>
 
       <p class="example">Example: Basic SSLServerSocketReceiver Configuration
-      (logback-examples/src/main/java/chapters/receivers/socket/receiver2.xml)</p>
+      (logback-examples/src/main/resources/chapters/receivers/socket/receiver2.xml)</p>
       <span class="asGroovy" onclick="return asGroovy('receiver2');">View as .groovy</span>
   <pre id="receiver2" class="prettyprint source">&lt;configuration debug="true">
 
@@ -385,7 +385,7 @@
       appender acts as a server.</p>
         
       <p class="example">Example: Basic SocketReceiver Configuration
-      (logback-examples/src/main/java/chapters/receivers/socket/receiver3.xml)</p>
+      (logback-examples/src/main/resources/chapters/receivers/socket/receiver3.xml)</p>
       <span class="asGroovy" onclick="return asGroovy('receiver3');">View as .groovy</span>
   <pre id="receiver3" class="prettyprint source">&lt;configuration debug="true">
     
@@ -427,9 +427,13 @@
       succeeds or until the logger context is shut down.  The delay
       interval between attempts is configurable using the 
       <span class="prop">reconnectionDelay</span> property as shown in the
-      example configuration.<p class="source">java -Dhost=localhost -Dport=6000 \
+      example configuration.
+      </p>
+
+      <p class="source">java -Dhost=localhost -Dport=6000 \
       chapters.receivers.socket.ReceiverExample \
       src/main/java/chapters/receivers/socket/receiver3.xml</p>
+
 
       <p>We can provide a remote appender to which our example receiver
       can connect, using the same appender example used previously.  The 
@@ -459,7 +463,7 @@
       </p>
    
       <p class="example">Example: Basic SSLSocketReceiver Configuration
-      (logback-examples/src/main/java/chapters/receivers/socket/receiver4.xml)</p>
+      (logback-examples/src/main/resources/chapters/receivers/socket/receiver4.xml)</p>
       <span class="asGroovy" onclick="return asGroovy('receiver4');">View as .groovy</span>
   <pre id="receiver4" class="prettyprint source">&lt;configuration debug="true">
 

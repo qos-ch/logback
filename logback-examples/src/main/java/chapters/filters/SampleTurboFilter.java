@@ -23,37 +23,36 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class SampleTurboFilter extends TurboFilter {
 
-  String marker;
-  Marker markerToAccept;
+    String marker;
+    Marker markerToAccept;
 
-  @Override
-  public FilterReply decide(Marker marker, Logger logger, Level level,
-      String format, Object[] params, Throwable t) {
-    
-    if (!isStarted()) {
-      return FilterReply.NEUTRAL;
+    @Override
+    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+
+        if (!isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
+
+        if ((markerToAccept.equals(marker))) {
+            return FilterReply.ACCEPT;
+        } else {
+            return FilterReply.NEUTRAL;
+        }
     }
 
-    if ((markerToAccept.equals(marker))) {
-      return FilterReply.ACCEPT;
-    } else {
-      return FilterReply.NEUTRAL;
+    public String getMarker() {
+        return marker;
     }
-  }
 
-  public String getMarker() {
-    return marker;
-  }
-
-  public void setMarker(String markerStr) {
-    this.marker = markerStr;
-  }
-
-  @Override
-  public void start() {
-    if (marker != null && marker.trim().length() > 0) {
-      markerToAccept = MarkerFactory.getMarker(marker);
-      super.start(); 
+    public void setMarker(String markerStr) {
+        this.marker = markerStr;
     }
-  }
+
+    @Override
+    public void start() {
+        if (marker != null && marker.trim().length() > 0) {
+            markerToAccept = MarkerFactory.getMarker(marker);
+            super.start();
+        }
+    }
 }

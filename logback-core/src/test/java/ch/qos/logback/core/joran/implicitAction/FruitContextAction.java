@@ -21,44 +21,36 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class FruitContextAction extends Action {
 
-  private boolean inError = false;
+    private boolean inError = false;
 
-  
-  @Override
-  public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
+    @Override
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
 
-    inError = false;
-    
-    try {
-      ec.pushObject(context);
-    } catch (Exception oops) {
-      inError = true;
-      addError(
-        "Could not push context", oops);
-      throw new ActionException(oops);
-    }
-  }
+        inError = false;
 
-  @Override
-  public void end(InterpretationContext ec, String name) throws ActionException {
-    if (inError) {
-      return;
+        try {
+            ec.pushObject(context);
+        } catch (Exception oops) {
+            inError = true;
+            addError("Could not push context", oops);
+            throw new ActionException(oops);
+        }
     }
 
-    Object o = ec.peekObject();
+    @Override
+    public void end(InterpretationContext ec, String name) throws ActionException {
+        if (inError) {
+            return;
+        }
 
-    if (o != context) {
-      addWarn(
-        "The object at the of the stack is not the context named ["
-        + context.getName() + "] pushed earlier.");
-    } else {
-      addInfo(
-        "Popping context named [" + context.getName()
-        + "] from the object stack");
-      ec.popObject();
+        Object o = ec.peekObject();
+
+        if (o != context) {
+            addWarn("The object at the of the stack is not the context named [" + context.getName() + "] pushed earlier.");
+        } else {
+            addInfo("Popping context named [" + context.getName() + "] from the object stack");
+            ec.popObject();
+        }
     }
-  }
 
-  
 }

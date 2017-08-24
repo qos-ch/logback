@@ -19,36 +19,36 @@ import ch.qos.logback.core.LayoutBase;
 
 public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
 
-  String prefix = null;
-  boolean printThreadName = true;
+    String prefix = null;
+    boolean printThreadName = true;
 
-  public void setPrefix(String prefix) {
-    this.prefix = prefix;
-  }
-
-  public void setPrintThreadName(boolean printThreadName) {
-    this.printThreadName = printThreadName;
-  }
-
-  public String doLayout(ILoggingEvent event) {
-    StringBuilder sbuf = new StringBuilder(128);
-    if (prefix != null) {
-      sbuf.append(prefix + ": ");
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
-    sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());
-    sbuf.append(" ");
-    sbuf.append(event.getLevel());
-    if (printThreadName) {
-      sbuf.append(" [");
-      sbuf.append(event.getThreadName());
-      sbuf.append("] ");
-    } else {
-      sbuf.append(" ");
+
+    public void setPrintThreadName(boolean printThreadName) {
+        this.printThreadName = printThreadName;
     }
-    sbuf.append(event.getLoggerName());
-    sbuf.append(" - ");
-    sbuf.append(event.getFormattedMessage());
-    sbuf.append(CoreConstants.LINE_SEPARATOR);
-    return sbuf.toString();
-  }
+
+    public String doLayout(ILoggingEvent event) {
+        StringBuilder sbuf = new StringBuilder(128);
+        if (prefix != null) {
+            sbuf.append(prefix + ": ");
+        }
+        sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());
+        sbuf.append(" ");
+        sbuf.append(event.getLevel());
+        if (printThreadName) {
+            sbuf.append(" [");
+            sbuf.append(event.getThreadName());
+            sbuf.append("] ");
+        } else {
+            sbuf.append(" ");
+        }
+        sbuf.append(event.getLoggerName());
+        sbuf.append(" - ");
+        sbuf.append(event.getFormattedMessage());
+        sbuf.append(CoreConstants.LINE_SEPARATOR);
+        return sbuf.toString();
+    }
 }

@@ -24,30 +24,25 @@ import ch.qos.logback.core.net.SyslogConstants;
 
 public class LevelToSyslogSeverityTest {
 
-  @Test
-  public void smoke() {
+    @Test
+    public void smoke() {
 
-    assertEquals(SyslogConstants.DEBUG_SEVERITY, LevelToSyslogSeverity
-        .convert(createEventOfLevel(Level.TRACE)));
+        assertEquals(SyslogConstants.DEBUG_SEVERITY, LevelToSyslogSeverity.convert(createEventOfLevel(Level.TRACE)));
 
-    assertEquals(SyslogConstants.DEBUG_SEVERITY, LevelToSyslogSeverity
-        .convert(createEventOfLevel(Level.DEBUG)));
+        assertEquals(SyslogConstants.DEBUG_SEVERITY, LevelToSyslogSeverity.convert(createEventOfLevel(Level.DEBUG)));
 
-    assertEquals(SyslogConstants.INFO_SEVERITY, LevelToSyslogSeverity
-        .convert(createEventOfLevel(Level.INFO)));
+        assertEquals(SyslogConstants.INFO_SEVERITY, LevelToSyslogSeverity.convert(createEventOfLevel(Level.INFO)));
 
-    assertEquals(SyslogConstants.WARNING_SEVERITY, LevelToSyslogSeverity
-        .convert(createEventOfLevel(Level.WARN)));
+        assertEquals(SyslogConstants.WARNING_SEVERITY, LevelToSyslogSeverity.convert(createEventOfLevel(Level.WARN)));
 
-    assertEquals(SyslogConstants.ERROR_SEVERITY, LevelToSyslogSeverity
-        .convert(createEventOfLevel(Level.ERROR)));
+        assertEquals(SyslogConstants.ERROR_SEVERITY, LevelToSyslogSeverity.convert(createEventOfLevel(Level.ERROR)));
 
-  }
+    }
 
-  ILoggingEvent createEventOfLevel(Level level) {
-    LoggingEvent event = new LoggingEvent();
-    event.setLevel(level);
-    return event;
-  }
+    ILoggingEvent createEventOfLevel(Level level) {
+        LoggingEvent event = new LoggingEvent();
+        event.setLevel(level);
+        return event;
+    }
 
 }

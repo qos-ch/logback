@@ -17,8 +17,8 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class ServerNameConverter extends AccessConverter {
 
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-    return accessEvent.getServerName();
-  }
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        return accessEvent.getServerName();
+    }
 }

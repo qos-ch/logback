@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="true">
+
+  <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />  
+    
+
+  <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+
+    <discriminator>
+      <key>userid</key>
+      <defaultValue>smoke</defaultValue>
+    </discriminator>
+    <sift>
+      <appender name="list-${userid}"
+        class="ch.qos.logback.classic.issue.logback416.InstanceCountingAppender" />
+    </sift>
+  </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="SIFT" />
+  </root>
+
+</configuration>

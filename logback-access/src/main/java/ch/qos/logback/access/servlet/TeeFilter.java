@@ -32,7 +32,6 @@ import static ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER;
 import static ch.qos.logback.access.AccessConstants.TEE_FILTER_INCLUDES_PARAM;
 import static ch.qos.logback.access.AccessConstants.TEE_FILTER_EXCLUDES_PARAM;
 
-
 public class TeeFilter implements Filter {
 
     boolean active;
@@ -43,25 +42,21 @@ public class TeeFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
         if (active && request instanceof HttpServletRequest) {
             try {
-                TeeHttpServletRequest teeRequest = new TeeHttpServletRequest(
-                        (HttpServletRequest) request);
-                TeeHttpServletResponse teeResponse = new TeeHttpServletResponse(
-                        (HttpServletResponse) response);
+                TeeHttpServletRequest teeRequest = new TeeHttpServletRequest((HttpServletRequest) request);
+                TeeHttpServletResponse teeResponse = new TeeHttpServletResponse((HttpServletResponse) response);
 
-                //System.out.println("BEFORE TeeFilter. filterChain.doFilter()");
+                // System.out.println("BEFORE TeeFilter. filterChain.doFilter()");
                 filterChain.doFilter(teeRequest, teeResponse);
-                //System.out.println("AFTER TeeFilter. filterChain.doFilter()");
+                // System.out.println("AFTER TeeFilter. filterChain.doFilter()");
 
                 teeResponse.finish();
                 // let the output contents be available for later use by
                 // logback-access-logging
-                teeRequest.setAttribute(LB_OUTPUT_BUFFER, teeResponse
-                        .getOutputBuffer());
+                teeRequest.setAttribute(LB_OUTPUT_BUFFER, teeResponse.getOutputBuffer());
             } catch (IOException e) {
                 e.printStackTrace();
                 throw e;
@@ -108,7 +103,6 @@ public class TeeFilter implements Filter {
         return nameList;
     }
 
-
     static String getLocalhostName() {
         String hostname = "127.0.0.1";
 
@@ -128,14 +122,15 @@ public class TeeFilter implements Filter {
         return inIncludesList && (!inExcludesList);
     }
 
-
     static boolean mathesIncludesList(String hostname, List<String> includeList) {
-        if (includeList.isEmpty()) return true;
+        if (includeList.isEmpty())
+            return true;
         return includeList.contains(hostname);
     }
 
     static boolean mathesExcludesList(String hostname, List<String> excludesList) {
-        if (excludesList.isEmpty()) return false;
+        if (excludesList.isEmpty())
+            return false;
         return excludesList.contains(hostname);
     }
 

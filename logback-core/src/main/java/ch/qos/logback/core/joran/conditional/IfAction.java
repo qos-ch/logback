@@ -28,128 +28,123 @@ import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class IfAction extends Action {
-  private static final String CONDITION_ATTR = "condition";
+    private static final String CONDITION_ATTR = "condition";
 
-  public static final String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
-  public static final String MISSING_JANINO_SEE = "See also " + CoreConstants.CODES_URL + "#ifJanino";
+    public static final String MISSING_JANINO_MSG = "Could not find Janino library on the class path. Skipping conditional processing.";
+    public static final String MISSING_JANINO_SEE = "See also " + CoreConstants.CODES_URL + "#ifJanino";
 
-  Stack<IfState> stack = new Stack<IfState>();
-  
-  @Override
-  public void begin(InterpretationContext ic, String name, Attributes attributes)
-      throws ActionException {
+    Stack<IfState> stack = new Stack<IfState>();
 
-    IfState state = new IfState();
-    boolean emptyStack = stack.isEmpty();
-    stack.push(state);
+    @Override
+    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
 
-    if(!emptyStack) {
-      return;
-    }
-    
-    ic.pushObject(this);
-    if(!EnvUtil.isJaninoAvailable()) {
-       addError(MISSING_JANINO_MSG);
-       addError(MISSING_JANINO_SEE);
-       return;
-     }
+        IfState state = new IfState();
+        boolean emptyStack = stack.isEmpty();
+        stack.push(state);
 
-    state.active = true;
-    Condition condition = null;
-    String conditionAttribute = attributes.getValue(CONDITION_ATTR);
+        if (!emptyStack) {
+            return;
+        }
 
+        ic.pushObject(this);
+        if (!EnvUtil.isJaninoAvailable()) {
+            addError(MISSING_JANINO_MSG);
+            addError(MISSING_JANINO_SEE);
+            return;
+        }
 
-    if (!OptionHelper.isEmpty(conditionAttribute)) {
-      conditionAttribute = OptionHelper.substVars(conditionAttribute, ic, context);
-      PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(ic);
-      pesb.setContext(context);
-      try {
-        condition = pesb.build(conditionAttribute);
-      } catch (Exception e) {
-        addError("Failed to parse condition ["+conditionAttribute+"]", e);
-      }
-     
-      if(condition!=null) {
-        state.boolResult = condition.evaluate();
-      }
-      
-    }
-  }
+        state.active = true;
+        Condition condition = null;
+        String conditionAttribute = attributes.getValue(CONDITION_ATTR);
 
+        if (!OptionHelper.isEmpty(conditionAttribute)) {
+            conditionAttribute = OptionHelper.substVars(conditionAttribute, ic, context);
+            PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(ic);
+            pesb.setContext(context);
+            try {
+                condition = pesb.build(conditionAttribute);
+            } catch (Exception e) {
+                addError("Failed to parse condition [" + conditionAttribute + "]", e);
+            }
 
-  @Override
-  public void end(InterpretationContext ic, String name) throws ActionException {
+            if (condition != null) {
+                state.boolResult = condition.evaluate();
+            }
 
-    IfState state = stack.pop();
-    if(!state.active) {
-      return;
-    }
-   
-    
-    Object o = ic.peekObject();
-    if (o == null) {
-      throw new IllegalStateException("Unexpected null object on stack");
-    }
-    if (!(o instanceof IfAction)) {
-      throw new IllegalStateException("Unexpected object of type ["
-          + o.getClass() + "] on stack");
+        }
     }
 
-    if (o != this) {
-      throw new IllegalStateException(
-          "IfAction different then current one on stack");
-    }
-    ic.popObject();
+    @Override
+    public void end(InterpretationContext ic, String name) throws ActionException {
 
-    if (state.boolResult == null) {
-      addError("Failed to determine \"if then else\" result");
-      return;
-    }
+        IfState state = stack.pop();
+        if (!state.active) {
+            return;
+        }
 
-    Interpreter interpreter = ic.getJoranInterpreter();
-    List<SaxEvent> listToPlay = state.thenSaxEventList;
-    if (!state.boolResult) {
-      listToPlay = state.elseSaxEventList;
-    }
+        Object o = ic.peekObject();
+        if (o == null) {
+            throw new IllegalStateException("Unexpected null object on stack");
+        }
+        if (!(o instanceof IfAction)) {
+            throw new IllegalStateException("Unexpected object of type [" + o.getClass() + "] on stack");
+        }
 
-    // if boolResult==false & missing else,  listToPlay may be null
-    if(listToPlay != null) {
-      // insert past this event
-      interpreter.getEventPlayer().addEventsDynamically(listToPlay, 1);
-    }
+        if (o != this) {
+            throw new IllegalStateException("IfAction different then current one on stack");
+        }
+        ic.popObject();
 
-  }
+        if (state.boolResult == null) {
+            addError("Failed to determine \"if then else\" result");
+            return;
+        }
 
+        Interpreter interpreter = ic.getJoranInterpreter();
+        List<SaxEvent> listToPlay = state.thenSaxEventList;
+        if (!state.boolResult) {
+            listToPlay = state.elseSaxEventList;
+        }
 
-  public void setThenSaxEventList(List<SaxEvent> thenSaxEventList) {
-    IfState state = stack.firstElement();
-    if(state.active) {
-      state.thenSaxEventList = thenSaxEventList;
-    } else {
-      throw new IllegalStateException("setThenSaxEventList() invoked on inactive IfAction");
-    }
-  }
+        // if boolResult==false & missing else, listToPlay may be null
+        if (listToPlay != null) {
+            // insert past this event
+            interpreter.getEventPlayer().addEventsDynamically(listToPlay, 1);
+        }
 
-  public void setElseSaxEventList(List<SaxEvent> elseSaxEventList) {
-    IfState state = stack.firstElement();
-    if(state.active) {
-      state.elseSaxEventList = elseSaxEventList;
-    } else {
-      throw new IllegalStateException("setElseSaxEventList() invoked on inactive IfAction");
     }
 
-  }
+    public void setThenSaxEventList(List<SaxEvent> thenSaxEventList) {
+        IfState state = stack.firstElement();
+        if (state.active) {
+            state.thenSaxEventList = thenSaxEventList;
+        } else {
+            throw new IllegalStateException("setThenSaxEventList() invoked on inactive IfAction");
+        }
+    }
 
-  public boolean isActive() {
-    if(stack == null) return false;
-    if(stack.isEmpty()) return false;
-    return stack.peek().active;
-  }
+    public void setElseSaxEventList(List<SaxEvent> elseSaxEventList) {
+        IfState state = stack.firstElement();
+        if (state.active) {
+            state.elseSaxEventList = elseSaxEventList;
+        } else {
+            throw new IllegalStateException("setElseSaxEventList() invoked on inactive IfAction");
+        }
+
+    }
+
+    public boolean isActive() {
+        if (stack == null)
+            return false;
+        if (stack.isEmpty())
+            return false;
+        return stack.peek().active;
+    }
 }
 
 class IfState {
-  Boolean boolResult;
-  List<SaxEvent> thenSaxEventList;
-  List<SaxEvent> elseSaxEventList;
-  boolean active;
+    Boolean boolResult;
+    List<SaxEvent> thenSaxEventList;
+    List<SaxEvent> elseSaxEventList;
+    boolean active;
 }

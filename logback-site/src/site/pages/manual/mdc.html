@@ -89,18 +89,18 @@ public class MDC {
 		lets the developer place information in a <em>diagnostic
 		context</em> that can be subsequently retrieved by certain logback
 		components. The <code>MDC</code> manages contextual information on
-		a <em>per thread basis</em>.  A child thread automatically
-		inherits a <em>copy</em> of the mapped diagnostic context of its
-		parent. Typically, while starting to service a new client request,
-		the developer will insert pertinent contextual information, such
-		as the client id, client's IP address, request parameters
-		etc. into the <code>MDC</code>. Logback components, if
-		appropriately configured, will automatically include this
-		information in each log entry.
+		a <em>per thread basis</em>.  Typically, while starting to service
+		a new client request, the developer will insert pertinent
+		contextual information, such as the client id, client's IP
+		address, request parameters etc. into the
+		<code>MDC</code>. Logback components, if appropriately configured,
+		will automatically include this information in each log entry.
 		</p>
 
     <p>Please note that MDC as implemented by logback-classic assumes
-    that values are placed into the MDC with moderate frequency. </p>
+    that values are placed into the MDC with moderate frequency.  Also
+    note that a child thread does not automatically inherit a copy of
+    the mapped diagnostic context of its parent.</p>
 
 		<p>
 			The next application named 

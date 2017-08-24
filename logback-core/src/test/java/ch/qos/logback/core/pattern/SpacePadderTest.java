@@ -23,85 +23,85 @@ import org.junit.Test;
 
 public class SpacePadderTest {
 
-  @BeforeClass
-  public static void setUpBeforeClass() throws Exception {
-  }
-
-  @AfterClass
-  public static void tearDownAfterClass() throws Exception {
-  }
-
-  @Before
-  public void setUp() throws Exception {
-  }
-
-  @After
-  public void tearDown() throws Exception {
-  }
-
-  @Test
-  public void smoke() {
-    {
-      StringBuilder buf = new StringBuilder();
-      String s = "a";
-      SpacePadder.leftPad(buf, s, 4);
-      assertEquals("   a", buf.toString());
-    }
-    {
-      StringBuilder buf = new StringBuilder();
-      String s = "a";
-      SpacePadder.rightPad(buf, s, 4);
-      assertEquals("a   ", buf.toString());
-    }
-  }
-
-  @Test
-  public void nullString() {
-    String s = null;
-    {
-      StringBuilder buf = new StringBuilder();
-      SpacePadder.leftPad(buf, s, 2);
-      assertEquals("  ", buf.toString());
-    }
-    {
-      StringBuilder buf = new StringBuilder();
-      SpacePadder.rightPad(buf, s, 2);
-      assertEquals("  ", buf.toString());
-    }
-  }
-
-  @Test
-  public void longString() {
-    {
-      StringBuilder buf = new StringBuilder();
-      String s = "abc";
-      SpacePadder.leftPad(buf, s, 2);
-      assertEquals(s, buf.toString());
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
     }
 
-    {
-      StringBuilder buf = new StringBuilder();
-      String s = "abc";
-      SpacePadder.rightPad(buf, s, 2);
-      assertEquals(s, buf.toString());
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
     }
-  }
-  
-  @Test
-  public void lengthyPad() {
-    {
-      StringBuilder buf = new StringBuilder();
-      String s = "abc";
-      SpacePadder.leftPad(buf, s, 33);
-      assertEquals("                              abc", buf.toString());
+
+    @Before
+    public void setUp() throws Exception {
     }
-    {
-      StringBuilder buf = new StringBuilder();
-      String s = "abc";
-      SpacePadder.rightPad(buf, s, 33);
-      assertEquals("abc                              ", buf.toString());
+
+    @After
+    public void tearDown() throws Exception {
     }
-    
-  }
+
+    @Test
+    public void smoke() {
+        {
+            StringBuilder buf = new StringBuilder();
+            String s = "a";
+            SpacePadder.leftPad(buf, s, 4);
+            assertEquals("   a", buf.toString());
+        }
+        {
+            StringBuilder buf = new StringBuilder();
+            String s = "a";
+            SpacePadder.rightPad(buf, s, 4);
+            assertEquals("a   ", buf.toString());
+        }
+    }
+
+    @Test
+    public void nullString() {
+        String s = null;
+        {
+            StringBuilder buf = new StringBuilder();
+            SpacePadder.leftPad(buf, s, 2);
+            assertEquals("  ", buf.toString());
+        }
+        {
+            StringBuilder buf = new StringBuilder();
+            SpacePadder.rightPad(buf, s, 2);
+            assertEquals("  ", buf.toString());
+        }
+    }
+
+    @Test
+    public void longString() {
+        {
+            StringBuilder buf = new StringBuilder();
+            String s = "abc";
+            SpacePadder.leftPad(buf, s, 2);
+            assertEquals(s, buf.toString());
+        }
+
+        {
+            StringBuilder buf = new StringBuilder();
+            String s = "abc";
+            SpacePadder.rightPad(buf, s, 2);
+            assertEquals(s, buf.toString());
+        }
+    }
+
+    @Test
+    public void lengthyPad() {
+        {
+            StringBuilder buf = new StringBuilder();
+            String s = "abc";
+            SpacePadder.leftPad(buf, s, 33);
+            assertEquals("                              abc", buf.toString());
+        }
+        {
+            StringBuilder buf = new StringBuilder();
+            String s = "abc";
+            SpacePadder.rightPad(buf, s, 33);
+            assertEquals("abc                              ", buf.toString());
+        }
+
+    }
 
 }

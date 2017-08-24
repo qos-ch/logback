@@ -23,30 +23,30 @@ import org.slf4j.MDC;
 
 public class MDCTest {
 
-  @Test
-  public void test() throws InterruptedException {
-    MDCTestThread threadA = new MDCTestThread("a");
-    threadA.start();
+    @Test
+    public void test() throws InterruptedException {
+        MDCTestThread threadA = new MDCTestThread("a");
+        threadA.start();
 
-    MDCTestThread threadB = new MDCTestThread("b");
-    threadB.start();
+        MDCTestThread threadB = new MDCTestThread("b");
+        threadB.start();
 
-    threadA.join();
-    threadB.join();
+        threadA.join();
+        threadB.join();
 
-    assertNull(threadA.x0);
-    assertEquals("a", threadA.x1);
-    assertNull(threadA.x2);
+        assertNull(threadA.x0);
+        assertEquals("a", threadA.x1);
+        assertNull(threadA.x2);
 
-    assertNull(threadB.x0);
-    assertEquals("b", threadB.x1);
-    assertNull(threadB.x2);
+        assertNull(threadB.x0);
+        assertEquals("b", threadB.x1);
+        assertNull(threadB.x2);
 
-  }
+    }
 
-  @Test
-  public void testLBCLASSIC_98() {
-    MDC.setContextMap(new HashMap<String, String>());
-  }
-  
+    @Test
+    public void testLBCLASSIC_98() {
+        MDC.setContextMap(new HashMap<String, String>());
+    }
+
 }

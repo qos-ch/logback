@@ -1,0 +1,14 @@
+
+<configuration scan="true" scanPeriod="5 millisecond">
+
+  <appender name="default" class="ch.qos.logback.classic.issue.logback474.LoggingAppender">
+  </appender>
+
+  <logger name="Ignore" level="ERROR" additivity="false"/>
+
+  <root level="INFO">    
+    <appender-ref ref="default"/>
+  </root> 
+
+</configuration> 
+       

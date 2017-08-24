@@ -19,6 +19,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({TeeFilterTest.class})
+@SuiteClasses({ TeeFilterTest.class })
 public class PackageTest extends TestCase {
 }

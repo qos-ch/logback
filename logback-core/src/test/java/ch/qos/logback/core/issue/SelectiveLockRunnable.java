@@ -26,81 +26,81 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
  */
 public class SelectiveLockRunnable extends RunnableWithCounterAndDone {
 
-  enum LockingModel {
-    NOLOCK, SYNC, FAIR, UNFAIR;
-  }
-
-  static Object LOCK = new Object();
-  static Lock FAIR_LOCK = new ReentrantLock(true);
-  static Lock UNFAIR_LOCK = new ReentrantLock(false);
-
-  LockingModel model;
-
-  SelectiveLockRunnable(LockingModel model) {
-    this.model = model;
-  }
-
-  public void run() {
-    switch (model) {
-    case NOLOCK:
-      nolockRun();
-      break;
-    case SYNC:
-      synchronizedRun();
-      break;
-    case FAIR:
-      fairLockRun();
-      break;
-    case UNFAIR:
-      unfairLockRun();
-      break;
+    enum LockingModel {
+        NOLOCK, SYNC, FAIR, UNFAIR;
     }
-  }
 
-  void fairLockRun() {
-    for (;;) {
-      FAIR_LOCK.lock();
-      counter++;
-      FAIR_LOCK.unlock();
-      if (done) {
-        return;
-      }
-    }
-  }
+    static Object LOCK = new Object();
+    static Lock FAIR_LOCK = new ReentrantLock(true);
+    static Lock UNFAIR_LOCK = new ReentrantLock(false);
 
-  void unfairLockRun() {
-    for (;;) {
-      UNFAIR_LOCK.lock();
-      counter++;
-      UNFAIR_LOCK.unlock();
-      if (done) {
-        return;
-      }
-    }
-  }
+    LockingModel model;
 
-  void nolockRun() {
-    for (;;) {
-      counter++;
-      if (done) {
-        return;
-      }
+    SelectiveLockRunnable(LockingModel model) {
+        this.model = model;
     }
-  }
 
-  void synchronizedRun() {
-    for (;;) {
-      synchronized (LOCK) {
-        counter++;
-      }
-      if (done) {
-        return;
-      }
+    public void run() {
+        switch (model) {
+        case NOLOCK:
+            nolockRun();
+            break;
+        case SYNC:
+            synchronizedRun();
+            break;
+        case FAIR:
+            fairLockRun();
+            break;
+        case UNFAIR:
+            unfairLockRun();
+            break;
+        }
     }
-  }
-  
-  @Override
-  public String toString() {
-    return "SelectiveLockRunnable "+model;
-  }
+
+    void fairLockRun() {
+        for (;;) {
+            FAIR_LOCK.lock();
+            counter++;
+            FAIR_LOCK.unlock();
+            if (done) {
+                return;
+            }
+        }
+    }
+
+    void unfairLockRun() {
+        for (;;) {
+            UNFAIR_LOCK.lock();
+            counter++;
+            UNFAIR_LOCK.unlock();
+            if (done) {
+                return;
+            }
+        }
+    }
+
+    void nolockRun() {
+        for (;;) {
+            counter++;
+            if (done) {
+                return;
+            }
+        }
+    }
+
+    void synchronizedRun() {
+        for (;;) {
+            synchronized (LOCK) {
+                counter++;
+            }
+            if (done) {
+                return;
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "SelectiveLockRunnable " + model;
+    }
 }

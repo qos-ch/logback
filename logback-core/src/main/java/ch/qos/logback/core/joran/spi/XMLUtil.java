@@ -18,13 +18,12 @@ import java.net.URL;
 import ch.qos.logback.core.status.StatusManager;
 
 public class XMLUtil {
-  
 
-  static public final int ILL_FORMED = 1;
-  static public final int UNRECOVERABLE_ERROR = 2;
-  
-  static public int checkIfWellFormed(URL url, StatusManager sm) {
-    return 0;
-  }
-  
+    static public final int ILL_FORMED = 1;
+    static public final int UNRECOVERABLE_ERROR = 2;
+
+    static public int checkIfWellFormed(URL url, StatusManager sm) {
+        return 0;
+    }
+
 }

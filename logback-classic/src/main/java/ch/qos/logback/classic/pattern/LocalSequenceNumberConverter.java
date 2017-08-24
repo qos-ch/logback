@@ -27,10 +27,10 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class LocalSequenceNumberConverter extends ClassicConverter {
 
-  AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
+    AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
 
-  @Override
-  public String convert(ILoggingEvent event) {
-    return Long.toString(sequenceNumber.getAndIncrement());
-  }
+    @Override
+    public String convert(ILoggingEvent event) {
+        return Long.toString(sequenceNumber.getAndIncrement());
+    }
 }

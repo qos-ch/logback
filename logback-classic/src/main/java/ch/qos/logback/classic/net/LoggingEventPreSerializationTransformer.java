@@ -20,20 +20,19 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
-public class LoggingEventPreSerializationTransformer implements
-    PreSerializationTransformer<ILoggingEvent> {
+public class LoggingEventPreSerializationTransformer implements PreSerializationTransformer<ILoggingEvent> {
 
-  public Serializable transform(ILoggingEvent event) {
-    if(event == null) {
-      return null;
+    public Serializable transform(ILoggingEvent event) {
+        if (event == null) {
+            return null;
+        }
+        if (event instanceof LoggingEvent) {
+            return LoggingEventVO.build(event);
+        } else if (event instanceof LoggingEventVO) {
+            return (LoggingEventVO) event;
+        } else {
+            throw new IllegalArgumentException("Unsupported type " + event.getClass().getName());
+        }
     }
-    if (event instanceof LoggingEvent) {
-      return LoggingEventVO.build(event);
-    } else if (event instanceof LoggingEventVO) {
-      return (LoggingEventVO)  event;
-    } else {
-      throw new IllegalArgumentException("Unsupported type "+event.getClass().getName());
-    }
-  }
 
 }

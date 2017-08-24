@@ -22,76 +22,72 @@ import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class FileAppenderPerf {
-  static String msgLong = "ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890";
+    static String msgLong = "ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890";
 
-  static long LEN = 100 * 1000;
-  static int DIFF = RandomUtil.getPositiveInt() % 1000;
-  static String FILENAME;
+    static long LEN = 100 * 1000;
+    static int DIFF = RandomUtil.getPositiveInt() % 1000;
+    static String FILENAME;
 
-  static LoggerContext buildLoggerContext(String filename, boolean safetyMode) {
-    LoggerContext loggerContext = new LoggerContext();
+    static LoggerContext buildLoggerContext(String filename, boolean safetyMode) {
+        LoggerContext loggerContext = new LoggerContext();
 
-    FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
+        FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
 
-    PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
-    patternLayout.setPattern("%5p %c - %m%n");
-    patternLayout.setContext(loggerContext);
-    patternLayout.start();
+        PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
+        patternLayout.setPattern("%5p %c - %m%n");
+        patternLayout.setContext(loggerContext);
+        patternLayout.start();
 
-    fa.setEncoder(patternLayout);
-    fa.setFile(filename);
-    fa.setAppend(false);
-    fa.setPrudent(safetyMode);
-    fa.setContext(loggerContext);
-    fa.start();
+        fa.setEncoder(patternLayout);
+        fa.setFile(filename);
+        fa.setAppend(false);
+        fa.setPrudent(safetyMode);
+        fa.setContext(loggerContext);
+        fa.start();
 
-    ch.qos.logback.classic.Logger root = loggerContext
-        .getLogger(Logger.ROOT_LOGGER_NAME);
-    root.addAppender(fa);
+        ch.qos.logback.classic.Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        root.addAppender(fa);
 
-    return loggerContext;
-  }
-
-  static void usage(String msg) {
-    System.err.println(msg);
-    System.err.println("Usage: java " + FileAppenderPerf.class.getName()
-        + " filename");
-
-    System.exit(1);
-  }
-
-  public static void main(String[] argv) throws Exception {
-    if (argv.length > 1) {
-      usage("Wrong number of arguments.");
+        return loggerContext;
     }
 
-    if (argv.length == 0) {
-      FILENAME = DIFF+"";
-    } else {
-      FILENAME = argv[0];
+    static void usage(String msg) {
+        System.err.println(msg);
+        System.err.println("Usage: java " + FileAppenderPerf.class.getName() + " filename");
+
+        System.exit(1);
     }
 
-    perfCase(false);
-    perfCase(true);
-  }
+    public static void main(String[] argv) throws Exception {
+        if (argv.length > 1) {
+            usage("Wrong number of arguments.");
+        }
 
-  static void perfCase(boolean safetyMode) throws Exception {
-    LoggerContext lc = buildLoggerContext(FILENAME + "-" + safetyMode + ".log",
-        safetyMode);
-    Logger logger = lc.getLogger(FileAppenderPerf.class);
+        if (argv.length == 0) {
+            FILENAME = DIFF + "";
+        } else {
+            FILENAME = argv[0];
+        }
 
-    long start = System.nanoTime();
-    for (int i = 0; i < LEN; i++) {
-      logger.debug(msgLong + " " + i);
+        perfCase(false);
+        perfCase(true);
     }
-    // in microseconds
-    double durationPerLog = (System.nanoTime() - start) / (LEN * 1000.0);
 
-    lc.stop();
+    static void perfCase(boolean safetyMode) throws Exception {
+        LoggerContext lc = buildLoggerContext(FILENAME + "-" + safetyMode + ".log", safetyMode);
+        Logger logger = lc.getLogger(FileAppenderPerf.class);
 
-    System.out.println("Average duration of " + (durationPerLog)
-        + " microseconds per log. Prudent mode=" + safetyMode);
-    System.out.println("------------------------------------------------");
-  }
+        long start = System.nanoTime();
+        for (int i = 0; i < LEN; i++) {
+            logger.debug(msgLong + " " + i);
+        }
+        // in microseconds
+        double durationPerLog = (System.nanoTime() - start) / (LEN * 1000.0);
+
+        lc.stop();
+
+        System.out.println("Average duration of " + (durationPerLog) + " microseconds per log. Prudent mode=" + safetyMode);
+        System.out.println("------------------------------------------------");
+    }
 
 }

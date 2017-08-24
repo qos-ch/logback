@@ -47,52 +47,52 @@ import static org.mockito.Mockito.when;
  */
 public class AppenderAttachableImplLockTest {
 
-  private AppenderAttachableImpl<Integer> aai = new AppenderAttachableImpl<Integer>();
+    private AppenderAttachableImpl<Integer> aai = new AppenderAttachableImpl<Integer>();
 
-  @SuppressWarnings("unchecked")
-  @Test(timeout = 5000)
-  public void getAppenderBoom() {
-    Appender<Integer> mockAppender1 = mock(Appender.class);
+    @SuppressWarnings("unchecked")
+    @Test(timeout = 5000)
+    public void getAppenderBoom() {
+        Appender<Integer> mockAppender1 = mock(Appender.class);
 
-    when(mockAppender1.getName()).thenThrow(new OutOfMemoryError("oops"));
-    aai.addAppender(mockAppender1);
-    try {
-      // appender.getName called as a result of next statement
-      aai.getAppender("foo");
-    } catch (OutOfMemoryError e) {
-      // this leaves the read lock locked.
+        when(mockAppender1.getName()).thenThrow(new OutOfMemoryError("oops"));
+        aai.addAppender(mockAppender1);
+        try {
+            // appender.getName called as a result of next statement
+            aai.getAppender("foo");
+        } catch (OutOfMemoryError e) {
+            // this leaves the read lock locked.
+        }
+
+        Appender<Integer> mockAppender2 = mock(Appender.class);
+        // the next call used to freeze with the earlier ReadWriteLock lock
+        // implementation
+        aai.addAppender(mockAppender2);
     }
 
-    Appender<Integer> mockAppender2=mock(Appender.class);
-    // the next call used to freeze with the earlier ReadWriteLock lock
-    // implementation
-    aai.addAppender(mockAppender2);
-  }
+    @SuppressWarnings("unchecked")
+    @Test(timeout = 5000)
+    public void detachAppenderBoom() throws InterruptedException {
+        Appender<Integer> mockAppender = mock(Appender.class);
+        when(mockAppender.getName()).thenThrow(new OutOfMemoryError("oops"));
+        mockAppender.doAppend(17);
 
-  @SuppressWarnings("unchecked")
-  @Test(timeout = 5000)
-  public void detachAppenderBoom() throws InterruptedException {
-    Appender<Integer> mockAppender = mock(Appender.class);
-    when(mockAppender.getName()).thenThrow(new OutOfMemoryError("oops"));
-    mockAppender.doAppend(17);
+        aai.addAppender(mockAppender);
+        Thread t = new Thread(new Runnable() {
 
-    aai.addAppender(mockAppender);
-    Thread t = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    // appender.getName called as a result of next statement
+                    aai.detachAppender("foo");
+                } catch (OutOfMemoryError e) {
+                    // this leaves the write lock locked.
+                }
+            }
+        });
+        t.start();
+        t.join();
 
-      public void run() {
-        try {
-          // appender.getName called as a result of next statement
-          aai.detachAppender("foo");
-        } catch (OutOfMemoryError e) {
-          // this leaves the write lock locked.
-        }
-      }
-    });
-    t.start();
-    t.join();
-
-    // the next call used to freeze with the earlier ReadWriteLock lock
-    // implementation
-    aai.appendLoopOnAppenders(17);
-  }
+        // the next call used to freeze with the earlier ReadWriteLock lock
+        // implementation
+        aai.appendLoopOnAppenders(17);
+    }
 }

@@ -13,50 +13,48 @@
  */
 package ch.qos.logback.classic;
 
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.classic.layout.TTLLLayout;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
-import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
  * BasicConfigurator configures logback-classic by attaching a 
  * {@link ConsoleAppender} to the root logger. The console appender's layout 
- * is set to a {@link  PatternLayout} with the pattern 
- * "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n".
+ * is set to a {@link ch.qos.logback.classic.layout.TTLLLayout TTLLLayout}.
  * 
- * @author Ceki Gulcu
+ * @author Ceki G&uuml;lc&uuml;
  */
-public class BasicConfigurator {
+public class BasicConfigurator extends ContextAwareBase implements Configurator {
 
-  final static BasicConfigurator hiddenSingleton = new BasicConfigurator();
-    
-  private BasicConfigurator() {
-  }
-  
-  public static void configure(LoggerContext lc) {
-    StatusManager sm = lc.getStatusManager();
-    if(sm != null)  {
-     sm.add(new InfoStatus("Setting up default configuration.", lc));
+    public BasicConfigurator() {
     }
-    ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
-    ca.setContext(lc);
-    ca.setName("console");
-    PatternLayoutEncoder pl = new PatternLayoutEncoder();
-    pl.setContext(lc);
-    pl.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
-    pl.start();
 
-    ca.setEncoder(pl);
-    ca.start();
-    Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    rootLogger.addAppender(ca);
-  }
-
-  public static void configureDefaultContext() {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    configure(lc);
-  }
+    public void configure(LoggerContext lc) {
+        addInfo("Setting up default configuration.");
+        
+        ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
+        ca.setContext(lc);
+        ca.setName("console");
+        LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<ILoggingEvent>();
+        encoder.setContext(lc);
+        
+ 
+        // same as 
+        // PatternLayout layout = new PatternLayout();
+        // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
+        TTLLLayout layout = new TTLLLayout();
+ 
+        layout.setContext(lc);
+        layout.start();
+        encoder.setLayout(layout);
+        
+        ca.setEncoder(encoder);
+        ca.start();
+        
+        Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        rootLogger.addAppender(ca);
+    }
 }

@@ -16,11 +16,7 @@ package ch.qos.logback.core.appender;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DummyAppenderTest.class,
-        ConsoleAppenderTest.class,
-        FileAppenderTest.class})
-
+@Suite.SuiteClasses({ DummyAppenderTest.class, ConsoleAppenderTest.class, FileAppenderTest.class })
 public class PackageTest {
 }

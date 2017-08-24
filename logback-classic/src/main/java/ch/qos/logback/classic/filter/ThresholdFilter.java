@@ -34,28 +34,28 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class ThresholdFilter extends Filter<ILoggingEvent> {
 
-  Level level;
-  
-  @Override
-  public FilterReply decide(ILoggingEvent event) {
-    if (!isStarted()) {
-      return FilterReply.NEUTRAL;
+    Level level;
+
+    @Override
+    public FilterReply decide(ILoggingEvent event) {
+        if (!isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
+
+        if (event.getLevel().isGreaterOrEqual(level)) {
+            return FilterReply.NEUTRAL;
+        } else {
+            return FilterReply.DENY;
+        }
     }
-    
-    if (event.getLevel().isGreaterOrEqual(level)) {
-      return FilterReply.NEUTRAL;
-    } else {
-      return FilterReply.DENY;
+
+    public void setLevel(String level) {
+        this.level = Level.toLevel(level);
     }
-  }
-  
-  public void setLevel(String level) {
-    this.level = Level.toLevel(level);
-  }
-  
-  public void start() {
-    if (this.level != null) {
-      super.start();
+
+    public void start() {
+        if (this.level != null) {
+            super.start();
+        }
     }
-  }
 }

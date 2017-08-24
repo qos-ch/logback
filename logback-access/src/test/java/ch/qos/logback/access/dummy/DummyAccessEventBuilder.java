@@ -18,13 +18,12 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class DummyAccessEventBuilder {
 
-  
-  static public IAccessEvent buildNewAccessEvent() {
-    DummyRequest request = new DummyRequest();
-    DummyResponse response = new DummyResponse();
-    DummyServerAdapter adapter = new DummyServerAdapter(request, response);
-    
-    return new AccessEvent(request, response, adapter);
-  }
-  
+    static public IAccessEvent buildNewAccessEvent() {
+        DummyRequest request = new DummyRequest();
+        DummyResponse response = new DummyResponse();
+        DummyServerAdapter adapter = new DummyServerAdapter(request, response);
+
+        return new AccessEvent(request, response, adapter);
+    }
+
 }

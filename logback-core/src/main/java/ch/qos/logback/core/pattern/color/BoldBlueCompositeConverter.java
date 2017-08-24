@@ -25,8 +25,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;
  */
 public class BoldBlueCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return BOLD + BLUE_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return BOLD + BLUE_FG;
+    }
 }

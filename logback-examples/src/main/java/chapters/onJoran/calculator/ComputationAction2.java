@@ -21,7 +21,6 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
-
 /**
  * ComputationAction2 will print the result of the compuration made by 
  * children elements but only if the computation itself is named, that is if the
@@ -59,28 +58,26 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ComputationAction2 extends Action {
-  public static final String NAME_ATR = "name";
+    public static final String NAME_ATR = "name";
 
-  Stack<String> nameStrStack = new Stack<String>();
-  
-  
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    String nameStr = attributes.getValue(NAME_ATR);
-    // save nameStr value in a special stack. Note that the value is saved
-    // even if it is empty or null.
-    nameStrStack.push(nameStr);
-  }
+    Stack<String> nameStrStack = new Stack<String>();
 
-  public void end(InterpretationContext ec, String name) {
-    // pop nameStr value from the special stack
-    String nameStr = (String) nameStrStack.pop();
-    
-    if (OptionHelper.isEmpty(nameStr)) {
-      // nothing to do
-    } else {
-      Integer i = (Integer) ec.peekObject();
-      System.out.println(
-        "The computation named [" + nameStr + "] resulted in the value " + i);
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        String nameStr = attributes.getValue(NAME_ATR);
+        // save nameStr value in a special stack. Note that the value is saved
+        // even if it is empty or null.
+        nameStrStack.push(nameStr);
     }
-  }
+
+    public void end(InterpretationContext ec, String name) {
+        // pop nameStr value from the special stack
+        String nameStr = (String) nameStrStack.pop();
+
+        if (OptionHelper.isEmpty(nameStr)) {
+            // nothing to do
+        } else {
+            Integer i = (Integer) ec.peekObject();
+            System.out.println("The computation named [" + nameStr + "] resulted in the value " + i);
+        }
+    }
 }

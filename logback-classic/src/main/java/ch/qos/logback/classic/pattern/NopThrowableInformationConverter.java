@@ -17,8 +17,6 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
 
-
-
 /**
  * Always returns an empty string.
  * <p>
@@ -36,8 +34,8 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class NopThrowableInformationConverter extends ThrowableHandlingConverter {
 
-  public String convert(ILoggingEvent event) {
-    return CoreConstants.EMPTY_STRING;
-  }
- 
+    public String convert(ILoggingEvent event) {
+        return CoreConstants.EMPTY_STRING;
+    }
+
 }

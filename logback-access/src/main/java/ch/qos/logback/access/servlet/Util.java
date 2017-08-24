@@ -20,26 +20,24 @@ import javax.servlet.http.HttpServletResponse;
 
 public class Util {
 
-  public static boolean isFormUrlEncoded(HttpServletRequest request) {
+    public static boolean isFormUrlEncoded(HttpServletRequest request) {
 
-    String contentTypeStr = request.getContentType();
-    if ("POST".equalsIgnoreCase(request.getMethod())
-            && contentTypeStr != null
-            && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
-      return true;
-    } else {
-      return false;
+        String contentTypeStr = request.getContentType();
+        if ("POST".equalsIgnoreCase(request.getMethod()) && contentTypeStr != null && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-  }
 
-  public static boolean isImageResponse(HttpServletResponse response) {
+    public static boolean isImageResponse(HttpServletResponse response) {
 
-    String responseType = response.getContentType();
+        String responseType = response.getContentType();
 
-    if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
-      return true;
-    } else {
-      return false;
+        if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
+            return true;
+        } else {
+            return false;
+        }
     }
-  }
 }

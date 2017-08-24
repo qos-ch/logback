@@ -20,5 +20,5 @@ package ch.qos.logback.core.status;
  * @author Ceki G&uuml;lc&uuml;
  */
 public interface StatusListener {
-  void addStatusEvent(Status status);
+    void addStatusEvent(Status status);
 }

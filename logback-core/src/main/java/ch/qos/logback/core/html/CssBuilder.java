@@ -15,6 +15,6 @@ package ch.qos.logback.core.html;
 
 public interface CssBuilder {
 
-  void addCss(StringBuilder sbuf);
-  
+    void addCss(StringBuilder sbuf);
+
 }

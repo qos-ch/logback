@@ -13,20 +13,19 @@
  */
 package ch.qos.logback.classic.control;
 
-
 public class CreateLogger extends ScenarioAction {
 
-  final String loggerName;
+    final String loggerName;
 
-  public CreateLogger(String loggerName) {
-    this.loggerName = loggerName;
-  }
+    public CreateLogger(String loggerName) {
+        this.loggerName = loggerName;
+    }
 
-  public String getLoggerName() {
-    return loggerName;
-  }
+    public String getLoggerName() {
+        return loggerName;
+    }
 
-  public String toString() {
-    return "CreateLogger("+loggerName+")";
-  }
+    public String toString() {
+        return "CreateLogger(" + loggerName + ")";
+    }
 }

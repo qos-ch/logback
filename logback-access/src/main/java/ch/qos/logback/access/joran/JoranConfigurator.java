@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.access.joran;
 
-
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.PatternLayoutEncoder;
 import ch.qos.logback.access.boolex.JaninoEventEvaluator;
 import ch.qos.logback.access.joran.action.ConfigurationAction;
 import ch.qos.logback.access.joran.action.EvaluatorAction;
 import ch.qos.logback.access.sift.SiftAction;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
@@ -35,47 +35,43 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
-
-
 /**
  * This JoranConfiguratorclass adds rules specific to logback-access.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class JoranConfigurator extends JoranConfiguratorBase {
+public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
-  @Override
-  public void addInstanceRules(RuleStore rs) {
-    super.addInstanceRules(rs);
-    
-    rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
-    rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
-    
-    rs.addRule(new ElementSelector("configuration/appender/sift"), new SiftAction());
-    rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
-    
-    rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());
+    @Override
+    public void addInstanceRules(RuleStore rs) {
+        super.addInstanceRules(rs);
 
-    // add if-then-else support
-    rs.addRule(new ElementSelector("*/if"), new IfAction());
-    rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
-    rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
-    rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
-    rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
+        rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
+        rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction<IAccessEvent>());
 
-    rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
-  }
+        rs.addRule(new ElementSelector("configuration/appender/sift"), new SiftAction());
+        rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
 
-  @Override
-  protected void addDefaultNestedComponentRegistryRules(
-      DefaultNestedComponentRegistry registry) {
-    registry.add(AppenderBase.class, "layout", PatternLayout.class);
-          registry
-        .add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
+        rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());
 
-    registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
-    registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
-    SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
-  }
+        // add if-then-else support
+        rs.addRule(new ElementSelector("*/if"), new IfAction());
+        rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
+        rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
+        rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
+        rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
+
+        rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
+    }
+
+    @Override
+    protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
+        registry.add(AppenderBase.class, "layout", PatternLayout.class);
+        registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
+
+        registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
+        registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
+        SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
+    }
 
 }

@@ -16,27 +16,26 @@ package ch.qos.logback.access.pattern;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.util.OptionHelper;
 
-
 public class RequestCookieConverter extends AccessConverter {
 
-  String key;
+    String key;
 
-  @Override
-  public void start() {
-    key = getFirstOption();
-    if (OptionHelper.isEmpty(key)) {
-      addWarn("Missing key for the requested header");
-    } else {
-      super.start();
-    }
-  }
-
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-    if (!isStarted()) {
-      return "INACTIVE_COOKIE_CONVERTER";
+    @Override
+    public void start() {
+        key = getFirstOption();
+        if (OptionHelper.isEmpty(key)) {
+            addWarn("Missing key for the requested header");
+        } else {
+            super.start();
+        }
     }
 
-    return accessEvent.getCookie(key);
-  }
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        if (!isStarted()) {
+            return "INACTIVE_COOKIE_CONVERTER";
+        }
+
+        return accessEvent.getCookie(key);
+    }
 }

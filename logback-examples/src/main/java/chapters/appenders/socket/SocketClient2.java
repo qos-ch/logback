@@ -22,52 +22,48 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 
-
 /**
  * This application uses a SocketAppender that log messages to a
  * server on a host and port specified by the user. It waits for the
  * user to type a message which will be sent to the server.
  * */
 public class SocketClient2 {
-  static void usage(String msg) {
-    System.err.println(msg);
-    System.err.println("Usage: java " + SocketClient2.class.getName() +
-      " configFile\n" +
-      "   configFile a logback configuration file" +
-      "   in XML format.");
-    System.exit(1);
-  }
-
-  static public void main(String[] args) throws Exception {
-    if (args.length != 1) {
-      usage("Wrong number of arguments.");
+    static void usage(String msg) {
+        System.err.println(msg);
+        System.err.println("Usage: java " + SocketClient2.class.getName() + " configFile\n" + "   configFile a logback configuration file"
+                        + "   in XML format.");
+        System.exit(1);
     }
 
-    String configFile = args[0];
+    static public void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            usage("Wrong number of arguments.");
+        }
 
-    if (configFile.endsWith(".xml")) {
-      LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-      JoranConfigurator configurator = new JoranConfigurator();
-      lc.stop();
-      configurator.setContext(lc);
-      configurator.doConfigure(configFile);
+        String configFile = args[0];
+
+        if (configFile.endsWith(".xml")) {
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            JoranConfigurator configurator = new JoranConfigurator();
+            lc.stop();
+            configurator.setContext(lc);
+            configurator.doConfigure(configFile);
+        }
+
+        Logger logger = LoggerFactory.getLogger(SocketClient2.class);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        while (true) {
+            System.out.println("Type a message to send to log server. Type 'q' to quit.");
+
+            String s = reader.readLine();
+
+            if (s.equals("q")) {
+                break;
+            } else {
+                logger.debug(s);
+            }
+        }
     }
-
-    Logger logger = LoggerFactory.getLogger(SocketClient2.class);
-
-    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-    while (true) {
-      System.out.println(
-        "Type a message to send to log server. Type 'q' to quit.");
-
-      String s = reader.readLine();
-
-      if (s.equals("q")) {
-        break;
-      } else {
-        logger.debug(s);
-      }
-    }
-  }
 }

@@ -21,92 +21,91 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.Status;
 
-abstract public class DynamicConverter<E> extends FormattingConverter<E>
-    implements LifeCycle, ContextAware {
+abstract public class DynamicConverter<E> extends FormattingConverter<E> implements LifeCycle, ContextAware {
 
-  ContextAwareBase cab = new ContextAwareBase(this);
+    ContextAwareBase cab = new ContextAwareBase(this);
 
-  // Contains a list of option Strings.
-  private List<String> optionList;
+    // Contains a list of option Strings.
+    private List<String> optionList;
 
-  /**
-   * Is this component active?
-   */
-  protected boolean started = false;
+    /**
+     * Is this component active?
+     */
+    protected boolean started = false;
 
-  /**
-   * Components that depend on options passed during configuration can override
-   * this method in order to make appropriate use of those options. For simpler
-   * components, the trivial implementation found in this abstract class will be
-   * sufficient.
-   */
-  public void start() {
-    started = true;
-  }
-
-  public void stop() {
-    started = false;
-  }
-
-  public boolean isStarted() {
-    return started;
-  }
-
-  public void setOptionList(List<String> optionList) {
-    this.optionList = optionList;
-  }
-
-  /**
-   * Return the first option passed to this component. The returned value may be
-   * null if there are no options.
-   * 
-   * @return First option, may be null.
-   */
-  public String getFirstOption() {
-    if (optionList == null || optionList.size() == 0) {
-      return null;
-    } else {
-      return optionList.get(0);
+    /**
+     * Components that depend on options passed during configuration can override
+     * this method in order to make appropriate use of those options. For simpler
+     * components, the trivial implementation found in this abstract class will be
+     * sufficient.
+     */
+    public void start() {
+        started = true;
     }
-  }
 
-  protected List<String> getOptionList() {
-    return optionList;
-  }
+    public void stop() {
+        started = false;
+    }
 
-  public void setContext(Context context) {
-    cab.setContext(context);
-  }
+    public boolean isStarted() {
+        return started;
+    }
 
-  public Context getContext() {
-    return cab.getContext();
-  }
+    public void setOptionList(List<String> optionList) {
+        this.optionList = optionList;
+    }
 
-  public void addStatus(Status status) {
-    cab.addStatus(status);
-  }
+    /**
+     * Return the first option passed to this component. The returned value may be
+     * null if there are no options.
+     * 
+     * @return First option, may be null.
+     */
+    public String getFirstOption() {
+        if (optionList == null || optionList.size() == 0) {
+            return null;
+        } else {
+            return optionList.get(0);
+        }
+    }
 
-  public void addInfo(String msg) {
-    cab.addInfo(msg);
-  }
+    protected List<String> getOptionList() {
+        return optionList;
+    }
 
-  public void addInfo(String msg, Throwable ex) {
-    cab.addInfo(msg, ex);
-  }
+    public void setContext(Context context) {
+        cab.setContext(context);
+    }
 
-  public void addWarn(String msg) {
-    cab.addWarn(msg);
-  }
+    public Context getContext() {
+        return cab.getContext();
+    }
 
-  public void addWarn(String msg, Throwable ex) {
-    cab.addWarn(msg, ex);
-  }
+    public void addStatus(Status status) {
+        cab.addStatus(status);
+    }
 
-  public void addError(String msg) {
-    cab.addError(msg);
-  }
+    public void addInfo(String msg) {
+        cab.addInfo(msg);
+    }
 
-  public void addError(String msg, Throwable ex) {
-    cab.addError(msg, ex);
-  }
+    public void addInfo(String msg, Throwable ex) {
+        cab.addInfo(msg, ex);
+    }
+
+    public void addWarn(String msg) {
+        cab.addWarn(msg);
+    }
+
+    public void addWarn(String msg, Throwable ex) {
+        cab.addWarn(msg, ex);
+    }
+
+    public void addError(String msg) {
+        cab.addError(msg);
+    }
+
+    public void addError(String msg, Throwable ex) {
+        cab.addError(msg, ex);
+    }
 }

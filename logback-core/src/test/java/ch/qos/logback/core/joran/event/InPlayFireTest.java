@@ -29,51 +29,49 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.CoreTestConstants;
 
-public class InPlayFireTest  {
+public class InPlayFireTest {
 
-  Context context = new ContextBase();
-  HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    Context context = new ContextBase();
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
 
-  @Test
-  public void testBasic() throws JoranException {
-    ListenAction listenAction = new ListenAction();
-    
-    rulesMap.put(new ElementSelector("fire"), listenAction);
-    TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
+    @Test
+    public void testBasic() throws JoranException {
+        ListenAction listenAction = new ListenAction();
 
-    gc.setContext(context);
-    gc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/fire1.xml");
-    
-    //for(SaxEvent se: listenAction.getSeList()) {
-    //  System.out.println(se);
-    //}
-    assertEquals(5, listenAction.getSeList().size());
-    assertTrue(listenAction.getSeList().get(0) instanceof StartEvent);
-    assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
-    assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
-    assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
-  }
+        rulesMap.put(new ElementSelector("fire"), listenAction);
+        TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
 
-  @Test
-  public void testReplay() throws JoranException {
-    ListenAction listenAction = new ListenAction();
-    
-    rulesMap.put(new ElementSelector("fire"), listenAction);
-    TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
+        gc.setContext(context);
+        gc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/fire1.xml");
 
-    gc.setContext(context);
-    gc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/fire1.xml");
-    
-//    for(SaxEvent se: listenAction.getSeList()) {
-//      System.out.println(se);
-//    }
-    assertEquals(5, listenAction.getSeList().size());
-    assertTrue(listenAction.getSeList().get(0) instanceof StartEvent);
-    assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
-    assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
-    assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
-  }
-  
-  
-  
+        // for(SaxEvent se: listenAction.getSeList()) {
+        // System.out.println(se);
+        // }
+        assertEquals(5, listenAction.getSeList().size());
+        assertTrue(listenAction.getSeList().get(0) instanceof StartEvent);
+        assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
+        assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
+        assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
+    }
+
+    @Test
+    public void testReplay() throws JoranException {
+        ListenAction listenAction = new ListenAction();
+
+        rulesMap.put(new ElementSelector("fire"), listenAction);
+        TrivialConfigurator gc = new TrivialConfigurator(rulesMap);
+
+        gc.setContext(context);
+        gc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/fire1.xml");
+
+        // for(SaxEvent se: listenAction.getSeList()) {
+        // System.out.println(se);
+        // }
+        assertEquals(5, listenAction.getSeList().size());
+        assertTrue(listenAction.getSeList().get(0) instanceof StartEvent);
+        assertTrue(listenAction.getSeList().get(1) instanceof StartEvent);
+        assertTrue(listenAction.getSeList().get(2) instanceof BodyEvent);
+        assertTrue(listenAction.getSeList().get(3) instanceof EndEvent);
+    }
+
 }

@@ -33,147 +33,138 @@ import ch.qos.logback.core.db.dialect.SQLDialectCode;
  */
 public abstract class DBAppenderBase<E> extends UnsynchronizedAppenderBase<E> {
 
-  protected ConnectionSource connectionSource;
-  protected boolean cnxSupportsGetGeneratedKeys = false;
-  protected boolean cnxSupportsBatchUpdates = false;
-  protected SQLDialect sqlDialect;
+    protected ConnectionSource connectionSource;
+    protected boolean cnxSupportsGetGeneratedKeys = false;
+    protected boolean cnxSupportsBatchUpdates = false;
+    protected SQLDialect sqlDialect;
 
-  protected abstract Method getGeneratedKeysMethod();
+    protected abstract Method getGeneratedKeysMethod();
 
-  protected abstract String getInsertSQL();
+    protected abstract String getInsertSQL();
 
-  @Override
-  public void start() {
+    @Override
+    public void start() {
 
-    if (connectionSource == null) {
-      throw new IllegalStateException(
-          "DBAppender cannot function without a connection source");
-    }
-
-    sqlDialect = DBUtil
-        .getDialectFromCode(connectionSource.getSQLDialectCode());
-    if (getGeneratedKeysMethod() != null) {
-      cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
-    } else {
-      cnxSupportsGetGeneratedKeys = false;
-    }
-    cnxSupportsBatchUpdates = connectionSource.supportsBatchUpdates();
-    if (!cnxSupportsGetGeneratedKeys && (sqlDialect == null)) {
-      throw new IllegalStateException(
-          "DBAppender cannot function if the JDBC driver does not support getGeneratedKeys method *and* without a specific SQL dialect");
-    }
-
-    // all nice and dandy on the eastern front
-    super.start();
-  }
-
-  /**
-   * @return Returns the connectionSource.
-   */
-  public ConnectionSource getConnectionSource() {
-    return connectionSource;
-  }
-
-  /**
-   * @param connectionSource
-   *          The connectionSource to set.
-   */
-  public void setConnectionSource(ConnectionSource connectionSource) {
-    this.connectionSource = connectionSource;
-  }
-
-  @Override
-  public void append(E eventObject) {
-    Connection connection = null;
-    PreparedStatement insertStatement = null;
-    try {
-      connection = connectionSource.getConnection();
-      connection.setAutoCommit(false);
-
-      if (cnxSupportsGetGeneratedKeys) {
-        String EVENT_ID_COL_NAME = "EVENT_ID";
-        // see
-        if (connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
-          EVENT_ID_COL_NAME = EVENT_ID_COL_NAME.toLowerCase();
+        if (connectionSource == null) {
+            throw new IllegalStateException("DBAppender cannot function without a connection source");
         }
-        insertStatement = connection.prepareStatement(getInsertSQL(),
-            new String[] { EVENT_ID_COL_NAME });
-      } else {
-        insertStatement = connection.prepareStatement(getInsertSQL());
-      }
 
-      long eventId;
-      // inserting an event and getting the result must be exclusive
-      synchronized (this) {
-        subAppend(eventObject, connection, insertStatement);
-        eventId = selectEventId(insertStatement, connection);
-      }
-      secondarySubAppend(eventObject, connection, eventId);
+        sqlDialect = DBUtil.getDialectFromCode(connectionSource.getSQLDialectCode());
+        if (getGeneratedKeysMethod() != null) {
+            cnxSupportsGetGeneratedKeys = connectionSource.supportsGetGeneratedKeys();
+        } else {
+            cnxSupportsGetGeneratedKeys = false;
+        }
+        cnxSupportsBatchUpdates = connectionSource.supportsBatchUpdates();
+        if (!cnxSupportsGetGeneratedKeys && (sqlDialect == null)) {
+            throw new IllegalStateException(
+                            "DBAppender cannot function if the JDBC driver does not support getGeneratedKeys method *and* without a specific SQL dialect");
+        }
 
-      connection.commit();
-    } catch (Throwable sqle) {
-      addError("problem appending event", sqle);
-    } finally {
-      DBHelper.closeStatement(insertStatement);
-      DBHelper.closeConnection(connection);
+        // all nice and dandy on the eastern front
+        super.start();
     }
-  }
 
-  protected abstract void subAppend(E eventObject, Connection connection,
-      PreparedStatement statement) throws Throwable;
+    /**
+     * @return Returns the connectionSource.
+     */
+    public ConnectionSource getConnectionSource() {
+        return connectionSource;
+    }
 
-  protected abstract void secondarySubAppend(E eventObject, Connection connection,
-      long eventId) throws Throwable;
+    /**
+     * @param connectionSource
+     *          The connectionSource to set.
+     */
+    public void setConnectionSource(ConnectionSource connectionSource) {
+        this.connectionSource = connectionSource;
+    }
 
-  protected long selectEventId(PreparedStatement insertStatement,
-      Connection connection) throws SQLException, InvocationTargetException {
-    ResultSet rs = null;
-    Statement idStatement = null;
-    try {
-      boolean gotGeneratedKeys = false;
-      if (cnxSupportsGetGeneratedKeys) {
+    @Override
+    public void append(E eventObject) {
+        Connection connection = null;
+        PreparedStatement insertStatement = null;
         try {
-          rs = (ResultSet) getGeneratedKeysMethod().invoke(insertStatement,
-              (Object[]) null);
-          gotGeneratedKeys = true;
-        } catch (InvocationTargetException ex) {
-          Throwable target = ex.getTargetException();
-          if (target instanceof SQLException) {
-            throw (SQLException) target;
-          }
-          throw ex;
-        } catch (IllegalAccessException ex) {
-          addWarn(
-              "IllegalAccessException invoking PreparedStatement.getGeneratedKeys",
-              ex);
-        }
-      }
+            connection = connectionSource.getConnection();
+            connection.setAutoCommit(false);
 
-      if (!gotGeneratedKeys) {
-        idStatement = connection.createStatement();
-        idStatement.setMaxRows(1);
-        String selectInsertIdStr = sqlDialect.getSelectInsertId();
-        rs = idStatement.executeQuery(selectInsertIdStr);
-      }
+            if (cnxSupportsGetGeneratedKeys) {
+                String EVENT_ID_COL_NAME = "EVENT_ID";
+                // see
+                if (connectionSource.getSQLDialectCode() == SQLDialectCode.POSTGRES_DIALECT) {
+                    EVENT_ID_COL_NAME = EVENT_ID_COL_NAME.toLowerCase();
+                }
+                insertStatement = connection.prepareStatement(getInsertSQL(), new String[] { EVENT_ID_COL_NAME });
+            } else {
+                insertStatement = connection.prepareStatement(getInsertSQL());
+            }
 
-      // A ResultSet cursor is initially positioned before the first row;
-      // the first call to the method next makes the first row the current row
-      rs.next();
-      long eventId = rs.getLong(1);
-      return eventId;
-    } finally {
-      if (rs!=null) {
-        try {
-          rs.close();
-        } catch (SQLException e) {
+            long eventId;
+            // inserting an event and getting the result must be exclusive
+            synchronized (this) {
+                subAppend(eventObject, connection, insertStatement);
+                eventId = selectEventId(insertStatement, connection);
+            }
+            secondarySubAppend(eventObject, connection, eventId);
+
+            connection.commit();
+        } catch (Throwable sqle) {
+            addError("problem appending event", sqle);
+        } finally {
+            DBHelper.closeStatement(insertStatement);
+            DBHelper.closeConnection(connection);
         }
-      }
-      DBHelper.closeStatement(idStatement);
     }
-  }
 
-  @Override
-  public void stop() {
-    super.stop();
-  }
+    protected abstract void subAppend(E eventObject, Connection connection, PreparedStatement statement) throws Throwable;
+
+    protected abstract void secondarySubAppend(E eventObject, Connection connection, long eventId) throws Throwable;
+
+    protected long selectEventId(PreparedStatement insertStatement, Connection connection) throws SQLException, InvocationTargetException {
+        ResultSet rs = null;
+        Statement idStatement = null;
+        try {
+            boolean gotGeneratedKeys = false;
+            if (cnxSupportsGetGeneratedKeys) {
+                try {
+                    rs = (ResultSet) getGeneratedKeysMethod().invoke(insertStatement, (Object[]) null);
+                    gotGeneratedKeys = true;
+                } catch (InvocationTargetException ex) {
+                    Throwable target = ex.getTargetException();
+                    if (target instanceof SQLException) {
+                        throw (SQLException) target;
+                    }
+                    throw ex;
+                } catch (IllegalAccessException ex) {
+                    addWarn("IllegalAccessException invoking PreparedStatement.getGeneratedKeys", ex);
+                }
+            }
+
+            if (!gotGeneratedKeys) {
+                idStatement = connection.createStatement();
+                idStatement.setMaxRows(1);
+                String selectInsertIdStr = sqlDialect.getSelectInsertId();
+                rs = idStatement.executeQuery(selectInsertIdStr);
+            }
+
+            // A ResultSet cursor is initially positioned before the first row;
+            // the first call to the method next makes the first row the current row
+            rs.next();
+            long eventId = rs.getLong(1);
+            return eventId;
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                }
+            }
+            DBHelper.closeStatement(idStatement);
+        }
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+    }
 }

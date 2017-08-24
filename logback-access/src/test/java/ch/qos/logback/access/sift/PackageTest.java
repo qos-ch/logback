@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({SiftingAppenderTest.class})
-public class PackageTest  {
+@SuiteClasses({ SiftingAppenderTest.class })
+public class PackageTest {
 
 }

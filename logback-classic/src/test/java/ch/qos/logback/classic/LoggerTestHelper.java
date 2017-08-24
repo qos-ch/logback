@@ -19,17 +19,17 @@ import junit.framework.*;
 
 public class LoggerTestHelper extends TestCase {
 
-
-  static void assertNameEquals(Logger logger, String name)  {
-    assertNotNull(logger);
-    assertEquals(name, logger.getName());
-  }
-  static void assertLevels(Level level, Logger logger, Level effectiveLevel)  {
-    if(level == null) {
-    assertNull(logger.getLevel());
-    } else {
-      assertEquals(level, logger.getLevel());
+    static void assertNameEquals(Logger logger, String name) {
+        assertNotNull(logger);
+        assertEquals(name, logger.getName());
     }
-    assertEquals(effectiveLevel, logger.getEffectiveLevel());
-  }
+
+    static void assertLevels(Level level, Logger logger, Level effectiveLevel) {
+        if (level == null) {
+            assertNull(logger.getLevel());
+        } else {
+            assertEquals(level, logger.getLevel());
+        }
+        assertEquals(effectiveLevel, logger.getEffectiveLevel());
+    }
 }

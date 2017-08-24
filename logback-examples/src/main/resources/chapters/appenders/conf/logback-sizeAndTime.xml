@@ -4,13 +4,12 @@
 
   <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <file>mylog.txt</file>
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
       <!-- rollover daily -->
-      <fileNamePattern>mylog-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
-      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-        <!-- or whenever the file size reaches 100MB -->
-        <maxFileSize>100MB</maxFileSize>
-      </timeBasedFileNamingAndTriggeringPolicy>
+      <fileNamePattern>mylog-%d{yyyy-MM-dd'T'HHmmss}.%i.txt</fileNamePattern>
+      <maxFileSize>100</maxFileSize>
+      <maxHistory>2</maxHistory>
+      <totalSizeCap>200</totalSizeCap>
     </rollingPolicy>
     <encoder>
       <pattern>%msg%n</pattern>

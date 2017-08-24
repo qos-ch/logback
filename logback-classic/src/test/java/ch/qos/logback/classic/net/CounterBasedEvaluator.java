@@ -25,51 +25,49 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class CounterBasedEvaluator extends ContextAwareBase implements EventEvaluator {
 
-  static int DEFAULT_LIMIT = 1024;
-  int limit = DEFAULT_LIMIT;
-  int counter = 0;
-  String name;
-  boolean started;
+    static int DEFAULT_LIMIT = 1024;
+    int limit = DEFAULT_LIMIT;
+    int counter = 0;
+    String name;
+    boolean started;
 
-  public boolean evaluate(Object event) throws NullPointerException,
-      EvaluationException {
-    counter++;
+    public boolean evaluate(Object event) throws NullPointerException, EvaluationException {
+        counter++;
 
-    if (counter == limit) {
-      counter = 0;
-      return true;
-    } else {
-      return false;
+        if (counter == limit) {
+            counter = 0;
+            return true;
+        } else {
+            return false;
+        }
     }
-  }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public boolean isStarted() {
-    return started;
-  }
+    public boolean isStarted() {
+        return started;
+    }
 
-  public void start() {
-    started = true;
-  }
+    public void start() {
+        started = true;
+    }
 
-  public void stop() {
-    started = false;
-  }
+    public void stop() {
+        started = false;
+    }
 
-  public int getLimit() {
-    return limit;
-  }
+    public int getLimit() {
+        return limit;
+    }
 
-  public void setLimit(int limit) {
-    this.limit = limit;
-  }
-  
-  
+    public void setLimit(int limit) {
+        this.limit = limit;
+    }
+
 }

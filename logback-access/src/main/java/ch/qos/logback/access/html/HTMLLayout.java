@@ -39,62 +39,61 @@ import ch.qos.logback.core.pattern.Converter;
  */
 public class HTMLLayout extends HTMLLayoutBase<IAccessEvent> {
 
-  /**
-   * Default pattern string for log output.
-   */
-  static final String DEFAULT_CONVERSION_PATTERN = "%h%l%u%t%r%s%b";
+    /**
+     * Default pattern string for log output.
+     */
+    static final String DEFAULT_CONVERSION_PATTERN = "%h%l%u%t%r%s%b";
 
-  /**
-   * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
-   * 
-   */
-  public HTMLLayout() {
-    pattern = DEFAULT_CONVERSION_PATTERN;
-    cssBuilder = new DefaultCssBuilder();  
-  }
-  
-  @Override
-  protected Map<String, String> getDefaultConverterMap() {
-    return PatternLayout.defaultConverterMap;
-  }
-
-  @Override
-  public String doLayout(IAccessEvent event) {
-    StringBuilder buf = new StringBuilder();
-    startNewTableIfLimitReached(buf);
-
-    boolean odd = true;
-    if (((counter++) & 1) == 0) {
-      odd = false;
+    /**
+     * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
+     * 
+     */
+    public HTMLLayout() {
+        pattern = DEFAULT_CONVERSION_PATTERN;
+        cssBuilder = new DefaultCssBuilder();
     }
 
-    buf.append(LINE_SEPARATOR);
-    buf.append("<tr class=\"");
-    if (odd) {
-      buf.append(" odd\">");
-    } else {
-      buf.append(" even\">");
+    @Override
+    protected Map<String, String> getDefaultConverterMap() {
+        return PatternLayout.defaultConverterMap;
     }
-    buf.append(LINE_SEPARATOR);
 
-    Converter<IAccessEvent> c = head;
-    while (c != null) {
-      appendEventToBuffer(buf, c, event);
-      c = c.getNext();
+    @Override
+    public String doLayout(IAccessEvent event) {
+        StringBuilder buf = new StringBuilder();
+        startNewTableIfLimitReached(buf);
+
+        boolean odd = true;
+        if (((counter++) & 1) == 0) {
+            odd = false;
+        }
+
+        buf.append(LINE_SEPARATOR);
+        buf.append("<tr class=\"");
+        if (odd) {
+            buf.append(" odd\">");
+        } else {
+            buf.append(" even\">");
+        }
+        buf.append(LINE_SEPARATOR);
+
+        Converter<IAccessEvent> c = head;
+        while (c != null) {
+            appendEventToBuffer(buf, c, event);
+            c = c.getNext();
+        }
+        buf.append("</tr>");
+        buf.append(LINE_SEPARATOR);
+
+        return buf.toString();
     }
-    buf.append("</tr>");
-    buf.append(LINE_SEPARATOR);
 
-    return buf.toString();
-  }
-
-  private void appendEventToBuffer(StringBuilder buf, Converter<IAccessEvent> c,
-      IAccessEvent event) {
-    buf.append("<td class=\"");
-    buf.append(computeConverterName(c));
-    buf.append("\">");
-    c.write(buf, event);
-    buf.append("</td>");
-    buf.append(LINE_SEPARATOR);
-  }
+    private void appendEventToBuffer(StringBuilder buf, Converter<IAccessEvent> c, IAccessEvent event) {
+        buf.append("<td class=\"");
+        buf.append(computeConverterName(c));
+        buf.append("\">");
+        c.write(buf, event);
+        buf.append("</td>");
+        buf.append(LINE_SEPARATOR);
+    }
 }

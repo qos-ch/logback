@@ -19,42 +19,47 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class BasicContextListener implements LoggerContextListener {
 
-  enum UpdateType { NONE, START, RESET, STOP , LEVEL_CHANGE};
-  
-  UpdateType updateType = UpdateType.NONE;
-  LoggerContext context;
-  Logger logger;
-  Level level;
-  
-  boolean resetResistant;
-  
-  public void setResetResistant(boolean resetResistant) {
-    this.resetResistant = resetResistant;
-  }
-  
-  public void onReset(LoggerContext context) {
-    updateType =  UpdateType.RESET;
-    this.context = context;
-    
-  }
-  public void onStart(LoggerContext context) {
-    updateType =  UpdateType.START;;
-    this.context = context;
-  }
-  
-  public void onStop(LoggerContext context) {
-    updateType =  UpdateType.STOP;;
-    this.context = context;
-  }
+    enum UpdateType {
+        NONE, START, RESET, STOP, LEVEL_CHANGE
+    };
 
-  public boolean isResetResistant() {
-    return resetResistant;
-  }
+    UpdateType updateType = UpdateType.NONE;
+    LoggerContext context;
+    Logger logger;
+    Level level;
 
-  public void onLevelChange(Logger logger, Level level) {
-    updateType = UpdateType.LEVEL_CHANGE;
-    this.logger = logger;
-    this.level = level;
-  }
-  
+    boolean resetResistant;
+
+    public void setResetResistant(boolean resetResistant) {
+        this.resetResistant = resetResistant;
+    }
+
+    public void onReset(LoggerContext context) {
+        updateType = UpdateType.RESET;
+        this.context = context;
+
+    }
+
+    public void onStart(LoggerContext context) {
+        updateType = UpdateType.START;
+        ;
+        this.context = context;
+    }
+
+    public void onStop(LoggerContext context) {
+        updateType = UpdateType.STOP;
+        ;
+        this.context = context;
+    }
+
+    public boolean isResetResistant() {
+        return resetResistant;
+    }
+
+    public void onLevelChange(Logger logger, Level level) {
+        updateType = UpdateType.LEVEL_CHANGE;
+        this.logger = logger;
+        this.level = level;
+    }
+
 }

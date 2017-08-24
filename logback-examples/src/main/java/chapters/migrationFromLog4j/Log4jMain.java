@@ -24,11 +24,11 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class Log4jMain {
 
-  static Logger logger = Logger.getLogger(Log4jMain.class);
+    static Logger logger = Logger.getLogger(Log4jMain.class);
 
-  public static void main(String[] args) {
-    PropertyConfigurator.configure("src/main/java/chapters/migrationFromLog4j/log4jTrivial.properties");
-    logger.debug("Hello world");
-  }
+    public static void main(String[] args) {
+        PropertyConfigurator.configure("src/main/java/chapters/migrationFromLog4j/log4jTrivial.properties");
+        logger.debug("Hello world");
+    }
 
 }

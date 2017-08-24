@@ -30,60 +30,53 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class JMXConfiguratorAction extends Action {
 
-  static final String OBJECT_NAME_ATTRIBUTE_NAME = "objectName";
-  static final String CONTEXT_NAME_ATTRIBUTE_NAME = "contextName";
-  static final char JMX_NAME_SEPARATOR = ',';
-  
-  @Override
-  public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
-    addInfo("begin");
+    static final String OBJECT_NAME_ATTRIBUTE_NAME = "objectName";
+    static final String CONTEXT_NAME_ATTRIBUTE_NAME = "contextName";
+    static final char JMX_NAME_SEPARATOR = ',';
 
+    @Override
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+        addInfo("begin");
 
-    String contextName = context.getName();
-    String contextNameAttributeVal = attributes
-    .getValue(CONTEXT_NAME_ATTRIBUTE_NAME);
-    if(!OptionHelper.isEmpty(contextNameAttributeVal)) {
-      contextName = contextNameAttributeVal;
+        String contextName = context.getName();
+        String contextNameAttributeVal = attributes.getValue(CONTEXT_NAME_ATTRIBUTE_NAME);
+        if (!OptionHelper.isEmpty(contextNameAttributeVal)) {
+            contextName = contextNameAttributeVal;
+        }
+
+        String objectNameAsStr;
+        String objectNameAttributeVal = attributes.getValue(OBJECT_NAME_ATTRIBUTE_NAME);
+        if (OptionHelper.isEmpty(objectNameAttributeVal)) {
+            objectNameAsStr = MBeanUtil.getObjectNameFor(contextName, JMXConfigurator.class);
+        } else {
+            objectNameAsStr = objectNameAttributeVal;
+        }
+
+        ObjectName objectName = MBeanUtil.string2ObjectName(context, this, objectNameAsStr);
+        if (objectName == null) {
+            addError("Failed construct ObjectName for [" + objectNameAsStr + "]");
+            return;
+        }
+
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        if (!MBeanUtil.isRegistered(mbs, objectName)) {
+            // register only of the named JMXConfigurator has not been previously
+            // registered. Unregistering an MBean within invocation of itself
+            // caused jconsole to throw an NPE. (This occurs when the reload* method
+            // unregisters the
+            JMXConfigurator jmxConfigurator = new JMXConfigurator((LoggerContext) context, mbs, objectName);
+            try {
+                mbs.registerMBean(jmxConfigurator, objectName);
+            } catch (Exception e) {
+                addError("Failed to create mbean", e);
+            }
+        }
+
     }
 
-    String objectNameAsStr;
-    String objectNameAttributeVal = attributes
-        .getValue(OBJECT_NAME_ATTRIBUTE_NAME);
-    if (OptionHelper.isEmpty(objectNameAttributeVal)) {
-      objectNameAsStr = MBeanUtil.getObjectNameFor(contextName,
-          JMXConfigurator.class);
-    } else {
-      objectNameAsStr = objectNameAttributeVal;
+    @Override
+    public void end(InterpretationContext ec, String name) throws ActionException {
+
     }
-
-    ObjectName objectName = MBeanUtil.string2ObjectName(context, this,
-        objectNameAsStr);
-    if (objectName == null) {
-      addError("Failed construct ObjectName for ["+objectNameAsStr+"]");
-      return;
-    }
-    
-    MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-    if(!MBeanUtil.isRegistered(mbs, objectName)) {
-      // register only of the named JMXConfigurator has not been previously
-      // registered. Unregistering an MBean within invocation of itself
-      // caused jconsole to throw an NPE. (This occurs when the reload* method
-      // unregisters the 
-      JMXConfigurator jmxConfigurator = new JMXConfigurator((LoggerContext) context, mbs,
-          objectName);
-      try {     
-        mbs.registerMBean(jmxConfigurator, objectName);
-      } catch (Exception e) {
-        addError("Failed to create mbean", e);
-      }
-    }
-
-  }
-
-  @Override
-  public void end(InterpretationContext ec, String name) throws ActionException {
-
-  }
 
 }

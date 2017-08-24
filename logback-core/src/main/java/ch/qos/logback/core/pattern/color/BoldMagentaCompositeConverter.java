@@ -25,8 +25,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.MAGENTA_FG;
  */
 public class BoldMagentaCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return BOLD + MAGENTA_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return BOLD + MAGENTA_FG;
+    }
 }

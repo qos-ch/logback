@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import ch.qos.logback.core.net.ssl.KeyManagerFactoryFactoryBean;
 
-
 /**
  * Unit tests for {@link KeyManagerFactoryFactoryBean}.
  *
@@ -29,26 +28,24 @@ import ch.qos.logback.core.net.ssl.KeyManagerFactoryFactoryBean;
  */
 public class KeyManagerFactoryFactoryBeanTest {
 
-  private KeyManagerFactoryFactoryBean factoryBean =
-      new KeyManagerFactoryFactoryBean();
-  
-  @Test
-  public void testDefaults() throws Exception {
-    assertNotNull(factoryBean.createKeyManagerFactory());
-  }
+    private KeyManagerFactoryFactoryBean factoryBean = new KeyManagerFactoryFactoryBean();
 
-  @Test
-  public void testExplicitAlgorithm() throws Exception {
-    factoryBean.setAlgorithm(KeyManagerFactory.getDefaultAlgorithm());
-    assertNotNull(factoryBean.createKeyManagerFactory());
-  }
-  
-  @Test
-  public void testExplicitProvider() throws Exception {
-    KeyManagerFactory factory = KeyManagerFactory.getInstance(
-        KeyManagerFactory.getDefaultAlgorithm());
-    factoryBean.setProvider(factory.getProvider().getName());
-    assertNotNull(factoryBean.createKeyManagerFactory());
-  }
-  
+    @Test
+    public void testDefaults() throws Exception {
+        assertNotNull(factoryBean.createKeyManagerFactory());
+    }
+
+    @Test
+    public void testExplicitAlgorithm() throws Exception {
+        factoryBean.setAlgorithm(KeyManagerFactory.getDefaultAlgorithm());
+        assertNotNull(factoryBean.createKeyManagerFactory());
+    }
+
+    @Test
+    public void testExplicitProvider() throws Exception {
+        KeyManagerFactory factory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+        factoryBean.setProvider(factory.getProvider().getName());
+        assertNotNull(factoryBean.createKeyManagerFactory());
+    }
+
 }

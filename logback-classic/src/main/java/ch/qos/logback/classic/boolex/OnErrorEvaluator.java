@@ -27,12 +27,11 @@ import ch.qos.logback.core.boolex.EventEvaluatorBase;
  */
 public class OnErrorEvaluator extends EventEvaluatorBase<ILoggingEvent> {
 
-  /**
-   * Return true if event passed as parameter has level ERROR or higher, returns
-   * false otherwise.
-   */
-  public boolean evaluate(ILoggingEvent event) throws NullPointerException,
-      EvaluationException {
-    return event.getLevel().levelInt >= Level.ERROR_INT;
-  }
+    /**
+     * Return true if event passed as parameter has level ERROR or higher, returns
+     * false otherwise.
+     */
+    public boolean evaluate(ILoggingEvent event) throws NullPointerException, EvaluationException {
+        return event.getLevel().levelInt >= Level.ERROR_INT;
+    }
 }

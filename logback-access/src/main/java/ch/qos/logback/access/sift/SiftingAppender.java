@@ -30,24 +30,24 @@ import ch.qos.logback.core.sift.SiftingAppenderBase;
  */
 public class SiftingAppender extends SiftingAppenderBase<IAccessEvent> {
 
-  @Override
-  public void start() {
-    super.start();
-  }
+    @Override
+    public void start() {
+        super.start();
+    }
 
-  @Override
-  protected long getTimestamp(IAccessEvent event) {
-    return event.getTimeStamp();
-  }
+    @Override
+    protected long getTimestamp(IAccessEvent event) {
+        return event.getTimeStamp();
+    }
 
-  @Override
-  protected boolean eventMarksEndOfLife(IAccessEvent event) {
-    return false;
-  }
+    @Override
+    protected boolean eventMarksEndOfLife(IAccessEvent event) {
+        return false;
+    }
 
-  @Override
-  @DefaultClass(AccessEventDiscriminator.class)
-  public void setDiscriminator(Discriminator<IAccessEvent> discriminator) {
-    super.setDiscriminator(discriminator);
-  }
+    @Override
+    @DefaultClass(AccessEventDiscriminator.class)
+    public void setDiscriminator(Discriminator<IAccessEvent> discriminator) {
+        super.setDiscriminator(discriminator);
+    }
 }

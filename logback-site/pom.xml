@@ -7,7 +7,7 @@
   <parent>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-parent</artifactId>
-    <version>1.1.4-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHPOT</version>
   </parent>
 
   <artifactId>logback-site</artifactId>
@@ -33,8 +33,17 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
-          <outputDirectory>${project.parent.basedir}/target/site
-          </outputDirectory>
+          <outputDirectory>${project.parent.basedir}/target/site</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <nonFilteredFileExtensions>
+            <nonFilteredFileExtension>js</nonFilteredFileExtension>
+          </nonFilteredFileExtensions>
         </configuration>
       </plugin>
     </plugins>

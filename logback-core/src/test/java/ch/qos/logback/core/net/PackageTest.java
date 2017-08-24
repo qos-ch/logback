@@ -16,12 +16,8 @@ package ch.qos.logback.core.net;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AbstractSocketAppenderTest.class,
-        DefaultSocketConnectorTest.class,
-        AbstractSSLSocketAppenderTest.class,
-        ch.qos.logback.core.net.server.PackageTest.class,
-        ch.qos.logback.core.net.ssl.PackageTest.class})
+@Suite.SuiteClasses({ DefaultSocketConnectorTest.class, AbstractSSLSocketAppenderTest.class,
+        ch.qos.logback.core.net.server.PackageTest.class, ch.qos.logback.core.net.ssl.PackageTest.class })
 public class PackageTest {
 }

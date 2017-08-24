@@ -26,7 +26,6 @@ import org.junit.Test;
 import ch.qos.logback.core.net.ssl.SSL;
 import ch.qos.logback.core.net.ssl.SecureRandomFactoryBean;
 
-
 /**
  * Unit tests for {@link SecureRandomFactoryBean}.
  *
@@ -34,43 +33,40 @@ import ch.qos.logback.core.net.ssl.SecureRandomFactoryBean;
  */
 public class SecureRandomFactoryBeanTest {
 
-  private SecureRandomFactoryBean factoryBean = new SecureRandomFactoryBean();
-  
-  @Test
-  public void testDefaults() throws Exception {
-    assertNotNull(factoryBean.createSecureRandom());
-  }
+    private SecureRandomFactoryBean factoryBean = new SecureRandomFactoryBean();
 
-  @Test
-  public void testExplicitProvider() throws Exception {
-    SecureRandom secureRandom = SecureRandom.getInstance(
-        SSL.DEFAULT_SECURE_RANDOM_ALGORITHM);
-    factoryBean.setProvider(secureRandom.getProvider().getName());
-    assertNotNull(factoryBean.createSecureRandom());    
-  }
+    @Test
+    public void testDefaults() throws Exception {
+        assertNotNull(factoryBean.createSecureRandom());
+    }
 
-  @Test
-  public void testUnknownProvider() throws Exception {
-    factoryBean.setProvider(SSLTestConstants.FAKE_PROVIDER_NAME);
-    try {
-      factoryBean.createSecureRandom();
-      fail("expected NoSuchProviderException");
+    @Test
+    public void testExplicitProvider() throws Exception {
+        SecureRandom secureRandom = SecureRandom.getInstance(SSL.DEFAULT_SECURE_RANDOM_ALGORITHM);
+        factoryBean.setProvider(secureRandom.getProvider().getName());
+        assertNotNull(factoryBean.createSecureRandom());
     }
-    catch (NoSuchProviderException ex) {
-      assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_PROVIDER_NAME));
-    }
-  }
 
-  @Test
-  public void testUnknownAlgorithm() throws Exception {
-    factoryBean.setAlgorithm(SSLTestConstants.FAKE_ALGORITHM_NAME);
-    try {
-      factoryBean.createSecureRandom();
-      fail("expected NoSuchAlgorithmException");
+    @Test
+    public void testUnknownProvider() throws Exception {
+        factoryBean.setProvider(SSLTestConstants.FAKE_PROVIDER_NAME);
+        try {
+            factoryBean.createSecureRandom();
+            fail("expected NoSuchProviderException");
+        } catch (NoSuchProviderException ex) {
+            assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_PROVIDER_NAME));
+        }
     }
-    catch (NoSuchAlgorithmException ex) {
-      assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_ALGORITHM_NAME));
+
+    @Test
+    public void testUnknownAlgorithm() throws Exception {
+        factoryBean.setAlgorithm(SSLTestConstants.FAKE_ALGORITHM_NAME);
+        try {
+            factoryBean.createSecureRandom();
+            fail("expected NoSuchAlgorithmException");
+        } catch (NoSuchAlgorithmException ex) {
+            assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_ALGORITHM_NAME));
+        }
     }
-  }
 
 }
