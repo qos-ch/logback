@@ -29,48 +29,45 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
  */
 public class AppenderExample {
 
-  static void usage(String msg) {
-    System.err.println(msg);
-    System.err.println("Usage: java " + AppenderExample.class.getName() +
-      " configFile\n" +
-      "   configFile a logback configuration file" +
-      "   in XML format.");
-    System.exit(1);
-  }
-
-  static public void main(String[] args) throws Exception {
-    if (args.length != 1) {
-      usage("Wrong number of arguments.");
+    static void usage(String msg) {
+        System.err.println(msg);
+        System.err.println("Usage: java " + AppenderExample.class.getName() + " configFile\n" + "   configFile a logback configuration file"
+                        + "   in XML format.");
+        System.exit(1);
     }
 
-    String configFile = args[0];
+    static public void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            usage("Wrong number of arguments.");
+        }
 
-    if (configFile.endsWith(".xml")) {
-      LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-      lc.reset();
-      JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(lc);
-      configurator.doConfigure(configFile);
+        String configFile = args[0];
+
+        if (configFile.endsWith(".xml")) {
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            lc.reset();
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(lc);
+            configurator.doConfigure(configFile);
+        }
+
+        Logger logger = LoggerFactory.getLogger(AppenderExample.class);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+
+        while (true) {
+            System.out.println("Type a message to send to remote clients. Type 'q' to quit.");
+
+            String s = reader.readLine();
+
+            if (s.equals("q")) {
+                break;
+            } else {
+                logger.debug(s);
+            }
+        }
+
+        ((LoggerContext) LoggerFactory.getILoggerFactory()).stop();
     }
-
-    Logger logger = LoggerFactory.getLogger(AppenderExample.class);
-
-    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-    while (true) {
-      System.out.println(
-        "Type a message to send to remote clients. Type 'q' to quit.");
-
-      String s = reader.readLine();
-
-      if (s.equals("q")) {
-        break;
-      } else {
-        logger.debug(s);
-      }
-    }
-    
-    ((LoggerContext) LoggerFactory.getILoggerFactory()).stop();
-  }
 
 }

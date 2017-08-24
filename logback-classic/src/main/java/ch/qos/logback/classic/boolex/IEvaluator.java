@@ -18,9 +18,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 /**
  * An <b>internal</b> interface used by the GEventEvaluator.
  * 
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public interface IEvaluator {
-  boolean doEvaluate(ILoggingEvent event);
+    boolean doEvaluate(ILoggingEvent event);
 }
- 

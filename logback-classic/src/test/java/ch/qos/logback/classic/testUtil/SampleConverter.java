@@ -18,11 +18,11 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class SampleConverter extends ClassicConverter {
 
-  static public final String SAMPLE_STR = "sample";
-  
-  @Override
-  public String convert(ILoggingEvent event) {
-    return SAMPLE_STR;
-  }
+    static public final String SAMPLE_STR = "sample";
+
+    @Override
+    public String convert(ILoggingEvent event) {
+        return SAMPLE_STR;
+    }
 
 }

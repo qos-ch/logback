@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ContextJNDISelectorTest.class, ContextDetachingSCLTest.class})
-public class PackageTest  {
+@SuiteClasses({ ContextJNDISelectorTest.class, ContextDetachingSCLTest.class })
+public class PackageTest {
 }

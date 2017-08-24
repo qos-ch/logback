@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { JoranConfiguratorTest.class, EvaluatorJoranTest.class,
-    ch.qos.logback.classic.joran.conditional.PackageTest.class })
+@SuiteClasses({ JoranConfiguratorTest.class, EvaluatorJoranTest.class, ch.qos.logback.classic.joran.conditional.PackageTest.class })
 public class PackageTest {
 }

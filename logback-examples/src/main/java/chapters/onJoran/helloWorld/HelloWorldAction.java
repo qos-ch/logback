@@ -26,10 +26,10 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class HelloWorldAction extends Action {
-  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    System.out.println("Hello World");
-  }
+    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        System.out.println("Hello World");
+    }
 
-  public void end(InterpretationContext ec, String name) {
-  }
+    public void end(InterpretationContext ec, String name) {
+    }
 }

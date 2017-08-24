@@ -31,39 +31,38 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class Activator implements BundleActivator {
 
-  private BundleContext m_context = null;
+    private BundleContext m_context = null;
 
-  public void start(BundleContext context) {
-    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-    
-    try {
-      JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(lc);
-      // the context was probably already configured by default configuration 
-      // rules
-      lc.reset(); 
-      configurator.doConfigure("src/test/input/osgi/simple.xml");
-    } catch (JoranException je) {
-       je.printStackTrace();
+    public void start(BundleContext context) {
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+        try {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(lc);
+            // the context was probably already configured by default configuration
+            // rules
+            lc.reset();
+            configurator.doConfigure("src/test/input/osgi/simple.xml");
+        } catch (JoranException je) {
+            je.printStackTrace();
+        }
+        StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.info("Activator.start()");
+        m_context = context;
     }
-    StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
-    
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    logger.info("Activator.start()");
-    m_context = context;
-  }
-
-  public void stop(BundleContext context) {
-    m_context = null;
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    logger.info("Activator.stop");
-  }
-
-  public Bundle[] getBundles() {
-    if (m_context != null) {
-      return m_context.getBundles();
+    public void stop(BundleContext context) {
+        m_context = null;
+        Logger logger = LoggerFactory.getLogger(this.getClass());
+        logger.info("Activator.stop");
     }
-    return null;
-  }
+
+    public Bundle[] getBundles() {
+        if (m_context != null) {
+            return m_context.getBundles();
+        }
+        return null;
+    }
 }

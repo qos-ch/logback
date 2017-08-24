@@ -31,6 +31,10 @@
   <div id="left">
     <script src="templates/left.js" type="text/javascript"></script>
   </div>
+    <div id="right">
+      <script type="text/javascript" src="templates/right.js" ></script>
+    </div>
+
   <div id="content">
     
   <h2><a name="top">Logback error messages and their meanings</a></h2>
@@ -283,7 +287,21 @@
   <code>RollingPolicy</code> at the same time.
   </p>
       
+  <!-- ============================================================= -->
+
+  <h3 class="doAnchor" name="#sat_missing_integer_token">Missing
+  integer token, that is %i, in FileNamePattern [...].
+    
+  </h3>
   
+  <p>The %i conversion token is mandatory for <a
+  href="manual/appenders.html#SizeAndTimeBasedFNATP">size and time
+  based archiving</a>. In case the %i token is missing,
+  <code>SizeAndTimeBasedFNATP</code> attached to
+  <code>RollingFileAppender</code> will detect the omission and will
+  not start.
+  </p>
+
       
   <!-- ============================================================= -->
 
@@ -380,7 +398,52 @@
   <code>RollingFileAppender</code> will emit an error message and
   refuse to start.</p>
 
-  <!-- ============================================================= -->
+  <!-- ============================================================= -->  
+
+  <h3 class="doAnchor" name="rfa_collision_in_dateFormat">The date
+  format in <span class="option">fileNamePattern</span> will result in
+  collisions in the names of archived log files.
+  </h3>
+
+  <p>This error message is output when the date time pattern in the %d
+  token within the <span class="option">fileNamePattern</span> is not
+  collision free. For example, the following
+  code>fileNamePattern</code> will result in the same log archive
+  every day of the week after the first week of the month.
+  </p>
+
+  <pre class="source">myapp-%d{yyyy-MM-<span class="bold red">uu</span>}.log.zip</pre>
+
+  <p>As such collisions will result in log data loss,
+  <code>RollingFileAppender</code> will check for a variety of such
+  possible collisions and will not start if any collisions are
+  detected.</p>
+
+  <!-- ============================================================= -->  
+
+  <h3 class="doAnchor" name="earlier_fa_collision"><span
+  class="option">File</span>/<span
+  class="option">FileNamePattern</span> option has the same value "..." as
+  that given for appender [...] defined earlier.
+  </h3>
+
+
+  <p>If a <code>FileAppender</code>/<code>RollingFileAppender</code>
+  defined earlier has the same <span class="option">File</span> option
+  as the current appender, then those two appenders are in collision
+  as <code>FileAppender</code> instances cannot share the same output
+  target. To prevent loss of data, the current appender will not
+  start. Make sure that each appender has a unique <span
+  class="option">File</span> option.
+  </p>
+
+  <p>By analogy the same restriction applies to the <span
+  class="option">FileNamePattern</span> option of
+  RollingFileAppender. Make sure that each RollingFileAppender has a
+  unique <span class="option">FileNamePattern</span> option</p>
+  
+  <!-- =============================================================
+       -->
   <h3 class="doAnchor" name="renamingError">Failed to rename file [x]
   as [y].</h3>
 
@@ -410,18 +473,22 @@
   permission which is different than the permission to "write" to the
   file.</p>
 
+  <p class="highlight">File rename operations during rollover can be
+  avoided altogether by omitting the <span class="option">file</span>
+  property in RollingFileAppender.</p>
 
   <p>In practice, it can be hard to set the right permissions or to
-  ensure that there are no file handle references to log files. Under
-  such circumstances, it can be easier to avoid file renaming
-  altogether. File renaming can be avoided by omitting the <span
-  class="option">file</span> property in
-  <code>TimeBasedRollingPolicy</code>, as shown in the next
-  configuration snippet.
+  ensure that there are no file handle references to log files.</p>
+
+  <p>Under many circumstances, it can be more robust to avoid file
+  renaming during rollover altogether. This is as easy as omitting the
+  <span class="option">file</span> property in
+  <code>RollingFileAppender</code>, as shown in the next configuration
+  snippet.
   </p>
 
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-  &lt;!-- <span class="option">file</span> property left unset/blank -->
+  <b>&lt;!-- <span class="option">file</span> property left unset/blank --></b>
   &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
     &lt;fileNamePattern>mylog.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
   &lt;/rollingPolicy>
@@ -440,8 +507,8 @@
    <p>On the Unix platform, the basic/quick rename method supplied by
    the JDK does not work if the source and target files are located on
    different file systems. In order to deal with this contingency,
-   logback will resort to renaming by copying if all following three
-   conditions are met:</p>
+   logback will resort to renaming by copying if all of the following
+   three conditions are met:</p>
 
    <ol>
      <li>quick renaming fails, </li>
@@ -455,6 +522,10 @@
    <p>The code for determining the file system of a file requires Java
    7. No rename by copying will be performed on Java 6 or earlier.</p>
    
+   <p>As explained in the Windows section above, renaming can be
+   avoided altogether by omitting the <span class="option">file</span>
+   property.
+   </p>
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="fwrp_parentFileName_not_set">The <span

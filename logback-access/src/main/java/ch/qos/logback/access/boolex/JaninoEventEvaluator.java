@@ -23,63 +23,62 @@ import ch.qos.logback.core.boolex.Matcher;
 
 public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent> {
 
-  public final static List<String> DEFAULT_PARAM_NAME_LIST = new ArrayList<String>();
-  public final static List<Class> DEFAULT_PARAM_TYPE_LIST = new ArrayList<Class>();
+    public final static List<String> DEFAULT_PARAM_NAME_LIST = new ArrayList<String>();
+    public final static List<Class> DEFAULT_PARAM_TYPE_LIST = new ArrayList<Class>();
 
-  static {
-    DEFAULT_PARAM_NAME_LIST.add("event");
-    DEFAULT_PARAM_TYPE_LIST.add(IAccessEvent.class);
-  }
-
-
-  @Override
-  protected String getDecoratedExpression() {
-    String expression = getExpression();
-    if (!expression.contains("return")) {
-      expression = "return " + expression + ";";
-      addInfo("Adding [return] prefix and a semicolon suffix. Expression becomes [" + expression + "]");
-      addInfo("See also " + CoreConstants.CODES_URL + "#block");
-    }
-    return expression;
-  }
-
-  @Override
-  protected String[] getParameterNames() {
-    List<String> fullNameList = new ArrayList<String>();
-    fullNameList.addAll(DEFAULT_PARAM_NAME_LIST);
-
-    for (int i = 0; i < matcherList.size(); i++) {
-      Matcher m = (Matcher) matcherList.get(i);
-      fullNameList.add(m.getName());
+    static {
+        DEFAULT_PARAM_NAME_LIST.add("event");
+        DEFAULT_PARAM_TYPE_LIST.add(IAccessEvent.class);
     }
 
-    return (String[]) fullNameList.toArray(CoreConstants.EMPTY_STRING_ARRAY);
-  }
-
-  @Override
-  protected Class[] getParameterTypes() {
-    List<Class> fullTypeList = new ArrayList<Class>();
-    fullTypeList.addAll(DEFAULT_PARAM_TYPE_LIST);
-    for (int i = 0; i < matcherList.size(); i++) {
-      fullTypeList.add(Matcher.class);
-    }
-    return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
-  }
-
-  @Override
-  protected Object[] getParameterValues(IAccessEvent accessEvent) {
-    final int matcherListSize = matcherList.size();
-
-    int i = 0;
-    Object[] values = new Object[DEFAULT_PARAM_NAME_LIST.size() + matcherListSize];
-
-    values[i++] = accessEvent;
-
-    for (int j = 0; j < matcherListSize; j++) {
-      values[i++] = matcherList.get(j);
+    @Override
+    protected String getDecoratedExpression() {
+        String expression = getExpression();
+        if (!expression.contains("return")) {
+            expression = "return " + expression + ";";
+            addInfo("Adding [return] prefix and a semicolon suffix. Expression becomes [" + expression + "]");
+            addInfo("See also " + CoreConstants.CODES_URL + "#block");
+        }
+        return expression;
     }
 
-    return values;
-  }
+    @Override
+    protected String[] getParameterNames() {
+        List<String> fullNameList = new ArrayList<String>();
+        fullNameList.addAll(DEFAULT_PARAM_NAME_LIST);
+
+        for (int i = 0; i < matcherList.size(); i++) {
+            Matcher m = (Matcher) matcherList.get(i);
+            fullNameList.add(m.getName());
+        }
+
+        return (String[]) fullNameList.toArray(CoreConstants.EMPTY_STRING_ARRAY);
+    }
+
+    @Override
+    protected Class[] getParameterTypes() {
+        List<Class> fullTypeList = new ArrayList<Class>();
+        fullTypeList.addAll(DEFAULT_PARAM_TYPE_LIST);
+        for (int i = 0; i < matcherList.size(); i++) {
+            fullTypeList.add(Matcher.class);
+        }
+        return (Class[]) fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
+    }
+
+    @Override
+    protected Object[] getParameterValues(IAccessEvent accessEvent) {
+        final int matcherListSize = matcherList.size();
+
+        int i = 0;
+        Object[] values = new Object[DEFAULT_PARAM_NAME_LIST.size() + matcherListSize];
+
+        values[i++] = accessEvent;
+
+        for (int j = 0; j < matcherListSize; j++) {
+            values[i++] = matcherList.get(j);
+        }
+
+        return values;
+    }
 
 }

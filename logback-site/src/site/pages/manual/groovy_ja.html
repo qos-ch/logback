@@ -142,7 +142,7 @@ root(DEBUG, ["FILE"])</pre>
     <!-- ========================================================== -->        
     <h3>• <span class="code">timestamp(String datePattern, long timeReference = -1)</span></h3>
 
-    <p><code>timestamp()</code>メソッドは、<code>datePattern</code>に指定された書式文字列で<code>timeReference</code>に指定されたlong値の時間を書式化した文字列を返します。第一引数の<code>datePattern</code>に指定する書式文字列は、<a href="http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>で定義されている規則に従わなければなりません。第二引数の<code>timeReference</code>が省略された場合-1が指定されたものとして扱います。これは設定ファイルを解析しているときの現在日時を表す値です。状況によりますが、基準時間として<code>context.birthTime</code>を使うこともあるでしょう。
+    <p><code>timestamp()</code>メソッドは、<code>datePattern</code>に指定された書式文字列で<code>timeReference</code>に指定されたlong値の時間を書式化した文字列を返します。第一引数の<code>datePattern</code>に指定する書式文字列は、<a href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>で定義されている規則に従わなければなりません。第二引数の<code>timeReference</code>が省略された場合-1が指定されたものとして扱います。これは設定ファイルを解析しているときの現在日時を表す値です。状況によりますが、基準時間として<code>context.birthTime</code>を使うこともあるでしょう。
     </p>
 
     <p>次の例では、 <code>bySecond</code>変数に"yyyyMMdd'T'HHmmss"という書式で文字列化した現在日時を代入していますそして、"bySecond" 変数を<span class="option">file</span>プロパティの値として使っています。

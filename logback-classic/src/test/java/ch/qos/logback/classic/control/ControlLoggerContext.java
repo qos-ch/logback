@@ -37,74 +37,74 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ControlLoggerContext {
 
-  private ControlLogger root;
-  //
-  // Hashtable loggerMap = new Hashtable();
-  Map<String, ControlLogger> loggerMap = new HashMap<String, ControlLogger>();
+    private ControlLogger root;
+    //
+    // Hashtable loggerMap = new Hashtable();
+    Map<String, ControlLogger> loggerMap = new HashMap<String, ControlLogger>();
 
-  public ControlLoggerContext() {
-    this.root = new ControlLogger("root", null);
-    this.root.setLevel(Level.DEBUG);
-  }
-
-  /**
-   * Return this contexts root logger
-   * 
-   * @return
-   */
-  public ControlLogger getRootLogger() {
-    return root;
-  }
-
-  public ControlLogger exists(String name) {
-    if (name == null) {
-      throw new IllegalArgumentException("name parameter cannot be null");
+    public ControlLoggerContext() {
+        this.root = new ControlLogger("root", null);
+        this.root.setLevel(Level.DEBUG);
     }
 
-    synchronized (loggerMap) {
-      return (ControlLogger) loggerMap.get(name);
+    /**
+     * Return this contexts root logger
+     * 
+     * @return
+     */
+    public ControlLogger getRootLogger() {
+        return root;
     }
-  }
 
-  public final ControlLogger getLogger(String name) {
-    if (name == null) {
-      throw new IllegalArgumentException("name parameter cannot be null");
-    }
-
-    synchronized (loggerMap) {
-      ControlLogger cl = (ControlLogger) loggerMap.get(name);
-      if (cl != null) {
-        return cl;
-      }
-      ControlLogger parent = this.root;
-
-      int i = 0;
-      while (true) {
-        i = name.indexOf(CoreConstants.DOT, i);
-        if (i == -1) {
-          // System.out.println("FINAL-Creating logger named [" + name + "] with
-          // parent " + parent.getName());
-          cl = new ControlLogger(name, parent);
-          loggerMap.put(name, cl);
-          return cl;
-        } else {
-          String parentName = name.substring(0, i);
-          ControlLogger p = (ControlLogger) loggerMap.get(parentName);
-          if (p == null) {
-            // System.out.println("INTERMEDIARY-Creating logger [" + parentName
-            // + "] with parent " + parent.getName());
-            p = new ControlLogger(parentName, parent);
-            loggerMap.put(parentName, p);
-          }
-          parent = p;
+    public ControlLogger exists(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("name parameter cannot be null");
         }
-        // make i move past the last found dot.
-        i++;
-      }
-    }
-  }
 
-  public Map<String, ControlLogger> getLoggerMap() {
-    return loggerMap;
-  }
+        synchronized (loggerMap) {
+            return (ControlLogger) loggerMap.get(name);
+        }
+    }
+
+    public final ControlLogger getLogger(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("name parameter cannot be null");
+        }
+
+        synchronized (loggerMap) {
+            ControlLogger cl = (ControlLogger) loggerMap.get(name);
+            if (cl != null) {
+                return cl;
+            }
+            ControlLogger parent = this.root;
+
+            int i = 0;
+            while (true) {
+                i = name.indexOf(CoreConstants.DOT, i);
+                if (i == -1) {
+                    // System.out.println("FINAL-Creating logger named [" + name + "] with
+                    // parent " + parent.getName());
+                    cl = new ControlLogger(name, parent);
+                    loggerMap.put(name, cl);
+                    return cl;
+                } else {
+                    String parentName = name.substring(0, i);
+                    ControlLogger p = (ControlLogger) loggerMap.get(parentName);
+                    if (p == null) {
+                        // System.out.println("INTERMEDIARY-Creating logger [" + parentName
+                        // + "] with parent " + parent.getName());
+                        p = new ControlLogger(parentName, parent);
+                        loggerMap.put(parentName, p);
+                    }
+                    parent = p;
+                }
+                // make i move past the last found dot.
+                i++;
+            }
+        }
+    }
+
+    public Map<String, ControlLogger> getLoggerMap() {
+        return loggerMap;
+    }
 }

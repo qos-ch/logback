@@ -24,52 +24,52 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public class URLEvaluator extends ContextAwareBase implements EventEvaluator, LifeCycle {
 
-  boolean started;
-  String name;
-  private List<String> URLList = new ArrayList<String>();
+    boolean started;
+    String name;
+    private List<String> URLList = new ArrayList<String>();
 
-  public void addURL(String url) {
-    URLList.add(url);
-  }
-
-  @Override
-  public void start() {
-    if (URLList.size() == 0) {
-      addWarn("No URL was given to URLEvaluator");
-    } else {
-      started = true;
+    public void addURL(String url) {
+        URLList.add(url);
     }
-  }
 
-  @Override
-  public boolean evaluate(Object eventObject) throws NullPointerException, EvaluationException {
-    IAccessEvent event = (IAccessEvent)eventObject;
-    String url = event.getRequestURL();
-    for(String expected:URLList) {
-      if (url.contains(expected)) {
-        return true;
-      }
+    @Override
+    public void start() {
+        if (URLList.size() == 0) {
+            addWarn("No URL was given to URLEvaluator");
+        } else {
+            started = true;
+        }
     }
-    return false;
-  }
 
-  @Override
-  public String getName() {
-    return name;
-  }
+    @Override
+    public boolean evaluate(Object eventObject) throws NullPointerException, EvaluationException {
+        IAccessEvent event = (IAccessEvent) eventObject;
+        String url = event.getRequestURL();
+        for (String expected : URLList) {
+            if (url.contains(expected)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-  @Override
-  public void setName(String name) {
-    this.name = name;
-  }
+    @Override
+    public String getName() {
+        return name;
+    }
 
-  @Override
-  public boolean isStarted() {
-    return started;
-  }
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  @Override
-  public void stop() {
-    started = false;
-  }
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
+
+    @Override
+    public void stop() {
+        started = false;
+    }
 }

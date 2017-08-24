@@ -25,31 +25,29 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
  */
 public class ReceiverExample {
 
-  static void usage(String msg) {
-    System.err.println(msg);
-    System.err.println("Usage: java " + ReceiverExample.class.getName() +
-      " configFile\n" +
-      "   configFile a logback configuration file" +
-      "   in XML format.");
-    System.exit(1);
-  }
-
-  static public void main(String[] args) throws Exception {
-    if (args.length != 1) {
-      usage("Wrong number of arguments.");
+    static void usage(String msg) {
+        System.err.println(msg);
+        System.err.println("Usage: java " + ReceiverExample.class.getName() + " configFile\n" + "   configFile a logback configuration file"
+                        + "   in XML format.");
+        System.exit(1);
     }
 
-    String configFile = args[0];
+    static public void main(String[] args) throws Exception {
+        if (args.length != 1) {
+            usage("Wrong number of arguments.");
+        }
 
-    if (configFile.endsWith(".xml")) {
-      LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-      lc.reset();
-      JoranConfigurator configurator = new JoranConfigurator();
-      configurator.setContext(lc);
-      configurator.doConfigure(configFile);
+        String configFile = args[0];
+
+        if (configFile.endsWith(".xml")) {
+            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            lc.reset();
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(lc);
+            configurator.doConfigure(configFile);
+        }
+
+        Thread.sleep(Long.MAX_VALUE);
     }
-
-    Thread.sleep(Long.MAX_VALUE);
-  }
 
 }

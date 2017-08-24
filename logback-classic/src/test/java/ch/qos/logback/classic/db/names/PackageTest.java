@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { DefaultDBNameResolverTest.class,
-    SimpleDBNameResolverTest.class })
+@SuiteClasses({ DefaultDBNameResolverTest.class, SimpleDBNameResolverTest.class })
 public class PackageTest {
 }

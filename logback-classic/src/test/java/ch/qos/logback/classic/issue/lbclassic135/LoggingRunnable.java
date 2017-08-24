@@ -18,32 +18,31 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 
 public class LoggingRunnable extends RunnableWithCounterAndDone {
 
-  final Logger logger;
-  final int burstLength;
+    final Logger logger;
+    final int burstLength;
 
-
-  public LoggingRunnable(Logger logger, int burstLength) {
-    this.logger = logger;
-    this.burstLength = burstLength;
-  }
-
-  public LoggingRunnable(Logger logger) {
-    this(logger, 100);
-  }
-
-  public void run() {
-    while (!isDone()) {
-      logger.info("hello world ABCDEFGHI");
-      counter++;
-      // don't hog the CPU forever
-      if (counter % burstLength == 0) {
-        try {
-          Thread.sleep(1);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
+    public LoggingRunnable(Logger logger, int burstLength) {
+        this.logger = logger;
+        this.burstLength = burstLength;
     }
-  }
+
+    public LoggingRunnable(Logger logger) {
+        this(logger, 10);
+    }
+
+    public void run() {
+        while (!isDone()) {
+            logger.info("hello world ABCDEFGHI");
+            counter++;
+            // don't hog the CPU forever
+            if (counter % burstLength == 0) {
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 }

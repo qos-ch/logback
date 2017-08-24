@@ -19,9 +19,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class MockConfigurator extends ContextAwareBase implements Configurator {
 
-  static LoggerContext context = null;
+    static LoggerContext context = null;
 
-  public void configure(LoggerContext loggerContext) {
-    context = loggerContext;
-  }
+    public void configure(LoggerContext loggerContext) {
+        context = loggerContext;
+    }
 }

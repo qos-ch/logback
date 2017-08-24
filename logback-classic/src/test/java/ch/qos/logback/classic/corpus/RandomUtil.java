@@ -17,30 +17,27 @@ import java.util.Random;
 
 public class RandomUtil {
 
-  
-  /**
-   * Approximate a gaussian distrib with only positive integer values
-   * 
-   * @param average
-   * @param stdDeviation
-   * @return
-   */
-  static public int gaussianAsPositiveInt(Random random, int average, int stdDeviation) {
-    if (average < 1) {
-      throw new IllegalArgumentException(
-          "The average must not be smaller than 1.");
-    }
+    /**
+     * Approximate a gaussian distrib with only positive integer values
+     * 
+     * @param average
+     * @param stdDeviation
+     * @return
+     */
+    static public int gaussianAsPositiveInt(Random random, int average, int stdDeviation) {
+        if (average < 1) {
+            throw new IllegalArgumentException("The average must not be smaller than 1.");
+        }
 
-    if (stdDeviation < 1) {
-      throw new IllegalArgumentException(
-          "The stdDeviation must not be smaller than 1.");
-    }
+        if (stdDeviation < 1) {
+            throw new IllegalArgumentException("The stdDeviation must not be smaller than 1.");
+        }
 
-    double d = random.nextGaussian() * stdDeviation + average;
-    int result = 1;
-    if (d > 1.0) {
-      result = (int) Math.round(d);
+        double d = random.nextGaussian() * stdDeviation + average;
+        int result = 1;
+        if (d > 1.0) {
+            result = (int) Math.round(d);
+        }
+        return result;
     }
-    return result;
-  }
 }

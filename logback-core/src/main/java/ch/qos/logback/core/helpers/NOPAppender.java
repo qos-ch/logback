@@ -17,7 +17,7 @@ import ch.qos.logback.core.AppenderBase;
 
 final public class NOPAppender<E> extends AppenderBase<E> {
 
-  @Override
-  protected void append(E eventObject) {
-  }
+    @Override
+    protected void append(E eventObject) {
+    }
 }

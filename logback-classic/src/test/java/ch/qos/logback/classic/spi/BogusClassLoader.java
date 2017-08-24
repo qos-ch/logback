@@ -24,29 +24,28 @@ import java.net.URLClassLoader;
  */
 public class BogusClassLoader extends URLClassLoader {
 
-  public BogusClassLoader(URL[] urls) {
-    super(urls);
-  }
-
-  public BogusClassLoader(URL[] urls, ClassLoader parent) {
-    super(urls, parent);
-  }
-
-  public Class<?> loadClass(String name) throws ClassNotFoundException {
-    return loadClass(name, false);
-  }
-
-  /**
-   * Throw NoClassDefFoundError if the requested class contains the string
-   * "Bogus". Otherwise, delegate to super-class.
-   */
-  protected Class<?> loadClass(String name, boolean resolve)
-      throws ClassNotFoundException {
-
-    if (name.contains("Bogus")) {
-      throw new NoClassDefFoundError();
+    public BogusClassLoader(URL[] urls) {
+        super(urls);
     }
 
-    return super.loadClass(name, resolve);
-  }
+    public BogusClassLoader(URL[] urls, ClassLoader parent) {
+        super(urls, parent);
+    }
+
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        return loadClass(name, false);
+    }
+
+    /**
+     * Throw NoClassDefFoundError if the requested class contains the string
+     * "Bogus". Otherwise, delegate to super-class.
+     */
+    protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+
+        if (name.contains("Bogus")) {
+            throw new NoClassDefFoundError();
+        }
+
+        return super.loadClass(name, resolve);
+    }
 }

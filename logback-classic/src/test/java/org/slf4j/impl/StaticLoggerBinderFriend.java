@@ -21,9 +21,9 @@ package org.slf4j.impl;
  * 
  */
 public class StaticLoggerBinderFriend {
- 
-  static public void reset() {
-    StaticLoggerBinder.reset();
-  }
+
+    static public void reset() {
+        StaticLoggerBinder.reset();
+    }
 
 }

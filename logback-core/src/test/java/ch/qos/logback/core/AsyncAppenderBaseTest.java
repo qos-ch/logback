@@ -13,20 +13,19 @@
  */
 package ch.qos.logback.core;
 
-import ch.qos.logback.core.helpers.NOPAppender;
-import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.testUtil.DelayingListAppender;
-import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.status.StatusChecker;
-import ch.qos.logback.core.testUtil.NPEAppender;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import ch.qos.logback.core.helpers.NOPAppender;
+import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.DelayingListAppender;
+import ch.qos.logback.core.testUtil.NPEAppender;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -34,235 +33,288 @@ import static org.junit.Assert.fail;
  */
 public class AsyncAppenderBaseTest {
 
-	Context context = new ContextBase();
-	AsyncAppenderBase<Integer> asyncAppenderBase = new AsyncAppenderBase<Integer>();
-	LossyAsyncAppender lossyAsyncAppender = new LossyAsyncAppender();
-	DelayingListAppender<Integer> delayingListAppender = new DelayingListAppender<Integer>();
-	ListAppender<Integer> listAppender = new ListAppender<Integer>();
-	OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
-	StatusChecker statusChecker = new StatusChecker(context);
+    Context context = new ContextBase();
+    AsyncAppenderBase<Integer> asyncAppenderBase = new AsyncAppenderBase<Integer>();
+    LossyAsyncAppender lossyAsyncAppender = new LossyAsyncAppender();
+    DelayingListAppender<Integer> delayingListAppender = new DelayingListAppender<Integer>();
+    ListAppender<Integer> listAppender = new ListAppender<Integer>();
+    OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
+    StatusChecker statusChecker = new StatusChecker(context);
 
-	@Before
-	public void setUp() {
-		onConsoleStatusListener.setContext(context);
-		context.getStatusManager().add(onConsoleStatusListener);
-		onConsoleStatusListener.start();
+    @Before
+    public void setUp() {
+        onConsoleStatusListener.setContext(context);
+        context.getStatusManager().add(onConsoleStatusListener);
+        onConsoleStatusListener.start();
 
-		asyncAppenderBase.setContext(context);
-		lossyAsyncAppender.setContext(context);
+        asyncAppenderBase.setContext(context);
+        lossyAsyncAppender.setContext(context);
 
-		listAppender.setContext(context);
-		listAppender.setName("list");
-		listAppender.start();
+        listAppender.setContext(context);
+        listAppender.setName("list");
+        listAppender.start();
 
-		delayingListAppender.setContext(context);
-		delayingListAppender.setName("list");
-		delayingListAppender.start();
-	}
+        delayingListAppender.setContext(context);
+        delayingListAppender.setName("list");
+        delayingListAppender.start();
+    }
 
-	@Test(timeout = 2000)
-	public void smoke() {
-		asyncAppenderBase.addAppender(listAppender);
-		asyncAppenderBase.start();
-		asyncAppenderBase.doAppend(0);
-		asyncAppenderBase.stop();
-		verify(listAppender, 1);
-	}
+    @Test(timeout = 2000)
+    public void smoke() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.doAppend(0);
+        asyncAppenderBase.stop();
+        verify(listAppender, 1);
+    }
 
-	@Test
-	public void exceptionsShouldNotCauseHalting() throws InterruptedException {
-		NPEAppender<Integer> npeAppender = new NPEAppender<Integer>();
-		npeAppender.setName("bad");
-		npeAppender.setContext(context);
-		npeAppender.start();
+    @Test
+    public void exceptionsShouldNotCauseHalting() throws InterruptedException {
+        NPEAppender<Integer> npeAppender = new NPEAppender<Integer>();
+        npeAppender.setName("bad");
+        npeAppender.setContext(context);
+        npeAppender.start();
 
-		asyncAppenderBase.addAppender(npeAppender);
-		asyncAppenderBase.start();
-		assertTrue(asyncAppenderBase.isStarted());
-		for (int i = 0; i < 10; i++)
-			asyncAppenderBase.append(i);
+        asyncAppenderBase.addAppender(npeAppender);
+        asyncAppenderBase.start();
+        assertTrue(asyncAppenderBase.isStarted());
+        for (int i = 0; i < 10; i++)
+            asyncAppenderBase.append(i);
 
-		asyncAppenderBase.stop();
-		assertFalse(asyncAppenderBase.isStarted());
-		assertEquals(AppenderBase.ALLOWED_REPEATS,
-				statusChecker
-						.matchCount("Appender \\[bad\\] failed to append."));
-	}
+        asyncAppenderBase.stop();
+        assertFalse(asyncAppenderBase.isStarted());
+        assertEquals(AppenderBase.ALLOWED_REPEATS, statusChecker.matchCount("Appender \\[bad\\] failed to append."));
+    }
 
-	@Test(timeout = 2000)
-	public void emptyQueueShouldBeStoppable() {
-		asyncAppenderBase.addAppender(listAppender);
-		asyncAppenderBase.start();
-		asyncAppenderBase.stop();
-		verify(listAppender, 0);
-	}
+    @Test(timeout = 2000)
+    public void emptyQueueShouldBeStoppable() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.stop();
+        verify(listAppender, 0);
+    }
 
-	@Test(timeout = 2000)
-	public void workerShouldStopEvenIfInterruptExceptionConsumedWithinSubappender() {
-		delayingListAppender.delay = 100;
-		asyncAppenderBase.addAppender(delayingListAppender);
-		asyncAppenderBase.start();
-		asyncAppenderBase.doAppend(0);
-		asyncAppenderBase.stop();
-		verify(delayingListAppender, 1);
-		assertTrue(delayingListAppender.interrupted);
-	}
+    @Test(timeout = 2000)
+    public void workerShouldStopEvenIfInterruptExceptionConsumedWithinSubappender() {
+        delayingListAppender.delay = 100;
+        asyncAppenderBase.addAppender(delayingListAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.doAppend(0);
+        asyncAppenderBase.stop();
+        verify(delayingListAppender, 1);
+        assertTrue(delayingListAppender.interrupted);
+        Thread.interrupted();
+    }
 
-	@Test(timeout = 2000)
-	public void noEventLoss() {
-		int bufferSize = 10;
-		int loopLen = bufferSize * 2;
-		asyncAppenderBase.addAppender(delayingListAppender);
-		asyncAppenderBase.setQueueSize(bufferSize);
-		asyncAppenderBase.start();
-		for (int i = 0; i < loopLen; i++) {
-			asyncAppenderBase.doAppend(i);
-		}
-		asyncAppenderBase.stop();
-		verify(delayingListAppender, loopLen);
-	}
+    @Test(timeout = 2000)
+    public void noEventLoss() {
+        int bufferSize = 10;
+        int loopLen = bufferSize * 2;
+        asyncAppenderBase.addAppender(delayingListAppender);
+        asyncAppenderBase.setQueueSize(bufferSize);
+        asyncAppenderBase.start();
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        asyncAppenderBase.stop();
+        verify(delayingListAppender, loopLen);
+    }
 
-	@Test(timeout = 2000)
-	public void lossyAppenderShouldOnlyLooseCertainEvents() {
-		int bufferSize = 5;
-		int loopLen = bufferSize * 2;
-		lossyAsyncAppender.addAppender(delayingListAppender);
-		lossyAsyncAppender.setQueueSize(bufferSize);
-		lossyAsyncAppender.setDiscardingThreshold(1);
-		lossyAsyncAppender.start();
-		for (int i = 0; i < loopLen; i++) {
-			lossyAsyncAppender.doAppend(i);
-		}
-		lossyAsyncAppender.stop();
-		verify(delayingListAppender, loopLen - 2);
-	}
+    @Test(timeout = 2000)
+    public void eventLossIfNeverBlock() {
+        int bufferSize = 10;
+        int loopLen = bufferSize * 200;
+        delayingListAppender.setDelay(5); // (loopLen*delay) much bigger than test timeout
+        asyncAppenderBase.addAppender(delayingListAppender);
+        asyncAppenderBase.setQueueSize(bufferSize);
+        asyncAppenderBase.setNeverBlock(true);
+        asyncAppenderBase.start();
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        asyncAppenderBase.stop();
+        // ListAppender size isn't a reliable test here, so just make sure we didn't
+        // have any errors, and that we could complete the test in time.
+        statusChecker.assertIsErrorFree();
+    }
 
-	@Test(timeout = 2000)
-	public void lossyAppenderShouldBeNonLossyIfDiscardingThresholdIsZero() {
-		int bufferSize = 5;
-		int loopLen = bufferSize * 2;
-		lossyAsyncAppender.addAppender(delayingListAppender);
-		lossyAsyncAppender.setQueueSize(bufferSize);
-		lossyAsyncAppender.setDiscardingThreshold(0);
-		lossyAsyncAppender.start();
-		for (int i = 0; i < loopLen; i++) {
-			lossyAsyncAppender.doAppend(i);
-		}
-		lossyAsyncAppender.stop();
-		verify(delayingListAppender, loopLen);
-	}
+    @Test(timeout = 2000)
+    public void lossyAppenderShouldOnlyLoseCertainEvents() {
+        int bufferSize = 5;
+        int loopLen = bufferSize * 2;
+        lossyAsyncAppender.addAppender(delayingListAppender);
+        lossyAsyncAppender.setQueueSize(bufferSize);
+        lossyAsyncAppender.setDiscardingThreshold(1);
+        lossyAsyncAppender.start();
+        for (int i = 0; i < loopLen; i++) {
+            lossyAsyncAppender.doAppend(i);
+        }
+        lossyAsyncAppender.stop();
+        // events 0, 3, 6 and 9 are discardable. However, for events 0 and 3
+        // the buffer is not not yet full. Thus, only events 6 and 9 will be
+        // effectively discarded.
+        verify(delayingListAppender, loopLen - 2);
+    }
 
-	@Test
-	public void invalidQueueCapacityShouldResultInNonStartedAppender() {
-		asyncAppenderBase.addAppender(new NOPAppender<Integer>());
-		asyncAppenderBase.setQueueSize(0);
-		assertEquals(0, asyncAppenderBase.getQueueSize());
-		asyncAppenderBase.start();
-		assertFalse(asyncAppenderBase.isStarted());
-		statusChecker.assertContainsMatch("Invalid queue size");
-	}
+    @Test(timeout = 2000)
+    public void lossyAppenderShouldBeNonLossyIfDiscardingThresholdIsZero() {
+        int bufferSize = 5;
+        int loopLen = bufferSize * 2;
+        lossyAsyncAppender.addAppender(delayingListAppender);
+        lossyAsyncAppender.setQueueSize(bufferSize);
+        lossyAsyncAppender.setDiscardingThreshold(0);
+        lossyAsyncAppender.start();
+        for (int i = 0; i < loopLen; i++) {
+            lossyAsyncAppender.doAppend(i);
+        }
+        lossyAsyncAppender.stop();
+        verify(delayingListAppender, loopLen);
+    }
 
-	@SuppressWarnings("deprecation")
-	@Test
-	public void workerThreadFlushesOnStop() {
-		int loopLen = 5;
-		int maxRuntime = (loopLen + 1)
-				* Math.max(1000, delayingListAppender.delay);
-		ListAppender<Integer> la = delayingListAppender;
-		asyncAppenderBase.addAppender(la);
-		asyncAppenderBase.setDiscardingThreshold(0);
-		asyncAppenderBase.setMaxFlushTime(maxRuntime);
-		asyncAppenderBase.start();
-		asyncAppenderBase.worker.suspend();
+    @Test
+    public void invalidQueueCapacityShouldResultInNonStartedAppender() {
+        asyncAppenderBase.addAppender(new NOPAppender<Integer>());
+        asyncAppenderBase.setQueueSize(0);
+        assertEquals(0, asyncAppenderBase.getQueueSize());
+        asyncAppenderBase.start();
+        assertFalse(asyncAppenderBase.isStarted());
+        statusChecker.assertContainsMatch("Invalid queue size");
+    }
 
-		for (int i = 0; i < loopLen; i++) {
-			asyncAppenderBase.doAppend(i);
-		}
-		assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
-		assertEquals(0, la.list.size());
+    @SuppressWarnings("deprecation")
+    @Test
+    public void workerThreadFlushesOnStop() {
+        int loopLen = 5;
+        int maxRuntime = (loopLen + 1) * Math.max(1000, delayingListAppender.delay);
+        ListAppender<Integer> la = delayingListAppender;
+        asyncAppenderBase.addAppender(la);
+        asyncAppenderBase.setDiscardingThreshold(0);
+        asyncAppenderBase.setMaxFlushTime(maxRuntime);
+        asyncAppenderBase.start();
+        asyncAppenderBase.worker.suspend();
 
-		asyncAppenderBase.worker.resume();
-		asyncAppenderBase.stop();
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
+        assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
+        assertEquals(0, la.list.size());
 
-		assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
-		verify(la, loopLen);
-	}
+        asyncAppenderBase.worker.resume();
+        asyncAppenderBase.stop();
 
-	@SuppressWarnings("deprecation")
-	@Test
-	public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
-		int maxRuntime = 1; // runtime of 0 means wait forever, so use 1 ms
-							// instead
-		int loopLen = 10;
-		ListAppender<Integer> la = delayingListAppender;
-		asyncAppenderBase.addAppender(la);
-		asyncAppenderBase.setMaxFlushTime(maxRuntime);
-		asyncAppenderBase.start();
+        assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
+        verify(la, loopLen);
+    }
 
-		for (int i = 0; i < loopLen; i++) {
-			asyncAppenderBase.doAppend(i);
-		}
+    // @SuppressWarnings("deprecation")
+    @Test
+    public void stopExitsWhenMaxRuntimeReached() throws InterruptedException {
+        int maxFlushTime = 1; // runtime of 0 means wait forever, so use 1 ms instead
+        int loopLen = 10;
+        ListAppender<Integer> la = delayingListAppender;
+        asyncAppenderBase.addAppender(la);
+        asyncAppenderBase.setMaxFlushTime(maxFlushTime);
+        asyncAppenderBase.start();
 
-		asyncAppenderBase.stop();
+        for (int i = 0; i < loopLen; i++) {
+            asyncAppenderBase.doAppend(i);
+        }
 
-		// suspend the thread so that we can make the following assertions
-		// without race conditions
-		asyncAppenderBase.worker.suspend();
+        asyncAppenderBase.stop();
 
-		// confirms that stop exited when runtime reached
-		statusChecker.assertContainsMatch("Max queue flush timeout \\("
-				+ maxRuntime + " ms\\) exceeded.");
+        // confirms that stop exited when runtime reached
+        statusChecker.assertContainsMatch("Max queue flush timeout \\(" + maxFlushTime + " ms\\) exceeded.");
 
-		// confirms that the number of events posted are the number of events
-		// removed from the queue
-		assertEquals(la.list.size(),
-				loopLen - asyncAppenderBase.getNumberOfElementsInQueue());
+        asyncAppenderBase.worker.join();
 
-		// resume the thread to let it finish processing
-		asyncAppenderBase.worker.resume();
+        // confirms that all entries do end up being flushed if we wait long enough
+        verify(la, loopLen);
+    }
 
-		asyncAppenderBase.worker.join();
+    // Interruption of current thread when in doAppend method should not be
+    // consumed by async appender. See also http://jira.qos.ch/browse/LOGBACK-910
+    @Test
+    public void verifyInterruptionIsNotSwallowed() {
+        asyncAppenderBase.addAppender(delayingListAppender);
+        asyncAppenderBase.start();
+        Thread.currentThread().interrupt();
+        asyncAppenderBase.doAppend(new Integer(0));
+        assertTrue(Thread.currentThread().isInterrupted());
+        // clear interrupt flag for subsequent tests
+        Thread.interrupted();
+    }
 
-		// confirms that all entries do end up being flushed if we wait long
-		// enough
-		verify(la, loopLen);
-	}
+    // Interruption of current thread should not prevent logging. 
+    // See also http://jira.qos.ch/browse/LOGBACK-910
+    // and https://jira.qos.ch/browse/LOGBACK-1247
+    @Test
+    public void verifyInterruptionDoesNotPreventLogging() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.doAppend(new Integer(0));
+        Thread.currentThread().interrupt();
+        asyncAppenderBase.doAppend(new Integer(1));
+        asyncAppenderBase.doAppend(new Integer(1));
+        assertTrue(Thread.currentThread().isInterrupted());
+        // the interruption needs to be consumed
+        Thread.interrupted();
+        asyncAppenderBase.stop();
+        verify(listAppender, 3);
+    }
+   
+    @Test
+    public void verifyInterruptionFlagWhenStopping_INTERUPPTED() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        Thread.currentThread().interrupt();
+        asyncAppenderBase.stop();
+        assertTrue(Thread.currentThread().isInterrupted());
+        Thread.interrupted();
+    }
+    
+    @Test
+    public void verifyInterruptionFlagWhenStopping_NOT_INTERUPPTED() {
+        asyncAppenderBase.addAppender(listAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.stop();
+        assertFalse(Thread.currentThread().isInterrupted());
+    }
+    
+    
+    @Test
+    public void verifyInterruptionOfWorkerIsSwallowed() {
+        asyncAppenderBase.addAppender(delayingListAppender);
+        asyncAppenderBase.start();
+        asyncAppenderBase.stop();
+        assertFalse(asyncAppenderBase.worker.isInterrupted());
+    }
 
+    private void verify(ListAppender<Integer> la, int atLeast) {
+        assertFalse(la.isStarted());
+        assertTrue(atLeast + " <= " + la.list.size(), atLeast <= la.list.size());
+        statusChecker.assertIsErrorFree();
+        statusChecker.assertContainsMatch("Worker thread will flush remaining events before exiting.");
+    }
 
-	// Interruption of current thread when in doAppend method should not be consumed
-	// by async appender. See also http://jira.qos.ch/browse/LOGBACK-910
-	@Test
-	public void verifyInterruptionIsNotSwallowed() {
-		asyncAppenderBase.addAppender(delayingListAppender);
-		asyncAppenderBase.start();
-		Thread.currentThread().interrupt();
-		asyncAppenderBase.doAppend(new Integer(0));
-		assertTrue(Thread.currentThread().isInterrupted());
-		// clear flag for next test
-		Thread.interrupted();
-	}
-	
-	@Test
-	public void verifyInterruptionOfWorkerIsSwallowed() {
-      asyncAppenderBase.addAppender(delayingListAppender);
-	  asyncAppenderBase.start();
-	  asyncAppenderBase.stop();
-	  assertFalse(asyncAppenderBase.worker.isInterrupted());
-	}
-	
-	
-	private void verify(ListAppender<Integer> la, int expectedSize) {
-		assertFalse(la.isStarted());
-		assertEquals(expectedSize, la.list.size());
-		statusChecker.assertIsErrorFree();
-		statusChecker
-				.assertContainsMatch("Worker thread will flush remaining events before exiting.");
-	}
+    static class LossyAsyncAppender extends AsyncAppenderBase<Integer> {
+        @Override
+        protected boolean isDiscardable(Integer i) {
+            return (i % 3 == 0);
+        }
+    }
 
-	static class LossyAsyncAppender extends AsyncAppenderBase<Integer> {
-		@Override
-		protected boolean isDiscardable(Integer i) {
-			return (i % 3 == 0);
-		}
-	}
+    @Test
+    public void checkThatStartMethodIsIdempotent() {
+        asyncAppenderBase.addAppender(lossyAsyncAppender);
+        asyncAppenderBase.start();
+
+        // we don't need mockito for this test, but if we did here is how it would look
+        // AsyncAppenderBase<Integer> spied = Mockito.spy(asyncAppenderBase);
+        // Mockito.doThrow(new IllegalStateException("non idempotent start")).when((UnsynchronizedAppenderBase<Integer>)
+        // spied).start();
+
+        // a second invocation of start will cause a IllegalThreadStateException thrown by the asyncAppenderBase.worker
+        // thread
+        asyncAppenderBase.start();
+    }
 }

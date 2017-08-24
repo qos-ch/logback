@@ -13,83 +13,80 @@
  */
 package ch.qos.logback.access.spi;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import org.junit.Test;
+
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
-import org.junit.Test;
+import ch.qos.logback.access.net.HardenedAccessEventInputStream;
 
-import java.io.*;
+public class AccessEventSerializationTest {
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+    private Object buildSerializedAccessEvent() throws IOException, ClassNotFoundException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
+        // average time for the next method: 5000 nanos
+        ae.prepareForDeferredProcessing();
+        oos.writeObject(ae);
+        oos.flush();
 
-public class AccessEventSerializationTest  {
+        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+        HardenedAccessEventInputStream hardenedOIS = new HardenedAccessEventInputStream(bais);
 
-  private Object buildSerializedAccessEvent() throws IOException,
-      ClassNotFoundException {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    ObjectOutputStream oos = new ObjectOutputStream(baos);
-    IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
-    // average time for the next method: 5000 nanos
-    ae.prepareForDeferredProcessing();
-    oos.writeObject(ae);
-    oos.flush();
+        Object sae = hardenedOIS.readObject();
+        hardenedOIS.close();
+        return sae;
+    }
 
-    ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-    ObjectInputStream ois = new ObjectInputStream(bais);
+    @Test
+    public void testSerialization() throws IOException, ClassNotFoundException {
+        Object o = buildSerializedAccessEvent();
+        assertNotNull(o);
+        IAccessEvent aeBack = (IAccessEvent) o;
 
-    return ois.readObject();
-  }
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP, aeBack.getResponseHeaderMap());
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("x"), aeBack.getResponseHeader("x"));
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("headerName1"), aeBack.getResponseHeader("headerName1"));
+        assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.size(), aeBack.getResponseHeaderNameList().size());
+        assertEquals(DummyResponse.DUMMY_DEFAULT_CONTENT_COUNT, aeBack.getContentLength());
+        assertEquals(DummyResponse.DUMMY_DEFAULT_STATUS, aeBack.getStatusCode());
 
-  @Test
-  public void testSerialization() throws IOException, ClassNotFoundException {
-    Object o = buildSerializedAccessEvent();
-    assertNotNull(o);
-    IAccessEvent aeBack = (IAccessEvent) o;
+        assertEquals(DummyRequest.DUMMY_CONTENT_STRING, aeBack.getRequestContent());
 
+        assertEquals(DummyRequest.DUMMY_RESPONSE_CONTENT_STRING, aeBack.getResponseContent());
 
-    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP, aeBack
-        .getResponseHeaderMap());
-    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("x"), aeBack
-        .getResponseHeader("x"));
-    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.get("headerName1"),
-        aeBack.getResponseHeader("headerName1"));
-    assertEquals(DummyResponse.DUMMY_DEFAULT_HDEADER_MAP.size(), aeBack
-        .getResponseHeaderNameList().size());
-    assertEquals(DummyResponse.DUMMY_DEFAULT_CONTENT_COUNT, aeBack
-        .getContentLength());
-    assertEquals(DummyResponse.DUMMY_DEFAULT_STATUS, aeBack.getStatusCode());
+        assertEquals(DummyRequest.DUMMY_DEFAULT_ATTR_MAP.get("testKey"), aeBack.getAttribute("testKey"));
+    }
 
-    assertEquals(DummyRequest.DUMMY_CONTENT_STRING, aeBack
-        .getRequestContent());
-    
-    assertEquals(DummyRequest.DUMMY_RESPONSE_CONTENT_STRING, aeBack
-        .getResponseContent());
+    // Web containers may (and will) recycle requests objects. So we must make sure that after
+    // we prepared an event for deferred processing it won't be using data from the original
+    // HttpRequest object which may at that time represent another request
+    @Test
+    public void testAttributesAreNotTakenFromRecycledRequestWhenProcessingDeferred() {
 
-    assertEquals(DummyRequest.DUMMY_DEFAULT_ATTR_MAP.get("testKey"), aeBack
-        .getAttribute("testKey"));
-  }
+        DummyRequest request = new DummyRequest();
+        DummyResponse response = new DummyResponse();
+        DummyServerAdapter adapter = new DummyServerAdapter(request, response);
 
-  // Web containers may (and will) recycle requests objects. So we must make sure that after
-  // we prepared an event for deferred processing it won't be using data from the original
-  // HttpRequest object which may at that time represent another request
-  @Test
-  public void testAttributesAreNotTakenFromRecycledRequestWhenProcessingDeferred() {
+        IAccessEvent event = new AccessEvent(request, response, adapter);
 
-    DummyRequest request = new DummyRequest();
-    DummyResponse response = new DummyResponse();
-    DummyServerAdapter adapter = new DummyServerAdapter(request, response);
+        request.setAttribute("testKey", "ORIGINAL");
 
-    IAccessEvent event = new AccessEvent(request, response, adapter);
+        event.prepareForDeferredProcessing();
 
-    request.setAttribute("testKey", "ORIGINAL");
+        request.setAttribute("testKey", "NEW");
 
-    event.prepareForDeferredProcessing();
-
-    request.setAttribute("testKey", "NEW");
-
-    // Event should capture the original value
-    assertEquals("ORIGINAL", event.getAttribute("testKey"));
-  }
+        // Event should capture the original value
+        assertEquals("ORIGINAL", event.getAttribute("testKey"));
+    }
 }

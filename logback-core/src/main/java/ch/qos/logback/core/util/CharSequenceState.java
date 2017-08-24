@@ -18,15 +18,15 @@ package ch.qos.logback.core.util;
  *  @author Ceki Gulcu
  */
 class CharSequenceState {
-  final char c;
-  int occurrences;
+    final char c;
+    int occurrences;
 
-  public CharSequenceState(char c) {
-    this.c = c;
-    this.occurrences = 1;
-  }
+    public CharSequenceState(char c) {
+        this.c = c;
+        this.occurrences = 1;
+    }
 
-  void incrementOccurrences() {
-    occurrences++;
-  }
+    void incrementOccurrences() {
+        occurrences++;
+    }
 }

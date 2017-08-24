@@ -24,41 +24,39 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class ConsolePluginAction extends Action {
 
-  private static final String PORT_ATTR = "port";
-  private static final Integer DEFAULT_PORT = 4321;
+    private static final String PORT_ATTR = "port";
+    private static final Integer DEFAULT_PORT = 4321;
 
-  @Override
-  public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
-    String portStr = attributes.getValue(PORT_ATTR);
-    Integer port = null;
-    
-    if (portStr == null) {
-      port = DEFAULT_PORT;
-    } else {
-      try {
-        port = Integer.valueOf(portStr);
-      } catch (NumberFormatException ex) {
-        addError("Port " + portStr
-            + " in ConsolePlugin config is not a correct number");
-      }
+    @Override
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+        String portStr = attributes.getValue(PORT_ATTR);
+        Integer port = null;
+
+        if (portStr == null) {
+            port = DEFAULT_PORT;
+        } else {
+            try {
+                port = Integer.valueOf(portStr);
+            } catch (NumberFormatException ex) {
+                addError("Port " + portStr + " in ConsolePlugin config is not a correct number");
+            }
+        }
+
+        LoggerContext lc = (LoggerContext) ec.getContext();
+        SocketAppender appender = new SocketAppender();
+        appender.setContext(lc);
+        appender.setIncludeCallerData(true);
+        appender.setRemoteHost("localhost");
+        appender.setPort(port.intValue());
+        appender.start();
+        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        root.addAppender(appender);
+
+        addInfo("Sending LoggingEvents to the plugin using port " + port);
     }
 
-    LoggerContext lc = (LoggerContext)ec.getContext();
-    SocketAppender appender = new SocketAppender();
-    appender.setContext(lc);
-    appender.setIncludeCallerData(true);
-    appender.setRemoteHost("localhost");
-    appender.setPort(port.intValue());
-    appender.start();
-    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-    root.addAppender(appender);
-    
-    addInfo("Sending LoggingEvents to the plugin using port " + port);
-  }
+    @Override
+    public void end(InterpretationContext ec, String name) throws ActionException {
 
-  @Override
-  public void end(InterpretationContext ec, String name) throws ActionException {
-
-  }
+    }
 }

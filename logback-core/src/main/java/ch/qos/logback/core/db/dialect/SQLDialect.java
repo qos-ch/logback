@@ -14,9 +14,9 @@
 package ch.qos.logback.core.db.dialect;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  *
  */
 public interface SQLDialect {
-  String getSelectInsertId();
+    String getSelectInsertId();
 }

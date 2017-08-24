@@ -30,28 +30,27 @@ import ch.qos.logback.core.net.mock.MockContext;
  */
 public class SSLServerSocketReceiverTest {
 
-  private MockContext context = new MockContext();
-  
-  private MockSSLConfiguration ssl = new MockSSLConfiguration();
-  
-  private MockSSLParametersConfiguration parameters = 
-      new MockSSLParametersConfiguration();
-  
-  private SSLServerSocketReceiver receiver = new SSLServerSocketReceiver();
-  
-  @Before
-  public void setUp() throws Exception {
-    receiver.setContext(context);
-    receiver.setSsl(ssl);
-    ssl.setParameters(parameters);
-  }
-  
-  @Test
-  public void testGetServerSocketFactory() throws Exception {
-    ServerSocketFactory socketFactory = receiver.getServerSocketFactory();
-    assertNotNull(socketFactory);
-    assertTrue(ssl.isContextCreated());
-    assertTrue(parameters.isContextInjected());
-  }
+    private MockContext context = new MockContext();
+
+    private MockSSLConfiguration ssl = new MockSSLConfiguration();
+
+    private MockSSLParametersConfiguration parameters = new MockSSLParametersConfiguration();
+
+    private SSLServerSocketReceiver receiver = new SSLServerSocketReceiver();
+
+    @Before
+    public void setUp() throws Exception {
+        receiver.setContext(context);
+        receiver.setSsl(ssl);
+        ssl.setParameters(parameters);
+    }
+
+    @Test
+    public void testGetServerSocketFactory() throws Exception {
+        ServerSocketFactory socketFactory = receiver.getServerSocketFactory();
+        assertNotNull(socketFactory);
+        assertTrue(ssl.isContextCreated());
+        assertTrue(parameters.isContextInjected());
+    }
 
 }

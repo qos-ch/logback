@@ -37,22 +37,6 @@ p.menu {
  font-size: smaller;
 }
 
-
-#leftOld {
-  position: absolute;
-  font-size: 80%;
-  left: 0px;
-  width: 15em;
-  color: #564b47;
-  margin: 4px 0px 0px 4px; 
-  padding: 0px;
-  border: 1px solid #cccccc;
-  background-color: #fff8e8;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-
 #left {
   position: absolute;
   left: 0px;
@@ -75,7 +59,6 @@ p.menu {
 
 #left a, #right a {
   display: block; 
-  width: 95.5%; 
   margin: 0px; 
   padding: 2px; 
   border: solid 1px #fff8e8; 
@@ -99,6 +82,18 @@ p.menu_header {
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
+}
+.pub {
+  text-align: center;
+}
+
+#left .pub a:hover {
+  background-color: transparent;
+  border: solid 0px #FFFFFF;
+}
+
+#left img {
+	border: none;
 }
 
 #left div.jobadd {
@@ -140,13 +135,6 @@ p.menu_header {
   font-size: 80%;
 }
 
-#left img {
-	display: block;
-	margin: 20px 0 20px 17px;
-	border: none;
-	width: 90px;
-	height: 30px;
-}
 
 #headerLine {
   background-color:#FFD0A0;

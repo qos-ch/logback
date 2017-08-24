@@ -16,32 +16,31 @@ package ch.qos.logback.access.pattern;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.util.OptionHelper;
 
-
 public class RequestHeaderConverter extends AccessConverter {
 
-  String key;
+    String key;
 
-  @Override
-  public void start() {
-    key = getFirstOption();
-    if (OptionHelper.isEmpty(key)) {
-      addWarn("Missing key for the requested header. Defaulting to all keys.");
-      key = null;
-    } 
-    super.start();
-  }
+    @Override
+    public void start() {
+        key = getFirstOption();
+        if (OptionHelper.isEmpty(key)) {
+            addWarn("Missing key for the requested header. Defaulting to all keys.");
+            key = null;
+        }
+        super.start();
+    }
 
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-    if(!isStarted()) {
-      return "INACTIVE_HEADER_CONV";
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        if (!isStarted()) {
+            return "INACTIVE_HEADER_CONV";
+        }
+
+        if (key != null) {
+            return accessEvent.getRequestHeader(key);
+        } else {
+            return accessEvent.getRequestHeaderMap().toString();
+        }
     }
-    
-    if(key != null) {
-      return accessEvent.getRequestHeader(key);
-    } else {
-      return accessEvent.getRequestHeaderMap().toString();
-    }
-  }
 
 }

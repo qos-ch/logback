@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({LevelChangePropagatorTest.class})
+@SuiteClasses({ LevelChangePropagatorTest.class })
 public class PackageTest {
 }

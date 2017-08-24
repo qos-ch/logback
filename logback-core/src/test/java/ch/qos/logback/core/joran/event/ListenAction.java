@@ -24,26 +24,25 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class ListenAction extends Action implements InPlayListener {
 
-  List<SaxEvent> seList = new ArrayList<SaxEvent>();
+    List<SaxEvent> seList = new ArrayList<SaxEvent>();
 
-  @Override
-  public void begin(InterpretationContext ec, String name, Attributes attributes)
-      throws ActionException {
-    ec.addInPlayListener(this);
-  }
+    @Override
+    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+        ec.addInPlayListener(this);
+    }
 
-  @Override
-  public void end(InterpretationContext ec, String name) throws ActionException {
-    ec.removeInPlayListener(this);
+    @Override
+    public void end(InterpretationContext ec, String name) throws ActionException {
+        ec.removeInPlayListener(this);
 
-  }
+    }
 
-  public void inPlay(SaxEvent event) {
-    seList.add(event);
-  }
+    public void inPlay(SaxEvent event) {
+        seList.add(event);
+    }
 
-  public List<SaxEvent> getSeList() {
-    return seList;
-  }
+    public List<SaxEvent> getSeList() {
+        return seList;
+    }
 
 }

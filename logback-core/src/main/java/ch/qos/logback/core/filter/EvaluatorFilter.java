@@ -36,41 +36,41 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class EvaluatorFilter<E> extends AbstractMatcherFilter<E> {
 
-  EventEvaluator<E> evaluator;
+    EventEvaluator<E> evaluator;
 
-  @Override
-  public void start() {
-    if (evaluator != null) {
-      super.start();
-    } else {
-      addError("No evaluator set for filter " + this.getName());
+    @Override
+    public void start() {
+        if (evaluator != null) {
+            super.start();
+        } else {
+            addError("No evaluator set for filter " + this.getName());
+        }
     }
-  }
 
-  public EventEvaluator<E> getEvaluator() {
-    return evaluator;
-  }
-
-  public void setEvaluator(EventEvaluator<E> evaluator) {
-    this.evaluator = evaluator;
-  }
-
-  public FilterReply decide(E event) {
-    // let us not throw an exception
-    // see also bug #17.
-    if (!isStarted() || !evaluator.isStarted()) {
-      return FilterReply.NEUTRAL;
+    public EventEvaluator<E> getEvaluator() {
+        return evaluator;
     }
-    try {
-      if (evaluator.evaluate(event)) {
-        return onMatch;
-      } else {
-        return onMismatch;
-      }
-    } catch (EvaluationException e) {
-      addError("Evaluator " + evaluator.getName() + " threw an exception", e);
-      return FilterReply.NEUTRAL;
+
+    public void setEvaluator(EventEvaluator<E> evaluator) {
+        this.evaluator = evaluator;
     }
-  }
+
+    public FilterReply decide(E event) {
+        // let us not throw an exception
+        // see also bug #17.
+        if (!isStarted() || !evaluator.isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
+        try {
+            if (evaluator.evaluate(event)) {
+                return onMatch;
+            } else {
+                return onMismatch;
+            }
+        } catch (EvaluationException e) {
+            addError("Evaluator " + evaluator.getName() + " threw an exception", e);
+            return FilterReply.NEUTRAL;
+        }
+    }
 
 }

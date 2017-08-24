@@ -22,55 +22,52 @@ import ch.qos.logback.core.util.CoreTestConstants;
 
 public class EnvUtilForTests {
 
-  static public boolean isWindows() {
-    return System.getProperty("os.name").indexOf("Windows") != -1;
-  }
-
-  static public boolean isMac() {
-    return System.getProperty("os.name").indexOf("Mac") != -1;
-  }
-
-  static public boolean isLinux() {
-    return System.getProperty("os.name").indexOf("Linux") != -1;
-  }
-
-
-  static public boolean isRunningOnSlowJenkins() {
-    return System.getProperty(CoreTestConstants.SLOW_JENKINS) != null;
-  }
-
-
-  static public String getLocalHostName() {
-    InetAddress localhostIA;
-    try {
-      localhostIA = InetAddress.getLocalHost();
-      return localhostIA.getHostName();
-    } catch (UnknownHostException e) {
-      return null;
+    static public boolean isWindows() {
+        return System.getProperty("os.name").indexOf("Windows") != -1;
     }
-  }
 
-  static public boolean isLocalHostNameInList(String[] hostList) {
-    String localHostName = getLocalHostName();
-    if (localHostName == null) {
-      return false;
+    static public boolean isMac() {
+        return System.getProperty("os.name").indexOf("Mac") != -1;
     }
-    for (String host : hostList) {
-      if (host.equalsIgnoreCase(localHostName)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
+    static public boolean isLinux() {
+        return System.getProperty("os.name").indexOf("Linux") != -1;
+    }
 
-  public static String getPathToBash() {
-    if (EnvUtilForTests.isLinux()) {
-      return CoreTestConstants.BASH_PATH_ON_LINUX;
+    static public boolean isRunningOnSlowJenkins() {
+        return System.getProperty(CoreTestConstants.SLOW_JENKINS) != null;
     }
-    if (EnvUtilForTests.isLocalHostNameInList(new String[]{"hetz", "het"})) {
-      return CoreTestConstants.BASH_PATH_ON_CYGWIN;
+
+    static public String getLocalHostName() {
+        InetAddress localhostIA;
+        try {
+            localhostIA = InetAddress.getLocalHost();
+            return localhostIA.getHostName();
+        } catch (UnknownHostException e) {
+            return null;
+        }
     }
-    return null;
-  }
+
+    static public boolean isLocalHostNameInList(String[] hostList) {
+        String localHostName = getLocalHostName();
+        if (localHostName == null) {
+            return false;
+        }
+        for (String host : hostList) {
+            if (host.equalsIgnoreCase(localHostName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getPathToBash() {
+        if (EnvUtilForTests.isLinux()) {
+            return CoreTestConstants.BASH_PATH_ON_LINUX;
+        }
+        if (EnvUtilForTests.isLocalHostNameInList(new String[] { "hetz", "het" })) {
+            return CoreTestConstants.BASH_PATH_ON_CYGWIN;
+        }
+        return null;
+    }
 }

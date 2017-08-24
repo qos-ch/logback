@@ -13,35 +13,29 @@
  */
 package ch.qos.logback.core.encoder;
 
-import java.io.IOException;
-import java.io.OutputStream;
-
 import ch.qos.logback.core.CoreConstants;
 
 public class EchoEncoder<E> extends EncoderBase<E> {
 
-  String fileHeader;
-  String fileFooter;
+    String fileHeader;
+    String fileFooter;
 
-  public void doEncode(E event) throws IOException {
-    String val = event + CoreConstants.LINE_SEPARATOR;
-    outputStream.write(val.getBytes());
-    // necessary if ResilientFileOutputStream is buffered
-    outputStream.flush();
-  }
-
-  public void close() throws IOException {
-    if (fileFooter == null) {
-      return;
+    public byte[] encode(E event) {
+        String val = event + CoreConstants.LINE_SEPARATOR;
+        return val.getBytes();
     }
-    outputStream.write(fileFooter.getBytes());
-  }
 
-  public void init(OutputStream os) throws IOException {
-    super.init(os);
-    if (fileHeader == null) {
-      return;
+    public byte[] footerBytes()  {
+        if (fileFooter == null) {
+            return null;
+        }
+        return fileFooter.getBytes();
     }
-    outputStream.write(fileHeader.getBytes());
-  }
+
+    public byte[] headerBytes()  {
+        if (fileHeader == null) {
+            return null;
+        }
+        return fileHeader.getBytes();
+    }
 }

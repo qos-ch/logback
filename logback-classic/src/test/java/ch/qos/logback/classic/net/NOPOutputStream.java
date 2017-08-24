@@ -18,25 +18,24 @@ import java.io.OutputStream;
 
 public class NOPOutputStream extends OutputStream {
 
-  long count;
+    long count;
 
-  @Override
-  public void write(int b) throws IOException {
-    count++;
-    // do nothing
-  }
+    @Override
+    public void write(int b) throws IOException {
+        count++;
+        // do nothing
+    }
 
-  public long getCount() {
-    return count;
-  }
+    public long getCount() {
+        return count;
+    }
 
-  public long size() {
-    return count;
-  }
+    public long size() {
+        return count;
+    }
 
-  
-  public void reset() {
-    count = 0;
-  }
+    public void reset() {
+        count = 0;
+    }
 
 }

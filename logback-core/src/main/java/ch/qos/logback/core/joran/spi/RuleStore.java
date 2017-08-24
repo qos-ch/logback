@@ -31,29 +31,28 @@ import ch.qos.logback.core.joran.action.Action;
  */
 public interface RuleStore {
 
-  /**
-   * Add a new rule, given by a pattern and a action class (String).
-   *
-   * @param elementSelector
-   * @param actionClassStr
-   * @throws ClassNotFoundException
-   */
-  void addRule(ElementSelector elementSelector, String actionClassStr)
-      throws ClassNotFoundException;
+    /**
+     * Add a new rule, given by a pattern and a action class (String).
+     *
+     * @param elementSelector
+     * @param actionClassStr
+     * @throws ClassNotFoundException
+     */
+    void addRule(ElementSelector elementSelector, String actionClassStr) throws ClassNotFoundException;
 
-  /**
-   * Add a new rule, given by a pattern and an action instance.
-   *
-   * @param elementSelector
-   * @param action
-   */
-  void addRule(ElementSelector elementSelector, Action action);
+    /**
+     * Add a new rule, given by a pattern and an action instance.
+     *
+     * @param elementSelector
+     * @param action
+     */
+    void addRule(ElementSelector elementSelector, Action action);
 
-  /**
-   * Return a list of actions matching a pattern.
-   *
-   * @param elementPath the path to match for
-   * @return list of matching actions
-   */
-  List<Action> matchActions(ElementPath elementPath);
+    /**
+     * Return a list of actions matching a pattern.
+     *
+     * @param elementPath the path to match for
+     * @return list of matching actions
+     */
+    List<Action> matchActions(ElementPath elementPath);
 }

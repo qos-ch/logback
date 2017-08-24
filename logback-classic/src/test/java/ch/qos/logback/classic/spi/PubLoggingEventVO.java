@@ -31,209 +31,206 @@ import ch.qos.logback.classic.Level;
  */
 public class PubLoggingEventVO implements ILoggingEvent, Serializable {
 
-  private static final long serialVersionUID = -3385765861078946218L;
+    private static final long serialVersionUID = -3385765861078946218L;
 
-  private static final int NULL_ARGUMENT_ARRAY = -1;
-  private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
+    private static final int NULL_ARGUMENT_ARRAY = -1;
+    private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
-  public String threadName;
-  public String loggerName;
-  public LoggerContextVO loggerContextVO;
+    public String threadName;
+    public String loggerName;
+    public LoggerContextVO loggerContextVO;
 
-  public transient Level level;
-  public String message;
+    public transient Level level;
+    public String message;
 
-  private transient String formattedMessage;
+    private transient String formattedMessage;
 
-  public Object[] argumentArray;
+    public Object[] argumentArray;
 
-  public IThrowableProxy throwableProxy;
-  public StackTraceElement[] callerDataArray;
-  public Marker marker;
-  public Map<String, String> mdcPropertyMap;
-  public long timeStamp;
+    public IThrowableProxy throwableProxy;
+    public StackTraceElement[] callerDataArray;
+    public Marker marker;
+    public Map<String, String> mdcPropertyMap;
+    public long timeStamp;
 
-  public String getThreadName() {
-    return threadName;
-  }
-
-  public LoggerContextVO getLoggerContextVO() {
-    return loggerContextVO;
-  }
-
-  public String getLoggerName() {
-    return loggerName;
-  }
-
-  public Level getLevel() {
-    return level;
-  }
-
-  public String getMessage() {
-    return message;
-  }
-
-  public String getFormattedMessage() {
-    if (formattedMessage != null) {
-      return formattedMessage;
+    public String getThreadName() {
+        return threadName;
     }
 
-    if (argumentArray != null) {
-      formattedMessage = MessageFormatter.arrayFormat(message, argumentArray)
-          .getMessage();
-    } else {
-      formattedMessage = message;
+    public LoggerContextVO getLoggerContextVO() {
+        return loggerContextVO;
     }
 
-    return formattedMessage;
-  }
+    public String getLoggerName() {
+        return loggerName;
+    }
 
-  public Object[] getArgumentArray() {
-    return argumentArray;
-  }
+    public Level getLevel() {
+        return level;
+    }
 
-  public IThrowableProxy getThrowableProxy() {
-    return throwableProxy;
-  }
+    public String getMessage() {
+        return message;
+    }
 
-  public StackTraceElement[] getCallerData() {
-    return callerDataArray;
-  }
+    public String getFormattedMessage() {
+        if (formattedMessage != null) {
+            return formattedMessage;
+        }
 
-  public boolean hasCallerData() {
-    return callerDataArray != null;
-  }
-
-  public Marker getMarker() {
-    return marker;
-  }
-
-  public long getTimeStamp() {
-    return timeStamp;
-  }
-
-  public long getContextBirthTime() {
-    return loggerContextVO.getBirthTime();
-  }
-
-  public LoggerContextVO getContextLoggerRemoteView() {
-    return loggerContextVO;
-  }
-
-  public Map<String, String> getMDCPropertyMap() {
-    return mdcPropertyMap;
-  }
-
-  public Map<String, String> getMdc() {
-    return mdcPropertyMap;
-  }
-
-  public void prepareForDeferredProcessing() {
-  }
-
-  private void writeObject(ObjectOutputStream out) throws IOException {
-    out.defaultWriteObject();
-    out.writeInt(level.levelInt);
-    if (argumentArray != null) {
-      int len = argumentArray.length;
-      out.writeInt(len);
-      for (int i = 0; i < argumentArray.length; i++) {
-        if (argumentArray[i] != null) {
-          out.writeObject(argumentArray[i].toString());
+        if (argumentArray != null) {
+            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
         } else {
-          out.writeObject(NULL_ARGUMENT_ARRAY_ELEMENT);
+            formattedMessage = message;
         }
-      }
-    } else {
-      out.writeInt(NULL_ARGUMENT_ARRAY);
+
+        return formattedMessage;
     }
 
-  }
-
-  private void readObject(ObjectInputStream in) throws IOException,
-      ClassNotFoundException {
-    in.defaultReadObject();
-    int levelInt = in.readInt();
-    level = Level.toLevel(levelInt);
-
-    int argArrayLen = in.readInt();
-    if (argArrayLen != NULL_ARGUMENT_ARRAY) {
-      argumentArray = new String[argArrayLen];
-      for (int i = 0; i < argArrayLen; i++) {
-        Object val = in.readObject();
-        if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
-          argumentArray[i] = val;
-        }
-      }
+    public Object[] getArgumentArray() {
+        return argumentArray;
     }
-  }
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((message == null) ? 0 : message.hashCode());
-    result = prime * result
-        + ((threadName == null) ? 0 : threadName.hashCode());
-    result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
-    return result;
-  }
+    public IThrowableProxy getThrowableProxy() {
+        return throwableProxy;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    final PubLoggingEventVO other = (PubLoggingEventVO) obj;
-    if (message == null) {
-      if (other.message != null)
-        return false;
-    } else if (!message.equals(other.message))
-      return false;
+    public StackTraceElement[] getCallerData() {
+        return callerDataArray;
+    }
 
-    if (loggerName == null) {
-      if (other.loggerName != null)
-        return false;
-    } else if (!loggerName.equals(other.loggerName))
-      return false;
+    public boolean hasCallerData() {
+        return callerDataArray != null;
+    }
 
-    if (threadName == null) {
-      if (other.threadName != null)
-        return false;
-    } else if (!threadName.equals(other.threadName))
-      return false;
-    if (timeStamp != other.timeStamp)
-      return false;
+    public Marker getMarker() {
+        return marker;
+    }
 
-    if (marker == null) {
-      if (other.marker != null)
-        return false;
-    } else if (!marker.equals(other.marker))
-      return false;
+    public long getTimeStamp() {
+        return timeStamp;
+    }
 
-    if (mdcPropertyMap == null) {
-      if (other.mdcPropertyMap != null)
-        return false;
-    } else if (!mdcPropertyMap.equals(other.mdcPropertyMap))
-      return false;
-    return true;
-  }
+    public long getContextBirthTime() {
+        return loggerContextVO.getBirthTime();
+    }
 
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(timeStamp);
-    sb.append(" ");
-    sb.append(level);
-    sb.append(" [");
-    sb.append(threadName);
-    sb.append("] ");
-    sb.append(loggerName);
-    sb.append(" - ");
-    sb.append(getFormattedMessage());
-    return sb.toString();
-  }
+    public LoggerContextVO getContextLoggerRemoteView() {
+        return loggerContextVO;
+    }
+
+    public Map<String, String> getMDCPropertyMap() {
+        return mdcPropertyMap;
+    }
+
+    public Map<String, String> getMdc() {
+        return mdcPropertyMap;
+    }
+
+    public void prepareForDeferredProcessing() {
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeInt(level.levelInt);
+        if (argumentArray != null) {
+            int len = argumentArray.length;
+            out.writeInt(len);
+            for (int i = 0; i < argumentArray.length; i++) {
+                if (argumentArray[i] != null) {
+                    out.writeObject(argumentArray[i].toString());
+                } else {
+                    out.writeObject(NULL_ARGUMENT_ARRAY_ELEMENT);
+                }
+            }
+        } else {
+            out.writeInt(NULL_ARGUMENT_ARRAY);
+        }
+
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        int levelInt = in.readInt();
+        level = Level.toLevel(levelInt);
+
+        int argArrayLen = in.readInt();
+        if (argArrayLen != NULL_ARGUMENT_ARRAY) {
+            argumentArray = new String[argArrayLen];
+            for (int i = 0; i < argArrayLen; i++) {
+                Object val = in.readObject();
+                if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
+                    argumentArray[i] = val;
+                }
+            }
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((message == null) ? 0 : message.hashCode());
+        result = prime * result + ((threadName == null) ? 0 : threadName.hashCode());
+        result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        final PubLoggingEventVO other = (PubLoggingEventVO) obj;
+        if (message == null) {
+            if (other.message != null)
+                return false;
+        } else if (!message.equals(other.message))
+            return false;
+
+        if (loggerName == null) {
+            if (other.loggerName != null)
+                return false;
+        } else if (!loggerName.equals(other.loggerName))
+            return false;
+
+        if (threadName == null) {
+            if (other.threadName != null)
+                return false;
+        } else if (!threadName.equals(other.threadName))
+            return false;
+        if (timeStamp != other.timeStamp)
+            return false;
+
+        if (marker == null) {
+            if (other.marker != null)
+                return false;
+        } else if (!marker.equals(other.marker))
+            return false;
+
+        if (mdcPropertyMap == null) {
+            if (other.mdcPropertyMap != null)
+                return false;
+        } else if (!mdcPropertyMap.equals(other.mdcPropertyMap))
+            return false;
+        return true;
+    }
+
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(timeStamp);
+        sb.append(" ");
+        sb.append(level);
+        sb.append(" [");
+        sb.append(threadName);
+        sb.append("] ");
+        sb.append(loggerName);
+        sb.append(" - ");
+        sb.append(getFormattedMessage());
+        return sb.toString();
+    }
 
 }

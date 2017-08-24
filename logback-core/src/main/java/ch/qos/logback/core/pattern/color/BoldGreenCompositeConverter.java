@@ -25,8 +25,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.GREEN_FG;
  */
 public class BoldGreenCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-  @Override
-  protected String getForegroundColorCode(E event) {
-    return BOLD + GREEN_FG;
-  }
+    @Override
+    protected String getForegroundColorCode(E event) {
+        return BOLD + GREEN_FG;
+    }
 }

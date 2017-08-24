@@ -19,21 +19,21 @@ import ch.qos.logback.core.util.StatusPrinter;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Ceki G&uuml;c&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  */
 public class Main {
 
-  public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
 
-    Logger logger = (Logger) LoggerFactory.getLogger(Main.class);
-    StatusPrinter.print((LoggerContext) LoggerFactory.getILoggerFactory());
-    OThread ot = new OThread();
-    ot.start();
-    Thread.sleep(OThread.WAIT_MILLIS-500);
-    logger.info("About to interrupt");
-    ot.interrupt();
-    logger.info("After interrupt");
-    logger.info("Leaving main");
+        Logger logger = (Logger) LoggerFactory.getLogger(Main.class);
+        StatusPrinter.print((LoggerContext) LoggerFactory.getILoggerFactory());
+        OThread ot = new OThread();
+        ot.start();
+        Thread.sleep(OThread.WAIT_MILLIS - 500);
+        logger.info("About to interrupt");
+        ot.interrupt();
+        logger.info("After interrupt");
+        logger.info("Leaving main");
 
-  }
+    }
 }

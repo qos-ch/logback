@@ -20,6 +20,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({AccessEventSerializationTest.class})
+@SuiteClasses({ AccessEventSerializationTest.class })
 public class PackageTest extends TestCase {
 }

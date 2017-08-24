@@ -26,28 +26,26 @@ import ch.qos.logback.core.net.server.ServerRunner;
  *
  * @author Carl Harris
  */
-class RemoteAppenderServerRunner
-    extends ConcurrentServerRunner<RemoteAppenderClient> {
+class RemoteAppenderServerRunner extends ConcurrentServerRunner<RemoteAppenderClient> {
 
-  /**
-   * Constructs a new server runner.
-   * @param listener the listener from which the server will accept new
-   *    clients
-   * @param executor that will be used to execute asynchronous tasks 
-   *    on behalf of the runner.
-   */
-  public RemoteAppenderServerRunner(
-      ServerListener<RemoteAppenderClient> listener, Executor executor) {
-    super(listener, executor);
-  }
+    /**
+     * Constructs a new server runner.
+     * @param listener the listener from which the server will accept new
+     *    clients
+     * @param executor that will be used to execute asynchronous tasks 
+     *    on behalf of the runner.
+     */
+    public RemoteAppenderServerRunner(ServerListener<RemoteAppenderClient> listener, Executor executor) {
+        super(listener, executor);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected boolean configureClient(RemoteAppenderClient client) {
-    client.setLoggerContext((LoggerContext) getContext());
-    return true;
-  }
-  
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean configureClient(RemoteAppenderClient client) {
+        client.setLoggerContext((LoggerContext) getContext());
+        return true;
+    }
+
 }

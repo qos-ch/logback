@@ -30,19 +30,19 @@ import chapters.onJoran.SimpleConfigurator;
  * @author Ceki Gulcu
  */
 public class HelloWorld {
-  public static void main(String[] args) throws Exception {
-    Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+    public static void main(String[] args) throws Exception {
+        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
 
-    // Associate "hello-world" pattern with HelloWorldAction
-    ruleMap.put(new ElementSelector("hello-world"), new HelloWorldAction());
+        // Associate "hello-world" pattern with HelloWorldAction
+        ruleMap.put(new ElementSelector("hello-world"), new HelloWorldAction());
 
-    // Joran needs to work within a context.
-    Context context = new ContextBase();
-    SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
-    // link the configurator with its context
-    simpleConfigurator.setContext(context);
+        // Joran needs to work within a context.
+        Context context = new ContextBase();
+        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        // link the configurator with its context
+        simpleConfigurator.setContext(context);
 
-    simpleConfigurator.doConfigure(args[0]);
-    StatusPrinter.print(context);
-  }
+        simpleConfigurator.doConfigure(args[0]);
+        StatusPrinter.print(context);
+    }
 }

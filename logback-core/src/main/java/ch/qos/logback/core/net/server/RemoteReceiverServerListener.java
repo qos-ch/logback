@@ -23,25 +23,23 @@ import java.net.Socket;
  *
  * @author Carl Harris
  */
-class RemoteReceiverServerListener
-    extends ServerSocketListener<RemoteReceiverClient> {
+class RemoteReceiverServerListener extends ServerSocketListener<RemoteReceiverClient> {
 
-  /**
-   * Constructs a new listener.
-   * @param serverSocket server socket from which new client connections
-   *    will be accepted
-   */
-  public RemoteReceiverServerListener(ServerSocket serverSocket) {
-    super(serverSocket);
-  }
+    /**
+     * Constructs a new listener.
+     * @param serverSocket server socket from which new client connections
+     *    will be accepted
+     */
+    public RemoteReceiverServerListener(ServerSocket serverSocket) {
+        super(serverSocket);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected RemoteReceiverClient createClient(String id, Socket socket)
-      throws IOException {
-    return new RemoteReceiverStreamClient(id, socket);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected RemoteReceiverClient createClient(String id, Socket socket) throws IOException {
+        return new RemoteReceiverStreamClient(id, socket);
+    }
 
 }

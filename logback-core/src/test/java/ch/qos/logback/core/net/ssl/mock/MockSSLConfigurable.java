@@ -17,79 +17,79 @@ import ch.qos.logback.core.net.ssl.SSLConfigurable;
 
 public class MockSSLConfigurable implements SSLConfigurable {
 
-  private static final String[] EMPTY = new String[0];
-  
-  private String[] defaultProtocols = EMPTY;
-  private String[] supportedProtocols = EMPTY;
-  private String[] enabledProtocols = EMPTY;
-  private String[] defaultCipherSuites = EMPTY;
-  private String[] supportedCipherSuites = EMPTY;
-  private String[] enabledCipherSuites = EMPTY;
-  private boolean needClientAuth;
-  private boolean wantClientAuth;
+    private static final String[] EMPTY = new String[0];
 
-  public String[] getDefaultProtocols() {
-    return defaultProtocols;
-  }
+    private String[] defaultProtocols = EMPTY;
+    private String[] supportedProtocols = EMPTY;
+    private String[] enabledProtocols = EMPTY;
+    private String[] defaultCipherSuites = EMPTY;
+    private String[] supportedCipherSuites = EMPTY;
+    private String[] enabledCipherSuites = EMPTY;
+    private boolean needClientAuth;
+    private boolean wantClientAuth;
 
-  public void setDefaultProtocols(String[] defaultProtocols) {
-    this.defaultProtocols = defaultProtocols;
-  }
+    public String[] getDefaultProtocols() {
+        return defaultProtocols;
+    }
 
-  public String[] getSupportedProtocols() {
-    return supportedProtocols;
-  }
+    public void setDefaultProtocols(String[] defaultProtocols) {
+        this.defaultProtocols = defaultProtocols;
+    }
 
-  public void setSupportedProtocols(String[] supportedProtocols) {
-    this.supportedProtocols = supportedProtocols;
-  }
+    public String[] getSupportedProtocols() {
+        return supportedProtocols;
+    }
 
-  public String[] getEnabledProtocols() {
-    return enabledProtocols;
-  }
+    public void setSupportedProtocols(String[] supportedProtocols) {
+        this.supportedProtocols = supportedProtocols;
+    }
 
-  public void setEnabledProtocols(String[] enabledProtocols) {
-    this.enabledProtocols = enabledProtocols;
-  }
+    public String[] getEnabledProtocols() {
+        return enabledProtocols;
+    }
 
-  public String[] getDefaultCipherSuites() {
-    return defaultCipherSuites;
-  }
+    public void setEnabledProtocols(String[] enabledProtocols) {
+        this.enabledProtocols = enabledProtocols;
+    }
 
-  public void setDefaultCipherSuites(String[] defaultCipherSuites) {
-    this.defaultCipherSuites = defaultCipherSuites;
-  }
+    public String[] getDefaultCipherSuites() {
+        return defaultCipherSuites;
+    }
 
-  public String[] getSupportedCipherSuites() {
-    return supportedCipherSuites;
-  }
+    public void setDefaultCipherSuites(String[] defaultCipherSuites) {
+        this.defaultCipherSuites = defaultCipherSuites;
+    }
 
-  public void setSupportedCipherSuites(String[] supportedCipherSuites) {
-    this.supportedCipherSuites = supportedCipherSuites;
-  }
+    public String[] getSupportedCipherSuites() {
+        return supportedCipherSuites;
+    }
 
-  public String[] getEnabledCipherSuites() {
-    return enabledCipherSuites;
-  }
+    public void setSupportedCipherSuites(String[] supportedCipherSuites) {
+        this.supportedCipherSuites = supportedCipherSuites;
+    }
 
-  public void setEnabledCipherSuites(String[] enabledCipherSuites) {
-    this.enabledCipherSuites = enabledCipherSuites;
-  }
+    public String[] getEnabledCipherSuites() {
+        return enabledCipherSuites;
+    }
 
-  public boolean isNeedClientAuth() {
-    return needClientAuth;
-  }
+    public void setEnabledCipherSuites(String[] enabledCipherSuites) {
+        this.enabledCipherSuites = enabledCipherSuites;
+    }
 
-  public void setNeedClientAuth(boolean needClientAuth) {
-    this.needClientAuth = needClientAuth;
-  }
+    public boolean isNeedClientAuth() {
+        return needClientAuth;
+    }
 
-  public boolean isWantClientAuth() {
-    return wantClientAuth;
-  }
+    public void setNeedClientAuth(boolean needClientAuth) {
+        this.needClientAuth = needClientAuth;
+    }
 
-  public void setWantClientAuth(boolean wantClientAuth) {
-    this.wantClientAuth = wantClientAuth;
-  }
+    public boolean isWantClientAuth() {
+        return wantClientAuth;
+    }
+
+    public void setWantClientAuth(boolean wantClientAuth) {
+        this.wantClientAuth = wantClientAuth;
+    }
 
 }

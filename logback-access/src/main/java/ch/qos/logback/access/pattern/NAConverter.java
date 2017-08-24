@@ -23,9 +23,9 @@ import ch.qos.logback.access.spi.IAccessEvent;
  */
 public class NAConverter extends AccessConverter {
 
-  @Override
-  public String convert(IAccessEvent accessEvent) {
-      return IAccessEvent.NA;
-  }
+    @Override
+    public String convert(IAccessEvent accessEvent) {
+        return IAccessEvent.NA;
+    }
 
 }

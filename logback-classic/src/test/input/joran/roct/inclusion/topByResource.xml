@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE x>
+
+
+<configuration scan="true" scanPeriod="5 milliseconds">
+  <include resource="asResource/inner1.xml"/>
+</configuration> 
+       

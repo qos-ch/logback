@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <jmxConfigurator/>
+
+    <appender name="SIZE_AND_TIME_BASED_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--  <file>/var/log/kapp/logbook.log</file> -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- rollover daily -->
+            <fileNamePattern>/var/log/logbook-%d{yyyy-MM-dd}-%i.log</fileNamePattern>
+            <!-- each file should be at most 25MB, keep 360 days worth of history, but at most 5GB -->
+            <maxFileSize>16MB</maxFileSize>
+            <maxHistory>2</maxHistory>
+            <totalSizeCap>2500MB</totalSizeCap>
+            <!-- <cleanHistoryOnStart>true</cleanHistoryOnStart> -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{"ISO8601","Europe/Berlin"} [%contextName %X{server}] %relative [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="SIZE_AND_TIME_BASED_FILE"/>
+    </root>
+</configuration>

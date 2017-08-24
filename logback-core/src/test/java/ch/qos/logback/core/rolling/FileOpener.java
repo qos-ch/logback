@@ -16,18 +16,17 @@ package ch.qos.logback.core.rolling;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-
 /**
  * Keep the file "output/test.log open for 10 seconds so that we can test
  * RollingFileAppender's ability to roll file open by another process.
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FileOpener {
-  public static void main(String[] args) throws Exception {
-    InputStream is = new FileInputStream("output/test.log");
-    is.read();
-    Thread.sleep(10000);
-    is.close();
-    System.out.println("Exiting FileOpener");
-  }
+    public static void main(String[] args) throws Exception {
+        InputStream is = new FileInputStream("output/test.log");
+        is.read();
+        Thread.sleep(10000);
+        is.close();
+        System.out.println("Exiting FileOpener");
+    }
 }

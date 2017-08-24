@@ -17,54 +17,54 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 
 public interface Layout<E> extends ContextAware, LifeCycle {
-  
-  /**
-   * Transform an event (of type Object) and return it as a String after 
-   * appropriate formatting.
-   * 
-   * <p>Taking in an object and returning a String is the least sophisticated
-   * way of formatting events. However, it is remarkably CPU-effective.
-   * </p>
-   * 
-   * @param event The event to format
-   * @return the event formatted as a String
-   */
-  String doLayout(E event);
-  
-  /**
-   * Return the file header for this layout. The returned value may be null.
-   * @return The header.
-   */
-  String getFileHeader();
 
-  /**
-   * Return the header of the logging event formatting. The returned value
-   * may be null.
-   * 
-   * @return The header.
-   */
-  String getPresentationHeader();
+    /**
+     * Transform an event (of type Object) and return it as a String after 
+     * appropriate formatting.
+     * 
+     * <p>Taking in an object and returning a String is the least sophisticated
+     * way of formatting events. However, it is remarkably CPU-effective.
+     * </p>
+     * 
+     * @param event The event to format
+     * @return the event formatted as a String
+     */
+    String doLayout(E event);
 
-  /**
-   * Return the footer of the logging event formatting. The returned value
-   * may be null.
-   * 
-   * @return The footer.
-   */
-  
-  String getPresentationFooter();
-  
-  /**
-   * Return the file footer for this layout. The returned value may be null.
-   * @return The footer.
-   */
-  String getFileFooter();
-  
-  /**
-   * Returns the content type as appropriate for the implementation.
-   *  
-   * @return
-   */
-  String getContentType();
-  
+    /**
+     * Return the file header for this layout. The returned value may be null.
+     * @return The header.
+     */
+    String getFileHeader();
+
+    /**
+     * Return the header of the logging event formatting. The returned value
+     * may be null.
+     * 
+     * @return The header.
+     */
+    String getPresentationHeader();
+
+    /**
+     * Return the footer of the logging event formatting. The returned value
+     * may be null.
+     * 
+     * @return The footer.
+     */
+
+    String getPresentationFooter();
+
+    /**
+     * Return the file footer for this layout. The returned value may be null.
+     * @return The footer.
+     */
+    String getFileFooter();
+
+    /**
+     * Returns the content type as appropriate for the implementation.
+     *  
+     * @return
+     */
+    String getContentType();
+
 }

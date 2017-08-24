@@ -22,24 +22,24 @@ import ch.qos.logback.core.AppenderBase;
 
 public class DummyLBAppender extends AppenderBase<ILoggingEvent> {
 
-  public List<ILoggingEvent> list = new ArrayList<ILoggingEvent>();
-  public List<String> stringList = new ArrayList<String>();
-  
-  PatternLayout layout;
-  
-  DummyLBAppender() {
-    this(null);
-  }
-  
-  DummyLBAppender(PatternLayout layout) {
-    this.layout = layout;
-  }
-  
-  protected void append(ILoggingEvent e) {
-    list.add(e);
-    if(layout != null) {
-      String s = layout.doLayout(e);
-      stringList.add(s);
+    public List<ILoggingEvent> list = new ArrayList<ILoggingEvent>();
+    public List<String> stringList = new ArrayList<String>();
+
+    PatternLayout layout;
+
+    DummyLBAppender() {
+        this(null);
     }
-  }
+
+    DummyLBAppender(PatternLayout layout) {
+        this.layout = layout;
+    }
+
+    protected void append(ILoggingEvent e) {
+        list.add(e);
+        if (layout != null) {
+            String s = layout.doLayout(e);
+            stringList.add(s);
+        }
+    }
 }

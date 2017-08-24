@@ -24,15 +24,15 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class MarkerConverter extends ClassicConverter {
 
-  private static String EMPTY = "";
+    private static String EMPTY = "";
 
-  public String convert(ILoggingEvent le) {
-    Marker marker = le.getMarker();
-    if (marker == null) {
-      return EMPTY;
-    } else {
-      return marker.toString();
+    public String convert(ILoggingEvent le) {
+        Marker marker = le.getMarker();
+        if (marker == null) {
+            return EMPTY;
+        } else {
+            return marker.toString();
+        }
     }
-  }
 
 }

@@ -24,16 +24,16 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  */
 class MockSSLParametersConfiguration extends SSLParametersConfiguration {
 
-  private boolean contextInjected;
-  
-  @Override
-  public void setContext(Context context) {
-    contextInjected = true;
-    super.setContext(context);
-  }
+    private boolean contextInjected;
 
-  public boolean isContextInjected() {
-    return contextInjected;
-  }
-  
+    @Override
+    public void setContext(Context context) {
+        contextInjected = true;
+        super.setContext(context);
+    }
+
+    public boolean isContextInjected() {
+        return contextInjected;
+    }
+
 }

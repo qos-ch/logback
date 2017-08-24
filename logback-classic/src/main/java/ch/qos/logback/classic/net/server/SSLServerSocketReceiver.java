@@ -26,45 +26,43 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  *
  * @author Carl Harris
  */
-public class SSLServerSocketReceiver extends ServerSocketReceiver 
-    implements SSLComponent {
+public class SSLServerSocketReceiver extends ServerSocketReceiver implements SSLComponent {
 
-  private SSLConfiguration ssl;
-  private ServerSocketFactory socketFactory;
-  
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected ServerSocketFactory getServerSocketFactory() throws Exception {
-    if (socketFactory == null) {
-      SSLContext sslContext = getSsl().createContext(this);
-      SSLParametersConfiguration parameters = getSsl().getParameters();
-      parameters.setContext(getContext());
-      socketFactory = new ConfigurableSSLServerSocketFactory(
-        parameters, sslContext.getServerSocketFactory());
+    private SSLConfiguration ssl;
+    private ServerSocketFactory socketFactory;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected ServerSocketFactory getServerSocketFactory() throws Exception {
+        if (socketFactory == null) {
+            SSLContext sslContext = getSsl().createContext(this);
+            SSLParametersConfiguration parameters = getSsl().getParameters();
+            parameters.setContext(getContext());
+            socketFactory = new ConfigurableSSLServerSocketFactory(parameters, sslContext.getServerSocketFactory());
+        }
+        return socketFactory;
     }
-    return socketFactory;
-  }
 
-  /**
-   * Gets the server's SSL configuration.
-   * @return SSL configuration; if no SSL configuration was provided
-   *    a default configuration is returned
-   */
-  public SSLConfiguration getSsl() {
-    if (ssl == null) {
-      ssl = new SSLConfiguration();
+    /**
+     * Gets the server's SSL configuration.
+     * @return SSL configuration; if no SSL configuration was provided
+     *    a default configuration is returned
+     */
+    public SSLConfiguration getSsl() {
+        if (ssl == null) {
+            ssl = new SSLConfiguration();
+        }
+        return ssl;
     }
-    return ssl;
-  }
 
-  /**
-   * Gets the server's SSL configuration.
-   * @param ssl the SSL configuration to set.
-   */
-  public void setSsl(SSLConfiguration ssl) {
-    this.ssl = ssl;
-  }
+    /**
+     * Gets the server's SSL configuration.
+     * @param ssl the SSL configuration to set.
+     */
+    public void setSsl(SSLConfiguration ssl) {
+        this.ssl = ssl;
+    }
 
 }

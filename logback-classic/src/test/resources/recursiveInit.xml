@@ -12,6 +12,6 @@
     
   <root level="DEBUG" >
     <appender-ref ref="STDOUT" />
-     <appender-ref ref="RECURSIVE" />
+    <appender-ref ref="RECURSIVE" />
   </root>
 </configuration>
