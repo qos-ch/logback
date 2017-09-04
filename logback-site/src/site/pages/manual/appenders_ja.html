@@ -621,7 +621,7 @@ public interface RollingPolicy extends LifeCycle {
        <td><em>/wombat/foo.%d.gz</em></td>
        <td>毎日深夜に切り替え。アーカイブファイルは自動的にgz圧縮する。</td>
        <td>
-         <p><span class="prop">file</span>プロパティを指定しない場合：2009年11月23日中は<em>/wombat/foo.2009-11-23</em>に出力します。23日24時（24日0時）になったら、それまでログを出力していたファイルはgz圧縮されて<em>/wombat/foo.2009-11-23.gz</em>になります。11月24日中は<em>/wombat/folder/foo.2009-11-24</em>に出力されます。
+         <p><span class="prop">file</span>プロパティを指定しない場合：2009年11月23日中は<em>/wombat/foo.2009-11-23</em>に出力します。23日24時（24日0時）になったら、それまでログを出力していたファイルはgz圧縮されて<em>/wombat/foo.2009-11-23.gz</em>になります。11月24日中は<em>/wombat/foo.2009-11-24</em>に出力されます。
          </p>
          
          <p><span class="prop">file</span>プロパティに<em>/wombat/foo.txt</em>を指定した場合：2009年11月23中は<em>/wombat/foo.txt</em>に出力されます。23日24時（24日0時）にgz圧縮されて<em>/wombat/foo.2009-11-23.gz</em>になります。11月24日中は新しく作られた<em>/wombat/foo.txt</em>に出力されます。24日24時（25日0時）に<em>/wombat/foo.txt</em>はgz圧縮されて<em>/wombat/foo.2009-11-24.gz</em>になります。
