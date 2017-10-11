@@ -6,7 +6,7 @@
 
 -- This SQL script creates the required tables by ch.qos.logback.classic.db.DBAppender
 -- 
--- The event_id column type was recently changed from INT to DECIMAL(40)
+-- The event_id column type was recently changed from DECIMAL(40) to DECIMAL(38)
 -- without testing.
 
 DROP TABLE logging_event_property 
