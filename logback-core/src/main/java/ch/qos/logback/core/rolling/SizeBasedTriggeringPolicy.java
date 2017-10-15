@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.core.rolling;
 
-import java.io.File;
-
-import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
+import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.InvocationGate;
+
+import java.io.File;
 
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being currently written
@@ -31,8 +31,8 @@ import ch.qos.logback.core.util.InvocationGate;
  * 
  */
 public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
-
     public static final String SEE_SIZE_FORMAT = "http://logback.qos.ch/codes.html#sbtp_size_format";
+
     /**
      * The default maximum file size.
      */
@@ -57,4 +57,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         this.maxFileSize = aMaxFileSize;
     }
 
+    public FileSize getMaxFileSize() {
+        return maxFileSize;
+    }
 }
