@@ -13,12 +13,12 @@
  */
 package ch.qos.logback.core.util;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Patrick Reinhart
@@ -43,6 +43,15 @@ public class EntUtilTest {
 
     @Test
     public void testJava1_5() {
+        System.setProperty("java.version", "1.5");
+
+        assertTrue(EnvUtil.isJDK5());
+        assertFalse(EnvUtil.isJDK6OrHigher());
+        assertFalse(EnvUtil.isJDK7OrHigher());
+    }
+
+    @Test
+    public void testJava1_5_x() {
         System.setProperty("java.version", "1.5.xx");
 
         assertTrue(EnvUtil.isJDK5());
@@ -79,6 +88,15 @@ public class EntUtilTest {
 
     @Test
     public void testJava9() {
+        System.setProperty("java.version", "9");
+
+        assertTrue(EnvUtil.isJDK5());
+        assertTrue(EnvUtil.isJDK6OrHigher());
+        assertTrue(EnvUtil.isJDK7OrHigher());
+    }
+
+    @Test
+    public void testJava9_1() {
         System.setProperty("java.version", "9.xx");
 
         assertTrue(EnvUtil.isJDK5());
@@ -87,8 +105,8 @@ public class EntUtilTest {
     }
 
     @Test
-    public void testJava10() {
-        System.setProperty("java.version", "10.xx");
+    public void testJava18_3() {
+        System.setProperty("java.version", "18.3+xx");
 
         assertTrue(EnvUtil.isJDK5());
         assertTrue(EnvUtil.isJDK6OrHigher());

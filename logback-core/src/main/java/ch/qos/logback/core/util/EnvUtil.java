@@ -1,35 +1,36 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015,
+ * QOS.ch. All rights reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the
+ * Eclipse Public License v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free
+ * Software Foundation.
  */
 package ch.qos.logback.core.util;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public class EnvUtil {
-    private static final Pattern versionPattern = Pattern.compile("^(1.)?([0-9]+)");
 
     private EnvUtil() {}
 
     static private boolean isJDK_N_OrHigher(int n) {
-        Matcher matcher = versionPattern.matcher(System.getProperty("java.version", ""));
-        if (matcher.find()) {
-            return n <= Integer.parseInt(matcher.group(2));
+        int version = 0;
+        for (byte ch : System.getProperty("java.version", "").getBytes()) {
+            if (Character.isDigit(ch)) {
+                version = (version * 10) + (ch - 48);
+            } else if (version == 1) {
+                version = 0;
+            } else {
+                break;
+            }
         }
-        return false;
+        return version > 0 && n <= version;
     }
 
     static public boolean isJDK5() {
