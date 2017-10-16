@@ -29,6 +29,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
+import org.slf4j.Marker;
+import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -148,6 +150,23 @@ public class LoggingEventSerializationTest {
         checkForEquality(event, remoteEvent);
     }
 
+
+    @Test
+    public void testWithMarker() throws Exception {
+        Marker marker = MarkerFactory.getMarker("A_MARKER");
+        LoggingEvent event = createLoggingEvent();
+        
+        
+        event.setMarker(marker);
+        assertNotNull(event.getMarker());
+        
+        ILoggingEvent remoteEvent = writeAndRead(event);
+        checkForEquality(event, remoteEvent);
+
+        assertNotNull(remoteEvent.getMarker());
+        assertEquals(marker, remoteEvent.getMarker());
+    }
+
     @Test
     public void testWithCallerData() throws Exception {
         LoggingEvent event = createLoggingEvent();
@@ -163,7 +182,6 @@ public class LoggingEventSerializationTest {
         ThrowableProxy tp = new ThrowableProxy(throwable);
         event.setThrowableProxy(tp);
         tp.calculatePackagingData();
-
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
     }
