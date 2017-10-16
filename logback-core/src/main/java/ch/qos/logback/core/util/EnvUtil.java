@@ -13,31 +13,25 @@
  */
 package ch.qos.logback.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public class EnvUtil {
 
-    static private boolean isJDK_N_OrHigher(int n) {
-        List<String> versionList = new ArrayList<String>();
-        // this code should work at least until JDK 10 (assuming n parameter is
-        // always 6 or more)
-        for (int i = 0; i < 5; i++) {
-            versionList.add("1." + (n + i));
-        }
+    private EnvUtil() {}
 
-        String javaVersion = System.getProperty("java.version");
-        if (javaVersion == null) {
-            return false;
+    static private boolean isJDK_N_OrHigher(int n) {
+        int version = 0;
+        for (byte ch : System.getProperty("java.version", "").getBytes()) {
+            if (Character.isDigit(ch)) {
+                version = (version * 10) + (ch - 48);
+            } else if (version == 1) {
+                version = 0;
+            } else {
+                break;
+            }
         }
-        for (String v : versionList) {
-            if (javaVersion.startsWith(v))
-                return true;
-        }
-        return false;
+        return version > 0 && n <= version;
     }
 
     static public boolean isJDK5() {
