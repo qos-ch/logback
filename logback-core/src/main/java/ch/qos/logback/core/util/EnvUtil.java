@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,9 +20,11 @@ import java.util.regex.Pattern;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class EnvUtil {
+    private static final Pattern versionPattern = Pattern.compile("^(1.)?([0-9]+)");
+
+    private EnvUtil() {}
 
     static private boolean isJDK_N_OrHigher(int n) {
-        Pattern versionPattern = Pattern.compile("^(1.)?([0-9]+)");
         Matcher matcher = versionPattern.matcher(System.getProperty("java.version", ""));
         if (matcher.find()) {
             return n <= Integer.parseInt(matcher.group(2));
