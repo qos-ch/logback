@@ -23,7 +23,7 @@ import org.mockito.Mock;
 /**
  * @author Patrick Reinhart
  */
-public class EntUtilTest {
+public class EnvUtilTest {
     @Mock
     private String savedVersion = System.getProperty("java.version");
 
