@@ -32,6 +32,11 @@ public class StaticMDCBinder {
     private StaticMDCBinder() {
     }
 
+    
+    public static StaticMDCBinder getSingleton() {
+        return SINGLETON;
+    }
+    
     /**
      * Currently this method always returns an instance of 
      * {@link StaticMDCBinder}.
