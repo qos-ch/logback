@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
 public class FileToBufferUtil {
 
@@ -33,6 +34,8 @@ public class FileToBufferUtil {
             gzFileReadIntoList(file, stringList);
         } else if (file.getName().endsWith(".zip")) {
             zipFileReadIntoList(file, stringList);
+        } else if (file.getName().endsWith(".bzip2")) {
+            bzip2FileReadIntoList(file, stringList);
         } else {
             regularReadIntoList(file, stringList);
         }
@@ -69,6 +72,12 @@ public class FileToBufferUtil {
         FileInputStream fis = new FileInputStream(file);
         GZIPInputStream gzis = new GZIPInputStream(fis);
         readInputStream(gzis, stringList);
+    }
+
+    static public void bzip2FileReadIntoList(File file, List<String> stringList) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+        BZip2CompressorInputStream bz2is = new BZip2CompressorInputStream(fis);
+        readInputStream(bz2is, stringList);
     }
 
 }

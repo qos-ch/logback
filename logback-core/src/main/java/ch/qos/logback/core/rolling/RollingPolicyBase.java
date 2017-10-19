@@ -21,7 +21,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 /**
  * Implements methods common to most, it not all, rolling policies. Currently
  * such methods are limited to a compression mode getter/setter.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class RollingPolicyBase extends ContextAwareBase implements RollingPolicy {
@@ -42,7 +42,7 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
      * mode depending on last letters of the fileNamePatternStr. Patterns ending
      * with .gz imply GZIP compression, endings with '.zip' imply ZIP compression.
      * Otherwise and by default, there is no compression.
-     * 
+     *
      */
     protected void determineCompressionMode() {
         if (fileNamePatternStr.endsWith(".gz")) {
@@ -51,6 +51,9 @@ public abstract class RollingPolicyBase extends ContextAwareBase implements Roll
         } else if (fileNamePatternStr.endsWith(".zip")) {
             addInfo("Will use zip compression");
             compressionMode = CompressionMode.ZIP;
+        } else if (fileNamePatternStr.endsWith(".bz2")) {
+            addInfo("Will use bzip2 compression");
+            compressionMode = CompressionMode.BZIP2;
         } else {
             addInfo("No compression will be used");
             compressionMode = CompressionMode.NONE;

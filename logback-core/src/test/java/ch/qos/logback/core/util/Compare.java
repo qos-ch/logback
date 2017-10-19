@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
 public class Compare {
     static final int B1_NULL = -1;
@@ -32,6 +33,8 @@ public class Compare {
             return gzFileCompare(file1, file2);
         } else if (file1.endsWith(".zip")) {
             return zipFileCompare(file1, file2);
+        } else if (file1.endsWith(".bzip2")) {
+            return bzip2FileCompare(file1, file2);
         } else {
             return regularFileCompare(file1, file2);
         }
@@ -43,11 +46,23 @@ public class Compare {
         return new BufferedReader(new InputStreamReader(gzis));
     }
 
+    static BufferedReader bzip2FileToBufferedReader(String file) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+        BZip2CompressorInputStream bz2is = new BZip2CompressorInputStream(fis);
+        return new BufferedReader(new InputStreamReader(bz2is));
+    }
+
     static BufferedReader zipFileToBufferedReader(String file) throws IOException {
         FileInputStream fis = new FileInputStream(file);
         ZipInputStream zis = new ZipInputStream(fis);
         zis.getNextEntry();
         return new BufferedReader(new InputStreamReader(zis));
+    }
+
+    public static boolean bzip2FileCompare(String file1, String file2) throws IOException {
+        BufferedReader in1 = bzip2FileToBufferedReader(file1);
+        BufferedReader in2 = bzip2FileToBufferedReader(file2);
+        return bufferCompare(in1, in2, file1, file2);
     }
 
     public static boolean gzFileCompare(String file1, String file2) throws IOException {
@@ -102,9 +117,9 @@ public class Compare {
     }
 
     /**
-     * 
+     *
      * Prints file on the console.
-     * 
+     *
      */
     private static void outputFile(String file) throws FileNotFoundException, IOException {
         BufferedReader in1 = null;
