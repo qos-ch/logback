@@ -16,6 +16,7 @@ package ch.qos.logback.classic.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -166,7 +167,24 @@ public class LoggingEventSerializationTest {
         assertNotNull(remoteEvent.getMarker());
         assertEquals(marker, remoteEvent.getMarker());
     }
+    
+    @Test
+    public void testWithTwoMarkers() throws Exception {
+        Marker marker = MarkerFactory.getMarker("A_MARKER");
+        Marker marker2 = MarkerFactory.getMarker("B_MARKER");
+        marker.add(marker2);
+        LoggingEvent event = createLoggingEvent();
+        
+        event.setMarker(marker);
+        assertNotNull(event.getMarker());
+        
+        ILoggingEvent remoteEvent = writeAndRead(event);
+        checkForEquality(event, remoteEvent);
 
+        assertNotNull(remoteEvent.getMarker());
+        assertEquals(marker, remoteEvent.getMarker());
+    }
+    
     @Test
     public void testWithCallerData() throws Exception {
         LoggingEvent event = createLoggingEvent();
