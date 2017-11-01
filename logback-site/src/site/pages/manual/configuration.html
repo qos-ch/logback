@@ -594,6 +594,19 @@ java.lang.Exception: 99 is invalid
   <b>lc.setPackagingDataEnabled(true);</b>
 </pre>
 
+   <h3 class="doAnchor" name="javascript">Conditional processing with
+   JavaScript</h3>
+
+   <p>As an alternative to the Janino library for
+   <a href="manual/configuration.html#conditional">conditional
+   processing</a> in configuration files JavaScript can be used.
+   To activate, set the attribute <span class="attr">conditional-js</span>
+   on the <em>configuration</em> element to true:</p>
+   
+   <pre class="prettyprint source">&lt;configuration conditional-js="true"&gt;
+...
+&lt;/configuration&gt;</pre>
+
    <h3 class="doAnchor" name="joranDirectly">Invoking
    <code>JoranConfigurator</code> directly</h3>
 
@@ -1898,7 +1911,9 @@ fileName=myApp.log
   <code>&lt;then></code> and <code>&lt;else></code> elements so that a
   single configuration file can adequately target several
   environments. Note that conditional processing requires the <a
-  href="../setup.html#janino">Janino library</a>.
+  href="../setup.html#janino">Janino library</a>, unless
+  <a href="../setup.html#javascript">JavaScript evaluation</a>
+  is chosen.
   </p>
 
   <p>The general format for conditional statements is shown below.</p>

@@ -24,7 +24,7 @@ import org.codehaus.janino.ClassBodyEvaluator;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-public class PropertyEvalScriptBuilder extends ContextAwareBase {
+public class PropertyEvalScriptBuilder extends ContextAwareBase implements Evaluation {
 
     private static String SCRIPT_PREFIX = "" + "public boolean evaluate() { return ";
     private static String SCRIPT_SUFFIX = "" + "; }";
@@ -37,21 +37,23 @@ public class PropertyEvalScriptBuilder extends ContextAwareBase {
 
     Map<String, String> map = new HashMap<String, String>();
 
-    public Condition build(String script) throws IllegalAccessException, CompileException, InstantiationException, SecurityException, NoSuchMethodException,
-                    IllegalArgumentException, InvocationTargetException {
-
-        ClassBodyEvaluator cbe = new ClassBodyEvaluator();
-        cbe.setImplementedInterfaces(new Class[] { Condition.class });
-        cbe.setExtendedClass(PropertyWrapperForScripts.class);
-        cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
-        cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
-
-        Class<?> clazz = cbe.getClazz();
-        Condition instance = (Condition) clazz.newInstance();
-        Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
-        setMapMethod.invoke(instance, localPropContainer, context);
-
-        return instance;
+    @Override
+    public Condition build(String script) {
+        try {            
+            ClassBodyEvaluator cbe = new ClassBodyEvaluator();
+            cbe.setImplementedInterfaces(new Class[] { Condition.class });
+            cbe.setExtendedClass(PropertyWrapperForScripts.class);
+            cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
+            cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
+    
+            Class<?> clazz = cbe.getClazz();
+            Condition instance = (Condition) clazz.newInstance();
+            Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
+            setMapMethod.invoke(instance, localPropContainer, context);
+            return instance;
+        } catch (CompileException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
 }

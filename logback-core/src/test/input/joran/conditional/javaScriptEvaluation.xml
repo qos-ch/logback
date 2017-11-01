@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<x conditional-js="true">
+  <stack name="BEGIN"/>
+  <if condition='property("sysKeyJS").equals("val1")'>
+    <then>
+      <stack name="a"/>
+    </then>
+  </if>
+  <stack name="END"/>
+</x>

@@ -25,6 +25,7 @@ import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.util.EnvUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.conditional.PropertyEvalJavaScriptBuilder;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
@@ -60,6 +61,14 @@ public class ConfigurationAction extends Action {
         }
 
         processScanAttrib(ic, attributes);
+        
+        String conditionalJs = ic.subst(attributes.getValue(PropertyEvalJavaScriptBuilder.CONDITIONAL_JS_ATTR));
+        if ("true".equalsIgnoreCase(conditionalJs)) {
+            ic.getObjectMap().put(PropertyEvalJavaScriptBuilder.CONDITIONAL_JS_ATTR, Boolean.TRUE);
+            addInfo("Using JavaScript for conditional expressions instead of Janino library");
+        } else {
+            ic.getObjectMap().remove(PropertyEvalJavaScriptBuilder.CONDITIONAL_JS_ATTR);
+        }
 
         LoggerContext lc = (LoggerContext) context;
         boolean packagingData = OptionHelper.toBoolean(ic.subst(attributes.getValue(PACKAGING_DATA_ATTR)), LoggerContext.DEFAULT_PACKAGING_DATA);

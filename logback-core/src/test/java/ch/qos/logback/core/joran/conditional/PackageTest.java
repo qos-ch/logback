@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PropertyEvalScriptBuilderTest.class, IfThenElseTest.class, IfThenElseAndIncludeCompositionTest.class })
+@SuiteClasses({ PropertyEvalScriptBuilderTest.class, PropertyEvalJavaScriptBuilderTest.class, IfThenElseTest.class, IfThenElseAndIncludeCompositionTest.class })
 public class PackageTest {
 
 }
