@@ -32,7 +32,7 @@ Gregory A. Denton        WA, USA               2013-05-02
 Mikhail Mazursky         Bashkortostan,Russia  2013-10-02
 Marvin B. Lillehaug      Trondheim, Norway     2014-01-20
 Chetan Mehrotra          Uttar Pradesh, India  2014-02-04
-Eric Dahl                NE, US                2014-02-04
+Eric Dahl                NE, USA               2014-02-04
 Adam Gent                MA, USA               2014-04-01
 Sebastian Groebler       Berlin, Germany       2014-07-17
 Alexander Dorokhine      CA, USA               2014-12-07
@@ -47,12 +47,13 @@ David Roberge            Maine, USA            2016-02-14
 Adam Batkin              Connecticut, USA      2016-02-14
 Ville Koskela            Washington, USA       2016-02-19
 Vedran Pavic             Croatia               2016-02-23
-Max Urech                AG, Swizerland        2016-03-17
+Max Urech                AG, Switzerland       2016-03-17
 Kenneth Gendron          CA, USA               2016-04-01
 Espen A. Fossen          Norway                2016-04-07
 Scott Babcock            WA, USA               2016-12-22
 Olivier Bourgain         France                2017-01-31
 Nicolas Maupu            France                2017-01-31
+Jan Engehausen           ZH, Switzerland       2017-07-07
 
 Justification for CLAs
 ----------------------
