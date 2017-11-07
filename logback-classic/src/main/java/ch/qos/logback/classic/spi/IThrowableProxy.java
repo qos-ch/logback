@@ -25,4 +25,6 @@ public interface IThrowableProxy {
     IThrowableProxy getCause();
 
     IThrowableProxy[] getSuppressed();
+    
+    boolean isCircular();
 }

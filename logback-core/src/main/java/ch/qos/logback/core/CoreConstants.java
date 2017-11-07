@@ -112,6 +112,8 @@ public class CoreConstants {
     public static final String CAUSED_BY = "Caused by: ";
     public static final String SUPPRESSED = "Suppressed: ";
     public static final String WRAPPED_BY = "Wrapped by: ";
+    public static final String CIRCULAR_START = "[CIRCULAR REFERENCE:";
+    public static final String CIRCULAR_END = "]";
 
     public static final char PERCENT_CHAR = '%';
     public static final char LEFT_PARENTHESIS_CHAR = '(';
