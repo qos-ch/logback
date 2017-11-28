@@ -944,7 +944,8 @@ public class SampleTurboFilter extends TurboFilter {
 
     <p>The <code>DuplicateMessageFilter</code> merits a separate
     presentation.  This filter detects duplicate messages, and beyond
-    a certain number of repetitions, drops repeated messages.
+    a certain number of repetitions, drops repeated messages until they
+    do not appear for a while.
     </p>
 
     <p>To detect repetition, this filter uses simple String equality
@@ -987,7 +988,14 @@ logger.debug("Hello {}.", name1);</pre>
     property. By the default, this is set to 100.
     </p>
 
-    
+    <p>The time until messages are not dropped anymore can be specified
+    by the <span class="option">SuppressionTimeMs</span> property. For
+    example, if the property is set to 10000 (ms), then all subsequent
+    occurrences of the same message within the next 10s will be dropped.
+    By default, the <span class="option">SuppressionTimeMs</span> property
+    is set to 60000 (ms).
+    </p>
+
     <em>Example: <code>DuplicateMessageFilter</code> 
     configuration (logback-examples/src/main/resources/chapters/filters/duplicateMessage.xml)</em>
 
