@@ -6,7 +6,7 @@
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
@@ -14,14 +14,13 @@
 package ch.qos.logback.classic.turbo;
 
 import junit.framework.Assert;
-
 import org.junit.Test;
 
 public class LRUMessageCacheTest {
 
     @Test
     public void testEldestEntriesRemoval() {
-        final LRUMessageCache cache = new LRUMessageCache(2);
+        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(2, Integer.MAX_VALUE);
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
@@ -36,6 +35,27 @@ public class LRUMessageCacheTest {
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
         // So it is expected a returned value of 0 instead of 2.
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("2"));
+    }
+
+    /**
+     * This test may fail if not processed fast enough, because it is based on elapsed time.
+     * Increase times to make it more robust.
+     */
+    @Test
+    public void testExpireEntry() throws InterruptedException {
+        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(10, 100);
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
+        Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("1"));
+        Thread.sleep(50);
+        Assert.assertEquals(2, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(2, cache.getMessageCountAndThenIncrement("1"));
+
+        Thread.sleep(110);
+
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
     }
 
 }

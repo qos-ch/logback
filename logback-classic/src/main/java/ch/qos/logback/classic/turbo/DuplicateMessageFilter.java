@@ -37,15 +37,20 @@ public class DuplicateMessageFilter extends TurboFilter {
      * The default number of allows repetitions.
      */
     public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
+    /**
+     * The default time log messages expire after [ms].
+     */
+    public static final int DEFAULT_SUPPRESSION_TIME_IN_MS = 65000;
 
     public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
     public int cacheSize = DEFAULT_CACHE_SIZE;
+    public int suppressionTimeMs = DEFAULT_SUPPRESSION_TIME_IN_MS;
 
-    private LRUMessageCache msgCache;
+    private ExpiringLRUMessageCache msgCache;
 
     @Override
     public void start() {
-        msgCache = new LRUMessageCache(cacheSize);
+        msgCache = new ExpiringLRUMessageCache(cacheSize, suppressionTimeMs);
         super.start();
     }
 
@@ -87,4 +92,16 @@ public class DuplicateMessageFilter extends TurboFilter {
         this.cacheSize = cacheSize;
     }
 
+    public int getSuppressionTimeMs() {
+        return suppressionTimeMs;
+    }
+
+    /**
+     * The allowed time log messages expire after [ms]
+     *
+     * @param suppressionTimeMs
+     */
+    public void setSuppressionTimeMs(int suppressionTimeMs) {
+        this.suppressionTimeMs = suppressionTimeMs;
+    }
 }
