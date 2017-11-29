@@ -17,8 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Clients of this class should only use the  {@link #getMessageCountAndThenIncrement} method. Other methods inherited
- * via LinkedHashMap are not thread safe.
+ * Clients of this class should only use the  {@link #getMessageCountAndThenIncrement} method. 
+ * Other methods inherited via LinkedHashMap are not thread safe.
  */
 class LRUMessageCache extends LinkedHashMap<String, Integer> {
 
@@ -55,7 +55,7 @@ class LRUMessageCache extends LinkedHashMap<String, Integer> {
 
     // called indirectly by get() or put() which are already supposed to be
     // called from within a synchronized block
-    protected boolean removeEldestEntry(Map.Entry eldest) {
+    protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
         return (size() > cacheSize);
     }
 
