@@ -158,6 +158,44 @@ public class ThrowableProxyTest {
         }
         verify(w);
     }
+    
+    @Test
+    public void nullMessage() {
+        Exception ex = new Exception();
+        verify(ex);
+    }
+    
+    @Test
+    public void circularCause() {
+        Exception e1 = new Exception("1");
+        Exception e2 = new Exception("2", e1);
+        Exception e3 = new Exception("3", e2);
+        e1.initCause(e3);
+        verify(e1);
+    }
+
+    @Test
+    public void circularSuppressed() {
+        Exception e1 = new Exception("1");
+        Exception e2 = new Exception("2");
+        e2.addSuppressed(e1);
+        Exception e3 = new Exception("3");
+        e3.addSuppressed(e2);
+        e1.addSuppressed(e3);
+        verify(e1);
+    }
+
+    @Test
+    public void circularCauseSuppressed() {
+        Exception e1 = new Exception("1");
+        Exception e2 = new Exception("2", e1);
+        e2.addSuppressed(e1);
+        Exception e3 = new Exception("3", e2);
+        e3.addSuppressed(e2);
+        e1.initCause(e3);
+        e1.addSuppressed(e3);
+        verify(e1);
+    }
 
     void someMethod() throws Exception {
         throw new Exception("someMethod");
