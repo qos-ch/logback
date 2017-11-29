@@ -54,6 +54,7 @@ Scott Babcock            WA, USA               2016-12-22
 Olivier Bourgain         France                2017-01-31
 Nicolas Maupu            France                2017-01-31
 Jan Engehausen           ZH, Switzerland       2017-07-07
+Christian Lorenz         Berlin, Germany       2017-11-28
 
 Justification for CLAs
 ----------------------
