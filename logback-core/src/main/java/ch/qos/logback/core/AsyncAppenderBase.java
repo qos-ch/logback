@@ -282,25 +282,40 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         public void run() {
             AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
             AppenderAttachableImpl<E> aai = parent.aai;
-
-            // loop while the parent is started
-            while (parent.isStarted()) {
-                try {
-                    E e = parent.blockingQueue.take();
-                    aai.appendLoopOnAppenders(e);
-                } catch (InterruptedException ie) {
-                    break;
+            try {
+                // loop while the parent is started
+                while (parent.isStarted()) {
+                    E e = null;
+                    try {
+                        e = parent.blockingQueue.take();
+                        aai.appendLoopOnAppenders(e);
+                    } catch (InterruptedException ie) {
+                        break;
+                    } catch (Throwable t) {
+                        try {
+                            addError("Failed to append event: " + e, t);
+                        } catch (Throwable t2) {
+                            // Ignore second throwable and prevent unexpected thread termination.
+                        }
+                    }
                 }
+
+                addInfo("Worker thread will flush remaining events before exiting. ");
+
+                for (E e : parent.blockingQueue) {
+                    try {
+                        try {
+                            aai.appendLoopOnAppenders(e);
+                        } finally {
+                            parent.blockingQueue.remove(e);
+                        }
+                    } catch (Throwable t) {
+                        addError("Failed to append event [" + e + "].", t);
+                    }
+                }
+            } finally {
+                aai.detachAndStopAllAppenders();
             }
-
-            addInfo("Worker thread will flush remaining events before exiting. ");
-
-            for (E e : parent.blockingQueue) {
-                aai.appendLoopOnAppenders(e);
-                parent.blockingQueue.remove(e);
-            }
-
-            aai.detachAndStopAllAppenders();
         }
     }
 }

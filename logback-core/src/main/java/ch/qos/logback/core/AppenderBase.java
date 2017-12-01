@@ -81,9 +81,9 @@ abstract public class AppenderBase<E> extends ContextAwareBase implements Append
             // ok, we now invoke derived class' implementation of append
             this.append(eventObject);
 
-        } catch (Exception e) {
+        } catch (Throwable t) {
             if (exceptionCount++ < ALLOWED_REPEATS) {
-                addError("Appender [" + name + "] failed to append.", e);
+                addError("Appender [" + name + "] failed to append.", t);
             }
         } finally {
             guard = false;
