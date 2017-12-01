@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import ch.qos.logback.core.testUtil.OOMAppender;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,6 +77,24 @@ public class AsyncAppenderBaseTest {
         npeAppender.start();
 
         asyncAppenderBase.addAppender(npeAppender);
+        asyncAppenderBase.start();
+        assertTrue(asyncAppenderBase.isStarted());
+        for (int i = 0; i < 10; i++)
+            asyncAppenderBase.append(i);
+
+        asyncAppenderBase.stop();
+        assertFalse(asyncAppenderBase.isStarted());
+        assertEquals(AppenderBase.ALLOWED_REPEATS, statusChecker.matchCount("Appender \\[bad\\] failed to append."));
+    }
+
+    @Test
+    public void errorsShouldNotCauseHalting() {
+        OOMAppender<Integer> oomAppender = new OOMAppender<Integer>();
+        oomAppender.setName("bad");
+        oomAppender.setContext(context);
+        oomAppender.start();
+
+        asyncAppenderBase.addAppender(oomAppender);
         asyncAppenderBase.start();
         assertTrue(asyncAppenderBase.isStarted());
         for (int i = 0; i < 10; i++)
