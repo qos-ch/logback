@@ -19,7 +19,7 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 appender("STDOUT", ConsoleAppender) {
   encoder(LayoutWrappingEncoder) {
     layout(PatternLayout) {
-      pattern = "${p} %m%n"
+      pattern = "%m%n"
     }
   }
 }

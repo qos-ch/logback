@@ -172,6 +172,7 @@ class GafferConfiguratorTest {
 
     @Test
     void appenderRefShouldWork() {
+        context.putProperty("p", "HELLO");
         File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "asyncAppender.groovy")
         configurator.run file.text
 
@@ -183,6 +184,7 @@ class GafferConfiguratorTest {
 
     @Test
     void appenderRefWithNonAppenderAttachable() {
+        context.putProperty("p", "HELLO");
         String message = shouldFail(IllegalArgumentException) {
             File file = new File(ClassicTestConstants.GAFFER_INPUT_PREFIX + "appenderRefWithNonAppenderAttachable.groovy")
             configurator.run file.text

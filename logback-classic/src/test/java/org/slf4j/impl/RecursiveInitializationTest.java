@@ -36,7 +36,6 @@ public class RecursiveInitializationTest {
     @Before
     public void setUp() throws Exception {
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "recursiveInit.xml");
-        StaticLoggerBinderFriend.reset();
         LoggerFactoryFriend.reset();
     }
 
@@ -53,7 +52,7 @@ public class RecursiveInitializationTest {
         LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
         StatusChecker statusChecker = new StatusChecker(loggerContext);
-        assertEquals("Was expecting no errors", Status.WARN, statusChecker.getHighestLevel(0));
+        statusChecker.assertIsErrorFree();
     }
 
 }

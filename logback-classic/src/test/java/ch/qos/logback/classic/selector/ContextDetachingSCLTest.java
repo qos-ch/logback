@@ -19,14 +19,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
+import org.slf4j.LoggerFactoryFriend;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
-import org.slf4j.LoggerFactoryFriend;
-import org.slf4j.impl.StaticLoggerBinderFriend;
 
 public class ContextDetachingSCLTest {
 
@@ -49,7 +48,6 @@ public class ContextDetachingSCLTest {
         System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
 
         // reinitialize the LoggerFactory, These reset methods are reserved for internal use
-        StaticLoggerBinderFriend.reset();
         LoggerFactoryFriend.reset();
 
         // this call will create the context "toto"
@@ -60,7 +58,6 @@ public class ContextDetachingSCLTest {
     public void tearDown() throws Exception {
         System.clearProperty(INITIAL_CONTEXT_KEY);
         // reinitialize the LoggerFactory, These resets method are reserved for internal use
-        StaticLoggerBinderFriend.reset();
         LoggerFactoryFriend.reset();
     }
 

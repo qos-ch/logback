@@ -23,6 +23,7 @@ import ch.qos.logback.core.util.TeeOutputStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.LoggerFactoryFriend;
 
 import java.io.PrintStream;
 
@@ -64,7 +65,7 @@ public class InitializationOutputTest {
         System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
         System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
 
-        StaticLoggerBinderFriend.reset();
+        LoggerFactoryFriend.reset();
         assertEquals(0, tee.baos.size());
     }
 

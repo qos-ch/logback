@@ -1,4 +1,4 @@
-package ch.qos.logback.classic.provider;
+package ch.qos.logback.classic.spi;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.IMarkerFactory;
@@ -27,29 +27,35 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String REQUESTED_API_VERSION = "1.8.99"; // !final
 
-    private LoggerContext loggerFactory;
+    private LoggerContext defaultLoggerContext;
     private IMarkerFactory markerFactory;
     private MDCAdapter mdcAdapter;
-
+    private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder.getSingleton();
+    private static Object KEY = new Object();
+    private boolean initialized = false;
+    
     @Override
     public void initialize() {
-        loggerFactory = new LoggerContext();
-        initializeLoggerContext(loggerFactory);
+        defaultLoggerContext = new LoggerContext();
+        defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
+        initializeLoggerContext();
         markerFactory = new BasicMarkerFactory();
         mdcAdapter = new LogbackMDCAdapter();
     }
 
-    private void initializeLoggerContext(LoggerContext loggerFactory) {
+    private void initializeLoggerContext() {
         try {
             try {
-                new ContextInitializer(loggerFactory).autoConfig();
+                new ContextInitializer(defaultLoggerContext).autoConfig();
             } catch (JoranException je) {
                 Util.report("Failed to auto configure default logger context", je);
             }
             // logback-292
-            if (!StatusUtil.contextHasStatusListener(loggerFactory)) {
-                StatusPrinter.printInCaseOfErrorsOrWarnings(loggerFactory);
+            if (!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
+                StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
             }
+            contextSelectorBinder.init(defaultLoggerContext, KEY);
+            initialized = true;
         } catch (Exception t) { // see LOGBACK-1159
             Util.report("Failed to instantiate [" + LoggerContext.class.getName() + "]", t);
         }
@@ -58,7 +64,14 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     @Override
 
     public ILoggerFactory getLoggerFactory() {
-        return loggerFactory;
+        if (!initialized) {
+            return defaultLoggerContext;
+        }
+
+        if (contextSelectorBinder.getContextSelector() == null) {
+            throw new IllegalStateException("contextSelector cannot be null. See also " + NULL_CS_URL);
+        }
+        return contextSelectorBinder.getContextSelector().getLoggerContext();
     }
 
     @Override

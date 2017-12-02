@@ -108,10 +108,16 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
+      <artifactId>groovy-all</artifactId>
       <scope>compile</scope>
-      <!--<optional>true</optional>-->
+      <optional>true</optional>
     </dependency>
+<!--     <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+-->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -235,6 +241,7 @@
         </dependencies>
 
         <executions>
+          <!--  
           <execution>
             <id>ant-osgi-test</id>
             <phase>package</phase>
@@ -250,7 +257,7 @@
               <goal>run</goal>
             </goals>
           </execution>
-
+			-->
           <execution>
             <id>ant-integration-test</id>
             <phase>package</phase>

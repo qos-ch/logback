@@ -9,14 +9,13 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.Collections;
 import java.util.Set;
 
-
 //import org.apache.commons.io.FileUtils;
 //import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.After;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.impl.StaticLoggerBinderFriend;
+import org.slf4j.LoggerFactoryFriend;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -35,7 +34,7 @@ public class LogbackListenerTest {
     @After
     public void after() {
         logFile.delete();
-        StaticLoggerBinderFriend.reset();
+        LoggerFactoryFriend.reset();
     }
 
     private void disableLogFileAccess() throws IOException {
