@@ -25,13 +25,14 @@
   <property name="org.apache.felix:org.apache.felix.main:jar" value="c:/Users/ceki/.m2/repository/org/apache/felix/org.apache.felix.main/2.0.2/org.apache.felix.main-2.0.2.jar" />
 -->
 
-	<echo message="compile classpath: ${currentVersion}" />
+  <echo message="currentVersion: ${currentVersion}" />
   <echo message="slfj4:  ${org.slf4j:slf4j-api:jar}" />
   <echo message="felix:  ${org.apache.felix:org.apache.felix.main:jar}" />
 
 
 
   <property name="iBundleJar" value="target/iBundle.jar"/>
+  <!-- jar in the folder named "bundle" are auto-deployed by Felix -->	
   <property name="bundlesDir" value="bundle"/>
 
 
@@ -43,7 +44,7 @@
     <pathelement location="${org.apache.felix:org.apache.felix.main:jar}" />    
     <pathelement location="target/classes/" />
     <pathelement location="target/test-classes" />  
-	</path >
+  </path >
 
 
 	<path id="minimal">
@@ -52,7 +53,7 @@
 
   <target name="copySLF4J_JAR">
     <echo>Making lib/ folder in case it does not already exist.</echo>
-	  <mkdir dir="lib/"/>
+	<mkdir dir="lib/"/>
     <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
     <!-- sneak in a clean up procedure of the ../logback-examples/lib/ folder-->
     <delete quiet="true">

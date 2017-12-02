@@ -22,15 +22,14 @@ import org.osgi.framework.BundleListener;
 
 public class CheckingBundleListener implements BundleListener {
 
-    List eventList = new ArrayList();
+    List<BundleEvent> eventList = new ArrayList<BundleEvent>();
 
-    @SuppressWarnings("unchecked")
     public void bundleChanged(BundleEvent be) {
         eventList.add(be);
     }
 
     private void dump(BundleEvent be) {
-        System.out.println("BE:" + ", source " + be.getSource() + ", bundle=" + be.getBundle() + ", type=" + be.getType());
+        System.out.println("BundleEvent:" + ", source " + be.getSource() + ", bundle=" + be.getBundle() + ", type=" + be.getType());
 
     }
 

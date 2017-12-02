@@ -21,9 +21,8 @@ import org.osgi.framework.FrameworkListener;
 
 public class FrameworkErrorListener implements FrameworkListener {
 
-    public List errorList = new ArrayList();
+    public List<FrameworkEvent> errorList = new ArrayList<FrameworkEvent>();
 
-    @SuppressWarnings("unchecked")
     public void frameworkEvent(FrameworkEvent fe) {
         if (fe.getType() == FrameworkEvent.ERROR) {
             errorList.add(fe);

@@ -22,10 +22,15 @@
 	</path >
 
 
-	<target name="testAll" depends="testWithoutGroovy, testConditionalsWithoutJanino" 
+	<target name="testAll" depends="init, testWithoutGroovy, testConditionalsWithoutJanino" 
           unless="maven.test.skip">
 	</target>
 
+	<target name="init">
+	   <echo message="in init"/>
+	   <mkdir dir="target/unit-reports" />
+    </target>
+	
 
 	<target name="testWithoutGroovy" unless="maven.test.skip">
 		<junit printsummary="yes" fork="no" haltonfailure="yes">
