@@ -108,16 +108,15 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
-<!--     <dependency>
+    <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-test</artifactId>
       <scope>test</scope>
     </dependency>
--->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -188,14 +187,14 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.5</version>
+        <version>1.6</version>
         <executions>
           <execution>
             <goals>
               <goal>generateStubs</goal>
               <goal>compile</goal>
-              <goal>testGenerateStubs</goal>
-              <goal>testCompile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>compileTests</goal>
             </goals>
           </execution>
         </executions>
@@ -241,7 +240,6 @@
         </dependencies>
 
         <executions>
-          <!--  
           <execution>
             <id>ant-osgi-test</id>
             <phase>package</phase>
@@ -257,8 +255,7 @@
               <goal>run</goal>
             </goals>
           </execution>
-			-->
-          <execution>
+		  <execution>
             <id>ant-integration-test</id>
             <phase>package</phase>
             <configuration>
@@ -311,6 +308,8 @@
         </executions>
         <configuration>
           <instructions>
+            <_noee>true</_noee> <!-- Jigsaw -->
+            <_failok>true</_failok> <!-- Jigsaw -->
             <Export-Package>ch.qos.logback.classic*, org.slf4j.impl;version=${slf4j.version}</Export-Package>
             <!-- LB-CLASSIC It is necessary to specify the rolling
                  file packages as classes are created via IOC (xml

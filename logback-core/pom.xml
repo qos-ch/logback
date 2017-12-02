@@ -97,6 +97,7 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
+        
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -108,6 +109,8 @@
         </executions>
         <configuration>
           <instructions>
+            <_noee>true</_noee> <!-- Jigsaw -->
+            <_failok>true</_failok> <!-- Jigsaw -->
             <Export-Package>ch.qos.logback.core.*</Export-Package>
             <Import-Package>
               javax.*;resolution:=optional,
