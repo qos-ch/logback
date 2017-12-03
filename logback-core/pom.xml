@@ -58,9 +58,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- <argLine>-Xmx4024m</argLine> -->
-          <!-- <argLine>=-illegal-access=warn</argLine> -->
-        	
+          <!-- <argLine>-Xmx2048m ==permit-illegal-access</argLine>  -->
           <forkCount>1C</forkCount>
           <reuseForks>true</reuseForks>
           <parallel>classes</parallel>
