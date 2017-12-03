@@ -2,3 +2,4 @@ language: java
 notifications:
   email:
       - notification@qos.ch
+jdk: oraclejdk9
