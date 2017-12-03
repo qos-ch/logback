@@ -11,14 +11,18 @@
 	-->
 	
 	<echo message="slf4j.version:  ${slf4j.version}" />
-
+	<echo message="hamcrest:  ${org.hamcrest:hamcrest-core:jar}" />
+	
 	<path id="basicClasspath">
+		<!-- post junit version 4.12, we neeed to add hamcrest manually to the 
+		     classpath, even though the m-ant-plugin declares a dependecy on hamcrest! -->
+		<pathelement location="${org.hamcrest:hamcrest-core:jar}" />
 		<pathelement location="../logback-core/target/classes/" />
 		<pathelement location="../logback-core/target/test-classes/" />
 		<pathelement location="./target/classes/" />
 		<pathelement location="./target/test-classes/" />
 		<pathelement location="./lib/slf4j-api-${slf4j.version}.jar" />
-    <pathelement location="./src/test/input/integration/autoInit/" />
+        <pathelement location="./src/test/input/integration/autoInit/" />
 	</path >
 
 
