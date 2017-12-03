@@ -3,3 +3,9 @@ notifications:
   email:
       - notification@qos.ch
 jdk: oraclejdk9
+
+sudo: false
+addons:
+  apt:
+    packages:
+      - oracle-java9-installer
