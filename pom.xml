@@ -376,11 +376,7 @@
             <id>default-compile</id>
             <configuration>
             <compilerArgs>
-				<arg>--add-reads</arg>
-				<arg>ch.qos.logback.classic=ALL-UNNAMED</arg>
-			</compilerArgs>
-
-              <args></args>
+			</compilerArgs> 
               <!-- compile everything to ensure module-info contains right entries -->
               <release>9</release>
             </configuration>
