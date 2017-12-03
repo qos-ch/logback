@@ -11,16 +11,16 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.rolling;
+package ch.qos.logback.core.rolling.testUtil;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.FileToBufferUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,8 +52,8 @@ public class ScaffoldingForRollingTests {
 
     int diff = RandomUtil.getPositiveInt();
     protected String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
-    EchoEncoder<Object> encoder = new EchoEncoder<Object>();
-    Context context = new ContextBase();
+    protected EchoEncoder<Object> encoder = new EchoEncoder<Object>();
+    protected Context context = new ContextBase();
     protected List<String> expectedFilenameList = new ArrayList<String>();
     protected long nextRolloverThreshold; // initialized in setUp()
     protected long currentTime; // initialized in setUp()
@@ -127,7 +127,7 @@ public class ScaffoldingForRollingTests {
         return existenceCounter;
     }
 
-    String testId2FileName(String testId) {
+    protected String testId2FileName(String testId) {
         return randomOutputDir + testId + ".log";
     }
 
@@ -166,7 +166,7 @@ public class ScaffoldingForRollingTests {
         expectedFilenameList.add(fn);
     }
 
-    void addExpectedFileNamedIfItsTime_ByDate(String fileNamePatternStr) {
+    protected void addExpectedFileNamedIfItsTime_ByDate(String fileNamePatternStr) {
         if (passThresholdTime(nextRolloverThreshold)) {
             addExpectedFileName_ByDate(fileNamePatternStr, getMillisOfCurrentPeriodsStart());
             recomputeRolloverThreshold(currentTime);
@@ -203,7 +203,7 @@ public class ScaffoldingForRollingTests {
         }
     }
 
-    void massageExpectedFilesToCorresponToCurrentTarget(String fileName, boolean fileOptionIsSet) {
+    protected void massageExpectedFilesToCorresponToCurrentTarget(String fileName, boolean fileOptionIsSet) {
         int lastIndex = expectedFilenameList.size() - 1;
         String last = expectedFilenameList.remove(lastIndex);
 
@@ -225,13 +225,13 @@ public class ScaffoldingForRollingTests {
         }
     }
 
-    void zipEntryNameCheck(List<String> expectedFilenameList, String pattern) throws IOException {
+    protected void zipEntryNameCheck(List<String> expectedFilenameList, String pattern) throws IOException {
         for (String filepath : expectedFilenameList) {
             checkZipEntryName(filepath, pattern);
         }
     }
 
-    void checkZipEntryMatchesZipFilename(List<String> expectedFilenameList) throws IOException {
+    protected void checkZipEntryMatchesZipFilename(List<String> expectedFilenameList) throws IOException {
         for (String filepath : expectedFilenameList) {
             String stripped = stripStemFromZipFilename(filepath);
             checkZipEntryName(filepath, stripped);

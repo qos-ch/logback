@@ -287,10 +287,12 @@
         <configuration>
           <!-- once, never, pertest, always -->
           <!--<forkMode>once</forkMode>-->
-          <forkCount>1C</forkCount>
+          <forkCount>2C</forkCount>
           <reuseForks>false</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
+          <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->
+          <childDelegation>true</childDelegation>
           <excludes>
             <exclude>**/AllClassicTest.java</exclude>
             <exclude>**/PackageTest.java</exclude>

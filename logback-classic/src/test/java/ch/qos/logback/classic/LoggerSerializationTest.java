@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import ch.qos.logback.core.net.HardenedObjectInputStream;
-import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 
 public class LoggerSerializationTest {
 

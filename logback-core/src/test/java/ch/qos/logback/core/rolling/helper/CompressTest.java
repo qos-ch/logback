@@ -27,9 +27,9 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.Compare;
-import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
  * @author Ceki Gulcu

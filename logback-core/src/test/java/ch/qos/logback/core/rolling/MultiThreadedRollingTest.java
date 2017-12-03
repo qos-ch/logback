@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static ch.qos.logback.core.util.CoreTestConstants.FAILURE_EXIT_CODE;
-import static ch.qos.logback.core.util.CoreTestConstants.SUCCESSFUL_EXIT_CODE;
+import static ch.qos.logback.core.testUtil.CoreTestConstants.FAILURE_EXIT_CODE;
+import static ch.qos.logback.core.testUtil.CoreTestConstants.SUCCESSFUL_EXIT_CODE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -24,6 +24,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
 import org.junit.After;
@@ -36,9 +37,8 @@ import ch.qos.logback.core.contention.MultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.Encoder;
-import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 

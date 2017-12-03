@@ -22,11 +22,11 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.rolling.ScaffoldingForRollingTests;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.CachingDateFormatter;
-import ch.qos.logback.core.util.CoreTestConstants;
 
 /**
  * Test that we can create time-stamped log files with the help of

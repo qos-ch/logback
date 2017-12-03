@@ -21,12 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+
 import org.junit.Test;
 
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
-import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /** 

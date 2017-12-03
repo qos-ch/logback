@@ -11,9 +11,11 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.status;
+package ch.qos.logback.core.testUtil;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.status.StatusManager;
+import ch.qos.logback.core.status.StatusUtil;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;

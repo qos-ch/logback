@@ -27,9 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
-import ch.qos.logback.core.net.server.MockServerListener;
-import ch.qos.logback.core.net.server.MockServerRunner;
-import ch.qos.logback.core.net.server.ServerSocketUtil;
+import ch.qos.logback.core.net.server.test.MockServerListener;
+import ch.qos.logback.core.net.server.test.MockServerRunner;
+import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
 

@@ -22,11 +22,13 @@ import javax.management.ObjectName
 import java.lang.management.ManagementFactory
 
 import static org.junit.Assert.*
-import ch.qos.logback.core.status.StatusChecker
+
 import ch.qos.logback.classic.turbo.TurboFilter
 import ch.qos.logback.classic.turbo.ReconfigureOnChangeFilter
 import ch.qos.logback.classic.Level
+import ch.qos.logback.core.testUtil.CoreTestConstants
 import ch.qos.logback.core.testUtil.RandomUtil
+import ch.qos.logback.core.testUtil.StatusChecker
 import ch.qos.logback.classic.Logger
 import ch.qos.logback.core.Appender
 import ch.qos.logback.core.helpers.NOPAppender
@@ -39,7 +41,6 @@ import ch.qos.logback.classic.net.SMTPAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.util.CoreTestConstants
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
 import ch.qos.logback.core.joran.action.TimestampAction
 

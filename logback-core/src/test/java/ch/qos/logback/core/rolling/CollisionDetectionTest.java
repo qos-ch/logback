@@ -1,7 +1,7 @@
 package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
-import static ch.qos.logback.core.util.CoreTestConstants.OUTPUT_DIR_PREFIX;
+import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
 
 import java.util.Map;
 
@@ -15,8 +15,8 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class CollisionDetectionTest {

@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Map;
 
 import ch.qos.logback.classic.spi.CallerData;
-import ch.qos.logback.core.status.StatusChecker;
+
 import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;
@@ -37,6 +37,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.db.DriverManagerConnectionSource;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class DBAppenderH2Test {

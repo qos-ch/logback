@@ -23,7 +23,7 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.StatusChecker;
 
 /**
  * @author Ceki G&uuml;lc&uuml;

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.StatusChecker;
 
 public class LoggerContextConcurrentResetTest {
     static int CONCURRENT_RESET_THREAD_COUNT = 10;

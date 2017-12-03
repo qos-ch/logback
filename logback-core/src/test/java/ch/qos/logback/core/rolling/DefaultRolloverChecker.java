@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.util.Compare;
-import ch.qos.logback.core.util.CoreTestConstants;
 
 import java.io.IOException;
 import java.util.List;

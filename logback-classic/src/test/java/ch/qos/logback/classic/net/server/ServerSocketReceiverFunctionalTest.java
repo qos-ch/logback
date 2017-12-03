@@ -35,7 +35,7 @@ import ch.qos.logback.classic.net.mock.MockAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEventVO;
-import ch.qos.logback.core.net.server.ServerSocketUtil;
+import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 
 /**
  * A functional test for {@link ServerSocketReceiver}.

@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.classic;
 
-import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 
 public class ClassicTestConstants {
     final static public String ISO_REGEX = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}";

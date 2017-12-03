@@ -18,7 +18,7 @@ import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.NopStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.TeeOutputStream;
+import ch.qos.logback.core.testUtil.TeeOutputStream;
 
 import org.junit.After;
 import org.junit.Before;

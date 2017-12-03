@@ -42,12 +42,11 @@ public class House {
     List<SwimmingPool> largePoolList = new ArrayList<SwimmingPool>();
 
     Orange orange;
-    
+
     public String getCamelCase() {
         return camelCase;
     }
 
-    
     public void setCamelCase(String camelCase) {
         this.camelCase = camelCase;
     }
@@ -153,17 +152,13 @@ public class House {
     public void setCharset(Charset charset) {
         this.charset = charset;
     }
-    
+
     public void setOrange(Orange o) {
         this.orange = o;
     }
 }
 
 class Door {
-    int handle;
-}
-
-class Window {
     int handle;
 }
 

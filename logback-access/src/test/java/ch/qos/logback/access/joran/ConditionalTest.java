@@ -18,9 +18,10 @@ import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
+import ch.qos.logback.core.testUtil.StatusChecker;
+
 import org.junit.Before;
 import org.junit.Test;
 

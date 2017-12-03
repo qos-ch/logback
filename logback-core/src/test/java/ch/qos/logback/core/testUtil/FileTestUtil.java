@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.testUtil;
 
-import ch.qos.logback.core.util.CoreTestConstants;
-
 import java.io.File;
 
 import static junit.framework.Assert.assertTrue;

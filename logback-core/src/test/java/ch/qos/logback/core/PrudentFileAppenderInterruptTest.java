@@ -25,8 +25,8 @@ import static org.junit.Assert.assertEquals;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
 
 public class PrudentFileAppenderInterruptTest {
 

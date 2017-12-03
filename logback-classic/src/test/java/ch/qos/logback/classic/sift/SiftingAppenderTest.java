@@ -18,7 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static ch.qos.logback.core.util.CoreTestConstants.OUTPUT_DIR_PREFIX;
+import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
@@ -52,10 +52,10 @@ import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.spi.AbstractComponentTracker;
 import ch.qos.logback.core.spi.ComponentTracker;
 import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
-import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.StatusPrinter;
 

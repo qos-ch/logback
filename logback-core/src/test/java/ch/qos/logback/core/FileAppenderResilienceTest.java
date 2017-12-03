@@ -26,8 +26,8 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.recovery.RecoveryCoordinator;
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.ResilienceUtil;
 
 public class FileAppenderResilienceTest {

@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.net.server.Client;
 import ch.qos.logback.core.net.server.ServerSocketListener;
+import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 
 /**
  * Unit tests for {@link ServerSocketListener}.

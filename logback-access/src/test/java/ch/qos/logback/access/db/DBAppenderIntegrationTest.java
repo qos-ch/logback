@@ -18,8 +18,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Random;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.EnvUtil;
 import org.junit.After;
 import org.junit.AfterClass;

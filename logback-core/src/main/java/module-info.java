@@ -43,6 +43,13 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.net.ssl;
     exports ch.qos.logback.core.net.server;
     
+    exports ch.qos.logback.core.rolling;
+    exports ch.qos.logback.core.rolling.helper;    
 
     exports ch.qos.logback.core.db;
+    exports ch.qos.logback.core.read;
+    
+    exports ch.qos.logback.core.recovery;
+    
+    
 }

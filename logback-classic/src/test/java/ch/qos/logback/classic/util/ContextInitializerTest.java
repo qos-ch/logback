@@ -44,7 +44,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.StatusListener;
-import ch.qos.logback.core.status.TrivialStatusListener;
+import ch.qos.logback.core.testUtil.TrivialStatusListener;
 import ch.qos.logback.core.util.Loader;
 
 public class ContextInitializerTest {

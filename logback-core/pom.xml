@@ -65,6 +65,8 @@
           <threadCount>20</threadCount>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
+          <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->
+          <childDelegation>true</childDelegation>
           <excludes>
             <exclude>**/All*Test.java</exclude>
             <exclude>**/PackageTest.java</exclude>

@@ -13,8 +13,15 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,10 +29,10 @@ import org.slf4j.MDC;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -33,8 +40,6 @@ import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
 
 public class ConverterTest {
 
@@ -71,7 +76,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("72", buf.toString());
+            assertEquals("78", buf.toString());
         }
     }
 
@@ -314,9 +319,10 @@ public class ConverterTest {
             converter.write(buf, le);
             assertTrue("buf is too short", buf.length() >= 10);
 
-            String expected = "Caller+4\t at java.lang.reflect.Method.invoke(";
-            String actual = buf.toString().substring(0, expected.length());
-            assertThat(actual, is(expected));
+            String expectedRegex = "Caller\\+4\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
+            String actual = buf.toString();
+            assertTrue("actual: "+actual, Pattern.compile(expectedRegex).matcher(actual).find());
+              
         }
     }
 

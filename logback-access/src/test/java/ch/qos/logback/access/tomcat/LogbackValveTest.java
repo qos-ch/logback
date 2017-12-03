@@ -22,7 +22,7 @@ import org.junit.Test;
 
 import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusChecker;
+import ch.qos.logback.core.testUtil.StatusChecker;
 
 public class LogbackValveTest {
 

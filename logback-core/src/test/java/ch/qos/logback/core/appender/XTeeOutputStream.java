@@ -16,7 +16,7 @@ package ch.qos.logback.core.appender;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import ch.qos.logback.core.util.TeeOutputStream;
+import ch.qos.logback.core.testUtil.TeeOutputStream;
 
 public class XTeeOutputStream extends TeeOutputStream {
 

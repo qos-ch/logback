@@ -23,9 +23,9 @@ import org.junit.Test;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.status.StatusChecker;
 import ch.qos.logback.core.testUtil.DelayingListAppender;
 import ch.qos.logback.core.testUtil.NPEAppender;
+import ch.qos.logback.core.testUtil.StatusChecker;
 
 /**
  * @author Ceki G&uuml;lc&uuml;

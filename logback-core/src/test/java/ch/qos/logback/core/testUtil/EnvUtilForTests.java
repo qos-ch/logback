@@ -18,8 +18,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.util.CoreTestConstants;
-
 public class EnvUtilForTests {
 
     static public boolean isWindows() {

@@ -14,8 +14,8 @@
 package ch.qos.logback.core.rolling.helper;
 
 import ch.qos.logback.core.rolling.RolloverFailure;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.FileUtil;
 import org.junit.Ignore;

@@ -271,7 +271,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.20.1</version>
+          <version>2.19.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -331,43 +331,15 @@
 
     <plugins>
 
-
-<!--      <plugin>
+<!--
+    <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-
-          <execution>
-            <id>base-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </execution> 
-
-          <execution>
-            <id>default-compile</id>
-            <configuration>
-              <jdkToolchain>
-                <version>9</version>
-              </jdkToolchain>
-              <release>9</release>
-            </configuration>
-          </execution>
-        </executions>
         <configuration>
-          <jdkToolchain>
-            <version>[1.5,9)</version>
-          </jdkToolchain>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
+     	    <release>9</release>
         </configuration>
-      </plugin>
--->
+	</plugin>
+  -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -376,7 +348,6 @@
           <execution>
             <id>default-compile</id>
             <configuration>
-            <compilerArgs></compilerArgs> 
               <!-- compile everything to ensure module-info contains right entries -->
               <release>9</release>
             </configuration>
@@ -394,17 +365,19 @@
             </configuration>
           </execution>
         </executions>
-        <!-- defaults for compile and testCompile -->
+        <!--  defaults for compile and testCompile -->
         <configuration>
           <!-- Only required when JAVA_HOME isn't at least Java 9 and when haven't
-               configured the maven-toolchains-plugin -->
+               configured the maven-toolchains-plugin 
           <jdkToolchain>
             <version>9</version>
           </jdkToolchain>
           <release>7</release>
+          -->
         </configuration>
       </plugin>
-
+  
+ 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
