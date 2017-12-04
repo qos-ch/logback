@@ -14,6 +14,7 @@
 package ch.qos.logback.classic;
 
 import static ch.qos.logback.core.CoreConstants.EVALUATOR_MAP;
+import static ch.qos.logback.core.CoreConstants.HOSTNAME_KEY;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -106,6 +107,16 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     public void setName(String name) {
         super.setName(name);
         updateLoggerContextVO();
+    }
+
+    @Override
+    public Map<String, String> getCopyOfPropertyMap() {
+        Map<String, String> propertyMap = super.getCopyOfPropertyMap();
+        if (!propertyMap.containsKey(HOSTNAME_KEY)) { // fix for missing hostname in LoggerContextVO
+            putProperty(HOSTNAME_KEY, getProperty(HOSTNAME_KEY));
+            return super.getCopyOfPropertyMap();
+        }
+        return propertyMap;
     }
 
     public final Logger getLogger(final Class<?> clazz) {
