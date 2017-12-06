@@ -104,11 +104,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
             return formattedMessage;
         }
 
-        if (argumentArray != null) {
-            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
-        } else {
-            formattedMessage = message;
-        }
+        formattedMessage = LoggingEvent.formatMessage(message, argumentArray);
 
         return formattedMessage;
     }

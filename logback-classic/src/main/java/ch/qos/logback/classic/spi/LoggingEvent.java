@@ -290,12 +290,32 @@ public class LoggingEvent implements ILoggingEvent {
             return formattedMessage;
         }
         if (argumentArray != null) {
-            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+            formattedMessage = formatMessage(message, argumentArray);
         } else {
             formattedMessage = message;
         }
 
         return formattedMessage;
+    }
+
+    static String formatMessage(String message, Object[] argumentArray) {
+        String result;
+        if (argumentArray == null || argumentArray.length <= 0) {
+            result = message;
+        } else if (message.contains("{}")) {
+            result = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+        } else {
+            // LOGBACK-1356 Since the message has no {}, rather than throw away the arguments, append them to the message.
+            StringBuilder stringBuilder = new StringBuilder(message);
+            for (int i = 0; i < argumentArray.length; i++) {
+                Object arg = argumentArray[i];
+                if (arg != null) {
+                    stringBuilder.append(' ').append(arg);
+                }
+            }
+            result = stringBuilder.toString();
+        }
+        return result;
     }
 
     public Map<String, String> getMDCPropertyMap() {
