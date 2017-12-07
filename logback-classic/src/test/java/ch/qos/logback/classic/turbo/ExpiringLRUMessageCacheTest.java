@@ -16,7 +16,7 @@ package ch.qos.logback.classic.turbo;
 import junit.framework.Assert;
 import org.junit.Test;
 
-public class LRUMessageCacheTest {
+public class ExpiringLRUMessageCacheTest {
 
     @Test
     public void testEldestEntriesRemoval() {
@@ -36,4 +36,26 @@ public class LRUMessageCacheTest {
         // So it is expected a returned value of 0 instead of 2.
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("2"));
     }
+
+    /**
+     * This test may fail if not processed fast enough, because it is based on elapsed time.
+     * Increase times to make it more robust.
+     */
+    @Test
+    public void testExpireEntry() throws InterruptedException {
+        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(10, 100);
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
+        Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("1"));
+        Thread.sleep(50);
+        Assert.assertEquals(2, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(2, cache.getMessageCountAndThenIncrement("1"));
+
+        Thread.sleep(110);
+
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
+        Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
+    }
+
 }

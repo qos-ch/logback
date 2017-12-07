@@ -13,21 +13,20 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import org.slf4j.Marker;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.FilterReply;
+import org.slf4j.Marker;
 
 /**
- *
- * See {@link http://logback.qos.ch/manual/filters.html#DuplicateMessageFilter}
+ * 
+ * See {@link http://logback.qos.ch/manual/filters.html#TimedDuplicateMessageFilter}
  * for details.
- *
+ * 
  * @author Ceki Gulcu
- *
+ * 
  */
-public class DuplicateMessageFilter extends TurboFilter {
+public class TimedDuplicateMessageFilter extends TurboFilter {
 
     /**
      * The default cache size.
@@ -37,15 +36,20 @@ public class DuplicateMessageFilter extends TurboFilter {
      * The default number of allows repetitions.
      */
     public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
+    /**
+     * The default time log messages expire after [ms].
+     */
+    public static final int DEFAULT_SUPPRESSION_TIME_IN_MS = 65000;
 
     public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
     public int cacheSize = DEFAULT_CACHE_SIZE;
+    public int suppressionTimeMs = DEFAULT_SUPPRESSION_TIME_IN_MS;
 
-    private LRUMessageCache msgCache;
+    private ExpiringLRUMessageCache msgCache;
 
     @Override
     public void start() {
-        msgCache = new LRUMessageCache(cacheSize);
+        msgCache = new ExpiringLRUMessageCache(cacheSize, suppressionTimeMs);
         super.start();
     }
 
@@ -72,7 +76,7 @@ public class DuplicateMessageFilter extends TurboFilter {
 
     /**
      * The allowed number of repetitions before
-     *
+     * 
      * @param allowedRepetitions
      */
     public void setAllowedRepetitions(int allowedRepetitions) {
@@ -87,4 +91,16 @@ public class DuplicateMessageFilter extends TurboFilter {
         this.cacheSize = cacheSize;
     }
 
+    public int getSuppressionTimeMs() {
+        return suppressionTimeMs;
+    }
+
+    /**
+     * The allowed time log messages expire after [ms]
+     *
+     * @param suppressionTimeMs
+     */
+    public void setSuppressionTimeMs(int suppressionTimeMs) {
+        this.suppressionTimeMs = suppressionTimeMs;
+    }
 }
