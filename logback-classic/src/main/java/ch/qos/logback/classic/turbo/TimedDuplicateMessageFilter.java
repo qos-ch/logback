@@ -16,6 +16,7 @@ package ch.qos.logback.classic.turbo;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.util.Duration;
 import org.slf4j.Marker;
 
 /**
@@ -37,19 +38,19 @@ public class TimedDuplicateMessageFilter extends TurboFilter {
      */
     public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
     /**
-     * The default time log messages expire after [ms].
+     * The default duration log messages expire after.
      */
-    public static final int DEFAULT_SUPPRESSION_TIME_IN_MS = 65000;
+    public static final Duration DEFAULT_SUPPRESSION_TIME = new Duration(65000);
 
     public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
     public int cacheSize = DEFAULT_CACHE_SIZE;
-    public int suppressionTimeMs = DEFAULT_SUPPRESSION_TIME_IN_MS;
+    public Duration suppressionTime = DEFAULT_SUPPRESSION_TIME;
 
     private ExpiringLRUMessageCache msgCache;
 
     @Override
     public void start() {
-        msgCache = new ExpiringLRUMessageCache(cacheSize, suppressionTimeMs);
+        msgCache = new ExpiringLRUMessageCache(cacheSize, suppressionTime);
         super.start();
     }
 
@@ -91,16 +92,16 @@ public class TimedDuplicateMessageFilter extends TurboFilter {
         this.cacheSize = cacheSize;
     }
 
-    public int getSuppressionTimeMs() {
-        return suppressionTimeMs;
+    public Duration getSuppressionTime() {
+        return suppressionTime;
     }
 
     /**
-     * The allowed time log messages expire after [ms]
+     * The allowed duration log messages expire after
      *
-     * @param suppressionTimeMs
+     * @param suppressionTime
      */
-    public void setSuppressionTimeMs(int suppressionTimeMs) {
-        this.suppressionTimeMs = suppressionTimeMs;
+    public void setSuppressionTime(Duration suppressionTime) {
+        this.suppressionTime = suppressionTime;
     }
 }

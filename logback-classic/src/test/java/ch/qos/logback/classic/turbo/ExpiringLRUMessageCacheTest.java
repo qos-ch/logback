@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.turbo;
 
+import ch.qos.logback.core.util.Duration;
 import junit.framework.Assert;
 import org.junit.Test;
 
@@ -20,7 +21,7 @@ public class ExpiringLRUMessageCacheTest {
 
     @Test
     public void testEldestEntriesRemoval() {
-        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(2, Integer.MAX_VALUE);
+        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(2, new Duration(Integer.MAX_VALUE));
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
@@ -43,16 +44,17 @@ public class ExpiringLRUMessageCacheTest {
      */
     @Test
     public void testExpireEntry() throws InterruptedException {
-        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(10, 100);
+        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(10, new Duration(100));
+        cache.setCurrentTime(0);
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
         Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("1"));
-        Thread.sleep(50);
+        cache.setCurrentTime(50);
         Assert.assertEquals(2, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(2, cache.getMessageCountAndThenIncrement("1"));
 
-        Thread.sleep(110);
+        cache.setCurrentTime(160);
 
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));

@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.turbo;
 
+import ch.qos.logback.core.util.Duration;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,18 +27,20 @@ class ExpiringLRUMessageCache extends LinkedHashMap<String, ExpiringLRUMessageCa
 
     private static final long serialVersionUID = 1L;
     final int cacheSize;
-    int expirationTimeMs;
+    Duration expirationTime;
 
-    ExpiringLRUMessageCache(int cacheSize, int expirationTimeMs) {
+    private long artificialCurrentTime = -1;
+
+    ExpiringLRUMessageCache(int cacheSize, Duration expirationTime) {
         super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
         if (cacheSize < 1) {
             throw new IllegalArgumentException("Cache size cannot be smaller than 1");
         }
-        if (expirationTimeMs < 1) {
+        if (expirationTime.getMilliseconds() < 1) {
             throw new IllegalArgumentException("Expiration time cannot be smaller than 1");
         }
         this.cacheSize = cacheSize;
-        this.expirationTimeMs = expirationTimeMs;
+        this.expirationTime = expirationTime;
     }
 
     int getMessageCountAndThenIncrement(String msg) {
@@ -49,7 +53,7 @@ class ExpiringLRUMessageCache extends LinkedHashMap<String, ExpiringLRUMessageCa
         // LinkedHashMap is not LinkedHashMap. See also LBCLASSIC-255
         synchronized (this) {
             hit = super.get(msg);
-            if (hit == null || hit.lastAccessTime + expirationTimeMs < System.currentTimeMillis()) {
+            if (hit == null || hit.lastAccessTime + expirationTime.getMilliseconds() < getCurrentTime()) {
                 hit = new Hit();
             } else {
                 hit = hit.getAndIncrement();
@@ -70,9 +74,25 @@ class ExpiringLRUMessageCache extends LinkedHashMap<String, ExpiringLRUMessageCa
         super.clear();
     }
 
-    static final class Hit {
+    long getCurrentTime() {
+        // if time is forced return the time set by user
+        if (artificialCurrentTime >= 0) {
+            return artificialCurrentTime;
+        } else {
+            return System.currentTimeMillis();
+        }
+    }
+
+    /**
+     * Manipulate used time in Tests.
+     */
+    void setCurrentTime(long artificialCurrentTime) {
+        this.artificialCurrentTime = artificialCurrentTime;
+    }
+
+    final class Hit {
         final int count;
-        final long lastAccessTime = System.currentTimeMillis();
+        final long lastAccessTime = getCurrentTime();
 
         public Hit() {
             this(0);

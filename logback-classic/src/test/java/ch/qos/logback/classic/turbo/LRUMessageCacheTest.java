@@ -20,7 +20,7 @@ public class LRUMessageCacheTest {
 
     @Test
     public void testEldestEntriesRemoval() {
-        final ExpiringLRUMessageCache cache = new ExpiringLRUMessageCache(2, Integer.MAX_VALUE);
+        final LRUMessageCache cache = new LRUMessageCache(2);
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(1, cache.getMessageCountAndThenIncrement("0"));
         Assert.assertEquals(0, cache.getMessageCountAndThenIncrement("1"));
