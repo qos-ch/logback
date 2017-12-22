@@ -173,11 +173,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         if (prefix != null) {
             buf.append(prefix);
         }
-        subjoinExceptionMessage(buf, tp);
-    }
-
-    private void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        ThrowableProxyUtil.subjoinExceptionMessage(buf, tp);
     }
 
     protected void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {

@@ -179,4 +179,14 @@ public class ThrowableProxyTest {
             throw new Exception("someOtherMethod", e);
         }
     }
+
+    @Test
+    public void overriddenToString() {
+        Exception e = new Exception() {
+            public String toString() {
+                return getClass().getName() + " [extra]";
+            }
+        };
+        verify(e);
+    }
 }

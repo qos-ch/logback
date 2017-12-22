@@ -17,6 +17,7 @@ public class DummyThrowableProxy implements IThrowableProxy {
 
     private String className;
     private String message;
+    private String string;
     private int commonFramesCount;
     private StackTraceElementProxy[] stackTraceElementProxyArray;
     private IThrowableProxy cause;
@@ -36,6 +37,14 @@ public class DummyThrowableProxy implements IThrowableProxy {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getString() {
+        return string;
+    }
+
+    public void setString(String string) {
+        this.string = string;
     }
 
     public int getCommonFrames() {

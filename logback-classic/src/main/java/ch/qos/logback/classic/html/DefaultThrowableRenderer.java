@@ -58,7 +58,12 @@ public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEven
         if (commonFrames > 0) {
             sb.append("<br />").append(CoreConstants.CAUSED_BY);
         }
-        sb.append(tp.getClassName()).append(": ").append(Transform.escapeTags(tp.getMessage()));
+        String string = tp.getString();
+        if (string == null) {
+            sb.append(tp.getClassName()).append(": ").append(Transform.escapeTags(tp.getMessage()));
+        } else {
+            sb.append(Transform.escapeTags(string));
+        }
         sb.append(CoreConstants.LINE_SEPARATOR);
     }
 

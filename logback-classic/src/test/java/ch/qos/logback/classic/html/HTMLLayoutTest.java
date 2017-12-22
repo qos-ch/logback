@@ -124,6 +124,27 @@ public class HTMLLayoutTest {
     }
 
     @Test
+    public void testAppendThrowableWithOverriddenToString() throws Exception {
+        StringBuilder buf = new StringBuilder();
+        DummyThrowableProxy tp = new DummyThrowableProxy();
+        tp.setString("test1: msg1 [extra]");
+
+        StackTraceElement ste1 = new StackTraceElement("c1", "m1", "f1", 1);
+        StackTraceElement ste2 = new StackTraceElement("c2", "m2", "f2", 2);
+
+        StackTraceElementProxy[] stepArray = { new StackTraceElementProxy(ste1), new StackTraceElementProxy(ste2) };
+        tp.setStackTraceElementProxyArray(stepArray);
+        DefaultThrowableRenderer renderer = (DefaultThrowableRenderer) layout.getThrowableRenderer();
+
+        renderer.render(buf, tp);
+        System.out.println(buf.toString());
+        String[] result = buf.toString().split(CoreConstants.LINE_SEPARATOR);
+        System.out.println(result[0]);
+        assertEquals("test1: msg1 [extra]", result[0]);
+        assertEquals(DefaultThrowableRenderer.TRACE_PREFIX + "at c1.m1(f1:1)", result[1]);
+    }
+
+    @Test
     public void testDoLayout() throws Exception {
         ILoggingEvent le = createLoggingEvent();
 
