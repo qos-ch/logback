@@ -61,6 +61,7 @@ public class JettyFixtureBase {
         requestLogHandler.setRequestLog(requestLogImpl);
 
         HandlerList handlers = new HandlerList();
+        handlers.addHandler(new ResponseHeaderHandler());
         handlers.addHandler(requestLogHandler);
         handlers.addHandler(getRequestHandler());
 
@@ -93,6 +94,12 @@ public class JettyFixtureBase {
 
             baseRequest.setHandled(true);
 
+        }
+    }
+
+    class ResponseHeaderHandler extends AbstractHandler {
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) {
+            response.addHeader("correlation-id", "123");
         }
     }
 }
