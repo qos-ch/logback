@@ -107,17 +107,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <type>test-jar</type>
@@ -171,36 +160,13 @@
   <build>
     <resources>
       <resource>
-        <directory>src/main/groovy</directory>
-        <includes>
-          <include>**/EvaluatorTemplate.groovy</include>
-          <include>**/*.groovy</include>
-        </includes>
-      </resource>
-      <resource>
         <directory>src/main/resources</directory>
       </resource>
     </resources>
 
     <plugins>
      
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.6</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>generateStubs</goal>
-              <goal>compile</goal>
-              <goal>generateTestStubs</goal>
-              <goal>compileTests</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
+       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -338,8 +304,6 @@
               ch.qos.logback.core.rolling.helper,
               ch.qos.logback.core.util,
               ch.qos.logback.core.read,
-              org.codehaus.groovy.*;resolution:=optional,
-              groovy.lang.*;resolution:=optional,
               *
             </Import-Package>
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>

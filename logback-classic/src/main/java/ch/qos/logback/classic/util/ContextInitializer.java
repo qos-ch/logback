@@ -21,7 +21,6 @@ import java.util.Set;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.core.LogbackException;
@@ -64,7 +63,11 @@ public class ContextInitializer {
             if (EnvUtil.isGroovyAvailable()) {
                 // avoid directly referring to GafferConfigurator so as to avoid
                 // loading groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-                GafferUtil.runGafferConfiguratorOn(loggerContext, this, url);
+                //GafferUtil.runGafferConfiguratorOn(loggerContext, this, url);
+
+                StatusManager sm = loggerContext.getStatusManager();
+                sm.add(new ErrorStatus("Groovy configuration disabled due to Java 9 compilation issues.", loggerContext));
+                
             } else {
                 StatusManager sm = loggerContext.getStatusManager();
                 sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.", loggerContext));
