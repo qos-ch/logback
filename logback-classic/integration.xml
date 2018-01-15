@@ -30,11 +30,22 @@
           unless="maven.test.skip">
 	</target>
 
-	<target name="init">
+	<target name="init" depends="copySLF4J_JAR">
 	   <echo message="in init"/>
 	   <mkdir dir="target/unit-reports" />
-    </target>
-	
+   </target>
+
+  <target name="copySLF4J_JAR">
+    <echo>Making lib/ folder in case it does not already exist.</echo>
+  	<mkdir dir="lib/"/>
+    <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
+    <!-- sneak in a clean up procedure of the ../logback-examples/lib/ folder-->
+    <delete quiet="true">
+      <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
+    </delete>
+    <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/" />
+  </target>
+
 
 	<target name="testWithoutGroovy" unless="maven.test.skip">
 		<junit printsummary="yes" fork="no" haltonfailure="yes">

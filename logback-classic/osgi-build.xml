@@ -53,7 +53,7 @@
 
   <target name="copySLF4J_JAR">
     <echo>Making lib/ folder in case it does not already exist.</echo>
-	<mkdir dir="lib/"/>
+  	<mkdir dir="lib/"/>
     <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
     <!-- sneak in a clean up procedure of the ../logback-examples/lib/ folder-->
     <delete quiet="true">
