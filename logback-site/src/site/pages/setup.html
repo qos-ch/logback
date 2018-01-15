@@ -107,49 +107,6 @@
   &lt;version>${project.version}&lt;/version>
 &lt;/dependency></pre>
 
-<!--
-
-    <h4>Maven "Bill of materials" (useful for large teams)</h4>
-
-    <p>To facilitate the synchronization of logback and slf4j modules,
-    we provide a "Bill of materials" pom file. It can be imported in
-    the <code>dependencyManagement</code> section of your parent
-    <code>pom</code> file, as shown below.
-    </p>
-
-    <pre class="prettyprint source">&lt;dependencyManagement>
-  &lt;dependencies>
-     &lt;dependency>
-       &lt;groupId>ch.qos.logback&lt;/groupId>
-       &lt;artifactId>logback-bom&lt;/artifactId>
-       &lt;version>${project.version}&lt;/version>
-       &lt;type>pom&lt;/type>
-       &lt;scope>import&lt;/scope>
-     &lt;/dependency>
-       ...
-  &lt;/dependencies>
-&lt;/dependencyManagement></pre>
-     
-    <p>Importing logback-bom as shown above allows you to declare the
-    version for logback/slf4j modules in one step and keep them in
-    sync. This can be convenient particularly in larger software
-    teams.</p>
-
-    <p>Note that you still need to declare a dependency on
-    logback-classic (or logback-access). However, you no longer will
-    have to specify the version.</p>
-    
-    <p>After logback-bom is imported, the previous dependency declaration
-    becomes:</p>
-
-   <pre class="prettyprint source">&lt;dependency>
-  &lt;groupId>ch.qos.logback&lt;/groupId>
-  &lt;artifactId>logback-classic&lt;/artifactId>
-  &lt;!-- Look mom, no version! --&gt;
-&lt;/dependency></pre>
-
- -->
-
    <h2 class="doAnchor" name="optionalDeps">Optional dependencies</h2>
 
    <h3 class="doAnchor" name="SMTP"><code>SMTPAppender</code> requires
@@ -226,11 +183,10 @@
 &lt;/dependency></pre>
 
 
+   <h2 class="doAnchor" name="ide">Building Logback with an IDE</h2>
 
-   
-    
-
-   <h2 class="doAnchor" name="ide">Building with an IDE</h2>
+   <p class="big green">As of version 1.3.0, logback requires Java 9 to build. However,
+   it can be run on Java 7 or later.</p>
    
    <p>If you wish to contribute to the project or just hack for fun,
    you will probably want to import logback as a project into your
