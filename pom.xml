@@ -345,6 +345,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <executions>
+        
+          <!-- Java 9 compilation  -->
           <execution>
             <id>default-compile</id>
             <configuration>
@@ -352,6 +354,8 @@
               <release>9</release>
             </configuration>
           </execution>
+        
+          <!-- Java targetVM compilation  -->
           <execution>
             <id>base-compile</id>
             <goals>
@@ -365,16 +369,6 @@
             </configuration>
           </execution>
         </executions>
-        <!--  defaults for compile and testCompile -->
-        <configuration>
-          <!-- Only required when JAVA_HOME isn't at least Java 9 and when haven't
-               configured the maven-toolchains-plugin 
-          <jdkToolchain>
-            <version>9</version>
-          </jdkToolchain>
-          <release>7</release>
-          -->
-        </configuration>
       </plugin>
   
  
