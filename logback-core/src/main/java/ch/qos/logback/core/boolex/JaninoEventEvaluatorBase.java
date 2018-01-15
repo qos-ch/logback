@@ -23,7 +23,7 @@ import org.codehaus.janino.ScriptEvaluator;
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
- * @param <E>
+ * @param <E> event type
  */
 abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> {
 

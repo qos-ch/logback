@@ -35,7 +35,7 @@ public class ElementPath {
 
     /**
      * Build an elementPath from a string.
-     * <p/>
+     * <p>
      * Note that "/x" is considered equivalent to "x" and to "x/"
      */
     public ElementPath(String pathStr) {

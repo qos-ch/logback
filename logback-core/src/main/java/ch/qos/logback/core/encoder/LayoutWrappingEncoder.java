@@ -26,9 +26,8 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
     /**
      * The charset to use when converting a String into bytes.
-     * <p/>
-     * By default this property has the value
-     * <code>null</null> which corresponds to
+     * <p>
+     * By default this property has the value {@code null} which corresponds to
      * the system's default charset.
      */
     private Charset charset;
@@ -51,9 +50,8 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     /**
      * Set the charset to use when converting the string returned by the layout
      * into bytes.
-     * <p/>
-     * By default this property has the value
-     * <code>null</null> which corresponds to
+     * <p>
+     * By default this property has the value {@code null} which corresponds to
      * the system's default charset.
      *
      * @param charset
@@ -148,7 +146,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * This method allows RollingPolicy implementations to be aware of their
      * containing appender.
      * 
-     * @param appender
+     * @param parent
      */
     public void setParent(Appender<?> parent) {
         this.parent = parent;

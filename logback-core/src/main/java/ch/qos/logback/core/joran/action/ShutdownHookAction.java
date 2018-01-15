@@ -22,7 +22,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * Action which handles <shutdownHook> elements in configuration files.
+ * Action which handles &lt;shutdownHook&gt; elements in configuration files.
  * 
  * @author Mike Reinhold
  */

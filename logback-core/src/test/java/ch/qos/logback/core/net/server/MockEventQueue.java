@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * A mock {@link BlockingQueue} with instrumentation for unit testing.
+ * A mock {@link LinkedBlockingQueue} with instrumentation for unit testing.
  *
  * @author Carl Harris
  */

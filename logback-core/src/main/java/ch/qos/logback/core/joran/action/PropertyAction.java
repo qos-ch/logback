@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * This class serves as a base for other actions, which similar to the ANT
- * <property> task which add/set properties of a given object.
+ * &lt;property&gt; task which add/set properties of a given object.
  * 
  * This action sets new substitution properties in the logging context by name,
  * value pair, or adds all the properties passed in "file" or "resource"

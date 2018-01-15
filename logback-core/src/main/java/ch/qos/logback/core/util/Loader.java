@@ -109,7 +109,7 @@ public class Loader {
     /**
      * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
      * under JDK 1.1 or anything else goes wrong the method returns
-     * <code>null<code>.
+     * {@code null}.
      */
     public static ClassLoader getTCL() {
         return Thread.currentThread().getContextClassLoader();

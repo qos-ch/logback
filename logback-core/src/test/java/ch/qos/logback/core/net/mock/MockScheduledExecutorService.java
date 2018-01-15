@@ -22,7 +22,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An {@link ExecutorService} with instrumentation for unit testing.
+ * An {@link ScheduledExecutorService} with instrumentation for unit testing.
  * <p>
  * This service is synchronous; submitted jobs are run on the calling thread.
  *

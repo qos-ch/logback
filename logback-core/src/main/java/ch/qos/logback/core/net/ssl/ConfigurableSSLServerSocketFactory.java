@@ -23,7 +23,7 @@ import javax.net.ssl.SSLServerSocketFactory;
 
 /**
  * An {@link SSLServerSocketFactory} that configures SSL parameters 
- * (those specified in {@link SSLParametersConfiguration) on each newly 
+ * (those specified in {@link SSLParametersConfiguration} on each newly 
  * created socket. 
  * <p>
  * When any of this factory's {@code createServerSocket} methods are invoked, 

@@ -20,7 +20,7 @@ public class AsIsEscapeUtil implements IEscapeUtil {
 
     /**
      * Do not perform any character escaping.
-     * <p/>
+     * <p>
      * Note that this method assumes that it is called after the escape character
      * has been consumed.
      */

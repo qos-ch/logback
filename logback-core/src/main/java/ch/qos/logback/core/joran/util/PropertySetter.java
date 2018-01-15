@@ -29,8 +29,8 @@ import ch.qos.logback.core.util.PropertySetterException;
 /**
  * General purpose Object property setter. Clients repeatedly invokes
  * {@link #setProperty setProperty(name,value)} in order to invoke setters on
- * the Object specified in the constructor. This class relies on the JavaBeans
- * {@link Introspector} to analyze the given Object Class using reflection.
+ * the Object specified in the constructor. This class relies on reflection
+ * to analyze the given Object Class.
  *
  * <p>
  * Usage:
@@ -44,7 +44,7 @@ import ch.qos.logback.core.util.PropertySetterException;
  *
  * will cause the invocations anObject.setName("Joe"), anObject.setAge(32), and
  * setMale(true) if such methods exist with those signatures. Otherwise an
- * {@link IntrospectionException} are thrown.
+ * {@link PropertySetterException} is thrown.
  *
  * @author Anders Kristensen
  * @author Ceki Gulcu

@@ -69,7 +69,9 @@
     <!--<jetty.version>9.2.9.v20150224</jetty.version>-->
     <compiler-plugin.version>3.7.0</compiler-plugin.version>
     <jansi.version>1.9</jansi.version>
-    <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
+
+    <!--<javadoc.plugin.version>2.10.4</javadoc.plugin.version>-->
+    <javadoc.plugin.version>3.0.0</javadoc.plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <maven-license-plugin.version>3.0</maven-license-plugin.version>
   </properties>
@@ -266,7 +268,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.6</version>
+          <version>3.7</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -277,6 +279,7 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.6</version>
+          <!--<version>3.0.2</version>-->
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -312,14 +315,14 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.15</version>
+          <version>1.16</version>
           <configuration>
             <ignores>
               <ignore>sun.reflect.Reflection</ignore>
             </ignores>
             <signature>
               <groupId>org.codehaus.mojo.signature</groupId>
-              <artifactId>java16</artifactId>
+              <artifactId>java17</artifactId>
               <version>1.0</version>
             </signature>
           </configuration>
@@ -330,16 +333,6 @@
     </pluginManagement>
 
     <plugins>
-
-<!--
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-     	    <release>9</release>
-        </configuration>
-	</plugin>
-  -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -419,7 +412,7 @@
         <artifactId>maven-site-plugin</artifactId>
         <configuration>
           <reportPlugins>
-
+            <!--
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
@@ -430,19 +423,25 @@
                 <linkJavadoc>true</linkJavadoc>
               </configuration>
             </plugin>
-            
+            -->
+
+            <!--
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.10.4</version>
               <configuration>
                 <aggregate>true</aggregate>
                 <linksource>true</linksource>
+                <additionalparam>-Xdoclint:none</additionalparam>
+                <sourceFileExcludes>
+                  <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                </sourceFileExcludes>
                 <links>
                   <link>
                     http://docs.oracle.com/javase/6/docs/api/
                   </link>
                 </links>
+                <!==
                 <groups>
                   <group>
                     <title>Logback Core</title>
@@ -461,20 +460,18 @@
                     </packages>
                   </group>
                   <group>
-                    <title>SLF4J</title>
-                    <packages>org.slf4j:org.slf4j.*</packages>
-                  </group>
-                  <group>
                     <title>Examples</title>
                     <packages>chapter*:joran*</packages>
                   </group>
-                </groups>
+                  </groups>
+                  ==>
               </configuration>
             </plugin>
-
+            -->
           </reportPlugins>
         </configuration>
-      </plugin>
+        </plugin>
+        
     </plugins>
   </build>
 
@@ -482,7 +479,7 @@
 
     <site>
       <id>qos_ch</id>
-      <url>scp://te.qos.ch/var/www/logback.qos.ch/htdocs/</url>
+      <url>scp://yvo.qos.ch/var/www/logback.qos.ch/htdocs/</url>
     </site>
 
     <repository>
@@ -492,6 +489,41 @@
 
   </distributionManagement>
 
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <aggregate>true</aggregate>
+          <linksource>true</linksource>
+          <additionalparam>-Xdoclint:none</additionalparam>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/module-info.java</sourceFileExclude>
+          </sourceFileExcludes>
+        </configuration>
+        <reportSets>
+          <reportSet><!-- by default, id = "default" -->
+            <id>default</id>
+            <inherited>false</inherited>
+            <reports><!-- select non-aggregate reports -->
+              <report>javadoc</report>             
+            </reports>
+          </reportSet>
+          <!--
+          <reportSet><!== aggregate reportSet, to define in poms having modules ==>
+            <id>aggregate</id>
+            <inherited>false</inherited><!== don't run aggregate in child modules ==>
+            <reports>
+              <report>aggregate</report>
+            </reports>
+            </reportSet>
+            -->
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  
   <profiles>
     <profile>
       <id>testSkip</id>
@@ -543,7 +575,6 @@
                 <id>attach-javadocs</id>
                 <goals>
                   <goal>jar</goal>
-                  <goal>test-jar</goal>
                 </goals>
               </execution>
             </executions>
@@ -583,8 +614,6 @@
             <artifactId>maven-site-plugin</artifactId>
             <configuration>
               <reportPlugins>
-                
-                
             
                 <plugin>
                   <groupId>org.codehaus.mojo</groupId>

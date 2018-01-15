@@ -64,7 +64,7 @@ public class ContextBase implements Context, LifeCycle {
      * Set the {@link StatusManager} for this context. Note that by default this
      * context is initialized with a {@link BasicStatusManager}. A null value for
      * the 'statusManager' argument is not allowed.
-     * <p/>
+     * 
      * <p> A malicious attacker can set the status manager to a dummy instance,
      * disabling internal error reporting.
      *

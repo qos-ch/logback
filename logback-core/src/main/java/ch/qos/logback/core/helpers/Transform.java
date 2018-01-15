@@ -31,7 +31,7 @@ public class Transform {
 
     /**
      * This method takes a string which may contain HTML tags (ie, &lt;b&gt;,
-     * &lt;table&gt;, etc) and replaces any '<','>' ... characters with
+     * &lt;table&gt;, etc) and replaces any '&lt;','&gt;' ... characters with
      * respective predefined entity references.
      * 
      * @param input
@@ -47,7 +47,7 @@ public class Transform {
 
     /**
      * This method takes a StringBuilder which may contain HTML tags (ie, &lt;b&gt;,
-     * &lt;table&gt;, etc) and replaces any '<' and '>' characters with
+     * &lt;table&gt;, etc) and replaces any '&lt;' and '&gt;' characters with
      * respective predefined entity references.
      * @param buf StringBuffer to transform
      * @return
@@ -89,11 +89,11 @@ public class Transform {
     }
 
     /**
-     * Ensures that embedded CDEnd strings (]]>) are handled properly within
+     * Ensures that embedded CDEnd strings (]]&gt;) are handled properly within
      * message, NDC and throwable tag text.
      * 
      * @param output
-     *          Writer. The initial CDSutart (<![CDATA[) and final CDEnd (]]>) of
+     *          Writer. The initial CDStart (&lt;![CDATA[) and final CDEnd (]]&gt;) of
      *          the CDATA section are the responsibility of the calling method.
      * 
      * @param str

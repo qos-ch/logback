@@ -30,8 +30,8 @@ import ch.qos.logback.core.util.ContextUtil;
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
  * log files depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
- * <p/>
- * <p/>
+ * 
+ * <p>
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#RollingFileAppender
  *

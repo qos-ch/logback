@@ -25,11 +25,11 @@ import java.util.concurrent.BlockingQueue;
  * This appender and derived classes, log events asynchronously.  In order to avoid loss of logging events, this
  * appender should be closed. It is the user's  responsibility to close appenders, typically at the end of the
  * application lifecycle.
- * <p/>
+ * <p>
  * This appender buffers events in a {@link BlockingQueue}. {@link Worker} thread created by this appender takes
  * events from the head of the queue, and dispatches them to the single appender attached to this appender.
- * <p/>
- * <p>Please refer to the <a href="http://logback.qos.ch/manual/appenders.html#AsyncAppender">logback manual</a> for
+ * <p>
+ * Please refer to the <a href="http://logback.qos.ch/manual/appenders.html#AsyncAppender">logback manual</a> for
  * further information about this appender.</p>
  *
  * @param <E>
@@ -67,8 +67,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     /**
      * Is the eventObject passed as parameter discardable? The base class's implementation of this method always returns
      * 'false' but sub-classes may (and do) override this method.
-     * <p/>
-     * <p>Note that only if the buffer is nearly full are events discarded. Otherwise, when the buffer is "not full"
+     * <p>
+     * Note that only if the buffer is nearly full are events discarded. Otherwise, when the buffer is "not full"
      * all events are logged.
      *
      * @param eventObject
@@ -234,9 +234,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     /**
      * The remaining capacity available in the blocking queue.
+     * <p>
+     * See also {@link java.util.concurrent.BlockingQueue#remainingCapacity() BlockingQueue#remainingCapacity()}
      *
      * @return the remaining capacity
-     * @see {@link java.util.concurrent.BlockingQueue#remainingCapacity()}
+     * 
      */
     public int getRemainingCapacity() {
         return blockingQueue.remainingCapacity();

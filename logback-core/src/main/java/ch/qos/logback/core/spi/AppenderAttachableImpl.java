@@ -66,7 +66,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
     /**
      * Look for an attached appender named as <code>name</code>.
-     * <p/>
+     * 
      * <p> Return the appender with that name if in the list. Return null
      * otherwise.
      */

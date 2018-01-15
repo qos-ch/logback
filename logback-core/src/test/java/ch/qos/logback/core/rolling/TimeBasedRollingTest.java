@@ -30,11 +30,11 @@ import ch.qos.logback.core.util.StatusPrinter;
  * A rather exhaustive set of tests. Tests include leaving the file option
  * blank, or setting it, with and without compression, and tests with or without
  * stopping/restarting the RollingFileAppender.
- * <p/>
+ * <p>
  * The regression tests log a few times using a RollingFileAppender. Then, they
  * predict the names of the files which should be generated and compare them
  * with witness files.
- * <p/>
+ * <p>
  * <pre>
  *                Compression     file option    Stop/Restart
  *     Test1      NO              BLANK           NO

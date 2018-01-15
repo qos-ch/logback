@@ -78,7 +78,6 @@ public class Parser<E> extends ContextAwareBase {
      * @param top
      * @param converterMap
      * @return
-     * @throws ScanException
      */
     public Converter<E> compile(final Node top, Map converterMap) {
         Compiler<E> compiler = new Compiler<E>(top, converterMap);

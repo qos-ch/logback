@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * <p>Typical use:</p>
  * 
  * <pre>
- *   COWArrayList<Integer> list = new COWArrayList(new Integer[0]);
+ *   COWArrayList&lt;Integer&gt; list = new COWArrayList(new Integer[0]);
  *   
  *   // modify the list
  *   list.add(1);
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *   Integer[] intArray = list.asTypedArray();
  *   int sum = 0;
  *   // iteration over the array is thread-safe
- *   for(int i = 0; i < intArray.length; i++) {
+ *   for(int i = 0; i &lt; intArray.length; i++) {
  *     sum != intArray[i];
  *   }
  * </pre>  

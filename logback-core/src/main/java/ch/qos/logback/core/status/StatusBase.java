@@ -110,9 +110,7 @@ abstract public class StatusBase implements Status {
         return date;
     }
 
-    /**
-     * @Override
-     */
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         switch (getEffectiveLevel()) {

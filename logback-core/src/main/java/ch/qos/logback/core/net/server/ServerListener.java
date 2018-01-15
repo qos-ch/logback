@@ -30,7 +30,7 @@ import java.io.IOException;
  * {@code ServerRunner} cares about; namely, that it is something that has
  * an underlying resource (or resources) that need to be closed before the
  * listener is discarded.
- * </ol>
+ * 
  */
 public interface ServerListener<T extends Client> extends Closeable {
 
