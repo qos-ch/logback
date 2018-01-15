@@ -253,7 +253,7 @@
         <configuration>
           <!-- once, never, pertest, always -->
           <!--<forkMode>once</forkMode>-->
-          <forkCount>2C</forkCount>
+          <forkCount>3C</forkCount>
           <reuseForks>false</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>

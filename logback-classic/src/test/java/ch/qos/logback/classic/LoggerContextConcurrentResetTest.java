@@ -2,12 +2,14 @@ package ch.qos.logback.classic;
 
 import java.util.concurrent.CyclicBarrier;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.testUtil.StatusChecker;
 
+@Ignore
 public class LoggerContextConcurrentResetTest {
     static int CONCURRENT_RESET_THREAD_COUNT = 10;
 
