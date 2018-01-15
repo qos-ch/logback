@@ -76,7 +76,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("78", buf.toString());
+            assertEquals("77", buf.toString());
         }
     }
 

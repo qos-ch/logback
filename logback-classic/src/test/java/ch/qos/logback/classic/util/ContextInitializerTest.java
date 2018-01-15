@@ -152,17 +152,17 @@ public class ContextInitializerTest {
         assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
     }
 
-    @Test
-    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
-        LoggerContext loggerContext = new LoggerContext();
-        ContextInitializer initializer = new ContextInitializer(loggerContext);
-        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-
-        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
-        initializer.configureByResource(configurationFileUrl);
-
-        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-    }
+//    @Test
+//    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
+//        LoggerContext loggerContext = new LoggerContext();
+//        ContextInitializer initializer = new ContextInitializer(loggerContext);
+//        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+//
+//        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
+//        initializer.configureByResource(configurationFileUrl);
+//
+//        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+//    }
 
     @Test
     public void shouldThrowExceptionIfUnexpectedConfigurationFileExtension() throws JoranException {
