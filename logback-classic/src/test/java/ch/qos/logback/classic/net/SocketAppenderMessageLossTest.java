@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Logger;
@@ -28,6 +29,7 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.Duration;
 
+@Ignore
 public class SocketAppenderMessageLossTest {
     int runLen = 100;
     Duration reconnectionDelay = new Duration(1000);

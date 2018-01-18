@@ -1,0 +1,14 @@
+module ch.qos.logback.access { 
+  requires ch.qos.logback.core;
+  
+  requires javax.servlet.api;
+  requires static java.management;
+  
+  requires static jetty.server;
+  
+  requires static tomcat.coyote;
+  requires static tomcat.catalina;
+  
+  
+}
+
