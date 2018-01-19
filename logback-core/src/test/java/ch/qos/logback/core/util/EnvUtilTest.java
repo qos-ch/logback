@@ -40,6 +40,7 @@ public class EnvUtilTest {
         assertEquals(5, EnvUtil.getJDKVersion("1.5.xx"));
         assertEquals(5, EnvUtil.getJDKVersion("1.5AA"));
         assertEquals(9, EnvUtil.getJDKVersion("9EA"));
+        assertEquals(9, EnvUtil.getJDKVersion("9.0.1"));
         assertEquals(18, EnvUtil.getJDKVersion("18.3+xx"));
     }
 
