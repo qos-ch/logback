@@ -31,7 +31,7 @@ public class CoreConstants {
     // This causes tests failures in SocketReceiverTest.testDispatchEventForEnabledLevel and
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
     // We thus set a pool size > 0 for tests to pass.
-    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 8;
+    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 1;
 
     
     /**

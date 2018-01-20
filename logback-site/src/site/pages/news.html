@@ -30,10 +30,11 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+    
     <hr width="80%" align="center" />
 
-    <h3>January 18th, 2018, Release of version 1.3.0-alpha0</h3>
-    
+    <h3>, 2018, Release of version 1.3.0-alpha1</h3>
+
     <p class="highlight">The 1.3.x series requires Java&nbsp;7 at
     <b>runtime</b>.</p>
 
@@ -44,21 +45,38 @@
     slf4j-api version 1.8.x.</p>
    
     <p>The 1.3.x series requires Java&nbsp;7 at <b>runtime</b>
-
    
     <p>Building logback from source requires Java&nbsp;9.</p>
-   
 
     <p>Given that all currently available versions of Groovy are
     incompatible with Java 9, at least when built with Maven, we have
     momentarily <b>dropped support for Groovy configuration</b>, a.k.a
     Gaffer. </p>
 
+    <p>Logback's internal <code>ThreadPoolExecutor</code> now has an
+    initial pool of 1 thread instead of 8 previously.</p>
+
+    
+    <hr width="80%" align="center" />
+
+    <h3>January 18th, 2018, Release of version 1.3.0-alpha0</h3>
+    
+   
     <p>Added support for minimum length in %i filename pattern. This
     fixes <a
     href="https://jira.qos.ch/browse/LOGBACK-1248">LOGBACK-1248</a>
     with John Gardiner Myers providing the relevant patch.</p>
-    
+
+    <p>Correct parsing of <code>java.version</code> system property
+    for Java 9 and later. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1260">LOGBACK-1260</a>
+    with Patrick Reinhart providing the relevant patch.
+    </p>
+
+    <p>ConsoleAppender now works with consoles confused by output
+    strings of zero length, e.g.  Java Web Start. This fixes issue <a
+    href="https://jira.qos.ch/browse/LOGBACK-1282">LOGBACK-1282</a>
+    reported by Clas Forsberg.</p>
     
     <hr width="80%" align="center" />
 
