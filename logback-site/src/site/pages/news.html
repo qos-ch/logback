@@ -56,6 +56,11 @@
     <p>Logback's internal <code>ThreadPoolExecutor</code> now has an
     initial pool of 1 thread instead of 8 previously.</p>
 
+    <p>Remove "final" modifier for the
+    <code>LoggerContext.getLogger(String)</code> method. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1308">LOGBACK-1308</a>
+    reported by Richard Sand.</p>
+    
     
     <hr width="80%" align="center" />
 
