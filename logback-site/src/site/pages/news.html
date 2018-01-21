@@ -51,12 +51,14 @@
     <p>Given that all currently available versions of Groovy are
     incompatible with Java 9, at least when built with Maven, we have
     momentarily <b>dropped support for Groovy configuration</b>, a.k.a
-    Gaffer. </p>
+    Gaffer. For details refer to <a
+    href="http://markmail.org/thread/nekeppbvwrfl7hbb#query:+page:1+mid:obdyvuv24kqpxm6v+state:results">this
+    thread</a>.</p>
 
     <p>Logback's internal <code>ThreadPoolExecutor</code> now has an
     initial pool of 1 thread instead of 8 previously.</p>
 
-    <p>Remove "final" modifier for the
+    <p>Removed "final" modifier for the
     <code>LoggerContext.getLogger(String)</code> method. This fixes <a
     href="https://jira.qos.ch/browse/LOGBACK-1308">LOGBACK-1308</a>
     reported by Richard Sand.</p>
