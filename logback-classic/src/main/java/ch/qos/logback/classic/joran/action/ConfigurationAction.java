@@ -38,6 +38,7 @@ public class ConfigurationAction extends Action {
     static final String PACKAGING_DATA_ATTR = "packagingData";
     static final String SCAN_ATTR = "scan";
     static final String SCAN_PERIOD_ATTR = "scanPeriod";
+    static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
     static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
 
     long threshold = 0;
@@ -132,6 +133,8 @@ public class ConfigurationAction extends Action {
             } catch (NumberFormatException nfe) {
                 addError("Error while converting [" + scanAttrib + "] to long", nfe);
             }
+        } else {
+            duration = SCAN_PERIOD_DEFAULT;
         }
         return duration;
     }
