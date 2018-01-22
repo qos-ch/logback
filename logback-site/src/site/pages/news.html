@@ -58,6 +58,13 @@
     <p>Logback's internal <code>ThreadPoolExecutor</code> now has an
     initial pool of 1 thread instead of 8 previously.</p>
 
+    <p>The <span class="option">scanPeriod</span> attribute in
+    configuration file defaults to 1 minute. The documentation stated
+    as much but the code had not followed through. This issue was
+    reported in <a
+    href="https://jira.qos.ch/browse/LOGBACK-1194">LOGBACK-1194</a>
+    with F. Buehler providing the appropriate patch.</p>
+    
     <p>Removed "final" modifier for the
     <code>LoggerContext.getLogger(String)</code> method. This fixes <a
     href="https://jira.qos.ch/browse/LOGBACK-1308">LOGBACK-1308</a>

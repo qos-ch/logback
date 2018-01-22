@@ -19,6 +19,7 @@ import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.FALLING_BACK_
 import static ch.qos.logback.classic.joran.ReconfigureOnChangeTask.RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION;
 import static ch.qos.logback.core.CoreConstants.RECONFIGURE_ON_CHANGE_TASK;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -74,6 +75,8 @@ public class ReconfigureOnChangeTaskTest {
     final static String INCLUSION_SCAN_INNER0_AS_STR = JORAN_INPUT_PREFIX + "roct/inclusion/inner0.xml";
 
     final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
+
+    private static final String SCAN_PERIOD_DEFAULT_FILE_AS_STR =  JORAN_INPUT_PREFIX + "roct/scan_period_default.xml";
 
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
@@ -309,6 +312,16 @@ public class ReconfigureOnChangeTaskTest {
         return rArray;
     }
 
+    @Test
+    public void checkReconfigureTaskScheduledWhenDefaultScanPeriodUsed() throws JoranException {
+        File file = new File(SCAN_PERIOD_DEFAULT_FILE_AS_STR);
+        configure(file);
+
+        final List<ScheduledFuture<?>> scheduledFutures = loggerContext.getScheduledFutures();
+        assertFalse(scheduledFutures.isEmpty());
+        StatusPrinter.print(loggerContext);
+}
+    
     // check for deadlocks
     @Test(timeout = 4000L)
     public void scan_LOGBACK_474() throws JoranException, IOException, InterruptedException {

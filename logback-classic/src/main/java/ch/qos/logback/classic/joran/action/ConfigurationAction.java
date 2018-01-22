@@ -39,7 +39,8 @@ public class ConfigurationAction extends Action {
     static final String SCAN_ATTR = "scan";
     static final String SCAN_PERIOD_ATTR = "scanPeriod";
     static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
-
+    static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
+    
     long threshold = 0;
 
     public void begin(InterpretationContext ic, String name, Attributes attributes) {
@@ -103,11 +104,7 @@ public class ConfigurationAction extends Action {
             context.putObject(CoreConstants.RECONFIGURE_ON_CHANGE_TASK, rocTask);
 
             String scanPeriodAttrib = ic.subst(attributes.getValue(SCAN_PERIOD_ATTR));
-            Duration duration = getDuration(scanAttrib, scanPeriodAttrib);
-
-            if (duration == null) {
-                return;
-            }
+            Duration duration = getDurationOfScanPeriodAttribute(scanPeriodAttrib, SCAN_PERIOD_DEFAULT);
 
             addInfo("Will scan for changes in [" + mainURL + "] ");
             // Given that included files are encountered at a later phase, the complete list of files 
@@ -122,16 +119,21 @@ public class ConfigurationAction extends Action {
         }
     }
 
-    private Duration getDuration(String scanAttrib, String scanPeriodAttrib) {
+    private Duration getDurationOfScanPeriodAttribute(String scanPeriodAttrib, Duration defaultDuration) {
         Duration duration = null;
 
         if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
             try {
                 duration = Duration.valueOf(scanPeriodAttrib);
-
-            } catch (NumberFormatException nfe) {
-                addError("Error while converting [" + scanAttrib + "] to long", nfe);
+            } catch(IllegalStateException|IllegalArgumentException e) {
+               addWarn("Failed to parse 'scanPeriod' attribute ["+scanPeriodAttrib+"]", e);
+                // default duration will be set below
             }
+        }
+        
+        if(duration == null) {
+            addInfo("No 'scanPeriod' specified. Defaulting to " + defaultDuration.toString());
+            duration = defaultDuration;
         }
         return duration;
     }
