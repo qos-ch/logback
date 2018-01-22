@@ -77,7 +77,7 @@ public class ReconfigureOnChangeTaskTest {
     final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
 
     private static final String SCAN_PERIOD_DEFAULT_FILE_AS_STR =  JORAN_INPUT_PREFIX + "roct/scan_period_default.xml";
-
+    
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
     StatusChecker statusChecker = new StatusChecker(loggerContext);
@@ -318,10 +318,12 @@ public class ReconfigureOnChangeTaskTest {
         configure(file);
 
         final List<ScheduledFuture<?>> scheduledFutures = loggerContext.getScheduledFutures();
-        assertFalse(scheduledFutures.isEmpty());
         StatusPrinter.print(loggerContext);
-}
-    
+        assertFalse(scheduledFutures.isEmpty());
+        statusChecker.containsMatch("No 'scanPeriod' specified. Defaulting to");
+   
+    }
+
     // check for deadlocks
     @Test(timeout = 4000L)
     public void scan_LOGBACK_474() throws JoranException, IOException, InterruptedException {

@@ -506,42 +506,20 @@ public static void main(String[] args) {
    do not forget to specify a time unit.
    </p>
 
-   <p>Behind the scenes, when you set the scan attribute to true, a
-   <code>TurboFilter</code> called <a
-   href="../xref/ch/qos/logback/classic/turbo/ReconfigureOnChangeFilter.html">ReconfigureOnChangeFilter</a>
-   will be installed. TurboFilters are described in a <a
-   href="filters.html#TurboFilter">later chapter</a>. As a
-   consequence, scanning is done "in-thread", that is any time a
-   printing method of logger is invoked. For example, for a logger
-   named <code>myLogger</code>, when you write
-   "myLogger.debug("hello");", and if the scan attribute is set to
-   true, then <code>ReconfigureOnChangeFilter</code> will be
-   invoked. Moreover, the said filter will be invoked even if
-   <code>myLogger</code> is disabled for the DEBUG level.
-   </p>
+   <p>Behind the scenes, when you set the <span
+   class="option">scan</span> attribute to <code>true</code>, a <a
+   href="../xref/ch/qos/logback/classic/joran/ReconfigureOnChangeTask.html"><code>ReconfigureOnChangeTask</code></a>
+   will be installed. This task run in a separate thread and will
+   check whether your configuration file has
+   changed. <code>ReconfigureOnChangeTask</code> will automatically
+   watch for any <a href="#fileInclusion">included</a> files as
+   well.</p>
 
-   <p class="highlight">When a configuration file changes, it will be
-   automatically reloaded but only after several logger invocations
-   and after a delay determined by the scanning period.
-   </p>
+   <p>As it is easy to make errors while editing a configuration file,
+   in case the latest version of the configuration file has XML syntax
+   errors, it will fall back to a previous configuration file free of
+   XML syntax errors.</p>
 
-   <p>Given that <code>ReconfigureOnChangeFilter</code> is invoked
-   every time <em>any</em> logger is invoked, regardless of logger
-   level, <code>ReconfigureOnChangeFilter</code> is absolutely
-   performance critical. So much so that in fact, the check whether
-   the scan period has elapsed or not, is too costly in itself. In
-   order to improve performance,
-   <code>ReconfigureOnChangeFilter</code> is in reality "alive" only
-   once every <em>N</em> logging operations.  Depending on how often
-   your application logs, the value of <em>N</em> can be modified on
-   the fly by logback. By default N is 16, although it can go as high
-   as 2^16 (=&nbsp;65536) for CPU-intensive applications.
-   </p>
-   
-   <p>In short, when a configuration file changes, it will be
-   automatically reloaded but only after several logger invocations
-   <em>and</em> after a delay determined by the scanning period.
-   </p>
 
    
    <h4 class="doAnchor" name="packagingData">Enabling packaging data in stack traces</h4>
