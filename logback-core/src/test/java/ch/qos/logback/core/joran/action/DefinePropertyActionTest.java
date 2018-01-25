@@ -13,20 +13,22 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
 
-import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.SimpleConfigurator;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.Status;
@@ -100,6 +102,14 @@ public class DefinePropertyActionTest {
         assertNull(inContextFoo);
         // check context errors
         checker.assertContainsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
+    }
+
+    @Ignore // on certain hosts this test takes 5 seconds to complete
+    @Test
+    public void canonicalHostNameProperty() throws JoranException {
+        String configFileAsStr = DEFINE_INPUT_DIR + "canonicalHostname.xml";
+        simpleConfigurator.doConfigure(configFileAsStr);
+        assertNotNull(context.getProperty("CANONICAL_HOST_NAME"));
     }
 
 }

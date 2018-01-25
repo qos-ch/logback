@@ -14,8 +14,8 @@
 package ch.qos.logback.core;
 
 import static ch.qos.logback.core.CoreConstants.CONTEXT_NAME_KEY;
-import static ch.qos.logback.core.CoreConstants.HOSTNAME_KEY;
 import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
+import static ch.qos.logback.core.CoreConstants.HOSTNAME_KEY;
 import static ch.qos.logback.core.CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP;
 
 import java.util.ArrayList;
@@ -30,8 +30,8 @@ import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.ExecutorServiceUtil;
+import ch.qos.logback.core.util.NetworkAddressUtil;
 
 public class ContextBase implements Context, LifeCycle {
 
@@ -115,7 +115,7 @@ public class ContextBase implements Context, LifeCycle {
     private String lazyGetHostname() {
         String hostname = (String) this.propertyMap.get(HOSTNAME_KEY);
         if (hostname == null) {
-            hostname = new ContextUtil(this).safelyGetLocalHostName();
+            hostname = new NetworkAddressUtil(this).safelyGetLocalHostName();
             putHostnameProperty(hostname);
         }
         return hostname;

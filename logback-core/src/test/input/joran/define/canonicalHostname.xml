@@ -1,0 +1,1 @@
+<define  name="CANONICAL_HOST_NAME" class="ch.qos.logback.core.property.CanonicalHostNamePropertyDefiner" scope="context"/>
