@@ -55,6 +55,14 @@
     href="http://markmail.org/thread/nekeppbvwrfl7hbb#query:+page:1+mid:obdyvuv24kqpxm6v+state:results">this
     thread</a>.</p>
 
+    <p>In the absence of a <span class="attr">class</span> attribute,
+    the <code>shutdownHook</code> configuration directive now
+    correctly assumes
+    <code>ch.qos.logback.core.hook.DefaultShutdownHook</code>
+    class. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1162">LOGBACK-1162</a>
+    reported by Alex Selesse .
+    
     <p>Logback's internal <code>ThreadPoolExecutor</code> now has an
     initial pool of 1 thread instead of 8 previously.</p>
 

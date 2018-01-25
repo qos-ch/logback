@@ -763,8 +763,8 @@ public class MyApp3 {
    <p>In order to release the resources used by logback-classic, it is
    always a good idea to stop the logback context. Stopping the
    context will close all appenders attached to loggers defined by the
-   context and stop any active threads.
-   </p>
+   context and stop any active threads in an orderly way. Please also
+   read the section on "shutdown hooks" just below.</p>
 
 <pre class="prettyprint lang-java source">
 import org.sflf4j.LoggerFactory;
@@ -788,25 +788,37 @@ import ch.qos.logback.classic.LoggerContext;
    via a shutdown hook</h4>
    
    <p>Installing a JVM shutdown hook is a convenient way for shutting
-   down logback and releasing associated resources.
+   down logback and releasing associated resources. 
    </p>
 
 
    <pre class="prettyprint source">&lt;configuration debug="true">
    &lt;!-- in the absence of the class attribute, assume 
-   ch.qos.logback.core.hook.DelayingShutdownHook --&gt;
+   ch.qos.logback.core.hook.DefaultShutdownHook --&gt;
    <b>&lt;shutdownHook/></b>
   .... 
 &lt;/configuration></pre>
-   
-   <p>The default shutdown hook, namely <a
-   href="../apidocs/ch/qos/logback/core/hook/DelayingShutdownHook.html">DelayingShutdownHook</a>,
-   can delay shutdown by a user specified duration. Note that you may
-   install a shutdown hook of your own making by setting the <span
-   class="attr">class</span> attribute to correspond to your shutdown
-   hook's class name.</p>
 
-    <h4 class="doAnchor" name="webShutdownHook">Stopping logback-classic 
+   <p>Note that you may install a shutdown hook of your own making by
+   setting the <span class="attr">class</span> attribute to correspond
+   to your shutdown hook's class name.</p>
+  
+   <p>The default shutdown hook, namely <a
+   href="../apidocs/ch/qos/logback/core/hook/DefaultShutdownHook.html">DefaultShutdownHook</a>,
+   will <b>stop</b> the logback context after a specified delay (0 by
+   default). Stopping the context will allow up to 30 seconds for any
+   log file compression tasks running in the background to finish. In
+   standalone Java applications, adding a
+   <code>&lt;shutdownHook/></code> directive to your configuration
+   file is an easy way to ensure that any ongoing compression tasks
+   are allowed to finish before JVM exit. In applications within a Web
+   server, <a href="#webShutdownHook">webShutdownHook</a> will be
+   installed automatically making <code>&lt;shutdownHook/></code>
+   directive quite redundant and unnecessary. </p>
+
+
+ 
+    <h4 class="doAnchor" name="webShutdownHook">WebShutdownHook or stopping logback-classic 
    in web-applications</h4>
   
    <p><span class="label">since 1.1.10</span> Logback-classic will

@@ -440,4 +440,13 @@ public class JoranConfiguratorTest {
         configure(configFileAsStr);
         checker.assertIsWarningOrErrorFree();
     }
+    
+    @Test
+    public void shutdownHookTest() throws JoranException {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1162.xml";
+        loggerContext.putProperty("output_dir", ClassicTestConstants.OUTPUT_DIR_PREFIX+"logback_issue_1162/");
+        configure(configFileAsStr);
+        assertNotNull(loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD));
+    }
+
 }
