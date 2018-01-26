@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true">
+    <timestamp key="bySecond" datePattern="HHmmss"/>
+    <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${output_dir}/log_${bySecond}_current.txt</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${output_dir}/log_${bySecond}_archive_%d{HHmmss}.%i.txt</fileNamePattern>
+            <maxFileSize>50KB</maxFileSize>
+            <maxHistory>5</maxHistory>
+            <totalSizeCap>500KB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS}  %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="ROLLING" />
+    </root>
+    
+    <shutdownHook/>
+</configuration>
