@@ -935,16 +935,116 @@ public class SampleTurboFilter extends TurboFilter {
 		class="option">OnMatch</span> option is set to <em>DENY</em>.
 		Thus, the 6th request was not displayed.
 		</p>
-		
 
 
-		  
+
+
+        <h3 class="doAnchor"
+            name="DuplicateMessageFilter">DuplicateMessageFilter</h3>
+
+        <p>The <code>DuplicateMessageFilter</code> merits a separate
+            presentation.  This filter detects duplicate messages, and beyond
+            a certain number of repetitions, drops repeated messages.
+        </p>
+
+        <p>To detect repetition, this filter uses simple String equality
+            between messages. It does not detect messages which are very
+            similar, varying only by few characters. For example, if you
+            write:
+        </p>
+
+        <pre class="prettyprint source">logger.debug("Hello "+name0);
+logger.debug("Hello "+name1);</pre>
+
+        <p>Assuming <code>name0</code> and <code>name1</code> have
+            different values, the two "Hello" messages will be considered as
+            unrelated. Depending on user demand, future releases may check for
+            string similarity, eliminating repetitions of similar but not
+            identical messages.
+        </p>
+
+        <p>Note that in case of parameterized logging, only the raw
+            message is taken into consideration. For example, in the next two
+            requests, the raw messages, i.e. "Hello {}.", are identical, and
+            thus considered as repetitions.
+        </p>
+
+        <pre class="prettyprint source">logger.debug("Hello {}.", name0);
+logger.debug("Hello {}.", name1);</pre>
+
+        <p>The number of allowed repetitions can be specified by the <span
+                class="option">AllowedRepetitions</span> property. For example, if
+            the property is set to 1, then the 2nd and subsequent
+            occurrences of the same message will be dropped. Similarly, if the
+            property is set to 2, then the 3rd and subsequent occurrences
+            of the same message will be dropped. By default, the <span
+                    class="option">AllowedRepetitions</span> property is set to 5.
+        </p>
+
+        <p>In order to detect repetitions, this filter needs to keep
+            references to old messages in an internal cache. The size of this
+            cache is determined by the <span class="option">CacheSize</span>
+            property. By the default, this is set to 100.
+        </p>
+
+
+        <em>Example: <code>DuplicateMessageFilter</code>
+            configuration (logback-examples/src/main/resources/chapters/filters/duplicateMessage.xml)</em>
+
+        <span class="asGroovy" onclick="return asGroovy('duplicateMessage');">View as .groovy</span>
+        <pre id="duplicateMessage" class="prettyprint source">&lt;configuration>
+
+  <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
+
+  &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    &lt;encoder>
+      &lt;pattern>%date [%thread] %-5level %logger - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="INFO">
+    &lt;appender-ref ref="console" />
+  &lt;/root>
+&lt;/configuration></pre>
+
+        <p>Thus, the output for <code>FilterEvents</code> application
+            configured with <em>duplicateMessage.xml</em> is:
+        </p>
+
+        <p class="source">2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 0
+            2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 1
+            2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 2
+            2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 4
+            2008-12-19 15:04:26,156 [main] INFO  chapters.filters.FilterEvents - logging statement 5
+            2008-12-19 15:04:26,171 [main] ERROR chapters.filters.FilterEvents - billing statement 6</p>
+
+        <p>"logging statement 0" is the first <em>occurrence</em> of the
+            message "logging statement {}". "logging statement 1" is the first
+            <em>repetition</em>, "logging statement 2" is the second
+            repetition. Interestingly enough, "logging statement 3" of level
+            DEBUG, is the <em>third</em> repetition, even though it is later
+            dropped by virtue of the <a
+                    href="architecture.html#basic_selection">basic selection
+                rule</a>. This can be explained by the fact that turbo filters are
+            invoked before other types of filters, including the basic
+            selection rule. Thus, <code>DuplicateMessageFilter</code>
+            considers "logging statement 3" as a repetition, oblivious to the
+            fact that it will be dropped further down in the processing
+            chain. "logging statement 4" is the fourth repetition and "logging
+            statement 5" the fifth. Statements 6 and beyond are dropped
+            because only 5 repetitions are allowed by default.
+        </p>
+
+
+
+
     <h3 class="doAnchor"
-    name="DuplicateMessageFilter">DuplicateMessageFilter</h3>
+    name="TimedDuplicateMessageFilter">TimedDuplicateMessageFilter</h3>
 
-    <p>The <code>DuplicateMessageFilter</code> merits a separate
+    <p>The <code>TimedDuplicateMessageFilter</code> merits a separate
     presentation.  This filter detects duplicate messages, and beyond
-    a certain number of repetitions, drops repeated messages.
+    a certain number of repetitions, drops repeated messages until they
+    do not appear for a while.
     </p>
 
     <p>To detect repetition, this filter uses simple String equality
@@ -987,14 +1087,21 @@ logger.debug("Hello {}.", name1);</pre>
     property. By the default, this is set to 100.
     </p>
 
-    
-    <em>Example: <code>DuplicateMessageFilter</code> 
-    configuration (logback-examples/src/main/resources/chapters/filters/duplicateMessage.xml)</em>
+    <p>The time until messages are not dropped anymore can be specified
+    by the <span class="option">SuppressionTimeMs</span> property. For
+    example, if the property is set to 10000 (ms), then all subsequent
+    occurrences of the same message within the next 10s will be dropped.
+    By default, the <span class="option">SuppressionTimeMs</span> property
+    is set to 60000 (ms).
+    </p>
+
+    <em>Example: <code>TimedDuplicateMessageFilter</code>
+    configuration (logback-examples/src/main/resources/chapters/filters/timedDuplicateMessage.xml)</em>
 
     <span class="asGroovy" onclick="return asGroovy('duplicateMessage');">View as .groovy</span>
     <pre id="duplicateMessage" class="prettyprint source">&lt;configuration>
 
-  <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/></b>
+  <b>&lt;turboFilter class="ch.qos.logback.classic.turbo.TimedDuplicateMessageFilter"/></b>
 
   &lt;appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     &lt;encoder>
@@ -1027,7 +1134,7 @@ logger.debug("Hello {}.", name1);</pre>
     href="architecture.html#basic_selection">basic selection
     rule</a>. This can be explained by the fact that turbo filters are
     invoked before other types of filters, including the basic
-    selection rule. Thus, <code>DuplicateMessageFilter</code>
+    selection rule. Thus, <code>TimedDuplicateMessageFilter</code>
     considers "logging statement 3" as a repetition, oblivious to the
     fact that it will be dropped further down in the processing
     chain. "logging statement 4" is the fourth repetition and "logging
