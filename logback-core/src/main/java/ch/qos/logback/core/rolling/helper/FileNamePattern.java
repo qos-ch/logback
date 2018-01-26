@@ -31,9 +31,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * After parsing file name patterns, given a number or a date, instances of this
  * class can be used to compute a file name according to the file name pattern
  * and the current date or integer.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class FileNamePattern extends ContextAwareBase {
 
@@ -54,7 +54,7 @@ public class FileNamePattern extends ContextAwareBase {
         ConverterUtil.startConverters(this.headTokenConverter);
     }
 
-    
+
     void parse() {
         try {
             // http://jira.qos.ch/browse/LOGBACK-197
@@ -141,7 +141,7 @@ public class FileNamePattern extends ContextAwareBase {
         IntegerTokenConverter itc = getIntegerTokenConverter();
         return itc != null;
     }
-    
+
     public String convertMultipleArguments(Object... objectList) {
         StringBuilder buf = new StringBuilder();
         Converter<Object> c = headTokenConverter;
@@ -199,7 +199,7 @@ public class FileNamePattern extends ContextAwareBase {
             if (p instanceof LiteralConverter) {
                 buf.append(p.convert(null));
             } else if (p instanceof IntegerTokenConverter) {
-                buf.append("(\\d{1,3})");
+                buf.append("(\\d+?)");
             } else if (p instanceof DateTokenConverter) {
                 buf.append(p.convert(date));
             }
@@ -218,7 +218,7 @@ public class FileNamePattern extends ContextAwareBase {
             if (p instanceof LiteralConverter) {
                 buf.append(p.convert(null));
             } else if (p instanceof IntegerTokenConverter) {
-                buf.append("\\d{1,2}");
+                buf.append("\\d+?");
             } else if (p instanceof DateTokenConverter) {
                 DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
                 buf.append(dtc.toRegex());
