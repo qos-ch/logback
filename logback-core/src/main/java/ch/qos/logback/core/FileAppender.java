@@ -156,18 +156,18 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             return false;
         }
         @SuppressWarnings("unchecked")
-        Map<String, String> map = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
-        if (map == null) {
+        Map<String, String> previousFilesMap = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        if (previousFilesMap == null) {
             return collisionsDetected;
         }
-        for (Entry<String, String> entry : map.entrySet()) {
+        for (Entry<String, String> entry : previousFilesMap.entrySet()) {
             if (fileName.equals(entry.getValue())) {
                 addErrorForCollision("File", entry.getValue(), entry.getKey());
                 collisionsDetected = true;
             }
         }
         if (name != null) {
-            map.put(getName(), fileName);
+            previousFilesMap.put(getName(), fileName);
         }
         return collisionsDetected;
     }

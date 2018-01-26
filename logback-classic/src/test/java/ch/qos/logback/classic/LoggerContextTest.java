@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic;
 
+import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -246,10 +247,10 @@ public class LoggerContextTest {
     public void collisionMapsPostReset() {
         lc.reset();
 
-        Map<String, String> fileCollisions = (Map<String, String>) lc.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        Map<String, String> fileCollisions = (Map<String, String>) lc.getObject(FA_FILENAME_COLLISION_MAP);
         assertNotNull(fileCollisions);
         assertTrue(fileCollisions.isEmpty());
-
+        
         Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         assertNotNull(filenamePatternCollisionMap);
         assertTrue(filenamePatternCollisionMap.isEmpty());
