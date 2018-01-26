@@ -17,6 +17,7 @@ import ch.qos.logback.core.CoreConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
 
 public class ThrowableProxy implements IThrowableProxy {
 
@@ -54,7 +55,7 @@ public class ThrowableProxy implements IThrowableProxy {
         this.message = throwable.getMessage();
         this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
 
-        Throwable nested = throwable.getCause();
+        Throwable nested = getNested(throwable);
 
         if (nested != null) {
             this.cause = new ThrowableProxy(nested);
@@ -82,6 +83,16 @@ public class ThrowableProxy implements IThrowableProxy {
             }
         }
 
+    }
+
+    private Throwable getNested(Throwable throwable) {
+        if (throwable instanceof SQLException) {
+            return ((SQLException) throwable).getNextException();
+        }
+        if (throwable instanceof InvocationTargetException) {
+            return ((InvocationTargetException) throwable).getTargetException();
+        }
+        return throwable.getCause();
     }
 
     public Throwable getThrowable() {
