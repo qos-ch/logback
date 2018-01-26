@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
+import org.slf4j.helpers.SubstituteLogger;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -99,7 +100,14 @@ public class MultithreadedInitializationTest {
             }
             logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + count);
             logger.info("in run method");
-            EVENT_COUNT.getAndIncrement();
+            if (logger instanceof SubstituteLogger) {
+                SubstituteLogger substLogger = (SubstituteLogger) logger;
+                if (!substLogger.createdPostInitialization) {
+                    EVENT_COUNT.getAndIncrement();
+                }
+            } else {
+                EVENT_COUNT.getAndIncrement();
+            }
         }
     };
 

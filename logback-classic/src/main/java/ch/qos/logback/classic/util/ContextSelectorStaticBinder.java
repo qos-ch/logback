@@ -89,7 +89,7 @@ public class ContextSelectorStaticBinder {
                     SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException,
                     InvocationTargetException {
         Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
-        Constructor cons = contextSelectorClass.getConstructor(new Class[] { LoggerContext.class });
+        Constructor<?> cons = contextSelectorClass.getConstructor(new Class[] { LoggerContext.class });
         return (ContextSelector) cons.newInstance(defaultLoggerContext);
     }
 

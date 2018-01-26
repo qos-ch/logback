@@ -30,10 +30,18 @@
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
+      <artifactId>javax.mail-api</artifactId>      
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+    <dependency>
+    	<groupId>com.sun.mail</groupId>
+   		<artifactId>javax.mail</artifactId>
+    	<version>${javax.mail.version}</version>
+    	<scope>runtime</scope>
+        <optional>true</optional>
+	</dependency>
+    
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>

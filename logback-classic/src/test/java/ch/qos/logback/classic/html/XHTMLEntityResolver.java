@@ -21,7 +21,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
 public class XHTMLEntityResolver implements EntityResolver {
-
+ 
     // key: public id, value: relative path to DTD file
     static Map<String, String> entityMap = new HashMap<String, String>();
 
@@ -37,7 +37,7 @@ public class XHTMLEntityResolver implements EntityResolver {
         final String relativePath = (String) entityMap.get(publicId);
 
         if (relativePath != null) {
-            Class clazz = getClass();
+            Class<?> clazz = getClass();
             InputStream in = clazz.getResourceAsStream(relativePath);
             if (in == null) {
                 return null;

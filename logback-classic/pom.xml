@@ -70,7 +70,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>dom4j</groupId>
+      <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <scope>test</scope>
     </dependency>
@@ -96,10 +96,15 @@
     </dependency>
     <dependency>
       <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
+      <artifactId>javax.mail-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+    <dependency>
+    	<groupId>com.sun.mail</groupId>
+   		<artifactId>javax.mail</artifactId>
+   		<scope>runtime</scope>
+	</dependency>
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
@@ -133,7 +138,7 @@
     <dependency>
       <groupId>org.subethamail</groupId>
       <artifactId>subethasmtp</artifactId>
-      <version>2.1.0</version>
+      <version>3.1.7</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -250,10 +255,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- once, never, pertest, always -->
-          <!--<forkMode>once</forkMode>-->
-          <forkCount>3C</forkCount>
-          <reuseForks>false</reuseForks>
+          <parallel>none</parallel>
+          <useUnlimitedThreads>false</useUnlimitedThreads>
+          <!-- <threadCount>10</threadCount> -->
+          <forkCount>1</forkCount>
+          <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->
@@ -264,6 +270,9 @@
             <exclude>**/TestConstants.java</exclude>
             <exclude>**/test_osgi/BundleTest.java</exclude>
             <exclude>**/ch/qos/logback/classic/util/InitializationIntegrationTest.java</exclude>
+            <exclude>**/ContextDetachingSCLTest.java</exclude>
+            <exclude>**/ContextJNDISelectorTest.java</exclude>
+            
             <!-- skip performance tests -->
             <exclude>**/*PerfTest.java</exclude>
           </excludes>

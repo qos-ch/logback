@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.layout;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +28,8 @@ public class TTLLLayoutTest {
         event.setTimeStamp(0);
         String result = layout.doLayout(event);
         
-        assertEquals("[main] INFO ch.qos.logback.classic.layout.TTLLLayoutTest - null", result.substring(13).trim());
+        String resultSuffix = result.substring(13).trim();
+        
+        assertTrue("[" + resultSuffix + "] did not match regexs", resultSuffix.matches("\\[.*\\] INFO ch.qos.logback.classic.layout.TTLLLayoutTest - null"));
     }
 }

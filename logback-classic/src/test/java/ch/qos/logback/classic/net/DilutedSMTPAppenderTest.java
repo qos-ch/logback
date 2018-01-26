@@ -15,13 +15,7 @@ package ch.qos.logback.classic.net;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import javax.mail.Address;
-import javax.mail.MessagingException;
-
-import ch.qos.logback.core.helpers.CyclicBuffer;
-import ch.qos.logback.core.spi.CyclicBufferTracker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +26,8 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
+import ch.qos.logback.core.helpers.CyclicBuffer;
+import ch.qos.logback.core.spi.CyclicBufferTracker;
 
 public class DilutedSMTPAppenderTest {
 

@@ -9,7 +9,6 @@ import org.slf4j.spi.SLF4JServiceProvider;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
-import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -30,17 +29,20 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     private LoggerContext defaultLoggerContext;
     private IMarkerFactory markerFactory;
     private MDCAdapter mdcAdapter;
-    private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder.getSingleton();
-    private static Object KEY = new Object();
-    private boolean initialized = false;
+    // private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder.getSingleton();
+//    private static Object KEY = new Object();
+//    private volatile boolean initialized = false;
     
     @Override
     public void initialize() {
+        System.out.println("******in LogbackServiceProvider.initialize");
         defaultLoggerContext = new LoggerContext();
         defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
         initializeLoggerContext();
+        System.out.println("******after autpConfig");
         markerFactory = new BasicMarkerFactory();
         mdcAdapter = new LogbackMDCAdapter();
+        //initialized = true;
     }
 
     private void initializeLoggerContext() {
@@ -54,8 +56,8 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
             if (!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
                 StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
             }
-            contextSelectorBinder.init(defaultLoggerContext, KEY);
-            initialized = true;
+            //contextSelectorBinder.init(defaultLoggerContext, KEY);
+           
         } catch (Exception t) { // see LOGBACK-1159
             Util.report("Failed to instantiate [" + LoggerContext.class.getName() + "]", t);
         }
@@ -64,14 +66,16 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     @Override
 
     public ILoggerFactory getLoggerFactory() {
-        if (!initialized) {
-            return defaultLoggerContext;
-        }
-
-        if (contextSelectorBinder.getContextSelector() == null) {
-            throw new IllegalStateException("contextSelector cannot be null. See also " + NULL_CS_URL);
-        }
-        return contextSelectorBinder.getContextSelector().getLoggerContext();
+        return defaultLoggerContext;
+        
+//        if (!initialized) {
+//            return defaultLoggerContext;
+//        
+//
+//        if (contextSelectorBinder.getContextSelector() == null) {
+//            throw new IllegalStateException("contextSelector cannot be null. See also " + NULL_CS_URL);
+//        }
+//        return contextSelectorBinder.getContextSelector().getLoggerContext();
     }
 
     @Override
