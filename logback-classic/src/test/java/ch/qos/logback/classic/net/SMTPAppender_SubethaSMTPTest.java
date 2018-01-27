@@ -311,7 +311,7 @@ public class SMTPAppender_SubethaSMTPTest {
     }
 
     
-    static String GMAIL_USER_NAME = "@@gmail.com";
+    static String GMAIL_USER_NAME = "xx@gmail.com";
     static String GMAIL_PASSWORD = "xxx";
     
     @Ignore
