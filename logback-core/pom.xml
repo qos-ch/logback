@@ -68,7 +68,7 @@
           <!-- <argLine>-Xmx2048m ==permit-illegal-access</argLine>  -->
           <parallel>none</parallel>
           <useUnlimitedThreads>false</useUnlimitedThreads>
-          <forkCount>2C</forkCount>
+          <forkCount>2</forkCount>
           <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>

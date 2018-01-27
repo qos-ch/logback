@@ -39,7 +39,6 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     // value "%logger{20} - %m" is referenced in the docs!
     static final String DEFAULT_SUBJECT_PATTERN = "%logger{20} - %m";
 
-    private int bufferSize = 512;
     private boolean includeCallerData = false;
 
     /**

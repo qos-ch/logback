@@ -284,10 +284,10 @@ public class SMTPAppender_SubethaSMTPTest {
         WISER.getServer().setAuthenticationHandlerFactory(authenticationHandlerFactory);
     }
 
-    @Test
-    @Ignore
+    
     // Unfortunately, there seems to be a problem with SubethaSMTP's implementation
     // of startTLS. The same SMTPAppender code works fine when tested with gmail.
+    @Test
     public void authenticatedSSL() throws Exception {
         
         setAuthenticanHandlerFactory();
@@ -310,46 +310,54 @@ public class SMTPAppender_SubethaSMTPTest {
         assertEquals(1, wiserMsgList.size());
     }
 
-    @Test
+    
+    static String GMAIL_USER_NAME = "@@gmail.com";
+    static String GMAIL_PASSWORD = "xxx";
+    
     @Ignore
+    @Test
     public void authenticatedGmailStartTLS() throws Exception {
         smtpAppender.setSMTPHost("smtp.gmail.com");
         smtpAppender.setSMTPPort(587);
-
-        smtpAppender.addTo("XXX@gmail.com");
+        smtpAppender.setAsynchronousSending(false);
+        smtpAppender.addTo(GMAIL_USER_NAME);
+        
         smtpAppender.setSTARTTLS(true);
-        smtpAppender.setUsername("XXX@gmail.com");
-        smtpAppender.setPassword("XXX");
+        smtpAppender.setUsername(GMAIL_USER_NAME);
+        smtpAppender.setPassword(GMAIL_PASSWORD);
 
         smtpAppender.setLayout(buildPatternLayout(loggerContext));
+        smtpAppender.setSubject("authenticatedGmailStartTLS - %level %logger{20} - %m");
         smtpAppender.start();
         Logger logger = loggerContext.getLogger("authenticatedGmailSTARTTLS");
         logger.addAppender(smtpAppender);
-        logger.debug("hello");
+        logger.debug("authenticatedGmailStartTLS =- hello");
         logger.error("en error", new Exception("an exception"));
 
         StatusPrinter.print(loggerContext);
     }
 
-    @Test
     @Ignore
+    @Test
     public void authenticatedGmail_SSL() throws Exception {
         smtpAppender.setSMTPHost("smtp.gmail.com");
         smtpAppender.setSMTPPort(465);
-
-        smtpAppender.addTo("XXX@gmail.com");
+        smtpAppender.setSubject("authenticatedGmail_SSL - %level %logger{20} - %m");
+        smtpAppender.addTo(GMAIL_USER_NAME);
         smtpAppender.setSSL(true);
-        smtpAppender.setUsername("XXX@gmail.com");
-        smtpAppender.setPassword("XXX");
-
+        smtpAppender.setUsername(GMAIL_USER_NAME);
+        smtpAppender.setPassword(GMAIL_PASSWORD);
+        smtpAppender.setAsynchronousSending(false);
         smtpAppender.setLayout(buildPatternLayout(loggerContext));
         smtpAppender.start();
         Logger logger = loggerContext.getLogger("authenticatedGmail_SSL");
         logger.addAppender(smtpAppender);
-        logger.debug("hello");
+        logger.debug("hello"+new java.util.Date());
         logger.error("en error", new Exception("an exception"));
 
         StatusPrinter.print(loggerContext);
+        
+        
     }
 
     @Test
