@@ -37,7 +37,6 @@
     <dependency>
     	<groupId>com.sun.mail</groupId>
    		<artifactId>javax.mail</artifactId>
-    	<version>${javax.mail.version}</version>
     	<scope>runtime</scope>
         <optional>true</optional>
 	</dependency>
@@ -67,10 +66,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- <argLine>-Xmx2048m ==permit-illegal-access</argLine>  -->
-          <forkCount>1C</forkCount>
+          <parallel>none</parallel>
+          <useUnlimitedThreads>false</useUnlimitedThreads>
+          <forkCount>2C</forkCount>
           <reuseForks>true</reuseForks>
-          <parallel>classes</parallel>
-          <threadCount>20</threadCount>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->

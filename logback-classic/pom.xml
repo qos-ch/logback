@@ -257,8 +257,7 @@
         <configuration>
           <parallel>none</parallel>
           <useUnlimitedThreads>false</useUnlimitedThreads>
-          <!-- <threadCount>10</threadCount> -->
-          <forkCount>1</forkCount>
+          <forkCount>2</forkCount>
           <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
