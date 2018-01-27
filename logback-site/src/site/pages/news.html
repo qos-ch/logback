@@ -66,6 +66,12 @@
     <p>Logback's internal <code>ThreadPoolExecutor</code> now has an
     initial pool of 1 thread instead of 8 previously.</p>
 
+    <p>TimeBasedArchiveRemover is now able to deal with indexes over
+    999. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1175">LOGBACK-1175</a>
+    reported by Diego Furtado who also provided the relevant PR.
+    </p>
+    
     <p>If omitted, the <span class="option">scanPeriod</span>
     attribute in configuration file defaults to 1 minute. The
     documentation <a
