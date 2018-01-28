@@ -15,60 +15,71 @@ package ch.qos.logback.classic.turbo;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Marker;
-import org.slf4j.MarkerFactory;
 import org.slf4j.MDC;
 
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class MDCFilterTest {
 
-    private static String KEY = "myKey";
+    int diff = RandomUtil.getPositiveInt();
+    String key = "myKey" + diff;
+    String value = "val" + diff;
 
     private MDCFilter filter;
 
     @Before
-    public void init() {
+    public void setUp() {
         filter = new MDCFilter();
         filter.setOnMatch("ACCEPT");
         filter.setOnMismatch("DENY");
-        filter.setMDCKey(KEY);
-        filter.start();
+        filter.setMDCKey(key);
+        filter.setValue(value);
+
+        MDC.clear();
+    }
+
+    @After
+    public void tearDown() {
         MDC.clear();
     }
 
     @Test
-    public void testNoValue() {
+    public void smoke() {
+        filter.start();
+        MDC.put(key, "other" + diff);
+        assertEquals(FilterReply.DENY, filter.decide(null, null, null, null, null, null));
+        MDC.put(key, null);
+        assertEquals(FilterReply.DENY, filter.decide(null, null, null, null, null, null));
+        MDC.put(key, value);
+        assertEquals(FilterReply.ACCEPT, filter.decide(null, null, null, null, null, null));
+    }
+
+    @Test
+    public void testNoValueOption() {
+
+        filter.setValue(null);
+        filter.start();
+        assertFalse(filter.isStarted());
+        MDC.put(key, null);
+        assertEquals(FilterReply.NEUTRAL, filter.decide(null, null, null, null, null, null));
+        MDC.put(key, value);
+        assertEquals(FilterReply.NEUTRAL, filter.decide(null, null, null, null, null, null));
+    }
+
+    @Test
+    public void testNoMDCKeyOption() {
         filter.setMDCKey(null);
-        MDC.remove(KEY);
+        filter.start();
+        assertFalse(filter.isStarted());
+        MDC.put(key, null);
         assertEquals(FilterReply.NEUTRAL, filter.decide(null, null, null, null, null, null));
-        MDC.put(KEY, "key");
+        MDC.put(key, value);
         assertEquals(FilterReply.NEUTRAL, filter.decide(null, null, null, null, null, null));
     }
 
-    @Test
-    public void testNoMdcValue() {
-        MDC.remove(KEY);
-        assertEquals(FilterReply.ACCEPT, filter.decide(null, null, null, null, null, null));
-    }
-
-    @Test
-    public void testMdcValue() {
-        MDC.put(KEY, "myKey");
-        assertEquals(FilterReply.DENY, filter.decide(null, null, null, null, null, null));
-    }
-
-    @Test
-    public void testMdcAndValue() {
-        filter.setValue("correct");
-        MDC.put(KEY, "wrong");
-        assertEquals(FilterReply.DENY, filter.decide(null, null, null, null, null, null));
-        MDC.put(KEY, "correct");
-        assertEquals(FilterReply.ACCEPT, filter.decide(null, null, null, null, null, null));
-    }
 }
-
