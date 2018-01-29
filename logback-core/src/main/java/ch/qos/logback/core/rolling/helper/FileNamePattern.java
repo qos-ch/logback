@@ -186,11 +186,14 @@ public class FileNamePattern extends ContextAwareBase {
         return pattern;
     }
 
+    
     /**
      * Given date, convert this instance to a regular expression.
      *
      * Used to compute sub-regex when the pattern has both %d and %i, and the
      * date is known.
+     * 
+     * @param date - known date
      */
     public String toRegexForFixedDate(Date date) {
         StringBuilder buf = new StringBuilder();
