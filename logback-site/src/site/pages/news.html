@@ -72,6 +72,14 @@
     reported by Diego Furtado who also provided the relevant PR.
     </p>
 
+    <p><code>SizeAndTimeBasedRollingPolicy</code> will correctly
+    remove archived log files created within a given time period even
+    if the last modified date for said files has been modifed since
+    archiving or is otherwise incorrect. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1361">LOGBACK-1361</a> as
+    reported by Peter Risko.</p>
+
+      
     <p><code>MDCFilter</code> will enforce the presence of
     <code>MDCKey</code> and <code>value</code> properties, refusing to
     start when either property absent. This fixes <a
