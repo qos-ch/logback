@@ -173,7 +173,7 @@ public class Parser<E> extends ContextAwareBase {
 
         Token ot = getCurentToken();
         if (ot != null && ot.getType() == Token.OPTION) {
-            List<String> optionList = (List<String>) ot.getValue();
+            List<String> optionList = ot.getOptionsList();
             keywordNode.setOptions(optionList);
             advanceTokenPointer();
         }
@@ -196,7 +196,7 @@ public class Parser<E> extends ContextAwareBase {
         }
         Token ot = getCurentToken();
         if (ot != null && ot.getType() == Token.OPTION) {
-            List<String> optionList = (List<String>) ot.getValue();
+            List<String> optionList = ot.getOptionsList();
             compositeNode.setOptions(optionList);
             advanceTokenPointer();
         }

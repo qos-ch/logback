@@ -66,6 +66,7 @@ public class PackagingDataCalculator {
         }
     }
 
+    @SuppressWarnings("unused")
     void populateFrames(StackTraceElementProxy[] stepArray) {
         // in the initial part of this method we populate package information for
         // common stack frames

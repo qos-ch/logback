@@ -338,6 +338,7 @@ public class ReconfigureOnChangeTest {
         double avg = indirectLoop();
         System.out.println(avg);
         // the reference was computed on Orion (Ceki's computer)
+        @SuppressWarnings("unused")
         long referencePerf = 68;
         //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }

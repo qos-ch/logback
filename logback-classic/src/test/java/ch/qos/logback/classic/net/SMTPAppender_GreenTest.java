@@ -336,6 +336,7 @@ public class SMTPAppender_GreenTest {
 
         MimeMessage mm0 = mma[oldCount];
         MimeMultipart content0 = (MimeMultipart) mm0.getContent();
+        @SuppressWarnings("unused")
         String body0 = GreenMailUtil.getBody(content0.getBodyPart(0));
 
         MimeMessage mm1 = mma[oldCount + 1];

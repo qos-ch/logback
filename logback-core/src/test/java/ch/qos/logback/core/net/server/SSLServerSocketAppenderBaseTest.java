@@ -31,6 +31,7 @@ public class SSLServerSocketAppenderBaseTest {
 
     private MockContext context = new MockContext(ExecutorServiceUtil.newScheduledExecutorService());
 
+    @SuppressWarnings("rawtypes")
     private SSLServerSocketAppenderBase appender = new InstrumentedSSLServerSocketAppenderBase();
 
     @Before

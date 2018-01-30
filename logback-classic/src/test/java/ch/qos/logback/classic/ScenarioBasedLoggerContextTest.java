@@ -58,7 +58,7 @@ public class ScenarioBasedLoggerContextTest {
         LoggerContext lc = new LoggerContext();
         ControlLoggerContext controlContext = new ControlLoggerContext();
         Scenario s = ScenarioMaker.makeRealisticCreationScenario(len);
-        List actionList = s.getActionList();
+        List<ScenarioAction> actionList = s.getActionList();
         int size = actionList.size();
         for (int i = 0; i < size; i++) {
             ScenarioAction action = (ScenarioAction) actionList.get(i);
