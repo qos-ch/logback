@@ -14,10 +14,12 @@
 package ch.qos.logback.core.spi;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 
 /**
  * @author Ceki G&uuml;lc&uuml;

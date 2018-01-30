@@ -19,11 +19,12 @@ import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import static junit.framework.Assert.assertEquals;
 
 public class FileFilterUtilTest {
 

@@ -82,7 +82,6 @@ public class HTMLLayoutTest {
         assertNotNull(rootElement.element("body"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void testPresentationHeader() throws Exception {
         String header = layout.getFileHeader();
@@ -165,7 +164,6 @@ public class HTMLLayoutTest {
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void layoutWithException() throws Exception {
         layout.setPattern("%level %thread %msg %ex");

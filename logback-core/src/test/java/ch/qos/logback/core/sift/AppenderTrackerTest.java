@@ -69,7 +69,7 @@ public class AppenderTrackerTest {
 
     @Test
     public void endOfLivedAppendersShouldBeRemovedAfterLingeringTimeout() {
-        Appender a = appenderTracker.getOrCreate(key, now);
+        Appender<Object> a = appenderTracker.getOrCreate(key, now);
         appenderTracker.endOfLife(key);
         now += AppenderTracker.LINGERING_TIMEOUT + 1;
         appenderTracker.removeStaleComponents(now);
@@ -80,11 +80,11 @@ public class AppenderTrackerTest {
 
     @Test
     public void endOfLivedAppenderShouldBeAvailableDuringLingeringPeriod() {
-        Appender a = appenderTracker.getOrCreate(key, now);
+        Appender<Object> a = appenderTracker.getOrCreate(key, now);
         appenderTracker.endOfLife(key);
         // clean
         appenderTracker.removeStaleComponents(now);
-        Appender lingering = appenderTracker.getOrCreate(key, now);
+        Appender<Object> lingering = appenderTracker.getOrCreate(key, now);
         assertTrue(lingering.isStarted());
         assertTrue(a == lingering);
         now += AppenderTracker.LINGERING_TIMEOUT + 1;
@@ -96,11 +96,11 @@ public class AppenderTrackerTest {
 
     @Test
     public void trackerShouldHonorMaxComponentsParameter() {
-        List<Appender<Object>> appenderList = new ArrayList<Appender<Object>>();
+        List<Appender<Object>> appenderList = new ArrayList<>();
         int max = 10;
         appenderTracker.setMaxComponents(max);
         for (int i = 0; i < (max + 1); i++) {
-            Appender a = appenderTracker.getOrCreate(key + "-" + i, now++);
+            Appender<Object> a = appenderTracker.getOrCreate(key + "-" + i, now++);
             appenderList.add(a);
         }
         // cleaning only happens in removeStaleComponents
@@ -116,7 +116,7 @@ public class AppenderTrackerTest {
         int timeout = 2;
         appenderTracker.setTimeout(timeout);
         for (int i = 0; i <= timeout; i++) {
-            Appender a = appenderTracker.getOrCreate(key + "-" + i, now++);
+            Appender<Object> a = appenderTracker.getOrCreate(key + "-" + i, now++);
             appenderList.add(a);
         }
 

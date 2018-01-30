@@ -34,7 +34,7 @@ import org.junit.Test;
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

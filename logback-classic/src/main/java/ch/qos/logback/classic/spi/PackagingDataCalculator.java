@@ -80,7 +80,7 @@ public class PackagingDataCalculator {
 
         int missfireCount = 0;
         for (int i = 0; i < commonFrames; i++) {
-            Class callerClass = null;
+            Class<?> callerClass = null;
             if (GET_CALLER_CLASS_METHOD_AVAILABLE) {
                 //callerClass = Reflection.getCallerClass(localFirstCommon + i - missfireCount + 1);
             }
@@ -113,7 +113,7 @@ public class PackagingDataCalculator {
         }
     }
 
-    private ClassPackagingData calculateByExactType(Class type) {
+    private ClassPackagingData calculateByExactType(Class<?> type) {
         String className = type.getName();
         ClassPackagingData cpd = cache.get(className);
         if (cpd != null) {
@@ -132,7 +132,7 @@ public class PackagingDataCalculator {
         if (cpd != null) {
             return cpd;
         }
-        Class type = bestEffortLoadClass(lastExactClassLoader, className);
+        Class<?> type = bestEffortLoadClass(lastExactClassLoader, className);
         String version = getImplementationVersion(type);
         String codeLocation = getCodeLocation(type);
         cpd = new ClassPackagingData(codeLocation, version, false);
@@ -140,7 +140,7 @@ public class PackagingDataCalculator {
         return cpd;
     }
 
-    String getImplementationVersion(Class type) {
+    String getImplementationVersion(Class<?> type) {
         if (type == null) {
             return "na";
         }
@@ -157,7 +157,7 @@ public class PackagingDataCalculator {
 
     }
 
-    String getCodeLocation(Class type) {
+    String getCodeLocation(Class<?> type) {
         try {
             if (type != null) {
                 // file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar
@@ -196,7 +196,7 @@ public class PackagingDataCalculator {
         return (idx != -1 && idx + 1 == text.length());
     }
 
-    private Class loadClass(ClassLoader cl, String className) {
+    private Class<?> loadClass(ClassLoader cl, String className) {
         if (cl == null) {
             return null;
         }
@@ -218,8 +218,8 @@ public class PackagingDataCalculator {
      * @param className
      * @return
      */
-    private Class bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader, String className) {
-        Class result = loadClass(lastGuaranteedClassLoader, className);
+    private Class<?> bestEffortLoadClass(ClassLoader lastGuaranteedClassLoader, String className) {
+        Class<?> result = loadClass(lastGuaranteedClassLoader, className);
         if (result != null) {
             return result;
         }

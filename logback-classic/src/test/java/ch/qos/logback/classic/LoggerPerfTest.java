@@ -15,16 +15,15 @@ package ch.qos.logback.classic;
 
 import static org.junit.Assert.assertTrue;
 
-import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.helpers.NOPAppender;
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
 @Ignore
 public class LoggerPerfTest {

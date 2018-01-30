@@ -1,17 +1,19 @@
 package ch.qos.logback.classic.servlet;
 
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.CoreConstants;
-
-import static org.mockito.Mockito.*;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 public class LogbackServletContainerInitializerTest {
 

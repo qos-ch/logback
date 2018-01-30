@@ -23,8 +23,6 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.Map;
 
-import ch.qos.logback.classic.spi.CallerData;
-
 import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;

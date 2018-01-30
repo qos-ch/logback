@@ -50,7 +50,7 @@ public class Reduce {
 
     private static List<String> readFile(File inputFile) throws IOException {
         BufferedReader reader = null;
-        List<String> lines = new ArrayList();
+        List<String> lines = new ArrayList<>();
         try {
             reader = new BufferedReader(new FileReader(inputFile));
             String line;
@@ -68,7 +68,7 @@ public class Reduce {
     }
 
     private static List<Structure> reduce(List<Structure> structuredLines) {
-        List<Structure> matching = new ArrayList<Structure>();
+        List<Structure> matching = new ArrayList<>();
         int lockIndex = 0;
         while (lockIndex < structuredLines.size()) {
             lockIndex = findNearestLock(structuredLines, lockIndex);
@@ -117,7 +117,7 @@ public class Reduce {
     }
 
     static List<Structure> structure(List<String> lines) {
-        List<Structure> structuredLines = new ArrayList();
+        List<Structure> structuredLines = new ArrayList<>();
         Pattern p = Pattern.compile("(\\d{2,5})\\ +(.*) (LOCK|UNLOCK)");
 
         for (String line : lines) {

@@ -135,7 +135,6 @@ public class DBAppenderIntegrationTest {
         assertEquals("This is a debug message. Message number: " + (diff + 5), msg);
     }
 
-    @SuppressWarnings("unchecked")
     void verifyProperty(long lastEventId) throws SQLException {
         DriverManagerConnectionSource cs = getConnectionSource();
         Connection con = cs.getConnection();

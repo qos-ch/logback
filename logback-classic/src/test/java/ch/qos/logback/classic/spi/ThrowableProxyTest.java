@@ -15,18 +15,17 @@ package ch.qos.logback.classic.spi;
 
 import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import ch.qos.logback.classic.util.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.qos.logback.classic.util.TestHelper;
 
 public class ThrowableProxyTest {
 
@@ -132,6 +131,8 @@ public class ThrowableProxyTest {
     @Test
     public void nullSTE() {
         Throwable t = new Exception("someMethodWithNullException") {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public StackTraceElement[] getStackTrace() {
                 return null;
@@ -165,6 +166,8 @@ public class ThrowableProxyTest {
 
     void someMethodWithNullException() throws Exception {
         throw new Exception("someMethodWithNullException") {
+            private static final long serialVersionUID = -2419053636101615373L;
+
             @Override
             public StackTraceElement[] getStackTrace() {
                 return null;

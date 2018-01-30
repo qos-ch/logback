@@ -19,7 +19,7 @@ import ch.qos.logback.classic.LoggerContext;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class LoggingEventTest {

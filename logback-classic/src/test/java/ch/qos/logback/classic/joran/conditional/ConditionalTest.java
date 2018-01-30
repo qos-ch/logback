@@ -15,7 +15,6 @@ package ch.qos.logback.classic.joran.conditional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,6 +28,7 @@ import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -124,7 +124,7 @@ public class ConditionalTest {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/conditionalIncludeExistingFile.xml";
         configure(configFileAsStr);
 
-        ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
+        ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
         assertNotNull(consoleAppender);
         StatusChecker checker = new StatusChecker(context);
         checker.assertIsErrorFree();
@@ -136,7 +136,7 @@ public class ConditionalTest {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/conditionalIncludeInexistentFile.xml";
         configure(configFileAsStr);
 
-        ConsoleAppender consoleAppender = (ConsoleAppender) root.getAppender("CON");
+        ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
         assertNull(consoleAppender);
         StatusChecker checker = new StatusChecker(context);
         checker.assertIsErrorFree();

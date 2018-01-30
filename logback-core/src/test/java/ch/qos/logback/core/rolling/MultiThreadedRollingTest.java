@@ -94,7 +94,7 @@ public class MultiThreadedRollingTest {
 
     public void setUpTimeBasedTriggeringPolicy(RollingFileAppender<Object> rfa) {
         String datePattern = "yyyy-MM-dd'T'HH_mm_ss_SSS";
-        TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<>();
         tbrp.setFileNamePattern(outputDirStr + "test-%d{" + datePattern + "}");
         tbrp.setContext(context);
         tbrp.setParent(rfa);
@@ -105,7 +105,7 @@ public class MultiThreadedRollingTest {
     }
 
     public void setUpSizeBasedTriggeringPolicy(RollingFileAppender<Object> rfa) {
-        SizeBasedTriggeringPolicy<Object> zbtp = new SizeBasedTriggeringPolicy<Object>();
+        SizeBasedTriggeringPolicy<Object> zbtp = new SizeBasedTriggeringPolicy<>();
         zbtp.setContext(context);
         zbtp.setMaxFileSize(FileSize.valueOf("100KB"));
 

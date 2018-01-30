@@ -15,6 +15,7 @@ package ch.qos.logback.access.joran;
 
 import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.access.spi.AccessContext;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
@@ -64,7 +65,7 @@ public class ConditionalTest {
     @Test
     public void conditionalConsoleApp_IF_THEN_True() throws JoranException, UnknownHostException {
         configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
-        ConsoleAppender consoleAppender = (ConsoleAppender) context.getAppender("CON");
+        ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
         assertNotNull(consoleAppender);
         assertTrue(checker.isErrorFree(0));
     }
@@ -74,7 +75,7 @@ public class ConditionalTest {
         context.putProperty("aHost", null);
         configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
 
-        ConsoleAppender consoleAppender = (ConsoleAppender) context.getAppender("CON");
+        ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
         assertNull(consoleAppender);
 
         StatusChecker checker = new StatusChecker(context);
@@ -84,10 +85,10 @@ public class ConditionalTest {
     @Test
     public void conditionalConsoleApp_ELSE() throws JoranException, IOException, InterruptedException {
         configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole_ELSE.xml");
-        ConsoleAppender consoleAppender = (ConsoleAppender) context.getAppender("CON");
+        ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
         assertNull(consoleAppender);
 
-        ListAppender listAppender = (ListAppender) context.getAppender("LIST");
+        ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context.getAppender("LIST");
         assertNotNull(listAppender);
         assertTrue(checker.isErrorFree(0));
     }

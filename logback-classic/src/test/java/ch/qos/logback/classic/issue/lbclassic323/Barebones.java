@@ -22,7 +22,7 @@ public class Barebones {
         Context context = new ContextBase();
         for (int i = 0; i < 3; i++) {
             SenderRunnable senderRunnable = new SenderRunnable("" + i);
-            context.getExecutorService().execute(senderRunnable);
+            context.getScheduledExecutorService().execute(senderRunnable);
         }
         System.out.println("done");
         // System.exit(0);

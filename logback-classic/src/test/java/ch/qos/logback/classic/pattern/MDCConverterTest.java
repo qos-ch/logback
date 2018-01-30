@@ -16,7 +16,6 @@ package ch.qos.logback.classic.pattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +26,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.core.util.SystemInfo;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class MDCConverterTest {
 

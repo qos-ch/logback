@@ -43,7 +43,7 @@ public class PerformanceComparatorLogback {
 
     private static long logbackParametrizedDebugCall() {
 
-        Integer j = new Integer(2);
+        Integer j = Integer.valueOf(2);
         long start = System.nanoTime();
         for (int i = 0; i < Common.loop; i++) {
             logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);

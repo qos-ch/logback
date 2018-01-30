@@ -15,7 +15,6 @@ package ch.qos.logback.access.jetty;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -23,11 +22,11 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.access.spi.Util;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;

@@ -54,7 +54,6 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
                 int index1 = extractIndex(pattern, f1);
                 int index2 = extractIndex(pattern, f2);
 
-                System.out.println("index1=" + index1 + ", index2=" + index2);
                 if (index1 == index2)
                     return 0;
                 // descending sort, i.e. newest files first
