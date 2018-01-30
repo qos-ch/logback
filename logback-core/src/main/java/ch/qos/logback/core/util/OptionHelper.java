@@ -58,7 +58,7 @@ public class OptionHelper {
                 throw new IncompatibleClassException(superClass, classObj);
             }
             if (type == null) {
-                return classObj.newInstance();
+                return classObj.getConstructor().newInstance();
             } else {
                 Constructor<?> constructor = classObj.getConstructor(type);
                 return constructor.newInstance(parameter);
