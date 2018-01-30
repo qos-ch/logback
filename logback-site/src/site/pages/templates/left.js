@@ -27,6 +27,10 @@ document.write('</p>');
 document.write('</div>');
 
 document.write('<p>&nbsp;</p>');
+document.write('<div class="jobadd"><p><a href="https://doodle.com/poll/s7n3wk59694pmnbs">Should logback 1.3.x series upgrade to Java 8 or remain with Java 7?</a></p></div>');
+
+document.write('<p>&nbsp;</p>');
+
 
 document.write('<div class="pub">');
 document.write('    <a href="http://twitter.com/qos_ch" style="">');
@@ -37,5 +41,3 @@ document.write('</div>');
 document.write('<p>&nbsp;</p>');
 document.write('<div class="pub"><img src="https://travis-ci.org/qos-ch/logback.svg?branch=master"/></div>');
 
-
-//document.write('<div class="jobadd"><p><a href="'+prefix +'job.html">Your career<br/>@QOS.ch</a></p></div>');

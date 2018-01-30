@@ -28,9 +28,9 @@ class Compiler<E> extends ContextAwareBase {
     Converter<E> head;
     Converter<E> tail;
     final Node top;
-    final Map converterMap;
+    final Map<String, String> converterMap;
 
-    Compiler(final Node top, final Map converterMap) {
+    Compiler(final Node top, final Map<String, String> converterMap) {
         this.top = top;
         this.converterMap = converterMap;
     }

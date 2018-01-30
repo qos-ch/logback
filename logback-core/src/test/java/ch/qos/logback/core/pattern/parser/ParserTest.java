@@ -14,20 +14,18 @@
 package ch.qos.logback.core.pattern.parser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.spi.ScanException;
-import ch.qos.logback.core.testUtil.StatusChecker;
-
 import org.junit.Test;
 
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.FormatInfo;
+import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.testUtil.StatusChecker;
 
 public class ParserTest {
 
@@ -36,7 +34,7 @@ public class ParserTest {
 
     @Test
     public void testBasic() throws Exception {
-        Parser p = new Parser("hello");
+        Parser<Object> p = new Parser<>("hello");
         Node t = p.parse();
         assertEquals(Node.LITERAL, t.getType());
         assertEquals("hello", t.getValue());
@@ -46,7 +44,7 @@ public class ParserTest {
     public void testKeyword() throws Exception {
 
         {
-            Parser p = new Parser("hello%xyz");
+            Parser<Object> p = new Parser<>("hello%xyz");
             Node t = p.parse();
             Node witness = new Node(Node.LITERAL, "hello");
             witness.next = new SimpleKeywordNode("xyz");
@@ -54,7 +52,7 @@ public class ParserTest {
         }
 
         {
-            Parser p = new Parser("hello%xyz{x}");
+            Parser<Object> p = new Parser<>("hello%xyz{x}");
             Node t = p.parse();
             Node witness = new Node(Node.LITERAL, "hello");
             SimpleKeywordNode n = new SimpleKeywordNode("xyz");
@@ -69,7 +67,7 @@ public class ParserTest {
     @Test
     public void testComposite() throws Exception {
         {
-            Parser p = new Parser("hello%(%child)");
+            Parser<Object> p = new Parser<>("hello%(%child)");
             Node t = p.parse();
 
             Node witness = new Node(Node.LITERAL, "hello");
@@ -86,7 +84,7 @@ public class ParserTest {
 
         // System.out.println("testRecursive part 2");
         {
-            Parser p = new Parser("hello%(%child )");
+            Parser<Object> p = new Parser<>("hello%(%child )");
             Node t = p.parse();
 
             Node witness = new Node(Node.LITERAL, "hello");
@@ -99,7 +97,7 @@ public class ParserTest {
         }
 
         {
-            Parser p = new Parser("hello%(%child %h)");
+            Parser<Object> p = new Parser<>("hello%(%child %h)");
             Node t = p.parse();
             Node witness = new Node(Node.LITERAL, "hello");
             CompositeNode composite = new CompositeNode(BARE);
@@ -112,7 +110,7 @@ public class ParserTest {
         }
 
         {
-            Parser p = new Parser("hello%(%child %h) %m");
+            Parser<Object> p = new Parser<>("hello%(%child %h) %m");
             Node t = p.parse();
             Node witness = new Node(Node.LITERAL, "hello");
             CompositeNode composite = new CompositeNode(BARE);
@@ -127,7 +125,7 @@ public class ParserTest {
         }
 
         {
-            Parser p = new Parser("hello%( %child \\(%h\\) ) %m");
+            Parser<Object> p = new Parser<>("hello%( %child \\(%h\\) ) %m");
             Node t = p.parse();
             Node witness = new Node(Node.LITERAL, "hello");
             CompositeNode composite = new CompositeNode(BARE);
@@ -149,7 +147,7 @@ public class ParserTest {
     @Test
     public void testNested() throws Exception {
         {
-            Parser p = new Parser("%top %(%child%(%h))");
+            Parser<Object> p = new Parser<>("%top %(%child%(%h))");
             Node t = p.parse();
             Node witness = new SimpleKeywordNode("top");
             Node w = witness.next = new Node(Node.LITERAL, " ");
@@ -168,14 +166,14 @@ public class ParserTest {
     @Test
     public void testFormattingInfo() throws Exception {
         {
-            Parser p = new Parser("%45x");
+            Parser<Object> p = new Parser<>("%45x");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
             assertEquals(witness, t);
         }
         {
-            Parser p = new Parser("%4.5x");
+            Parser<Object> p = new Parser<>("%4.5x");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5));
@@ -183,14 +181,14 @@ public class ParserTest {
         }
 
         {
-            Parser p = new Parser("%-4.5x");
+            Parser<Object> p = new Parser<>("%-4.5x");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5, false, true));
             assertEquals(witness, t);
         }
         {
-            Parser p = new Parser("%-4.-5x");
+            Parser<Object> p = new Parser<>("%-4.-5x");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5, false, false));
@@ -198,7 +196,7 @@ public class ParserTest {
         }
 
         {
-            Parser p = new Parser("%-4.5x %12y");
+            Parser<Object> p = new Parser<>("%-4.5x %12y");
             Node t = p.parse();
             FormattingNode witness = new SimpleKeywordNode("x");
             witness.setFormatInfo(new FormatInfo(4, 5, false, true));
@@ -211,7 +209,7 @@ public class ParserTest {
 
     @Test
     public void testOptions0() throws Exception {
-        Parser p = new Parser("%45x{'test '}");
+        Parser<Object> p = new Parser<>("%45x{'test '}");
         Node t = p.parse();
         SimpleKeywordNode witness = new SimpleKeywordNode("x");
         witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
@@ -223,7 +221,7 @@ public class ParserTest {
 
     @Test
     public void testOptions1() throws Exception {
-        Parser p = new Parser("%45x{a, b}");
+        Parser<Object> p = new Parser<>("%45x{a, b}");
         Node t = p.parse();
         SimpleKeywordNode witness = new SimpleKeywordNode("x");
         witness.setFormatInfo(new FormatInfo(45, Integer.MAX_VALUE));
@@ -237,7 +235,7 @@ public class ParserTest {
     // see http://jira.qos.ch/browse/LBCORE-180
     @Test
     public void keywordGluedToLitteral() throws Exception {
-        Parser p = new Parser("%x{}a");
+        Parser<Object> p = new Parser<>("%x{}a");
         Node t = p.parse();
         SimpleKeywordNode witness = new SimpleKeywordNode("x");
         witness.setOptions(new ArrayList<String>());
@@ -247,7 +245,7 @@ public class ParserTest {
 
     @Test
     public void testCompositeFormatting() throws Exception {
-        Parser p = new Parser("hello%5(XYZ)");
+        Parser<Object> p = new Parser<>("hello%5(XYZ)");
         Node t = p.parse();
 
         Node witness = new Node(Node.LITERAL, "hello");
@@ -264,7 +262,7 @@ public class ParserTest {
     @Test
     public void empty() {
         try {
-            Parser p = new Parser("");
+            Parser<Object> p = new Parser<>("");
             p.parse();
             fail("");
         } catch (ScanException e) {
@@ -275,9 +273,9 @@ public class ParserTest {
     @Test
     public void lbcore193() throws Exception {
         try {
-            Parser p = new Parser("hello%(abc");
+            Parser<Object> p = new Parser<>("hello%(abc");
             p.setContext(context);
-            Node t = p.parse();
+            p.parse();
             fail("where the is exception?");
         } catch (ScanException ise) {
             assertEquals("Expecting RIGHT_PARENTHESIS token but got null", ise.getMessage());
