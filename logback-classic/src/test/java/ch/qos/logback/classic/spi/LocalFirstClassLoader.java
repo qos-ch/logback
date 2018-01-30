@@ -48,7 +48,7 @@ public class LocalFirstClassLoader extends URLClassLoader {
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
 
         // First, check if the class has already been loaded
-        Class c = findLoadedClass(name);
+        Class<?> c = findLoadedClass(name);
 
         // if not loaded, search the local (child) resources
         if (c == null) {

@@ -173,13 +173,13 @@ public class HLogger extends MarkerIgnoringBase {
      *          The event to log
      */
     public void callAppenders(ILoggingEvent event) {
-        int writes = 0;
+        ///int writes = 0;
 
         for (HLogger l = this; l != null; l = l.parent) {
             // Protected against simultaneous call to addAppender, removeAppender,...
             synchronized (l) {
                 if (l.appenderList != null) {
-                    writes += l.appendLoopOnAppenders(event);
+                    l.appendLoopOnAppenders(event);
                 }
                 if (!l.additive) {
                     break;
@@ -382,21 +382,21 @@ public class HLogger extends MarkerIgnoringBase {
     public void trace(String format, Object arg) {
     }
 
-    public void trace(String format, Object[] argArray) {
+    public void trace(String format, Object... argArray) {
     }
 
     public void debug(String format, Object arg) {
     }
 
-    public void debug(String format, Object[] argArray) {
+    public void debug(String format, Object... argArray) {
     }
 
-    public void info(String format, Object[] argArray) {
+    public void info(String format, Object... argArray) {
     }
 
-    public void warn(String format, Object[] argArray) {
+    public void warn(String format, Object... argArray) {
     }
 
-    public void error(String format, Object[] argArray) {
+    public void error(String format, Object... argArray) {
     }
 }

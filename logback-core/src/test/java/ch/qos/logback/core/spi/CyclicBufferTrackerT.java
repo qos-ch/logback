@@ -43,8 +43,8 @@ public class CyclicBufferTrackerT<E> implements ComponentTracker<CyclicBuffer<E>
         return null;
     }
 
-    private TEntry getFromEitherList(String key) {
-        TEntry entry = getEntry(liveList, key);
+    private TEntry<E> getFromEitherList(String key) {
+        TEntry<E> entry = getEntry(liveList, key);
         if (entry != null)
             return entry;
         else {
@@ -72,18 +72,18 @@ public class CyclicBufferTrackerT<E> implements ComponentTracker<CyclicBuffer<E>
 
     public Set<String> allKeys() {
         HashSet<String> allKeys = new HashSet<String>();
-        for (TEntry e : liveList)
+        for (TEntry<E> e : liveList)
             allKeys.add(e.key);
-        for (TEntry e : lingererList)
+        for (TEntry<E> e : lingererList)
             allKeys.add(e.key);
         return allKeys;
     }
 
     public Collection<CyclicBuffer<E>> allComponents() {
         List<CyclicBuffer<E>> allComponents = new ArrayList<CyclicBuffer<E>>();
-        for (TEntry e : liveList)
+        for (TEntry<E> e : liveList)
             allComponents.add(e.value);
-        for (TEntry e : lingererList)
+        for (TEntry<E> e : lingererList)
             allComponents.add(e.value);
 
         return allComponents;

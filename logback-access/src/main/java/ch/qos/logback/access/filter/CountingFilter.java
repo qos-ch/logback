@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.access.filter;
 
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.filter.Filter;
 import ch.qos.logback.core.spi.FilterReply;
 
@@ -21,7 +22,7 @@ import javax.management.ObjectName;
 import javax.management.StandardMBean;
 import java.lang.management.ManagementFactory;
 
-public class CountingFilter extends Filter {
+public class CountingFilter extends Filter<IAccessEvent> {
 
     long total = 0;
     final StatisticalViewImpl accessStatsImpl;
@@ -33,7 +34,7 @@ public class CountingFilter extends Filter {
     }
 
     @Override
-    public FilterReply decide(Object event) {
+    public FilterReply decide(IAccessEvent event) {
         total++;
         accessStatsImpl.update();
         return FilterReply.NEUTRAL;

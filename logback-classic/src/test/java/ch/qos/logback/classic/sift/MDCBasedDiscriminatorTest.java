@@ -73,7 +73,7 @@ public class MDCBasedDiscriminatorTest {
     @Test
     public void nullMDC() {
         event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
-        assertEquals(new HashMap(), event.getMDCPropertyMap());
+        assertEquals(new HashMap<String, String>(), event.getMDCPropertyMap());
         String discriminatorValue = discriminator.getDiscriminatingValue(event);
         assertEquals(DEFAULT_VAL, discriminatorValue);
     }

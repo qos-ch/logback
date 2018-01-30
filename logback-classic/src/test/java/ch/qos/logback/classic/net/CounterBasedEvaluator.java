@@ -23,7 +23,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * 
  * <p>By default, the limit is 1024.
  */
-public class CounterBasedEvaluator extends ContextAwareBase implements EventEvaluator {
+public class CounterBasedEvaluator extends ContextAwareBase implements EventEvaluator<Object> {
 
     static int DEFAULT_LIMIT = 1024;
     int limit = DEFAULT_LIMIT;

@@ -62,7 +62,6 @@ public class StaxEventRecorderTest {
     @Test
     public void testProcessingOfTextWithEntityCharacters() throws Exception {
         List<StaxEvent> seList = doTest("ampEvent.xml");
-        StatusManager sm = context.getStatusManager();
         assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
         // dump(seList);
         assertEquals(3, seList.size());
@@ -74,7 +73,6 @@ public class StaxEventRecorderTest {
     @Test
     public void testAttributeProcessing() throws Exception {
         List<StaxEvent> seList = doTest("inc.xml");
-        StatusManager sm = context.getStatusManager();
         assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
         assertEquals(4, seList.size());
         StartEvent se = (StartEvent) seList.get(1);

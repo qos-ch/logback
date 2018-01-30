@@ -64,7 +64,7 @@ public class LRUCacheTest {
     void doScenario(int simulationLen, int cacheSize, int worldSize) {
         int get2PutRatio = 10;
         Simulator simulator = new Simulator(worldSize, get2PutRatio, false);
-        List<Event> scenario = simulator.generateScenario(simulationLen);
+        List<Event<String>> scenario = simulator.generateScenario(simulationLen);
         LRUCache<String, String> lruCache = new LRUCache<String, String>(cacheSize);
         T_LRUCache<String> tlruCache = new T_LRUCache<String>(cacheSize);
         long start = System.nanoTime();
@@ -111,7 +111,7 @@ public class LRUCacheTest {
             int get2PutRatio = 10;
             int simulationLen = 1000 * 50;
             Simulator simulator = new Simulator(worldSize, get2PutRatio, true);
-            List<Event> scenario = simulator.generateScenario(simulationLen);
+            List<Event<String>> scenario = simulator.generateScenario(simulationLen);
             simulator.simulate(scenario, lruCache, tlruCache);
             System.out.println("done");
         }

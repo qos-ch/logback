@@ -41,6 +41,7 @@ public class DateFormatPerf_Tapp {
 
     static double doRawJoda() {
         // DateTimeFormatter jodaFormat = DateTimeFormat.forPattern(ISO8601_PATTERN);
+        @SuppressWarnings("unused")
         long timeInMillis = new Date().getTime();
         long start = System.nanoTime();
         for (int i = 0; i < RUN_LENGTH; ++i) {

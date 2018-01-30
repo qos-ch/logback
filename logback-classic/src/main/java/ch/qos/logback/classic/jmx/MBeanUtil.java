@@ -27,7 +27,7 @@ public class MBeanUtil {
 
     static final String DOMAIN = "ch.qos.logback.classic";
 
-    static public String getObjectNameFor(String contextName, Class type) {
+    static public String getObjectNameFor(String contextName, Class<?> type) {
         return DOMAIN + ":Name=" + contextName + ",Type=" + type.getName();
     }
 

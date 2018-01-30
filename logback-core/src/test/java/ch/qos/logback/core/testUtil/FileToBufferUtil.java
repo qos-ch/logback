@@ -40,10 +40,11 @@ public class FileToBufferUtil {
 
     private static void zipFileReadIntoList(File file, List<String> stringList) throws IOException {
         System.out.println("Reading zip file [" + file + "]");
-        ZipFile zipFile = new ZipFile(file);
-        Enumeration entries = zipFile.entries();
-        ZipEntry entry = (ZipEntry) entries.nextElement();
-        readInputStream(zipFile.getInputStream(entry), stringList);
+        try (ZipFile zipFile = new ZipFile(file)) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            ZipEntry entry = entries.nextElement();
+            readInputStream(zipFile.getInputStream(entry), stringList);
+        }
     }
 
     static void readInputStream(InputStream is, List<String> stringList) throws IOException {

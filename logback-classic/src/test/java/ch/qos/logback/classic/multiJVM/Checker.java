@@ -46,34 +46,32 @@ public class Checker {
 
     static void check(String stamp, String filename, boolean safetyMode) throws Exception {
 
-        FileReader fr = new FileReader(FILENAME);
-        BufferedReader br = new BufferedReader(fr);
+        try (FileReader fr = new FileReader(FILENAME); BufferedReader br = new BufferedReader(fr)) {
 
-        String regExp = "^" + stamp + " DEBUG - " + LoggingThread.msgLong + " (\\d+)$";
-        Pattern p = Pattern.compile(regExp);
+            String regExp = "^" + stamp + " DEBUG - " + LoggingThread.msgLong + " (\\d+)$";
+            Pattern p = Pattern.compile(regExp);
 
-        String line;
-        int expected = 0;
-        while ((line = br.readLine()) != null) {
-            Matcher m = p.matcher(line);
-            if (m.matches()) {
-                String g = m.group(1);
-                int num = Integer.parseInt(g);
-                if (num != expected) {
-                    System.err.println("ERROR: out of sequence line: ");
-                    System.err.println(line);
-                    return;
+            String line;
+            int expected = 0;
+            while ((line = br.readLine()) != null) {
+                Matcher m = p.matcher(line);
+                if (m.matches()) {
+                    String g = m.group(1);
+                    int num = Integer.parseInt(g);
+                    if (num != expected) {
+                        System.err.println("ERROR: out of sequence line: ");
+                        System.err.println(line);
+                        return;
+                    }
+                    expected++;
                 }
-                expected++;
+            }
+
+            if (expected != LEN) {
+                System.err.println("ERROR: For JVM stamp " + stamp + " found " + expected + " was expecting " + LEN);
+            } else {
+                System.out.println("For JVM stamp " + stamp + " found " + LEN + " lines in correct sequence");
             }
         }
-
-        if (expected != LEN) {
-            System.err.println("ERROR: For JVM stamp " + stamp + " found " + expected + " was expecting " + LEN);
-        } else {
-            System.out.println("For JVM stamp " + stamp + " found " + LEN + " lines in correct sequence");
-        }
-        fr.close();
-        br.close();
     }
 }

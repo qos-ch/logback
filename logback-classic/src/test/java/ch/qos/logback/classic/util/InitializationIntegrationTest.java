@@ -29,6 +29,7 @@ public class InitializationIntegrationTest {
 
     @Test
     public void smoke() {
+        @SuppressWarnings("unused")
         Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
         Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
