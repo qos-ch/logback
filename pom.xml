@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.3.0-beta0-SNAPSHOT</version>
+  <version>1.3.0-alpha2</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -386,7 +386,7 @@
               <version>9</version>
             </jdk>
             <jdk>
-              <version>7</version>
+              <version>1.7</version>
             </jdk>            
           </toolchains>
         </configuration>
