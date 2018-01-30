@@ -7,5 +7,5 @@ document.write('           data-ad-slot="6377851613"');
 document.write('           data-ad-format="auto"></ins>');
 document.write('      <script>');
 document.write('        (adsbygoogle = window.adsbygoogle || []).push({});');
-document.write('      </script>;');
+document.write('      </script>');
 

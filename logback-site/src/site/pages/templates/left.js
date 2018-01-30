@@ -16,9 +16,6 @@ document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/profess
 
 //document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/training">Training</a>');
 
-document.write('<p class="menu_header">Sister projects</p>');
-document.write('<p class="menu"><a href="http://audit.qos.ch/">Logback-audit</a>');
-
 document.write('<p class="menu_header">Online Tools</p>');
 document.write('<p class="menu"><a href="https://logback.qos.ch/translator/">log4j.properties Translator</a>');
 document.write('<p class="menu"><a href="https://logback.qos.ch/translator/asGroovy.html">logback.XML to Groovy</a>');

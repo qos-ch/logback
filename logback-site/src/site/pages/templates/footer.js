@@ -3,7 +3,7 @@ document.write('<table class="footer" border="0">')
 
 document.write('<tr>')
 
-document.write('<td valign="top">Copyright &copy; 2017  <a href="http://www.qos.ch/">QOS.ch</a></td>')
+document.write('<td valign="top">Copyright &copy; 2018  <a href="http://www.qos.ch/">QOS.ch</a></td>')
 
 document.write('  <td rowspan="2">');
 document.write('    <a href="http://twitter.com/qos_ch">');
