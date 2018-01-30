@@ -36,7 +36,8 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
     private final ServerSocket serverSocket;
     private final ServerListener<RemoteAppenderClient> listener;
     private final ServerRunner<RemoteAppenderClient> runner;
-
+    
+    @SuppressWarnings("rawtypes")
     private ServerListener lastListener;
 
     public InstrumentedServerSocketReceiver(ServerSocket serverSocket) {
@@ -70,6 +71,7 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
         };
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected ServerRunner createServerRunner(ServerListener<RemoteAppenderClient> listener, Executor executor) {
         lastListener = listener;
@@ -80,7 +82,8 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
     protected ServerListener<RemoteAppenderClient> createServerListener(ServerSocket socket) {
         return listener;
     }
-
+    
+    @SuppressWarnings("rawtypes")
     public ServerListener getLastListener() {
         return lastListener;
     }

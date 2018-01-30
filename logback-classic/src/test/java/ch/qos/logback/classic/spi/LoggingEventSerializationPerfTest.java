@@ -61,12 +61,12 @@ public class LoggingEventSerializationPerfTest {
     public void tearDown() throws Exception {
     }
 
-    double doLoop(Builder builder, int loopLen) {
+    double doLoop(Builder<LoggingEvent> builder, int loopLen) {
         long start = System.nanoTime();
         int resetCounter = 0;
         for (int i = 0; i < loopLen; i++) {
             try {
-                ILoggingEvent le = (ILoggingEvent) builder.build(i);
+                ILoggingEvent le = builder.build(i);
                 oos.writeObject(LoggingEventVO.build(le));
 
                 oos.flush();

@@ -102,6 +102,10 @@ public class DBUtil extends ContextAwareBase {
         case SQLITE_DIALECT:
             sqlDialect = new SQLiteDialect();
             break;
+            
+        case UNKNOWN_DIALECT:
+            // nothing to do 
+
         }
         return sqlDialect;
     }

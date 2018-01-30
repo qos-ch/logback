@@ -23,7 +23,7 @@ public class StatusBaseTest extends TestCase {
         {
             InfoStatus status = new InfoStatus("testing", this);
             status.add(new ErrorStatus("error", this));
-            Iterator it = status.iterator();
+            Iterator<Status> it = status.iterator();
             assertTrue("No status was added", it.hasNext());
             assertTrue("hasChilden method reported wrong result", status.hasChildren());
         }
@@ -43,7 +43,7 @@ public class StatusBaseTest extends TestCase {
             ErrorStatus error = new ErrorStatus("error", this);
             status.add(error);
             boolean result = status.remove(error);
-            Iterator it = status.iterator();
+            Iterator<Status> it = status.iterator();
             assertTrue("Remove failed", result);
             assertFalse("No status was removed", it.hasNext());
             assertFalse("hasChilden method reported wrong result", status.hasChildren());

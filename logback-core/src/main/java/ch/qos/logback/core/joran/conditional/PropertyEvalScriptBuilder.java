@@ -47,7 +47,7 @@ public class PropertyEvalScriptBuilder extends ContextAwareBase {
         cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
 
         Class<?> clazz = cbe.getClazz();
-        Condition instance = (Condition) clazz.newInstance();
+        Condition instance = (Condition) clazz.getDeclaredConstructor().newInstance();
         Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
         setMapMethod.invoke(instance, localPropContainer, context);
 

@@ -13,20 +13,22 @@
  */
 package ch.qos.logback.core.joran.event.stax;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
-import javax.xml.stream.events.Attribute;
 import java.io.FileInputStream;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import javax.xml.stream.events.Attribute;
+
+import org.junit.Test;
+
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+import ch.qos.logback.core.testUtil.StatusChecker;
 
 public class StaxEventRecorderTest {
 

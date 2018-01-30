@@ -82,6 +82,7 @@ public class JettyFixtureBase {
     }
 
     class BasicHandler extends AbstractHandler {
+        @SuppressWarnings("resource")
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
             OutputStream out = response.getOutputStream();
             ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();

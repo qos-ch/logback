@@ -97,7 +97,7 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
     }
 
     void addRequestHeaders(IAccessEvent event, Connection connection, long eventId) throws SQLException {
-        Enumeration names = event.getRequestHeaderNames();
+        Enumeration<String> names = event.getRequestHeaderNames();
         if (names.hasMoreElements()) {
             PreparedStatement insertHeaderStatement = connection.prepareStatement(insertHeaderSQL);
 

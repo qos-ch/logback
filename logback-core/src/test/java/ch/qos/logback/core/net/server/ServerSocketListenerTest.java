@@ -36,6 +36,7 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 public class ServerSocketListenerTest {
 
     private ServerSocket serverSocket;
+    @SuppressWarnings("rawtypes")
     private ServerSocketListener listener;
 
     @Before

@@ -45,6 +45,7 @@ public class ServerSocketReceiver extends ReceiverBase {
     private String address;
 
     private ServerSocket serverSocket;
+    @SuppressWarnings("rawtypes")
     private ServerRunner runner;
 
     /**
@@ -70,6 +71,7 @@ public class ServerSocketReceiver extends ReceiverBase {
         return new RemoteAppenderServerListener(socket);
     }
 
+    @SuppressWarnings("rawtypes")
     protected ServerRunner createServerRunner(ServerListener<RemoteAppenderClient> listener, Executor executor) {
         return new RemoteAppenderServerRunner(listener, executor);
     }
