@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.Set;
 
 import ch.qos.logback.classic.BasicConfigurator;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
@@ -46,7 +47,10 @@ public class ContextInitializer {
     final public static String GROOVY_AUTOCONFIG_FILE = "logback.groovy";
     final public static String AUTOCONFIG_FILE = "logback.xml";
     final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
-    final public static String CONFIG_FILE_PROPERTY = "logback.configurationFile";
+    /**
+     * @deprecated Please use ClassicConstants.CONFIG_FILE_PROPERTY instead
+     */
+    final public static String CONFIG_FILE_PROPERTY = ClassicConstants.CONFIG_FILE_PROPERTY;
 
     final LoggerContext loggerContext;
 

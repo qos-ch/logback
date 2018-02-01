@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 import org.slf4j.helpers.SubstituteLogger;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.read.ListAppender;
 
 public class MultithreadedInitializationTest {
@@ -33,13 +33,13 @@ public class MultithreadedInitializationTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
         LoggerFactoryFriend.reset();
     }
 
     @After
     public void tearDown() throws Exception {
-        System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
+        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
     }
 
     @Test

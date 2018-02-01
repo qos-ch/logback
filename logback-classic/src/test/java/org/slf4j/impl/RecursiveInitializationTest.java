@@ -20,8 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -32,13 +32,13 @@ public class RecursiveInitializationTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "recursiveInit.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "recursiveInit.xml");
         LoggerFactoryFriend.reset();
     }
 
     @After
     public void tearDown() throws Exception {
-        System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
+        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
     }
 
     @Test

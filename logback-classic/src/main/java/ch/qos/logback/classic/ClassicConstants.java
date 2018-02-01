@@ -20,6 +20,8 @@ public class ClassicConstants {
     public static final String USER_MDC_KEY = "user";
 
     public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
+    public static final String CONFIG_FILE_PROPERTY = "logback.configurationFile";
+
     public static final String JNDI_CONFIGURATION_RESOURCE = "java:comp/env/logback/configuration-resource";
     public static final String JNDI_CONTEXT_NAME = "java:comp/env/logback/context-name";
 

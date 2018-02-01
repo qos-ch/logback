@@ -34,6 +34,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -58,7 +59,7 @@ public class ContextInitializerTest {
 
     @After
     public void tearDown() throws Exception {
-        System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
+        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
         System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
         MockConfigurator.context = null;
     }
@@ -92,7 +93,7 @@ public class ContextInitializerTest {
 
     public void doAutoConfigFromSystemProperties(String val) throws JoranException {
         // lc.reset();
-        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, val);
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, val);
         new ContextInitializer(loggerContext).autoConfig();
         Appender<ILoggingEvent> appender = root.getAppender("AUTO_BY_SYSTEM_PROPERTY");
         assertNotNull(appender);

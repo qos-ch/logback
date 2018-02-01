@@ -13,21 +13,21 @@
  */
 package org.slf4j.impl;
 
-import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.util.ContextInitializer;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.status.NopStatusListener;
-import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.TeeOutputStream;
+import static org.junit.Assert.assertEquals;
+
+import java.io.PrintStream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.LoggerFactoryFriend;
 
-import java.io.PrintStream;
-
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.status.NopStatusListener;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.testUtil.TeeOutputStream;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -56,13 +56,13 @@ public class InitializationOutputTest {
     @After
     public void tearDown() {
         System.setOut(original);
-        System.clearProperty(ContextInitializer.CONFIG_FILE_PROPERTY);
+        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
         System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
     }
 
     @Test
     public void noOutputIfContextHasAStatusListener() {
-        System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
         System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
 
         LoggerFactoryFriend.reset();

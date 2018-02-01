@@ -456,7 +456,22 @@ public static void main(String[] args) {
    registering a status listener</a> may help debugging issues
    locating the configuration file.</p>
 
+   <p>Given that <code>"logback.configurationFile"</code> is a Java
+   system property, it may be set within your application as
+   well. However, the system property must be set before any logger
+   instance is created.</p>
 
+   <pre class="prettyprint lang-java source">import ch.qos.logback.classic.util.ContextInitializer;
+
+public class ServerMain {
+    public static void main(String args[]) throws IOException, InterruptedException {
+       // must be set before the first call to  LoggerFactory.getLogger();
+       // ContextInitializer.CONFIG_FILE_PROPERTY is set to "logback.configurationFile"
+       System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, /path/to/config.xml);
+       ...
+    }   
+}</pre>
+   
    <h3 class="doAnchor" name="autoScan">Automatically reloading
    configuration file upon modification</h3>
 
