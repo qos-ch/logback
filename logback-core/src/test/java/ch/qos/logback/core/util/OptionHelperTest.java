@@ -255,8 +255,41 @@ public class OptionHelperTest {
         String prefix = "c:";
         String suffix = "/tmp";
         context.putProperty("var", prefix);
-        String r = OptionHelper.substVars("${var}"+suffix, context);
-        assertEquals(prefix+suffix, r);
+        String r = OptionHelper.substVars("${var}" + suffix, context);
+        assertEquals(prefix + suffix, r);
     }
-    
+
+    @Test
+    public void curlyBraces_LOGBACK_1101() {
+        {
+            String input = "foo{bar}";
+            String r = OptionHelper.substVars(input, context);
+            assertEquals(input, r);
+        }
+        {
+            String input = "{foo{\"bar\"}}";
+            String r = OptionHelper.substVars(input, context);
+            assertEquals(input, r);
+        }
+        {
+            String input = "a:{y}";
+            String r = OptionHelper.substVars(input, context);
+            assertEquals(input, r);
+        }
+        {
+            String input = "{world:{yay}}";
+            String r = OptionHelper.substVars(input, context);
+            assertEquals(input, r);
+        }
+        {
+            String input = "{hello:{world:yay}}";
+            String r = OptionHelper.substVars(input, context);
+            assertEquals(input, r);
+        }
+        {
+            String input = "{\"hello\":{\"world\":\"yay\"}}";
+            String r = OptionHelper.substVars(input, context);
+            assertEquals(input, r);
+        }
+    }
 }

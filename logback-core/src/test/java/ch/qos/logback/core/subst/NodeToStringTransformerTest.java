@@ -129,4 +129,11 @@ public class NodeToStringTransformerTest {
         assertEquals("axv0c", nodeToStringTransformer.transform());
     }
 
+    @Test
+    public void LOGBACK_1101() throws ScanException {
+        String input = "a: {y}";
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+        assertEquals("a: {y}", nodeToStringTransformer.transform());
+    }
 }
