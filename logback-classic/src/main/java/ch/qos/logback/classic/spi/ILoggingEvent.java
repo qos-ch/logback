@@ -81,6 +81,15 @@ public interface ILoggingEvent extends DeferredProcessingAware {
     Map<String, String> getMdc();
 
     long getTimeStamp();
+    
+    /**
+     * The sequence number associated with this event. 
+     * 
+     * <p>Sequence numbers, if present, should be increasing monotonically.
+     *  
+     * @since 1.3.0
+     */
+    long getSquenceNuber();
 
     void prepareForDeferredProcessing();
 

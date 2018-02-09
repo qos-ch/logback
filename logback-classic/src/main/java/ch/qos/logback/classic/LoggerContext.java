@@ -30,6 +30,7 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.spi.LoggerComparator;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.SequenceNumberGenerator;
 import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.classic.util.LoggerNameUtil;
@@ -65,7 +66,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     private LoggerContextVO loggerContextRemoteView;
     private final TurboFilterList turboFilterList = new TurboFilterList();
     private boolean packagingDataEnabled = DEFAULT_PACKAGING_DATA;
-
+    SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
+    
     private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
 
     int resetCount = 0;
@@ -375,5 +377,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
      */
     public List<String> getFrameworkPackages() {
         return frameworkPackages;
+    }
+
+    public SequenceNumberGenerator getSequenceNumberGenerator() {
+        return null;
     }
 }
