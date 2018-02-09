@@ -248,7 +248,7 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     @Override
-    public long getSquenceNuber() {
+    public long getSequenceNumber() {
         return sequenceNumber;
     }
     

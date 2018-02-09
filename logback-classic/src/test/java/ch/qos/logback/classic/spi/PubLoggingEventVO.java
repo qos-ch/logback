@@ -52,6 +52,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public Marker marker;
     public Map<String, String> mdcPropertyMap;
     public long timeStamp;
+    public long sequenceNumber;
 
     public String getThreadName() {
         return threadName;
@@ -111,6 +112,14 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         return timeStamp;
     }
 
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
+
+    public void setSequenceNumber(long sequenceNumber) {
+        this.sequenceNumber = sequenceNumber;
+    }
+    
     public long getContextBirthTime() {
         return loggerContextVO.getBirthTime();
     }

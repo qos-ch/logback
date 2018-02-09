@@ -58,6 +58,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     private Marker marker;
     private Map<String, String> mdcPropertyMap;
     private long timeStamp;
+    private long sequenceNumber;
 
     public static LoggingEventVO build(ILoggingEvent le) {
         LoggingEventVO ledo = new LoggingEventVO();
@@ -70,6 +71,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         ledo.marker = le.getMarker();
         ledo.mdcPropertyMap = le.getMDCPropertyMap();
         ledo.timeStamp = le.getTimeStamp();
+        ledo.timeStamp = le.getSequenceNumber();
         ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
         // add caller data only if it is there already
         // fixes http://jira.qos.ch/browse/LBCLASSIC-145
@@ -137,6 +139,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return timeStamp;
     }
 
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
+    
     public long getContextBirthTime() {
         return loggerContextVO.getBirthTime();
     }

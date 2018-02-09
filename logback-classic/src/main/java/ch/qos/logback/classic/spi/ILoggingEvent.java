@@ -89,7 +89,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      *  
      * @since 1.3.0
      */
-    long getSquenceNuber();
+    long getSequenceNumber();
 
     void prepareForDeferredProcessing();
 
