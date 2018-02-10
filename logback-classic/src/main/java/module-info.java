@@ -13,7 +13,7 @@ module ch.qos.logback.classic {
   exports ch.qos.logback.classic.db.names;
   exports ch.qos.logback.classic.encoder;
   exports ch.qos.logback.classic.filter;
-  exports ch.qos.logback.classic.gaffer;
+  //exports ch.qos.logback.classic.gaffer;
   exports ch.qos.logback.classic.helpers;
   exports ch.qos.logback.classic.html;
   exports ch.qos.logback.classic.jmx;
