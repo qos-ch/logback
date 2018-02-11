@@ -1,4 +1,4 @@
-package ch.qos.logback.classic.spi;
+package ch.qos.logback.core.spi;
 
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
-public class BasicSequenceNumberGenerator implements SequenceNumberGenerator {
+public class BasicSequenceNumberGenerator extends ContextAwareBase implements SequenceNumberGenerator  {
 
     private final AtomicLong atomicLong = new AtomicLong();
     

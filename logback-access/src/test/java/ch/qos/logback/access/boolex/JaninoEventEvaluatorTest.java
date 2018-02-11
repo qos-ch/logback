@@ -13,34 +13,35 @@
  */
 package ch.qos.logback.access.boolex;
 
-import ch.qos.logback.access.dummy.DummyRequest;
-import ch.qos.logback.access.dummy.DummyResponse;
-import ch.qos.logback.access.dummy.DummyServerAdapter;
-import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.boolex.EvaluationException;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
+import ch.qos.logback.access.spi.AccessContext;
+import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.core.boolex.EvaluationException;
 
 public class JaninoEventEvaluatorTest {
 
     final String expectedURL1 = "testUrl1";
     final String expectedURL2 = "testUrl2";
-    Context context = new ContextBase();
+    //Context context = new ContextBase();
     JaninoEventEvaluator evaluator;
     DummyRequest request;
     DummyResponse response;
     DummyServerAdapter serverAdapter;
-
+    AccessContext accessContext = new AccessContext();
+    
     @Before
     public void setUp() throws Exception {
         evaluator = new JaninoEventEvaluator();
-        evaluator.setContext(context);
+        evaluator.setContext(accessContext);
         request = new DummyRequest();
         response = new DummyResponse();
         serverAdapter = new DummyServerAdapter(request, response);
@@ -50,7 +51,7 @@ public class JaninoEventEvaluatorTest {
     public void smoke() throws EvaluationException {
         evaluator.setExpression("event.getProtocol().equals(\"testProtocol\")");
         evaluator.start();
-        IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
+        IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
         assertTrue(evaluator.evaluate(ae));
     }
 
@@ -58,7 +59,7 @@ public class JaninoEventEvaluatorTest {
     public void block() throws EvaluationException {
         evaluator.setExpression("String protocol = event.getProtocol();" + "return protocol.equals(\"testProtocol\");");
         evaluator.start();
-        IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
+        IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
         assertTrue(evaluator.evaluate(ae));
     }
 
@@ -66,7 +67,7 @@ public class JaninoEventEvaluatorTest {
     public void invalidExpression() throws EvaluationException {
         evaluator.setExpression("return true");
         evaluator.start();
-        IAccessEvent ae = new AccessEvent(request, response, serverAdapter);
+        IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
         try {
             evaluator.evaluate(ae);
             fail("Was expecting an exception");

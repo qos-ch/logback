@@ -26,6 +26,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.spi.SequenceNumberGenerator;
 
 import org.slf4j.spi.MDCAdapter;
 

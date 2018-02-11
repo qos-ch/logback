@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.access.dummy;
 
+import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
 
@@ -22,8 +23,9 @@ public class DummyAccessEventBuilder {
         DummyRequest request = new DummyRequest();
         DummyResponse response = new DummyResponse();
         DummyServerAdapter adapter = new DummyServerAdapter(request, response);
-
-        return new AccessEvent(request, response, adapter);
+        AccessContext accessContext = new AccessContext();
+        
+        return new AccessEvent(accessContext, request, response, adapter);
     }
 
 }

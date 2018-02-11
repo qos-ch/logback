@@ -20,6 +20,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.PropertyContainer;
+import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import ch.qos.logback.core.status.StatusManager;
 
 /**
@@ -138,5 +139,9 @@ public interface Context extends PropertyContainer {
     void register(LifeCycle component);
 
     void addScheduledFuture(ScheduledFuture<?> scheduledFuture);
+
+    SequenceNumberGenerator getSequenceNumberGenerator();
+    void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator);
+    
 
 }

@@ -28,18 +28,18 @@ import org.junit.Test;
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
+import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
 
 public class ConverterTest {
 
     IAccessEvent event;
-    DummyRequest request;
-    DummyResponse response;
-
+    DummyRequest request = new DummyRequest();
+    DummyResponse response =  new DummyResponse();
+    AccessContext accessContext = new AccessContext();
+    
     @Before
     public void setUp() throws Exception {
-        request = new DummyRequest();
-        response = new DummyResponse();
         event = createEvent();
     }
 
@@ -193,7 +193,7 @@ public class ConverterTest {
 
     private IAccessEvent createEvent() {
         DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
-        return new AccessEvent(request, response, dummyAdapter);
+        return new AccessEvent(accessContext, request, response, dummyAdapter);
     }
 
 }

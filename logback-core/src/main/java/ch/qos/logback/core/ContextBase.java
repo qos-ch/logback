@@ -29,6 +29,7 @@ import java.util.concurrent.ScheduledFuture;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
+import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.ExecutorServiceUtil;
 import ch.qos.logback.core.util.NetworkAddressUtil;
@@ -50,6 +51,9 @@ public class ContextBase implements Context, LifeCycle {
     private ScheduledExecutorService scheduledExecutorService;
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
+    private SequenceNumberGenerator sequenceNumberGenerator;
+  
+
     private boolean started;
 
     public ContextBase() {
@@ -274,6 +278,14 @@ public class ContextBase implements Context, LifeCycle {
 
     public List<ScheduledFuture<?>> getScheduledFutures() {
         return new ArrayList<ScheduledFuture<?>>(scheduledFutures);
+    }
+    
+    public SequenceNumberGenerator getSequenceNumberGenerator() {
+        return sequenceNumberGenerator;
+    }
+
+    public void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator) {
+        this.sequenceNumberGenerator = sequenceNumberGenerator;
     }
 
 }

@@ -77,8 +77,9 @@ public class AccessEventSerializationTest {
         DummyRequest request = new DummyRequest();
         DummyResponse response = new DummyResponse();
         DummyServerAdapter adapter = new DummyServerAdapter(request, response);
-
-        IAccessEvent event = new AccessEvent(request, response, adapter);
+        AccessContext accessContext = new AccessContext();
+        
+        IAccessEvent event = new AccessEvent(accessContext, request, response, adapter);
 
         request.setAttribute("testKey", "ORIGINAL");
 
