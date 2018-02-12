@@ -23,6 +23,7 @@ import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
 import ch.qos.logback.core.joran.action.DefinePropertyAction;
+import ch.qos.logback.core.joran.action.ModelImplicitAction;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.action.NewRuleAction;
@@ -88,6 +89,9 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
         nestedBasicIA.setContext(context);
         interpreter.addImplicitAction(nestedBasicIA);
+        
+        ModelImplicitAction modelImplicitAction = new  ModelImplicitAction();
+        interpreter.addImplicitAction(modelImplicitAction);
     }
 
     @Override
