@@ -387,7 +387,7 @@
               <version>9</version>
             </jdk>
             <jdk>
-              <version>1.7</version>
+              <version>${jdk.version}</version>
             </jdk>            
           </toolchains>
         </configuration>
@@ -422,7 +422,7 @@
         </executions>
         <configuration>
           <jdkToolchain>
-            <version>[1.7,9)</version>
+            <version>[8,9)</version>
           </jdkToolchain>
           <source>${jdk.version}</source>
           <target>${jdk.version}</target>
@@ -499,7 +499,7 @@
                 <aggregate>true</aggregate>
                 <linkJavadoc>true</linkJavadoc>
                 <linksource>true</linksource>
-                <!--<additionalparam>-Xdoclint:none</additionalparam>-->
+                <additionalparam>-Xdoclint:none</additionalparam>
                 <sourceFileExcludes>
                   <sourceFileExclude>**/module-info.java</sourceFileExclude>
                 </sourceFileExcludes>
