@@ -18,6 +18,7 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.hook.DefaultShutdownHook;
 import ch.qos.logback.core.hook.ShutdownHookBase;
+import ch.qos.logback.core.joran.model.ShutdownHookModel;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
@@ -29,7 +30,9 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class ShutdownHookAction extends Action {
 
-    ShutdownHookBase hook;
+    ShutdownHookModel shutdownHookModel;
+    
+    //ShutdownHookBase hook;
     private boolean inError;
 
     /**
@@ -40,27 +43,14 @@ public class ShutdownHookAction extends Action {
      */
     @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
-        hook = null;
+        shutdownHookModel = null;
         inError = false;
 
+        ShutdownHookModel shutdownHookModel = new ShutdownHookModel();
+        
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
-            className = DefaultShutdownHook.class.getName();
-            addInfo("Assuming className [" + className + "]");
-        }
-
-        try {
-            addInfo("About to instantiate shutdown hook of type [" + className + "]");
-
-            hook = (ShutdownHookBase) OptionHelper.instantiateByClassName(className, ShutdownHookBase.class, context);
-            hook.setContext(context);
-
-            ic.pushObject(hook);
-        } catch (Exception e) {
-            inError = true;
-            addError("Could not create a shutdown hook of type [" + className + "].", e);
-            throw new ActionException(e);
-        }
+        shutdownHookModel.setClassName(className);
+        ic.pushObject(shutdownHookModel);
     }
 
     /**
@@ -74,15 +64,10 @@ public class ShutdownHookAction extends Action {
         }
 
         Object o = ic.peekObject();
-        if (o != hook) {
+        if (o != shutdownHookModel) {
             addWarn("The object at the of the stack is not the hook pushed earlier.");
         } else {
             ic.popObject();
-
-            Thread hookThread = new Thread(hook, "Logback shutdown hook [" + context.getName() + "]");
-            addInfo("Registeting shuthown hook with JVM runtime.");
-            context.putObject(CoreConstants.SHUTDOWN_HOOK_THREAD, hookThread);
-            Runtime.getRuntime().addShutdownHook(hookThread);
         }
     }
 }

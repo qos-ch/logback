@@ -48,8 +48,6 @@ public class NestedBasicPropertyIA extends ImplicitAction {
     }
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
-        // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
-        // "]");
         String nestedElementTagName = elementPath.peekLast();
 
         // no point in attempting if there is no parent object
