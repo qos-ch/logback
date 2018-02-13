@@ -1,44 +1,29 @@
-package ch.qos.logback.core.joran.processor;
+package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.hook.DefaultShutdownHook;
 import ch.qos.logback.core.hook.ShutdownHookBase;
-import ch.qos.logback.core.joran.model.Model;
-import ch.qos.logback.core.joran.model.ShutdownHookModel;
-import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.util.DynamicClassLoadingException;
 import ch.qos.logback.core.util.IncompatibleClassException;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class DefaultProcessor extends ContextAwareBase {
+public class ShutdownHookModelHandler extends ModelHandlerBase<ShutdownHookModel> {
 
-    final Model topLevelModel;
-    Context context;
-
-    public DefaultProcessor(Context context, Model topLevelModel) {
-        this.context = context;
-        this.topLevelModel = topLevelModel;
+    ShutdownHookModelHandler(Context context, InterpretationContext interpretationContext) {
+        super(context, interpretationContext);
     }
 
-    public void process() {
-        for (Model model : topLevelModel.getSubModels()) {
-            if (model instanceof ShutdownHookModel) {
-                handleShudownHookModel((ShutdownHookModel) model);
-            }
-        }
-    }
-
-    private void handleShudownHookModel(ShutdownHookModel model) {
-        
-        String className = model.getClassName();
+    @Override
+    void handle(ShutdownHookModel shutdownHookModel) {
+        String className = shutdownHookModel.getClassName();
         if (OptionHelper.isEmpty(className)) {
             className = DefaultShutdownHook.class.getName();
             addInfo("Assuming className [" + className + "]");
         }
-        
-
-        
+                
         addInfo("About to instantiate shutdown hook of type [" + className + "]");
         ShutdownHookBase hook = null;
         try {
@@ -56,6 +41,7 @@ public class DefaultProcessor extends ContextAwareBase {
         context.putObject(CoreConstants.SHUTDOWN_HOOK_THREAD, hookThread);
         Runtime.getRuntime().addShutdownHook(hookThread);
 
+        
     }
 
 }

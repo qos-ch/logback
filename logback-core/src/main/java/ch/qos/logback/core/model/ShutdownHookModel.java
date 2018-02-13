@@ -1,5 +1,6 @@
-package ch.qos.logback.core.joran.model;
+package ch.qos.logback.core.model;
 
 public class ShutdownHookModel extends Model {
  
 }
+

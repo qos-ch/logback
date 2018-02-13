@@ -258,7 +258,7 @@ public class OptionHelper {
     }
 
     public static boolean isEmpty(String str) {
-        return ((str == null) || CoreConstants.EMPTY_STRING.equals(str));
+        return ((str == null) || CoreConstants.EMPTY_STRING.equals(str.trim()));
     }
 
 }
