@@ -1,7 +1,9 @@
-package ch.qos.logback.core.joran.model;
+package ch.qos.logback.core.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * Abstract representation of configuration elements
@@ -10,10 +12,19 @@ import java.util.List;
  */
 public class Model {
 
+    String tag;
     String className;
     String bodyText;
     List<Parameter> parameters = new ArrayList<>();
     List<Model> subModels = new ArrayList<>();
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
 
     public String getClassName() {
         return className;
@@ -49,5 +60,16 @@ public class Model {
         else
             this.bodyText += bodytext;
     }
+
+    public boolean isComponentModel() {
+        if (!OptionHelper.isEmpty(this.getClassName()))
+            return true;
+     
+        if(bodyText == null || bodyText.isEmpty() || bodyText.trim().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
 
 }

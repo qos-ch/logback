@@ -15,13 +15,9 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.hook.DefaultShutdownHook;
-import ch.qos.logback.core.hook.ShutdownHookBase;
-import ch.qos.logback.core.joran.model.ShutdownHookModel;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.model.ShutdownHookModel;
 
 /**
  * Action which handles &lt;shutdownHook&gt; elements in configuration files.
