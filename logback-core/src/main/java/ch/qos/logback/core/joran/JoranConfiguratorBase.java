@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
@@ -36,6 +37,9 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.*;
+import ch.qos.logback.core.model.processor.*;
+
 
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
 // see also http://tinyurl.com/c2rp5
@@ -105,4 +109,14 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     public InterpretationContext getInterpretationContext() {
         return interpreter.getInterpretationContext();
     }
+
+    @Override
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
+        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
+        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
+        return defaultProcessor;
+    }
+
 }

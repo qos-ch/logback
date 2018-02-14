@@ -89,10 +89,22 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
         return objectStack;
     }
 
+    /**
+     * @deprecated Use {@link isObjectStackEmpty isObjectStackEmpty()} method instead
+     * @return
+     */
     public boolean isEmpty() {
-        return objectStack.isEmpty();
+        return isObjectStackEmpty();
     }
 
+    /**
+     * 
+     * @return whether the objectStack is empty or not
+     */
+    public boolean isObjectStackEmpty() {
+        return objectStack.isEmpty();
+    }
+    
     public Object peekObject() {
         return objectStack.peek();
     }

@@ -51,7 +51,7 @@ public class NestedBasicPropertyIA extends ImplicitAction {
         String nestedElementTagName = elementPath.peekLast();
 
         // no point in attempting if there is no parent object
-        if (ec.isEmpty()) {
+        if (ec.isObjectStackEmpty()) {
             return false;
         }
 

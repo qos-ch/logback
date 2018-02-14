@@ -5,19 +5,28 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.hook.DefaultShutdownHook;
 import ch.qos.logback.core.hook.ShutdownHookBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.util.DynamicClassLoadingException;
 import ch.qos.logback.core.util.IncompatibleClassException;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class ShutdownHookModelHandler extends ModelHandlerBase<ShutdownHookModel> {
+public class ShutdownHookModelHandler extends ModelHandlerBase {
 
-    ShutdownHookModelHandler(Context context, InterpretationContext interpretationContext) {
-        super(context, interpretationContext);
+    ShutdownHookModelHandler(Context context) {
+        super(context);
     }
 
     @Override
-    void handle(ShutdownHookModel shutdownHookModel) {
+    void handle(InterpretationContext interpretationContext, Model model) {
+
+        if(!(model instanceof ShutdownHookModel)) {
+            addError("Can only handle models of type [" + ShutdownHookModel.class + "]");
+            return;
+        }
+        ShutdownHookModel shutdownHookModel = (ShutdownHookModel) model;
+
+        
         String className = shutdownHookModel.getClassName();
         if (OptionHelper.isEmpty(className)) {
             className = DefaultShutdownHook.class.getName();

@@ -19,6 +19,13 @@ import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.*;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.ShutdownHookModel;
+import ch.qos.logback.core.model.TimestampModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.PropertyModelHandler;
+import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
+import ch.qos.logback.core.model.processor.TimestampModelHandler;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
@@ -164,6 +171,17 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         synchronized (context.getConfigurationLock()) {
             interpreter.getEventPlayer().play(eventList);
         }
+        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
+        defaultProcessor.process();
+    }
+
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = new DefaultProcessor(context, interpreter.getInterpretationContext());
+        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
+        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
+        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
+
+        return defaultProcessor;
     }
 
     /**
