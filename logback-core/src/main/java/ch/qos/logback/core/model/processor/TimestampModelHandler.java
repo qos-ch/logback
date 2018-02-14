@@ -15,12 +15,12 @@ public class TimestampModelHandler  extends ModelHandlerBase {
 
     boolean inError = false;
     
-    TimestampModelHandler(Context context) {
+    public TimestampModelHandler(Context context) {
         super(context);
     }
 
     @Override
-    void handle(InterpretationContext interpretationContext, Model model) {
+    public void handle(InterpretationContext interpretationContext, Model model) {
         if(!(model instanceof TimestampModel)) {
             addError("Can only handle models of type [" + TimestampModel.class + "]");
             return;
