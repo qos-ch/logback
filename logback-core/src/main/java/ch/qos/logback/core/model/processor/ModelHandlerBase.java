@@ -5,17 +5,15 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-abstract class ModelHandlerBase<M extends Model> extends ContextAwareBase  {
+abstract class ModelHandlerBase extends ContextAwareBase  {
 
-    InterpretationContext interpretationContext;
     
-    ModelHandlerBase(Context context,  InterpretationContext interpretationContext) {
-        this.interpretationContext = interpretationContext;
+    ModelHandlerBase(Context context) {
         setContext(context);
     }
     
     
-    abstract void handle(M model);
+    abstract void handle(InterpretationContext interpretationContext, Model model);
 
 
 }

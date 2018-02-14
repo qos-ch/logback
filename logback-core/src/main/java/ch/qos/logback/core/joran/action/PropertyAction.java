@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.PropertyModel;
 
 /**
@@ -32,33 +33,46 @@ public class PropertyAction extends Action {
 
     static final String RESOURCE_ATTRIBUTE = "resource";
 
+    Object parent;
+    PropertyModel propertyModel;
+
     /**
      * Set a new property for the execution context by name, value pair, or adds
      * all the properties found in the given file.
      * 
      */
     public void begin(InterpretationContext interpretationContext, String localName, Attributes attributes) {
+        parent = null;
 
         if ("substitutionProperty".equals(localName)) {
             addWarn("[substitutionProperty] element has been deprecated. Please use the [property] element instead.");
         }
 
-        
-        PropertyModel propertyModel = new PropertyModel();
-        
+        parent = interpretationContext.peekObject();
+
+        propertyModel = new PropertyModel();
+
         propertyModel.setName(attributes.getValue(NAME_ATTRIBUTE));
         propertyModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
         propertyModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
         propertyModel.setFile(attributes.getValue(FILE_ATTRIBUTE));
         propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
-        
+
         interpretationContext.pushObject(propertyModel);
     }
-        
-        
 
     public void end(InterpretationContext interpretationContext, String name) {
-        interpretationContext.popObject();
+        Object o = interpretationContext.peekObject();
+
+        if (o != propertyModel) {
+            addWarn("The object at the of the stack is not the model [" + propertyModel.getTag() + "] pushed earlier.");
+        } else {
+            if (parent instanceof Model) {
+                Model parentModel = (Model) parent;
+                parentModel.addSubModel(propertyModel);
+            }
+            interpretationContext.popObject();
+        }
     }
 
     public void finish(InterpretationContext ec) {

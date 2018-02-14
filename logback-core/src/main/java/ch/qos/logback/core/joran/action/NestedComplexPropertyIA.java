@@ -57,7 +57,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         String nestedElementTagName = elementPath.peekLast();
 
         // calling ic.peekObject with an empty stack will throw an exception
-        if (ic.isEmpty()) {
+        if (ic.isObjectStackEmpty()) {
             return false;
         }
 
