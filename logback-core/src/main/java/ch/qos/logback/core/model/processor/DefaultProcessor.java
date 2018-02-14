@@ -35,35 +35,35 @@ public class DefaultProcessor extends ContextAwareBase {
             addError("Expecting a Model instance at the top of hte interpretationContext");
             return;
         }
+
         final Model topLevelModel = (Model) o;
 
-        for (Model model : topLevelModel.getSubModels()) {
-            Class<? extends Model> modelClass = model.getClass();
-
-            Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(modelClass);
-            if (handlerClass == null) {
-                addError("Can't handle model of type " + modelClass.getName());
-                continue;
-            }
-
-            ModelHandlerBase handler = instantiateHandler(handlerClass);
-            if (handler != null)
-                handler.handle(interpretationContext, model);
-
-            
-//            if (model instanceof ShutdownHookModel) {
-//                ShutdownHookModelHandler shutdownHookModelHandler = new ShutdownHookModelHandler(context);
-//                shutdownHookModelHandler.handle(interpretationContext, (ShutdownHookModel) model);
-//            } else if (model instanceof PropertyModel) {
-//                PropertyModelHandler propertyModelHandler = new PropertyModelHandler(context);
-//                propertyModelHandler.handle(interpretationContext, (PropertyModel) model);
-//            } else if (model instanceof TimestampModel) {
-//                TimestampModelHandler propertyModelHandler = new TimestampModelHandler(context);
-//                propertyModelHandler.handle(interpretationContext, (TimestampModel) model);
-//            }
-        }
+        traverse(topLevelModel);
+        
     }
+   
+    void traverse(Model parentModel) {
+        for (Model model : parentModel.getSubModels()) {
+            traverse(model);
+        }
+        invokeHandlerForModel(parentModel);
+    }
+    
 
+    void invokeHandlerForModel(Model model) {
+        Class<? extends Model> modelClass = model.getClass();
+
+        Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(modelClass);
+        if (handlerClass == null) {
+            addError("Can't handle model of type " + modelClass.getName());
+            return;
+        }
+
+        ModelHandlerBase handler = instantiateHandler(handlerClass);
+        if (handler != null)
+            handler.handle(interpretationContext, model);
+    }
+    
     private ModelHandlerBase instantiateHandler(Class<? extends ModelHandlerBase> handlerClass) {
 
         // =

@@ -18,7 +18,7 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
     }
 
     @Override
-    void handle(InterpretationContext interpretationContext, Model model) {
+    public void handle(InterpretationContext interpretationContext, Model model) {
 
         if(!(model instanceof ShutdownHookModel)) {
             addError("Can only handle models of type [" + ShutdownHookModel.class + "]");

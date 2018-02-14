@@ -20,6 +20,9 @@ module ch.qos.logback.core {
     
     exports ch.qos.logback.core.filter;
 
+    exports ch.qos.logback.core.model;
+    exports ch.qos.logback.core.model.processor;
+
     exports ch.qos.logback.core.joran;
     exports ch.qos.logback.core.joran.action;
     exports ch.qos.logback.core.joran.spi;
