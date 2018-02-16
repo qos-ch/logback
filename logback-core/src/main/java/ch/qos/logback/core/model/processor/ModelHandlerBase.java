@@ -12,7 +12,11 @@ abstract public class ModelHandlerBase extends ContextAwareBase  {
         setContext(context);
     }
     
-    abstract public void handle(InterpretationContext interpretationContext, Model model);
+    abstract public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException;
+
+    public void postHandle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
+        // let specialized handlers override
+    }
 
 
 }

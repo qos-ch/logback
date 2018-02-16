@@ -1,7 +1,5 @@
 package ch.qos.logback.core.model.processor;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
 import ch.qos.logback.core.Context;
@@ -11,70 +9,47 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class DefaultProcessor extends ContextAwareBase {
 
-    final Context context;
     final InterpretationContext interpretationContext;
-    final HashMap<Class<? extends Model>, Class<? extends ModelHandlerBase>> modelClassToHandlerMap = new HashMap<>();
+    final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToHandlerMap = new HashMap<>();
 
     public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
-        this.context = context;
+        this.setContext(context);
         this.interpretationContext = interpretationContext;
     }
 
-    public void addHandler(Class<? extends Model> modelClass, Class<? extends ModelHandlerBase> handlerClass) {
-        modelClassToHandlerMap.put(modelClass, handlerClass);
+    public void addHandler(Class<? extends Model> modelClass, ModelHandlerBase handler) {
+        modelClassToHandlerMap.put(modelClass, handler);
     }
 
     public void process() {
-        if (interpretationContext.isObjectStackEmpty()) {
-            addError("Expecting a Model instance at the top of hte interpretationContext");
-            return;
-        }
-        Object o = interpretationContext.peekObject();
-
-        if (!(o instanceof Model)) {
+        if (interpretationContext.isModelStackEmpty()) {
             addError("Expecting a Model instance at the top of hte interpretationContext");
             return;
         }
 
-        final Model topLevelModel = (Model) o;
-
+        final Model topLevelModel = interpretationContext.peekModel();
         traverse(topLevelModel);
-        
-    }
-   
-    void traverse(Model parentModel) {
-        for (Model model : parentModel.getSubModels()) {
-            traverse(model);
-        }
-        invokeHandlerForModel(parentModel);
-    }
-    
 
-    void invokeHandlerForModel(Model model) {
-        Class<? extends Model> modelClass = model.getClass();
+    }
 
-        Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(modelClass);
-        if (handlerClass == null) {
-            addError("Can't handle model of type " + modelClass.getName());
+    void traverse(Model model) {
+
+        ModelHandlerBase handler = modelClassToHandlerMap.get(model.getClass());
+
+        if (handler == null) {
+            addError("Can't handle model of type " + model.getClassName() + "  with tag: " + model.getTag());
             return;
         }
 
-        ModelHandlerBase handler = instantiateHandler(handlerClass);
-        if (handler != null)
-            handler.handle(interpretationContext, model);
-    }
-    
-    private ModelHandlerBase instantiateHandler(Class<? extends ModelHandlerBase> handlerClass) {
-
-        // =
         try {
-            Constructor<? extends ModelHandlerBase> constructor = handlerClass.getConstructor(Context.class);
-            return constructor.newInstance(context);
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            addError("Failed to construct handler of type ["+handlerClass+"]", e);
+            handler.handle(interpretationContext, model);
+            for (Model m : model.getSubModels()) {
+                traverse(m);
+            }
+            handler.postHandle(interpretationContext, model);
+        } catch (ModelHandlerException e) {
+            addError("Failed to traverse model "+model.getTag(), e);
         }
-
-        return null;
     }
 
 }

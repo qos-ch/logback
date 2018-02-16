@@ -9,13 +9,14 @@ import ch.qos.logback.core.util.OptionHelper;
  * Abstract representation of configuration elements
  * 
  * @author Ceki Gulcu
+ * @SINCE 1.3.0
  */
 public class Model {
+
 
     String tag;
     String className;
     String bodyText;
-    List<Parameter> parameters = new ArrayList<>();
     List<Model> subModels = new ArrayList<>();
 
     public String getTag() {
@@ -32,14 +33,6 @@ public class Model {
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public List<Parameter> getParameters() {
-        return parameters;
-    }
-
-    public void addParameter(Parameter p) {
-        parameters.add(p);
     }
 
     public List<Model> getSubModels() {
@@ -69,6 +62,11 @@ public class Model {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() +" [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText + "]";
     }
 
 
