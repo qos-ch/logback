@@ -18,39 +18,28 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 
 public class FruitContextAction extends Action {
-
-    private boolean inError = false;
-
+    
+    FruitContextModel parentModel;
+    
     @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
-
-        inError = false;
-
-        try {
-            ec.pushObject(context);
-        } catch (Exception oops) {
-            inError = true;
-            addError("Could not push context", oops);
-            throw new ActionException(oops);
-        }
+    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
+        parentModel = new FruitContextModel();
+        parentModel.setTag(name);
+        ic.pushModel(parentModel);
     }
 
     @Override
-    public void end(InterpretationContext ec, String name) throws ActionException {
-        if (inError) {
-            return;
-        }
+    public void end(InterpretationContext ic, String name) throws ActionException {
 
-        Object o = ec.peekObject();
+        Model m = ic.peekModel();
 
-        if (o != context) {
-            addWarn("The object at the of the stack is not the context named [" + context.getName() + "] pushed earlier.");
-        } else {
-            addInfo("Popping context named [" + context.getName() + "] from the object stack");
-            ec.popObject();
-        }
+        if (m != parentModel) {
+            addWarn("The object at the of the stack is not the model named [" + parentModel.getTag() + "] pushed earlier.");
+        }  
+        // NOTE: top level model is NOT popped
     }
 
 }

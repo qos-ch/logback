@@ -13,7 +13,7 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ShutdownHookModelHandler extends ModelHandlerBase {
 
-    ShutdownHookModelHandler(Context context) {
+    public ShutdownHookModelHandler(Context context) {
         super(context);
     }
 

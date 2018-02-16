@@ -26,6 +26,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
         super(context);
     }
 
+    @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
 
         if(!(model instanceof PropertyModel)) {
