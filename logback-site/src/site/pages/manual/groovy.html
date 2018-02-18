@@ -113,6 +113,7 @@
       <li><span class="code">import ch.qos.logback.core.status.*;</span></li>
       <li><span class="code">import ch.qos.logback.classic.net.*;</span></li>
       <li><span class="code">import ch.qos.logback.classic.encoder.PatternLayoutEncoder;</span></li>
+      <li><span class="code">import groovy.transform.Field;</span></li>
     </ul>
 
     <p>In addition, all constants in <span
@@ -340,6 +341,142 @@ root(DEBUG, ["STDOUT"])</pre>
  
     <p><a href="configuration.html#statusListener">Status listeners</a> were described in an earlier
     chapter.</p>
+
+    <!-- ========================================================== -->
+  
+    <h3>&#8226; <span class="code">Script include(config, boolean optional = true)</span></h3>
+
+    <p>The include() method supports including a configuration script from
+    another file. An example is shown below:
+    </p>
+
+  <p class="example">Example: File include
+  (logback-examples/src/main/java/chapters/configuration/containingConfig.groovy)</p>
+
+  <pre class="prettyprint source"><b>include("src/main/java/chapters/configuration/includedConfig.groovy")</b>
+
+root(DEBUG, ["includedConsole"])</pre>
+
+  <p class="example">Example: File include
+  (logback-examples/src/main/java/chapters/configuration/includedConfig.groovy)</p>
+
+  <pre class="prettyprint source">appender("includedConsole", ConsoleAppender) {
+  encoder(PatternLayoutEncoder) {
+    pattern = '"%d - %m%n"'
+  }
+}</pre>
+
+    <p>The configuration to include can be referenced as a string, as a
+    URL object or as a File object. If config is a string, it is first
+    attempted to be resolved into a URL, then into an existing resource
+    and finally, it is assumed to be a file.</p>
+
+  <ul>
+
+    <li><p><b>As a URL:</b><br/> To include the contents of a URL provide
+    either a <code>URL</code> object or a string containing a valid URL 
+    for the config parameter.</p>
+
+    <pre class="prettyprint source">URL url = new URL("http://some.host.com/includedConfig1.groovy")
+include(url)
+
+include("http://some.host.com/includedConfig2.groovy")</pre>
+
+    </li>
+ 
+     <li><p><b>As a resource:</b><br/> To include a resource, i.e. a
+    file found on the class path, provide a string containing an existing
+    resource as config parameter</p>
+
+    <pre class="prettyprint source">include("includedConfig.groovy")</pre>
+    
+    </li>
+ 
+    <li><p><b>As a file:</b><br/> To include a file provide either a
+    <code>File</code> object or a string containing a file path for the
+    config parameter. You can use relative paths but note that the current
+    directory is defined by the application and is not necessarily related
+    to the path of the configuration file.</p>
+
+    <pre class="prettyprint source">File file = new File("includedConfig1.groovy")
+include file
+
+include("includedConfig2.groovy")</pre>
+
+    </li>
+
+  </ul>
+
+    <p>If it cannot find the file to be included, logback will complain
+    by printing a warning status message.  In case the included file is
+    optional, you can suppress the warning message by providing an
+    <code>optional</code> parameter with value <code>true</code>
+    to the <code>include</code> method. Here is an example:</p>
+
+    <pre class="prettyprint source">include("includedConfig.groovy", true)</pre>
+
+    <p>Note that included files are also periodically scanned for configuration
+    changes if scanning is turned on. This is even the case if the included file
+    could not be found, irrespective of the value of the <code>optional</code> parameter.
+    Creation and deletion of an included file is detected as a configuration change, allowing
+    files to be truly optionally included.</p>
+    
+    <p>The include method returns a reference to the included script as a return value.
+    This allows the including script to call methods defined in the included script and
+    to access fields defined in the included script (which were defined via the
+    @Field annotation)</p>
+
+    <p>Each included script can access its parent script through the <code>parent</code>
+    field. This allows the included script to call methods defined in the including
+    script and to access fields defined in the including script (which were defined
+    via the @Field annotation). Here is an example.</p>
+
+  <p class="example">Example: File include with parent/child member access
+  (logback-examples/src/main/java/chapters/configuration/containingConfig2.groovy)</p>
+
+  <pre class="prettyprint source">Script child = include("src/main/java/chapters/configuration/includedConfig2.groovy")
+println "I am " + this + " and my child is " + child
+println "Child method call output: " + child.provideIncludedValue()
+println "Child field value: " + child.includedField
+
+root(DEBUG, ["includedConsole"])
+
+@Field
+String containingField = "Value of containing field"
+
+String provideContainingValue() {
+  return "Value returned by method in containing script"
+}</pre>
+
+  <p class="example">Example: File include with parent/child member access
+  (logback-examples/src/main/java/chapters/configuration/includedConfig2.groovy)</p>
+
+  <pre class="prettyprint source">println "I am " + this + " and my parent is " + parent
+println "Parent method call output: " + parent.provideContainingValue()
+println "Parent field value: " + parent.containingField
+
+@Field
+String includedField = "Value of included field"
+
+String provideIncludedValue() {
+  return "Value returned by method in included script"
+}
+
+appender("includedConsole", ConsoleAppender) {
+  encoder(PatternLayoutEncoder) {
+    pattern = '"%d - %m%n"'
+  }
+}</pre>
+
+  <p>Which gives an output like:</p>
+
+  <pre class="prettyprint source">I am includedConfig2@5e21e98f and my parent is containingConfig2@4bff7da0
+Parent method call output: Value returned by method in containing script
+Parent field value: Value of containing field
+I am containingConfig2@4bff7da0 and my child is includedConfig2@5e21e98f
+Child method call output: Value returned by method in included script
+Child field value: Value of included field</pre
+    <!-- ========================================================== -->
 
     <h3>&#8226; <span class="code">jmxConfigurator(String name)</span></h3>
 
