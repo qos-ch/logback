@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8   " />
+    <title>第一章：介绍</title>
+    <link rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />    
+
+  </head>
+  <body onload="prettyPrint(); decorate();">
+    <script type="text/javascript">prefix='../';</script>
+    <script type="text/javascript" src="../js/prettify.js"></script>
+    <script src="../templates/header.js" type="text/javascript"> </script>
+    <script type="text/javascript" src="../js/jquery-min.js"></script>
+    <script type="text/javascript" src="../js/decorator.js"></script>
+    <div id="left">
+      <noscript>Please turn on Javascript to view this menu</noscript>
+      <script src="../templates/left.js" type="text/javascript"></script>
+    </div>
+    <div id="right">
+      <script src="menu.js" type="text/javascript"></script>
+    </div>
+    <div id="content">
+
+    <h1>第一章：介绍</h1>
+
+    <div class="quote">
+      <p><em> The morale effects are startling. Enthusiasm jumps when
+      there is a running system, even a simple one. Efforts redouble when
+      the first picture from a new graphics software system appears on the
+      screen, even if it is only a rectangle. One always has, at every
+      stage in the process, a working system. I find that teams can grow
+      much more complex entities in four months than they can
+      build.</em></p>
+      
+      <p>&mdash;FREDERICK P. BROOKS, JR., <em>The Mythical Man-Month</em></p>
+    </div>
+
+
+    <script src="../templates/creative.js" type="text/javascript"></script>
+
+  
+    <h2>什么是 logback？</h2>
+
+    <a href="introduction_ja.html">&#x548C;&#x8A33; (Japanese translation)</a>
+    <a href="introduction_zh.html">(Chinese translation)</a>
+  
+    <p>Logback 计划成为流行的log4j项目的继任者。
+    它是由log4j的发起人 Ceki G&#252;lc&#252; 设计的。
+    它基于十年的强大的日志系统上做的设计。logback 在很大程度上，比现存所有的日志系统更快
+    并且更小巧。更重要的是 logback 提供其他日志系统缺失的 <a href="../reasonsToSwitch.html">
+    独特而且很有用</a> 的特性。
+    </p>
+
+    <h2>第一步</h2>
+
+    <script src="../templates/setup.js" type="text/javascript"></script>
+    
+    <a name="Requirements"></a>
+    <h3>必要条件</h3>
+
+    <p>Logback-classic 模块需要 <em>slf4j-api.jar</em> 和 <em>logback-core.jar</em> 以及
+    <em>logback-classic.jar</em> 放到类类路径中。
+    </p>
+
+    <p>这些文件 <em>logback-*.jar</em> 是 logback 发行的一部分，
+    然而 <em>slf4j-api-${slf4j.version}.jar</em> 是在另外一个独立的项目
+    <a href="http://www.slf4j.org">SLF4J</a>中。
+    </p>
+
+    <p>让我们开始体验一下 logback。</p>
+
+<em>示例 1.1: 日志的基本模式 (<a href="../xref/chapters/introduction/HelloWorld1.html">logback-examples/src/main/java/chapters/introduction/HelloWorld1.java</a>)</em>
+<pre class="prettyprint source">package chapters.introduction;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HelloWorld1 {
+
+  public static void main(String[] args) {
+
+    Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld1");
+    logger.debug("Hello world.");
+
+  }
+}</pre>
+
+    <p>类 <code>HelloWorld1</code> 在包
+    <code>chapters.introduction</code> 中定义。它首先导入了类 <a
+    href="http://slf4j.org/api/org/slf4j/Logger.html"><code>Logger</code></a>
+    和类 <a
+    href="http://slf4j.org/api/org/slf4j/LoggerFactory.html"><code>LoggerFactory</code></a>
+    ，这些类在 SLF4J 的 API中，都是以包 <code>org.slf4j</code> 开头的。
+    </p>
+
+
+    <p>在方法 main() 的第一行，通过调用类 <code>LoggerFactory</code> 的静态方法
+    <code>getLogger</code> 获取的对象实例 <code>Logger</code> 赋值给变量
+    <code>logger</code> 。该日志句柄被命名为
+    "chapters.introduction.HelloWorld1"。main方法调用logger的方法
+    <code>debug</code> 传递参数 "Hello World" 。
+    我们可以说 main 方法包含一条打印DEBUG日志"Hello world"的语句。
+    </p>
+
+    <p>注意，上面的例子中没有引用任何 logback 的类。
+    在大多数情况下，日志是你关心的，但你的类只需要导入 SLF4J 的类。因此，多数情况下，
+    你的类将会使用 SLF4J 的API，并不会察觉到 logback 的存在。
+    </p>
+
+
+    <p>你可以运行第一个样例程序，<em>chapters.introduction.HelloWorld1</em> 需要通过命令：
+    </p>
+    <div class="source"><pre>java chapters.introduction.HelloWorld1</pre></div>
+
+    <p>来运行程序 <code>HelloWorld1</code> ，并在控制台打印出一行文本。
+    当没有找到默认的配置文件时，logback 将会增加一个 <code>ConsoleAppender</code> 根日志句柄。
+    </p>
+
+    <p class="source">20:49:07.962 [main] DEBUG chapters.introduction.HelloWorld1 - Hello world.</p>
+
+    <p>Logback 可以通过内建的状态系统提供它内部的状态信息。当 logback 的生命周期中
+    有重要的事件发生时，也可以通过组件 <code>StatusManager</code> 获取到。
+    这时候，我们可以通过执行类 <code>StatusPrinter</code> 的方法 <code>print()</code>
+    来打印 logback 的内部状态。
+    </p>
+
+<em>示例： 打印句柄状态 (<a href="../xref/chapters/introduction/HelloWorld2.html">logback-examples/src/main/java/chapters/introduction/HelloWorld2.java</a>)</em>
+<pre class="prettyprint source">package chapters.introduction;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+<b>import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;</b>
+
+public class HelloWorld2 {
+
+  public static void main(String[] args) {
+    Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld2");
+    logger.debug("Hello world.");
+
+    // print internal state
+    <b>LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    StatusPrinter.print(lc);</b>
+  }
+}</pre>
+
+
+   <p>运行程序 <code>HelloWorld2</code> 将会输出下面的内容：</p>
+
+<div class="source longline"><pre>12:49:22.203 [main] DEBUG chapters.introduction.HelloWorld2 - Hello world.
+12:49:22,076 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.groovy]
+12:49:22,078 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.xml]
+12:49:22,093 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Setting up default configuration.
+</pre></div>
+
+
+  <p>Logback 打印出没有找到配置文件
+  <em>logback-test.xml</em> 和 <em>logback.xml</em> （我们后续讨论），
+  它会采用默认的策略，也就是基本的 <code>ConsoleAppender</code>。一个
+  <code>Appender</code> 可以被当作一个输出目的地。Appenders的存在有很多用途，
+  包括：控制台、文件、系统日志、TCP套接字、JMS以及更多的。用户也可以针对特殊的场合
+  轻松地创建出自己的Appenders。
+  </p>
+
+  <p>在异常情况下， logback 会自动打在控制台印出它的内部状态。</p>
+
+  <p>之前的例子特别简单。在真实大型的程序中肯定是不一样的。但日志语句大体上不会有改变。
+  只是配置过程可能会不一样。然而，你可以想根据你的需要来自定义或者配置 logback 。
+  有关 logback 的配置将会在后续的章节中介绍。
+  </p>
+
+  <p>上面的例子中，我们通过调用方法 <code>StatusPrinter.print()</code> 让 logback 打印出
+  它的内部状态信息。在诊断 logback 相关的问题时，它的内部状态信息是非常有用的。
+  </p>
+
+  <p>在你的程序中要使用日志需要下面的三步。
+  </p>
+
+  <ol> 
+    <li>配置 logback 环境。你可以通过更简单或者复杂的方式来做。后面会介绍更多。</li>
+
+    <li>在每个你想要记录日志的地方，通过执行类 <code>org.slf4j.LoggerFactory</code> 的方法
+    <code>getLogger()</code> 并传递当前类的名称或者类本身作为参数来获取 <code>Logger</code>
+    的实例对象。
+    
+    <li>通过 logger 实例来执行命名为 debug(), info(), warn() 和 error() 的方法来打印。
+    这样会向已经配置好的 appender 输出日志。</li>
+  </ol>
+ 
+  
+  <h2 class="doAnchor" name="building">构建 logback</h2>
+  
+  <p>至于它的构建工具， logback 采用了使用广泛的开源构建工具 <a
+  href="http://maven.apache.org">Maven</a>。
+  </p>
+
+  <p>一旦你安装了 Maven，就可以在 logback 解压后的目录中执行命令 <code>mvn
+  install</code> 来构建它以及所有模块。Maven 将会自动下载依赖的外部库。
+  </p>
+
+  <p>Logback 发行版完整的源码，你可以修改 logback 的源码并构建你自己的版本。
+  你甚至可以重新发行修改后的版本，只要你附加 LGPL 或者 EPL 证书的条款即可。</p>
+
+  <p>对于在 IDE 中构建 logback的情况，请参考 <a
+  href="../setup.html#ide">类路径设置的相关章节</a>。</p>
+  
+  <script src="../templates/footer.js" type="text/javascript"></script>
+</div>
+</body>
+</html>
