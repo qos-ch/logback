@@ -23,6 +23,7 @@ import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
 
+import org.fusesource.jansi.AnsiPrintStream;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,33 +34,40 @@ import java.nio.charset.Charset;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
- * Redirecting System.out is quite messy. Disable this test in Maven bu not in Package.class
+ * Redirecting System.out is quite messy. Disable this test in Maven but not in Package.class
  */
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
-    XTeeOutputStream tee;
-    PrintStream original;
+    XTeeOutputStream teeOut;
+    XTeeOutputStream teeErr;
+    PrintStream originalOut;
+    PrintStream originalErr;
 
     @Before
     public void setUp() {
-        original = System.out;
-        // tee will output bytes on System out but it will also
+        originalOut = System.out;
+        originalErr = System.err;
+        // teeOut will output bytes on System out but it will also
         // collect them so that the output can be compared against
         // some expected output data
-        // tee = new TeeOutputStream(original);
+        // teeOut = new TeeOutputStream(originalOut);
 
         // keep the console quiet
-        tee = new XTeeOutputStream(null);
+        teeOut = new XTeeOutputStream(null);
+        teeErr = new XTeeOutputStream(null);
 
-        // redirect System.out to tee
-        System.setOut(new PrintStream(tee));
+        // redirect System.out to teeOut and System.err to teeErr
+        System.setOut(new PrintStream(teeOut));
+        System.setErr(new PrintStream(teeErr));
     }
 
     @After
     public void tearDown() {
-        System.setOut(original);
+        System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
     @Override
@@ -80,7 +88,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.setEncoder(new DummyEncoder<Object>());
         ca.start();
         ca.doAppend(new Object());
-        assertEquals(DummyLayout.DUMMY, tee.toString());
+        assertEquals(DummyLayout.DUMMY, teeOut.toString());
     }
 
     @Test
@@ -92,7 +100,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.start();
         ca.doAppend(new Object());
         ca.stop();
-        assertEquals("open" + CoreConstants.LINE_SEPARATOR + DummyLayout.DUMMY, tee.toString());
+        assertEquals("open" + CoreConstants.LINE_SEPARATOR + DummyLayout.DUMMY, teeOut.toString());
     }
 
     @Test
@@ -106,8 +114,8 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.stop();
         // ConsoleAppender must keep the underlying stream open.
         // The console is not ours to close.
-        assertFalse(tee.isClosed());
-        assertEquals(DummyLayout.DUMMY + "CLOSED", tee.toString());
+        assertFalse(teeOut.isClosed());
+        assertEquals(DummyLayout.DUMMY + "CLOSED", teeOut.toString());
     }
 
     // See http://jira.qos.ch/browse/LBCORE-143
@@ -118,7 +126,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.setEncoder(encoder);
         ca.start();
         ca.doAppend("a");
-        assertEquals("a" + CoreConstants.LINE_SEPARATOR, tee.toString());
+        assertEquals("a" + CoreConstants.LINE_SEPARATOR, teeOut.toString());
 
         XTeeOutputStream newTee = new XTeeOutputStream(null);
         System.setOut(new PrintStream(newTee));
@@ -135,7 +143,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.setEncoder(dummyEncoder);
         ca.start();
         ca.doAppend(new Object());
-        assertEquals(DummyLayout.DUMMY, new String(tee.toByteArray(), utf16BE));
+        assertEquals(DummyLayout.DUMMY, new String(teeOut.toByteArray(), utf16BE));
     }
 
     @Test
@@ -159,4 +167,31 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
     }
 
+    @Test
+    public void jansiSystemOut() {
+        ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+        DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
+        ca.setEncoder(dummyEncoder);
+        ca.setTarget("System.out");
+        ca.setContext(context);
+        ca.setWithJansi(true);
+        ca.start();
+        assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
+        ca.doAppend(new Object());
+        assertEquals(DummyLayout.DUMMY, teeOut.toString());
+    }
+
+    @Test
+    public void jansiSystemErr() {
+        ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
+        DummyEncoder<Object> dummyEncoder = new DummyEncoder<Object>();
+        ca.setEncoder(dummyEncoder);
+        ca.setTarget("System.err");
+        ca.setContext(context);
+        ca.setWithJansi(true);
+        ca.start();
+        assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
+        ca.doAppend(new Object());
+        assertEquals(DummyLayout.DUMMY, teeErr.toString());
+    }
 }
