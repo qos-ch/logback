@@ -1,5 +1,4 @@
-
-#About logback
+# About logback
 
 Thank you for your interest in logback, the reliable, generic, fast
 and flexible logging library for Java.
@@ -8,13 +7,13 @@ The Logback documentation can be found on the [project
 web-site](https://logback.qos.ch/documentation.html) as well as under
 the docs/ folder of the logback distribution.
 
-#Building logback
+# Building logback
 
 Building logback is documented at:
 
   https://logback.qos.ch/setup.html#ide
 
-#In case of problems
+# In case of problems
 
 In case of problems please do not hesitate to post an e-mail message
 on the logback-user@qos.ch mailing list.  However, please do not
@@ -23,8 +22,7 @@ be useful to other users. Moreover, there are many knowledgeable users
 on the logback-user mailing lists who can quickly answer your
 questions.
 
-
-#Pull requests
+# Pull requests
 
 If you are interested in improving logback, great! The logback community
 looks forward to your contribution. Please follow this process:
@@ -51,7 +49,6 @@ looks forward to your contribution. Please follow this process:
 
 6. Submit a pull request to logback from from your commit page on
    github.
-
 
 # Build Status
 [![Build Status](https://travis-ci.org/qos-ch/slf4j.png)](https://travis-ci.org/qos-ch/slf4j)
