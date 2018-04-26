@@ -40,6 +40,7 @@ public class DuplicateMessageFilter extends TurboFilter {
 
     public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
     public int cacheSize = DEFAULT_CACHE_SIZE;
+    public Level threshold = Level.ALL;
 
     private LRUMessageCache msgCache;
 
@@ -58,6 +59,10 @@ public class DuplicateMessageFilter extends TurboFilter {
 
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+        if (level != null && !level.isGreaterOrEqual(threshold)) {
+            return FilterReply.NEUTRAL;
+        }
+
         int count = msgCache.getMessageCountAndThenIncrement(format);
         if (count <= allowedRepetitions) {
             return FilterReply.NEUTRAL;
@@ -86,5 +91,9 @@ public class DuplicateMessageFilter extends TurboFilter {
     public void setCacheSize(int cacheSize) {
         this.cacheSize = cacheSize;
     }
+
+    public Level getThreshould() { return threshold; }
+
+    public void setThreshold(Level threshold) { this.threshold = threshold; }
 
 }

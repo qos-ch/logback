@@ -15,6 +15,7 @@ package ch.qos.logback.classic.turbo;
 
 import static org.junit.Assert.*;
 
+import ch.qos.logback.classic.Level;
 import org.junit.Test;
 
 import ch.qos.logback.core.spi.FilterReply;
@@ -74,4 +75,25 @@ public class DuplicateMessageFilterTest {
         assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, null, null, null));
     }
 
+    @Test
+    public void defaultThreshold() {
+        DuplicateMessageFilter dmf = new DuplicateMessageFilter();
+        dmf.setAllowedRepetitions(0);
+        dmf.start();
+        assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, Level.INFO, "x", null, null));
+        assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, Level.INFO, "y", null, null));
+        assertEquals(FilterReply.DENY, dmf.decide(null, null, Level.WARN, "x", null, null));
+        assertEquals(FilterReply.DENY, dmf.decide(null, null, Level.WARN, "y", null, null));
+    }
+
+    @Test
+    public void customThreshold() {
+        DuplicateMessageFilter dmf = new DuplicateMessageFilter();
+        dmf.setAllowedRepetitions(0);
+        dmf.setThreshold(Level.WARN);
+        dmf.start();
+        assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, Level.INFO, "a", null, null));
+        assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, Level.WARN, "a", null, null));
+        assertEquals(FilterReply.DENY, dmf.decide(null, null, Level.ERROR, "a", null, null));
+    }
 }
