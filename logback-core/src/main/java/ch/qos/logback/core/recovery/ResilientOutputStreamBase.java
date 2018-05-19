@@ -84,9 +84,9 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
         }
     }
 
-    abstract String getDescription();
+    protected abstract String getDescription();
 
-    abstract OutputStream openNewOutputStream() throws IOException;
+    protected abstract OutputStream openNewOutputStream() throws IOException;
 
     private void postSuccessfulWrite() {
         if (recoveryCoordinator != null) {
