@@ -38,6 +38,16 @@ import org.slf4j.spi.MDCAdapter;
  */
 public class LogbackMDCAdapter implements MDCAdapter {
 
+    public static final String PROPERTY_COPY_ON_INHERIT = "logback.threadlocal.inherit.copy";
+    // returns true if the map should be copied on inherit thread local. Defaults to true.
+    private static boolean copyOnInherit() {
+        try {
+            return Boolean.valueOf(System.getProperty(PROPERTY_COPY_ON_INHERIT, Boolean.TRUE.toString()));
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
     // The internal map is copied so as
 
     // We wish to avoid unnecessarily copying of the map. To ensure
@@ -52,7 +62,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     // Initially the contents of the thread local in parent and child threads
     // reference the same map. However, as soon as a thread invokes the put()
     // method, the maps diverge as they should.
-    final ThreadLocal<Map<String, String>> copyOnThreadLocal = new ThreadLocal<Map<String, String>>();
+    final ThreadLocal<Map<String, String>> copyOnThreadLocal;
 
     private static final int WRITE_OPERATION = 1;
     private static final int MAP_COPY_OPERATION = 2;
@@ -60,6 +70,16 @@ public class LogbackMDCAdapter implements MDCAdapter {
     // keeps track of the last operation performed
     final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
 
+    public LogbackMDCAdapter()
+    {
+        this(copyOnInherit());
+    }
+
+    public LogbackMDCAdapter(boolean copyOnInherit)
+    {
+        copyOnThreadLocal = copyOnInherit ? new InheritableThreadLocal<Map<String,String>>() : new ThreadLocal<Map<String, String>>();
+    }
+    
     private Integer getAndSetLastOperation(int op) {
         Integer lastOp = lastOperation.get();
         lastOperation.set(op);

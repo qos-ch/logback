@@ -26,15 +26,16 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Test;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
-public class LogbackMDCAdapterTest {
+abstract class LogbackMDCAdapterTest {
 
     final static String A_SUFFIX = "A_SUFFIX";
     final static String B_SUFFIX = "B_SUFFIX";
 
     int diff = RandomUtil.getPositiveInt();
+    final LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter(copyOnInhertiance());
 
-    private final LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
-
+    protected abstract boolean copyOnInhertiance();
+    
     /**
      * Test that CopyOnInheritThreadLocal does not barf when the
      * MDC hashmap is null
@@ -94,42 +95,6 @@ public class LogbackMDCAdapterTest {
         assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
     }
 
-    // =================================================
-
-    /**
-     * Test that LogbackMDCAdapter does not copy its hashmap when a child
-     * thread inherits it.
-     *
-     * @throws InterruptedException
-     */
-    @Test
-    public void noCopyOnInheritenceTest() throws InterruptedException {
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        String firstKey = "x" + diff;
-        String secondKey = "o" + diff;
-        mdcAdapter.put(firstKey, firstKey + A_SUFFIX);
-
-        ChildThread childThread = new ChildThread(mdcAdapter, firstKey, secondKey, countDownLatch);
-        childThread.start();
-        countDownLatch.await();
-        mdcAdapter.put(firstKey, firstKey + B_SUFFIX);
-        childThread.join();
-
-        assertNull(mdcAdapter.get(secondKey));
-        assertTrue(childThread.successful);
-
-        Map<String, String> parentHM = getMapFromMDCAdapter(mdcAdapter);
-        assertTrue(parentHM != childThread.childHM);
-
-        HashMap<String, String> parentHMWitness = new HashMap<String, String>();
-        parentHMWitness.put(firstKey, firstKey + B_SUFFIX);
-        assertEquals(parentHMWitness, parentHM);
-
-        HashMap<String, String> childHMWitness = new HashMap<String, String>();
-        childHMWitness.put(secondKey, secondKey + A_SUFFIX);
-        assertEquals(childHMWitness, childThread.childHM);
-
-    }
 
     // see also http://jira.qos.ch/browse/LBCLASSIC-253
     @Test
@@ -214,6 +179,7 @@ public class LogbackMDCAdapterTest {
 
     class ChildThread extends Thread {
 
+        String expectedFirstKeyValue;
         LogbackMDCAdapter logbackMDCAdapter;
         String firstKey;
         String secondKey;
@@ -230,9 +196,13 @@ public class LogbackMDCAdapterTest {
         }
 
         ChildThread(LogbackMDCAdapter logbackMDCAdapter, String firstKey, String secondKey, CountDownLatch countDownLatch) {
+            this(logbackMDCAdapter, firstKey, secondKey, countDownLatch, null);
+        }
+        ChildThread(LogbackMDCAdapter logbackMDCAdapter, String firstKey, String secondKey, CountDownLatch countDownLatch, String expectedFirstKeyValue) {
             super("chil");
             this.logbackMDCAdapter = logbackMDCAdapter;
             this.firstKey = firstKey;
+            this.expectedFirstKeyValue = expectedFirstKeyValue;
             this.secondKey = secondKey;
             this.countDownLatch = countDownLatch;
         }
@@ -240,7 +210,7 @@ public class LogbackMDCAdapterTest {
         @Override
         public void run() {
             logbackMDCAdapter.put(secondKey, secondKey + A_SUFFIX);
-            assertNull(logbackMDCAdapter.get(firstKey));
+            assertEquals(expectedFirstKeyValue, logbackMDCAdapter.get(firstKey));
             if (countDownLatch != null)
                 countDownLatch.countDown();
             assertNotNull(logbackMDCAdapter.get(secondKey));
