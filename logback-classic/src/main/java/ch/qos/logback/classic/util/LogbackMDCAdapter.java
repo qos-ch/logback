@@ -42,7 +42,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     // returns true if the map should be copied on inherit thread local. Defaults to true.
     private static boolean copyOnInherit() {
         try {
-            return Boolean.valueOf(System.getProperty(PROPERTY_COPY_ON_INHERIT, Boolean.TRUE.toString()));
+            return Boolean.valueOf(System.getProperty(PROPERTY_COPY_ON_INHERIT, Boolean.FALSE.toString()));
         } catch (Exception e) {
             return true;
         }
