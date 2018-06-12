@@ -108,7 +108,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
     }
 
     protected ArchiveRemover createArchiveRemover() {
-        return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+        return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, tbrp.getCompressionMode(), rc);
     }
 
     void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
