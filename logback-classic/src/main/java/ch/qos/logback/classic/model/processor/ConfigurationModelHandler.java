@@ -9,6 +9,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.util.EnvUtil;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
@@ -25,7 +26,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
     static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
     static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
 
-    ConfigurationModelHandler(LoggerContext context) {
+    public ConfigurationModelHandler(Context context) {
         super(context);
     }
 

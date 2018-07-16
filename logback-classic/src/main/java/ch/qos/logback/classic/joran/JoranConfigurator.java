@@ -103,7 +103,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler.class);
+        defaultProcessor.addHandler(ConfigurationModel.class, new ConfigurationModelHandler(context));
         return defaultProcessor;
     }
 

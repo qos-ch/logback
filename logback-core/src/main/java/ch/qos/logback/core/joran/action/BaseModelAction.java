@@ -15,7 +15,8 @@ public abstract class BaseModelAction extends Action {
     @Override
     public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) throws ActionException {
         parentModel = null;
-
+        inError = false;
+        
         if (!validPreconditions(interpretationContext, name, attributes)) {
             inError = true;
             return;
@@ -23,6 +24,8 @@ public abstract class BaseModelAction extends Action {
         parentModel = interpretationContext.peekModel();
         currentModel = buildCurrentModel(interpretationContext, name, attributes);
         currentModel.setTag(name);
+        final int lineNumber = getLineNumber(interpretationContext);
+        currentModel.setLineNumber(lineNumber);
         interpretationContext.pushModel(currentModel);
     }
 
@@ -32,6 +35,9 @@ public abstract class BaseModelAction extends Action {
 
     @Override
     public void end(InterpretationContext interpretationContext, String name) throws ActionException {
+        if(inError)
+            return;
+        
         Model m = interpretationContext.peekModel();
 
         if (m != currentModel) {

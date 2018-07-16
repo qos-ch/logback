@@ -25,7 +25,7 @@ import org.xml.sax.Locator;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ImplicitAction;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.event.BodyEvent;
 import ch.qos.logback.core.joran.event.EndEvent;
 import ch.qos.logback.core.joran.event.StartEvent;
@@ -69,7 +69,7 @@ public class Interpreter {
 
     final private RuleStore ruleStore;
     final private InterpretationContext interpretationContext;
-    final private ArrayList<ImplicitAction> implicitActions;
+    final private ArrayList<Action> implicitActions;
     final private CAI_WithLocatorSupport cai;
     private ElementPath elementPath;
     Locator locator;
@@ -95,7 +95,7 @@ public class Interpreter {
         this.cai = new CAI_WithLocatorSupport(context, this);
         ruleStore = rs;
         interpretationContext = new InterpretationContext(context, this);
-        implicitActions = new ArrayList<ImplicitAction>(3);
+        implicitActions = new ArrayList<Action>(3);
         this.elementPath = initialElementPath;
         actionListStack = new Stack<List<Action>>();
         eventPlayer = new EventPlayer(this);
@@ -215,7 +215,7 @@ public class Interpreter {
         return tagName;
     }
 
-    public void addImplicitAction(ImplicitAction ia) {
+    public void addImplicitAction(ImplicitModelAction ia) {
         implicitActions.add(ia);
     }
 
@@ -225,20 +225,23 @@ public class Interpreter {
      * one element.
      */
     List<Action> lookupImplicitAction(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
-        int len = implicitActions.size();
+        
+        return implicitActions;
+        
+//        int len = implicitActions.size();
+//        
+//        for (int i = 0; i < len; i++) {
+//            ImplicitModelAction ia = (ImplicitModelAction) implicitActions.get(i);
 
-        for (int i = 0; i < len; i++) {
-            ImplicitAction ia = (ImplicitAction) implicitActions.get(i);
-
-            if (ia.isApplicable(elementPath, attributes, ec)) {
-                List<Action> actionList = new ArrayList<Action>(1);
-                actionList.add(ia);
-
-                return actionList;
-            }
-        }
-
-        return null;
+//            if (ia.isApplicable(elementPath, attributes, ec)) {
+//                List<Action> actionList = new ArrayList<Action>(1);
+//                actionList.add(ia);
+//
+//                return actionList;
+//            }
+//        }
+//
+//        return null;
     }
 
     /**

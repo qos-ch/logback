@@ -3,6 +3,7 @@ package ch.qos.logback.core.model.processor;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -22,6 +23,12 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
 
     @Override
     public void handle(InterpretationContext ic, Model model) throws ModelHandlerException {
+        
+        if(!(model instanceof StatusListenerModel)) {
+            
+        }
+        StatusListenerModel statusListenerModel = (StatusListenerModel) model;
+        
         try {
             statusListener = (StatusListener) OptionHelper.instantiateByClassName(model.getClassName(), StatusListener.class, context);
             effectivelyAdded = ic.getContext().getStatusManager().add(statusListener);

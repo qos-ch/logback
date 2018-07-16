@@ -4,6 +4,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.TopModel;
 
 /**
  * Add a Model instance at the top of the InterpretationContext stack
@@ -13,9 +14,9 @@ import ch.qos.logback.core.model.Model;
 public class TopElementAction extends Action {
 
     public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        Model model = new Model();
-        model.setTag(name);
-        interpretationContext.pushObject(model);
+        TopModel topModel = new TopModel();
+        topModel.setTag(name);
+        interpretationContext.pushModel(topModel);
     }
 
     public void end(InterpretationContext interpretationContext, String name) {

@@ -15,55 +15,35 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ShutdownHookModel;
 
 /**
- * Action which handles &lt;shutdownHook&gt; elements in configuration files.
+ * Action which builds {@link ShutdownHookModel} based on &lt;shutdownHook&gt; elements found in configuration files.
  * 
  * @author Mike Reinhold
+ * @author Ceki G&uuml;lc&uuml;
  */
-public class ShutdownHookAction extends Action {
+public class ShutdownHookAction extends BaseModelAction {
 
-    ShutdownHookModel shutdownHookModel;
-    
-    //ShutdownHookBase hook;
-    private boolean inError;
 
-    /**
-     * Instantiates a shutdown hook of the given class and sets its name.
-     * 
-     * The hook thus generated is placed in the {@link InterpretationContext}'s
-     * shutdown hook bag.
-     */
     @Override
-    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
-        shutdownHookModel = null;
-        inError = false;
-
+    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        return true;
+    }
+    
+    @Override
+    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
         ShutdownHookModel shutdownHookModel = new ShutdownHookModel();
-        
+
         String className = attributes.getValue(CLASS_ATTRIBUTE);
         shutdownHookModel.setClassName(className);
-        ic.pushObject(shutdownHookModel);
+        
+        return shutdownHookModel;
     }
 
-    /**
-     * Once the children elements are also parsed, now is the time to activate the
-     * shutdown hook options.
-     */
-    @Override
-    public void end(InterpretationContext ic, String name) throws ActionException {
-        if (inError) {
-            return;
-        }
+  
 
-        Object o = ic.peekObject();
-        if (o != shutdownHookModel) {
-            addWarn("The object at the of the stack is not the hook pushed earlier.");
-        } else {
-            ic.popObject();
-        }
-    }
+
 }

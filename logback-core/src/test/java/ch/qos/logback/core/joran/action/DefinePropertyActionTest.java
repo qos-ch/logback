@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.action;
 
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -31,9 +30,17 @@ import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.model.DefineModel;
+import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.TopModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.DefineModelHandler;
+import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * Test {@link DefinePropertyAction}.
@@ -58,8 +65,20 @@ public class DefinePropertyActionTest {
     public void setUp() throws Exception {
 
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("define"), new DefinePropertyAction());
-        simpleConfigurator = new SimpleConfigurator(rulesMap);
+        rulesMap.put(new ElementSelector("top"), new TopElementAction());
+        rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
+        
+        simpleConfigurator = new SimpleConfigurator(rulesMap) {
+            @Override
+            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+                defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
+                defaultProcessor.addHandler(DefineModel.class, new DefineModelHandler(context));
+                defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context, getBeanDescriptionCache()));
+
+                return defaultProcessor;
+            }
+        };
         simpleConfigurator.setContext(context);
     }
 
@@ -83,15 +102,16 @@ public class DefinePropertyActionTest {
         String inContextFoo = context.getProperty("foo");
         assertNull(inContextFoo);
         // check context errors
-        checker.assertContainsMatch(Status.ERROR, "Missing property name for property definer. Near \\[define\\] line 1");
+        checker.assertContainsMatch(Status.ERROR, "Missing property name for property definer. Near \\[define\\] line 2");
     }
 
     @Test
     public void noClass() throws JoranException {
         simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
         String inContextFoo = context.getProperty("foo");
+       
         assertNull(inContextFoo);
-        checker.assertContainsMatch(Status.ERROR, "Missing class name for property definer. Near \\[define\\] line 1");
+        checker.assertContainsMatch(Status.ERROR, "Missing class name for property definer. Near \\[define\\] line 2");
     }
 
     @Test

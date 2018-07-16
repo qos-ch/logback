@@ -26,6 +26,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.InPlayListener;
 import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
@@ -40,6 +41,7 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class InterpretationContext extends ContextAwareBase implements PropertyContainer {
     Stack<Object> objectStack;
+    Stack<Model> modelStack;
     Map<String, Object> objectMap;
     Map<String, String> propertiesMap;
 
@@ -50,9 +52,10 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
     public InterpretationContext(Context context, Interpreter joranInterpreter) {
         this.context = context;
         this.joranInterpreter = joranInterpreter;
-        objectStack = new Stack<Object>();
-        objectMap = new HashMap<String, Object>(5);
-        propertiesMap = new HashMap<String, String>(5);
+        objectStack = new Stack<>();
+        modelStack = new Stack<>();
+        objectMap = new HashMap<>(5);
+        propertiesMap = new HashMap<>(5);
     }
 
     public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
@@ -109,6 +112,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
         return objectStack.peek();
     }
 
+    
     public void pushObject(Object o) {
         objectStack.push(o);
     }
@@ -117,6 +121,24 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
         return objectStack.pop();
     }
 
+    
+    public Model peekModel() {
+        return modelStack.peek();
+    }
+    
+    public void pushModel(Model m) {
+        modelStack.push(m);
+    }
+    
+    public boolean isModelStackEmpty() {
+        return modelStack.isEmpty();
+    }
+
+    public Model popModel() {
+        return modelStack.pop();
+    }
+
+    
     public Object getObject(int i) {
         return objectStack.get(i);
     }

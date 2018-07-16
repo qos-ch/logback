@@ -8,8 +8,8 @@ import ch.qos.logback.core.util.OptionHelper;
 /**
  * Abstract representation of configuration elements
  * 
- * @author Ceki Gulcu
- * @SINCE 1.3.0
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3.0
  */
 public class Model {
 
@@ -17,6 +17,8 @@ public class Model {
     String tag;
     String className;
     String bodyText;
+    int lineNumber;
+    
     List<Model> subModels = new ArrayList<>();
 
     public String getTag() {
@@ -33,6 +35,14 @@ public class Model {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
     }
 
     public List<Model> getSubModels() {

@@ -24,10 +24,16 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;
@@ -45,70 +51,74 @@ public class PropertyActionTest {
     PropertyAction propertyAction;
     DummyAttributes atts = new DummyAttributes();
     DefaultProcessor defaultProcessor;
-    Model model = new Model();
-    
+    TopModel topModel = new TopModel();
+    String tagName = "property";
     
     @Before
     public void setUp() throws Exception {
         context = new ContextBase();
         interpretationContext = new InterpretationContext(context, null);
-        interpretationContext.pushObject(model); 
+        topModel.setTag("top");
+        interpretationContext.pushModel(topModel);
         propertyAction = new PropertyAction();
         propertyAction.setContext(context);
         defaultProcessor = new DefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
+        defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
+        defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
+        defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context,  new BeanDescriptionCache(context)));
     }
 
     @After
     public void tearDown() throws Exception {
+        StatusPrinter.print(context);
         context = null;
         propertyAction = null;
         atts = null;
     }
 
     @Test
-    public void nameValuePair() {
+    public void nameValuePair() throws ActionException {
         atts.setValue("name", "v1");
         atts.setValue("value", "work");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals("work", interpretationContext.getProperty("v1"));
     }
 
     @Test
-    public void nameValuePairWithPrerequisiteSubsitution() {
+    public void nameValuePairWithPrerequisiteSubsitution() throws ActionException {
         context.putProperty("w", "wor");
         atts.setValue("name", "v1");
         atts.setValue("value", "${w}k");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals("work", interpretationContext.getProperty("v1"));
     }
 
     @Test
-    public void noValue() {
+    public void noValue() throws ActionException {
         atts.setValue("name", "v1");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
 
     @Test
-    public void noName() {
+    public void noName() throws ActionException {
         atts.setValue("value", "v1");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
 
     @Test
-    public void noAttributes() {
+    public void noAttributes() throws ActionException {
         propertyAction.begin(interpretationContext, "noAttributes", atts);
         propertyAction.end(interpretationContext, "noAttributes");
         defaultProcessor.process();
@@ -118,63 +128,63 @@ public class PropertyActionTest {
     }
 
     @Test
-    public void testFileNotLoaded() {
+    public void testFileNotLoaded() throws ActionException {
         atts.setValue("file", "toto");
         atts.setValue("value", "work");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
 
     @Test
-    public void testLoadFileWithPrerequisiteSubsitution() {
+    public void testLoadFileWithPrerequisiteSubsitution() throws ActionException {
         context.putProperty("STEM", CoreTestConstants.TEST_SRC_PREFIX + "input/joran");
         atts.setValue("file", "${STEM}/propertyActionTest.properties");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals("tata", interpretationContext.getProperty("v1"));
         assertEquals("toto", interpretationContext.getProperty("v2"));
     }
 
     @Test
-    public void testLoadFile() {
+    public void testLoadFile() throws ActionException {
         atts.setValue("file", CoreTestConstants.TEST_SRC_PREFIX + "input/joran/propertyActionTest.properties");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals("tata", interpretationContext.getProperty("v1"));
         assertEquals("toto", interpretationContext.getProperty("v2"));
     }
 
     @Test
-    public void testLoadResource() {
+    public void testLoadResource() throws ActionException {
         atts.setValue("resource", "asResource/joran/propertyActionTest.properties");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals("tata", interpretationContext.getProperty("r1"));
         assertEquals("toto", interpretationContext.getProperty("r2"));
     }
 
     @Test
-    public void testLoadResourceWithPrerequisiteSubsitution() {
+    public void testLoadResourceWithPrerequisiteSubsitution() throws ActionException {
         context.putProperty("STEM", "asResource/joran");
         atts.setValue("resource", "${STEM}/propertyActionTest.properties");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals("tata", interpretationContext.getProperty("r1"));
         assertEquals("toto", interpretationContext.getProperty("r2"));
     }
 
     @Test
-    public void testLoadNotPossible() {
+    public void testLoadNotPossible() throws ActionException {
         atts.setValue("file", "toto");
-        propertyAction.begin(interpretationContext, null, atts);
-        propertyAction.end(interpretationContext, null);
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process();
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkFileErrors());

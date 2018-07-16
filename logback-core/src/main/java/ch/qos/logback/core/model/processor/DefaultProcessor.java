@@ -37,10 +37,11 @@ public class DefaultProcessor extends ContextAwareBase {
         ModelHandlerBase handler = modelClassToHandlerMap.get(model.getClass());
 
         if (handler == null) {
-            addError("Can't handle model of type " + model.getClassName() + "  with tag: " + model.getTag());
+            addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag());
             return;
         }
 
+        System.out.println(model.getClass() + " --> "+handler.getClass());
         try {
             handler.handle(interpretationContext, model);
             for (Model m : model.getSubModels()) {
