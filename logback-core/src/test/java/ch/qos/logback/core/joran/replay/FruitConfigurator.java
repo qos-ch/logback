@@ -15,16 +15,18 @@ package ch.qos.logback.core.joran.replay;
 
 import java.util.List;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.GenericConfigurator;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.action.NOPAction;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.EventPlayer;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
 
 public class FruitConfigurator extends GenericConfigurator {
 
@@ -42,20 +44,21 @@ public class FruitConfigurator extends GenericConfigurator {
         player.play(eventList);
     }
 
-    @Override
-    protected void addImplicitRules(Interpreter interpreter) {
-        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
-        nestedIA.setContext(context);
-        interpreter.addImplicitAction(nestedIA);
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
-        nestedIA.setContext(context);
-        interpreter.addImplicitAction(nestedSimpleIA);
+        return defaultProcessor;
     }
 
     @Override
     protected void addInstanceRules(RuleStore rs) {
         rs.addRule(new ElementSelector("fruitShell"), new NOPAction());
+    }
+
+    @Override
+    protected void addImplicitRules(Interpreter interpreter) {
+        ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
+        interpreter.addImplicitAction(implicitRuleModelAction);
     }
 
 }

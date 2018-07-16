@@ -15,7 +15,6 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.TimestampModel;
@@ -29,60 +28,43 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class TimestampAction extends Action {
-
-    Object parent;
-    TimestampModel timestampModel;
+public class TimestampAction extends BaseModelAction {
 
     public static final String DATE_PATTERN_ATTRIBUTE = "datePattern";
     public static final String TIME_REFERENCE_ATTRIBUTE = "timeReference";
 
-    boolean inError = false;
 
     @Override
-    public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) throws ActionException {
-        parent = null;
-
+    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        boolean valid = true;
         String keyStr = attributes.getValue(KEY_ATTRIBUTE);
         if (OptionHelper.isEmpty(keyStr)) {
             addError("Attribute named [" + KEY_ATTRIBUTE + "] cannot be empty");
-            inError = true;
+            valid = false;
         }
         String datePatternStr = attributes.getValue(DATE_PATTERN_ATTRIBUTE);
         if (OptionHelper.isEmpty(datePatternStr)) {
             addError("Attribute named [" + DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
-            inError = true;
+            valid = false;
         }
+        return valid;
+    }
 
-        parent = interpretationContext.peekObject();
-        timestampModel = new TimestampModel();
+    
+    @Override
+    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        TimestampModel timestampModel = new TimestampModel();
 
-        timestampModel.setKey(keyStr);
-
-        timestampModel.setTag(name);
+        timestampModel.setKey(attributes.getValue(KEY_ATTRIBUTE));
         timestampModel.setDatePattern(attributes.getValue(DATE_PATTERN_ATTRIBUTE));
         timestampModel.setTimeReference(attributes.getValue(TIME_REFERENCE_ATTRIBUTE));
         timestampModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
+        
+        return timestampModel;
 
-        if (inError)
-            return;
-
-        interpretationContext.pushObject(timestampModel);
     }
 
-    @Override
-    public void end(InterpretationContext interpretationContext, String name) throws ActionException {
-        Object o = interpretationContext.peekObject();
 
-        if (o != timestampModel) {
-            addWarn("The object at the of the stack is not the model [" + timestampModel.getTag() + "] pushed earlier.");
-        } else {
-            if (this.parent instanceof Model) {
-                Model parentModel = (Model) parent;
-                parentModel.addSubModel(timestampModel);
-            }
-            interpretationContext.popObject();
-        }
-    }
+
 
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 import ch.qos.logback.core.ContextBase;
 
-public class FruitContext extends ContextBase {
+public class ReplayFruitContext extends ContextBase {
 
     List<FruitShell> fruitShellList = new ArrayList<FruitShell>();
 

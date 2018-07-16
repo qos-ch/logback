@@ -34,7 +34,7 @@ public class ConfigurationAction extends Action {
         configurationModel.setScanPeriodStr(attributes.getValue(SCAN_PERIOD_ATTR));
         configurationModel.setPackagingDataStr(attributes.getValue(PACKAGING_DATA_ATTR));
         
-        interpretationContext.pushObject(configurationModel);
+        interpretationContext.pushModel(configurationModel);
     }
 
 

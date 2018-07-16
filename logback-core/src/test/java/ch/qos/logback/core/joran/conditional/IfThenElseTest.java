@@ -123,6 +123,7 @@ public class IfThenElseTest {
         assertNull(System.getProperty(sysKey));
         assertNull(context.getProperty(dynaKey));
         tc.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem.xml");
+        StatusPrinter.print(context);
         System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
         assertNotNull(context.getProperty(dynaKey));
     }

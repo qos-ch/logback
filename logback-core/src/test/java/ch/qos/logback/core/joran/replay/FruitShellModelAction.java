@@ -18,40 +18,42 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.FruitShellModel;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.util.OptionHelper;
 
 /** 
  * The Fruit* code is intended to test Joran's replay capability
  * */
-public class FruitShellAction extends Action {
+public class FruitShellModelAction extends Action {
 
-    FruitShell fruitShell;
+    FruitShellModel fruitShellModel;
     private boolean inError = false;
 
     @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
 
         // We are just beginning, reset variables
-        fruitShell = new FruitShell();
+        fruitShellModel = new FruitShellModel();
         inError = false;
 
         try {
 
-            fruitShell.setContext(context);
+//            fruitShell.setContext(context);
 
             String shellName = attributes.getValue(NAME_ATTRIBUTE);
 
             if (OptionHelper.isEmpty(shellName)) {
                 addWarn("No appender name given for fruitShell].");
             } else {
-                fruitShell.setName(shellName);
+                fruitShellModel.setName(shellName);
                 addInfo("FruitShell named as [" + shellName + "]");
             }
 
-            ec.pushObject(fruitShell);
+            ec.pushModel(fruitShellModel);
         } catch (Exception oops) {
             inError = true;
-            addError("Could not create an FruitShell", oops);
+            addError("Could not create an FruitShellModel", oops);
             throw new ActionException(oops);
         }
     }
@@ -62,15 +64,15 @@ public class FruitShellAction extends Action {
             return;
         }
 
-        Object o = ec.peekObject();
+        Model m = ec.peekModel();
 
-        if (o != fruitShell) {
-            addWarn("The object at the of the stack is not the fruitShell named [" + fruitShell.getName() + "] pushed earlier.");
+        if (m != fruitShellModel) {
+            addWarn("The object at the of the stack is not the fruitShell named [" + fruitShellModel.getName() + "] pushed earlier.");
         } else {
-            addInfo("Popping fruitSHell named [" + fruitShell.getName() + "] from the object stack");
-            ec.popObject();
-            FruitContext fruitContext = (FruitContext) ec.getContext();
-            fruitContext.addFruitShell(fruitShell);
+            addInfo("Popping fruitSHell named [" + fruitShellModel.getName() + "] from the object stack");
+            ec.popModel();
+//            FruitContext fruitContext = (FruitContext) ec.getContext();
+//            fruitContext.addFruitShell(fruitShellModel);
         }
     }
 

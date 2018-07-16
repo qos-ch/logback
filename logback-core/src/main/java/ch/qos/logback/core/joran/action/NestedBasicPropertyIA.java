@@ -31,7 +31,7 @@ import ch.qos.logback.core.util.AggregationType;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NestedBasicPropertyIA extends ImplicitAction {
+public class NestedBasicPropertyIA extends ImplicitActionOld {
 
     // We use a stack of IADataForBasicProperty objects in order to
     // support nested elements which are handled by the same NestedBasicPropertyIA instance.

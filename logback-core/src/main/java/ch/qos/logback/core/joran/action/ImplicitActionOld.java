@@ -27,7 +27,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public abstract class ImplicitAction extends Action {
+public abstract class ImplicitActionOld extends Action {
 
     /**
      * Check whether this implicit action is appropriate in the current context.

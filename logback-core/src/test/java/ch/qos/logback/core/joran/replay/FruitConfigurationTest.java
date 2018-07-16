@@ -31,17 +31,17 @@ import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /** 
- * The Fruit* code is intended to test Joran's replay capability
+ * The Fruit code is intended to test Joran's replay capability
  * */
 public class FruitConfigurationTest {
 
-    FruitContext fruitContext = new FruitContext();
+    ReplayFruitContext fruitContext = new ReplayFruitContext();
 
     public List<FruitShell> doFirstPart(String filename) throws Exception {
 
         try {
             HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-            rulesMap.put(new ElementSelector("group/fruitShell"), new FruitShellAction());
+            rulesMap.put(new ElementSelector("group/fruitShell"), new FruitShellModelAction());
             rulesMap.put(new ElementSelector("group/fruitShell/fruit"), new FruitFactoryAction());
             rulesMap.put(new ElementSelector("group/fruitShell/fruit/*"), new NOPAction());
             SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap);
