@@ -40,7 +40,6 @@ import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * Test {@link DefinePropertyAction}.
@@ -57,8 +56,6 @@ public class DefinePropertyActionTest {
 
     SimpleConfigurator simpleConfigurator;
     Context context = new ContextBase();
-    DefinePropertyAction definerAction;
-    InterpretationContext ic;
     StatusChecker checker = new StatusChecker(context);
 
     @Before
@@ -84,7 +81,6 @@ public class DefinePropertyActionTest {
 
     @After
     public void tearDown() throws Exception {
-        // StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     }
 
     @Test
