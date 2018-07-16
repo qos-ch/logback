@@ -384,7 +384,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>9</version>
+              <version>[9, )</version>
             </jdk>
             <jdk>
               <version>${jdk.version}</version>
@@ -414,7 +414,7 @@
             <id>default-compile</id>
             <configuration>
               <jdkToolchain>
-                <version>9</version>
+                <version>[9, )</version>
               </jdkToolchain>
               <release>9</release>
             </configuration>
@@ -422,7 +422,7 @@
         </executions>
         <configuration>
           <jdkToolchain>
-            <version>[8,9)</version>
+            <version>[8,)</version>
           </jdkToolchain>
           <source>${jdk.version}</source>
           <target>${jdk.version}</target>
