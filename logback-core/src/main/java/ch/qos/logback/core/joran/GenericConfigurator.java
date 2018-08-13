@@ -37,6 +37,7 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
@@ -171,10 +172,16 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         synchronized (context.getConfigurationLock()) {
             interpreter.getEventPlayer().play(eventList);
         }
-        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
-        defaultProcessor.process();
+        
+        Model top = interpreter.getInterpretationContext().peekModel();
+        doConfigure(top, interpreter);
     }
 
+    public void doConfigure(Model model) {
+        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
+        defaultProcessor.process(model);
+    }
+    
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = new DefaultProcessor(context, interpreter.getInterpretationContext());
         return defaultProcessor;

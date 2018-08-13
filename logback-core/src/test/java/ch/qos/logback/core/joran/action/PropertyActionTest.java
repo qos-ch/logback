@@ -26,6 +26,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
@@ -48,6 +49,8 @@ public class PropertyActionTest {
 
     Context context;
     InterpretationContext interpretationContext;
+    Interpreter x;
+    
     PropertyAction propertyAction;
     DummyAttributes atts = new DummyAttributes();
     DefaultProcessor defaultProcessor;
@@ -82,7 +85,7 @@ public class PropertyActionTest {
         atts.setValue("value", "work");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals("work", interpretationContext.getProperty("v1"));
     }
 
@@ -93,7 +96,7 @@ public class PropertyActionTest {
         atts.setValue("value", "${w}k");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals("work", interpretationContext.getProperty("v1"));
     }
 
@@ -102,7 +105,7 @@ public class PropertyActionTest {
         atts.setValue("name", "v1");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
@@ -112,7 +115,7 @@ public class PropertyActionTest {
         atts.setValue("value", "v1");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
@@ -121,7 +124,7 @@ public class PropertyActionTest {
     public void noAttributes() throws ActionException {
         propertyAction.begin(interpretationContext, "noAttributes", atts);
         propertyAction.end(interpretationContext, "noAttributes");
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
         StatusPrinter.print(context);
@@ -133,7 +136,7 @@ public class PropertyActionTest {
         atts.setValue("value", "work");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
@@ -144,7 +147,7 @@ public class PropertyActionTest {
         atts.setValue("file", "${STEM}/propertyActionTest.properties");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals("tata", interpretationContext.getProperty("v1"));
         assertEquals("toto", interpretationContext.getProperty("v2"));
     }
@@ -154,7 +157,7 @@ public class PropertyActionTest {
         atts.setValue("file", CoreTestConstants.TEST_SRC_PREFIX + "input/joran/propertyActionTest.properties");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals("tata", interpretationContext.getProperty("v1"));
         assertEquals("toto", interpretationContext.getProperty("v2"));
     }
@@ -164,7 +167,7 @@ public class PropertyActionTest {
         atts.setValue("resource", "asResource/joran/propertyActionTest.properties");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals("tata", interpretationContext.getProperty("r1"));
         assertEquals("toto", interpretationContext.getProperty("r2"));
     }
@@ -175,7 +178,7 @@ public class PropertyActionTest {
         atts.setValue("resource", "${STEM}/propertyActionTest.properties");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals("tata", interpretationContext.getProperty("r1"));
         assertEquals("toto", interpretationContext.getProperty("r2"));
     }
@@ -185,7 +188,7 @@ public class PropertyActionTest {
         atts.setValue("file", "toto");
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
-        defaultProcessor.process();
+        defaultProcessor.process(topModel);
         assertEquals(1, context.getStatusManager().getCount());
         assertTrue(checkFileErrors());
     }
