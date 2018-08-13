@@ -23,10 +23,11 @@ import ch.qos.logback.core.joran.event.InPlayListener;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 
-public class FruitFactoryAction extends Action implements InPlayListener {
+public class FruitFactoryAction extends Action implements InPlayListener  {
 
-    List<SaxEvent> seList = new ArrayList<SaxEvent>();
+    List<Model> modelList = new ArrayList<Model>();
 
     @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
@@ -41,17 +42,17 @@ public class FruitFactoryAction extends Action implements InPlayListener {
         if (o instanceof FruitShell) {
             FruitShell fs = (FruitShell) o;
             FruitFactory fruitFactory = new FruitFactory();
-            fruitFactory.setEventList(new ArrayList<SaxEvent>(seList));
+            fruitFactory.setModelList(new ArrayList<Model>(modelList));
             fs.setFruitFactory(fruitFactory);
         }
     }
 
     public void inPlay(SaxEvent event) {
-        seList.add(event);
+        //seList.add(event);
     }
 
     public List<SaxEvent> getSeList() {
-        return seList;
+        return null;//seList;
     }
 
 }

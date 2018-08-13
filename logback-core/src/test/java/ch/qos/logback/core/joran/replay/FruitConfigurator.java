@@ -26,6 +26,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 
 public class FruitConfigurator extends GenericConfigurator {
@@ -36,14 +37,19 @@ public class FruitConfigurator extends GenericConfigurator {
         this.ff = ff;
     }
 
+
     @Override
-    final public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
+    final public void doConfigure(Model model) throws JoranException {
         buildInterpreter();
         interpreter.getInterpretationContext().pushObject(ff);
-        EventPlayer player = new EventPlayer(interpreter);
-        player.play(eventList);
+        
     }
 
+    public InterpretationContext getInterpretationContext() {
+        return interpreter.getInterpretationContext();
+    }
+    
+    @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
 

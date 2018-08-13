@@ -35,7 +35,11 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.model.TopModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.FileTestUtil;
@@ -90,11 +94,19 @@ public class IncludeActionTest {
     public void setUp() throws Exception {
         FileTestUtil.makeTestOutputDir();
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("x"), new NOPAction());
+        rulesMap.put(new ElementSelector("x"), new TopElementAction());
         rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
         rulesMap.put(new ElementSelector("x/stack"), stackAction);
 
-        tc = new TrivialConfigurator(rulesMap);
+        tc = new TrivialConfigurator(rulesMap) {
+            @Override
+            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+                defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
+                return defaultProcessor;
+            }
+        };
+        
         tc.setContext(context);
     }
 

@@ -84,6 +84,8 @@ public abstract class Action extends ContextAwareBase {
 
     protected int getLineNumber(InterpretationContext ic) {
         Interpreter interpreter = ic.getJoranInterpreter();
+        if(interpreter == null)
+            return -1;
         Locator locator = interpreter.getLocator();
         if (locator != null) {
             return locator.getLineNumber();

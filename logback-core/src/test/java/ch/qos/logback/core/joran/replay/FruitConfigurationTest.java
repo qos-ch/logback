@@ -21,10 +21,15 @@ import java.util.HashMap;
 import java.util.List;
 
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.TopModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 
 import org.junit.Test;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
@@ -44,7 +49,15 @@ public class FruitConfigurationTest {
             rulesMap.put(new ElementSelector("group/fruitShell"), new FruitShellModelAction());
             rulesMap.put(new ElementSelector("group/fruitShell/fruit"), new FruitFactoryAction());
             rulesMap.put(new ElementSelector("group/fruitShell/fruit/*"), new NOPAction());
-            SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap);
+            
+            SimpleConfigurator simpleConfigurator = new SimpleConfigurator(rulesMap) {
+                @Override
+                protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+                    DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+                    defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
+                    return defaultProcessor;
+                }  
+            };
 
             simpleConfigurator.setContext(fruitContext);
 

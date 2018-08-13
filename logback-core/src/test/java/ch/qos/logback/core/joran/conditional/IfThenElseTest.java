@@ -20,6 +20,8 @@ import java.util.Stack;
 import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -32,6 +34,11 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.TopModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.NOPModelHandler;
+import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
@@ -66,7 +73,16 @@ public class IfThenElseTest {
         rulesMap.put(new ElementSelector("*/if/else"), new ElseAction());
         rulesMap.put(new ElementSelector("*/if/else/*"), new NOPAction());
 
-        tc = new TrivialConfigurator(rulesMap);
+        tc = new TrivialConfigurator(rulesMap) {
+            @Override
+            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+                defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
+                defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
+                return defaultProcessor;
+            }
+        };
+        
         tc.setContext(context);
     }
 

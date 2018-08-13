@@ -15,20 +15,13 @@ package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
 
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.model.ImplicitModel;
-import ch.qos.logback.core.model.PropertyModel;
-import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.ImplicitModelHandler;
-import ch.qos.logback.core.model.processor.PropertyModelHandler;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
@@ -65,14 +58,4 @@ public class SimpleConfigurator extends GenericConfigurator {
             rs.addRule(elementSelector, action);
         }
     }
-    
-    @Override
-    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
-        defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context, getBeanDescriptionCache()));
-        
-        return defaultProcessor;
-    }
-
 }

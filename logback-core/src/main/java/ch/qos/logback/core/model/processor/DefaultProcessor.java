@@ -1,6 +1,8 @@
 package ch.qos.logback.core.model.processor;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -21,16 +23,15 @@ public class DefaultProcessor extends ContextAwareBase {
         modelClassToHandlerMap.put(modelClass, handler);
     }
 
-    public void process() {
-        if (interpretationContext.isModelStackEmpty()) {
-            addError("Expecting a Model instance at the top of hte interpretationContext");
+    public void process(Model model) {
+        if (model == null) {
+            addError("Expecting non null model to process");
             return;
         }
 
-        final Model topLevelModel = interpretationContext.peekModel();
-        traverse(topLevelModel);
-
+        traverse(model);
     }
+    
 
     void traverse(Model model) {
 
