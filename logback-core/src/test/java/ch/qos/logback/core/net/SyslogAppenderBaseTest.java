@@ -18,6 +18,17 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class SyslogAppenderBaseTest {
+
+    @Test
+    public void testFacilityStringTointShouldThrowIllegalArgumentException() {
+        try {
+            SyslogAppenderBase.facilityStringToint("*zH_");
+            org.junit.Assert.fail("should have thrown IllegalArgumentException");
+        } catch (IllegalArgumentException expected) {
+            assertEquals("*zH_ is not a valid syslog facility string", expected.getMessage());
+        }
+    }
+
     @Test
     public void testFacilityStringToint() throws InterruptedException {
         assertEquals(SyslogConstants.LOG_KERN, SyslogAppenderBase.facilityStringToint("KERN"));
