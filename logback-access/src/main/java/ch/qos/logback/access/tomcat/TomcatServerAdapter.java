@@ -18,8 +18,8 @@ import ch.qos.logback.access.spi.ServerAdapter;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A tomcat specific implementation of the {@link ServerAdapter} interface.
@@ -53,7 +53,7 @@ public class TomcatServerAdapter implements ServerAdapter {
 
     @Override
     public Map<String, String> buildResponseHeaderMap() {
-        Map<String, String> responseHeaderMap = new HashMap<String, String>();
+        Map<String, String> responseHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         for (String key : response.getHeaderNames()) {
             String value = response.getHeader(key);
             responseHeaderMap.put(key, value);

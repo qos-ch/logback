@@ -47,7 +47,7 @@ public class JettyFixtureWithListAndConsoleAppenders extends JettyFixtureBase {
         console.setName("console");
         PatternLayoutEncoder layout = new PatternLayoutEncoder();
         layout.setContext(requestLogImpl);
-        layout.setPattern("%date %server %clientHost");
+        layout.setPattern("%date %server %clientHost %responseHeader{correlation-id}");
         console.setEncoder(layout);
         layout.start();
         console.start();
