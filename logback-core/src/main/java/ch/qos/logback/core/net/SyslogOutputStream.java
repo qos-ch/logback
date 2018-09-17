@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.net;
 
+import ch.qos.logback.core.util.CloseUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -73,6 +75,7 @@ public class SyslogOutputStream extends OutputStream {
 
     public void close() {
         address = null;
+        CloseUtil.closeQuietly(ds);
         ds = null;
     }
 
