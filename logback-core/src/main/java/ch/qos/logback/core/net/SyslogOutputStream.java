@@ -67,15 +67,23 @@ public class SyslogOutputStream extends OutputStream {
         if (bytes.length == 0) {
             return;
         }
-        if (this.ds != null) {
-            ds.send(packet);
-        }
 
+        sendAndClose(packet);
+    }
+
+    public void sendAndClose(DatagramPacket packet)throws IOException{
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+        if (this.ds == null || this.ds.isClosed()) {
+            ds = new DatagramSocket();
+        }
+        ds.send(packet);
+        CloseUtil.closeQuietly(ds);
     }
 
     public void close() {
         address = null;
-        CloseUtil.closeQuietly(ds);
         ds = null;
     }
 
