@@ -33,6 +33,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /** 
@@ -46,6 +47,7 @@ public class FruitConfigurationTest {
 
         try {
             HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+            rulesMap.put(new ElementSelector("group"), new TopElementAction());
             rulesMap.put(new ElementSelector("group/fruitShell"), new FruitShellModelAction());
             rulesMap.put(new ElementSelector("group/fruitShell/fruit"), new FruitFactoryAction());
             rulesMap.put(new ElementSelector("group/fruitShell/fruit/*"), new NOPAction());

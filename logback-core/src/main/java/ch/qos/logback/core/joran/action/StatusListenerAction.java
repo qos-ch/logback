@@ -27,14 +27,6 @@ public class StatusListenerAction extends BaseModelAction {
     Boolean effectivelyAdded = null;
     StatusListener statusListener = null;
 
-
-    @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        StatusListenerModel statusListenerModel = new StatusListenerModel();
-        statusListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
-        return statusListenerModel;
-    }
-
     @Override
     protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
         String className = attributes.getValue(CLASS_ATTRIBUTE);
@@ -44,4 +36,13 @@ public class StatusListenerAction extends BaseModelAction {
         }
         return true;
     }
+
+    @Override
+    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        StatusListenerModel statusListenerModel = new StatusListenerModel();
+        statusListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        return statusListenerModel;
+    }
+
+
 }
