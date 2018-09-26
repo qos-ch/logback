@@ -46,7 +46,10 @@ public class FruitFactory {
         for (Model m : modelList)
             ic.pushModel(m);
         DefaultProcessor defaultProcessor = fruitConfigurator.buildDefaultProcessor(context, ic);
-        defaultProcessor.process();
+        
+        Model top = ic.peekModel();
+        
+        defaultProcessor.process(top);
 
         return fruit;
     }

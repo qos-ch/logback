@@ -174,7 +174,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         }
         
         Model top = interpreter.getInterpretationContext().peekModel();
-        doConfigure(top, interpreter);
+        doConfigure(top);
     }
 
     public void doConfigure(Model model) {
