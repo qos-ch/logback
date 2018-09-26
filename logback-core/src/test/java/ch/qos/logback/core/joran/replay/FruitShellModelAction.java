@@ -15,8 +15,7 @@ package ch.qos.logback.core.joran.replay;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.ActionException;
+import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.FruitShellModel;
 import ch.qos.logback.core.model.Model;
@@ -25,55 +24,30 @@ import ch.qos.logback.core.util.OptionHelper;
 /** 
  * The Fruit* code is intended to test Joran's replay capability
  * */
-public class FruitShellModelAction extends Action {
+public class FruitShellModelAction extends BaseModelAction {
 
     FruitShellModel fruitShellModel;
-    private boolean inError = false;
+
 
     @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
-
-        // We are just beginning, reset variables
+    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        String shellName = attributes.getValue(NAME_ATTRIBUTE);
+        if (OptionHelper.isEmpty(shellName)) {
+            addError("Missing name for fruitShell. Near [" + name + "] line " + getLineNumber(interpretationContext));
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
         fruitShellModel = new FruitShellModel();
-        inError = false;
-
-        try {
-
-//            fruitShell.setContext(context);
-
-            String shellName = attributes.getValue(NAME_ATTRIBUTE);
-
-            if (OptionHelper.isEmpty(shellName)) {
-                addWarn("No appender name given for fruitShell].");
-            } else {
-                fruitShellModel.setName(shellName);
-                addInfo("FruitShell named as [" + shellName + "]");
-            }
-
-            ec.pushModel(fruitShellModel);
-        } catch (Exception oops) {
-            inError = true;
-            addError("Could not create an FruitShellModel", oops);
-            throw new ActionException(oops);
-        }
+        String shellName = attributes.getValue(NAME_ATTRIBUTE);
+        fruitShellModel.setName(shellName);
+        addInfo("FruitShell named as [" + shellName + "]");
+        return fruitShellModel;
     }
+    
 
-    @Override
-    public void end(InterpretationContext ec, String name) throws ActionException {
-        if (inError) {
-            return;
-        }
-
-        Model m = ec.peekModel();
-
-        if (m != fruitShellModel) {
-            addWarn("The object at the of the stack is not the fruitShell named [" + fruitShellModel.getName() + "] pushed earlier.");
-        } else {
-            addInfo("Popping fruitSHell named [" + fruitShellModel.getName() + "] from the object stack");
-            ec.popModel();
-//            FruitContext fruitContext = (FruitContext) ec.getContext();
-//            fruitContext.addFruitShell(fruitShellModel);
-        }
-    }
 
 }
