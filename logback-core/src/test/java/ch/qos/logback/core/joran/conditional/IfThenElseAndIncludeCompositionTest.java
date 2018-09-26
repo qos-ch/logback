@@ -30,6 +30,7 @@ import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -55,7 +56,7 @@ public class IfThenElseAndIncludeCompositionTest {
     @Before
     public void setUp() throws Exception {
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("x"), new NOPAction());
+        rulesMap.put(new ElementSelector("x"), new TopElementAction());
         rulesMap.put(new ElementSelector("x/stack"), stackAction);
         rulesMap.put(new ElementSelector("*/if"), new IfAction());
         rulesMap.put(new ElementSelector("*/if/then"), new ThenAction());

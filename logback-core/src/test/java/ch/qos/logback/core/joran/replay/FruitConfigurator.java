@@ -39,7 +39,7 @@ public class FruitConfigurator extends GenericConfigurator {
 
 
     @Override
-    final public void doConfigure(Model model) throws JoranException {
+    final public void doConfigure(Model model) {
         buildInterpreter();
         interpreter.getInterpretationContext().pushObject(ff);
         
