@@ -17,18 +17,15 @@ import static ch.qos.logback.core.CoreConstants.UNBOUND_HISTORY;
 import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.rolling.helper.ArchiveRemover;
-import ch.qos.logback.core.rolling.helper.CompressionMode;
-import ch.qos.logback.core.rolling.helper.Compressor;
-import ch.qos.logback.core.rolling.helper.FileFilterUtil;
-import ch.qos.logback.core.rolling.helper.FileNamePattern;
-import ch.qos.logback.core.rolling.helper.RenameUtil;
+import ch.qos.logback.core.rolling.helper.*;
 import ch.qos.logback.core.util.FileSize;
 
 /**
@@ -114,8 +111,56 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         } else if (!isUnboundedTotalSizeCap()) {
             addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value ["+totalSizeCap+"]");
         }
-
         super.start();
+
+        compressElapsedPeriodFile();
+    }
+
+    private void compressElapsedPeriodFile() {
+        //  get rolling period
+        DateTokenConverter dtc = fileNamePattern.getPrimaryDateTokenConverter();
+
+        RollingCalendar rc = null;
+        if (dtc.getTimeZone() != null) {
+            rc = new RollingCalendar(dtc.getDatePattern(), dtc.getTimeZone(), Locale.getDefault());
+        } else {
+            rc = new RollingCalendar(dtc.getDatePattern());
+        }
+        long now = timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
+        Date next1 = rc.getNextTriggeringDate(new Date(now));
+        Date next2 = rc.getNextTriggeringDate(next1);
+
+        long period = next2.getTime() - next1.getTime();
+
+        // get elapsed period file name
+        Date dateOfElapsedPeriod = new Date(now - period);
+
+        String elapsedPeriodsFileName = fileNamePatternWithoutCompSuffix
+                .convert(dateOfElapsedPeriod);
+
+        // compress
+        addInfo("To compress "+elapsedPeriodsFileName);
+        File file = new File(elapsedPeriodsFileName);
+        if(!file.exists()){
+            return;
+        }
+        String elapsedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
+
+        if (compressionMode == CompressionMode.NONE) {
+            if (getParentsRawFileProperty() != null) {
+                renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
+            } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
+        } else {
+            if (getParentsRawFileProperty() == null) {
+                compressor.asyncCompress(elapsedPeriodsFileName, elapsedPeriodsFileName, elapsedPeriodStem);
+            } else {
+                renameRawAndAsyncCompress(elapsedPeriodsFileName, elapsedPeriodStem);
+            }
+        }
+
+        if (archiveRemover != null) {
+            archiveRemover.cleanAsynchronously(new Date(now));
+        }
     }
 
     protected boolean isUnboundedTotalSizeCap() {
