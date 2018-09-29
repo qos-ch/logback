@@ -264,4 +264,9 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         addInfo("setting totalSizeCap to "+totalSizeCap.toString());
         this.totalSizeCap = totalSizeCap;
     }
+     public void test(FileSize totalSizeCap) {
+        addInfo("setting totalSizeCap to "+totalSizeCap.toString());
+        this.totalSizeCap = totalSizeCap;
+    }
+   
 }
