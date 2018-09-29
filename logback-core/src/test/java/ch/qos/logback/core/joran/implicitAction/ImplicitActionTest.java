@@ -22,10 +22,19 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.StatusListenerModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.PropertyModelHandler;
+import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -44,7 +53,19 @@ public class ImplicitActionTest {
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
         rulesMap.put(new ElementSelector("/context/"), new FruitContextAction());
         rulesMap.put(new ElementSelector("/context/statusListener"), new StatusListenerAction());
-        simpleConfigurator = new SimpleConfigurator(rulesMap);
+        simpleConfigurator = new SimpleConfigurator(rulesMap) {
+            @Override
+            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+                defaultProcessor.addHandler(FruitContextModel.class, new FruitContextModelHandler(context));
+                defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
+                defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context, getBeanDescriptionCache()));
+                defaultProcessor.addHandler(StatusListenerModel.class, new StatusListenerModelHandler(context));
+                
+                return defaultProcessor;
+            }
+
+        };
         simpleConfigurator.setContext(fruitContext);
     }
 

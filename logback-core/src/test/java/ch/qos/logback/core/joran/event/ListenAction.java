@@ -21,20 +21,23 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.TopModel;
 
 public class ListenAction extends Action implements InPlayListener {
 
     List<SaxEvent> seList = new ArrayList<SaxEvent>();
 
     @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
-        ec.addInPlayListener(this);
+    public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) throws ActionException {
+        TopModel topModel = new TopModel();
+        topModel.setTag(name);
+        interpretationContext.pushModel(topModel);
+        interpretationContext.addInPlayListener(this);
     }
 
     @Override
     public void end(InterpretationContext ec, String name) throws ActionException {
         ec.removeInPlayListener(this);
-
     }
 
     public void inPlay(SaxEvent event) {

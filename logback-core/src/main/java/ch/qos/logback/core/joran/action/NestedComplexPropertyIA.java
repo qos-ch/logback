@@ -35,7 +35,7 @@ import ch.qos.logback.core.util.OptionHelper;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NestedComplexPropertyIA extends ImplicitAction {
+public class NestedComplexPropertyIA extends ImplicitActionOld {
 
     // actionDataStack contains ActionData instances
     // We use a stack of ActionData objects in order to support nested
@@ -57,7 +57,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         String nestedElementTagName = elementPath.peekLast();
 
         // calling ic.peekObject with an empty stack will throw an exception
-        if (ic.isEmpty()) {
+        if (ic.isObjectStackEmpty()) {
             return false;
         }
 

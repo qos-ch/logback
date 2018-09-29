@@ -13,11 +13,24 @@
  */
 package ch.qos.logback.classic.joran;
 
-import ch.qos.logback.classic.joran.action.*;
+import ch.qos.logback.classic.joran.action.ConfigurationAction;
+import ch.qos.logback.classic.joran.action.ConsolePluginAction;
+import ch.qos.logback.classic.joran.action.ContextNameAction;
+import ch.qos.logback.classic.joran.action.EvaluatorAction;
+import ch.qos.logback.classic.joran.action.InsertFromJNDIAction;
+import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
+import ch.qos.logback.classic.joran.action.LevelAction;
+import ch.qos.logback.classic.joran.action.LoggerAction;
+import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
+import ch.qos.logback.classic.joran.action.ReceiverAction;
+import ch.qos.logback.classic.joran.action.RootLoggerAction;
+import ch.qos.logback.classic.model.ConfigurationModel;
+import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
 import ch.qos.logback.classic.sift.SiftAction;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
@@ -27,7 +40,9 @@ import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.conditional.ThenAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -83,6 +98,13 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     @Override
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
         DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
+    }
+    
+    @Override
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+        defaultProcessor.addHandler(ConfigurationModel.class, new ConfigurationModelHandler(context));
+        return defaultProcessor;
     }
 
 }

@@ -13,12 +13,11 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import ch.qos.logback.core.util.CachingDateFormatter;
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.action.ActionUtil.Scope;
-import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -29,51 +28,43 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  * 
  */
-public class TimestampAction extends Action {
-    static String DATE_PATTERN_ATTRIBUTE = "datePattern";
-    static String TIME_REFERENCE_ATTRIBUTE = "timeReference";
-    static String CONTEXT_BIRTH = "contextBirth";
+public class TimestampAction extends BaseModelAction {
 
-    boolean inError = false;
+    public static final String DATE_PATTERN_ATTRIBUTE = "datePattern";
+    public static final String TIME_REFERENCE_ATTRIBUTE = "timeReference";
+
 
     @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        boolean valid = true;
         String keyStr = attributes.getValue(KEY_ATTRIBUTE);
         if (OptionHelper.isEmpty(keyStr)) {
             addError("Attribute named [" + KEY_ATTRIBUTE + "] cannot be empty");
-            inError = true;
+            valid = false;
         }
         String datePatternStr = attributes.getValue(DATE_PATTERN_ATTRIBUTE);
         if (OptionHelper.isEmpty(datePatternStr)) {
             addError("Attribute named [" + DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
-            inError = true;
+            valid = false;
         }
-
-        String timeReferenceStr = attributes.getValue(TIME_REFERENCE_ATTRIBUTE);
-        long timeReference;
-        if (CONTEXT_BIRTH.equalsIgnoreCase(timeReferenceStr)) {
-            addInfo("Using context birth as time reference.");
-            timeReference = context.getBirthTime();
-        } else {
-            timeReference = System.currentTimeMillis();
-            addInfo("Using current interpretation time, i.e. now, as time reference.");
-        }
-
-        if (inError)
-            return;
-
-        String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
-        Scope scope = ActionUtil.stringToScope(scopeStr);
-
-        CachingDateFormatter sdf = new CachingDateFormatter(datePatternStr);
-        String val = sdf.format(timeReference);
-
-        addInfo("Adding property to the context with key=\"" + keyStr + "\" and value=\"" + val + "\" to the " + scope + " scope");
-        ActionUtil.setProperty(ec, keyStr, val, scope);
+        return valid;
     }
 
+    
     @Override
-    public void end(InterpretationContext ec, String name) throws ActionException {
+    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+        TimestampModel timestampModel = new TimestampModel();
+
+        timestampModel.setKey(attributes.getValue(KEY_ATTRIBUTE));
+        timestampModel.setDatePattern(attributes.getValue(DATE_PATTERN_ATTRIBUTE));
+        timestampModel.setTimeReference(attributes.getValue(TIME_REFERENCE_ATTRIBUTE));
+        timestampModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
+        
+        return timestampModel;
+
     }
+
+
+
 
 }

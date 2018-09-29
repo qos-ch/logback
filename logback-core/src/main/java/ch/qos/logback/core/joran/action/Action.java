@@ -74,8 +74,8 @@ public abstract class Action extends ContextAwareBase {
     }
 
     protected int getColumnNumber(InterpretationContext ic) {
-        Interpreter ji = ic.getJoranInterpreter();
-        Locator locator = ji.getLocator();
+        Interpreter interpreter = ic.getJoranInterpreter();
+        Locator locator = interpreter.getLocator();
         if (locator != null) {
             return locator.getColumnNumber();
         }
@@ -83,8 +83,10 @@ public abstract class Action extends ContextAwareBase {
     }
 
     protected int getLineNumber(InterpretationContext ic) {
-        Interpreter ji = ic.getJoranInterpreter();
-        Locator locator = ji.getLocator();
+        Interpreter interpreter = ic.getJoranInterpreter();
+        if(interpreter == null)
+            return -1;
+        Locator locator = interpreter.getLocator();
         if (locator != null) {
             return locator.getLineNumber();
         }

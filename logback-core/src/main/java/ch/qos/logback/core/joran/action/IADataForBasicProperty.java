@@ -21,13 +21,12 @@ import ch.qos.logback.core.util.AggregationType;
  * 
  * @author Ceki Gulcu
  */
-class IADataForBasicProperty {
-    final PropertySetter parentBean;
-    final AggregationType aggregationType;
-    final String propertyName;
-    boolean inError;
+public class IADataForBasicProperty {
+    public final PropertySetter parentBean;
+    public final AggregationType aggregationType;
+    public final String propertyName;
 
-    IADataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
+    public IADataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
         this.parentBean = parentBean;
         this.aggregationType = aggregationType;
         this.propertyName = propertyName;

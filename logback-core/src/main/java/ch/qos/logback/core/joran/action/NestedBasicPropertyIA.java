@@ -31,7 +31,7 @@ import ch.qos.logback.core.util.AggregationType;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NestedBasicPropertyIA extends ImplicitAction {
+public class NestedBasicPropertyIA extends ImplicitActionOld {
 
     // We use a stack of IADataForBasicProperty objects in order to
     // support nested elements which are handled by the same NestedBasicPropertyIA instance.
@@ -48,12 +48,10 @@ public class NestedBasicPropertyIA extends ImplicitAction {
     }
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
-        // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
-        // "]");
         String nestedElementTagName = elementPath.peekLast();
 
         // no point in attempting if there is no parent object
-        if (ec.isEmpty()) {
+        if (ec.isObjectStackEmpty()) {
             return false;
         }
 

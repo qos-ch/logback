@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PropertyActionTest.class, IncludeActionTest.class })
+@SuiteClasses({ PropertyActionTest.class, IncludeActionTest.class, DefinePropertyActionTest.class })
 public class PackageTest {
 }

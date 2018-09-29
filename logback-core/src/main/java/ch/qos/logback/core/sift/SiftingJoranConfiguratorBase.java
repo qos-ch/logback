@@ -43,13 +43,13 @@ public abstract class SiftingJoranConfiguratorBase<E> extends GenericConfigurato
 
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
-        NestedComplexPropertyIA nestedComplexIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
-        nestedComplexIA.setContext(context);
-        interpreter.addImplicitAction(nestedComplexIA);
-
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
-        nestedSimpleIA.setContext(context);
-        interpreter.addImplicitAction(nestedSimpleIA);
+//        NestedComplexPropertyIA nestedComplexIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
+//        nestedComplexIA.setContext(context);
+//        interpreter.addImplicitAction(nestedComplexIA);
+//
+//        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
+//        nestedSimpleIA.setContext(context);
+//        interpreter.addImplicitAction(nestedSimpleIA);
     }
 
     @Override

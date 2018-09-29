@@ -13,16 +13,7 @@
  */
 package ch.qos.logback.core.joran;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.spi.*;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.status.StatusUtil;
-
-import org.xml.sax.InputSource;
+import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +23,24 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
-import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
+import org.xml.sax.InputSource;
+
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.event.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
+import ch.qos.logback.core.joran.spi.ElementPath;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SimpleRuleStore;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.status.StatusUtil;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
@@ -164,6 +172,19 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         synchronized (context.getConfigurationLock()) {
             interpreter.getEventPlayer().play(eventList);
         }
+        
+        Model top = interpreter.getInterpretationContext().peekModel();
+        doConfigure(top);
+    }
+
+    public void doConfigure(Model model) {
+        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
+        defaultProcessor.process(model);
+    }
+    
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = new DefaultProcessor(context, interpreter.getInterpretationContext());
+        return defaultProcessor;
     }
 
     /**

@@ -16,6 +16,7 @@ package ch.qos.logback.core.joran;
 import java.util.HashMap;
 
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.spi.ElementSelector;
@@ -34,11 +35,16 @@ public class SimpleConfigurator extends GenericConfigurator {
     protected void addImplicitRules(Interpreter interpreter) {
         NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
         nestedIA.setContext(context);
-        interpreter.addImplicitAction(nestedIA);
+//        interpreter.addImplicitAction(nestedIA);
 
         NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
         nestedSimpleIA.setContext(context);
-        interpreter.addImplicitAction(nestedSimpleIA);
+//        interpreter.addImplicitAction(nestedSimpleIA);
+        
+        
+        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+        interpreter.addImplicitAction(implicitRuleModelAction);
+
     }
 
     public Interpreter getInterpreter() {
@@ -52,5 +58,4 @@ public class SimpleConfigurator extends GenericConfigurator {
             rs.addRule(elementSelector, action);
         }
     }
-
 }

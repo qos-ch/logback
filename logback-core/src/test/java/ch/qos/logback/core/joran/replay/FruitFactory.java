@@ -17,14 +17,15 @@ import java.util.List;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
 
 public class FruitFactory {
 
     static int count = 0;
 
-    private List<SaxEvent> eventList;
+    private List<Model> modelList;
     Fruit fruit;
 
     public void setFruit(Fruit fruit) {
@@ -40,11 +41,16 @@ public class FruitFactory {
         count++;
         FruitConfigurator fruitConfigurator = new FruitConfigurator(this);
         fruitConfigurator.setContext(context);
-        try {
-            fruitConfigurator.doConfigure(eventList);
-        } catch (JoranException je) {
-            je.printStackTrace();
-        }
+
+        InterpretationContext ic = fruitConfigurator.getInterpretationContext();
+        for (Model m : modelList)
+            ic.pushModel(m);
+        DefaultProcessor defaultProcessor = fruitConfigurator.buildDefaultProcessor(context, ic);
+        
+        Model top = ic.peekModel();
+        
+        defaultProcessor.process(top);
+
         return fruit;
     }
 
@@ -54,16 +60,16 @@ public class FruitFactory {
         StringBuilder retValue = new StringBuilder();
 
         retValue.append("FruitFactory ( ");
-        if (eventList != null && eventList.size() > 0) {
-            retValue.append("event1 = ").append(eventList.get(0)).append(TAB);
+        if (modelList != null && modelList.size() > 0) {
+            retValue.append("event1 = ").append(modelList.get(0)).append(TAB);
         }
         retValue.append(" )");
 
         return retValue.toString();
     }
 
-    public void setEventList(List<SaxEvent> eventList) {
-        this.eventList = eventList;
+    public void setModelList(List<Model> modelList) {
+        this.modelList = modelList;
     }
 
 }

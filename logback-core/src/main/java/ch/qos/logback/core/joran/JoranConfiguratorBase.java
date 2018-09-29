@@ -17,14 +17,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.Appender;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
 import ch.qos.logback.core.joran.action.DefinePropertyAction;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.PropertyAction;
@@ -35,6 +35,18 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.ShutdownHookModel;
+import ch.qos.logback.core.model.StatusListenerModel;
+import ch.qos.logback.core.model.TimestampModel;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.PropertyModelHandler;
+import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
+import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
+import ch.qos.logback.core.model.processor.TimestampModelHandler;
+
 
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
 // see also http://tinyurl.com/c2rp5
@@ -81,13 +93,16 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     @Override
     protected void addImplicitRules(Interpreter interpreter) {
         // The following line adds the capability to parse nested components
-        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
-        nestedComplexPropertyIA.setContext(context);
-        interpreter.addImplicitAction(nestedComplexPropertyIA);
-
-        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
-        nestedBasicIA.setContext(context);
-        interpreter.addImplicitAction(nestedBasicIA);
+//        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
+//        nestedComplexPropertyIA.setContext(context);
+//        interpreter.addImplicitAction(nestedComplexPropertyIA);
+//
+//        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
+//        nestedBasicIA.setContext(context);
+//        interpreter.addImplicitAction(nestedBasicIA);
+        
+        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+        interpreter.addImplicitAction(implicitRuleModelAction);
     }
 
     @Override
@@ -101,4 +116,17 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     public InterpretationContext getInterpretationContext() {
         return interpreter.getInterpretationContext();
     }
+
+    @Override
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+        defaultProcessor.addHandler(ShutdownHookModel.class, new ShutdownHookModelHandler(context));
+        defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
+        defaultProcessor.addHandler(TimestampModel.class, new TimestampModelHandler(context));
+        defaultProcessor.addHandler(StatusListenerModel.class, new StatusListenerModelHandler(context));
+        defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context, getBeanDescriptionCache()));
+
+        return defaultProcessor;
+    }
+
 }

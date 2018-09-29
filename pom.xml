@@ -47,7 +47,7 @@
   </modules>
 
   <properties>
-    <jdk.version>1.8</jdk.version>
+    <jdk.version>8</jdk.version>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -369,6 +369,7 @@
 
     <plugins>
 
+      <!-- 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-toolchains-plugin</artifactId>
@@ -384,7 +385,7 @@
         <configuration>
           <toolchains>
             <jdk>
-              <version>9</version>
+              <version>[9, )</version>
             </jdk>
             <jdk>
               <version>${jdk.version}</version>
@@ -392,41 +393,19 @@
           </toolchains>
         </configuration>
       </plugin>
-
+      -->
+ 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-
-          <execution>
-            <id>base-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
+    	<configuration>
+             <source>${jdk.version}</source>
+         	 <target>${jdk.version}</target>
               <excludes>
                 <exclude>module-info.java</exclude>
               </excludes>
-            </configuration>
-          </execution> 
-
-          <execution>
-            <id>default-compile</id>
-            <configuration>
-              <jdkToolchain>
-                <version>9</version>
-              </jdkToolchain>
-              <release>9</release>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <jdkToolchain>
-            <version>[8,9)</version>
-          </jdkToolchain>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-        </configuration>
+         </configuration>
+    
       </plugin>
 
  
