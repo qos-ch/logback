@@ -44,7 +44,7 @@ public class SyslogOutputStream extends OutputStream {
     public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException, SocketException {
         this.address = InetAddress.getByName(syslogHost);
         this.port = port;
-        this.ds = new DatagramSocket();
+        //this.ds = new DatagramSocket();
     }
 
     public void write(byte[] byteArray, int offset, int len) throws IOException {
@@ -67,14 +67,10 @@ public class SyslogOutputStream extends OutputStream {
         if (bytes.length == 0) {
             return;
         }
-
         sendAndClose(packet);
     }
 
     public void sendAndClose(DatagramPacket packet)throws IOException{
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$;$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         if (this.ds == null || this.ds.isClosed()) {
             ds = new DatagramSocket();
         }
@@ -97,6 +93,9 @@ public class SyslogOutputStream extends OutputStream {
     }
 
     int getSendBufferSize() throws SocketException {
-        return ds.getSendBufferSize();
+        ds = new DatagramSocket();
+        int bs= ds.getSendBufferSize();
+        ds.close();
+        return bs;
     }
 }
