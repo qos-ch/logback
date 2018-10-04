@@ -44,7 +44,6 @@ public class SyslogOutputStream extends OutputStream {
     public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException, SocketException {
         this.address = InetAddress.getByName(syslogHost);
         this.port = port;
-        //this.ds = new DatagramSocket();
     }
 
     public void write(byte[] byteArray, int offset, int len) throws IOException {
