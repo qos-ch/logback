@@ -14,7 +14,6 @@
 package ch.qos.logback.core.net;
 
 import ch.qos.logback.core.util.CloseUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
