@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.db.names;
 
+import java.util.Locale;
+
 /**
  * The default name resolver simply returns the enum passes as parameter
  * as a lower case string.
@@ -24,11 +26,11 @@ package ch.qos.logback.classic.db.names;
 public class DefaultDBNameResolver implements DBNameResolver {
 
     public <N extends Enum<?>> String getTableName(N tableName) {
-        return tableName.toString().toLowerCase();
+        return tableName.toString().toLowerCase(Locale.ENGLISH);
     }
 
     public <N extends Enum<?>> String getColumnName(N columnName) {
-        return columnName.toString().toLowerCase();
+        return columnName.toString().toLowerCase(Locale.ENGLISH);
     }
 
 }

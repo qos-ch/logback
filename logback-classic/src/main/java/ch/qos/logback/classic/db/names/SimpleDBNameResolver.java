@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.db.names;
 
+import java.util.Locale;
+
 /**
  * Adds custom prefix/suffix to table and column names.
  *
@@ -30,11 +32,11 @@ public class SimpleDBNameResolver implements DBNameResolver {
     private String columnNameSuffix = "";
 
     public <N extends Enum<?>> String getTableName(N tableName) {
-        return tableNamePrefix + tableName.name().toLowerCase() + tableNameSuffix;
+        return tableNamePrefix + tableName.name().toLowerCase(Locale.ENGLISH) + tableNameSuffix;
     }
 
     public <N extends Enum<?>> String getColumnName(N columnName) {
-        return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
+        return columnNamePrefix + columnName.name().toLowerCase(Locale.ENGLISH) + columnNameSuffix;
     }
 
     public void setTableNamePrefix(String tableNamePrefix) {
