@@ -100,7 +100,7 @@
 
     <h3>• <span class="code">logger(String name, Level level, List&lt;String&gt; appenderNames = [], <br>         Boolean additivity = null)</span></h3>
 
-    <p><code>logger()</code>メソッドは引数を四つとります。後ろの二つは任意です。第一引数にはロガーの名前を指定します。第二引数にはロガーのログレベルを指定します。ログレベルに<code>null</code>を指定すると、直近の祖先ロガーに指定されたログレベルを<a href="./01-architecture.html#effectiveLevel">継承</a>するという意味になります。第三引数は<code>List&lt;String&gt;</code>で任意です。省略した場合は空のリストを指定したものとして扱います。リストにはロガーに割り当てるアペンダーの名前を並べます。第四引数は<code>Boolean</code>でこちらも任意です。<a href="./01-architecture.html#additivity">additivityフラグ</a>として使われます。省略した場合は<code>null</code>が指定されたものとして扱います。
+    <p><code>logger()</code>メソッドは引数を四つとります。後ろの二つは任意です。第一引数にはロガーの名前を指定します。第二引数にはロガーのログレベルを指定します。ログレベルに<code>null</code>を指定すると、直近の祖先ロガーに指定されたログレベルを<a href="./architecture_ja.html#effectiveLevel">継承</a>するという意味になります。第三引数は<code>List&lt;String&gt;</code>で任意です。省略した場合は空のリストを指定したものとして扱います。リストにはロガーに割り当てるアペンダーの名前を並べます。第四引数は<code>Boolean</code>でこちらも任意です。<a href="./architecture_ja.html#additivity">additivityフラグ</a>として使われます。省略した場合は<code>null</code>が指定されたものとして扱います。
     </p> 
 
     <p>たとえば、次のスクリプトはロガー名として"com.foo"、ログレベルとしてINFOを設定します。</p>
@@ -186,7 +186,7 @@ root(DEBUG, ["STDOUT"])</pre>
 
     <pre class="prettyprint source">scan("30 seconds")</pre>
     
-    <p>時間単位がない場合ミリ秒が指定されたものとして扱いますが、ほとんどの場合これは不適切な単位です。デフォルトの監視周期を変更する場合は、時間単位を指定することを忘れないでください。どのように変更を監視するのかについて詳しくは<a href="./03-configuration.html#autoScan">自動再読み込みのセクション</a>を参照してください。
+    <p>時間単位がない場合ミリ秒が指定されたものとして扱いますが、ほとんどの場合これは不適切な単位です。デフォルトの監視周期を変更する場合は、時間単位を指定することを忘れないでください。どのように変更を監視するのかについて詳しくは<a href="./configuration_ja.html#autoScan">自動再読み込みのセクション</a>を参照してください。
     </p>
     
     <!-- ========================================================== -->
@@ -200,7 +200,7 @@ root(DEBUG, ["STDOUT"])</pre>
 <b>// statusListener()メソッドの呼び出しはimport文の直後、他の式よりも前に置くことを強く推奨します</b>
 <b>statusListener(OnConsoleStatusListener)</b></pre>
  
-    <p><a href="./03-configuration.html#statusListener">ステータスリスナー</a>については前の章で説明しました。</p>
+    <p><a href="./configuration_ja.html#statusListener">ステータスリスナー</a>については前の章で説明しました。</p>
 
     <h3>• <span class="code">jmxConfigurator(String name)</span></h3>
 

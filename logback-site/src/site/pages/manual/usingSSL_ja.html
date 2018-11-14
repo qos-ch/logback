@@ -96,7 +96,7 @@
         </tr>
       </table>
 
-      <p><a href="./15-usingSSL.html#Examples">こちらの例</a>で、SSL対応のサーバーコンポーネントを実行する際にシステムプロパティを指定する方法を確認してください。
+      <p><a href="./usingSSL_ja.html#Examples">こちらの例</a>で、SSL対応のサーバーコンポーネントを実行する際にシステムプロパティを指定する方法を確認してください。
       </p>
          
       <p>サーバーコンポーネントが民間の証明機関（CA）で署名された証明書を使うときは、<strong>おそらくクライアントコンポーネントでSSLの設定をする必要はありません。</strong>サーバー側では、JVMのシステムプロパティとしてキーストアを指定するだけでよいです。
@@ -127,7 +127,7 @@
         </tr>
       </table>
 
-      <p><a href="./15-usingSSL.html#Examples">こちらの例</a>で、SSL対応のクライアントコンポーネントを実行する際にシステムプロパティを指定する方法を確認してください。
+      <p><a href="./usingSSL_ja.html#Examples">こちらの例</a>で、SSL対応のクライアントコンポーネントを実行する際にシステムプロパティを指定する方法を確認してください。
       </p>         
             
       <h3 class="doAnchor"><a name="SSLConfiguration"></a>高度なSSLの設定</h3>
@@ -210,7 +210,7 @@
           <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyManagerFactoryFactoryBean.html">
               <code>KeyManagerFactoryFactoryBean</code></a>
           </td>
-          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></code>の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのファクトリが使われます。<a href="./15-usingSSL.html#KeyManagerFactoryFactoryBean">キーマネージャファクトリの設定</a>を参照してください。
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></code>の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのファクトリが使われます。<a href="./usingSSL_ja.html#KeyManagerFactoryFactoryBean">キーマネージャファクトリの設定</a>を参照してください。
           </td>
         </tr>
         <tr>
@@ -225,7 +225,7 @@
             </p>
             <p>SSLサーバー（<code>SimpleSSLSocketServer</code>など）の<span class="prop" container="ssl">keyStore</span>プロパティには、サーバー証明書を格納したキーストアを指定します。このプロパティが設定されていない場合は、JSSEのシステムプロパティ<code>javax.net.ssl.keyStore</code>に、サーバーのキーストアの場所を指定しておかなければなりません。詳細は<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html">JSSEリファレンスガイド</a>の<a href="http://docs.oracle.com/javase/1.5.0/docs/guide/security/jsse/JSSERefGuide.html#InstallationAndCustomization">JSSEのカスタマイズ</a>を参照してください。
             </p>
-            <p><a href="./15-usingSSL.html#KeyStoreFactoryBean">キーストアの設定</a>については後述します。
+            <p><a href="./usingSSL_ja.html#KeyStoreFactoryBean">キーストアの設定</a>については後述します。
             </p>
           </td>
         </tr>
@@ -233,7 +233,7 @@
           <td><span class="prop" container="ssl">parameters</span></td>
           <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SSLParametersConfiguration.html">
               <code>SSLParametersConfiguration</code></a></td>
-          <td>SSLセッションのネゴシエーションで使用するいろいろなパラメータを指定します。<a href="./15-usingSSL.html#SSLParametersConfiguration">SSLパラメータの設定</a>については後述します。
+          <td>SSLセッションのネゴシエーションで使用するいろいろなパラメータを指定します。<a href="./usingSSL_ja.html#SSLParametersConfiguration">SSLパラメータの設定</a>については後述します。
           </td>
         </tr>
         <tr>
@@ -253,7 +253,7 @@
           <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/SecureRandomFactoryBean.html">
               <code>SecureRandomFactoryBean</code></a>
           </td>
-          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/SecureRandom.html">SecureRandom</a></code>（安全な乱数生成器）の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトの乱数生成器が使用されます。<a href="./15-usingSSL.html#SecureRandomFactoryBean">安全な乱数生成器の設定</a>については後述します。
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/SecureRandom.html">SecureRandom</a></code>（安全な乱数生成器）の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトの乱数生成器が使用されます。<a href="./usingSSL_ja.html#SecureRandomFactoryBean">安全な乱数生成器の設定</a>については後述します。
           </td>
         </tr>
         <tr>
@@ -261,7 +261,7 @@
           <td><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/TrustManagerFactoryFactoryBean.html">
               <code>TrustManagerFactoryFactoryBean</code></a>
           </td>
-          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></code>の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのファクトリーを使用します。<a href="./15-usingSSL.html#TrustManagerFactoryFactoryBean">トラストマネージャファクトリー</a>については後述します。
+          <td><code><a href="http://docs.oracle.com/javase/1.5.0/docs/api/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></code>の設定を指定します。このプロパティが設定されていない場合は、JVMのデフォルトのファクトリーを使用します。<a href="./usingSSL_ja.html#TrustManagerFactoryFactoryBean">トラストマネージャファクトリー</a>については後述します。
           </td>
         </tr>
         <tr>
@@ -281,7 +281,7 @@
       
       <h4 class="doAnchor"><a name="KeyStoreFactoryBean"></a>キーストアの設定</h4>
           
-      <p><code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyStoreFactoryBean.html">KeyStoreFactoryBean</a></code>は、X.509証明書を格納した<a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/KeyStore.html"><code>KeyStore</code></a>を作成するために必要な設定を提供します。このファクトリーBeanのプロパティは、<a href="./15-usingSSL.html#SSLConfiguration">SSLの設定</a>で紹介した<a href="./15-usingSSL.html#ssl.keyStore"><span class="prop" container="ssl">keyStore</span></a>および<a href="./15-usingSSL.html#ssl.trustStore"><span class="prop" container="ssl">trustStore</span></a>として使うことができます。
+      <p><code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/net/ssl/KeyStoreFactoryBean.html">KeyStoreFactoryBean</a></code>は、X.509証明書を格納した<a href="http://docs.oracle.com/javase/1.5.0/docs/api/java/security/KeyStore.html"><code>KeyStore</code></a>を作成するために必要な設定を提供します。このファクトリーBeanのプロパティは、<a href="./usingSSL_ja.html#SSLConfiguration">SSLの設定</a>で紹介した<a href="./usingSSL_ja.html#ssl.keyStore"><span class="prop" container="ssl">keyStore</span></a>および<a href="./usingSSL_ja.html#ssl.trustStore"><span class="prop" container="ssl">trustStore</span></a>として使うことができます。
       </p>
  
       <table class="bodyTable striped">
@@ -663,7 +663,7 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       </p>
       
       <h4>ソリューション</h4>
-      <p>システムプロパティの<a href="./15-usingSSL.html#basicConfig.keyStore">キーストア</a>か、サーバーコンポーネントの<span class="prop">ssl</span>の設定で<span class="prop"><a href="./15-usingSSL.html#ssl.keyStore">keyStore</a></span>プロパティに、サーバ証明書を含むキーストアの場所を指定してください。あと、キーストアのパスワードも指定してください。
+      <p>システムプロパティの<a href="./usingSSL_ja.html#basicConfig.keyStore">キーストア</a>か、サーバーコンポーネントの<span class="prop">ssl</span>の設定で<span class="prop"><a href="./usingSSL_ja.html#ssl.keyStore">keyStore</a></span>プロパティに、サーバ証明書を含むキーストアの場所を指定してください。あと、キーストアのパスワードも指定してください。
       </p>
       
       <h3>クライアントはサーバーを信頼できません</h3>
@@ -705,7 +705,7 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       </table>
         
       <h4>ソリューション</h4>
-      <p>サーバー側のログに<code>certificate_unknown</code>が現れているときは、システムプロパティ<a href="./15-usingSSL.html#basicConfig.trustStore">トラストストア</a>か、アペンダーの<span class="prop">ssl</span>設定に<a href="./15-usingSSL.html#ssl.trustStore">trustStore</a>プロパティを指定してください。サーバーの自己署名証明書か、証明書に署名したCAのルート証明書を格納した<span class="prop">トラストストア</span>の場所と、アクセスするためのパスワードを指定しなければなりません。
+      <p>サーバー側のログに<code>certificate_unknown</code>が現れているときは、システムプロパティ<a href="./usingSSL_ja.html#basicConfig.trustStore">トラストストア</a>か、アペンダーの<span class="prop">ssl</span>設定に<a href="./usingSSL_ja.html#ssl.trustStore">trustStore</a>プロパティを指定してください。サーバーの自己署名証明書か、証明書に署名したCAのルート証明書を格納した<span class="prop">トラストストア</span>の場所と、アクセスするためのパスワードを指定しなければなりません。
       </p>
 
       <p>サーバー側のログに<code>certificate_expired</code>か<code>certificate_revoked</code>が現れているときは、新しいサーバー証明書が必要です。サーバーの設定で指定したキーストアの場所に、新しいサーバー証明書と対応する秘密鍵を配置してください。自己署名サーバー証明書を使っているときは、クライアントのアペンダーの設定に指定されているトラストストアにも新しい証明書を配置しなければなりません。
@@ -713,7 +713,7 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       
       <h3>サーバーはクライアントを信頼できません
 </h3>
-      <p>注： <strong>この問題が生じるのは、サーバーがクライアント証明書を要求するように明示的に設定している場合だけです（<a href="./15-usingSSL.html#parameters.needClientAuth"><span class="prop">needClientAuth</span></a>か<a href="./15-usingSSL.html#parameters.wantClientAuth"><span class="prop">wantClientAuth</span></a>プロパティを指定したときです）。</strong>
+      <p>注： <strong>この問題が生じるのは、サーバーがクライアント証明書を要求するように明示的に設定している場合だけです（<a href="./usingSSL_ja.html#parameters.needClientAuth"><span class="prop">needClientAuth</span></a>か<a href="./usingSSL_ja.html#parameters.wantClientAuth"><span class="prop">wantClientAuth</span></a>プロパティを指定したときです）。</strong>
       </p>
  
       <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。
@@ -751,7 +751,7 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       </table>
         
       <h4>ソリューション</h4>
-      <p>クライアント側のログに<code>bad_certificate</code>が現れているときは、システムプロパティ<a href="./15-usingSSL.html#basicConfig.trustStore">トラストストア</a>かサーバーコンポーネントの<span class="prop">ssl</span>設定の<span class="prop"><a href="./15-usingSSL.html#ssl.trustStore">trustStore</a></span>プロパティに、トラストストアの場所とパスワードを指定しなければなりません。トラストストアにはクライアントの自己署名証明書か、証明書に署名したCAのルート証明書が含まれていなければなりません。
+      <p>クライアント側のログに<code>bad_certificate</code>が現れているときは、システムプロパティ<a href="./usingSSL_ja.html#basicConfig.trustStore">トラストストア</a>かサーバーコンポーネントの<span class="prop">ssl</span>設定の<span class="prop"><a href="./usingSSL_ja.html#ssl.trustStore">trustStore</a></span>プロパティに、トラストストアの場所とパスワードを指定しなければなりません。トラストストアにはクライアントの自己署名証明書か、証明書に署名したCAのルート証明書が含まれていなければなりません。
       </p>
 
       <p>サーバー側のログに<code>certifacte_expired</code>あるいは<code>certificate_revoked</code>が現れているときは、新しい証明書が必要です。クライアントの設定で指定したキーストアの場所に、新しい証明書と対応する秘密鍵を配置してください。自己署名証明書を使っているときは、サーバーの設定に指定されているトラストストアにも新しい証明書を配置しなければなりません。
@@ -759,7 +759,7 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       </p>
       
       <h3>クライアントとサーバー間でSSLプロトコルを合意できません</h3>
-      <p>注： <strong>この問題が生じるのは、明示的にSSLプロトコルを<a href="./15-usingSSL.html#parameters.excludedProtocols">除外</a>したり<a href="./15-usingSSL.html#parameters.includedProtocols">指定</a>している場合だけです</strong> 。
+      <p>注： <strong>この問題が生じるのは、明示的にSSLプロトコルを<a href="./usingSSL_ja.html#parameters.excludedProtocols">除外</a>したり<a href="./usingSSL_ja.html#parameters.includedProtocols">指定</a>している場合だけです</strong> 。
       </p>
 
       <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。</p>
@@ -776,12 +776,12 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       <p>一方のピアで除外したプロトコルが、もう一方のピアでは除外されていない場合に発生します。</p>
          
       <h4>ソリューション</h4>
-      <p>サーバーとクライアントの両方で、<a href="./15-usingSSL.html#parameters.excludedProtocols"><span class="prop">excludedProtocols</span></a>と<a href="./15-usingSSL.html#parameters.includedProtocols"><span class="prop">includedProtocols</span></a>に指定した値を確認してください。
+      <p>サーバーとクライアントの両方で、<a href="./usingSSL_ja.html#parameters.excludedProtocols"><span class="prop">excludedProtocols</span></a>と<a href="./usingSSL_ja.html#parameters.includedProtocols"><span class="prop">includedProtocols</span></a>に指定した値を確認してください。
       </p>
 
       <h3>クライアントとサーバー間で暗号スイートを合意できません
 </h3>
-      <p>注： <strong>この問題が生じるのは、明示的に暗号スイートを<a href="./15-usingSSL.html#parameters.excludedCipherSuites">除外</a>したり<a href="./15-usingSSL.html#parameters.includedCipherSuites">指定</a>している場合だけです</strong> 。
+      <p>注： <strong>この問題が生じるのは、明示的に暗号スイートを<a href="./usingSSL_ja.html#parameters.excludedCipherSuites">除外</a>したり<a href="./usingSSL_ja.html#parameters.includedCipherSuites">指定</a>している場合だけです</strong> 。
       </p>
       
       <p>クライアントがサーバに接続しようとするとき、次のような例外メッセージがログに現れます。
@@ -800,7 +800,7 @@ Trust this certificate? [no]:  &lt;Enter "yes"&gt;
       <p>クライアントとサーバーそれぞれの暗号スイート一覧について、1つも一致するものが無い場合に発生します。</p>
       
       <h4>ソリューション</h4>
-      <p>サーバーとクライアントの両方で、<a href="./15-usingSSL.html#parameters.excludedCipherSuites"><span class="prop">excludedCipherSuites</span></a>と<a href="./15-usingSSL.html#parameters.includedCipherSuites"><span class="prop">includedCipherSuites</span></a>に指定した値を確認してください。
+      <p>サーバーとクライアントの両方で、<a href="./usingSSL_ja.html#parameters.excludedCipherSuites"><span class="prop">excludedCipherSuites</span></a>と<a href="./usingSSL_ja.html#parameters.includedCipherSuites"><span class="prop">includedCipherSuites</span></a>に指定した値を確認してください。
 
       </p>
          

@@ -1,6 +1,13 @@
 dist: trusty
 language: java
 jdk: oraclejdk9
+addons:
+  apt:
+    packages:
+    - python-pip
+before_script:
+  - pip install --user linkchecker
+  - linkchecker --ignore-url=.*(?:png|jpg|jpeg|gif|tiff|bmp|svg|js)$ --ignore-url=contextSelector.html --ignore-url=xref/ch/qos/logback/access/filter/CountingFilter.html logback-site/src/site/pages/manual/appenders_ja.html
 notifications:
   email:
       - notification@qos.ch
