@@ -155,7 +155,7 @@ public class SimpleMDC {
 
     <p>For the sake of conciseness, we have the omitted the code that
     configures logback with the configuration file <a
-    href="http://github.com/qos-ch/logback/blob/master/logback-examples/src/main/java/chapters/mdc/simpleMDC.xml">simpleMDC.xml</a>. Here
+    href="http://github.com/qos-ch/logback/blob/master/logback-examples/src/main/resources/chapters/mdc/simpleMDC.xml">simpleMDC.xml</a>. Here
     is the relevant section from that file.
     </p>
 
@@ -214,7 +214,7 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 		<p>The next example is somewhat more advanced.  It shows how the
 		<code>MDC</code> can be used in a client-server setting.  The
 		server-side implements the <code>NumberCruncher</code> interface
-		shown in Example 7.2 below. <code>The NumberCruncher</code>
+		shown in Example 7.2 below. The <code>NumberCruncher</code>
 		interface contains a single method named
 		<code>factor()</code>. Using RMI technology, the client invokes
 		the <code>factor()</code> method of the server application to
@@ -420,12 +420,12 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			cruncher example. Start the server with the following command:
 		</p>
 		
-<div class="source"><pre>java chapters.mdc.NumberCruncherServer src/main/java/chapters/mdc/mdc1.xml</pre></div>
+<div class="source"><pre>java chapters.mdc.NumberCruncherServer src/main/resources/chapters/mdc/mdc1.xml</pre></div>
 		
 		<p>
 			The <em>mdc1.xml</em> configuration file is listed below:
 		</p>
-<em>Example 7.4: Configuration file (logback-examples/src/main/java/chapters/mdc/mdc1.xml)</em>
+<em>Example 7.4: Configuration file (logback-examples/src/main/resources/chapters/mdc/mdc1.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout>
