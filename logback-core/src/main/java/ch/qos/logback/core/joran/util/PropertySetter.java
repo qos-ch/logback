@@ -278,7 +278,7 @@ public class PropertySetter extends ContextAwareBase {
             return;
         }
         if (arg != null) {
-            invokeMethodWithSingleParameterOnThisObject(adderMethod, strValue);
+            invokeMethodWithSingleParameterOnThisObject(adderMethod, arg);
         }
     }
 
