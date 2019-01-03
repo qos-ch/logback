@@ -13,12 +13,12 @@
  */
 package ch.qos.logback.classic.util;
 
-import org.slf4j.spi.MDCAdapter;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.spi.MDCAdapter;
 
 /**
  * A <em>Mapped Diagnostic Context</em>, or MDC in short, is an instrument for

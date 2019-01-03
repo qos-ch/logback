@@ -13,14 +13,18 @@
  */
 package ch.qos.logback.classic.util;
 
-import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
+import org.junit.Test;
+import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class LogbackMDCAdapterTest {
 
