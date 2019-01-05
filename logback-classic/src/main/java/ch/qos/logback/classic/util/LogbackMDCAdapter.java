@@ -26,9 +26,7 @@ import org.slf4j.spi.MDCAdapter;
  * typically interleaved when a server handles multiple clients
  * near-simultaneously.
  * <p/>
- * <b><em>The MDC is managed on a per thread basis</em></b>. A child thread
- * automatically inherits a <em>copy</em> of the mapped diagnostic context of
- * its parent.
+ * <b><em>The MDC is managed on a per thread basis</em></b>.
  * <p/>
  * <p/>
  * For more information about MDC, please refer to the online manual at
