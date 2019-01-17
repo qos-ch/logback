@@ -24,29 +24,22 @@ public class ResponseHeaderConverter extends AccessConverter {
     public void start() {
         key = getFirstOption();
         if (OptionHelper.isEmpty(key)) {
-            addWarn("Missing key for the response header");
-        } else {
-            super.start();
+            addWarn("Missing key for the response header. Defaulting to all keys.");
+            key = null;
         }
+        super.start();
     }
 
     @Override
     public String convert(IAccessEvent accessEvent) {
         if (!isStarted()) {
-            return "INACTIVE_REPONSE_HEADER_CONV";
+            return "INACTIVE_RESPONSE_HEADER_CONV";
         }
 
-        return accessEvent.getResponseHeader(key);
-        // return null;
-
-        // HttpServletResponse response = accessEvent.getHttpResponse();
-        //
-        // Object value = null; // = response.getHeader(key);
-        // if (value == null) {
-        // return AccessConverter.NA;
-        // } else {
-        // return value.toString();
-        // }
+        if (key != null) {
+            return accessEvent.getResponseHeader(key);
+        } else {
+            return accessEvent.getResponseHeaderMap().toString();
+        }
     }
-
 }
