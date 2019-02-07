@@ -186,7 +186,12 @@ public class LogbackMDCAdapter implements MDCAdapter {
         if (hashMap == null) {
             return null;
         } else {
-            return new HashMap<String, String>(hashMap);
+            // it is possible gets a reference of this thread local from OTHER threads, (e.g for debugging purposes), and modify it
+            // so we don't want an exception when we make a copy of this map, hence we need to synchronize when iterating over it
+            //noinspection SynchronizationOnLocalVariableOrMethodParameter
+            synchronized (hashMap) {
+                return new HashMap<String, String>(hashMap);
+            }
         }
     }
 
