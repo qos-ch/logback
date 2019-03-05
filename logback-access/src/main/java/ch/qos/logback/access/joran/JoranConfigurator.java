@@ -18,7 +18,6 @@ import ch.qos.logback.access.PatternLayoutEncoder;
 import ch.qos.logback.access.boolex.JaninoEventEvaluator;
 import ch.qos.logback.access.joran.action.ConfigurationAction;
 import ch.qos.logback.access.joran.action.EvaluatorAction;
-import ch.qos.logback.access.sift.SiftAction;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
@@ -49,7 +48,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
         rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction<IAccessEvent>());
 
-        rs.addRule(new ElementSelector("configuration/appender/sift"), new SiftAction());
         rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
 
         rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());

@@ -16,6 +16,11 @@
   <name>Logback Core Module</name>
   <description>logback-core module</description>
 
+
+  <properties>
+    <module-name>ch.qos.logback.core</module-name>
+  </properties>
+  
   <dependencies>
     <dependency>
        <groupId>org.codehaus.janino</groupId>
@@ -87,6 +92,9 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
+            <manifestEntries>
+              <Multi-Release>true</Multi-Release>
+            </manifestEntries>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
 

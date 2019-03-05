@@ -26,7 +26,6 @@ import ch.qos.logback.classic.joran.action.ReceiverAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
-import ch.qos.logback.classic.sift.SiftAction;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
@@ -63,9 +62,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         rs.addRule(new ElementSelector("configuration/insertFromJNDI"), new InsertFromJNDIAction());
         rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());
 
-        rs.addRule(new ElementSelector("configuration/appender/sift"), new SiftAction());
-        rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
-
+        
         rs.addRule(new ElementSelector("configuration/logger"), new LoggerAction());
         rs.addRule(new ElementSelector("configuration/logger/level"), new LevelAction());
 

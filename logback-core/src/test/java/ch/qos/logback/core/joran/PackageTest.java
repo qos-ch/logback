@@ -20,7 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ SkippingInInterpreterTest.class, TrivialConfiguratorTest.class, ch.qos.logback.core.joran.action.PackageTest.class,
         ch.qos.logback.core.joran.event.PackageTest.class, ch.qos.logback.core.joran.util.PackageTest.class, ch.qos.logback.core.joran.spi.PackageTest.class,
-        ch.qos.logback.core.joran.replay.PackageTest.class, ch.qos.logback.core.joran.implicitAction.PackageTest.class,
+        ch.qos.logback.core.joran.implicitAction.PackageTest.class,
         ch.qos.logback.core.joran.conditional.PackageTest.class })
 public class PackageTest {
 

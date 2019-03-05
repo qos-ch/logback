@@ -16,6 +16,10 @@
   <name>Logback Classic Module</name>
   <description>logback-classic module</description>
 
+  <properties>
+    <module-name>ch.qos.logback.classic</module-name>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
