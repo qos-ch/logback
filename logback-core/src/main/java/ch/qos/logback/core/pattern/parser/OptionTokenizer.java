@@ -19,6 +19,7 @@ import java.util.List;
 import ch.qos.logback.core.pattern.util.AsIsEscapeUtil;
 import ch.qos.logback.core.pattern.util.IEscapeUtil;
 
+import static ch.qos.logback.core.CoreConstants.CURLY_LEFT;
 import static ch.qos.logback.core.CoreConstants.CURLY_RIGHT;
 
 import static ch.qos.logback.core.CoreConstants.ESCAPE_CHAR;
@@ -34,6 +35,7 @@ public class OptionTokenizer {
     private final static int EXPECTING_STATE = 0;
     private final static int RAW_COLLECTING_STATE = 1;
     private final static int QUOTED_COLLECTING_STATE = 2;
+    private final static int NESTED_COLLECTING_STATE = 3;
 
     final IEscapeUtil escapeUtil;
     final TokenStream tokenStream;
@@ -58,6 +60,7 @@ public class OptionTokenizer {
         StringBuffer buf = new StringBuffer();
         List<String> optionList = new ArrayList<String>();
         char c = firstChar;
+        int nestedBraces = 0;
 
         while (tokenStream.pointer < patternLength) {
             switch (state) {
@@ -77,6 +80,11 @@ public class OptionTokenizer {
                 case CURLY_RIGHT:
                     emitOptionToken(tokenList, optionList);
                     return;
+                case CURLY_LEFT:
+                    buf.append(c);
+                    nestedBraces++;
+                    state = NESTED_COLLECTING_STATE;
+                    break;
                 default:
                     buf.append(c);
                     state = RAW_COLLECTING_STATE;
@@ -87,12 +95,16 @@ public class OptionTokenizer {
                 case COMMA_CHAR:
                     optionList.add(buf.toString().trim());
                     buf.setLength(0);
-                    state = EXPECTING_STATE;
                     break;
                 case CURLY_RIGHT:
                     optionList.add(buf.toString().trim());
                     emitOptionToken(tokenList, optionList);
                     return;
+                case CURLY_LEFT:
+                    buf.append(c);
+                    nestedBraces++;
+                    state = NESTED_COLLECTING_STATE;
+                    break;
                 default:
                     buf.append(c);
                 }
@@ -107,7 +119,21 @@ public class OptionTokenizer {
                 } else {
                     buf.append(c);
                 }
-
+                break;
+            case NESTED_COLLECTING_STATE:
+                buf.append(c);
+                switch(c) {
+                case CURLY_LEFT:
+                    nestedBraces++;
+                    break;
+                case CURLY_RIGHT:
+                    nestedBraces--;
+                    if (nestedBraces < 1) {
+                        optionList.add(buf.toString());
+                        buf.setLength(0);
+                        state = RAW_COLLECTING_STATE;
+                    }
+                }
                 break;
             }
 
@@ -117,6 +143,14 @@ public class OptionTokenizer {
 
         // EOS
         if (c == CURLY_RIGHT) {
+            if (nestedBraces == 1) {
+                buf.append(c);
+                optionList.add(buf.toString());
+                emitOptionToken(tokenList, optionList);
+                return;
+            } else if (nestedBraces > 1) {
+                throw new ScanException("Unexpected end of pattern string in OptionTokenizer");
+            }
             if (state == EXPECTING_STATE) {
                 emitOptionToken(tokenList, optionList);
             } else if (state == RAW_COLLECTING_STATE) {

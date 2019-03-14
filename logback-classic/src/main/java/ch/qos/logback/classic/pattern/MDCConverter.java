@@ -13,23 +13,31 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 import java.util.Map;
 
-import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
+import ch.qos.logback.core.util.OptionHelper;
 
 public class MDCConverter extends ClassicConverter {
 
     private String key;
-    private String defaultValue = "";
+    private PatternLayout defaultValue = new PatternLayout();
 
     @Override
     public void start() {
-        String[] keyInfo = extractDefaultReplacement(getFirstOption());
+        String[] keyInfo = OptionHelper.extractDefaultReplacement(getFirstOption());
         key = keyInfo[0];
         if (keyInfo[1] != null) {
-            defaultValue = keyInfo[1];
+            if (getContext() != null) {
+                defaultValue.setContext(getContext());
+            } else {
+                defaultValue.setContext(new LoggerContext());
+            }
+            defaultValue.setPattern(keyInfo[1]);
+            defaultValue.start();
         }
         super.start();
     }
@@ -45,7 +53,7 @@ public class MDCConverter extends ClassicConverter {
         Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
         if (mdcPropertyMap == null) {
-            return defaultValue;
+            return defaultValue.doLayout(event);
         }
 
         if (key == null) {
@@ -56,7 +64,7 @@ public class MDCConverter extends ClassicConverter {
             if (value != null) {
                 return value;
             } else {
-                return defaultValue;
+                return defaultValue.doLayout(event);
             }
         }
     }
