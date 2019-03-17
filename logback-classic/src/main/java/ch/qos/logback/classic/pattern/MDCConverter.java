@@ -28,7 +28,10 @@ public class MDCConverter extends ClassicConverter {
 
     @Override
     public void start() {
-        String[] keyInfo = OptionHelper.extractDefaultReplacement(String.join("",getOptionList()));
+        String[] keyInfo = new String[2];
+        if (getOptionList() != null) {
+            keyInfo = OptionHelper.extractDefaultReplacement(String.join("",getOptionList()));
+        }
         key = keyInfo[0];
         if (keyInfo[1] != null) {
             if (getContext() != null) {
