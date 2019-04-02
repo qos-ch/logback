@@ -18,7 +18,6 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * Creates {@link DefineModel} instance and populate its name, className and scope.
@@ -40,20 +39,10 @@ public class DefinePropertyAction extends BaseModelAction {
 
     @Override
     protected boolean validPreconditions(InterpretationContext ic, String name, Attributes attributes) {
-        boolean valid = true;
-        String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
-            addError("Missing class name for property definer. Near [" + name + "] line " + getLineNumber(ic));
-            valid = false;
-        }
-        
-        String propertyName = attributes.getValue(NAME_ATTRIBUTE);
-        if (OptionHelper.isEmpty(propertyName)) {
-            addError("Missing property name for property definer. Near [" + name + "] line " + getLineNumber(ic));
-            valid = false;
-        }
-        System.out.println("DefinePropertyAction validPreconditions "+ valid);
-        return valid;
+    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
+    	validator.validateClassAttribute();
+    	validator.validateNameAttribute();
+        return validator.isValid();
     }
 
 }

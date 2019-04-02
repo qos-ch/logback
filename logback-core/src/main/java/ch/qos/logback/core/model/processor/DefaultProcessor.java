@@ -1,8 +1,6 @@
 package ch.qos.logback.core.model.processor;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -28,7 +26,6 @@ public class DefaultProcessor extends ContextAwareBase {
             addError("Expecting non null model to process");
             return;
         }
-
         traverse(model);
     }
     
@@ -44,6 +41,10 @@ public class DefaultProcessor extends ContextAwareBase {
 
         System.out.println(model.getClass() + " --> "+handler.getClass());
         try {
+        	if(!handler.isSupportedModelType(model)) {
+        		addWarn("Skipping processing for model "+model.idString());
+        		return;
+        	}
             handler.handle(interpretationContext, model);
             for (Model m : model.getSubModels()) {
                 traverse(m);

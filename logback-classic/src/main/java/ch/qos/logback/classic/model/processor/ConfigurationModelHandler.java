@@ -30,6 +30,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         super(context);
     }
 
+    
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
 

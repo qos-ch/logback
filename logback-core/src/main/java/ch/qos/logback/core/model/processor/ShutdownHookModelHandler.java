@@ -18,13 +18,16 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
     }
 
     @Override
+    protected Class<ShutdownHookModel> getSupportedModelClass() {
+    	return ShutdownHookModel.class;
+    }
+
+
+    
+    @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
 
-        if(!(model instanceof ShutdownHookModel)) {
-            addError("Can only handle models of type [" + ShutdownHookModel.class + "]");
-            return;
-        }
-        ShutdownHookModel shutdownHookModel = (ShutdownHookModel) model;
+    	ShutdownHookModel shutdownHookModel = (ShutdownHookModel) model;
 
         
         String className = shutdownHookModel.getClassName();

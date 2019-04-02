@@ -82,7 +82,8 @@ public abstract class Action extends ContextAwareBase {
         return -1;
     }
 
-    protected int getLineNumber(InterpretationContext ic) {
+    // move to InterpretationContext
+    static public int getLineNumber(InterpretationContext ic) {
         Interpreter interpreter = ic.getJoranInterpreter();
         if(interpreter == null)
             return -1;

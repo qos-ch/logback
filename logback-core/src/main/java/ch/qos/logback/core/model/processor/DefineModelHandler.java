@@ -3,13 +3,9 @@ package ch.qos.logback.core.model.processor;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
-import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.TimestampModel;
-import ch.qos.logback.core.model.processor.ModelHandlerBase;
-import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.PropertyDefiner;
 import ch.qos.logback.core.util.OptionHelper;
@@ -31,22 +27,22 @@ public class DefineModelHandler extends ModelHandlerBase {
     public DefineModelHandler(Context context) {
         super(context);
     }
-
+    
+    @Override
+    protected Class<DefineModel> getSupportedModelClass() {
+    	return DefineModel.class;
+    }
+    
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         definer = null;
         inError = false;
         propertyName = null;
 
-        if (!(model instanceof DefineModel)) {
-            addError("Can only handle models of type [" + DefineModel.class + "]");
-            return;
-        }
-
+        
         DefineModel defineModel = (DefineModel) model;
 
         propertyName = defineModel.getName();
-        System.out.println("propertyName="+propertyName);
         String scopeStr = defineModel.getScopeStr();
 
         scope = ActionUtil.stringToScope(scopeStr);

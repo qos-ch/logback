@@ -12,8 +12,6 @@ public class NOPModelHandler extends ModelHandlerBase {
 
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
-      
-
     }
 
 }

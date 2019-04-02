@@ -27,12 +27,14 @@ public class PropertyModelHandler extends ModelHandlerBase {
     }
 
     @Override
+    protected Class<PropertyModel> getSupportedModelClass() {
+    	return PropertyModel.class;
+    }
+
+    
+    @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
 
-        if(!(model instanceof PropertyModel)) {
-            addError("Can only handle models of type [" + PropertyModel.class + "]");
-            return;
-        }
         PropertyModel propertyModel = (PropertyModel) model;
  
         

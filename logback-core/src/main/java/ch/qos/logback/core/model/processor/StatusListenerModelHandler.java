@@ -22,24 +22,26 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
     }
 
     @Override
+    protected Class<StatusListenerModel> getSupportedModelClass() {
+    	return StatusListenerModel.class;
+    }
+
+    @Override
     public void handle(InterpretationContext ic, Model model) throws ModelHandlerException {
         
-        if(!(model instanceof StatusListenerModel)) {
-            
-        }
-        StatusListenerModel statusListenerModel = (StatusListenerModel) model;
+        StatusListenerModel slModel = (StatusListenerModel) model;
         
         try {
-            statusListener = (StatusListener) OptionHelper.instantiateByClassName(model.getClassName(), StatusListener.class, context);
+            statusListener = (StatusListener) OptionHelper.instantiateByClassName(slModel.getClassName(), StatusListener.class, context);
             effectivelyAdded = ic.getContext().getStatusManager().add(statusListener);
             if (statusListener instanceof ContextAware) {
                 ((ContextAware) statusListener).setContext(context);
             }
-            addInfo("Added status listener of type [" + model.getClassName() + "]");
+            addInfo("Added status listener of type [" + slModel.getClassName() + "]");
             ic.pushObject(statusListener);
         } catch (Exception e) {
             inError = true;
-            addError("Could not create an StatusListener of type [" + model.getClassName() + "].", e);
+            addError("Could not create an StatusListener of type [" + slModel.getClassName() + "].", e);
             throw new ModelHandlerException(e);
         }   
     }

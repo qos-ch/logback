@@ -52,7 +52,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
     @Override
     public void addInstanceRules(RuleStore rs) {
-        // parent rules already added
+        // add parent rules 
         super.addInstanceRules(rs);
 
         rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());

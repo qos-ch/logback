@@ -40,6 +40,7 @@ import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * Test {@link DefinePropertyAction}.
@@ -98,7 +99,8 @@ public class DefinePropertyActionTest {
         String inContextFoo = context.getProperty("foo");
         assertNull(inContextFoo);
         // check context errors
-        checker.assertContainsMatch(Status.ERROR, "Missing property name for property definer. Near \\[define\\] line 2");
+      
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\] near line 2");
     }
 
     @Test
@@ -106,8 +108,9 @@ public class DefinePropertyActionTest {
         simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
         String inContextFoo = context.getProperty("foo");
        
+        StatusPrinter.print(context);
         assertNull(inContextFoo);
-        checker.assertContainsMatch(Status.ERROR, "Missing class name for property definer. Near \\[define\\] line 2");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\] near line 2");
     }
 
     @Test

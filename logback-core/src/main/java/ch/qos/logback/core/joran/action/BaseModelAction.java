@@ -21,9 +21,11 @@ public abstract class BaseModelAction extends Action {
             inError = true;
             return;
         }
-        parentModel = interpretationContext.peekModel();
         currentModel = buildCurrentModel(interpretationContext, name, attributes);
         currentModel.setTag(name);
+        if(!interpretationContext.isModelStackEmpty()) {
+        	parentModel = interpretationContext.peekModel();
+        }
         final int lineNumber = getLineNumber(interpretationContext);
         currentModel.setLineNumber(lineNumber);
         interpretationContext.pushModel(currentModel);
@@ -31,7 +33,25 @@ public abstract class BaseModelAction extends Action {
 
     abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
 
-    abstract protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes);
+    /**
+     * Validate preconditions of this action.
+     * 
+     * By default, true is returned. Sub-classes should override appropriatelly.
+     * 
+     * @param interpretationContext
+     * @param name
+     * @param attributes
+     * @return
+     */
+    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    	return true;
+    }
+
+    @Override
+    public void body(InterpretationContext ec, String body) {
+        String finalBody = ec.subst(body);
+        currentModel.addText(finalBody);
+    }
 
     @Override
     public void end(InterpretationContext interpretationContext, String name) throws ActionException {
@@ -41,8 +61,11 @@ public abstract class BaseModelAction extends Action {
         Model m = interpretationContext.peekModel();
 
         if (m != currentModel) {
-            addWarn("The object at the of the stack is not the model [" + currentModel.getTag() + "] pushed earlier.");
-        } else {
+            addWarn("The object at the of the stack is not the model [" + currentModel.idString() + "] pushed earlier.");
+            addWarn("This is wholly unexpected.");
+        } 
+        
+        if(parentModel != null) {
             parentModel.addSubModel(currentModel);
             interpretationContext.popModel();
         }

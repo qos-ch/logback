@@ -20,11 +20,12 @@ public class TimestampModelHandler  extends ModelHandlerBase {
     }
 
     @Override
+    protected Class<TimestampModel> getSupportedModelClass() {
+    	return TimestampModel.class;
+    }
+    
+    @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
-        if(!(model instanceof TimestampModel)) {
-            addError("Can only handle models of type [" + TimestampModel.class + "]");
-            return;
-        }
         TimestampModel timestampModel = (TimestampModel) model;
         String keyStr = timestampModel.getKey();
         if (OptionHelper.isEmpty(keyStr)) {

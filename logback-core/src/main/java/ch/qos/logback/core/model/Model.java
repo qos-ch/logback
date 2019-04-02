@@ -74,6 +74,12 @@ public class Model {
         return false;
     }
 
+
+    public String idString() {
+        return "<"+tag+"> at line "+lineNumber;
+    }
+
+    
     @Override
     public String toString() {
         return this.getClass().getSimpleName() +" [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText + "]";

@@ -16,30 +16,32 @@ package ch.qos.logback.classic.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.model.ConfigurationModel;
-import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.BaseModelAction;
+import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 
-public class ConfigurationAction extends Action {
-    static final String INTERNAL_DEBUG_ATTR = "debug";
-    static final String SCAN_ATTR = "scan";
-    static final String SCAN_PERIOD_ATTR = "scanPeriod";
-    static final String PACKAGING_DATA_ATTR = "packagingData";
+public class ConfigurationAction extends BaseModelAction {
+	static final String INTERNAL_DEBUG_ATTR = "debug";
+	static final String SCAN_ATTR = "scan";
+	static final String SCAN_PERIOD_ATTR = "scanPeriod";
+	static final String PACKAGING_DATA_ATTR = "packagingData";
 
-    
-    public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) {
-
-        ConfigurationModel configurationModel = new ConfigurationModel();
-        configurationModel.setDebugStr(attributes.getValue(INTERNAL_DEBUG_ATTR));
-        configurationModel.setScanStr(attributes.getValue(SCAN_ATTR));
-        configurationModel.setScanPeriodStr(attributes.getValue(SCAN_PERIOD_ATTR));
-        configurationModel.setPackagingDataStr(attributes.getValue(PACKAGING_DATA_ATTR));
-        
-        interpretationContext.pushModel(configurationModel);
-    }
+	@Override
+	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+		ConfigurationModel configurationModel = new ConfigurationModel();
+		configurationModel.setDebugStr(attributes.getValue(INTERNAL_DEBUG_ATTR));
+		configurationModel.setScanStr(attributes.getValue(SCAN_ATTR));
+		configurationModel.setScanPeriodStr(attributes.getValue(SCAN_PERIOD_ATTR));
+		configurationModel.setPackagingDataStr(attributes.getValue(PACKAGING_DATA_ATTR));
+		return configurationModel;
+	}
 
 
-    public void end(InterpretationContext ec, String name) {
-        addInfo("End of configuration.");
-        // model is at the top of the stack
-    }
+	@Override
+	public void end(InterpretationContext ic, String name) throws ActionException {
+		super.end(ic, name);
+		addInfo("End of configuration.");
+	}
+
 }
