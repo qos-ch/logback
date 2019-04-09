@@ -13,9 +13,7 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class Model {
 
-
     String tag;
-    String className;
     String bodyText;
     int lineNumber;
     
@@ -27,14 +25,6 @@ public class Model {
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
     }
 
     public int getLineNumber() {
@@ -64,14 +54,20 @@ public class Model {
             this.bodyText += bodytext;
     }
 
+    // TODO: this method needs to be revised
     public boolean isComponentModel() {
-        if (!OptionHelper.isEmpty(this.getClassName()))
-            return true;
-     
-        if(bodyText == null || bodyText.isEmpty() || bodyText.trim().isEmpty()) {
-            return true;
-        }
-        return false;
+    	if(this instanceof ComponentModel) {
+    		ComponentModel componentModel = (ComponentModel) this;
+            if (!OptionHelper.isEmpty(componentModel.getClassName()))
+                return true;
+
+            if(bodyText == null || bodyText.isEmpty() || bodyText.trim().isEmpty()) {
+                return true;
+            }
+            return false;
+    	} else {
+    		return false;
+    	}
     }
 
 
@@ -82,7 +78,7 @@ public class Model {
     
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText + "]";
+        return this.getClass().getSimpleName() +" [tag=" + tag + ", bodyText=" + bodyText + "]";
     }
 
 

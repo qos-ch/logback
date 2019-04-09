@@ -102,7 +102,7 @@ public class IncludeActionTest {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-                defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
+                defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
                 return defaultProcessor;
             }
         };

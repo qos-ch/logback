@@ -35,11 +35,13 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.TimestampModel;
+import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
@@ -87,7 +89,6 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
         rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction<E>());
         rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
-        rs.addRule(new ElementSelector("*/param"), new ParamAction(getBeanDescriptionCache()));
     }
 
     @Override
@@ -102,6 +103,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
 //        interpreter.addImplicitAction(nestedBasicIA);
         
         ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+        implicitRuleModelAction.setContext(context);
         interpreter.addImplicitAction(implicitRuleModelAction);
     }
 
@@ -120,11 +122,11 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(ShutdownHookModel.class, new ShutdownHookModelHandler(context));
-        defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
-        defaultProcessor.addHandler(TimestampModel.class, new TimestampModelHandler(context));
-        defaultProcessor.addHandler(StatusListenerModel.class, new StatusListenerModelHandler(context));
-        defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context, getBeanDescriptionCache()));
+        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
+        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
+        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
+        defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);
+        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
 
         return defaultProcessor;
     }

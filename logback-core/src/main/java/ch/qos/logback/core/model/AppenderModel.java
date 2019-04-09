@@ -1,6 +1,6 @@
 package ch.qos.logback.core.model;
 
-public class AppenderModel extends Model {
+public class AppenderModel extends ComponentModel {
 
 	String name;
 

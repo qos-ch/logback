@@ -29,15 +29,15 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
     public ConfigurationModelHandler(Context context) {
         super(context);
     }
+    
+	protected Class<ConfigurationModel> getSupportedModelClass() {
+		return ConfigurationModel.class;
+	}
 
     
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
 
-        if (!(model instanceof ConfigurationModel)) {
-            addError("Can only handle models of type [" + ConfigurationModel.class + "]");
-            return;
-        }
         ConfigurationModel configurationModel = (ConfigurationModel) model;
 
         // See LOGBACK-527 (the system property is looked up first. Thus, it overrides

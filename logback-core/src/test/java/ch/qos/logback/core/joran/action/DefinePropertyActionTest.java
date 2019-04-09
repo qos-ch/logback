@@ -70,9 +70,9 @@ public class DefinePropertyActionTest {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-                defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
-                defaultProcessor.addHandler(DefineModel.class, new DefineModelHandler(context));
-                defaultProcessor.addHandler(ImplicitModel.class, new ImplicitModelHandler(context, getBeanDescriptionCache()));
+                defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
+                defaultProcessor.addHandler(DefineModel.class, DefineModelHandler.class);
+                defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
 
                 return defaultProcessor;
             }
@@ -94,7 +94,11 @@ public class DefinePropertyActionTest {
 
     @Test
     public void noName() throws JoranException {
-        simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+     try {
+    	 simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+     } finally {
+    	 StatusPrinter.print(context);
+     }
         // get from context
         String inContextFoo = context.getProperty("foo");
         assertNull(inContextFoo);

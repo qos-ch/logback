@@ -22,6 +22,9 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+		this.appender = null;
+		this.inError = false;
+		
 		AppenderModel appenderModel = (AppenderModel) model;
 
 		String className = appenderModel.getClassName();
@@ -63,6 +66,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
         if (o != appender) {
             addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
         } else {
+        	appender = null;
         	interpContext.popObject();
         }
 	}

@@ -1,5 +1,5 @@
 package ch.qos.logback.core.model;
 
-public class ImplicitModel extends Model {
+public class ImplicitModel extends ComponentModel {
 
 }

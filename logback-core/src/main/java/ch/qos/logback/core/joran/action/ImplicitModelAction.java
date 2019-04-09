@@ -25,9 +25,17 @@ public class ImplicitModelAction extends Action {
     @Override
     public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) throws ActionException {
         ImplicitModel currentImplicitModel = new ImplicitModel();
-        String className = attributes.getValue(CLASS_ATTRIBUTE);
-        currentImplicitModel.setClassName(className);
         currentImplicitModel.setTag(name);
+
+        String className = attributes.getValue(CLASS_ATTRIBUTE);
+        if(className == null) {
+        	String implicitClassName = interpretationContext.getDefaultNestedComponentRegistry().findDefaultComponentTypeByTag(name);
+        	if(implicitClassName != null) {
+        		addInfo("Assuming default class name ["+implicitClassName+"] for tag ["+name+"]");
+        		className = implicitClassName;
+        	} 
+        }
+        currentImplicitModel.setClassName(className);
         currentImplicitModelStack.push(currentImplicitModel);
         interpretationContext.pushModel(currentImplicitModel);
     }

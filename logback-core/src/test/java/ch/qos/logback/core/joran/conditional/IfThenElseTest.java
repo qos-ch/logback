@@ -77,8 +77,8 @@ public class IfThenElseTest {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-                defaultProcessor.addHandler(TopModel.class, new NOPModelHandler(context));
-                defaultProcessor.addHandler(PropertyModel.class, new PropertyModelHandler(context));
+                defaultProcessor.addHandler(TopModel.class,  NOPModelHandler.class);
+                defaultProcessor.addHandler(PropertyModel.class,  PropertyModelHandler.class);
                 return defaultProcessor;
             }
         };

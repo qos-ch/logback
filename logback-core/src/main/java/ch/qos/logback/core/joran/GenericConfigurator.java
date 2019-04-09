@@ -44,8 +44,6 @@ import ch.qos.logback.core.status.StatusUtil;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-    private BeanDescriptionCache beanDescriptionCache;
-
     protected Interpreter interpreter;
 
     public final void doConfigure(URL url) throws JoranException {
@@ -116,13 +114,6 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         InputSource inputSource = new InputSource(inputStream);
         inputSource.setSystemId(systemId);
         doConfigure(inputSource);
-    }
-
-    protected BeanDescriptionCache getBeanDescriptionCache() {
-        if (beanDescriptionCache == null) {
-            beanDescriptionCache = new BeanDescriptionCache(getContext());
-        }
-        return beanDescriptionCache;
     }
 
     protected abstract void addInstanceRules(RuleStore rs);

@@ -1,6 +1,6 @@
 package ch.qos.logback.core.model;
 
-public class ShutdownHookModel extends Model {
+public class ShutdownHookModel extends ComponentModel {
  
 }
 

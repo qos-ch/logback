@@ -26,6 +26,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.InPlayListener;
 import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
@@ -48,7 +49,8 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
     Interpreter joranInterpreter;
     final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
     DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
-
+    private BeanDescriptionCache beanDescriptionCache;
+    
     public InterpretationContext(Context context, Interpreter joranInterpreter) {
         this.context = context;
         this.joranInterpreter = joranInterpreter;
@@ -58,6 +60,12 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
         propertiesMap = new HashMap<>(5);
     }
 
+    public BeanDescriptionCache getBeanDescriptionCache() {
+        if (beanDescriptionCache == null) {
+            beanDescriptionCache = new BeanDescriptionCache(getContext());
+        }
+        return beanDescriptionCache;
+    }
     public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
         return defaultNestedComponentRegistry;
     }

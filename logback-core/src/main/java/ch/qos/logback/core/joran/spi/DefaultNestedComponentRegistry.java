@@ -34,8 +34,12 @@ public class DefaultNestedComponentRegistry {
     }
 
 
-    public Class<?> findDefaultComponentTypeByTag(String tagName) {
-    	return tagToClassMap.get(tagName);
+    public String findDefaultComponentTypeByTag(String tagName) {
+    	Class<?> defaultClass = tagToClassMap.get(tagName);
+    	if(defaultClass == null)
+    		return null;
+    	else 
+    		return defaultClass.getCanonicalName();
     }
     
     public Class<?> findDefaultComponentType(Class<?> hostClass, String propertyName) {

@@ -9,6 +9,8 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.ComponentModel;
+import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -34,9 +36,16 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         this.beanDescriptionCache = beanDescriptionCache;
     }
 
+	protected Class<? extends ImplicitModel> getSupportedModelClass() {
+		return ImplicitModel.class;
+	}
+	
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) {
 
+    	ImplicitModel implicitModel = (ImplicitModel) model;
+
+    	
         // calling ic.peekObject with an empty stack will throw an exception
         if (interpretationContext.isObjectStackEmpty()) {
             return;
@@ -62,7 +71,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         case AS_COMPLEX_PROPERTY:
             IADataForComplexProperty adComplex = new IADataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
             actionDataStack.push(adComplex);
-            doComplex(interpretationContext, model, adComplex);
+            doComplex(interpretationContext, implicitModel, adComplex);
             return;
         default:
             addError("PropertySetter.computeAggregationType returned " + aggregationType);
@@ -136,9 +145,9 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         }
     }
 
-    public void doComplex(InterpretationContext interpretationContext, Model model, IADataForComplexProperty actionData) {
+    public void doComplex(InterpretationContext interpretationContext, ComponentModel componentModel, IADataForComplexProperty actionData) {
 
-        String className = model.getClassName();
+        String className = componentModel.getClassName();
         // perform variable name substitution
         className = interpretationContext.subst(className);
 
@@ -156,13 +165,13 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
             if (componentClass == null) {
                 actionData.inError = true;
-                String errMsg = "Could not find an appropriate class for property [" + model.getTag() + "]";
+                String errMsg = "Could not find an appropriate class for property [" + componentModel.getTag() + "]";
                 addError(errMsg);
                 return;
             }
 
             if (OptionHelper.isEmpty(className)) {
-                addInfo("Assuming default type [" + componentClass.getName() + "] for [" + model.getTag() + "] property");
+                addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag() + "] property");
             }
 
             actionData.setNestedComplexProperty(componentClass.getConstructor().newInstance());
@@ -177,7 +186,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
         } catch (Exception oops) {
             actionData.inError = true;
-            String msg = "Could not create component [" + model.getTag() + "] of type [" + className + "]";
+            String msg = "Could not create component [" + componentModel.getTag() + "] of type [" + className + "]";
             addError(msg, oops);
         }
     }

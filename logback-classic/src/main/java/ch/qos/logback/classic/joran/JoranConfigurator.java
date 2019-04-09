@@ -41,6 +41,8 @@ import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.AppenderModel;
+import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 
 /**
@@ -100,7 +102,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(ConfigurationModel.class, new ConfigurationModelHandler(context));
+        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler.class);
+        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
+        
         return defaultProcessor;
     }
 

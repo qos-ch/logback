@@ -1,6 +1,6 @@
 package ch.qos.logback.core.model;
 
-public class DefineModel extends Model {
+public class DefineModel extends ComponentModel {
 
     String name;
     String scopeStr;
