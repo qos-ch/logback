@@ -103,7 +103,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
             } else {
                 // guess class name via implicit rules
                 PropertySetter parentBean = actionData.parentBean;
-                componentClass = parentBean.getClassNameViaImplicitRules(actionData.getComplexPropertyName(), actionData.getAggregationType(),
+                componentClass = parentBean.getClassNameViaImplicitRules(actionData.propertyName, actionData.getAggregationType(),
                                 ec.getDefaultNestedComponentRegistry());
             }
 

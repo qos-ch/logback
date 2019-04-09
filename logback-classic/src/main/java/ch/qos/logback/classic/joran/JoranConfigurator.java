@@ -16,7 +16,6 @@ package ch.qos.logback.classic.joran;
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.ContextNameAction;
-import ch.qos.logback.classic.joran.action.EvaluatorAction;
 import ch.qos.logback.classic.joran.action.InsertFromJNDIAction;
 import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
 import ch.qos.logback.classic.joran.action.LevelAction;
@@ -74,8 +73,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         rs.addRule(new ElementSelector("configuration/contextName"), new ContextNameAction());
         rs.addRule(new ElementSelector("configuration/contextListener"), new LoggerContextListenerAction());
         rs.addRule(new ElementSelector("configuration/insertFromJNDI"), new InsertFromJNDIAction());
-        rs.addRule(new ElementSelector("configuration/evaluator"), new EvaluatorAction());
-
         
         rs.addRule(new ElementSelector("configuration/logger"), new LoggerAction());
         rs.addRule(new ElementSelector("configuration/logger/level"), new LevelAction());

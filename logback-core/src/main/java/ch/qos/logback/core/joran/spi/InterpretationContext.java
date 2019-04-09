@@ -24,7 +24,7 @@ import org.xml.sax.Locator;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ImplicitActionDataForComplexProperty;
+import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
 import ch.qos.logback.core.joran.event.InPlayListener;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -44,7 +44,7 @@ import ch.qos.logback.core.util.OptionHelper;
 public class InterpretationContext extends ContextAwareBase implements PropertyContainer {
 	Stack<Object> objectStack;
 	Stack<Model> modelStack;
-	Stack<ImplicitActionDataForComplexProperty> impolicitActionDataStack;
+	Stack<ImplicitActionDataBase> implicitActionDataStack;
 
 	Map<String, Object> objectMap;
 	Map<String, String> propertiesMap;
@@ -57,9 +57,9 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	public InterpretationContext(Context context, Interpreter joranInterpreter) {
 		this.context = context;
 		this.joranInterpreter = joranInterpreter;
-		objectStack = new Stack<>();
-		modelStack = new Stack<>();
-		impolicitActionDataStack = new Stack<>();
+		this.objectStack = new Stack<>();
+		this.modelStack = new Stack<>();
+		this.implicitActionDataStack = new Stack<>();
 
 		objectMap = new HashMap<>(5);
 		propertiesMap = new HashMap<>(5);
@@ -91,6 +91,16 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 			return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
 		} else {
 			return msg;
+		}
+	}
+
+	public String getLineNumber() {
+		Locator locator = joranInterpreter.getLocator();
+
+		if (locator != null) {
+			return Integer.toString(locator.getLineNumber());
+		} else {
+			return "NA";
 		}
 	}
 
@@ -143,8 +153,8 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	 * method. The XML well-formedness property will guarantee that a push will
 	 * eventually be followed by a corresponding pop.
 	 */
-	public Stack<ImplicitActionDataForComplexProperty> getImplcitActionDataStack() {
-		return impolicitActionDataStack;
+	public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
+		return implicitActionDataStack;
 	}
 
 	public Model peekModel() {
@@ -236,4 +246,5 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 			ipl.inPlay(event);
 		}
 	}
+
 }

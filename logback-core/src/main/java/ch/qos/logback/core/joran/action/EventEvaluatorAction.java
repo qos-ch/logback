@@ -15,32 +15,29 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.ParamModel;
 
-public class ParamAction extends BaseModelAction {
+public class EventEvaluatorAction extends BaseModelAction {
 
 	@Override
-	protected boolean validPreconditions(InterpretationContext intercon, String name,
-			Attributes attributes) {
+	protected boolean validPreconditions(InterpretationContext intercon, String name, Attributes attributes) {
 		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
 		pv.validateNameAttribute();
-		pv.validateValueAttribute();
-		
-		addWarn("<param> element is deprecated in favor of a more direct syntax." + atLine(intercon));
-		addWarn("For details see " + CoreConstants.CODES_URL + "#param");
-		
 		return pv.isValid();
-		
 	}
-
+	
 	@Override
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-		ParamModel paramModel = new ParamModel();
-		paramModel.setName(attributes.getValue(NAME_ATTRIBUTE));
-		paramModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
-		return paramModel;
+		
+		EventEvaluatorModel eem = new EventEvaluatorModel();
+		
+		eem.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+		eem.setName(attributes.getValue(NAME_ATTRIBUTE));
+		
+		return eem;
 	}
+
+
 }

@@ -17,26 +17,15 @@ import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.AggregationType;
 
 /**
- * Lump together several fields for use by {@link NestedComplexPropertyIA}.
+ * Lump together several fields for use by {@link NestedBasicPropertyIA}.
  * 
- * @author Ceki
+ * @author Ceki Gulcu
  */
-public class ImplicitActionDataForComplexProperty extends ImplicitActionDataBase {
-    
+public class ImcplicitActionDataForBasicProperty extends ImplicitActionDataBase {
 
-	private Object nestedComplexProperty;
-    
-    public ImplicitActionDataForComplexProperty(PropertySetter parentBean, AggregationType aggregationType,
-			String propertyName) {
+	public ImcplicitActionDataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
 		super(parentBean, aggregationType, propertyName);
-    }
+	}
 
-    public Object getNestedComplexProperty() {
-        return nestedComplexProperty;
-    }
-
-    public void setNestedComplexProperty(Object nestedComplexProperty) {
-        this.nestedComplexProperty = nestedComplexProperty;
-    }
 
 }

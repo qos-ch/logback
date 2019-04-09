@@ -10,14 +10,14 @@ import ch.qos.logback.core.util.OptionHelper;
 public class PreconditionValidator extends ContextAwareBase {
 
 	boolean valid = true;
-	InterpretationContext ic;
+	InterpretationContext intercon;
 	Attributes attributes;
 	String tag;
 
-	public PreconditionValidator(ContextAware origin, InterpretationContext ic, String name, Attributes attributes) {
+	public PreconditionValidator(ContextAware origin, InterpretationContext intercon, String name, Attributes attributes) {
 		super(origin);
 		this.setContext(origin.getContext());
-		this.ic = ic;
+		this.intercon = intercon;
 		this.tag = name;
 		this.attributes = attributes;
 	}
@@ -41,7 +41,7 @@ public class PreconditionValidator extends ContextAwareBase {
 	public PreconditionValidator generic(String attributeName) {
 		String attributeValue = attributes.getValue(attributeName);
 		if (OptionHelper.isEmpty(attributeValue)) {
-			addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line " + Action.getLineNumber(ic));
+			addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line " + Action.getLineNumber(intercon));
 			this.valid = false;
 		}
 		return this;

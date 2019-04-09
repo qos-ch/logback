@@ -54,23 +54,6 @@ public class Model {
             this.bodyText += bodytext;
     }
 
-    // TODO: this method needs to be revised
-    public boolean isComponentModel() {
-    	if(this instanceof ComponentModel) {
-    		ComponentModel componentModel = (ComponentModel) this;
-            if (!OptionHelper.isEmpty(componentModel.getClassName()))
-                return true;
-
-            if(bodyText == null || bodyText.isEmpty() || bodyText.trim().isEmpty()) {
-                return true;
-            }
-            return false;
-    	} else {
-    		return false;
-    	}
-    }
-
-
     public String idString() {
         return "<"+tag+"> at line "+lineNumber;
     }

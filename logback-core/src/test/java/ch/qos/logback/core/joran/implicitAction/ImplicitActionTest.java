@@ -85,6 +85,7 @@ public class ImplicitActionTest {
     public void nestedComplex() throws Exception {
         try {
             simpleConfigurator.doConfigure(IMPLCIT_DIR + "nestedComplex.xml");
+            StatusPrinter.print(fruitContext);
             verifyFruit();
 
         } catch (Exception je) {

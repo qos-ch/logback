@@ -23,7 +23,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
-abstract public class AbstractEventEvaluatorAction extends Action {
+abstract public class AbstractEventEvaluatorActionOld extends Action {
 
     EventEvaluator<?> evaluator;
     boolean inError = false;

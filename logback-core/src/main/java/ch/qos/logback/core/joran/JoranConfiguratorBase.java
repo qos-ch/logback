@@ -24,8 +24,10 @@ import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
 import ch.qos.logback.core.joran.action.ConversionRuleAction;
 import ch.qos.logback.core.joran.action.DefinePropertyAction;
+import ch.qos.logback.core.joran.action.EventEvaluatorAction;
 import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.action.NewRuleAction;
+import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.joran.action.ShutdownHookAction;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
@@ -34,12 +36,15 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
@@ -74,6 +79,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         rs.addRule(new ElementSelector("configuration/timestamp"), new TimestampAction());
         rs.addRule(new ElementSelector("configuration/shutdownHook"), new ShutdownHookAction());
         rs.addRule(new ElementSelector("configuration/define"), new DefinePropertyAction());
+        rs.addRule(new ElementSelector("configuration/evaluator"), new EventEvaluatorAction());
 
         // the contextProperty pattern is deprecated. It is undocumented
         // and will be dropped in future versions of logback
@@ -86,6 +92,9 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
         rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction());
         rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
+        
+        rs.addRule(new ElementSelector("*/param"), new ParamAction());
+        
     }
 
     @Override
@@ -120,6 +129,8 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
+        defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler.class);
+        defaultProcessor.addHandler(ParamModel.class, ParamModelHandler.class);
         defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
         defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
         defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);

@@ -34,6 +34,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class EvaluatorJoranTest {
 
@@ -63,8 +64,12 @@ public class EvaluatorJoranTest {
         JoranConfigurator jc = new JoranConfigurator();
         LoggerContext loggerContext = new LoggerContext();
         jc.setContext(loggerContext);
-        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
 
+        try {
+        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
+        } finally {
+			StatusPrinter.print(loggerContext);
+		}
         @SuppressWarnings("unchecked")
         Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
         assertNotNull(evalMap);

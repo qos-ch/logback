@@ -11,12 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.joran.action;
+package ch.qos.logback.access.joran.action;
 
-import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
-import ch.qos.logback.core.joran.action.AbstractEventEvaluatorAction;
+import ch.qos.logback.access.boolex.JaninoEventEvaluator;
+import ch.qos.logback.core.joran.action.EventEvaluatorAction;
 
-public class EvaluatorAction extends AbstractEventEvaluatorAction {
+public class AccessEvaluatorAction extends EventEvaluatorAction {
+
     protected String defaultClassName() {
         return JaninoEventEvaluator.class.getName();
     }

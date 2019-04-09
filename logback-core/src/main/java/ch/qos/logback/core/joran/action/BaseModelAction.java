@@ -31,6 +31,10 @@ public abstract class BaseModelAction extends Action {
         interpretationContext.pushModel(currentModel);
     }
 
+    String atLine(InterpretationContext intercon) {
+    	return "At line "+intercon.getLineNumber();
+    }
+    
     abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
 
     /**
@@ -43,7 +47,7 @@ public abstract class BaseModelAction extends Action {
      * @param attributes
      * @return
      */
-    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected boolean validPreconditions(InterpretationContext intercon, String name, Attributes attributes) {
     	return true;
     }
 

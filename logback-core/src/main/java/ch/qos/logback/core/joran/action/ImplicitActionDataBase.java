@@ -17,18 +17,24 @@ import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.AggregationType;
 
 /**
- * Lump together several fields for use by {@link NestedBasicPropertyIA}.
+ * Lump together several fields for use by implicit action and co.
  * 
- * @author Ceki Gulcu
+ * @author Ceki
  */
-public class IADataForBasicProperty {
+public class ImplicitActionDataBase {
     public final PropertySetter parentBean;
     public final AggregationType aggregationType;
     public final String propertyName;
+    public boolean inError;
 
-    public IADataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
+    public ImplicitActionDataBase(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
         this.parentBean = parentBean;
         this.aggregationType = aggregationType;
         this.propertyName = propertyName;
     }
+
+    public AggregationType getAggregationType() {
+        return aggregationType;
+    }
+
 }

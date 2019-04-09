@@ -50,8 +50,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			if (modelClassName == null)
 				modelClassName = "";
 		}
-		System.out.println(
-				model.getClass() + "tag: " + model.getTag() + "#" + modelClassName + " --> " + handler.getClass());
+
 		try {
 			if (!handler.isSupportedModelType(model)) {
 				addWarn("Skipping processing for model " + model.idString());

@@ -23,7 +23,7 @@ public class FruitContextModelHandler extends ModelHandlerBase {
         Object o = ec.peekObject();
 
         if (o != context) {
-            addWarn("The object at the of the stack is not the context named [" + context.getName() + "] pushed earlier.");
+            addWarn("The object ["+o+"] at top of the stack is not the context named [" + context.getName() + "] pushed earlier.");
         } else {
             addInfo("Popping context named [" + context.getName() + "] from the object stack");
             ec.popObject();
