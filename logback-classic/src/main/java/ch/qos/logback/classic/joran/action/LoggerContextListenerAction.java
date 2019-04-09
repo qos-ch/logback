@@ -15,11 +15,11 @@ package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.classic.model.LoggerContextListenerModel;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.model.LoggerContextListenerModel;
 import ch.qos.logback.core.model.Model;
 
 public class LoggerContextListenerAction extends BaseModelAction {
