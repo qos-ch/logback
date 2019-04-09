@@ -37,6 +37,10 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 			appender.setContext(context);
 
 			String appenderName = interpContext.subst(appenderModel.getName());
+
+            addInfo("Naming appender as [" + appenderName + "]");
+            appender.setName(appenderName);
+
 			// The execution context contains a bag which contains the appenders
 			// created thus far.
 			HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) interpContext.getObjectMap()

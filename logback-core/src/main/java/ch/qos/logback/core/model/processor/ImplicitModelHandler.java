@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.IADataForBasicProperty;
-import ch.qos.logback.core.joran.action.IADataForComplexProperty;
+import ch.qos.logback.core.joran.action.ImplicitActionDataForComplexProperty;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.util.PropertySetter;
@@ -20,15 +20,6 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ImplicitModelHandler extends ModelHandlerBase {
 
-    // actionDataStack contains ActionData instances
-    // We use a stack of ActionData objects in order to support nested
-    // elements which are handled by the same NestedComplexPropertyIA instance.
-    // We push a ActionData instance in the isApplicable method (if the
-    // action is applicable) and pop it in the end() method.
-    // The XML well-formedness property will guarantee that a push will eventually
-    // be followed by a corresponding pop.
-    Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
-
     private final BeanDescriptionCache beanDescriptionCache;
 
     public ImplicitModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
@@ -41,37 +32,37 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 	}
 	
     @Override
-    public void handle(InterpretationContext interpretationContext, Model model) {
+    public void handle(InterpretationContext intercon, Model model) {
 
     	ImplicitModel implicitModel = (ImplicitModel) model;
 
-    	
-        // calling ic.peekObject with an empty stack will throw an exception
-        if (interpretationContext.isObjectStackEmpty()) {
+    	// calling intercon.peekObject with an empty stack will throw an exception
+        if (intercon.isObjectStackEmpty()) {
             return;
         }
         String nestedElementTagName = model.getTag();
 
-        Object o = interpretationContext.peekObject();
+        Object o = intercon.peekObject();
         PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
         parentBean.setContext(context);
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
 
+        Stack<ImplicitActionDataForComplexProperty>  actionDataStack = intercon.getImplcitActionDataStack();
         switch (aggregationType) {
         case NOT_FOUND:
             return;
         case AS_BASIC_PROPERTY:
         case AS_BASIC_PROPERTY_COLLECTION:
             IADataForBasicProperty adBasicProperty = new IADataForBasicProperty(parentBean, aggregationType, nestedElementTagName);
-            doBasicProperty(interpretationContext, model, adBasicProperty);
+            doBasicProperty(intercon, model, adBasicProperty);
             return;
         // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:
         case AS_COMPLEX_PROPERTY:
-            IADataForComplexProperty adComplex = new IADataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
+            ImplicitActionDataForComplexProperty adComplex = new ImplicitActionDataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
             actionDataStack.push(adComplex);
-            doComplex(interpretationContext, implicitModel, adComplex);
+            doComplex(intercon, implicitModel, adComplex);
             return;
         default:
             addError("PropertySetter.computeAggregationType returned " + aggregationType);
@@ -97,11 +88,12 @@ public class ImplicitModelHandler extends ModelHandlerBase {
     }
 
     @Override
-    public void postHandle(InterpretationContext interpretationContext, Model model) {
+    public void postHandle(InterpretationContext intercon, Model model) {
         if (model.isComponentModel()) {
+        	Stack<ImplicitActionDataForComplexProperty>  actionDataStack = intercon.getImplcitActionDataStack();
             // pop the action data object pushed in isApplicable() method call
             // we assume that each this begin
-            IADataForComplexProperty actionData = (IADataForComplexProperty) actionDataStack.pop();
+            ImplicitActionDataForComplexProperty actionData = actionDataStack.pop();
 
             if (actionData.inError) {
                 return;
@@ -123,12 +115,12 @@ public class ImplicitModelHandler extends ModelHandlerBase {
                 ((LifeCycle) nestedComplexProperty).start();
             }
 
-            Object o = interpretationContext.peekObject();
+            Object o = intercon.peekObject();
 
             if (o != actionData.getNestedComplexProperty()) {
                 addError("The object on the top the of the stack is not the component pushed earlier.");
             } else {
-                interpretationContext.popObject();
+            	intercon.popObject();
                 // Now let us attach the component
                 switch (actionData.aggregationType) {
                 case AS_COMPLEX_PROPERTY:
@@ -145,7 +137,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         }
     }
 
-    public void doComplex(InterpretationContext interpretationContext, ComponentModel componentModel, IADataForComplexProperty actionData) {
+    public void doComplex(InterpretationContext interpretationContext, ComponentModel componentModel, ImplicitActionDataForComplexProperty actionData) {
 
         String className = componentModel.getClassName();
         // perform variable name substitution

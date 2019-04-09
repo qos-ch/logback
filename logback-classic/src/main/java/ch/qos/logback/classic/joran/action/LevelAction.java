@@ -15,11 +15,13 @@ package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.model.LevelModel;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.action.BaseModelAction;
+import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.Model;
 
 /**
  * Action to handle the <level> element nested within <logger> element. 
@@ -29,39 +31,29 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  * 
  * @author Ceki Gulcu
  */
-public class LevelAction extends Action {
+public class LevelAction extends BaseModelAction {
 
-    boolean inError = false;
+	
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-        Object o = ec.peekObject();
+	@Override
+	protected boolean validPreconditions(InterpretationContext interpcont, String name,
+			Attributes attributes) {
+		PreconditionValidator pv = new PreconditionValidator(this, interpcont, name, attributes);
+		pv.validateValueAttribute();
+		addWarn("<level> element is deprecated. Near [" + name + "] on line " + Action.getLineNumber(interpcont));
+		addWarn("Please use \"level\" attribute within <logger> or <root> elements instead.");
+		return pv.isValid();
+	}
+	
+	@Override
+	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+		LevelModel lm = new LevelModel();
+		
+		String value = attributes.getValue(ActionConst.VALUE_ATTR);
+		lm.setValue(value);
+		
+		return lm;
+	}
 
-        if (!(o instanceof Logger)) {
-            inError = true;
-            addError("For element <level>, could not find a logger at the top of execution stack.");
-            return;
-        }
-
-        Logger l = (Logger) o;
-
-        String loggerName = l.getName();
-
-        String levelStr = ec.subst(attributes.getValue(ActionConst.VALUE_ATTR));
-        // addInfo("Encapsulating logger name is [" + loggerName
-        // + "], level value is  [" + levelStr + "].");
-
-        if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
-            l.setLevel(null);
-        } else {
-            l.setLevel(Level.toLevel(levelStr, Level.DEBUG));
-        }
-
-        addInfo(loggerName + " level set to " + l.getLevel());
-    }
-
-    public void finish(InterpretationContext ec) {
-    }
-
-    public void end(InterpretationContext ec, String e) {
-    }
+	
 }

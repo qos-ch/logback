@@ -44,7 +44,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
     // action is applicable) and pop it in the end() method.
     // The XML well-formedness property will guarantee that a push will eventually
     // be followed by a corresponding pop.
-    Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
+    Stack<ImplicitActionDataForComplexProperty> actionDataStack = new Stack<ImplicitActionDataForComplexProperty>();
 
     private final BeanDescriptionCache beanDescriptionCache;
 
@@ -76,7 +76,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
             // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:
         case AS_COMPLEX_PROPERTY:
-            IADataForComplexProperty ad = new IADataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
+            ImplicitActionDataForComplexProperty ad = new ImplicitActionDataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
             actionDataStack.push(ad);
 
             return true;
@@ -89,7 +89,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
     public void begin(InterpretationContext ec, String localName, Attributes attributes) {
         // LogLog.debug("in NestComponentIA begin method");
         // get the action data object pushed in isApplicable() method call
-        IADataForComplexProperty actionData = (IADataForComplexProperty) actionDataStack.peek();
+        ImplicitActionDataForComplexProperty actionData = (ImplicitActionDataForComplexProperty) actionDataStack.peek();
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
         // perform variable name substitution
@@ -140,7 +140,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
 
         // pop the action data object pushed in isApplicable() method call
         // we assume that each this begin
-        IADataForComplexProperty actionData = (IADataForComplexProperty) actionDataStack.pop();
+        ImplicitActionDataForComplexProperty actionData = (ImplicitActionDataForComplexProperty) actionDataStack.pop();
 
         if (actionData.inError) {
             return;

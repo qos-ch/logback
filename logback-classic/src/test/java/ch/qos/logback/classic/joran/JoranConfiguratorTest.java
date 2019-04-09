@@ -48,6 +48,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
@@ -62,15 +63,19 @@ public class JoranConfiguratorTest {
         jc.setContext(loggerContext);
         loggerContext.putProperty("diff", "" + diff);
         jc.doConfigure(file);
+        
     }
 
     @Test
     public void simpleList() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleList.xml");
 
+        StatusPrinter.print(loggerContext);
+        
         Logger logger = loggerContext.getLogger(this.getClass().getName());
         Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(listAppender);
         assertEquals(0, listAppender.list.size());
         String msg = "hello world";
         logger.debug(msg);
@@ -345,6 +350,7 @@ public class JoranConfiguratorTest {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
         configure(configFileAsStr);
         StatusChecker checker = new StatusChecker(loggerContext);
+        StatusPrinter.print(loggerContext);
         checker.assertIsErrorFree();
         verifyJULLevel(loggerName, null);
         verifyJULLevel("a.b.c." + diff, Level.WARN);

@@ -21,14 +21,14 @@ import ch.qos.logback.core.util.AggregationType;
  * 
  * @author Ceki
  */
-public class IADataForComplexProperty {
+public class ImplicitActionDataForComplexProperty {
     public final PropertySetter parentBean;
     public final AggregationType aggregationType;
     public final String complexPropertyName;
     private Object nestedComplexProperty;
     public boolean inError;
 
-    public IADataForComplexProperty(PropertySetter parentBean, AggregationType aggregationType, String complexPropertyName) {
+    public ImplicitActionDataForComplexProperty(PropertySetter parentBean, AggregationType aggregationType, String complexPropertyName) {
         this.parentBean = parentBean;
         this.aggregationType = aggregationType;
         this.complexPropertyName = complexPropertyName;

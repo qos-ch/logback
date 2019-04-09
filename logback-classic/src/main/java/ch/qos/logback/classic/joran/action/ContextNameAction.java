@@ -28,23 +28,5 @@ public class ContextNameAction extends BaseModelAction {
     	ContextNameModel contextNameModel = new ContextNameModel();
     	return contextNameModel;
     }
-//
-//    public void body(InterpretationContext ec, String body) {
-//
-//        String finalBody = ec.subst(body);
-//        addInfo("Setting logger context name as [" + finalBody + "]");
-//        try {
-//            context.setName(finalBody);
-//        } catch (IllegalStateException e) {
-//            addError("Failed to rename context [" + context.getName() + "] as [" + finalBody + "]", e);
-//        }
-//    }
-
-	@Override
-	protected boolean validPreconditions(InterpretationContext interpretationContext, String name,
-			Attributes attributes) {
-		return true;
-	}
-
  
 }

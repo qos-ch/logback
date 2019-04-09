@@ -14,7 +14,7 @@ public class PreconditionValidator extends ContextAwareBase {
 	Attributes attributes;
 	String tag;
 
-	PreconditionValidator(ContextAware origin, InterpretationContext ic, String name, Attributes attributes) {
+	public PreconditionValidator(ContextAware origin, InterpretationContext ic, String name, Attributes attributes) {
 		super(origin);
 		this.setContext(origin.getContext());
 		this.ic = ic;
@@ -22,15 +22,23 @@ public class PreconditionValidator extends ContextAwareBase {
 		this.attributes = attributes;
 	}
 
-	PreconditionValidator validateClassAttribute() {
+	public PreconditionValidator validateClassAttribute() {
 		return generic(Action.CLASS_ATTRIBUTE);
 	}
 
-	PreconditionValidator validateNameAttribute() {
+	public PreconditionValidator validateNameAttribute() {
 		return generic(Action.NAME_ATTRIBUTE);
 	}
 
-	PreconditionValidator generic(String attributeName) {
+	public PreconditionValidator validateValueAttribute() {
+		return generic(ActionConst.VALUE_ATTR);
+	}
+
+	public PreconditionValidator validateRefAttribute() {
+		return generic(ActionConst.REF_ATTRIBUTE);
+	}
+	
+	public PreconditionValidator generic(String attributeName) {
 		String attributeValue = attributes.getValue(attributeName);
 		if (OptionHelper.isEmpty(attributeValue)) {
 			addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line " + Action.getLineNumber(ic));
@@ -42,4 +50,6 @@ public class PreconditionValidator extends ContextAwareBase {
 	public boolean isValid() {
 		return valid;
 	}
+
+
 }

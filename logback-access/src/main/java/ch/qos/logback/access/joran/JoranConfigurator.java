@@ -46,7 +46,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         super.addInstanceRules(rs);
 
         rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
-        rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction<IAccessEvent>());
+        rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
 
         rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
 

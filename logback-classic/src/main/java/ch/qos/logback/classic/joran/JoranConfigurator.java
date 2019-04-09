@@ -25,7 +25,16 @@ import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
 import ch.qos.logback.classic.joran.action.ReceiverAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.classic.model.ConfigurationModel;
+import ch.qos.logback.classic.model.ContextNameModel;
+import ch.qos.logback.classic.model.LevelModel;
+import ch.qos.logback.classic.model.LoggerModel;
+import ch.qos.logback.classic.model.RootLoggerModel;
 import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
+import ch.qos.logback.classic.model.processor.ContextNameModelHandler;
+import ch.qos.logback.classic.model.processor.LevelModelHandler;
+import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
+import ch.qos.logback.classic.model.processor.LoggerModelHandler;
+import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
@@ -42,7 +51,10 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
+import ch.qos.logback.core.model.AppenderRefModel;
+import ch.qos.logback.core.model.LoggerContextListenerModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
+import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 
 /**
@@ -70,8 +82,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
         rs.addRule(new ElementSelector("configuration/root"), new RootLoggerAction());
         rs.addRule(new ElementSelector("configuration/root/level"), new LevelAction());
-        rs.addRule(new ElementSelector("configuration/logger/appender-ref"), new AppenderRefAction<ILoggingEvent>());
-        rs.addRule(new ElementSelector("configuration/root/appender-ref"), new AppenderRefAction<ILoggingEvent>());
+        rs.addRule(new ElementSelector("configuration/logger/appender-ref"), new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/root/appender-ref"), new AppenderRefAction());
 
         // add if-then-else support
         rs.addRule(new ElementSelector("*/if"), new IfAction());
@@ -103,8 +115,14 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
         defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler.class);
-        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
+        defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler.class);
+        defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler.class);
         
+        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
+        defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler.class);
+        defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler.class);
+        defaultProcessor.addHandler(LevelModel.class, LevelModelHandler.class);
+        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
         return defaultProcessor;
     }
 
