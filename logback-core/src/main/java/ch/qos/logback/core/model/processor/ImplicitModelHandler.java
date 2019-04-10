@@ -56,6 +56,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 		switch (aggregationType) {
 		case NOT_FOUND:
+			inError = true;
 			return;
 		case AS_BASIC_PROPERTY:
 		case AS_BASIC_PROPERTY_COLLECTION:
