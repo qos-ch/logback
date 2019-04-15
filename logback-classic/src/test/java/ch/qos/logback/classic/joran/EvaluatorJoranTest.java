@@ -65,11 +65,7 @@ public class EvaluatorJoranTest {
         LoggerContext loggerContext = new LoggerContext();
         jc.setContext(loggerContext);
 
-        try {
         jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
-        } finally {
-			StatusPrinter.print(loggerContext);
-		}
         @SuppressWarnings("unchecked")
         Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
         assertNotNull(evalMap);

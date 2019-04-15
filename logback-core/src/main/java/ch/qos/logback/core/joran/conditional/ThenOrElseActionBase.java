@@ -30,25 +30,17 @@ abstract public class ThenOrElseActionBase extends Action {
     Stack<ThenActionState> stateStack = new Stack<ThenActionState>();
 
     @Override
-    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
+    public void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException {
 
-        if (!weAreActive(ic))
+        if (!weAreActive(intercon))
             return;
 
         ThenActionState state = new ThenActionState();
-        if (ic.isListenerListEmpty()) {
-            ic.addInPlayListener(state);
+        if (intercon.isListenerListEmpty()) {
+            intercon.addInPlayListener(state);
             state.isRegistered = true;
         }
         stateStack.push(state);
-    }
-
-    boolean weAreActive(InterpretationContext ic) {
-        Object o = ic.peekObject();
-        if (!(o instanceof IfAction))
-            return false;
-        IfAction ifAction = (IfAction) o;
-        return ifAction.isActive();
     }
 
     @Override
@@ -70,6 +62,14 @@ abstract public class ThenOrElseActionBase extends Action {
         }
     }
 
+    boolean weAreActive(InterpretationContext ic) {
+        Object o = ic.peekObject();
+        if (!(o instanceof IfAction))
+            return false;
+        IfAction ifAction = (IfAction) o;
+        return ifAction.isActive();
+    }
+    
     abstract void registerEventList(IfAction ifAction, List<SaxEvent> eventList);
 
     void removeFirstAndLastFromList(List<SaxEvent> eventList) {

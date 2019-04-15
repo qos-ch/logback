@@ -28,8 +28,15 @@ import ch.qos.logback.core.model.Model;
 public class DefinePropertyAction extends BaseModelAction {
 
     @Override
+    protected boolean validPreconditions(InterpretationContext ic, String name, Attributes attributes) {
+    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
+    	validator.validateClassAttribute();
+    	validator.validateNameAttribute();
+        return validator.isValid();
+    }
+    
+    @Override
     protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        System.out.println("building DefineModel");
         DefineModel defineModel = new DefineModel();
         defineModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
         defineModel.setName(attributes.getValue(NAME_ATTRIBUTE));
@@ -37,12 +44,6 @@ public class DefinePropertyAction extends BaseModelAction {
         return defineModel;
     }
 
-    @Override
-    protected boolean validPreconditions(InterpretationContext ic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
-    	validator.validateClassAttribute();
-    	validator.validateNameAttribute();
-        return validator.isValid();
-    }
+
 
 }

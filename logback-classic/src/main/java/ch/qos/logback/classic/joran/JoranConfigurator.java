@@ -26,6 +26,7 @@ import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.ContextNameModel;
 import ch.qos.logback.classic.model.LevelModel;
+import ch.qos.logback.classic.model.LoggerContextListenerModel;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.model.RootLoggerModel;
 import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
@@ -41,17 +42,12 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
-import ch.qos.logback.core.joran.action.NOPAction;
-import ch.qos.logback.core.joran.conditional.ElseAction;
-import ch.qos.logback.core.joran.conditional.IfAction;
-import ch.qos.logback.core.joran.conditional.ThenAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
-import ch.qos.logback.classic.model.LoggerContextListenerModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
@@ -83,11 +79,11 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         rs.addRule(new ElementSelector("configuration/root/appender-ref"), new AppenderRefAction());
 
         // add if-then-else support
-        rs.addRule(new ElementSelector("*/if"), new IfAction());
-        rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
-        rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
-        rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
-        rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
+        //rs.addRule(new ElementSelector("*/if"), new IfAction());
+        //rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
+        //rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
+        //rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
+        //rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
 
         // add jmxConfigurator only if we have JMX available.
         // If running under JDK 1.4 (retrotranslateed logback) then we

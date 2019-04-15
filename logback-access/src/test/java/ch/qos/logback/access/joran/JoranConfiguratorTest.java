@@ -28,6 +28,7 @@ import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.StringListAppender;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
@@ -50,8 +51,9 @@ public class JoranConfiguratorTest {
     @Test
     public void smoke() throws Exception {
         configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/smoke.xml");
-
+        StatusPrinter.print(context);
         ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context.getAppender("LIST");
+        assertNotNull(listAppender);
         IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
         listAppender.doAppend(event);
 
