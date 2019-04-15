@@ -1,6 +1,6 @@
 dist: trusty
 language: java
-jdk: oraclejdk9
+jdk: oraclejdk11
 notifications:
   email:
       - notification@qos.ch
