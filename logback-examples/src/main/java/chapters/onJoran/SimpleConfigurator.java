@@ -18,7 +18,7 @@ import java.util.Map;
 
 import ch.qos.logback.core.joran.GenericConfigurator;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ImplicitAction;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.ElementSelector;
@@ -33,13 +33,13 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 public class SimpleConfigurator extends GenericConfigurator {
 
     final Map<ElementSelector, Action> ruleMap;
-    final List<ImplicitAction> iaList;
+    final List<ImplicitModelAction> iaList;
 
     public SimpleConfigurator(Map<ElementSelector, Action> ruleMap) {
         this(ruleMap, null);
     }
 
-    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitAction> iaList) {
+    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitModelAction> iaList) {
         this.ruleMap = ruleMap;
         this.iaList = iaList;
     }
@@ -57,7 +57,7 @@ public class SimpleConfigurator extends GenericConfigurator {
         if (iaList == null) {
             return;
         }
-        for (ImplicitAction ia : iaList) {
+        for (ImplicitModelAction ia : iaList) {
             interpreter.addImplicitAction(ia);
         }
     }

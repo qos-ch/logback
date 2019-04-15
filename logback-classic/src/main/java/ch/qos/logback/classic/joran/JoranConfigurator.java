@@ -112,10 +112,11 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler.class);
         
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
+        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
         defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler.class);
         defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler.class);
         defaultProcessor.addHandler(LevelModel.class, LevelModelHandler.class);
-        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
+    
         return defaultProcessor;
     }
 

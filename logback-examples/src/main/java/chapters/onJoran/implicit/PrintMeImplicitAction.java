@@ -13,10 +13,10 @@
  */
 package chapters.onJoran.implicit;
 
-import ch.qos.logback.core.joran.spi.ElementPath;
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.action.ImplicitAction;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
+import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
@@ -26,7 +26,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class PrintMeImplicitAction extends ImplicitAction {
+public class PrintMeImplicitAction extends ImplicitModelAction {
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
         String printmeStr = attributes.getValue("printme");
