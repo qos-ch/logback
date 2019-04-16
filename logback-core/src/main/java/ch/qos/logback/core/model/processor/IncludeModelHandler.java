@@ -52,7 +52,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		if (!checkAttributes(includeModel)) {
 			return;
 		}
-
+ 
 		InputStream in = getInputStream(intercon, includeModel);
 		try {
 			if (in != null) {
