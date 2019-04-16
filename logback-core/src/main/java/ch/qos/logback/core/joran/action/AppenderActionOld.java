@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.joran.action;
 
+import static ch.qos.logback.core.joran.JoranConstants.APPENDER_BAG;
+
 import java.util.HashMap;
 
 import org.xml.sax.Attributes;
@@ -64,7 +66,7 @@ public class AppenderActionOld<E> extends Action {
 
             // The execution context contains a bag which contains the appenders
             // created thus far.
-            HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
+            HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) ec.getObjectMap().get(APPENDER_BAG);
 
             // add the appender just created to the appender bag.
             appenderBag.put(appenderName, appender);

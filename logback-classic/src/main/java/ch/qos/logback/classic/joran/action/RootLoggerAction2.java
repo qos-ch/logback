@@ -13,13 +13,14 @@
  */
 package ch.qos.logback.classic.joran.action;
 
+import static ch.qos.logback.core.joran.JoranConstants.LEVEL_ATTRIBUTE;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -34,7 +35,7 @@ public class RootLoggerAction2 extends Action {
         LoggerContext loggerContext = (LoggerContext) this.context;
         root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-        String levelStr = ec.subst(attributes.getValue(ActionConst.LEVEL_ATTRIBUTE));
+        String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
         if (!OptionHelper.isEmpty(levelStr)) {
             Level level = Level.toLevel(levelStr);
             addInfo("Setting level of ROOT logger to " + level);

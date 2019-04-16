@@ -48,7 +48,7 @@ public class NewRuleAction extends Action {
 
         try {
             addInfo("About to add new Joran parsing rule [" + pattern + "," + actionClass + "].");
-            ec.getJoranInterpreter().getRuleStore().addRule(new ElementSelector(pattern), actionClass);
+            ec.getSaxEventInterpreter().getRuleStore().addRule(new ElementSelector(pattern), actionClass);
         } catch (Exception oops) {
             inError = true;
             errorMsg = "Could not add new Joran parsing rule [" + pattern + "," + actionClass + "]";

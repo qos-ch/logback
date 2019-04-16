@@ -13,27 +13,25 @@ public abstract class BaseModelAction extends Action {
     boolean inError = false;
 
     @Override
-    public void begin(InterpretationContext interpretationContext, String name, Attributes attributes) throws ActionException {
+    public void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException {
         parentModel = null;
         inError = false;
         
-        if (!validPreconditions(interpretationContext, name, attributes)) {
+        if (!validPreconditions(intercon, name, attributes)) {
             inError = true;
             return;
         }
-        currentModel = buildCurrentModel(interpretationContext, name, attributes);
+        
+        currentModel = buildCurrentModel(intercon, name, attributes);
         currentModel.setTag(name);
-        if(!interpretationContext.isModelStackEmpty()) {
-        	parentModel = interpretationContext.peekModel();
+        if(!intercon.isModelStackEmpty()) {
+        	parentModel = intercon.peekModel();
         }
-        final int lineNumber = getLineNumber(interpretationContext);
+        final int lineNumber = getLineNumber(intercon);
         currentModel.setLineNumber(lineNumber);
-        interpretationContext.pushModel(currentModel);
+        intercon.pushModel(currentModel);
     }
 
-    String atLine(InterpretationContext intercon) {
-    	return "At line "+intercon.getLineNumber();
-    }
     
     abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
 

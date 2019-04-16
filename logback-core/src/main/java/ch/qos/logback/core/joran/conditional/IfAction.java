@@ -24,7 +24,7 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class IfAction extends Action {
@@ -100,7 +100,7 @@ public class IfAction extends Action {
             return;
         }
 
-        Interpreter interpreter = ic.getJoranInterpreter();
+        SaxEventInterpreter interpreter = ic.getSaxEventInterpreter();
         List<SaxEvent> listToPlay = state.thenSaxEventList;
         if (!state.boolResult) {
             listToPlay = state.elseSaxEventList;

@@ -151,7 +151,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
             try {
                 lc.reset();
                 ConfigurationWatchListUtil.registerConfigurationWatchList(context, newCWL);
-                joranConfigurator.doConfigure(failsafeEvents);
+                joranConfigurator.playSaxEvents(failsafeEvents);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
                 joranConfigurator.registerSafeConfiguration(eventList);
                 

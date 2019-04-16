@@ -10,12 +10,18 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.ComponentModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.FilterReply;
 
 public class DefaultProcessor extends ContextAwareBase {
 
 	final InterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, Class<? extends ModelHandlerBase>> modelClassToHandlerMap = new HashMap<>();
 
+	ModelFiler phaseOneFilter = new AllowAllModelFilter();
+	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
+	ModelFiler phaseThreeFilter = new DenyAllModelFilter();
+	
+	
 	public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
 		this.setContext(context);
 		this.interpretationContext = interpretationContext;
@@ -26,14 +32,51 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 
 	public void process(Model model) {
+
 		if (model == null) {
 			addError("Expecting non null model to process");
 			return;
 		}
-		traverse(model);
+		interpretationContext.pushObject(context);
+		traverse(model, getPhaseOneFilter());
+		traverse(model, getPhaseTwoFilter());
+		traverse(model, getPhaseThreeFilter());
+
+		addInfo("End of configuration.");
+		interpretationContext.popObject();
 	}
 
-	void traverse(Model model) {
+	public ModelFiler getPhaseOneFilter() {
+		return phaseOneFilter;
+	}
+
+	public ModelFiler getPhaseTwoFilter() {
+		return phaseTwoFilter;
+	}
+
+	public ModelFiler getPhaseThreeFilter() {
+		return phaseThreeFilter;
+	}
+
+	
+	
+	public void setPhaseOneFilter(ModelFiler phaseOneFilter) {
+		this.phaseOneFilter = phaseOneFilter;
+	}
+
+	public void setPhaseTwoFilter(ModelFiler phaseTwoFilter) {
+		this.phaseTwoFilter = phaseTwoFilter;
+	}
+
+	public void setPhaseThreeFilter(ModelFiler phaseThreeFilter) {
+		this.phaseThreeFilter = phaseThreeFilter;
+	}
+
+	void traverse(Model model, ModelFiler modelFiler) {
+
+		FilterReply filterReply = modelFiler.decide(model);
+		if (filterReply == FilterReply.DENY)
+			return;
 
 		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
 
@@ -59,7 +102,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			}
 			handler.handle(interpretationContext, model);
 			for (Model m : model.getSubModels()) {
-				traverse(m);
+				traverse(m, modelFiler);
 			}
 			handler.postHandle(interpretationContext, model);
 		} catch (ModelHandlerException e) {

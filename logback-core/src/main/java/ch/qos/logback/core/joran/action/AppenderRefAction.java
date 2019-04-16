@@ -15,6 +15,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
@@ -33,7 +34,7 @@ public class AppenderRefAction extends BaseModelAction {
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 		AppenderRefModel arm = new AppenderRefModel();
 		
-        String ref = attributes.getValue(ActionConst.REF_ATTRIBUTE);
+        String ref = attributes.getValue(JoranConstants.REF_ATTRIBUTE);
 		arm.setRef(ref);
 		return arm;
 	}

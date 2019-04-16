@@ -37,8 +37,10 @@ import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.IncludeModelHandler;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -95,7 +97,7 @@ public class IncludeActionTest {
         FileTestUtil.makeTestOutputDir();
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
         rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
+        rulesMap.put(new ElementSelector("x/include"), new IncludeModelAction());
         rulesMap.put(new ElementSelector("x/stack"), stackAction);
 
         tc = new TrivialConfigurator(rulesMap) {
@@ -103,6 +105,7 @@ public class IncludeActionTest {
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
+                defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler.class);
                 return defaultProcessor;
             }
         };
@@ -124,6 +127,7 @@ public class IncludeActionTest {
     public void basicFile() throws JoranException {
         System.setProperty(INCLUDE_KEY, INCLUDED_FILE);
         tc.doConfigure(TOP_BY_FILE);
+        StatusPrinter.print(context);
         verifyConfig(new String[] { "IA", "IB" });
     }
 

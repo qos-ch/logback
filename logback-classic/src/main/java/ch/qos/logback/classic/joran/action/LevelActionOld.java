@@ -13,12 +13,15 @@
  */
 package ch.qos.logback.classic.joran.action;
 
+import static ch.qos.logback.core.joran.JoranConstants.INHERITED;
+import static ch.qos.logback.core.joran.JoranConstants.NULL;
+import static ch.qos.logback.core.joran.JoranConstants.VALUE_ATTR;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
@@ -46,11 +49,11 @@ public class LevelActionOld extends Action {
 
         String loggerName = l.getName();
 
-        String levelStr = ec.subst(attributes.getValue(ActionConst.VALUE_ATTR));
+        String levelStr = ec.subst(attributes.getValue(VALUE_ATTR));
         // addInfo("Encapsulating logger name is [" + loggerName
         // + "], level value is  [" + levelStr + "].");
 
-        if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
+        if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
             l.setLevel(null);
         } else {
             l.setLevel(Level.toLevel(levelStr, Level.DEBUG));

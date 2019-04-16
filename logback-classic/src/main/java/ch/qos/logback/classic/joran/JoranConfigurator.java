@@ -41,16 +41,20 @@ import ch.qos.logback.classic.util.DefaultNestedComponentRules;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
-import ch.qos.logback.core.joran.action.IncludeAction;
+import ch.qos.logback.core.joran.action.IncludeModelAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
+import ch.qos.logback.core.model.DefineModel;
+import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
+import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.ModelFiler;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -91,7 +95,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         if (PlatformInfo.hasJMXObjectName()) {
             rs.addRule(new ElementSelector("configuration/jmxConfigurator"), new JMXConfiguratorAction());
         }
-        rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
+        rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
 
         rs.addRule(new ElementSelector("configuration/consolePlugin"), new ConsolePluginAction());
 
@@ -110,13 +114,19 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler.class);
         defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler.class);
         defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler.class);
+
+        defaultProcessor.addHandler(IncludeModel.class, AppenderModelHandler.class);
         
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
         defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler.class);
         defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler.class);
         defaultProcessor.addHandler(LevelModel.class, LevelModelHandler.class);
-    
+        
+        ModelFiler phaseOneFilter = new ChainedModelFilter().allow(ConfigurationModel.class).allow(DefineModel.class).denyAll();
+        ModelFiler phaseTwoFilter = new ChainedModelFilter().allowAll();
+        defaultProcessor.setPhaseOneFilter(phaseOneFilter);
+        defaultProcessor.setPhaseTwoFilter(phaseTwoFilter);
         return defaultProcessor;
     }
 

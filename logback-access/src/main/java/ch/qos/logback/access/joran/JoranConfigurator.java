@@ -26,7 +26,7 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
-import ch.qos.logback.core.joran.action.IncludeAction;
+import ch.qos.logback.core.joran.action.IncludeModelAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -61,7 +61,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         //rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
         //rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
 
-        rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
+        rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
     }
 
     @Override

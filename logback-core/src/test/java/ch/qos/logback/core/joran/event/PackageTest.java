@@ -18,6 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ SaxEventRecorderTest.class, InPlayFireTest.class })
+@SuiteClasses({ SaxEventRecorderTest.class})
 public class PackageTest {
 }

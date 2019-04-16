@@ -49,14 +49,14 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	Map<String, Object> objectMap;
 	Map<String, String> propertiesMap;
 
-	Interpreter joranInterpreter;
+	SaxEventInterpreter saxEventInterpreter;
 	final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
 	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
 	private BeanDescriptionCache beanDescriptionCache;
 
-	public InterpretationContext(Context context, Interpreter joranInterpreter) {
+	public InterpretationContext(Context context, SaxEventInterpreter saxEventInterpreter) {
 		this.context = context;
-		this.joranInterpreter = joranInterpreter;
+		this.saxEventInterpreter = saxEventInterpreter;
 		this.objectStack = new Stack<>();
 		this.modelStack = new Stack<>();
 		this.implicitActionDataStack = new Stack<>();
@@ -85,7 +85,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	}
 
 	String updateLocationInfo(String msg) {
-		Locator locator = joranInterpreter.getLocator();
+		Locator locator = saxEventInterpreter.getLocator();
 
 		if (locator != null) {
 			return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
@@ -95,7 +95,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	}
 
 	public String getLineNumber() {
-		Locator locator = joranInterpreter.getLocator();
+		Locator locator = saxEventInterpreter.getLocator();
 
 		if (locator != null) {
 			return Integer.toString(locator.getLineNumber());
@@ -105,11 +105,11 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	}
 
 	public Locator getLocator() {
-		return joranInterpreter.getLocator();
+		return saxEventInterpreter.getLocator();
 	}
 
-	public Interpreter getJoranInterpreter() {
-		return joranInterpreter;
+	public SaxEventInterpreter getSaxEventInterpreter() {
+		return saxEventInterpreter;
 	}
 
 	public Stack<Object> getObjectStack() {

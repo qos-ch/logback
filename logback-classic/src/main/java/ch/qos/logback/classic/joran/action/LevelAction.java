@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.model.LevelModel;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -49,7 +49,7 @@ public class LevelAction extends BaseModelAction {
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 		LevelModel lm = new LevelModel();
 		
-		String value = attributes.getValue(ActionConst.VALUE_ATTR);
+		String value = attributes.getValue(JoranConstants.VALUE_ATTR);
 		lm.setValue(value);
 		
 		return lm;

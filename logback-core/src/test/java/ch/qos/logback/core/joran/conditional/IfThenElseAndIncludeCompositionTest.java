@@ -28,7 +28,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.IncludeAction;
+import ch.qos.logback.core.joran.action.IncludeModelAction;
 import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
@@ -63,7 +63,7 @@ public class IfThenElseAndIncludeCompositionTest {
         rulesMap.put(new ElementSelector("*/if/then/*"), new NOPAction());
         rulesMap.put(new ElementSelector("*/if/else"), new ElseAction());
         rulesMap.put(new ElementSelector("*/if/else/*"), new NOPAction());
-        rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
+        rulesMap.put(new ElementSelector("x/include"), new IncludeModelAction());
 
         tc = new TrivialConfigurator(rulesMap);
         tc.setContext(context);

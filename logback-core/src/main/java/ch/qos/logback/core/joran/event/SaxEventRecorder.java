@@ -39,16 +39,23 @@ import ch.qos.logback.core.status.Status;
 
 public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
-    final ContextAwareImpl cai;
-
-    public SaxEventRecorder(Context context) {
-        cai = new ContextAwareImpl(context, this);
-    }
-
+    final ContextAwareImpl contextAwareImpl;
+    final ElementPath elementPath;
     public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
     Locator locator;
-    ElementPath globalElementPath = new ElementPath();
+    
+    
+    public SaxEventRecorder(Context context) {
+    	this(context, new ElementPath());
+    }
 
+    public SaxEventRecorder(Context context, ElementPath elementPath) {
+        contextAwareImpl = new ContextAwareImpl(context, this);
+        this.elementPath = elementPath;
+    }
+
+    
+    
     final public void recordEvents(InputStream inputStream) throws JoranException {
         recordEvents(new InputSource(inputStream));
     }
@@ -98,11 +105,16 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         locator = l;
     }
 
+    protected boolean isIgnoredTag(String tagName) {
+    	return false;
+    }
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
 
         String tagName = getTagName(localName, qName);
-        globalElementPath.push(tagName);
-        ElementPath current = globalElementPath.duplicate();
+        if(!isIgnoredTag(tagName)) {
+          elementPath.push(tagName);
+        }
+        ElementPath current = elementPath.duplicate();
         saxEventList.add(new StartEvent(current, namespaceURI, localName, qName, atts, getLocator()));
     }
 
@@ -135,7 +147,10 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
     public void endElement(String namespaceURI, String localName, String qName) {
         saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
-        globalElementPath.pop();
+        String tagName = getTagName(localName, qName);
+        if(!isIgnoredTag(tagName)) {
+          elementPath.pop();
+        }
     }
 
     String getTagName(String localName, String qName) {
@@ -149,7 +164,6 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     public void error(SAXParseException spe) throws SAXException {
         addError(XML_PARSING + " - Parsing error on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber());
         addError(spe.toString());
-        
     }
 
     public void fatalError(SAXParseException spe) throws SAXException {
@@ -162,39 +176,39 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     }
 
     public void addError(String msg) {
-        cai.addError(msg);
+        contextAwareImpl.addError(msg);
     }
 
     public void addError(String msg, Throwable ex) {
-        cai.addError(msg, ex);
+        contextAwareImpl.addError(msg, ex);
     }
 
     public void addInfo(String msg) {
-        cai.addInfo(msg);
+        contextAwareImpl.addInfo(msg);
     }
 
     public void addInfo(String msg, Throwable ex) {
-        cai.addInfo(msg, ex);
+        contextAwareImpl.addInfo(msg, ex);
     }
 
     public void addStatus(Status status) {
-        cai.addStatus(status);
+        contextAwareImpl.addStatus(status);
     }
 
     public void addWarn(String msg) {
-        cai.addWarn(msg);
+        contextAwareImpl.addWarn(msg);
     }
 
     public void addWarn(String msg, Throwable ex) {
-        cai.addWarn(msg, ex);
+        contextAwareImpl.addWarn(msg, ex);
     }
 
     public Context getContext() {
-        return cai.getContext();
+        return contextAwareImpl.getContext();
     }
 
     public void setContext(Context context) {
-        cai.setContext(context);
+        contextAwareImpl.setContext(context);
     }
 
     public List<SaxEvent> getSaxEventList() {

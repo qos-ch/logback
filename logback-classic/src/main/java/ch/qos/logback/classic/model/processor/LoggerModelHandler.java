@@ -1,11 +1,13 @@
 package ch.qos.logback.classic.model.processor;
 
+import static ch.qos.logback.core.joran.JoranConstants.NULL;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
@@ -39,7 +41,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
 
 		String levelStr = intercon.subst(loggerModel.getLevel());
 		if (!OptionHelper.isEmpty(levelStr)) {
-			if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
+			if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
 				addInfo("Setting level of logger [" + finalLoggerName + "] to null, i.e. INHERITED");
 				logger.setLevel(null);
 			} else {

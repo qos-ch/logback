@@ -23,11 +23,11 @@ import ch.qos.logback.core.joran.event.StartEvent;
 
 public class EventPlayer {
 
-    final Interpreter interpreter;
+    final SaxEventInterpreter interpreter;
     List<SaxEvent> eventList;
     int currentIndex;
 
-    public EventPlayer(Interpreter interpreter) {
+    public EventPlayer(SaxEventInterpreter interpreter) {
         this.interpreter = interpreter;
     }
 

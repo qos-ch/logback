@@ -32,7 +32,7 @@ import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class IncludeAction extends Action {
+public class IncludeActionOld extends Action {
 
     private static final String INCLUDED_TAG = "included";
     private static final String FILE_ATTR = "file";
@@ -59,12 +59,13 @@ public class IncludeAction extends Action {
 
         try {
             if (in != null) {
+            	
                 parseAndRecord(in, recorder);
                 // remove the <included> tag from the beginning and </included> from the end
                 trimHeadAndTail(recorder);
 
                 // offset = 2, because we need to get past this element as well as the end element
-                ec.getJoranInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
+                ec.getSaxEventInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
             }
         } catch (JoranException e) {
             addError("Error while parsing  " + attributeInUse, e);

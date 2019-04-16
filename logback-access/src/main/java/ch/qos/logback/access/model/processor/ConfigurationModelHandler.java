@@ -38,15 +38,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
 		}
 
-		intercon.pushObject(context);
 	}
 	
-	@Override
-	public void postHandle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		addInfo("End of configuration.");
-		intercon.popObject();
-	}
-
 //  public void begin(InterpretationContext ec, String name, Attributes attributes) {
 //
 //      // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides

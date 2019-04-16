@@ -2,6 +2,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -31,11 +32,11 @@ public class PreconditionValidator extends ContextAwareBase {
 	}
 
 	public PreconditionValidator validateValueAttribute() {
-		return generic(ActionConst.VALUE_ATTR);
+		return generic(JoranConstants.VALUE_ATTR);
 	}
 
 	public PreconditionValidator validateRefAttribute() {
-		return generic(ActionConst.REF_ATTRIBUTE);
+		return generic(JoranConstants.REF_ATTRIBUTE);
 	}
 	
 	public PreconditionValidator generic(String attributeName) {

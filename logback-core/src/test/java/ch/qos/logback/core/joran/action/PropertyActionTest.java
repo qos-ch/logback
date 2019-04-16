@@ -26,7 +26,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.TopModel;
@@ -47,7 +47,7 @@ public class PropertyActionTest {
 
     Context context;
     InterpretationContext interpretationContext;
-    Interpreter x;
+    SaxEventInterpreter x;
     
     PropertyAction propertyAction;
     DummyAttributes atts = new DummyAttributes();
@@ -104,7 +104,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(1, context.getStatusManager().getCount());
+        assertEquals(2, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
 
@@ -114,7 +114,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(1, context.getStatusManager().getCount());
+        assertEquals(2, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
 
@@ -123,7 +123,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, "noAttributes", atts);
         propertyAction.end(interpretationContext, "noAttributes");
         defaultProcessor.process(topModel);
-        assertEquals(1, context.getStatusManager().getCount());
+        assertEquals(2, context.getStatusManager().getCount());
         assertTrue(checkError());
         StatusPrinter.print(context);
     }
@@ -135,7 +135,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(1, context.getStatusManager().getCount());
+        assertEquals(2, context.getStatusManager().getCount());
         assertTrue(checkError());
     }
 
@@ -187,7 +187,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(1, context.getStatusManager().getCount());
+        assertEquals(2, context.getStatusManager().getCount());
         assertTrue(checkFileErrors());
     }
 

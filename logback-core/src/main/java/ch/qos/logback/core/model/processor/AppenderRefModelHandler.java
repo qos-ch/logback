@@ -5,12 +5,10 @@ import java.util.HashMap;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.processor.ModelHandlerBase;
-import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.spi.AppenderAttachable;
 
 public class AppenderRefModelHandler extends ModelHandlerBase {
@@ -47,7 +45,7 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
         String appenderName = intercon.subst(appenderRefModel.getRef());
 		
 		HashMap<String, Appender<?>> appenderBag = (HashMap<String, Appender<?>>) intercon.getObjectMap()
-				.get(ActionConst.APPENDER_BAG);
+				.get(JoranConstants.APPENDER_BAG);
 		
 		@SuppressWarnings("rawtypes")
 		Appender appender = appenderBag.get(appenderName);

@@ -36,7 +36,6 @@ public class PropertyModelHandler extends ModelHandlerBase {
     public void handle(InterpretationContext interpretationContext, Model model) {
 
         PropertyModel propertyModel = (PropertyModel) model;
- 
         
         Scope scope = ActionUtil.stringToScope(propertyModel.getScopeStr());
 

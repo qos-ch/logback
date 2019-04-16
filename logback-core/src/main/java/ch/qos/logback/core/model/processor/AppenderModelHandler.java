@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.Model;
@@ -44,7 +44,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 			// The execution context contains a bag which contains the appenders
 			// created thus far.
 			HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) interpContext.getObjectMap()
-					.get(ActionConst.APPENDER_BAG);
+					.get(JoranConstants.APPENDER_BAG);
 
 			// add the appender just created to the appender bag.
 			appenderBag.put(appenderName, appender);

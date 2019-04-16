@@ -11,16 +11,18 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.joran.action;
+package ch.qos.logback.core.joran;
 
 /**
  *
- * This class contains costants used by other Actions.
+ * This class contains constants used by Joran components.
  * 
  * @author Ceki G&uuml;lc&uuml;
  *
  */
-public abstract class ActionConst {
+public abstract class JoranConstants {
+	public static final String INCLUDED_TAG = "included";
+	public static final String INCLUDE_TAG = "include";
 
     public static final String APPENDER_TAG = "appender";
     public static final String REF_ATTRIBUTE = "ref";

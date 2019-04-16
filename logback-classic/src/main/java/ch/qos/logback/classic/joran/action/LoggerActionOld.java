@@ -13,13 +13,16 @@
  */
 package ch.qos.logback.classic.joran.action;
 
+import static ch.qos.logback.core.joran.JoranConstants.ADDITIVITY_ATTRIBUTE;
+import static ch.qos.logback.core.joran.JoranConstants.INHERITED;
+import static ch.qos.logback.core.joran.JoranConstants.NULL;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -56,7 +59,7 @@ public class LoggerActionOld extends Action {
         String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
 
         if (!OptionHelper.isEmpty(levelStr)) {
-            if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
+            if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
                 addInfo("Setting level of logger [" + loggerName + "] to null, i.e. INHERITED");
                 logger.setLevel(null);
             } else {
@@ -66,7 +69,7 @@ public class LoggerActionOld extends Action {
             }
         }
 
-        String additivityStr = ec.subst(attributes.getValue(ActionConst.ADDITIVITY_ATTRIBUTE));
+        String additivityStr = ec.subst(attributes.getValue(ADDITIVITY_ATTRIBUTE));
         if (!OptionHelper.isEmpty(additivityStr)) {
             boolean additive = OptionHelper.toBoolean(additivityStr, true);
             addInfo("Setting additivity of logger [" + loggerName + "] to " + additive);

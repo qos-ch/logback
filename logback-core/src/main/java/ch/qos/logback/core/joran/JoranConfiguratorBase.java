@@ -18,7 +18,6 @@ import java.util.Map;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.action.ActionConst;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
@@ -34,8 +33,8 @@ import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.action.TimestampAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.ImplicitModel;
@@ -100,7 +99,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     }
 
     @Override
-    protected void addImplicitRules(Interpreter interpreter) {
+    protected void addImplicitRules(SaxEventInterpreter interpreter) {
         // The following line adds the capability to parse nested components
 //        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
 //        nestedComplexPropertyIA.setContext(context);
@@ -119,7 +118,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     protected void buildInterpreter() {
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-        omap.put(ActionConst.APPENDER_BAG, new HashMap<String, Appender<?>>());
+        omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 

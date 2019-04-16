@@ -20,7 +20,7 @@ import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
 import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 
@@ -33,7 +33,7 @@ public class SimpleConfigurator extends GenericConfigurator {
     }
 
     @Override
-    protected void addImplicitRules(Interpreter interpreter) {
+    protected void addImplicitRules(SaxEventInterpreter interpreter) {
     	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
     	
         NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
@@ -50,7 +50,7 @@ public class SimpleConfigurator extends GenericConfigurator {
 
     }
 
-    public Interpreter getInterpreter() {
+    public SaxEventInterpreter getInterpreter() {
         return interpreter;
     }
 

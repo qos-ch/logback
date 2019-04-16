@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.model.RootLoggerModel;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
@@ -31,7 +31,7 @@ public class RootLoggerAction extends BaseModelAction {
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 		RootLoggerModel rootLoggerModel = new RootLoggerModel();
 		
-		String levelStr = attributes.getValue(ActionConst.LEVEL_ATTRIBUTE);
+		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
 		rootLoggerModel.setLevel(levelStr);
 	        
 		return rootLoggerModel;

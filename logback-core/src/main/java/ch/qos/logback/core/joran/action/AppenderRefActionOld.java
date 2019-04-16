@@ -13,6 +13,11 @@
  */
 package ch.qos.logback.core.joran.action;
 
+import static ch.qos.logback.core.joran.JoranConstants.APPENDER_BAG;
+import static ch.qos.logback.core.joran.JoranConstants.REF_ATTRIBUTE;
+
+import java.util.HashMap;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.Appender;
@@ -20,8 +25,6 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.util.OptionHelper;
-
-import java.util.HashMap;
 
 public class AppenderRefActionOld<E> extends Action {
     boolean inError = false;
@@ -44,7 +47,7 @@ public class AppenderRefActionOld<E> extends Action {
 
         AppenderAttachable<E> appenderAttachable = (AppenderAttachable<E>) o;
 
-        String appenderName = ec.subst(attributes.getValue(ActionConst.REF_ATTRIBUTE));
+        String appenderName = ec.subst(attributes.getValue(REF_ATTRIBUTE));
 
         if (OptionHelper.isEmpty(appenderName)) {
             // print a meaningful error message and return
@@ -55,7 +58,7 @@ public class AppenderRefActionOld<E> extends Action {
             return;
         }
 
-        HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) ec.getObjectMap().get(ActionConst.APPENDER_BAG);
+        HashMap<String, Appender<E>> appenderBag = (HashMap<String, Appender<E>>) ec.getObjectMap().get(APPENDER_BAG);
         Appender<E> appender = (Appender<E>) appenderBag.get(appenderName);
 
         if (appender == null) {

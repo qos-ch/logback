@@ -16,7 +16,7 @@ package ch.qos.logback.classic.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.model.LoggerModel;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -44,10 +44,10 @@ public class LoggerAction extends BaseModelAction {
 		String nameStr = attributes.getValue(NAME_ATTRIBUTE);
 		loggerModel.setName(nameStr);
 		
-		String levelStr = attributes.getValue(ActionConst.LEVEL_ATTRIBUTE);
+		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
 		loggerModel.setLevel(levelStr);
 	    
-		String additivityStr = attributes.getValue(ActionConst.ADDITIVITY_ATTRIBUTE);
+		String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
 		loggerModel.setAdditivity(additivityStr);
 	    
 		return loggerModel;

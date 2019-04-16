@@ -18,7 +18,7 @@ import org.xml.sax.Locator;
 
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -51,7 +51,7 @@ public abstract class Action extends ContextAwareBase {
      * Called when the parser encounters an element matching a
      * {@link ch.qos.logback.core.joran.spi.ElementSelector Pattern}.
      */
-    public abstract void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException;
+    public abstract void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException;
 
     /**
      * Called to pass the body (as text) contained within an element.
@@ -59,7 +59,7 @@ public abstract class Action extends ContextAwareBase {
      * @param body
      * @throws ActionException
      */
-    public void body(InterpretationContext ic, String body) throws ActionException {
+    public void body(InterpretationContext intercon, String body) throws ActionException {
         // NOP
     }
 
@@ -67,14 +67,14 @@ public abstract class Action extends ContextAwareBase {
      * Called when the parser encounters an endElement event matching a {@link ch.qos.logback.core.joran.spi.Pattern
      * Pattern}.
      */
-    public abstract void end(InterpretationContext ic, String name) throws ActionException;
+    public abstract void end(InterpretationContext intercon, String name) throws ActionException;
 
     public String toString() {
         return this.getClass().getName();
     }
 
-    protected int getColumnNumber(InterpretationContext ic) {
-        Interpreter interpreter = ic.getJoranInterpreter();
+    protected int getColumnNumber(InterpretationContext intercon) {
+        SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
         Locator locator = interpreter.getLocator();
         if (locator != null) {
             return locator.getColumnNumber();
@@ -83,8 +83,8 @@ public abstract class Action extends ContextAwareBase {
     }
 
     // move to InterpretationContext
-    static public int getLineNumber(InterpretationContext ic) {
-        Interpreter interpreter = ic.getJoranInterpreter();
+    static public int getLineNumber(InterpretationContext intercon) {
+        SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
         if(interpreter == null)
             return -1;
         Locator locator = interpreter.getLocator();
@@ -94,7 +94,15 @@ public abstract class Action extends ContextAwareBase {
         return -1;
     }
 
-    protected String getLineColStr(InterpretationContext ic) {
-        return "line: " + getLineNumber(ic) + ", column: " + getColumnNumber(ic);
+    protected String getLineColStr(InterpretationContext intercon) {
+        return "line: " + getLineNumber(intercon) + ", column: " + getColumnNumber(intercon);
+    }
+    
+    protected String atLine(InterpretationContext intercon) {
+    	return "At line "+intercon.getLineNumber();
+    }
+    
+    protected String nearLine(InterpretationContext intercon) {
+    	return "Near line "+intercon.getLineNumber();
     }
 }
