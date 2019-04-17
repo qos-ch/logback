@@ -42,7 +42,7 @@ public class AppenderActionOld<E> extends Action {
         inError = false;
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             addError("Missing class name for appender. Near [" + localName + "] line " + getLineNumber(ec));
             inError = true;
             return;
@@ -57,7 +57,7 @@ public class AppenderActionOld<E> extends Action {
 
             String appenderName = ec.subst(attributes.getValue(NAME_ATTRIBUTE));
 
-            if (OptionHelper.isEmpty(appenderName)) {
+            if (OptionHelper.isNullOrEmpty(appenderName)) {
                 addWarn("No appender name given for appender of type " + className + "].");
             } else {
                 appender.setName(appenderName);

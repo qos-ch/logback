@@ -11,7 +11,21 @@ import java.util.List;
  */
 public class Model {
 
-    String tag;
+	boolean handled = false;
+	
+    public boolean isHandled() {
+		return handled;
+	}
+
+    public boolean isFirstPass() {
+		return !handled;
+	}
+    
+	public void markAsHandled() {
+		this.handled = true;
+	}
+
+	String tag;
     String bodyText;
     int lineNumber;
     

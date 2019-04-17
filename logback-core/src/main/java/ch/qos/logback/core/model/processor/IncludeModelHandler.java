@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.List;
+import java.util.Stack;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
@@ -46,13 +47,13 @@ public class IncludeModelHandler extends ModelHandlerBase {
 				return JoranConstants.INCLUDED_TAG.equalsIgnoreCase(tagName);
 			}
 		};
-		
+
 		this.optional = OptionHelper.toBoolean(includeModel.getOptional(), false);
 
 		if (!checkAttributes(includeModel)) {
 			return;
 		}
- 
+
 		InputStream in = getInputStream(intercon, includeModel);
 		try {
 			if (in != null) {
@@ -61,14 +62,10 @@ public class IncludeModelHandler extends ModelHandlerBase {
 				// remove the <included> tag from the beginning and </included> from the end
 				trimHeadAndTail(recorder);
 
-				
-				SaxEventInterpreter subInterpreter = intercon.getSaxEventInterpreter().duplicate(includeModel.getElementPath());
+				SaxEventInterpreter subInterpreter = intercon.getSaxEventInterpreter()
+						.duplicate(includeModel.getElementPath());
 				subInterpreter.getEventPlayer().play(recorder.saxEventList);
-
-				System.out.println("after event played");
-				// offset = 2, because we need to get past this element as well as the end
-				// element				
-				//intercon.getJoranInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
+				copyModelStack(intercon, subInterpreter);
 			}
 		} catch (JoranException e) {
 			addError("Error while parsing  " + attributeInUse, e);
@@ -77,16 +74,28 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		}
 	}
 
+	private void copyModelStack(InterpretationContext intercon, SaxEventInterpreter subInterpreter) {
+		Stack<Model> copy = subInterpreter.getInterpretationContext().getCopyOfModelStack();
+		Model currentTop = intercon.peekModel();
+		if (currentTop == null) {
+			addWarn("Unexpected emtpy model stack");
+		} else {
+			for (Model m : copy) {
+				currentTop.addSubModel(m);
+			}
+		}
+	}
+
 	private boolean checkAttributes(IncludeModel includeModel) {
 		int count = 0;
 
-		if (!OptionHelper.isEmpty(includeModel.getFile())) {
+		if (!OptionHelper.isNullOrEmpty(includeModel.getFile())) {
 			count++;
 		}
-		if (!OptionHelper.isEmpty(includeModel.getUrl())) {
+		if (!OptionHelper.isNullOrEmpty(includeModel.getUrl())) {
 			count++;
 		}
-		if (!OptionHelper.isEmpty(includeModel.getResource())) {
+		if (!OptionHelper.isNullOrEmpty(includeModel.getResource())) {
 			count++;
 		}
 
@@ -196,17 +205,17 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		String urlAttribute = includeModel.getUrl();
 		String resourceAttribute = includeModel.getResource();
 
-		if (!OptionHelper.isEmpty(fileAttribute)) {
+		if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
 			this.attributeInUse = ec.subst(fileAttribute);
 			return filePathAsURL(attributeInUse);
 		}
 
-		if (!OptionHelper.isEmpty(urlAttribute)) {
+		if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
 			this.attributeInUse = ec.subst(urlAttribute);
 			return attributeToURL(attributeInUse);
 		}
 
-		if (!OptionHelper.isEmpty(resourceAttribute)) {
+		if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
 			this.attributeInUse = ec.subst(resourceAttribute);
 			return resourceAsURL(attributeInUse);
 		}

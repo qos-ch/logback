@@ -36,7 +36,7 @@ public class RootLoggerAction2 extends Action {
         root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
         String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
-        if (!OptionHelper.isEmpty(levelStr)) {
+        if (!OptionHelper.isNullOrEmpty(levelStr)) {
             Level level = Level.toLevel(levelStr);
             addInfo("Setting level of ROOT logger to " + level);
             root.setLevel(level);

@@ -28,12 +28,12 @@ public class TimestampModelHandler  extends ModelHandlerBase {
     public void handle(InterpretationContext interpretationContext, Model model) {
         TimestampModel timestampModel = (TimestampModel) model;
         String keyStr = timestampModel.getKey();
-        if (OptionHelper.isEmpty(keyStr)) {
+        if (OptionHelper.isNullOrEmpty(keyStr)) {
             addError("Attribute named [" + Action.KEY_ATTRIBUTE + "] cannot be empty");
             inError = true;
         }
         String datePatternStr = timestampModel.getDatePattern();
-        if (OptionHelper.isEmpty(datePatternStr)) {
+        if (OptionHelper.isNullOrEmpty(datePatternStr)) {
             addError("Attribute named [" + TimestampAction.DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
             inError = true;
         }

@@ -30,7 +30,7 @@ public class StatusListenerAction extends BaseModelAction {
     @Override
     protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             addError("Missing class name for statusListener. Near [" + name + "] line " + getLineNumber(interpretationContext));
             return false;
         }

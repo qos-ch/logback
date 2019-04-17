@@ -20,8 +20,7 @@ public class DefaultProcessor extends ContextAwareBase {
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
 	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
 	ModelFiler phaseThreeFilter = new DenyAllModelFilter();
-	
-	
+
 	public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
 		this.setContext(context);
 		this.interpretationContext = interpretationContext;
@@ -38,10 +37,27 @@ public class DefaultProcessor extends ContextAwareBase {
 			return;
 		}
 		interpretationContext.pushObject(context);
-		traverse(model, getPhaseOneFilter());
-		traverse(model, getPhaseTwoFilter());
-		traverse(model, getPhaseThreeFilter());
+		int LIMIT = 3;
+		for (int i = 0; i < LIMIT; i++) {
+			int count = traverse(model, getPhaseOneFilter());
+			System.out.println("p1 count=" + count);
+			if (count == 0)
+				break;
+		}
+		for (int i = 0; i < LIMIT; i++) {
+			int count = traverse(model, getPhaseTwoFilter());
+			System.out.println("p2 count=" + count);
+			if (count == 0)
+				break;
+		}
+		for (int i = 0; i < LIMIT; i++) {
 
+			int count = traverse(model, getPhaseThreeFilter());
+			System.out.println("p3 count=" + count);
+			if (count == 0) {
+				break;
+			}
+		}
 		addInfo("End of configuration.");
 		interpretationContext.popObject();
 	}
@@ -58,8 +74,6 @@ public class DefaultProcessor extends ContextAwareBase {
 		return phaseThreeFilter;
 	}
 
-	
-	
 	public void setPhaseOneFilter(ModelFiler phaseOneFilter) {
 		this.phaseOneFilter = phaseOneFilter;
 	}
@@ -72,42 +86,50 @@ public class DefaultProcessor extends ContextAwareBase {
 		this.phaseThreeFilter = phaseThreeFilter;
 	}
 
-	void traverse(Model model, ModelFiler modelFiler) {
+	int traverse(Model model, ModelFiler modelFiler) {
+
 
 		FilterReply filterReply = modelFiler.decide(model);
 		if (filterReply == FilterReply.DENY)
-			return;
+			return 0;
 
 		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
 
 		if (handlerClass == null) {
 			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
 					+ model.getLineNumber());
-			return;
+			return 0;
 		}
 
+		int count = 0;
+		
 		ModelHandlerBase handler = instantiateHandler(handlerClass);
-
-		String modelClassName = "";
-		if (model instanceof ComponentModel) {
-			modelClassName = ((ComponentModel) model).getClassName();
-			if (modelClassName == null)
-				modelClassName = "";
-		}
 
 		try {
 			if (!handler.isSupportedModelType(model)) {
 				addWarn("Skipping processing for model " + model.idString());
-				return;
+				return count;
 			}
-			handler.handle(interpretationContext, model);
-			for (Model m : model.getSubModels()) {
-				traverse(m, modelFiler);
+			boolean handledHere = false;
+			if (model.isFirstPass()) {
+				handledHere = true;
+				handler.handle(interpretationContext, model);
+				model.markAsHandled();
+				count++;
 			}
-			handler.postHandle(interpretationContext, model);
+			// recurse into submodels handled or not
+			int len = model.getSubModels().size();
+			for (int i = 0; i < len; i++) {
+				Model m = model.getSubModels().get(i);
+				count += traverse(m, modelFiler);
+			}
+			if (handledHere) {
+				handler.postHandle(interpretationContext, model);
+			}
 		} catch (ModelHandlerException e) {
 			addError("Failed to traverse model " + model.getTag(), e);
 		}
+		return count;
 	}
 
 	ModelHandlerBase instantiateHandler(Class<? extends ModelHandlerBase> handlerClass) {

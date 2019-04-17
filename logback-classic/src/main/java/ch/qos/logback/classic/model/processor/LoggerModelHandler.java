@@ -40,7 +40,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
 		logger = loggerContext.getLogger(finalLoggerName);
 
 		String levelStr = intercon.subst(loggerModel.getLevel());
-		if (!OptionHelper.isEmpty(levelStr)) {
+		if (!OptionHelper.isNullOrEmpty(levelStr)) {
 			if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
 				addInfo("Setting level of logger [" + finalLoggerName + "] to null, i.e. INHERITED");
 				logger.setLevel(null);
@@ -52,7 +52,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
 		}
 
 		String additivityStr = intercon.subst(loggerModel.getAdditivity());
-		if (!OptionHelper.isEmpty(additivityStr)) {
+		if (!OptionHelper.isNullOrEmpty(additivityStr)) {
 			boolean additive = OptionHelper.toBoolean(additivityStr, true);
 			addInfo("Setting additivity of logger [" + finalLoggerName + "] to " + additive);
 			logger.setAdditive(additive);

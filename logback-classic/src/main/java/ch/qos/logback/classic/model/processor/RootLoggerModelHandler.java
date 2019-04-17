@@ -34,7 +34,7 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 		root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
 		String levelStr = interpretationContext.subst(rootLoggerModel.getLevel());
-		if (!OptionHelper.isEmpty(levelStr)) {
+		if (!OptionHelper.isNullOrEmpty(levelStr)) {
 			Level level = Level.toLevel(levelStr);
 			addInfo("Setting level of ROOT logger to " + level);
 			root.setLevel(level);

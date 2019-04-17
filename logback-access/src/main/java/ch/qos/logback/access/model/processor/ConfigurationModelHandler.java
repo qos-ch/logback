@@ -32,7 +32,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 		if (debug == null) {
 			debug = configurationModel.getDebug();
 		}
-		if (OptionHelper.isEmpty(debug) || debug.equals("false") || debug.equals("null")) {
+		if (OptionHelper.isNullOrEmpty(debug) || debug.equals("false") || debug.equals("null")) {
 			addInfo(ConfigurationModel.INTERNAL_DEBUG_ATTR + " attribute not set");
 		} else {
 			StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());

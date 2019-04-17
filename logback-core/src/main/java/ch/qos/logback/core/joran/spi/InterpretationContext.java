@@ -172,6 +172,12 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	public Model popModel() {
 		return modelStack.pop();
 	}
+	
+	public Stack<Model> getCopyOfModelStack() {
+		Stack<Model> copy = new Stack<>();
+		copy.addAll(modelStack);
+		return copy;
+	}
 
 	public Object getObject(int i) {
 		return objectStack.get(i);

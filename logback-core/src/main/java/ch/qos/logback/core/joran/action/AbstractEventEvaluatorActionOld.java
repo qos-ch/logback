@@ -37,12 +37,12 @@ abstract public class AbstractEventEvaluatorActionOld extends Action {
         evaluator = null;
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             className = defaultClassName();
             addInfo("Assuming default evaluator class [" + className + "]");
         }
 
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             className = defaultClassName();
             inError = true;
             addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute not set for <evaluator>");
@@ -50,7 +50,7 @@ abstract public class AbstractEventEvaluatorActionOld extends Action {
         }
 
         String evaluatorName = attributes.getValue(Action.NAME_ATTRIBUTE);
-        if (OptionHelper.isEmpty(evaluatorName)) {
+        if (OptionHelper.isNullOrEmpty(evaluatorName)) {
             inError = true;
             addError("Mandatory \"" + NAME_ATTRIBUTE + "\" attribute not set for <evaluator>");
             return;

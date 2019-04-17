@@ -33,9 +33,9 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 		EventEvaluatorModel eem = (EventEvaluatorModel) model;
 
 		String className = eem.getClassName();
-		if (OptionHelper.isEmpty(className)) {
+		if (OptionHelper.isNullOrEmpty(className)) {
 			String defaultClassName = defaultClassName(intercon, eem);
-			if (OptionHelper.isEmpty(defaultClassName)) {
+			if (OptionHelper.isNullOrEmpty(defaultClassName)) {
 				inError = true;
 				addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator> at line "
 						+ intercon.getLineNumber());

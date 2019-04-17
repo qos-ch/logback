@@ -31,7 +31,7 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
 
         
         String className = shutdownHookModel.getClassName();
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             className = DefaultShutdownHook.class.getName();
             addInfo("Assuming className [" + className + "]");
         }

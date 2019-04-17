@@ -134,7 +134,13 @@
         <type>test-jar</type>
       </dependency>
       <!-- end of dependencies duplicated from logback-bom/pom.xml -->
-    
+
+      <dependency>
+	<groupId>edu.washington.cs.types.checker</groupId>
+	<artifactId>checker-framework</artifactId>
+	<version>1.7.0</version>
+      </dependency>
+
       <dependency>
         <groupId>org.codehaus.janino</groupId>
         <artifactId>janino</artifactId>

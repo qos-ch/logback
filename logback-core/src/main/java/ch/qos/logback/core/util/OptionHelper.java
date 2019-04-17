@@ -16,6 +16,8 @@ package ch.qos.logback.core.util;
 import java.lang.reflect.Constructor;
 import java.util.Properties;
 
+import org.eclipse.jdt.annotation.Nullable;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
@@ -257,7 +259,7 @@ public class OptionHelper {
         return dEfault;
     }
 
-    public static boolean isEmpty(String str) {
+    public static boolean isNullOrEmpty(@Nullable String str) {
         return ((str == null) || CoreConstants.EMPTY_STRING.equals(str.trim()));
     }
 

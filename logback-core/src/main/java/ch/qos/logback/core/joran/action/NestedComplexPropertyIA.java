@@ -98,7 +98,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
         Class<?> componentClass = null;
         try {
 
-            if (!OptionHelper.isEmpty(className)) {
+            if (!OptionHelper.isNullOrEmpty(className)) {
                 componentClass = Loader.loadClass(className, context);
             } else {
                 // guess class name via implicit rules
@@ -114,7 +114,7 @@ public class NestedComplexPropertyIA extends ImplicitActionOld {
                 return;
             }
 
-            if (OptionHelper.isEmpty(className)) {
+            if (OptionHelper.isNullOrEmpty(className)) {
                 addInfo("Assuming default type [" + componentClass.getName() + "] for [" + localName + "] property");
             }
 

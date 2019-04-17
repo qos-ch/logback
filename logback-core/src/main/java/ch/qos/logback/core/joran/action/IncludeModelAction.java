@@ -61,13 +61,13 @@ public class IncludeModelAction extends BaseModelAction {
 
 		int count = 0;
 
-		if (!OptionHelper.isEmpty(fileAttribute)) {
+		if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
 			count++;
 		}
-		if (!OptionHelper.isEmpty(urlAttribute)) {
+		if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
 			count++;
 		}
-		if (!OptionHelper.isEmpty(resourceAttribute)) {
+		if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
 			count++;
 		}
 

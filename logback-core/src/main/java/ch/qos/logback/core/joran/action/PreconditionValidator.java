@@ -41,7 +41,7 @@ public class PreconditionValidator extends ContextAwareBase {
 	
 	public PreconditionValidator generic(String attributeName) {
 		String attributeValue = attributes.getValue(attributeName);
-		if (OptionHelper.isEmpty(attributeValue)) {
+		if (OptionHelper.isNullOrEmpty(attributeValue)) {
 			addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line " + Action.getLineNumber(intercon));
 			this.valid = false;
 		}

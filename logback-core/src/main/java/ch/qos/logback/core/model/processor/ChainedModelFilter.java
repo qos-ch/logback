@@ -13,6 +13,10 @@ public class ChainedModelFilter implements ModelFiler {
 	public  ChainedModelFilter() {
 	}
 
+	static public ChainedModelFilter newInstance() {
+		return new ChainedModelFilter();
+	}
+	
 	public  ChainedModelFilter allow(Class<? extends Model> allowedType) {
 		modelFilters.add(new AllowModelFilter(allowedType));
 		return this;

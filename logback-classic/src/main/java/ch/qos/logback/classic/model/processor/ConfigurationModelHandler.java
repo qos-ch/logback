@@ -49,7 +49,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			debugAttrib = intercon.subst(configurationModel.getDebugStr());
 		}
 
-		if (!(OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
+		if (!(OptionHelper.isNullOrEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
 				|| debugAttrib.equalsIgnoreCase("null"))) {
 			StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
 		}
@@ -84,7 +84,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
 	void processScanAttrib(InterpretationContext ic, ConfigurationModel configurationModel) {
 		String scanStr = ic.subst(configurationModel.getScanStr());
-		if (!OptionHelper.isEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
+		if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
 
 			ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
 			URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
@@ -118,7 +118,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 	private Duration getDurationOfScanPeriodAttribute(String scanPeriodAttrib, Duration defaultDuration) {
 		Duration duration = null;
 
-		if (!OptionHelper.isEmpty(scanPeriodAttrib)) {
+		if (!OptionHelper.isNullOrEmpty(scanPeriodAttrib)) {
 			try {
 				duration = Duration.valueOf(scanPeriodAttrib);
 			} catch (IllegalStateException | IllegalArgumentException e) {

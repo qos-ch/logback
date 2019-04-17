@@ -54,11 +54,11 @@ public class MDCBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> 
     @Override
     public void start() {
         int errors = 0;
-        if (OptionHelper.isEmpty(key)) {
+        if (OptionHelper.isNullOrEmpty(key)) {
             errors++;
             addError("The \"Key\" property must be set");
         }
-        if (OptionHelper.isEmpty(defaultValue)) {
+        if (OptionHelper.isNullOrEmpty(defaultValue)) {
             errors++;
             addError("The \"DefaultValue\" property must be set");
         }

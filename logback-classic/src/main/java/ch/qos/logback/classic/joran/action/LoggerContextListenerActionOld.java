@@ -34,7 +34,7 @@ public class LoggerContextListenerActionOld extends Action {
         inError = false;
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute not set for <contextListener> element");
             inError = true;
             return;

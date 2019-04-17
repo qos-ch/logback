@@ -91,13 +91,13 @@ public class IncludeActionOld extends Action {
 
         int count = 0;
 
-        if (!OptionHelper.isEmpty(fileAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
             count++;
         }
-        if (!OptionHelper.isEmpty(urlAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
             count++;
         }
-        if (!OptionHelper.isEmpty(resourceAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
             count++;
         }
 
@@ -163,17 +163,17 @@ public class IncludeActionOld extends Action {
         String urlAttribute = attributes.getValue(URL_ATTR);
         String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
 
-        if (!OptionHelper.isEmpty(fileAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
             this.attributeInUse = ec.subst(fileAttribute);
             return filePathAsURL(attributeInUse);
         }
 
-        if (!OptionHelper.isEmpty(urlAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
             this.attributeInUse = ec.subst(urlAttribute);
             return attributeToURL(attributeInUse);
         }
 
-        if (!OptionHelper.isEmpty(resourceAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
             this.attributeInUse = ec.subst(resourceAttribute);
             return resourceAsURL(attributeInUse);
         }

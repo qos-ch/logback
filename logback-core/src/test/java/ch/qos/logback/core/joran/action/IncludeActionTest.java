@@ -39,8 +39,10 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.TopModel;
+import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.IncludeModelHandler;
+import ch.qos.logback.core.model.processor.ModelFiler;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -106,6 +108,10 @@ public class IncludeActionTest {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
                 defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler.class);
+                ModelFiler p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
+                defaultProcessor.setPhaseOneFilter(p1Filter);
+                ModelFiler p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class).denyAll();
+                defaultProcessor.setPhaseTwoFilter(p2Filter);
                 return defaultProcessor;
             }
         };
@@ -157,6 +163,7 @@ public class IncludeActionTest {
     public void basicURL() throws JoranException {
         System.setProperty(INCLUDE_KEY, URL_TO_INCLUDE);
         tc.doConfigure(TOP_BY_URL);
+        StatusPrinter.print(context);
         verifyConfig(new String[] { "IA", "IB" });
     }
 
@@ -217,11 +224,11 @@ public class IncludeActionTest {
         System.setProperty(SUB_FILE_KEY, SUB_FILE);
         System.setProperty(INCLUDE_KEY, INTERMEDIARY_FILE);
         tc.doConfigure(TOP_BY_FILE);
-        Stack<String> witness = new Stack<String>();
-        witness.push("a");
-        witness.push("b");
-        witness.push("c");
-        assertEquals(witness, stackAction.getStack());
+        Stack<String> expected = new Stack<String>();
+        expected.push("a");
+        expected.push("c");
+        expected.push("b");
+        assertEquals(expected, stackAction.getStack());
     }
 
     @Test

@@ -57,7 +57,7 @@ public class IfAction extends Action {
         Condition condition = null;
         String conditionAttribute = attributes.getValue(CONDITION_ATTR);
 
-        if (!OptionHelper.isEmpty(conditionAttribute)) {
+        if (!OptionHelper.isNullOrEmpty(conditionAttribute)) {
             conditionAttribute = OptionHelper.substVars(conditionAttribute, ic, context);
             PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(ic);
             pesb.setContext(context);

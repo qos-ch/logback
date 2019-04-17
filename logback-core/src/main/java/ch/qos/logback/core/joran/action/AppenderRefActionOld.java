@@ -49,7 +49,7 @@ public class AppenderRefActionOld<E> extends Action {
 
         String appenderName = ec.subst(attributes.getValue(REF_ATTRIBUTE));
 
-        if (OptionHelper.isEmpty(appenderName)) {
+        if (OptionHelper.isNullOrEmpty(appenderName)) {
             // print a meaningful error message and return
             String errMsg = "Missing appender ref attribute in <appender-ref> tag.";
             inError = true;

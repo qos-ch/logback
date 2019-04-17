@@ -46,7 +46,7 @@ public class LoggerActionOld extends Action {
 
         String loggerName = ec.subst(attributes.getValue(NAME_ATTRIBUTE));
 
-        if (OptionHelper.isEmpty(loggerName)) {
+        if (OptionHelper.isNullOrEmpty(loggerName)) {
             inError = true;
             String aroundLine = getLineColStr(ec);
             String errorMsg = "No 'name' attribute in element " + name + ", around " + aroundLine;
@@ -58,7 +58,7 @@ public class LoggerActionOld extends Action {
 
         String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
 
-        if (!OptionHelper.isEmpty(levelStr)) {
+        if (!OptionHelper.isNullOrEmpty(levelStr)) {
             if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
                 addInfo("Setting level of logger [" + loggerName + "] to null, i.e. INHERITED");
                 logger.setLevel(null);
@@ -70,7 +70,7 @@ public class LoggerActionOld extends Action {
         }
 
         String additivityStr = ec.subst(attributes.getValue(ADDITIVITY_ATTRIBUTE));
-        if (!OptionHelper.isEmpty(additivityStr)) {
+        if (!OptionHelper.isNullOrEmpty(additivityStr)) {
             boolean additive = OptionHelper.toBoolean(additivityStr, true);
             addInfo("Setting additivity of logger [" + loggerName + "] to " + additive);
             logger.setAdditive(additive);
