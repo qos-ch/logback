@@ -42,7 +42,7 @@
     </dependency>
     <dependency>
     	<groupId>com.sun.mail</groupId>
-   		<artifactId>javax.mail</artifactId>
+   	<artifactId>javax.mail</artifactId>
     	<scope>runtime</scope>
         <optional>true</optional>
 	</dependency>

@@ -67,6 +67,7 @@ public abstract class BaseModelAction extends Action {
             addWarn("This is wholly unexpected.");
         } 
         
+        // do not pop nor add to parent if there is no parent
         if(parentModel != null) {
             parentModel.addSubModel(currentModel);
             interpretationContext.popModel();

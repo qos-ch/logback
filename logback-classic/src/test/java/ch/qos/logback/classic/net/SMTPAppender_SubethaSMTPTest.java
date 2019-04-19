@@ -53,8 +53,8 @@ public class SMTPAppender_SubethaSMTPTest {
     static final String HEADER = "HEADER\n";
     static final String FOOTER = "FOOTER\n";
 
-    static int DIFF = 1024 + new Random().nextInt(30000);
-    static Wiser WISER;
+    int DIFF = 1024 + new Random().nextInt(10000);
+    Wiser WISER;
 
     SMTPAppender smtpAppender;
     LoggerContext loggerContext = new LoggerContext();

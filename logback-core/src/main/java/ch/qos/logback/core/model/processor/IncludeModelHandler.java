@@ -41,9 +41,9 @@ public class IncludeModelHandler extends ModelHandlerBase {
 	@Override
 	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
 		IncludeModel includeModel = (IncludeModel) model;
-		SaxEventRecorder recorder = new SaxEventRecorder(context, includeModel.getElementPath()) {
+		SaxEventRecorder localRecorder = new SaxEventRecorder(context, includeModel.getElementPath()) {
 			@Override
-			public boolean isIgnoredTag(String tagName) {
+			public boolean shouldIgnoreForElementPath(String tagName) {
 				return JoranConstants.INCLUDED_TAG.equalsIgnoreCase(tagName);
 			}
 		};
@@ -58,14 +58,15 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		try {
 			if (in != null) {
 
-				parseAndRecord(in, recorder);
+				parseAndRecord(in, localRecorder);
 				// remove the <included> tag from the beginning and </included> from the end
-				trimHeadAndTail(recorder);
+				trimHeadAndTail(localRecorder, INCLUDED_TAG);
 
-				SaxEventInterpreter subInterpreter = intercon.getSaxEventInterpreter()
+				SaxEventInterpreter localInterpreter = intercon.getSaxEventInterpreter()
 						.duplicate(includeModel.getElementPath());
-				subInterpreter.getEventPlayer().play(recorder.saxEventList);
-				copyModelStack(intercon, subInterpreter);
+				// add models
+				localInterpreter.getEventPlayer().play(localRecorder.saxEventList);
+				transferModelStack(includeModel, localInterpreter);
 			}
 		} catch (JoranException e) {
 			addError("Error while parsing  " + attributeInUse, e);
@@ -74,14 +75,18 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		}
 	}
 
-	private void copyModelStack(InterpretationContext intercon, SaxEventInterpreter subInterpreter) {
+	private void transferModelStack(IncludeModel includeModel, SaxEventInterpreter subInterpreter) {
 		Stack<Model> copy = subInterpreter.getInterpretationContext().getCopyOfModelStack();
-		Model currentTop = intercon.peekModel();
-		if (currentTop == null) {
-			addWarn("Unexpected emtpy model stack");
-		} else {
-			for (Model m : copy) {
-				currentTop.addSubModel(m);
+		for (Model m : copy) {
+			includeModel.addSubModel(m);
+		}
+	}
+
+	private void close(InputStream in) {
+		if (in != null) {
+			try {
+				in.close();
+			} catch (IOException e) {
 			}
 		}
 	}
@@ -111,7 +116,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		throw new IllegalStateException("Count value [" + count + "] is not expected");
 	}
 
-	InputStream getInputStream(InterpretationContext ec, IncludeModel includeModel) {
+	private InputStream getInputStream(InterpretationContext ec, IncludeModel includeModel) {
 		URL inputURL = getInputURL(ec, includeModel);
 		if (inputURL == null)
 			return null;
@@ -120,16 +125,39 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		return openURL(inputURL);
 	}
 
-	void close(InputStream in) {
-		if (in != null) {
-			try {
-				in.close();
-			} catch (IOException e) {
-			}
+	private URL getInputURL(InterpretationContext ec, IncludeModel includeModel) {
+		String fileAttribute = includeModel.getFile();
+		String urlAttribute = includeModel.getUrl();
+		String resourceAttribute = includeModel.getResource();
+
+		if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
+			this.attributeInUse = ec.subst(fileAttribute);
+			return filePathAsURL(attributeInUse);
+		}
+
+		if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
+			this.attributeInUse = ec.subst(urlAttribute);
+			return attributeToURL(attributeInUse);
+		}
+
+		if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
+			this.attributeInUse = ec.subst(resourceAttribute);
+			return resourceAsURL(attributeInUse);
+		}
+		// given previous checkAttributes() check we cannot reach this line
+		throw new IllegalStateException("A URL stream should have been returned");
+	}
+
+	private InputStream openURL(URL url) {
+		try {
+			return url.openStream();
+		} catch (IOException e) {
+			optionalWarning("Failed to open [" + url.toString() + "]");
+			return null;
 		}
 	}
 
-	URL attributeToURL(String urlAttribute) {
+	private URL attributeToURL(String urlAttribute) {
 		try {
 			return new URL(urlAttribute);
 		} catch (MalformedURLException mue) {
@@ -139,16 +167,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		}
 	}
 
-	InputStream openURL(URL url) {
-		try {
-			return url.openStream();
-		} catch (IOException e) {
-			optionalWarning("Failed to open [" + url.toString() + "]");
-			return null;
-		}
-	}
-
-	URL resourceAsURL(String resourceAttribute) {
+	private URL resourceAsURL(String resourceAttribute) {
 		URL url = Loader.getResourceBySelfClassLoader(resourceAttribute);
 		if (url == null) {
 			optionalWarning("Could not find resource corresponding to [" + resourceAttribute + "]");
@@ -179,8 +198,8 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		recorder.recordEvents(inputSource);
 	}
 
-	private void trimHeadAndTail(SaxEventRecorder recorder) {
-		// Let's remove the two <included> events before
+	private void trimHeadAndTail(SaxEventRecorder recorder, String tagName) {
+		// Let's remove the two events with the specified tag before
 		// adding the events to the player.
 
 		List<SaxEvent> saxEventList = recorder.saxEventList;
@@ -190,36 +209,14 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		}
 
 		SaxEvent first = saxEventList.get(0);
-		if (first != null && first.qName.equalsIgnoreCase(INCLUDED_TAG)) {
+		if (first != null && first.qName.equalsIgnoreCase(tagName)) {
 			saxEventList.remove(0);
 		}
 
 		SaxEvent last = saxEventList.get(recorder.saxEventList.size() - 1);
-		if (last != null && last.qName.equalsIgnoreCase(INCLUDED_TAG)) {
+		if (last != null && last.qName.equalsIgnoreCase(tagName)) {
 			saxEventList.remove(recorder.saxEventList.size() - 1);
 		}
 	}
 
-	URL getInputURL(InterpretationContext ec, IncludeModel includeModel) {
-		String fileAttribute = includeModel.getFile();
-		String urlAttribute = includeModel.getUrl();
-		String resourceAttribute = includeModel.getResource();
-
-		if (!OptionHelper.isNullOrEmpty(fileAttribute)) {
-			this.attributeInUse = ec.subst(fileAttribute);
-			return filePathAsURL(attributeInUse);
-		}
-
-		if (!OptionHelper.isNullOrEmpty(urlAttribute)) {
-			this.attributeInUse = ec.subst(urlAttribute);
-			return attributeToURL(attributeInUse);
-		}
-
-		if (!OptionHelper.isNullOrEmpty(resourceAttribute)) {
-			this.attributeInUse = ec.subst(resourceAttribute);
-			return resourceAsURL(attributeInUse);
-		}
-		// given previous checkAttributes() check we cannot reach this line
-		throw new IllegalStateException("A URL stream should have been returned");
-	}
 }

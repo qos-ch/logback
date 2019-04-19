@@ -32,7 +32,7 @@ public class TeeHttpServletResponseTest {
 
     String characterEncoding;
     String testString;
-    byte[] expectedBytes;
+    byte[] expectedBytes; 
 
     public TeeHttpServletResponseTest(String characterEncoding, String testString, byte[] expectedBytes) {
         this.characterEncoding = characterEncoding;

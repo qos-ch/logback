@@ -11,13 +11,11 @@ import java.util.List;
  */
 public class Model {
 
+	// this state should not be here but should be treated via listeners
+	// between processors and ModelHandlers
 	boolean handled = false;
 	
-    public boolean isHandled() {
-		return handled;
-	}
-
-    public boolean isFirstPass() {
+    public boolean isAlreadyHandled() {
 		return !handled;
 	}
     

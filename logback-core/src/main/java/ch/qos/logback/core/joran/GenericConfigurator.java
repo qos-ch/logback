@@ -147,12 +147,8 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         // }
         SaxEventRecorder recorder = new SaxEventRecorder(context);
         recorder.recordEvents(inputSource);
-        buildInterpreter();
         
-        playSaxEvents(recorder.saxEventList);
-        
-        Model top = interpreter.getInterpretationContext().peekModel();
-        processModel(top);
+        playEventsAndProcessModel(recorder.saxEventList);
         
         // no exceptions a this level
         StatusUtil statusUtil = new StatusUtil(context);
@@ -162,7 +158,14 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         }
     }
 
-    public void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
+	public void playEventsAndProcessModel(List<SaxEvent> saxEvents) throws JoranException {
+        buildInterpreter();
+		playSaxEvents(saxEvents);      
+        Model top = interpreter.getInterpretationContext().peekModel();
+        processModel(top);
+	}
+
+    private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
         // disallow simultaneous configurations of the same context
         synchronized (context.getConfigurationLock()) {
             interpreter.getEventPlayer().play(eventList);

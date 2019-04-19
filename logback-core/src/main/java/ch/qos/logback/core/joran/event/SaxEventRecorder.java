@@ -105,13 +105,13 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         locator = l;
     }
 
-    protected boolean isIgnoredTag(String tagName) {
+    protected boolean shouldIgnoreForElementPath(String tagName) {
     	return false;
     }
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
 
         String tagName = getTagName(localName, qName);
-        if(!isIgnoredTag(tagName)) {
+        if(!shouldIgnoreForElementPath(tagName)) {
           elementPath.push(tagName);
         }
         ElementPath current = elementPath.duplicate();
@@ -148,7 +148,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     public void endElement(String namespaceURI, String localName, String qName) {
         saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
         String tagName = getTagName(localName, qName);
-        if(!isIgnoredTag(tagName)) {
+        if(!shouldIgnoreForElementPath(tagName)) {
           elementPath.pop();
         }
     }

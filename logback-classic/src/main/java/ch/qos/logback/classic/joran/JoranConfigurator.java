@@ -54,6 +54,7 @@ import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.IncludeModelHandler;
 import ch.qos.logback.core.model.processor.ModelFiler;
 
 /**
@@ -115,7 +116,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler.class);
         defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler.class);
 
-        defaultProcessor.addHandler(IncludeModel.class, AppenderModelHandler.class);
+        defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler.class);
         
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);

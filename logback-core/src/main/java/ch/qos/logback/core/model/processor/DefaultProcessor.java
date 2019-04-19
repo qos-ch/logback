@@ -7,13 +7,16 @@ import java.util.HashMap;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
-import ch.qos.logback.core.model.ComponentModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 
 public class DefaultProcessor extends ContextAwareBase {
 
+	interface TraverseMethod {
+		int traverse(Model model, ModelFiler modelFiler);
+	}
+	
 	final InterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, Class<? extends ModelHandlerBase>> modelClassToHandlerMap = new HashMap<>();
 
@@ -30,6 +33,16 @@ public class DefaultProcessor extends ContextAwareBase {
 		modelClassToHandlerMap.put(modelClass, handlerClass);
 	}
 
+	private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFiler modelfFilter, String phaseName) {
+		int LIMIT = 3;
+		for (int i = 0; i < LIMIT; i++) {
+			int count = traverseMethod.traverse(model, modelfFilter);
+			System.out.println(phaseName+" count=" + count);
+			if (count == 0)
+				break;
+		}
+	}
+	
 	public void process(Model model) {
 
 		if (model == null) {
@@ -37,27 +50,11 @@ public class DefaultProcessor extends ContextAwareBase {
 			return;
 		}
 		interpretationContext.pushObject(context);
-		int LIMIT = 3;
-		for (int i = 0; i < LIMIT; i++) {
-			int count = traverse(model, getPhaseOneFilter());
-			System.out.println("p1 count=" + count);
-			if (count == 0)
-				break;
-		}
-		for (int i = 0; i < LIMIT; i++) {
-			int count = traverse(model, getPhaseTwoFilter());
-			System.out.println("p2 count=" + count);
-			if (count == 0)
-				break;
-		}
-		for (int i = 0; i < LIMIT; i++) {
-
-			int count = traverse(model, getPhaseThreeFilter());
-			System.out.println("p3 count=" + count);
-			if (count == 0) {
-				break;
-			}
-		}
+		
+		traversalLoop(this::traverse, model, getPhaseOneFilter(), "phase 1");
+		traversalLoop(this::traverse, model, getPhaseTwoFilter(), "phase 2");
+		traversalLoop(this::traverse, model, getPhaseThreeFilter(),"phase 3");
+		
 		addInfo("End of configuration.");
 		interpretationContext.popObject();
 	}
@@ -86,8 +83,8 @@ public class DefaultProcessor extends ContextAwareBase {
 		this.phaseThreeFilter = phaseThreeFilter;
 	}
 
-	int traverse(Model model, ModelFiler modelFiler) {
-
+	
+	protected int traverse(Model model, ModelFiler modelFiler) {
 
 		FilterReply filterReply = modelFiler.decide(model);
 		if (filterReply == FilterReply.DENY)
@@ -111,7 +108,7 @@ public class DefaultProcessor extends ContextAwareBase {
 				return count;
 			}
 			boolean handledHere = false;
-			if (model.isFirstPass()) {
+			if (model.isAlreadyHandled()) {
 				handledHere = true;
 				handler.handle(interpretationContext, model);
 				model.markAsHandled();

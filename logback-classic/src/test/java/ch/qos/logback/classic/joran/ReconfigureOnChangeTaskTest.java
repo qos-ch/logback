@@ -184,11 +184,19 @@ public class ReconfigureOnChangeTaskTest {
         File topLevelFile = new File(path);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         configure(topLevelFile);
+        StatusPrinter.print(loggerContext);
         CountDownLatch changeDetectedLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
         assertNotNull(oldRoct);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>");
+        
+        String badXML = "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>";
+        writeToFile(topLevelFile, badXML);
+        System.out.println("Waiting for changeDetectedLatch.await()");
         changeDetectedLatch.await();
+        System.out.println("Woke from changeDetectedLatch.await()");
+        
+        StatusPrinter.print(loggerContext);
+        
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
 
@@ -214,6 +222,8 @@ public class ReconfigureOnChangeTaskTest {
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
         configure(topLevelFile);
 
+        StatusPrinter.print(loggerContext);
+        
         CountDownLatch doneLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
         assertNotNull(oldRoct);
@@ -274,6 +284,7 @@ public class ReconfigureOnChangeTaskTest {
 
         @Override
         public void doneReconfiguring() {
+        	System.out.println("ReconfigurationDoneListener now invoking countDownLatch.countDown()");
             countDownLatch.countDown();
         }
     };

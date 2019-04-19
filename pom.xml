@@ -102,6 +102,12 @@
       <version>1.7.1</version>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>edu.washington.cs.types.checker</groupId>
+      <artifactId>checker-framework</artifactId>
+      <version>1.7.0</version>
+    </dependency> 
   </dependencies>
 
   <dependencyManagement>
