@@ -20,6 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -53,32 +54,22 @@ public class SMTPAppender_SubethaSMTPTest {
     static final String HEADER = "HEADER\n";
     static final String FOOTER = "FOOTER\n";
 
-    int DIFF = 1024 + new Random().nextInt(10000);
-    Wiser WISER;
+    int diff = 1024 + new Random().nextInt(10000);
+    Wiser wiser;
 
     SMTPAppender smtpAppender;
     LoggerContext loggerContext = new LoggerContext();
 
     int numberOfOldMessages;
-
-//    @BeforeClass
-//    static public void beforeClass() {
-//        WISER = new Wiser();
-//        WISER.setPort(DIFF);
-//        WISER.start();
-//    }
-
-//    @AfterClass
-//    static public void afterClass() throws Exception {
-//        WISER.stop();
-//    }
-
+    
+    boolean asyncronous = true;
+    
     @Before
     public void setUp() throws Exception {
-        WISER = new Wiser();
-        WISER.setPort(DIFF);
-        WISER.start();
-        numberOfOldMessages = WISER.getMessages().size();
+        wiser = new Wiser();
+        wiser.setPort(diff);
+        wiser.start();
+        numberOfOldMessages = wiser.getMessages().size();
         buildSMTPAppender();
     }
 
@@ -86,16 +77,18 @@ public class SMTPAppender_SubethaSMTPTest {
     public void tearDown() {
         // clear any authentication handler factory
         //WISER.getServer().setAuthenticationHandlerFactory(null);
-        WISER.stop();
+        wiser.stop();
     }
 
     void buildSMTPAppender() throws Exception {
         smtpAppender = new SMTPAppender();
+        // asynchronousSending is true by default
+        smtpAppender.setAsynchronousSending(asyncronous);
         smtpAppender.setContext(loggerContext);
         smtpAppender.setName("smtp");
         smtpAppender.setFrom("user@host.dom");
         smtpAppender.setSMTPHost("localhost");
-        smtpAppender.setSMTPPort(DIFF);
+        smtpAppender.setSMTPPort(diff);
         smtpAppender.setSubject(TEST_SUBJECT);
         smtpAppender.addTo("noreply@qos.ch");
     }
@@ -131,9 +124,20 @@ public class SMTPAppender_SubethaSMTPTest {
     }
 
     void waitUntilEmailIsSent() throws Exception {
+    	if(!asyncronous) {
+    		System.out.println("Non asyncronous. No need to wait");
+    		return;
+    	}
         System.out.println("About to wait for sending thread to finish");
-        loggerContext.getExecutorService().shutdown();
-        loggerContext.getExecutorService().awaitTermination(3000, TimeUnit.MILLISECONDS);
+        
+        Future<?> future = null;
+        while(future == null) {
+           future = smtpAppender.getAsynchronousSendingFuture();
+           
+           Thread.yield();
+        }
+        System.out.println("got a future done="+future.isDone());
+        future.get(5000, TimeUnit.MILLISECONDS);
     }
 
     private static String getBody(Part msg) {
@@ -142,18 +146,19 @@ public class SMTPAppender_SubethaSMTPTest {
         return all.substring(i + 4, all.length());
     } 
  
-    @Test
+    @Test(timeout = 5000)
     public void smoke() throws Exception {
         smtpAppender.setLayout(buildPatternLayout(loggerContext));
         smtpAppender.start();
-        Logger logger = loggerContext.getLogger("test");
+        Logger logger = loggerContext.getLogger(this.getClass()+".smoke");
         logger.addAppender(smtpAppender);
         logger.debug("hello");
         logger.error("en error", new Exception("an exception"));
 
         waitUntilEmailIsSent();
+        System.out.println("Done waiting");
         System.out.println("*** " + ((ThreadPoolExecutor) loggerContext.getExecutorService()).getCompletedTaskCount());
-        List<WiserMessage> wiserMsgList = WISER.getMessages();
+        List<WiserMessage> wiserMsgList = wiser.getMessages();
 
         assertNotNull(wiserMsgList);
         assertEquals(numberOfOldMessages + 1, wiserMsgList.size());
@@ -180,7 +185,7 @@ public class SMTPAppender_SubethaSMTPTest {
         logger.error("en error", new Exception("an exception"));
         waitUntilEmailIsSent();
 
-        List<WiserMessage> wiserMsgList = WISER.getMessages();
+        List<WiserMessage> wiserMsgList = wiser.getMessages();
 
         assertNotNull(wiserMsgList);
         assertEquals(numberOfOldMessages + 1, wiserMsgList.size());
@@ -216,7 +221,7 @@ public class SMTPAppender_SubethaSMTPTest {
         }
         logger.error("en error", new Exception("an exception"));
         waitUntilEmailIsSent();
-        List<WiserMessage> wiserMsgList = WISER.getMessages();
+        List<WiserMessage> wiserMsgList = wiser.getMessages();
 
         assertNotNull(wiserMsgList);
         assertEquals(numberOfOldMessages + 1, wiserMsgList.size());
@@ -263,7 +268,7 @@ public class SMTPAppender_SubethaSMTPTest {
         logger.debug("hello");
         logger.error("en error", new Exception("an exception"));
         waitUntilEmailIsSent();
-        List<WiserMessage> wiserMsgList = WISER.getMessages();
+        List<WiserMessage> wiserMsgList = wiser.getMessages();
 
         assertNotNull(wiserMsgList);
         assertEquals(numberOfOldMessages + 1, wiserMsgList.size());
@@ -281,7 +286,7 @@ public class SMTPAppender_SubethaSMTPTest {
     private void setAuthenticanHandlerFactory() {
         UsernamePasswordValidator validator = new RequiredUsernamePasswordValidator();
         EasyAuthenticationHandlerFactory authenticationHandlerFactory = new EasyAuthenticationHandlerFactory(validator);
-        WISER.getServer().setAuthenticationHandlerFactory(authenticationHandlerFactory);
+        wiser.getServer().setAuthenticationHandlerFactory(authenticationHandlerFactory);
     }
 
     
@@ -304,7 +309,7 @@ public class SMTPAppender_SubethaSMTPTest {
         logger.error("en error", new Exception("an exception"));
 
         waitUntilEmailIsSent();
-        List<WiserMessage> wiserMsgList = WISER.getMessages();
+        List<WiserMessage> wiserMsgList = wiser.getMessages();
 
         assertNotNull(wiserMsgList);
         assertEquals(1, wiserMsgList.size());
@@ -371,7 +376,7 @@ public class SMTPAppender_SubethaSMTPTest {
         logger.error("en error", new Exception("an exception"));
         waitUntilEmailIsSent();
 
-        List<WiserMessage> wiserMsgList = WISER.getMessages();
+        List<WiserMessage> wiserMsgList = wiser.getMessages();
         assertNotNull(wiserMsgList);
         assertEquals(numberOfOldMessages + 3, wiserMsgList.size());
     }

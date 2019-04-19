@@ -148,6 +148,11 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+
       </exclusions>
     </dependency>
     <dependency>
@@ -260,8 +265,8 @@
         <configuration>
           <parallel>none</parallel>
           <useUnlimitedThreads>false</useUnlimitedThreads>
-          <forkCount>2</forkCount>
-          <reuseForks>false</reuseForks>
+          <forkCount>4</forkCount>
+          <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->
