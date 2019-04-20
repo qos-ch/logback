@@ -22,7 +22,6 @@ import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
-import jdk.internal.org.objectweb.asm.tree.analysis.Interpreter;
 
 /**
  * A minimal configurator extending GenericConfigurator.
