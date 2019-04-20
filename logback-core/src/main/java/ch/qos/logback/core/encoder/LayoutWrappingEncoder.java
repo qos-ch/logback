@@ -115,7 +115,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     public boolean isStarted() {
-        return false;
+        return started;
     }
 
     public void start() {
