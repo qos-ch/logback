@@ -33,8 +33,19 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
+import ch.qos.logback.core.model.DefineModel;
+import ch.qos.logback.core.model.EventEvaluatorModel;
+import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.IncludeModel;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ParamModel;
+import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.ShutdownHookModel;
+import ch.qos.logback.core.model.TimestampModel;
+import ch.qos.logback.core.model.processor.AllowAllModelFilter;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
+import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
@@ -54,13 +65,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
         //rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
 
-        // add if-then-else support
-        //rs.addRule(new ElementSelector("*/if"), new IfAction());
-        //rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
-        //rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
-        //rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
-        //rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
-
         rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
     }
 
@@ -70,10 +74,60 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler.class);
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
+        
+        injectModelFilters(defaultProcessor);
+        
     	return defaultProcessor;
     	
     }
-    
+
+	private void injectModelFilters(DefaultProcessor defaultProcessor) {
+		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { 
+				DefineModel.class, 
+				PropertyModel.class, 
+				TimestampModel.class, 
+				ParamModel.class};
+
+		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] implicitModelClasses = new Class[] { 
+				ImplicitModel.class, 
+				ParamModel.class};
+
+		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] appenderRefModelClasses = new Class[] { 
+				AppenderRefModel.class };
+
+		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { 
+				ConfigurationModel.class, 
+				EventEvaluatorModel.class,
+				ShutdownHookModel.class, 
+				EventEvaluatorModel.class, 
+				IncludeModel.class,
+				};
+
+
+
+		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
+			fistPhaseDefintionFilter.allow(modelClass);
+		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
+			fistPhaseDefintionFilter.allow(modelClass);
+		for (Class<? extends Model> modelClass : implicitModelClasses)
+			fistPhaseDefintionFilter.allow(modelClass);
+		for (Class<? extends Model> modelClass : appenderRefModelClasses)
+			fistPhaseDefintionFilter.allow(modelClass);
+		
+		fistPhaseDefintionFilter.denyAll();
+		defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
+
+
+		defaultProcessor.setPhaseTwoFilter(new AllowAllModelFilter());
+
+	}
+	
+	
     @Override
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
         registry.add(AppenderBase.class, "layout", PatternLayout.class);

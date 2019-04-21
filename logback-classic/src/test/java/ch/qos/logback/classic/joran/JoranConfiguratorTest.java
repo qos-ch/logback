@@ -159,7 +159,7 @@ public class JoranConfiguratorTest {
 	@Test
 	public void eval() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "callerData.xml");
-
+		StatusPrinter.print(loggerContext);
 		String msg = "hello world";
 		logger.debug("toto");
 		logger.debug(msg);

@@ -159,16 +159,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         
 
 		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] remainingFirstPhaseModelClasses = new Class[] { 
-				ConfigurationModel.class, 
-				LoggerContextListenerModel.class,
-				ShutdownHookModel.class, 
-				EventEvaluatorModel.class, 
-				IncludeModel.class,
-				};
-
-		
-		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { 
 				ContextNameModel.class,
 				DefineModel.class, 
@@ -178,7 +168,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
 		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] implicitModelClasses = new Class[] { 
-				ImplicitModelHandler.class, 
+				ImplicitModel.class, 
 				ParamModel.class};
 
 		@SuppressWarnings("unchecked")
@@ -187,10 +177,22 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 				RootLoggerModel.class, 
 				AppenderRefModel.class };
 
+		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { 
+				ConfigurationModel.class, 
+				EventEvaluatorModel.class,
+				LoggerContextListenerModel.class,
+				ShutdownHookModel.class, 
+				EventEvaluatorModel.class, 
+				IncludeModel.class,
+				};
+
+
+
 		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
 		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : remainingFirstPhaseModelClasses)
+		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : implicitModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);

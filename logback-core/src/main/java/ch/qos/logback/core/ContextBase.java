@@ -139,7 +139,6 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     public void putObject(String key, Object value) {
-    	System.out.println("Putting "+key+"="+value);
         objectMap.put(key, value);
     }
 

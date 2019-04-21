@@ -86,6 +86,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 			intercon.popObject();
 
 			try {
+				@SuppressWarnings("unchecked")
 				Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
 						.getObject(CoreConstants.EVALUATOR_MAP);
 				if (evaluatorMap == null) {
