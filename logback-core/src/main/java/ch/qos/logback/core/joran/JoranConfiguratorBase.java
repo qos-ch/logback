@@ -51,6 +51,7 @@ import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.model.processor.TimestampModelHandler;
+import ch.qos.logback.core.spi.AppenderAttachable;
 
 
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
@@ -119,6 +120,8 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         super.buildInterpreter();
         Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
+        omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+        
         //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 

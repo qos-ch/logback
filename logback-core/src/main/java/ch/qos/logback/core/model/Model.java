@@ -15,7 +15,7 @@ public class Model {
 	// between processors and ModelHandlers
 	boolean handled = false;
 	
-    public boolean isAlreadyHandled() {
+    public boolean isUnhandled() {
 		return !handled;
 	}
     

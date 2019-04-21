@@ -36,9 +36,9 @@ public class DefaultProcessor extends ContextAwareBase {
 	private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFiler modelfFilter, String phaseName) {
 		int LIMIT = 3;
 		for (int i = 0; i < LIMIT; i++) {
-			int count = traverseMethod.traverse(model, modelfFilter);
-			System.out.println(phaseName+" count=" + count);
-			if (count == 0)
+			int handledModelCount = traverseMethod.traverse(model, modelfFilter);
+			//addInfo(phaseName+" handledModelCount=" + handledModelCount);
+			if (handledModelCount == 0)
 				break;
 		}
 	}
@@ -49,14 +49,22 @@ public class DefaultProcessor extends ContextAwareBase {
 			addError("Expecting non null model to process");
 			return;
 		}
-		interpretationContext.pushObject(context);
+		initialObjectPush();
 		
 		traversalLoop(this::traverse, model, getPhaseOneFilter(), "phase 1");
 		traversalLoop(this::traverse, model, getPhaseTwoFilter(), "phase 2");
 		traversalLoop(this::traverse, model, getPhaseThreeFilter(),"phase 3");
 		
 		addInfo("End of configuration.");
+		finalObjectPop();
+	}
+
+	private void finalObjectPop() {
 		interpretationContext.popObject();
+	}
+
+	private void initialObjectPush() {
+		interpretationContext.pushObject(context);
 	}
 
 	public ModelFiler getPhaseOneFilter() {
@@ -108,9 +116,9 @@ public class DefaultProcessor extends ContextAwareBase {
 				return count;
 			}
 			boolean handledHere = false;
-			if (model.isAlreadyHandled()) {
-				handledHere = true;
+			if (model.isUnhandled()) {
 				handler.handle(interpretationContext, model);
+				handledHere = true;
 				model.markAsHandled();
 				count++;
 			}

@@ -121,7 +121,7 @@ public class JoranConfiguratorTest {
 		String propertyName = "logback.level";
 		System.setProperty(propertyName, "DEBUG");
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "loggerLevelByProperty.xml");
-		// StatusPrinter.print(loggerContext);
+		StatusPrinter.print(loggerContext);
 		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
 		String msg = "hello world";

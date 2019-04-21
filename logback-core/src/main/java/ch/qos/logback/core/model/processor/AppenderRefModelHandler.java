@@ -1,10 +1,8 @@
 package ch.qos.logback.core.model.processor;
 
-import java.util.HashMap;
+import java.util.Map;
 
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.AppenderRefModel;
@@ -26,8 +24,7 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		// logger.debug("begin called");
-
+		
 		Object o = intercon.peekObject(); 
 
 		if (!(o instanceof AppenderAttachable)) {
@@ -44,23 +41,11 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 
         String appenderName = intercon.subst(appenderRefModel.getRef());
 		
-		HashMap<String, Appender<?>> appenderBag = (HashMap<String, Appender<?>>) intercon.getObjectMap()
-				.get(JoranConstants.APPENDER_BAG);
+		Map<String, AppenderAttachable<?>> appenderRefBag = (Map<String, AppenderAttachable<?>>) intercon.getObjectMap()
+				.get(JoranConstants.APPENDER_REF_BAG);
 		
-		@SuppressWarnings("rawtypes")
-		Appender appender = appenderBag.get(appenderName);
+		appenderRefBag.put(appenderName, appenderAttachable);
 
-		if (appender == null) {
-			String msg = "Could not find an appender named [" + appenderName
-					+ "]. Did you define it below instead of above in the configuration file?";
-			inError = true;
-			addError(msg);
-			addError("See " + CoreConstants.CODES_URL + "#appender_order for more details.");
-			return;
-		}
-
-		addInfo("Attaching appender named [" + appenderName + "] to " + appenderAttachable);
-		appenderAttachable.addAppender(appender);
 	}
 
 }
