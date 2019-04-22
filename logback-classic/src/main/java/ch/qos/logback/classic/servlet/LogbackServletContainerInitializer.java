@@ -8,8 +8,6 @@ import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.eclipse.jdt.annotation.Nullable;
-
 import ch.qos.logback.classic.util.StatusViaSLF4JLoggerFactory;
 import ch.qos.logback.core.util.OptionHelper;
 
