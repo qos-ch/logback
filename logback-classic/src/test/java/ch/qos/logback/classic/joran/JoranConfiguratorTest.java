@@ -464,8 +464,8 @@ public class JoranConfiguratorTest {
 	}
 
 	@Test
-	public void appenderAfterLoggerTest() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderAfterLogger.xml";
+	public void appenderRefBeforeAppenderTest() throws JoranException {
+		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefBeforeAppender.xml";
 		configure(configFileAsStr);
 		Logger logger = loggerContext.getLogger(this.getClass().getName());
 		Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
