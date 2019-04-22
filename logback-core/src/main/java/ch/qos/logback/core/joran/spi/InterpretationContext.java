@@ -13,9 +13,7 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
@@ -25,8 +23,6 @@ import org.xml.sax.Locator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
-import ch.qos.logback.core.joran.event.InPlayListener;
-import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -50,7 +46,6 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	Map<String, String> propertiesMap;
 
 	SaxEventInterpreter saxEventInterpreter;
-	final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
 	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
 	private BeanDescriptionCache beanDescriptionCache;
 
@@ -229,28 +224,6 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 			return null;
 		}
 		return OptionHelper.substVars(value, this, context);
-	}
-
-	public boolean isListenerListEmpty() {
-		return listenerList.isEmpty();
-	}
-
-	public void addInPlayListener(InPlayListener ipl) {
-		if (listenerList.contains(ipl)) {
-			addWarn("InPlayListener " + ipl + " has been already registered");
-		} else {
-			listenerList.add(ipl);
-		}
-	}
-
-	public boolean removeInPlayListener(InPlayListener ipl) {
-		return listenerList.remove(ipl);
-	}
-
-	void fireInPlay(SaxEvent event) {
-		for (InPlayListener ipl : listenerList) {
-			ipl.inPlay(event);
-		}
 	}
 
 }

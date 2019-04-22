@@ -48,17 +48,11 @@ public class EventPlayer {
 
             if (se instanceof StartEvent) {
                 interpreter.startElement((StartEvent) se);
-                // invoke fireInPlay after startElement processing
-                interpreter.getInterpretationContext().fireInPlay(se);
             }
             if (se instanceof BodyEvent) {
-                // invoke fireInPlay before characters processing
-                interpreter.getInterpretationContext().fireInPlay(se);
                 interpreter.characters((BodyEvent) se);
             }
             if (se instanceof EndEvent) {
-                // invoke fireInPlay before endElement processing
-                interpreter.getInterpretationContext().fireInPlay(se);
                 interpreter.endElement((EndEvent) se);
             }
 
