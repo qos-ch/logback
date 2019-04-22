@@ -39,25 +39,4 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 		}
 
 	}
-	
-//  public void begin(InterpretationContext ec, String name, Attributes attributes) {
-//
-//      // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
-//      // the equivalent property in the config file. This reversal of scope priority is justified
-//      // by the use case: the admin trying to chase rogue config file
-//      String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
-//      if (debugAttrib == null) {
-//          debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
-//      }
-//
-//      if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equals("false") || debugAttrib.equals("null")) {
-//          addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
-//      } else {
-//          StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
-//      }
-//
-//      // the context is appender attachable, so it is pushed on top of the stack
-//      ec.pushObject(getContext());
-//  }
-
 }

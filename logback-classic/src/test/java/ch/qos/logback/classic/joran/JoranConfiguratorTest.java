@@ -69,9 +69,6 @@ public class JoranConfiguratorTest {
 	@Test
 	public void simpleList() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleList.xml");
-
-		StatusPrinter.print(loggerContext);
-
 		Logger logger = loggerContext.getLogger(this.getClass().getName());
 		Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
@@ -466,4 +463,20 @@ public class JoranConfiguratorTest {
 		assertNotNull(loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD));
 	}
 
+	@Test
+	public void appenderAfterLoggerTest() throws JoranException {
+		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderAfterLogger.xml";
+		configure(configFileAsStr);
+		Logger logger = loggerContext.getLogger(this.getClass().getName());
+		Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		assertNotNull(listAppender);
+		assertEquals(0, listAppender.list.size());
+		String msg = "hello world";
+		logger.debug(msg);
+		assertEquals(1, listAppender.list.size());
+		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
+		assertEquals(msg, le.getMessage());
+		checker.assertIsErrorFree();
+	}
 }

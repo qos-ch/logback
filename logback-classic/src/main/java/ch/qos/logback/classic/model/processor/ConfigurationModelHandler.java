@@ -15,7 +15,6 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
-import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
@@ -65,9 +64,6 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			ContextUtil contextUtil = new ContextUtil(context);
 			contextUtil.addGroovyPackages(lc.getFrameworkPackages());
 		}
-		// the context is turbo filter attachable, so it is pushed on top of the
-		// stack
-		intercon.pushObject(context);
 	}
 
 	String getSystemProperty(String name) {
@@ -132,12 +128,6 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			duration = defaultDuration;
 		}
 		return duration;
-	}
-
-	@Override
-	public void postHandle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		addInfo("End of configuration.");
-		intercon.popObject();
 	}
 
 }

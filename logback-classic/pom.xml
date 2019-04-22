@@ -265,8 +265,8 @@
         <configuration>
           <parallel>none</parallel>
           <useUnlimitedThreads>false</useUnlimitedThreads>
-          <forkCount>2C</forkCount>
-          <reuseForks>false</reuseForks>
+          <forkCount>1.5C</forkCount>
+          <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
           <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->

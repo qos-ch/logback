@@ -17,7 +17,6 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.joran.action.BaseModelAction;
-import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 
@@ -37,11 +36,5 @@ public class ConfigurationAction extends BaseModelAction {
 		return configurationModel;
 	}
 
-
-	@Override
-	public void end(InterpretationContext ic, String name) throws ActionException {
-		super.end(ic, name);
-		addInfo("End of configuration.");
-	}
 
 }
