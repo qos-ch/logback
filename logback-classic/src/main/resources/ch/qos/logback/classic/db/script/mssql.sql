@@ -9,8 +9,11 @@
 -- The event_id column type was recently changed from INT to DECIMAL(40)
 -- without testing.
 
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'logging_event_property')
 DROP TABLE logging_event_property 
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'logging_event_exception')
 DROP TABLE logging_event_exception 
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'logging_event')
 DROP TABLE logging_event 
 
 CREATE TABLE logging_event 
