@@ -67,8 +67,6 @@ import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
-//import org.apache.catalina.Lifecycle;
-
 /**
  * This class is an implementation of tomcat's Valve interface, by extending
  * ValveBase.
