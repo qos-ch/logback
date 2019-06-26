@@ -1,4 +1,7 @@
 dist: trusty
+os:
+  - linux
+  - linux-ppc64le
 language: java
 jdk: oraclejdk9
 notifications:
