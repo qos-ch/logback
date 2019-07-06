@@ -13,24 +13,6 @@
  */
 package ch.qos.logback.core.net;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
@@ -43,6 +25,15 @@ import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
 import ch.qos.logback.core.util.ContentTypeUtil;
 import ch.qos.logback.core.util.OptionHelper;
+
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import java.util.*;
 
 // Contributors:
 // Andrey Rybin charset encoding support http://jira.qos.ch/browse/LBCORE-69
@@ -192,7 +183,30 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         long now = System.currentTimeMillis();
         final CyclicBuffer<E> cb = cbTracker.getOrCreate(key, now);
         subAppend(cb, eventObject);
+        // see http://jira.qos.ch/browse/LOGBACK-1067
+        if (isSendBufferRequired(cb, now)) {
+            sendBuffer(eventObject, cb);
+        }
 
+        // immediately remove the buffer if asked by the user
+        if (eventMarksEndOfLife(eventObject)) {
+            sendBuffer(eventObject, cb);
+            cbTracker.endOfLife(key);
+        }
+
+        cbTracker.removeStaleComponents(now);
+
+        if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
+            addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.getComponentCount() + "] buffers");
+            lastTrackerStatusPrint = now;
+            // quadruple 'delay' assuming less than max delay
+            if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {
+                delayBetweenStatusMessages *= 4;
+            }
+        }
+    }
+
+    private void sendBuffer(E eventObject, CyclicBuffer<E> cb) {
         try {
             if (eventEvaluator.evaluate(eventObject)) {
                 // clone the CyclicBuffer before sending out asynchronously
@@ -215,22 +229,19 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
                 addError("SMTPAppender's EventEvaluator threw an Exception-", ex);
             }
         }
+    }
 
-        // immediately remove the buffer if asked by the user
-        if (eventMarksEndOfLife(eventObject)) {
-            cbTracker.endOfLife(key);
+    /**
+     * Send buffer contents over mail when max number of messages in buffer has exceeded or buffer flush interval has passed
+     * @param cb
+     * @param now
+     * @return true if buffer has to be flushed
+     */
+    private boolean isSendBufferRequired(CyclicBuffer<E> cb, long now) {
+        if (((cb.getBufferCreatedTimeStamp() + cbTracker.getBufferFlushInterval()) <= now) || cb.length() >= cb.getMaxSize()) {
+            return true;
         }
-
-        cbTracker.removeStaleComponents(now);
-
-        if (lastTrackerStatusPrint + delayBetweenStatusMessages < now) {
-            addInfo("SMTPAppender [" + name + "] is tracking [" + cbTracker.getComponentCount() + "] buffers");
-            lastTrackerStatusPrint = now;
-            // quadruple 'delay' assuming less than max delay
-            if (delayBetweenStatusMessages < MAX_DELAY_BETWEEN_STATUS_MESSAGES) {
-                delayBetweenStatusMessages *= 4;
-            }
-        }
+        return false;
     }
 
     abstract protected boolean eventMarksEndOfLife(E eventObject);

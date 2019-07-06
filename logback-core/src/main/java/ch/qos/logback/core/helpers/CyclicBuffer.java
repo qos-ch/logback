@@ -18,10 +18,10 @@ import java.util.List;
 
 /**
  * CyclicBuffer holds values in a cyclic array.
- * 
+ *
  * <p>It allows read access to any element in the buffer not just the first or
  * last element.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class CyclicBuffer<E> {
@@ -31,12 +31,14 @@ public class CyclicBuffer<E> {
     int last;
     int numElems;
     int maxSize;
+    // time stamp when the buffer was created or cleared
+    long bufferCreatedTimeStamp;
 
     /**
      * Instantiate a new CyclicBuffer of at most <code>maxSize</code> events.
-     * 
+     *
      * The <code>maxSize</code> argument must a positive integer.
-     * 
+     *
      * @param maxSize
      *                The maximum number of elements in the buffer.
      */
@@ -55,6 +57,7 @@ public class CyclicBuffer<E> {
         this.last = other.last;
         this.first = other.first;
         this.numElems = other.numElems;
+        this.bufferCreatedTimeStamp = other.bufferCreatedTimeStamp;
     }
 
     @SuppressWarnings("unchecked")
@@ -64,6 +67,7 @@ public class CyclicBuffer<E> {
         first = 0;
         last = 0;
         numElems = 0;
+        this.bufferCreatedTimeStamp = System.currentTimeMillis();
     }
 
     /**
@@ -75,7 +79,7 @@ public class CyclicBuffer<E> {
 
     /**
      * Add an <code>event</code> as the last event in the buffer.
-     * 
+     *
      */
     public void add(E event) {
         ea[last] = event;
@@ -138,7 +142,7 @@ public class CyclicBuffer<E> {
 
     /**
      * Resize the cyclic buffer to <code>newSize</code>.
-     * 
+     *
      * @throws IllegalArgumentException
      *                 if <code>newSize</code> is negative.
      */
@@ -170,5 +174,9 @@ public class CyclicBuffer<E> {
         } else {
             last = loopLen;
         }
+    }
+
+    public long getBufferCreatedTimeStamp() {
+        return bufferCreatedTimeStamp;
     }
 }

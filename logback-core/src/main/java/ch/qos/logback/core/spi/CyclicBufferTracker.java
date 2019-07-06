@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.spi;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
 import java.util.*;
@@ -27,7 +28,9 @@ public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffe
     static final int DEFAULT_NUMBER_OF_BUFFERS = 64;
 
     static final int DEFAULT_BUFFER_SIZE = 256;
+    static final long DEFAULT_BUFFER_FLUSH_INTERVAL = 5 * CoreConstants.MILLIS_IN_ONE_MINUTE;
     int bufferSize = DEFAULT_BUFFER_SIZE;
+    long bufferFlushInterval = DEFAULT_BUFFER_FLUSH_INTERVAL;
 
     public CyclicBufferTracker() {
         super();
@@ -67,4 +70,11 @@ public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffe
 
     }
 
+    public long getBufferFlushInterval() {
+        return bufferFlushInterval;
+    }
+
+    public void setBufferFlushInterval(long bufferFlushInterval) {
+        this.bufferFlushInterval = bufferFlushInterval;
+    }
 }
