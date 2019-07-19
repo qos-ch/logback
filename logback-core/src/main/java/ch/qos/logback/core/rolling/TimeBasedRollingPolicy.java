@@ -224,19 +224,20 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     }
 
     /**
-     * Get the number of archive files to keep.
+     * Get the retention time for which archive files are kept.
+     * E.g. with monthly rollover and maxHistory of 6, archives are retained for 6 months.
      * 
-     * @return number of archive files to keep
+     * @return retention time for archive files
      */
     public int getMaxHistory() {
         return maxHistory;
     }
 
     /**
-     * Set the maximum number of archive files to keep.
+     * Get the retention time for which archive files are kept.
+     * E.g. with monthly rollover and maxHistory of 6, archives are retained for 6 months.
      * 
-     * @param maxHistory
-     *                number of archive files to keep
+     * @param maxHistory retention time for archive files
      */
     public void setMaxHistory(int maxHistory) {
         this.maxHistory = maxHistory;
