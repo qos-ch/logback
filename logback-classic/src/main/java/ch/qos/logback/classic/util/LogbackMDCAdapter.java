@@ -71,7 +71,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
 
     private Map<String, String> duplicateAndInsertNewMap(Map<String, String> oldMap) {
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
+        Map<String, String> newMap = new HashMap<String, String>();
         if (oldMap != null) {
             // we don't want the parent thread modifying oldMap while we are
             // iterating over it
@@ -80,6 +80,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
             }
         }
 
+        newMap = Collections.synchronizedMap(newMap);
         copyOnThreadLocal.set(newMap);
         return newMap;
     }
@@ -193,10 +194,10 @@ public class LogbackMDCAdapter implements MDCAdapter {
     public void setContextMap(Map<String, String> contextMap) {
         lastOperation.set(WRITE_OPERATION);
 
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
+        Map<String, String> newMap = new HashMap<String, String>();
         newMap.putAll(contextMap);
 
         // the newMap replaces the old one for serialisation's sake
-        copyOnThreadLocal.set(newMap);
+        copyOnThreadLocal.set(Collections.synchronizedMap(newMap));
     }
 }
