@@ -44,7 +44,7 @@
     
       <p>歴史的な経緯により、logback によるネットワーク越しのロギングイベントの配信は<code>SocketAppender</code>と<code>SimpleSocketServer</code>によって実現されてきました。アペンダーはクライアントとして動作します。サーバーアプリケーションへのネットワーク接続を確立し、ロギングイベントを配信するのです。レシーバーコンポーネントと対応するアペンダーを使うことで、より優れた柔軟性を実現することができます。</p>
     
-      <p>レシーバーコンポーネントは他のlogbackのコンポーネントと同様に<em>logback.xml</em>で設定します。つまり、<a href="./11-onJoran.html">Joran</a>の全ての機能を利用することができるのです。さらに、複数のレシーバーコンポーネントを設定するだけで、<em>あらゆる</em>アプリケーションのリモートアペンダーからロギングイベントを受け付けることができます。</p>
+      <p>レシーバーコンポーネントは他のlogbackのコンポーネントと同様に<em>logback.xml</em>で設定します。つまり、<a href="./onJoran_ja.html">Joran</a>の全ての機能を利用することができるのです。さらに、複数のレシーバーコンポーネントを設定するだけで、<em>あらゆる</em>アプリケーションのリモートアペンダーからロギングイベントを受け付けることができます。</p>
     
       <p>アペンダーとレシーバー間のネットワーク接続の確立はどちら側からでも始めることができます。レシーバーはサーバーとして振る舞うことができます。つまり、クライアントたるリモートアペンダーからの接続を待ち受けることができます。レシーバーはクライアントとして振る舞うこともできます。サーバーとして振る舞うリモートアペンダーに対してネットワーク接続を確立することができるのです。アペンダーとレシーバーのそれぞれの役割とは無関係に、<em>ロギングイベントは常にアペンダーからレシーバーに送信されます</em>。</p>
     
@@ -89,7 +89,7 @@
         <tr>
           <td><span class="prop" container="serverSocketReceiver">ssl</span></td>
           <td><code>SSLConfiguration</code></td>
-          <td><code>SSLServerSocketReceiver</code>でのみサポートされているプロパティです。このプロパティには<a href="./15-usingSSL.html">SSLを使用する</a>で説明されているSSLの設定を指定します。</td>
+          <td><code>SSLServerSocketReceiver</code>でのみサポートされているプロパティです。このプロパティには<a href="./usingSSL_ja.html">SSLを使用する</a>で説明されているSSLの設定を指定します。</td>
         </tr>
       </table>
     
@@ -165,7 +165,7 @@
 
 &lt;/configuration&gt;</pre>
 
-      <p>前の<code>ServerSocketReceiver</code>を使った設定とこちらの設定で根本的に違うのは、レシーバーの<em>class属性</em>に<code>SSLServerSocketReceiver</code>が指定されていることと、<span class="prop">ssl</span>プロパティがネストされていることです。sslプロパティにはレシーバーの秘密鍵と証明書が配置されたキーストアの場所とパスワードを、変数で指定しています。sslプロパティの設定内容について詳しくは<a href="./15-usingSSL.html">SSLを使用する</a>を参照してください。</p>    
+      <p>前の<code>ServerSocketReceiver</code>を使った設定とこちらの設定で根本的に違うのは、レシーバーの<em>class属性</em>に<code>SSLServerSocketReceiver</code>が指定されていることと、<span class="prop">ssl</span>プロパティがネストされていることです。sslプロパティにはレシーバーの秘密鍵と証明書が配置されたキーストアの場所とパスワードを、変数で指定しています。sslプロパティの設定内容について詳しくは<a href="./usingSSL_ja.html">SSLを使用する</a>を参照してください。</p>    
  
       <p>いくつか引数を追加して次のようにサーバーアプリケーションを実行します。</p>
 
@@ -175,7 +175,7 @@
       chapters.receivers.socket.ReceiverExample \
       src/main/java/chapters/receivers/socket/receiver2.xml</p>
   
-      <p>コマンドラインで指定したプロパティ<em>keystore</em>には、キーストアのfileから始まるURLを指定します。<a href="./15-usingSSL.html">SSLを使用する</a>でも説明していますが、クラスパス上のリソースを指定することもできます。</p>
+      <p>コマンドラインで指定したプロパティ<em>keystore</em>には、キーストアのfileから始まるURLを指定します。<a href="./usingSSL_ja.html">SSLを使用する</a>でも説明していますが、クラスパス上のリソースを指定することもできます。</p>
     
       <p>このレシーバーには、クライアントアプリケーションから<code>SSLSocketAppender</code>で接続することができます。SSL対応のアペンダーを使う設定ファイルを、前の例で使用したクライアントアプリケーションから使うことができます。次のように実行します。</p>
     
@@ -185,7 +185,7 @@
       chapters.receivers.socket.AppenderExample \
       src/main/java/chapters/receivers/socket/appender2.xml</p>
     
-      <p>この例では自己署名したX.509証明書を使用していますが、これを使っていいのはテストや実験的な用途だけです。<strong>本番環境では、SSL対応のアペンダーのために適切なX.509証明書を使うようにしてください</strong> 。詳細は<a href="./15-usingSSL.html">SSLを使用する</a>を参照してください。</p>
+      <p>この例では自己署名したX.509証明書を使用していますが、これを使っていいのはテストや実験的な用途だけです。<strong>本番環境では、SSL対応のアペンダーのために適切なX.509証明書を使うようにしてください</strong> 。詳細は<a href="./usingSSL_ja.html">SSLを使用する</a>を参照してください。</p>
   
       <h2 class="doAnchor" name="receiverClientComponents">クライアントとして振る舞うレシーバー
 </h2>
@@ -225,7 +225,7 @@
         <tr>
           <td><span class="prop" container="SocketReceiver">ssl</span></td>
           <td><code>SSLConfiguration</code></td>
-          <td><code>SSLSocketReceiver</code>でのみ設定可能なプロパティ。<a href="./15-usingSSL.html">SSLを使用する</a>で説明しているとおり、SSLの設定を指定します。</td>
+          <td><code>SSLSocketReceiver</code>でのみ設定可能なプロパティ。<a href="./usingSSL_ja.html">SSLを使用する</a>で説明しているとおり、SSLの設定を指定します。</td>
         </tr>
       </table>
         
@@ -308,7 +308,7 @@
 
 &lt;/configuration&gt;</pre>
 
-      <p><em>class</em>属性に<code>SSLSocketReceiver</code>を指定していること、そして、リモートアペンダーが信頼できるかどうかを検証するために使用するトラストストアの場所とパスワードを指定しているところが重要なところです。sslプロパティの設定内容について詳しくは<a href="./15-usingSSL.html">SSLを使用する</a>を参照してください。
+      <p><em>class</em>属性に<code>SSLSocketReceiver</code>を指定していること、そして、リモートアペンダーが信頼できるかどうかを検証するために使用するトラストストアの場所とパスワードを指定しているところが重要なところです。sslプロパティの設定内容について詳しくは<a href="./usingSSL_ja.html">SSLを使用する</a>を参照してください。
 
       </p>
   
@@ -333,7 +333,7 @@
 
       <p>レシーバーが接続していない状態で何か入力しても、そのメッセージは単純に破棄されるだけです。</p>
 
-      <p>繰り返しになりますが、この例では自己署名したX.509証明書を使用していますが、これはあくまでもテストだからです。<strong>本番環境においては、SSL対応のlogbackコンポーネントが自身の身元を証明するため、適切なX.509証明書を取得しなければなりません</strong>。詳しくは<a href="./15-usingSSL.html">SSLを使用する</a>を参照してください。
+      <p>繰り返しになりますが、この例では自己署名したX.509証明書を使用していますが、これはあくまでもテストだからです。<strong>本番環境においては、SSL対応のlogbackコンポーネントが自身の身元を証明するため、適切なX.509証明書を取得しなければなりません</strong>。詳しくは<a href="./usingSSL_ja.html">SSLを使用する</a>を参照してください。
 </p>
   
     <script src="../templates/footer.js" type="text/javascript"></script>

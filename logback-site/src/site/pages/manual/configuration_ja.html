@@ -35,7 +35,7 @@
     <script src="../templates/creative.js" type="text/javascript"></script>
 
 
-    <p>設定スクリプトの例を示しながら、logback の設定方法を説明していきます。logback は Joran という設定フレームワークを利用しています。Joran については<a href="./11-onJoran.html">後の章</a>で紹介します。
+    <p>設定スクリプトの例を示しながら、logback の設定方法を説明していきます。logback は Joran という設定フレームワークを利用しています。Joran については<a href="./onJoran_ja.html">後の章</a>で紹介します。
     </p>
 
 
@@ -52,14 +52,14 @@
 
     <ol>
       <li>
-        <p>logback は<a href="./faq.html#configFileLocation">クラスパス</a>上で<em>logback.groovy</em>というファイルを探します。</p>
+        <p>logback は<a href="../faq.html#configFileLocation">クラスパス</a>上で<em>logback.groovy</em>というファイルを探します。</p>
       </li>
 
       <li>
-        <p>見つからなかったら、今度は<a href="./faq.html#configFileLocation">クラスパス</a>上で<em>logback-test.xml</em>というファイルを探します。</p>
+        <p>見つからなかったら、今度は<a href="../faq.html#configFileLocation">クラスパス</a>上で<em>logback-test.xml</em>というファイルを探します。</p>
       </li>
 
-      <li><p>見つからなかったら、今度は<a href="./faq.html#configFileLocation">クラスパス</a>上で<em>logback.xml</em>というファイルを探します。</p>
+      <li><p>見つからなかったら、今度は<a href="../faq.html#configFileLocation">クラスパス</a>上で<em>logback.xml</em>というファイルを探します。</p>
       </li>
       
       <li><p>何も見つからなかったら、自動的に<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/BasicConfigurator.html"><code>BasicConfigurator</code></a>を使って設定します。ロギング出力は直接コンソールに出力されるようになります。
@@ -234,7 +234,7 @@ public class Foo {
    <p>これらのいずれかの条件が満たされなかった場合、設定ファイルを読み込むことができないので、Joran には<span class="attr">debug</span>属性を理解することができません。見つかった設定ファイルがXMLとして不適格な場合、logback はエラーと判断し、自動的に内部状態をコンソールに出力します。ですが、設定ファイルが見つからなかった場合、logback は内部状態を自動的に出力することはありません。それだけではエラーと見做すには不十分だからです。<a href="http://logback.qos.ch/xref/chapters/configuration/MyApp2.html"><em>MyApp2</em></a>アプリケーションの例で示したように、<code>StatusPrinter.print()</code>をプログラム的に呼び出していれば、どんな場合でも内部ステータス情報を確実に出力するようになります。</p>
 
  
-   <p>ステータスメッセージが無くても<span class="label">強制的に</span>内部ステータス情報を出力させていると、不正な<em>logback.xml</em>がどこにあるのか突き止めるのが難しくなります。アプリケーションのソースコードを簡単に変更できない商用環境においては特にそうです。不正な設定ファイルの場所を見つけやすくするには、システムプロパティの"logback.statusListenerClass"（<a href="./03-configuration.html#logback.statusLC">すぐ後で説明します</a>）に<code>StatusListener</code>を指定するとよいでしょう。そうすれば、強制的にステータスメッセージを出力させることができます。"logback.statusListenerClass" システムプロパティを使うと、エラーが発生したときに自動的に出力されるメッセージを抑止することもできます。
+   <p>ステータスメッセージが無くても<span class="label">強制的に</span>内部ステータス情報を出力させていると、不正な<em>logback.xml</em>がどこにあるのか突き止めるのが難しくなります。アプリケーションのソースコードを簡単に変更できない商用環境においては特にそうです。不正な設定ファイルの場所を見つけやすくするには、システムプロパティの"logback.statusListenerClass"（<a href="#logback.statusLC">すぐ後で説明します</a>）に<code>StatusListener</code>を指定するとよいでしょう。そうすれば、強制的にステータスメッセージを出力させることができます。"logback.statusListenerClass" システムプロパティを使うと、エラーが発生したときに自動的に出力されるメッセージを抑止することもできます。
    </p>
 
    <h3 class="doAnchor" name="configFileProperty">システムプロパティでデフォルトの設定ファイルの場所を指定する</h3>
@@ -244,7 +244,7 @@ public class Foo {
 
    <p class="source">java <b>-Dlogback.configurationFile=/path/to/config.xml</b> chapters.configuration.MyApp1</p>
 
-   <p>ファイルの拡張子は ".xml" か ".groovy" でなければならないので注意してください。他の拡張子の場合は無視します。<a href="./03-configuration.html#logback.statusLC">ステータスリスナーを明示的に登録</a>しておくと、設定ファイルの場所を突き止めるのに役立つでしょう。</p>
+   <p>ファイルの拡張子は ".xml" か ".groovy" でなければならないので注意してください。他の拡張子の場合は無視します。<a href="#logback.statusLC">ステータスリスナーを明示的に登録</a>しておくと、設定ファイルの場所を突き止めるのに役立つでしょう。</p>
 
 
    <h3 class="doAnchor" name="autoScan">設定ファイルが変更されたら自動的に再読み込みする</h3>
@@ -403,7 +403,7 @@ public class MyApp3 {
    <p>logback の配布物にはいくつかのステータスリスナー実装が含まれています。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a> は、受け取ったステータスメッセージを、コンソール（例えばSystem.out）に出力します。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/OnErrorConsoleStatusListener.html">OnErrorConsoleStatusListener</a> は、受け取ったステータスメッセージをSystem.errに出力します。<a href="http://logback.qos.ch/xref/ch/qos/logback/core/status/NopStatusListener.html">NopStatusListener</a>は、受け取ったステータスメッセージをそのまま捨ててしまいます。</p>
    
 
-   <p>設定の途中でステータスリスナーを登録したり、システムプロパティの"logback.statusListenerClass" でステータスリスナーを指定した場合は、<a href="./03-configuration.html#automaticStatusPrinting">メッセージステータスの自動出力（エラー発生時）</a>が無効になるので気をつけてください。つまり、<code>NopStatusListener</code>を使うように設定すると、内部ステータスの出力を完全に止めることが出来るのです。</p>
+   <p>設定の途中でステータスリスナーを登録したり、システムプロパティの"logback.statusListenerClass" でステータスリスナーを指定した場合は、<a href="#automaticStatusPrinting">メッセージステータスの自動出力（エラー発生時）</a>が無効になるので気をつけてください。つまり、<code>NopStatusListener</code>を使うように設定すると、内部ステータスの出力を完全に止めることが出来るのです。</p>
    
    <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.NopStatusListener ...</p>
 
@@ -818,7 +818,7 @@ import ch.qos.logback.classic.LoggerContext;
   <p>このドキュメントの以前のバージョンでは、「変数の置換」ではなく「プロパティの置換」と呼んでいました。<span class="label"></span>どちらも相互に置き換えられるくらい同じ意味の言葉ですが、前者のほうが明確に意味を表していると思います。
   </p>
 
-  <p>よくあるスクリプト言語のように、logbackの設定ファイルは変数を定義して、値と置き換えられるようになっています。変数は設定ファイルの中で定義することもできるし、外部のファイルで定義することもできます。そして外部リソースでも定義することもできるし、何らか計算することさえできます。また、<a href="./03-configuration.html#definingPropsOnTheFly">実行時に定義する</a>こともできます。
+  <p>よくあるスクリプト言語のように、logbackの設定ファイルは変数を定義して、値と置き換えられるようになっています。変数は設定ファイルの中で定義することもできるし、外部のファイルで定義することもできます。そして外部リソースでも定義することもできるし、何らか計算することさえできます。また、<a href="#definingPropsOnTheFly">実行時に定義する</a>こともできます。
   </p>
 
   <p class="highlight">値を指定できるところなら設定ファイル中のどこでも変数を置換することができます。</p>
@@ -827,7 +827,7 @@ import ch.qos.logback.classic.LoggerContext;
 変数の置換をする構文はUnixシェルとよく似ています。<em>${</em>から始まり<em>}</em>で終わる文字列は、<em>プロパティの値</em>への参照と見做されます。<em>aName</em>というプロパティの場合文字列の"${aName}"は、その値に置き換えられます。<em></em>
   </p>
 
-  <p>変数には<a href="./03-configuration.html#scopes">スコープ</a>があります（後で説明します）。</p>
+  <p>変数には<a href="#scopes">スコープ</a>があります（後で説明します）。</p>
 
   <p>HOSTNAME変数とCONTEXT_NAME変数はよく使われるので、コンテキストスコープを持つ変数として自動的に定義されます。</p>
 
@@ -1042,7 +1042,7 @@ fileName=myApp.log
   <!-- ============================================================== -->
   <h3 class="doAnchor" name="definingPropsOnTheFly">実行時に変数を定義する</h3>
 
-  <p><code>define要素</code>を使うと動的に変数を定義できます。define要素には二つの必須属性<span class="attr">name属性</span>と<span class="attr">class属性</span>があります。<span class="attr">name属性</span>には変数の名前を指定します。<span class="attr">class属性</span>には<a href="http://logback.qos.ch/xref/ch/qos/logback/core/spi/PropertyDefiner.html">PropertyDefiner</a>インターフェイスを実装したクラスの完全名を指定します。<code>PropertyDefiner</code>の<code>getPropertyValue()</code>メソッドの返す値が、変数の値になります。<span class="attr">scope属性</span>で<a href="./03-configuration.html#scopes">スコープ</a>を指定することもできます。
+  <p><code>define要素</code>を使うと動的に変数を定義できます。define要素には二つの必須属性<span class="attr">name属性</span>と<span class="attr">class属性</span>があります。<span class="attr">name属性</span>には変数の名前を指定します。<span class="attr">class属性</span>には<a href="http://logback.qos.ch/xref/ch/qos/logback/core/spi/PropertyDefiner.html">PropertyDefiner</a>インターフェイスを実装したクラスの完全名を指定します。<code>PropertyDefiner</code>の<code>getPropertyValue()</code>メソッドの返す値が、変数の値になります。<span class="attr">scope属性</span>で<a href="#scopes">スコープ</a>を指定することもできます。
   </p>
 
   <p>以下に例を示します。</p>
@@ -1154,7 +1154,7 @@ fileName=myApp.log
 
    <h3 class="doAnchor" name="insertFromJNDI">JNDIから変数を取得する</h3>
 
-   <p>特定の状況下では、JNDIに格納されたenvの内容を参照したいこともあるでしょう。<code>insertFromJNDIディレクティブ</code>を使うと、JNDIに格納されたenvを取得して、ローカルスコープの変数<span class="attr">として</span>取り込むことができます。他の変数と同じく、<em>scope属性</em>に指定した<a href="./03-configuration.html#scopes">別のスコープ</a>に新しい変数を登録することができます。
+   <p>特定の状況下では、JNDIに格納されたenvの内容を参照したいこともあるでしょう。<code>insertFromJNDIディレクティブ</code>を使うと、JNDIに格納されたenvを取得して、ローカルスコープの変数<span class="attr">として</span>取り込むことができます。他の変数と同じく、<em>scope属性</em>に指定した<a href="#scopes">別のスコープ</a>に新しい変数を登録することができます。
    </p>
 
    <p class="example">例：JNDI経由で取得したenvを変数として登録する（<a href="http://logback.qos.ch/xref/chapters/configuration/insertFromJNDI.xml">logback-examples/src/main/java/chapters/configuration/insertFromJNDI.xml</a>）</p>

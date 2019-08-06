@@ -395,7 +395,7 @@ Logger y = LoggerFactory.getLogger("wombat");</pre>
 		</p>
 		<div class="definition">
 
-			<h4 class="deftitle"><a href="./01-architecture.html#additivity" name="additivity">アペンダーの加算性</a></h4>
+			<h4 class="deftitle"><a href="#additivity" name="additivity">アペンダーの加算性</a></h4>
 
 			<p>ロガー<em>L</em>のログ出力は、<em>L</em>とその祖先も割り当てられた全てのアペンダーに転送される。これが「アペンダーの加算性」の定義である。
 			</p>
@@ -536,21 +536,21 @@ logger.debug("Value {} was inserted between {} and {}.", paramArray);</pre>
   <p><code>TurboFilter</code>が存在するならそれが呼び出されます。Turbo Filter コンテキストにまたがる閾値を設定できるし、いろんなイベントを捨てることができます。捨てるイベントは、<code>Marker</code> 、 <code>Level</code> 、 <code>Logger</code> 、メッセージ、<code>Throwable</code>といったロギング要求に関係する情報から判断します。フィルタチェインの結果が <code>FilterReply.DENY</code> だったら処理中のロギング要求はその時点で破棄します。<code>FilterReply.NEUTRAL</code> だったら次のステップ（ステップ2）に進みます。<code>FilterReply.ACCEPT</code> だったら、次のステップを無視してステップ3にジャンプします。
   </p>
 
-  <h4>ステップ2. <a href="./02-architecture.html#basic_selection">基本的な選択ルール</a>の適用</h4>
+  <h4>ステップ2. <a href="#basic_selection">基本的な選択ルール</a>の適用</h4>
 
   <p>このステップでは、logback はロガーの有効レベルとロギング要求のレベルを比較します。比較した結果ロギング要求が無効の場合は残りの処理は行わず、ロギング要求を破棄します。ロギング要求が破棄されなければ、次のステップに進みます。
   </p>
 
   <h4>ステップ3. <code>LoggingEvent</code>オブジェクトの作成</h4>
 
-  <p>ロギング要求がここまでのフィルタを通過したら、logback はロギング要求に含まれる必要な情報を全て格納した<code>ch.qos.logback.classic.LoggingEvent</code> オブジェクトを作成します。中には、ロギング要求を受け付けたロガーインスタンス、ロギング要求のレベル、ロギング要求に指定された例外オブジェクト、現在の時間、現在のスレッド、ロギング要求を起こしたクラスに関するさまざまな情報、<code>MDC</code>などが含まれます。フィールドによってはレイジーな初期化となるものがあります。つまり、必要になった時点で初期化される、ということです。<code>MDC</code>は、ロギング要求の付加情報となります。MDCについては<a href="./08-mdc.html">以降の章</a>で詳しく説明します。</p>
+  <p>ロギング要求がここまでのフィルタを通過したら、logback はロギング要求に含まれる必要な情報を全て格納した<code>ch.qos.logback.classic.LoggingEvent</code> オブジェクトを作成します。中には、ロギング要求を受け付けたロガーインスタンス、ロギング要求のレベル、ロギング要求に指定された例外オブジェクト、現在の時間、現在のスレッド、ロギング要求を起こしたクラスに関するさまざまな情報、<code>MDC</code>などが含まれます。フィールドによってはレイジーな初期化となるものがあります。つまり、必要になった時点で初期化される、ということです。<code>MDC</code>は、ロギング要求の付加情報となります。MDCについては<a href="./mdc_ja.html">以降の章</a>で詳しく説明します。</p>
 
   <h4>ステップ4. アペンダーの起動</h4>
 
   <p><code>LoggingEvent</code>オブジェクトを作ったら、logback は利用可能な全てのアペンダーについて <code>doAppend()</code>メソッドを呼び出します。ロガーコンテキストから受け継いだアペンダーが対象になります。
   </p>
 
-  <p>logback の配布物に含まれているアペンダーは、すべて <code>AppenderBase</code> 抽象クラスを継承しています。<code>doAppend()</code>メソッドは synchronized として宣言されており、スレッドセーフであることが保証されています。<code>AppenderBase</code>クラスの<code>doAppend()</code>メソッドでは、アペンダーに割り当てられたフィルターが存在する場合、それを呼び出します。カスタムフィルターは、実行時にアペンダーに割り当てることができるフィルターのことです。<a href="./07-filters.html">別の章</a>で説明しています。
+  <p>logback の配布物に含まれているアペンダーは、すべて <code>AppenderBase</code> 抽象クラスを継承しています。<code>doAppend()</code>メソッドは synchronized として宣言されており、スレッドセーフであることが保証されています。<code>AppenderBase</code>クラスの<code>doAppend()</code>メソッドでは、アペンダーに割り当てられたフィルターが存在する場合、それを呼び出します。カスタムフィルターは、実行時にアペンダーに割り当てることができるフィルターのことです。<a href="./filters_ja.html">別の章</a>で説明しています。
   </p>
 
   <h4>ステップ5. メッセージの書式化</h4>

@@ -31,7 +31,7 @@
 		<h3>JMXコンフィギュレーターを使用する</h3>
     
     
-		<p>サーバーを実行しているJVMがJDK1.6以降なら、コマンドラインから<code>jconsole</code>コマンドを実行するだけで、実行中のサーバーのMBeanServerにアクセスすることができます。古いJVMで実行している場合は<a href="./10-jmxConfig.html#jmxEnablingServer">サーバーでJMXを有効化する</a>のセクションを読んでおいてください。
+		<p>サーバーを実行しているJVMがJDK1.6以降なら、コマンドラインから<code>jconsole</code>コマンドを実行するだけで、実行中のサーバーのMBeanServerにアクセスすることができます。古いJVMで実行している場合は<a href="#jmxEnablingServer">サーバーでJMXを有効化する</a>のセクションを読んでおいてください。
     </p>
 
     <p>次のように設定ファイルに1行追加するだけで<code>JMXConfigurator</code>が有効になります。</p>
@@ -66,7 +66,7 @@
 
 			<li>指定したロガーのレベルを設定します。nullを設定するには文字列"null"を指定します。</li>
       <li>指定したロガーのレベルを取得します。nullになることがあります。</li>
-			<li>指定したロガーの<a href="./01-architecture.html#effectiveLevel">有効レベル</a>を取得します。</li>
+			<li>指定したロガーの<a href="./architecture_ja.html#effectiveLevel">有効レベル</a>を取得します。</li>
 		</ul>
 		
     <p><code>JMXConfigurator</code>はAttributesとして存在しているロガーの一覧と、ステータスの一覧を公開します。</p>
@@ -104,10 +104,10 @@ public class MyContextListener implements ServletContextListener {
     
     <h2 class="doAnchor" name="multiple">複数のWebアプリケーションで<code>JMXConfigurator</code>を使用する</h2>
 
-    <p>複数のアプリケーションを同じサーバーにデプロイしている、<a href="./09-loggingSeparation.html#contextSelectors">コンテキストセレクタ</a>を上書きせずデフォルトのまま使っている、それぞれのアプリケーションの<em>WEB-INF/lib</em>フォルダに<em>logback-*.jar</em>と<em>slf4j-api.jar</em>を置いている、これらが全て当てはまるなら、それぞれのアプリケーションの<code>JMXConfigurator</code>のインスタンスは同じ名前（"ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator"）で登録されてしまうでしょう。言い換えると、何もしなければそれぞれのアプリケーションのロガーコンテキストに関連付けられた<code>JMXConfigurator</code>のインスタンスは衝突してしまうのです。
+    <p>複数のアプリケーションを同じサーバーにデプロイしている、<a href="./loggingSeparation_ja.html#contextSelectors">コンテキストセレクタ</a>を上書きせずデフォルトのまま使っている、それぞれのアプリケーションの<em>WEB-INF/lib</em>フォルダに<em>logback-*.jar</em>と<em>slf4j-api.jar</em>を置いている、これらが全て当てはまるなら、それぞれのアプリケーションの<code>JMXConfigurator</code>のインスタンスは同じ名前（"ch.qos.logback.classic:Name=default,Type=ch.qos.logback.classic.jmx.JMXConfigurator"）で登録されてしまうでしょう。言い換えると、何もしなければそれぞれのアプリケーションのロガーコンテキストに関連付けられた<code>JMXConfigurator</code>のインスタンスは衝突してしまうのです。
     </p>
     
-    <p>衝突を避けるには、単に<a href="./03-configuration.html#contextName">アプリケーションのロガーコンテキストに名前を付ける</a>だけでよいのです。そうすれば、<code>JMXConfigurator</code>には自動的にその名前が設定されます。
+    <p>衝突を避けるには、単に<a href="./configuration_ja.html#contextName">アプリケーションのロガーコンテキストに名前を付ける</a>だけでよいのです。そうすれば、<code>JMXConfigurator</code>には自動的にその名前が設定されます。
     </p>
 
     <p>たとえば、それぞれ"コアラ"と"コウモリ"という名前のアプリケーションをデプロイしているものとします。そして、コアラのlogback.xmlには次のような設定がされているとしましょう。</p>
@@ -177,7 +177,7 @@ public class MyContextListener implements ServletContextListener {
 
     <img src="images/chapters/jmxConfigurator/jconsole15_jetty.gif" alt="jconsole15_jetty.gif">   
 
-    <p>接続したら、<a href="./10-jmxConfig.html#jmxConfigurator">前のスクリーンショット</a>のように<code>JMXConfigurator</code>にアクセスできるはずです。</p>
+    <p>接続したら、<a href="#jmxConfigurator">前のスクリーンショット</a>のように<code>JMXConfigurator</code>にアクセスできるはずです。</p>
 
     <h4>JettyにMX4Jを入れる（JDK 1.5およびJDK 1.6で動作確認済み）</h4>
 
@@ -245,7 +245,7 @@ public class MyContextListener implements ServletContextListener {
 
     <img src="images/chapters/jmxConfigurator/jconsole15_tomcat.gif" alt="jconsole15_tomcat.gif">   
 
-    <p>接続したら、<a href="./10-jmxConfig.html#jmxConfigurator">前のスクリーンショット</a>のように<code>JMXConfigurator</code>にアクセスできるはずです。
+    <p>接続したら、<a href="#jmxConfigurator">前のスクリーンショット</a>のように<code>JMXConfigurator</code>にアクセスできるはずです。
 </p>
 
 
