@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic;
 
+import static org.slf4j.event.Level.TRACE;
+
 import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.Collections;
@@ -22,9 +24,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.spi.DefaultLoggingEventBuilder;
 import org.slf4j.spi.LocationAwareLogger;
+import org.slf4j.spi.LoggingEventBuilder;
+import org.slf4j.spi.NOPLoggingEventBuilder;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LogbackLoggingEventBuilder;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import ch.qos.logback.core.Appender;
@@ -461,6 +467,15 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, t);
     }
 
+    
+ 
+    @Override
+    public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
+    	return new LogbackLoggingEventBuilder(this, level);
+    }
+    
+
+    
     public boolean isDebugEnabled() {
         return isDebugEnabled(null);
     }
