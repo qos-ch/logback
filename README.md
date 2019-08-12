@@ -10,7 +10,9 @@ the docs/ folder of the logback distribution.
 
 # Building logback
 
-Building logback is documented at:
+Version 1.3.x requires Java 9 to compile and build.
+
+More details on building logback is documented at:
 
   https://logback.qos.ch/setup.html#ide
 
