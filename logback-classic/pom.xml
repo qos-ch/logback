@@ -16,16 +16,19 @@
   <name>Logback Classic Module</name>
   <description>logback-classic module</description>
 
+  <properties>
+    <module-name>ch.qos.logback.classic</module-name>
+  </properties>
+
+
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -97,7 +100,6 @@
     <dependency>
       <groupId>javax.mail</groupId>
       <artifactId>javax.mail-api</artifactId>
-      <scope>compile</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -108,7 +110,6 @@
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
-      <scope>compile</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
@@ -175,6 +176,11 @@
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
+            <manifestEntries>
+                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>	
+                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                <Multi-Release>true</Multi-Release>
+            </manifestEntries>
             <manifestFile>
               ${project.build.outputDirectory}/META-INF/MANIFEST.MF
             </manifestFile>
