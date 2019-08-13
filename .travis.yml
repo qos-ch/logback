@@ -1,7 +1,16 @@
 dist: trusty
+
 language: java
-jdk: oraclejdk11
-script: mvn clean install
+
+jdk:
+  - oraclejdk11
+
 notifications:
   email:
       - notification@qos.ch
+
+install: /bin/true
+
+script:
+  - mvn clean
+  - mvn install
