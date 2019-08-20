@@ -35,6 +35,7 @@ public class InsertFromJNDIAction extends Action {
 
     public static final String ENV_ENTRY_NAME_ATTR = "env-entry-name";
     public static final String AS_ATTR = "as";
+    public static final String OPTIONAL_ATTR = "optional";
 
     public void begin(InterpretationContext ec, String name, Attributes attributes) {
 
@@ -44,6 +45,8 @@ public class InsertFromJNDIAction extends Action {
 
         String scopeStr = attributes.getValue(SCOPE_ATTRIBUTE);
         Scope scope = ActionUtil.stringToScope(scopeStr);
+
+        boolean optional = Boolean.valueOf(attributes.getValue(OPTIONAL_ATTR));
 
         String envEntryValue;
 
@@ -66,11 +69,13 @@ public class InsertFromJNDIAction extends Action {
         try {
             Context ctx = JNDIUtil.getInitialContext();
             envEntryValue = JNDIUtil.lookup(ctx, envEntryName);
-            if (OptionHelper.isEmpty(envEntryValue)) {
-                addError("[" + envEntryName + "] has null or empty value");
-            } else {
+            if (!OptionHelper.isEmpty(envEntryValue)) {
                 addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");
                 ActionUtil.setProperty(ec, asKey, envEntryValue, scope);
+            } else if (optional) {
+                addInfo("[" + envEntryName + "] has null or empty value");
+            } else {
+                addError("Required JNDI env-entry [" + envEntryName + "] has null or empty value");
             }
         } catch (NamingException e) {
             addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");
