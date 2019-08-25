@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.FixedDelay;
  */
 public class DefaultSocketConnector implements SocketConnector {
 
-    private final InetAddress address;
+    private final String address;
     private final int port;
     private final DelayStrategy delayStrategy;
 
@@ -45,7 +45,7 @@ public class DefaultSocketConnector implements SocketConnector {
      * @param initialDelay delay before initial connection attempt
      * @param retryDelay   delay after failed connection attempt
      */
-    public DefaultSocketConnector(InetAddress address, int port, long initialDelay, long retryDelay) {
+    public DefaultSocketConnector(String address, int port, long initialDelay, long retryDelay) {
         this(address, port, new FixedDelay(initialDelay, retryDelay));
     }
 
@@ -57,7 +57,7 @@ public class DefaultSocketConnector implements SocketConnector {
      * @param delayStrategy strategy for choosing the delay to impose before
      *                      each connection attempt
      */
-    public DefaultSocketConnector(InetAddress address, int port, DelayStrategy delayStrategy) {
+    public DefaultSocketConnector(String address, int port, DelayStrategy delayStrategy) {
         this.address = address;
         this.port = port;
         this.delayStrategy = delayStrategy;
