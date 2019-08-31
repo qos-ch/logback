@@ -24,6 +24,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
+@Ignore
 public class ConditionalTest {
 
     AccessContext context = new AccessContext();

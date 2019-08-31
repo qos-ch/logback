@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.Future;
 
 import javax.mail.Message;
 import javax.mail.Multipart;
@@ -84,7 +85,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     String localhost;
 
     boolean asynchronousSending = true;
-
+    protected Future<?> asynchronousSendingFuture = null;
     private String charsetEncoding = "UTF-8";
 
     protected Session session;
@@ -120,6 +121,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         else
             session = buildSessionFromProperties();
 
+        session.setDebug(true);
         if (session == null) {
             addError("Failed to obtain javax.mail.Session. Cannot start.");
             return;
@@ -203,7 +205,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
                 if (asynchronousSending) {
                     // perform actual sending asynchronously
                     SenderRunnable senderRunnable = new SenderRunnable(cbClone, eventObject);
-                    context.getScheduledExecutorService().execute(senderRunnable);
+                    this.asynchronousSendingFuture = context.getScheduledExecutorService().submit(senderRunnable);
                 } else {
                     // synchronous sending
                     sendBuffer(cbClone, eventObject);
@@ -314,7 +316,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     /**
      * Send the contents of the cyclic buffer as an e-mail message.
      */
-    protected void sendBuffer(CyclicBuffer<E> cb, E lastEventObject) {
+    @SuppressWarnings("null")
+	protected void sendBuffer(CyclicBuffer<E> cb, E lastEventObject) {
 
         // Note: this code already owns the monitor for this
         // appender. This frees us from needing to synchronize on 'cb'.

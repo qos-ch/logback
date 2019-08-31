@@ -43,7 +43,7 @@ public class SequenceNumberGeneratorAction extends Action {
         inError = false;
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             className = BasicSequenceNumberGenerator.class.getName();
             addInfo("Assuming className [" + className + "]");
         }

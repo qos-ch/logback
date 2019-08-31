@@ -36,7 +36,7 @@ public class ReceiverAction extends Action {
     public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isEmpty(className)) {
+        if (OptionHelper.isNullOrEmpty(className)) {
             addError("Missing class name for receiver. Near [" + name + "] line " + getLineNumber(ic));
             inError = true;
             return;

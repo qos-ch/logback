@@ -15,79 +15,41 @@ package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.classic.model.LoggerModel;
+import ch.qos.logback.core.joran.JoranConstants;
+import ch.qos.logback.core.joran.action.BaseModelAction;
+import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.model.Model;
 
 /**
  * Action which handles <logger> elements in configuration files.
  * 
- * @author Ceki Gulcu
+ * @author Ceki G&uuml;lc&uuml;
  */
-public class LoggerAction extends Action {
-    public static final String LEVEL_ATTRIBUTE = "level";
+public class LoggerAction extends BaseModelAction {
 
-    boolean inError = false;
-    Logger logger;
-
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-        // Let us forget about previous errors (in this object)
-        inError = false;
-        logger = null;
-
-        LoggerContext loggerContext = (LoggerContext) this.context;
-
-        String loggerName = ec.subst(attributes.getValue(NAME_ATTRIBUTE));
-
-        if (OptionHelper.isEmpty(loggerName)) {
-            inError = true;
-            String aroundLine = getLineColStr(ec);
-            String errorMsg = "No 'name' attribute in element " + name + ", around " + aroundLine;
-            addError(errorMsg);
-            return;
-        }
-
-        logger = loggerContext.getLogger(loggerName);
-
-        String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
-
-        if (!OptionHelper.isEmpty(levelStr)) {
-            if (ActionConst.INHERITED.equalsIgnoreCase(levelStr) || ActionConst.NULL.equalsIgnoreCase(levelStr)) {
-                addInfo("Setting level of logger [" + loggerName + "] to null, i.e. INHERITED");
-                logger.setLevel(null);
-            } else {
-                Level level = Level.toLevel(levelStr);
-                addInfo("Setting level of logger [" + loggerName + "] to " + level);
-                logger.setLevel(level);
-            }
-        }
-
-        String additivityStr = ec.subst(attributes.getValue(ActionConst.ADDITIVITY_ATTRIBUTE));
-        if (!OptionHelper.isEmpty(additivityStr)) {
-            boolean additive = OptionHelper.toBoolean(additivityStr, true);
-            addInfo("Setting additivity of logger [" + loggerName + "] to " + additive);
-            logger.setAdditive(additive);
-        }
-        ec.pushObject(logger);
+    @Override
+    protected boolean validPreconditions(InterpretationContext ic, String name, Attributes attributes) {
+    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
+    	validator.validateNameAttribute();
+    	return validator.isValid();
     }
 
-    public void end(InterpretationContext ec, String e) {
-        if (inError) {
-            return;
-        }
-        Object o = ec.peekObject();
-        if (o != logger) {
-            addWarn("The object on the top the of the stack is not " + logger + " pushed earlier");
-            addWarn("It is: " + o);
-        } else {
-            ec.popObject();
-        }
-    }
+	@Override
+	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 
-    public void finish(InterpretationContext ec) {
-    }
+		LoggerModel loggerModel = new LoggerModel();
+		
+		String nameStr = attributes.getValue(NAME_ATTRIBUTE);
+		loggerModel.setName(nameStr);
+		
+		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+		loggerModel.setLevel(levelStr);
+	    
+		String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
+		loggerModel.setAdditivity(additivityStr);
+	    
+		return loggerModel;
+	}
 }

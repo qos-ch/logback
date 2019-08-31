@@ -49,7 +49,7 @@ public class BindDataSourceToJNDIAction extends Action {
     public void begin(InterpretationContext ec, String localName, Attributes attributes) {
         String dsClassName = ec.getProperty(DATA_SOURCE_CLASS);
 
-        if (OptionHelper.isEmpty(dsClassName)) {
+        if (OptionHelper.isNullOrEmpty(dsClassName)) {
             addWarn("dsClassName is a required parameter");
             ec.addError("dsClassName is a required parameter");
 
@@ -66,15 +66,15 @@ public class BindDataSourceToJNDIAction extends Action {
             PropertySetter setter = new PropertySetter(beanDescriptionCache,ds);
             setter.setContext(context);
 
-            if (!OptionHelper.isEmpty(urlStr)) {
+            if (!OptionHelper.isNullOrEmpty(urlStr)) {
                 setter.setProperty("url", urlStr);
             }
 
-            if (!OptionHelper.isEmpty(userStr)) {
+            if (!OptionHelper.isNullOrEmpty(userStr)) {
                 setter.setProperty("user", userStr);
             }
 
-            if (!OptionHelper.isEmpty(passwordStr)) {
+            if (!OptionHelper.isNullOrEmpty(passwordStr)) {
                 setter.setProperty("password", passwordStr);
             }
 

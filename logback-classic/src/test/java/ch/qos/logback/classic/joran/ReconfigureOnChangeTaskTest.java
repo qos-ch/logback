@@ -114,16 +114,6 @@ public class ReconfigureOnChangeTaskTest {
         checkThatTaskCanBeStopped();
     }
 
-//    @Test(timeout = 4000L)
-//    public void checkBasicLifecyleWithGaffer() throws JoranException, IOException, InterruptedException {
-//        File file = new File(G_SCAN1_FILE_AS_STR);
-//        gConfigure(file);
-//        List<File> fileList = getConfigurationWatchList(loggerContext);
-//        assertThatListContainsFile(fileList, file);
-//        checkThatTaskHasRan();
-//        checkThatTaskCanBeStopped();
-//    }
-
     private void checkThatTaskCanBeStopped() {
         ScheduledFuture<?> future = loggerContext.getScheduledFutures().get(0);
         loggerContext.stop();
@@ -184,11 +174,19 @@ public class ReconfigureOnChangeTaskTest {
         File topLevelFile = new File(path);
         writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         configure(topLevelFile);
+        StatusPrinter.print(loggerContext);
         CountDownLatch changeDetectedLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
         assertNotNull(oldRoct);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>");
+        
+        String badXML = "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>";
+        writeToFile(topLevelFile, badXML);
+        System.out.println("Waiting for changeDetectedLatch.await()");
         changeDetectedLatch.await();
+        System.out.println("Woke from changeDetectedLatch.await()");
+        
+        StatusPrinter.print(loggerContext);
+        
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
 
@@ -213,7 +211,7 @@ public class ReconfigureOnChangeTaskTest {
         File innerFile = new File(innerFileAsStr);
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
         configure(topLevelFile);
-
+        
         CountDownLatch doneLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
         assertNotNull(oldRoct);
@@ -274,6 +272,7 @@ public class ReconfigureOnChangeTaskTest {
 
         @Override
         public void doneReconfiguring() {
+        	System.out.println("ReconfigurationDoneListener now invoking countDownLatch.countDown()");
             countDownLatch.countDown();
         }
     };

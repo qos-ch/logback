@@ -35,7 +35,4 @@ public class StackAction extends Action {
     public void end(InterpretationContext ec, String name) {
     }
 
-    // static public void reset() {
-    // stack.clear();
-    // }
 }

@@ -39,6 +39,8 @@ public class ConsolePluginAction extends Action {
                 port = Integer.valueOf(portStr);
             } catch (NumberFormatException ex) {
                 addError("Port " + portStr + " in ConsolePlugin config is not a correct number");
+                addError("Abandoning configuration of ConsolePlugin.");
+                return;
             }
         }
 

@@ -47,13 +47,13 @@ public class InsertFromJNDIAction extends Action {
 
         String envEntryValue;
 
-        if (OptionHelper.isEmpty(envEntryName)) {
+        if (OptionHelper.isNullOrEmpty(envEntryName)) {
             String lineColStr = getLineColStr(ec);
             addError("[" + ENV_ENTRY_NAME_ATTR + "] missing, around " + lineColStr);
             errorCount++;
         }
 
-        if (OptionHelper.isEmpty(asKey)) {
+        if (OptionHelper.isNullOrEmpty(asKey)) {
             String lineColStr = getLineColStr(ec);
             addError("[" + AS_ATTR + "] missing, around " + lineColStr);
             errorCount++;
@@ -66,7 +66,7 @@ public class InsertFromJNDIAction extends Action {
         try {
             Context ctx = JNDIUtil.getInitialContext();
             envEntryValue = JNDIUtil.lookup(ctx, envEntryName);
-            if (OptionHelper.isEmpty(envEntryValue)) {
+            if (OptionHelper.isNullOrEmpty(envEntryValue)) {
                 addError("[" + envEntryName + "] has null or empty value");
             } else {
                 addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");

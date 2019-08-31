@@ -31,15 +31,9 @@ import ch.qos.logback.core.util.AggregationType;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NestedBasicPropertyIA extends ImplicitAction {
+public class NestedBasicPropertyIA extends ImplicitActionOld {
 
-    // We use a stack of IADataForBasicProperty objects in order to
-    // support nested elements which are handled by the same NestedBasicPropertyIA instance.
-    // We push a IADataForBasicProperty instance in the isApplicable method (if the
-    // action is applicable) and pop it in the end() method.
-    // The XML well-formedness property will guarantee that a push will eventually
-    // be followed by the corresponding pop.
-    Stack<IADataForBasicProperty> actionDataStack = new Stack<IADataForBasicProperty>();
+    Stack<ImplicitActionDataBase> actionDataStack = new Stack<>();
 
     private final BeanDescriptionCache beanDescriptionCache;
 
@@ -48,12 +42,10 @@ public class NestedBasicPropertyIA extends ImplicitAction {
     }
 
     public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
-        // System.out.println("in NestedSimplePropertyIA.isApplicable [" + pattern +
-        // "]");
         String nestedElementTagName = elementPath.peekLast();
 
         // no point in attempting if there is no parent object
-        if (ec.isEmpty()) {
+        if (ec.isObjectStackEmpty()) {
             return false;
         }
 
@@ -71,7 +63,7 @@ public class NestedBasicPropertyIA extends ImplicitAction {
 
         case AS_BASIC_PROPERTY:
         case AS_BASIC_PROPERTY_COLLECTION:
-            IADataForBasicProperty ad = new IADataForBasicProperty(parentBean, aggregationType, nestedElementTagName);
+        	ImcplicitActionDataForBasicProperty ad = new ImcplicitActionDataForBasicProperty(parentBean, aggregationType, nestedElementTagName);
             actionDataStack.push(ad);
             // addInfo("NestedSimplePropertyIA deemed applicable [" + pattern + "]");
             return true;
@@ -89,7 +81,7 @@ public class NestedBasicPropertyIA extends ImplicitAction {
 
         String finalBody = ec.subst(body);
         // get the action data object pushed in isApplicable() method call
-        IADataForBasicProperty actionData = (IADataForBasicProperty) actionDataStack.peek();
+        ImcplicitActionDataForBasicProperty actionData = (ImcplicitActionDataForBasicProperty) actionDataStack.peek();
         switch (actionData.aggregationType) {
         case AS_BASIC_PROPERTY:
             actionData.parentBean.setProperty(actionData.propertyName, finalBody);

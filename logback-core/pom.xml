@@ -21,6 +21,7 @@
   </properties>
   
   <dependencies>
+  
     <dependency>
        <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
@@ -40,7 +41,7 @@
     </dependency>
     <dependency>
     	<groupId>com.sun.mail</groupId>
-   		<artifactId>javax.mail</artifactId>
+   	<artifactId>javax.mail</artifactId>
     	<scope>runtime</scope>
         <optional>true</optional>
 	</dependency>
@@ -72,7 +73,7 @@
           <!-- <argLine>-Xmx2048m ==permit-illegal-access</argLine>  -->
           <parallel>none</parallel>
           <useUnlimitedThreads>false</useUnlimitedThreads>
-          <forkCount>2</forkCount>
+          <forkCount>2C</forkCount>
           <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>
@@ -93,9 +94,9 @@
         <configuration>
           <archive>
             <manifestEntries>
-                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>	
-                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-                <Multi-Release>true</Multi-Release>
+              <Multi-Release>true</Multi-Release>
+              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>	
+              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
             </manifestEntries>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>

@@ -15,40 +15,20 @@ package ch.qos.logback.access.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.access.model.ConfigurationModel;
+import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.util.OptionHelper;
-import ch.qos.logback.core.util.StatusListenerConfigHelper;
+import ch.qos.logback.core.model.Model;
 
-public class ConfigurationAction extends Action {
-    static final String INTERNAL_DEBUG_ATTR = "debug";
-    static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback-access.debug";
+public class ConfigurationAction extends BaseModelAction {
 
-    @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+	@Override
+	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+		ConfigurationModel configurationModel = new ConfigurationModel();
+		configurationModel.setDebug(attributes.getValue(ConfigurationModel.INTERNAL_DEBUG_ATTR));
+		return configurationModel;
+	}
 
-        // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
-        // the equivalent property in the config file. This reversal of scope priority is justified
-        // by the use case: the admin trying to chase rogue config file
-        String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
-        if (debugAttrib == null) {
-            debugAttrib = attributes.getValue(INTERNAL_DEBUG_ATTR);
-        }
 
-        if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equals("false") || debugAttrib.equals("null")) {
-            addInfo(INTERNAL_DEBUG_ATTR + " attribute not set");
-        } else {
-            StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
-        }
 
-        // the context is appender attachable, so it is pushed on top of the stack
-        ec.pushObject(getContext());
-    }
-
-    @Override
-    public void end(InterpretationContext ec, String name) {
-        addInfo("End of configuration.");
-        ec.popObject();
-    }
 }

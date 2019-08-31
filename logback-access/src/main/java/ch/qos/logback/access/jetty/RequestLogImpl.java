@@ -178,7 +178,7 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
 
         String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
         String defaultConfigFile = DEFAULT_CONFIG_FILE;
-        if (!OptionHelper.isEmpty(jettyHomeProperty)) {
+        if (!OptionHelper.isNullOrEmpty(jettyHomeProperty)) {
             defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
         } else {
             addInfo("[jetty.home] system property not set.");

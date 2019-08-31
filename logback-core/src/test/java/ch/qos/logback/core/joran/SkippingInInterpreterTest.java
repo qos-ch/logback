@@ -30,6 +30,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.joran.action.ext.BadBeginAction;
 import ch.qos.logback.core.joran.action.ext.BadEndAction;
 import ch.qos.logback.core.joran.action.ext.HelloAction;
@@ -58,7 +59,7 @@ public class SkippingInInterpreterTest {
 
     void doTest(String filename, Integer expectedInt, Class<?> exceptionClass) throws Exception {
 
-        rulesMap.put(new ElementSelector("test"), new NOPAction());
+        rulesMap.put(new ElementSelector("test"), new TopElementAction());
         rulesMap.put(new ElementSelector("test/badBegin"), new BadBeginAction());
         rulesMap.put(new ElementSelector("test/badBegin/touch"), new TouchAction());
         rulesMap.put(new ElementSelector("test/badEnd"), new BadEndAction());

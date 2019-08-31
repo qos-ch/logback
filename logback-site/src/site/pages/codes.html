@@ -647,7 +647,33 @@ return false;</pre>
 
    <p>
    </p>
+
+     <!-- ============================================================= -->
+   <h3 class="doAnchor" name="param">The &lt;param&gt; element is
+   deprecated in favor of a more direct syntax.
+   </h3>
+
+
+   <p class="red bold">Instead of writing (DEPRECATED)</p>  
    
+   <pre class="prettyprint source">
+    &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+      &lt;encoder>
+        &lt;<b>param name="pattern" value="%logger- %msg %n"/&gt;</b>
+      &lt;/encoder>
+    &lt;/appender>
+   </pre>
+
+   <p class="green bold">prefer the direct form (GOOD)
+
+   <pre class="prettyprint source">
+    &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+      &lt;encoder>
+        <b>&lt;pattern>%logger - %msg %n&lt;/pattern></b>
+      &lt;/encoder>
+    &lt;/appender>
+   </pre>
+
    <!-- ============================================================= -->
    <h3 class="doAnchor" name="missingRightParenthesis">In a conversion
    pattern, opened parenthesis must be closed.

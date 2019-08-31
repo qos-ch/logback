@@ -15,47 +15,26 @@ package ch.qos.logback.classic.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ActionConst;
+import ch.qos.logback.classic.model.RootLoggerModel;
+import ch.qos.logback.core.joran.JoranConstants;
+import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.model.Model;
 
-public class RootLoggerAction extends Action {
+public class RootLoggerAction extends BaseModelAction {
 
     Logger root;
     boolean inError = false;
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-        inError = false;
+	@Override
+	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+		RootLoggerModel rootLoggerModel = new RootLoggerModel();
+		
+		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+		rootLoggerModel.setLevel(levelStr);
+	        
+		return rootLoggerModel;
+	}
 
-        LoggerContext loggerContext = (LoggerContext) this.context;
-        root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-
-        String levelStr = ec.subst(attributes.getValue(ActionConst.LEVEL_ATTRIBUTE));
-        if (!OptionHelper.isEmpty(levelStr)) {
-            Level level = Level.toLevel(levelStr);
-            addInfo("Setting level of ROOT logger to " + level);
-            root.setLevel(level);
-        }
-        ec.pushObject(root);
-    }
-
-    public void end(InterpretationContext ec, String name) {
-        if (inError) {
-            return;
-        }
-        Object o = ec.peekObject();
-        if (o != root) {
-            addWarn("The object on the top the of the stack is not the root logger");
-            addWarn("It is: " + o);
-        } else {
-            ec.popObject();
-        }
-    }
-
-    public void finish(InterpretationContext ec) {
-    }
 }

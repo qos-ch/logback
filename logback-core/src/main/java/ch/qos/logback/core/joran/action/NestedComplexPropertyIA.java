@@ -35,7 +35,7 @@ import ch.qos.logback.core.util.OptionHelper;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-public class NestedComplexPropertyIA extends ImplicitAction {
+public class NestedComplexPropertyIA extends ImplicitActionOld {
 
     // actionDataStack contains ActionData instances
     // We use a stack of ActionData objects in order to support nested
@@ -44,7 +44,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     // action is applicable) and pop it in the end() method.
     // The XML well-formedness property will guarantee that a push will eventually
     // be followed by a corresponding pop.
-    Stack<IADataForComplexProperty> actionDataStack = new Stack<IADataForComplexProperty>();
+    Stack<ImplicitActionDataForComplexProperty> actionDataStack = new Stack<ImplicitActionDataForComplexProperty>();
 
     private final BeanDescriptionCache beanDescriptionCache;
 
@@ -57,7 +57,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         String nestedElementTagName = elementPath.peekLast();
 
         // calling ic.peekObject with an empty stack will throw an exception
-        if (ic.isEmpty()) {
+        if (ic.isObjectStackEmpty()) {
             return false;
         }
 
@@ -76,7 +76,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
             // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:
         case AS_COMPLEX_PROPERTY:
-            IADataForComplexProperty ad = new IADataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
+            ImplicitActionDataForComplexProperty ad = new ImplicitActionDataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
             actionDataStack.push(ad);
 
             return true;
@@ -89,7 +89,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
     public void begin(InterpretationContext ec, String localName, Attributes attributes) {
         // LogLog.debug("in NestComponentIA begin method");
         // get the action data object pushed in isApplicable() method call
-        IADataForComplexProperty actionData = (IADataForComplexProperty) actionDataStack.peek();
+        ImplicitActionDataForComplexProperty actionData = (ImplicitActionDataForComplexProperty) actionDataStack.peek();
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
         // perform variable name substitution
@@ -98,12 +98,12 @@ public class NestedComplexPropertyIA extends ImplicitAction {
         Class<?> componentClass = null;
         try {
 
-            if (!OptionHelper.isEmpty(className)) {
+            if (!OptionHelper.isNullOrEmpty(className)) {
                 componentClass = Loader.loadClass(className, context);
             } else {
                 // guess class name via implicit rules
                 PropertySetter parentBean = actionData.parentBean;
-                componentClass = parentBean.getClassNameViaImplicitRules(actionData.getComplexPropertyName(), actionData.getAggregationType(),
+                componentClass = parentBean.getClassNameViaImplicitRules(actionData.propertyName, actionData.getAggregationType(),
                                 ec.getDefaultNestedComponentRegistry());
             }
 
@@ -114,7 +114,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
                 return;
             }
 
-            if (OptionHelper.isEmpty(className)) {
+            if (OptionHelper.isNullOrEmpty(className)) {
                 addInfo("Assuming default type [" + componentClass.getName() + "] for [" + localName + "] property");
             }
 
@@ -140,7 +140,7 @@ public class NestedComplexPropertyIA extends ImplicitAction {
 
         // pop the action data object pushed in isApplicable() method call
         // we assume that each this begin
-        IADataForComplexProperty actionData = (IADataForComplexProperty) actionDataStack.pop();
+        ImplicitActionDataForComplexProperty actionData = (ImplicitActionDataForComplexProperty) actionDataStack.pop();
 
         if (actionData.inError) {
             return;

@@ -20,7 +20,6 @@
     <module-name>ch.qos.logback.classic</module-name>
   </properties>
 
-
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>
@@ -30,19 +29,19 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency>
+<!--     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
       <version>${slf4j.version}</version>
       <scope>test</scope>
-    </dependency>
+    </dependency> -->
 
-    <dependency>
+<!--     <dependency>
       <groupId>ch.qos.cal10n.plugins</groupId>
       <artifactId>maven-cal10n-plugin</artifactId>
       <version>${cal10n.version}</version>
       <scope>test</scope>
-    </dependency>
+    </dependency> -->
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -132,7 +131,7 @@
     <dependency>
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail</artifactId>
-      <version>1.3</version>
+      <version>1.5.10</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -145,6 +144,11 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>javax.mail</groupId>
+          <artifactId>mail</artifactId>
+        </exclusion>
+
       </exclusions>
     </dependency>
     <dependency>
@@ -262,7 +266,7 @@
         <configuration>
           <parallel>none</parallel>
           <useUnlimitedThreads>false</useUnlimitedThreads>
-          <forkCount>2</forkCount>
+          <forkCount>1.5C</forkCount>
           <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
           <trimStackTrace>false</trimStackTrace>

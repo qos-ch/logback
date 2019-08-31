@@ -19,6 +19,7 @@ import java.util.Map;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -35,10 +36,10 @@ public class ConversionRuleAction extends Action {
         inError = false;
 
         String errorMsg;
-        String conversionWord = attributes.getValue(ActionConst.CONVERSION_WORD_ATTRIBUTE);
-        String converterClass = attributes.getValue(ActionConst.CONVERTER_CLASS_ATTRIBUTE);
+        String conversionWord = attributes.getValue(JoranConstants.CONVERSION_WORD_ATTRIBUTE);
+        String converterClass = attributes.getValue(JoranConstants.CONVERTER_CLASS_ATTRIBUTE);
 
-        if (OptionHelper.isEmpty(conversionWord)) {
+        if (OptionHelper.isNullOrEmpty(conversionWord)) {
             inError = true;
             errorMsg = "No 'conversionWord' attribute in <conversionRule>";
             addError(errorMsg);
@@ -46,7 +47,7 @@ public class ConversionRuleAction extends Action {
             return;
         }
 
-        if (OptionHelper.isEmpty(converterClass)) {
+        if (OptionHelper.isNullOrEmpty(converterClass)) {
             inError = true;
             errorMsg = "No 'converterClass' attribute in <conversionRule>";
             ec.addError(errorMsg);

@@ -25,7 +25,7 @@ public class ContextPropertyAction extends Action {
 
     @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
-        addError("The [contextProperty] element has been removed. Please use [substitutionProperty] element instead");
+        addError("The [contextProperty] element has been removed. Please use [property] element instead");
     }
 
     @Override
