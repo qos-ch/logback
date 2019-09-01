@@ -326,11 +326,11 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         checkDirPatternCompliance(maxHistory + 1);
     }
 
-    void logTwiceAndStop(long currentTime, String fileNamePattern, int maxHistory, long timePeriod) {
+    void logTwiceAndStop(long currentTime, String fileNamePattern, int maxHistory, long durationInMillis) {
         ConfigParameters params = new ConfigParameters(currentTime).fileNamePattern(fileNamePattern).maxHistory(maxHistory);
         buildRollingFileAppender(params, DO_CLEAN_HISTORY_ON_START);
         rfa.doAppend("Hello ----------------------------------------------------------" + new Date(currentTime));
-        currentTime += timePeriod / 2;
+        currentTime += durationInMillis / 2;
         add(tbrp.compressionFuture);
         add(tbrp.cleanUpFuture);
         waitForJobsToComplete();
@@ -339,6 +339,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         rfa.stop();
     }
 
+    
     @Test
     public void cleanHistoryOnStartWithDayPattern() {
         long simulatedTime = WED_2016_03_23_T_230705_CET;
@@ -349,7 +350,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
             simulatedTime += MILLIS_IN_DAY;
         }
         StatusPrinter.print(context);
-        checkFileCount(expectedCountWithoutFolders(maxHistory));
+        checkFileCount(expectedCountWithoutFolders(maxHistory));        
     }
 
     @Test
