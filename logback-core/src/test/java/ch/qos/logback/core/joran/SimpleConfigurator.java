@@ -17,12 +17,9 @@ import java.util.HashMap;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitModelAction;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
@@ -34,14 +31,14 @@ public class SimpleConfigurator extends GenericConfigurator {
 
     @Override
     protected void addImplicitRules(SaxEventInterpreter interpreter) {
-    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
+//    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
     	
-        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
-        nestedIA.setContext(context);
+//        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
+//        nestedIA.setContext(context);
 //        interpreter.addImplicitAction(nestedIA);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
-        nestedSimpleIA.setContext(context);
+//        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
+//        nestedSimpleIA.setContext(context);
 //        interpreter.addImplicitAction(nestedSimpleIA);
         
         
