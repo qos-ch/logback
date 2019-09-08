@@ -467,15 +467,6 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, t);
     }
 
-    
- 
-    @Override
-    public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
-    	return new LogbackLoggingEventBuilder(this, level);
-    }
-    
-
-    
     public boolean isDebugEnabled() {
         return isDebugEnabled(null);
     }
@@ -773,6 +764,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      */
     public LoggerContext getLoggerContext() {
         return loggerContext;
+    }
+
+    @Override
+    public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
+    	return new LogbackLoggingEventBuilder(this, level);
     }
 
     public void log(Marker marker, String fqcn, int levelInt, String message, Object[] argArray, Throwable t) {
