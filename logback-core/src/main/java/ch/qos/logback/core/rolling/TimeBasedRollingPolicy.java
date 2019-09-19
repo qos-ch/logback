@@ -178,6 +178,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
 
         if (archiveRemover != null) {
+            waitForAsynchronousJobToStop(this.cleanUpFuture, "previous-clean-up");
             Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
             this.cleanUpFuture = archiveRemover.cleanAsynchronously(now);
         }
