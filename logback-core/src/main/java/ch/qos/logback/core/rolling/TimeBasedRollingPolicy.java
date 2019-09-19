@@ -235,7 +235,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
 
     /**
      * Set the retention time for which archive files are kept.
-     * E.g. with monthly rollover and maxHistory of 6, archives are retained for 6 months.
+     * E.g. with monthly rollover and maxHistory of 6, 6 months worth of archives files are kept.
      * 
      * @param maxHistory retention time for archive files
      */
