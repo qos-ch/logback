@@ -21,12 +21,14 @@ import java.util.Map;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ImplicitAction;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 
 /**
+ * BEWARE: This examples are outdated with version 1.3. They need to be rewritten.
+ * 
  * This example illustrates the usage of implicit actions.
  * 
  * <p>Keep in mind that implicit actions are not associated with any specific
@@ -46,7 +48,7 @@ public class PrintMe {
         ruleMap.put(new ElementSelector("*/foo"), new NOPAction());
 
         // Add an implicit action.
-        List<ImplicitAction> iaList = new ArrayList<ImplicitAction>();
+        List<ImplicitModelAction> iaList = new ArrayList<ImplicitModelAction>();
         iaList.add(new PrintMeImplicitAction());
         SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap, iaList);
 

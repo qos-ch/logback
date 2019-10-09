@@ -23,8 +23,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.spi.LocationAwareLogger;
+import org.slf4j.spi.LoggingEventBuilder;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LogbackLoggingEventBuilder;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import ch.qos.logback.core.Appender;
@@ -760,6 +762,16 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         return loggerContext;
     }
 
+    /**
+     * Creates a {@link LoggingEventBuilder} of type {@link LogbackLoggingEventBuilder}.
+     * 
+     * @since 1.3
+     */
+    @Override
+    public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
+    	return new LogbackLoggingEventBuilder(this, level);
+    }
+
     public void log(Marker marker, String fqcn, int levelInt, String message, Object[] argArray, Throwable t) {
         Level level = Level.fromLocationAwareLoggerInteger(levelInt);
         filterAndLog_0_Or3Plus(fqcn, marker, level, message, argArray, t);
@@ -772,7 +784,15 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      */
     public void log(org.slf4j.event.LoggingEvent slf4jEvent) {
         Level level = Level.fromLocationAwareLoggerInteger(slf4jEvent.getLevel().toInt());
-        filterAndLog_0_Or3Plus(FQCN, slf4jEvent.getMarker(), level, slf4jEvent.getMessage(), slf4jEvent.getArgumentArray(), slf4jEvent.getThrowable());
+        
+        // the TurboFilter API is designed to use a single marker which justifies
+        // the following admittedly horrible hack
+        List<Marker> markers = slf4jEvent.getMarkers();
+        Marker marker = null;
+        if(markers != null && (!markers.isEmpty())) {
+        	marker = markers.get(0);
+        }
+        filterAndLog_0_Or3Plus(FQCN, marker, level, slf4jEvent.getMessage(), slf4jEvent.getArgumentArray(), slf4jEvent.getThrowable());
     }
 
     /**

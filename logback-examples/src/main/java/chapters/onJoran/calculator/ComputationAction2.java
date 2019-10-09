@@ -73,7 +73,7 @@ public class ComputationAction2 extends Action {
         // pop nameStr value from the special stack
         String nameStr = (String) nameStrStack.pop();
 
-        if (OptionHelper.isEmpty(nameStr)) {
+        if (OptionHelper.isNullOrEmpty(nameStr)) {
             // nothing to do
         } else {
             Integer i = (Integer) ec.peekObject();

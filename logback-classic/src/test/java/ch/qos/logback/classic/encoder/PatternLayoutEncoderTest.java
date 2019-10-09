@@ -77,4 +77,10 @@ public class PatternLayoutEncoderTest {
         assertEquals(msg, new String(baos.toByteArray(), utf8Charset));
     }
 
+    @Test
+    public void isStarted() throws IOException {
+        assertTrue(!ple.isStarted());
+        ple.start();
+        assertTrue(ple.isStarted());
+    }
 }

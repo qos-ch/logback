@@ -16,11 +16,10 @@ package ch.qos.logback.core.joran;
 import java.util.HashMap;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.NestedBasicPropertyIA;
-import ch.qos.logback.core.joran.action.NestedComplexPropertyIA;
+import ch.qos.logback.core.joran.action.ImplicitModelAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.Interpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
@@ -31,17 +30,24 @@ public class SimpleConfigurator extends GenericConfigurator {
     }
 
     @Override
-    protected void addImplicitRules(Interpreter interpreter) {
-        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
-        nestedIA.setContext(context);
-        interpreter.addImplicitAction(nestedIA);
+    protected void addImplicitRules(SaxEventInterpreter interpreter) {
+//    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
+    	
+//        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
+//        nestedIA.setContext(context);
+//        interpreter.addImplicitAction(nestedIA);
 
-        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
-        nestedSimpleIA.setContext(context);
-        interpreter.addImplicitAction(nestedSimpleIA);
+//        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
+//        nestedSimpleIA.setContext(context);
+//        interpreter.addImplicitAction(nestedSimpleIA);
+        
+        
+        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+        interpreter.addImplicitAction(implicitRuleModelAction);
+
     }
 
-    public Interpreter getInterpreter() {
+    public SaxEventInterpreter getInterpreter() {
         return interpreter;
     }
 
@@ -52,5 +58,4 @@ public class SimpleConfigurator extends GenericConfigurator {
             rs.addRule(elementSelector, action);
         }
     }
-
 }

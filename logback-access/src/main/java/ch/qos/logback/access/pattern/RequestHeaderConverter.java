@@ -23,7 +23,7 @@ public class RequestHeaderConverter extends AccessConverter {
     @Override
     public void start() {
         key = getFirstOption();
-        if (OptionHelper.isEmpty(key)) {
+        if (OptionHelper.isNullOrEmpty(key)) {
             addWarn("Missing key for the requested header. Defaulting to all keys.");
             key = null;
         }

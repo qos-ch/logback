@@ -13,16 +13,7 @@
  */
 package ch.qos.logback.core.joran;
 
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.spi.*;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
-import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.status.StatusUtil;
-
-import org.xml.sax.InputSource;
+import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,13 +23,27 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
-import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
+import org.xml.sax.InputSource;
+
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.event.SaxEventRecorder;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
+import ch.qos.logback.core.joran.spi.ElementPath;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SimpleRuleStore;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.status.StatusUtil;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-    private BeanDescriptionCache beanDescriptionCache;
-
-    protected Interpreter interpreter;
+    protected SaxEventInterpreter interpreter;
 
     public final void doConfigure(URL url) throws JoranException {
         InputStream in = null;
@@ -110,16 +115,9 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         doConfigure(inputSource);
     }
 
-    protected BeanDescriptionCache getBeanDescriptionCache() {
-        if (beanDescriptionCache == null) {
-            beanDescriptionCache = new BeanDescriptionCache(getContext());
-        }
-        return beanDescriptionCache;
-    }
-
     protected abstract void addInstanceRules(RuleStore rs);
 
-    protected abstract void addImplicitRules(Interpreter interpreter);
+    protected abstract void addImplicitRules(SaxEventInterpreter interpreter);
 
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
 
@@ -132,7 +130,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     protected void buildInterpreter() {
         RuleStore rs = new SimpleRuleStore(context);
         addInstanceRules(rs);
-        this.interpreter = new Interpreter(context, rs, initialElementPath());
+        this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
         InterpretationContext interpretationContext = interpreter.getInterpretationContext();
         interpretationContext.setContext(context);
         addImplicitRules(interpreter);
@@ -149,7 +147,9 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         // }
         SaxEventRecorder recorder = new SaxEventRecorder(context);
         recorder.recordEvents(inputSource);
-        doConfigure(recorder.saxEventList);
+        
+        playEventsAndProcessModel(recorder.saxEventList);
+        
         // no exceptions a this level
         StatusUtil statusUtil = new StatusUtil(context);
         if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
@@ -158,12 +158,29 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         }
     }
 
-    public void doConfigure(final List<SaxEvent> eventList) throws JoranException {
+	public void playEventsAndProcessModel(List<SaxEvent> saxEvents) throws JoranException {
         buildInterpreter();
+		playSaxEvents(saxEvents);      
+        Model top = interpreter.getInterpretationContext().peekModel();
+        processModel(top);
+	}
+
+    private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
         // disallow simultaneous configurations of the same context
         synchronized (context.getConfigurationLock()) {
             interpreter.getEventPlayer().play(eventList);
         }
+        
+    }
+
+    protected void processModel(Model model) {
+        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
+        defaultProcessor.process(model);
+    }
+    
+    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
+        DefaultProcessor defaultProcessor = new DefaultProcessor(context, interpreter.getInterpretationContext());
+        return defaultProcessor;
     }
 
     /**

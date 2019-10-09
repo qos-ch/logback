@@ -15,55 +15,32 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.util.PropertySetter;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ParamModel;
 
-public class ParamAction extends Action {
-    static String NO_NAME = "No name attribute in <param> element";
-    static String NO_VALUE = "No value attribute in <param> element";
-    boolean inError = false;
+public class ParamAction extends BaseModelAction {
 
-	private final BeanDescriptionCache beanDescriptionCache;
-	public ParamAction(BeanDescriptionCache beanDescriptionCache) {
-		this.beanDescriptionCache=beanDescriptionCache;
+	@Override
+	protected boolean validPreconditions(InterpretationContext intercon, String name,
+			Attributes attributes) {
+		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
+		pv.validateNameAttribute();
+		pv.validateValueAttribute();
+		
+		addWarn("<param> element is deprecated in favor of a more direct syntax." + atLine(intercon));
+		addWarn("For details see " + CoreConstants.CODES_URL + "#param");
+		
+		return pv.isValid();
+		
 	}
 
-    public void begin(InterpretationContext ec, String localName, Attributes attributes) {
-        String name = attributes.getValue(NAME_ATTRIBUTE);
-        String value = attributes.getValue(VALUE_ATTRIBUTE);
-
-        if (name == null) {
-            inError = true;
-            addError(NO_NAME);
-            return;
-        }
-
-        if (value == null) {
-            inError = true;
-            addError(NO_VALUE);
-            return;
-        }
-
-        // remove both leading and trailing spaces
-        value = value.trim();
-
-        Object o = ec.peekObject();
-        PropertySetter propSetter = new PropertySetter(beanDescriptionCache,o);
-        propSetter.setContext(context);
-        value = ec.subst(value);
-
-        // allow for variable substitution for name as well
-        name = ec.subst(name);
-
-        // getLogger().debug(
-        // "In ParamAction setting parameter [{}] to value [{}].", name, value);
-        propSetter.setProperty(name, value);
-    }
-
-    public void end(InterpretationContext ec, String localName) {
-    }
-
-    public void finish(InterpretationContext ec) {
-    }
+	@Override
+	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+		ParamModel paramModel = new ParamModel();
+		paramModel.setName(attributes.getValue(NAME_ATTRIBUTE));
+		paramModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
+		return paramModel;
+	}
 }

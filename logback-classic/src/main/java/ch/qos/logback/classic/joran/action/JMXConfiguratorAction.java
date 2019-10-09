@@ -40,13 +40,13 @@ public class JMXConfiguratorAction extends Action {
 
         String contextName = context.getName();
         String contextNameAttributeVal = attributes.getValue(CONTEXT_NAME_ATTRIBUTE_NAME);
-        if (!OptionHelper.isEmpty(contextNameAttributeVal)) {
+        if (!OptionHelper.isNullOrEmpty(contextNameAttributeVal)) {
             contextName = contextNameAttributeVal;
         }
 
         String objectNameAsStr;
         String objectNameAttributeVal = attributes.getValue(OBJECT_NAME_ATTRIBUTE_NAME);
-        if (OptionHelper.isEmpty(objectNameAttributeVal)) {
+        if (OptionHelper.isNullOrEmpty(objectNameAttributeVal)) {
             objectNameAsStr = MBeanUtil.getObjectNameFor(contextName, JMXConfigurator.class);
         } else {
             objectNameAsStr = objectNameAttributeVal;

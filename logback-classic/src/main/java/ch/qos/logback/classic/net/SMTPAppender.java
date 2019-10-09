@@ -21,6 +21,9 @@ import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.net.SMTPAppenderBase;
+
+import java.util.concurrent.Future;
+
 import org.slf4j.Marker;
 
 /**
@@ -126,5 +129,9 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
 
     public void setIncludeCallerData(boolean includeCallerData) {
         this.includeCallerData = includeCallerData;
+    }
+    
+    Future<?> getAsynchronousSendingFuture() {
+    	return asynchronousSendingFuture;
     }
 }

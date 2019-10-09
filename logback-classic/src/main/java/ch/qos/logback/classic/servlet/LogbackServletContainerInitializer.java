@@ -41,26 +41,22 @@ public class LogbackServletContainerInitializer implements ServletContainerIniti
      * @param ctx
      * @return True if value of DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY is available and set to "true", false otherwise.
      */
-    boolean isDisabledByConfiguration(ServletContext ctx) {
+	boolean isDisabledByConfiguration(ServletContext ctx) {
         String disableAttributeStr = null;
         Object disableAttribute = ctx.getInitParameter(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
         if (disableAttribute instanceof String) {
             disableAttributeStr = (String) disableAttribute;
         }
 
-        if (OptionHelper.isEmpty(disableAttributeStr)) {
+        if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
             disableAttributeStr = OptionHelper.getSystemProperty(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
         }
 
-        if (OptionHelper.isEmpty(disableAttributeStr)) {
+        if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
             disableAttributeStr = OptionHelper.getEnv(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
         }
-
-        if (OptionHelper.isEmpty(disableAttributeStr))
-            return false;
-
-        return disableAttributeStr.equalsIgnoreCase("true");
-
+        
+        return Boolean.parseBoolean(disableAttributeStr);
     }
 
 }

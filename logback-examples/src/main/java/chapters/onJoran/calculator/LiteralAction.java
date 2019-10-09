@@ -34,7 +34,7 @@ public class LiteralAction extends Action {
     public void begin(InterpretationContext ic, String name, Attributes attributes) {
         String valueStr = attributes.getValue(VALUE_ATR);
 
-        if (OptionHelper.isEmpty(valueStr)) {
+        if (OptionHelper.isNullOrEmpty(valueStr)) {
             ic.addError("The literal action requires a value attribute");
             return;
         }

@@ -32,7 +32,7 @@ public class TeeHttpServletResponseTest {
 
     String characterEncoding;
     String testString;
-    byte[] expectedBytes;
+    byte[] expectedBytes; 
 
     public TeeHttpServletResponseTest(String characterEncoding, String testString, byte[] expectedBytes) {
         this.characterEncoding = characterEncoding;
@@ -43,8 +43,8 @@ public class TeeHttpServletResponseTest {
     @Parameterized.Parameters
     public static Collection<?> inputValues() {
         return Arrays.asList(new Object[][] {
-                { "utf-8", "Gülcü", new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3, (byte) 0xBC } },
-                { "iso-8859-1", "Gülcü", new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC } } });
+                { "utf-8", "G\u00FClc\u00FC", new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3, (byte) 0xBC } },
+                { "iso-8859-1", "G\u00FClc\u00FC", new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC } } });
     }
 
     @Test

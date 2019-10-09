@@ -32,14 +32,14 @@ public class NewRuleAction extends Action {
         String pattern = attributes.getValue(Action.PATTERN_ATTRIBUTE);
         String actionClass = attributes.getValue(Action.ACTION_CLASS_ATTRIBUTE);
 
-        if (OptionHelper.isEmpty(pattern)) {
+        if (OptionHelper.isNullOrEmpty(pattern)) {
             inError = true;
             errorMsg = "No 'pattern' attribute in <newRule>";
             addError(errorMsg);
             return;
         }
 
-        if (OptionHelper.isEmpty(actionClass)) {
+        if (OptionHelper.isNullOrEmpty(actionClass)) {
             inError = true;
             errorMsg = "No 'actionClass' attribute in <newRule>";
             addError(errorMsg);
@@ -48,7 +48,7 @@ public class NewRuleAction extends Action {
 
         try {
             addInfo("About to add new Joran parsing rule [" + pattern + "," + actionClass + "].");
-            ec.getJoranInterpreter().getRuleStore().addRule(new ElementSelector(pattern), actionClass);
+            ec.getSaxEventInterpreter().getRuleStore().addRule(new ElementSelector(pattern), actionClass);
         } catch (Exception oops) {
             inError = true;
             errorMsg = "Could not add new Joran parsing rule [" + pattern + "," + actionClass + "]";

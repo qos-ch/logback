@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.Interpreter;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class TrivialConfigurator extends GenericConfigurator {
@@ -29,7 +29,7 @@ public class TrivialConfigurator extends GenericConfigurator {
     }
 
     @Override
-    protected void addImplicitRules(Interpreter interpreter) {
+    protected void addImplicitRules(SaxEventInterpreter interpreter) {
     }
 
     @Override

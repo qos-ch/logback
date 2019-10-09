@@ -27,12 +27,14 @@ import java.util.HashMap;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.joran.action.ext.IncAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -46,11 +48,16 @@ public class TrivialConfiguratorTest {
     Context context = new ContextBase();
     HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
 
-    public void doTest(String filename) throws Exception {
-
+    
+    @Before
+    public void setUp() {
         // rule store is case insensitve
+        rulesMap.put(new ElementSelector("x"), new TopElementAction());
         rulesMap.put(new ElementSelector("x/inc"), new IncAction());
 
+    }
+
+    public void doTest(String filename) throws Exception {
         TrivialConfigurator trivialConfigurator = new TrivialConfigurator(rulesMap);
 
         trivialConfigurator.setContext(context);

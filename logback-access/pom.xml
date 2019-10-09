@@ -16,6 +16,10 @@
   <name>Logback Access Module</name>
   <description>logback-access module</description>
 
+  <properties>
+    <module-name>ch.qos.logback.access</module-name>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>ch.qos.logback</groupId>

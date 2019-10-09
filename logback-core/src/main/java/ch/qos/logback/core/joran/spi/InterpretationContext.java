@@ -13,9 +13,7 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
@@ -24,8 +22,9 @@ import org.xml.sax.Locator;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.event.InPlayListener;
-import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
+import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
@@ -39,143 +38,192 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class InterpretationContext extends ContextAwareBase implements PropertyContainer {
-    Stack<Object> objectStack;
-    Map<String, Object> objectMap;
-    Map<String, String> propertiesMap;
+	Stack<Object> objectStack;
+	Stack<Model> modelStack;
+	Stack<ImplicitActionDataBase> implicitActionDataStack;
 
-    Interpreter joranInterpreter;
-    final List<InPlayListener> listenerList = new ArrayList<InPlayListener>();
-    DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
+	Map<String, Object> objectMap;
+	Map<String, String> propertiesMap;
 
-    public InterpretationContext(Context context, Interpreter joranInterpreter) {
-        this.context = context;
-        this.joranInterpreter = joranInterpreter;
-        objectStack = new Stack<Object>();
-        objectMap = new HashMap<String, Object>(5);
-        propertiesMap = new HashMap<String, String>(5);
-    }
+	SaxEventInterpreter saxEventInterpreter;
+	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
+	private BeanDescriptionCache beanDescriptionCache;
 
-    public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
-        return defaultNestedComponentRegistry;
-    }
+	public InterpretationContext(Context context, SaxEventInterpreter saxEventInterpreter) {
+		this.context = context;
+		this.saxEventInterpreter = saxEventInterpreter;
+		this.objectStack = new Stack<>();
+		this.modelStack = new Stack<>();
+		this.implicitActionDataStack = new Stack<>();
 
-    public Map<String, String> getCopyOfPropertyMap() {
-        return new HashMap<String, String>(propertiesMap);
-    }
+		objectMap = new HashMap<>(5);
+		propertiesMap = new HashMap<>(5);
+	}
 
-    void setPropertiesMap(Map<String, String> propertiesMap) {
-        this.propertiesMap = propertiesMap;
-    }
+	public BeanDescriptionCache getBeanDescriptionCache() {
+		if (beanDescriptionCache == null) {
+			beanDescriptionCache = new BeanDescriptionCache(getContext());
+		}
+		return beanDescriptionCache;
+	}
 
-    String updateLocationInfo(String msg) {
-        Locator locator = joranInterpreter.getLocator();
+	public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
+		return defaultNestedComponentRegistry;
+	}
 
-        if (locator != null) {
-            return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
-        } else {
-            return msg;
-        }
-    }
+	public Map<String, String> getCopyOfPropertyMap() {
+		return new HashMap<String, String>(propertiesMap);
+	}
 
-    public Locator getLocator() {
-        return joranInterpreter.getLocator();
-    }
+	void setPropertiesMap(Map<String, String> propertiesMap) {
+		this.propertiesMap = propertiesMap;
+	}
 
-    public Interpreter getJoranInterpreter() {
-        return joranInterpreter;
-    }
+	String updateLocationInfo(String msg) {
+		Locator locator = saxEventInterpreter.getLocator();
 
-    public Stack<Object> getObjectStack() {
-        return objectStack;
-    }
+		if (locator != null) {
+			return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
+		} else {
+			return msg;
+		}
+	}
 
-    public boolean isEmpty() {
-        return objectStack.isEmpty();
-    }
+	public String getLineNumber() {
+		Locator locator = saxEventInterpreter.getLocator();
 
-    public Object peekObject() {
-        return objectStack.peek();
-    }
+		if (locator != null) {
+			return Integer.toString(locator.getLineNumber());
+		} else {
+			return "NA";
+		}
+	}
 
-    public void pushObject(Object o) {
-        objectStack.push(o);
-    }
+	public Locator getLocator() {
+		return saxEventInterpreter.getLocator();
+	}
 
-    public Object popObject() {
-        return objectStack.pop();
-    }
+	public SaxEventInterpreter getSaxEventInterpreter() {
+		return saxEventInterpreter;
+	}
 
-    public Object getObject(int i) {
-        return objectStack.get(i);
-    }
+	public Stack<Object> getObjectStack() {
+		return objectStack;
+	}
 
-    public Map<String, Object> getObjectMap() {
-        return objectMap;
-    }
+	/**
+	 * @deprecated Use {@link isObjectStackEmpty isObjectStackEmpty()} method
+	 *             instead
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return isObjectStackEmpty();
+	}
 
-    /**
-     * Add a property to the properties of this execution context. If the property
-     * exists already, it is overwritten.
-     */
-    public void addSubstitutionProperty(String key, String value) {
-        if (key == null || value == null) {
-            return;
-        }
-        // values with leading or trailing spaces are bad. We remove them now.
-        value = value.trim();
-        propertiesMap.put(key, value);
-    }
+	/**
+	 * 
+	 * @return whether the objectStack is empty or not
+	 */
+	public boolean isObjectStackEmpty() {
+		return objectStack.isEmpty();
+	}
 
-    public void addSubstitutionProperties(Properties props) {
-        if (props == null) {
-            return;
-        }
-        for (Object keyObject : props.keySet()) {
-            String key = (String) keyObject;
-            String val = props.getProperty(key);
-            addSubstitutionProperty(key, val);
-        }
-    }
+	public Object peekObject() {
+		return objectStack.peek();
+	}
 
-    /**
-     * If a key is found in propertiesMap then return it. Otherwise, delegate to
-     * the context.
-     */
-    public String getProperty(String key) {
-        String v = propertiesMap.get(key);
-        if (v != null) {
-            return v;
-        } else {
-            return context.getProperty(key);
-        }
-    }
+	public void pushObject(Object o) {
+		objectStack.push(o);
+	}
 
-    public String subst(String value) {
-        if (value == null) {
-            return null;
-        }
-        return OptionHelper.substVars(value, this, context);
-    }
+	public Object popObject() {
+		return objectStack.pop();
+	}
 
-    public boolean isListenerListEmpty() {
-        return listenerList.isEmpty();
-    }
+	/**
+	 * actionDataStack contains ActionData instances We use a stack of ActionData
+	 * objects in order to support nested elements which are handled by the same
+	 * NestedComplexPropertyIA instance. We push a ActionData instance in the
+	 * isApplicable method (if the action is applicable) and pop it in the end()
+	 * method. The XML well-formedness property will guarantee that a push will
+	 * eventually be followed by a corresponding pop.
+	 */
+	public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
+		return implicitActionDataStack;
+	}
 
-    public void addInPlayListener(InPlayListener ipl) {
-        if (listenerList.contains(ipl)) {
-            addWarn("InPlayListener " + ipl + " has been already registered");
-        } else {
-            listenerList.add(ipl);
-        }
-    }
+	public Model peekModel() {
+		return modelStack.peek();
+	}
 
-    public boolean removeInPlayListener(InPlayListener ipl) {
-        return listenerList.remove(ipl);
-    }
+	public void pushModel(Model m) {
+		modelStack.push(m);
+	}
 
-    void fireInPlay(SaxEvent event) {
-        for (InPlayListener ipl : listenerList) {
-            ipl.inPlay(event);
-        }
-    }
+	public boolean isModelStackEmpty() {
+		return modelStack.isEmpty();
+	}
+
+	public Model popModel() {
+		return modelStack.pop();
+	}
+	
+	public Stack<Model> getCopyOfModelStack() {
+		Stack<Model> copy = new Stack<>();
+		copy.addAll(modelStack);
+		return copy;
+	}
+
+	public Object getObject(int i) {
+		return objectStack.get(i);
+	}
+
+	public Map<String, Object> getObjectMap() {
+		return objectMap;
+	}
+
+	/**
+	 * Add a property to the properties of this execution context. If the property
+	 * exists already, it is overwritten.
+	 */
+	public void addSubstitutionProperty(String key, String value) {
+		if (key == null || value == null) {
+			return;
+		}
+		// values with leading or trailing spaces are bad. We remove them now.
+		value = value.trim();
+		propertiesMap.put(key, value);
+	}
+
+	public void addSubstitutionProperties(Properties props) {
+		if (props == null) {
+			return;
+		}
+		for (Object keyObject : props.keySet()) {
+			String key = (String) keyObject;
+			String val = props.getProperty(key);
+			addSubstitutionProperty(key, val);
+		}
+	}
+
+	/**
+	 * If a key is found in propertiesMap then return it. Otherwise, delegate to the
+	 * context.
+	 */
+	public String getProperty(String key) {
+		String v = propertiesMap.get(key);
+		if (v != null) {
+			return v;
+		} else {
+			return context.getProperty(key);
+		}
+	}
+
+	public String subst(String value) {
+		if (value == null) {
+			return null;
+		}
+		return OptionHelper.substVars(value, this, context);
+	}
+
 }

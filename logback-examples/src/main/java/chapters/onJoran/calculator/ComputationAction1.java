@@ -47,7 +47,7 @@ public class ComputationAction1 extends Action {
      * named. Anonymous computation will not print their result.
      */
     public void end(InterpretationContext ec, String name) {
-        if (OptionHelper.isEmpty(nameStr)) {
+        if (OptionHelper.isNullOrEmpty(nameStr)) {
             // nothing to do
         } else {
             Integer i = (Integer) ec.peekObject();
