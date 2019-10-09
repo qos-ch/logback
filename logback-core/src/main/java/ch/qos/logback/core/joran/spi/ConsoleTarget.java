@@ -23,6 +23,8 @@ import java.io.OutputStream;
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
  * @author David Roussel
+ * 
+ * @sse LOGBACK-136
  */
 public enum ConsoleTarget {
 
