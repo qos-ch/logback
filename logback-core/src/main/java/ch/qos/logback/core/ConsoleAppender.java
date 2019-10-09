@@ -14,13 +14,14 @@
 package ch.qos.logback.core;
 
 import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.EnvUtil;
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.Loader;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -40,7 +41,10 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     protected ConsoleTarget target = ConsoleTarget.SystemOut;
     protected boolean withJansi = false;
 
-    private final static String WindowsAnsiOutputStream_CLASS_NAME = "org.fusesource.jansi.WindowsAnsiOutputStream";
+    private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
+    private final static String wrapSystemOut_METHOD_NAME = "wrapSystemOut";
+    private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
+    private final static Class<?>[] ARGUMENT_TYPES = {PrintStream.class};
 
     /**
      * Sets the value of the <b>Target</b> option. Recognized values are
@@ -74,37 +78,40 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     @Override
     public void start() {
         OutputStream targetStream = target.getStream();
-        // enable jansi only on Windows and only if withJansi set to true
-        if (EnvUtil.isWindows() && withJansi) {
-            targetStream = getTargetStreamForWindows(targetStream);
+        // enable jansi only if withJansi set to true
+        if (withJansi) {
+            targetStream = wrapWithJansi(targetStream);
         }
         setOutputStream(targetStream);
         super.start();
     }
 
-    private OutputStream getTargetStreamForWindows(OutputStream targetStream) {
+    private OutputStream wrapWithJansi(OutputStream targetStream) {
         try {
-            addInfo("Enabling JANSI WindowsAnsiOutputStream for the console.");
-            Object windowsAnsiOutputStream = OptionHelper.instantiateByClassNameAndParameter(WindowsAnsiOutputStream_CLASS_NAME, Object.class, context,
-                            OutputStream.class, targetStream);
-            return (OutputStream) windowsAnsiOutputStream;
+            addInfo("Enabling JANSI AnsiPrintStream for the console.");
+            ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
+            Class<?> classObj = classLoader.loadClass(AnsiConsole_CLASS_NAME);
+            String methodName = target == ConsoleTarget.SystemOut ? wrapSystemOut_METHOD_NAME : wrapSystemErr_METHOD_NAME;
+            Method method = classObj.getMethod(methodName, ARGUMENT_TYPES);
+            return (OutputStream) method.invoke(null, new PrintStream(targetStream));
         } catch (Exception e) {
-            addWarn("Failed to create WindowsAnsiOutputStream. Falling back on the default stream.", e);
+            addWarn("Failed to create AnsiPrintStream. Falling back on the default stream.", e);
         }
         return targetStream;
     }
 
     /**
-     * @return
+     * @return whether to use JANSI or not.
      */
     public boolean isWithJansi() {
         return withJansi;
     }
 
     /**
-     * If true, this appender will output to a stream which
+     * If true, this appender will output to a stream provided by the JANSI
+     * library.
      *
-     * @param withJansi
+     * @param withJansi whether to use JANSI or not.
      * @since 1.0.5
      */
     public void setWithJansi(boolean withJansi) {

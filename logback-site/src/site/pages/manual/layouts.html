@@ -1394,11 +1394,6 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 
 <pre id="highlighted" class="prettyprint">&lt;configuration debug="true">
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    &lt;!-- On Windows machines setting withJansi to true enables ANSI
-         color code interpretation by the Jansi library. This requires
-         org.fusesource.jansi:jansi:1.8 on the class path.  Note that
-         Unix-based operating systems such as Linux and Mac OS X
-         support ANSI color codes by default. --&gt;
     <b>&lt;withJansi>true&lt;/withJansi></b>
     &lt;encoder>
       &lt;pattern>[%thread] <b>%highlight(%-5level)</b> <b>%cyan(%logger{15})</b> - %msg %n&lt;/pattern>
@@ -1408,6 +1403,19 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
 &lt;/configuration></pre>
+
+     <p>Setting <code>withJansi</code> to true enables ANSI
+     color code interpretation by the Jansi library, which transparently
+     filters out ANSI escape sequences if the underlying terminal is not
+     compatible. This is the safest choice for cross-platform deployments,
+     but requires org.fusesource.jansi:jansi:1.17 or higher on the class path.
+     Note that Unix-based operating systems such as Linux and Mac OS X
+     support ANSI color codes natively and usually do not require
+     enabling the Jansi library, but doing so is harmless.
+     On Windows however, enabling Jansi is recommended to benefit from color
+     code interpretation on DOS command prompts, which otherwise
+     risk being sent ANSI escape sequences that they cannot interpret.
+     </p>
 
      <p>Here is the corresponding output:</p>
 
