@@ -58,6 +58,7 @@ Jan Engehausen           ZH, Switzerland       2017-07-07
 Christian Lorenz         Berlin, Germany       2017-11-28
 Federico Fissore         Reano, Italy          2019-02-18
 Wessel van Norel         Netherlands           2019-08-12
+Alexandre Dutra          France                2019-10-10
 
 Justification for CLAs
 ----------------------
