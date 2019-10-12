@@ -7,7 +7,7 @@ document.write('<td valign="top">Copyright &copy; 2019  <a href="http://www.qos.
 
 document.write('  <td rowspan="2">');
 document.write('    <a href="http://twitter.com/qos_ch">');
-document.write('      <img alt="Follow @qos_ch" src="https://www.slf4j.org/images/follow_us.png" />');
+document.write('      <img alt="Follow @qos_ch" src="http://www.slf4j.org/images/follow_us.png" />');
 document.write('    </a>');
 document.write('  </td>');
 
