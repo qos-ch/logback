@@ -32,7 +32,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3> , 2019, Release of version 1.3.0-alpha5</h3>
+    <h3>11th of October, 2019, Release of version 1.3.0-alpha5</h3>
 
     <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
     modularized and requires slf4j-api version 2.0.x. Moreover, the
@@ -43,6 +43,14 @@
     slf4j-api version 2.0.x. Moreover, the 1.3.x series requires
     Java&nbsp;8 at <b>runtime</b> whereas building logback from source
     requires Java&nbsp;9.  <br/></p>
+
+    <p>Joran, logback's configuration system, has been rewritten to
+    use an internal representation model which can be processed
+    separately. As a side-effect, logback configuration scripts are
+    now order-free. Given the breadth of the changes, support for
+    <code>SiftingAppender</code> and Groovy configuration have been
+    dropped temporarily.
+    </p>
     
     <p>ConsoleAppender now delegates filtering of ANSI sequences to
     Jansi. This fixes <a
@@ -57,12 +65,15 @@
     <br/>
     
     <div class="breaking">
+
       <p>Given that all currently available versions of Groovy are
-      incompatible with Java 9, at least when built with Maven, we have
-      momentarily <b>dropped support for Groovy configuration</b>, a.k.a
-      Gaffer. For details refer to <a
+      incompatible with Java 9, at least when built with Maven, we
+      have momentarily <b>dropped support for Groovy
+      configuration</b>, a.k.a Gaffer. For details refer to <a
       href="http://markmail.org/thread/nekeppbvwrfl7hbb#query:+page:1+mid:obdyvuv24kqpxm6v+state:results">this
-      thread</a> and relevant <a href="https://issues.apache.org/jira/browse/GROOVY-8471">jira issue.</a></p>
+      thread</a> and relevant <a
+      href="https://issues.apache.org/jira/browse/GROOVY-8471">jira
+      issue.</a></p>
     </div>
     
 
