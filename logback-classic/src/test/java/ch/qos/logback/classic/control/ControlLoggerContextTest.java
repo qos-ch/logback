@@ -13,23 +13,26 @@
  */
 package ch.qos.logback.classic.control;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.control.ControlLogger;
-import ch.qos.logback.classic.control.ControlLoggerContext;
 
 /**
  * This class is for testing ControlLoggerContext which is a control class for testing HLoggerContext.
  */
-public class CLCTest extends TestCase {
+public class ControlLoggerContextTest {
     ControlLoggerContext clc;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         clc = new ControlLoggerContext();
     }
 
-    public void test1() {
+    @Test
+    public void smoke() {
         ControlLogger x = clc.getLogger("x");
         assertEquals("x", x.getName());
         assertEquals(clc.getRootLogger(), x.parent);
@@ -39,6 +42,7 @@ public class CLCTest extends TestCase {
         assertEquals(Level.DEBUG, abc.getEffectiveLevel());
     }
 
+    @Test
     public void testCreation() {
         ControlLogger xyz = clc.getLogger("x.y.z");
         assertEquals("x.y.z", xyz.getName());
