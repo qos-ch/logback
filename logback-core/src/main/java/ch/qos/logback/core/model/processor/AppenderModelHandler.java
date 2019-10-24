@@ -37,7 +37,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		this.appenderAttachable = appenderRefBag.get(appenderName);
 		
 		if(this.appenderAttachable == null) {
-			addWarn("Processing appender named ["+appenderName+"] not referenced. Skipping.");
+			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
 			skipped = true;
 			return;
 		}

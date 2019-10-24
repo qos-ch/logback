@@ -62,9 +62,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
         rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
         rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
-
-        //rs.addRule(new ElementSelector("configuration/appender/sift/*"), new NOPAction());
-
         rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
     }
 
@@ -122,6 +119,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 		fistPhaseDefintionFilter.denyAll();
 		defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
 
+		// Note: AppenderModel is in the second phase
 
 		defaultProcessor.setPhaseTwoFilter(new AllowAllModelFilter());
 

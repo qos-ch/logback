@@ -47,7 +47,10 @@
     <p>Joran, logback's configuration system, has been rewritten to
     use an internal representation model which can be processed
     separately. As a side-effect, logback configuration scripts are
-    now order-free. Given the breadth of the changes, support for
+    now largely order-free. For example, appenders can now be defined
+    after they are first referenced in a logger. Moreover,
+    unreferenced appenders are no longer instantiated. Given the
+    breadth of the changes in Joran codebase, support for
     <code>SiftingAppender</code> and Groovy configuration have been
     dropped temporarily.
     </p>

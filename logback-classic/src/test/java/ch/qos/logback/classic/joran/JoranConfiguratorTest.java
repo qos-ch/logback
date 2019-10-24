@@ -27,6 +27,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
 
+import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -132,14 +133,17 @@ public class JoranConfiguratorTest {
 		final String propertyName = "logback.appenderRef";
 		System.setProperty(propertyName, "A");
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefByProperty.xml");
+		StatusPrinter.print(loggerContext);
 		final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
 		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) logger.getAppender("A");
 		assertEquals(0, listAppender.list.size());
 		final String msg = "hello world";
 		logger.info(msg);
+	
 		assertEquals(1, listAppender.list.size());
 		System.clearProperty(propertyName);
 	}
+
 
 	@Test
 	public void statusListener() throws JoranException {
@@ -478,5 +482,32 @@ public class JoranConfiguratorTest {
 		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
 		assertEquals(msg, le.getMessage());
 		checker.assertIsErrorFree();
+	}
+	
+	@Test
+	public void unreferencedAppendersShouldBeSkipped() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "unreferencedAppender1.xml");
+		
+		final ListAppender<ILoggingEvent> listAppenderA = (ListAppender<ILoggingEvent>) root.getAppender("A");
+		assertNotNull(listAppenderA);
+		StatusPrinter.print(loggerContext);
+		StatusChecker checker = new StatusChecker(loggerContext);	
+		checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
+	}
+	
+
+	@Test
+	public void asynAppender() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender.xml");
+		
+		final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
+		assertNotNull(asyncAppender);
+		StatusPrinter.print(loggerContext);
+		
+		assertTrue(asyncAppender.isStarted());
+		StatusPrinter.print(loggerContext);
+		
+		StatusChecker checker = new StatusChecker(loggerContext);	
+		//checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
 	}
 }
