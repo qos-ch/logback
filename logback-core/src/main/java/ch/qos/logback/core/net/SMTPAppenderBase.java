@@ -121,7 +121,6 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         else
             session = buildSessionFromProperties();
 
-        session.setDebug(true);
         if (session == null) {
             addError("Failed to obtain javax.mail.Session. Cannot start.");
             return;
