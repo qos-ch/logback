@@ -1,20 +1,18 @@
 package ch.qos.logback.core.model;
 
-public class TimestampModel extends Model {
+public class TimestampModel extends NamedModel {
 
     public static final String CONTEXT_BIRTH = "contextBirth";
 
-    
-    String key;
     String datePattern;
     String timeReference;
     String scopeStr;
     
     public String getKey() {
-        return key;
+        return getName();
     }
     public void setKey(String key) {
-        this.key = key;
+    	this.setName(key);
     }
     public String getDatePattern() {
         return datePattern;

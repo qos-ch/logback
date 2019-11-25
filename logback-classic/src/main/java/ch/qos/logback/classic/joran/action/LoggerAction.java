@@ -41,6 +41,7 @@ public class LoggerAction extends BaseModelAction {
 
 		LoggerModel loggerModel = new LoggerModel();
 		
+		
 		String nameStr = attributes.getValue(NAME_ATTRIBUTE);
 		loggerModel.setName(nameStr);
 		

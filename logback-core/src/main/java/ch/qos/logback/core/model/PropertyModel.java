@@ -1,21 +1,14 @@
 package ch.qos.logback.core.model;
 
-public class PropertyModel extends Model {
+public class PropertyModel extends NamedModel {
 
-    String name;
+
     String value;
     String scopeStr;
 
     String file;
     String resource;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getValue() {
         return value;

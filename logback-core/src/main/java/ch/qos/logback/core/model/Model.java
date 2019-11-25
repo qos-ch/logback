@@ -3,13 +3,15 @@ package ch.qos.logback.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.spi.ContextAwareBase;
+
 /**
  * Abstract representation of configuration elements
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
-public class Model {
+public class Model  {
 
 	// this state should not be here but should be treated via listeners
 	// between processors and ModelHandlers

@@ -51,8 +51,7 @@ public abstract class BaseModelAction extends Action {
 
     @Override
     public void body(InterpretationContext ec, String body) {
-        String finalBody = ec.subst(body);
-        currentModel.addText(finalBody);
+    	currentModel.addText(body);
     }
 
     @Override

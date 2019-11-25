@@ -33,7 +33,6 @@ public class AppenderRefAction extends BaseModelAction {
 	@Override
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 		AppenderRefModel arm = new AppenderRefModel();
-		
         String ref = attributes.getValue(JoranConstants.REF_ATTRIBUTE);
 		arm.setRef(ref);
 		return arm;

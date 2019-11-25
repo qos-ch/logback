@@ -48,7 +48,6 @@ public class LevelAction extends BaseModelAction {
 	@Override
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 		LevelModel lm = new LevelModel();
-		
 		String value = attributes.getValue(JoranConstants.VALUE_ATTR);
 		lm.setValue(value);
 		

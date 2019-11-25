@@ -30,7 +30,6 @@ public class RootLoggerAction extends BaseModelAction {
 	@Override
 	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
 		RootLoggerModel rootLoggerModel = new RootLoggerModel();
-		
 		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
 		rootLoggerModel.setLevel(levelStr);
 	        

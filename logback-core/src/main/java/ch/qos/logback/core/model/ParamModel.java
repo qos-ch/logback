@@ -1,16 +1,9 @@
 package ch.qos.logback.core.model;
 
-public class ParamModel extends Model {
+public class ParamModel extends NamedModel {
 
-	String name;
 	String value;
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	public String getValue() {
 		return value;
 	}
