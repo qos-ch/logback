@@ -134,7 +134,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         }
         Map<String, String> current = readWriteThreadLocalMap.get();
         if (current == null) {
-            current = new HashMap<String, String>();
+            current = new LinkedHashMap<>();
             readWriteThreadLocalMap.set(current);
         }
 
@@ -211,7 +211,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         if (readOnlyMap == null) {
             Map<String, String> current = readWriteThreadLocalMap.get();
             if (current != null) {
-                final Map<String, String> tempMap = new HashMap<String, String>(current);
+                final Map<String, String> tempMap = new LinkedHashMap<>(current);
                 readOnlyMap = Collections.unmodifiableMap(tempMap);
                 readOnlyThreadLocalMap.set(readOnlyMap);
             }
@@ -229,7 +229,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         if (readOnlyMap == null) {
             return null;
         } else {
-            return new HashMap<String, String>(readOnlyMap);
+            return new LinkedHashMap(readOnlyMap);
         }
     }
 
@@ -262,8 +262,8 @@ public class LogbackMDCAdapter implements MDCAdapter  {
      * Copies the map and records null keys and null values in the same pass.
      */
     private Map<String, String> copyAndReportNulls(Map<String, String> contextMap) {
-        // same sizing as the HashMap(Map) constructor
-        Map<String, String> copy = new HashMap<String, String>((int) (contextMap.size() / 0.75f) + 1);
+        // same sizing as the LinkedHashMap(Map) constructor
+        Map<String, String> copy = new LinkedHashMap<String, String>((int) (contextMap.size() / 0.75f) + 1);
 
         boolean hasNullKey = false;
         int nullValueCount = 0;
