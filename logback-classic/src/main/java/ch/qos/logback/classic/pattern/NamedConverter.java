@@ -15,9 +15,13 @@ package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 public abstract class NamedConverter extends ClassicConverter {
 
     Abbreviator abbreviator = null;
+    private ConcurrentMap<String, String> knownAbbreviations = null;
 
     /**
      * Gets fully qualified name from event.
@@ -38,6 +42,7 @@ public abstract class NamedConverter extends ClassicConverter {
                 } else if (targetLen > 0) {
                     abbreviator = new TargetLengthBasedClassNameAbbreviator(targetLen);
                 }
+                knownAbbreviations = new ConcurrentHashMap<>();
             } catch (NumberFormatException nfe) {
                 // FIXME: better error reporting
             }
@@ -50,7 +55,7 @@ public abstract class NamedConverter extends ClassicConverter {
         if (abbreviator == null) {
             return fqn;
         } else {
-            return abbreviator.abbreviate(fqn);
+            return knownAbbreviations.computeIfAbsent(fqn, s -> abbreviator.abbreviate(s));
         }
     }
 }
