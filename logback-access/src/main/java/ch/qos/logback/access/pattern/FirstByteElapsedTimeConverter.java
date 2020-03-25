@@ -11,26 +11,15 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.access.spi;
+package ch.qos.logback.access.pattern;
 
-import java.util.Map;
+import ch.qos.logback.access.spi.IAccessEvent;
 
-/**
- * An interface to access server-specific methods from
- * the server-independent AccessEvent.
- *
- * @author Ceki G&uuml;lc&uuml;
- * @author S&eacute;bastien Pennec
- */
-public interface ServerAdapter {
+public class FirstByteElapsedTimeConverter extends AccessConverter {
 
-    long getRequestTimestamp();
+    @Override
+    public String convert(IAccessEvent event) {
+        return Long.toString(event.getFirstByteElapsedTime());
+    }
 
-    long getContentLength();
-
-    int getStatusCode();
-
-    long getCommitTime();
-
-    Map<String, String> buildResponseHeaderMap();
 }
