@@ -38,7 +38,7 @@ public class TomcatServerAdapter implements ServerAdapter {
 
     @Override
     public long getContentLength() {
-        return response.getContentLength();
+        return response.getBytesWritten(false);
     }
 
     @Override
