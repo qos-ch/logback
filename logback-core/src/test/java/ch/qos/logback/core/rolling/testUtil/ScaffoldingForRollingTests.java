@@ -276,7 +276,7 @@ public class ScaffoldingForRollingTests {
             try {
                 future.get(10, TimeUnit.SECONDS);
             } catch (Exception e) {
-                new RuntimeException("unexpected exception while testing", e);
+                throw new RuntimeException("unexpected exception while testing", e);
             }
         }
         futureList.clear();
