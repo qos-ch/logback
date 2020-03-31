@@ -74,6 +74,7 @@
     <site-plugin.version>3.7.1</site-plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
     <license-plugin.version>3.0</license-plugin.version>
+    <project.build.outputTimestamp>2020-03-31T20:00:00Z</project.build.outputTimestamp>
   </properties>
 
   <developers>
@@ -281,7 +282,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.3.1</version>
+          <version>3.2.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -301,7 +302,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.1.2</version>
+          <version>3.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

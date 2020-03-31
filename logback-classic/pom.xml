@@ -326,6 +326,7 @@
             <!-- Needed to integrate ServiceLoader mechanism with OSGi -->
             <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability> 
   			<Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
+  			<_removeheaders>Bnd-LastModified</_removeheaders>
     
     
           </instructions>
