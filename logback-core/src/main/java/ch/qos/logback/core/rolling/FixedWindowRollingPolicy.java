@@ -149,10 +149,10 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
                 util.rename(getActiveFileName(), fileNamePattern.convertInt(minIndex));
                 break;
             case GZ:
-                compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex), null);
+                compressor.asyncCompress(getActiveFileName(), fileNamePattern.convertInt(minIndex), null);
                 break;
             case ZIP:
-                compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex), zipEntryFileNamePattern.convert(new Date()));
+                compressor.asyncCompress(getActiveFileName(), fileNamePattern.convertInt(minIndex), zipEntryFileNamePattern.convert(new Date()));
                 break;
             }
         }
