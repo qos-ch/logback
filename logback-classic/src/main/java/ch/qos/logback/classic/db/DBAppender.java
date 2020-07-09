@@ -248,26 +248,35 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
         }
     }
 
-    short buildExceptionStatement(IThrowableProxy tp, short baseIndex, PreparedStatement insertExceptionStatement, long eventId) throws SQLException {
-
+    short recursiveBuildExceptionStatement(IThrowableProxy tp, String prefix, int indent, short baseIndex, PreparedStatement insertExceptionStatement, long eventId) throws SQLException {
+        if (tp == null)
+            return baseIndex;
         StringBuilder buf = new StringBuilder();
-        ThrowableProxyUtil.subjoinFirstLine(buf, tp);
+        ThrowableProxyUtil.subjoinFirstLine(buf, prefix, indent, tp);
         updateExceptionStatement(insertExceptionStatement, buf.toString(), baseIndex++, eventId);
 
         int commonFrames = tp.getCommonFrames();
         StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
         for (int i = 0; i < stepArray.length - commonFrames; i++) {
             StringBuilder sb = new StringBuilder();
-            sb.append(CoreConstants.TAB);
+            ThrowableProxyUtil.indent(sb, indent);
             ThrowableProxyUtil.subjoinSTEP(sb, stepArray[i]);
             updateExceptionStatement(insertExceptionStatement, sb.toString(), baseIndex++, eventId);
         }
 
         if (commonFrames > 0) {
             StringBuilder sb = new StringBuilder();
-            sb.append(CoreConstants.TAB).append("... ").append(commonFrames).append(" common frames omitted");
+            ThrowableProxyUtil.indent(sb, indent);
+            sb.append("... ").append(commonFrames).append(" common frames omitted");
             updateExceptionStatement(insertExceptionStatement, sb.toString(), baseIndex++, eventId);
         }
+        IThrowableProxy[] suppressed = tp.getSuppressed();
+        if (suppressed != null) {
+            for (IThrowableProxy current : suppressed) {
+                baseIndex = recursiveBuildExceptionStatement(current, CoreConstants.SUPPRESSED, indent + ThrowableProxyUtil.SUPPRESSED_EXCEPTION_INDENT, baseIndex, insertExceptionStatement, eventId);
+            }
+        }
+        baseIndex = recursiveBuildExceptionStatement(tp.getCause(), CoreConstants.CAUSED_BY, indent, baseIndex, insertExceptionStatement, eventId);
 
         return baseIndex;
     }
@@ -279,10 +288,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
             exceptionStatement = connection.prepareStatement(insertExceptionSQL);
 
             short baseIndex = 0;
-            while (tp != null) {
-                baseIndex = buildExceptionStatement(tp, baseIndex, exceptionStatement, eventId);
-                tp = tp.getCause();
-            }
+            recursiveBuildExceptionStatement(tp, null, ThrowableProxyUtil.REGULAR_EXCEPTION_INDENT, baseIndex, exceptionStatement, eventId);
 
             if (cnxSupportsBatchUpdates) {
                 exceptionStatement.executeBatch();
