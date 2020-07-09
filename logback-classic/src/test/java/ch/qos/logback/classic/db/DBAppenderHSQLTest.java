@@ -28,6 +28,7 @@ import java.sql.Statement;
 import java.util.Map;
 
 import ch.qos.logback.classic.util.TestHelper;
+import ch.qos.logback.core.CoreConstants;
 import org.apache.log4j.MDC;
 import org.junit.*;
 
@@ -246,7 +247,9 @@ public class DBAppenderHSQLTest {
         rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION where EVENT_ID = " + existingRowCount);
         StringBuilder builder = new StringBuilder();
         while (rs.next()) {
-            builder.append(rs.getString(3).replace("common frames omitted", "more")).append("\r\n");
+            builder.append(
+                    rs.getString(3).replace("common frames omitted", "more")
+            ).append(CoreConstants.LINE_SEPARATOR);
         }
         System.out.println(builder.toString());
         assertEquals(sw.toString(), builder.toString());
