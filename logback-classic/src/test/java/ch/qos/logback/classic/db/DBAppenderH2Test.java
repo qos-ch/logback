@@ -13,16 +13,22 @@
  */
 package ch.qos.logback.classic.db;
 
+import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.Map;
 
+import ch.qos.logback.classic.util.TestHelper;
 import org.apache.log4j.MDC;
 import org.junit.After;
 import org.junit.Before;
@@ -47,6 +53,8 @@ public class DBAppenderH2Test {
     DBAppenderH2TestFixture dbAppenderH2TestFixture;
     int diff = RandomUtil.getPositiveInt();
     StatusChecker checker = new StatusChecker(loggerContext);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
 
     @Before
     public void setUp() throws SQLException {
@@ -112,27 +120,48 @@ public class DBAppenderH2Test {
 
     @Test
     public void testAppendThrowable() throws SQLException {
-        ILoggingEvent event = createLoggingEvent();
-        appender.append(event);
-        Statement stmt = connectionSource.getConnection().createStatement();
-        ResultSet rs = null;
-        rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION WHERE EVENT_ID=1");
-        rs.next();
-        String expected = "java.lang.Exception: test Ex";
-        String firstLine = rs.getString(3);
-        assertTrue("[" + firstLine + "] does not match [" + expected + "]", firstLine.contains(expected));
+        verifyException(testException());
+    }
 
-        int i = 0;
-        while (rs.next()) {
-            expected = event.getThrowableProxy().getStackTraceElementProxyArray()[i].toString();
-            String st = rs.getString(3);
-            assertTrue("[" + st + "] does not match [" + expected + "]", st.contains(expected));
-            i++;
-        }
-        assertTrue(i != 0);
+    @Test
+    public void testAppendThrowableSuppressed() throws SQLException, InvocationTargetException, IllegalAccessException {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception ex = testException();
+        Exception fooException = new Exception("Foo");
+        Exception barException = new Exception("Bar");
+        addSuppressed(ex, fooException);
+        addSuppressed(ex, barException);
 
-        rs.close();
-        stmt.close();
+        verifyException(ex);
+    }
+
+    @Test
+    public void testAppendThrowableSuppressedWithCause() throws SQLException, InvocationTargetException, IllegalAccessException {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception e = testException();
+        Exception ex = new Exception("Wrapper", e);
+        Exception fooException = new Exception("Foo");
+        Exception barException = new Exception("Bar");
+        addSuppressed(ex, fooException);
+        addSuppressed(e, barException);
+
+        verifyException(ex);
+    }
+
+    @Test
+    public void testAppendThrowableSuppressedWithSuppressed() throws SQLException, InvocationTargetException, IllegalAccessException {
+        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
+                                                      // sense.
+        Exception e = testException();
+        Exception ex = new Exception("Wrapper", e);
+        Exception fooException = new Exception("Foo");
+        Exception barException = new Exception("Bar");
+        addSuppressed(barException, fooException);
+        addSuppressed(e, barException);
+
+        verifyException(ex);
     }
 
     @Test
@@ -207,12 +236,44 @@ public class DBAppenderH2Test {
         checker.assertIsErrorFree();
     }
 
+    private LoggingEvent createLoggingEvent(String msg, Throwable t, Object[] args) {
+        return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, msg, t, args);
+    }
+
     private LoggingEvent createLoggingEvent(String msg, Object[] args) {
-        return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, msg, new Exception("test Ex"), args);
+        return createLoggingEvent(msg, testException(), args);
     }
 
     private LoggingEvent createLoggingEvent() {
         return createLoggingEvent("test message", new Integer[] { diff });
+    }
+
+    private LoggingEvent createLoggingEvent(Throwable t) {
+        return createLoggingEvent("test message", t, new Integer[] { diff });
+    }
+
+    private Exception testException() {
+        return new Exception("test Ex");
+    }
+
+    private void verifyException(Exception ex) throws SQLException {
+        ILoggingEvent event = createLoggingEvent(ex);
+        appender.append(event);
+
+        ex.printStackTrace(pw);
+
+        Statement stmt = connectionSource.getConnection().createStatement();
+        ResultSet rs = null;
+        rs = stmt.executeQuery("SELECT * FROM LOGGING_EVENT_EXCEPTION WHERE EVENT_ID=1");
+        StringBuilder builder = new StringBuilder();
+        while (rs.next()) {
+            builder.append(rs.getString(3).replace("common frames omitted", "more")).append("\r\n");
+        }
+        System.out.println(builder.toString());
+        assertEquals(sw.toString(), builder.toString());
+
+        rs.close();
+        stmt.close();
     }
 
 }
