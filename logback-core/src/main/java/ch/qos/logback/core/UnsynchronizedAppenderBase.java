@@ -30,7 +30,7 @@ import ch.qos.logback.core.status.WarnStatus;
  */
 abstract public class UnsynchronizedAppenderBase<E> extends ContextAwareBase implements Appender<E> {
 
-    protected boolean started = false;
+    protected volatile boolean started = false;
 
     // using a ThreadLocal instead of a boolean add 75 nanoseconds per
     // doAppend invocation. This is tolerable as doAppend takes at least a few microseconds
