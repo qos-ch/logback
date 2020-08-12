@@ -60,6 +60,8 @@ Federico Fissore         Reano, Italy          2019-02-18
 Wessel van Norel         Netherlands           2019-08-12
 Alexandre Dutra          France                2019-10-10
 Nicolai Parlog           Karlsruhe,Germany     2019-11-25
+Antonio Tomac            Zagreb, Croatia       2020-08-11 
+
 
 Justification for CLAs
 ----------------------
