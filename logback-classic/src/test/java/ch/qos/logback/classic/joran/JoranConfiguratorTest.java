@@ -503,7 +503,9 @@ public class JoranConfiguratorTest {
 		final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
 		assertNotNull(asyncAppender);
 		StatusPrinter.print(loggerContext);
-		
+
+		asyncAppender.start();
+
 		assertTrue(asyncAppender.isStarted());
 		StatusPrinter.print(loggerContext);
 		
