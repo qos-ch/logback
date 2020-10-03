@@ -67,6 +67,14 @@ public class CompressTest {
             target.mkdirs();
             target.delete();
         }
+        {
+            File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress4.copy");
+            File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress4.txt");
+            copy(source, dest);
+            File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress4.txt.bz2");
+            target.mkdirs();
+            target.delete();
+        }
     }
 
     @Test
@@ -90,6 +98,17 @@ public class CompressTest {
         assertTrue(checker.isErrorFree(0));
 
         assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.gz"));
+    }
+
+    @Test
+    public void testBzip2() throws Exception {
+        Compressor compressor = new Compressor(CompressionMode.BZIP2);
+        compressor.setContext(context);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress4.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress4.txt.bz2", null);
+
+        StatusChecker checker = new StatusChecker(context);
+        assertTrue(checker.isErrorFree(0));
+        assertTrue(Compare.bz2FileCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress4.txt.bz2", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress4.txt.bz2"));
     }
 
     @Test

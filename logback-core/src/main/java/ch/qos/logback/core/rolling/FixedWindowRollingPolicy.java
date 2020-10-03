@@ -24,10 +24,10 @@ import ch.qos.logback.core.rolling.helper.*;
 /**
  * When rolling over, <code>FixedWindowRollingPolicy</code> renames files
  * according to a fixed window algorithm.
- * 
+ *
  * For more information about this policy, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#FixedWindowRollingPolicy
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
@@ -148,6 +148,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
             case NONE:
                 util.rename(getActiveFileName(), fileNamePattern.convertInt(minIndex));
                 break;
+            case BZIP2:
             case GZ:
                 compressor.compress(getActiveFileName(), fileNamePattern.convertInt(minIndex), null);
                 break;
