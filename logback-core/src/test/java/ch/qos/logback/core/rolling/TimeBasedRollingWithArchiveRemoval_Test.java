@@ -15,11 +15,16 @@ package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,9 +32,13 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
@@ -292,6 +301,32 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         System.out.print(foundFiles);
         StatusPrinter.print(context);
         checkFileCount(expectedFileCount - 1);
+    }
+
+    @Test
+    public void dailySizeBasedRolloverWithSizeCapAndMaxHistory() throws IOException, ExecutionException, InterruptedException {
+        FileNamePattern fileNamePattern = new FileNamePattern(randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i", context);
+        SizeAndTimeBasedArchiveRemover remover = new SizeAndTimeBasedArchiveRemover(fileNamePattern, new RollingCalendar(DAILY_DATE_PATTERN));
+        remover.setMaxHistory(1);
+        remover.setTotalSizeCap(1024);
+        remover.setContext(context);
+
+        Date yesterday = new Date(0);
+        Date today = Date.from(yesterday.toInstant().atZone(ZoneOffset.UTC).plusDays(1).toInstant());
+
+        new File(randomOutputDir).mkdirs();
+        File[] fileArray = new File[2];
+        fileArray[0] = new File(randomOutputDir + "/1970-01-01-clean.0");
+        fileArray[1] = new File(randomOutputDir + "/1970-01-02-clean.0");
+        byte[] bytes = new byte[1024];
+        Arrays.fill(bytes, (byte) 1);
+        Files.write(fileArray[0].toPath(), bytes);
+        Files.write(fileArray[1].toPath(), bytes);
+
+        remover.cleanAsynchronously(today).get();
+
+        assertFalse(fileArray[0].exists());
+        assertTrue(fileArray[1].exists());
     }
 
     @Test
