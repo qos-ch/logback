@@ -154,7 +154,14 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     @Override
     public String getThreadName() {
-        return threadName == null ? NA : threadName;
+        try {
++            final String threadName = Thread.currentThread().getName();
++            if (threadName != null) {
++                return threadName;
++            }
++        } catch (Exception ignored) {
++        }
++        return NA;
     }
 
     @Override
