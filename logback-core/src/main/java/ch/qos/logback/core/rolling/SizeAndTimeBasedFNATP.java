@@ -139,7 +139,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         long time = getCurrentTime();
 
         // first check for roll-over based on time
-        if (time >= nextCheck) {
+        if (time >= nextCheck || time < previousCheck) {
             Date dateInElapsedPeriod = dateInCurrentPeriod;
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
             currentPeriodsCounter = 0;
