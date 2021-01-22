@@ -45,7 +45,7 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
 
     public boolean isTriggeringEvent(File activeFile, final E event) {
         long time = getCurrentTime();
-        if (time >= nextCheck) {
+        if (time >= nextCheck || time < previousCheck) {
             Date dateOfElapsedPeriod = dateInCurrentPeriod;
             addInfo("Elapsed period: " + dateOfElapsedPeriod);
             elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convert(dateOfElapsedPeriod);
