@@ -74,7 +74,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      * the 'aai'ariable is set is within the addAppender method. This method is
      * synchronized on 'this' (Logger) protecting against simultaneous
      * re-configuration of this logger (a very unlikely scenario).
-     * 
+     *
      * <p>
      * It is further assumed that the AppenderAttachableImpl is responsible for
      * its internal synchronization and thread safety. Thus, we can get away with
@@ -119,6 +119,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         return level;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -178,7 +179,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     /**
      * This method is invoked by parent logger to let this logger know that the
      * prent's levelInt changed.
-     * 
+     *
      * @param newParentLevelInt
      */
     private synchronized void handleParentLevelChange(int newParentLevelInt) {
@@ -203,12 +204,14 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      * <p/>
      * This is useful when re-reading configuration information.
      */
+    @Override
     public void detachAndStopAllAppenders() {
         if (aai != null) {
             aai.detachAndStopAllAppenders();
         }
     }
 
+    @Override
     public boolean detachAppender(String name) {
         if (aai == null) {
             return false;
@@ -218,6 +221,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     // this method MUST be synchronized. See comments on 'aai' field for further
     // details.
+    @Override
     public synchronized void addAppender(Appender<ILoggingEvent> newAppender) {
         if (aai == null) {
             aai = new AppenderAttachableImpl<ILoggingEvent>();
@@ -225,6 +229,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         aai.addAppender(newAppender);
     }
 
+    @Override
     public boolean isAttached(Appender<ILoggingEvent> appender) {
         if (aai == null) {
             return false;
@@ -232,6 +237,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         return aai.isAttached(appender);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Iterator<Appender<ILoggingEvent>> iteratorForAppenders() {
         if (aai == null) {
@@ -240,6 +246,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         return aai.iteratorForAppenders();
     }
 
+    @Override
     public Appender<ILoggingEvent> getAppender(String name) {
         if (aai == null) {
             return null;
@@ -249,7 +256,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     /**
      * Invoke all the appenders of this logger.
-     * 
+     *
      * @param event
      *          The event to log
      */
@@ -278,6 +285,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     /**
      * Remove the appender passed as parameter form the list of appenders.
      */
+    @Override
     public boolean detachAppender(Appender<ILoggingEvent> appender) {
         if (aai == null) {
             return false;
@@ -289,11 +297,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      * Create a child of this logger by suffix, that is, the part of the name
      * extending this logger. For example, if this logger is named "x.y" and the
      * lastPart is "z", then the created child logger will be named "x.y.z".
-     * 
+     *
      * <p>
      * IMPORTANT: Calls to this method must be within a synchronized block on this
      * logger.
-     * 
+     *
      * @param lastPart
      *          the suffix (i.e. last part) of the child logger name. This
      *          parameter may not include dots, i.e. the logger separator
@@ -423,50 +431,62 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         callAppenders(le);
     }
 
+    @Override
     public void trace(String msg) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, msg, null, null);
     }
 
+    @Override
     public void trace(String format, Object arg) {
         filterAndLog_1(FQCN, null, Level.TRACE, format, arg, null);
     }
 
+    @Override
     public void trace(String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, null, Level.TRACE, format, arg1, arg2, null);
     }
 
+    @Override
     public void trace(String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, format, argArray, null);
     }
 
+    @Override
     public void trace(String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.TRACE, msg, null, t);
     }
 
+    @Override
     public void trace(Marker marker, String msg) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, null);
     }
 
+    @Override
     public void trace(Marker marker, String format, Object arg) {
         filterAndLog_1(FQCN, marker, Level.TRACE, format, arg, null);
     }
 
+    @Override
     public void trace(Marker marker, String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, marker, Level.TRACE, format, arg1, arg2, null);
     }
 
+    @Override
     public void trace(Marker marker, String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, format, argArray, null);
     }
 
+    @Override
     public void trace(Marker marker, String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.TRACE, msg, null, t);
     }
 
+    @Override
     public boolean isDebugEnabled() {
         return isDebugEnabled(null);
     }
 
+    @Override
     public boolean isDebugEnabled(Marker marker) {
         final FilterReply decision = callTurboFilters(marker, Level.DEBUG);
         if (decision == FilterReply.NEUTRAL) {
@@ -480,90 +500,112 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         }
     }
 
+    @Override
     public void debug(String msg) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, msg, null, null);
     }
 
+    @Override
     public void debug(String format, Object arg) {
         filterAndLog_1(FQCN, null, Level.DEBUG, format, arg, null);
     }
 
+    @Override
     public void debug(String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, null, Level.DEBUG, format, arg1, arg2, null);
     }
 
+    @Override
     public void debug(String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, format, argArray, null);
     }
 
+    @Override
     public void debug(String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.DEBUG, msg, null, t);
     }
 
+    @Override
     public void debug(Marker marker, String msg) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, msg, null, null);
     }
 
+    @Override
     public void debug(Marker marker, String format, Object arg) {
         filterAndLog_1(FQCN, marker, Level.DEBUG, format, arg, null);
     }
 
+    @Override
     public void debug(Marker marker, String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, marker, Level.DEBUG, format, arg1, arg2, null);
     }
 
+    @Override
     public void debug(Marker marker, String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, format, argArray, null);
     }
 
+    @Override
     public void debug(Marker marker, String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.DEBUG, msg, null, t);
     }
 
+    @Override
     public void error(String msg) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, msg, null, null);
     }
 
+    @Override
     public void error(String format, Object arg) {
         filterAndLog_1(FQCN, null, Level.ERROR, format, arg, null);
     }
 
+    @Override
     public void error(String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, null, Level.ERROR, format, arg1, arg2, null);
     }
 
+    @Override
     public void error(String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, format, argArray, null);
     }
 
+    @Override
     public void error(String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.ERROR, msg, null, t);
     }
 
+    @Override
     public void error(Marker marker, String msg) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, msg, null, null);
     }
 
+    @Override
     public void error(Marker marker, String format, Object arg) {
         filterAndLog_1(FQCN, marker, Level.ERROR, format, arg, null);
     }
 
+    @Override
     public void error(Marker marker, String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, marker, Level.ERROR, format, arg1, arg2, null);
     }
 
+    @Override
     public void error(Marker marker, String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, format, argArray, null);
     }
 
+    @Override
     public void error(Marker marker, String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.ERROR, msg, null, t);
     }
 
+    @Override
     public boolean isInfoEnabled() {
         return isInfoEnabled(null);
     }
 
+    @Override
     public boolean isInfoEnabled(Marker marker) {
         FilterReply decision = callTurboFilters(marker, Level.INFO);
         if (decision == FilterReply.NEUTRAL) {
@@ -577,50 +619,62 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         }
     }
 
+    @Override
     public void info(String msg) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, msg, null, null);
     }
 
+    @Override
     public void info(String format, Object arg) {
         filterAndLog_1(FQCN, null, Level.INFO, format, arg, null);
     }
 
+    @Override
     public void info(String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, null, Level.INFO, format, arg1, arg2, null);
     }
 
+    @Override
     public void info(String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, format, argArray, null);
     }
 
+    @Override
     public void info(String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.INFO, msg, null, t);
     }
 
+    @Override
     public void info(Marker marker, String msg) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, msg, null, null);
     }
 
+    @Override
     public void info(Marker marker, String format, Object arg) {
         filterAndLog_1(FQCN, marker, Level.INFO, format, arg, null);
     }
 
+    @Override
     public void info(Marker marker, String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, marker, Level.INFO, format, arg1, arg2, null);
     }
 
+    @Override
     public void info(Marker marker, String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, format, argArray, null);
     }
 
+    @Override
     public void info(Marker marker, String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.INFO, msg, null, t);
     }
 
+    @Override
     public boolean isTraceEnabled() {
         return isTraceEnabled(null);
     }
 
+    @Override
     public boolean isTraceEnabled(Marker marker) {
         final FilterReply decision = callTurboFilters(marker, Level.TRACE);
         if (decision == FilterReply.NEUTRAL) {
@@ -634,10 +688,12 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         }
     }
 
+    @Override
     public boolean isErrorEnabled() {
         return isErrorEnabled(null);
     }
 
+    @Override
     public boolean isErrorEnabled(Marker marker) {
         FilterReply decision = callTurboFilters(marker, Level.ERROR);
         if (decision == FilterReply.NEUTRAL) {
@@ -651,10 +707,12 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         }
     }
 
+    @Override
     public boolean isWarnEnabled() {
         return isWarnEnabled(null);
     }
 
+    @Override
     public boolean isWarnEnabled(Marker marker) {
         FilterReply decision = callTurboFilters(marker, Level.WARN);
         if (decision == FilterReply.NEUTRAL) {
@@ -686,42 +744,52 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         return isEnabledFor(null, level);
     }
 
+    @Override
     public void warn(String msg) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, msg, null, null);
     }
 
+    @Override
     public void warn(String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, msg, null, t);
     }
 
+    @Override
     public void warn(String format, Object arg) {
         filterAndLog_1(FQCN, null, Level.WARN, format, arg, null);
     }
 
+    @Override
     public void warn(String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, null, Level.WARN, format, arg1, arg2, null);
     }
 
+    @Override
     public void warn(String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, null, Level.WARN, format, argArray, null);
     }
 
+    @Override
     public void warn(Marker marker, String msg) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, msg, null, null);
     }
 
+    @Override
     public void warn(Marker marker, String format, Object arg) {
         filterAndLog_1(FQCN, marker, Level.WARN, format, arg, null);
     }
 
+    @Override
     public void warn(Marker marker, String format, Object... argArray) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, format, argArray, null);
     }
 
+    @Override
     public void warn(Marker marker, String format, Object arg1, Object arg2) {
         filterAndLog_2(FQCN, marker, Level.WARN, format, arg1, arg2, null);
     }
 
+    @Override
     public void warn(Marker marker, String msg, Throwable t) {
         filterAndLog_0_Or3Plus(FQCN, marker, Level.WARN, msg, null, t);
     }
@@ -734,6 +802,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         this.additive = additive;
     }
 
+    @Override
     public String toString() {
         return "Logger[" + name + "]";
     }
@@ -741,11 +810,11 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     /**
      * Method that calls the attached TurboFilter objects based on the logger and
      * the level.
-     * 
+     *
      * It is used by isYYYEnabled() methods.
-     * 
+     *
      * It returns the typical FilterReply values: ACCEPT, NEUTRAL or DENY.
-     * 
+     *
      * @param level
      * @return the reply given by the TurboFilters
      */
@@ -755,7 +824,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     /**
      * Return the context for this logger.
-     * 
+     *
      * @return the context
      */
     public LoggerContext getLoggerContext() {
@@ -764,7 +833,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     /**
      * Creates a {@link LoggingEventBuilder} of type {@link LogbackLoggingEventBuilder}.
-     * 
+     *
      * @since 1.3
      */
     @Override
@@ -772,6 +841,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     	return new LogbackLoggingEventBuilder(this, level);
     }
 
+    @Override
     public void log(Marker marker, String fqcn, int levelInt, String message, Object[] argArray, Throwable t) {
         Level level = Level.fromLocationAwareLoggerInteger(levelInt);
         filterAndLog_0_Or3Plus(fqcn, marker, level, message, argArray, t);
@@ -779,12 +849,12 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 
     /**
      * Support SLF4J interception during initialization as introduced in SLF4J version 1.7.15
-     * @since 1.1.4 
+     * @since 1.1.4
      * @param slf4jEvent
      */
     public void log(org.slf4j.event.LoggingEvent slf4jEvent) {
         Level level = Level.fromLocationAwareLoggerInteger(slf4jEvent.getLevel().toInt());
-        
+
         // the TurboFilter API is designed to use a single marker which justifies
         // the following admittedly horrible hack
         List<Marker> markers = slf4jEvent.getMarkers();
@@ -799,7 +869,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      * After serialization, the logger instance does not know its LoggerContext.
      * The best we can do here, is to return a logger with the same name
      * returned by org.slf4j.LoggerFactory.
-     * 
+     *
      * @return Logger instance with the same name
      * @throws ObjectStreamException
      */

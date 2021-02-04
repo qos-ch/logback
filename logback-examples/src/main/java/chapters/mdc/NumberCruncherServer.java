@@ -42,6 +42,7 @@ public class NumberCruncherServer extends UnicastRemoteObject implements NumberC
     public NumberCruncherServer() throws RemoteException {
     }
 
+    @Override
     public int[] factor(int number) throws RemoteException {
         // The client's host is an important source of information.
         try {

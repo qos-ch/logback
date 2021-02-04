@@ -19,6 +19,7 @@ import ch.qos.logback.core.LayoutBase;
 
 public class MySampleLayout extends LayoutBase<ILoggingEvent> {
 
+    @Override
     public String doLayout(ILoggingEvent event) {
         StringBuilder sbuf = new StringBuilder(128);
         sbuf.append(event.getTimeStamp() - event.getLoggerContextVO().getBirthTime());

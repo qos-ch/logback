@@ -123,6 +123,7 @@ public class IOPerformance extends Thread {
         System.out.println("------------------------------------------------");
     }
 
+    @Override
     public void run() {
 
         long before = System.nanoTime();
@@ -140,6 +141,7 @@ class OtherIO extends Thread {
     public boolean interrupted = false;
     public int counter = 0;
 
+    @Override
     public void run() {
         long before = System.nanoTime();
         try {

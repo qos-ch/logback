@@ -16,7 +16,7 @@ package ch.qos.logback.core.pattern;
 /**
  * FormattingInfo instances contain the information obtained when parsing
  * formatting modifiers in conversion modifiers.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FormatInfo {
@@ -43,7 +43,7 @@ public class FormatInfo {
     /**
      * This method is used to parse a string such as "5", ".7", "5.7" or "-5.7" into
      * a FormatInfo.
-     * 
+     *
      * @param str A String to convert into a FormatInfo object
      * @return A newly created and appropriately initialized FormatInfo object.
      * @throws IllegalArgumentException
@@ -125,6 +125,7 @@ public class FormatInfo {
         this.leftTruncate = leftTruncate;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -146,6 +147,7 @@ public class FormatInfo {
         return result;
     }
 
+    @Override
     public String toString() {
         return "FormatInfo(" + min + ", " + max + ", " + leftPad + ", " + leftTruncate + ")";
     }

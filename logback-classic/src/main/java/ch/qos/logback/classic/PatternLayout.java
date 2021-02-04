@@ -33,7 +33,7 @@ import ch.qos.logback.core.pattern.parser.Parser;
  * <p>
  * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#PatternLayout
- * 
+ *
  */
 
 public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
@@ -130,10 +130,12 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         this.postCompileProcessor = new EnsureExceptionHandling();
     }
 
+    @Override
     public Map<String, String> getDefaultConverterMap() {
         return defaultConverterMap;
     }
 
+    @Override
     public String doLayout(ILoggingEvent event) {
         if (!isStarted()) {
             return CoreConstants.EMPTY_STRING;

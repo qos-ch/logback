@@ -27,10 +27,10 @@ import ch.qos.logback.core.status.ErrorStatus;
 /**
  * OutputStreamAppender appends events to a {@link OutputStream}. This class
  * provides basic services that other appenders build upon.
- * 
+ *
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#OutputStreamAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
@@ -55,7 +55,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     /**
     * The underlying output stream used by this appender.
-    * 
+    *
     * @return
     */
     public OutputStream getOutputStream() {
@@ -66,6 +66,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * Checks that requires parameters are set and if everything is in order,
      * activates this appender.
      */
+    @Override
     public void start() {
         int errors = 0;
         if (this.encoder == null) {
@@ -105,10 +106,11 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     /**
      * Stop this appender instance. The underlying stream or writer is also
      * closed.
-     * 
+     *
      * <p>
      * Stopped appenders cannot be reused.
      */
+    @Override
     public void stop() {
         lock.lock();
         try {
@@ -153,7 +155,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * <code>OutputStream</code> must be opened by the user and be writable. The
      * <code>OutputStream</code> will be closed when the appender instance is
      * closed.
-     * 
+     *
      * @param outputStream
      *          An already opened OutputStream.
      */
@@ -193,7 +195,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     private void writeBytes(byte[] byteArray) throws IOException {
         if(byteArray == null || byteArray.length == 0)
             return;
-        
+
         lock.lock();
         try {
             this.outputStream.write(byteArray);
@@ -210,7 +212,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * <p>
      * Most subclasses of <code>WriterAppender</code> will need to override this
      * method.
-     * 
+     *
      * @since 0.9.0
      */
     protected void subAppend(E event) {

@@ -15,12 +15,13 @@ package ch.qos.logback.core.db.dialect;
 
 /**
  * The HSQLDB dialect.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class HSQLDBDialect implements SQLDialect {
     public static final String SELECT_CURRVAL = "CALL IDENTITY()";
 
+    @Override
     public String getSelectInsertId() {
         return SELECT_CURRVAL;
     }

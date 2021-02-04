@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 public class Bar {
     Logger logger = LoggerFactory.getLogger(Bar.class);
 
+    @Override
     public String toString() {
         return "test 123";
     }

@@ -23,14 +23,15 @@ import ch.qos.logback.core.util.OptionHelper;
  * This action converts the value attribute of the associated element to an
  * integer and pushes the resulting Integer object on top of the execution
  * context stack.
- * 
+ *
  * <p>It also illustrates usage of Joran's error reporting/handling paradigm.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class LiteralAction extends Action {
     public static final String VALUE_ATR = "value";
 
+    @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) {
         String valueStr = attributes.getValue(VALUE_ATR);
 
@@ -48,6 +49,7 @@ public class LiteralAction extends Action {
         }
     }
 
+    @Override
     public void end(InterpretationContext ic, String name) {
         // Nothing to do here.
         // In general, the end() method of actions associated with elements

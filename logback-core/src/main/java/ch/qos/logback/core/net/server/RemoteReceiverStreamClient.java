@@ -52,10 +52,10 @@ class RemoteReceiverStreamClient extends ContextAwareBase implements RemoteRecei
 
     /**
      * Constructs a new client.
-     * <p> 
+     * <p>
      * This constructor exists primarily to support unit tests where it
      * is inconvenient to have to create a socket for the test.
-     * 
+     *
      * @param id identifier string for the client
      * @param outputStream output stream to which logging Events will be written
      */
@@ -68,6 +68,7 @@ class RemoteReceiverStreamClient extends ContextAwareBase implements RemoteRecei
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setQueue(BlockingQueue<Serializable> queue) {
         this.queue = queue;
     }
@@ -75,6 +76,7 @@ class RemoteReceiverStreamClient extends ContextAwareBase implements RemoteRecei
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean offer(Serializable event) {
         if (queue == null) {
             throw new IllegalStateException("client has no event queue");
@@ -85,6 +87,7 @@ class RemoteReceiverStreamClient extends ContextAwareBase implements RemoteRecei
     /**
      * {@inheritDoc}
      */
+    @Override
     public void close() {
         if (socket == null)
             return;
@@ -94,6 +97,7 @@ class RemoteReceiverStreamClient extends ContextAwareBase implements RemoteRecei
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run() {
         addInfo(clientId + "connected");
 

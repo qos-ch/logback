@@ -18,11 +18,12 @@ import ch.qos.logback.core.LayoutBase;
 
 /**
  * Echos the incoming object adding a line separator character(s) at the end.
- * 
+ *
  * @author Ceki
  */
 public class EchoLayout<E> extends LayoutBase<E> {
 
+    @Override
     public String doLayout(E event) {
         return event + CoreConstants.LINE_SEPARATOR;
     }

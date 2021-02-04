@@ -61,14 +61,17 @@ public class ContextJNDISelector implements ContextSelector {
         defaultContext = context;
     }
 
+    @Override
     public LoggerContext getDefaultLoggerContext() {
         return defaultContext;
     }
 
+    @Override
     public LoggerContext detachLoggerContext(String loggerContextName) {
         return synchronizedContextMap.remove(loggerContextName);
     }
 
+    @Override
     public LoggerContext getLoggerContext() {
         String contextName = null;
         Context ctx = null;
@@ -161,12 +164,14 @@ public class ContextJNDISelector implements ContextSelector {
         StatusPrinter.printInCaseOfErrorsOrWarnings(context);
     }
 
+    @Override
     public List<String> getContextNames() {
         List<String> list = new ArrayList<String>();
         list.addAll(synchronizedContextMap.keySet());
         return list;
     }
 
+    @Override
     public LoggerContext getLoggerContext(String name) {
         return synchronizedContextMap.get(name);
     }

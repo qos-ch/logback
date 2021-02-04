@@ -72,12 +72,12 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
 /**
  * This class is an implementation of tomcat's Valve interface, by extending
  * ValveBase.
- * 
+ *
  * <p>
  * For more information on using LogbackValve please refer to the online
  * documentation on <a
  * href="http://logback.qos.ch/access.html#tomcat">logback-acces and tomcat</a>.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -91,8 +91,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
 
     private long birthTime = System.currentTimeMillis();
-   
-    
+
+
     LogbackLock configurationLock = new LogbackLock();
 
     // Attributes from ContextBase:
@@ -111,7 +111,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     boolean started;
     boolean alreadySetLogbackStatusManager = false;
     private SequenceNumberGenerator sequenceNumberGenerator;
- 
+
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -460,11 +460,13 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     public void addScheduledFuture(ScheduledFuture<?> scheduledFuture) {
         throw new UnsupportedOperationException();
     }
-    
+
+    @Override
     public SequenceNumberGenerator getSequenceNumberGenerator() {
         return sequenceNumberGenerator;
     }
 
+    @Override
     public void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator) {
         this.sequenceNumberGenerator = sequenceNumberGenerator;
     }

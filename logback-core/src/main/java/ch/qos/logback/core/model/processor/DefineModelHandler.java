@@ -14,7 +14,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * Instantiate class for define property value. Get future property name and
  * property definer class from attributes. Some property definer properties
  * could be used. After defining put new property to context.
- * 
+ *
  * @author Aleksey Didik
  */
 public class DefineModelHandler extends ModelHandlerBase {
@@ -27,19 +27,19 @@ public class DefineModelHandler extends ModelHandlerBase {
     public DefineModelHandler(Context context) {
         super(context);
     }
-    
+
     @Override
     protected Class<DefineModel> getSupportedModelClass() {
     	return DefineModel.class;
     }
-    
+
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         definer = null;
         inError = false;
         propertyName = null;
 
-        
+
         DefineModel defineModel = (DefineModel) model;
 
         propertyName = defineModel.getName();
@@ -80,6 +80,7 @@ public class DefineModelHandler extends ModelHandlerBase {
     * Now property definer is initialized by all properties and we can put
     * property value to context
     */
+    @Override
     public void postHandle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         if (inError) {
             return;

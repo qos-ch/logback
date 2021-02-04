@@ -28,7 +28,7 @@ import ch.qos.logback.core.status.ErrorStatus;
 
 /**
  * This converter outputs caller data depending on depth or depth range and marker data.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class CallerDataConverter extends ClassicConverter {
@@ -44,6 +44,7 @@ public class CallerDataConverter extends ClassicConverter {
     final int MAX_ERROR_COUNT = 4;
     int errorCount = 0;
 
+    @Override
     @SuppressWarnings("unchecked")
     public void start() {
         String depthStr = getFirstOption();
@@ -109,6 +110,7 @@ public class CallerDataConverter extends ClassicConverter {
         evaluatorList.add(ee);
     }
 
+    @Override
     public String convert(ILoggingEvent le) {
         StringBuilder buf = new StringBuilder();
 

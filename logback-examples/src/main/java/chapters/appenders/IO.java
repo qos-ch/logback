@@ -134,6 +134,7 @@ public class IO extends Thread {
         System.out.println("------------------------------------------------");
     }
 
+    @Override
     public void run() {
         String msg = msgShort;
 
@@ -157,6 +158,7 @@ class Counter extends Thread {
     public boolean interrupted = false;
     public double counter = 0;
 
+    @Override
     public void run() {
         long before = System.nanoTime();
 

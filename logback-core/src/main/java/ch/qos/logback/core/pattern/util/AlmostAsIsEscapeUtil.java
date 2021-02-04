@@ -18,14 +18,14 @@ import ch.qos.logback.core.rolling.helper.FileNamePattern;
 
 /**
  * This implementation is intended for use in {@link FileNamePattern}.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class AlmostAsIsEscapeUtil extends RestrictedEscapeUtil {
 
     /**
      * Do not perform any character escaping, except for '%', and ')'.
-     * 
+     *
      * <p>
      * Here is the rationale. First, filename patterns do not include escape
      * combinations such as \r or \n. Moreover, characters which have special
@@ -33,11 +33,12 @@ public class AlmostAsIsEscapeUtil extends RestrictedEscapeUtil {
      * names (so me thinks). The left parenthesis character has special meaning
      * only if it is preceded by %. Thus, the only characters that needs escaping
      * are '%' and ')'.
-     * 
+     *
      * <p>
      * Note that this method assumes that it is called after the escape character
      * has been consumed.
      */
+    @Override
     public void escape(String escapeChars, StringBuffer buf, char next, int pointer) {
         super.escape("" + CoreConstants.PERCENT_CHAR + CoreConstants.RIGHT_PARENTHESIS_CHAR, buf, next, pointer);
     }

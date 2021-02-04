@@ -25,15 +25,15 @@ import ch.qos.logback.core.status.StatusManager;
 
 /**
  * A context is the main anchorage point of all logback components.
- * 
+ *
  * @author Ceki Gulcu
- * 
+ *
  */
 public interface Context extends PropertyContainer {
 
     /**
      * Return the StatusManager instance in use.
-     * 
+     *
      * @return the {@link StatusManager} instance in use.
      */
     StatusManager getStatusManager();
@@ -41,14 +41,14 @@ public interface Context extends PropertyContainer {
     /**
      * A Context can act as a store for various objects used by LOGBack
      * components.
-     * 
+     *
      * @return The object stored under 'key'.
      */
     Object getObject(String key);
 
     /**
      * Store an object under 'key'. If no object can be found, null is returned.
-     * 
+     *
      * @param key
      * @param value
      */
@@ -58,13 +58,14 @@ public interface Context extends PropertyContainer {
      * Get all the properties for this context as a Map. Note that the returned
      * cop might be a copy not the original. Thus, modifying the returned Map will
      * have no effect (on the original.)
-     * 
+     *
      * @return
      */
     // public Map<String, String> getPropertyMap();
     /**
      * Get the property of this context.
      */
+    @Override
     String getProperty(String key);
 
     /**
@@ -77,18 +78,19 @@ public interface Context extends PropertyContainer {
      * @return
      * @since 0.9.20
      */
+    @Override
     Map<String, String> getCopyOfPropertyMap();
 
     /**
      * Contexts are named objects.
-     * 
+     *
      * @return the name for this context
      */
     String getName();
 
     /**
      * The name of the context can be set only once.
-     * 
+     *
      * @param name
      */
     void setName(String name);
@@ -96,13 +98,13 @@ public interface Context extends PropertyContainer {
     /**
      * The time at which this context was created, expressed in
      * millisecond elapsed since the epoch (1.1.1970).
-     * 
+     *
      * @return The time as measured when this class was created.
      */
     long getBirthTime();
 
     /**
-     * Object used for synchronization purposes. 
+     * Object used for synchronization purposes.
      * INTENDED FOR INTERNAL USAGE.
      */
     Object getConfigurationLock();
@@ -113,7 +115,7 @@ public interface Context extends PropertyContainer {
      * @return
      * @since 1.1.7
      */
-    // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be submitted from 
+    // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be submitted from
     // within a running task. ThreadPoolExecutor does not have this limitation.
     // This causes tests failures in SocketReceiverTest.testDispatchEventForEnabledLevel and
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
@@ -133,7 +135,7 @@ public interface Context extends PropertyContainer {
      * <p>
      * All components registered via this method will be stopped and removed
      * from the context when the context is reset.
-     * 
+     *
      * @param component the subject component
      */
     void register(LifeCycle component);
@@ -142,6 +144,6 @@ public interface Context extends PropertyContainer {
 
     SequenceNumberGenerator getSequenceNumberGenerator();
     void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator);
-    
+
 
 }

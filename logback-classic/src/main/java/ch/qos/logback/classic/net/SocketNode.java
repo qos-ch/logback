@@ -29,14 +29,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  * Read {@link ILoggingEvent} objects sent from a remote client using Sockets
  * (TCP). These logging events are logged according to local policy, as if they
  * were generated locally.
- * 
+ *
  * <p>
  * For example, the socket node might decide to log events to a local file and
  * also resent them to a second socket node.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
+ *
  * @since 0.8.4
  */
 public class SocketNode implements Runnable {
@@ -64,6 +64,7 @@ public class SocketNode implements Runnable {
     // System.err.flush();
     // }
 
+    @Override
     public void run() {
 
         try {

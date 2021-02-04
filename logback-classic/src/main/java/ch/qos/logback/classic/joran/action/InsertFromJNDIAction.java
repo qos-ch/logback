@@ -26,7 +26,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * Insert an env-entry found in JNDI as a new context variable  
+ * Insert an env-entry found in JNDI as a new context variable
 
  * @author Ceki Gulcu
  *
@@ -36,6 +36,7 @@ public class InsertFromJNDIAction extends Action {
     public static final String ENV_ENTRY_NAME_ATTR = "env-entry-name";
     public static final String AS_ATTR = "as";
 
+    @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) {
 
         int errorCount = 0;
@@ -78,6 +79,7 @@ public class InsertFromJNDIAction extends Action {
 
     }
 
+    @Override
     public void end(InterpretationContext ec, String name) {
     }
 }

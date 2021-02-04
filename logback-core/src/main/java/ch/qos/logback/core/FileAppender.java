@@ -30,10 +30,10 @@ import ch.qos.logback.core.util.FileUtil;
 
 /**
  * FileAppender appends log events to a file.
- * 
+ *
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#FileAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FileAppender<E> extends OutputStreamAppender<E> {
@@ -82,7 +82,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     /**
      * This method is used by derived classes to obtain the raw file property.
      * Regular users should not be calling this method.
-     * 
+     *
      * @return the value of the file property
      */
     final public String rawFileProperty() {
@@ -91,10 +91,10 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
     /**
      * Returns the value of the <b>File</b> property.
-     * 
+     *
      * <p>
      * This method may be overridden by derived classes.
-     * 
+     *
      */
     public String getFile() {
         return fileName;
@@ -105,6 +105,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
      * {@link #openFile} is called with the values of <b>File</b> and
      * <b>Append</b> properties.
      */
+    @Override
     public void start() {
         int errors = 0;
         if (getFile() != null) {
@@ -180,15 +181,15 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
      * <p>
      * Sets and <i>opens</i> the file where the log output will go. The specified
      * file must be writable.
-     * 
+     *
      * <p>
      * If there was already an opened file, then the previous file is closed
      * first.
-     * 
+     *
      * <p>
      * <b>Do not use this method directly. To configure a FileAppender or one of
      * its subclasses, set its properties one by one and then call start().</b>
-     * 
+     *
      * @param file_name
      *          The path to the log file.
      */
@@ -211,7 +212,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
     /**
      * @see #setPrudent(boolean)
-     * 
+     *
      * @return true if in prudent mode
      */
     public boolean isPrudent() {
@@ -221,7 +222,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     /**
      * When prudent is set to true, file appenders from multiple JVMs can safely
      * write to the same file.
-     * 
+     *
      * @param prudent
      */
     public void setPrudent(boolean prudent) {
@@ -231,7 +232,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     public void setAppend(boolean append) {
         this.append = append;
     }
-    
+
     public void setBufferSize(FileSize bufferSize) {
         addInfo("Setting bufferSize to ["+bufferSize.toString()+"]");
         this.bufferSize = bufferSize;

@@ -66,6 +66,7 @@ public class DefaultSocketConnector implements SocketConnector {
     /**
      * Loops until the desired connection is established and returns the resulting connector.
      */
+    @Override
     public Socket call() throws InterruptedException {
         useDefaultsForMissingFields();
         Socket socket = createSocket();
@@ -98,6 +99,7 @@ public class DefaultSocketConnector implements SocketConnector {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setExceptionHandler(ExceptionHandler exceptionHandler) {
         this.exceptionHandler = exceptionHandler;
     }
@@ -105,6 +107,7 @@ public class DefaultSocketConnector implements SocketConnector {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setSocketFactory(SocketFactory socketFactory) {
         this.socketFactory = socketFactory;
     }
@@ -114,6 +117,7 @@ public class DefaultSocketConnector implements SocketConnector {
      */
     private static class ConsoleExceptionHandler implements ExceptionHandler {
 
+        @Override
         public void connectionFailed(SocketConnector connector, Exception ex) {
             System.out.println(ex);
         }

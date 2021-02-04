@@ -21,7 +21,7 @@ import javax.net.SocketFactory;
 /**
  * A {@link Runnable} that (re)connects a socket.
  * <p>
- * An implementation of this interface is responsible for repeatedly 
+ * An implementation of this interface is responsible for repeatedly
  * attempting to create a socket connection to a remote host.
  *
  * @author Carl Harris
@@ -42,6 +42,7 @@ public interface SocketConnector extends Callable<Socket> {
      * @return the connected socket
      * @throws InterruptedException
      */
+    @Override
     Socket call() throws InterruptedException;
 
     /**
@@ -57,7 +58,7 @@ public interface SocketConnector extends Callable<Socket> {
      * <p>
      * If no factory is configured that connector will use the platform's
      * default factory.
-     * 
+     *
      * @param socketFactory the factory to set
      */
     void setSocketFactory(SocketFactory socketFactory);

@@ -51,6 +51,7 @@ public class ServerSocketReceiver extends ReceiverBase {
     /**
      * Starts the server.
      */
+    @Override
     protected boolean shouldStart() {
         try {
             ServerSocket serverSocket = getServerSocketFactory().createServerSocket(getPort(), getBacklog(), getInetAddress());
@@ -84,6 +85,7 @@ public class ServerSocketReceiver extends ReceiverBase {
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void onStop() {
         try {
             if (runner == null)
@@ -135,7 +137,7 @@ public class ServerSocketReceiver extends ReceiverBase {
     /**
      * Gets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
+     * This represents the number of connected clients whose connections
      * have not yet been accepted.
      * @return queue depth
      * @see java.net.ServerSocket
@@ -147,7 +149,7 @@ public class ServerSocketReceiver extends ReceiverBase {
     /**
      * Sets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
+     * This represents the number of connected clients whose connections
      * have not yet been accepted.
      * @param backlog the queue depth to set
      * @see java.net.ServerSocket

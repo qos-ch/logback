@@ -67,7 +67,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     private final TurboFilterList turboFilterList = new TurboFilterList();
     private boolean packagingDataEnabled = DEFAULT_PACKAGING_DATA;
     SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
-    
+
     private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
 
     int resetCount = 0;
@@ -341,11 +341,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     // === end listeners ==============================================
 
+    @Override
     public void start() {
         super.start();
         fireOnStart();
     }
 
+    @Override
     public void stop() {
         reset();
         fireOnStop();
@@ -379,6 +381,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return frameworkPackages;
     }
 
+    @Override
     public SequenceNumberGenerator getSequenceNumberGenerator() {
         return null;
     }

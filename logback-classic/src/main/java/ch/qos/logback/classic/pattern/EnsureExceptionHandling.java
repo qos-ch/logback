@@ -34,9 +34,10 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
      * <p>
      * If for some reason the user wishes to NOT print exceptions, then she can
      * add %nopex to the pattern.
-     * 
-     * 
+     *
+     *
      */
+    @Override
     public void process(Context context, Converter<ILoggingEvent> head) {
         if (head == null) {
             // this should never happen
@@ -58,7 +59,7 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
     /**
      * This method computes whether a chain of converters handles exceptions or
      * not.
-     * 
+     *
      * @param head
      *                The first element of the chain
      * @return true if can handle throwables contained in logging events

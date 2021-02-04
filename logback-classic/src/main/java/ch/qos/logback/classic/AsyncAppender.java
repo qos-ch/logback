@@ -34,11 +34,13 @@ public class AsyncAppender extends AsyncAppenderBase<ILoggingEvent> {
      * @param event
      * @return true if the event is of level TRACE, DEBUG or INFO false otherwise.
      */
+    @Override
     protected boolean isDiscardable(ILoggingEvent event) {
         Level level = event.getLevel();
         return level.toInt() <= Level.INFO_INT;
     }
 
+    @Override
     protected void preprocess(ILoggingEvent eventObject) {
         eventObject.prepareForDeferredProcessing();
         if (includeCallerData)

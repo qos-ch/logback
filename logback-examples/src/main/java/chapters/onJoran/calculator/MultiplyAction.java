@@ -21,14 +21,15 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import java.util.EmptyStackException;
 
 /**
- * 
+ *
  * This action multiplies the two integers at the top of the stack (they are
  * removed) and pushes the result on top the stack.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MultiplyAction extends Action {
 
+    @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) {
         int first = fetchInteger(ic);
         int second = fetchInteger(ic);
@@ -59,6 +60,7 @@ public class MultiplyAction extends Action {
         return result;
     }
 
+    @Override
     public void end(InterpretationContext ic, String name) {
         // Nothing to do here.
     }

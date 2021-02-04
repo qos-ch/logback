@@ -57,8 +57,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     Worker worker = new Worker();
 
     /**
-     * The default maximum queue flush time allowed during appender stop. If the 
-     * worker takes longer than this time it will exit, discarding any remaining 
+     * The default maximum queue flush time allowed during appender stop. If the
+     * worker takes longer than this time it will exit, discarding any remaining
      * items in the queue
      */
     public static final int DEFAULT_MAX_FLUSH_TIME = 1000;
@@ -238,12 +238,13 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
      * See also {@link java.util.concurrent.BlockingQueue#remainingCapacity() BlockingQueue#remainingCapacity()}
      *
      * @return the remaining capacity
-     * 
+     *
      */
     public int getRemainingCapacity() {
         return blockingQueue.remainingCapacity();
     }
 
+    @Override
     public void addAppender(Appender<E> newAppender) {
         if (appenderCount == 0) {
             appenderCount++;
@@ -255,32 +256,39 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
         }
     }
 
+    @Override
     public Iterator<Appender<E>> iteratorForAppenders() {
         return aai.iteratorForAppenders();
     }
 
+    @Override
     public Appender<E> getAppender(String name) {
         return aai.getAppender(name);
     }
 
+    @Override
     public boolean isAttached(Appender<E> eAppender) {
         return aai.isAttached(eAppender);
     }
 
+    @Override
     public void detachAndStopAllAppenders() {
         aai.detachAndStopAllAppenders();
     }
 
+    @Override
     public boolean detachAppender(Appender<E> eAppender) {
         return aai.detachAppender(eAppender);
     }
 
+    @Override
     public boolean detachAppender(String name) {
         return aai.detachAppender(name);
     }
 
     class Worker extends Thread {
 
+        @Override
         public void run() {
             AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
             AppenderAttachableImpl<E> aai = parent.aai;

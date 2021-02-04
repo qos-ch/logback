@@ -17,7 +17,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	private boolean inError = false;
 	private boolean skipped = false;
 	AppenderAttachable<E> appenderAttachable;
-	
+
 	public AppenderModelHandler(Context context) {
 		super(context);
 	}
@@ -27,25 +27,25 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
 		this.appender = null;
 		this.inError = false;
-		
+
 		AppenderModel appenderModel = (AppenderModel) model;
 
 		String appenderName = interpContext.subst(appenderModel.getName());
 		Map<String, AppenderAttachable<E>> appenderRefBag = (Map<String, AppenderAttachable<E>>) interpContext.getObjectMap()
 				.get(JoranConstants.APPENDER_REF_BAG);
-	
+
 		this.appenderAttachable = appenderRefBag.get(appenderName);
-		
+
 		if(this.appenderAttachable == null) {
 			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
 			skipped = true;
 			return;
 		}
-		
+
 		addInfo("Processing appender named ["+appenderName+"]");
-		
+
 		String className = appenderModel.getClassName();
-		
+
 		try {
 			addInfo("About to instantiate appender of type [" + className + "]");
 
@@ -61,7 +61,8 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		}
 	}
 
-	public void postHandle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	@Override
+    public void postHandle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
 		if (inError || skipped) {
 			return;
 		}
@@ -76,7 +77,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
         } else {
         	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
         	appenderAttachable.addAppender(appender);
-        	
+
         	interpContext.popObject();
         }
 	}

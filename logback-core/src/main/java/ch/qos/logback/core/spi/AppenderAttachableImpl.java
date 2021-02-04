@@ -33,6 +33,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      * Attach an appender. If the appender is already in the list in won't be
      * added again.
      */
+    @Override
     public void addAppender(Appender<E> newAppender) {
         if (newAppender == null) {
             throw new IllegalArgumentException("Null argument disallowed");
@@ -60,16 +61,18 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      *
      * @return Iterator An iterator of attached appenders.
      */
+    @Override
     public Iterator<Appender<E>> iteratorForAppenders() {
         return appenderList.iterator();
     }
 
     /**
      * Look for an attached appender named as <code>name</code>.
-     * 
+     *
      * <p> Return the appender with that name if in the list. Return null
      * otherwise.
      */
+    @Override
     public Appender<E> getAppender(String name) {
         if (name == null) {
             return null;
@@ -88,6 +91,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      *
      * @since 1.2
      */
+    @Override
     public boolean isAttached(Appender<E> appender) {
         if (appender == null) {
             return false;
@@ -102,6 +106,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
     /**
      * Remove and processPriorToRemoval all previously attached appenders.
      */
+    @Override
     public void detachAndStopAllAppenders() {
         for (Appender<E> a : appenderList) {
             a.stop();
@@ -115,6 +120,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      * Remove the appender passed as parameter form the list of attached
      * appenders.
      */
+    @Override
     public boolean detachAppender(Appender<E> appender) {
         if (appender == null) {
             return false;
@@ -128,6 +134,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
      * Remove the appender with the name passed as parameter form the list of
      * appenders.
      */
+    @Override
     public boolean detachAppender(String name) {
         if (name == null) {
             return false;

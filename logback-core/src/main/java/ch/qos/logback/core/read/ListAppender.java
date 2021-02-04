@@ -22,6 +22,7 @@ public class ListAppender<E> extends AppenderBase<E> {
 
     public List<E> list = new ArrayList<E>();
 
+    @Override
     protected void append(E e) {
         list.add(e);
     }

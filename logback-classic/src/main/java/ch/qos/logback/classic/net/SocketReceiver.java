@@ -58,6 +58,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
     /**
      * {@inheritDoc}
      */
+    @Override
     protected boolean shouldStart() {
         int errorCount = 0;
         if (port == 0) {
@@ -94,6 +95,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void onStop() {
         if (socket != null) {
             CloseUtil.closeQuietly(socket);
@@ -108,6 +110,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run() {
         try {
             LoggerContext lc = (LoggerContext) getContext();
@@ -184,6 +187,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
     /**
      * {@inheritDoc}
      */
+    @Override
     public void connectionFailed(SocketConnector connector, Exception ex) {
         if (ex instanceof InterruptedException) {
             addInfo("connector interrupted");

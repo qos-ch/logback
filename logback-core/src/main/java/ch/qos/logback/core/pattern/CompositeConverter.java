@@ -17,6 +17,7 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
 
     Converter<E> childConverter;
 
+    @Override
     public String convert(E event) {
         StringBuilder buf = new StringBuilder();
 
@@ -37,6 +38,7 @@ abstract public class CompositeConverter<E> extends DynamicConverter<E> {
         childConverter = child;
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         buf.append("CompositeConverter<");

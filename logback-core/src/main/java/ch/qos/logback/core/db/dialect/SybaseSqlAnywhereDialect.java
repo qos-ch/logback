@@ -15,17 +15,18 @@ package ch.qos.logback.core.db.dialect;
 
 public class SybaseSqlAnywhereDialect implements SQLDialect {
 
-    /** 
-    * The Sybase SQLAnywhere Dialect 
-    * 
-    * Note that the dialect is not needed if your JDBC driver supports 
+    /**
+    * The Sybase SQLAnywhere Dialect
+    *
+    * Note that the dialect is not needed if your JDBC driver supports
     * the getGeneratedKeys method introduced in JDBC 3.0 specification.
-    * 
-    * @author Michael Lynch 
+    *
+    * @author Michael Lynch
     */
 
     public static final String SELECT_CURRVAL = "SELECT @@identity id";
 
+    @Override
     public String getSelectInsertId() {
         return SELECT_CURRVAL;
     }

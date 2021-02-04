@@ -29,6 +29,7 @@ public class RootLoggerAction2 extends Action {
     Logger root;
     boolean inError = false;
 
+    @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) {
         inError = false;
 
@@ -44,6 +45,7 @@ public class RootLoggerAction2 extends Action {
         ec.pushObject(root);
     }
 
+    @Override
     public void end(InterpretationContext ec, String name) {
         if (inError) {
             return;

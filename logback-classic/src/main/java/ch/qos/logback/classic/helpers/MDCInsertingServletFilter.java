@@ -38,10 +38,12 @@ import ch.qos.logback.classic.ClassicConstants;
  */
 public class MDCInsertingServletFilter implements Filter {
 
+    @Override
     public void destroy() {
         // do nothing
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         insertIntoMDC(request);
@@ -82,6 +84,7 @@ public class MDCInsertingServletFilter implements Filter {
         MDC.remove(ClassicConstants.REQUEST_X_FORWARDED_FOR);
     }
 
+    @Override
     public void init(FilterConfig arg0) throws ServletException {
         // do nothing
     }

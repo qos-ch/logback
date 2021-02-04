@@ -46,6 +46,7 @@ public class BindDataSourceToJNDIAction extends Action {
      * Instantiates an a data source and bind it to JNDI
      * Most of the required parameters are placed in the ec.substitutionProperties
      */
+    @Override
     public void begin(InterpretationContext ec, String localName, Attributes attributes) {
         String dsClassName = ec.getProperty(DATA_SOURCE_CLASS);
 
@@ -86,6 +87,7 @@ public class BindDataSourceToJNDIAction extends Action {
         }
     }
 
+    @Override
     public void end(InterpretationContext ec, String name) {
     }
 }

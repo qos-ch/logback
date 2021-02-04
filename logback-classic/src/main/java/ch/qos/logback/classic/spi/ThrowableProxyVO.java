@@ -27,26 +27,32 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     private IThrowableProxy cause;
     private IThrowableProxy[] suppressed;
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public String getClassName() {
         return className;
     }
 
+    @Override
     public int getCommonFrames() {
         return commonFramesCount;
     }
 
+    @Override
     public IThrowableProxy getCause() {
         return cause;
     }
 
+    @Override
     public StackTraceElementProxy[] getStackTraceElementProxyArray() {
         return stackTraceElementProxyArray;
     }
 
+    @Override
     public IThrowableProxy[] getSuppressed() {
         return suppressed;
     }

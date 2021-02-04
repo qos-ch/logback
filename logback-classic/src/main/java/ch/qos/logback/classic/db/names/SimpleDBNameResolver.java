@@ -29,10 +29,12 @@ public class SimpleDBNameResolver implements DBNameResolver {
 
     private String columnNameSuffix = "";
 
+    @Override
     public <N extends Enum<?>> String getTableName(N tableName) {
         return tableNamePrefix + tableName.name().toLowerCase() + tableNameSuffix;
     }
 
+    @Override
     public <N extends Enum<?>> String getColumnName(N columnName) {
         return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
     }

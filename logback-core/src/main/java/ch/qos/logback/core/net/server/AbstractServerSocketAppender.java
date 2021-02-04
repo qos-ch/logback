@@ -27,10 +27,10 @@ import ch.qos.logback.core.net.AbstractSocketAppender;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * 
+ *
  * This is the super class for module specific ServerSocketAppender
  * implementations can derive from.
- * 
+ *
  * @author Carl Harris
  */
 public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
@@ -40,7 +40,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
      */
     public static final int DEFAULT_BACKLOG = 50;
 
-    /** 
+    /**
      * Default queue size used for each client
      */
     public static final int DEFAULT_CLIENT_QUEUE_SIZE = 100;
@@ -97,6 +97,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
         postProcessEvent(event);
         final Serializable serEvent = getPST().transform(event);
         runner.accept(new ClientVisitor<RemoteReceiverClient>() {
+            @Override
             public void visit(RemoteReceiverClient client) {
                 client.offer(serEvent);
             }
@@ -119,10 +120,10 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     /**
      * Gets the factory used to create {@link ServerSocket} objects.
      * <p>
-     * The default implementation delegates to 
+     * The default implementation delegates to
      * {@link ServerSocketFactory#getDefault()}.  Subclasses may override to
      * private a different socket factory implementation.
-     * 
+     *
      * @return socket factory.
      */
     protected ServerSocketFactory getServerSocketFactory() throws Exception {
@@ -159,7 +160,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     /**
      * Gets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
+     * This represents the number of connected clients whose connections
      * have not yet been accepted.
      * @return queue depth
      * @see java.net.ServerSocket
@@ -171,7 +172,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     /**
      * Sets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
+     * This represents the number of connected clients whose connections
      * have not yet been accepted.
      * @param backlog the queue depth to set
      * @see java.net.ServerSocket
@@ -197,7 +198,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     }
 
     /**
-     * Gets the event queue size used for each client connection. 
+     * Gets the event queue size used for each client connection.
      * @return queue size
      */
     public int getClientQueueSize() {

@@ -23,17 +23,18 @@ import ch.qos.logback.core.CoreConstants;
  * This converter is useful to pretend that the converter chain for
  * PatternLayout actually handles exceptions, when in fact it does not.
  * By adding %nopex to the conversion pattern, the user can bypass
- * the automatic addition of %ex conversion pattern for patterns 
+ * the automatic addition of %ex conversion pattern for patterns
  * which do not contain a converter handling exceptions.
- * 
+ *
  * <p>Users can ignore the existence of this converter, unless they
- * want to suppress the automatic printing of exceptions by 
+ * want to suppress the automatic printing of exceptions by
  * {@link PatternLayout}.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NopThrowableInformationConverter extends ThrowableHandlingConverter {
 
+    @Override
     public String convert(ILoggingEvent event) {
         return CoreConstants.EMPTY_STRING;
     }

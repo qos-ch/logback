@@ -29,7 +29,7 @@ import ch.qos.logback.core.spi.ScanException;
 /**
  * This class is a base class for HTMLLayout classes part of
  * other logback modules such as logback-classic and logback-access.
- * 
+ *
  *
  * @author S&eacute;bastien Pennec
  */
@@ -125,7 +125,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
     /**
      * The <b>Title </b> option takes a String value. This option sets the
      * document title of the generated HTML document.
-     * 
+     *
      * <p>
      * Defaults to 'Logback Log Messages'.
      */
@@ -177,6 +177,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         return sbuf.toString();
     }
 
+    @Override
     public String getPresentationHeader() {
         StringBuilder sbuf = new StringBuilder();
         sbuf.append("<hr/>");
@@ -217,6 +218,7 @@ public abstract class HTMLLayoutBase<E> extends LayoutBase<E> {
         sbuf.append(LINE_SEPARATOR);
     }
 
+    @Override
     public String getPresentationFooter() {
         StringBuilder sbuf = new StringBuilder();
         sbuf.append("</table>");

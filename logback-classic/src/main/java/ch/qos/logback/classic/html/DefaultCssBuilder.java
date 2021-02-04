@@ -21,11 +21,12 @@ import ch.qos.logback.core.html.CssBuilder;
  * This class helps the HTMLLayout build the CSS link. It either provides the
  * HTMLLayout with a default css file, or builds the link to an external,
  * user-specified, file.
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class DefaultCssBuilder implements CssBuilder {
 
+    @Override
     public void addCss(StringBuilder sbuf) {
         sbuf.append("<style  type=\"text/css\">");
         sbuf.append(LINE_SEPARATOR);

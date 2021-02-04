@@ -29,13 +29,13 @@ import org.slf4j.Marker;
 /**
  * Send an e-mail when a specific logging event occurs, typically on errors or
  * fatal errors.
- * 
+ *
  * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SMTPAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
+ *
  */
 public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
 
@@ -53,6 +53,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
 
     }
 
+    @Override
     public void start() {
         if (eventEvaluator == null) {
             OnErrorEvaluator onError = new OnErrorEvaluator();
@@ -76,6 +77,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
      * Perform SMTPAppender specific appending actions, mainly adding the event to
      * a cyclic buffer.
      */
+    @Override
     protected void subAppend(CyclicBuffer<ILoggingEvent> cb, ILoggingEvent event) {
         if (includeCallerData) {
             event.getCallerData();
@@ -93,6 +95,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
         }
     }
 
+    @Override
     protected boolean eventMarksEndOfLife(ILoggingEvent eventObject) {
         Marker marker = eventObject.getMarker();
         if (marker == null)
@@ -117,6 +120,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
         return pl;
     }
 
+    @Override
     protected PatternLayout makeNewToPatternLayout(String toPattern) {
         PatternLayout pl = new PatternLayout();
         pl.setPattern(toPattern + "%nopex");
@@ -130,7 +134,7 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
     public void setIncludeCallerData(boolean includeCallerData) {
         this.includeCallerData = includeCallerData;
     }
-    
+
     Future<?> getAsynchronousSendingFuture() {
     	return asynchronousSendingFuture;
     }

@@ -18,6 +18,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class ClassOfCallerConverter extends NamedConverter {
 
+    @Override
     protected String getFullyQualifiedName(ILoggingEvent event) {
 
         StackTraceElement[] cda = event.getCallerData();

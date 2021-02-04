@@ -21,6 +21,7 @@ public final class LiteralConverter<E> extends Converter<E> {
         this.literal = literal;
     }
 
+    @Override
     public String convert(E o) {
         return literal;
     }

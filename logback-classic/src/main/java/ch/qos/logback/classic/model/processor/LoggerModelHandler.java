@@ -23,7 +23,8 @@ public class LoggerModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	protected Class<LoggerModel> getSupportedModelClass() {
+	@Override
+    protected Class<LoggerModel> getSupportedModelClass() {
 		return LoggerModel.class;
 	}
 
@@ -36,7 +37,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
 		String finalLoggerName = intercon.subst(loggerModel.getName());
 
 		LoggerContext loggerContext = (LoggerContext) this.context;
-		
+
 		logger = loggerContext.getLogger(finalLoggerName);
 
 		String levelStr = intercon.subst(loggerModel.getLevel());

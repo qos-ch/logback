@@ -31,14 +31,14 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     Converter<E> head;
     String pattern;
     protected PostCompileProcessor<E> postCompileProcessor;
-    
+
     Map<String, String> instanceConverterMap = new HashMap<String, String>();
     protected boolean outputPatternAsHeader = false;
-    
+
     /**
      * Concrete implementations of this class are responsible for elaborating the
      * mapping between pattern words and converters.
-     * 
+     *
      * @return A map associating pattern words to the names of converter classes
      */
     abstract public Map<String, String> getDefaultConverterMap();
@@ -70,6 +70,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         return effectiveMap;
     }
 
+    @Override
     public void start() {
         if (pattern == null || pattern.length() == 0) {
             addError("Empty or null pattern.");
@@ -126,6 +127,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         this.pattern = pattern;
     }
 
+    @Override
     public String toString() {
         return this.getClass().getName() + "(\"" + getPattern() + "\")";
     }

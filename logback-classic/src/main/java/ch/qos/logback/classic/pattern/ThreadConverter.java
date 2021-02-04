@@ -17,11 +17,12 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the events thread (usually the current thread).
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ThreadConverter extends ClassicConverter {
 
+    @Override
     public String convert(ILoggingEvent event) {
         return event.getThreadName();
     }

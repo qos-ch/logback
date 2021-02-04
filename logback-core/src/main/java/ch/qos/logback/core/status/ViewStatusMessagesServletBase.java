@@ -43,6 +43,7 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
 
     int count;
 
+    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         count = 0;

@@ -104,7 +104,7 @@ public class LoggingEvent implements ILoggingEvent {
     public LoggingEvent() {
     }
 
-    public LoggingEvent(String fqcn, Logger logger, Level level, String message, Throwable throwable, Object[] argArray) {           
+    public LoggingEvent(String fqcn, Logger logger, Level level, String message, Throwable throwable, Object[] argArray) {
         this.fqnOfLoggerClass = fqcn;
         this.loggerName = logger.getName();
         this.loggerContext = logger.getLoggerContext();
@@ -115,27 +115,27 @@ public class LoggingEvent implements ILoggingEvent {
         this.argumentArray = argArray;
 
         timeStamp = System.currentTimeMillis();
-       
+
         if(loggerContext != null) {
             SequenceNumberGenerator sequenceNumberGenerator = loggerContext.getSequenceNumberGenerator();
             if(sequenceNumberGenerator != null)
                 sequenceNumber = sequenceNumberGenerator.nextSequenceNumber();
         }
-       
-        
+
+
         if (throwable == null) {
             throwable = extractThrowableAnRearrangeArguments(argArray);
         }
 
         if (throwable != null) {
             this.throwableProxy = new ThrowableProxy(throwable);
-           
+
             if (loggerContext != null && loggerContext.isPackagingDataEnabled()) {
                 this.throwableProxy.calculatePackagingData();
             }
         }
 
-        
+
     }
 
     private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
@@ -153,14 +153,17 @@ public class LoggingEvent implements ILoggingEvent {
         this.argumentArray = argArray;
     }
 
+    @Override
     public Object[] getArgumentArray() {
         return this.argumentArray;
     }
 
+    @Override
     public Level getLevel() {
         return level;
     }
 
+    @Override
     public String getLoggerName() {
         return loggerName;
     }
@@ -169,6 +172,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.loggerName = loggerName;
     }
 
+    @Override
     public String getThreadName() {
         if (threadName == null) {
             threadName = (Thread.currentThread()).getName();
@@ -191,6 +195,7 @@ public class LoggingEvent implements ILoggingEvent {
      * Returns the throwable information contained within this event. May be
      * <code>null</code> if there is no such information.
      */
+    @Override
     public IThrowableProxy getThrowableProxy() {
         return throwableProxy;
     }
@@ -214,6 +219,7 @@ public class LoggingEvent implements ILoggingEvent {
      * Note that due to performance concerns, this method does NOT extract caller
      * data. It is the responsibility of the caller to extract caller information.
      */
+    @Override
     public void prepareForDeferredProcessing() {
         this.getFormattedMessage();
         this.getThreadName();
@@ -221,6 +227,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.getMDCPropertyMap();
     }
 
+    @Override
     public LoggerContextVO getLoggerContextVO() {
         return loggerContextVO;
     }
@@ -229,6 +236,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.loggerContextVO = loggerContextVO;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
@@ -240,6 +248,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.message = message;
     }
 
+    @Override
     public long getTimeStamp() {
         return timeStamp;
     }
@@ -252,11 +261,11 @@ public class LoggingEvent implements ILoggingEvent {
     public long getSequenceNumber() {
         return sequenceNumber;
     }
-    
+
     public void setSquenceNumber(long sn) {
         sequenceNumber = sn;
     }
-    
+
     public void setLevel(Level level) {
         if (this.level != null) {
             throw new IllegalStateException("The level has been already set for this event.");
@@ -274,6 +283,7 @@ public class LoggingEvent implements ILoggingEvent {
      * information.
      * </p>
      */
+    @Override
     public StackTraceElement[] getCallerData() {
         if (callerDataArray == null) {
             callerDataArray = CallerData
@@ -282,6 +292,7 @@ public class LoggingEvent implements ILoggingEvent {
         return callerDataArray;
     }
 
+    @Override
     public boolean hasCallerData() {
         return (callerDataArray != null);
     }
@@ -290,6 +301,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.callerDataArray = callerDataArray;
     }
 
+    @Override
     public Marker getMarker() {
         return marker;
     }
@@ -306,6 +318,7 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     // lazy computation as suggested in LOGBACK-495
+    @Override
     public String getFormattedMessage() {
         if (formattedMessage != null) {
             return formattedMessage;
@@ -319,6 +332,7 @@ public class LoggingEvent implements ILoggingEvent {
         return formattedMessage;
     }
 
+    @Override
     public Map<String, String> getMDCPropertyMap() {
         // populate mdcPropertyMap if null
         if (mdcPropertyMap == null) {
@@ -354,6 +368,7 @@ public class LoggingEvent implements ILoggingEvent {
      *
      * @deprecated Replaced by [@link #getMDCPropertyMap}
      */
+    @Override
     public Map<String, String> getMdc() {
         return getMDCPropertyMap();
     }

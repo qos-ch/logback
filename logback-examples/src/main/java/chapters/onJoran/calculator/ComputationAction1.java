@@ -20,11 +20,11 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * ComputationAction1 will print the result of the compuration made by 
+ * ComputationAction1 will print the result of the compuration made by
  * children elements but only if the compuration itself is named, that is if the
  * name attribute of the associated computation element is not null. In other
  * words, anonymous computations will not print their result.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ComputationAction1 extends Action {
@@ -35,17 +35,19 @@ public class ComputationAction1 extends Action {
     /**
      * Store the value of the name attribute for future use.
      */
+    @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) {
         nameStr = attributes.getValue(NAME_ATR);
     }
 
     /**
-     * Children elements have been processed. The sesults should be an integer 
+     * Children elements have been processed. The sesults should be an integer
      * placed at the top of the execution stack.
-     * 
-     * This value will be printed on the console but only if the action is 
+     *
+     * This value will be printed on the console but only if the action is
      * named. Anonymous computation will not print their result.
      */
+    @Override
     public void end(InterpretationContext ec, String name) {
         if (OptionHelper.isNullOrEmpty(nameStr)) {
             // nothing to do

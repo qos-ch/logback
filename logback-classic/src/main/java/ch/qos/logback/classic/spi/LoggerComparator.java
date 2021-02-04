@@ -19,6 +19,7 @@ import ch.qos.logback.classic.Logger;
 
 public class LoggerComparator implements Comparator<Logger> {
 
+    @Override
     public int compare(Logger l1, Logger l2) {
         if (l1.getName().equals(l2.getName())) {
             return 0;

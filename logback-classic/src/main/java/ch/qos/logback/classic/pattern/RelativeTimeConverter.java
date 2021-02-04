@@ -20,6 +20,7 @@ public class RelativeTimeConverter extends ClassicConverter {
     long lastTimestamp = -1;
     String timesmapCache = null;
 
+    @Override
     public String convert(ILoggingEvent event) {
         long now = event.getTimeStamp();
 

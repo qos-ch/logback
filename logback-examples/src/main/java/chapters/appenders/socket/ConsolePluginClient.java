@@ -98,6 +98,7 @@ public class ConsolePluginClient {
             super(name);
         }
 
+        @Override
         public void run() {
             for (int i = 0; i < RUN_LENGTH; i++) {
                 if (i % 23 == 0) {

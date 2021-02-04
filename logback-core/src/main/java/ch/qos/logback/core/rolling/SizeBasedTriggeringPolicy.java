@@ -23,12 +23,12 @@ import ch.qos.logback.core.util.InvocationGate;
  * SizeBasedTriggeringPolicy looks at size of the file being currently written
  * to. If it grows bigger than the specified size, the FileAppender using the
  * SizeBasedTriggeringPolicy rolls the file and creates a new one.
- * 
+ *
  * For more information about this policy, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#SizeBasedTriggeringPolicy
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 
@@ -45,6 +45,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 
     InvocationGate invocationGate = new DefaultInvocationGate();
 
+    @Override
     public boolean isTriggeringEvent(final File activeFile, final E event) {
         long now = System.currentTimeMillis();
         if (invocationGate.isTooSoon(now))
@@ -58,7 +59,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         return this.maxFileSize;
     }
 
-    
+
     public void setMaxFileSize(FileSize aMaxFileSize) {
         this.maxFileSize = aMaxFileSize;
     }

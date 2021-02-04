@@ -53,6 +53,7 @@ public class Node {
         this.next = next;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -80,6 +81,7 @@ public class Node {
         }
     }
 
+    @Override
     public String toString() {
         StringBuilder buf = new StringBuilder();
         switch (type) {

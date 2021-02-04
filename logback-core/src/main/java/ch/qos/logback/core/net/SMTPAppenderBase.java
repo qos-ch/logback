@@ -110,6 +110,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     /**
      * Start the appender
      */
+    @Override
     public void start() {
 
         if (cbTracker == null) {
@@ -183,6 +184,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
      * Perform SMTPAppender specific appending actions, delegating some of them to
      * a subclass and checking if the event triggers an e-mail to be sent.
      */
+    @Override
     protected void append(E eventObject) {
 
         if (!checkEntryConditions()) {
@@ -263,6 +265,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         return true;
     }
 
+    @Override
     synchronized public void stop() {
         this.started = false;
     }
@@ -504,7 +507,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     /**
      * Set the "mail.smtp.localhost" property to the value passed as parameter to
      * this method.
-     * 
+     *
      * <p>Useful in case the hostname for the client host is not fully qualified
      * and as a consequence the SMTP server rejects the clients HELO/EHLO command.
      * </p>
@@ -673,6 +676,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
             this.e = e;
         }
 
+        @Override
         public void run() {
             sendBuffer(cyclicBuffer, e);
         }

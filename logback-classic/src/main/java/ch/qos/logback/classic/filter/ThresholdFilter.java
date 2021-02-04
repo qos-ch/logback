@@ -20,13 +20,13 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * Filters events below the threshold level.
- * 
+ *
  * Events with a level below the specified
  * level will be denied, while events with a level
  * equal or above the specified level will trigger a
  * FilterReply.NEUTRAL result, to allow the rest of the
  * filter chain process the event.
- * 
+ *
  * For more information about filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html#thresholdFilter
  *
@@ -53,6 +53,7 @@ public class ThresholdFilter extends Filter<ILoggingEvent> {
         this.level = Level.toLevel(level);
     }
 
+    @Override
     public void start() {
         if (this.level != null) {
             super.start();

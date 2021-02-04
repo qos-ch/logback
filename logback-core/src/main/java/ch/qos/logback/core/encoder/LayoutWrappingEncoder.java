@@ -109,15 +109,18 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         }
     }
 
+    @Override
     public byte[] encode(E event) {
         String txt = layout.doLayout(event);
         return convertToBytes(txt);
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }
 
+    @Override
     public void start() {
         if (immediateFlush != null) {
             if (parent instanceof OutputStreamAppender) {
@@ -132,6 +135,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
         started = true;
     }
 
+    @Override
     public void stop() {
         started = false;
     }
@@ -145,7 +149,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     /**
      * This method allows RollingPolicy implementations to be aware of their
      * containing appender.
-     * 
+     *
      * @param parent
      */
     public void setParent(Appender<?> parent) {

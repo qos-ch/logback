@@ -21,9 +21,9 @@ import ch.qos.logback.core.boolex.EventEvaluatorBase;
 /**
  * Evaluates to true when the logging event passed as parameter has level ERROR
  * or higher.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class OnErrorEvaluator extends EventEvaluatorBase<ILoggingEvent> {
 
@@ -31,6 +31,7 @@ public class OnErrorEvaluator extends EventEvaluatorBase<ILoggingEvent> {
      * Return true if event passed as parameter has level ERROR or higher, returns
      * false otherwise.
      */
+    @Override
     public boolean evaluate(ILoggingEvent event) throws NullPointerException, EvaluationException {
         return event.getLevel().levelInt >= Level.ERROR_INT;
     }

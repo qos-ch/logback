@@ -39,19 +39,24 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
         this.resetJUL = resetJUL;
     }
 
+    @Override
     public boolean isResetResistant() {
         return false;
     }
 
+    @Override
     public void onStart(LoggerContext context) {
     }
 
+    @Override
     public void onReset(LoggerContext context) {
     }
 
+    @Override
     public void onStop(LoggerContext context) {
     }
 
+    @Override
     public void onLevelChange(Logger logger, Level level) {
         propagate(logger, level);
     }
@@ -90,6 +95,7 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
         }
     }
 
+    @Override
     public void start() {
         if (resetJUL) {
             resetJULLevels();
@@ -99,10 +105,12 @@ public class LevelChangePropagator extends ContextAwareBase implements LoggerCon
         isStarted = true;
     }
 
+    @Override
     public void stop() {
         isStarted = false;
     }
 
+    @Override
     public boolean isStarted() {
         return isStarted;
     }

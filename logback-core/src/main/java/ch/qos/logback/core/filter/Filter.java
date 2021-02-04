@@ -19,13 +19,13 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 /**
  * Users should extend this class to implement customized event filtering.
- * 
+ *
  * <p>We suggest that you first try to use the built-in rules before rushing to
  * write your own custom filters.
- * 
+ *
  * <p>For more information about filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
@@ -34,14 +34,17 @@ public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
 
     boolean start = false;
 
+    @Override
     public void start() {
         this.start = true;
     }
 
+    @Override
     public boolean isStarted() {
         return this.start;
     }
 
+    @Override
     public void stop() {
         this.start = false;
     }
@@ -52,7 +55,7 @@ public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
      * filter, if any, will be invoked. If the decision is
      * <code>{@link FilterReply#ACCEPT}</code> then the event will be logged without
      * consulting with other filters in the chain.
-     * 
+     *
      * @param event
      *                The event to decide upon.
      */

@@ -22,12 +22,13 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
  * This action adds the two integers at the top of the stack (they are removed)
- * and pushes the result to the top the stack.  
- * 
+ * and pushes the result to the top the stack.
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class AddAction extends Action {
 
+    @Override
     public void begin(InterpretationContext ic, String name, Attributes attributes) {
         int first = fetchInteger(ic);
         int second = fetchInteger(ic);
@@ -37,7 +38,7 @@ public class AddAction extends Action {
 
     /**
      * Pop the Integer object at the top of the stack.
-     * This code also  illustrates usage of Joran's error handling paradigm. 
+     * This code also  illustrates usage of Joran's error handling paradigm.
      */
     int fetchInteger(InterpretationContext ic) {
         int result = 0;
@@ -60,6 +61,7 @@ public class AddAction extends Action {
         return result;
     }
 
+    @Override
     public void end(InterpretationContext ic, String name) {
         // Nothing to do here.
     }

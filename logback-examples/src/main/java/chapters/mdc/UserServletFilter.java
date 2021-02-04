@@ -29,7 +29,7 @@ import org.slf4j.MDC;
 /**
  * A simple servlet filter that puts the username
  * found either in the Principal.
- * 
+ *
  * <p> The value is removed from the MDC once the request has been
  * fully processed.
  *
@@ -39,9 +39,11 @@ public class UserServletFilter implements Filter {
 
     private final String USER_KEY = "username";
 
+    @Override
     public void destroy() {
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         boolean successfulRegistration = false;
@@ -64,12 +66,13 @@ public class UserServletFilter implements Filter {
         }
     }
 
+    @Override
     public void init(FilterConfig arg0) throws ServletException {
     }
 
     /**
      * Register the user in the MDC under USER_KEY.
-     * 
+     *
      * @param username
      * @return true id the user can be successfully registered
      */

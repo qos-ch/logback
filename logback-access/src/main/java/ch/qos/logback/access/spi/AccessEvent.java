@@ -137,6 +137,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         }
     }
 
+    @Override
     public long getSequenceNumber() {
         return sequenceNumber;
     }
@@ -148,6 +149,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     /**
      * @param threadName The threadName to set.
      */
+    @Override
     public void setThreadName(String threadName) {
         this.threadName = threadName;
     }
@@ -464,6 +466,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return contentLength;
     }
 
+    @Override
     public int getStatusCode() {
         if (statusCode == SENTINEL) {
             if (httpResponse != null) {
@@ -473,10 +476,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return statusCode;
     }
 
+    @Override
     public long getElapsedSeconds() {
         return elapsedTime < 0 ? elapsedTime : elapsedTime / 1000;
     }
 
+    @Override
     public long getElapsedTime() {
         return elapsedTime;
     }
@@ -488,6 +493,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return getTimeStamp() - serverAdapter.getRequestTimestamp();
     }
 
+    @Override
     public String getRequestContent() {
         if (requestContent != null) {
             return requestContent;
@@ -538,6 +544,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return requestContent;
     }
 
+    @Override
     public String getResponseContent() {
         if (responseContent != null) {
             return responseContent;
@@ -561,6 +568,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return responseContent;
     }
 
+    @Override
     public int getLocalPort() {
         if (localPort == SENTINEL) {
             if (httpRequest != null) {
@@ -571,10 +579,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
         return localPort;
     }
 
+    @Override
     public ServerAdapter getServerAdapter() {
         return serverAdapter;
     }
 
+    @Override
     public String getResponseHeader(String key) {
         buildResponseHeaderMap();
         return responseHeaderMap.get(key);
@@ -586,16 +596,19 @@ public class AccessEvent implements Serializable, IAccessEvent {
         }
     }
 
+    @Override
     public Map<String, String> getResponseHeaderMap() {
         buildResponseHeaderMap();
         return responseHeaderMap;
     }
 
+    @Override
     public List<String> getResponseHeaderNameList() {
         buildResponseHeaderMap();
         return new ArrayList<String>(responseHeaderMap.keySet());
     }
 
+    @Override
     public void prepareForDeferredProcessing() {
         getRequestHeaderMap();
         getRequestParameterMap();

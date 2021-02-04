@@ -24,10 +24,10 @@ import ch.qos.logback.core.rolling.helper.*;
 /**
  * When rolling over, <code>FixedWindowRollingPolicy</code> renames files
  * according to a fixed window algorithm.
- * 
+ *
  * For more information about this policy, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#FixedWindowRollingPolicy
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
@@ -51,6 +51,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
         maxIndex = 7;
     }
 
+    @Override
     public void start() {
         util.setContext(this.context);
 
@@ -118,6 +119,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
         return stemOfFileNamePattern.replace("%i", "%d{" + ZIP_ENTRY_DATE_PATTERN + "}");
     }
 
+    @Override
     public void rollover() throws RolloverFailure {
 
         // Inside this method it is guaranteed that the hereto active log file is
@@ -161,6 +163,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
     /**
      * Return the value of the parent's RawFile property.
      */
+    @Override
     public String getActiveFileName() {
         return getParentsRawFileProperty();
     }

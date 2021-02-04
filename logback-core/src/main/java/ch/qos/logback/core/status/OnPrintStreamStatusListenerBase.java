@@ -30,13 +30,13 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
 
     static final long DEFAULT_RETROSPECTIVE = 300;
     long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
-    
+
     /**
      * The prefix to place before each status message
      * @since 1.1.10
      */
     String prefix;
-    
+
     /**
      * The PrintStream used by derived classes
      * @return
@@ -47,11 +47,12 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
         StringBuilder sb = new StringBuilder();
         if(prefix != null)
             sb.append(prefix);
-        
+
         StatusPrinter.buildStr(sb, "", status);
         getPrintStream().print(sb);
     }
 
+    @Override
     public void addStatusEvent(Status status) {
         if (!isStarted)
             return;
@@ -81,9 +82,10 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
     }
 
     /**
-     * Invoking the start method can cause the instance to print status messages created less than 
-     * value of retrospectiveThresold. 
+     * Invoking the start method can cause the instance to print status messages created less than
+     * value of retrospectiveThresold.
      */
+    @Override
     public void start() {
         isStarted = true;
         if (retrospectiveThresold > 0) {
@@ -98,7 +100,7 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
-    
+
     public void setRetrospective(long retrospective) {
         this.retrospectiveThresold = retrospective;
     }
@@ -107,10 +109,12 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
         return retrospectiveThresold;
     }
 
+    @Override
     public void stop() {
         isStarted = false;
     }
 
+    @Override
     public boolean isStarted() {
         return isStarted;
     }

@@ -29,17 +29,17 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * An instance of this object is created with a {@link ServerListener} and
  * an {@link java.util.concurrent.Executor Executor}.  On invocation of the {@code start()} method, it
  * passes itself to the given {@code Executor} and returns immediately.  On
- * invocation of its {@link #run()} method by the {@link Executor} it begins 
+ * invocation of its {@link #run()} method by the {@link Executor} it begins
  * accepting client connections via its {@code ServerListener}.  As each
- * new {@link Client} is accepted, the client is configured with the 
- * runner's LoggingContext and is then passed to the {@code 
- * Executor} for concurrent execution of the client's service loop.     
+ * new {@link Client} is accepted, the client is configured with the
+ * runner's LoggingContext and is then passed to the {@code
+ * Executor} for concurrent execution of the client's service loop.
  * <p>
  * On invocation of the {@link #stop()} method, the runner closes the listener
- * and each of the connected clients (by invoking {@link Client#close()} 
+ * and each of the connected clients (by invoking {@link Client#close()}
  * effectively interrupting any blocked I/O calls and causing these concurrent
  * subtasks to exit gracefully).  This ensures that before the {@link #stop()}
- * method returns (1) all I/O resources have been released and (2) all 
+ * method returns (1) all I/O resources have been released and (2) all
  * of the threads of the {@code Executor} are idle.
  *
  * @author Carl Harris
@@ -72,6 +72,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isRunning() {
         return running;
     }
@@ -83,9 +84,11 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
     /**
      * {@inheritDoc}
      */
+    @Override
     public void stop() throws IOException {
         listener.close();
         accept(new ClientVisitor<T>() {
+            @Override
             public void visit(T client) {
                 client.close();
             }
@@ -95,6 +98,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
     /**
      * {@inheritDoc}
      */
+    @Override
     public void accept(ClientVisitor<T> visitor) {
         Collection<T> clients = copyClients();
         for (T client : clients) {
@@ -124,6 +128,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
     /**
      * {@inheritDoc}
      */
+    @Override
     public void run() {
         setRunning(true);
         try {
@@ -158,7 +163,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
      * <p>
      * A subclass implements this method to perform any necessary configuration
      * of the client object before its {@link Client#run()} method is invoked.
-     * 
+     *
      * @param client the subject client
      * @return {@code true} if configuration was successful; if the return
      *    value is {@code false} the client connection will be dropped
@@ -203,6 +208,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
             this.delegate = client;
         }
 
+        @Override
         public void run() {
             addClient(delegate);
             try {
@@ -212,6 +218,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
             }
         }
 
+        @Override
         public void close() {
             delegate.close();
         }

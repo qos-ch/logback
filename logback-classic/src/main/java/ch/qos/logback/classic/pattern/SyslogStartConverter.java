@@ -35,6 +35,7 @@ public class SyslogStartConverter extends ClassicConverter {
     String localHostName;
     int facility;
 
+    @Override
     public void start() {
         int errorCount = 0;
 
@@ -61,6 +62,7 @@ public class SyslogStartConverter extends ClassicConverter {
         }
     }
 
+    @Override
     public String convert(ILoggingEvent event) {
         StringBuilder sb = new StringBuilder();
 
@@ -79,7 +81,7 @@ public class SyslogStartConverter extends ClassicConverter {
 
     /**
      * This method gets the network name of the machine we are running on.
-     * Returns "UNKNOWN_LOCALHOST" in the unlikely case where the host name 
+     * Returns "UNKNOWN_LOCALHOST" in the unlikely case where the host name
      * cannot be found.
      * @return String the name of the local host
      */
