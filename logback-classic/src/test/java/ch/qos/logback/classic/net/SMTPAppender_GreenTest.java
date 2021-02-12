@@ -140,7 +140,9 @@ public class SMTPAppender_GreenTest {
 
     void waitUntilEmailIsSent() throws InterruptedException {
         loggerContext.getExecutorService().shutdown();
-        loggerContext.getExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
+        while(loggerContext.getExecutorService().isTerminated()){
+            Thread.sleep(200L);
+        }
     }
 
     @Test
