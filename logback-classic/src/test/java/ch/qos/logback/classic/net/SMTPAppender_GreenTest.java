@@ -47,6 +47,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -77,16 +79,26 @@ public class SMTPAppender_GreenTest {
         greenMailServer = new GreenMail(serverSetup);
         greenMailServer.start();
         // give the server a head start
-        if (EnvUtilForTests.isRunningOnSlowJenkins()) {
-            Thread.sleep(2000);
-        } else {
-            Thread.sleep(50);
-        }
+        waitForGreen(serverSetup);
     }
 
     @After
     public void tearDown() throws Exception {
         greenMailServer.stop();
+    }
+
+    void waitForGreen(ServerSetup serverSetup) throws InterruptedException {
+        while (true) {
+            try {
+                Socket socket = new Socket(InetAddress.getByName(serverSetup.getBindAddress()), serverSetup.getPort());
+                if (socket.isConnected()) {
+                    break;
+                }
+            } catch (IOException e) {
+                //ignore exception
+            }
+            Thread.sleep(200L);
+        }
     }
 
     void buildSMTPAppender(String subject, boolean synchronicity) throws Exception {
