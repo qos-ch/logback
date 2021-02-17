@@ -497,17 +497,22 @@ public class JoranConfiguratorTest {
 	
 
 	@Test
-	public void asynAppender() throws JoranException {
-		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender.xml");
+	public void asynAppenderListFirst() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_first.xml");
 		
 		final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
+		StatusPrinter.print(loggerContext);
 		assertNotNull(asyncAppender);
-		StatusPrinter.print(loggerContext);
-		
 		assertTrue(asyncAppender.isStarted());
-		StatusPrinter.print(loggerContext);
+	}
+	
+	@Test
+	public void asynAppenderListAfter() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_after.xml");
 		
-		StatusChecker checker = new StatusChecker(loggerContext);	
-		//checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
+		final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
+		StatusPrinter.print(loggerContext);
+		assertNotNull(asyncAppender);
+		assertTrue(asyncAppender.isStarted());
 	}
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration debug="false">
+
+   <appender name="LIST" class="ch.qos.logback.core.read.ListAppender"/>
+ 
+ 
+   <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+      <queueSize>256</queueSize>
+      <includeCallerData>false</includeCallerData>
+      <appender-ref ref="LIST" />
+    </appender>
+ 
+    <root level="debug">
+        <appender-ref ref="ASYNC" />
+    </root>
+    
+
+</configuration>
