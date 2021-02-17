@@ -3,8 +3,6 @@ package ch.qos.logback.core.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.qos.logback.core.spi.ContextAwareBase;
-
 /**
  * Abstract representation of configuration elements
  * 
