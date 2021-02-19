@@ -180,6 +180,7 @@ public class CoreConstants {
     public static final long MILLIS_IN_ONE_SECOND = 1000;
     public static final long MILLIS_IN_ONE_MINUTE = MILLIS_IN_ONE_SECOND * 60;
     public static final long MILLIS_IN_ONE_HOUR = MILLIS_IN_ONE_MINUTE * 60;
+    public static final long MILLIS_IN_HALF_DAY = MILLIS_IN_ONE_HOUR * 12;
     public static final long MILLIS_IN_ONE_DAY = MILLIS_IN_ONE_HOUR * 24;
     public static final long MILLIS_IN_ONE_WEEK = MILLIS_IN_ONE_DAY * 7;
 

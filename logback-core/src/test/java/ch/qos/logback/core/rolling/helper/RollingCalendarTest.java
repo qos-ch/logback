@@ -80,6 +80,11 @@ public class RollingCalendarTest {
         }
 
         {
+            RollingCalendar rc = new RollingCalendar("yyyy-MM-dd-a");
+            assertEquals(PeriodicityType.HALF_DAY, rc.getPeriodicityType());
+        }
+
+        {
             RollingCalendar rc = new RollingCalendar("yyyy-MM-dd");
             assertEquals(PeriodicityType.TOP_OF_DAY, rc.getPeriodicityType());
         }
