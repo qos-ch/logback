@@ -20,6 +20,8 @@ import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_WEEK;
 import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_DAY;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -42,6 +44,7 @@ public class RollingCalendar extends GregorianCalendar {
 
     // The gmtTimeZone is used only in computeCheckPeriod() method.
     static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
+    private static final Long FIRST_WEEK_OF_1970 = 59958745200000L;
 
     PeriodicityType periodicityType = PeriodicityType.ERRONEOUS;
     String datePattern;
@@ -128,11 +131,17 @@ public class RollingCalendar extends GregorianCalendar {
     }
 
     private boolean collision(long delta) {
+        // date shift does not always end in obvious results (eg. 1970-01-01 is 1st week of 1970, while 1971-01-1 is 53rd)
+        // we need to check for additional cases
+        return collision(new Date(0), delta) ||
+                collision(new Date(FIRST_WEEK_OF_1970), delta);
+    }
+
+    private boolean collision(Date reference, long delta) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(datePattern);
         simpleDateFormat.setTimeZone(GMT_TIMEZONE); // all date formatting done in GMT
-        Date epoch0 = new Date(0);
-        String r0 = simpleDateFormat.format(epoch0);
-        Date epoch12 = new Date(delta);
+        String r0 = simpleDateFormat.format(reference);
+        Date epoch12 = new Date(reference.getTime() + delta);
         String r12 = simpleDateFormat.format(epoch12);
 
         return r0.equals(r12);
