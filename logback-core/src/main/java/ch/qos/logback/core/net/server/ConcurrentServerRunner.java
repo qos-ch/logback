@@ -14,6 +14,7 @@
 package ch.qos.logback.core.net.server;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -128,7 +129,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
         setRunning(true);
         try {
             addInfo("listening on " + listener);
-            while (!Thread.currentThread().isInterrupted()) {
+            while (!Thread.currentThread().isInterrupted() && listener.isListening()) {
                 T client = listener.acceptClient();
                 if (!configureClient(client)) {
                     addError(client + ": connection dropped");

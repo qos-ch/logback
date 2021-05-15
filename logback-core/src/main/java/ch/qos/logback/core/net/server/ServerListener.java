@@ -64,4 +64,17 @@ public interface ServerListener<T extends Client> extends Closeable {
      */
     void close();
 
+    /**
+     * Returns a boolean that checks whether this listener is listening and is able accept clients.<br/>
+     * Should return false when the `close()` method had been called or there is any situation that
+     * prevents it from listening. Otherwise it should always return true, even when initializing. <br/>
+     * False indicates this listener has shut down.
+     *
+     * <p>
+     * It should not throw any exception as this is a simple on/off indicator that should not have any side effects.
+     * </p>
+     *
+     * @return a boolean representing whether this listener can accept clients
+     */
+    boolean isListening();
 }
