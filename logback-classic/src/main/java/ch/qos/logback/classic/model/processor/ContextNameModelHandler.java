@@ -23,6 +23,7 @@ public class ContextNameModelHandler extends ModelHandlerBase {
 		ContextNameModel contextNameModel = (ContextNameModel) model;
 		
 		// TODO: fix me
+		// TODO: figure out what to fix
 		
 		String finalBody = intercon.subst(contextNameModel.getBodyText());
         addInfo("Setting logger context name as [" + finalBody + "]");

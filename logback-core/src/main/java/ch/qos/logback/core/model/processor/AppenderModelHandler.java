@@ -16,7 +16,6 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	Appender<E> appender;
 	private boolean inError = false;
 	private boolean skipped = false;
-	AppenderAttachable<E> appenderAttachable;
 	
 	public AppenderModelHandler(Context context) {
 		super(context);
@@ -31,16 +30,6 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		AppenderModel appenderModel = (AppenderModel) model;
 
 		String appenderName = interpContext.subst(appenderModel.getName());
-		Map<String, AppenderAttachable<E>> appenderRefBag = (Map<String, AppenderAttachable<E>>) interpContext.getObjectMap()
-				.get(JoranConstants.APPENDER_REF_BAG);
-	
-		this.appenderAttachable = appenderRefBag.get(appenderName);
-		
-		if(this.appenderAttachable == null) {
-			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
-			skipped = true;
-			return;
-		}
 		
 		addInfo("Processing appender named ["+appenderName+"]");
 		
@@ -55,18 +44,14 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
             appender.setName(appenderName);
 			interpContext.pushObject(appender);
 		} catch (Exception oops) {
-			inError = true;
 			addError("Could not create an Appender of type [" + className + "].", oops);
 			throw new ModelHandlerException(oops);
 		}
 	}
 
-	public void postHandle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
-		if (inError || skipped) {
-			return;
-		}
-	    if (appender instanceof LifeCycle) {
-            ((LifeCycle) appender).start();
+    public void postHandle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+        if (inError || skipped) {
+            return;
         }
 
         Object o = interpContext.peekObject();
@@ -74,11 +59,33 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
         if (o != appender) {
             addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
         } else {
-        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
-        	appenderAttachable.addAppender(appender);
-        	
-        	interpContext.popObject();
+            interpContext.popObject();
         }
-	}
+    }
 
+    @Override
+    public void postModelProcessing(InterpretationContext context) {
+        if (appender == null) return;
+
+        @SuppressWarnings("unchecked")
+        Map<String, AppenderAttachable<E>> appenderRefBag = (Map<String, AppenderAttachable<E>>) context.getObjectMap()
+                .get(JoranConstants.APPENDER_REF_BAG);
+        String appenderName = appender.getName();
+        AppenderAttachable<E> appenderAttachable = appenderRefBag.get(appenderName);
+
+        if (appenderAttachable == null) {
+            addWarn("Appender named [" + appenderName + "] not referenced. Skipping further processing.");
+            skipped = true;
+            return;
+        }
+
+        addInfo("Attaching appender [" + appender.getName() + "] to " + appenderAttachable);
+        appenderAttachable.addAppender(appender);
+    }
+
+    @Override
+    public void startLifeCycle() {
+	    if (appender == null) return;
+        appender.start();
+    }
 }

@@ -174,7 +174,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] loggerModelClasses = new Class[] { 
 				LoggerModel.class, 
-				RootLoggerModel.class, 
+				RootLoggerModel.class,
 				AppenderRefModel.class };
 
 		@SuppressWarnings("unchecked")
@@ -190,6 +190,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
 
 		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+
 		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)

@@ -2,7 +2,10 @@ package ch.qos.logback.core.model.processor;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -10,6 +13,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
+import ch.qos.logback.core.spi.LifeCycle;
 
 public class DefaultProcessor extends ContextAwareBase {
 
@@ -23,6 +27,8 @@ public class DefaultProcessor extends ContextAwareBase {
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
 	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
 	ModelFiler phaseThreeFilter = new DenyAllModelFilter();
+
+	private final Deque<ModelHandlerBase> handledModels = new ArrayDeque<>();
 
 	public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
 		this.setContext(context);
@@ -54,7 +60,10 @@ public class DefaultProcessor extends ContextAwareBase {
 		traversalLoop(this::traverse, model, getPhaseOneFilter(), "phase 1");
 		traversalLoop(this::traverse, model, getPhaseTwoFilter(), "phase 2");
 		traversalLoop(this::traverse, model, getPhaseThreeFilter(),"phase 3");
-		
+
+		handledModels.forEach(handler -> handler.postModelProcessing(interpretationContext));
+		handledModels.forEach(ModelHandlerBase::startLifeCycle);
+
 		addInfo("End of configuration.");
 		finalObjectPop();
 	}
@@ -120,6 +129,7 @@ public class DefaultProcessor extends ContextAwareBase {
 				handler.handle(interpretationContext, model);
 				handledHere = true;
 				model.markAsHandled();
+				handledModels.add(handler);
 				count++;
 			}
 			// recurse into submodels handled or not
