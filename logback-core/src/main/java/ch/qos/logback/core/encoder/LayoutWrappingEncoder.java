@@ -52,7 +52,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * Set the charset to use when converting the string returned by the layout
      * into bytes.
      * <p/>
-     * By default this propertyhas the value
+     * By default this property has the value
      * <code>null</null> which corresponds to
      * the system's default charset.
      *
