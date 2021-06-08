@@ -15,10 +15,10 @@ package ch.qos.logback.core.encoder;
 
 import java.nio.charset.Charset;
 
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.OutputStreamAppender;
+import ch.qos.logback.core.spi.ContextAware;
 
 public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
@@ -33,8 +33,8 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      */
     private Charset charset;
 
-    Appender<?> parent;
-    Boolean immediateFlush = null;
+    private ContextAware parent;
+    private Boolean immediateFlush;
 
     public Layout<E> getLayout() {
         return layout;
@@ -145,12 +145,11 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     /**
-     * This method allows RollingPolicy implementations to be aware of their
-     * containing appender.
+     * This method allows RollingPolicy implementations to be aware of their parent.
      * 
-     * @param appender
+     * @param parent
      */
-    public void setParent(Appender<?> parent) {
+    public void setParent(ContextAware parent) {
         this.parent = parent;
     }
 }
