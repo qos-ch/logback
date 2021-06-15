@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledFuture;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+import ch.qos.logback.access.spi.ServerAdapter;
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
@@ -260,7 +261,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
 
             getNext().invoke(request, response);
 
-            TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
+            ServerAdapter adapter = createServerAdapter(request, response);
             IAccessEvent accessEvent = new AccessEvent(this, request, response, adapter);
 
             addThreadName(accessEvent);
@@ -274,6 +275,10 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
         } finally {
             request.removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
         }
+    }
+
+    protected ServerAdapter createServerAdapter(Request request, Response response) {
+        return new TomcatServerAdapter(request, response);
     }
 
     private void addThreadName(IAccessEvent accessEvent) {
