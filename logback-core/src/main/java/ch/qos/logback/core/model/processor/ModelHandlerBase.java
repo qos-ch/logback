@@ -42,4 +42,11 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
 		// let specialized handlers override
 	}
 
+	public void postModelProcessing(InterpretationContext context) {
+		// let specialized handlers override
+	}
+
+	public void startLifeCycle() {
+		// let specialized handlers override
+	}
 }
