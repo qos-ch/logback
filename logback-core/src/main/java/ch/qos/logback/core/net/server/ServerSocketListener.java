@@ -61,6 +61,10 @@ public abstract class ServerSocketListener<T extends Client> implements ServerLi
         CloseUtil.closeQuietly(serverSocket);
     }
 
+    public boolean isListening() {
+        return !serverSocket.isClosed();
+    }
+
     /**
      * {@inheritDoc}
      */

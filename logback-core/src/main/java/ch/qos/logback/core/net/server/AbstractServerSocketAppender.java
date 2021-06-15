@@ -19,6 +19,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
 
 import javax.net.ServerSocketFactory;
 
@@ -52,6 +53,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     private String address;
 
     private ServerRunner<RemoteReceiverClient> runner;
+    private Future<?> runnerTask;
 
     @Override
     public void start() {
@@ -63,7 +65,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
             runner = createServerRunner(listener, getContext().getScheduledExecutorService());
             runner.setContext(getContext());
-            getContext().getScheduledExecutorService().execute(runner);
+            runnerTask = getContext().getScheduledExecutorService().submit(runner);
             super.start();
         } catch (Exception ex) {
             addError("server startup error: " + ex, ex);
@@ -83,8 +85,9 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
         if (!isStarted())
             return;
         try {
-            runner.stop();
             super.stop();
+            runnerTask.cancel(true); // the runner should stop waiting for connections
+            runner.stop();
         } catch (IOException ex) {
             addError("server shutdown error: " + ex, ex);
         }
@@ -92,6 +95,8 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
 
     @Override
     protected void append(E event) {
+        if (!isStarted())
+            return;
         if (event == null)
             return;
         postProcessEvent(event);
