@@ -160,6 +160,24 @@ public class ThrowableProxyTest {
         verify(w);
     }
 
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void nestedLoop1() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        new ThrowableProxy(e);
+    }
+
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void nestedLoop2() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        new ThrowableProxy(e);
+    }
+
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
