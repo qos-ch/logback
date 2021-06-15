@@ -51,7 +51,7 @@ looks forward to your contribution. Please follow this process:
    your master! If you do it will make it harder to submit new changes
    later.
 
-6. Submit a pull request to logback from from your commit page on
+6. Submit a pull request to logback from your commit page on
    github.
 
 
