@@ -28,7 +28,7 @@ import ch.qos.logback.core.pattern.parser.Parser;
  * <p>
  * A flexible layout configurable with pattern string. The goal of this class is
  * to {@link #format format} a {@link ILoggingEvent} and return the results in a
- * {#link String}. The format of the result depends on the
+ * {@link String}. The format of the result depends on the
  * <em>conversion pattern</em>.
  * <p>
  * For more information about this layout, please refer to the online manual at
