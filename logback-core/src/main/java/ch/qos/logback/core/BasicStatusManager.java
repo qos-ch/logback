@@ -15,6 +15,7 @@ package ch.qos.logback.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.spi.LogbackLock;
@@ -28,7 +29,7 @@ public class BasicStatusManager implements StatusManager {
     public static final int MAX_HEADER_COUNT = 150;
     public static final int TAIL_SIZE = 150;
 
-    int count = 0;
+    AtomicInteger count = new AtomicInteger();
 
     // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
     final protected List<Status> statusList = new ArrayList<Status>();
@@ -58,7 +59,7 @@ public class BasicStatusManager implements StatusManager {
         // LBCORE-72: fire event before the count check
         fireStatusAddEvent(newStatus);
 
-        count++;
+        count.incrementAndGet();
         if (newStatus.getLevel() > level) {
             level = newStatus.getLevel();
         }
@@ -91,7 +92,7 @@ public class BasicStatusManager implements StatusManager {
 
     public void clear() {
         synchronized (statusListLock) {
-            count = 0;
+            count.set(0);;
             statusList.clear();
             tailBuffer.clear();
         }
@@ -102,7 +103,7 @@ public class BasicStatusManager implements StatusManager {
     }
 
     public int getCount() {
-        return count;
+        return count.intValue();
     }
 
     /**
