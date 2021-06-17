@@ -84,16 +84,24 @@ public class ThrowableProxyUtil {
     private static void recursiveAppend(StringBuilder sb, String prefix, int indent, IThrowableProxy tp) {
         if (tp == null)
             return;
-        subjoinFirstLine(sb, prefix, indent, tp);
-        sb.append(CoreConstants.LINE_SEPARATOR);
-        subjoinSTEPArray(sb, indent, tp);
-        IThrowableProxy[] suppressed = tp.getSuppressed();
-        if (suppressed != null) {
-            for (IThrowableProxy current : suppressed) {
-                recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + SUPPRESSED_EXCEPTION_INDENT, current);
+        if (tp.isCircular()) {
+            indent(sb, 1);
+            sb.append("[CIRCULAR REFERENCE:");
+            subjoinExceptionMessage(sb, tp);
+            sb.append("]");
+            sb.append(CoreConstants.LINE_SEPARATOR);
+        } else {
+            subjoinFirstLine(sb, prefix, indent, tp);
+            sb.append(CoreConstants.LINE_SEPARATOR);
+            subjoinSTEPArray(sb, indent, tp);
+            IThrowableProxy[] suppressed = tp.getSuppressed();
+            if (suppressed != null) {
+                for (IThrowableProxy current : suppressed) {
+                    recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + SUPPRESSED_EXCEPTION_INDENT, current);
+                }
             }
+            recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
         }
-        recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
     }
 
     public static void indent(StringBuilder buf, int indent) {
@@ -179,6 +187,11 @@ public class ThrowableProxyUtil {
     }
 
     private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        //The JVM does not print the message if it is null
+        buf.append(tp.getClassName());
+        String message = tp.getMessage();
+        if (message != null) {
+            buf.append(": ").append(message);
+        }
     }
 }

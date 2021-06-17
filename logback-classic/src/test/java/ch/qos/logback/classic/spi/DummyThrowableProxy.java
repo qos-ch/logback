@@ -21,6 +21,7 @@ public class DummyThrowableProxy implements IThrowableProxy {
     private StackTraceElementProxy[] stackTraceElementProxyArray;
     private IThrowableProxy cause;
     private IThrowableProxy[] suppressed;
+    private boolean circular;
 
     public String getClassName() {
         return className;
@@ -68,5 +69,9 @@ public class DummyThrowableProxy implements IThrowableProxy {
 
     public void setSuppressed(IThrowableProxy[] suppressed) {
         this.suppressed = suppressed;
+    }
+    
+    public boolean isCircular() {
+        return circular;
     }
 }
