@@ -8,10 +8,10 @@
 --
 -- It is intended for PostgreSQL databases.
 
-DROP TABLE    logging_event_property;
-DROP TABLE    logging_event_exception;
-DROP TABLE    logging_event;
-DROP SEQUENCE logging_event_id_seq;
+DROP TABLE IF EXISTS    logging_event_property;
+DROP TABLE IF EXISTS    logging_event_exception;
+DROP TABLE IF EXISTS    logging_event;
+DROP SEQUENCE IF EXISTS logging_event_id_seq;
 
 
 CREATE SEQUENCE logging_event_id_seq MINVALUE 1 START 1;
