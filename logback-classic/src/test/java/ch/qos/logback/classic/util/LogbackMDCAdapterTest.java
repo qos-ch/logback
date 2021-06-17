@@ -13,18 +13,14 @@
  */
 package ch.qos.logback.classic.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Test;
-import ch.qos.logback.core.testUtil.RandomUtil;
+import static org.junit.Assert.*;
 
 public class LogbackMDCAdapterTest {
 
@@ -92,6 +88,13 @@ public class LogbackMDCAdapterTest {
 
         // verify that map0 is the same instance and that value was updated
         assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
+    }
+
+    @Test
+    public void setContextMapHandlesNull() {
+        mdcAdapter.setContextMap(null);
+        // Should not throw first of all and then
+        assertNull(mdcAdapter.getCopyOfContextMap());
     }
 
     // =================================================
