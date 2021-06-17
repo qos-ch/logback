@@ -95,8 +95,8 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     void capTotalSize(Date now) {
         long totalSize = 0;
         long totalRemoved = 0;
-        for (int offset = 0; offset < maxHistory; offset++) {
-            Date date = rc.getEndOfNextNthPeriod(now, -offset);
+        for (int offset = 0; offset > getPeriodOffsetForDeletionTarget(); offset--) {
+            Date date = rc.getEndOfNextNthPeriod(now, offset);
             File[] matchingFileArray = getFilesInPeriod(date);
             descendingSort(matchingFileArray, date);
             for (File f : matchingFileArray) {
