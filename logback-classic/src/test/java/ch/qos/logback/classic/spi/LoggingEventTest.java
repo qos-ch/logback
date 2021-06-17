@@ -60,7 +60,7 @@ public class LoggingEventTest {
         Object[] argArray = new Object[] { 12, 13 };
         LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
         assertNull(event.formattedMessage);
-        assertEquals(message, event.getFormattedMessage());
+        assertEquals("testNoFormatting 12 13", event.getFormattedMessage());
     }
 
     @Test
