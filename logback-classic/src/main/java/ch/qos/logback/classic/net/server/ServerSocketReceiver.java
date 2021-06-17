@@ -18,6 +18,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import javax.net.ServerSocketFactory;
 
@@ -57,7 +58,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
             ServerListener<RemoteAppenderClient> listener = createServerListener(serverSocket);
 
-            runner = createServerRunner(listener, getContext().getScheduledExecutorService());
+            runner = createServerRunner(listener, Executors.newCachedThreadPool());
             runner.setContext(getContext());
             return true;
         } catch (Exception ex) {
