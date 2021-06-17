@@ -50,12 +50,14 @@ public class RollingCalendar extends GregorianCalendar {
         super();
         this.datePattern = datePattern;
         this.periodicityType = computePeriodicityType();
+		
     }
 
     public RollingCalendar(String datePattern, TimeZone tz, Locale locale) {
         super(tz, locale);
         this.datePattern = datePattern;
         this.periodicityType = computePeriodicityType();
+		
     }
 
     public PeriodicityType getPeriodicityType() {
