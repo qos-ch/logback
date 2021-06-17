@@ -22,6 +22,7 @@ module ch.qos.logback.classic {
   exports ch.qos.logback.classic.jul;
   exports ch.qos.logback.classic.layout;
   exports ch.qos.logback.classic.log4j;
+  exports ch.qos.logback.classic.model.processor;
   exports ch.qos.logback.classic.net;
   exports ch.qos.logback.classic.net.server;
   exports ch.qos.logback.classic.pattern;
