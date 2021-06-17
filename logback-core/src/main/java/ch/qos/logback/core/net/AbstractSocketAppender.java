@@ -34,7 +34,7 @@ import ch.qos.logback.core.util.Duration;
 /**
  * An abstract base for module specific {@code SocketAppender}
  * implementations in other logback modules.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * @author Carl Harris
@@ -107,6 +107,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void start() {
         if (isStarted())
             return;
@@ -247,6 +248,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     /**
      * {@inheritDoc}
      */
+    @Override
     public void connectionFailed(SocketConnector connector, Exception ex) {
         if (ex instanceof InterruptedException) {
             addInfo("connector interrupted");
@@ -263,7 +265,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
      * The default implementation creates an instance of {@link DefaultSocketConnector}.
      * A subclass may override to provide a different {@link SocketConnector}
      * implementation.
-     * 
+     *
      * @param address target remote address
      * @param port target remote port
      * @param initialDelay delay before the first connection attempt
@@ -355,7 +357,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
      * event, assuming that there is space available in the deque.  Using a
      * non-zero deque length can improve performance by eliminating delays
      * caused by transient network delays.
-     * 
+     *
      * @param queueSize the deque size to set.
      */
     public void setQueueSize(int queueSize) {
@@ -393,7 +395,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
      * <p>
      * This property is configurable primarily to support instrumentation
      * for unit testing.
-     * 
+     *
      * @param acceptConnectionTimeout timeout value in milliseconds
      */
     void setAcceptConnectionTimeout(int acceptConnectionTimeout) {

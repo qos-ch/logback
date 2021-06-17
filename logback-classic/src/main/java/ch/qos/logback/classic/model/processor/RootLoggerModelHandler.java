@@ -20,7 +20,8 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	protected Class<RootLoggerModel> getSupportedModelClass() {
+	@Override
+    protected Class<RootLoggerModel> getSupportedModelClass() {
 		return RootLoggerModel.class;
 	}
 

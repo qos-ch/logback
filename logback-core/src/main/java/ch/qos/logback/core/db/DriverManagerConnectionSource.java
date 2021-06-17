@@ -24,13 +24,14 @@ import java.sql.SQLException;
  * <p>
  * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
- * 
+ *
  * @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */
 public class DriverManagerConnectionSource extends ConnectionSourceBase {
     private String driverClass = null;
     private String url = null;
 
+    @Override
     public void start() {
         try {
             if (driverClass != null) {
@@ -47,6 +48,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
     /**
      * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
      */
+    @Override
     public Connection getConnection() throws SQLException {
         if (getUser() == null) {
             return DriverManager.getConnection(url);
@@ -57,7 +59,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
 
     /**
      * Returns the url.
-     * 
+     *
      * @return String
      */
     public String getUrl() {
@@ -66,7 +68,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
 
     /**
      * Sets the url.
-     * 
+     *
      * @param url
      *          The url to set
      */
@@ -76,7 +78,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
 
     /**
      * Returns the name of the driver class.
-     * 
+     *
      * @return String
      */
     public String getDriverClass() {
@@ -85,7 +87,7 @@ public class DriverManagerConnectionSource extends ConnectionSourceBase {
 
     /**
      * Sets the driver class.
-     * 
+     *
      * @param driverClass
      *          The driver class to set
      */

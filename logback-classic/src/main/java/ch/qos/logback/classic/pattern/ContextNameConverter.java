@@ -17,7 +17,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Converts an event to the logger context's name.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ContextNameConverter extends ClassicConverter {
@@ -25,6 +25,7 @@ public class ContextNameConverter extends ClassicConverter {
     /**
      * Return the name of the logger context's name.
      */
+    @Override
     public String convert(ILoggingEvent event) {
         return event.getLoggerContextVO().getName();
     }

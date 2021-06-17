@@ -17,6 +17,7 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class SessionIDConverter extends AccessConverter {
 
+  @Override
   public String convert(IAccessEvent accessEvent) {
     return accessEvent.getSessionID();
   }

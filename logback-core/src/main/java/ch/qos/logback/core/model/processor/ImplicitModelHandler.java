@@ -30,7 +30,8 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 		this.beanDescriptionCache = beanDescriptionCache;
 	}
 
-	protected Class<? extends ImplicitModel> getSupportedModelClass() {
+	@Override
+    protected Class<? extends ImplicitModel> getSupportedModelClass() {
 		return ImplicitModel.class;
 	}
 

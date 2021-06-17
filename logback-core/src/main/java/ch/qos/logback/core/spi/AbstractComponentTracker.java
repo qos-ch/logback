@@ -73,6 +73,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
      */
     protected abstract boolean isComponentStale(C c);
 
+    @Override
     public int getComponentCount() {
         return liveMap.size() + lingerersMap.size();
     }
@@ -101,6 +102,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
      * @return {@inheritDoc}
      *
      */
+    @Override
     public synchronized C find(String key) {
         Entry<C> entry = getFromEitherMap(key);
         if (entry == null)
@@ -118,6 +120,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
      * @param timestamp {@inheritDoc}
      * @return {@inheritDoc}
      */
+    @Override
     public synchronized C getOrCreate(String key, long timestamp) {
         Entry<C> entry = getFromEitherMap(key);
         if (entry == null) {
@@ -136,6 +139,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
      *
      * @param key
      */
+    @Override
     public void endOfLife(String key) {
         Entry<C> entry = liveMap.remove(key);
         if (entry == null)
@@ -149,6 +153,7 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
      *
      * @param now
      */
+    @Override
     public synchronized void removeStaleComponents(long now) {
         if (isTooSoonForRemovalIteration(now))
             return;
@@ -185,17 +190,20 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     }
 
     private RemovalPredicator<C> byExcedent = new RemovalPredicator<C>() {
+        @Override
         public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
             return (liveMap.size() > maxComponents);
         }
     };
 
     private RemovalPredicator<C> byTimeout = new RemovalPredicator<C>() {
+        @Override
         public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
             return isEntryStale(entry, timestamp);
         }
     };
     private RemovalPredicator<C> byLingering = new RemovalPredicator<C>() {
+        @Override
         public boolean isSlatedForRemoval(Entry<C> entry, long timestamp) {
             return isEntryDoneLingering(entry, timestamp);
         }
@@ -223,12 +231,14 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
         return ((entry.timestamp + LINGERING_TIMEOUT) < now);
     }
 
+    @Override
     public Set<String> allKeys() {
         HashSet<String> allKeys = new HashSet<String>(liveMap.keySet());
         allKeys.addAll(lingerersMap.keySet());
         return allKeys;
     }
 
+    @Override
     public Collection<C> allComponents() {
         List<C> allComponents = new ArrayList<C>();
         for (Entry<C> e : liveMap.values())

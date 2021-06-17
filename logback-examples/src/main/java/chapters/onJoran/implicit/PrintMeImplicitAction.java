@@ -20,10 +20,10 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
- * 
+ *
  * A rather trivial implicit action which is applicable if an element has a
  * printme attribute set to true.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class PrintMeImplicitAction extends ImplicitModelAction {
@@ -34,10 +34,12 @@ public class PrintMeImplicitAction extends ImplicitModelAction {
         return Boolean.valueOf(printmeStr).booleanValue();
     }
 
+    @Override
     public void begin(InterpretationContext ec, String name, Attributes attributes) {
         System.out.println("Element [" + name + "] asked to be printed.");
     }
 
+    @Override
     public void end(InterpretationContext ec, String name) {
     }
 }

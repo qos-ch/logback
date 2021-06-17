@@ -20,11 +20,13 @@ public class EchoEncoder<E> extends EncoderBase<E> {
     String fileHeader;
     String fileFooter;
 
+    @Override
     public byte[] encode(E event) {
         String val = event + CoreConstants.LINE_SEPARATOR;
         return val.getBytes();
     }
 
+    @Override
     public byte[] footerBytes()  {
         if (fileFooter == null) {
             return null;
@@ -32,6 +34,7 @@ public class EchoEncoder<E> extends EncoderBase<E> {
         return fileFooter.getBytes();
     }
 
+    @Override
     public byte[] headerBytes()  {
         if (fileHeader == null) {
             return null;

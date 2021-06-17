@@ -28,34 +28,42 @@ public class SSLConfigurableSocket implements SSLConfigurable {
         this.delegate = delegate;
     }
 
+    @Override
     public String[] getDefaultProtocols() {
         return delegate.getEnabledProtocols();
     }
 
+    @Override
     public String[] getSupportedProtocols() {
         return delegate.getSupportedProtocols();
     }
 
+    @Override
     public void setEnabledProtocols(String[] protocols) {
         delegate.setEnabledProtocols(protocols);
     }
 
+    @Override
     public String[] getDefaultCipherSuites() {
         return delegate.getEnabledCipherSuites();
     }
 
+    @Override
     public String[] getSupportedCipherSuites() {
         return delegate.getSupportedCipherSuites();
     }
 
+    @Override
     public void setEnabledCipherSuites(String[] suites) {
         delegate.setEnabledCipherSuites(suites);
     }
 
+    @Override
     public void setNeedClientAuth(boolean state) {
         delegate.setNeedClientAuth(state);
     }
 
+    @Override
     public void setWantClientAuth(boolean state) {
         delegate.setWantClientAuth(state);
     }

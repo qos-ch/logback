@@ -17,7 +17,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	protected Class<ConfigurationModel> getSupportedModelClass() {
+	@Override
+    protected Class<ConfigurationModel> getSupportedModelClass() {
 		return ConfigurationModel.class;
 	}
 

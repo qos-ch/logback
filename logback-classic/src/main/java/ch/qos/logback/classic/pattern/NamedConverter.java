@@ -21,13 +21,14 @@ public abstract class NamedConverter extends ClassicConverter {
 
     /**
      * Gets fully qualified name from event.
-     * 
+     *
      * @param event
      *          The LoggingEvent to process, cannot not be null.
      * @return name, must not be null.
      */
     protected abstract String getFullyQualifiedName(final ILoggingEvent event);
 
+    @Override
     public void start() {
         String optStr = getFirstOption();
         if (optStr != null) {
@@ -44,6 +45,7 @@ public abstract class NamedConverter extends ClassicConverter {
         }
     }
 
+    @Override
     public String convert(ILoggingEvent event) {
         String fqn = getFullyQualifiedName(event);
 

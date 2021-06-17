@@ -18,7 +18,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 /**
  * SizeBasedTriggeringPolicy looks at size of the file being
  * currently written to.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
@@ -26,14 +26,17 @@ abstract public class TriggeringPolicyBase<E> extends ContextAwareBase implement
 
     private boolean start;
 
+    @Override
     public void start() {
         start = true;
     }
 
+    @Override
     public void stop() {
         start = false;
     }
 
+    @Override
     public boolean isStarted() {
         return start;
     }

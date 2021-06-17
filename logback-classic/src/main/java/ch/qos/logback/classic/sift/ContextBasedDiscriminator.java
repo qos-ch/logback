@@ -19,12 +19,12 @@ import ch.qos.logback.core.sift.AbstractDiscriminator;
 /**
  * This discriminator returns the value context to which this event is attached
  * to. If the said value is null, then a default value is returned.
- * 
+ *
  * <p>
  * Both Key and the DefaultValue are user specified properties.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class ContextBasedDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
@@ -34,6 +34,7 @@ public class ContextBasedDiscriminator extends AbstractDiscriminator<ILoggingEve
     /**
      * Return the name of the current context name as found in the logging event.
      */
+    @Override
     public String getDiscriminatingValue(ILoggingEvent event) {
         String contextName = event.getLoggerContextVO().getName();
 
@@ -44,6 +45,7 @@ public class ContextBasedDiscriminator extends AbstractDiscriminator<ILoggingEve
         }
     }
 
+    @Override
     public String getKey() {
         return KEY;
     }
@@ -63,7 +65,7 @@ public class ContextBasedDiscriminator extends AbstractDiscriminator<ILoggingEve
     /**
      * The default context name in case the context name is not set for the
      * current logging event.
-     * 
+     *
      * @param defaultValue
      */
     public void setDefaultValue(String defaultValue) {

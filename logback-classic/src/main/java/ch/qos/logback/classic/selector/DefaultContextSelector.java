@@ -26,22 +26,27 @@ public class DefaultContextSelector implements ContextSelector {
         this.defaultLoggerContext = context;
     }
 
+    @Override
     public LoggerContext getLoggerContext() {
         return getDefaultLoggerContext();
     }
 
+    @Override
     public LoggerContext getDefaultLoggerContext() {
         return defaultLoggerContext;
     }
 
+    @Override
     public LoggerContext detachLoggerContext(String loggerContextName) {
         return defaultLoggerContext;
     }
 
+    @Override
     public List<String> getContextNames() {
         return Arrays.asList(defaultLoggerContext.getName());
     }
 
+    @Override
     public LoggerContext getLoggerContext(String name) {
         if (defaultLoggerContext.getName().equals(name)) {
             return defaultLoggerContext;

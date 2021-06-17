@@ -40,6 +40,7 @@ abstract public class StatusBase implements Status {
         this.date = System.currentTimeMillis();
     }
 
+    @Override
     public synchronized void add(Status child) {
         if (child == null) {
             throw new NullPointerException("Null values are not valid Status.");
@@ -50,10 +51,12 @@ abstract public class StatusBase implements Status {
         childrenList.add(child);
     }
 
+    @Override
     public synchronized boolean hasChildren() {
         return ((childrenList != null) && (childrenList.size() > 0));
     }
 
+    @Override
     public synchronized Iterator<Status> iterator() {
         if (childrenList != null) {
             return childrenList.iterator();
@@ -62,6 +65,7 @@ abstract public class StatusBase implements Status {
         }
     }
 
+    @Override
     public synchronized boolean remove(Status statusToRemove) {
         if (childrenList == null) {
             return false;
@@ -70,6 +74,7 @@ abstract public class StatusBase implements Status {
         return childrenList.remove(statusToRemove);
     }
 
+    @Override
     public int getLevel() {
         return level;
     }
@@ -78,6 +83,7 @@ abstract public class StatusBase implements Status {
     // cyclic status arrangements are like to cause deadlocks
     // when this method is called from different thread on
     // different status objects lying on the same cycle
+    @Override
     public synchronized int getEffectiveLevel() {
         int result = level;
         int effLevel;
@@ -94,18 +100,22 @@ abstract public class StatusBase implements Status {
         return result;
     }
 
+    @Override
     public String getMessage() {
         return message;
     }
 
+    @Override
     public Object getOrigin() {
         return origin;
     }
 
+    @Override
     public Throwable getThrowable() {
         return throwable;
     }
 
+    @Override
     public Long getDate() {
         return date;
     }

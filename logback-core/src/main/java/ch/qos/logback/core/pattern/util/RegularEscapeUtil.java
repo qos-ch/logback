@@ -15,11 +15,12 @@ package ch.qos.logback.core.pattern.util;
 
 /**
  * This implementation is intended for use in PatternLayout.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class RegularEscapeUtil implements IEscapeUtil {
 
+    @Override
     public void escape(String escapeChars, StringBuffer buf, char next, int pointer) {
         if (escapeChars.indexOf(next) >= 0) {
             buf.append(next);

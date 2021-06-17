@@ -50,6 +50,7 @@ public class SSLServerSocketReceiver extends ServerSocketReceiver implements SSL
      * @return SSL configuration; if no SSL configuration was provided
      *    a default configuration is returned
      */
+    @Override
     public SSLConfiguration getSsl() {
         if (ssl == null) {
             ssl = new SSLConfiguration();
@@ -61,6 +62,7 @@ public class SSLServerSocketReceiver extends ServerSocketReceiver implements SSL
      * Gets the server's SSL configuration.
      * @param ssl the SSL configuration to set.
      */
+    @Override
     public void setSsl(SSLConfiguration ssl) {
         this.ssl = ssl;
     }

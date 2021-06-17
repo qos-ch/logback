@@ -22,6 +22,7 @@ public final class PropertyConverter extends ClassicConverter {
 
     String key;
 
+    @Override
     public void start() {
         String optStr = getFirstOption();
         if (optStr != null) {
@@ -30,6 +31,7 @@ public final class PropertyConverter extends ClassicConverter {
         }
     }
 
+    @Override
     public String convert(ILoggingEvent event) {
         if (key == null) {
             return "Property_HAS_NO_KEY";

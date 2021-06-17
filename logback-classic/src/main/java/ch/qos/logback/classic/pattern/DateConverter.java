@@ -26,6 +26,7 @@ public class DateConverter extends ClassicConverter {
     String timestampStrCache = null;
     CachingDateFormatter cachingDateFormatter = null;
 
+    @Override
     public void start() {
 
         String datePattern = getFirstOption();
@@ -56,6 +57,7 @@ public class DateConverter extends ClassicConverter {
         }
     }
 
+    @Override
     public String convert(ILoggingEvent le) {
         long timestamp = le.getTimeStamp();
         return cachingDateFormatter.format(timestamp);

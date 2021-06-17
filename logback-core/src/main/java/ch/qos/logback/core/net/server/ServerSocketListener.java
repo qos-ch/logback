@@ -40,6 +40,7 @@ public abstract class ServerSocketListener<T extends Client> implements ServerLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public T acceptClient() throws IOException {
         Socket socket = serverSocket.accept();
         return createClient(socketAddressToString(socket.getRemoteSocketAddress()), socket);
@@ -57,6 +58,7 @@ public abstract class ServerSocketListener<T extends Client> implements ServerLi
     /**
      * {@inheritDoc}
      */
+    @Override
     public void close() {
         CloseUtil.closeQuietly(serverSocket);
     }

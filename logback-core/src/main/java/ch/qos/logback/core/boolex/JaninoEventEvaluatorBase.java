@@ -20,9 +20,9 @@ import org.codehaus.janino.ScriptEvaluator;
 
 /**
  * Abstract class which sets the groundwork for janino based evaluations.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  * @param <E> event type
  */
 abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> {
@@ -61,6 +61,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
         }
     }
 
+    @Override
     public boolean evaluate(E event) throws EvaluationException {
         if (!isStarted()) {
             throw new IllegalStateException("Evaluator [" + name + "] was called in stopped state");

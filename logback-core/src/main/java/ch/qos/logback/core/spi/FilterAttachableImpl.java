@@ -21,7 +21,7 @@ import ch.qos.logback.core.util.COWArrayList;
 
 /**
  * Implementation of FilterAttachable.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
@@ -32,6 +32,7 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
     /**
      * Add a filter to end of the filter list.
      */
+    @Override
     public void addFilter(Filter<E> newFilter) {
         filterList.add(newFilter);
     }
@@ -39,6 +40,7 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
     /**
      * Clear the filter chain
      */
+    @Override
     public void clearAllFilters() {
         filterList.clear();
     }
@@ -48,6 +50,7 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
      * ACCEPT or DENY, then that value is returned. If all of the filters return
      * NEUTRAL, then NEUTRAL is returned.
      */
+    @Override
     public FilterReply getFilterChainDecision(E event) {
 
         final Filter<E>[] filterArrray = filterList.asTypedArray();
@@ -64,6 +67,7 @@ final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
         return FilterReply.NEUTRAL;
     }
 
+    @Override
     public List<Filter<E>> getCopyOfAttachedFiltersList() {
         return new ArrayList<Filter<E>>(filterList);
     }

@@ -19,13 +19,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the event's marker value(s).
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class MarkerConverter extends ClassicConverter {
 
     private static String EMPTY = "";
 
+    @Override
     public String convert(ILoggingEvent le) {
         Marker marker = le.getMarker();
         if (marker == null) {

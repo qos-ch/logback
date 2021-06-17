@@ -20,10 +20,12 @@ public class DefaultDiscriminator<E> extends AbstractDiscriminator<E> {
 
     static public final String DEFAULT = "default";
 
+    @Override
     public String getDiscriminatingValue(E e) {
         return DEFAULT;
     }
 
+    @Override
     public String getKey() {
         return DEFAULT;
     }

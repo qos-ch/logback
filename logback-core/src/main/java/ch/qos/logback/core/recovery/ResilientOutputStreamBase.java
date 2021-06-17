@@ -40,6 +40,7 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
         return (recoveryCoordinator != null && !presumedClean);
     }
 
+    @Override
     public void write(byte b[], int off, int len) {
         if (isPresumedInError()) {
             if (!recoveryCoordinator.isTooSoon()) {

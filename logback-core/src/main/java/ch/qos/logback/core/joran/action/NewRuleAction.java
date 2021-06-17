@@ -25,6 +25,7 @@ public class NewRuleAction extends Action {
     /**
      * Instantiates an layout of the given class and sets its name.
      */
+    @Override
     public void begin(InterpretationContext ec, String localName, Attributes attributes) {
         // Let us forget about previous errors (in this object)
         inError = false;
@@ -60,6 +61,7 @@ public class NewRuleAction extends Action {
      * Once the children elements are also parsed, now is the time to activate the
      * appender options.
      */
+    @Override
     public void end(InterpretationContext ec, String n) {
     }
 

@@ -22,10 +22,10 @@ import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * 
- * This is the base class for module specific ServerSocketAppender 
+ *
+ * This is the base class for module specific ServerSocketAppender
  * implementations.
- * 
+ *
  * @author Carl Harris
  */
 public abstract class SSLServerSocketAppenderBase<E> extends AbstractServerSocketAppender<E> implements SSLComponent {
@@ -59,6 +59,7 @@ public abstract class SSLServerSocketAppenderBase<E> extends AbstractServerSocke
      * @return SSL configuration; if no configuration has been set, a
      *    default configuration is returned
      */
+    @Override
     public SSLConfiguration getSsl() {
         if (ssl == null) {
             ssl = new SSLConfiguration();
@@ -70,6 +71,7 @@ public abstract class SSLServerSocketAppenderBase<E> extends AbstractServerSocke
      * Sets the SSL configuration.
      * @param ssl the SSL configuration to set
      */
+    @Override
     public void setSsl(SSLConfiguration ssl) {
         this.ssl = ssl;
     }

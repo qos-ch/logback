@@ -25,10 +25,10 @@ import ch.qos.logback.core.db.dialect.SQLDialectCode;
  * {@link ConnectionSource} that obtains the Connection in the recommended JDBC
  * manner based on a {@link javax.sql.DataSource DataSource}.
  * <p>
- * 
+ *
  * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
- * 
+ *
  * @author Ray DeCampo
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -52,6 +52,7 @@ public class DataSourceConnectionSource extends ConnectionSourceBase {
     /**
      * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
      */
+    @Override
     public Connection getConnection() throws SQLException {
         if (dataSource == null) {
             addError("WARNING: No data source specified");

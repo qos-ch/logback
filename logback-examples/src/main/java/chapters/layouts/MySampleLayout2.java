@@ -30,6 +30,7 @@ public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
         this.printThreadName = printThreadName;
     }
 
+    @Override
     public String doLayout(ILoggingEvent event) {
         StringBuilder sbuf = new StringBuilder(128);
         if (prefix != null) {

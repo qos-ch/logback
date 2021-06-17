@@ -30,11 +30,11 @@ import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * 
+ *
  * An InterpretationContext contains the contextual state of a Joran parsing
  * session. {@link Action} objects depend on this context to exchange and store
  * information.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class InterpretationContext extends ContextAwareBase implements PropertyContainer {
@@ -71,7 +71,8 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		return defaultNestedComponentRegistry;
 	}
 
-	public Map<String, String> getCopyOfPropertyMap() {
+	@Override
+    public Map<String, String> getCopyOfPropertyMap() {
 		return new HashMap<String, String>(propertiesMap);
 	}
 
@@ -121,7 +122,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	}
 
 	/**
-	 * 
+	 *
 	 * @return whether the objectStack is empty or not
 	 */
 	public boolean isObjectStackEmpty() {
@@ -167,7 +168,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	public Model popModel() {
 		return modelStack.pop();
 	}
-	
+
 	public Stack<Model> getCopyOfModelStack() {
 		Stack<Model> copy = new Stack<>();
 		copy.addAll(modelStack);
@@ -210,7 +211,8 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	 * If a key is found in propertiesMap then return it. Otherwise, delegate to the
 	 * context.
 	 */
-	public String getProperty(String key) {
+	@Override
+    public String getProperty(String key) {
 		String v = propertiesMap.get(key);
 		if (v != null) {
 			return v;

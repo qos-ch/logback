@@ -32,9 +32,9 @@ import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 /**
  * A servlet filter that puts the environment dependent LoggerContext in a
  * ThreadLocal variable, removing it after the request is processed.
- * 
+ *
  * <p>To use it, add the following lines to a web.xml file
- *  
+ *
  * <filter>
  *   <filter-name>LoggerContextFilter</filter-name>
  *   <filter-class>
@@ -45,15 +45,17 @@ import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
  *   <filter-name>LoggerContextFilter</filter-name>
  *   <url-pattern>/*</url-pattern>
  * </filter-mapping>
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class LoggerContextFilter implements Filter {
 
+    @Override
     public void destroy() {
         // do nothing
     }
 
+    @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
@@ -74,6 +76,7 @@ public class LoggerContextFilter implements Filter {
         }
     }
 
+    @Override
     public void init(FilterConfig arg0) throws ServletException {
         // do nothing
     }

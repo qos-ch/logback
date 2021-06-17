@@ -31,20 +31,20 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 /**
  * A simple {@link SocketNode} based server.
- * 
+ *
  * <pre>
  *      &lt;b&gt;Usage:&lt;/b&gt; java ch.qos.logback.classic.net.SimpleSocketServer port configFile
  * </pre>
- * 
+ *
  * where <em>port</em> is a port number where the server listens and
  * <em>configFile</em> is an xml configuration file fed to
  * {@link JoranConfigurator}.
- * 
+ *
  * </pre>
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
+ *
  * @since 0.8.4
  */
 public class SimpleSocketServer extends Thread {
@@ -85,6 +85,7 @@ public class SimpleSocketServer extends Thread {
         this.port = port;
     }
 
+    @Override
     public void run() {
 
         final String oldThreadName = Thread.currentThread().getName();

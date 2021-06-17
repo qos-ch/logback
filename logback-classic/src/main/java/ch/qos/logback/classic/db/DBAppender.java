@@ -107,6 +107,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
         }
     }
 
+    @Override
     protected void secondarySubAppend(ILoggingEvent event, Connection connection, long eventId) throws Throwable {
         Map<String, String> mergedMap = mergePropertyMaps(event);
         insertProperties(mergedMap, connection, eventId);

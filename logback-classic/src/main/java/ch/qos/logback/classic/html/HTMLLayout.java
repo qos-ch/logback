@@ -26,14 +26,14 @@ import ch.qos.logback.core.pattern.Converter;
 import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
- * 
+ *
  * HTMLLayout outputs events in an HTML table. <p> The content of the table
  * columns are specified using a conversion pattern. See
  * {@link ch.qos.logback.classic.PatternLayout} for documentation on the
  * available patterns. <p> For more information about this layout, please refer
  * to the online manual at
  * http://logback.qos.ch/manual/layouts.html#ClassicHTMLLayout
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
@@ -48,7 +48,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
 
     /**
      * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
-     * 
+     *
      * The default pattern just produces the application supplied message.
      */
     public HTMLLayout() {
@@ -69,10 +69,12 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
         }
     }
 
+    @Override
     protected Map<String, String> getDefaultConverterMap() {
         return PatternLayout.defaultConverterMap;
     }
 
+    @Override
     public String doLayout(ILoggingEvent event) {
         StringBuilder buf = new StringBuilder();
         startNewTableIfLimitReached(buf);

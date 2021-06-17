@@ -95,6 +95,7 @@ public final class Level implements java.io.Serializable {
     /**
      * Returns the string representation of this Level.
      */
+    @Override
     public String toString() {
         return levelStr;
     }
@@ -202,7 +203,7 @@ public final class Level implements java.io.Serializable {
 
         // see LOGBACK-1288
         final String in = sArg.trim();
-        
+
         if (in.equalsIgnoreCase("ALL")) {
             return Level.ALL;
         }

@@ -68,10 +68,12 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
     /**
      * Does this connection support the JDBC Connection.getGeneratedKeys method?
      */
+    @Override
     public final boolean supportsGetGeneratedKeys() {
         return supportsGetGeneratedKeys;
     }
 
+    @Override
     public final SQLDialectCode getSQLDialectCode() {
         return dialectCode;
     }
@@ -109,18 +111,22 @@ public abstract class ConnectionSourceBase extends ContextAwareBase implements C
     /**
      * Does this connection support batch updates?
      */
+    @Override
     public final boolean supportsBatchUpdates() {
         return supportsBatchUpdates;
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }
 
+    @Override
     public void start() {
         started = true;
     }
 
+    @Override
     public void stop() {
         started = false;
     }

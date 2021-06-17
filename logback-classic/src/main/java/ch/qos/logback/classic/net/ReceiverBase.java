@@ -29,6 +29,7 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void start() {
         if (isStarted())
             return;
@@ -44,6 +45,7 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void stop() {
         if (!isStarted())
             return;
@@ -58,6 +60,7 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
     /**
      * {@inheritDoc}
      */
+    @Override
     public final boolean isStarted() {
         return started;
     }
@@ -66,9 +69,9 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
      * Determines whether this receiver should start.
      * <p>
      * Subclasses will implement this method to do any subclass-specific
-     * validation.  The subclass's {@link #getRunnableTask()} method will be 
+     * validation.  The subclass's {@link #getRunnableTask()} method will be
      * invoked (and the task returned will be submitted to the executor)
-     * if and only if this method returns {@code true} 
+     * if and only if this method returns {@code true}
      * @return flag indicating whether this receiver should start
      */
     protected abstract boolean shouldStart();

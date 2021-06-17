@@ -28,6 +28,7 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
         super(fileNamePattern, rc);
     }
 
+    @Override
     protected File[] getFilesInPeriod(Date dateOfPeriodToClean) {
         File archive0 = new File(fileNamePattern.convertMultipleArguments(dateOfPeriodToClean, 0));
         File parentDir = getParentDir(archive0);
@@ -67,7 +68,7 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
                 Matcher matcher = pattern.matcher(f1.getName());
                 if (matcher.find()) {
                     String indexAsStr = matcher.group(1);
-                    
+
                     if (indexAsStr == null || indexAsStr.isEmpty())
                         return NO_INDEX; // unreachable code?
                     else

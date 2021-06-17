@@ -23,7 +23,7 @@ import ch.qos.logback.core.status.WarnStatus;
 /**
  * A helper class that implements ContextAware methods. Use this class to
  * implement the ContextAware interface by composition.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ContextAwareImpl implements ContextAware {
@@ -42,6 +42,7 @@ public class ContextAwareImpl implements ContextAware {
         return origin;
     }
 
+    @Override
     public void setContext(Context context) {
         if (this.context == null) {
             this.context = context;
@@ -50,6 +51,7 @@ public class ContextAwareImpl implements ContextAware {
         }
     }
 
+    @Override
     public Context getContext() {
         return this.context;
     }
@@ -61,6 +63,7 @@ public class ContextAwareImpl implements ContextAware {
         return context.getStatusManager();
     }
 
+    @Override
     public void addStatus(Status status) {
         if (context == null) {
             if (noContextWarning++ == 0) {
@@ -74,26 +77,32 @@ public class ContextAwareImpl implements ContextAware {
         }
     }
 
+    @Override
     public void addInfo(String msg) {
         addStatus(new InfoStatus(msg, getOrigin()));
     }
 
+    @Override
     public void addInfo(String msg, Throwable ex) {
         addStatus(new InfoStatus(msg, getOrigin(), ex));
     }
 
+    @Override
     public void addWarn(String msg) {
         addStatus(new WarnStatus(msg, getOrigin()));
     }
 
+    @Override
     public void addWarn(String msg, Throwable ex) {
         addStatus(new WarnStatus(msg, getOrigin(), ex));
     }
 
+    @Override
     public void addError(String msg) {
         addStatus(new ErrorStatus(msg, getOrigin()));
     }
 
+    @Override
     public void addError(String msg, Throwable ex) {
         addStatus(new ErrorStatus(msg, getOrigin(), ex));
     }

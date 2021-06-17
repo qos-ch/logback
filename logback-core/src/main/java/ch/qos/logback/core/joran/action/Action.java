@@ -69,6 +69,7 @@ public abstract class Action extends ContextAwareBase {
      */
     public abstract void end(InterpretationContext intercon, String name) throws ActionException;
 
+    @Override
     public String toString() {
         return this.getClass().getName();
     }
@@ -97,11 +98,11 @@ public abstract class Action extends ContextAwareBase {
     protected String getLineColStr(InterpretationContext intercon) {
         return "line: " + getLineNumber(intercon) + ", column: " + getColumnNumber(intercon);
     }
-    
+
     protected String atLine(InterpretationContext intercon) {
     	return "At line "+intercon.getLineNumber();
     }
-    
+
     protected String nearLine(InterpretationContext intercon) {
     	return "Near line "+intercon.getLineNumber();
     }

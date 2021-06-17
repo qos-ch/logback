@@ -24,7 +24,7 @@ import ch.qos.logback.core.util.DatePatternToRegexUtil;
 
 /**
  * Returns a date formatted by SimpleDateFormatter.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTypedConverter {
@@ -43,6 +43,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
     // determines the rolling period
     private boolean primary = true;
 
+    @Override
     public void start() {
         this.datePattern = getFirstOption();
         if (this.datePattern == null) {
@@ -71,6 +72,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
         return cdf.format(date.getTime());
     }
 
+    @Override
     public String convert(Object o) {
         if (o == null) {
             throw new IllegalArgumentException("Null argument forbidden");
@@ -92,6 +94,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
         return timeZone;
     }
 
+    @Override
     public boolean isApplicable(Object o) {
         return (o instanceof Date);
     }

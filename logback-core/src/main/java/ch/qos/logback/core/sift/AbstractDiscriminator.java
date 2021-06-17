@@ -25,14 +25,17 @@ public abstract class AbstractDiscriminator<E> extends ContextAwareBase implemen
 
     protected boolean started;
 
+    @Override
     public void start() {
         started = true;
     }
 
+    @Override
     public void stop() {
         started = false;
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }

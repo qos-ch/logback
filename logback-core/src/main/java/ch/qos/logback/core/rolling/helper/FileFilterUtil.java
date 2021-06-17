@@ -24,6 +24,7 @@ public class FileFilterUtil {
 
     public static void sortFileArrayByName(File[] fileArray) {
         Arrays.sort(fileArray, new Comparator<File>() {
+            @Override
             public int compare(File o1, File o2) {
                 String o1Name = o1.getName();
                 String o2Name = o2.getName();
@@ -34,6 +35,7 @@ public class FileFilterUtil {
 
     public static void reverseSortFileArrayByName(File[] fileArray) {
         Arrays.sort(fileArray, new Comparator<File>() {
+            @Override
             public int compare(File o1, File o2) {
                 String o1Name = o1.getName();
                 String o2Name = o2.getName();
@@ -66,7 +68,7 @@ public class FileFilterUtil {
     /**
      * Return the set of files matching the stemRegex as found in 'directory'. A
      * stemRegex does not contain any slash characters or any folder separators.
-     * 
+     *
      * @param file
      * @param stemRegex
      * @return
@@ -80,6 +82,7 @@ public class FileFilterUtil {
             return new File[0];
         }
         return file.listFiles(new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 return name.matches(stemRegex);
             }

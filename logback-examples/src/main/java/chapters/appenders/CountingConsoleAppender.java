@@ -44,6 +44,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
         super.start();
     }
 
+    @Override
     public void append(ILoggingEvent event) {
         if (counter >= limit) {
             return;

@@ -17,10 +17,10 @@ import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
 /**
- * CyclicBufferAppender stores events in a cyclic buffer of user-specified size. As the 
+ * CyclicBufferAppender stores events in a cyclic buffer of user-specified size. As the
  * name suggests, if the size of the buffer is N, only the latest N events are available.
- * 
- * 
+ *
+ *
  * @author Ceki Gulcu
  */
 public class CyclicBufferAppender<E> extends AppenderBase<E> {
@@ -28,11 +28,13 @@ public class CyclicBufferAppender<E> extends AppenderBase<E> {
     CyclicBuffer<E> cb;
     int maxSize = 512;
 
+    @Override
     public void start() {
         cb = new CyclicBuffer<E>(maxSize);
         super.start();
     }
 
+    @Override
     public void stop() {
         cb = null;
         super.stop();

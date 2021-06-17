@@ -42,13 +42,13 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A class that provides access to logback components via JMX.
- * 
+ *
  * <p>Since this class implements {@link JMXConfiguratorMBean} it has to be
  * named as JMXConfigurator}.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
+ *
  * Contributor: Sebastian Davids See http://bugzilla.qos.ch/show_bug.cgi?id=35
  */
 public class JMXConfigurator extends ContextAwareBase implements JMXConfiguratorMBean, LoggerContextListener {
@@ -94,12 +94,14 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         return false;
     }
 
+    @Override
     public void reloadDefaultConfiguration() throws JoranException {
         ContextInitializer ci = new ContextInitializer(loggerContext);
         URL url = ci.findURLOfDefaultConfigurationFile(true);
         reloadByURL(url);
     }
 
+    @Override
     public void reloadByFileName(String fileName) throws JoranException, FileNotFoundException {
         File f = new File(fileName);
         if (f.exists() && f.isFile()) {
@@ -128,6 +130,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         sm.remove(statusListener);
     }
 
+    @Override
     public void reloadByURL(URL url) throws JoranException {
         StatusListenerAsList statusListenerAsList = new StatusListenerAsList();
 
@@ -153,6 +156,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         }
     }
 
+    @Override
     public void setLoggerLevel(String loggerName, String levelStr) {
         if (loggerName == null) {
             return;
@@ -177,6 +181,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         }
     }
 
+    @Override
     public String getLoggerLevel(String loggerName) {
         if (loggerName == null) {
             return EMPTY;
@@ -193,6 +198,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         }
     }
 
+    @Override
     public String getLoggerEffectiveLevel(String loggerName) {
         if (loggerName == null) {
             return EMPTY;
@@ -209,6 +215,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         }
     }
 
+    @Override
     public List<String> getLoggerList() {
         LoggerContext lc = (LoggerContext) context;
         List<String> strList = new ArrayList<String>();
@@ -220,6 +227,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         return strList;
     }
 
+    @Override
     public List<String> getStatuses() {
         List<String> list = new ArrayList<String>();
         Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
@@ -233,6 +241,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
      * When the associated LoggerContext is stopped, this configurator must be
      * unregistered
      */
+    @Override
     public void onStop(LoggerContext context) {
         if (!started) {
             addInfo("onStop() method called on a stopped JMXActivator [" + objectNameAsString + "]");
@@ -254,19 +263,22 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         stop();
     }
 
+    @Override
     public void onLevelChange(Logger logger, Level level) {
         // nothing to do
     }
 
+    @Override
     public void onReset(LoggerContext context) {
         addInfo("onReset() method called JMXActivator [" + objectNameAsString + "]");
     }
 
     /**
      * JMXConfigurator should not be removed subsequent to a LoggerContext reset.
-     * 
+     *
      * @return
      */
+    @Override
     public boolean isResetResistant() {
         return true;
     }
@@ -282,6 +294,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         clearFields();
     }
 
+    @Override
     public void onStart(LoggerContext context) {
         // nop
     }

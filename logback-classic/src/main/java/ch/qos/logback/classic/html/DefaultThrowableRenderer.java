@@ -24,6 +24,7 @@ public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEven
 
     static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
 
+    @Override
     public void render(StringBuilder sbuf, ILoggingEvent event) {
         IThrowableProxy tp = event.getThrowableProxy();
         sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");

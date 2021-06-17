@@ -36,13 +36,14 @@ import javax.sql.DataSource;
  * <p>
  * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
- * 
+ *
  * @author <a href="mailto:rdecampo@twcny.rr.com">Ray DeCampo</a>
  */
 public class JNDIConnectionSource extends ConnectionSourceBase {
     private String jndiLocation = null;
     private DataSource dataSource = null;
 
+    @Override
     public void start() {
         if (jndiLocation == null) {
             addError("No JNDI location specified for JNDIConnectionSource.");
@@ -50,6 +51,7 @@ public class JNDIConnectionSource extends ConnectionSourceBase {
         discoverConnectionProperties();
     }
 
+    @Override
     public Connection getConnection() throws SQLException {
         Connection conn = null;
         try {
@@ -73,7 +75,7 @@ public class JNDIConnectionSource extends ConnectionSourceBase {
 
     /**
      * Returns the jndiLocation.
-     * 
+     *
      * @return String
      */
     public String getJndiLocation() {
@@ -82,7 +84,7 @@ public class JNDIConnectionSource extends ConnectionSourceBase {
 
     /**
      * Sets the jndiLocation.
-     * 
+     *
      * @param jndiLocation
      *          The jndiLocation to set
      */

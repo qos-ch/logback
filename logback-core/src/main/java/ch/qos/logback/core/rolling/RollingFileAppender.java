@@ -30,7 +30,7 @@ import ch.qos.logback.core.util.ContextUtil;
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
  * log files depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
- * 
+ *
  * <p>
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#RollingFileAppender
@@ -48,6 +48,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     static private String COLLISION_URL = CODES_URL + "#rfa_collision";
     static private String RFA_LATE_FILE_URL = CODES_URL + "#rfa_file_after";
 
+    @Override
     public void start() {
         if (triggeringPolicy == null) {
             addWarn("No TriggeringPolicy was set for the RollingFileAppender named " + getName());
@@ -147,7 +148,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     @Override
     public void stop() {
         super.stop();
-        
+
         if (rollingPolicy != null)
             rollingPolicy.stop();
         if (triggeringPolicy != null)
