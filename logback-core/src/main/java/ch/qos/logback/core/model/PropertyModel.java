@@ -8,6 +8,7 @@ public class PropertyModel extends NamedModel {
 
     String file;
     String resource;
+    String optional;
 
 
     public String getValue() {
@@ -42,4 +43,11 @@ public class PropertyModel extends NamedModel {
         this.resource = resource;
     }
 
+    public String getOptional() {
+        return optional;
+    }
+
+    public void setOptional(String optional) {
+        this.optional = optional;
+    }
 }
