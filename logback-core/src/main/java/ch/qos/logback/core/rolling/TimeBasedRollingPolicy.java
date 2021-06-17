@@ -166,7 +166,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         String elapsedPeriodStem = FileFilterUtil.afterLastSlash(elapsedPeriodsFileName);
 
         if (compressionMode == CompressionMode.NONE) {
-            if (getParentsRawFileProperty() != null) {
+           if (getParentsRawFileProperty() != null && !new File(elapsedPeriodsFileName).exists()) {
                 renameUtil.rename(getParentsRawFileProperty(), elapsedPeriodsFileName);
             } // else { nothing to do if CompressionMode == NONE and parentsRawFileProperty == null }
         } else {
