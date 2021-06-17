@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,9 +52,21 @@ public class Compare {
         return new BufferedReader(new InputStreamReader(zis));
     }
 
+    static BufferedReader bz2FileToBufferedReader(String file) throws IOException {
+        FileInputStream fis = new FileInputStream(file);
+        BZip2CompressorInputStream gzis = new BZip2CompressorInputStream(fis);
+        return new BufferedReader(new InputStreamReader(gzis));
+    }
+
     public static boolean gzFileCompare(String file1, String file2) throws IOException {
         BufferedReader in1 = gzFileToBufferedReader(file1);
         BufferedReader in2 = gzFileToBufferedReader(file2);
+        return bufferCompare(in1, in2, file1, file2);
+    }
+
+    public static boolean bz2FileCompare(String file1, String file2) throws IOException {
+        BufferedReader in1 = bz2FileToBufferedReader(file1);
+        BufferedReader in2 = bz2FileToBufferedReader(file2);
         return bufferCompare(in1, in2, file1, file2);
     }
 
@@ -102,9 +116,9 @@ public class Compare {
     }
 
     /**
-     * 
+     *
      * Prints file on the console.
-     * 
+     *
      */
     private static void outputFile(String file) throws FileNotFoundException, IOException {
         BufferedReader in1 = null;
