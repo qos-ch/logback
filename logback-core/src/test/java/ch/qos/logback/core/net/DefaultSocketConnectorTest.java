@@ -60,7 +60,7 @@ public class DefaultSocketConnectorTest {
     @Before
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
-        connector = new DefaultSocketConnector(serverSocket.getInetAddress(), serverSocket.getLocalPort(), 0, RETRY_DELAY);
+        connector = new DefaultSocketConnector(serverSocket.getInetAddress().getHostAddress(), serverSocket.getLocalPort(), 0, RETRY_DELAY);
         connector.setExceptionHandler(exceptionHandler);
     }
 

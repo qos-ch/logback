@@ -22,6 +22,8 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
+import javax.mail.internet.InternetAddress;
+
 /**
  * SyslogOutputStream is a wrapper around the {@link DatagramSocket} class so that it
  * behaves like an {@link OutputStream}.
@@ -34,13 +36,13 @@ public class SyslogOutputStream extends OutputStream {
      */
     private static final int MAX_LEN = 1024;
 
-    private InetAddress address;
+    private String syslogHost;
     private DatagramSocket ds;
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     final private int port;
 
     public SyslogOutputStream(String syslogHost, int port) throws UnknownHostException, SocketException {
-        this.address = InetAddress.getByName(syslogHost);
+        this.syslogHost = syslogHost;
         this.port = port;
         this.ds = new DatagramSocket();
     }
@@ -51,7 +53,7 @@ public class SyslogOutputStream extends OutputStream {
 
     public void flush() throws IOException {
         byte[] bytes = baos.toByteArray();
-        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);
+        DatagramPacket packet = new DatagramPacket(bytes, bytes.length, InetAddress.getByName(syslogHost), port);
 
         // clean up for next round
         if (baos.size() > MAX_LEN) {
@@ -72,7 +74,7 @@ public class SyslogOutputStream extends OutputStream {
     }
 
     public void close() {
-        address = null;
+        syslogHost = null;
         ds = null;
     }
 

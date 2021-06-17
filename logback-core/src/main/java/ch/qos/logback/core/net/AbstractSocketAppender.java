@@ -76,7 +76,6 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
 
     private String remoteHost;
     private int port = DEFAULT_PORT;
-    private InetAddress address;
     private Duration reconnectionDelay = new Duration(DEFAULT_RECONNECTION_DELAY);
     private int queueSize = DEFAULT_QUEUE_SIZE;
     private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
@@ -131,19 +130,12 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
             addError("Queue size must be greater than zero");
         }
 
-        if (errorCount == 0) {
-            try {
-                address = InetAddress.getByName(remoteHost);
-            } catch (UnknownHostException ex) {
-                addError("unknown host: " + remoteHost);
-                errorCount++;
-            }
-        }
+
 
         if (errorCount == 0) {
             deque = queueFactory.newLinkedBlockingDeque(queueSize);
             peerId = "remote peer " + remoteHost + ":" + port + ": ";
-            connector = createConnector(address, port, 0, reconnectionDelay.getMilliseconds());
+            connector = createConnector(remoteHost, port, 0, reconnectionDelay.getMilliseconds());
             task = getContext().getScheduledExecutorService().submit(new Runnable() {
                 @Override
                 public void run() {
@@ -216,7 +208,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
         return objectWriter;
     }
 
-    private SocketConnector createConnector(InetAddress address, int port, int initialDelay, long retryDelay) {
+    private SocketConnector createConnector(String address, int port, int initialDelay, long retryDelay) {
         SocketConnector connector = newConnector(address, port, initialDelay, retryDelay);
         connector.setExceptionHandler(this);
         connector.setSocketFactory(getSocketFactory());
@@ -270,7 +262,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
      * @param retryDelay delay before a reconnection attempt
      * @return socket connector
      */
-    protected SocketConnector newConnector(InetAddress address, int port, long initialDelay, long retryDelay) {
+    protected SocketConnector newConnector(String address, int port, long initialDelay, long retryDelay) {
         return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
     }
 

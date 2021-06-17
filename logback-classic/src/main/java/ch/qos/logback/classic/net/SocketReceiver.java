@@ -46,7 +46,6 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
     private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
     private String remoteHost;
-    private InetAddress address;
     private int port;
     private int reconnectionDelay;
     private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
@@ -77,7 +76,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
 
         if (errorCount == 0) {
             try {
-                address = InetAddress.getByName(remoteHost);
+                InetAddress.getByName(remoteHost);
             } catch (UnknownHostException ex) {
                 addError("unknown host: " + remoteHost);
                 errorCount++;
@@ -112,7 +111,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
         try {
             LoggerContext lc = (LoggerContext) getContext();
             while (!Thread.currentThread().isInterrupted()) {
-                SocketConnector connector = createConnector(address, port, 0, reconnectionDelay);
+                SocketConnector connector = createConnector(remoteHost, port, 0, reconnectionDelay);
                 connectorTask = activateConnector(connector);
                 if (connectorTask == null) {
                     break;
@@ -128,7 +127,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
         addInfo("shutting down");
     }
 
-    private SocketConnector createConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
+    private SocketConnector createConnector(String address, int port, int initialDelay, int retryDelay) {
         SocketConnector connector = newConnector(address, port, initialDelay, retryDelay);
         connector.setExceptionHandler(this);
         connector.setSocketFactory(getSocketFactory());
@@ -194,7 +193,7 @@ public class SocketReceiver extends ReceiverBase implements Runnable, SocketConn
         }
     }
 
-    protected SocketConnector newConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
+    protected SocketConnector newConnector(String address, int port, int initialDelay, int retryDelay) {
         return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
     }
 
