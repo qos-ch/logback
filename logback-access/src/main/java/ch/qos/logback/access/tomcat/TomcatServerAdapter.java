@@ -38,7 +38,14 @@ public class TomcatServerAdapter implements ServerAdapter {
 
     @Override
     public long getContentLength() {
-        return response.getContentLength();
+        // Don't need to flush since trigger for log message is after the
+        // response has been committed
+        long length = response.getBytesWritten(false);
+        if (length <= 0) {
+            // in case the bytesWritten is not present, fallback to ContentLength header.
+            return response.getContentLength();
+        }
+        return length;
     }
 
     @Override
