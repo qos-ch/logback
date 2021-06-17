@@ -311,7 +311,8 @@ public class LoggingEvent implements ILoggingEvent {
             return formattedMessage;
         }
         if (argumentArray != null) {
-            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+            // throwable had been extracted in constructor
+            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray, null).getMessage();
         } else {
             formattedMessage = message;
         }
