@@ -159,7 +159,7 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
 
         StackTraceElement caller = extractFirstCaller(callerDataArray);
 
-        stmt.setString(CALLER_FILENAME_INDEX, caller.getFileName());
+        stmt.setString(CALLER_FILENAME_INDEX, caller.getFileName() == null ? EMPTY_CALLER_DATA.getFileName() : caller.getFileName());
         stmt.setString(CALLER_CLASS_INDEX, caller.getClassName());
         stmt.setString(CALLER_METHOD_INDEX, caller.getMethodName());
         stmt.setString(CALLER_LINE_INDEX, Integer.toString(caller.getLineNumber()));
