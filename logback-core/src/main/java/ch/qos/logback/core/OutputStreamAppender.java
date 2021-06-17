@@ -222,13 +222,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             if (event instanceof DeferredProcessingAware) {
                 ((DeferredProcessingAware) event).prepareForDeferredProcessing();
             }
-            // the synchronization prevents the OutputStream from being closed while we
-            // are writing. It also prevents multiple threads from entering the same
-            // converter. Converters assume that they are in a synchronized block.
-            // lock.lock();
-
-            byte[] byteArray = this.encoder.encode(event);
-            writeBytes(byteArray);
+            writeOut(event);
 
         } catch (IOException ioe) {
             // as soon as an exception occurs, move to non-started state
