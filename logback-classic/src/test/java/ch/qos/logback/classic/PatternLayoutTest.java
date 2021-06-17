@@ -153,6 +153,20 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     }
 
     @Test
+    public void mdcWithNestedDefaultValue() {
+        String pattern = "%thread %mdc{ndef:-%msg} %mdc{abc:-%mdc{xyz:-%mdc{bar:-%date{ISO8601}}}}";
+        pl.setPattern(OptionHelper.substVars(pattern, lc));
+        pl.start();
+        MDC.put("bar", "bar");
+        try {
+            String val = pl.doLayout(getEventObject());
+            assertEquals("main Some message bar", val);
+        } finally {
+            MDC.remove("bar");
+        }
+    }
+
+    @Test
     public void contextNameTest() {
         pl.setPattern("%contextName");
         lc.setName("aValue");
