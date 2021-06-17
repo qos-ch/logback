@@ -159,6 +159,24 @@ public class ThrowableProxyConverterTest {
     }
 
     @Test
+    public void skipSelectedLinesButAlwaysIncludeExceptionOrigin() throws Exception {
+        String nameOfContainingMethod = "skipSelectedLine";
+        // given
+        final Throwable t = TestHelper.makeNestedException(0);
+        t.printStackTrace(pw);
+        final ILoggingEvent le = createLoggingEvent(t);
+        tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod, "makeNestedException"));
+        tpc.start();
+
+        // when
+        final String result = tpc.convert(le);
+
+        // then
+        assertThat(result).doesNotContain(nameOfContainingMethod).contains("makeNestedException");
+
+    }
+
+    @Test
     public void skipSelectedLine() throws Exception {
         String nameOfContainingMethod = "skipSelectedLine";
         // given
