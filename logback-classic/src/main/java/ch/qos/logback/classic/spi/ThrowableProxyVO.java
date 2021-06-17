@@ -22,6 +22,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
 
     private String className;
     private String message;
+    private String string;
     private int commonFramesCount;
     private StackTraceElementProxy[] stackTraceElementProxyArray;
     private IThrowableProxy cause;
@@ -29,6 +30,10 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getString() {
+        return string;
     }
 
     public String getClassName() {
@@ -97,6 +102,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         ThrowableProxyVO tpvo = new ThrowableProxyVO();
         tpvo.className = throwableProxy.getClassName();
         tpvo.message = throwableProxy.getMessage();
+        tpvo.string = throwableProxy.getString();
         tpvo.commonFramesCount = throwableProxy.getCommonFrames();
         tpvo.stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
         IThrowableProxy cause = throwableProxy.getCause();

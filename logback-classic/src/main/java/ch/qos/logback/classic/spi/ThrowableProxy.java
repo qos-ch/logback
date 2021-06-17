@@ -23,6 +23,7 @@ public class ThrowableProxy implements IThrowableProxy {
     private Throwable throwable;
     private String className;
     private String message;
+    private String string;
     // package-private because of ThrowableProxyUtil
     StackTraceElementProxy[] stackTraceElementProxyArray;
     // package-private because of ThrowableProxyUtil
@@ -52,6 +53,10 @@ public class ThrowableProxy implements IThrowableProxy {
         this.throwable = throwable;
         this.className = throwable.getClass().getName();
         this.message = throwable.getMessage();
+        this.string = throwable.toString();
+        if (this.string.equals(this.className + ": " + this.message)) {
+            this.string = null;
+        }
         this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
 
         Throwable nested = throwable.getCause();
@@ -90,6 +95,10 @@ public class ThrowableProxy implements IThrowableProxy {
 
     public String getMessage() {
         return message;
+    }
+
+    public String getString() {
+        return string;
     }
 
     /*
