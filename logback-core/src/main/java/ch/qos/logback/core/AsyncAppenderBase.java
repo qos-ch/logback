@@ -245,6 +245,12 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
     }
 
     public void addAppender(Appender<E> newAppender) {
+
+        if (newAppender == this) {
+            addError("Ignoring asyncAppender named [ " + newAppender.getName() + "] because asyncAppender cannot refer to itself");
+            return;
+        }
+
         if (appenderCount == 0) {
             appenderCount++;
             addInfo("Attaching appender named [" + newAppender.getName() + "] to AsyncAppender.");
