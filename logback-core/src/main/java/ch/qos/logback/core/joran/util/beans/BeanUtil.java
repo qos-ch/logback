@@ -108,8 +108,8 @@ public class BeanUtil {
      * @param string to decapitalize.
      * @return null if the given String is null.
      * Emtpy string if the given string is empty.
-     * The given string if the first two consecutive letters are in upper case.
-     * The given string with the first letter in lower case otherwise, which might be the given string.
+     * The given string with underscores instead of dashes if the first two consecutive letters are in upper case.
+     * The given string with underscores instead of dashes and the first letter in lower case.
      */
     static public String toLowerCamelCase(String string) {
         if (string == null) {
@@ -118,6 +118,7 @@ public class BeanUtil {
         if (string.isEmpty()) {
             return string;
         }
+        string = string.replace('-', '_');
         if (string.length() > 1 && Character.isUpperCase(string.charAt(1)) && Character.isUpperCase(string.charAt(0))) {
             return string;
         }
