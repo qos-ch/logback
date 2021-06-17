@@ -16,6 +16,7 @@ package ch.qos.logback.classic.pattern;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.pattern.CompositeConverter;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.PostCompileProcessor;
@@ -68,9 +69,16 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
         while (c != null) {
             if (c instanceof ThrowableHandlingConverter) {
                 return true;
+            } else if (isCompositeAndHandlesThrowable(c)) {
+                return true;
             }
             c = c.getNext();
         }
         return false;
+    }
+
+    private boolean isCompositeAndHandlesThrowable(Converter<ILoggingEvent> converter) {
+        return converter instanceof CompositeConverter
+            && chainHandlesThrowable(((CompositeConverter<ILoggingEvent>) converter).getChildConverter());
     }
 }
