@@ -39,6 +39,10 @@ public class DummyServerAdapter implements ServerAdapter {
         return -1;
     }
 
+    public long getCommitTime() {
+        return -1;
+    }
+
     public Map<String, String> buildResponseHeaderMap() {
         return response.headerMap;
     }

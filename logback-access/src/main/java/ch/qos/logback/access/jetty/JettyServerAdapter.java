@@ -55,6 +55,11 @@ public class JettyServerAdapter implements ServerAdapter {
     }
 
     @Override
+    public long getCommitTime() {
+        return -1;
+    }
+
+    @Override
     public Map<String, String> buildResponseHeaderMap() {
         Map<String, String> responseHeaderMap = new HashMap<String, String>();
         HttpFields httpFields = response.getHttpFields();

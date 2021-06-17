@@ -80,6 +80,11 @@ public interface IAccessEvent extends DeferredProcessingAware {
     */
     long getElapsedSeconds();
 
+    /**
+     * The time elapsed between receiving the request and the first byte being written.
+     */
+    long getFirstByteElapsedTime();
+
     String getRequestURI();
 
     /**
