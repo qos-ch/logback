@@ -19,7 +19,6 @@ import java.util.Properties;
 import org.eclipse.jdt.annotation.Nullable;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
@@ -260,7 +259,7 @@ public class OptionHelper {
     }
 
     public static boolean isNullOrEmpty(@Nullable String str) {
-        return ((str == null) || CoreConstants.EMPTY_STRING.equals(str.trim()));
+        return ((str == null) || str.trim().isEmpty());
     }
 
 }
