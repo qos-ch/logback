@@ -227,8 +227,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             // converter. Converters assume that they are in a synchronized block.
             // lock.lock();
 
-            byte[] byteArray = this.encoder.encode(event);
-            writeBytes(byteArray);
+            writeOut(event);
 
         } catch (IOException ioe) {
             // as soon as an exception occurs, move to non-started state
