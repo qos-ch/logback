@@ -102,7 +102,7 @@ public class ThrowableProxyUtil {
         }
     }
 
-    private static void subjoinFirstLine(StringBuilder buf, String prefix, int indent, IThrowableProxy tp) {
+    public static void subjoinFirstLine(StringBuilder buf, String prefix, int indent, IThrowableProxy tp) {
         indent(buf, indent - 1);
         if (prefix != null) {
             buf.append(prefix);
