@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.spi;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -117,6 +118,14 @@ public class PackagingDataCalculatorTest {
         // NoClassDefFoundError should be caught
         pdc.calculate(tp);
 
+    }
+
+    @Test
+    // Test http://jira.qos.ch/browse/LOGBACK-1146
+    public void LOGBACK_1146Test() {
+        PackagingDataCalculator pdc = new PackagingDataCalculator();
+        assertEquals("greenmail-1.3.jar",pdc.getCodeLocation("file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar"));
+        assertEquals("greenmail-1.3.jar", pdc.getCodeLocation("jar:file:/C:/java/maven-2.0.8/repo/com/icegreen/greenmail/1.3/greenmail-1.3.jar!/com/icegreen/greenmail/Config.class"));
     }
 
 }
