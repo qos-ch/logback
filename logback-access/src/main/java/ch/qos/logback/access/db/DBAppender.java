@@ -36,7 +36,6 @@ import ch.qos.logback.core.db.DBAppenderBase;
 public class DBAppender extends DBAppenderBase<IAccessEvent> {
     protected static final String insertSQL;
     protected final String insertHeaderSQL = "INSERT INTO  access_event_header (event_id, header_key, header_value) VALUES (?, ?, ?)";
-    protected static final Method GET_GENERATED_KEYS_METHOD;
 
     private boolean insertHeaders = false;
 
@@ -55,14 +54,6 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
         sql.append("postContent) ");
         sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)");
         insertSQL = sql.toString();
-
-        Method getGeneratedKeysMethod;
-        try {
-            getGeneratedKeysMethod = PreparedStatement.class.getMethod("getGeneratedKeys", (Class[]) null);
-        } catch (Exception ex) {
-            getGeneratedKeysMethod = null;
-        }
-        GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
     }
 
     @Override
@@ -122,11 +113,6 @@ public class DBAppender extends DBAppenderBase<IAccessEvent> {
 
             insertHeaderStatement.close();
         }
-    }
-
-    @Override
-    protected Method getGeneratedKeysMethod() {
-        return GET_GENERATED_KEYS_METHOD;
     }
 
     @Override
