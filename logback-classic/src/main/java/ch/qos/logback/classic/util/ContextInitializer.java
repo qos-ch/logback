@@ -63,7 +63,7 @@ public class ContextInitializer {
             throw new IllegalArgumentException("URL argument cannot be null");
         }
         final String urlString = url.toString();
-        if (urlString.endsWith("groovy")) {
+        if (urlString.regionMatches(true, urlString.length() - "groovy".length(), "groovy", 0, "groovy".length())) { 
             if (EnvUtil.isGroovyAvailable()) {
                 // avoid directly referring to GafferConfigurator so as to avoid
                 // loading groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
@@ -76,7 +76,7 @@ public class ContextInitializer {
                 StatusManager sm = loggerContext.getStatusManager();
                 sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.", loggerContext));
             }
-        } else if (urlString.endsWith("xml")) {
+        } else if (urlString.regionMatches(true, urlString.length() - "xml".length(), "xml", 0, "xml".length())) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);
             configurator.doConfigure(url);
