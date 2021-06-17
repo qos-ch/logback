@@ -13,12 +13,6 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_HOUR;
-import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_MINUTE;
-import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_SECOND;
-import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_WEEK;
-import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_DAY;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,6 +21,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
+
+import static ch.qos.logback.core.CoreConstants.*;
 
 /**
  * RollingCalendar is a helper class to
@@ -195,7 +191,10 @@ public class RollingCalendar extends GregorianCalendar {
         case TOP_OF_MINUTE:
             return diff / MILLIS_IN_ONE_MINUTE;
         case TOP_OF_HOUR:
-            return diff / MILLIS_IN_ONE_HOUR;
+            return (int) diff / MILLIS_IN_ONE_HOUR;
+
+        case HALF_DAY:
+            return (int) diff / MILLIS_IN_HALF_DAY;
         case TOP_OF_DAY:
             return diff / MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
