@@ -137,6 +137,7 @@
             </Import-Package>
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
             </Bundle-RequiredExecutionEnvironment>
+            <_removeheaders>Bnd-LastModified</_removeheaders>
           </instructions>
         </configuration>
       </plugin>
