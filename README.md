@@ -56,4 +56,4 @@ looks forward to your contribution. Please follow this process:
 
 
 # Build Status
-[![Build Status](https://travis-ci.org/qos-ch/slf4j.png)](https://travis-ci.org/qos-ch/slf4j)
+[![Build Status](https://travis-ci.org/qos-ch/logback.png)](https://travis-ci.org/qos-ch/logback)
