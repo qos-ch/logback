@@ -249,6 +249,14 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     @Test
+    public void testHalfDailyRollover() throws Exception {
+        String fileNamePattern = randomOutputDir + "/%d{" + "yyyy-MM-dd-a" + "}/clean.txt.zip";
+        cp.maxHistory(8).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(8*3);
+        logOverMultiplePeriods(cp);
+        expectedFileAndDirCount(9, 9, 9);
+    }
+
+    @Test
     public void dailySizeBasedRolloverWithoutCap() {
         SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
         sizeAndTimeBasedFNATP.invocationGate = fixedRateInvocationGate;

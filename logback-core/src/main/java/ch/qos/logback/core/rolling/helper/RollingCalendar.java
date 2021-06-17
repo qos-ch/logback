@@ -196,6 +196,8 @@ public class RollingCalendar extends GregorianCalendar {
             return diff / MILLIS_IN_ONE_MINUTE;
         case TOP_OF_HOUR:
             return diff / MILLIS_IN_ONE_HOUR;
+        case HALF_DAY:
+            return (int) diff / (MILLIS_IN_ONE_HOUR * 12);
         case TOP_OF_DAY:
             return diff / MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
@@ -248,6 +250,10 @@ public class RollingCalendar extends GregorianCalendar {
             cal.add(Calendar.HOUR_OF_DAY, numPeriods);
             break;
 
+        case HALF_DAY:
+            cal = getNextMiddayOrMidnight(now, numPeriods);
+            break;
+
         case TOP_OF_DAY:
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
@@ -279,6 +285,45 @@ public class RollingCalendar extends GregorianCalendar {
         }
 
         return cal.getTime();
+    }
+
+    // returns calendar instance that holds the time of next midday or midnight:
+    // 12:00 or 00:00
+    private static Calendar getNextMiddayOrMidnight(Date now, int periods) {
+        Calendar nowCal = Calendar.getInstance();
+        nowCal.setTimeZone(GMT_TIMEZONE);
+        nowCal.setTime(now);
+
+        Calendar noonOfCurrentDay = Calendar.getInstance();
+        noonOfCurrentDay.setTimeZone(GMT_TIMEZONE);
+
+        noonOfCurrentDay.setTime(now);
+        noonOfCurrentDay.set(MILLISECOND, 0);
+        noonOfCurrentDay.set(SECOND, 0);
+        noonOfCurrentDay.set(MINUTE, 0);
+        noonOfCurrentDay.set(HOUR_OF_DAY, 12);
+
+        boolean isAlreadyAfterNoon = nowCal.compareTo(noonOfCurrentDay) >= 0;
+        if (isAlreadyAfterNoon) {
+            nowCal.set(HOUR_OF_DAY, 0);
+            nowCal.add(DAY_OF_YEAR, 1);
+        } else {
+            nowCal = noonOfCurrentDay;
+        }
+
+        if (periods == 0) {
+            nowCal.add(HOUR_OF_DAY, -12);
+        } else if (Math.abs(periods) > 1) {
+            nowCal.add(HOUR_OF_DAY, (periods - 1) * 12);
+        } else if (periods == -1) {
+            nowCal.add(HOUR_OF_DAY, -24);
+        }
+
+        nowCal.set(MILLISECOND, 0);
+        nowCal.set(SECOND, 0);
+        nowCal.set(MINUTE, 0);
+
+        return nowCal;
     }
 
     public Date getEndOfNextNthPeriod(Date now, int periods) {
