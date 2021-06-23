@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -102,11 +104,11 @@ public class ReconfigureOnChangeTaskTest {
         gc.run(file);
     }
 
-    @Test(timeout = 4000L)
+    @Test(timeout = 400000L)
     public void checkBasicLifecyle() throws JoranException, IOException, InterruptedException {
         File file = new File(SCAN1_FILE_AS_STR);
         configure(file);
-        List<File> fileList = getConfigurationWatchList(loggerContext);
+        List<URL> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, file);
         checkThatTaskHasRan();
         checkThatTaskCanBeStopped();
@@ -116,7 +118,7 @@ public class ReconfigureOnChangeTaskTest {
     public void checkBasicLifecyleWithGaffer() throws JoranException, IOException, InterruptedException {
         File file = new File(G_SCAN1_FILE_AS_STR);
         gConfigure(file);
-        List<File> fileList = getConfigurationWatchList(loggerContext);
+        List<URL> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, file);
         checkThatTaskHasRan();
         checkThatTaskCanBeStopped();
@@ -132,9 +134,9 @@ public class ReconfigureOnChangeTaskTest {
         waitForReconfigureOnChangeTaskToRun();
     }
 
-    List<File> getConfigurationWatchList(LoggerContext context) {
+    List<URL> getConfigurationWatchList(LoggerContext context) {
         ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
-        return configurationWatchList.getCopyOfFileWatchList();
+        return configurationWatchList.getCopyOfURLWatchList();
     }
 
     @Test(timeout = 4000L)
@@ -142,7 +144,7 @@ public class ReconfigureOnChangeTaskTest {
         File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
         configure(topLevelFile);
-        List<File> fileList = getConfigurationWatchList(loggerContext);
+        List<URL> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, topLevelFile);
         assertThatListContainsFile(fileList, innerFile);
         checkThatTaskHasRan();
@@ -154,7 +156,7 @@ public class ReconfigureOnChangeTaskTest {
         File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
         configure(topLevelFile);
-        List<File> fileList = getConfigurationWatchList(loggerContext);
+        List<URL> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, topLevelFile);
         assertThatListContainsFile(fileList, innerFile);
     }
@@ -331,9 +333,13 @@ public class ReconfigureOnChangeTaskTest {
         checkResetCount(expectedResets);
     }
 
-    private void assertThatListContainsFile(List<File> fileList, File file) {
+    private void assertThatListContainsFile(List<URL> fileList, File file) {
         // conversion to absolute file seems to work nicely
-        assertTrue(fileList.contains(file.getAbsoluteFile()));
+        try {
+            assertTrue(fileList.contains(file.getAbsoluteFile().toURI().toURL()));
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void checkResetCount(int expected) {
