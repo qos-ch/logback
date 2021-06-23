@@ -41,6 +41,7 @@ import org.slf4j.helpers.BogoPerf;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -134,7 +135,7 @@ public class ReconfigureOnChangeTest {
     public void installFilter() throws JoranException, IOException, InterruptedException {
         File file = new File(SCAN1_FILE_AS_STR);
         configure(file);
-        List<File> fileList = getConfigurationFileList(loggerContext);
+        List<URL> fileList = getConfigurationFileList(loggerContext);
         assertThatListContainsFile(fileList, file);
         assertThatFirstFilterIsROCF();
         StatusPrinter.print(loggerContext);
@@ -144,7 +145,7 @@ public class ReconfigureOnChangeTest {
     public void gafferInstallFilter() throws JoranException, IOException, InterruptedException {
         File file = new File(G_SCAN1_FILE_AS_STR);
         gConfigure(file);
-        List<File> fileList = getConfigurationFileList(loggerContext);
+        List<URL> fileList = getConfigurationFileList(loggerContext);
         assertThatListContainsFile(fileList, file);
         assertThatFirstFilterIsROCF();
 
@@ -165,9 +166,9 @@ public class ReconfigureOnChangeTest {
         executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
     }
 
-    List<File> getConfigurationFileList(LoggerContext context) {
+    List<URL> getConfigurationFileList(LoggerContext context) {
         ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
-        return configurationWatchList.getCopyOfFileWatchList();
+        return configurationWatchList.getCopyOfURLWatchList();
     }
 
     @Test(timeout = 4000L)
@@ -175,7 +176,7 @@ public class ReconfigureOnChangeTest {
         File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
         configure(topLevelFile);
-        List<File> fileList = getConfigurationFileList(loggerContext);
+        List<URL> fileList = getConfigurationFileList(loggerContext);
         assertThatListContainsFile(fileList, topLevelFile);
         assertThatListContainsFile(fileList, innerFile);
     }
@@ -186,7 +187,7 @@ public class ReconfigureOnChangeTest {
         File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
         configure(topLevelFile);
 
-        List<File> fileList = getConfigurationFileList(loggerContext);
+        List<URL> fileList = getConfigurationFileList(loggerContext);
         assertThatListContainsFile(fileList, topLevelFile);
         assertThatListContainsFile(fileList, innerFile);
     }
@@ -255,9 +256,9 @@ public class ReconfigureOnChangeTest {
         verify(expectedResets);
     }
 
-    private void assertThatListContainsFile(List<File> fileList, File file) {
+    private void assertThatListContainsFile(List<URL> fileList, File file) {
         // conversion to absolute file seems to work nicely
-        assertTrue(fileList.contains(file.getAbsoluteFile()));
+        assertTrue(fileList.contains(file.getAbsoluteFile().toURI()));
     }
 
     private TurboFilter getFirstTurboFilter() {
