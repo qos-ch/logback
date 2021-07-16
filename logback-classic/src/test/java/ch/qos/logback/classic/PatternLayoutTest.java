@@ -240,4 +240,55 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(1, sla.strList.size());
         assertEquals("A\n\tC", sla.strList.get(0));
     }
+    
+    @Test
+    public void prefixConverterSmoke() {
+    	 String pattern = "%prefix(%logger) %message";
+         pl.setPattern(pattern);
+         pl.start();
+         String val = pl.doLayout(makeLoggingEvent("hello", null));
+         assertEquals("logger="+logger.getName() + " hello", val);
+    }
+    
+    @Test
+    public void prefixConverterWithMDC() {
+    	String mdcKey = "boo";
+    	String mdcVal = "moo";
+    	
+    	 String pattern = "%prefix(%level %logger %X{"+mdcKey+"}) %message";
+         pl.setPattern(pattern);
+         pl.start();
+         MDC.put(mdcKey, mdcVal);
+         try {
+        	  String val = pl.doLayout(makeLoggingEvent("hello", null));
+        	  
+              assertEquals("level="+"INFO logger="+logger.getName() +" "+mdcKey+"="+mdcVal+ " hello", val);
+              
+         } finally {
+             MDC.remove(mdcKey);
+         }
+    }
+    
+    @Test
+    public void prefixConverterWithProperty() {
+    	
+         try {
+        	 String propertyKey = "px1953";
+        	 String propertyVal = "pxVal";
+        	 
+        	 System.setProperty(propertyKey, propertyVal);	
+         	
+        	 String pattern = "%prefix(%logger %property{"+propertyKey+"}) %message";
+             pl.setPattern(pattern);
+             pl.start();
+             
+        	 String val = pl.doLayout(makeLoggingEvent("hello", null));
+        	  
+              assertEquals("logger="+logger.getName() +" "+propertyKey+"="+propertyVal+ " hello", val);
+              
+         } finally {
+        	 System.clearProperty("px");	
+         }
+    }
+
 }
