@@ -109,10 +109,17 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-all</artifactId>
+      <artifactId>groovy</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+      
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -183,14 +190,14 @@
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.5</version>
+        <version>1.12.1</version>
         <executions>
           <execution>
             <goals>
               <goal>generateStubs</goal>
               <goal>compile</goal>
-              <goal>testGenerateStubs</goal>
-              <goal>testCompile</goal>
+              <goal>generateTestStubs</goal>
+              <goal>compileTests</goal>
             </goals>
           </execution>
         </executions>
