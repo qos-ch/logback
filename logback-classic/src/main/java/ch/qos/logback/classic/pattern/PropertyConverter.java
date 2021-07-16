@@ -30,6 +30,10 @@ public final class PropertyConverter extends ClassicConverter {
         }
     }
 
+    public String getKey() {
+    	return key;
+    }
+    
     public String convert(ILoggingEvent event) {
         if (key == null) {
             return "Property_HAS_NO_KEY";

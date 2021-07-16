@@ -70,7 +70,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
     }
 
     protected Map<String, String> getDefaultConverterMap() {
-        return PatternLayout.defaultConverterMap;
+        return PatternLayout.DEFAULT_CONVERTER_MAP;
     }
 
     public String doLayout(ILoggingEvent event) {

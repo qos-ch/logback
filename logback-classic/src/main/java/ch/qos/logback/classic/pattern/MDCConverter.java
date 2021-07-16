@@ -78,4 +78,13 @@ public class MDCConverter extends ClassicConverter {
         }
         return buf.toString();
     }
+    
+    /**
+     * PrefixCompositeConverter needs the key
+     * @return
+     */
+    public String getKey() {
+    	return key;
+    }
+    
 }
