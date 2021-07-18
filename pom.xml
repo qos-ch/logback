@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.2.4-SNAPSHOT</version>
+  <version>1.2.4</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -66,9 +66,17 @@
     <jetty.version>8.2.0.v20160908</jetty.version>
     <!--<jetty.version>9.2.9.v20150224</jetty.version>-->
     <jansi.version>1.9</jansi.version>
-    <javadoc.plugin.version>2.10.4</javadoc.plugin.version>
-    <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>    
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
+    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
     <maven-license-plugin.version>3.0</maven-license-plugin.version>
+    <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
+    <maven-jxr-plugin.version>3.1.1</maven-jxr-plugin.version>
+
+    <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
+
   </properties>
 
   <developers>
@@ -239,7 +247,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.6.0</version>
+          <version>${maven-compiler-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -259,22 +267,22 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.6</version>
+          <version>${maven-site-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
+          <version>${maven-surefire-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.6</version>
+          <version>${maven-jar-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${javadoc.plugin.version}</version>
+          <version>${maven-javadoc-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -289,7 +297,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>${maven-source-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -374,7 +382,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-jxr-plugin</artifactId>
-              <version>2.5</version>
+              <version>${maven-jxr-plugin.version}</version>
               <configuration>
                 <aggregate>true</aggregate>
                 <javadocDir>target/site/apidocs/</javadocDir>
@@ -385,10 +393,14 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>2.10.4</version>
+              <version>${maven-javadoc-plugin.version}</version>
               <configuration>
                 <aggregate>true</aggregate>
                 <linksource>true</linksource>
+                <additionalOptions>
+                  <additionalOption>-Xdoclint:none</additionalOption>
+                  <doclint>none</doclint>
+                </additionalOptions>
                 <links>
                   <link>
                     http://docs.oracle.com/javase/6/docs/api/
@@ -488,7 +500,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${javadoc.plugin.version}</version>
+            <version>${maven-javadoc-plugin.version}</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -498,6 +510,10 @@
                 </goals>
               </execution>
             </executions>
+             <configuration>
+               <additionalparam>-Xdoclint:none</additionalparam>
+               <doclint>none</doclint>
+            </configuration>
           </plugin>
         </plugins>
       </build>
