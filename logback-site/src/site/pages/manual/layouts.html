@@ -1041,6 +1041,35 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
         </td>
       </tr>
 
+      <tr>
+        <td class="word" name="prefix">
+          <b>prefix(<em>p</em>)</b>
+        </td>
+        
+        <td><p>For all the child converters contained in pattern 'p',
+        prefixes the output of each converter with the name of the
+        converter.  In environments where log contents need to be
+        analysed, it is often useful to prefix the contents of a
+        pattern with a prefix.</p>
+
+        <p>For example, you may wish to use the following pattern to
+        facilitate parsing of log files:
+        </p>
+
+        <pre>%d thread=%thread level=%level logger=%logger user=%X{user} %message</pre>
+
+        <p>The %prefix composite converter can take care of the prefixing for you:
+        
+        <pre>%d %prefix(%thread %level %logger %X{user}) %message</pre>
+
+        <p>The two previous patterns will generate equivalent
+        output. The usefullness of the %prefix converter increases
+        with the number of child converters contained in the pattern
+        'p'.</p>
+        
+        </td>
+      </tr>
+
 
       <tr>
         <td class="word" name="rootException">

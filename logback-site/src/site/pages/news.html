@@ -32,6 +32,29 @@
 
     <hr width="80%" align="center" />
 
+    <h3>19th of July, 2021, Release of version 1.2.4</h3>
+    
+    <p>Added support for minimum length in %i filename pattern. This
+    fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1248">LOGBACK-1248</a>
+    with John Gardiner Myers providing the relevant patch.</p>
+
+    <p>For size bound log file archiving, allow
+    <code>TimeBasedArchiveRemove</code> to remove files with indexes
+    containing upto 5 digits. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1175">LOGBACK-1175</a>.
+    </p>
+
+    <p>Added <a
+    href="manual/layouts.html#prefix"><code>%prefix</code></a>
+    composite converter which automatically prefixes child converter
+    output with the name of the converter. This feature is quite handy
+    in environments where log files need to be parsed and monitored.
+    tools.
+    </p>
+    
+    <hr width="80%" align="center" />
+
     <h3>11th of October, 2019, Release of version 1.3.0-alpha5</h3>
 
     <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
