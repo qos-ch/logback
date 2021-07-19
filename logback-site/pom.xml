@@ -46,6 +46,28 @@
           </nonFilteredFileExtensions>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>${maven-source-plugin.version}</version>
+        <configuration>
+          <!-- Maven central does not allow entries with ../.. in
+               *-source.jar but requires that they exist. -->
+          <includes>
+            <include>**/META-INF/*</include>
+          </includes>          
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 
