@@ -16,6 +16,8 @@ import ch.qos.logback.classic.PatternLayout
 import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
 
+def p = "HELLO"
+
 appender("STDOUT", ConsoleAppender) {
   encoder(LayoutWrappingEncoder) {
     layout(PatternLayout) {
