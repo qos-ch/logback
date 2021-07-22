@@ -17,7 +17,6 @@ import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.TurboFilterList;
@@ -115,11 +114,6 @@ public class ReconfigureOnChangeTest {
         jc.doConfigure(is);
     }
 
-    void gConfigure(File file) throws JoranException {
-        GafferConfigurator gc = new GafferConfigurator(loggerContext);
-        gc.run(file);
-    }
-
     RunnableWithCounterAndDone[] buildRunnableArray(File configFile, UpdateType updateType) {
         RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
         rArray[0] = new Updater(configFile, updateType);
@@ -138,24 +132,6 @@ public class ReconfigureOnChangeTest {
         assertThatListContainsFile(fileList, file);
         assertThatFirstFilterIsROCF();
         StatusPrinter.print(loggerContext);
-    }
-
-    @Test
-    public void gafferInstallFilter() throws JoranException, IOException, InterruptedException {
-        File file = new File(G_SCAN1_FILE_AS_STR);
-        gConfigure(file);
-        List<File> fileList = getConfigurationFileList(loggerContext);
-        assertThatListContainsFile(fileList, file);
-        assertThatFirstFilterIsROCF();
-
-        rocfDetachReconfigurationToNewThreadAndAwaitTermination();
-
-        fileList = getConfigurationFileList(loggerContext);
-        assertThatListContainsFile(fileList, file);
-        assertThatFirstFilterIsROCF();
-
-        // check that rcof filter installed on two occasions
-        assertEquals(2, checker.matchCount("Will scan for changes in"));
     }
 
     private void rocfDetachReconfigurationToNewThreadAndAwaitTermination() throws InterruptedException {

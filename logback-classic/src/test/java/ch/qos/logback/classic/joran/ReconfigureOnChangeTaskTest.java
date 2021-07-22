@@ -39,7 +39,6 @@ import org.junit.Test;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferConfigurator;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.contention.AbstractMultiThreadedHarness;
@@ -97,25 +96,10 @@ public class ReconfigureOnChangeTaskTest {
         jc.doConfigure(is);
     }
 
-    void gConfigure(File file) throws JoranException {
-        GafferConfigurator gc = new GafferConfigurator(loggerContext);
-        gc.run(file);
-    }
-
     @Test(timeout = 4000L)
     public void checkBasicLifecyle() throws JoranException, IOException, InterruptedException {
         File file = new File(SCAN1_FILE_AS_STR);
         configure(file);
-        List<File> fileList = getConfigurationWatchList(loggerContext);
-        assertThatListContainsFile(fileList, file);
-        checkThatTaskHasRan();
-        checkThatTaskCanBeStopped();
-    }
-
-    @Test(timeout = 4000L)
-    public void checkBasicLifecyleWithGaffer() throws JoranException, IOException, InterruptedException {
-        File file = new File(G_SCAN1_FILE_AS_STR);
-        gConfigure(file);
         List<File> fileList = getConfigurationWatchList(loggerContext);
         assertThatListContainsFile(fileList, file);
         checkThatTaskHasRan();

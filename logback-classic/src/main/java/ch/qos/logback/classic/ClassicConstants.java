@@ -48,4 +48,6 @@ public class ClassicConstants {
 
     public static final String FINALIZE_SESSION = "FINALIZE_SESSION";
     public static final Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker(FINALIZE_SESSION);
+    
+    public static final String NO_GAFFER_SUPPORT_MSG = "This versin of logback does not support GafferConfigurator. ABORTING CONFIGURATION.";
 }

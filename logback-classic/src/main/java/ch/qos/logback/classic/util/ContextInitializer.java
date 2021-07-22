@@ -20,8 +20,8 @@ import java.net.URL;
 import java.util.Set;
 
 import ch.qos.logback.classic.BasicConfigurator;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.core.LogbackException;
@@ -61,14 +61,8 @@ public class ContextInitializer {
         }
         final String urlString = url.toString();
         if (urlString.endsWith("groovy")) {
-            if (EnvUtil.isGroovyAvailable()) {
-                // avoid directly referring to GafferConfigurator so as to avoid
-                // loading groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-                GafferUtil.runGafferConfiguratorOn(loggerContext, this, url);
-            } else {
                 StatusManager sm = loggerContext.getStatusManager();
-                sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.", loggerContext));
-            }
+                sm.add(new ErrorStatus(ClassicConstants.NO_GAFFER_SUPPORT_MSG, loggerContext));
         } else if (urlString.endsWith("xml")) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);

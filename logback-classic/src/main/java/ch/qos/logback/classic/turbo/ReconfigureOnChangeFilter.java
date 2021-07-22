@@ -17,7 +17,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import ch.qos.logback.classic.gaffer.GafferUtil;
 import ch.qos.logback.classic.util.EnvUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
@@ -26,6 +25,7 @@ import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.status.StatusUtil;
 import org.slf4j.Marker;
 
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -187,14 +187,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
             if (mainConfigurationURL.toString().endsWith("xml")) {
                 performXMLConfiguration(lc);
             } else if (mainConfigurationURL.toString().endsWith("groovy")) {
-                if (EnvUtil.isGroovyAvailable()) {
-                    lc.reset();
-                    // avoid directly referring to GafferConfigurator so as to avoid
-                    // loading groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-                    GafferUtil.runGafferConfiguratorOn(lc, this, mainConfigurationURL);
-                } else {
-                    addError("Groovy classes are not available on the class path. ABORTING INITIALIZATION.");
-                }
+                addError(ClassicConstants.NO_GAFFER_SUPPORT_MSG);
             }
         }
 

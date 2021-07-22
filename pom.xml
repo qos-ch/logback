@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.2.4-gafferless-SNAPSHOT</version>
+  <version>1.2.4-groovyless-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -53,7 +53,6 @@
     <junit.version>4.10</junit.version>
     <javax.mail.version>1.4</javax.mail.version>
     <janino.version>3.0.6</janino.version>
-    <groovy.version>2.4.0</groovy.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml and in setClasspath.cmd 
     -->    
@@ -143,17 +142,6 @@
         <groupId>org.codehaus.janino</groupId>
         <artifactId>janino</artifactId>
         <version>${janino.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>${groovy.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-test</artifactId>
-        <version>${groovy.version}</version>
       </dependency>
       
       <dependency>
@@ -477,7 +465,6 @@
               <aggregate>true</aggregate>
               <includes>
                 <include>src/**/*.java</include>
-                <include>src/**/*.groovy</include>
               </includes>
               <useDefaultExcludes>true</useDefaultExcludes>
               <useDefaultMapping>true</useDefaultMapping>
