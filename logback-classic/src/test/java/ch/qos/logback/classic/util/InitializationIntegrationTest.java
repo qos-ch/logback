@@ -15,6 +15,7 @@ package ch.qos.logback.classic.util;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ import ch.qos.logback.core.read.ListAppender;
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
+@Ignore
 public class InitializationIntegrationTest {
 
     @Test

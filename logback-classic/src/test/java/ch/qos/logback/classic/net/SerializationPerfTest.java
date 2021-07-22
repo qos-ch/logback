@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import org.junit.Ignore;
+
 import junit.framework.TestCase;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSer;
@@ -24,6 +26,7 @@ import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventVOBuilder;
 import ch.qos.logback.classic.spi.LoggingEventVO;
 
+@Ignore
 public class SerializationPerfTest extends TestCase {
 
     ObjectOutputStream oos;

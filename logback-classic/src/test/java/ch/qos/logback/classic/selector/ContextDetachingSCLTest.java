@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
@@ -27,6 +28,7 @@ import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.MockInitialContext;
 import ch.qos.logback.classic.util.MockInitialContextFactory;
 
+@Ignore
 public class ContextDetachingSCLTest {
 
     static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";

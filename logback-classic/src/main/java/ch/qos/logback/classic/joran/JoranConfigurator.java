@@ -140,13 +140,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler.class);
 		defaultProcessor.addHandler(LevelModel.class, LevelModelHandler.class);
 
-		injectModelFilters(defaultProcessor);
-
-		return defaultProcessor;
-	}
-
-	private void injectModelFilters(DefaultProcessor defaultProcessor) {
-	
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
         defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler.class);
         defaultProcessor.addHandler(DefineModel.class, DefineModelHandler.class);
@@ -156,6 +149,15 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
         defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);
         defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
+        
+		injectModelFilters(defaultProcessor);
+
+		return defaultProcessor;
+	}
+
+	private void injectModelFilters(DefaultProcessor defaultProcessor) {
+	
+
         
 
 		@SuppressWarnings("unchecked")
@@ -168,8 +170,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
 		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] implicitModelClasses = new Class[] { 
-				ImplicitModel.class, 
-				ParamModel.class};
+				ImplicitModel.class};
 
 		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] loggerModelClasses = new Class[] { 
