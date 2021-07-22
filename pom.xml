@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.2.4-groovyless-SNAPSHOT</version>
+  <version>1.2.4-groovyless</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
