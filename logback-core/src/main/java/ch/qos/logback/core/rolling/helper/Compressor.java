@@ -22,6 +22,7 @@ import java.util.concurrent.Future;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 
 import ch.qos.logback.core.rolling.RolloverFailure;
 import ch.qos.logback.core.spi.ContextAwareBase;
@@ -30,7 +31,7 @@ import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.FileUtil;
 
 /**
- * The <code>Compression</code> class implements ZIP and GZ file
+ * The <code>Compression</code> class implements ZIP, GZ and BZIP2 file
  * compression/decompression methods.
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -48,11 +49,13 @@ public class Compressor extends ContextAwareBase {
     /**
      * @param nameOfFile2Compress
      * @param nameOfCompressedFile
-     * @param innerEntryName 
+     * @param innerEntryName
      *            The name of the file within the zip file. Use for ZIP compression.
      */
     public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
         switch (compressionMode) {
+        case BZIP2:
+            bzip2Compress(nameOfFile2Compress, nameOfCompressedFile);
         case GZ:
             gzCompress(nameOfFile2Compress, nameOfCompressedFile);
             break;
@@ -183,9 +186,58 @@ public class Compressor extends ContextAwareBase {
 
     }
 
+    private void bzip2Compress(String nameOfFile2bzip, String nameOfbzippedFile) {
+        File file2bzip = new File(nameOfFile2bzip);
+
+        if (!file2bzip.exists()) {
+            addStatus(new WarnStatus("The file to compress named [" + nameOfFile2bzip + "] does not exist.", this));
+
+            return;
+        }
+
+        if (!nameOfbzippedFile.endsWith(".bz2")) {
+            nameOfbzippedFile = nameOfbzippedFile + ".bz2";
+        }
+
+        File bzippedFile = new File(nameOfbzippedFile);
+
+        if (bzippedFile.exists()) {
+            addWarn("The target compressed file named [" + nameOfbzippedFile + "] exist already. Aborting file compression.");
+            return;
+        }
+
+        addInfo("BZ2 compressing [" + file2bzip + "] as [" + bzippedFile + "]");
+        createMissingTargetDirsIfNecessary(bzippedFile);
+
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2bzip));
+                BZip2CompressorOutputStream bzos = new BZip2CompressorOutputStream(new FileOutputStream(nameOfbzippedFile))) {
+
+            byte[] inbuf = new byte[BUFFER_SIZE];
+            int n;
+
+            while ((n = bis.read(inbuf)) != -1) {
+                bzos.write(inbuf, 0, n);
+            }
+
+            addInfo("Done ZIP compressing [" + file2bzip + "] as [" + bzippedFile + "]");
+        } catch (Exception e) {
+            addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2bzip + "] into [" + nameOfbzippedFile + "].", this, e));
+        }
+
+        if (!file2bzip.delete()) {
+            addStatus(new WarnStatus("Could not delete [" + nameOfFile2bzip + "].", this));
+        }
+
+    }
+
     static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr, CompressionMode compressionMode) {
         int len = fileNamePatternStr.length();
         switch (compressionMode) {
+        case BZIP2:
+            if (fileNamePatternStr.endsWith(".bz2"))
+                return fileNamePatternStr.substring(0, len - 4);
+            else
+                return fileNamePatternStr;
         case GZ:
             if (fileNamePatternStr.endsWith(".gz"))
                 return fileNamePatternStr.substring(0, len - 3);
