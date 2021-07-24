@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import junit.framework.*;
 
 public class LoggerTestHelper extends TestCase {

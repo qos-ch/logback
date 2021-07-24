@@ -26,7 +26,6 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.util.LocationUtil;
 
 /**
  * Unit tests for {@link LocationUtil}.

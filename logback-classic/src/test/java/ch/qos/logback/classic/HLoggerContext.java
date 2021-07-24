@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import ch.qos.logback.classic.Level;
 
 /**
  * @author ceki

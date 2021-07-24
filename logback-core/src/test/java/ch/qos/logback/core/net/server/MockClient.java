@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.net.server;
 
-import ch.qos.logback.core.net.server.Client;
 
 /**
  *

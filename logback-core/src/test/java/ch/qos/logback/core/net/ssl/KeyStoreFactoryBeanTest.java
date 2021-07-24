@@ -19,9 +19,6 @@ import java.security.KeyStore;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.net.ssl.KeyStoreFactoryBean;
-import ch.qos.logback.core.net.ssl.SSL;
-
 /**
  * Unit tests for {@link KeyStoreFactoryBean}.
  *

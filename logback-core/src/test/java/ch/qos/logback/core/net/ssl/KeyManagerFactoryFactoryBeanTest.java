@@ -19,7 +19,6 @@ import javax.net.ssl.KeyManagerFactory;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.net.ssl.KeyManagerFactoryFactoryBean;
 
 /**
  * Unit tests for {@link KeyManagerFactoryFactoryBean}.

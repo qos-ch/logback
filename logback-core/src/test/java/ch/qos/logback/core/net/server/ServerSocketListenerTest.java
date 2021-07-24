@@ -24,8 +24,6 @@ import java.net.Socket;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.net.server.Client;
-import ch.qos.logback.core.net.server.ServerSocketListener;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 
 /**

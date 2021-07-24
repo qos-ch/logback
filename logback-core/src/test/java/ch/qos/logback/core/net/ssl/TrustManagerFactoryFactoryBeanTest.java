@@ -19,7 +19,6 @@ import javax.net.ssl.TrustManagerFactory;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.net.ssl.TrustManagerFactoryFactoryBean;
 
 /**
  * Unit tests for {@link TrustManagerFactoryFactoryBean}.

@@ -4,7 +4,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.StatusListenerModel;
-import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.StatusListener;

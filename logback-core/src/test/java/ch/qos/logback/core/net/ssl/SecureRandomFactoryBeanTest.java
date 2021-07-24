@@ -23,8 +23,6 @@ import java.security.SecureRandom;
 
 import org.junit.Test;
 
-import ch.qos.logback.core.net.ssl.SSL;
-import ch.qos.logback.core.net.ssl.SecureRandomFactoryBean;
 
 /**
  * Unit tests for {@link SecureRandomFactoryBean}.

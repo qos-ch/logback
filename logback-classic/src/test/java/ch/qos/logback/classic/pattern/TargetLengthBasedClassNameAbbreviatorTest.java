@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import ch.qos.logback.classic.pattern.TargetLengthBasedClassNameAbbreviator;
 
 public class TargetLengthBasedClassNameAbbreviatorTest {
 
