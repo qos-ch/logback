@@ -72,13 +72,17 @@
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>    
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-    <maven-javadoc-plugin.version>3.1.0</maven-javadoc-plugin.version>
+    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <maven-javadoc-plugin.version>3.3.0</maven-javadoc-plugin.version>
     <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
+    <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <license-maven-plugin.version>3.0</license-maven-plugin.version>
     <maven-jar-plugin.version>2.6</maven-jar-plugin.version>
     <maven-jxr-plugin.version>3.1.1</maven-jxr-plugin.version>
+    <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
-
+    <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
+    <maven-bundle-plugin.version>5.1.2</maven-bundle-plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
   </properties>
 
@@ -267,12 +271,12 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>${maven-install-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.1</version>
+          <version>${maven-resources-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -297,17 +301,17 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
-          <version>2.10</version>
+          <version>${maven-dependency-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>${maven-release-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.1.2</version>
+          <version>${maven-source-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -317,7 +321,7 @@
         <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
-          <version>3.3.0</version>
+          <version>${maven-bundle-plugin.version}</version>
         </plugin>
 
         <plugin>
@@ -414,80 +418,6 @@
           <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
-
- 
-
-
-      <!-- ================ site plugin ==================== -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-
-          <reportPlugins>
-
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-jxr-plugin</artifactId>
-              <version>2.5</version>
-              <configuration>
-                <aggregate>true</aggregate>
-                <javadocDir>target/site/apidocs/</javadocDir>
-                <linkJavadoc>true</linkJavadoc>
-              </configuration>
-            </plugin>
-
-      
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              
-              <configuration>                                
-                <aggregate>true</aggregate>
-                <linkJavadoc>true</linkJavadoc>
-                <linksource>true</linksource>
-                <additionalOptions>
-                  <additionalOption>-Xdoclint:none</additionalOption>
-                </additionalOptions>
-                <sourceFileExcludes>
-                  <sourceFileExclude>**/module-info.java</sourceFileExclude>
-                </sourceFileExcludes>
-                <links>
-                  <link>
-                    http://docs.oracle.com/javase/7/docs/api/
-                  </link>
-                </links>
-                
-                <groups>
-                  <group>
-                    <title>Logback Core</title>
-                    <packages>ch.qos.logback.core:ch.qos.logback.core.*
-                    </packages>
-                  </group>
-                  <group>
-                    <title>Logback Classic</title>
-                    <packages>
-                      ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
-                    </packages>
-                  </group>
-                  <group>
-                    <title>Logback Access</title>
-                    <packages>ch.qos.logback.access:ch.qos.logback.access.*
-                    </packages>
-                  </group>
-                  <group>
-                    <title>Examples</title>
-                    <packages>chapter*:joran*</packages>
-                  </group>
-                </groups>                  
-              </configuration>
-            </plugin>
-
-            
-          </reportPlugins>
-          
-        </configuration>
-        </plugin>
         
     </plugins>
   </build>
@@ -521,6 +451,61 @@
       </plugin>
       -->
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <aggregate>true</aggregate>
+          <javadocDir>target/site/apidocs/</javadocDir>
+          <linkJavadoc>true</linkJavadoc>
+        </configuration>
+      </plugin>
+      
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        
+        <configuration>                                
+          <aggregate>true</aggregate>
+          <linkJavadoc>true</linkJavadoc>
+          <linksource>true</linksource>
+          <doclint>none</doclint>
+          <sourceFileExcludes>
+            <sourceFileExclude>**/module-info.java</sourceFileExclude>
+          </sourceFileExcludes>
+          <links>
+            <link>
+              http://docs.oracle.com/javase/7/docs/api/
+            </link>
+          </links>
+          
+          <groups>
+            <group>
+              <title>Logback Core</title>
+              <packages>ch.qos.logback.core:ch.qos.logback.core.*
+              </packages>
+            </group>
+            <group>
+              <title>Logback Classic</title>
+              <packages>
+                ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
+              </packages>
+            </group>
+            <group>
+              <title>Logback Access</title>
+              <packages>ch.qos.logback.access:ch.qos.logback.access.*
+              </packages>
+            </group>
+            <group>
+              <title>Examples</title>
+              <packages>chapter*:joran*</packages>
+            </group>
+          </groups>                  
+        </configuration>
+      </plugin>
+      
             
     </plugins>
   </reporting>
@@ -580,7 +565,7 @@
               </execution>            
             </executions>
             <configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
+              <doclint>none</doclint>
               <sourceFileExcludes>
                 <sourceFileExclude>**/module-info.java</sourceFileExclude>
               </sourceFileExcludes>
@@ -611,35 +596,6 @@
         </plugins>
       </build>
     </profile>
-
-    <profile>
-      <id>cobertura</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <configuration>
-              <reportPlugins>
-            
-                <plugin>
-                  <groupId>org.codehaus.mojo</groupId>
-                  <artifactId>cobertura-maven-plugin</artifactId>
-                  <version>${cobertura.maven.plugin.version}</version>
-                  <configuration>
-                    <formats>
-                      <format>html</format>
-                    </formats>
-                    <aggregate>true</aggregate>
-                  </configuration>
-                </plugin>
-              </reportPlugins>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
 
   </profiles>
 
