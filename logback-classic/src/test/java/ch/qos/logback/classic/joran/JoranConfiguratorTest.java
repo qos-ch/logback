@@ -45,6 +45,7 @@ import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
@@ -85,6 +86,7 @@ public class JoranConfiguratorTest {
 	@Test
 	public void level() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleLevel.xml");
+		StatusPrinter.print(loggerContext);
 		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
 		String msg = "hello world";

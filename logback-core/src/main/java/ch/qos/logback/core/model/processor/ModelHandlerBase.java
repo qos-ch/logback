@@ -26,7 +26,7 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
 	}
 
 	
-	boolean isSupportedModelType(Model model) {
+	protected boolean isSupportedModelType(Model model) {
 		Class<? extends Model> modelClass = getSupportedModelClass();
 		if (modelClass.isInstance(model)) {
 			return true;

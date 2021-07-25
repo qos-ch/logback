@@ -32,4 +32,8 @@ public class LoggerModel extends Model {
 		this.additivity = additivity;
 	}
 
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() +" name=" + name + "]";
+    }
 }

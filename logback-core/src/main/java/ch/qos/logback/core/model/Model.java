@@ -19,8 +19,11 @@ public class Model  {
 		return !handled;
 	}
     
+    public boolean isHandled() {
+		return handled;
+	}    
 	public void markAsHandled() {
-		this.handled = true;
+		
 	}
 
 	String tag;
@@ -73,6 +76,8 @@ public class Model  {
     public String toString() {
         return this.getClass().getSimpleName() +" [tag=" + tag + ", bodyText=" + bodyText + "]";
     }
+
+
 
 
 }

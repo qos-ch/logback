@@ -13,7 +13,10 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
@@ -45,6 +48,9 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	Map<String, Object> objectMap;
 	Map<String, String> propertiesMap;
 
+	final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
+	final List<String> startedDependencies = new ArrayList<>();
+	
 	SaxEventInterpreter saxEventInterpreter;
 	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
 	private BeanDescriptionCache beanDescriptionCache;
@@ -79,6 +85,36 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		this.propertiesMap = propertiesMap;
 	}
 
+	public HashMap<Model, List<String>> getDependenciesMap() {
+		return dependenciesMap;
+	}
+	
+	public boolean hasDependencies(String name) {
+		
+		Collection<List<String>> nameLists = dependenciesMap.values();
+		if(nameLists == null || nameLists.isEmpty())
+			return false;
+		
+		for(List<String> aList: nameLists) {
+			if(aList.contains(name))
+				return true;
+		}
+		return false;
+	}
+
+	public void addDependency(Model model, String ref) {
+		List<String> refList = dependenciesMap.get(model);
+		if(refList == null) {
+			refList = new ArrayList<>();
+		}
+		refList.add(ref);
+		dependenciesMap.put(model, refList);
+	}
+
+	public List<String> getDependencies(Model model) {
+		return dependenciesMap.get(model);
+	}
+	
 	String updateLocationInfo(String msg) {
 		Locator locator = saxEventInterpreter.getLocator();
 
@@ -225,5 +261,14 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		}
 		return OptionHelper.substVars(value, this, context);
 	}
+
+	public void markStartOfNamedDependency(String name) {
+		startedDependencies.add(name);
+	}
+	public boolean isNamedDependencyStarted(String name) {
+		return startedDependencies.contains(name);
+	}
+
+	
 
 }

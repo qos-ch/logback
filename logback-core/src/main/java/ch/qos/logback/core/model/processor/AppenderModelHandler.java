@@ -31,16 +31,20 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		AppenderModel appenderModel = (AppenderModel) model;
 
 		String appenderName = interpContext.subst(appenderModel.getName());
-		Map<String, AppenderAttachable<E>> appenderRefBag = (Map<String, AppenderAttachable<E>>) interpContext.getObjectMap()
-				.get(JoranConstants.APPENDER_REF_BAG);
 	
-		this.appenderAttachable = appenderRefBag.get(appenderName);
-		
-		if(this.appenderAttachable == null) {
+		if(!interpContext.hasDependencies(appenderName)) {
 			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
 			skipped = true;
 			return;
 		}
+		
+//		//this.appenderAttachable = appenderRefBag.get(appenderName);
+//		
+//		if(this.appenderAttachable == null) {
+//			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
+//			skipped = true;
+//			return;
+//		}
 		
 		addInfo("Processing appender named ["+appenderName+"]");
 		
@@ -68,17 +72,23 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	    if (appender instanceof LifeCycle) {
             ((LifeCycle) appender).start();
         }
-
+        interpContext.markStartOfNamedDependency(appender.getName());
+        
         Object o = interpContext.peekObject();
 
+    	@SuppressWarnings("unchecked")
+		Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) interpContext.getObjectMap()
+				.get(JoranConstants.APPENDER_BAG);
+    	appenderBag.put(appender.getName(), appender);
+    	
         if (o != appender) {
             addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
         } else {
-        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
-        	appenderAttachable.addAppender(appender);
-        	
+//        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
+//        	appenderAttachable.addAppender(appender);
         	interpContext.popObject();
         }
+    
 	}
 
 }

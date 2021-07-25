@@ -2,16 +2,22 @@ package ch.qos.logback.classic.model.processor;
 
 import static ch.qos.logback.core.joran.JoranConstants.NULL;
 
+import java.util.List;
+import java.util.Map;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerModel;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class LoggerModelHandler extends ModelHandlerBase {
@@ -58,7 +64,31 @@ public class LoggerModelHandler extends ModelHandlerBase {
 			logger.setAdditive(additive);
 		}
 
+		attachRefencedAppenders(intercon, loggerModel, logger);
+		
 		intercon.pushObject(logger);
+	}
+
+	static void attachRefencedAppenders(InterpretationContext interpContext, Model model, Logger logger) {
+		
+		List<String> dependencies = interpContext.getDependencies(model);
+		if(dependencies == null || dependencies.isEmpty())
+			return;
+		
+		@SuppressWarnings("unchecked")
+		Map<String, Appender<ILoggingEvent>> appenderBag = (Map<String, Appender<ILoggingEvent>>) interpContext.getObjectMap()
+				.get(JoranConstants.APPENDER_BAG);
+    	
+		for(String name: dependencies) {
+			Appender<ILoggingEvent> appender = appenderBag.get(name);
+			if(appender == null) {
+				interpContext.addError("Failed to find appender named ["+name+"]");
+			} else {
+				interpContext.addInfo("Attaching appender named ["+name+"] to logger ["+logger.getName());
+				logger.addAppender(appender);
+			}
+		}
+		
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package ch.qos.logback.core.model.processor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -16,13 +17,13 @@ public class DefaultProcessor extends ContextAwareBase {
 	interface TraverseMethod {
 		int traverse(Model model, ModelFiler modelFiler);
 	}
-	
+
 	final InterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, Class<? extends ModelHandlerBase>> modelClassToHandlerMap = new HashMap<>();
+	final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
 
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
 	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
-	ModelFiler phaseThreeFilter = new DenyAllModelFilter();
 
 	public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
 		this.setContext(context);
@@ -33,16 +34,21 @@ public class DefaultProcessor extends ContextAwareBase {
 		modelClassToHandlerMap.put(modelClass, handlerClass);
 	}
 
+	public void addAnalyser(Class<? extends Model> modelClass, ModelHandlerBase handler) {
+		modelClassToDependencyAnalyserMap.put(modelClass, handler);
+	}
+
 	private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFiler modelfFilter, String phaseName) {
+		System.out.println("****traversalLoop called for phase " + phaseName);
 		int LIMIT = 3;
 		for (int i = 0; i < LIMIT; i++) {
 			int handledModelCount = traverseMethod.traverse(model, modelfFilter);
-			//addInfo(phaseName+" handledModelCount=" + handledModelCount);
+			addInfo(phaseName + " handledModelCount=" + handledModelCount);
 			if (handledModelCount == 0)
 				break;
 		}
 	}
-	
+
 	public void process(Model model) {
 
 		if (model == null) {
@@ -50,11 +56,14 @@ public class DefaultProcessor extends ContextAwareBase {
 			return;
 		}
 		initialObjectPush();
-		
-		traversalLoop(this::traverse, model, getPhaseOneFilter(), "phase 1");
-		traversalLoop(this::traverse, model, getPhaseTwoFilter(), "phase 2");
-		traversalLoop(this::traverse, model, getPhaseThreeFilter(),"phase 3");
-		
+
+		// phaseOneTraverse();
+
+		mainTraverse(model, getPhaseOneFilter());
+		analyseDependencies(model);
+		System.out.println("PHASE TWO ====================");
+		traversalLoop(this::secondPhaseTraverse, model, getPhaseTwoFilter(), "phase 2");
+
 		addInfo("End of configuration.");
 		finalObjectPop();
 	}
@@ -75,10 +84,6 @@ public class DefaultProcessor extends ContextAwareBase {
 		return phaseTwoFilter;
 	}
 
-	public ModelFiler getPhaseThreeFilter() {
-		return phaseThreeFilter;
-	}
-
 	public void setPhaseOneFilter(ModelFiler phaseOneFilter) {
 		this.phaseOneFilter = phaseOneFilter;
 	}
@@ -87,16 +92,75 @@ public class DefaultProcessor extends ContextAwareBase {
 		this.phaseTwoFilter = phaseTwoFilter;
 	}
 
-	public void setPhaseThreeFilter(ModelFiler phaseThreeFilter) {
-		this.phaseThreeFilter = phaseThreeFilter;
+	protected void analyseDependencies(Model model) {
+		ModelHandlerBase handler = modelClassToDependencyAnalyserMap.get(model.getClass());
+
+		if (handler != null) {
+			try {
+				handler.handle(interpretationContext, model);
+			} catch (ModelHandlerException e) {
+				addError("Failed to traverse model " + model.getTag(), e);
+			}
+		}
+
+		for (Model m : model.getSubModels()) {
+			analyseDependencies(m);
+		}
 	}
 
-	
-	protected int traverse(Model model, ModelFiler modelFiler) {
+	static final int DENIED = -1;
+
+	protected int mainTraverse(Model model, ModelFiler modelFiler) {
 
 		FilterReply filterReply = modelFiler.decide(model);
 		if (filterReply == FilterReply.DENY)
+			return DENIED;
+
+		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
+
+		if (handlerClass == null) {
+			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
+					+ model.getLineNumber());
 			return 0;
+		}
+
+		ModelHandlerBase handler = instantiateHandler(handlerClass);
+		int count = 0;
+
+		try {
+
+			if (!handler.isSupportedModelType(model)) {
+				addWarn("Skipping processing for model " + model.idString());
+				return count;
+			}
+			boolean handledHere = false;
+
+			if (model.isUnhandled()) {
+				handler.handle(interpretationContext, model);
+				handledHere = true;
+				model.markAsHandled();
+				count++;
+			}
+			// recurse into submodels handled or not
+
+			for (Model m : model.getSubModels()) {
+				count += mainTraverse(m, modelFiler);
+			}
+			if (handledHere) {
+				handler.postHandle(interpretationContext, model);
+			}
+		} catch (ModelHandlerException e) {
+			addError("Failed to traverse model " + model.getTag(), e);
+		}
+		return count;
+	}
+
+	protected int secondPhaseTraverse(Model model, ModelFiler modelFilter) {
+
+		FilterReply filterReply = modelFilter.decide(model);
+		if (filterReply == FilterReply.DENY) {
+			return 0;
+		}
 
 		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
 
@@ -107,7 +171,7 @@ public class DefaultProcessor extends ContextAwareBase {
 		}
 
 		int count = 0;
-		
+
 		ModelHandlerBase handler = instantiateHandler(handlerClass);
 
 		try {
@@ -115,18 +179,23 @@ public class DefaultProcessor extends ContextAwareBase {
 				addWarn("Skipping processing for model " + model.idString());
 				return count;
 			}
+
+			boolean allDependenciesStarted = allDependenciesStarted(model);
+
 			boolean handledHere = false;
-			if (model.isUnhandled()) {
+			if (model.isUnhandled() && allDependenciesStarted) {
 				handler.handle(interpretationContext, model);
 				handledHere = true;
 				model.markAsHandled();
 				count++;
 			}
-			// recurse into submodels handled or not
-			int len = model.getSubModels().size();
-			for (int i = 0; i < len; i++) {
-				Model m = model.getSubModels().get(i);
-				count += traverse(m, modelFiler);
+
+			if(!allDependenciesStarted) {
+				return count;
+			}
+			
+			for (Model m: model.getSubModels()) {
+				count += secondPhaseTraverse(m, modelFilter);
 			}
 			if (handledHere) {
 				handler.postHandle(interpretationContext, model);
@@ -135,6 +204,20 @@ public class DefaultProcessor extends ContextAwareBase {
 			addError("Failed to traverse model " + model.getTag(), e);
 		}
 		return count;
+	}
+
+	private boolean allDependenciesStarted(Model model) {
+		List<String> dependecyList = this.interpretationContext.getDependencies(model);
+		if (dependecyList == null || dependecyList.isEmpty()) {
+			return true;
+		}
+		for(String name: dependecyList) {
+			boolean isStarted = interpretationContext.isNamedDependencyStarted(name);
+			if(isStarted == false) {
+				return isStarted;
+			}
+		}
+		return true;
 	}
 
 	ModelHandlerBase instantiateHandler(Class<? extends ModelHandlerBase> handlerClass) {

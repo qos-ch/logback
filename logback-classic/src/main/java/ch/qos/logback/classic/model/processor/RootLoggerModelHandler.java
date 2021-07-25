@@ -39,6 +39,8 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 			addInfo("Setting level of ROOT logger to " + level);
 			root.setLevel(level);
 		}
+		
+		LoggerModelHandler.attachRefencedAppenders(interpretationContext, model, root);
 		interpretationContext.pushObject(root);
 	}
 
