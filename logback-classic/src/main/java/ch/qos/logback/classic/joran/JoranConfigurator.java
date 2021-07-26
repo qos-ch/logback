@@ -33,7 +33,6 @@ import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
 import ch.qos.logback.classic.model.processor.ContextNameModelHandler;
 import ch.qos.logback.classic.model.processor.LevelModelHandler;
 import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
-import ch.qos.logback.classic.model.processor.LoggerOrAppenderModelDependencyAnalyser;
 import ch.qos.logback.classic.model.processor.LoggerModelHandler;
 import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -41,7 +40,6 @@ import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.classic.util.DefaultNestedComponentRules;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
-import ch.qos.logback.core.joran.ParamModelHandler;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeModelAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
@@ -58,21 +56,14 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
-import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.DefineModelHandler;
-import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
-import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.IncludeModelHandler;
-import ch.qos.logback.core.model.processor.PropertyModelHandler;
-import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
-import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
-import ch.qos.logback.core.model.processor.TimestampModelHandler;
+import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -141,19 +132,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler.class);
 		defaultProcessor.addHandler(LevelModel.class, LevelModelHandler.class);
 
-        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
-        defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler.class);
-        defaultProcessor.addHandler(DefineModel.class, DefineModelHandler.class);
-        
-        defaultProcessor.addHandler(ParamModel.class, ParamModelHandler.class);
-        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
-        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
-        defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);
-        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
-        
-        defaultProcessor.addAnalyser(LoggerModel.class, new LoggerOrAppenderModelDependencyAnalyser(context));
-        defaultProcessor.addAnalyser(RootLoggerModel.class, new LoggerOrAppenderModelDependencyAnalyser(context));
-        defaultProcessor.addAnalyser(AppenderModel.class, new LoggerOrAppenderModelDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(LoggerModel.class, new RefContainerDependencyAnalyser(context, LoggerModel.class));
+        defaultProcessor.addAnalyser(RootLoggerModel.class, new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
+        defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
         defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
         
 		injectModelFilters(defaultProcessor);
@@ -162,10 +143,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 	}
 
 	private void injectModelFilters(DefaultProcessor defaultProcessor) {
-	
-
-        
-
 		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { 
 				ContextNameModel.class,
@@ -189,12 +166,12 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 				IncludeModel.class,
 				};
 
-		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] secondPhaseModelClasses = new Class[] { 
-				LoggerModel.class, 
-				RootLoggerModel.class, 
-				AppenderModel.class,
-				AppenderRefModel.class };
+//		@SuppressWarnings("unchecked")
+//		Class<? extends Model>[] secondPhaseModelClasses = new Class[] { 
+//				LoggerModel.class, 
+//				RootLoggerModel.class, 
+//				AppenderModel.class,
+//				AppenderRefModel.class };
 
 	    // MOTE: AppenderModelHandler is delayed to second phase
 	    

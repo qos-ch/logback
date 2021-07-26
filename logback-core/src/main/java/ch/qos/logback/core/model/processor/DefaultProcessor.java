@@ -101,6 +101,13 @@ public class DefaultProcessor extends ContextAwareBase {
 		for (Model m : model.getSubModels()) {
 			analyseDependencies(m);
 		}
+		if (handler != null) {
+			try {
+				handler.postHandle(interpretationContext, model);
+			} catch (ModelHandlerException e) {
+				addError("Failed to invole postHandle on model " + model.getTag(), e);
+			}
+		}
 	}
 
 	static final int DENIED = -1;
@@ -185,11 +192,11 @@ public class DefaultProcessor extends ContextAwareBase {
 				count++;
 			}
 
-			if(!allDependenciesStarted) {
+			if (!allDependenciesStarted) {
 				return count;
 			}
-			
-			for (Model m: model.getSubModels()) {
+
+			for (Model m : model.getSubModels()) {
 				count += secondPhaseTraverse(m, modelFilter);
 			}
 			if (handledHere) {
@@ -206,9 +213,9 @@ public class DefaultProcessor extends ContextAwareBase {
 		if (dependecyList == null || dependecyList.isEmpty()) {
 			return true;
 		}
-		for(String name: dependecyList) {
+		for (String name : dependecyList) {
 			boolean isStarted = interpretationContext.isNamedDependencyStarted(name);
-			if(isStarted == false) {
+			if (isStarted == false) {
 				return isStarted;
 			}
 		}

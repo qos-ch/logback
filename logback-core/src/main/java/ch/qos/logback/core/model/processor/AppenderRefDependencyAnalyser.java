@@ -17,15 +17,15 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
     }
 	
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
 	
 		AppenderRefModel appenderRefModel = (AppenderRefModel) model;
 		
-		String ref = appenderRefModel.getRef();
+		String ref = interpContext.subst(appenderRefModel.getRef());
 		
 		
-		Model dependentModel = intercon.peekModel();
-		intercon.addDependency(dependentModel, ref);
+		Model dependentModel = interpContext.peekModel();
+		interpContext.addDependency(dependentModel, ref);
 	} 
 
 }

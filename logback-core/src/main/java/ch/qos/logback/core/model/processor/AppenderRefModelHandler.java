@@ -1,6 +1,5 @@
 package ch.qos.logback.core.model.processor;
 
-import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.core.Appender;

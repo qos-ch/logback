@@ -44,9 +44,11 @@ import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.model.processor.AllowAllModelFilter;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
+import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
 /**
@@ -72,6 +74,10 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
         
+        
+        defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
+        defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
+ 
         injectModelFilters(defaultProcessor);
         
     	return defaultProcessor;
@@ -92,10 +98,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 				ParamModel.class};
 
 		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] appenderRefModelClasses = new Class[] { 
-				AppenderRefModel.class };
-
-		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { 
 				ConfigurationModel.class, 
 				EventEvaluatorModel.class,
@@ -112,8 +114,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : implicitModelClasses)
-			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : appenderRefModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
 		
 		fistPhaseDefintionFilter.denyAll();

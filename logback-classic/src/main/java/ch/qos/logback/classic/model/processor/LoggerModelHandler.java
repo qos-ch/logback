@@ -2,22 +2,16 @@ package ch.qos.logback.classic.model.processor;
 
 import static ch.qos.logback.core.joran.JoranConstants.NULL;
 
-import java.util.List;
-import java.util.Map;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerModel;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
-import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class LoggerModelHandler extends ModelHandlerBase {
