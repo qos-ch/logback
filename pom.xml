@@ -47,7 +47,7 @@
   </modules>
 
   <properties>
-    <latest.stable.version>1.2.4</latest.stable.version>
+    <latest.stable.version>1.2.5</latest.stable.version>
     <jdk.version>8</jdk.version>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
