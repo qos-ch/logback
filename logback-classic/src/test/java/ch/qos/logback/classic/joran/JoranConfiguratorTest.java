@@ -45,7 +45,6 @@ import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
@@ -497,10 +496,6 @@ public class JoranConfiguratorTest {
 		checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
 	}
 	
-
-
-	// FIX BEFORE RELASE
-	@Ignore
 	@Test
 	public void asynAppenderListFirst() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_first.xml");
@@ -512,8 +507,6 @@ public class JoranConfiguratorTest {
 	}
 	
 
-	// FIX BEFORE RELASE
-	@Ignore
 	@Test
 	public void asynAppenderListAfter() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_after.xml");

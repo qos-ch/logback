@@ -23,7 +23,7 @@ public class Model  {
 		return handled;
 	}    
 	public void markAsHandled() {
-		
+		handled = true;
 	}
 
 	String tag;

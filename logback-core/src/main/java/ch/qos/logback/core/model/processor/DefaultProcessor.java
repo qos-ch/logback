@@ -39,7 +39,6 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 
 	private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFiler modelfFilter, String phaseName) {
-		System.out.println("****traversalLoop called for phase " + phaseName);
 		int LIMIT = 3;
 		for (int i = 0; i < LIMIT; i++) {
 			int handledModelCount = traverseMethod.traverse(model, modelfFilter);
@@ -61,7 +60,6 @@ public class DefaultProcessor extends ContextAwareBase {
 
 		mainTraverse(model, getPhaseOneFilter());
 		analyseDependencies(model);
-		System.out.println("PHASE TWO ====================");
 		traversalLoop(this::secondPhaseTraverse, model, getPhaseTwoFilter(), "phase 2");
 
 		addInfo("End of configuration.");

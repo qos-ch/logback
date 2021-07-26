@@ -25,6 +25,8 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 	@SuppressWarnings("unchecked")
 	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
 		
+		
+		//should be NOP
 		Object o = intercon.peekObject(); 
 
 		if (!(o instanceof AppenderAttachable)) {

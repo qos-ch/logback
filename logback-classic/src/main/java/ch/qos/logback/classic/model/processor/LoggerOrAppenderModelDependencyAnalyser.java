@@ -4,20 +4,22 @@ import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.model.RootLoggerModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
 
-public class LoggerModelDependencyAnalyser extends ModelHandlerBase {
+public class LoggerOrAppenderModelDependencyAnalyser extends ModelHandlerBase {
 
-	public LoggerModelDependencyAnalyser(Context context) {
+	public LoggerOrAppenderModelDependencyAnalyser(Context context) {
 		super(context);
 	}
 	
 	@Override
 	protected boolean isSupportedModelType(Model model) {
 		
-		if (LoggerModel.class.isInstance(model) || RootLoggerModel.class.isInstance(model)) {
+		if (LoggerModel.class.isInstance(model) || RootLoggerModel.class.isInstance(model)
+				|| AppenderModel.class.isInstance(model)) {
 			return true;
 		} else {
 			addError("This handler can only handle models of type LoggerModel or RootLoggerModel");

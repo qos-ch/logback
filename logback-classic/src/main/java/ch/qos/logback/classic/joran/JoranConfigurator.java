@@ -33,7 +33,7 @@ import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
 import ch.qos.logback.classic.model.processor.ContextNameModelHandler;
 import ch.qos.logback.classic.model.processor.LevelModelHandler;
 import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
-import ch.qos.logback.classic.model.processor.LoggerModelDependencyAnalyser;
+import ch.qos.logback.classic.model.processor.LoggerOrAppenderModelDependencyAnalyser;
 import ch.qos.logback.classic.model.processor.LoggerModelHandler;
 import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -151,8 +151,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);
         defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
         
-        defaultProcessor.addAnalyser(LoggerModel.class, new LoggerModelDependencyAnalyser(context));
-        defaultProcessor.addAnalyser(RootLoggerModel.class, new LoggerModelDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(LoggerModel.class, new LoggerOrAppenderModelDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(RootLoggerModel.class, new LoggerOrAppenderModelDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(AppenderModel.class, new LoggerOrAppenderModelDependencyAnalyser(context));
         defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
         
 		injectModelFilters(defaultProcessor);
@@ -192,13 +193,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		Class<? extends Model>[] secondPhaseModelClasses = new Class[] { 
 				LoggerModel.class, 
 				RootLoggerModel.class, 
+				AppenderModel.class,
 				AppenderRefModel.class };
-
-	    @SuppressWarnings("unchecked")
-	    Class<? extends Model>[] loggerModelClasses = new Class[] {
-	                    LoggerModel.class,
-	                    RootLoggerModel.class,
-	                    AppenderRefModel.class };
 
 	    // MOTE: AppenderModelHandler is delayed to second phase
 	    

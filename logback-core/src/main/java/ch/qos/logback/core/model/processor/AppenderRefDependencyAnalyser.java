@@ -26,6 +26,6 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 		
 		Model dependentModel = intercon.peekModel();
 		intercon.addDependency(dependentModel, ref);
-	}
+	} 
 
 }
