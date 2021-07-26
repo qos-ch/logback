@@ -23,6 +23,9 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 	private final BeanDescriptionCache beanDescriptionCache;
 
+	static final String  PARENT_PROPPERTY_KEY = "parent";
+	
+	
 	boolean inError = false;
 
 	public ImplicitModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
@@ -169,8 +172,8 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 		nestedBean.setContext(context);
 
 		// have the nested element point to its parent if possible
-		if (nestedBean.computeAggregationType("parent") == AggregationType.AS_COMPLEX_PROPERTY) {
-			nestedBean.setComplexProperty("parent", actionData.parentBean.getObj());
+		if (nestedBean.computeAggregationType(PARENT_PROPPERTY_KEY) == AggregationType.AS_COMPLEX_PROPERTY) {
+			nestedBean.setComplexProperty(PARENT_PROPPERTY_KEY, actionData.parentBean.getObj());
 		}
 
 		// start the nested complex property if it implements LifeCycle and is not
