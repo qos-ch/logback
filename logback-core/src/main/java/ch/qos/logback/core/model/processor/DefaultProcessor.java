@@ -42,7 +42,6 @@ public class DefaultProcessor extends ContextAwareBase {
 		int LIMIT = 3;
 		for (int i = 0; i < LIMIT; i++) {
 			int handledModelCount = traverseMethod.traverse(model, modelfFilter);
-			addInfo(phaseName + " handledModelCount=" + handledModelCount);
 			if (handledModelCount == 0)
 				break;
 		}
@@ -55,8 +54,6 @@ public class DefaultProcessor extends ContextAwareBase {
 			return;
 		}
 		initialObjectPush();
-
-		// phaseOneTraverse();
 
 		mainTraverse(model, getPhaseOneFilter());
 		analyseDependencies(model);
