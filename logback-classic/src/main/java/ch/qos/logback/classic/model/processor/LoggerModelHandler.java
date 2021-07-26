@@ -63,32 +63,8 @@ public class LoggerModelHandler extends ModelHandlerBase {
 			addInfo("Setting additivity of logger [" + finalLoggerName + "] to " + additive);
 			logger.setAdditive(additive);
 		}
-
-		attachRefencedAppenders(intercon, loggerModel, logger);
 		
 		intercon.pushObject(logger);
-	}
-
-	static void attachRefencedAppenders(InterpretationContext interpContext, Model model, Logger logger) {
-		
-		List<String> dependencies = interpContext.getDependencies(model);
-		if(dependencies == null || dependencies.isEmpty())
-			return;
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Appender<ILoggingEvent>> appenderBag = (Map<String, Appender<ILoggingEvent>>) interpContext.getObjectMap()
-				.get(JoranConstants.APPENDER_BAG);
-    	
-		for(String name: dependencies) {
-			Appender<ILoggingEvent> appender = appenderBag.get(name);
-			if(appender == null) {
-				interpContext.addError("Failed to find appender named ["+name+"]");
-			} else {
-				interpContext.addInfo("Attaching appender named ["+name+"] to logger ["+logger.getName());
-				logger.addAppender(appender);
-			}
-		}
-		
 	}
 
 	@Override

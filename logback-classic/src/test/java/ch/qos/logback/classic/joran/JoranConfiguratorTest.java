@@ -85,7 +85,6 @@ public class JoranConfiguratorTest {
 	@Test
 	public void level() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleLevel.xml");
-		StatusPrinter.print(loggerContext);
 		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
 		String msg = "hello world";
@@ -149,6 +148,9 @@ public class JoranConfiguratorTest {
 	@Test
 	public void statusListener() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
+		StatusChecker checker = new StatusChecker(loggerContext);
+		checker.assertIsErrorFree();
+		checker.assertContainsMatch(Status.WARN, "Please use \"level\" attribute within <logger> or <root> elements instead.");
 	}
 
 	@Test

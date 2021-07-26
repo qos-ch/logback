@@ -54,7 +54,7 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 		if (appender == null) {
 			addError("Failed to find appender named [" + appenderName + "]");
 		} else {
-			interpContext.addInfo("Attaching appender named [" + appenderName + "] to " +appenderAttachable );
+			addInfo("Attaching appender named [" + appenderName + "] to " +appenderAttachable );
 			appenderAttachable.addAppender(appender);
 		}
 

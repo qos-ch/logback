@@ -4,7 +4,7 @@
 <configuration debug="false">
 
 
-  <statusListener class="ch.qos.logback.classic.joran.TrivialStatusListener"/>
+  <statusListener class="ch.qos.logback.core.testUtil.TrivialStatusListener"/>
   
   <appender name="LIST" class="ch.qos.logback.core.read.ListAppender"/>
    <logger name="ch.qos.logback.classic.joran">

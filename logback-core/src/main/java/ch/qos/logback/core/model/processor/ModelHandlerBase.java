@@ -10,13 +10,13 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
 	public ModelHandlerBase(Context context) {
 		setContext(context);
 	}
-	
+
 	/**
 	 * Subclasses should return the sub-class of Model that they expect to handle.
 	 * 
-	 * The default implementation assumes that all Model classes are supported. This a very lax 
-	 * assumption which is usually not true. 
-	 *  
+	 * The default implementation assumes that all Model classes are supported. This
+	 * a very lax assumption which is usually not true.
+	 * 
 	 * @return supported model class
 	 * @see ModelHandlerBase#isSupportedModelType(Model)
 	 */
@@ -25,7 +25,6 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
 		return Model.class;
 	}
 
-	
 	protected boolean isSupportedModelType(Model model) {
 		Class<? extends Model> modelClass = getSupportedModelClass();
 		if (modelClass.isInstance(model)) {
@@ -40,6 +39,10 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
 
 	public void postHandle(InterpretationContext intercon, Model model) throws ModelHandlerException {
 		// let specialized handlers override
+	}
+
+	public String toString() {
+		return this.getClass().getName();
 	}
 
 }
