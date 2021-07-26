@@ -19,6 +19,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.OutputStreamAppender;
+import ch.qos.logback.core.spi.ContextAware;
 
 public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
 
@@ -33,7 +34,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      */
     private Charset charset;
 
-    Appender<?> parent;
+    ContextAware parent;
     Boolean immediateFlush = null;
 
     public Layout<E> getLayout() {
@@ -148,9 +149,9 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
      * This method allows RollingPolicy implementations to be aware of their
      * containing appender.
      * 
-     * @param appender
+     * @param parent
      */
-    public void setParent(Appender<?> parent) {
+    public void setParent(ContextAware parent) {
         this.parent = parent;
     }
 }
