@@ -1,7 +1,9 @@
 package ch.qos.logback.core.model.processor;
 
+import java.util.List;
 import java.util.Map;
 
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
@@ -22,12 +24,9 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		
-		
-		//should be NOP
-		Object o = intercon.peekObject(); 
+	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+
+		Object o = interpContext.peekObject();
 
 		if (!(o instanceof AppenderAttachable)) {
 			inError = true;
@@ -38,16 +37,26 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 		}
 
 		AppenderRefModel appenderRefModel = (AppenderRefModel) model;
+		AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
 
-        AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
-
-        String appenderName = intercon.subst(appenderRefModel.getRef());
+		attachRefencedAppenders(interpContext, appenderRefModel,appenderAttachable);
 		
-		Map<String, AppenderAttachable<?>> appenderRefBag = (Map<String, AppenderAttachable<?>>) intercon.getObjectMap()
-				.get(JoranConstants.APPENDER_REF_BAG);
-		
-		appenderRefBag.put(appenderName, appenderAttachable);
-
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	void attachRefencedAppenders(InterpretationContext interpContext, AppenderRefModel appenderRefModel, AppenderAttachable<?> appenderAttachable) {
+		String appenderName = interpContext.subst(appenderRefModel.getRef());
+		
+		Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap()
+				.get(JoranConstants.APPENDER_BAG);
+
+		Appender appender = appenderBag.get(appenderName);
+		if (appender == null) {
+			addError("Failed to find appender named [" + appenderName + "]");
+		} else {
+			interpContext.addInfo("Attaching appender named [" + appenderName + "] to " +appenderAttachable );
+			appenderAttachable.addAppender(appender);
+		}
+
+	}
 }
