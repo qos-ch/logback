@@ -9,6 +9,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.NamedComponentModel;
+import ch.qos.logback.core.model.NamedModel;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 
@@ -192,7 +194,8 @@ public class DefaultProcessor extends ContextAwareBase {
 				count++;
 			}
 
-			if (!allDependenciesStarted) {
+			
+			if (!allDependenciesStarted && !dependencyIsADirectSubmodel(model)) {
 				return count;
 			}
 
@@ -206,6 +209,25 @@ public class DefaultProcessor extends ContextAwareBase {
 			addError("Failed to traverse model " + model.getTag(), e);
 		}
 		return count;
+	}
+
+	private boolean dependencyIsADirectSubmodel(Model model) {
+		List<String> dependecyList = this.interpretationContext.getDependencies(model);
+		if (dependecyList == null || dependecyList.isEmpty()) {
+			return false;
+		}
+		for(Model submodel: model.getSubModels()) {
+			if(submodel instanceof NamedComponentModel) {
+				NamedComponentModel namedComponentModel = (NamedComponentModel) submodel;
+				String subModelName = namedComponentModel.getName();
+				if(dependecyList.contains(subModelName)) {
+					return true;
+				}
+			}
+		}
+		
+		
+		return false;
 	}
 
 	private boolean allDependenciesStarted(Model model) {
