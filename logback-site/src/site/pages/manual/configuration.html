@@ -32,9 +32,6 @@
       
     <h1>Chapter 3: Logback configuration</h1>
 
-    <a href="configuration_ja.html">&#x548C;&#x8A33; (Japanese translation)</a>
-
-      
     <div class="quote">
       <p><em>In symbols one observes an advantage in discovery which
       is greatest when they express the exact nature of a thing
@@ -294,7 +291,8 @@ public class Foo {
    configuration file, logback will automatically print its internal
    status data on the console. Note that to avoid duplication,
    automatic status printing is disabled if the user explicitly
-   registers a status listener (defined below).</p>
+   registers a status listener (<a href="#logback.statusLC">discussed
+   below</a>).</p>
 
    <p>In the absence of warnings or errors, if you still wish to
    inspect logback's internal status, then you can instruct logback to
@@ -303,7 +301,7 @@ public class Foo {
    shown below is identical to <em>MyApp1</em> except for the addition
    of two lines of code for printing internal status data.</p>
 
-    <p class="example">Example: Print logback's internal status
+   <p class="example" id="MyApp2">Example: Print logback's internal status
     information <a
     href="../xref/chapters/configuration/MyApp2.html">(logback-examples/src/main/java/chapters/configuration/MyApp2.java)</a></p>
 
@@ -341,34 +339,80 @@ public static void main(String[] args) {
    <h4 class="doAnchor" name="dumpingStatusData">Status data</h4>
 
    <p class="highlight">Enabling output of status data usually goes a
-   long way in the diagnosis of issues with logback. As such, it is
-   highly recommended and should be considered as a recourse of
-   <b>first</b> resort.</p>
+   long way in the diagnosis of issues with logback.</p>
 
-   <p>Instead of invoking <code>StatusPrinter</code> programmatically
-   from your code, you can instruct the configuration file to dump
-   status data, even in the absence of errors. To achieve this, you
-   need to set the <span class="attr">debug</span> attribute of the
-   <em>configuration</em> element, i.e. the top-most element in the
-   configuration file, as shown below. Please note that this <span
-   class="attr">debug</span> attribute relates only to the status
-   data. It does <em>not</em> affect logback's configuration
-   otherwise, in particular with respect to logger levels. (If you are
-   asking, no, the root logger will <em>not</em> be set to
-   <code>DEBUG</code>.)
+   <p>Enabling output of status data usually goes a
+   long way in the diagnosis of issues with logback. Note that errors
+   can also occur post-configuration, e.g. when a disk a full or log
+   files cannot be archived due to permission errors. As such, it is
+   highly recommended that you register a <code>StatusdListener</code>
+   as discussed below.</p>
+
+   <p>The next example illustrates the installation of
+   <code>OnConsoleStatusListener</code>. </p>
+
+   <p class="example">Example: Registering a status listener
+   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
+   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>   
+   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
+  &lt;-- Recommendation: place status listeners towards the the top of the configuration file --&gt;
+  <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
+
+  ... the rest of the configuration file  
+&lt;/configuration></pre>
+
+   <p>A <code>StatusListner</code> can be installed using a
+   configuration fileassuming that:
+   </p>
+   <ol>
+     <li>the configuration file is found</li>
+     <li>the configuration file is well-formed XML.</li>
+   </ol>
+
+     
+   <p>If any of these two conditions is not fulfilled, Joran cannot
+   interpret the configuration file and in particular the
+   &lt;statusListener/&gt; element. If the configuration file is found
+   but is malformed, then logback will detect the error condition and
+   automatically print its internal status on the console. However, if
+   the configuration file cannot be found, logback will not
+   automatically print its status data, since this is not necessarily
+   an error condition. Programmatically invoking
+   <code>StatusPrinter.print()</code> as shown in the <a
+   href="#MyApp2"><em>MyApp2</em></a>
+   application above ensures that status information is printed in
+   every case.</p>
+ 
+   <p><span class="label">Forcing status output</span> In the absence
+   of status messages, tracking down a rogue <em>logback.xml</em>
+   configuration file can be difficult, especially in production where
+   the application source cannot be easily modified. To help identify
+   the location of a rogue configuration file, you can set a
+   <code>StatusListener</code> via the "logback.statusListenerClass"
+   system property (<a href="#logback.statusLC">discussed below</a>) to
+   force output of status messages. The "logback.statusListenerClass"
+   system property can also be used to silence output automatically
+   generated in case of errors.
    </p>
 
-   <p class="example">Example: Basic configuration file using debug
+   <h4>Shorthand</h4>
+   
+   <p>As a shorthand, it is possible to register an
+   <code>OnConsoleStatusListener</code> by setting the <em>debug</em>
+   attribute to <code>true</code> within the &lt;configuration/&gt;
+   element as shown below.</p>
+
+  <p class="example">Example: Basic configuration file using debug
    mode
    (logback-examples/src/main/resources/chapters/configuration/sample1.xml)</p>
    <span class="asGroovy" onclick="return asGroovy('sample1');">View as .groovy</span>
 
    <pre id="sample1" class="prettyprint source">
-&lt;configuration <span class="big bold">debug="true"</span>> 
+&lt;configuration <span class="bold">debug="true"</span>> 
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"> 
-    &lt;!-- encoders are  by default assigned the type
-         ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
+    &lt;&excl;&dash;- encoders are  by default assigned the type
+         ch.qos.logback.classic.encoder.PatternLayoutEncoder &dash;&dash;>
     &lt;encoder>
       &lt;pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n&lt;/pattern>
     &lt;/encoder>
@@ -379,68 +423,109 @@ public static void main(String[] args) {
   &lt;/root>
 &lt;/configuration></pre>
   
-   <p>Setting <code>debug="true"</code> within the
-   &lt;configuration&gt; element will output status information,
-   assuming that:
-   </p>
-   <ol>
-     <li>the configuration file is found</li>
-     <li>the configuration file is well-formed XML.</li>
-   </ol>
-     
-   <p>If any of these two conditions is not fulfilled, Joran cannot
-   interpret the <span class="attr">debug</span> attribute since the
-   configuration file cannot be read. If the configuration file is
-   found but is malformed, then logback will detect the error
-   condition and automatically print its internal status on the
-   console. However, if the configuration file cannot be found,
-   logback will not automatically print its status data, since this is
-   not necessarily an error condition. Programmatically invoking
-   <code>StatusPrinter.print()</code> as shown in the <a
-   href="../xref/chapters/configuration/MyApp2.html"><em>MyApp2</em></a>
-   application above ensures that status information is printed in
-   every case.</p>
-
- 
- 
-   <p><span class="label">Forcing status output</span> In the absence
-   of status messages, tracking down a rogue <em>logback.xml</em>
-   configuration file can be difficult, especially in production where
-   the application source cannot be easily modified. To help identify
-   the location of a rogue configuration file, you can set a
-   <code>StatusListener</code> via the "logback.statusListenerClass"
-   system property (<a href="#logback.statusLC">defined below</a>) to
-   force output of status messages. The "logback.statusListenerClass"
-   system property can also be used to silence output automatically
-   generated in case of errors.
-   </p>
-
    <p>By the way, setting <code>debug="true"</code> is strictly
-   equivalent to installing an
-   <code>OnConsoleStatusListener</code>. Status listeners are
-   disccussed further below. The installation of
-   <code>OnConsoleStatusListener</code> is shown next. </p>
-
-   <p class="example">Example: Registering a status listener
-   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
-   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
-   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
-  <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
-
-  ... the rest of the configuration file  
-&lt;/configuration></pre>
+   equivalent to installing an <code>OnConsoleStatusListener</code> as
+   shown previously. </p>
 
 
-   <p>Enabling output of status data, either via the debug attribute
-   or equivalently by installing <code>OnConsoleStatusListener</code>,
-   will go a long way in helping you diagnose logback issues. As such,
-   enabling logback status data is very highly recommended and should
-   be considered as a recourse of <b>first</b> resort.
+   <h3 class="doAnchor"
+   name="logback.statusLC">"logback.statusListenerClass" system
+   property</h3>
+
+   <p>One may also register a status listener by setting the
+   "logback.statusListenerClass" Java system property to the name of
+   the listener class you wish to register. For example,
    </p>
 
-   <h3 class="doAnchor" name="configFileProperty">Specifying the
-   location of the default configuration file as a system
-   property</h3>
+   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
+   
+   <p>Logback ships with several status listener implementations. <a
+   href="../xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a>
+   prints incoming status messages on the console, i.e. on
+   System.out. <a
+   href="../xref/ch/qos/logback/core/status/OnErrorConsoleStatusListener.html">OnErrorConsoleStatusListener</a>
+   prints incoming status messages on System.err. <a
+   href="../xref/ch/qos/logback/core/status/NopStatusListener.html">NopStatusListener</a>
+   drops incoming status messages.</p>
+   
+
+   <p>Note that <a href="#automaticStatusPrinting">automatic status
+   printing</a> (in case of errors) is disabled if any status listener
+   is registered during configuration and in particular if the user
+   specifies a status listener via the "logback.statusListenerClass"
+   system. Thus, by setting <code>NopStatusListener</code> as a status
+   listener, you can silence internal status printing altogether. </p>
+   
+   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.NopStatusListener&nbsp;...</p>
+
+   <h3 class="doAnchor" name="viewingStatusMessages">Viewing status
+   messages </h3>
+
+   <p>Logback collects its internal status data in a <code><a
+   href="../xref/ch/qos/logback/core/status/StatusManager.html">StatusManager</a></code>
+   object, accessible via the <code>LoggerContext</code>.
+   </p>
+
+   <p>Given a <code>StatusManager</code> you can access all the status
+   data associated with a logback context. To keep memory usage at
+   reasonable levels, the default <code>StatusManager</code>
+   implementation stores the status messages in two separate parts:
+   the header part and the tail part. The header part stores the first
+   <em>H</em> status messages whereas the tail part stores the last
+   <em>T</em> messages. At present time <em>H</em>=<em>T</em>=150,
+   although these values may change in future releases.</p>
+
+   <p>Logback-classic ships with a servlet called
+   ViewStatusMessagesServlet. This servlet prints the contents of the
+   <code>StatusManager</code> associated with the current
+   <code>LoggerContext</code> as an HTML table. Here is sample output.
+   </p>
+   
+   <a href="images/chapters/configuration/lbClassicStatus.jpg">
+     <img src="images/chapters/configuration/lbClassicStatus.jpg" alt="click to enlarge" width="90%"/>
+   </a>
+
+   <p>To add this servlet to your web-application, add the following
+   lines to its <em>WEB-INF/web.xml</em> file.</p>
+
+   <pre class="prettyprint source">  &lt;servlet>
+    &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
+    &lt;servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet&lt;/servlet-class>
+  &lt;/servlet>
+
+  &lt;servlet-mapping>
+    &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
+    &lt;url-pattern>/lbClassicStatus&lt;/url-pattern>
+  &lt;/servlet-mapping></pre>
+   
+   <p>The <code>ViewStatusMessages</code> servlet will be viewable at
+   the URL <code>http://host/yourWebapp/lbClassicStatus</code>
+   </p>
+
+
+   <h3 class="doAnchor" name="statusListenerViaCode">Listening to status messages via code</h3>
+
+   <p>You may also register a <code>StatusListener</code> via Java
+   code. Here is <a
+   href="../xref/chapters/configuration/AddStatusListenerApp.html">sample
+   code</a>. </p>
+
+   <pre class="prettyprint source">   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
+   StatusManager statusManager = lc.getStatusManager();
+   OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
+   statusManager.add(onConsoleListener);</pre>
+
+   <p>Note that the registered status listener will only receive status
+   events subsequent to its registration. It will not receive prior
+   messages. Thus, it is usually a good idea to place status listener
+   registration directives at top of the configuration file before
+   other directives.</p>
+
+
+   <!-- =========================================================== -->
+
+   <h2 class="doAnchor" name="configFileProperty">Setting the location
+   of the configuration file via a system property</h2>
 
    <p>You may specify the location of the default configuration file
    with a system property named
@@ -648,128 +733,6 @@ public class MyApp3 {
    application. Internal status data is printed in case of warnings or
    errors. Note that for multi-step configuration,
    <code>context.reset()</code> invocation should be omitted.</p>
-
-   <h3 class="doAnchor" name="viewingStatusMessages">Viewing status
-   messages </h3>
-
-   <p>Logback collects its internal status data in a <code><a
-   href="../xref/ch/qos/logback/core/status/StatusManager.html">StatusManager</a></code>
-   object, accessible via the <code>LoggerContext</code>.
-   </p>
-
-   <p>Given a <code>StatusManager</code> you can access all the status
-   data associated with a logback context. To keep memory usage at
-   reasonable levels, the default <code>StatusManager</code>
-   implementation stores the status messages in two separate parts:
-   the header part and the tail part. The header part stores the first
-   <em>H</em> status messages whereas the tail part stores the last
-   <em>T</em> messages. At present time <em>H</em>=<em>T</em>=150,
-   although these values may change in future releases.</p>
-
-   <p>Logback-classic ships with a servlet called
-   ViewStatusMessagesServlet. This servlet prints the contents of the
-   <code>StatusManager</code> associated with the current
-   <code>LoggerContext</code> as an HTML table. Here is sample output.
-   </p>
-   
-   <a href="images/chapters/configuration/lbClassicStatus.jpg">
-     <img src="images/chapters/configuration/lbClassicStatus.jpg" alt="click to enlarge" width="90%"/>
-   </a>
-
-   <p>To add this servlet to your web-application, add the following
-   lines to its <em>WEB-INF/web.xml</em> file.</p>
-
-   <pre class="prettyprint source">  &lt;servlet>
-    &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
-    &lt;servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet&lt;/servlet-class>
-  &lt;/servlet>
-
-  &lt;servlet-mapping>
-    &lt;servlet-name>ViewStatusMessages&lt;/servlet-name>
-    &lt;url-pattern>/lbClassicStatus&lt;/url-pattern>
-  &lt;/servlet-mapping></pre>
-   
-   <p>The <code>ViewStatusMessages</code> servlet will be viewable at
-   the URL <code>http://host/yourWebapp/lbClassicStatus</code>
-   </p>
-
-   <h3 class="doAnchor" name="statusListener">Listening to status
-   messages</h3>
-
-   <p>You may also attach a <code>StatusListener</code> to a
-   <code>StatusManager</code> so that you can take immediate action in
-   response to status messages, especially to messages occurring after
-   logback configuration. Registering a status listener is a
-   convenient way to supervise logback's internal state without human
-   intervention.
-   </p>
-
-   <p>Logback ships with a <code>StatusListener</code> implementation
-   called <code><a
-   href="../xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a></code>
-   which, as its name indicates, prints all <em>new</em> incoming
-   status messages on the console.
-   </p>
-
-   <p>Here is <a
-   href="../xref/chapters/configuration/AddStatusListenerApp.html">sample
-   code</a> to register an <code>OnConsoleStatusListener</code>
-   instance with the StatusManager.
-   </p>
-
-   <pre class="prettyprint source">   LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory(); 
-   StatusManager statusManager = lc.getStatusManager();
-   OnConsoleStatusListener onConsoleListener = new OnConsoleStatusListener();
-   statusManager.add(onConsoleListener);</pre>
-
-   <p>Note that the registered status listener will only receive status
-   events subsequent to its registration. It will not receive prior
-   messages. Thus, it is usually a good idea to place status listener
-   registration directives at top of the configuration file before
-   other directives.</p>
-
-   <p>It is also possible to register one or more status listeners
-   within a configuration file. Here is an example.</p>
-
-   <p class="example">Example: Registering a status listener
-   (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
-
-   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>
-   <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
-  <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
-
-  ... the rest of the configuration file  
-&lt;/configuration></pre>
-
-   <h3 class="doAnchor"
-   name="logback.statusLC">"logback.statusListenerClass" system
-   property</h3>
-
-   <p>One may also register a status listener by setting the
-   "logback.statusListenerClass" Java system property to the name of
-   the listener class you wish to register. For example,
-   </p>
-
-   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.OnConsoleStatusListener&nbsp;...</p>
-   
-   <p>Logback ships with several status listener implementations. <a
-   href="../xref/ch/qos/logback/core/status/OnConsoleStatusListener.html">OnConsoleStatusListener</a>
-   prints incoming status messages on the console, i.e. on
-   System.out. <a
-   href="../xref/ch/qos/logback/core/status/OnErrorConsoleStatusListener.html">OnErrorConsoleStatusListener</a>
-   prints incoming status messages on System.err. <a
-   href="../xref/ch/qos/logback/core/status/NopStatusListener.html">NopStatusListener</a>
-   drops incoming status messages.</p>
-   
-
-   <p>Note that <a href="#automaticStatusPrinting">automatic status
-   printing</a> (in case of errors) is disabled if any status listener
-   is registered during configuration and in particular if the user
-   specifies a status listener via the "logback.statusListenerClass"
-   system. Thus, by setting <code>NopStatusListener</code> as a status
-   listener, you can silence internal status printing altogether. </p>
-   
-   <p class="source">java <b>-Dlogback.statusListenerClass</b>=ch.qos.logback.core.status.NopStatusListener&nbsp;...</p>
 
 
    <h2 class="doAnchor" name="stopContext">Stopping

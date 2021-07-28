@@ -17,10 +17,8 @@ import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
@@ -33,9 +31,9 @@ import ch.qos.logback.core.joran.event.SaxEventRecorder;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.SimpleRuleStore;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
@@ -160,8 +158,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		}
 	}
 
-	public static String TTT = "c:/tmp/x.model";
-
+	
 	public void playEventsAndProcessModel(List<SaxEvent> saxEvents) throws JoranException {
 		buildInterpreter();
 		playSaxEvents(saxEvents);
@@ -170,15 +167,16 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		processModel(top);
 	}
 
-	void serializeModel(Model top) {
-		try {
-			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
-			oos.writeObject(top);
-			oos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	public static String TTT = "c:/tmp/x.model";
+//	void serializeModel(Model top) {
+//		try {
+//			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
+//			oos.writeObject(top);
+//			oos.close();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
 	private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
 		// disallow simultaneous configurations of the same context

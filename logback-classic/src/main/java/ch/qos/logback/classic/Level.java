@@ -106,6 +106,26 @@ public final class Level implements java.io.Serializable {
         return levelInt;
     }
 
+    
+    static public Level convertAnSLF4JLevel(org.slf4j.event.Level slf4jLevel) {
+    	
+    	final int levelInt = slf4jLevel.toInt();
+    	switch(levelInt) {
+    	  case (org.slf4j.event.EventConstants.TRACE_INT):
+              return TRACE;
+          case (org.slf4j.event.EventConstants.DEBUG_INT):
+              return DEBUG;
+          case (org.slf4j.event.EventConstants.INFO_INT):
+              return INFO;
+          case (org.slf4j.event.EventConstants.WARN_INT):
+              return WARN;
+          case (org.slf4j.event.EventConstants.ERROR_INT):
+              return ERROR;
+          default:
+              throw new IllegalArgumentException("Level integer [" + levelInt + "] not recognized.");
+          }
+    }
+    
     /**
      * Convert a Level to an Integer object.
      *

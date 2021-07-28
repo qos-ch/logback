@@ -50,7 +50,7 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
             } catch (JoranException je) {
                 Util.report("Failed to auto configure default logger context", je);
             }
-            // logback-292
+            // LOGBACK-292
             if (!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
                 StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
             }

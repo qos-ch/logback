@@ -511,31 +511,31 @@ public class JoranConfiguratorTest {
 		assertTrue(asyncAppender.isStarted());
 	}
 
-	@Test
-	public void doTest() throws JoranException {
-		int LIMIT = 0;
-		boolean oss = true;
-		for (int i = 0; i < LIMIT; i++) {
-			innerDoT(oss);
-		}
-		long start = System.currentTimeMillis();
-		innerDoT(oss);
-		long diff = System.currentTimeMillis() - start;
-		double average = (1.0d * diff);
-		System.out.println("Average time " + average + " ms. By serialization " + oss);
+//	@Test
+//	public void doTest() throws JoranException {
+//		int LIMIT = 0;
+//		boolean oss = true;
+//		for (int i = 0; i < LIMIT; i++) {
+//			innerDoT(oss);
+//		}
+//		long start = System.currentTimeMillis();
+//		innerDoT(oss);
+//		long diff = System.currentTimeMillis() - start;
+//		double average = (1.0d * diff);
+//		System.out.println("Average time " + average + " ms. By serialization " + oss);
+//
+//	}
 
-	}
-
-	private void innerDoT(boolean oss) throws JoranException {
-		JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(loggerContext);
-		if (oss) {
-			System.out.println("jc.doT");
-			jc.doT();
-		} else {
-			System.out.println("jc.doConfigure");
-			jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
-		}
-	}
+//	private void innerDoT(boolean oss) throws JoranException {
+//		JoranConfigurator jc = new JoranConfigurator();
+//		jc.setContext(loggerContext);
+//		if (oss) {
+//			System.out.println("jc.doT");
+//			jc.doT();
+//		} else {
+//			System.out.println("jc.doConfigure");
+//			jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
+//		}
+//	}
 
 }

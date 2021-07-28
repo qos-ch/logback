@@ -8,7 +8,6 @@ import java.util.concurrent.TimeUnit;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
-import ch.qos.logback.classic.util.EnvUtil;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
