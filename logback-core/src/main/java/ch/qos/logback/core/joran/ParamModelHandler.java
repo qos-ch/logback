@@ -13,6 +13,10 @@ public class ParamModelHandler extends ModelHandlerBase {
 
 	private final BeanDescriptionCache beanDescriptionCache;
 
+	public ParamModelHandler(Context context, InterpretationContext interpretationContext) {
+		this(context, interpretationContext.getBeanDescriptionCache());
+	}
+	
 	public ParamModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
 		super(context);
 		this.beanDescriptionCache = beanDescriptionCache;

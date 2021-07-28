@@ -4,7 +4,9 @@ import ch.qos.logback.core.model.Model;
 
 public class LoggerModel extends Model {
  
-    String name;
+ 	private static final long serialVersionUID = 5326913660697375316L;
+
+ 	String name;
     String level;
     String additivity;
     

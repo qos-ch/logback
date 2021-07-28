@@ -19,6 +19,8 @@ public class DefaultProcessor extends ContextAwareBase {
 	interface TraverseMethod {
 		int traverse(Model model, ModelFiler modelFiler);
 	}
+	
+	
 
 	final InterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, Class<? extends ModelHandlerBase>> modelClassToHandlerMap = new HashMap<>();
@@ -114,43 +116,49 @@ public class DefaultProcessor extends ContextAwareBase {
 
 	static final int DENIED = -1;
 
+	private ModelHandlerBase createHandler(Model model) {
+		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
+
+		if (handlerClass == null) {
+			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
+					+ model.getLineNumber());
+			return null;
+		}
+
+		ModelHandlerBase handler = instantiateHandler(handlerClass);
+		if (handler == null)
+			return null;
+		if (!handler.isSupportedModelType(model)) {
+			addWarn("Handler [" + handler.getClass() + "] does not support " + model.idString());
+			return null;
+		}
+		return handler;
+	}
+
 	protected int mainTraverse(Model model, ModelFiler modelFiler) {
 
 		FilterReply filterReply = modelFiler.decide(model);
 		if (filterReply == FilterReply.DENY)
 			return DENIED;
 
-		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
-
-		if (handlerClass == null) {
-			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
-					+ model.getLineNumber());
-			return 0;
-		}
-
-		ModelHandlerBase handler = instantiateHandler(handlerClass);
 		int count = 0;
 
 		try {
-
-			if (!handler.isSupportedModelType(model)) {
-				addWarn("Skipping processing for model " + model.idString());
-				return count;
-			}
-			boolean handledHere = false;
-
+			ModelHandlerBase handler = null;
 			if (model.isUnhandled()) {
-				handler.handle(interpretationContext, model);
-				handledHere = true;
-				model.markAsHandled();
-				count++;
+				handler = createHandler(model);
+				if (handler != null) {
+					handler.handle(interpretationContext, model);
+					model.markAsHandled();
+					count++;
+				}
 			}
 			// recurse into submodels handled or not
 
 			for (Model m : model.getSubModels()) {
 				count += mainTraverse(m, modelFiler);
 			}
-			if (handledHere) {
+			if (handler != null) {
 				handler.postHandle(interpretationContext, model);
 			}
 		} catch (ModelHandlerException e) {
@@ -166,35 +174,22 @@ public class DefaultProcessor extends ContextAwareBase {
 			return 0;
 		}
 
-		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
-
-		if (handlerClass == null) {
-			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
-					+ model.getLineNumber());
-			return 0;
-		}
-
 		int count = 0;
 
-		ModelHandlerBase handler = instantiateHandler(handlerClass);
-
 		try {
-			if (!handler.isSupportedModelType(model)) {
-				addWarn("Skipping processing for model " + model.idString());
-				return count;
-			}
 
 			boolean allDependenciesStarted = allDependenciesStarted(model);
 
-			boolean handledHere = false;
+			ModelHandlerBase handler = null;
 			if (model.isUnhandled() && allDependenciesStarted) {
-				handler.handle(interpretationContext, model);
-				handledHere = true;
-				model.markAsHandled();
-				count++;
+				handler = createHandler(model);
+				if (handler != null) {
+					handler.handle(interpretationContext, model);
+					model.markAsHandled();
+					count++;
+				}
 			}
 
-			
 			if (!allDependenciesStarted && !dependencyIsADirectSubmodel(model)) {
 				return count;
 			}
@@ -202,7 +197,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			for (Model m : model.getSubModels()) {
 				count += secondPhaseTraverse(m, modelFilter);
 			}
-			if (handledHere) {
+			if (handler != null) {
 				handler.postHandle(interpretationContext, model);
 			}
 		} catch (ModelHandlerException e) {
@@ -216,17 +211,16 @@ public class DefaultProcessor extends ContextAwareBase {
 		if (dependecyList == null || dependecyList.isEmpty()) {
 			return false;
 		}
-		for(Model submodel: model.getSubModels()) {
-			if(submodel instanceof NamedComponentModel) {
+		for (Model submodel : model.getSubModels()) {
+			if (submodel instanceof NamedComponentModel) {
 				NamedComponentModel namedComponentModel = (NamedComponentModel) submodel;
 				String subModelName = namedComponentModel.getName();
-				if(dependecyList.contains(subModelName)) {
+				if (dependecyList.contains(subModelName)) {
 					return true;
 				}
 			}
 		}
-		
-		
+
 		return false;
 	}
 

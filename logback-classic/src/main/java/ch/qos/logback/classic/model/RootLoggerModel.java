@@ -4,7 +4,8 @@ import ch.qos.logback.core.model.Model;
 
 public class RootLoggerModel extends Model {
  
-    String level;
+ 	private static final long serialVersionUID = -2811453129653502831L;
+	String level;
     
 	public String getLevel() {
 		return level;

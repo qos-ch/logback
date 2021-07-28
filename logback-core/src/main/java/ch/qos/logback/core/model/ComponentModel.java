@@ -8,7 +8,9 @@ package ch.qos.logback.core.model;
  */
 public class ComponentModel extends Model {
 
-    String className;
+	private static final long serialVersionUID = -7117814935763453139L;
+
+	String className;
     
     public String getClassName() {
         return className;

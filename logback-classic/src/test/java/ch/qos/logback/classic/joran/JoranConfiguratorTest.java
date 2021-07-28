@@ -50,6 +50,7 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
@@ -119,7 +120,6 @@ public class JoranConfiguratorTest {
 		String propertyName = "logback.level";
 		System.setProperty(propertyName, "DEBUG");
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "loggerLevelByProperty.xml");
-		StatusPrinter.print(loggerContext);
 		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
 		String msg = "hello world";
@@ -133,24 +133,23 @@ public class JoranConfiguratorTest {
 		final String propertyName = "logback.appenderRef";
 		System.setProperty(propertyName, "A");
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefByProperty.xml");
-		StatusPrinter.print(loggerContext);
 		final Logger logger = loggerContext.getLogger("ch.qos.logback.classic.joran");
 		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) logger.getAppender("A");
 		assertEquals(0, listAppender.list.size());
 		final String msg = "hello world";
 		logger.info(msg);
-	
+
 		assertEquals(1, listAppender.list.size());
 		System.clearProperty(propertyName);
 	}
-
 
 	@Test
 	public void statusListener() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
 		StatusChecker checker = new StatusChecker(loggerContext);
 		checker.assertIsErrorFree();
-		checker.assertContainsMatch(Status.WARN, "Please use \"level\" attribute within <logger> or <root> elements instead.");
+		checker.assertContainsMatch(Status.WARN,
+				"Please use \"level\" attribute within <logger> or <root> elements instead.");
 	}
 
 	@Test
@@ -163,7 +162,6 @@ public class JoranConfiguratorTest {
 	@Test
 	public void eval() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "callerData.xml");
-		StatusPrinter.print(loggerContext);
 		String msg = "hello world";
 		logger.debug("toto");
 		logger.debug(msg);
@@ -360,7 +358,7 @@ public class JoranConfiguratorTest {
 		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
 		configure(configFileAsStr);
 		StatusChecker checker = new StatusChecker(loggerContext);
-		StatusPrinter.print(loggerContext);
+
 		checker.assertIsErrorFree();
 		verifyJULLevel(loggerName, null);
 		verifyJULLevel("a.b.c." + diff, Level.WARN);
@@ -387,7 +385,6 @@ public class JoranConfiguratorTest {
 	public void onConsoleRetro() throws JoranException, IOException, InterruptedException {
 		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/onConsoleRetro.xml";
 		configure(configFileAsStr);
-		System.out.println("xxxxxxxxxxxxx");
 		Thread.sleep(400);
 
 		loggerContext.reset();
@@ -449,8 +446,7 @@ public class JoranConfiguratorTest {
 		try {
 			configure(configFileAsStr);
 		} finally {
-			StatusPrinter.print(loggerContext);
-
+			// StatusPrinter.print(loggerContext);
 		}
 		assertTrue(loggerContext.isPackagingDataEnabled());
 	}
@@ -486,36 +482,54 @@ public class JoranConfiguratorTest {
 		assertEquals(msg, le.getMessage());
 		checker.assertIsErrorFree();
 	}
-	
+
 	@Test
 	public void unreferencedAppendersShouldBeSkipped() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "unreferencedAppender1.xml");
-		
+
 		final ListAppender<ILoggingEvent> listAppenderA = (ListAppender<ILoggingEvent>) root.getAppender("A");
 		assertNotNull(listAppenderA);
-		StatusPrinter.print(loggerContext);
-		StatusChecker checker = new StatusChecker(loggerContext);	
+		StatusChecker checker = new StatusChecker(loggerContext);
 		checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
 	}
-	
+
 	@Test
 	public void asynAppenderListFirst() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_first.xml");
-		
+
 		final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
-		StatusPrinter.print(loggerContext);
 		assertNotNull(asyncAppender);
 		assertTrue(asyncAppender.isStarted());
 	}
-	
 
 	@Test
 	public void asynAppenderListAfter() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_after.xml");
-		
+
 		final AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
-		StatusPrinter.print(loggerContext);
 		assertNotNull(asyncAppender);
 		assertTrue(asyncAppender.isStarted());
 	}
+
+	@Test
+	public void doTest() throws JoranException {
+		int LIMIT = 1;
+		boolean oss = true;
+		long start = System.currentTimeMillis();
+		for (int i = 0; i < LIMIT; i++) {
+			JoranConfigurator jc = new JoranConfigurator();
+			jc.setContext(loggerContext);
+			if (oss) {
+				jc.doT();
+			} else {
+				jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_first.xml");
+			}
+		}
+
+		long diff = System.currentTimeMillis() - start;
+		double average = (1.0d * diff) / LIMIT;
+		System.out.println("Average time " + average + " ms. By serialization " + oss);
+
+	}
+
 }

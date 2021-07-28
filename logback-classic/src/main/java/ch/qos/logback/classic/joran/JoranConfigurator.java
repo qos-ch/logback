@@ -13,6 +13,10 @@
  */
 package ch.qos.logback.classic.joran;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
 import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.ContextNameAction;
@@ -45,6 +49,7 @@ import ch.qos.logback.core.joran.action.IncludeModelAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
@@ -191,6 +196,21 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		secondPhaseDefintionFilter.allowAll();
 		 
 		defaultProcessor.setPhaseTwoFilter(secondPhaseDefintionFilter);
+
+	}
+	
+	public void doT() throws JoranException {
+		buildInterpreter();
+		Model top;
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
+			top = (Model) ois.readObject();
+			ois.close();
+			interpreter.getInterpretationContext().pushModel(top);
+			processModel(top);
+		} catch (IOException | ClassNotFoundException e1) {
+			e1.printStackTrace();
+		}
 
 	}
 

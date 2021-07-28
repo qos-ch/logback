@@ -1,5 +1,6 @@
 package ch.qos.logback.core.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +10,10 @@ import java.util.List;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
-public class Model  {
+public class Model  implements Serializable {
 
+	private static final long serialVersionUID = -797372668713068159L;
+	
 	// this state should not be here but should be treated via listeners
 	// between processors and ModelHandlers
 	boolean handled = false;
