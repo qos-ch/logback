@@ -30,6 +30,35 @@
     the <a href="http://www.qos.ch/mailman/listinfo/announce">QOS.ch
     announce</a> mailing list.</p>
 
+    <hr width="80%" align="center" />
+
+    <h3>28th of July, 2021, Release of version 1.3.0-alpha6</h3>
+
+    <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
+    modularized and requires slf4j-api version 2.0.x. Moreover, the
+    1.3.x series requires Java&nbsp;8 at
+    <b>runtime</b>.</p>
+
+    <p>The 1.3.x series is Jigsaw/Java&nbsp;9 modularized and requires
+    slf4j-api version 2.0.x. Moreover, the 1.3.x series requires
+    Java&nbsp;8 at <b>runtime</b> whereas building logback from source
+    requires Java&nbsp;9.  <br/></p>
+
+    <p>Joran, logback's configuration system, has been rewritten to
+    use an internal representation model which can be processed
+    separately. As a side-effect, logback configuration scripts are
+    now largely order-free. For example, appenders can now be defined
+    after they are first referenced in a logger. Moreover,
+    unreferenced appenders are no longer instantiated. Given the
+    breadth of the changes in Joran codebase, support for
+    <code>SiftingAppender</code> and Groovy configuration have been
+    dropped temporarily.
+    </p>
+
+    <p>In addition to the important changes mentioned above, this
+    version contains the same fixes as in logback versions 1.2.4 and
+    1.2.5.
+    </p>
     
     <hr width="80%" align="center" />
 
@@ -68,27 +97,6 @@
     <hr width="80%" align="center" />
 
     <h3>11th of October, 2019, Release of version 1.3.0-alpha5</h3>
-
-    <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
-    modularized and requires slf4j-api version 2.0.x. Moreover, the
-    1.3.x series requires Java&nbsp;8 at
-    <b>runtime</b>.</p>
-
-    <p>The 1.3.x series is Jigsaw/Java&nbsp;9 modularized and requires
-    slf4j-api version 2.0.x. Moreover, the 1.3.x series requires
-    Java&nbsp;8 at <b>runtime</b> whereas building logback from source
-    requires Java&nbsp;9.  <br/></p>
-
-    <p>Joran, logback's configuration system, has been rewritten to
-    use an internal representation model which can be processed
-    separately. As a side-effect, logback configuration scripts are
-    now largely order-free. For example, appenders can now be defined
-    after they are first referenced in a logger. Moreover,
-    unreferenced appenders are no longer instantiated. Given the
-    breadth of the changes in Joran codebase, support for
-    <code>SiftingAppender</code> and Groovy configuration have been
-    dropped temporarily.
-    </p>
     
     <p>ConsoleAppender now delegates filtering of ANSI sequences to
     Jansi. This fixes <a
@@ -100,8 +108,6 @@
 
     <h3>February 11th, 2018, Release of version 1.3.0-alpha4</h3>
 
-    <br/>
-    
     <div class="breaking">
 
       <p>Given that all currently available versions of Groovy are
