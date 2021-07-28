@@ -6,6 +6,7 @@ import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
+import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
 
@@ -13,13 +14,13 @@ public class ParamModelHandler extends ModelHandlerBase {
 
 	private final BeanDescriptionCache beanDescriptionCache;
 
-	public ParamModelHandler(Context context, InterpretationContext interpretationContext) {
-		this(context, interpretationContext.getBeanDescriptionCache());
-	}
-	
 	public ParamModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
 		super(context);
 		this.beanDescriptionCache = beanDescriptionCache;
+	}
+	
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new ParamModelHandler(context, ic.getBeanDescriptionCache());
 	}
 
 	@Override

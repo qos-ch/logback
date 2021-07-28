@@ -1,0 +1,47 @@
+<configuration debug="false">
+	<appender name="FILE_INFO"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>infoLog.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>infoLogs.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE_ERROR"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>errorLog.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>errorLogs.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>3GB</totalSizeCap>
+		</rollingPolicy>
+
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>ERROR</level>
+		</filter>
+
+		<encoder>
+			<pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n
+			</pattern>
+		</encoder>
+	</appender>
+
+
+	<root level="DEBUG">
+		<appender-ref ref="FILE_INFO" />
+		<appender-ref ref="FILE_ERROR" />
+	</root>
+</configuration>

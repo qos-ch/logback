@@ -23,6 +23,10 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new EventEvaluatorModelHandler(context);
+	}	
+	
 	@Override
 	protected Class<EventEvaluatorModel> getSupportedModelClass() {
 		return EventEvaluatorModel.class;

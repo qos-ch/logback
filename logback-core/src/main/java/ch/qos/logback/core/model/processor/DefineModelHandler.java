@@ -28,6 +28,10 @@ public class DefineModelHandler extends ModelHandlerBase {
         super(context);
     }
     
+	static public DefineModelHandler makeInstance(Context context, InterpretationContext ic) {
+		return new DefineModelHandler(context);
+	}
+	
     @Override
     protected Class<DefineModel> getSupportedModelClass() {
     	return DefineModel.class;

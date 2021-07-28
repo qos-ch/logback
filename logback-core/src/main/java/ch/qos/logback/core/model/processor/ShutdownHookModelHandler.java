@@ -17,12 +17,15 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
         super(context);
     }
 
+    static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new ShutdownHookModelHandler(context);
+	}	
+	
+    
     @Override
     protected Class<ShutdownHookModel> getSupportedModelClass() {
     	return ShutdownHookModel.class;
     }
-
-
     
     @Override
     public void handle(InterpretationContext interpretationContext, Model model) {

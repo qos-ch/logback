@@ -29,7 +29,11 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 	public ConfigurationModelHandler(Context context) {
 		super(context);
 	}
-
+	
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new ConfigurationModelHandler(context);
+	}	
+		
 	protected Class<ConfigurationModel> getSupportedModelClass() {
 		return ConfigurationModel.class;
 	}
@@ -60,10 +64,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 				LoggerContext.DEFAULT_PACKAGING_DATA);
 		lc.setPackagingDataEnabled(packagingData);
 
-		if (EnvUtil.isGroovyAvailable()) {
-			ContextUtil contextUtil = new ContextUtil(context);
-			contextUtil.addGroovyPackages(lc.getFrameworkPackages());
-		}
+		ContextUtil contextUtil = new ContextUtil(context);
+		contextUtil.addGroovyPackages(lc.getFrameworkPackages());
 	}
 
 	String getSystemProperty(String name) {

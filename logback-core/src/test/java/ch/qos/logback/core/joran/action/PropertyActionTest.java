@@ -64,9 +64,9 @@ public class PropertyActionTest {
         propertyAction = new PropertyAction();
         propertyAction.setContext(context);
         defaultProcessor = new DefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
-        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
-        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
+        defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
+        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
+        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
     }
 
     @After

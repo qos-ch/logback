@@ -18,6 +18,11 @@ public class TimestampModelHandler  extends ModelHandlerBase {
     public TimestampModelHandler(Context context) {
         super(context);
     }
+    
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new TimestampModelHandler(context);
+	}	
+		
 
     @Override
     protected Class<TimestampModel> getSupportedModelClass() {

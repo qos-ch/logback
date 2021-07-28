@@ -13,6 +13,11 @@ public class ContextNameModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new ContextNameModelHandler(context);
+	}	
+		
+	
 	@Override
 	protected Class<ContextNameModel> getSupportedModelClass() {
 		return ContextNameModel.class;

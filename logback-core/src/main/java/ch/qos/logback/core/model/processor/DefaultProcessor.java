@@ -9,8 +9,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelFactoryMethod;
 import ch.qos.logback.core.model.NamedComponentModel;
-import ch.qos.logback.core.model.NamedModel;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 
@@ -21,9 +21,8 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 	
 	
-
 	final InterpretationContext interpretationContext;
-	final HashMap<Class<? extends Model>, Class<? extends ModelHandlerBase>> modelClassToHandlerMap = new HashMap<>();
+	final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
 	final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
 
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
@@ -34,8 +33,8 @@ public class DefaultProcessor extends ContextAwareBase {
 		this.interpretationContext = interpretationContext;
 	}
 
-	public void addHandler(Class<? extends Model> modelClass, Class<? extends ModelHandlerBase> handlerClass) {
-		modelClassToHandlerMap.put(modelClass, handlerClass);
+	public void addHandler(Class<? extends Model> modelClass, ModelFactoryMethod modelFactoryMethod) {
+		modelClassToHandlerMap.put(modelClass, modelFactoryMethod);
 	}
 
 	public void addAnalyser(Class<? extends Model> modelClass, ModelHandlerBase handler) {
@@ -117,15 +116,15 @@ public class DefaultProcessor extends ContextAwareBase {
 	static final int DENIED = -1;
 
 	private ModelHandlerBase createHandler(Model model) {
-		Class<? extends ModelHandlerBase> handlerClass = modelClassToHandlerMap.get(model.getClass());
+		ModelFactoryMethod modelFactoryMethod  = modelClassToHandlerMap.get(model.getClass());
 
-		if (handlerClass == null) {
+		if (modelFactoryMethod == null) {
 			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
 					+ model.getLineNumber());
 			return null;
 		}
 
-		ModelHandlerBase handler = instantiateHandler(handlerClass);
+		ModelHandlerBase handler = modelFactoryMethod.make(context, interpretationContext);
 		if (handler == null)
 			return null;
 		if (!handler.isSupportedModelType(model)) {
@@ -277,4 +276,6 @@ public class DefaultProcessor extends ContextAwareBase {
 			return null;
 		}
 	}
+	
+	
 }

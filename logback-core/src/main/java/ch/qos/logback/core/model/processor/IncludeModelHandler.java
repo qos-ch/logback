@@ -33,6 +33,10 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new IncludeModelHandler(context);
+	}	
+
 	@Override
 	protected Class<IncludeModel> getSupportedModelClass() {
 		return IncludeModel.class;

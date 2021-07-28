@@ -70,9 +70,9 @@ public class DefinePropertyActionTest {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-                defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
-                defaultProcessor.addHandler(DefineModel.class, DefineModelHandler.class);
-                defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
+                defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
+                defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
+                defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
 
                 return defaultProcessor;
             }

@@ -26,6 +26,10 @@ public class PropertyModelHandler extends ModelHandlerBase {
         super(context);
     }
 
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new PropertyModelHandler(context);
+	}	
+	
     @Override
     protected Class<PropertyModel> getSupportedModelClass() {
     	return PropertyModel.class;

@@ -70,9 +70,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
     	DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler.class);
-        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler.class);
-        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler.class);
+        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
+        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
+        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
         
         
         defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));

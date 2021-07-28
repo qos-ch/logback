@@ -513,23 +513,29 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void doTest() throws JoranException {
-		int LIMIT = 1;
+		int LIMIT = 0;
 		boolean oss = true;
-		long start = System.currentTimeMillis();
 		for (int i = 0; i < LIMIT; i++) {
-			JoranConfigurator jc = new JoranConfigurator();
-			jc.setContext(loggerContext);
-			if (oss) {
-				jc.doT();
-			} else {
-				jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "asyncAppender_list_first.xml");
-			}
+			innerDoT(oss);
 		}
-
+		long start = System.currentTimeMillis();
+		innerDoT(oss);
 		long diff = System.currentTimeMillis() - start;
-		double average = (1.0d * diff) / LIMIT;
+		double average = (1.0d * diff);
 		System.out.println("Average time " + average + " ms. By serialization " + oss);
 
+	}
+
+	private void innerDoT(boolean oss) throws JoranException {
+		JoranConfigurator jc = new JoranConfigurator();
+		jc.setContext(loggerContext);
+		if (oss) {
+			System.out.println("jc.doT");
+			jc.doT();
+		} else {
+			System.out.println("jc.doConfigure");
+			jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
+		}
 	}
 
 }

@@ -11,8 +11,12 @@ public class FruitContextModelHandler extends ModelHandlerBase {
     public FruitContextModelHandler(Context context) {
         super(context);
     }
-
-    @Override
+    
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new FruitContextModelHandler(context);
+	}	
+		
+	@Override
     public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         interpretationContext.pushObject(context);
     }

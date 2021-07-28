@@ -22,6 +22,11 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		super(context);
 	}
 
+	@SuppressWarnings("rawtypes")
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new AppenderModelHandler(context);
+	}
+	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {

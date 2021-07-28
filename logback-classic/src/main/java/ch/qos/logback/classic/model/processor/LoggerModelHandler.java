@@ -22,7 +22,11 @@ public class LoggerModelHandler extends ModelHandlerBase {
 	public LoggerModelHandler(Context context) {
 		super(context);
 	}
-
+	
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new LoggerModelHandler(context);
+	}	
+		
 	protected Class<LoggerModel> getSupportedModelClass() {
 		return LoggerModel.class;
 	}

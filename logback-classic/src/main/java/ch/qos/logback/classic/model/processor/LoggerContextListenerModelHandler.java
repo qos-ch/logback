@@ -20,6 +20,10 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new LoggerContextListenerModelHandler(context);
+	}	
+	
 	@Override
 	protected Class<LoggerContextListenerModel> getSupportedModelClass() {
 		return LoggerContextListenerModel.class;

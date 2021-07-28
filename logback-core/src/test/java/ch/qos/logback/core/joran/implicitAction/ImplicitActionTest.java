@@ -57,10 +57,10 @@ public class ImplicitActionTest {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-                defaultProcessor.addHandler(FruitContextModel.class, FruitContextModelHandler.class);
-                defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
-                defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
-                defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);
+                defaultProcessor.addHandler(FruitContextModel.class, FruitContextModelHandler::makeInstance);
+                defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
+                defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
+                defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
                 
                 return defaultProcessor;
             }

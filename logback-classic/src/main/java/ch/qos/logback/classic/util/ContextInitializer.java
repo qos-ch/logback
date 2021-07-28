@@ -64,18 +64,8 @@ public class ContextInitializer {
         }
         final String urlString = url.toString();
         if (urlString.endsWith("groovy")) {
-            if (EnvUtil.isGroovyAvailable()) {
-                // avoid directly referring to GafferConfigurator so as to avoid
-                // loading groovy.lang.GroovyObject . See also http://jira.qos.ch/browse/LBCLASSIC-214
-                //GafferUtil.runGafferConfiguratorOn(loggerContext, this, url);
-
-                StatusManager sm = loggerContext.getStatusManager();
-                sm.add(new ErrorStatus("Groovy configuration disabled due to Java 9 compilation issues.", loggerContext));
-                
-            } else {
-                StatusManager sm = loggerContext.getStatusManager();
-                sm.add(new ErrorStatus("Groovy classes are not available on the class path. ABORTING INITIALIZATION.", loggerContext));
-            }
+            StatusManager sm = loggerContext.getStatusManager();
+            sm.add(new ErrorStatus("Groovy configuration disabled due to Java 9 compilation issues.", loggerContext));
         } else if (urlString.endsWith("xml")) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);

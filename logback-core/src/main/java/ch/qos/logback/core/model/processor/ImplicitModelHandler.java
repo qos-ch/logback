@@ -37,6 +37,10 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 		return ImplicitModel.class;
 	}
 
+	static public ImplicitModelHandler makeInstance(Context context, InterpretationContext ic) {
+		return new ImplicitModelHandler(context, ic.getBeanDescriptionCache());
+	}
+	
 	@Override
 	public void handle(InterpretationContext intercon, Model model) {
 

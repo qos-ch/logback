@@ -106,8 +106,8 @@ public class IncludeActionTest {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-                defaultProcessor.addHandler(TopModel.class, NOPModelHandler.class);
-                defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler.class);
+                defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
+                defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
                 ModelFiler p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
                 defaultProcessor.setPhaseOneFilter(p1Filter);
                 ModelFiler p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class).denyAll();

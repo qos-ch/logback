@@ -132,15 +132,15 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler.class);
-        defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler.class);
-        defaultProcessor.addHandler(DefineModel.class, DefineModelHandler.class);
+        defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);
+        defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
+        defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
         
-        defaultProcessor.addHandler(ParamModel.class, ParamModelHandler.class);
-        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler.class);
-        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler.class);
-        defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler.class);
-        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler.class);
+        defaultProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);
+        defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
+        defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler::makeInstance);
+        defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
+        defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
 
         return defaultProcessor;
     }

@@ -17,6 +17,10 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new AppenderRefModelHandler(context);
+	}	
+		
 	@Override
 	protected Class<? extends AppenderRefModel> getSupportedModelClass() {
 		return AppenderRefModel.class;

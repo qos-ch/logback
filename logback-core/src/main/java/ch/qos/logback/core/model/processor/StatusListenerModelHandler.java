@@ -19,7 +19,11 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
     public StatusListenerModelHandler(Context context) {
         super(context);
     }
-
+    
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new StatusListenerModelHandler(context);
+	}	
+    
     @Override
     protected Class<StatusListenerModel> getSupportedModelClass() {
     	return StatusListenerModel.class;

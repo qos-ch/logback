@@ -16,6 +16,11 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 	public ConfigurationModelHandler(Context context) {
 		super(context);
 	}
+	
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new ConfigurationModelHandler(context);
+	}	
+		
 
 	protected Class<ConfigurationModel> getSupportedModelClass() {
 		return ConfigurationModel.class;

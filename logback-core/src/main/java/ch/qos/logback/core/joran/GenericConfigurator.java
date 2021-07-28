@@ -166,11 +166,11 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		buildInterpreter();
 		playSaxEvents(saxEvents);
 		Model top = interpreter.getInterpretationContext().peekModel();
-		//x(top);
+		//serializeModel(top);
 		processModel(top);
 	}
 
-	void x(Model top) {
+	void serializeModel(Model top) {
 		try {
 			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
 			oos.writeObject(top);

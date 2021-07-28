@@ -19,7 +19,11 @@ public class LevelModelHandler extends ModelHandlerBase {
 	public LevelModelHandler(Context context) {
 		super(context);
 	}
-
+	
+	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+		return new LevelModelHandler(context);
+	}	
+	
 	@Override
 	protected Class<? extends LevelModel> getSupportedModelClass() {
 		return LevelModel.class;
