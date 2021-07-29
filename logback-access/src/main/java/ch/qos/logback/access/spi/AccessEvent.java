@@ -263,7 +263,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     public String getSessionID() {
         if (sessionID == null) {
             if (httpRequest != null) {
-                final HttpSession session = httpRequest.getSession();
+                final HttpSession session = httpRequest.getSession(false);
                 if (session != null) {
                     sessionID = session.getId();
                 }
