@@ -32,6 +32,16 @@
 
     <hr width="80%" align="center" />
 
+    <h3>, 2021, Release of version 1.3.0-alpha7</h3>
+
+    <p><code>AccessEvent</code> in the logback-access module now tries
+    to get a reference to a given <code>HttpRequest</code> session
+    without trying to create it if missing. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1219">LOGBACK-1219</a>
+    reported by Chris West with Iliya Krapchatov providing the
+    relevant patch.
+    </p>
+    
     <h3>28th of July, 2021, Release of version 1.3.0-alpha6</h3>
 
     <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
