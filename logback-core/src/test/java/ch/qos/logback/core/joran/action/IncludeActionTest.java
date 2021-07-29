@@ -246,9 +246,10 @@ public class IncludeActionTest {
     @Test
     public void includeAsEntity() throws JoranException {
         tc.doConfigure(TOP_BY_ENTITY);
-        StatusPrinter.print(context);
+        // when entity inclusion is enabled
         //verifyConfig(new String[] { "EA", "EB" });
-        // entity inclusion disabled
+        
+        // when entity inclusion disabled
         verifyConfig(new String[] { });
     }
     
