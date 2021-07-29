@@ -206,7 +206,9 @@ public class IncludeActionTest {
 
     @Test
     public void malformedURL() throws JoranException {
-        System.setProperty(INCLUDE_KEY, "htp://logback.qos.ch");
+    	String MALFORMED = "htp://logback.qos.ch";
+    		
+        System.setProperty(INCLUDE_KEY, MALFORMED);
         tc.doConfigure(TOP_BY_URL);
         assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
         assertTrue(statusChecker.containsException(MalformedURLException.class));
@@ -239,10 +241,15 @@ public class IncludeActionTest {
         verifyConfig(new String[] { "IA", "IB", "SECOND" });
     }
     
+    
+    // See LOGBACK-1465 - xxe vulnerability
     @Test
     public void includeAsEntity() throws JoranException {
         tc.doConfigure(TOP_BY_ENTITY);
-        verifyConfig(new String[] { "EA", "EB" });  
+        StatusPrinter.print(context);
+        //verifyConfig(new String[] { "EA", "EB" });
+        // entity inclusion disabled
+        verifyConfig(new String[] { });
     }
     
     void verifyConfig(String[] expected) {

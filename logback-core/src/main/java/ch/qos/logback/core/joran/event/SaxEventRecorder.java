@@ -85,6 +85,9 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setValidating(false);
+            //spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
+            spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             spf.setNamespaceAware(true);
             return spf.newSAXParser();
         } catch (Exception pce) {
