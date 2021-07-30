@@ -235,6 +235,24 @@ public class TimeBasedRollingTest extends ScaffoldingForRollingTests {
         }
     }
 
-    
+
+//    @Test
+//    public void failed_rename2() throws IOException {
+//
+//        String testId = "failed_rename";
+//        try {
+//            String fileName = testId2FileName(testId);
+//
+//            
+//            rolloverChecker = new ZRolloverChecker(testId);
+//            genericTest(testId, "test10", ".gz", this::testId2FileName, NO_RESTART);
+//            rolloverChecker.check(expectedFilenameList);
+//
+//        } finally {
+//            StatusPrinter.print(context);
+//
+//        }
+//    }
+
     
 }
