@@ -31,7 +31,7 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.core.util.StatusPrinter;
 
 public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -114,7 +114,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.setContext(context);
         rfa.setRollingPolicy(tbrp);
         rfa.setFile("x");
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
         statusChecker.assertContainsMatch(Status.ERROR, "File property must be set before any triggeringPolicy ");
     }
@@ -150,7 +150,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.setRollingPolicy(tbrp);
         rfa.start();
 
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         assertTrue(tbrp.isStarted());
         assertTrue(rfa.isStarted());
         rfa.stop();
@@ -178,7 +178,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
         rfa.start();
 
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         assertTrue(fwRollingPolicy.isStarted());
         assertTrue(sbTriggeringPolicy.isStarted());
         assertTrue(rfa.isStarted());
@@ -222,7 +222,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         StatusChecker checker = new StatusChecker(context);
         assertFalse(rfa.isStarted());
         assertEquals(Status.ERROR, checker.getHighestLevel(0));
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         checker.assertContainsMatch("The date format in FileNamePattern will result");
     }
 

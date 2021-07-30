@@ -32,6 +32,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.UnaryOperator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -127,6 +128,14 @@ public class ScaffoldingForRollingTests {
         return existenceCounter;
     }
 
+    protected String nullFileName(String testId) {
+        return null;
+    }
+
+    protected String impossibleFileName(String testId) {
+        throw new RuntimeException("implement");
+    }
+
     protected String testId2FileName(String testId) {
         return randomOutputDir + testId + ".log";
     }
@@ -203,12 +212,13 @@ public class ScaffoldingForRollingTests {
         }
     }
 
-    protected void massageExpectedFilesToCorresponToCurrentTarget(String fileName, boolean fileOptionIsSet) {
+    protected void massageExpectedFilesToCorresponToCurrentTarget(String testId, UnaryOperator<String> filenameFunction) {
         int lastIndex = expectedFilenameList.size() - 1;
         String last = expectedFilenameList.remove(lastIndex);
 
-        if (fileOptionIsSet) {
-            expectedFilenameList.add(fileName);
+        String filename = filenameFunction.apply(testId);
+        if (filename != null) {
+            expectedFilenameList.add(filename);
         } else if (last.endsWith(".gz")) {
             int lastLen = last.length();
             String stem = last.substring(0, lastLen - 3);
@@ -247,7 +257,6 @@ public class ScaffoldingForRollingTests {
     }
 
     void checkZipEntryName(String filepath, String pattern) throws IOException {
-        System.out.println("Checking [" + filepath + "]");
         ZipFile zf = new ZipFile(filepath);
 
         try {
@@ -255,7 +264,6 @@ public class ScaffoldingForRollingTests {
             assert ((entries.hasMoreElements()));
             ZipEntry firstZipEntry = entries.nextElement();
             assert ((!entries.hasMoreElements()));
-            System.out.println("Testing zip entry [" + firstZipEntry.getName() + "]");
             assertTrue(firstZipEntry.getName().matches(pattern));
         } finally {
             if (zf != null)

@@ -63,7 +63,7 @@ public class CoreConstants {
     public static final String ISO8601_STR = "ISO8601";
     public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
     public static final String DAILY_DATE_PATTERN = "yyyy-MM-dd";
-
+ 
     /**
      * Time format used in Common Log Format
      */

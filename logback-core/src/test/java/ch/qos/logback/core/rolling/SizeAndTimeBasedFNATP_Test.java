@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.function.UnaryOperator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -88,8 +89,8 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         }
     }
 
-    void generic(String testId, String stem, boolean withSecondPhase, String compressionSuffix) throws IOException, InterruptedException, ExecutionException {
-        String file = (stem != null) ? randomOutputDir + stem : null;
+    void generic(String testId, UnaryOperator<String> filenameFunction, boolean withSecondPhase, String compressionSuffix) throws IOException, InterruptedException, ExecutionException {
+        String file = filenameFunction.apply(testId);
         initRollingFileAppender(rfa1, file);
         sizeThreshold = 300;
 
@@ -111,12 +112,12 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         }
 
         if (withSecondPhase) {
-            secondPhase(testId, file, stem, compressionSuffix, runLength, prefix);
+            secondPhase(testId, filenameFunction, compressionSuffix, runLength, prefix);
             runLength = runLength * 2;
         }
 
-        if (stem != null)
-            massageExpectedFilesToCorresponToCurrentTarget(file, true);
+        if (file != null)
+            massageExpectedFilesToCorresponToCurrentTarget(testId, this::testId2FileName);
 
         Thread.yield();
         // wait for compression to finish
@@ -127,11 +128,12 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         sortedContentCheck(randomOutputDir, runLength, prefix);
     }
 
-    void secondPhase(String testId, String file, String stem, String compressionSuffix, int runLength, String prefix) {
+    void secondPhase(String testId, UnaryOperator<String> filenameFunction, String compressionSuffix, int runLength, String prefix) {
         rfa1.stop();
 
-        if (stem != null) {
-            File f = new File(file);
+        String filename = filenameFunction.apply(testId);
+        if (filename != null) {
+            File f = new File(filename);
             f.setLastModified(currentTime);
         }
 
@@ -139,7 +141,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         sm.add(new InfoStatus("Time when rfa1 is stopped: " + new Date(currentTime), this));
         sm.add(new InfoStatus("currentTime%1000=" + (currentTime % 1000), this));
 
-        initRollingFileAppender(rfa2, file);
+        initRollingFileAppender(rfa2, filename);
         initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
 
         for (int i = runLength; i < runLength * 2; i++) {
@@ -157,37 +159,37 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
 
     @Test
     public void noCompression_FileSet_NoRestart_1() throws InterruptedException, ExecutionException, IOException {
-        generic("test1", "toto.log", FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
+        generic("test1", this::testId2FileName, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
     }
 
     @Test
     public void noCompression_FileBlank_NoRestart_2() throws Exception {
-        generic("test2", null, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
+        generic("test2", this::nullFileName, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
     }
 
     @Test
     public void noCompression_FileBlank_WithStopStart_3() throws Exception {
-        generic("test3", null, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX); 
+        generic("test3", this::nullFileName, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX); 
     }
 
     @Test
     public void noCompression_FileSet_WithStopStart_4() throws Exception {
-        generic("test4", "test4.log", WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
+        generic("test4", this::testId2FileName, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
     }
 
     @Test
     public void withGZCompression_FileSet_NoRestart_5() throws Exception {
-        generic("test5", "toto.log", FIRST_PHASE_ONLY, ".gz");
+        generic("test5", this::testId2FileName, FIRST_PHASE_ONLY, ".gz");
     }
 
     @Test
     public void withGZCompression_FileBlank_NoRestart_6() throws Exception {
-        generic("test6", null, FIRST_PHASE_ONLY, ".gz");
+        generic("test6", this::nullFileName, FIRST_PHASE_ONLY, ".gz");
     }
 
     @Test
     public void withZipCompression_FileSet_NoRestart_7() throws Exception {
-        generic("test7", "toto.log", FIRST_PHASE_ONLY, ".zip");
+        generic("test7", this::testId2FileName, FIRST_PHASE_ONLY, ".zip");
         List<String> zipFiles = filterElementsInListBySuffix(".zip");
         checkZipEntryMatchesZipFilename(zipFiles);
     }
