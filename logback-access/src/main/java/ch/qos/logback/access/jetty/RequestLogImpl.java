@@ -112,7 +112,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class RequestLogImpl extends ContextBase implements RequestLog, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
+public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.util.component.LifeCycle,  RequestLog, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
     public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar + "logback-access.xml";
 
