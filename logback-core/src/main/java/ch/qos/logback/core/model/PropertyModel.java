@@ -3,7 +3,11 @@ package ch.qos.logback.core.model;
 public class PropertyModel extends NamedModel {
 
 
-    String value;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1494176979175092052L;
+	String value;
     String scopeStr;
 
     String file;

@@ -4,6 +4,10 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 
 public class IncludeModel extends Model {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7613821942841993495L;
 	String optional;
 	String file;
 	String url;
