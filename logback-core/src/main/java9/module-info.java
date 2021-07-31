@@ -11,12 +11,14 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
     exports ch.qos.logback.core.db;
-
+    
+    exports ch.qos.logback.core.rolling;
+    exports ch.qos.logback.core.rolling.helper;
+    
     exports ch.qos.logback.core.encoder;
 
     exports ch.qos.logback.core.helpers;
     exports ch.qos.logback.core.html;
-    
     
     exports ch.qos.logback.core.filter;
 
@@ -29,12 +31,11 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.joran.event;  
     exports ch.qos.logback.core.joran.util;
     exports ch.qos.logback.core.joran.conditional;
-    
+    exports ch.qos.logback.core.joran.util.beans;
     
     exports ch.qos.logback.core.net;
     exports ch.qos.logback.core.net.server;
     exports ch.qos.logback.core.net.ssl;
-
 
     exports ch.qos.logback.core.pattern;
     exports ch.qos.logback.core.pattern.color;
@@ -45,10 +46,6 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.status;
 
     exports ch.qos.logback.core.util;
-
-    
-    
-  
     
 }
 
