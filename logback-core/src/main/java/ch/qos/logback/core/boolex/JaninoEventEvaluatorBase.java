@@ -48,7 +48,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
 
     abstract protected Object[] getParameterValues(E event);
 
-    protected List<Matcher> matcherList = new ArrayList<Matcher>();
+    protected List<Matcher> matcherList = new ArrayList<>();
 
     @Override
     public void start() {
@@ -67,7 +67,7 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
         }
         try {
             Boolean result = (Boolean) scriptEvaluator.evaluate(getParameterValues(event));
-            return result.booleanValue();
+            return result;
         } catch (Exception ex) {
             errorCount++;
             if (errorCount >= ERROR_THRESHOLD) {
