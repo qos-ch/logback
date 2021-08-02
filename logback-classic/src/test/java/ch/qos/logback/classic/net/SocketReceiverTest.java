@@ -208,7 +208,7 @@ public class SocketReceiverTest {
         private boolean connectorCreated;
 
         @Override
-        protected synchronized SocketConnector newConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
+        protected synchronized SocketConnector newConnector(String address, int port, int initialDelay, int retryDelay) {
             connectorCreated = true;
             notifyAll();
             return connector;
