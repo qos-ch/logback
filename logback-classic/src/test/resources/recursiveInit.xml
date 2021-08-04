@@ -8,7 +8,7 @@
   </appender>
 
                                                
-  <appender name="RECURSIVE"  class="org.slf4j.impl.RecursiveLBAppender"/>
+  <appender name="RECURSIVE"  class="org.slf4j.implTest.RecursiveLBAppender"/>
     
   <root level="DEBUG" >
     <appender-ref ref="STDOUT" />
