@@ -1,4 +1,4 @@
-package org.slf4j.impl;
+package org.slf4j.implTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

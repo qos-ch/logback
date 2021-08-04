@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package org.slf4j.impl;
+package org.slf4j.implTest;
 
 import org.junit.After;
 import org.junit.Before;

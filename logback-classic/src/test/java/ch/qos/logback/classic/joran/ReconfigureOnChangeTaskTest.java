@@ -115,7 +115,7 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     private void checkThatTaskCanBeStopped() {
-        ScheduledFuture<?> future = loggerContext.getScheduledFutures().get(0);
+        ScheduledFuture<?> future = loggerContext.getCopyOfScheduledFutures().get(0);
         loggerContext.stop();
         assertTrue(future.isCancelled());
     }
@@ -165,7 +165,7 @@ public class ReconfigureOnChangeTaskTest {
         StatusPrinter.print(loggerContext);
         ReconfigureOnChangeTask roct = getRegisteredReconfigureTask();
         assertNull(roct);
-        assertEquals(0, loggerContext.getScheduledFutures().size());
+        assertEquals(0, loggerContext.getCopyOfScheduledFutures().size());
     }
 
     @Test(timeout = 3000L)
@@ -316,7 +316,7 @@ public class ReconfigureOnChangeTaskTest {
         File file = new File(SCAN_PERIOD_DEFAULT_FILE_AS_STR);
         configure(file);
 
-        final List<ScheduledFuture<?>> scheduledFutures = loggerContext.getScheduledFutures();
+        final List<ScheduledFuture<?>> scheduledFutures = loggerContext.getCopyOfScheduledFutures();
         StatusPrinter.print(loggerContext);
         assertFalse(scheduledFutures.isEmpty());
         statusChecker.containsMatch("No 'scanPeriod' specified. Defaulting to");

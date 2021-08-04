@@ -30,6 +30,8 @@ import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.ExecutorServiceUtil;
 import ch.qos.logback.core.util.NetworkAddressUtil;
@@ -234,8 +236,12 @@ public class ContextBase implements Context, LifeCycle {
         Thread hook = (Thread) getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
         if (hook != null) {
             removeObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+            
             try {
-                Runtime.getRuntime().removeShutdownHook(hook);
+            	sm.add(new InfoStatus("Removing shutdownHook "+hook, this));
+            	Runtime runtime = Runtime.getRuntime();
+            	boolean result = runtime.removeShutdownHook(hook);
+            	sm.add(new InfoStatus("ShutdownHook removal result: "+ result, this));
             } catch (IllegalStateException e) {
                 // if JVM is already shutting down, ISE is thrown
                 // no need to do anything else
@@ -276,7 +282,15 @@ public class ContextBase implements Context, LifeCycle {
         scheduledFutures.add(scheduledFuture);
     }
 
+    /**
+     * @deprecated replaced by getCopyOfScheduledFutures
+     */
+    @Deprecated 
     public List<ScheduledFuture<?>> getScheduledFutures() {
+        return getCopyOfScheduledFutures();
+    }
+    
+    public List<ScheduledFuture<?>> getCopyOfScheduledFutures() {
         return new ArrayList<ScheduledFuture<?>>(scheduledFutures);
     }
     

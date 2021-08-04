@@ -46,6 +46,8 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.status;
 
     exports ch.qos.logback.core.util;
+    exports ch.qos.logback.core.read;
+    
     
 }
 
