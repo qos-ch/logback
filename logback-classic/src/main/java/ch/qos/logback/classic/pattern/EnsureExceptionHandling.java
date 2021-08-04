@@ -16,6 +16,7 @@ package ch.qos.logback.classic.pattern;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.pattern.CompositeConverter;
 import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.PostCompileProcessor;
@@ -68,8 +69,30 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
         while (c != null) {
             if (c instanceof ThrowableHandlingConverter) {
                 return true;
+            } else if (c instanceof CompositeConverter) {
+                if (compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c)) {
+                    return true;
+                }
             }
             c = c.getNext();
+        }
+        return false;
+    }
+
+    /**
+     * This method computes whether a composite converter handles exceptions or
+     * not.
+     *
+     * @param converter
+     *                The composite converter
+     * @return true if can handle throwables contained in logging events
+     */
+    public boolean compositeHandlesThrowable(CompositeConverter<ILoggingEvent> converter) {
+        Converter<ILoggingEvent> c = converter.getChildConverter();
+        if (c instanceof ThrowableHandlingConverter) {
+            return true;
+        } else if (c instanceof CompositeConverter) {
+            return compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c);
         }
         return false;
     }
