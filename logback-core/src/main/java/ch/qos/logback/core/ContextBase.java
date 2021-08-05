@@ -211,7 +211,7 @@ public class ContextBase implements Context, LifeCycle {
 
     @Override
     /**
-     * @deprecated
+     * @deprecated replaced by getScheduledExecutorService
      */
     public synchronized ExecutorService getExecutorService() {
         return getScheduledExecutorService();
