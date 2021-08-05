@@ -13,15 +13,14 @@
  */
 package ch.qos.logback.core;
 
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
+
+import java.io.OutputStream;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * ConsoleAppender appends log events to <code>System.out</code> or
@@ -40,11 +39,6 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
 
     protected ConsoleTarget target = ConsoleTarget.SystemOut;
     protected boolean withJansi = false;
-
-    private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
-    private final static String wrapSystemOut_METHOD_NAME = "wrapSystemOut";
-    private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
-    private final static Class<?>[] ARGUMENT_TYPES = {PrintStream.class};
 
     /**
      * Sets the value of the <b>Target</b> option. Recognized values are
@@ -80,24 +74,30 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
         OutputStream targetStream = target.getStream();
         // enable jansi only if withJansi set to true
         if (withJansi) {
-            targetStream = wrapWithJansi(targetStream);
+            addInfo("Enabling JANSI AnsiPrintStream for the console.");
+            OutputStream ansiPrintStream = getAnsiPrintStream();
+            if (ansiPrintStream != null) {
+                targetStream = ansiPrintStream;
+            }
         }
         setOutputStream(targetStream);
         super.start();
     }
 
-    private OutputStream wrapWithJansi(OutputStream targetStream) {
+    private OutputStream getAnsiPrintStream() {
         try {
-            addInfo("Enabling JANSI AnsiPrintStream for the console.");
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
-            Class<?> classObj = classLoader.loadClass(AnsiConsole_CLASS_NAME);
-            String methodName = target == ConsoleTarget.SystemOut ? wrapSystemOut_METHOD_NAME : wrapSystemErr_METHOD_NAME;
-            Method method = classObj.getMethod(methodName, ARGUMENT_TYPES);
-            return (OutputStream) method.invoke(null, new PrintStream(targetStream));
-        } catch (Exception e) {
+            Class<?> ansiConsoleClass = classLoader.loadClass("org.fusesource.jansi.AnsiConsole");
+            Class<?> ansiPrintStreamClass = classLoader.loadClass("org.fusesource.jansi.AnsiPrintStream");
+            Method ansiPrintStreamMethod = ansiConsoleClass.getMethod(target == ConsoleTarget.SystemOut ? "out" : "err");
+            Method installMethod = ansiPrintStreamClass.getMethod("install");
+            OutputStream outputStream = (OutputStream) ansiPrintStreamMethod.invoke(null);
+            installMethod.invoke(outputStream);
+            return outputStream;
+        } catch (Throwable e) {
             addWarn("Failed to create AnsiPrintStream. Falling back on the default stream.", e);
         }
-        return targetStream;
+        return null;
     }
 
     /**
