@@ -65,7 +65,7 @@
     <tomcat.version>9.0.50</tomcat.version>
     <jetty.version>9.4.9.v20180320</jetty.version>
     <compiler-plugin.version>3.8.0</compiler-plugin.version> <!-- 3.6.1, 3.7.0 -->
-    <jansi.version>2.3.4</jansi.version>
+    <jansi.version>1.18</jansi.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>    
