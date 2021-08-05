@@ -61,12 +61,14 @@
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>javax.mail-api</artifactId>      
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
   </dependencies>
 
   <build>

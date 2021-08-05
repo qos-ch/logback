@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.core.net;
 
-import javax.mail.Authenticator;
-import javax.mail.PasswordAuthentication;
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
 
 /**
  * Used by SMTPAppender for authentication purposes.

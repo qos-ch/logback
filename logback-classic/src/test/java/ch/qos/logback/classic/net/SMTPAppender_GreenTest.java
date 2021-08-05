@@ -39,9 +39,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
