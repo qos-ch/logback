@@ -66,11 +66,10 @@ public class LoggerNameConverterPerfTest {
 	
 	@Test
 	public void measureAbbreviationPerf() {
-		for(int i = 0; i < 100; i++) {
+		for(int i = 0; i < 1000; i++) {
 			performAbbreviation();
 		}
-		if(1==21)
-			return;
+
 		final int runLength = 1000*1000;
 		
 		long start = System.nanoTime();

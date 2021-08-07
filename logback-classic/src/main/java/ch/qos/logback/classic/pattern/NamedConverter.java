@@ -19,11 +19,28 @@ import java.util.Map;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public abstract class NamedConverter extends ClassicConverter {
-	static final int INITIAL_CACHE_SIZE = 128;
-	static final int MAX_ALLOWED_REMOVAL_THRESHOLD = 2048;
-	static final double CACHE_MISSRATE_TRIGGER = 0.3d;
-	static final int MIN_SAMPLE_SIZE = MAX_ALLOWED_REMOVAL_THRESHOLD * 8;
 
+	static final int INITIAL_CACHE_SIZE = 512;
+	static final double LOAD_FACTOR = 0.75; // this is the JDK implementation default
+	
+	/**
+	 * We don't let the cache map size to go over MAX_ALLOWED_REMOVAL_THRESHOLD elements
+	 */
+	static final int MAX_ALLOWED_REMOVAL_THRESHOLD =  (int) (2048*LOAD_FACTOR); 
+	
+	/**
+	 * When the cache miss rate is above 30%, the cache is deemed inefficient.
+	 */
+	static final double CACHE_MISSRATE_TRIGGER = 0.3d;
+	
+	/**
+	 * We should have a sample size of minimal length before computing the
+	 * cache miss rate.
+	 */
+	static final int MIN_SAMPLE_SIZE = 1024;
+
+	static final double NEGATIVE = -1;
+	
 	final NameCache cache = new NameCache(INITIAL_CACHE_SIZE);
 
 	Abbreviator abbreviator = null;
@@ -61,11 +78,12 @@ public abstract class NamedConverter extends ClassicConverter {
 		if (abbreviator == null) {
 			return fqn;
 		} else {
+			//return abbreviator.abbreviate(fqn);
 			return viaCache(fqn);
 		}
 	}
 
-	private String viaCache(String fqn) {
+	private synchronized String viaCache(String fqn) {
 		totalCalls++;
 		String abbreviated = cache.get(fqn);
 		if (abbreviated == null) {
@@ -89,7 +107,7 @@ public abstract class NamedConverter extends ClassicConverter {
 
 		NameCache(int initialCapacity) {
 			super(initialCapacity);
-			this.removalThreshold = (int) (0.75 * initialCapacity);
+			this.removalThreshold = (int) (initialCapacity * LOAD_FACTOR);
 		}
 
 		/**
@@ -99,13 +117,12 @@ public abstract class NamedConverter extends ClassicConverter {
 		@Override
 		protected boolean removeEldestEntry(Map.Entry<String, String> entry) {
 			if (shouldDoubleRemovalThreshold()) {
-				NamedConverter.this.addInfo("Will double removalThreshold at " + removalThreshold + " cacheMissRate="
+				removalThreshold *= 2;
+				NamedConverter.this.addInfo("Doubled removalThreshold to " + removalThreshold + " cacheMissRate="
 						+ cacheMissCalculator.getCacheMissRate());
 				cacheMissCalculator.updateMilestones();
-				removalThreshold *= 2;
 			}
 
-			// System.out.println("size="+size()+" removalThreshold="+removalThreshold);
 			if (size() >= removalThreshold) {
 				return true;
 			} else
@@ -114,21 +131,19 @@ public abstract class NamedConverter extends ClassicConverter {
 
 		private boolean shouldDoubleRemovalThreshold() {
 
+			// cannot double removalThreshold is already at max allowed size
 			if (this.removalThreshold >= MAX_ALLOWED_REMOVAL_THRESHOLD)
 				return false;
 
 			double rate = cacheMissCalculator.getCacheMissRate();
-			// System.out.println("computed getCacheMissRate="+rate);
 
+			// negative rate indicates insufficient sample size
 			if (rate < 0)
 				return false;
 
 			if (rate < CACHE_MISSRATE_TRIGGER)
 				return false;
 
-			System.out.println(
-					"xxxxxxxxxxxx shouldDoubleRemovalThreshold returns true at " + (int) (removalThreshold / 0.75));
-			System.out.println("xxxxxxxxxxxx computed cache miss rate: " + rate);
 			return true;
 		}
 	}
@@ -139,8 +154,6 @@ public abstract class NamedConverter extends ClassicConverter {
 		int cacheMissesMilestone = 0;
 
 		void updateMilestones() {
-			System.out.println("updateMilestones totalsMilestone=" + totalsMilestone + " cacheMissesMilestone="
-					+ cacheMissesMilestone);
 			this.totalsMilestone = NamedConverter.this.totalCalls;
 			this.cacheMissesMilestone = NamedConverter.this.cacheMisses;
 		}
@@ -150,11 +163,12 @@ public abstract class NamedConverter extends ClassicConverter {
 			int effectiveTotal = NamedConverter.this.totalCalls - totalsMilestone;
 
 			if (effectiveTotal < MIN_SAMPLE_SIZE) {
-				return -1;
+				// cache miss rate cannot be negative. Thus, we signal the caller of
+				// insufficient sample size.
+				return NEGATIVE;
 			}
 
 			int effectiveCacheMisses = NamedConverter.this.cacheMisses - cacheMissesMilestone;
-			// System.out.println("effectiveCacheMisses = "+effectiveCacheMisses);
 			return (1.0d * effectiveCacheMisses / effectiveTotal);
 		}
 	}
