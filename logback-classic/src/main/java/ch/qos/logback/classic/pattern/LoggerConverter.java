@@ -20,4 +20,6 @@ public class LoggerConverter extends NamedConverter {
     protected String getFullyQualifiedName(ILoggingEvent event) {
         return event.getLoggerName();
     }
+
+
 }

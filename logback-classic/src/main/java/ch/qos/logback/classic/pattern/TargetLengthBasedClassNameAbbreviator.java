@@ -37,20 +37,20 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
         int[] dotIndexesArray = new int[ClassicConstants.MAX_DOTS];
         // a.b.c contains 2 dots but 2+1 parts.
-        // see also http://jira.qos.ch/browse/LBCLASSIC-110
+        // see also http://jira.qos.ch/browse/LOGBACK-437
         int[] lengthArray = new int[ClassicConstants.MAX_DOTS + 1];
 
         int dotCount = computeDotIndexes(fqClassName, dotIndexesArray);
 
         // System.out.println();
         // System.out.println("Dot count for [" + className + "] is " + dotCount);
-        // if there are not dots than abbreviation is not possible
+        // if there are no dots than abbreviation is not possible
         if (dotCount == 0) {
             return fqClassName;
         }
         // printArray("dotArray: ", dotArray);
         computeLengthArray(fqClassName, dotIndexesArray, lengthArray, dotCount);
-        // printArray("lengthArray: ", lengthArray);
+        //printArray("lengthArray: ", lengthArray);
         for (int i = 0; i <= dotCount; i++) {
             if (i == 0) {
                 buf.append(fqClassName.substring(0, lengthArray[i] - 1));
@@ -63,6 +63,14 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
         return buf.toString();
     }
 
+    /**
+     * Populate dotArray with the positions of the DOT character in className.
+     * Leftmost dot is placed at index 0 of dotArray.
+     * 
+     * @param className
+     * @param dotArray
+     * @return the number of dots found
+     */
     static int computeDotIndexes(final String className, int[] dotArray) {
         int dotCount = 0;
         int k = 0;
@@ -73,7 +81,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
             if (k != -1 && dotCount < ClassicConstants.MAX_DOTS) {
                 dotArray[dotCount] = k;
                 dotCount++;
-                k++;
+                k++; // move past the last found DOT
             } else {
                 break;
             }
@@ -84,8 +92,6 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
     void computeLengthArray(final String className, int[] dotArray, int[] lengthArray, int dotCount) {
         int toTrim = className.length() - targetLength;
         // System.out.println("toTrim=" + toTrim);
-
-        // int toTrimAvarage = 0;
 
         int len;
         for (int i = 0; i < dotCount; i++) {
