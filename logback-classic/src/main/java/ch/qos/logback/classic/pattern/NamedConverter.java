@@ -114,6 +114,16 @@ public abstract class NamedConverter extends ClassicConverter {
 		}
 	}
 
+	/**
+	 *  This method is synchronized. It is the only place where the cache, a subclass of LinkedHashMap, 
+	 *  is modified. 
+	 *  
+	 *  The cache can be cleared via a call to disableCache(). However, the call to disableCache() is made 
+	 *  indirectly from within viaCache(String).
+	 *  
+	 * @param fqn
+	 * @return
+	 */
 	private synchronized String viaCache(String fqn) {
 		totalCalls++;
 		String abbreviated = cache.get(fqn);
