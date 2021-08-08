@@ -99,14 +99,6 @@ public abstract class NamedConverter extends ClassicConverter {
 		}
 	}
 
-	private void disableCache() {
-		if (!cacheEnabled)
-			return;
-		cache.clear();
-		this.cacheEnabled = false;
-		addInfo("Disabling cache at totalCalls=" + totalCalls);
-	}
-
 	private synchronized String viaCache(String fqn) {
 		totalCalls++;
 		String abbreviated = cache.get(fqn);
@@ -118,6 +110,14 @@ public abstract class NamedConverter extends ClassicConverter {
 		return abbreviated;
 	}
 
+	private void disableCache() {
+		if (!cacheEnabled)
+			return;
+		this.cacheEnabled = false;
+		cache.clear();	
+		addInfo("Disabling cache at totalCalls=" + totalCalls);
+	}
+	
 	public double getCacheMissRate() {
 		return cache.cacheMissCalculator.getCacheMissRate();
 	}
