@@ -19,6 +19,21 @@ import java.util.Map;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.util.OptionHelper;
 
+/**
+ * In case abbreviation service is requested, NamedConverter will convert fully qualified class names 
+ * to their abbreviated from. NamedConverter instances will store abbreviated names in an internal LRU 
+ * cache.
+ * 
+ * The cache will double in size if he cache miss rate is consistently above 30%. Assuming a high miss rate, 
+ * the doubling until a maximum size of 2048 is attained. If at this point the cache miss rate is still 
+ * too high, NamedConverter will revert to non cached behavior.
+
+ * The general assumption here is that a large majority of logger names are concentrated within a 
+ * group of approximately 1000 logger names.
+
+ * @author Ceki Gulcu
+ *
+ */
 public abstract class NamedConverter extends ClassicConverter {
 
 	private static final String DISABLE_CACHE_SYSTEM_PROPERTY = "logback.namedConverter.disableCache";
