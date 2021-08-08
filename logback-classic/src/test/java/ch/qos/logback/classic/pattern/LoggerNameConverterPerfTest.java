@@ -43,7 +43,7 @@ public class LoggerNameConverterPerfTest {
 
 		SIZE = NAMES_LIST.size();
 		MEAN = SIZE / 2;
-		DEVIATION = MEAN / 8;
+		DEVIATION = MEAN / 2;
 		G = new Gaussian(MEAN, DEVIATION);
 		System.out.println("names list size=" + SIZE);
 	}
@@ -66,12 +66,14 @@ public class LoggerNameConverterPerfTest {
 	
 	@Test
 	public void measureAbbreviationPerf() {
-		for(int i = 0; i < 1000; i++) {
+		for(int i = 0; i < 10*1000; i++) {
 			performAbbreviation();
 		}
-
+		for(int i = 0; i < 10*1000; i++) {
+			performAbbreviation();
+		}
 		final int runLength = 1000*1000;
-		
+		System.out.println("Start measurements");
 		long start = System.nanoTime();
 		for(int i = 0; i < runLength; i++) {
 			performAbbreviation();
@@ -80,7 +82,7 @@ public class LoggerNameConverterPerfTest {
 		long diff = end - start;
 		double average = diff*1.0D/runLength;
 		logger.atInfo().addArgument(average).log("Average = {} nanos");
-		int cacheMisses = loggerConverter.cacheMisses;
+		int cacheMisses = loggerConverter.getCacheMisses();
 		
 		logger.atInfo().addArgument(cacheMisses).log("cacheMisses = {} ");
 		logger.atInfo().addArgument(runLength).log("total calls= = {} ");
