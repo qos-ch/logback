@@ -113,10 +113,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>edu.washington.cs.types.checker</groupId>
-      <artifactId>checker-framework</artifactId>
-    </dependency> 
   </dependencies>
 
   <dependencyManagement>
