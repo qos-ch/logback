@@ -43,7 +43,7 @@ public class LoggerNameConverterPerfTest {
 
 		SIZE = NAMES_LIST.size();
 		MEAN = SIZE / 2;
-		DEVIATION = MEAN / 2;
+		DEVIATION = MEAN / 8;
 		G = new Gaussian(MEAN, DEVIATION);
 		System.out.println("names list size=" + SIZE);
 	}

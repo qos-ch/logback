@@ -53,6 +53,9 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 		
 		int leftSegmentsLen = inLen - lastSegmentLength;
 
+		// maxPossibleTrim denotes the maximum number of characters we aim to trim
+		// the actual number of character trimmed may be higher since segments, when
+		// reduced, are reduced to just one character
 		int maxPossibleTrim = leftSegmentsLen - leftSegments_TargetLen;
 
 		int trimmed = 0;
@@ -62,12 +65,11 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 		for (; i < rightMostDotIndex; i++) {
 			char c = fqClassName.charAt(i);
 			if (c == DOT) {
+				// if trimmed too many characters, let us stop
 				if (trimmed >= maxPossibleTrim)
 					break;
 				buf.append(c);
 				scanState = ScanState.A_DOT;
-				
-
 			} else {
 				switch (scanState) {
 				case INITIAL:
@@ -81,7 +83,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 				}
 			}
 		}
-
+		// append from the position of i which may include the last seen DOT
 		buf.append(fqClassName.substring(i));
 		return buf.toString();
 	}

@@ -185,11 +185,7 @@ public class ConverterTest {
 
         for (int i = 0; i < totalParts; i++) {
             loggerNameBuf.append(c).append(c).append(c);
-            if (i < ClassicConstants.MAX_DOTS) {
-                witness.append(c);
-            } else {
-                witness.append(c).append(c).append(c);
-            }
+            witness.append(c);
             loggerNameBuf.append('.');
             witness.append('.');
         }
