@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
@@ -57,6 +58,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     private ThrowableProxyVO throwableProxy;
     private StackTraceElement[] callerDataArray;
     private List<Marker> markerList;
+    private List<KeyValuePair> keyValuePairList;
     private Map<String, String> mdcPropertyMap;
     private long timeStamp;
     private long sequenceNumber;
@@ -70,9 +72,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         ledo.message = (le.getMessage());
         ledo.argumentArray = (le.getArgumentArray());
         ledo.markerList = le.getMarkerList();
+        ledo.keyValuePairList = le.getKeyValuePairs();
         ledo.mdcPropertyMap = le.getMDCPropertyMap();
+        
         ledo.timeStamp = le.getTimeStamp();
-        ledo.timeStamp = le.getSequenceNumber();
+        ledo.sequenceNumber = le.getSequenceNumber();
         ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
         // add caller data only if it is there already
         // fixes http://jira.qos.ch/browse/LBCLASSIC-145
@@ -160,6 +164,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return mdcPropertyMap;
     }
 
+    @Override
+	public List<KeyValuePair> getKeyValuePairs() {
+		return this.keyValuePairList;
+	}
+    
     public void prepareForDeferredProcessing() {
     }
 
@@ -251,4 +260,6 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
             return false;
         return true;
     }
+
+	
 }

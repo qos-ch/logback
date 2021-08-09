@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -107,6 +108,11 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
 
 	@Override
 	public String getFormattedMessage() {
+		return null;
+	}
+
+	@Override
+	public List<KeyValuePair> getKeyValuePairs() {
 		return null;
 	}
 

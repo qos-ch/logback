@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.core.spi.DeferredProcessingAware;
@@ -92,6 +93,14 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      */
     long getSequenceNumber();
 
+    /**
+     * A list of {@link KeyValuePair} objects. The returned list may be null.
+     * 
+     * @return may be null
+     * @since 1.3.0
+     */
+    List<KeyValuePair> getKeyValuePairs();
+    
     void prepareForDeferredProcessing();
 
 }

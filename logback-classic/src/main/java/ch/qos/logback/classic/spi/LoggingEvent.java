@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.slf4j.MDC;
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
 import org.slf4j.spi.MDCAdapter;
 
@@ -95,6 +96,11 @@ public class LoggingEvent implements ILoggingEvent {
     private Map<String, String> mdcPropertyMap;
 
     /**
+     * @since 1.3.0
+     */
+    List<KeyValuePair> keyValuePairs;
+    
+    /**
      * The number of milliseconds elapsed from 1/1/1970 until logging event was
      * created.
      */
@@ -140,7 +146,7 @@ public class LoggingEvent implements ILoggingEvent {
         
     }
 
-    private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
+	private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
         Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
         if (EventArgUtil.successfulExtraction(extractedThrowable)) {
             this.argumentArray = EventArgUtil.trimmedCopy(argArray);
@@ -159,6 +165,16 @@ public class LoggingEvent implements ILoggingEvent {
         return this.argumentArray;
     }
 
+    public void setKeyValuePairs(List<KeyValuePair> kvp) {
+    	this.keyValuePairs = kvp;
+    }
+
+    @Override
+    public List<KeyValuePair> getKeyValuePairs() {
+    	return this.keyValuePairs;
+    }
+    
+    
     public Level getLevel() {
         return level;
     }
@@ -223,6 +239,11 @@ public class LoggingEvent implements ILoggingEvent {
         this.getMDCPropertyMap();
     }
 
+    
+    public void setLoggerContext(LoggerContext lc) {
+    	this.loggerContext = lc;
+    }
+    
     public LoggerContextVO getLoggerContextVO() {
         return loggerContextVO;
     }
