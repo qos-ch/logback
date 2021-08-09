@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.testUtil.Gaussian;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 
+@Ignore
 public class LoggerNameConverterPerfTest {
 
 	static final String NAMES_FILE = ClassicTestConstants.INPUT_PREFIX + "fqcn.txt";

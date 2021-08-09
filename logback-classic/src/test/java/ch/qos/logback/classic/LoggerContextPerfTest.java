@@ -14,12 +14,14 @@
 package ch.qos.logback.classic;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.corpus.CorpusModel;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
+@Ignore
 public class LoggerContextPerfTest {
 
     static int THREAD_COUNT = 10000;

@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -157,14 +158,14 @@ public class LoggingEventSerializationTest {
         LoggingEvent event = createLoggingEvent();
         
         
-        event.setMarker(marker);
-        assertNotNull(event.getMarker());
+        event.addMarker(marker);
+        assertNotNull(event.getMarkerList());
         
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
 
-        assertNotNull(remoteEvent.getMarker());
-        assertEquals(marker, remoteEvent.getMarker());
+        assertNotNull(remoteEvent.getMarkerList());
+        assertEquals(List.of(marker), remoteEvent.getMarkerList());
     }
     
     @Test
@@ -174,14 +175,14 @@ public class LoggingEventSerializationTest {
         marker.add(marker2);
         LoggingEvent event = createLoggingEvent();
         
-        event.setMarker(marker);
-        assertNotNull(event.getMarker());
+        event.addMarker(marker);
+        assertNotNull(event.getMarkerList());
         
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
 
-        assertNotNull(remoteEvent.getMarker());
-        assertEquals(marker, remoteEvent.getMarker());
+        assertNotNull(remoteEvent.getMarkerList());
+        assertEquals(List.of(marker), remoteEvent.getMarkerList());
     }
     
     @Test

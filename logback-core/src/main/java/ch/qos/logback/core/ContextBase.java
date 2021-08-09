@@ -31,7 +31,6 @@ import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.ExecutorServiceUtil;
 import ch.qos.logback.core.util.NetworkAddressUtil;

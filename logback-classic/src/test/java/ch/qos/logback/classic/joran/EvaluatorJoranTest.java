@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -58,6 +59,7 @@ public class EvaluatorJoranTest {
         assertFalse(evaluator.evaluate(event1));
     }
 
+    @Ignore // markers are no longer suported in Janino
     @Test
     public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
         JoranConfigurator jc = new JoranConfigurator();
@@ -75,7 +77,7 @@ public class EvaluatorJoranTest {
         LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
 
         Marker ignoreMarker = MarkerFactory.getMarker("IGNORE");
-        event.setMarker(ignoreMarker);
+        event.addMarker(ignoreMarker);
         assertTrue(evaluator.evaluate(event));
 
         logger.debug("hello", new Exception("test"));

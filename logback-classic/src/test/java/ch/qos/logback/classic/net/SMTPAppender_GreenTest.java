@@ -36,7 +36,6 @@ import com.icegreen.greenmail.util.DummySSLSocketFactory;
 import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
-import com.icegreen.greenmail.util.ServerSetupTest;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -49,7 +48,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.testUtil.EnvUtilForTests;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StatusPrinter;

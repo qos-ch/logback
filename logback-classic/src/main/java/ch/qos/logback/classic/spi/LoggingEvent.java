@@ -15,20 +15,21 @@ package ch.qos.logback.classic.spi;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.helpers.MessageFormatter;
+import org.slf4j.spi.MDCAdapter;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
-
-import org.slf4j.spi.MDCAdapter;
 
 /**
  * The internal representation of logging events. When an affirmative decision
@@ -89,7 +90,7 @@ public class LoggingEvent implements ILoggingEvent {
 
     private StackTraceElement[] callerDataArray;
 
-    private Marker marker;
+    private List<Marker> markerList;
 
     private Map<String, String> mdcPropertyMap;
 
@@ -113,7 +114,8 @@ public class LoggingEvent implements ILoggingEvent {
 
         this.message = message;
         this.argumentArray = argArray;
-
+        //List<Object> l =		Arrays.asList(argArray);
+        
         timeStamp = System.currentTimeMillis();
        
         if(loggerContext != null) {
@@ -290,15 +292,19 @@ public class LoggingEvent implements ILoggingEvent {
         this.callerDataArray = callerDataArray;
     }
 
-    public Marker getMarker() {
-        return marker;
+    
+    public List<Marker> getMarkerList() {
+        return markerList;
     }
 
-    public void setMarker(Marker marker) {
-        if (this.marker != null) {
-            throw new IllegalStateException("The marker has been already set for this event.");
+    public void addMarker(Marker marker) {
+        if (marker == null) {
+           return;
         }
-        this.marker = marker;
+        if(markerList==null) {
+        	markerList = new ArrayList<>(4);
+        }
+        markerList.add(marker);
     }
 
     public long getContextBirthTime() {

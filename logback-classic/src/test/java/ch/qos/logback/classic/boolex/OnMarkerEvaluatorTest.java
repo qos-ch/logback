@@ -41,7 +41,7 @@ public class OnMarkerEvaluatorTest {
         evaluator.addMarker("M");
         evaluator.start();
 
-        event.setMarker(MarkerFactory.getMarker("M"));
+        event.addMarker(MarkerFactory.getMarker("M"));
         assertTrue(evaluator.evaluate(event));
     }
 

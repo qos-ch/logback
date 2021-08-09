@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.spi;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
@@ -67,7 +68,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      */
     boolean hasCallerData();
 
-    Marker getMarker();
+    List<Marker> getMarkerList();
 
     /**
      * Returns the MDC map. The returned value can be an empty map but not null.

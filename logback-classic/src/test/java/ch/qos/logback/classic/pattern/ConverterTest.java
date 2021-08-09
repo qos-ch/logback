@@ -243,7 +243,7 @@ public class ConverterTest {
 
             StringBuilder buf = new StringBuilder();
             LoggingEvent event = makeLoggingEvent(null);
-            event.setMarker(MarkerFactory.getMarker("XXX"));
+            event.addMarker(MarkerFactory.getMarker("XXX"));
             converter.write(buf, event);
             if (buf.length() < 10) {
                 fail("buf is too short");
@@ -261,7 +261,7 @@ public class ConverterTest {
 
             StringBuilder buf = new StringBuilder();
             LoggingEvent event = makeLoggingEvent(null);
-            event.setMarker(MarkerFactory.getMarker("YYY"));
+            event.addMarker(MarkerFactory.getMarker("YYY"));
             converter.write(buf, event);
             if (buf.length() < 10) {
                 fail("buf is too short");
@@ -278,7 +278,7 @@ public class ConverterTest {
 
             StringBuilder buf = new StringBuilder();
             LoggingEvent event = makeLoggingEvent(null);
-            event.setMarker(MarkerFactory.getMarker("YYY"));
+            event.addMarker(MarkerFactory.getMarker("YYY"));
             converter.write(buf, event);
             if (buf.length() < 10) {
                 fail("buf is too short");

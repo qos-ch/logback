@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import java.util.List;
+
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -27,12 +29,24 @@ public class MarkerConverter extends ClassicConverter {
     private static String EMPTY = "";
 
     public String convert(ILoggingEvent le) {
-        Marker marker = le.getMarker();
-        if (marker == null) {
+        List<Marker> markers = le.getMarkerList();
+        if (markers == null || markers.isEmpty()) {
             return EMPTY;
-        } else {
-            return marker.toString();
+        } 
+        int size = markers.size() ;
+        
+        if(size == 1)
+            return markers.get(0).toString();
+        
+        StringBuffer buf = new StringBuffer(32);
+        for(int i = 0; i < size; i++) {
+        	if(i != 0)
+        		buf.append(' ');
+        	Marker m = markers.get(i);
+        	buf.append(m.toString());
         }
+        return buf.toString();
+        
     }
 
 }

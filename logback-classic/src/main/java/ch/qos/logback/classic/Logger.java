@@ -419,7 +419,7 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     private void buildLoggingEventAndAppend(final String localFQCN, final Marker marker, final Level level, final String msg, final Object[] params,
                     final Throwable t) {
         LoggingEvent le = new LoggingEvent(localFQCN, this, level, msg, t, params);
-        le.setMarker(marker);
+        le.addMarker(marker);
         callAppenders(le);
     }
 

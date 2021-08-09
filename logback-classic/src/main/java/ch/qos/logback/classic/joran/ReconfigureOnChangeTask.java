@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.util.EnvUtil;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;

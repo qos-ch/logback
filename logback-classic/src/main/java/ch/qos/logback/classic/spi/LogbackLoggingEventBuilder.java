@@ -18,15 +18,25 @@ import org.slf4j.spi.DefaultLoggingEventBuilder;
 import ch.qos.logback.classic.Logger;
 
 /**
- * A trivial implementation LoggingEventBuilder which build on DefaultLoggingEventBuilder.
+ * A trivial implementation LoggingEventBuilder which build on
+ * DefaultLoggingEventBuilder.
  * 
  * @author Ceki Gulcu
  *
  */
 public class LogbackLoggingEventBuilder extends DefaultLoggingEventBuilder {
 
+	LoggingEvent loggingEvent;
+
+    public static final String FQCN = LogbackLoggingEventBuilder.class.getName();
+
 	public LogbackLoggingEventBuilder(Logger logger, org.slf4j.event.Level level) {
 		super(logger, level);
+	}
+
+	@Override
+	protected void log(org.slf4j.event.LoggingEvent logggingEvent) {
+		
 	}
 
 }

@@ -1,5 +1,6 @@
 package ch.qos.logback.classic.pattern;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
@@ -66,8 +67,7 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
 	}
 
 	@Override
-	public Marker getMarker() {
-		// TODO Auto-generated method stub
+	public List<Marker> getMarkerList() {
 		return null;
 	}
 

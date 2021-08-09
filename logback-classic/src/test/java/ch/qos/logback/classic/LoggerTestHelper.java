@@ -13,9 +13,11 @@
  */
 package ch.qos.logback.classic;
 
-import junit.framework.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-public class LoggerTestHelper extends TestCase {
+public class LoggerTestHelper  {
 
     static void assertNameEquals(Logger logger, String name) {
         assertNotNull(logger);

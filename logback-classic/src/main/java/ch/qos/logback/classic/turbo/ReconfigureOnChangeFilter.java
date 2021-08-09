@@ -13,26 +13,25 @@
  */
 package ch.qos.logback.classic.turbo;
 
+import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_SECOND;
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
 
-import ch.qos.logback.classic.util.EnvUtil;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.status.StatusUtil;
 import org.slf4j.Marker;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.joran.event.SaxEvent;
+import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.spi.FilterReply;
-
-import static ch.qos.logback.core.CoreConstants.MILLIS_IN_ONE_SECOND;
+import ch.qos.logback.core.status.StatusUtil;
 
 /**
  * Reconfigure a LoggerContext when the configuration file changes.

@@ -23,10 +23,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 		this.targetLength = targetLength;
 	}
 
-	enum ScanState {
-		INITIAL, A_DOT, A_CHAR
-	};
-
+	
 	public String abbreviate(String fqClassName) {
 		if (fqClassName == null) {
 			throw new IllegalArgumentException("Class name may not be null");
@@ -59,7 +56,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 		int maxPossibleTrim = leftSegmentsLen - leftSegments_TargetLen;
 
 		int trimmed = 0;
-		ScanState scanState = ScanState.INITIAL;
+		boolean inDotState = true;
 
 		int i = 0;
 		for (; i < rightMostDotIndex; i++) {
@@ -69,17 +66,13 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 				if (trimmed >= maxPossibleTrim)
 					break;
 				buf.append(c);
-				scanState = ScanState.A_DOT;
+				inDotState = true;
 			} else {
-				switch (scanState) {
-				case INITIAL:
-				case A_DOT:
+				if(inDotState) {
 					buf.append(c);
-					scanState = ScanState.A_CHAR;
-					break;
-				case A_CHAR:
+					inDotState = false;
+				} else {
 					trimmed++;
-					break;
 				}
 			}
 		}

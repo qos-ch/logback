@@ -2,7 +2,12 @@ package ch.qos.logback.core.model;
 
 public class TimestampModel extends NamedModel {
 
-    public static final String CONTEXT_BIRTH = "contextBirth";
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2096655273673863306L;
+
+	public static final String CONTEXT_BIRTH = "contextBirth";
 
     String datePattern;
     String timeReference;

@@ -30,6 +30,7 @@ public class ClassicConstants {
      * algorithms can handle. Class or logger names with more separators will have
      * their first MAX_DOTS parts shortened.
      * 
+     * Since 1.3.0, no longer unused 
      */
     public static final int MAX_DOTS = 16;
 
