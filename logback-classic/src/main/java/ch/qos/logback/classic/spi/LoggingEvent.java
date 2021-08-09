@@ -165,8 +165,15 @@ public class LoggingEvent implements ILoggingEvent {
         return this.argumentArray;
     }
 
-    public void setKeyValuePairs(List<KeyValuePair> kvp) {
-    	this.keyValuePairs = kvp;
+    public void addKeyValuePair(KeyValuePair kvp) {
+    	if(keyValuePairs == null) {
+    		keyValuePairs = new ArrayList<>(4);
+    	}
+    	keyValuePairs.add(kvp);
+    }
+
+    public void setKeyValuePairs(List<KeyValuePair> kvpList) {
+    	this.keyValuePairs = kvpList;
     }
 
     @Override
