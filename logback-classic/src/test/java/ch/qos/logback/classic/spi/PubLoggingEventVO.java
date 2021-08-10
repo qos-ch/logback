@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
-import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
 
@@ -80,11 +79,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
             return formattedMessage;
         }
 
-        if (argumentArray != null) {
-            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
-        } else {
-            formattedMessage = message;
-        }
+        formattedMessage = LoggingEvent.formatMessage(message, argumentArray);
 
         return formattedMessage;
     }
