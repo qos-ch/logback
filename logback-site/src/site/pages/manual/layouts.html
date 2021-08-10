@@ -683,61 +683,99 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 				</td>
 			</tr>
 
-			<tr>
-				<td class="word" name="line">
-					<b>L / line</b>
-				</td>
+		<tr>
+		  <td class="word" name="message">
+		    <b>kvp{NONE,SINGLE,DOUBLE}</b>
+		  </td>
+		  <td>
+                    <p>Outputs the key value pairs contained in the
+                    logging event. By default, the value part will be
+                    surrounded by double quotes. You can
+                    override the default by specifying NONE or SINGLE,
+                    for no quote character or the single quote
+                    character &apos; respectively.                    
+                    </p>
 
-				<td><p>Outputs the line number from where the logging
-					request was issued.</p>
+                    <p>The value key pairs {k1, v1} and {k2, v2}
+                    contained in the event will be output as follows:
+                    <table>
+                      <tr>
+                        <td>NONE</td>
+                        <td>v1=k1 v2=k2</td>
+                      </tr>
+                      <tr>
+                        <td>DOUBLE</td>
+                        <td>v1="k1" v2="k2"</td>
+                      </tr>
+                      <tr>
+                        <td>SINGLE</td>
+                        <td>v1='k1' v1='k1'</td>
+                      </tr>
+                      <tr>
+                        <td>default</td>
+                        <td>same as if DOUBLE were specified</td>
+                      </tr>
+                      
+                    </table>
+		  </td>
+		</tr>
 
-					<p>Generating the line number information is not
-					particularly fast.  Thus, its use should be avoided unless
-					execution speed is not an issue.
-					</p>
-				</td>
-			</tr>
+                        
+		<tr>
+		  <td class="word" name="line">
+		    <b>L / line</b>
+		  </td>
+                  
+		  <td><p>Outputs the line number from where the logging
+		  request was issued.</p>
+                  
+		  <p>Generating the line number information is not
+		  particularly fast.  Thus, its use should be avoided unless
+		  execution speed is not an issue.
+		  </p>
+		  </td>
+		</tr>
 
+                
+		<tr>
+		  <td class="word" name="message">
+		    <b>m / msg / message</b>
+		  </td>
+		  <td>
+                    <p>Outputs the application-supplied message associated with
+                    the logging event.
+                    </p>
+		  </td>
+		</tr>
 
-			<tr>
-				<td class="word" name="message">
-					<b>m / msg / message</b>
-				</td>
-				<td>
-          <p>Outputs the application-supplied message associated with
-          the logging event.
-          </p>
-				</td>
-			</tr>
+		<tr>
+		  <td class="word" name="method">
+		    <b>M / method</b>
+		  </td>
 
-			<tr>
-				<td class="word" name="method">
-					<b>M / method</b>
-				</td>
-
-				<td>
-					<p>Outputs the method name where the logging request was
-					issued.</p>
-					<p>Generating the method name is not particularly fast.
-					Thus, its use should be avoided unless execution speed is
-					not an issue.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="word" name="newline">
-					<b>n</b>
-				</td>
-
-				<td>
-					<p>Outputs the platform dependent line separator
-						character or characters.</p>
-					<p>This conversion word offers practically the same
-					performance as using non-portable line separator strings
-					such as "\n", or "\r\n". Thus, it is the preferred way of
-					specifying a line separator.
-					</p>
-				</td>
+		  <td>
+		    <p>Outputs the method name where the logging request was
+		    issued.</p>
+		    <p>Generating the method name is not particularly fast.
+		    Thus, its use should be avoided unless execution speed is
+		    not an issue.</p>
+		  </td>
+		</tr>
+                
+		<tr>
+		  <td class="word" name="newline">
+		    <b>n</b>
+		  </td>
+                  
+		  <td>
+		    <p>Outputs the platform dependent line separator
+		    character or characters.</p>
+		    <p>This conversion word offers practically the same
+		    performance as using non-portable line separator strings
+		    such as "\n", or "\r\n". Thus, it is the preferred way of
+		    specifying a line separator.
+		    </p>
+		  </td>
 
 			</tr>
 
@@ -863,14 +901,14 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 						</tr>
 				 </table>
 					
-					<p>This conversion word can also use evaluators to test
-					logging events against a given criterion before creating the
-					output. For example, using <b>%ex{full, EX_DISPLAY_EVAL}</b>
-					will display the full stack trace of the exception only if
-					the evaluator called <em>EX_DISPLAY_EVAL</em> returns a
-					<b>negative</b> answer. Evaluators are described further
-					down in this document.
-					</p>
+	<p>This conversion word can also use evaluators to test
+	logging events against a given criterion before creating the
+	output. For example, using <b>%ex{full, EX_DISPLAY_EVAL}</b>
+	will display the full stack trace of the exception only if the
+	evaluator called <em>EX_DISPLAY_EVAL</em> returns a
+	<b>negative</b> answer. Evaluators are described further down
+	in this document.
+	</p>
 
          <p>If you do not specify %throwable or another
           throwable-related conversion word in the conversion pattern,
@@ -881,13 +919,13 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
           information to be displayed. See also the %nopex conversion
           word.
          </p>
-
-				</td>
-			</tr>
+         
+	</td>
+      </tr>
       
       <tr>
-				<td class="word" name="xThrowable">
-					<b>xEx</b>{<em>depth</em>} <br /> 
+	<td class="word" name="xThrowable">
+	  <b>xEx</b>{<em>depth</em>} <br /> 
           <b>xException</b>{<em>depth</em>} <br /> 
 					<b>xThrowable</b>{<em>depth</em>} <br />
           <br />
