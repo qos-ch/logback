@@ -47,7 +47,7 @@ public class KeyValuePairConverterTest {
     public void testWithOnelKVP() {
     	event.addKeyValuePair(new KeyValuePair("k", "v"));
         String result = converter.convert(event);
-        assertEquals("k=v", result);
+        assertEquals("k=\"v\"", result);
     }
     
     private LoggingEvent createLoggingEvent() {

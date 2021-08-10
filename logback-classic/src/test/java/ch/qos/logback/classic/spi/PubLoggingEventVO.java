@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
 
 import ch.qos.logback.classic.Level;
@@ -51,6 +52,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public IThrowableProxy throwableProxy;
     public StackTraceElement[] callerDataArray;
     public List<Marker> markerList;
+    public List<KeyValuePair> kvpList;
     public Map<String, String> mdcPropertyMap;
     public long timeStamp;
     public long sequenceNumber;
@@ -140,6 +142,11 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public void prepareForDeferredProcessing() {
     }
 
+	@Override
+	public List<KeyValuePair> getKeyValuePairs() {
+		return kvpList;
+	}
+	
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeInt(level.levelInt);
@@ -242,5 +249,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         sb.append(getFormattedMessage());
         return sb.toString();
     }
+
+
 
 }
