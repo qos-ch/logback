@@ -54,6 +54,7 @@ public class DateConverter extends ClassicConverter {
             TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
             cachingDateFormatter.setTimeZone(tz);
         }
+        super.start();
     }
 
     public String convert(ILoggingEvent le) {

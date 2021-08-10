@@ -98,6 +98,7 @@ public abstract class NamedConverter extends ClassicConverter {
 				addError("failed to parse integer string [" + optStr + "]", nfe);
 			}
 		}
+		super.start();
 	}
 
 	public String convert(ILoggingEvent event) {

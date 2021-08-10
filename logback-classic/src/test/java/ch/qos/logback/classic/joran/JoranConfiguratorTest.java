@@ -26,6 +26,7 @@ import java.util.Date;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
+import org.slf4j.event.KeyValuePair;
 
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -511,6 +512,34 @@ public class JoranConfiguratorTest {
 		assertTrue(asyncAppender.isStarted());
 	}
 
+	@Test
+	public void kvp() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/kvp.xml");
+		
+		String msg = "hello kvp";
+		
+		KeyValuePair kvp1 = new KeyValuePair("k"+diff, "v"+diff);
+		KeyValuePair kvp2 = new KeyValuePair("k"+(diff+1), "v"+(diff+1));
+		KeyValuePair kvpNullKey = new KeyValuePair(null, "v"+(diff+2));
+		KeyValuePair kvpNullValue = new KeyValuePair("k"+(diff+3), null);
+
+		logger.atDebug().addKeyValue(kvp1.key, kvp1.value).log(msg);
+		logger.atDebug().addKeyValue(kvp2.key, kvp2.value).log(msg);
+		logger.atDebug().addKeyValue(kvpNullKey.key, kvpNullKey.value).log(msg);
+		logger.atDebug().addKeyValue(kvpNullValue.key, kvpNullValue.value).log(msg);
+		
+
+		StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
+				.getLogger("root").getAppender("LIST");
+		assertNotNull(slAppender);
+		assertEquals(4, slAppender.strList.size());
+		assertTrue(slAppender.strList.get(0).contains(kvp1.key+ "=\""+kvp1.value+"\" "+msg));
+		assertTrue(slAppender.strList.get(1).contains(kvp2.key+ "=\""+kvp2.value+"\" "+msg));
+		assertTrue(slAppender.strList.get(2).contains("null=\""+kvpNullKey.value+"\" "+msg));
+		assertTrue(slAppender.strList.get(3).contains(kvpNullValue.key+ "=\"null\" " +msg));
+	}
+	
+	
 //	@Test
 //	public void doTest() throws JoranException {
 //		int LIMIT = 0;

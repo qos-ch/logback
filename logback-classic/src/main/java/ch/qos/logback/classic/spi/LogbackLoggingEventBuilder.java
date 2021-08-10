@@ -53,9 +53,9 @@ public class LogbackLoggingEventBuilder extends DefaultLoggingEventBuilder {
 		lle.setKeyValuePairs(sle.getKeyValuePairs());
 		
 
-		// Note that at this point, any calls makde with a logger disabled 
-		// for a given level will be already filtered out. TurboFilters cannot 
-		// prevent that.
+		// Note that at this point, any calls made with a logger disabled 
+		// for a given level, will be already filtered out/in. TurboFilters cannot 
+		// act at this point in the process.
 		logbackLogger.callAppenders(lle);
 	}
 
