@@ -22,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.spi.CallerBoundaryAware;
 import org.slf4j.spi.LocationAwareLogger;
 import org.slf4j.spi.LoggingEventBuilder;
 
@@ -783,16 +784,33 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
      * @param slf4jEvent
      */
     public void log(org.slf4j.event.LoggingEvent slf4jEvent) {
-        Level level = Level.fromLocationAwareLoggerInteger(slf4jEvent.getLevel().toInt());
+    	org.slf4j.event.Level slf4jLevel = slf4jEvent.getLevel();
+		Level logbackLevel = Level.convertAnSLF4JLevel(slf4jLevel);
+		
+		// By default, assume this class was the caller. This happens during initialization.
+		// However, it is possible that the caller is some other library, e.g. 
+		// slf4j-jdk-platform-logging
         
-        // the TurboFilter API is designed to use a single marker which justifies
-        // the following admittedly horrible hack
-        List<Marker> markers = slf4jEvent.getMarkers();
-        Marker marker = null;
-        if(markers != null && (!markers.isEmpty())) {
-        	marker = markers.get(0);
+		String callerBoundary = slf4jEvent.getCallerBoundary();
+        if(callerBoundary==null) {
+        	callerBoundary = FQCN;
         }
-        filterAndLog_0_Or3Plus(FQCN, marker, level, slf4jEvent.getMessage(), slf4jEvent.getArgumentArray(), slf4jEvent.getThrowable());
+        
+		LoggingEvent lle = new LoggingEvent(callerBoundary, this, logbackLevel,  slf4jEvent.getMessage(), slf4jEvent.getThrowable(), 
+				slf4jEvent.getArgumentArray());
+		List<Marker> markers = slf4jEvent.getMarkers();
+		
+		if(markers != null) {
+			markers.forEach(m -> lle.addMarker(m));
+		}
+		
+		lle.setKeyValuePairs(slf4jEvent.getKeyValuePairs());
+		
+
+		// Note that at this point, any calls made with a logger disabled 
+		// for a given level, will be already filtered out/in. TurboFilters cannot 
+		// act at this point in the process.
+		this.callAppenders(lle);
     }
 
     /**

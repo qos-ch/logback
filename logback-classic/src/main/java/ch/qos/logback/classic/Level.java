@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic;
 
+import org.slf4j.event.EventConstants;
 import org.slf4j.spi.LocationAwareLogger;
 
 /**
@@ -108,22 +109,8 @@ public final class Level implements java.io.Serializable {
 
     
     static public Level convertAnSLF4JLevel(org.slf4j.event.Level slf4jLevel) {
-    	
     	final int levelInt = slf4jLevel.toInt();
-    	switch(levelInt) {
-    	  case (org.slf4j.event.EventConstants.TRACE_INT):
-              return TRACE;
-          case (org.slf4j.event.EventConstants.DEBUG_INT):
-              return DEBUG;
-          case (org.slf4j.event.EventConstants.INFO_INT):
-              return INFO;
-          case (org.slf4j.event.EventConstants.WARN_INT):
-              return WARN;
-          case (org.slf4j.event.EventConstants.ERROR_INT):
-              return ERROR;
-          default:
-              throw new IllegalArgumentException("Level integer [" + levelInt + "] not recognized.");
-          }
+    	return fromLocationAwareLoggerInteger(levelInt);
     }
     
     /**
@@ -268,19 +255,19 @@ public final class Level implements java.io.Serializable {
     public static Level fromLocationAwareLoggerInteger(int levelInt) {
         Level level;
         switch (levelInt) {
-        case LocationAwareLogger.TRACE_INT:
+        case EventConstants.TRACE_INT:
             level = TRACE;
             break;
-        case LocationAwareLogger.DEBUG_INT:
+        case EventConstants.DEBUG_INT:
             level = DEBUG;
             break;
-        case LocationAwareLogger.INFO_INT:
+        case EventConstants.INFO_INT:
             level = INFO;
             break;
-        case LocationAwareLogger.WARN_INT:
+        case EventConstants.WARN_INT:
             level = WARN;
             break;
-        case LocationAwareLogger.ERROR_INT:
+        case EventConstants.ERROR_INT:
             level = ERROR;
             break;
         default:
@@ -302,15 +289,15 @@ public final class Level implements java.io.Serializable {
             throw new IllegalArgumentException("null level parameter is not admitted");
         switch (level.toInt()) {
         case Level.TRACE_INT:
-            return LocationAwareLogger.TRACE_INT;
+            return EventConstants.TRACE_INT;
         case Level.DEBUG_INT:
-            return LocationAwareLogger.DEBUG_INT;
+            return EventConstants.DEBUG_INT;
         case Level.INFO_INT:
-            return LocationAwareLogger.INFO_INT;
+            return EventConstants.INFO_INT;
         case Level.WARN_INT:
-            return LocationAwareLogger.WARN_INT;
+            return EventConstants.WARN_INT;
         case Level.ERROR_INT:
-            return LocationAwareLogger.ERROR_INT;
+            return EventConstants.ERROR_INT;
         default:
             throw new IllegalArgumentException(level + " not a valid level value");
         }
