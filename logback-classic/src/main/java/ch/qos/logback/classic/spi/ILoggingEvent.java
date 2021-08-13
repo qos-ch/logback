@@ -81,16 +81,21 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * @return the first marker in the marker list or null if no markers are available
      */
     default Marker getMarker() {
-    	
     	List<Marker> markers = getMarkerList();
     	if(markers == null || markers.isEmpty())
     		return null;
+
+    	// return the first marker. Assuming that only the first marker is useful
+    	// is obviously incorrect. However, we have no other choice if we wish
+    	// to preserve binary compatibility.
     	return markers.get(0);
     }
 
     
     /**
-     * Since logback 1.3.0 and slf4j 12.0.0 LoggingEvent instances may contain multiple markers.
+     * Since SLF4J 2.0.0, the slf4j logging API assumes the possibility of multiple
+     * Marker instances in a logging event. Consequently, ILoggingEvent needs to cater 
+     * for this possibility. 
      * 
      * @return the marker list, may be null
      * @since 1.3.0

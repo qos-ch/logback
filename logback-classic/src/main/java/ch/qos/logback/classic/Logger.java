@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
-import org.slf4j.spi.CallerBoundaryAware;
 import org.slf4j.spi.LocationAwareLogger;
 import org.slf4j.spi.LoggingEventBuilder;
 

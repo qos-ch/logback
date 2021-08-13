@@ -32,7 +32,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>12th of August, 2021, Release of version 1.3.0-alpha8</h3>
+    <h3>13th of August, 2021, Release of version 1.3.0-alpha9</h3>
 
     <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
     modularized and requires slf4j-api version 2.0.x. Howover, the
@@ -53,6 +53,19 @@
     <code>SiftingAppender</code> and Groovy configuration have been
     dropped temporarily.
     </p>
+
+    <p>In <code>ILoggingEvent</code>, added a <code>getMarker()</code>
+    method with a default implementaiton returning the first marker in
+    the marker list. This method is deprecated and exists solely for
+    backward compatibility reasons.  Logback components should use
+    {@link #getMarkerList()} and cater for all available markers and
+    not the only the first one. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1569">LOGBACK-1569</a>
+    reported by Pelle Kr&oslash;gholt .</p>
+    
+    <hr width="80%" align="center" />
+
+    <h3>12th of August, 2021, Release of version 1.3.0-alpha8</h3>
 
     <p>&bull; Upped the requested slf4j-api version by
     <code>LogbackServiceProvider</code> to 2.0.99 instead of
