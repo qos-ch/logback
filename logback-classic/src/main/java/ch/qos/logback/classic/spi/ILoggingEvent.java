@@ -69,6 +69,32 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      */
     boolean hasCallerData();
 
+    
+    /**
+     * Returns the first marker is the marker list or null if no markers are available.
+     * 
+     * This method is deprecated and exists solely for backward compatibility reasons.
+     * Logback components should use {@link #getMarkerList()} and cater for all available markers 
+     * and not the only the first one. 
+     * 
+     * @deprecated Replaced by {@link #getMarkerList()}
+     * @return the first marker in the marker list or null if no markers are available
+     */
+    default Marker getMarker() {
+    	
+    	List<Marker> markers = getMarkerList();
+    	if(markers == null || markers.isEmpty())
+    		return null;
+    	return markers.get(0);
+    }
+
+    
+    /**
+     * Since logback 1.3.0 and slf4j 12.0.0 LoggingEvent instances may contain multiple markers.
+     * 
+     * @return the marker list, may be null
+     * @since 1.3.0
+     */
     List<Marker> getMarkerList();
 
     /**
