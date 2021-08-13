@@ -54,12 +54,12 @@
     dropped temporarily.
     </p>
 
-    <p>In <code>ILoggingEvent</code>, added a <code>getMarker()</code>
+    <p>&bull; In <code>ILoggingEvent</code>, added a <code>getMarker()</code>
     method with a default implementaiton returning the first marker in
     the marker list. This method is deprecated and exists solely for
     backward compatibility reasons.  Logback components should use
-    {@link #getMarkerList()} and cater for all available markers and
-    not the only the first one. This fixes <a
+    <code>getMarkerList()</code> and cater for all available markers and
+    not the only the first marker. This fixes <a
     href="https://jira.qos.ch/browse/LOGBACK-1569">LOGBACK-1569</a>
     reported by Pelle Kr&oslash;gholt .</p>
     
