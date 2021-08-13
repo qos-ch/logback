@@ -435,6 +435,15 @@ public class JoranConfiguratorTest {
 	}
 
 	@Test
+	public void propsWithMissingRightCurlyBrace() throws JoranException {
+		System.setProperty("abc", "not important");
+		JoranConfigurator configurator = new JoranConfigurator();
+		configurator.setContext(loggerContext);
+		configurator.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "propsMissingRightCurlyBrace.xml");
+		checker.assertContainsMatch(Status.ERROR, "Problem while parsing");
+	}
+	
+	@Test
 	public void packageDataDisabledByConfigAttribute() throws JoranException {
 		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "packagingDataDisabled.xml";
 		configure(configFileAsStr);

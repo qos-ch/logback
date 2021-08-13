@@ -22,6 +22,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
+import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -139,7 +140,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     }
 
     @Test
-    public void mdcWithDefaultValue() {
+    public void mdcWithDefaultValue() throws ScanException {
         String pattern = "%msg %mdc{foo} %mdc{bar:-[null]}";
         pl.setPattern(OptionHelper.substVars(pattern, lc));
         pl.start();
@@ -203,7 +204,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     }
 
     @Test
-    public void replaceNewline() {
+    public void replaceNewline() throws ScanException {
         String pattern = "%replace(A\nB){'\n', '\n\t'}";
         String substPattern = OptionHelper.substVars(pattern, null, lc);
         assertEquals(pattern, substPattern);

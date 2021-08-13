@@ -21,11 +21,15 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Object> {
 
     Context context = new ContextBase();
-
+    StatusChecker checker = new StatusChecker(context);
+    
     public PatternLayoutBase<Object> getPatternLayoutBase() {
         return new SamplePatternLayout<Object>();
     }
@@ -82,6 +86,17 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         assertEquals("hello % world", s);
     }
 
+
+    @Test
+    public void noClosingCurlyBrace() {
+        PatternLayoutBase<Object> plb = getPatternLayoutBase();
+        plb.setContext(context);
+        plb.setPattern("%x %hello{asd");
+        plb.start();
+        
+        checker.assertContainsMatch(Status.ERROR, "Failed to parse pattern");
+    }
+    
     @Override
     public Context getContext() {
         return context;

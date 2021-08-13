@@ -30,6 +30,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
+import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
@@ -259,7 +260,13 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		if (value == null) {
 			return null;
 		}
-		return OptionHelper.substVars(value, this, context);
+		
+		try  {
+		  return OptionHelper.substVars(value, this, context);
+		} catch(ScanException|IllegalArgumentException e) {
+			addError("Problem while parsing ["+value+"]", e);
+			return value;
+		}
 	}
 
 	public void markStartOfNamedDependency(String name) {

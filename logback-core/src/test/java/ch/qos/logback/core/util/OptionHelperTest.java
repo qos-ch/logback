@@ -27,6 +27,7 @@ import org.junit.rules.ExpectedException;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.spi.ScanException;
 
 public class OptionHelperTest {
 
@@ -44,14 +45,14 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testLiteral() {
+    public void testLiteral() throws ScanException {
         String noSubst = "hello world";
         String result = OptionHelper.substVars(noSubst, context);
         assertEquals(noSubst, result);
     }
 
     @Test
-    public void testUndefinedValues() {
+    public void testUndefinedValues() throws ScanException {
         String withUndefinedValues = "${axyz}";
 
         String result = OptionHelper.substVars(withUndefinedValues, context);
@@ -59,7 +60,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsVariableNotClosed() {
+    public void testSubstVarsVariableNotClosed() throws ScanException {
         String noSubst = "testing if ${v1 works";
 
         try {
@@ -72,7 +73,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsContextOnly() {
+    public void testSubstVarsContextOnly() throws ScanException {
         context.putProperty("v1", "if");
         context.putProperty("v2", "works");
 
@@ -81,7 +82,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsSystemProperties() {
+    public void testSubstVarsSystemProperties() throws ScanException {
         System.setProperty("v1", "if");
         System.setProperty("v2", "works");
 
@@ -93,7 +94,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsWithDefault() {
+    public void testSubstVarsWithDefault() throws ScanException {
         context.putProperty("v1", "if");
         String textWithDefault = "Testing ${v1} variable substitution ${v2:-toto}";
         String resultWithDefault = "Testing if variable substitution toto";
@@ -103,7 +104,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsRecursive() {
+    public void testSubstVarsRecursive() throws ScanException {
         context.putProperty("v1", "if");
         context.putProperty("v2", "${v3}");
         context.putProperty("v3", "works");
@@ -113,7 +114,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsTwoLevelsDeep() {
+    public void testSubstVarsTwoLevelsDeep() throws ScanException {
         context.putProperty("v1", "if");
         context.putProperty("v2", "${v3}");
         context.putProperty("v3", "${v4}");
@@ -124,7 +125,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsTwoLevelsWithDefault() {
+    public void testSubstVarsTwoLevelsWithDefault() throws ScanException {
         // Example input taken from LOGBCK-943 bug report
         context.putProperty("APP_NAME", "LOGBACK");
         context.putProperty("ARCHIVE_SUFFIX", "archive.log");
@@ -136,7 +137,7 @@ public class OptionHelperTest {
     }
 
     @Test(timeout = 1000)
-    public void stubstVarsShouldNotGoIntoInfiniteLoop() {
+    public void stubstVarsShouldNotGoIntoInfiniteLoop() throws ScanException {
         context.putProperty("v1", "if");
         context.putProperty("v2", "${v3}");
         context.putProperty("v3", "${v4}");
@@ -147,7 +148,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void nonCircularGraphShouldWork() {
+    public void nonCircularGraphShouldWork() throws ScanException {
         context.putProperty("A", "${B} and ${C}");
         context.putProperty("B", "${B1}");
         context.putProperty("B1", "B1-value");
@@ -159,7 +160,7 @@ public class OptionHelperTest {
     }
 
     @Test(timeout = 1000)
-    public void detectCircularReferences0() {
+    public void detectCircularReferences0() throws ScanException {
         context.putProperty("A", "${A}");
 
         expectedException.expect(IllegalArgumentException.class);
@@ -168,7 +169,7 @@ public class OptionHelperTest {
     }
 
     @Test(timeout = 1000)
-    public void detectCircularReferences1() {
+    public void detectCircularReferences1() throws ScanException {
         context.putProperty("A", "${A}a");
 
         expectedException.expect(IllegalArgumentException.class);
@@ -177,7 +178,7 @@ public class OptionHelperTest {
     }
 
     @Test(timeout = 1000)
-    public void detectCircularReferences2() {
+    public void detectCircularReferences2() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
         context.putProperty("C", "${A}");
@@ -188,7 +189,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void detectCircularReferencesInDefault() {
+    public void detectCircularReferencesInDefault() throws ScanException {
         context.putProperty("A", "${B:-${A}}");
         expectedException.expect(IllegalArgumentException.class);
         expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${A}]");
@@ -196,7 +197,7 @@ public class OptionHelperTest {
     }
 
     @Test(timeout = 1000)
-    public void detectCircularReferences3() {
+    public void detectCircularReferences3() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
         context.putProperty("C", "${A}");
@@ -207,7 +208,7 @@ public class OptionHelperTest {
     }
 
     @Test(timeout = 1000)
-    public void detectCircularReferences4() {
+    public void detectCircularReferences4() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
         context.putProperty("C", "${A}");
@@ -218,7 +219,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void detectCircularReferences5() {
+    public void detectCircularReferences5() throws ScanException {
         context.putProperty("A", "${B} and ${C}");
         context.putProperty("B", "${B1}");
         context.putProperty("B1", "B1-value");
@@ -232,26 +233,26 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void defaultValueReferencingAVariable() {
+    public void defaultValueReferencingAVariable() throws ScanException {
         context.putProperty("v1", "k1");
         String result = OptionHelper.substVars("${undef:-${v1}}", context);
         assertEquals("k1", result);
     }
 
     @Test
-    public void jackrabbit_standalone() {
+    public void jackrabbit_standalone() throws ScanException {
         String r = OptionHelper.substVars("${jackrabbit.log:-${repo:-jackrabbit}/log/jackrabbit.log}", context);
         assertEquals("jackrabbit/log/jackrabbit.log", r);
     }
 
     @Test
-    public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException {
+    public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException, ScanException {
         context.putProperty("var", "");
         OptionHelper.substVars("${var}", context);
     }
 
     @Test
-    public void trailingColon_LOGBACK_1140() {
+    public void trailingColon_LOGBACK_1140() throws ScanException {
         String prefix = "c:";
         String suffix = "/tmp";
         context.putProperty("var", prefix);
@@ -260,7 +261,7 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void curlyBraces_LOGBACK_1101() {
+    public void curlyBraces_LOGBACK_1101() throws ScanException {
         {
             String input = "foo{bar}";
             String r = OptionHelper.substVars(input, context);
