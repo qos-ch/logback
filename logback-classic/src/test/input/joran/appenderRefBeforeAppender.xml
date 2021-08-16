@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration>
 
-<configuration xmlns:logback='http://ch.qos.logback/' debug="true">
+<configuration xmlns:logback='http://ch.qos.logback/' debug="false">
 
   <root level="DEBUG">
     <appender-ref ref="LIST" />
