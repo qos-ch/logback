@@ -52,6 +52,7 @@ import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.StatusPrinter;
 //import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
@@ -266,7 +267,7 @@ public class JoranConfiguratorTest {
 		try {
 			configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "turboDynamicThreshold2.xml");
 		} finally {
-			StatusPrinter.print(loggerContext);
+			//StatusPrinter.print(loggerContext);
 		}
 		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
@@ -393,7 +394,7 @@ public class JoranConfiguratorTest {
 	}
 
 	@Test
-	public void lbcore193() throws JoranException {
+	public void LOGBACK_111() throws JoranException {
 		String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
 		configure(configFileAsStr);
 		checker.asssertContainsException(ScanException.class);
@@ -423,7 +424,7 @@ public class JoranConfiguratorTest {
 		assertEquals("A", loggerContext.getProperty(CoreConstants.HOSTNAME_KEY));
 	}
 
-	// see also http://jira.qos.ch/browse/LBCORE-254
+	// see also http://jira.qos.ch/browse/LOGBACK-134
 	@Test
 	public void sysProps() throws JoranException {
 		System.setProperty("k.lbcore254", ClassicTestConstants.ISSUES_PREFIX + "lbcore254");
@@ -521,6 +522,17 @@ public class JoranConfiguratorTest {
 		assertTrue(asyncAppender.isStarted());
 	}
 
+	// https://jira.qos.ch/browse/LOGBACK-1570
+	@Test
+	public void missingPropertyErrorHandling() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "missingProperty.xml");
+
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		assertNotNull(listAppender);
+		assertTrue(listAppender.isStarted());
+		checker.assertContainsMatch(Status.WARN, "Ignoring unkown property \\[inexistent\\] in \\[ch.qos.logback.core.read.ListAppender\\]");
+	}
+	
 	@Test
 	public void kvp() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/kvp.xml");

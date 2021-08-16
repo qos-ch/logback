@@ -51,7 +51,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 			inError = true;
 			return;
 		}
-		String nestedElementTagName = model.getTag();
+		String nestedElementTagName = implicitModel.getTag();
 
 		Object o = intercon.peekObject();
 		PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
@@ -63,6 +63,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 		switch (aggregationType) {
 		case NOT_FOUND:
+			addWarn("Ignoring unkown property ["+nestedElementTagName+"] in ["+o.getClass().getName()+"]");
 			inError = true;
 			return;
 		case AS_BASIC_PROPERTY:
