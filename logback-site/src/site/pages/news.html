@@ -58,6 +58,13 @@
     during variable substitution. This fixes <a
     href="https://jira.qos.ch/browse/LOGBACK-1417">LOGBACK-1417</a>.
     </p>
+
+    <p>&bull; Better error reporting in case of unknown properties in
+    components when reading XML configuration files. This
+    fixes <a href="https://jira.qos.ch/browse/LOGBACK-1570">LOGBACK-1570</a>.
+    </p>
+
+
     <hr width="80%" align="center" />
 
     <h3>13th of August, 2021, Release of version 1.3.0-alpha9</h3>
@@ -124,7 +131,13 @@
     href="https://jira.qos.ch/browse/LOGBACK-1501">LOGBACK-1501</a>
     reported by Jeremy Landis.
     </p>
-    
+
+    <p>Implementation of
+    <code>TargetLengthBasedClassNameAbbreviator</code> has been both
+    simplified and augmented with a LRU cache. This fixes <a
+    href="https://jira.qos.ch/browse/LOGBACK-1509">LOGBACK-1509</a>
+    reported by Michael Skells who also provided a relevant PR.
+    </p>
     
     <h3>28th of July, 2021, Release of version 1.3.0-alpha6</h3>
 
