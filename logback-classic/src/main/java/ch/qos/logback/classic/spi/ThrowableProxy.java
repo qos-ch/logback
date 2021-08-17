@@ -17,6 +17,7 @@ import ch.qos.logback.core.CoreConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.IdentityHashMap;
 
 public class ThrowableProxy implements IThrowableProxy {
 
@@ -32,6 +33,7 @@ public class ThrowableProxy implements IThrowableProxy {
 
     private transient PackagingDataCalculator packagingDataCalculator;
     private boolean calculatedPackageData = false;
+    private boolean circular;
 
     private static final Method GET_SUPPRESSED_METHOD;
 
@@ -46,20 +48,18 @@ public class ThrowableProxy implements IThrowableProxy {
     }
 
     private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
-
+    
     public ThrowableProxy(Throwable throwable) {
+        this(throwable, null);
+    }
+
+    private ThrowableProxy(Throwable throwable, IdentityHashMap circularCheck) {
 
         this.throwable = throwable;
         this.className = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
 
-        Throwable nested = throwable.getCause();
-
-        if (nested != null) {
-            this.cause = new ThrowableProxy(nested);
-            this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
-        }
         if (GET_SUPPRESSED_METHOD != null) {
             // this will only execute on Java 7
             try {
@@ -67,11 +67,20 @@ public class ThrowableProxy implements IThrowableProxy {
                 if (obj instanceof Throwable[]) {
                     Throwable[] throwableSuppressed = (Throwable[]) obj;
                     if (throwableSuppressed.length > 0) {
+                        if (circularCheck == null) {
+                            circularCheck = new IdentityHashMap(4);
+                            circularCheck.put(throwable, Boolean.TRUE);
+                        }
                         suppressed = new ThrowableProxy[throwableSuppressed.length];
                         for (int i = 0; i < throwableSuppressed.length; i++) {
-                            this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i]);
-                            this.suppressed[i].commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
-                                            stackTraceElementProxyArray);
+                            Throwable suppressedThrowable = throwableSuppressed[i];
+                            if (circularCheck.put(suppressedThrowable, Boolean.TRUE)==null) {
+                                this.suppressed[i] = new ThrowableProxy(suppressedThrowable, circularCheck);
+                                this.suppressed[i].commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(suppressedThrowable.getStackTrace(),
+                                                stackTraceElementProxyArray);
+                            } else {
+                                this.suppressed[i] = new ThrowableProxy(suppressedThrowable, true);
+                            }
                         }
                     }
                 }
@@ -81,7 +90,30 @@ public class ThrowableProxy implements IThrowableProxy {
                 // ignore
             }
         }
+        //The JVM prints stack traces with suppressed exceptions first, then cause afterwards
+        Throwable nested = throwable.getCause();
 
+        if (nested != null) {
+            if (circularCheck==null) {
+                circularCheck = new IdentityHashMap(4);
+                circularCheck.put(throwable, Boolean.TRUE);
+            }
+            if (circularCheck.put(nested, Boolean.TRUE) == null) {
+                this.cause = new ThrowableProxy(nested, circularCheck);
+                this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
+            } else {
+                this.cause = new ThrowableProxy(nested, true);
+            }
+        }
+
+    }
+    
+    private ThrowableProxy(Throwable throwable, boolean circular) {
+        this.throwable = throwable;
+        this.className = throwable.getClass().getName();
+        this.message = throwable.getMessage();
+        this.circular = circular;
+        stackTraceElementProxyArray = new StackTraceElementProxy[0];
     }
 
     public Throwable getThrowable() {
@@ -152,6 +184,10 @@ public class ThrowableProxy implements IThrowableProxy {
             builder.append(CoreConstants.LINE_SEPARATOR);
         }
         System.out.println(builder.toString());
+    }
+    
+    public boolean isCircular() {
+        return circular;
     }
 
 }
