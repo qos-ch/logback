@@ -178,7 +178,12 @@ public class ThrowableProxyUtil {
         subjoinExceptionMessage(buf, tp);
     }
 
-    private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    public static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
+        String string = tp.getString();
+        if (string == null) {
+            buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        } else {
+            buf.append(string);
+        }
     }
 }

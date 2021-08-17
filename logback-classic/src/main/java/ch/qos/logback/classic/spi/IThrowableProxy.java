@@ -18,6 +18,8 @@ public interface IThrowableProxy {
 
     String getClassName();
 
+    String getString();
+
     StackTraceElementProxy[] getStackTraceElementProxyArray();
 
     int getCommonFrames();
