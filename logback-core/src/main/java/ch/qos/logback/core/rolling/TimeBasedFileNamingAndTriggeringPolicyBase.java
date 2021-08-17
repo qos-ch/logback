@@ -18,6 +18,7 @@ import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import java.io.File;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.ArchiveRemover;
@@ -52,8 +53,9 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
             throw new IllegalStateException("FileNamePattern [" + tbrp.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
         }
 
-        if (dtc.getTimeZone() != null) {
-            rc = new RollingCalendar(dtc.getDatePattern(), dtc.getTimeZone(), Locale.getDefault());
+        if (dtc.getZoneId() != null) {
+        	TimeZone tz = TimeZone.getTimeZone(dtc.getZoneId()); 
+            rc = new RollingCalendar(dtc.getDatePattern(), tz, Locale.getDefault());
         } else {
             rc = new RollingCalendar(dtc.getDatePattern());
         }

@@ -1098,7 +1098,7 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
 
         <p>The %prefix composite converter can take care of the prefixing for you:
         
-        <pre>%d %prefix(%thread %level %logger %X{user}) %message</pre>
+        <pre>%d <b>%prefix(</b>%thread %level %logger %X{user}<b>)</b> %message</pre>
 
         <p>The two previous patterns will generate equivalent
         output. The usefullness of the %prefix converter increases
@@ -1114,8 +1114,8 @@ Caller+0   at mainPackage.sub.sample.Bar.createLoggingRequest(Bar.java:17)</pre>
           <b>rEx</b>{<em>depth</em>} <br /> 
           <b>rootException</b>{<em>depth</em>} <br /> 
           <br />
-					<b>rEx</b>{depth, evaluator-1, ..., evaluator-n} <br />
-					<b>rootException</b>{depth, evaluator-1, ..., evaluator-n}
+	  <b>rEx</b>{depth, evaluator-1, ..., evaluator-n} <br />
+	  <b>rootException</b>{depth, evaluator-1, ..., evaluator-n}
         </td>
         
         <td>
@@ -1379,14 +1379,12 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
     previous item at least 14 but at most 16 times.
     </p>
 
-		<h2 class="doAnchor" name="Parentheses">Parentheses are
-		special</h2>
+    <h2 class="doAnchor" name="grouping">Grouping with
+      parentheses</h2>
 
     <p>In logback, parentheses within the pattern string are treated
     as grouping tokens. Thus, it is possible to group a sub-pattern
-    and apply formatting directives on that sub-pattern. As of version
-    0.9.27, logback supports composite conversion words such as <a
-    href="#replace">%replace</a> which can transform sub-patterns.
+    and apply formatting directives on that sub-pattern. 
     </p>
 
     <p>For example, the pattern</p> 
@@ -1398,7 +1396,7 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
     than 30 characters.
     </p>
 
-    <p>If without the grouping the output was</p>
+    <p>Assuming without the grouping the output was</p>
 
     <p class="source">13:09:30 [main] DEBUG c.q.logback.demo.ContextListener - Classload hashcode is 13995234
 13:09:30 [main] DEBUG c.q.logback.demo.ContextListener - Initializing for ServletContext

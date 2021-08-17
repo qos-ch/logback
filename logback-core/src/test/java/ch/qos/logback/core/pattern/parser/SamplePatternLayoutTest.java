@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -23,7 +23,6 @@ import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Object> {
 

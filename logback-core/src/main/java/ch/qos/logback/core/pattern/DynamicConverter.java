@@ -39,14 +39,17 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E> impleme
      * components, the trivial implementation found in this abstract class will be
      * sufficient.
      */
+    @Override
     public void start() {
         started = true;
     }
 
+    @Override
     public void stop() {
         started = false;
     }
 
+    @Override
     public boolean isStarted() {
         return started;
     }
@@ -73,38 +76,47 @@ abstract public class DynamicConverter<E> extends FormattingConverter<E> impleme
         return optionList;
     }
 
+    @Override
     public void setContext(Context context) {
         cab.setContext(context);
     }
 
+    @Override
     public Context getContext() {
         return cab.getContext();
     }
 
+    @Override
     public void addStatus(Status status) {
         cab.addStatus(status);
     }
 
+    @Override
     public void addInfo(String msg) {
         cab.addInfo(msg);
     }
 
+    @Override
     public void addInfo(String msg, Throwable ex) {
         cab.addInfo(msg, ex);
     }
 
+    @Override
     public void addWarn(String msg) {
         cab.addWarn(msg);
     }
 
+    @Override
     public void addWarn(String msg, Throwable ex) {
         cab.addWarn(msg, ex);
     }
 
+    @Override
     public void addError(String msg) {
         cab.addError(msg);
     }
 
+    @Override
     public void addError(String msg, Throwable ex) {
         cab.addError(msg, ex);
     }

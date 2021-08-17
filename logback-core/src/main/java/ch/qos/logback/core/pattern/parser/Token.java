@@ -35,6 +35,7 @@ class Token {
 
     static Token EOF_TOKEN = new Token(EOF, "EOF");
     static Token RIGHT_PARENTHESIS_TOKEN = new Token(RIGHT_PARENTHESIS);
+    // BARE as in naked. Used for formatting purposes
     static Token BARE_COMPOSITE_KEYWORD_TOKEN = new Token(COMPOSITE_KEYWORD, "BARE");
     static Token PERCENT_TOKEN = new Token(PERCENT);
 

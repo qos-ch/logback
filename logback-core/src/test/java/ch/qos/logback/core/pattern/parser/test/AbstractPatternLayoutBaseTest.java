@@ -22,9 +22,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.ExceptionalConverter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
-import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
 
 abstract public class AbstractPatternLayoutBaseTest<E> {
 
@@ -41,8 +39,6 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         plb.setContext(context);
         String s = plb.doLayout(getEventObject());
         assertEquals("", s);
-        StatusManager sm = context.getStatusManager();
-        StatusPrinter.print(sm);
     }
 
     /**
@@ -59,7 +55,6 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         plb.start();
         String result = plb.doLayout(getEventObject());
         assertFalse(result.contains("%PARSER_ERROR_EX"));
-        // System.out.println("========="+result);
     }
 
     @Test
@@ -69,8 +64,6 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         plb.setContext(context);
         String s = plb.doLayout(getEventObject());
         assertEquals("", s);
-        StatusManager sm = context.getStatusManager();
-        StatusPrinter.print(sm);
     }
 
     @Test
@@ -84,7 +77,6 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         String s = plb.doLayout(getEventObject());
         assertEquals("", s);
         StatusChecker checker = new StatusChecker(context.getStatusManager());
-        // StatusPrinter.print(context);
         checker.assertContainsMatch("Empty or null pattern.");
     }
 
@@ -99,7 +91,6 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         String s = plb.doLayout(getEventObject());
         assertEquals("", s);
         StatusChecker checker = new StatusChecker(context.getStatusManager());
-        // StatusPrinter.print(context);
         checker.assertContainsMatch("Empty or null pattern.");
     }
 

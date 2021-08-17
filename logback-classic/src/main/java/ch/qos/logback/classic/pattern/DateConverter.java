@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import java.time.ZoneId;
 import java.util.List;
-import java.util.TimeZone;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -37,23 +37,24 @@ public class DateConverter extends ClassicConverter {
             datePattern = CoreConstants.ISO8601_PATTERN;
         }
 
+        List<String> optionList = getOptionList();
+        ZoneId zoneId = null;
+        // if the option list contains a TZ option, then set it.
+        if (optionList != null && optionList.size() > 1) {
+        	String zoneIdString = (String) optionList.get(1);
+        	zoneId = ZoneId.of(zoneIdString);
+        }
+        
         try {
-            cachingDateFormatter = new CachingDateFormatter(datePattern);
-            // maximumCacheValidity =
-            // CachedDateFormat.getMaximumCacheValidity(pattern);
+            cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
         } catch (IllegalArgumentException e) {
             addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
             // default to the ISO8601 format
-            cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN);
+            cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN, zoneId);
         }
 
-        List<String> optionList = getOptionList();
-
-        // if the option list contains a TZ option, then set it.
-        if (optionList != null && optionList.size() > 1) {
-            TimeZone tz = TimeZone.getTimeZone((String) optionList.get(1));
-            cachingDateFormatter.setTimeZone(tz);
-        }
+       
+        
         super.start();
     }
 

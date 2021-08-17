@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -185,14 +186,14 @@ public class FileNamePatternTest {
     @Test
     public void nullTimeZoneByDefault() {
         FileNamePattern fnp = new FileNamePattern("%d{hh}", context);
-        assertNull(fnp.getPrimaryDateTokenConverter().getTimeZone());
+        assertNull(fnp.getPrimaryDateTokenConverter().getZoneId());
     }
 
     @Test
     public void settingTimeZoneOptionHasAnEffect() {
-        TimeZone tz = TimeZone.getTimeZone("Australia/Perth");
+        ZoneId tz = ZoneId.of("Australia/Perth");
 
-        FileNamePattern fnp = new FileNamePattern("%d{hh, " + tz.getID() + "}", context);
-        assertEquals(tz, fnp.getPrimaryDateTokenConverter().getTimeZone());
+        FileNamePattern fnp = new FileNamePattern("%d{hh, " + tz.getId() + "}", context);
+        assertEquals(tz, fnp.getPrimaryDateTokenConverter().getZoneId());
     }
 }

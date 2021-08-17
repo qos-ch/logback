@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
@@ -37,7 +37,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
     public static final String DEFAULT_DATE_PATTERN = CoreConstants.DAILY_DATE_PATTERN;
 
     private String datePattern;
-    private TimeZone timeZone;
+    private ZoneId zoneId;
     private CachingDateFormatter cdf;
     // is this token converter primary or auxiliary? Only the primary converter
     // determines the rolling period
@@ -56,15 +56,12 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
                 if (AUXILIARY_TOKEN.equalsIgnoreCase(option)) {
                     primary = false;
                 } else {
-                    timeZone = TimeZone.getTimeZone(option);
+                	zoneId = ZoneId.of(option);
                 }
             }
         }
 
-        cdf = new CachingDateFormatter(datePattern);
-        if (timeZone != null) {
-            cdf.setTimeZone(timeZone);
-        }
+        cdf = new CachingDateFormatter(datePattern, zoneId);
     }
 
     public String convert(Date date) {
@@ -88,8 +85,8 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
         return datePattern;
     }
 
-    public TimeZone getTimeZone() {
-        return timeZone;
+    public ZoneId getZoneId() {
+        return zoneId;
     }
 
     public boolean isApplicable(Object o) {

@@ -19,7 +19,7 @@ import ch.qos.logback.core.pattern.Converter;
 import ch.qos.logback.core.pattern.Converter123;
 import ch.qos.logback.core.pattern.ConverterHello;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,6 +79,17 @@ public class CompilerTest {
         }
     }
 
+    @Test
+    public void converterStart() throws Exception {
+        {
+            Parser<Object> p = new Parser<Object>("abc %hello");
+            p.setContext(context);
+            Node t = p.parse();
+            Converter<Object> head = p.compile(t, converterMap);
+            String result = write(head, new Object());
+            assertEquals("abc Hello", result);
+        }
+    }
     @Test
     public void testFormat() throws Exception {
         {
@@ -168,7 +179,7 @@ public class CompilerTest {
             Node t = p.parse();
             Converter<Object> head = p.compile(t, converterMap);
             String result = write(head, new Object());
-            StatusPrinter.print(c);
+            //StatusPrinter.print(c);
             assertEquals("ABC Hello", result);
         }
         {
