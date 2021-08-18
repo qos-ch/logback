@@ -179,6 +179,10 @@ public class ThrowableProxyUtil {
     }
 
     private static void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-        buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    	if(tp.isCyclic()) {
+    		buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage()).append(']');
+    	} else {
+          buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+    	}
     }
 }

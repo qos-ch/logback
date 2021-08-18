@@ -25,4 +25,12 @@ public interface IThrowableProxy {
     IThrowableProxy getCause();
 
     IThrowableProxy[] getSuppressed();
+
+    /**
+     * Is this instance the result of a cyclic exception?
+     * 
+     * @return true if cyclic, false otherwise
+     * @sine 1.3.0
+     */
+	boolean isCyclic();
 }

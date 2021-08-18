@@ -13,6 +13,12 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
@@ -21,7 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.qos.logback.core.CoreConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +37,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TestHelper;
-
-import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeTrue;
+import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableProxyConverterTest {
 
@@ -61,16 +62,14 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void suppressed() throws InvocationTargetException, IllegalAccessException {
-        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
-                                                      // sense.
         Exception ex = null;
         try {
             someMethod();
         } catch (Exception e) {
             Exception fooException = new Exception("Foo");
             Exception barException = new Exception("Bar");
-            addSuppressed(e, fooException);
-            addSuppressed(e, barException);
+            e.addSuppressed(fooException);
+            e.addSuppressed(barException);
             ex = e;
         }
         verify(ex);
@@ -78,8 +77,6 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
-        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
-                                                      // sense.
         Exception ex = null;
         try {
             someMethod();
@@ -87,16 +84,14 @@ public class ThrowableProxyConverterTest {
             ex = new Exception("Wrapper", e);
             Exception fooException = new Exception("Foo");
             Exception barException = new Exception("Bar");
-            addSuppressed(ex, fooException);
-            addSuppressed(e, barException);
+            e.addSuppressed(fooException);
+            e.addSuppressed(barException);
         }
         verify(ex);
     }
 
     @Test
     public void suppressedWithSuppressed() throws Exception {
-        assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
-                                                      // sense.
         Exception ex = null;
         try {
             someMethod();
@@ -104,8 +99,8 @@ public class ThrowableProxyConverterTest {
             ex = new Exception("Wrapper", e);
             Exception fooException = new Exception("Foo");
             Exception barException = new Exception("Bar");
-            addSuppressed(barException, fooException);
-            addSuppressed(e, barException);
+            barException.addSuppressed(fooException);
+            e.addSuppressed(barException);
         }
         verify(ex);
     }
