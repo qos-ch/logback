@@ -15,8 +15,11 @@ package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.core.CoreConstants;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Set;
 
 public class ThrowableProxy implements IThrowableProxy {
 
@@ -29,59 +32,52 @@ public class ThrowableProxy implements IThrowableProxy {
     int commonFrames;
     private ThrowableProxy cause;
     private ThrowableProxy[] suppressed = NO_SUPPRESSED;
+    private final Set<Throwable> alreadyProcessedSet;
 
     private transient PackagingDataCalculator packagingDataCalculator;
     private boolean calculatedPackageData = false;
 
-    private static final Method GET_SUPPRESSED_METHOD;
-
-    static {
-        Method method = null;
-        try {
-            method = Throwable.class.getMethod("getSuppressed");
-        } catch (NoSuchMethodException e) {
-            // ignore, will get thrown in Java < 7
-        }
-        GET_SUPPRESSED_METHOD = method;
-    }
-
     private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
 
     public ThrowableProxy(Throwable throwable) {
+        // Using Collections.newSetFromMap(new IdentityHashMap<>()) is inspired from
+        // Throwable.printStackTrace(PrintStreamOrWriter):
+        // Guard against malicious overrides of Throwable.equals by
+        // using a Set with identity equality semantics.
+        this(throwable, Collections.newSetFromMap(new IdentityHashMap<>()));
+    }
+
+    public ThrowableProxy(Throwable throwable, Set<Throwable> alreadyProcessedSet) {
 
         this.throwable = throwable;
         this.className = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
+        this.alreadyProcessedSet = alreadyProcessedSet;
+
+        alreadyProcessedSet.add(throwable);
 
         Throwable nested = throwable.getCause();
 
-        if (nested != null) {
-            this.cause = new ThrowableProxy(nested);
+        if (nested != null && !alreadyProcessedSet.contains(nested)) {
+            this.cause = new ThrowableProxy(nested, alreadyProcessedSet);
             this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
         }
-        if (GET_SUPPRESSED_METHOD != null) {
-            // this will only execute on Java 7
-            try {
-                Object obj = GET_SUPPRESSED_METHOD.invoke(throwable);
-                if (obj instanceof Throwable[]) {
-                    Throwable[] throwableSuppressed = (Throwable[]) obj;
-                    if (throwableSuppressed.length > 0) {
-                        suppressed = new ThrowableProxy[throwableSuppressed.length];
-                        for (int i = 0; i < throwableSuppressed.length; i++) {
-                            this.suppressed[i] = new ThrowableProxy(throwableSuppressed[i]);
-                            this.suppressed[i].commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(throwableSuppressed[i].getStackTrace(),
-                                            stackTraceElementProxyArray);
-                        }
-                    }
+        Throwable[] throwableSuppressed = throwable.getSuppressed();
+        if (throwableSuppressed.length > 0) {
+            List<ThrowableProxy> suppressedList = new ArrayList<>(throwableSuppressed.length);
+            for (int i = 0; i < throwableSuppressed.length; i++) {
+                Throwable sup = throwableSuppressed[i];
+                if (alreadyProcessedSet.contains(sup)) {
+                    continue; // loop detected
                 }
-            } catch (IllegalAccessException e) {
-                // ignore
-            } catch (InvocationTargetException e) {
-                // ignore
+                ThrowableProxy throwableProxy = new ThrowableProxy(sup, alreadyProcessedSet);
+                throwableProxy.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(sup.getStackTrace(),
+                        stackTraceElementProxyArray);
+                suppressedList.add(throwableProxy);
             }
+            this.suppressed = suppressedList.toArray(new ThrowableProxy[suppressedList.size()]);
         }
-
     }
 
     public Throwable getThrowable() {
