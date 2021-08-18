@@ -1,0 +1,4 @@
+<configuration debug="false">
+  <contextListener class="ch.qos.logback.classic.spi.ListContextListener"/>
+  <root level="TRACE"/>
+</configuration>
