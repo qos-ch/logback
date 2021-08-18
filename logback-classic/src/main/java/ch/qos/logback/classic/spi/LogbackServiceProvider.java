@@ -38,9 +38,9 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
         defaultLoggerContext = new LoggerContext();
         defaultLoggerContext.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
         initializeLoggerContext();
+        defaultLoggerContext.start();
         markerFactory = new BasicMarkerFactory();
         mdcAdapter = new LogbackMDCAdapter();
-        //initialized = true;
     }
 
     private void initializeLoggerContext() {
