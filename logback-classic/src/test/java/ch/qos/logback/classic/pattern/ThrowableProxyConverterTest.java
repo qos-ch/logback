@@ -118,6 +118,22 @@ public class ThrowableProxyConverterTest {
     }
 
     @Test
+    public void cyclicCause() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        verify(e);
+    }
+ 
+    @Test
+    public void cyclicSuppressed() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        verify(e);
+    }
+    
+    @Test
     public void withArgumentOfOne() throws Exception {
         final Throwable t = TestHelper.makeNestedException(0);
         t.printStackTrace(pw);
@@ -205,6 +221,8 @@ public class ThrowableProxyConverterTest {
         assertThat(lines).hasSize(3 + 1);
     }
 
+ 
+    
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
@@ -214,7 +232,7 @@ public class ThrowableProxyConverterTest {
 
         ILoggingEvent le = createLoggingEvent(t);
         String result = tpc.convert(le);
-        System.out.println(result);
+        //System.out.println(result);
         result = result.replace("common frames omitted", "more");
         assertEquals(sw.toString(), result);
     }

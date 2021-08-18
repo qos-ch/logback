@@ -85,13 +85,30 @@ public class ExtendedThrowableProxyConverterTest {
         verify(t);
     }
 
+    @Test
+    public void cyclicCause() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        verify(e);
+    }
+ 
+    @Test
+    public void cyclicSuppressed() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        verify(e);
+    }
+    
     void verify(Throwable t) {
         t.printStackTrace(pw);
 
         ILoggingEvent le = createLoggingEvent(t);
         String result = etpc.convert(le);
         result = result.replace("common frames omitted", "more");
-        result = result.replaceAll(" ~?\\[.*\\]", "");
+        // replace ~[something:other] with "" but not if it contains "CIRCULAR"
+        result = result.replaceAll(" ~?\\[(?!CIRCULAR).*\\]", "");
         assertEquals(sw.toString(), result);
     }
 

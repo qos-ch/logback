@@ -108,5 +108,33 @@ public class RootCauseFirstThrowableProxyConverterTest {
         assertThat(positionOf("nesting level=0").in(result)).isLessThan(positionOf("nesting level =1").in(result));
         assertThat(positionOf("nesting level =1").in(result)).isLessThan(positionOf("nesting level =2").in(result));
     }
+ 
+    @Test
+    public void cyclicCause() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        ILoggingEvent le = createLoggingEvent(e);
+        String result = converter.convert(le);
+
+        assertThat(result).startsWith("[CIRCULAR REFERENCE: java.lang.Exception: foo]");
+    }
+ 
+    
+    @Test
+    public void cyclicSuppressed() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        ILoggingEvent le = createLoggingEvent(e);
+        String result = converter.convert(le);
+
+        assertThat(result).startsWith("java.lang.Exception: foo");
+        String circular = "Suppressed: [CIRCULAR REFERENCE: java.lang.Exception: foo]";
+        String wrapped = "Wrapped by: java.lang.Exception: java.lang.Exception: foo";
+        
+        assertThat(positionOf(circular).in(result)).isLessThan(positionOf(wrapped).in(result));
+    }
+    
 
 }
