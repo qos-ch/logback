@@ -50,9 +50,6 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
-import ch.qos.logback.core.util.StatusPrinter;
-//import ch.qos.logback.core.util.StatusPrinter;
-//import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 

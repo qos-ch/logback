@@ -42,13 +42,11 @@ public class BasicContextListener implements LoggerContextListener {
 
     public void onStart(LoggerContext context) {
         updateType = UpdateType.START;
-        ;
         this.context = context;
     }
 
     public void onStop(LoggerContext context) {
         updateType = UpdateType.STOP;
-        ;
         this.context = context;
     }
 

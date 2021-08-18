@@ -31,7 +31,7 @@ public class InvocationTest {
     }
     
     // https://jira.qos.ch/browse/LOGBACK-1568 would have been prevented
-    // had this almost silly test existed.
+    // had this silly test existed.
 	@Test
 	public void smoke() {
 		Logger logger = LoggerFactory.getLogger(this.getClass());

@@ -208,27 +208,6 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return packagingDataEnabled;
     }
 
-    /**
-     * This method clears all internal properties, except internal status messages,
-     * closes all appenders, removes any turboFilters, fires an OnReset event,
-     * removes all status listeners, removes all context listeners
-     * (except those which are reset resistant).
-     * <p/>
-     * As mentioned above, internal status messages survive resets.
-     */
-    @Override
-    public void reset() {
-        resetCount++;
-        super.reset();
-        initEvaluatorMap();
-        initCollisionMaps();
-        root.recursiveReset();
-        resetTurboFilterList();
-        cancelScheduledTasks();
-        fireOnReset();
-        resetListenersExceptResetResistant();
-        resetStatusListeners();
-    }
 
     private void cancelScheduledTasks() {
         for(ScheduledFuture<?> sf: scheduledFutures) {
@@ -341,6 +320,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     // === end listeners ==============================================
 
+    @Override
     public void start() {
         super.start();
         fireOnStart();
@@ -353,6 +333,28 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         super.stop();
     }
 
+    /**
+     * This method clears all internal properties, except internal status messages,
+     * closes all appenders, removes any turboFilters, fires an OnReset event,
+     * removes all status listeners, removes all context listeners
+     * (except those which are reset resistant).
+     * <p/>
+     * As mentioned above, internal status messages survive resets.
+     */
+    @Override
+    public void reset() {
+        resetCount++;
+        super.reset();
+        initEvaluatorMap();
+        initCollisionMaps();
+        root.recursiveReset();
+        resetTurboFilterList();
+        cancelScheduledTasks();
+        fireOnReset();
+        resetListenersExceptResetResistant();
+        resetStatusListeners();
+    }
+    
     @Override
     public String toString() {
         return this.getClass().getName() + "[" + getName() + "]";
