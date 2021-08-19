@@ -17,7 +17,9 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.util.InterruptUtil;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -287,11 +289,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
             // loop while the parent is started
             while (parent.isStarted()) {
-                try {
-                    E e = parent.blockingQueue.take();
-                    aai.appendLoopOnAppenders(e);
-                } catch (InterruptedException ie) {
-                    break;
+                List<E> elements = new ArrayList<E>();
+                parent.blockingQueue.drainTo(elements);
+                for(E e: elements) {
+                   aai.appendLoopOnAppenders(e);
                 }
             }
 
