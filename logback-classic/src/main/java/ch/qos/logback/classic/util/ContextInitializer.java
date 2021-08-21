@@ -146,7 +146,7 @@ public class ContextInitializer {
         if (url != null) {
             configureByResource(url);
         } else {
-            Configurator c = EnvUtil.loadFromServiceLoader(Configurator.class);
+            Configurator c = ClassicEnvUtil.loadFromServiceLoader(Configurator.class);
             if (c != null) {
                 try {
                     c.setContext(loggerContext);

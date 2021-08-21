@@ -186,8 +186,8 @@ public class ContextInitializerTest {
     }
 
     private void setupMockServiceLoader() {
-        final ClassLoader realLoader = EnvUtil.class.getClassLoader();
-        EnvUtil.testServiceLoaderClassLoader = new WrappedClassLoader(realLoader) {
+        final ClassLoader realLoader = ClassicEnvUtil.class.getClassLoader();
+        ClassicEnvUtil.testServiceLoaderClassLoader = new WrappedClassLoader(realLoader) {
 
             @Override
             public Enumeration<URL> getResources(String name) throws IOException {

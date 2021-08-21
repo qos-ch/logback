@@ -21,7 +21,7 @@ import ch.qos.logback.core.util.Loader;
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
-public class EnvUtil {
+public class ClassicEnvUtil {
 
     /*
      * Used to replace the ClassLoader that the ServiceLoader uses for unit testing. We need this to mock the resources
@@ -31,7 +31,7 @@ public class EnvUtil {
     static ClassLoader testServiceLoaderClassLoader = null;
 
     static public boolean isGroovyAvailable() {
-        ClassLoader classLoader = Loader.getClassLoaderOfClass(EnvUtil.class);
+        ClassLoader classLoader = Loader.getClassLoaderOfClass(ClassicEnvUtil.class);
         try {
             Class<?> bindingClass = classLoader.loadClass("groovy.lang.Binding");
             return (bindingClass != null);
@@ -41,7 +41,7 @@ public class EnvUtil {
     }
 
     private static ClassLoader getServiceLoaderClassLoader() {
-        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(EnvUtil.class) : testServiceLoaderClassLoader;
+        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(ClassicEnvUtil.class) : testServiceLoaderClassLoader;
     }
 
     public static <T> T loadFromServiceLoader(Class<T> c) {
