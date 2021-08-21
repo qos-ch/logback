@@ -131,8 +131,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		super.stop();
 
 		// interrupt the worker thread so that it can terminate. Note that the
-		// interruption can be consumed
-		// by sub-appenders
+		// interruption can be consumed by sub-appenders
 		worker.interrupt();
 
 		InterruptUtil interruptUtil = new InterruptUtil(context);
@@ -288,6 +287,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
 	class Worker extends Thread {
 
+		int spinCount = 0;
+		
 		public void run() {
 			AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
 			AppenderAttachableImpl<E> aai = parent.aai;
@@ -296,6 +297,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 			while (parent.isStarted()) {
 				try {
 					E e0 = parent.blockingQueue.take();
+					spinCount++;
+					if((spinCount & 0x0FFF) == 0)
+					  System.out.println("spinCount="
+					  		+ ""+spinCount);
 					List<E> elements = new ArrayList<E>();
 					elements.add(e0);
 					parent.blockingQueue.drainTo(elements);
