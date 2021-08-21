@@ -23,6 +23,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import ch.qos.logback.core.util.EnvUtil;
+
 public class ThrowableProxyTest {
 
     StringWriter sw = new StringWriter();
@@ -158,6 +160,9 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void cyclicCause() {
+    	// Earlier JDKs may formats things differently
+    	if(!EnvUtil.isJDK16OrHigher())
+    		return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.initCause(e2);
@@ -167,6 +172,9 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void cyclicSuppressed() {
+    	// Earlier JDKs may formats things differently
+    	if(!EnvUtil.isJDK16OrHigher())
+    		return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);

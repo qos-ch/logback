@@ -38,6 +38,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.TestHelper;
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.EnvUtil;
 
 public class ThrowableProxyConverterTest {
 
@@ -119,6 +120,9 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void cyclicCause() {
+    	// Earlier JDKs may formats things differently
+    	if(!EnvUtil.isJDK16OrHigher())
+    		return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.initCause(e2);
@@ -127,7 +131,11 @@ public class ThrowableProxyConverterTest {
  
     @Test
     public void cyclicSuppressed() {
-        Exception e = new Exception("foo");
+    	// Earlier JDKs may formats things differently
+    	if(!EnvUtil.isJDK16OrHigher())
+    		return;
+        
+    	Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);
         verify(e);
