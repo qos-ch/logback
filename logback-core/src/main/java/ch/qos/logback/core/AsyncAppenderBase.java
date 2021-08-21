@@ -287,8 +287,6 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
 	class Worker extends Thread {
 
-		int spinCount = 0;
-		
 		public void run() {
 			AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
 			AppenderAttachableImpl<E> aai = parent.aai;
@@ -296,12 +294,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 			// loop while the parent is started
 			while (parent.isStarted()) {
 				try {
-					E e0 = parent.blockingQueue.take();
-					spinCount++;
-					if((spinCount & 0x0FFF) == 0)
-					  System.out.println("spinCount="
-					  		+ ""+spinCount);
 					List<E> elements = new ArrayList<E>();
+					E e0 = parent.blockingQueue.take();
 					elements.add(e0);
 					parent.blockingQueue.drainTo(elements);
 					for (E e : elements) {
