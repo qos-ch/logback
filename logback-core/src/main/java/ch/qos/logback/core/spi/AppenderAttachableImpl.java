@@ -19,8 +19,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.util.COWArrayList;
 
 /**
- * A ReentrantReadWriteLock based implementation of the
- * {@link AppenderAttachable} interface.
+ * A {@link COWArrayList} based implementation of the {@link AppenderAttachable} interface.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -109,8 +108,6 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
         appenderList.clear();
     }
 
-    static final long START = System.currentTimeMillis();
-
     /**
      * Remove the appender passed as parameter form the list of attached
      * appenders.
@@ -133,7 +130,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
             return false;
         }
         boolean removed = false;
-        for (Appender<E> a : appenderList) {
+        for (Appender<E> a : appenderList.asTypedArray()) {
             if (name.equals((a).getName())) {
                 removed = appenderList.remove(a);
                 break;

@@ -141,36 +141,36 @@ public class COWArrayList<E> implements List<E> {
 
     @Override
     public boolean addAll(Collection<? extends E> c) {
-        boolean result = underlyingList.addAll(c);
-        markAsStale();
+    	markAsStale();
+    	boolean result = underlyingList.addAll(c);
         return result;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> col) {
-        boolean result = underlyingList.addAll(index, col);
         markAsStale();
+    	boolean result = underlyingList.addAll(index, col);
         return result;
     }
 
     @Override
     public boolean removeAll(Collection<?> col) {
-        boolean result = underlyingList.removeAll(col);
         markAsStale();
+    	boolean result = underlyingList.removeAll(col);
         return result;
     }
 
     @Override
     public boolean retainAll(Collection<?> col) {
-        boolean result = underlyingList.retainAll(col);
         markAsStale();
+    	boolean result = underlyingList.retainAll(col);
         return result;
     }
 
     @Override
     public void clear() {
-        underlyingList.clear();
         markAsStale();
+    	underlyingList.clear();
     }
 
     @Override
@@ -181,21 +181,21 @@ public class COWArrayList<E> implements List<E> {
 
     @Override
     public E set(int index, E element) {
-        E e = underlyingList.set(index, element);
         markAsStale();
+    	E e = underlyingList.set(index, element);
         return e;
     }
 
     @Override
     public void add(int index, E element) {
-        underlyingList.add(index, element);
         markAsStale();
+    	underlyingList.add(index, element);
     }
 
     @Override
     public E remove(int index) {
-        E e = (E) underlyingList.remove(index);
         markAsStale();
+    	E e = (E) underlyingList.remove(index);
         return e;
     }
 

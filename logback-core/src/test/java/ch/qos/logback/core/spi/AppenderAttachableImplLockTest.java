@@ -19,9 +19,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * This test shows the general problem I described in LBCORE-67.
+ * This test shows the general problem I described in LOGBACK-102.
  *
- * In the two test cases below, an appender that throws an OutOfMemoryError
+ * In the two test cases below, an appender that throws an RuntimeException
  * while getName is called - but this is just an example to show the general
  * problem.
  *
@@ -50,16 +50,16 @@ public class AppenderAttachableImplLockTest {
     private AppenderAttachableImpl<Integer> aai = new AppenderAttachableImpl<Integer>();
 
     @SuppressWarnings("unchecked")
-    @Test(timeout = 5000)
+    @Test(timeout = 1000)
     public void getAppenderBoom() {
         Appender<Integer> mockAppender1 = mock(Appender.class);
 
-        when(mockAppender1.getName()).thenThrow(new OutOfMemoryError("oops"));
+        when(mockAppender1.getName()).thenThrow(new RuntimeException("oops"));
         aai.addAppender(mockAppender1);
         try {
             // appender.getName called as a result of next statement
             aai.getAppender("foo");
-        } catch (OutOfMemoryError e) {
+        } catch (RuntimeException e) {
             // this leaves the read lock locked.
         }
 
@@ -70,10 +70,11 @@ public class AppenderAttachableImplLockTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(timeout = 5000)
+    //@Test(timeout = 1000)
+    @Test
     public void detachAppenderBoom() throws InterruptedException {
         Appender<Integer> mockAppender = mock(Appender.class);
-        when(mockAppender.getName()).thenThrow(new OutOfMemoryError("oops"));
+        when(mockAppender.getName()).thenThrow(new RuntimeException("oops"));
         mockAppender.doAppend(17);
 
         aai.addAppender(mockAppender);
@@ -83,7 +84,8 @@ public class AppenderAttachableImplLockTest {
                 try {
                     // appender.getName called as a result of next statement
                     aai.detachAppender("foo");
-                } catch (OutOfMemoryError e) {
+                } catch (RuntimeException e) {
+                	System.out.println("Caught "+e.toString());
                     // this leaves the write lock locked.
                 }
             }
