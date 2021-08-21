@@ -70,8 +70,8 @@ public class AppenderAttachableImplLockTest {
     }
 
     @SuppressWarnings("unchecked")
-    //@Test(timeout = 1000)
-    @Test
+    @Test(timeout = 15000)
+    //@Test
     public void detachAppenderBoom() throws InterruptedException {
         Appender<Integer> mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenThrow(new RuntimeException("oops"));
