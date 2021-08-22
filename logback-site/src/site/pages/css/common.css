@@ -142,6 +142,9 @@ table.bodyTable td {
   padding-bottom: 0.5ex;
 }
 
+table[class="bodyTable alignRight"] td {
+  text-align: right;
+}
 
 /* apply to tr elements of tables which are both bodytable and dark */
 table[class="bodyTable dark"] tr {
