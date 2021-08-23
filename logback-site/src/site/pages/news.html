@@ -32,7 +32,7 @@
 
     <hr width="80%" align="center" />
 
-    <h3>th of August, 2021, Release of version 1.3.0-alpha10</h3>
+    <h3>23rd of August, 2021, Release of version 1.3.0-alpha10</h3>
 
     <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
     modularized and requires slf4j-api version 2.0.x. However, the
@@ -60,10 +60,17 @@
     href="https://jira.qos.ch/browse/LOGBACK-1421">LOGBACK-1421</a>.
     </p>
 
+    <p>&bull; <code>AsyncAppenderBase</code> now drains its buffer in
+    one go, considerably improving thoughput. See <a
+    href="performance.html">benchmarking results</a> for further
+    details.
+    </p>
+
+    
     <p>&bull; <code>ThrowableProxy</code> now supports circular
     exceptions. This fixes <a
     href="https://jira.qos.ch/browse/LOGBACK-1027">LOGBACK-1027</a>
-    with Jan S. (jpstotz) providing the relevant patch.
+    with Jan S. (jpstotz) providing the relevant patch.</p>
     
     <p>&bull; <code>LogbackServiceProvider</code> now invokes
     <code>LoggerContext.start()</code> method upon completion of
