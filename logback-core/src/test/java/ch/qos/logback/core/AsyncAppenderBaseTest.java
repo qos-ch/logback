@@ -113,10 +113,12 @@ public class AsyncAppenderBaseTest {
         int loopLen = bufferSize * 2;
         asyncAppenderBase.addAppender(delayingListAppender);
         asyncAppenderBase.setQueueSize(bufferSize);
+        asyncAppenderBase.setMaxFlushTime(2000);
         asyncAppenderBase.start();
         for (int i = 0; i < loopLen; i++) {
             asyncAppenderBase.doAppend(i);
         }
+        
         asyncAppenderBase.stop();
         verify(delayingListAppender, loopLen);
     }
@@ -292,6 +294,7 @@ public class AsyncAppenderBaseTest {
     }
 
     private void verify(ListAppender<Integer> la, int atLeast) {
+    	// ListAppender passes as parameter should be stopped at this stage
         assertFalse(la.isStarted());
         assertTrue(atLeast + " <= " + la.list.size(), atLeast <= la.list.size());
         statusChecker.assertIsErrorFree();
