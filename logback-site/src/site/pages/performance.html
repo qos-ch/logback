@@ -274,9 +274,17 @@
       <p>While we do not have a definite answer, it is likely that
       algorithmic differences account for logback's better
       performance. Moreover, in a multi-core CPU running many threads,
-      concurrent access requires use of the L3 cache, perhaps
+      concurrent access requires use of the shared L3 cache, perhaps
       mitigating the advantages of L1 and L2 caches.      
       </p>
+
+      <h3>Replication of results</h3>
+      
+      <p>The results have been replicated by the author on several
+      other computers, including an Intel i7-8565U running Windows, an
+      Intel Xeon E5-2650L running Linux under a KVM hypervisor and an
+      AMD A10 Micro-6700T running Linux.</p>
+      
       
       <script src="templates/footer.js" type="text/javascript"></script>	
     </div>
