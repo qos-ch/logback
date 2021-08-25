@@ -43,7 +43,10 @@
       second or a service duration of a microsecond per operation. If
       the destination of the event is a database with a throughput of
       200 operations per second, the performance gain can be
-      tremendous.</p>
+      tremendous. This very favorable situation occurs if the rate of
+      logging event arrival is <em>slower</em> than the rate of
+      service, that is the rate at which events are transmitted to
+      destination and taken off the circular buffer.</p>
 
       <p>Asynchronous logging is not a panacea however. It still has
       to obey they laws of the physical universe. In particular, in
@@ -72,7 +75,7 @@
       logging events.
       </p>
 
-      <p>When the <code>AsyncAppender</code> is overlaoded, your
+      <p>When the <code>AsyncAppender</code> is overloaded, your
       application will be paying the cost of moving events in and out
       of <code>AsyncAppender</code>'s circular buffer in addition to
       sending events to destination. Thus, when we talk about
@@ -83,10 +86,17 @@
       contending for AsyncAppender's circular buffer.
       </p>
       
-      <p>Therefore, an asynchronous logging benchmark should yield
-      information about the overhead of asynchronous logging (when
-      overloaded) and its behavior in presence of many producer
-      threads.
+      <p>As mentioned earlier, if the rate of event arrival is slower
+      than the service rate, the application will only have to
+      hand-off logging events to a circular buffer, significantly
+      lowering the perceived cost of logging. At the same time, we
+      must also consider the worst-case scenario where the rate of
+      logging event arrival is higher than the service rate. Such a
+      scenario is not that uncommon as slow appenders
+      abound. Therefore, as a worst-case analysis, an asynchronous
+      logging benchmark should yield information about the overhead of
+      asynchronous logging (when overloaded) and its behavior in
+      presence of many producer threads.
       </p>
 
       <p>We have chosen to use <code>FileAppender</code> in
@@ -108,10 +118,10 @@
       <p>We have taken care to compare apples to apples. All tests
       specify the same buffer size, i.e. 256KB, for all
       <code>FileAppender</code> instances across frameworks and using
-      the same identical pattern, that is "%d %p [%t] %c - %m%n".
-      Lossy behavior (when the buffer is full) is turned off for
-      logback's <code>AsyncAppender</code>. It is turned off by
-      default for log4j 1.2 as well as log4j2.</p>
+      the same identical pattern, that is <span class="pattern">"%d %p
+      [%t] %c - %m%n"</span>.  Lossy behavior (when the buffer is
+      full) is turned off for logback's <code>AsyncAppender</code>. It
+      is turned off by default for log4j 1.2 as well as log4j2.</p>
 
       <p>Regarding the circular buffer size for
       <code>AsyncAppender</code> or log4j's LMAX ring buffer, we have
@@ -130,7 +140,7 @@
  <!--
      easier cut and paste with emacs marco uusing forward-whitespace with </td><td> insertions
 -->      
-      <table  class="bodyTable alignRight striped">
+      <table  class="bodyTable rightAlign striped">
         <tr>
           <th>Threads</th>
           <th>log4j synchronous</th>
@@ -150,7 +160,7 @@
           <td>844.67</td>
           <td>2,139.83</td>
           <td>1,760.30</td>
-          <td>"ops/ms"</td>
+          <td>ops/ms</td>
         </tr>
 
         <tr>
@@ -161,7 +171,7 @@
           <td>819.40</td>
           <td>2,276.77</td>
           <td>1,821.36</td>
-          <td>"ops/ms"</td>
+          <td>ops/ms</td>
         </tr>
         <tr>
           <td>4</td>
@@ -171,49 +181,49 @@
           <td>770.27</td>
           <td>1,836.99</td>
           <td>1,799.39</td>
-          <td>"ops/ms"</td>          
+          <td>ops/ms</td>          
         </tr>
         <tr>
           <td>8</td>
           <td>633.13</td>
           <td>726.21</td>
-          <td>1257.63</td>
+          <td>1,257.63</td>
           <td>733.25</td>
-          <td>1787.62</td>
-          <td>1774.99</td>
-          <td>"ops/ms"</td>          
+          <td>1,787.62</td>
+          <td>1,774.99</td>
+          <td>ops/ms</td>          
         </tr>
         <tr>
           <td>16</td>
-          <td>585.134</td>
-          <td>693.747</td>
-          <td>1211.313</td>
-          <td>722.345</td>
-          <td>1813.098</td>
-          <td>1815.107</td>
-          <td>"ops/ms"</td>          
+          <td>585.13</td>
+          <td>693.74</td>
+          <td>1,211.31</td>
+          <td>722.34</td>
+          <td>1,813.09</td>
+          <td>1,815.10</td>
+          <td>ops/ms</td>          
         </tr>
 
         <tr>
           <td>32</td>
-          <td>643.851</td>
-          <td>657.082</td>
-          <td>1203.27</td>
+          <td>643.85</td>
+          <td>657.08</td>
+          <td>1,203.27</td>
           <td>704.08</td>
-          <td>1782.814</td>
-          <td>1751.212</td>
-          <td>"ops/ms"</td>          
+          <td>1,782.81</td>
+          <td>1,751.21</td>
+          <td>ops/ms</td>          
         </tr>
 
         <tr>
           <td>64</td>
-          <td>576.676</td>
-          <td>696.216</td>
-          <td>1236.377</td>
-          <td>726.153</td>
-          <td>1740.279</td>
-          <td>1644.819</td>
-          <td>"ops/ms"</td>          
+          <td>576.67</td>
+          <td>696.21</td>
+          <td>1,236.37</td>
+          <td>726.15</td>
+          <td>1,740.27</td>
+          <td>1,644.81</td>
+          <td>ops/ms</td>          
         </tr>
       </table>      
 
@@ -239,19 +249,19 @@
       frameworks.
       </p>
 
-      <p class="highlight">logback 1.3 performs about 3 times faster
-      than log4j and about 1.6 times faster than log4j2 in case of
-      synchronous logging. For asynchronous logging, logback 1.3
-      performs 2.5 faster than log4j and 2.3 times faster than
-      log4j2.</p>
+      <p class="highlight">logback version 1.3-alpha10 performs about
+      3 times faster than log4j and about 1.6 times faster than log4j2
+      in case of synchronous logging. For asynchronous logging,
+      logback 1.3 performs 2.5 faster than log4j and 2.3 times faster
+      than log4j2.</p>
 
       
       <p>While these points may be somewhat subtle, the not so subtle
-      observation is that logback 1.3 performs about 3 times faster
-      than log4j and about 1.6 times faster than log4j2 in case of
-      synchronous logging. For asynchronous logging, logback 1.3
-      performs 2.5 faster than log4j and 2.3 times faster than
-      log4j2.</p>
+      observation is that logback version 1.3-alpha10 performs about 3
+      times faster than log4j and about 1.6 times faster than log4j2
+      in case of synchronous logging. For asynchronous logging,
+      logback 1.3 performs 2.5 faster than log4j and 2.3 times faster
+      than log4j2.</p>
 
       <p>Note that with 2'200'000 events per second, and 209 bytes
       written per event, logback's <code>FileAppender</code> is

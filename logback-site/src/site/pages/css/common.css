@@ -142,18 +142,13 @@ table.bodyTable td {
   padding-bottom: 0.5ex;
 }
 
-table[class="bodyTable alignRight"] td {
-  text-align: right;
+table.bodyTable.rightAlign tr td {
+    text-align: right;
 }
 
 /* apply to tr elements of tables which are both bodytable and dark */
-table[class="bodyTable dark"] tr {
+table.bodyTable[class="dark"] tr {
 	background-color: #ddd;
-}
-
-/* apply to tr elements of tables which are both bodytable and dark */
-table[class="bodyTable properties"] tr {
-	vertical-align: top;
 }
 
 /* table.bodyTable tr.a { 	background-color: #ddd; } */
@@ -173,7 +168,7 @@ table.bodyTable tr td p:first-child {
   background-color: #f0f0f0;
 }
 .striped tr:last-child td {
-  border-bottom: 1px solid #ddd;
+  border-bottom: 2px solid #ddd;
 }
 
 td.word {
@@ -236,13 +231,24 @@ td.word {
 }
 
 .code {
-	font-family: Courier, monospace;
- 	color: #666;	
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;    
+    background-color: #EEE;
 }
 
+.pattern {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;    
+    background-color: #DDD;
+}
+
+code {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    background-color: #EEE;
+}
+    
+
 .variable {
-	font-family: Courier, monospace;
-  font-style:italic;  
+    font-family: Courier, monospace;
+    font-style:italic;  
 }
 
 
