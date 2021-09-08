@@ -3,6 +3,7 @@ package ch.qos.logback.classic.pattern;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class LoggerNameConverterPerfTest {
 		ocsl.setContext(loggerContext);
 		ocsl.start();
 		loggerContext.getStatusManager().add(ocsl);
-		loggerConverter.setOptionList(List.of("30"));
+		loggerConverter.setOptionList(Arrays.asList("30"));
 		loggerConverter.setContext(loggerContext);
 		loggerConverter.start();
 	}
