@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -165,7 +166,7 @@ public class LoggingEventSerializationTest {
         checkForEquality(event, remoteEvent);
 
         assertNotNull(remoteEvent.getMarkerList());
-        assertEquals(List.of(marker), remoteEvent.getMarkerList());
+        assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
     }
     
     @Test
@@ -182,7 +183,7 @@ public class LoggingEventSerializationTest {
         checkForEquality(event, remoteEvent);
 
         assertNotNull(remoteEvent.getMarkerList());
-        assertEquals(List.of(marker), remoteEvent.getMarkerList());
+        assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
     }
     
     @Test
