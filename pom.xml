@@ -35,7 +35,7 @@
 
   <scm>
     <url>https://github.com/ceki/logback</url>
-    <connection>git@github.com:ceki/logback.git</connection>
+    <connection>scm:git@github.com:qos-ch/logback.git</connection>
   </scm>
 
   <modules>
