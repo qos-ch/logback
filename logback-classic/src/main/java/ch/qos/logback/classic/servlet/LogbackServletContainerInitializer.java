@@ -4,9 +4,9 @@ import static ch.qos.logback.core.CoreConstants.DISABLE_SERVLET_CONTAINER_INITIA
 
 import java.util.Set;
 
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 
 import ch.qos.logback.classic.util.StatusViaSLF4JLoggerFactory;
 import ch.qos.logback.core.util.OptionHelper;

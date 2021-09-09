@@ -1,7 +1,7 @@
 module ch.qos.logback.classic { 
   requires org.slf4j;
   requires static java.management;
-  requires static javax.servlet.api;
+  requires static jakarta.servlet;
 
   requires ch.qos.logback.core;
   uses ch.qos.logback.classic.spi.Configurator;

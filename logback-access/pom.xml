@@ -131,8 +131,7 @@
             <Import-Package>
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
-              javax.servlet.*;version="2.5",
-              javax.*;resolution:=optional,
+              jakarta.servlet.*;version="5.0.0",
               org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
               org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
               *

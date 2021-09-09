@@ -15,6 +15,7 @@ package ch.qos.logback.access.jetty;
 
 import java.io.File;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -310,14 +311,16 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         return fai.getFilterChainDecision(event);
     }
 
-    @Override
-    public void addLifeCycleListener(Listener listener) {
-        // we'll implement this when asked
-    }
+	@Override
+	public boolean addEventListener(EventListener listener) {
+		// we'll implement this when asked
+		return false;
+	}
 
-    @Override
-    public void removeLifeCycleListener(Listener listener) {
-        // we'll implement this when asked
-    }
+	@Override
+	public boolean removeEventListener(EventListener listener) {
+		// we'll implement this when asked
+		return false;
+	}
 
 }
