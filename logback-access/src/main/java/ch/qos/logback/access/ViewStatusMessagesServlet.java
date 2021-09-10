@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.access;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.ViewStatusMessagesServletBase;

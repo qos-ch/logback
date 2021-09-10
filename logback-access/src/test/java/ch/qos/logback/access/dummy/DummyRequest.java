@@ -15,8 +15,8 @@ package ch.qos.logback.access.dummy;
 
 import ch.qos.logback.access.AccessConstants;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;

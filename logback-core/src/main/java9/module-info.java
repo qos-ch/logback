@@ -5,7 +5,7 @@ module ch.qos.logback.core {
     requires static jakarta.mail;
     requires static jakarta.activation;
     
-    requires static javax.servlet.api;
+    requires static jakarta.servlet;
     requires static janino;
     requires static commons.compiler;
     
