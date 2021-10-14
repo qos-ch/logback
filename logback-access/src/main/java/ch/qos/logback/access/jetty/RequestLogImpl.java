@@ -19,14 +19,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.util.FileUtil;
-import ch.qos.logback.core.util.StatusPrinter;
-
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.RequestLog;
-import org.eclipse.jetty.server.Response;
-
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
@@ -42,22 +34,115 @@ import ch.qos.logback.core.spi.FilterAttachable;
 import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.util.FileUtil;
 import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.RequestLog;
+import org.eclipse.jetty.server.Response;
+import org.eclipse.jetty.util.Jetty;
+import org.eclipse.jetty.util.component.LifeCycle;
 
 /**
- * This class is logback's implementation of jetty's RequestLog interface. <p>
+ * This class is logback's implementation of jetty's RequestLog interface.
+ * <p>
  * It can be seen as logback classic's LoggerContext. Appenders can be attached
  * directly to RequestLogImpl and RequestLogImpl uses the same StatusManager as
- * LoggerContext does. It also provides containers for properties. <p> To
- * configure jetty in order to use RequestLogImpl, the following lines must be
- * added to the jetty configuration file, namely <em>etc/jetty.xml</em>:
+ * LoggerContext does. It also provides containers for properties.
+ * </p>
+ * <h2>Supported Jetty Versions</h2>
+ * <p>
+ *     This {@code RequestLogImpl} only supports Jetty 7.0.0 through Jetty 10.
+ *     If you are using Jetty 11 with the new Jakarta Servlets (namespace {@code jakarta.servlet})
+ *     then you will need a more modern version of {@code logback-access}.
+ * </p>
+ * <h2>Configuring for Jetty 9.4.x through to Jetty 10.0.x</h2>
+ * <p>
+ *     Jetty 9.4.x and Jetty 10.x use a modern @{code server.setRequestLog(RequestLog)} interface that
+ *     is based on a Server level RequestLog behavior.  This means all requests are logged,
+ *     even bad requests, and context-less requests.  The internals of the Jetty Request and
+ *     Response objects track the state of the object at the time they are committed (the
+ *     actual state during the application when an action on the network commits the
+ *     request/response exchange).  This prevents behaviors from 3rd party libraries
+ *     that change the state of the request / response before the RequestLog gets a chance
+ *     to log the details.  This differs from Jetty 9.3.x and
+ *     older in that those versions used a (now deprecated) {@code RequestLogHandler} and
+ *     would never see bad requests, or context-less requests,
+ *     and if a 3rd party library modifies the the response (for example by setting
+ *     {@code response.setStatus(200)} after the response has been initiated on the network)
+ *     this change in status would be logged, instead of the actual status that was sent.
+ * </p>
+ * <p>
+ *     First, you must be using the proper {@code ${jetty.home}} and {@code ${jetty.base}}
+ *     directory split.  Configure your {@code ${jetty.base}} with at least the `resources` module
+ *     enabled (so that your configuration can be found).
+ * </p>
+ * <p>
+ *     Next, create a {@code ${jetty.base}/etc/logback-access-requestlog.xml} file with the following
+ *     content.
+ * </p>
+ * <pre>
+ *   &lt;?xml version="1.0"?&gt;
+ *   &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+ *
+ *   &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+ *     &lt;Set name="requestLog"&gt;
+ *       &lt;New id="LogbackAccess" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+ *         &lt;Set name="resource"&gt;logback-access.xml&lt;/Set&gt;
+ *       &lt;/New&gt;
+ *     &lt;/Set&gt;
+ *   &lt;/Configure&gt;
+ * </pre>
+ * <p/>
+ * <p>
+ *     Now you'll need a {@code ${jetty.base}/resources/logback-access.xml} configuration file.
+ * </p>
+ * By default, {@code RequestLogImpl} looks for a logback configuration file called
+ * {@code etc/logback-access.xml}, in the {@code ${jetty.base}} directory, then
+ * the older {@code ${jetty.home}} directory.
+ * The {@code logback-access.xml} file is slightly
+ * different than the usual logback classic configuration file. Most of it is
+ * the same: Appenders and Layouts are declared the exact same way. However,
+ * loggers elements are not allowed. <p> It is possible to put the logback
+ * configuration file anywhere, as long as it's path is specified. Here is
+ * another example, with a path to the logback-access.xml file.
  * <p/>
  * <pre>
- *    &lt;Ref id=&quot;requestLog&quot;&gt;
- *      &lt;Set name=&quot;requestLog&quot;&gt;
- *        &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *      &lt;/Set&gt;
- *    &lt;/Ref&gt;
+ *   &lt;?xml version="1.0"?&gt;
+ *   &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_3.dtd"&gt;
+ *
+ *   &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+ *     &lt;Set name="requestLog"&gt;
+ *       &lt;New id="LogbackAccess" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+ *         &lt;Set name="fileName"&gt;/path/to/logback-access.xml&lt;/Set&gt;
+ *       &lt;/New&gt;
+ *     &lt;/Set&gt;
+ *   &lt;/Configure&gt;
+ * </pre>
+ * <h2>Configuring for Jetty 7.x thru to Jetty 9.3.x</h2>
+ * <p>
+ * To configure these older Jetty instances to use {@code RequestLogImpl},
+ * the use of the {@code RequestLogHandler} is the technique available to you.
+ * Modify your {@code etc/jetty-requestlog.xml}
+ * </p>
+ * <pre>
+ *   &lt;?xml version="1.0"?&gt;
+ *   &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd"&gt;
+ *
+ *   &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+ *     &lt;Ref id="Handlers"&gt;
+ *       &lt;Call name="addHandler"&gt;
+ *         &lt;Arg&gt;
+ *           &lt;New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler"&gt;
+ *             &lt;Set name="requestLog"&gt;
+ *               &lt;New id="RequestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"/&gt;
+ *             &lt;/Set&gt;
+ *           &lt;/New&gt;
+ *         &lt;/Arg&gt;
+ *       &lt;/Call&gt;
+ *     &lt;/Ref&gt;
+ *   &lt;/Configure&gt;
  * </pre>
  * <p/>
  * By default, RequestLogImpl looks for a logback configuration file called
@@ -70,12 +155,24 @@ import ch.qos.logback.core.util.OptionHelper;
  * another example, with a path to the logback-access.xml file.
  * <p/>
  * <pre>
- *    &lt;Ref id=&quot;requestLog&quot;&gt;
- *      &lt;Set name=&quot;requestLog&quot;&gt;
- *        &lt;New id=&quot;requestLogImpl&quot; class=&quot;ch.qos.logback.access.jetty.RequestLogImpl&quot;&gt;&lt;/New&gt;
- *          &lt;Set name=&quot;fileName&quot;&gt;path/to/logback.xml&lt;/Set&gt;
- *      &lt;/Set&gt;
- *    &lt;/Ref&gt;
+ *   &lt;?xml version="1.0"?&gt;
+ *   &lt;!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd"&gt;
+ *
+ *   &lt;Configure id="Server" class="org.eclipse.jetty.server.Server"&gt;
+ *     &lt;Ref id="Handlers"&gt;
+ *       &lt;Call name="addHandler"&gt;
+ *         &lt;Arg&gt;
+ *           &lt;New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler"&gt;
+ *             &lt;Set name="requestLog"&gt;
+ *               &lt;New id="RequestLogImpl" class="ch.qos.logback.access.jetty.RequestLogImpl"&gt;
+ *                 &lt;Set name="fileName"&gt;path/to/logback-access.xml&lt;/Set&gt;
+ *               &lt;/New&gt;
+ *             &lt;/Set&gt;
+ *           &lt;/New&gt;
+ *         &lt;/Arg&gt;
+ *       &lt;/Call&gt;
+ *     &lt;/Ref&gt;
+ *   &lt;/Configure&gt;
  * </pre>
  * <p/>
  * <p> Here is a sample logback-access.xml file that can be used right away:
@@ -112,24 +209,50 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class RequestLogImpl extends ContextBase implements RequestLog, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
-
+public class RequestLogImpl extends ContextBase implements RequestLog, LifeCycle, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
     public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar + "logback-access.xml";
+
+    enum State {
+        FAILED, STOPPED, STARTING, STARTED, STOPPING
+    }
+    State state = State.STOPPED;
 
     AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<IAccessEvent>();
     FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<IAccessEvent>();
     String fileName;
     String resource;
-    boolean started = false;
+
+    // Default to non-modern Jetty (ie: Jetty 9.3 or earlier)
+    // Jetty 9.4.x and newer is considered modern.
+    boolean modernJettyRequestLog = false;
     boolean quiet = false;
 
     public RequestLogImpl() {
         putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
+
+        // plumb the depths of Jetty and the environment ...
+        try {
+            Class.forName("jakarta.servlet.http.HttpServlet");
+            throw new RuntimeException("The new jakarta.servlet classes are not supported by this " +
+                "version of logback-access (check for a newer version of logback-access that " +
+                "does support it)");
+        } catch(Throwable ignore) {
+            // Class doesn't exist, assumption is that this is normal javax.servlet environment.
+        }
+
+        // look for modern approach to RequestLog
+        try {
+            Class.forName("org.eclipse.jetty.server.CustomRequestLog");
+            // Class exists, treat as modern Jetty.
+            modernJettyRequestLog = true;
+        } catch(Throwable ignore) {
+            // Class doesn't exist, this is an old school Jetty.
+        }
     }
 
     @Override
     public void log(Request jettyRequest, Response jettyResponse) {
-        JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest, jettyResponse);
+        JettyServerAdapter adapter = newJettyServerAdapter(jettyRequest, jettyResponse);
         IAccessEvent accessEvent = new AccessEvent(jettyRequest, jettyResponse, adapter);
         if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
             return;
@@ -137,7 +260,15 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
         aai.appendLoopOnAppenders(accessEvent);
     }
 
-    private void addInfo(String msg) {
+    private JettyServerAdapter newJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
+        if (modernJettyRequestLog) {
+            return new JettyModernServerAdapter(jettyRequest, jettyResponse);
+        } else {
+            return new JettyServerAdapter(jettyRequest, jettyResponse);
+        }
+    }
+
+    protected void addInfo(String msg) {
         getStatusManager().add(new InfoStatus(msg, this));
     }
 
@@ -147,11 +278,17 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
 
     @Override
     public void start() {
-        configure();
-        if (!isQuiet()) {
-            StatusPrinter.print(getStatusManager());
+        state = State.STARTING;
+        try {
+            configure();
+            if (!isQuiet()) {
+                StatusPrinter.print(getStatusManager());
+            }
+            state = State.STARTED;
+        } catch(Throwable t) {
+            t.printStackTrace();
+            state = State.FAILED;
         }
-        started = true;
     }
 
     protected void configure() {
@@ -176,14 +313,25 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
             return this.getClass().getResource(resource);
         }
 
-        String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
         String defaultConfigFile = DEFAULT_CONFIG_FILE;
-        if (!OptionHelper.isEmpty(jettyHomeProperty)) {
-            defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
-        } else {
-            addInfo("[jetty.home] system property not set.");
+        // Always attempt ${jetty.base} first
+        String jettyBaseProperty = OptionHelper.getSystemProperty("jetty.base");
+        if (!OptionHelper.isEmpty(jettyBaseProperty)) {
+            defaultConfigFile = jettyBaseProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
         }
+
         File file = new File(defaultConfigFile);
+        if(!file.exists()) {
+            // Then use ${jetty.home} (not supported in Jetty 10+)
+            String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
+            if (!OptionHelper.isEmpty(jettyHomeProperty)) {
+                defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+            } else {
+                addInfo("Neither [jetty.base] nor [jetty.home] system properties are set.");
+            }
+        }
+
+        file = new File(defaultConfigFile);
         addInfo("Assuming default configuration file [" + defaultConfigFile + "]");
         if (!file.exists())
             return null;
@@ -205,13 +353,14 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
 
     @Override
     public void stop() {
+        state = State.STOPPING;
         aai.detachAndStopAllAppenders();
-        started = false;
+        state = State.STOPPED;
     }
 
     @Override
     public boolean isRunning() {
-        return started;
+        return state == State.STARTED;
     }
 
     public void setFileName(String fileName) {
@@ -224,27 +373,26 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
 
     @Override
     public boolean isStarted() {
-        return started;
+        return state == State.STARTED;
     }
 
     @Override
     public boolean isStarting() {
-        return false;
+        return state == State.STARTING;
     }
 
     @Override
     public boolean isStopping() {
-        return false;
+        return state == State.STOPPING;
     }
 
-    @Override
     public boolean isStopped() {
-        return !started;
+        return state == State.STOPPED;
     }
 
     @Override
     public boolean isFailed() {
-        return false;
+        return state == State.FAILED;
     }
 
     public boolean isQuiet() {
@@ -311,13 +459,12 @@ public class RequestLogImpl extends ContextBase implements RequestLog, AppenderA
     }
 
     @Override
-    public void addLifeCycleListener(Listener listener) {
+    public void addLifeCycleListener(LifeCycle.Listener listener) {
         // we'll implement this when asked
     }
 
     @Override
-    public void removeLifeCycleListener(Listener listener) {
+    public void removeLifeCycleListener(LifeCycle.Listener listener) {
         // we'll implement this when asked
     }
-
 }

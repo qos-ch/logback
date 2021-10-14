@@ -13,21 +13,16 @@
  */
 package ch.qos.logback.access.jetty;
 
-import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
-import org.eclipse.jetty.util.ByteArrayISO8859Writer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Writer;
 
 public class JettyFixtureBase {
     final protected RequestLogImpl requestLogImpl;
@@ -51,20 +46,12 @@ public class JettyFixtureBase {
     }
 
     public void start() throws Exception {
-        server = new Server();
-        Connector connector = new SelectChannelConnector();
-        connector.setPort(port);
-        server.setConnectors(new Connector[] { connector });
+        server = new Server(port);
 
-        RequestLogHandler requestLogHandler = new RequestLogHandler();
+        server.setRequestLog(requestLogImpl);
         configureRequestLogImpl();
-        requestLogHandler.setRequestLog(requestLogImpl);
 
-        HandlerList handlers = new HandlerList();
-        handlers.addHandler(requestLogHandler);
-        handlers.addHandler(getRequestHandler());
-
-        server.setHandler(handlers);
+        server.setHandler(getRequestHandler());
         server.start();
     }
 
@@ -83,16 +70,12 @@ public class JettyFixtureBase {
 
     class BasicHandler extends AbstractHandler {
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-            OutputStream out = response.getOutputStream();
-            ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("text/plain");
+            Writer writer = response.getWriter();
             writer.write("hello world");
             writer.flush();
-            response.setContentLength(writer.size());
-            writer.writeTo(out);
-            out.flush();
-
             baseRequest.setHandled(true);
-
         }
     }
 }

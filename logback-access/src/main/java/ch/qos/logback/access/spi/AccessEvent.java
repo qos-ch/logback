@@ -335,13 +335,22 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     public void buildRequestParameterMap() {
         requestParameterMap = new HashMap<String, String[]>();
-        Enumeration<String> e = httpRequest.getParameterNames();
-        if (e == null) {
-            return;
-        }
-        while (e.hasMoreElements()) {
-            String key = e.nextElement();
-            requestParameterMap.put(key, httpRequest.getParameterValues(key));
+        try {
+            Enumeration<String> e = httpRequest.getParameterNames();
+            if (e == null) {
+                return;
+            }
+            while (e.hasMoreElements()) {
+                String key = e.nextElement();
+                requestParameterMap.put(key, httpRequest.getParameterValues(key));
+            }
+        } catch(Throwable t) {
+            // The use of HttpServletRequest.getParameterNames() can cause
+            // a READ of the Request body content.  This can fail with various
+            // Throwable failures depending on the state of the Request
+            // at the time this method is called.
+            // We don't want to fail the logging due to these types of requests
+            t.printStackTrace();
         }
     }
 
@@ -479,12 +488,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
         if (Util.isFormUrlEncoded(httpRequest)) {
             StringBuilder buf = new StringBuilder();
 
-            Enumeration<String> pramEnumeration = httpRequest.getParameterNames();
-
-            // example: id=1234&user=cgu
-            // number=1233&x=1
-            int count = 0;
             try {
+                Enumeration<String> pramEnumeration = httpRequest.getParameterNames();
+
+                // example: id=1234&user=cgu
+                // number=1233&x=1
+                int count = 0;
                 while (pramEnumeration.hasMoreElements()) {
 
                     String key = pramEnumeration.nextElement();
@@ -500,9 +509,14 @@ public class AccessEvent implements Serializable, IAccessEvent {
                         buf.append("");
                     }
                 }
-            } catch (Exception e) {
-                // FIXME Why is try/catch required?
-                e.printStackTrace();
+            } catch (Throwable t) {
+                // The use of HttpServletRequest.getParameterNames() and
+                // HttpServletRequest.getParameter(String) can cause
+                // a READ of the Request body content.  This can fail with various
+                // Throwable failures depending on the state of the Request
+                // at the time this method is called.
+                // We don't want to fail the logging due to these types of requests
+                t.printStackTrace();
             }
             requestContent = buf.toString();
         } else {
