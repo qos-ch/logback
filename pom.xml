@@ -74,6 +74,7 @@
 
     <jansi.version>1.18</jansi.version>
 
+
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>    
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
