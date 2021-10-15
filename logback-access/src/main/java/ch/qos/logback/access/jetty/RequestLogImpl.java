@@ -41,7 +41,6 @@ import ch.qos.logback.core.util.StatusPrinter;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Response;
-import org.eclipse.jetty.util.Jetty;
 import org.eclipse.jetty.util.component.LifeCycle;
 
 /**
@@ -222,31 +221,30 @@ public class RequestLogImpl extends ContextBase implements RequestLog, LifeCycle
     String fileName;
     String resource;
 
-    // Default to non-modern Jetty (ie: Jetty 9.3 or earlier)
     // Jetty 9.4.x and newer is considered modern.
-    boolean modernJettyRequestLog = false;
+    boolean modernJettyRequestLog;
     boolean quiet = false;
 
     public RequestLogImpl() {
         putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
 
         // plumb the depths of Jetty and the environment ...
-        try {
-            Class.forName("jakarta.servlet.http.HttpServlet");
+        if (classIsPresent("jakarta.servlet.http.HttpServlet")) {
             throw new RuntimeException("The new jakarta.servlet classes are not supported by this " +
                 "version of logback-access (check for a newer version of logback-access that " +
                 "does support it)");
-        } catch(Throwable ignore) {
-            // Class doesn't exist, assumption is that this is normal javax.servlet environment.
         }
 
         // look for modern approach to RequestLog
+        modernJettyRequestLog = classIsPresent("org.eclipse.jetty.server.CustomRequestLog");
+    }
+
+    private boolean classIsPresent(String className) {
         try {
-            Class.forName("org.eclipse.jetty.server.CustomRequestLog");
-            // Class exists, treat as modern Jetty.
-            modernJettyRequestLog = true;
-        } catch(Throwable ignore) {
-            // Class doesn't exist, this is an old school Jetty.
+            Class.forName(className);
+            return true;
+        } catch (ClassNotFoundException e)  {
+            return false;
         }
     }
 
