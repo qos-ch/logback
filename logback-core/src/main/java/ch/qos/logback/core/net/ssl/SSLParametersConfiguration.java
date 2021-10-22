@@ -40,6 +40,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
     private Boolean wantClientAuth;
     private String[] enabledProtocols;
     private String[] enabledCipherSuites;
+    private Boolean verifyHostname = Boolean.TRUE;
 
     /**
      * Configures SSL parameters on an {@link SSLConfigurable}.
@@ -54,6 +55,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
         if (isWantClientAuth() != null) {
             socket.setWantClientAuth(isWantClientAuth());
         }
+        socket.setEnableHostnameVerification(verifyHostname);
     }
 
     /**
@@ -239,4 +241,11 @@ public class SSLParametersConfiguration extends ContextAwareBase {
         this.wantClientAuth = wantClientAuth;
     }
 
+    public void setVerifyHostname(Boolean verifyHostname) {
+        this.verifyHostname = verifyHostname;
+    }
+
+    public Boolean isDisableHostnameVerification() {
+        return verifyHostname;
+    }
 }

@@ -13,6 +13,12 @@
  */
 package ch.qos.logback.core.net.ssl;
 
+import ch.qos.logback.core.LogbackException;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 
 /**
@@ -60,4 +66,16 @@ public class SSLConfigurableSocket implements SSLConfigurable {
         delegate.setWantClientAuth(state);
     }
 
+    public void setEnableHostnameVerification(boolean enableHostnameVerification) {
+        if (!enableHostnameVerification) {
+            return;
+        }
+        try {
+            SSLParameters sslParameters = delegate.getSSLParameters();
+            sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
+            delegate.setSSLParameters(sslParameters);
+        } catch (IllegalArgumentException e) {
+            throw new LogbackException("Failed to verify hostname", e);
+        }
+    }
 }

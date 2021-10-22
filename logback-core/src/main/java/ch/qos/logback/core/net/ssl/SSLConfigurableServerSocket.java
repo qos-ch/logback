@@ -60,4 +60,7 @@ public class SSLConfigurableServerSocket implements SSLConfigurable {
         delegate.setWantClientAuth(state);
     }
 
+    public void setEnableHostnameVerification(boolean enableHostnameVerification) {
+        // This is not relevant for a server socket.
+    }
 }

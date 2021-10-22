@@ -83,4 +83,5 @@ public interface SSLConfigurable {
      */
     void setWantClientAuth(boolean state);
 
+    void setEnableHostnameVerification(boolean enableHostnameVerification);
 }
