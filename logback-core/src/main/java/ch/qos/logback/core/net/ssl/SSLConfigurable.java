@@ -26,39 +26,39 @@ public interface SSLConfigurable {
 
     /**
      * Gets the set of protocols that the SSL component enables by default.
-     * 
+     *
      * @return protocols (generally a subset of the set returned by
-     *    {@link #getSupportedProtocols()}); the return value may be 
+     *    {@link #getSupportedProtocols()}); the return value may be
      *    an empty array but must never be {@code null}.
      */
     String[] getDefaultProtocols();
 
     /**
      * Gets the set of protocols that the SSL component supports.
-     * @return protocols supported protocols; the return value may be 
+     * @return protocols supported protocols; the return value may be
      *    an empty array but must never be {@code null}.
      */
     String[] getSupportedProtocols();
 
     /**
      * Sets the enabled protocols on the SSL component.
-     * 
+     *
      * @param protocols the protocols to enable
      */
     void setEnabledProtocols(String[] protocols);
 
     /**
      * Gets the set of cipher suites that the SSL component enables by default.
-     * 
+     *
      * @return cipher suites (generally a subset of the set returned by
-     *    {@link #getSupportedCipherSuites()}); the return value may be 
+     *    {@link #getSupportedCipherSuites()}); the return value may be
      *    an empty array but must never be {@code null}
      */
     String[] getDefaultCipherSuites();
 
     /**
      * Gets the set of cipher suites that the SSL component supports.
-     * @return supported cipher suites; the return value may be 
+     * @return supported cipher suites; the return value may be
      *    an empty array but must never be {@code null}
      */
     String[] getSupportedCipherSuites();
@@ -70,14 +70,14 @@ public interface SSLConfigurable {
     void setEnabledCipherSuites(String[] cipherSuites);
 
     /**
-     * Sets a flag indicating whether the SSL component should require 
+     * Sets a flag indicating whether the SSL component should require
      * client authentication.
      * @param state the flag state to set
      */
     void setNeedClientAuth(boolean state);
 
     /**
-     * Sets a flag indicating whether the SSL component should request 
+     * Sets a flag indicating whether the SSL component should request
      * client authentication.
      * @param state the flag state to set
      */

@@ -58,7 +58,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the set of enabled protocols based on the configuration.
-     * @param supportedProtocols protocols supported by the SSL engine 
+     * @param supportedProtocols protocols supported by the SSL engine
      * @param defaultProtocols default protocols enabled by the SSL engine
      * @return enabled protocols
      */
@@ -80,7 +80,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the set of enabled cipher suites based on the configuration.
-     * @param supportedCipherSuites cipher suites supported by the SSL engine 
+     * @param supportedCipherSuites cipher suites supported by the SSL engine
      * @param defaultCipherSuites default cipher suites enabled by the SSL engine
      * @return enabled cipher suites
      */
@@ -133,7 +133,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the JSSE secure transport protocols to include.
-     * @return a string containing comma-separated JSSE secure transport 
+     * @return a string containing comma-separated JSSE secure transport
      *    protocol names (e.g. {@code TLSv1})
      */
     public String getIncludedProtocols() {
@@ -142,7 +142,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets the JSSE secure transport protocols to include.
-     * @param protocols a string containing comma-separated JSSE secure 
+     * @param protocols a string containing comma-separated JSSE secure
      *    transport protocol names
      * @see Java Cryptography Architecture Standard Algorithm Name Documentation
      */
@@ -152,7 +152,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Gets the JSSE secure transport protocols to exclude.
-     * @return a string containing comma-separated JSSE secure transport 
+     * @return a string containing comma-separated JSSE secure transport
      *    protocol names (e.g. {@code TLSv1})
      */
     public String getExcludedProtocols() {
@@ -161,7 +161,7 @@ public class SSLParametersConfiguration extends ContextAwareBase {
 
     /**
      * Sets the JSSE secure transport protocols to exclude.
-     * @param protocols a string containing comma-separated JSSE secure 
+     * @param protocols a string containing comma-separated JSSE secure
      *    transport protocol names
      * @see Java Cryptography Architecture Standard Algorithm Name Documentation
      */
