@@ -15,18 +15,17 @@ package ch.qos.logback.classic.spi;
 
 import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import ch.qos.logback.classic.util.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.qos.logback.classic.util.TestHelper;
 
 public class ThrowableProxyTest {
 
@@ -80,7 +79,7 @@ public class ThrowableProxyTest {
     @Test
     public void suppressed() throws InvocationTargetException, IllegalAccessException {
         assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
-                                                      // sense.
+        // sense.
         Exception ex = null;
         try {
             someMethod();
@@ -97,7 +96,7 @@ public class ThrowableProxyTest {
     @Test
     public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
         assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
-                                                      // sense.
+        // sense.
         Exception ex = null;
         try {
             someMethod();
@@ -114,7 +113,7 @@ public class ThrowableProxyTest {
     @Test
     public void suppressedWithSuppressed() throws Exception {
         assumeTrue(TestHelper.suppressedSupported()); // only execute on Java 7, would work anyway but doesn't make
-                                                      // sense.
+        // sense.
         Exception ex = null;
         try {
             someMethod();
@@ -132,6 +131,8 @@ public class ThrowableProxyTest {
     @Test
     public void nullSTE() {
         Throwable t = new Exception("someMethodWithNullException") {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public StackTraceElement[] getStackTrace() {
                 return null;
@@ -159,12 +160,32 @@ public class ThrowableProxyTest {
         verify(w);
     }
 
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void nestedLoop1() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        new ThrowableProxy(e);
+    }
+
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void nestedLoop2() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        new ThrowableProxy(e);
+    }
+
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
 
     void someMethodWithNullException() throws Exception {
         throw new Exception("someMethodWithNullException") {
+            private static final long serialVersionUID = -2419053636101615373L;
+
             @Override
             public StackTraceElement[] getStackTrace() {
                 return null;
