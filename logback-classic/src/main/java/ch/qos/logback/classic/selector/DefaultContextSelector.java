@@ -20,33 +20,37 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class DefaultContextSelector implements ContextSelector {
 
-    private LoggerContext defaultLoggerContext;
+	private final LoggerContext defaultLoggerContext;
 
-    public DefaultContextSelector(LoggerContext context) {
-        this.defaultLoggerContext = context;
-    }
+	public DefaultContextSelector(final LoggerContext context) {
+		defaultLoggerContext = context;
+	}
 
-    public LoggerContext getLoggerContext() {
-        return getDefaultLoggerContext();
-    }
+	@Override
+	public LoggerContext getLoggerContext() {
+		return getDefaultLoggerContext();
+	}
 
-    public LoggerContext getDefaultLoggerContext() {
-        return defaultLoggerContext;
-    }
+	@Override
+	public LoggerContext getDefaultLoggerContext() {
+		return defaultLoggerContext;
+	}
 
-    public LoggerContext detachLoggerContext(String loggerContextName) {
-        return defaultLoggerContext;
-    }
+	@Override
+	public LoggerContext detachLoggerContext(final String loggerContextName) {
+		return defaultLoggerContext;
+	}
 
-    public List<String> getContextNames() {
-        return Arrays.asList(defaultLoggerContext.getName());
-    }
+	@Override
+	public List<String> getContextNames() {
+		return Arrays.asList(defaultLoggerContext.getName());
+	}
 
-    public LoggerContext getLoggerContext(String name) {
-        if (defaultLoggerContext.getName().equals(name)) {
-            return defaultLoggerContext;
-        } else {
-            return null;
-        }
-    }
+	@Override
+	public LoggerContext getLoggerContext(final String name) {
+		if (defaultLoggerContext.getName().equals(name)) {
+			return defaultLoggerContext;
+		}
+		return null;
+	}
 }

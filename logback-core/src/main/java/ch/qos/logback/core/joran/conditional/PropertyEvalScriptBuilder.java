@@ -18,40 +18,40 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import ch.qos.logback.core.spi.PropertyContainer;
 import org.codehaus.commons.compiler.CompileException;
 import org.codehaus.janino.ClassBodyEvaluator;
 
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.PropertyContainer;
 
 public class PropertyEvalScriptBuilder extends ContextAwareBase {
 
-    private static String SCRIPT_PREFIX = "" + "public boolean evaluate() { return ";
-    private static String SCRIPT_SUFFIX = "" + "; }";
+	private static String SCRIPT_PREFIX = "" + "public boolean evaluate() { return ";
+	private static String SCRIPT_SUFFIX = "" + "; }";
 
-    final PropertyContainer localPropContainer;
+	final PropertyContainer localPropContainer;
 
-    PropertyEvalScriptBuilder(PropertyContainer localPropContainer) {
-        this.localPropContainer = localPropContainer;
-    }
+	PropertyEvalScriptBuilder(final PropertyContainer localPropContainer) {
+		this.localPropContainer = localPropContainer;
+	}
 
-    Map<String, String> map = new HashMap<String, String>();
+	Map<String, String> map = new HashMap<>();
 
-    public Condition build(String script) throws IllegalAccessException, CompileException, InstantiationException, SecurityException, NoSuchMethodException,
-                    IllegalArgumentException, InvocationTargetException {
+	public Condition build(final String script) throws IllegalAccessException, CompileException, InstantiationException, SecurityException, NoSuchMethodException,
+	IllegalArgumentException, InvocationTargetException {
 
-        ClassBodyEvaluator cbe = new ClassBodyEvaluator();
-        cbe.setImplementedInterfaces(new Class[] { Condition.class });
-        cbe.setExtendedClass(PropertyWrapperForScripts.class);
-        cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
-        cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
+		final ClassBodyEvaluator cbe = new ClassBodyEvaluator();
+		cbe.setImplementedInterfaces(new Class[] { Condition.class });
+		cbe.setExtendedClass(PropertyWrapperForScripts.class);
+		cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
+		cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
 
-        Class<?> clazz = cbe.getClazz();
-        Condition instance = (Condition) clazz.getDeclaredConstructor().newInstance();
-        Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
-        setMapMethod.invoke(instance, localPropContainer, context);
+		final Class<?> clazz = cbe.getClazz();
+		final Condition instance = (Condition) clazz.getDeclaredConstructor().newInstance();
+		final Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
+		setMapMethod.invoke(instance, localPropContainer, context);
 
-        return instance;
-    }
+		return instance;
+	}
 
 }

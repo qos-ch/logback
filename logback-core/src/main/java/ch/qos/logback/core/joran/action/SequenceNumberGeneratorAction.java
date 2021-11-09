@@ -23,63 +23,63 @@ import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * Action which handles &lt;sequenceNumberGenerator&gt; elements in configuration files.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class SequenceNumberGeneratorAction extends Action {
 
-    SequenceNumberGenerator sequenceNumberGenerator;
-    private boolean inError;
+	SequenceNumberGenerator sequenceNumberGenerator;
+	private boolean inError;
 
-    /**
-     * Instantiates a shutdown hook of the given class and sets its name.
-     * 
-     * The hook thus generated is placed in the {@link InterpretationContext}'s
-     * shutdown hook bag.
-     */
-    @Override
-    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
-        sequenceNumberGenerator = null;
-        inError = false;
+	/**
+	 * Instantiates a shutdown hook of the given class and sets its name.
+	 *
+	 * The hook thus generated is placed in the {@link InterpretationContext}'s
+	 * shutdown hook bag.
+	 */
+	@Override
+	public void begin(final InterpretationContext ic, final String name, final Attributes attributes) throws ActionException {
+		sequenceNumberGenerator = null;
+		inError = false;
 
-        String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(className)) {
-            className = BasicSequenceNumberGenerator.class.getName();
-            addInfo("Assuming className [" + className + "]");
-        }
+		String className = attributes.getValue(CLASS_ATTRIBUTE);
+		if (OptionHelper.isNullOrEmpty(className)) {
+			className = BasicSequenceNumberGenerator.class.getName();
+			addInfo("Assuming className [" + className + "]");
+		}
 
-        try {
-            addInfo("About to instantiate SequenceNumberGenerator of type [" + className + "]");
+		try {
+			addInfo("About to instantiate SequenceNumberGenerator of type [" + className + "]");
 
-            sequenceNumberGenerator = (SequenceNumberGenerator) OptionHelper.instantiateByClassName(className, SequenceNumberGenerator.class, context);
-            sequenceNumberGenerator.setContext(context);
+			sequenceNumberGenerator = (SequenceNumberGenerator) OptionHelper.instantiateByClassName(className, SequenceNumberGenerator.class, context);
+			sequenceNumberGenerator.setContext(context);
 
-            ic.pushObject(sequenceNumberGenerator);
-        } catch (Exception e) {
-            inError = true;
-            addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
-            throw new ActionException(e);
-        }
-    }
+			ic.pushObject(sequenceNumberGenerator);
+		} catch (final Exception e) {
+			inError = true;
+			addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
+			throw new ActionException(e);
+		}
+	}
 
-    /**
-     * Once the children elements are also parsed, now is the time to activate the
-     * shutdown hook options.
-     */
-    @Override
-    public void end(InterpretationContext ic, String name) throws ActionException {
-        if (inError) {
-            return;
-        }
+	/**
+	 * Once the children elements are also parsed, now is the time to activate the
+	 * shutdown hook options.
+	 */
+	@Override
+	public void end(final InterpretationContext ic, final String name) throws ActionException {
+		if (inError) {
+			return;
+		}
 
-        Object o = ic.peekObject();
-        if (o != sequenceNumberGenerator) {
-            addWarn("The object at the of the stack is not the hook pushed earlier.");
-        } else {
-            ic.popObject();
+		final Object o = ic.peekObject();
+		if (o != sequenceNumberGenerator) {
+			addWarn("The object at the of the stack is not the hook pushed earlier.");
+		} else {
+			ic.popObject();
 
-            addInfo("Registering sequenceNumberGenerator with context.");
-            context.setSequenceNumberGenerator(sequenceNumberGenerator);
-        }
-    }
+			addInfo("Registering sequenceNumberGenerator with context.");
+			context.setSequenceNumberGenerator(sequenceNumberGenerator);
+		}
+	}
 }

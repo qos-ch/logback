@@ -14,98 +14,101 @@ import ch.qos.logback.core.util.OptionHelper;
  * Instantiate class for define property value. Get future property name and
  * property definer class from attributes. Some property definer properties
  * could be used. After defining put new property to context.
- * 
+ *
  * @author Aleksey Didik
  */
 public class DefineModelHandler extends ModelHandlerBase {
 
-    boolean inError;
-    PropertyDefiner definer;
-    String propertyName;
-    Scope scope;
+	boolean inError;
+	PropertyDefiner definer;
+	String propertyName;
+	Scope scope;
 
-    public DefineModelHandler(Context context) {
-        super(context);
-    }
-    
-	static public DefineModelHandler makeInstance(Context context, InterpretationContext ic) {
+	public DefineModelHandler(final Context context) {
+		super(context);
+	}
+
+	static public DefineModelHandler makeInstance(final Context context, final InterpretationContext ic) {
 		return new DefineModelHandler(context);
 	}
-	
-    @Override
-    protected Class<DefineModel> getSupportedModelClass() {
-    	return DefineModel.class;
-    }
-    
-    @Override
-    public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
-        definer = null;
-        inError = false;
-        propertyName = null;
 
-        
-        DefineModel defineModel = (DefineModel) model;
+	@Override
+	protected Class<DefineModel> getSupportedModelClass() {
+		return DefineModel.class;
+	}
 
-        propertyName = defineModel.getName();
-        String scopeStr = defineModel.getScopeStr();
+	@Override
+	public void handle(final InterpretationContext interpretationContext, final Model model) throws ModelHandlerException {
+		definer = null;
+		inError = false;
+		propertyName = null;
 
-        scope = ActionUtil.stringToScope(scopeStr);
 
-        if (OptionHelper.isNullOrEmpty(propertyName)) {
-            addError("Missing property name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
-            inError = true;
-        }
+		final DefineModel defineModel = (DefineModel) model;
 
-        // read property definer class name
-        String className = defineModel.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
-            addError("Missing class name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
-            inError = true;
-        }
+		propertyName = defineModel.getName();
+		final String scopeStr = defineModel.getScopeStr();
 
-        if (inError)
-            return;
+		scope = ActionUtil.stringToScope(scopeStr);
 
-        // try to instantiate property definer
-        try {
-            addInfo("About to instantiate property definer of type [" + className + "]");
-            definer = (PropertyDefiner) OptionHelper.instantiateByClassName(className, PropertyDefiner.class, context);
-            definer.setContext(context);
-            interpretationContext.pushObject(definer);
-        } catch (Exception oops) {
-            inError = true;
-            addError("Could not create an PropertyDefiner of type [" + className + "].", oops);
-            throw new ModelHandlerException(oops);
-        }
+		if (OptionHelper.isNullOrEmpty(propertyName)) {
+			addError("Missing property name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
+			inError = true;
+		}
 
-    }
+		// read property definer class name
+		final String className = defineModel.getClassName();
+		if (OptionHelper.isNullOrEmpty(className)) {
+			addError("Missing class name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
+			inError = true;
+		}
 
-    /**
-    * Now property definer is initialized by all properties and we can put
-    * property value to context
-    */
-    public void postHandle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
-        if (inError) {
-            return;
-        }
+		if (inError) {
+			return;
+		}
 
-        Object o = interpretationContext.peekObject();
+		// try to instantiate property definer
+		try {
+			addInfo("About to instantiate property definer of type [" + className + "]");
+			definer = (PropertyDefiner) OptionHelper.instantiateByClassName(className, PropertyDefiner.class, context);
+			definer.setContext(context);
+			interpretationContext.pushObject(definer);
+		} catch (final Exception oops) {
+			inError = true;
+			addError("Could not create an PropertyDefiner of type [" + className + "].", oops);
+			throw new ModelHandlerException(oops);
+		}
 
-        if (o != definer) {
-            addWarn("The object at the of the stack is not the property definer for property named [" + propertyName + "] pushed earlier.");
-        } else {
-            interpretationContext.popObject();
-            if (definer instanceof LifeCycle)
-                ((LifeCycle) definer).start();
+	}
 
-            // let's put defined property and value to context but only if it is
-            // not null
-            String propertyValue = definer.getPropertyValue();
-            if (propertyValue != null) {
-                addInfo("Setting property "+propertyName+"="+propertyValue+" in scope "+scope);
-                ActionUtil.setProperty(interpretationContext, propertyName, propertyValue, scope);
-            }
-        }
+	/**
+	 * Now property definer is initialized by all properties and we can put
+	 * property value to context
+	 */
+	@Override
+	public void postHandle(final InterpretationContext interpretationContext, final Model model) throws ModelHandlerException {
+		if (inError) {
+			return;
+		}
 
-    }
+		final Object o = interpretationContext.peekObject();
+
+		if (o != definer) {
+			addWarn("The object at the of the stack is not the property definer for property named [" + propertyName + "] pushed earlier.");
+		} else {
+			interpretationContext.popObject();
+			if (definer instanceof LifeCycle) {
+				((LifeCycle) definer).start();
+			}
+
+			// let's put defined property and value to context but only if it is
+			// not null
+			final String propertyValue = definer.getPropertyValue();
+			if (propertyValue != null) {
+				addInfo("Setting property "+propertyName+"="+propertyValue+" in scope "+scope);
+				ActionUtil.setProperty(interpretationContext, propertyName, propertyValue, scope);
+			}
+		}
+
+	}
 }

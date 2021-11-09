@@ -26,37 +26,39 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class RootLoggerAction2 extends Action {
 
-    Logger root;
-    boolean inError = false;
+	Logger root;
+	boolean inError = false;
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-        inError = false;
+	@Override
+	public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
+		inError = false;
 
-        LoggerContext loggerContext = (LoggerContext) this.context;
-        root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+		final LoggerContext loggerContext = (LoggerContext) context;
+		root = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
-        String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
-        if (!OptionHelper.isNullOrEmpty(levelStr)) {
-            Level level = Level.toLevel(levelStr);
-            addInfo("Setting level of ROOT logger to " + level);
-            root.setLevel(level);
-        }
-        ec.pushObject(root);
-    }
+		final String levelStr = ec.subst(attributes.getValue(LEVEL_ATTRIBUTE));
+		if (!OptionHelper.isNullOrEmpty(levelStr)) {
+			final Level level = Level.toLevel(levelStr);
+			addInfo("Setting level of ROOT logger to " + level);
+			root.setLevel(level);
+		}
+		ec.pushObject(root);
+	}
 
-    public void end(InterpretationContext ec, String name) {
-        if (inError) {
-            return;
-        }
-        Object o = ec.peekObject();
-        if (o != root) {
-            addWarn("The object on the top the of the stack is not the root logger");
-            addWarn("It is: " + o);
-        } else {
-            ec.popObject();
-        }
-    }
+	@Override
+	public void end(final InterpretationContext ec, final String name) {
+		if (inError) {
+			return;
+		}
+		final Object o = ec.peekObject();
+		if (o != root) {
+			addWarn("The object on the top the of the stack is not the root logger");
+			addWarn("It is: " + o);
+		} else {
+			ec.popObject();
+		}
+	}
 
-    public void finish(InterpretationContext ec) {
-    }
+	public void finish(final InterpretationContext ec) {
+	}
 }

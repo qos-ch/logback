@@ -15,11 +15,11 @@ public class PreconditionValidator extends ContextAwareBase {
 	Attributes attributes;
 	String tag;
 
-	public PreconditionValidator(ContextAware origin, InterpretationContext intercon, String name, Attributes attributes) {
+	public PreconditionValidator(final ContextAware origin, final InterpretationContext intercon, final String name, final Attributes attributes) {
 		super(origin);
-		this.setContext(origin.getContext());
+		setContext(origin.getContext());
 		this.intercon = intercon;
-		this.tag = name;
+		tag = name;
 		this.attributes = attributes;
 	}
 
@@ -38,12 +38,12 @@ public class PreconditionValidator extends ContextAwareBase {
 	public PreconditionValidator validateRefAttribute() {
 		return generic(JoranConstants.REF_ATTRIBUTE);
 	}
-	
-	public PreconditionValidator generic(String attributeName) {
-		String attributeValue = attributes.getValue(attributeName);
+
+	public PreconditionValidator generic(final String attributeName) {
+		final String attributeValue = attributes.getValue(attributeName);
 		if (OptionHelper.isNullOrEmpty(attributeValue)) {
 			addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line " + Action.getLineNumber(intercon));
-			this.valid = false;
+			valid = false;
 		}
 		return this;
 	}

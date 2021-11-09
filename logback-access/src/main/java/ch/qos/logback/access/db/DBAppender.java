@@ -24,117 +24,117 @@ import ch.qos.logback.core.db.DBAppenderBase;
 
 /**
  * The DBAppender inserts access events into three database tables in a format
- * independent of the Java programming language. 
- * 
+ * independent of the Java programming language.
+ *
  * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#AccessDBAppender
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author Ray DeCampo
  * @author S&eacute;bastien Pennec
  */
 public class DBAppender extends DBAppenderBase<IAccessEvent> {
-    protected static final String insertSQL;
-    protected final String insertHeaderSQL = "INSERT INTO  access_event_header (event_id, header_key, header_value) VALUES (?, ?, ?)";
-    protected static final Method GET_GENERATED_KEYS_METHOD;
+	protected static final String insertSQL;
+	protected final String insertHeaderSQL = "INSERT INTO  access_event_header (event_id, header_key, header_value) VALUES (?, ?, ?)";
+	protected static final Method GET_GENERATED_KEYS_METHOD;
 
-    private boolean insertHeaders = false;
+	private boolean insertHeaders = false;
 
-    static {
-        StringBuilder sql = new StringBuilder();
-        sql.append("INSERT INTO access_event (");
-        sql.append("timestmp, ");
-        sql.append("requestURI, ");
-        sql.append("requestURL, ");
-        sql.append("remoteHost, ");
-        sql.append("remoteUser, ");
-        sql.append("remoteAddr, ");
-        sql.append("protocol, ");
-        sql.append("method, ");
-        sql.append("serverName, ");
-        sql.append("postContent) ");
-        sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)");
-        insertSQL = sql.toString();
+	static {
+		final StringBuilder sql = new StringBuilder();
+		sql.append("INSERT INTO access_event (");
+		sql.append("timestmp, ");
+		sql.append("requestURI, ");
+		sql.append("requestURL, ");
+		sql.append("remoteHost, ");
+		sql.append("remoteUser, ");
+		sql.append("remoteAddr, ");
+		sql.append("protocol, ");
+		sql.append("method, ");
+		sql.append("serverName, ");
+		sql.append("postContent) ");
+		sql.append(" VALUES (?, ?, ? ,?, ?, ?, ?, ?, ?, ?)");
+		insertSQL = sql.toString();
 
-        Method getGeneratedKeysMethod;
-        try {
-            getGeneratedKeysMethod = PreparedStatement.class.getMethod("getGeneratedKeys", (Class[]) null);
-        } catch (Exception ex) {
-            getGeneratedKeysMethod = null;
-        }
-        GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
-    }
+		Method getGeneratedKeysMethod;
+		try {
+			getGeneratedKeysMethod = PreparedStatement.class.getMethod("getGeneratedKeys", (Class[]) null);
+		} catch (final Exception ex) {
+			getGeneratedKeysMethod = null;
+		}
+		GET_GENERATED_KEYS_METHOD = getGeneratedKeysMethod;
+	}
 
-    @Override
-    protected void subAppend(IAccessEvent event, Connection connection, PreparedStatement insertStatement) throws Throwable {
+	@Override
+	protected void subAppend(final IAccessEvent event, final Connection connection, final PreparedStatement insertStatement) throws Throwable {
 
-        addAccessEvent(insertStatement, event);
+		addAccessEvent(insertStatement, event);
 
-        int updateCount = insertStatement.executeUpdate();
-        if (updateCount != 1) {
-            addWarn("Failed to insert access event");
-        }
-    }
+		final int updateCount = insertStatement.executeUpdate();
+		if (updateCount != 1) {
+			addWarn("Failed to insert access event");
+		}
+	}
 
-    @Override
-    protected void secondarySubAppend(IAccessEvent event, Connection connection, long eventId) throws Throwable {
-        if (insertHeaders) {
-            addRequestHeaders(event, connection, eventId);
-        }
-    }
+	@Override
+	protected void secondarySubAppend(final IAccessEvent event, final Connection connection, final long eventId) throws Throwable {
+		if (insertHeaders) {
+			addRequestHeaders(event, connection, eventId);
+		}
+	}
 
-    void addAccessEvent(PreparedStatement stmt, IAccessEvent event) throws SQLException {
-        stmt.setLong(1, event.getTimeStamp());
-        stmt.setString(2, event.getRequestURI());
-        stmt.setString(3, event.getRequestURL());
-        stmt.setString(4, event.getRemoteHost());
-        stmt.setString(5, event.getRemoteUser());
-        stmt.setString(6, event.getRemoteAddr());
-        stmt.setString(7, event.getProtocol());
-        stmt.setString(8, event.getMethod());
-        stmt.setString(9, event.getServerName());
-        stmt.setString(10, event.getRequestContent());
-    }
+	void addAccessEvent(final PreparedStatement stmt, final IAccessEvent event) throws SQLException {
+		stmt.setLong(1, event.getTimeStamp());
+		stmt.setString(2, event.getRequestURI());
+		stmt.setString(3, event.getRequestURL());
+		stmt.setString(4, event.getRemoteHost());
+		stmt.setString(5, event.getRemoteUser());
+		stmt.setString(6, event.getRemoteAddr());
+		stmt.setString(7, event.getProtocol());
+		stmt.setString(8, event.getMethod());
+		stmt.setString(9, event.getServerName());
+		stmt.setString(10, event.getRequestContent());
+	}
 
-    void addRequestHeaders(IAccessEvent event, Connection connection, long eventId) throws SQLException {
-        Enumeration<String> names = event.getRequestHeaderNames();
-        if (names.hasMoreElements()) {
-            PreparedStatement insertHeaderStatement = connection.prepareStatement(insertHeaderSQL);
+	void addRequestHeaders(final IAccessEvent event, final Connection connection, final long eventId) throws SQLException {
+		final Enumeration<String> names = event.getRequestHeaderNames();
+		if (names.hasMoreElements()) {
+			final PreparedStatement insertHeaderStatement = connection.prepareStatement(insertHeaderSQL);
 
-            while (names.hasMoreElements()) {
-                String key = (String) names.nextElement();
-                String value = (String) event.getRequestHeader(key);
+			while (names.hasMoreElements()) {
+				final String key = names.nextElement();
+				final String value = event.getRequestHeader(key);
 
-                insertHeaderStatement.setLong(1, eventId);
-                insertHeaderStatement.setString(2, key);
-                insertHeaderStatement.setString(3, value);
+				insertHeaderStatement.setLong(1, eventId);
+				insertHeaderStatement.setString(2, key);
+				insertHeaderStatement.setString(3, value);
 
-                if (cnxSupportsBatchUpdates) {
-                    insertHeaderStatement.addBatch();
-                } else {
-                    insertHeaderStatement.execute();
-                }
-            }
+				if (cnxSupportsBatchUpdates) {
+					insertHeaderStatement.addBatch();
+				} else {
+					insertHeaderStatement.execute();
+				}
+			}
 
-            if (cnxSupportsBatchUpdates) {
-                insertHeaderStatement.executeBatch();
-            }
+			if (cnxSupportsBatchUpdates) {
+				insertHeaderStatement.executeBatch();
+			}
 
-            insertHeaderStatement.close();
-        }
-    }
+			insertHeaderStatement.close();
+		}
+	}
 
-    @Override
-    protected Method getGeneratedKeysMethod() {
-        return GET_GENERATED_KEYS_METHOD;
-    }
+	@Override
+	protected Method getGeneratedKeysMethod() {
+		return GET_GENERATED_KEYS_METHOD;
+	}
 
-    @Override
-    protected String getInsertSQL() {
-        return insertSQL;
-    }
+	@Override
+	protected String getInsertSQL() {
+		return insertSQL;
+	}
 
-    public void setInsertHeaders(boolean insertHeaders) {
-        this.insertHeaders = insertHeaders;
-    }
+	public void setInsertHeaders(final boolean insertHeaders) {
+		this.insertHeaders = insertHeaders;
+	}
 }

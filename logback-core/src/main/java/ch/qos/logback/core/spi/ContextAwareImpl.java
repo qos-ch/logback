@@ -23,79 +23,88 @@ import ch.qos.logback.core.status.WarnStatus;
 /**
  * A helper class that implements ContextAware methods. Use this class to
  * implement the ContextAware interface by composition.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ContextAwareImpl implements ContextAware {
 
-    private int noContextWarning = 0;
-    protected Context context;
-    final Object origin;
+	private int noContextWarning = 0;
+	protected Context context;
+	final Object origin;
 
-    public ContextAwareImpl(Context context, Object origin) {
-        this.context = context;
-        this.origin = origin;
+	public ContextAwareImpl(final Context context, final Object origin) {
+		this.context = context;
+		this.origin = origin;
 
-    }
+	}
 
-    protected Object getOrigin() {
-        return origin;
-    }
+	protected Object getOrigin() {
+		return origin;
+	}
 
-    public void setContext(Context context) {
-        if (this.context == null) {
-            this.context = context;
-        } else if (this.context != context) {
-            throw new IllegalStateException("Context has been already set");
-        }
-    }
+	@Override
+	public void setContext(final Context context) {
+		if (this.context == null) {
+			this.context = context;
+		} else if (this.context != context) {
+			throw new IllegalStateException("Context has been already set");
+		}
+	}
 
-    public Context getContext() {
-        return this.context;
-    }
+	@Override
+	public Context getContext() {
+		return context;
+	}
 
-    public StatusManager getStatusManager() {
-        if (context == null) {
-            return null;
-        }
-        return context.getStatusManager();
-    }
+	public StatusManager getStatusManager() {
+		if (context == null) {
+			return null;
+		}
+		return context.getStatusManager();
+	}
 
-    public void addStatus(Status status) {
-        if (context == null) {
-            if (noContextWarning++ == 0) {
-                System.out.println("LOGBACK: No context given for " + this);
-            }
-            return;
-        }
-        StatusManager sm = context.getStatusManager();
-        if (sm != null) {
-            sm.add(status);
-        }
-    }
+	@Override
+	public void addStatus(final Status status) {
+		if (context == null) {
+			if (noContextWarning++ == 0) {
+				System.out.println("LOGBACK: No context given for " + this);
+			}
+			return;
+		}
+		final StatusManager sm = context.getStatusManager();
+		if (sm != null) {
+			sm.add(status);
+		}
+	}
 
-    public void addInfo(String msg) {
-        addStatus(new InfoStatus(msg, getOrigin()));
-    }
+	@Override
+	public void addInfo(final String msg) {
+		addStatus(new InfoStatus(msg, getOrigin()));
+	}
 
-    public void addInfo(String msg, Throwable ex) {
-        addStatus(new InfoStatus(msg, getOrigin(), ex));
-    }
+	@Override
+	public void addInfo(final String msg, final Throwable ex) {
+		addStatus(new InfoStatus(msg, getOrigin(), ex));
+	}
 
-    public void addWarn(String msg) {
-        addStatus(new WarnStatus(msg, getOrigin()));
-    }
+	@Override
+	public void addWarn(final String msg) {
+		addStatus(new WarnStatus(msg, getOrigin()));
+	}
 
-    public void addWarn(String msg, Throwable ex) {
-        addStatus(new WarnStatus(msg, getOrigin(), ex));
-    }
+	@Override
+	public void addWarn(final String msg, final Throwable ex) {
+		addStatus(new WarnStatus(msg, getOrigin(), ex));
+	}
 
-    public void addError(String msg) {
-        addStatus(new ErrorStatus(msg, getOrigin()));
-    }
+	@Override
+	public void addError(final String msg) {
+		addStatus(new ErrorStatus(msg, getOrigin()));
+	}
 
-    public void addError(String msg, Throwable ex) {
-        addStatus(new ErrorStatus(msg, getOrigin(), ex));
-    }
+	@Override
+	public void addError(final String msg, final Throwable ex) {
+		addStatus(new ErrorStatus(msg, getOrigin(), ex));
+	}
 
 }

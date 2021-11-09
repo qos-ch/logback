@@ -18,20 +18,21 @@ import java.util.List;
 
 /**
  * Collect all incoming events in a list.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class StatusListenerAsList implements StatusListener {
 
-    List<Status> statusList = new ArrayList<Status>();
+	List<Status> statusList = new ArrayList<>();
 
-    public void addStatusEvent(Status status) {
-        statusList.add(status);
-    }
+	@Override
+	public void addStatusEvent(final Status status) {
+		statusList.add(status);
+	}
 
-    public List<Status> getStatusList() {
-        return statusList;
-    }
+	public List<Status> getStatusList() {
+		return statusList;
+	}
 
 }

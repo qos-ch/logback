@@ -20,32 +20,33 @@ import ch.qos.logback.classic.spi.LoggerContextVO;
 
 public final class PropertyConverter extends ClassicConverter {
 
-    String key;
+	String key;
 
-    public void start() {
-        String optStr = getFirstOption();
-        if (optStr != null) {
-            key = optStr;
-            super.start();
-        }
-    }
+	@Override
+	public void start() {
+		final String optStr = getFirstOption();
+		if (optStr != null) {
+			key = optStr;
+			super.start();
+		}
+	}
 
-    public String getKey() {
-    	return key;
-    }
-    
-    public String convert(ILoggingEvent event) {
-        if (key == null) {
-            return "Property_HAS_NO_KEY";
-        } else {
-            LoggerContextVO lcvo = event.getLoggerContextVO();
-            Map<String, String> map = lcvo.getPropertyMap();
-            String val = map.get(key);
-            if (val != null) {
-                return val;
-            } else {
-                return System.getProperty(key);
-            }
-        }
-    }
+	public String getKey() {
+		return key;
+	}
+
+	@Override
+	public String convert(final ILoggingEvent event) {
+		if (key == null) {
+			return "Property_HAS_NO_KEY";
+		}
+		final LoggerContextVO lcvo = event.getLoggerContextVO();
+		final Map<String, String> map = lcvo.getPropertyMap();
+		final String val = map.get(key);
+		if (val != null) {
+			return val;
+		} else {
+			return System.getProperty(key);
+		}
+	}
 }

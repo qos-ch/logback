@@ -16,24 +16,24 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 	boolean inError = false;
 	LoggerContextListener lcl;
 
-	public LoggerContextListenerModelHandler(Context context) {
+	public LoggerContextListenerModelHandler(final Context context) {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new LoggerContextListenerModelHandler(context);
-	}	
-	
+	}
+
 	@Override
 	protected Class<LoggerContextListenerModel> getSupportedModelClass() {
 		return LoggerContextListenerModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		LoggerContextListenerModel LoggerContextListenerModel = (LoggerContextListenerModel) model;
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+		final LoggerContextListenerModel LoggerContextListenerModel = (LoggerContextListenerModel) model;
 
-		String className = LoggerContextListenerModel.getClassName();
+		final String className = LoggerContextListenerModel.getClassName();
 		try {
 			lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class,
 					context);
@@ -45,18 +45,18 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 			intercon.pushObject(lcl);
 			addInfo("Adding LoggerContextListener of type [" + className + "] to the object stack");
 
-		} catch (Exception oops) {
+		} catch (final Exception oops) {
 			inError = true;
 			addError("Could not create LoggerContextListener of type " + className + "].", oops);
 		}
 	}
 
 	@Override
-	public void postHandle(InterpretationContext interop, Model model) throws ModelHandlerException {
+	public void postHandle(final InterpretationContext interop, final Model model) throws ModelHandlerException {
 		if (inError) {
 			return;
 		}
-		Object o = interop.peekObject();
+		final Object o = interop.peekObject();
 
 		if (o != lcl) {
 			addWarn("The object on the top the of the stack is not the LoggerContextListener pushed earlier.");

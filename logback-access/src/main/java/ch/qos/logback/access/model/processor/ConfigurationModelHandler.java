@@ -13,22 +13,23 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
 public class ConfigurationModelHandler extends ModelHandlerBase {
 	static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback-access.debug";
 
-	public ConfigurationModelHandler(Context context) {
+	public ConfigurationModelHandler(final Context context) {
 		super(context);
 	}
-	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
-		return new ConfigurationModelHandler(context);
-	}	
-		
 
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
+		return new ConfigurationModelHandler(context);
+	}
+
+
+	@Override
 	protected Class<ConfigurationModel> getSupportedModelClass() {
 		return ConfigurationModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		ConfigurationModel configurationModel = (ConfigurationModel) model;
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+		final ConfigurationModel configurationModel = (ConfigurationModel) model;
 		// See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
 		// the equivalent property in the config file. This reversal of scope priority
 		// is justified

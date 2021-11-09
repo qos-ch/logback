@@ -21,11 +21,11 @@ import java.io.PrintStream;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class OnConsoleStatusListener extends OnPrintStreamStatusListenerBase {
-    
-    
-    @Override
-    protected PrintStream getPrintStream() {
-        return System.out;
-    }
+
+
+	@Override
+	protected PrintStream getPrintStream() {
+		return System.out;
+	}
 
 }

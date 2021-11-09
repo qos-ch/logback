@@ -6,79 +6,80 @@ import java.util.List;
 
 /**
  * Abstract representation of configuration elements
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
 public class Model  implements Serializable {
 
 	private static final long serialVersionUID = -797372668713068159L;
-	
+
 	// this state should not be here but should be treated via listeners
 	// between processors and ModelHandlers
 	boolean handled = false;
-	
-    public boolean isUnhandled() {
+
+	public boolean isUnhandled() {
 		return !handled;
 	}
-    
-    public boolean isHandled() {
+
+	public boolean isHandled() {
 		return handled;
-	}    
+	}
 	public void markAsHandled() {
 		handled = true;
 	}
 
 	String tag;
-    String bodyText;
-    int lineNumber;
-    
-    List<Model> subModels = new ArrayList<>();
+	String bodyText;
+	int lineNumber;
 
-    public String getTag() {
-        return tag;
-    }
+	List<Model> subModels = new ArrayList<>();
 
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
+	public String getTag() {
+		return tag;
+	}
 
-    public int getLineNumber() {
-        return lineNumber;
-    }
+	public void setTag(final String tag) {
+		this.tag = tag;
+	}
 
-    public void setLineNumber(int lineNumber) {
-        this.lineNumber = lineNumber;
-    }
+	public int getLineNumber() {
+		return lineNumber;
+	}
 
-    public List<Model> getSubModels() {
-        return subModels;
-    }
+	public void setLineNumber(final int lineNumber) {
+		this.lineNumber = lineNumber;
+	}
 
-    public void addSubModel(Model m) {
-        subModels.add(m);
-    }
+	public List<Model> getSubModels() {
+		return subModels;
+	}
 
-    public String getBodyText() {
-        return bodyText;
-    }
+	public void addSubModel(final Model m) {
+		subModels.add(m);
+	}
 
-    public void addText(String bodytext) {
-        if (bodyText == null)
-            this.bodyText = bodytext;
-        else
-            this.bodyText += bodytext;
-    }
+	public String getBodyText() {
+		return bodyText;
+	}
 
-    public String idString() {
-        return "<"+tag+"> at line "+lineNumber;
-    }
+	public void addText(final String bodytext) {
+		if (bodyText == null) {
+			bodyText = bodytext;
+		} else {
+			bodyText += bodytext;
+		}
+	}
 
-    
-    @Override
-    public String toString() {
-        return this.getClass().getSimpleName() +" [tag=" + tag + ", bodyText=" + bodyText + "]";
-    }
+	public String idString() {
+		return "<"+tag+"> at line "+lineNumber;
+	}
+
+
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName() +" [tag=" + tag + ", bodyText=" + bodyText + "]";
+	}
 
 
 

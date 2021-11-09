@@ -73,7 +73,7 @@ import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
 public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
 	@Override
-	public void addInstanceRules(RuleStore rs) {
+	public void addInstanceRules(final RuleStore rs) {
 		// add parent rules
 		super.addInstanceRules(rs);
 
@@ -113,13 +113,13 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 	}
 
 	@Override
-	protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
+	protected void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {
 		DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
 	}
 
 	@Override
-	protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-		DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+	protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
+		final DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
 		defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
 		defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler::makeInstance);
 		defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler::makeInstance);
@@ -144,69 +144,75 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		return defaultProcessor;
 	}
 
-	private void injectModelFilters(DefaultProcessor defaultProcessor) {
+	private void injectModelFilters(final DefaultProcessor defaultProcessor) {
 		@SuppressWarnings("unchecked")
+		final
 		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
 				DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
 
 		@SuppressWarnings("unchecked")
+		final
 		Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
 
 		@SuppressWarnings("unchecked")
+		final
 		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
 				EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
 				EventEvaluatorModel.class, IncludeModel.class, };
 
-//		@SuppressWarnings("unchecked")
-//		Class<? extends Model>[] secondPhaseModelClasses = new Class[] { 
-//				LoggerModel.class, 
-//				RootLoggerModel.class, 
-//				AppenderModel.class,
-//				AppenderRefModel.class };
+		//		@SuppressWarnings("unchecked")
+		//		Class<? extends Model>[] secondPhaseModelClasses = new Class[] {
+		//				LoggerModel.class,
+		//				RootLoggerModel.class,
+		//				AppenderModel.class,
+		//				AppenderRefModel.class };
 
 		// MOTE: AppenderModelHandler is delayed to second phase
 
-		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
-		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
+		final ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+		for (final Class<? extends Model> modelClass : variableDefinitionModelClasses) {
 			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
+		}
+		for (final Class<? extends Model> modelClass : otherFirstPhaseModelClasses) {
 			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : implicitModelClasses)
+		}
+		for (final Class<? extends Model> modelClass : implicitModelClasses) {
 			fistPhaseDefintionFilter.allow(modelClass);
+		}
 
 		fistPhaseDefintionFilter.denyAll();
 		defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
 
-		ChainedModelFilter secondPhaseDefintionFilter = new ChainedModelFilter();
+		final ChainedModelFilter secondPhaseDefintionFilter = new ChainedModelFilter();
 		secondPhaseDefintionFilter.allowAll();
 
 		defaultProcessor.setPhaseTwoFilter(secondPhaseDefintionFilter);
 
 	}
 
-//	protected void miniBuildInterpreter() {
-//		RuleStore rs = new SimpleRuleStore(context);
-//		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
-//		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
-//		interpretationContext.setContext(context);
-//		Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-//		omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
-//		omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
-//	}
+	//	protected void miniBuildInterpreter() {
+	//		RuleStore rs = new SimpleRuleStore(context);
+	//		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
+	//		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
+	//		interpretationContext.setContext(context);
+	//		Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+	//		omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
+	//		omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+	//	}
 
-//	public void doT() throws JoranException {
-//		miniBuildInterpreter();
-//		Model top;
-//		try {
-//			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
-//			top = (Model) ois.readObject();
-//			ois.close();
-//			interpreter.getInterpretationContext().pushModel(top);
-//			processModel(top);
-//		} catch (IOException | ClassNotFoundException e1) {
-//			e1.printStackTrace();
-//		}
-//
-//	}
+	//	public void doT() throws JoranException {
+	//		miniBuildInterpreter();
+	//		Model top;
+	//		try {
+	//			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
+	//			top = (Model) ois.readObject();
+	//			ois.close();
+	//			interpreter.getInterpretationContext().pushModel(top);
+	//			processModel(top);
+	//		} catch (IOException | ClassNotFoundException e1) {
+	//			e1.printStackTrace();
+	//		}
+	//
+	//	}
 
 }

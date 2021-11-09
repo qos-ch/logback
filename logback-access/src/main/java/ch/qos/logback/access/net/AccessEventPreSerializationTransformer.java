@@ -21,13 +21,12 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class AccessEventPreSerializationTransformer implements PreSerializationTransformer<IAccessEvent> {
 
-    @Override
-    public Serializable transform(IAccessEvent event) {
-        if (event instanceof AccessEvent) {
-            return (AccessEvent) event;
-        } else {
-            throw new IllegalArgumentException("Unsupported type " + event.getClass().getName());
-        }
-    }
+	@Override
+	public Serializable transform(final IAccessEvent event) {
+		if (event instanceof AccessEvent) {
+			return (AccessEvent) event;
+		}
+		throw new IllegalArgumentException("Unsupported type " + event.getClass().getName());
+	}
 
 }

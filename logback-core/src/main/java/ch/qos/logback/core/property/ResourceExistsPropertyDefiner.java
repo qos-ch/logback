@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.core.property;
 
+import java.net.URL;
+
 import ch.qos.logback.core.PropertyDefinerBase;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
-
-import java.net.URL;
 
 /**
  * In conjunction with {@link ch.qos.logback.core.joran.action.PropertyAction} sets
@@ -32,35 +32,36 @@ import java.net.URL;
  */
 public class ResourceExistsPropertyDefiner extends PropertyDefinerBase {
 
-    String resourceStr;
+	String resourceStr;
 
-    public String getResource() {
-        return resourceStr;
-    }
+	public String getResource() {
+		return resourceStr;
+	}
 
-    /**
-     * The resource to search for on the class path.
-     *
-     * @param resource
-     */
-    public void setResource(String resource) {
-        this.resourceStr = resource;
-    }
+	/**
+	 * The resource to search for on the class path.
+	 *
+	 * @param resource
+	 */
+	public void setResource(final String resource) {
+		resourceStr = resource;
+	}
 
-    /**
-     * Returns the string "true" if the {@link #setResource(String) resource} specified by the
-     * user is available on the class path, "false" otherwise.
-     *
-     * @return "true"|"false" depending on the availability of resource on the classpath
-     */
-    public String getPropertyValue() {
-        if (OptionHelper.isNullOrEmpty(resourceStr)) {
-            addError("The \"resource\" property must be set.");
-            return null;
-        }
+	/**
+	 * Returns the string "true" if the {@link #setResource(String) resource} specified by the
+	 * user is available on the class path, "false" otherwise.
+	 *
+	 * @return "true"|"false" depending on the availability of resource on the classpath
+	 */
+	@Override
+	public String getPropertyValue() {
+		if (OptionHelper.isNullOrEmpty(resourceStr)) {
+			addError("The \"resource\" property must be set.");
+			return null;
+		}
 
-        URL resourceURL = Loader.getResourceBySelfClassLoader(resourceStr);
-        return booleanAsStr(resourceURL != null);
-    }
+		final URL resourceURL = Loader.getResourceBySelfClassLoader(resourceStr);
+		return booleanAsStr(resourceURL != null);
+	}
 
 }

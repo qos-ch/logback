@@ -34,23 +34,23 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * SAX events. It extends SAX {@link org.xml.sax.helpers.DefaultHandler
  * DefaultHandler} which invokes various {@link Action actions} according to
  * predefined patterns.
- * 
+ *
  * <p>
  * Patterns are kept in a {@link RuleStore} which is programmed to store and
  * then later produce the applicable actions for a given pattern.
- * 
+ *
  * <p>
  * The pattern corresponding to a top level &lt;a&gt; element is the string "a".
- * 
+ *
  * <p>
  * The pattern corresponding to an element &lt;b&gt; embedded within a top level
  * &lt;a&gt; element is the string {@code "a/b"}.
- * 
+ *
  * <p>
  * The pattern corresponding to an &lt;b&gt; and any level of nesting is
  * "&#42;/b. Thus, the &#42; character placed at the beginning of a pattern
  * serves as a wildcard for the level of nesting.
- * 
+ *
  * Conceptually, this is very similar to the API of commons-digester. Joran
  * offers several small advantages. First and foremost, it offers support for
  * implicit actions which result in a significant leap in flexibility. Second,
@@ -58,12 +58,12 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * It does not depend on other APIs, in particular commons-logging which is too
  * unreliable. Last but not least, Joran is quite tiny and is expected to remain
  * so.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class SaxEventInterpreter {
-	private static List<Action> EMPTY_LIST = new ArrayList<Action>(0);
+	private static List<Action> EMPTY_LIST = new ArrayList<>(0);
 
 	final private RuleStore ruleStore;
 	final private InterpretationContext interpretationContext;
@@ -76,10 +76,10 @@ public class SaxEventInterpreter {
 	/**
 	 * The <id>actionListStack</id> contains a list of actions that are executing
 	 * for the given XML element.
-	 * 
+	 *
 	 * A list of actions is pushed by the {link #startElement} and popped by
 	 * {@link #endElement}.
-	 * 
+	 *
 	 */
 	Stack<List<Action>> actionListStack;
 
@@ -89,23 +89,23 @@ public class SaxEventInterpreter {
 	 */
 	ElementPath skip = null;
 
-	public SaxEventInterpreter(Context context, RuleStore rs, ElementPath initialElementPath) {
-		this.cai = new CAI_WithLocatorSupport(context, this);
+	public SaxEventInterpreter(final Context context, final RuleStore rs, final ElementPath initialElementPath) {
+		cai = new CAI_WithLocatorSupport(context, this);
 		ruleStore = rs;
 		interpretationContext = new InterpretationContext(context, this);
-		implicitActions = new ArrayList<Action>(3);
-		this.elementPath = initialElementPath;
-		actionListStack = new Stack<List<Action>>();
+		implicitActions = new ArrayList<>(3);
+		elementPath = initialElementPath;
+		actionListStack = new Stack<>();
 		eventPlayer = new EventPlayer(this);
 	}
 
-	public SaxEventInterpreter duplicate(ElementPath initial) {
-		SaxEventInterpreter clone = new SaxEventInterpreter(this.cai.getContext(), ruleStore, initial);
+	public SaxEventInterpreter duplicate(final ElementPath initial) {
+		final SaxEventInterpreter clone = new SaxEventInterpreter(cai.getContext(), ruleStore, initial);
 		clone.addImplicitActions(implicitActions);
 		clone.elementPath = initial;
 		return clone;
 	}
-	
+
 	public EventPlayer getEventPlayer() {
 		return eventPlayer;
 	}
@@ -113,9 +113,9 @@ public class SaxEventInterpreter {
 	public ElementPath getCopyOfElementPath() {
 		return elementPath.duplicate();
 	}
-	
-	
-	public void setInterpretationContextPropertiesMap(Map<String, String> propertiesMap) {
+
+
+	public void setInterpretationContextPropertiesMap(final Map<String, String> propertiesMap) {
 		interpretationContext.setPropertiesMap(propertiesMap);
 	}
 
@@ -126,15 +126,15 @@ public class SaxEventInterpreter {
 	public void startDocument() {
 	}
 
-	
-	public void startElement(StartEvent se) {
+
+	public void startElement(final StartEvent se) {
 		setDocumentLocator(se.getLocator());
 		startElement(se.namespaceURI, se.localName, se.qName, se.attributes);
 	}
 
-	private void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
+	private void startElement(final String namespaceURI, final String localName, final String qName, final Attributes atts) {
 
-		String tagName = getTagName(localName, qName);
+		final String tagName = getTagName(localName, qName);
 		elementPath.push(tagName);
 
 		if (skip != null) {
@@ -143,14 +143,14 @@ public class SaxEventInterpreter {
 			return;
 		}
 
-		List<Action> applicableActionList = getApplicableActionList(elementPath, atts);
+		final List<Action> applicableActionList = getApplicableActionList(elementPath, atts);
 		if (applicableActionList != null) {
 			actionListStack.add(applicableActionList);
 			callBeginAction(applicableActionList, tagName, atts);
 		} else {
 			// every startElement pushes an action list
 			pushEmptyActionList();
-			String errMsg = "no applicable action for [" + tagName + "], current ElementPath  is [" + elementPath + "]";
+			final String errMsg = "no applicable action for [" + tagName + "], current ElementPath  is [" + elementPath + "]";
 			cai.addError(errMsg);
 		}
 	}
@@ -162,12 +162,12 @@ public class SaxEventInterpreter {
 		actionListStack.add(EMPTY_LIST);
 	}
 
-	public void characters(BodyEvent be) {
+	public void characters(final BodyEvent be) {
 
 		setDocumentLocator(be.locator);
 
 		String body = be.getText();
-		List<Action> applicableActionList = actionListStack.peek();
+		final List<Action> applicableActionList = actionListStack.peek();
 
 		if (body != null) {
 			body = body.trim();
@@ -178,16 +178,16 @@ public class SaxEventInterpreter {
 		}
 	}
 
-	public void endElement(EndEvent endEvent) {
+	public void endElement(final EndEvent endEvent) {
 		setDocumentLocator(endEvent.locator);
 		endElement(endEvent.namespaceURI, endEvent.localName, endEvent.qName);
 	}
 
-	private void endElement(String namespaceURI, String localName, String qName) {
+	private void endElement(final String namespaceURI, final String localName, final String qName) {
 		// given that an action list is always pushed for every startElement, we
 		// need
 		// to always pop for every endElement
-		List<Action> applicableActionList = (List<Action>) actionListStack.pop();
+		final List<Action> applicableActionList = actionListStack.pop();
 
 		if (skip != null) {
 			if (skip.equals(elementPath)) {
@@ -206,33 +206,33 @@ public class SaxEventInterpreter {
 	}
 
 	// having the locator set as parsing progresses is quite ugly
-	public void setDocumentLocator(Locator l) {
+	public void setDocumentLocator(final Locator l) {
 		locator = l;
 	}
 
-	String getTagName(String localName, String qName) {
+	String getTagName(final String localName, final String qName) {
 		String tagName = localName;
 
-		if ((tagName == null) || (tagName.length() < 1)) {
+		if (tagName == null || tagName.length() < 1) {
 			tagName = qName;
 		}
 
 		return tagName;
 	}
 
-	public void addImplicitActions(List<Action> actionList) {
+	public void addImplicitActions(final List<Action> actionList) {
 		implicitActions.addAll(actionList);
 	}
-	
-	public void addImplicitAction(Action ia) {
+
+	public void addImplicitAction(final Action ia) {
 		implicitActions.add(ia);
 	}
 
-	
+
 	/**
 	 * Return the list of applicable patterns for this
 	 */
-	List<Action> getApplicableActionList(ElementPath elementPath, Attributes attributes) {
+	List<Action> getApplicableActionList(final ElementPath elementPath, final Attributes attributes) {
 		List<Action> applicableActionList = ruleStore.matchActions(elementPath);
 
 		if (applicableActionList == null) {
@@ -242,63 +242,63 @@ public class SaxEventInterpreter {
 		return applicableActionList;
 	}
 
-	void callBeginAction(List<Action> applicableActionList, String tagName, Attributes atts) {
+	void callBeginAction(final List<Action> applicableActionList, final String tagName, final Attributes atts) {
 		if (applicableActionList == null) {
 			return;
 		}
 
-		Iterator<Action> i = applicableActionList.iterator();
+		final Iterator<Action> i = applicableActionList.iterator();
 		while (i.hasNext()) {
-			Action action = (Action) i.next();
+			final Action action = i.next();
 			// now let us invoke the action. We catch and report any eventual
 			// exceptions
 			try {
 				action.begin(interpretationContext, tagName, atts);
-			} catch (ActionException e) {
+			} catch (final ActionException e) {
 				skip = elementPath.duplicate();
 				cai.addError("ActionException in Action for tag [" + tagName + "]", e);
-			} catch (RuntimeException e) {
+			} catch (final RuntimeException e) {
 				skip = elementPath.duplicate();
 				cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
 			}
 		}
 	}
 
-	private void callBodyAction(List<Action> applicableActionList, String body) {
+	private void callBodyAction(final List<Action> applicableActionList, final String body) {
 		if (applicableActionList == null) {
 			return;
 		}
-		Iterator<Action> i = applicableActionList.iterator();
+		final Iterator<Action> i = applicableActionList.iterator();
 
 		while (i.hasNext()) {
-			Action action = i.next();
+			final Action action = i.next();
 			try {
 				action.body(interpretationContext, body);
-			} catch (ActionException ae) {
+			} catch (final ActionException ae) {
 				cai.addError("Exception in end() methd for action [" + action + "]", ae);
 			}
 		}
 	}
 
-	private void callEndAction(List<Action> applicableActionList, String tagName) {
+	private void callEndAction(final List<Action> applicableActionList, final String tagName) {
 		if (applicableActionList == null) {
 			return;
 		}
 
 		// logger.debug("About to call end actions on node: [" + localName + "]");
-		Iterator<Action> i = applicableActionList.iterator();
+		final Iterator<Action> i = applicableActionList.iterator();
 
 		while (i.hasNext()) {
-			Action action = i.next();
+			final Action action = i.next();
 			// now let us invoke the end method of the action. We catch and report
 			// any eventual exceptions
 			try {
 				action.end(interpretationContext, tagName);
-			} catch (ActionException ae) {
+			} catch (final ActionException ae) {
 				// at this point endAction, there is no point in skipping children as
 				// they have been already processed
 				cai.addError("ActionException in Action for tag [" + tagName + "]", ae);
-			} catch (RuntimeException e) {
+			} catch (final RuntimeException e) {
 				// no point in setting skip
 				cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
 			}
@@ -314,23 +314,22 @@ public class SaxEventInterpreter {
  * When {@link SaxEventInterpreter} class is used as the origin of an
  * {@link ContextAwareImpl} instance, then XML locator information is lost. This
  * class preserves locator information (as a string).
- * 
+ *
  * @author ceki
  */
 class CAI_WithLocatorSupport extends ContextAwareImpl {
 
-	CAI_WithLocatorSupport(Context context, SaxEventInterpreter interpreter) {
+	CAI_WithLocatorSupport(final Context context, final SaxEventInterpreter interpreter) {
 		super(context, interpreter);
 	}
 
 	@Override
 	protected Object getOrigin() {
-		SaxEventInterpreter i = (SaxEventInterpreter) super.getOrigin();
-		Locator locator = i.locator;
+		final SaxEventInterpreter i = (SaxEventInterpreter) super.getOrigin();
+		final Locator locator = i.locator;
 		if (locator != null) {
 			return SaxEventInterpreter.class.getName() + "@" + locator.getLineNumber() + ":" + locator.getColumnNumber();
-		} else {
-			return SaxEventInterpreter.class.getName() + "@NA:NA";
 		}
+		return SaxEventInterpreter.class.getName() + "@NA:NA";
 	}
 }

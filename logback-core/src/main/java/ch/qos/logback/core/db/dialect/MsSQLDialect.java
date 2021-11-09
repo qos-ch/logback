@@ -13,18 +13,19 @@
  */
 package ch.qos.logback.core.db.dialect;
 
-/** 
-* The MS SQL Server dialect is untested. 
-* 
-* Note that the dialect is not needed if your JDBC driver supports 
-* the getGeneratedKeys method introduced in JDBC 3.0 specification.
-* 
-* @author James Stauffer 
-*/
+/**
+ * The MS SQL Server dialect is untested.
+ *
+ * Note that the dialect is not needed if your JDBC driver supports
+ * the getGeneratedKeys method introduced in JDBC 3.0 specification.
+ *
+ * @author James Stauffer
+ */
 public class MsSQLDialect implements SQLDialect {
-    public static final String SELECT_CURRVAL = "SELECT @@identity id";
+	public static final String SELECT_CURRVAL = "SELECT @@identity id";
 
-    public String getSelectInsertId() {
-        return SELECT_CURRVAL;
-    }
+	@Override
+	public String getSelectInsertId() {
+		return SELECT_CURRVAL;
+	}
 }

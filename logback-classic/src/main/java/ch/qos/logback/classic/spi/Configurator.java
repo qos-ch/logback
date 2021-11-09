@@ -19,15 +19,15 @@ import ch.qos.logback.core.spi.ContextAware;
 /**
  * Allows programmatic initialization and configuration of Logback.
  * The ServiceLoader is typically used to instantiate implementations and
- * thus implementations will need to follow the guidelines of the ServiceLoader 
+ * thus implementations will need to follow the guidelines of the ServiceLoader
  * specifically a no-arg constructor is required.
  */
 public interface Configurator extends ContextAware {
 
-    /**
-     * The context will also be set before this method is called via
-     * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
-     */
-    public void configure(LoggerContext loggerContext);
+	/**
+	 * The context will also be set before this method is called via
+	 * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
+	 */
+	void configure(LoggerContext loggerContext);
 
 }

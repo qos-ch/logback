@@ -34,18 +34,19 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
 	 * <p>
 	 * If for some reason the user wishes to NOT print exceptions, then she can add
 	 * %nopex to the pattern.
-	 * 
-	 * 
+	 *
+	 *
 	 */
-	public void process(Context context, Converter<ILoggingEvent> head) {
+	@Override
+	public void process(final Context context, final Converter<ILoggingEvent> head) {
 		if (head == null) {
 			// this should never happen
 			throw new IllegalArgumentException("cannot process empty chain");
 		}
 		if (!chainHandlesThrowable(head)) {
-			Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
+			final Converter<ILoggingEvent> tail = ConverterUtil.findTail(head);
 			Converter<ILoggingEvent> exConverter = null;
-			LoggerContext loggerContext = (LoggerContext) context;
+			final LoggerContext loggerContext = (LoggerContext) context;
 			if (loggerContext.isPackagingDataEnabled()) {
 				exConverter = new ExtendedThrowableProxyConverter();
 			} else {
@@ -57,19 +58,15 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
 
 	/**
 	 * This method computes whether a chain of converters handles exceptions or not.
-	 * 
+	 *
 	 * @param head The first element of the chain
 	 * @return true if can handle throwables contained in logging events
 	 */
-	public boolean chainHandlesThrowable(Converter<ILoggingEvent> head) {
+	public boolean chainHandlesThrowable(final Converter<ILoggingEvent> head) {
 		Converter<ILoggingEvent> c = head;
 		while (c != null) {
-			if (c instanceof ThrowableHandlingConverter) {
+			if ((c instanceof ThrowableHandlingConverter) || ((c instanceof CompositeConverter) && compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c))) {
 				return true;
-			} else if (c instanceof CompositeConverter) {
-				if (compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c)) {
-					return true;
-				}
 			}
 			c = c.getNext();
 		}
@@ -82,16 +79,18 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
 	 * @param converter The composite converter
 	 * @return true if can handle throwables contained in logging events
 	 */
-	public boolean compositeHandlesThrowable(CompositeConverter<ILoggingEvent> compositeConverter) {
-		Converter<ILoggingEvent> childConverter = compositeConverter.getChildConverter();
+	public boolean compositeHandlesThrowable(final CompositeConverter<ILoggingEvent> compositeConverter) {
+		final Converter<ILoggingEvent> childConverter = compositeConverter.getChildConverter();
 
 		for (Converter<ILoggingEvent> c = childConverter; c != null; c = c.getNext()) {
 			if (c instanceof ThrowableHandlingConverter) {
 				return true;
-			} else if (c instanceof CompositeConverter) {
-				boolean r = compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c);
-				if (r)
+			}
+			if (c instanceof CompositeConverter) {
+				final boolean r = compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c);
+				if (r) {
 					return true;
+				}
 			}
 
 		}

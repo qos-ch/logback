@@ -8,32 +8,32 @@ public class RefContainerDependencyAnalyser extends ModelHandlerBase {
 
 	final Class<?> modelClass;
 
-	public RefContainerDependencyAnalyser(Context context, Class<?> modelClass) {
+	public RefContainerDependencyAnalyser(final Context context, final Class<?> modelClass) {
 		super(context);
 		this.modelClass = modelClass;
 	}
 
 	@Override
-	protected boolean isSupportedModelType(Model model) {
+	protected boolean isSupportedModelType(final Model model) {
 
 		if (modelClass.isInstance(model)) {
 			return true;
 		}
 
-		StringBuilder buf = new StringBuilder("This handler can only handle models of type ");
+		final StringBuilder buf = new StringBuilder("This handler can only handle models of type ");
 		buf.append(modelClass.getName());
 		addError(buf.toString());
 		return false;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
 		intercon.pushModel(model);
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		Model poppedModel = intercon.popModel();
+	public void postHandle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+		final Model poppedModel = intercon.popModel();
 		if (model != poppedModel) {
 			addError("Popped model [" + poppedModel + "] different than expected [" + model + "]");
 		}

@@ -37,205 +37,207 @@ import ch.qos.logback.core.util.FileUtil;
  */
 public class Compressor extends ContextAwareBase {
 
-    final CompressionMode compressionMode;
+	final CompressionMode compressionMode;
 
-    static final int BUFFER_SIZE = 8192;
+	static final int BUFFER_SIZE = 8192;
 
-    public Compressor(CompressionMode compressionMode) {
-        this.compressionMode = compressionMode;
-    }
+	public Compressor(final CompressionMode compressionMode) {
+		this.compressionMode = compressionMode;
+	}
 
-    /**
-     * @param nameOfFile2Compress
-     * @param nameOfCompressedFile
-     * @param innerEntryName 
-     *            The name of the file within the zip file. Use for ZIP compression.
-     */
-    public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
-        switch (compressionMode) {
-        case GZ:
-            gzCompress(nameOfFile2Compress, nameOfCompressedFile);
-            break;
-        case ZIP:
-            zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-            break;
-        case NONE:
-            throw new UnsupportedOperationException("compress method called in NONE compression mode");
-        }
-    }
+	/**
+	 * @param nameOfFile2Compress
+	 * @param nameOfCompressedFile
+	 * @param innerEntryName
+	 *            The name of the file within the zip file. Use for ZIP compression.
+	 */
+	public void compress(final String nameOfFile2Compress, final String nameOfCompressedFile, final String innerEntryName) {
+		switch (compressionMode) {
+		case GZ:
+			gzCompress(nameOfFile2Compress, nameOfCompressedFile);
+			break;
+		case ZIP:
+			zipCompress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+			break;
+		case NONE:
+			throw new UnsupportedOperationException("compress method called in NONE compression mode");
+		}
+	}
 
-    private void zipCompress(String nameOfFile2zip, String nameOfZippedFile, String innerEntryName) {
-        File file2zip = new File(nameOfFile2zip);
+	private void zipCompress(final String nameOfFile2zip, String nameOfZippedFile, final String innerEntryName) {
+		final File file2zip = new File(nameOfFile2zip);
 
-        if (!file2zip.exists()) {
-            addStatus(new WarnStatus("The file to compress named [" + nameOfFile2zip + "] does not exist.", this));
+		if (!file2zip.exists()) {
+			addStatus(new WarnStatus("The file to compress named [" + nameOfFile2zip + "] does not exist.", this));
 
-            return;
-        }
+			return;
+		}
 
-        if (innerEntryName == null) {
-            addStatus(new WarnStatus("The innerEntryName parameter cannot be null", this));
-            return;
-        }
+		if (innerEntryName == null) {
+			addStatus(new WarnStatus("The innerEntryName parameter cannot be null", this));
+			return;
+		}
 
-        if (!nameOfZippedFile.endsWith(".zip")) {
-            nameOfZippedFile = nameOfZippedFile + ".zip";
-        }
+		if (!nameOfZippedFile.endsWith(".zip")) {
+			nameOfZippedFile = nameOfZippedFile + ".zip";
+		}
 
-        File zippedFile = new File(nameOfZippedFile);
+		final File zippedFile = new File(nameOfZippedFile);
 
-        if (zippedFile.exists()) {
-            addStatus(new WarnStatus("The target compressed file named [" + nameOfZippedFile + "] exist already.", this));
+		if (zippedFile.exists()) {
+			addStatus(new WarnStatus("The target compressed file named [" + nameOfZippedFile + "] exist already.", this));
 
-            return;
-        }
+			return;
+		}
 
-        addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
-        createMissingTargetDirsIfNecessary(zippedFile);
+		addInfo("ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
+		createMissingTargetDirsIfNecessary(zippedFile);
 
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2zip));
-                        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(nameOfZippedFile))) {
+		try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2zip));
+				ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(nameOfZippedFile))) {
 
-            ZipEntry zipEntry = computeZipEntry(innerEntryName);
-            zos.putNextEntry(zipEntry);
+			final ZipEntry zipEntry = computeZipEntry(innerEntryName);
+			zos.putNextEntry(zipEntry);
 
-            byte[] inbuf = new byte[BUFFER_SIZE];
-            int n;
+			final byte[] inbuf = new byte[BUFFER_SIZE];
+			int n;
 
-            while ((n = bis.read(inbuf)) != -1) {
-                zos.write(inbuf, 0, n);
-            }
+			while ((n = bis.read(inbuf)) != -1) {
+				zos.write(inbuf, 0, n);
+			}
 
-            addInfo("Done ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
-        } catch (Exception e) {
-            addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
-        }
-        if (!file2zip.delete()) {
-            addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].", this));
-        }
-    }
+			addInfo("Done ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
+		} catch (final Exception e) {
+			addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
+		}
+		if (!file2zip.delete()) {
+			addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].", this));
+		}
+	}
 
-    // http://jira.qos.ch/browse/LBCORE-98
-    // The name of the compressed file as nested within the zip archive
-    //
-    // Case 1: RawFile = null, Patern = foo-%d.zip
-    // nestedFilename = foo-${current-date}
-    //
-    // Case 2: RawFile = hello.txt, Pattern = = foo-%d.zip
-    // nestedFilename = foo-${current-date}
-    //
-    // in both cases, the strategy consisting of removing the compression
-    // suffix of zip file works reasonably well. The alternative strategy
-    // whereby the nested file name was based on the value of the raw file name
-    // (applicable to case 2 only) has the disadvantage of the nested files
-    // all having the same name, which could make it harder for the user
-    // to unzip the file without collisions
-    ZipEntry computeZipEntry(File zippedFile) {
-        return computeZipEntry(zippedFile.getName());
-    }
+	// http://jira.qos.ch/browse/LBCORE-98
+	// The name of the compressed file as nested within the zip archive
+	//
+	// Case 1: RawFile = null, Patern = foo-%d.zip
+	// nestedFilename = foo-${current-date}
+	//
+	// Case 2: RawFile = hello.txt, Pattern = = foo-%d.zip
+	// nestedFilename = foo-${current-date}
+	//
+	// in both cases, the strategy consisting of removing the compression
+	// suffix of zip file works reasonably well. The alternative strategy
+	// whereby the nested file name was based on the value of the raw file name
+	// (applicable to case 2 only) has the disadvantage of the nested files
+	// all having the same name, which could make it harder for the user
+	// to unzip the file without collisions
+	ZipEntry computeZipEntry(final File zippedFile) {
+		return computeZipEntry(zippedFile.getName());
+	}
 
-    ZipEntry computeZipEntry(String filename) {
-        String nameOfFileNestedWithinArchive = computeFileNameStrWithoutCompSuffix(filename, compressionMode);
-        return new ZipEntry(nameOfFileNestedWithinArchive);
-    }
+	ZipEntry computeZipEntry(final String filename) {
+		final String nameOfFileNestedWithinArchive = computeFileNameStrWithoutCompSuffix(filename, compressionMode);
+		return new ZipEntry(nameOfFileNestedWithinArchive);
+	}
 
-    private void gzCompress(String nameOfFile2gz, String nameOfgzedFile) {
-        File file2gz = new File(nameOfFile2gz);
+	private void gzCompress(final String nameOfFile2gz, String nameOfgzedFile) {
+		final File file2gz = new File(nameOfFile2gz);
 
-        if (!file2gz.exists()) {
-            addStatus(new WarnStatus("The file to compress named [" + nameOfFile2gz + "] does not exist.", this));
+		if (!file2gz.exists()) {
+			addStatus(new WarnStatus("The file to compress named [" + nameOfFile2gz + "] does not exist.", this));
 
-            return;
-        }
+			return;
+		}
 
-        if (!nameOfgzedFile.endsWith(".gz")) {
-            nameOfgzedFile = nameOfgzedFile + ".gz";
-        }
+		if (!nameOfgzedFile.endsWith(".gz")) {
+			nameOfgzedFile = nameOfgzedFile + ".gz";
+		}
 
-        File gzedFile = new File(nameOfgzedFile);
+		final File gzedFile = new File(nameOfgzedFile);
 
-        if (gzedFile.exists()) {
-            addWarn("The target compressed file named [" + nameOfgzedFile + "] exist already. Aborting file compression.");
-            return;
-        }
+		if (gzedFile.exists()) {
+			addWarn("The target compressed file named [" + nameOfgzedFile + "] exist already. Aborting file compression.");
+			return;
+		}
 
-        addInfo("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
-        createMissingTargetDirsIfNecessary(gzedFile);
+		addInfo("GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
+		createMissingTargetDirsIfNecessary(gzedFile);
 
-        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2gz));
-                        GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(nameOfgzedFile))) {
+		try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2gz));
+				GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(nameOfgzedFile))) {
 
-            byte[] inbuf = new byte[BUFFER_SIZE];
-            int n;
+			final byte[] inbuf = new byte[BUFFER_SIZE];
+			int n;
 
-            while ((n = bis.read(inbuf)) != -1) {
-                gzos.write(inbuf, 0, n);
-            }
+			while ((n = bis.read(inbuf)) != -1) {
+				gzos.write(inbuf, 0, n);
+			}
 
-            addInfo("Done ZIP compressing [" + file2gz + "] as [" + gzedFile + "]");
-        } catch (Exception e) {
-            addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
-        }
+			addInfo("Done ZIP compressing [" + file2gz + "] as [" + gzedFile + "]");
+		} catch (final Exception e) {
+			addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
+		}
 
-        if (!file2gz.delete()) {
-            addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].", this));
-        }
+		if (!file2gz.delete()) {
+			addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].", this));
+		}
 
-    }
+	}
 
-    static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr, CompressionMode compressionMode) {
-        int len = fileNamePatternStr.length();
-        switch (compressionMode) {
-        case GZ:
-            if (fileNamePatternStr.endsWith(".gz"))
-                return fileNamePatternStr.substring(0, len - 3);
-            else
-                return fileNamePatternStr;
-        case ZIP:
-            if (fileNamePatternStr.endsWith(".zip"))
-                return fileNamePatternStr.substring(0, len - 4);
-            else
-                return fileNamePatternStr;
-        case NONE:
-            return fileNamePatternStr;
-        }
-        throw new IllegalStateException("Execution should not reach this point");
-    }
+	static public String computeFileNameStrWithoutCompSuffix(final String fileNamePatternStr, final CompressionMode compressionMode) {
+		final int len = fileNamePatternStr.length();
+		switch (compressionMode) {
+		case GZ:
+			if (fileNamePatternStr.endsWith(".gz")) {
+				return fileNamePatternStr.substring(0, len - 3);
+			} else {
+				return fileNamePatternStr;
+			}
+		case ZIP:
+			if (fileNamePatternStr.endsWith(".zip")) {
+				return fileNamePatternStr.substring(0, len - 4);
+			} else {
+				return fileNamePatternStr;
+			}
+		case NONE:
+			return fileNamePatternStr;
+		}
+		throw new IllegalStateException("Execution should not reach this point");
+	}
 
-    void createMissingTargetDirsIfNecessary(File file) {
-        boolean result = FileUtil.createMissingParentDirectories(file);
-        if (!result) {
-            addError("Failed to create parent directories for [" + file.getAbsolutePath() + "]");
-        }
-    }
+	void createMissingTargetDirsIfNecessary(final File file) {
+		final boolean result = FileUtil.createMissingParentDirectories(file);
+		if (!result) {
+			addError("Failed to create parent directories for [" + file.getAbsolutePath() + "]");
+		}
+	}
 
-    @Override
-    public String toString() {
-        return this.getClass().getName();
-    }
+	@Override
+	public String toString() {
+		return this.getClass().getName();
+	}
 
-    public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
-        CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-        ExecutorService executorService = context.getScheduledExecutorService();
-        Future<?> future = executorService.submit(runnable);
-        return future;
-    }
+	public Future<?> asyncCompress(final String nameOfFile2Compress, final String nameOfCompressedFile, final String innerEntryName) throws RolloverFailure {
+		final CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+		final ExecutorService executorService = context.getScheduledExecutorService();
+		return executorService.submit(runnable);
+	}
 
-    class CompressionRunnable implements Runnable {
-        final String nameOfFile2Compress;
-        final String nameOfCompressedFile;
-        final String innerEntryName;
+	class CompressionRunnable implements Runnable {
+		final String nameOfFile2Compress;
+		final String nameOfCompressedFile;
+		final String innerEntryName;
 
-        public CompressionRunnable(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
-            this.nameOfFile2Compress = nameOfFile2Compress;
-            this.nameOfCompressedFile = nameOfCompressedFile;
-            this.innerEntryName = innerEntryName;
-        }
+		public CompressionRunnable(final String nameOfFile2Compress, final String nameOfCompressedFile, final String innerEntryName) {
+			this.nameOfFile2Compress = nameOfFile2Compress;
+			this.nameOfCompressedFile = nameOfCompressedFile;
+			this.innerEntryName = innerEntryName;
+		}
 
-        public void run() {
+		@Override
+		public void run() {
 
-            Compressor.this.compress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
-        }
-    }
+			compress(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+		}
+	}
 
 }

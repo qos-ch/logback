@@ -17,83 +17,85 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	private boolean inError = false;
 	private boolean skipped = false;
 	AppenderAttachable<E> appenderAttachable;
-	
-	public AppenderModelHandler(Context context) {
+
+	public AppenderModelHandler(final Context context) {
 		super(context);
 	}
 
 	@SuppressWarnings("rawtypes")
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new AppenderModelHandler(context);
 	}
-	
+
 	@Override
 	@SuppressWarnings("unchecked")
-	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext interpContext, final Model model) throws ModelHandlerException {
 		this.appender = null;
 		this.inError = false;
-		
-		AppenderModel appenderModel = (AppenderModel) model;
 
-		String appenderName = interpContext.subst(appenderModel.getName());
-	
+		final AppenderModel appenderModel = (AppenderModel) model;
+
+		final String appenderName = interpContext.subst(appenderModel.getName());
+
 		if(!interpContext.hasDependencies(appenderName)) {
 			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
 			skipped = true;
 			return;
 		}
-		
-//		//this.appenderAttachable = appenderRefBag.get(appenderName);
-//		
-//		if(this.appenderAttachable == null) {
-//			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
-//			skipped = true;
-//			return;
-//		}
-		
+
+		//		//this.appenderAttachable = appenderRefBag.get(appenderName);
+		//
+		//		if(this.appenderAttachable == null) {
+		//			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
+		//			skipped = true;
+		//			return;
+		//		}
+
 		addInfo("Processing appender named ["+appenderName+"]");
-		
-		String className = appenderModel.getClassName();
-		
+
+		final String className = appenderModel.getClassName();
+
 		try {
 			addInfo("About to instantiate appender of type [" + className + "]");
 
 			appender = (Appender<E>) OptionHelper.instantiateByClassName(className, ch.qos.logback.core.Appender.class,
 					context);
 			appender.setContext(context);
-            appender.setName(appenderName);
+			appender.setName(appenderName);
 			interpContext.pushObject(appender);
-		} catch (Exception oops) {
+		} catch (final Exception oops) {
 			inError = true;
 			addError("Could not create an Appender of type [" + className + "].", oops);
 			throw new ModelHandlerException(oops);
 		}
 	}
 
-	public void postHandle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	@Override
+	public void postHandle(final InterpretationContext interpContext, final Model model) throws ModelHandlerException {
 		if (inError || skipped) {
 			return;
 		}
-	    if (appender instanceof LifeCycle) {
-            ((LifeCycle) appender).start();
-        }
-        interpContext.markStartOfNamedDependency(appender.getName());
-        
-        Object o = interpContext.peekObject();
+		if (appender instanceof LifeCycle) {
+			((LifeCycle) appender).start();
+		}
+		interpContext.markStartOfNamedDependency(appender.getName());
 
-    	@SuppressWarnings("unchecked")
+		final Object o = interpContext.peekObject();
+
+		@SuppressWarnings("unchecked")
+		final
 		Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) interpContext.getObjectMap()
-				.get(JoranConstants.APPENDER_BAG);
-    	appenderBag.put(appender.getName(), appender);
-    	
-        if (o != appender) {
-            addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
-        } else {
-//        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
-//        	appenderAttachable.addAppender(appender);
-        	interpContext.popObject();
-        }
-    
+		.get(JoranConstants.APPENDER_BAG);
+		appenderBag.put(appender.getName(), appender);
+
+		if (o != appender) {
+			addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
+		} else {
+			//        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
+			//        	appenderAttachable.addAppender(appender);
+			interpContext.popObject();
+		}
+
 	}
 
 }

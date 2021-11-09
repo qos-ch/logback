@@ -20,15 +20,15 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * In case abbreviation service is requested, NamedConverter will convert fully qualified class names 
- * to their abbreviated from. NamedConverter instances will store abbreviated names in an internal LRU 
+ * In case abbreviation service is requested, NamedConverter will convert fully qualified class names
+ * to their abbreviated from. NamedConverter instances will store abbreviated names in an internal LRU
  * cache.
- * 
- * The cache will double in size if he cache miss rate is consistently above 30%. Assuming a high miss rate, 
- * the doubling until a maximum size of 2048 is attained. If at this point the cache miss rate is still 
+ *
+ * The cache will double in size if he cache miss rate is consistently above 30%. Assuming a high miss rate,
+ * the doubling until a maximum size of 2048 is attained. If at this point the cache miss rate is still
  * too high, NamedConverter will revert to non cached behavior.
 
- * The general assumption here is that a large majority of logger names are concentrated within a 
+ * The general assumption here is that a large majority of logger names are concentrated within a
  * group of approximately 1000 logger names.
 
  * @author Ceki Gulcu
@@ -70,62 +70,63 @@ public abstract class NamedConverter extends ClassicConverter {
 
 	/**
 	 * Gets fully qualified name from event.
-	 * 
+	 *
 	 * @param event The LoggingEvent to process, cannot not be null.
 	 * @return name, must not be null.
 	 */
 	protected abstract String getFullyQualifiedName(final ILoggingEvent event);
 
+	@Override
 	public void start() {
 
-		String disableCacheProp = OptionHelper.getSystemProperty(DISABLE_CACHE_SYSTEM_PROPERTY);
-		boolean disableCache = OptionHelper.toBoolean(disableCacheProp, false);
+		final String disableCacheProp = OptionHelper.getSystemProperty(DISABLE_CACHE_SYSTEM_PROPERTY);
+		final boolean disableCache = OptionHelper.toBoolean(disableCacheProp, false);
 		if (disableCache) {
 			addInfo("Disabling name cache via System.properties");
-			this.cacheEnabled = false;
+			cacheEnabled = false;
 		}
 
-		String optStr = getFirstOption();
+		final String optStr = getFirstOption();
 		if (optStr != null) {
 			try {
-				int targetLen = Integer.parseInt(optStr);
+				final int targetLen = Integer.parseInt(optStr);
 				if (targetLen == 0) {
 					abbreviator = new ClassNameOnlyAbbreviator();
 				} else if (targetLen > 0) {
 					abbreviator = new TargetLengthBasedClassNameAbbreviator(targetLen);
 				}
-			} catch (NumberFormatException nfe) {
+			} catch (final NumberFormatException nfe) {
 				addError("failed to parse integer string [" + optStr + "]", nfe);
 			}
 		}
 		super.start();
 	}
 
-	public String convert(ILoggingEvent event) {
-		String fqn = getFullyQualifiedName(event);
+	@Override
+	public String convert(final ILoggingEvent event) {
+		final String fqn = getFullyQualifiedName(event);
 
 		if (abbreviator == null) {
 			return fqn;
+		}
+		if (cacheEnabled) {
+			return viaCache(fqn);
 		} else {
-			if (cacheEnabled) {
-				return viaCache(fqn);
-			} else {
-				return abbreviator.abbreviate(fqn);
-			}
+			return abbreviator.abbreviate(fqn);
 		}
 	}
 
 	/**
-	 *  This method is synchronized. It is the only place where the cache, a subclass of LinkedHashMap, 
-	 *  is modified. 
-	 *  
-	 *  The cache can be cleared via a call to disableCache(). However, the call to disableCache() is made 
+	 *  This method is synchronized. It is the only place where the cache, a subclass of LinkedHashMap,
+	 *  is modified.
+	 *
+	 *  The cache can be cleared via a call to disableCache(). However, the call to disableCache() is made
 	 *  indirectly from within viaCache(String).
-	 *  
+	 *
 	 * @param fqn
 	 * @return
 	 */
-	private synchronized String viaCache(String fqn) {
+	private synchronized String viaCache(final String fqn) {
 		totalCalls++;
 		String abbreviated = cache.get(fqn);
 		if (abbreviated == null) {
@@ -137,13 +138,14 @@ public abstract class NamedConverter extends ClassicConverter {
 	}
 
 	private void disableCache() {
-		if (!cacheEnabled)
+		if (!cacheEnabled) {
 			return;
-		this.cacheEnabled = false;
-		cache.clear();	
+		}
+		cacheEnabled = false;
+		cache.clear();
 		addInfo("Disabling cache at totalCalls=" + totalCalls);
 	}
-	
+
 	public double getCacheMissRate() {
 		return cache.cacheMissCalculator.getCacheMissRate();
 	}
@@ -159,21 +161,21 @@ public abstract class NamedConverter extends ClassicConverter {
 		int removalThreshold;
 		CacheMissCalculator cacheMissCalculator = new CacheMissCalculator();
 
-		NameCache(int initialCapacity) {
+		NameCache(final int initialCapacity) {
 			super(initialCapacity);
-			this.removalThreshold = (int) (initialCapacity * LOAD_FACTOR);
+			removalThreshold = (int) (initialCapacity * LOAD_FACTOR);
 		}
 
 		/**
 		 * In the JDK tested, this method is called for every map insertion.
-		 * 
+		 *
 		 */
 		@Override
-		protected boolean removeEldestEntry(Map.Entry<String, String> entry) {
+		protected boolean removeEldestEntry(final Map.Entry<String, String> entry) {
 			if (shouldDoubleRemovalThreshold()) {
 				removalThreshold *= 2;
 
-				int missRate = (int) (cacheMissCalculator.getCacheMissRate() * 100);
+				final int missRate = (int) (cacheMissCalculator.getCacheMissRate() * 100);
 
 				NamedConverter.this.addInfo("Doubling nameCache removalThreshold to " + removalThreshold
 						+ " previous cacheMissRate=" + missRate + "%");
@@ -182,24 +184,22 @@ public abstract class NamedConverter extends ClassicConverter {
 
 			if (size() >= removalThreshold) {
 				return true;
-			} else
-				return false;
+			}
+			return false;
 		}
 
 		private boolean shouldDoubleRemovalThreshold() {
 
-			double rate = cacheMissCalculator.getCacheMissRate();
+			final double rate = cacheMissCalculator.getCacheMissRate();
 
 			// negative rate indicates insufficient sample size
-			if (rate < 0)
+			if ((rate < 0) || (rate < CACHE_MISSRATE_TRIGGER)) {
 				return false;
-
-			if (rate < CACHE_MISSRATE_TRIGGER)
-				return false;
+			}
 
 			// cannot double removalThreshold is already at max allowed size
-			if (this.removalThreshold >= MAX_ALLOWED_REMOVAL_THRESHOLD) {
-				NamedConverter.this.disableCache();
+			if (removalThreshold >= MAX_ALLOWED_REMOVAL_THRESHOLD) {
+				disableCache();
 				return false;
 			}
 
@@ -213,13 +213,13 @@ public abstract class NamedConverter extends ClassicConverter {
 		int cacheMissesMilestone = 0;
 
 		void updateMilestones() {
-			this.totalsMilestone = NamedConverter.this.totalCalls;
-			this.cacheMissesMilestone = NamedConverter.this.cacheMisses;
+			totalsMilestone = totalCalls;
+			cacheMissesMilestone = cacheMisses;
 		}
 
 		double getCacheMissRate() {
 
-			int effectiveTotal = NamedConverter.this.totalCalls - totalsMilestone;
+			final int effectiveTotal = totalCalls - totalsMilestone;
 
 			if (effectiveTotal < MIN_SAMPLE_SIZE) {
 				// cache miss rate cannot be negative. Woth a negative value, we signal the caller of
@@ -227,8 +227,8 @@ public abstract class NamedConverter extends ClassicConverter {
 				return NEGATIVE;
 			}
 
-			int effectiveCacheMisses = NamedConverter.this.cacheMisses - cacheMissesMilestone;
-			return (1.0d * effectiveCacheMisses / effectiveTotal);
+			final int effectiveCacheMisses = cacheMisses - cacheMissesMilestone;
+			return 1.0d * effectiveCacheMisses / effectiveTotal;
 		}
 	}
 

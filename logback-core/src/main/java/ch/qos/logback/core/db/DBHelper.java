@@ -19,27 +19,27 @@ import java.sql.Statement;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class DBHelper {
 
-    static public void closeConnection(Connection connection) {
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException sqle) {
-                // static utility classes should not log without an explicit repository
-                // reference
-            }
-        }
-    }
+	static public void closeConnection(final Connection connection) {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (final SQLException sqle) {
+				// static utility classes should not log without an explicit repository
+				// reference
+			}
+		}
+	}
 
-    public static void closeStatement(Statement statement) {
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException sqle) {
-            }
-        }
-    }
+	public static void closeStatement(final Statement statement) {
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (final SQLException sqle) {
+			}
+		}
+	}
 }

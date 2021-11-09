@@ -13,21 +13,21 @@
  */
 package ch.qos.logback.classic.spi;
 
-import ch.qos.logback.core.CoreConstants;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
 
+import ch.qos.logback.core.CoreConstants;
+
 public class ThrowableProxy implements IThrowableProxy {
 
-	static final StackTraceElementProxy[] EMPTY_STEP = new StackTraceElementProxy[0]; 
-			
-	private Throwable throwable;
-	private String className;
-	private String message;
+	static final StackTraceElementProxy[] EMPTY_STEP = {};
+
+	private final Throwable throwable;
+	private final String className;
+	private final String message;
 	// package-private because of ThrowableProxyUtil
 	StackTraceElementProxy[] stackTraceElementProxyArray;
 	// package-private because of ThrowableProxyUtil
@@ -40,60 +40,60 @@ public class ThrowableProxy implements IThrowableProxy {
 	private transient PackagingDataCalculator packagingDataCalculator;
 	private boolean calculatedPackageData = false;
 
-	private boolean circular;
+	private final boolean circular;
 
-	private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
+	private static final ThrowableProxy[] NO_SUPPRESSED = {};
 
-	public ThrowableProxy(Throwable throwable) {
+	public ThrowableProxy(final Throwable throwable) {
 		// use an identity set to detect cycles in the throwable chain
 		this(throwable, Collections.newSetFromMap(new IdentityHashMap<>()));
 	}
 
 	// used for circular exceptions
-	private ThrowableProxy(Throwable circular, boolean isCircular) {
-		this.throwable = circular;
-		this.className = circular.getClass().getName();
-		this.message = circular.getMessage();
-		this.stackTraceElementProxyArray = EMPTY_STEP;
+	private ThrowableProxy(final Throwable circular, final boolean isCircular) {
+		throwable = circular;
+		className = circular.getClass().getName();
+		message = circular.getMessage();
+		stackTraceElementProxyArray = EMPTY_STEP;
 		this.circular = true;
 	}
 
-	public ThrowableProxy(Throwable throwable, Set<Throwable> alreadyProcessedSet) {
+	public ThrowableProxy(final Throwable throwable, final Set<Throwable> alreadyProcessedSet) {
 
 		this.throwable = throwable;
-		this.className = throwable.getClass().getName();
-		this.message = throwable.getMessage();
-		this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
-		this.circular = false;
-		
+		className = throwable.getClass().getName();
+		message = throwable.getMessage();
+		stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
+		circular = false;
+
 		alreadyProcessedSet.add(throwable);
 
-		Throwable nested = throwable.getCause();
+		final Throwable nested = throwable.getCause();
 		if (nested != null) {
 			if (alreadyProcessedSet.contains(nested)) {
-				this.cause = new ThrowableProxy(nested, true);
+				cause = new ThrowableProxy(nested, true);
 			} else {
-				this.cause = new ThrowableProxy(nested, alreadyProcessedSet);
-				this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(),
+				cause = new ThrowableProxy(nested, alreadyProcessedSet);
+				cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(),
 						stackTraceElementProxyArray);
 			}
 		}
 
-		Throwable[] throwableSuppressed = throwable.getSuppressed();
+		final Throwable[] throwableSuppressed = throwable.getSuppressed();
 		if (throwableSuppressed.length > 0) {
-			List<ThrowableProxy> suppressedList = new ArrayList<>(throwableSuppressed.length);
-			for (Throwable sup : throwableSuppressed) {
+			final List<ThrowableProxy> suppressedList = new ArrayList<>(throwableSuppressed.length);
+			for (final Throwable sup : throwableSuppressed) {
 				if (alreadyProcessedSet.contains(sup)) {
-					ThrowableProxy throwableProxy = new ThrowableProxy(sup, true);
+					final ThrowableProxy throwableProxy = new ThrowableProxy(sup, true);
 					suppressedList.add(throwableProxy);
 				} else {
-					ThrowableProxy throwableProxy = new ThrowableProxy(sup, alreadyProcessedSet);
+					final ThrowableProxy throwableProxy = new ThrowableProxy(sup, alreadyProcessedSet);
 					throwableProxy.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(sup.getStackTrace(),
 							stackTraceElementProxyArray);
 					suppressedList.add(throwableProxy);
 				}
 			}
-			this.suppressed = suppressedList.toArray(new ThrowableProxy[suppressedList.size()]);
+			suppressed = suppressedList.toArray(new ThrowableProxy[suppressedList.size()]);
 		}
 	}
 
@@ -101,19 +101,22 @@ public class ThrowableProxy implements IThrowableProxy {
 		return throwable;
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ch.qos.logback.classic.spi.IThrowableProxy#getClassName()
 	 */
+	@Override
 	public String getClassName() {
 		return className;
 	}
 
+	@Override
 	public StackTraceElementProxy[] getStackTraceElementProxyArray() {
 		return stackTraceElementProxyArray;
 	}
@@ -123,20 +126,23 @@ public class ThrowableProxy implements IThrowableProxy {
 	public boolean isCyclic() {
 		return circular;
 	}
-	
+
+	@Override
 	public int getCommonFrames() {
 		return commonFrames;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see ch.qos.logback.classic.spi.IThrowableProxy#getCause()
 	 */
+	@Override
 	public IThrowableProxy getCause() {
 		return cause;
 	}
 
+	@Override
 	public IThrowableProxy[] getSuppressed() {
 		return suppressed;
 	}
@@ -155,7 +161,7 @@ public class ThrowableProxy implements IThrowableProxy {
 		if (calculatedPackageData) {
 			return;
 		}
-		PackagingDataCalculator pdc = this.getPackagingDataCalculator();
+		final PackagingDataCalculator pdc = getPackagingDataCalculator();
 		if (pdc != null) {
 			calculatedPackageData = true;
 			pdc.calculate(this);
@@ -163,9 +169,9 @@ public class ThrowableProxy implements IThrowableProxy {
 	}
 
 	public void fullDump() {
-		StringBuilder builder = new StringBuilder();
-		for (StackTraceElementProxy step : stackTraceElementProxyArray) {
-			String string = step.toString();
+		final StringBuilder builder = new StringBuilder();
+		for (final StackTraceElementProxy step : stackTraceElementProxyArray) {
+			final String string = step.toString();
 			builder.append(CoreConstants.TAB).append(string);
 			ThrowableProxyUtil.subjoinPackagingData(builder, step);
 			builder.append(CoreConstants.LINE_SEPARATOR);

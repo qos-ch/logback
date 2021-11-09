@@ -23,82 +23,82 @@ import java.io.OutputStream;
  * @author Ceki G&uuml;lc&uuml;
  * @author Tom SH Liu
  * @author David Roussel
- * 
+ *
  * @sse LOGBACK-136
  */
 public enum ConsoleTarget {
 
-    SystemOut("System.out", new OutputStream() {
-        @Override
-        public void write(int b) throws IOException {
-            System.out.write(b);
-        }
+	SystemOut("System.out", new OutputStream() {
+		@Override
+		public void write(final int b) throws IOException {
+			System.out.write(b);
+		}
 
-        @Override
-        public void write(byte b[]) throws IOException {
-            System.out.write(b);
-        }
+		@Override
+		public void write(final byte b[]) throws IOException {
+			System.out.write(b);
+		}
 
-        @Override
-        public void write(byte b[], int off, int len) throws IOException {
-            System.out.write(b, off, len);
-        }
+		@Override
+		public void write(final byte b[], final int off, final int len) throws IOException {
+			System.out.write(b, off, len);
+		}
 
-        @Override
-        public void flush() throws IOException {
-            System.out.flush();
-        }
-    }),
+		@Override
+		public void flush() throws IOException {
+			System.out.flush();
+		}
+	}),
 
-    SystemErr("System.err", new OutputStream() {
-        @Override
-        public void write(int b) throws IOException {
-            System.err.write(b);
-        }
+	SystemErr("System.err", new OutputStream() {
+		@Override
+		public void write(final int b) throws IOException {
+			System.err.write(b);
+		}
 
-        @Override
-        public void write(byte b[]) throws IOException {
-            System.err.write(b);
-        }
+		@Override
+		public void write(final byte b[]) throws IOException {
+			System.err.write(b);
+		}
 
-        @Override
-        public void write(byte b[], int off, int len) throws IOException {
-            System.err.write(b, off, len);
-        }
+		@Override
+		public void write(final byte b[], final int off, final int len) throws IOException {
+			System.err.write(b, off, len);
+		}
 
-        @Override
-        public void flush() throws IOException {
-            System.err.flush();
-        }
-    });
+		@Override
+		public void flush() throws IOException {
+			System.err.flush();
+		}
+	});
 
-    public static ConsoleTarget findByName(String name) {
-        for (ConsoleTarget target : ConsoleTarget.values()) {
-            if (target.name.equalsIgnoreCase(name)) {
-                return target;
-            }
-        }
-        return null;
-    }
+	public static ConsoleTarget findByName(final String name) {
+		for (final ConsoleTarget target : ConsoleTarget.values()) {
+			if (target.name.equalsIgnoreCase(name)) {
+				return target;
+			}
+		}
+		return null;
+	}
 
-    private final String name;
-    private final OutputStream stream;
+	private final String name;
+	private final OutputStream stream;
 
-    private ConsoleTarget(String name, OutputStream stream) {
-        this.name = name;
-        this.stream = stream;
-    }
+	ConsoleTarget(final String name, final OutputStream stream) {
+		this.name = name;
+		this.stream = stream;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public OutputStream getStream() {
-        return stream;
-    }
+	public OutputStream getStream() {
+		return stream;
+	}
 
-    @Override
-    public String toString() {
-        return name;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 }

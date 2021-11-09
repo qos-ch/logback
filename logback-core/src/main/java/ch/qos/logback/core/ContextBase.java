@@ -37,269 +37,284 @@ import ch.qos.logback.core.util.NetworkAddressUtil;
 
 public class ContextBase implements Context, LifeCycle {
 
-    private long birthTime = System.currentTimeMillis();
+	private final long birthTime = System.currentTimeMillis();
 
-    private String name;
-    private StatusManager sm = new BasicStatusManager();
-    // TODO propertyMap should be observable so that we can be notified
-    // when it changes so that a new instance of propertyMap can be
-    // serialized. For the time being, we ignore this shortcoming.
-    Map<String, String> propertyMap = new HashMap<String, String>();
-    Map<String, Object> objectMap = new HashMap<String, Object>();
+	private String name;
+	private StatusManager sm = new BasicStatusManager();
+	// TODO propertyMap should be observable so that we can be notified
+	// when it changes so that a new instance of propertyMap can be
+	// serialized. For the time being, we ignore this shortcoming.
+	Map<String, String> propertyMap = new HashMap<>();
+	Map<String, Object> objectMap = new HashMap<>();
 
-    LogbackLock configurationLock = new LogbackLock();
+	LogbackLock configurationLock = new LogbackLock();
 
-    private ScheduledExecutorService scheduledExecutorService;
-    protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
-    private LifeCycleManager lifeCycleManager;
-    private SequenceNumberGenerator sequenceNumberGenerator;
-  
+	private ScheduledExecutorService scheduledExecutorService;
+	protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<>(1);
+	private LifeCycleManager lifeCycleManager;
+	private SequenceNumberGenerator sequenceNumberGenerator;
 
-    private boolean started;
 
-    public ContextBase() {
-        initCollisionMaps();
-    }
+	private boolean started;
 
-    public StatusManager getStatusManager() {
-        return sm;
-    }
+	public ContextBase() {
+		initCollisionMaps();
+	}
 
-    /**
-     * Set the {@link StatusManager} for this context. Note that by default this
-     * context is initialized with a {@link BasicStatusManager}. A null value for
-     * the 'statusManager' argument is not allowed.
-     * 
-     * <p> A malicious attacker can set the status manager to a dummy instance,
-     * disabling internal error reporting.
-     *
-     * @param statusManager the new status manager
-     */
-    public void setStatusManager(StatusManager statusManager) {
-        // this method was added in response to http://jira.qos.ch/browse/LBCORE-35
-        if (statusManager == null) {
-            throw new IllegalArgumentException("null StatusManager not allowed");
-        }
-        this.sm = statusManager;
-    }
+	@Override
+	public StatusManager getStatusManager() {
+		return sm;
+	}
 
-    public Map<String, String> getCopyOfPropertyMap() {
-        return new HashMap<String, String>(propertyMap);
-    }
+	/**
+	 * Set the {@link StatusManager} for this context. Note that by default this
+	 * context is initialized with a {@link BasicStatusManager}. A null value for
+	 * the 'statusManager' argument is not allowed.
+	 *
+	 * <p> A malicious attacker can set the status manager to a dummy instance,
+	 * disabling internal error reporting.
+	 *
+	 * @param statusManager the new status manager
+	 */
+	public void setStatusManager(final StatusManager statusManager) {
+		// this method was added in response to http://jira.qos.ch/browse/LBCORE-35
+		if (statusManager == null) {
+			throw new IllegalArgumentException("null StatusManager not allowed");
+		}
+		sm = statusManager;
+	}
 
-    public void putProperty(String key, String val) {
-        if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
-            putHostnameProperty(val);
-        } else {
-            this.propertyMap.put(key, val);
-        }
-    }
+	@Override
+	public Map<String, String> getCopyOfPropertyMap() {
+		return new HashMap<>(propertyMap);
+	}
 
-    protected void initCollisionMaps() {
-        putObject(FA_FILENAME_COLLISION_MAP, new HashMap<String, String>());
-        putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
-    }
+	@Override
+	public void putProperty(final String key, final String val) {
+		if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
+			putHostnameProperty(val);
+		} else {
+			propertyMap.put(key, val);
+		}
+	}
 
-    /**
-     * Given a key, return the corresponding property value. If invoked with
-     * the special key "CONTEXT_NAME", the name of the context is returned.
-     *
-     * @param key
-     * @return
-     */
-    public String getProperty(String key) {
-        if (CONTEXT_NAME_KEY.equals(key))
-            return getName();
-        if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
-            return lazyGetHostname();
-        }
+	protected void initCollisionMaps() {
+		putObject(FA_FILENAME_COLLISION_MAP, new HashMap<String, String>());
+		putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
+	}
 
-        return (String) this.propertyMap.get(key);
-    }
+	/**
+	 * Given a key, return the corresponding property value. If invoked with
+	 * the special key "CONTEXT_NAME", the name of the context is returned.
+	 *
+	 * @param key
+	 * @return
+	 */
+	@Override
+	public String getProperty(final String key) {
+		if (CONTEXT_NAME_KEY.equals(key)) {
+			return getName();
+		}
+		if (HOSTNAME_KEY.equalsIgnoreCase(key)) {
+			return lazyGetHostname();
+		}
 
-    private String lazyGetHostname() {
-        String hostname = (String) this.propertyMap.get(HOSTNAME_KEY);
-        if (hostname == null) {
-            hostname = new NetworkAddressUtil(this).safelyGetLocalHostName();
-            putHostnameProperty(hostname);
-        }
-        return hostname;
-    }
+		return propertyMap.get(key);
+	}
 
-    private void putHostnameProperty(String hostname) {
-        String existingHostname = (String) this.propertyMap.get(HOSTNAME_KEY);
-        if (existingHostname == null) {
-            this.propertyMap.put(CoreConstants.HOSTNAME_KEY, hostname);
-        } else {
+	private String lazyGetHostname() {
+		String hostname = propertyMap.get(HOSTNAME_KEY);
+		if (hostname == null) {
+			hostname = new NetworkAddressUtil(this).safelyGetLocalHostName();
+			putHostnameProperty(hostname);
+		}
+		return hostname;
+	}
 
-        }
-    }
+	private void putHostnameProperty(final String hostname) {
+		final String existingHostname = propertyMap.get(HOSTNAME_KEY);
+		if (existingHostname == null) {
+			propertyMap.put(CoreConstants.HOSTNAME_KEY, hostname);
+		} else {
 
-    public Object getObject(String key) {
-        return objectMap.get(key);
-    }
+		}
+	}
 
-    public void putObject(String key, Object value) {
-        objectMap.put(key, value);
-    }
+	@Override
+	public Object getObject(final String key) {
+		return objectMap.get(key);
+	}
 
-    public void removeObject(String key) {
-        objectMap.remove(key);
-    }
+	@Override
+	public void putObject(final String key, final Object value) {
+		objectMap.put(key, value);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public void removeObject(final String key) {
+		objectMap.remove(key);
+	}
 
-    @Override
-    public void start() {
-        // We'd like to create the executor service here, but we can't;
-        // ContextBase has not always implemented LifeCycle and there are *many*
-        // uses (mostly in tests) that would need to be modified.
-        started = true;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    public void stop() {
-        // We don't check "started" here, because the executor service uses
-        // lazy initialization, rather than being created in the start method
-        stopExecutorService();
+	@Override
+	public void start() {
+		// We'd like to create the executor service here, but we can't;
+		// ContextBase has not always implemented LifeCycle and there are *many*
+		// uses (mostly in tests) that would need to be modified.
+		started = true;
+	}
 
-        started = false;
-    }
+	@Override
+	public void stop() {
+		// We don't check "started" here, because the executor service uses
+		// lazy initialization, rather than being created in the start method
+		stopExecutorService();
 
-    public boolean isStarted() {
-        return started;
-    }
+		started = false;
+	}
 
-    /**
-     * Clear the internal objectMap and all properties. Removes any registered
-     * shutdown hook.
-     */
-    public void reset() {
+	@Override
+	public boolean isStarted() {
+		return started;
+	}
 
-        removeShutdownHook();
-        getLifeCycleManager().reset();
-        propertyMap.clear();
-        objectMap.clear();
-    }
+	/**
+	 * Clear the internal objectMap and all properties. Removes any registered
+	 * shutdown hook.
+	 */
+	public void reset() {
 
-    /**
-     * The context name can be set only if it is not already set, or if the
-     * current name is the default context name, namely "default", or if the
-     * current name and the old name are the same.
-     *
-     * @throws IllegalStateException if the context already has a name, other than "default".
-     */
-    public void setName(String name) throws IllegalStateException {
-        if (name != null && name.equals(this.name)) {
-            return; // idempotent naming
-        }
-        if (this.name == null || CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
-            this.name = name;
-        } else {
-            throw new IllegalStateException("Context has been already given a name");
-        }
-    }
+		removeShutdownHook();
+		getLifeCycleManager().reset();
+		propertyMap.clear();
+		objectMap.clear();
+	}
 
-    public long getBirthTime() {
-        return birthTime;
-    }
+	/**
+	 * The context name can be set only if it is not already set, or if the
+	 * current name is the default context name, namely "default", or if the
+	 * current name and the old name are the same.
+	 *
+	 * @throws IllegalStateException if the context already has a name, other than "default".
+	 */
+	@Override
+	public void setName(final String name) throws IllegalStateException {
+		if (name != null && name.equals(this.name)) {
+			return; // idempotent naming
+		}
+		if ((this.name != null) && !CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
+			throw new IllegalStateException("Context has been already given a name");
+		}
+		this.name = name;
+	}
 
-    public Object getConfigurationLock() {
-        return configurationLock;
-    }
+	@Override
+	public long getBirthTime() {
+		return birthTime;
+	}
 
-    @Override
-    /**
-     * @deprecated replaced by getScheduledExecutorService
-     */
-    public synchronized ExecutorService getExecutorService() {
-        return getScheduledExecutorService();
-    }
+	@Override
+	public Object getConfigurationLock() {
+		return configurationLock;
+	}
 
-    @Override
-    public synchronized ScheduledExecutorService getScheduledExecutorService() {
-        if (scheduledExecutorService == null) {
-            scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
-        }
-        return scheduledExecutorService;
-    }
+	@Override
+	/**
+	 * @deprecated replaced by getScheduledExecutorService
+	 */
+	public synchronized ExecutorService getExecutorService() {
+		return getScheduledExecutorService();
+	}
 
-    private synchronized void stopExecutorService() {
-        if (scheduledExecutorService != null) {
-            ExecutorServiceUtil.shutdown(scheduledExecutorService);
-            scheduledExecutorService = null;
-        }
-    }
+	@Override
+	public synchronized ScheduledExecutorService getScheduledExecutorService() {
+		if (scheduledExecutorService == null) {
+			scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
+		}
+		return scheduledExecutorService;
+	}
 
-    private void removeShutdownHook() {
-        Thread hook = (Thread) getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
-        if (hook != null) {
-            removeObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
-            
-            try {
-            	sm.add(new InfoStatus("Removing shutdownHook "+hook, this));
-            	Runtime runtime = Runtime.getRuntime();
-            	boolean result = runtime.removeShutdownHook(hook);
-            	sm.add(new InfoStatus("ShutdownHook removal result: "+ result, this));
-            } catch (IllegalStateException e) {
-                // if JVM is already shutting down, ISE is thrown
-                // no need to do anything else
-            }
-        }
-    }
+	private synchronized void stopExecutorService() {
+		if (scheduledExecutorService != null) {
+			ExecutorServiceUtil.shutdown(scheduledExecutorService);
+			scheduledExecutorService = null;
+		}
+	}
 
-    public void register(LifeCycle component) {
-        getLifeCycleManager().register(component);
-    }
+	private void removeShutdownHook() {
+		final Thread hook = (Thread) getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+		if (hook != null) {
+			removeObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
 
-    /**
-     * Gets the life cycle manager for this context.
-     * <p>
-     * The default implementation lazily initializes an instance of
-     * {@link LifeCycleManager}.  Subclasses may override to provide a custom 
-     * manager implementation, but must take care to return the same manager
-     * object for each call to this method.
-     * <p>
-     * This is exposed primarily to support instrumentation for unit testing.
-     * 
-     * @return manager object 
-     */
-    synchronized LifeCycleManager getLifeCycleManager() {
-        if (lifeCycleManager == null) {
-            lifeCycleManager = new LifeCycleManager();
-        }
-        return lifeCycleManager;
-    }
+			try {
+				sm.add(new InfoStatus("Removing shutdownHook "+hook, this));
+				final Runtime runtime = Runtime.getRuntime();
+				final boolean result = runtime.removeShutdownHook(hook);
+				sm.add(new InfoStatus("ShutdownHook removal result: "+ result, this));
+			} catch (final IllegalStateException e) {
+				// if JVM is already shutting down, ISE is thrown
+				// no need to do anything else
+			}
+		}
+	}
 
-    @Override
-    public String toString() {
-        return name;
-    }
+	@Override
+	public void register(final LifeCycle component) {
+		getLifeCycleManager().register(component);
+	}
 
-    @Override
-    public void addScheduledFuture(ScheduledFuture<?> scheduledFuture) {
-        scheduledFutures.add(scheduledFuture);
-    }
+	/**
+	 * Gets the life cycle manager for this context.
+	 * <p>
+	 * The default implementation lazily initializes an instance of
+	 * {@link LifeCycleManager}.  Subclasses may override to provide a custom
+	 * manager implementation, but must take care to return the same manager
+	 * object for each call to this method.
+	 * <p>
+	 * This is exposed primarily to support instrumentation for unit testing.
+	 *
+	 * @return manager object
+	 */
+	synchronized LifeCycleManager getLifeCycleManager() {
+		if (lifeCycleManager == null) {
+			lifeCycleManager = new LifeCycleManager();
+		}
+		return lifeCycleManager;
+	}
 
-    /**
-     * @deprecated replaced by getCopyOfScheduledFutures
-     */
-    @Deprecated 
-    public List<ScheduledFuture<?>> getScheduledFutures() {
-        return getCopyOfScheduledFutures();
-    }
-    
-    public List<ScheduledFuture<?>> getCopyOfScheduledFutures() {
-        return new ArrayList<ScheduledFuture<?>>(scheduledFutures);
-    }
-    
-    public SequenceNumberGenerator getSequenceNumberGenerator() {
-        return sequenceNumberGenerator;
-    }
+	@Override
+	public String toString() {
+		return name;
+	}
 
-    public void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator) {
-        this.sequenceNumberGenerator = sequenceNumberGenerator;
-    }
+	@Override
+	public void addScheduledFuture(final ScheduledFuture<?> scheduledFuture) {
+		scheduledFutures.add(scheduledFuture);
+	}
+
+	/**
+	 * @deprecated replaced by getCopyOfScheduledFutures
+	 */
+	@Deprecated
+	public List<ScheduledFuture<?>> getScheduledFutures() {
+		return getCopyOfScheduledFutures();
+	}
+
+	public List<ScheduledFuture<?>> getCopyOfScheduledFutures() {
+		return new ArrayList<>(scheduledFutures);
+	}
+
+	@Override
+	public SequenceNumberGenerator getSequenceNumberGenerator() {
+		return sequenceNumberGenerator;
+	}
+
+	@Override
+	public void setSequenceNumberGenerator(final SequenceNumberGenerator sequenceNumberGenerator) {
+		this.sequenceNumberGenerator = sequenceNumberGenerator;
+	}
 
 }

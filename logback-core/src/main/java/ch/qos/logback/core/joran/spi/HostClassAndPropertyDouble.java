@@ -13,63 +13,60 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import java.util.Objects;
+
 /**
  * A 2-tuple (a double) consisting of a Class and a String. The Class references
  * the hosting class of a component and the String represents the property name
  * under which a nested component is referenced the host.
- * 
+ *
  * This class is used by {@link DefaultNestedComponentRegistry}.
- * 
+ *
  * @author Ceki Gulcu
- * 
+ *
  */
 public class HostClassAndPropertyDouble {
 
-    final Class<?> hostClass;
-    final String propertyName;
+	final Class<?> hostClass;
+	final String propertyName;
 
-    public HostClassAndPropertyDouble(Class<?> hostClass, String propertyName) {
-        this.hostClass = hostClass;
-        this.propertyName = propertyName;
-    }
+	public HostClassAndPropertyDouble(final Class<?> hostClass, final String propertyName) {
+		this.hostClass = hostClass;
+		this.propertyName = propertyName;
+	}
 
-    public Class<?> getHostClass() {
-        return hostClass;
-    }
+	public Class<?> getHostClass() {
+		return hostClass;
+	}
 
-    public String getPropertyName() {
-        return propertyName;
-    }
+	public String getPropertyName() {
+		return propertyName;
+	}
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((hostClass == null) ? 0 : hostClass.hashCode());
-        result = prime * result + ((propertyName == null) ? 0 : propertyName.hashCode());
-        return result;
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (hostClass == null ? 0 : hostClass.hashCode());
+		return prime * result + (propertyName == null ? 0 : propertyName.hashCode());
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final HostClassAndPropertyDouble other = (HostClassAndPropertyDouble) obj;
-        if (hostClass == null) {
-            if (other.hostClass != null)
-                return false;
-        } else if (!hostClass.equals(other.hostClass))
-            return false;
-        if (propertyName == null) {
-            if (other.propertyName != null)
-                return false;
-        } else if (!propertyName.equals(other.propertyName))
-            return false;
-        return true;
-    }
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final HostClassAndPropertyDouble other = (HostClassAndPropertyDouble) obj;
+		if (!Objects.equals(hostClass, other.hostClass)) {
+			return false;
+		}
+		if (!Objects.equals(propertyName, other.propertyName)) {
+			return false;
+		}
+		return true;
+	}
 
 }

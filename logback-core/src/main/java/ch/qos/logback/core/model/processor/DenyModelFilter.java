@@ -7,12 +7,12 @@ public class DenyModelFilter implements ModelFiler {
 
 	final Class<? extends Model> deniedModelType;
 
-	DenyModelFilter(Class<? extends Model> deniedModelType) {
+	DenyModelFilter(final Class<? extends Model> deniedModelType) {
 		this.deniedModelType = deniedModelType;
 	}
 
 	@Override
-	public FilterReply decide(Model model) {
+	public FilterReply decide(final Model model) {
 
 		if (model.getClass() == deniedModelType) {
 			return FilterReply.DENY;
@@ -20,7 +20,7 @@ public class DenyModelFilter implements ModelFiler {
 
 		return FilterReply.NEUTRAL;
 	}
-	
-	
+
+
 
 }

@@ -5,9 +5,9 @@ import ch.qos.logback.core.util.NetworkAddressUtil;
 
 public class CanonicalHostNamePropertyDefiner extends PropertyDefinerBase {
 
-    @Override
-    public String getPropertyValue() {
-        return new NetworkAddressUtil(getContext()).safelyGetCanonicalLocalHostName();
-    }
+	@Override
+	public String getPropertyValue() {
+		return new NetworkAddressUtil(getContext()).safelyGetCanonicalLocalHostName();
+	}
 
 }

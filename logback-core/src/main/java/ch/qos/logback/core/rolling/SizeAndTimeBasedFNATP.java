@@ -24,160 +24,161 @@ import ch.qos.logback.core.rolling.helper.ArchiveRemover;
 import ch.qos.logback.core.rolling.helper.CompressionMode;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
-import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
+import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.InvocationGate;
 
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
-    enum Usage {EMBEDDED, DIRECT};
+	enum Usage {EMBEDDED, DIRECT}
 
-    
-    int currentPeriodsCounter = 0;
-    FileSize maxFileSize;
-    // String maxFileSizeAsString;
 
-    long nextSizeCheck = 0;
-    static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
-    static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
+	int currentPeriodsCounter = 0;
+	FileSize maxFileSize;
+	// String maxFileSizeAsString;
 
-    private final Usage usage;
-    
-    public SizeAndTimeBasedFNATP() {
-        this(Usage.DIRECT);
-    }
-    
-    public SizeAndTimeBasedFNATP(Usage usage) {
-        this.usage = usage;
-    }
-    
-    @Override
-    public void start() {
-        // we depend on certain fields having been initialized in super class
-        super.start();
-        
-        if(usage == Usage.DIRECT) {
-          addWarn(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
-          addWarn("For more information see "+MANUAL_URL_PREFIX+"appenders.html#SizeAndTimeBasedRollingPolicy");
-        }
-        
-        if (!super.isErrorFree())
-            return;
+	long nextSizeCheck = 0;
+	static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
+	static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
 
-        
-        if (maxFileSize == null) {
-            addError("maxFileSize property is mandatory.");
-            withErrors();
-        }
+	private final Usage usage;
 
-        if (!validateDateAndIntegerTokens()) {
-            withErrors();
-            return;
-        }
+	public SizeAndTimeBasedFNATP() {
+		this(Usage.DIRECT);
+	}
 
-        archiveRemover = createArchiveRemover();
-        archiveRemover.setContext(context);
+	public SizeAndTimeBasedFNATP(final Usage usage) {
+		this.usage = usage;
+	}
 
-        // we need to get the correct value of currentPeriodsCounter.
-        // usually the value is 0, unless the appender or the application
-        // is stopped and restarted within the same period
-        String regex = tbrp.fileNamePattern.toRegexForFixedDate(dateInCurrentPeriod);
-        String stemRegex = FileFilterUtil.afterLastSlash(regex);
+	@Override
+	public void start() {
+		// we depend on certain fields having been initialized in super class
+		super.start();
 
-        computeCurrentPeriodsHighestCounterValue(stemRegex);
+		if(usage == Usage.DIRECT) {
+			addWarn(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
+			addWarn("For more information see "+MANUAL_URL_PREFIX+"appenders.html#SizeAndTimeBasedRollingPolicy");
+		}
 
-        if (isErrorFree()) {
-            started = true;
-        }
-    }
+		if (!super.isErrorFree()) {
+			return;
+		}
 
-    private boolean validateDateAndIntegerTokens() {
-        boolean inError = false;
-        if (tbrp.fileNamePattern.getIntegerTokenConverter() == null) {
-            inError = true;
-            addError(MISSING_INT_TOKEN + tbrp.fileNamePatternStr + "]");
-            addError(CoreConstants.SEE_MISSING_INTEGER_TOKEN);
-        }
-        if (tbrp.fileNamePattern.getPrimaryDateTokenConverter() == null) {
-            inError = true;
-            addError(MISSING_DATE_TOKEN + tbrp.fileNamePatternStr + "]");
-        }
 
-        return !inError;
-    }
+		if (maxFileSize == null) {
+			addError("maxFileSize property is mandatory.");
+			withErrors();
+		}
 
-    protected ArchiveRemover createArchiveRemover() {
-        return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
-    }
+		if (!validateDateAndIntegerTokens()) {
+			withErrors();
+			return;
+		}
 
-    void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
-        File file = new File(getCurrentPeriodsFileNameWithoutCompressionSuffix());
-        File parentDir = file.getParentFile();
+		archiveRemover = createArchiveRemover();
+		archiveRemover.setContext(context);
 
-        File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
+		// we need to get the correct value of currentPeriodsCounter.
+		// usually the value is 0, unless the appender or the application
+		// is stopped and restarted within the same period
+		final String regex = tbrp.fileNamePattern.toRegexForFixedDate(dateInCurrentPeriod);
+		final String stemRegex = FileFilterUtil.afterLastSlash(regex);
 
-        if (matchingFileArray == null || matchingFileArray.length == 0) {
-            currentPeriodsCounter = 0;
-            return;
-        }
-        currentPeriodsCounter = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
+		computeCurrentPeriodsHighestCounterValue(stemRegex);
 
-        // if parent raw file property is not null, then the next
-        // counter is max found counter+1
-        if (tbrp.getParentsRawFileProperty() != null || (tbrp.compressionMode != CompressionMode.NONE)) {
-            // TODO test me
-            currentPeriodsCounter++;
-        }
-    }
+		if (isErrorFree()) {
+			started = true;
+		}
+	}
 
-    InvocationGate invocationGate = new DefaultInvocationGate();
+	private boolean validateDateAndIntegerTokens() {
+		boolean inError = false;
+		if (tbrp.fileNamePattern.getIntegerTokenConverter() == null) {
+			inError = true;
+			addError(MISSING_INT_TOKEN + tbrp.fileNamePatternStr + "]");
+			addError(CoreConstants.SEE_MISSING_INTEGER_TOKEN);
+		}
+		if (tbrp.fileNamePattern.getPrimaryDateTokenConverter() == null) {
+			inError = true;
+			addError(MISSING_DATE_TOKEN + tbrp.fileNamePatternStr + "]");
+		}
 
-    @Override
-    public boolean isTriggeringEvent(File activeFile, final E event) {
+		return !inError;
+	}
 
-        long time = getCurrentTime();
+	protected ArchiveRemover createArchiveRemover() {
+		return new SizeAndTimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
+	}
 
-        // first check for roll-over based on time
-        if (time >= nextCheck) {
-            Date dateInElapsedPeriod = dateInCurrentPeriod;
-            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
-            currentPeriodsCounter = 0;
-            setDateInCurrentPeriod(time);
-            computeNextCheck();
-            return true;
-        }
+	void computeCurrentPeriodsHighestCounterValue(final String stemRegex) {
+		final File file = new File(getCurrentPeriodsFileNameWithoutCompressionSuffix());
+		final File parentDir = file.getParentFile();
 
-        // next check for roll-over based on size
-        if (invocationGate.isTooSoon(time)) {
-            return false;
-        }
+		final File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
 
-        if (activeFile == null) {
-            addWarn("activeFile == null");
-            return false;
-        }
-        if (maxFileSize == null) {
-            addWarn("maxFileSize = null");
-            return false;
-        }
-        if (activeFile.length() >= maxFileSize.getSize()) {
+		if (matchingFileArray == null || matchingFileArray.length == 0) {
+			currentPeriodsCounter = 0;
+			return;
+		}
+		currentPeriodsCounter = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
 
-            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
-            currentPeriodsCounter++;
-            return true;
-        }
+		// if parent raw file property is not null, then the next
+		// counter is max found counter+1
+		if (tbrp.getParentsRawFileProperty() != null || tbrp.compressionMode != CompressionMode.NONE) {
+			// TODO test me
+			currentPeriodsCounter++;
+		}
+	}
 
-        return false;
-    }
+	InvocationGate invocationGate = new DefaultInvocationGate();
 
-    @Override
-    public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-        return tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
-    }
+	@Override
+	public boolean isTriggeringEvent(final File activeFile, final E event) {
 
-    public void setMaxFileSize(FileSize aMaxFileSize) {
-        this.maxFileSize = aMaxFileSize;
-    }
+		final long time = getCurrentTime();
+
+		// first check for roll-over based on time
+		if (time >= nextCheck) {
+			final Date dateInElapsedPeriod = dateInCurrentPeriod;
+			elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInElapsedPeriod, currentPeriodsCounter);
+			currentPeriodsCounter = 0;
+			setDateInCurrentPeriod(time);
+			computeNextCheck();
+			return true;
+		}
+
+		// next check for roll-over based on size
+		if (invocationGate.isTooSoon(time)) {
+			return false;
+		}
+
+		if (activeFile == null) {
+			addWarn("activeFile == null");
+			return false;
+		}
+		if (maxFileSize == null) {
+			addWarn("maxFileSize = null");
+			return false;
+		}
+		if (activeFile.length() >= maxFileSize.getSize()) {
+
+			elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
+			currentPeriodsCounter++;
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
+		return tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInCurrentPeriod, currentPeriodsCounter);
+	}
+
+	public void setMaxFileSize(final FileSize aMaxFileSize) {
+		this.maxFileSize = aMaxFileSize;
+	}
 
 }

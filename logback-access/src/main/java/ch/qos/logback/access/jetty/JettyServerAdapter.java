@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.access.jetty;
 
-import ch.qos.logback.access.spi.ServerAdapter;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jetty.http.HttpFields;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import ch.qos.logback.access.spi.ServerAdapter;
 
 /**
  * A jetty specific implementation of the {@link ServerAdapter} interface.
@@ -31,40 +31,40 @@ import java.util.Map;
  */
 public class JettyServerAdapter implements ServerAdapter {
 
-    Request request;
-    Response response;
+	Request request;
+	Response response;
 
-    public JettyServerAdapter(Request jettyRequest, Response jettyResponse) {
-        this.request = jettyRequest;
-        this.response = jettyResponse;
-    }
+	public JettyServerAdapter(final Request jettyRequest, final Response jettyResponse) {
+		request = jettyRequest;
+		response = jettyResponse;
+	}
 
-    @Override
-    public long getContentLength() {
-        return response.getContentCount();
-    }
+	@Override
+	public long getContentLength() {
+		return response.getContentCount();
+	}
 
-    @Override
-    public int getStatusCode() {
-        return response.getStatus();
-    }
+	@Override
+	public int getStatusCode() {
+		return response.getStatus();
+	}
 
-    @Override
-    public long getRequestTimestamp() {
-        return request.getTimeStamp();
-    }
+	@Override
+	public long getRequestTimestamp() {
+		return request.getTimeStamp();
+	}
 
-    @Override
-    public Map<String, String> buildResponseHeaderMap() {
-        Map<String, String> responseHeaderMap = new HashMap<String, String>();
-        HttpFields httpFields = response.getHttpFields();
-        Enumeration<String> e = httpFields.getFieldNames();
-        while (e.hasMoreElements()) {
-            String key = (String) e.nextElement();
-            String value = response.getHeader(key);
-            responseHeaderMap.put(key, value);
-        }
-        return responseHeaderMap;
-    }
+	@Override
+	public Map<String, String> buildResponseHeaderMap() {
+		final Map<String, String> responseHeaderMap = new HashMap<>();
+		final HttpFields httpFields = response.getHttpFields();
+		final Enumeration<String> e = httpFields.getFieldNames();
+		while (e.hasMoreElements()) {
+			final String key = e.nextElement();
+			final String value = response.getHeader(key);
+			responseHeaderMap.put(key, value);
+		}
+		return responseHeaderMap;
+	}
 
 }

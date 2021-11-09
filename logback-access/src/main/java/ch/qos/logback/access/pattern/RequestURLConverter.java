@@ -17,13 +17,13 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 /**
  * The first line of the request.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class RequestURLConverter extends AccessConverter {
 
-    @Override
-    public String convert(IAccessEvent accessEvent) {
-        return accessEvent.getRequestURL();
-    }
+	@Override
+	public String convert(final IAccessEvent accessEvent) {
+		return accessEvent.getRequestURL();
+	}
 }

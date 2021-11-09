@@ -14,30 +14,27 @@
 package ch.qos.logback.access.servlet;
 
 import ch.qos.logback.access.AccessConstants;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class Util {
 
-    public static boolean isFormUrlEncoded(HttpServletRequest request) {
+	public static boolean isFormUrlEncoded(final HttpServletRequest request) {
 
-        String contentTypeStr = request.getContentType();
-        if ("POST".equalsIgnoreCase(request.getMethod()) && contentTypeStr != null && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+		final String contentTypeStr = request.getContentType();
+		if ("POST".equalsIgnoreCase(request.getMethod()) && contentTypeStr != null && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
+			return true;
+		}
+		return false;
+	}
 
-    public static boolean isImageResponse(HttpServletResponse response) {
+	public static boolean isImageResponse(final HttpServletResponse response) {
 
-        String responseType = response.getContentType();
+		final String responseType = response.getContentType();
 
-        if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+		if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
+			return true;
+		}
+		return false;
+	}
 }

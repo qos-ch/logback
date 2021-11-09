@@ -13,7 +13,8 @@
  */
 package ch.qos.logback.core.pattern.color;
 
-import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.RED_FG;
 
 /**
  * Encloses a given set of converter output in bold red using the appropriate ANSI escape codes.
@@ -23,8 +24,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
  */
 public class BoldRedCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-    @Override
-    protected String getForegroundColorCode(E event) {
-        return BOLD + RED_FG;
-    }
+	@Override
+	protected String getForegroundColorCode(final E event) {
+		return BOLD + RED_FG;
+	}
 }

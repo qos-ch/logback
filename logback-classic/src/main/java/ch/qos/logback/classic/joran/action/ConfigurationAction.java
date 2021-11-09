@@ -27,8 +27,8 @@ public class ConfigurationAction extends BaseModelAction {
 	static final String PACKAGING_DATA_ATTR = "packagingData";
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-		ConfigurationModel configurationModel = new ConfigurationModel();
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		final ConfigurationModel configurationModel = new ConfigurationModel();
 		configurationModel.setDebugStr(attributes.getValue(INTERNAL_DEBUG_ATTR));
 		configurationModel.setScanStr(attributes.getValue(SCAN_ATTR));
 		configurationModel.setScanPeriodStr(attributes.getValue(SCAN_PERIOD_ATTR));

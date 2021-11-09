@@ -17,13 +17,14 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the event's formatted message.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MessageConverter extends ClassicConverter {
 
-    public String convert(ILoggingEvent event) {
-        return event.getFormattedMessage();
-    }
+	@Override
+	public String convert(final ILoggingEvent event) {
+		return event.getFormattedMessage();
+	}
 
 }

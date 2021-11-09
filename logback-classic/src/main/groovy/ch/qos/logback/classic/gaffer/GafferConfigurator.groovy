@@ -27,77 +27,77 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer
 
 class GafferConfigurator {
 
-  LoggerContext context
-                         
-  static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
+	LoggerContext context
 
-  GafferConfigurator(LoggerContext context) {
-    this.context = context
-  }
+	static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
 
-  protected void informContextOfURLUsedForConfiguration(URL url) {
-    ConfigurationWatchListUtil.setMainWatchURL(context, url);
-  }
+	GafferConfigurator(final LoggerContext context) {
+		this.context = context
+	}
 
-  void run(URL url) {
-    informContextOfURLUsedForConfiguration(url);
-    run(url.text);
-  }
+	protected void informContextOfURLUsedForConfiguration(final URL url) {
+		ConfigurationWatchListUtil.setMainWatchURL(context, url);
+	}
 
-  void run(File file) {
-    informContextOfURLUsedForConfiguration(file.toURI().toURL());
-    run(file.text);
-  }
+	void run(final URL url) {
+		informContextOfURLUsedForConfiguration(url);
+		run(url.text);
+	}
 
-  void run(String dslText) {
-    Binding binding = new Binding();
-    binding.setProperty("hostname", ContextUtil.localHostName);
+	void run(final File file) {
+		informContextOfURLUsedForConfiguration(file.toURI().toURL());
+		run(file.text);
+	}
 
-    def configuration = new CompilerConfiguration()
-    configuration.addCompilationCustomizers(importCustomizer())
+	void run(final String dslText) {
+		final Binding binding = new Binding();
+		binding.setProperty("hostname", ContextUtil.localHostName);
 
-    String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
-    if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
-            || debugAttrib.equalsIgnoreCase("null")) {
-      // For now, Groovy/Gaffer configuration DSL does not support "debug" attribute. But in order to keep
-      // the conditional logic identical to that in XML/Joran, we have this empty block.
-    } else {
-      OnConsoleStatusListener.addNewInstanceToContext(context);
-    }
+		final def configuration = new CompilerConfiguration()
+				configuration.addCompilationCustomizers(importCustomizer())
 
-    // caller data should take into account groovy frames
-    new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
+				String debugAttrib = System.getProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+		if (OptionHelper.isEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
+				|| debugAttrib.equalsIgnoreCase("null")) {
+			// For now, Groovy/Gaffer configuration DSL does not support "debug" attribute. But in order to keep
+			// the conditional logic identical to that in XML/Joran, we have this empty block.
+		} else {
+			OnConsoleStatusListener.addNewInstanceToContext(context);
+		}
 
-    Script dslScript = new GroovyShell(binding, configuration).parse(dslText)
+		// caller data should take into account groovy frames
+		new ContextUtil(context).addGroovyPackages(context.getFrameworkPackages());
 
-    dslScript.metaClass.mixin(ConfigurationDelegate)
-    dslScript.setContext(context)
-    dslScript.metaClass.getDeclaredOrigin = { dslScript }
+		final Script dslScript = new GroovyShell(binding, configuration).parse(dslText)
 
-    dslScript.run()
-  }
+				dslScript.metaClass.mixin(ConfigurationDelegate)
+				dslScript.setContext(context)
+				dslScript.metaClass.getDeclaredOrigin = { dslScript }
 
-  protected ImportCustomizer importCustomizer() {
-    def customizer = new ImportCustomizer()
+		dslScript.run()
+	}
+
+	protected ImportCustomizer importCustomizer() {
+		final def customizer = new ImportCustomizer()
 
 
-    def core = 'ch.qos.logback.core'
-    customizer.addStarImports(core, "${core}.encoder", "${core}.read", "${core}.rolling", "${core}.status",
-            "ch.qos.logback.classic.net")
+				final def core = 'ch.qos.logback.core'
+				customizer.addStarImports(core, "${core}.encoder", "${core}.read", "${core}.rolling", "${core}.status",
+						"ch.qos.logback.classic.net")
 
-    customizer.addImports(PatternLayoutEncoder.class.name)
+				customizer.addImports(PatternLayoutEncoder.class.name)
 
-    customizer.addStaticStars(Level.class.name)
+				customizer.addStaticStars(Level.class.name)
 
-    customizer.addStaticImport('off', Level.class.name, 'OFF')
-    customizer.addStaticImport('error', Level.class.name, 'ERROR')
-    customizer.addStaticImport('warn', Level.class.name, 'WARN')
-    customizer.addStaticImport('info', Level.class.name, 'INFO')
-    customizer.addStaticImport('debug', Level.class.name, 'DEBUG')
-    customizer.addStaticImport('trace', Level.class.name, 'TRACE')
-    customizer.addStaticImport('all', Level.class.name, 'ALL')
+				customizer.addStaticImport('off', Level.class.name, 'OFF')
+				customizer.addStaticImport('error', Level.class.name, 'ERROR')
+				customizer.addStaticImport('warn', Level.class.name, 'WARN')
+				customizer.addStaticImport('info', Level.class.name, 'INFO')
+				customizer.addStaticImport('debug', Level.class.name, 'DEBUG')
+				customizer.addStaticImport('trace', Level.class.name, 'TRACE')
+				customizer.addStaticImport('all', Level.class.name, 'ALL')
 
-    customizer
-  }
+				customizer
+	}
 
 }

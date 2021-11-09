@@ -19,61 +19,63 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
 	final int targetLength;
 
-	public TargetLengthBasedClassNameAbbreviator(int targetLength) {
+	public TargetLengthBasedClassNameAbbreviator(final int targetLength) {
 		this.targetLength = targetLength;
 	}
 
-	
-	public String abbreviate(String fqClassName) {
+
+	@Override
+	public String abbreviate(final String fqClassName) {
 		if (fqClassName == null) {
 			throw new IllegalArgumentException("Class name may not be null");
 		}
 
-		int inLen = fqClassName.length();
+		final int inLen = fqClassName.length();
 		if (inLen < targetLength) {
 			return fqClassName;
 		}
 
-		StringBuilder buf = new StringBuilder(inLen);
+		final StringBuilder buf = new StringBuilder(inLen);
 
-		int rightMostDotIndex = fqClassName.lastIndexOf(DOT);
+		final int rightMostDotIndex = fqClassName.lastIndexOf(DOT);
 
-		if (rightMostDotIndex == -1)
+		if (rightMostDotIndex == -1) {
 			return fqClassName;
+		}
 
 		// length of last segment including the dot
-		int lastSegmentLength = inLen - rightMostDotIndex;
+		final int lastSegmentLength = inLen - rightMostDotIndex;
 
 		int leftSegments_TargetLen = targetLength - lastSegmentLength;
-		if (leftSegments_TargetLen < 0)
+		if (leftSegments_TargetLen < 0) {
 			leftSegments_TargetLen = 0;
-		
-		int leftSegmentsLen = inLen - lastSegmentLength;
+		}
+
+		final int leftSegmentsLen = inLen - lastSegmentLength;
 
 		// maxPossibleTrim denotes the maximum number of characters we aim to trim
 		// the actual number of character trimmed may be higher since segments, when
 		// reduced, are reduced to just one character
-		int maxPossibleTrim = leftSegmentsLen - leftSegments_TargetLen;
+		final int maxPossibleTrim = leftSegmentsLen - leftSegments_TargetLen;
 
 		int trimmed = 0;
 		boolean inDotState = true;
 
 		int i = 0;
 		for (; i < rightMostDotIndex; i++) {
-			char c = fqClassName.charAt(i);
+			final char c = fqClassName.charAt(i);
 			if (c == DOT) {
 				// if trimmed too many characters, let us stop
-				if (trimmed >= maxPossibleTrim)
+				if (trimmed >= maxPossibleTrim) {
 					break;
+				}
 				buf.append(c);
 				inDotState = true;
+			} else if(inDotState) {
+				buf.append(c);
+				inDotState = false;
 			} else {
-				if(inDotState) {
-					buf.append(c);
-					inDotState = false;
-				} else {
-					trimmed++;
-				}
+				trimmed++;
 			}
 		}
 		// append from the position of i which may include the last seen DOT

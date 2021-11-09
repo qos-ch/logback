@@ -21,16 +21,17 @@ import jakarta.mail.PasswordAuthentication;
  */
 public class LoginAuthenticator extends Authenticator {
 
-    String username;
-    String password;
+	String username;
+	String password;
 
-    LoginAuthenticator(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
+	LoginAuthenticator(final String username, final String password) {
+		this.username = username;
+		this.password = password;
+	}
 
-    public PasswordAuthentication getPasswordAuthentication() {
-        return new PasswordAuthentication(username, password);
-    }
+	@Override
+	public PasswordAuthentication getPasswordAuthentication() {
+		return new PasswordAuthentication(username, password);
+	}
 
 }

@@ -16,43 +16,44 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 	Logger root;
 	boolean inError = false;
 
-	public RootLoggerModelHandler(Context context) {
+	public RootLoggerModelHandler(final Context context) {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new RootLoggerModelHandler(context);
-	}	
-	
+	}
+
+	@Override
 	protected Class<RootLoggerModel> getSupportedModelClass() {
 		return RootLoggerModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext interpretationContext, final Model model) throws ModelHandlerException {
 		inError = false;
 
-		RootLoggerModel rootLoggerModel = (RootLoggerModel) model;
+		final RootLoggerModel rootLoggerModel = (RootLoggerModel) model;
 
-		LoggerContext loggerContext = (LoggerContext) this.context;
-		root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+		final LoggerContext loggerContext = (LoggerContext) context;
+		root = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
-		String levelStr = interpretationContext.subst(rootLoggerModel.getLevel());
+		final String levelStr = interpretationContext.subst(rootLoggerModel.getLevel());
 		if (!OptionHelper.isNullOrEmpty(levelStr)) {
-			Level level = Level.toLevel(levelStr);
+			final Level level = Level.toLevel(levelStr);
 			addInfo("Setting level of ROOT logger to " + level);
 			root.setLevel(level);
 		}
-		
+
 		interpretationContext.pushObject(root);
 	}
 
 	@Override
-	public void postHandle(InterpretationContext ic, Model model) {
+	public void postHandle(final InterpretationContext ic, final Model model) {
 		if (inError) {
 			return;
 		}
-		Object o = ic.peekObject();
+		final Object o = ic.peekObject();
 		if (o != root) {
 			addWarn("The object ["+o+"] on the top the of the stack is not the root logger");
 		} else {

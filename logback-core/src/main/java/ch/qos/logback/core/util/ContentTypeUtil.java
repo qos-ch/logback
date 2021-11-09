@@ -15,33 +15,32 @@ package ch.qos.logback.core.util;
 
 /**
  * Various utility methods for processing strings representing context types.
- * 
+ *
  * @author Ceki Gulcu
- * 
+ *
  */
 public class ContentTypeUtil {
 
-    public static boolean isTextual(String contextType) {
-        if (contextType == null) {
-            return false;
-        }
-        return contextType.startsWith("text");
-    }
+	public static boolean isTextual(final String contextType) {
+		if (contextType == null) {
+			return false;
+		}
+		return contextType.startsWith("text");
+	}
 
-    public static String getSubType(String contextType) {
-        if (contextType == null) {
-            return null;
-        }
-        int index = contextType.indexOf('/');
-        if (index == -1) {
-            return null;
-        } else {
-            int subTypeStartIndex = index + 1;
-            if (subTypeStartIndex < contextType.length()) {
-                return contextType.substring(subTypeStartIndex);
-            } else {
-                return null;
-            }
-        }
-    }
+	public static String getSubType(final String contextType) {
+		if (contextType == null) {
+			return null;
+		}
+		final int index = contextType.indexOf('/');
+		if (index == -1) {
+			return null;
+		}
+		final int subTypeStartIndex = index + 1;
+		if (subTypeStartIndex < contextType.length()) {
+			return contextType.substring(subTypeStartIndex);
+		} else {
+			return null;
+		}
+	}
 }

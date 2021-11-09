@@ -22,42 +22,50 @@ import javax.net.ssl.SSLServerSocket;
  */
 public class SSLConfigurableServerSocket implements SSLConfigurable {
 
-    private final SSLServerSocket delegate;
+	private final SSLServerSocket delegate;
 
-    public SSLConfigurableServerSocket(SSLServerSocket delegate) {
-        this.delegate = delegate;
-    }
+	public SSLConfigurableServerSocket(final SSLServerSocket delegate) {
+		this.delegate = delegate;
+	}
 
-    public String[] getDefaultProtocols() {
-        return delegate.getEnabledProtocols();
-    }
+	@Override
+	public String[] getDefaultProtocols() {
+		return delegate.getEnabledProtocols();
+	}
 
-    public String[] getSupportedProtocols() {
-        return delegate.getSupportedProtocols();
-    }
+	@Override
+	public String[] getSupportedProtocols() {
+		return delegate.getSupportedProtocols();
+	}
 
-    public void setEnabledProtocols(String[] protocols) {
-        delegate.setEnabledProtocols(protocols);
-    }
+	@Override
+	public void setEnabledProtocols(final String[] protocols) {
+		delegate.setEnabledProtocols(protocols);
+	}
 
-    public String[] getDefaultCipherSuites() {
-        return delegate.getEnabledCipherSuites();
-    }
+	@Override
+	public String[] getDefaultCipherSuites() {
+		return delegate.getEnabledCipherSuites();
+	}
 
-    public String[] getSupportedCipherSuites() {
-        return delegate.getSupportedCipherSuites();
-    }
+	@Override
+	public String[] getSupportedCipherSuites() {
+		return delegate.getSupportedCipherSuites();
+	}
 
-    public void setEnabledCipherSuites(String[] suites) {
-        delegate.setEnabledCipherSuites(suites);
-    }
+	@Override
+	public void setEnabledCipherSuites(final String[] suites) {
+		delegate.setEnabledCipherSuites(suites);
+	}
 
-    public void setNeedClientAuth(boolean state) {
-        delegate.setNeedClientAuth(state);
-    }
+	@Override
+	public void setNeedClientAuth(final boolean state) {
+		delegate.setNeedClientAuth(state);
+	}
 
-    public void setWantClientAuth(boolean state) {
-        delegate.setWantClientAuth(state);
-    }
+	@Override
+	public void setWantClientAuth(final boolean state) {
+		delegate.setWantClientAuth(state);
+	}
 
 }

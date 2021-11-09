@@ -5,19 +5,19 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
  * Allows masking of interrupt flag if previously the flag is already set. Does nothing otherwise.
- * 
+ *
  * Typical use:
- * 
+ *
  * <pre>
  * InterruptUtil interruptUtil = new InterruptUtil(context);
- * 
+ *
  * try {
  *   interruptUtil.maskInterruptFlag();
- *   someOtherThread.join(delay); 
+ *   someOtherThread.join(delay);
  * } catch(InterruptedException e) {
  *   // reachable only if join does not succeed within delay.
  *   // Without the maskInterruptFlag() call, the join() would have returned immediately
- *   // had the current thread been interrupted previously, i.e. before entering the above block    
+ *   // had the current thread been interrupted previously, i.e. before entering the above block
  * } finally {
  *   interruptUtil.unmaskInterruptFlag();
  * }
@@ -27,28 +27,27 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class InterruptUtil extends ContextAwareBase {
 
-    final boolean previouslyInterrupted;
+	final boolean previouslyInterrupted;
 
-    public InterruptUtil(Context context) {
-        super();
-        setContext(context);
-        previouslyInterrupted = Thread.currentThread().isInterrupted();
-    }
+	public InterruptUtil(final Context context) {
+		setContext(context);
+		previouslyInterrupted = Thread.currentThread().isInterrupted();
+	}
 
-    public void maskInterruptFlag() {
-        if (previouslyInterrupted) {
-            Thread.interrupted();
-        }
-    }
+	public void maskInterruptFlag() {
+		if (previouslyInterrupted) {
+			Thread.interrupted();
+		}
+	}
 
-    public void unmaskInterruptFlag() {
-        if (previouslyInterrupted) {
-            try {
-                Thread.currentThread().interrupt();
-            } catch (SecurityException se) {
-                addError("Failed to intrreupt current thread", se);
-            }
-        }
-    }
+	public void unmaskInterruptFlag() {
+		if (previouslyInterrupted) {
+			try {
+				Thread.currentThread().interrupt();
+			} catch (final SecurityException se) {
+				addError("Failed to intrreupt current thread", se);
+			}
+		}
+	}
 
 }

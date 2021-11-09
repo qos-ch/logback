@@ -25,120 +25,129 @@ import ch.qos.logback.core.status.StatusManager;
 
 public class BasicStatusManager implements StatusManager {
 
-    public static final int MAX_HEADER_COUNT = 150;
-    public static final int TAIL_SIZE = 150;
+	public static final int MAX_HEADER_COUNT = 150;
+	public static final int TAIL_SIZE = 150;
 
-    int count = 0;
+	int count = 0;
 
-    // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
-    final protected List<Status> statusList = new ArrayList<Status>();
-    final protected CyclicBuffer<Status> tailBuffer = new CyclicBuffer<Status>(TAIL_SIZE);
-    final protected LogbackLock statusListLock = new LogbackLock();
+	// protected access was requested in http://jira.qos.ch/browse/LBCORE-36
+	final protected List<Status> statusList = new ArrayList<>();
+	final protected CyclicBuffer<Status> tailBuffer = new CyclicBuffer<>(TAIL_SIZE);
+	final protected LogbackLock statusListLock = new LogbackLock();
 
-    int level = Status.INFO;
+	int level = Status.INFO;
 
-    // protected access was requested in http://jira.qos.ch/browse/LBCORE-36
-    final protected List<StatusListener> statusListenerList = new ArrayList<StatusListener>();
-    final protected LogbackLock statusListenerListLock = new LogbackLock();
+	// protected access was requested in http://jira.qos.ch/browse/LBCORE-36
+	final protected List<StatusListener> statusListenerList = new ArrayList<>();
+	final protected LogbackLock statusListenerListLock = new LogbackLock();
 
-    // Note on synchronization
-    // This class contains two separate locks statusListLock and
-    // statusListenerListLock guarding respectively the statusList+tailBuffer and
-    // statusListenerList fields. The locks are used internally
-    // without cycles. They are exposed to derived classes which should be careful
-    // not to create deadlock cycles.
+	// Note on synchronization
+	// This class contains two separate locks statusListLock and
+	// statusListenerListLock guarding respectively the statusList+tailBuffer and
+	// statusListenerList fields. The locks are used internally
+	// without cycles. They are exposed to derived classes which should be careful
+	// not to create deadlock cycles.
 
-    /**
-     * Add a new status object.
-     * 
-     * @param newStatus
-     *                the status message to add
-     */
-    public void add(Status newStatus) {
-        // LBCORE-72: fire event before the count check
-        fireStatusAddEvent(newStatus);
+	/**
+	 * Add a new status object.
+	 *
+	 * @param newStatus
+	 *                the status message to add
+	 */
+	@Override
+	public void add(final Status newStatus) {
+		// LBCORE-72: fire event before the count check
+		fireStatusAddEvent(newStatus);
 
-        count++;
-        if (newStatus.getLevel() > level) {
-            level = newStatus.getLevel();
-        }
+		count++;
+		if (newStatus.getLevel() > level) {
+			level = newStatus.getLevel();
+		}
 
-        synchronized (statusListLock) {
-            if (statusList.size() < MAX_HEADER_COUNT) {
-                statusList.add(newStatus);
-            } else {
-                tailBuffer.add(newStatus);
-            }
-        }
+		synchronized (statusListLock) {
+			if (statusList.size() < MAX_HEADER_COUNT) {
+				statusList.add(newStatus);
+			} else {
+				tailBuffer.add(newStatus);
+			}
+		}
 
-    }
+	}
 
-    public List<Status> getCopyOfStatusList() {
-        synchronized (statusListLock) {
-            List<Status> tList = new ArrayList<Status>(statusList);
-            tList.addAll(tailBuffer.asList());
-            return tList;
-        }
-    }
+	@Override
+	public List<Status> getCopyOfStatusList() {
+		synchronized (statusListLock) {
+			final List<Status> tList = new ArrayList<>(statusList);
+			tList.addAll(tailBuffer.asList());
+			return tList;
+		}
+	}
 
-    private void fireStatusAddEvent(Status status) {
-        synchronized (statusListenerListLock) {
-            for (StatusListener sl : statusListenerList) {
-                sl.addStatusEvent(status);
-            }
-        }
-    }
+	private void fireStatusAddEvent(final Status status) {
+		synchronized (statusListenerListLock) {
+			for (final StatusListener sl : statusListenerList) {
+				sl.addStatusEvent(status);
+			}
+		}
+	}
 
-    public void clear() {
-        synchronized (statusListLock) {
-            count = 0;
-            statusList.clear();
-            tailBuffer.clear();
-        }
-    }
+	@Override
+	public void clear() {
+		synchronized (statusListLock) {
+			count = 0;
+			statusList.clear();
+			tailBuffer.clear();
+		}
+	}
 
-    public int getLevel() {
-        return level;
-    }
+	public int getLevel() {
+		return level;
+	}
 
-    public int getCount() {
-        return count;
-    }
+	@Override
+	public int getCount() {
+		return count;
+	}
 
-    /**
-     * This implementation does not allow duplicate installations of OnConsoleStatusListener
-     * @param listener
-     */
-    public boolean add(StatusListener listener) {
-        synchronized (statusListenerListLock) {
-            if (listener instanceof OnConsoleStatusListener) {
-                boolean alreadyPresent = checkForPresence(statusListenerList, listener.getClass());
-                if (alreadyPresent)
-                    return false;
-            }
-            statusListenerList.add(listener);
-        }
-        return true;
-    }
+	/**
+	 * This implementation does not allow duplicate installations of OnConsoleStatusListener
+	 * @param listener
+	 */
+	@Override
+	public boolean add(final StatusListener listener) {
+		synchronized (statusListenerListLock) {
+			if (listener instanceof OnConsoleStatusListener) {
+				final boolean alreadyPresent = checkForPresence(statusListenerList, listener.getClass());
+				if (alreadyPresent) {
+					return false;
+				}
+			}
+			statusListenerList.add(listener);
+		}
+		return true;
+	}
 
-    private boolean checkForPresence(List<StatusListener> statusListenerList, Class<?> aClass) {
-        for (StatusListener e : statusListenerList) {
-            if (e.getClass() == aClass)
-                return true;
-        }
-        return false;
-    }
+	private boolean checkForPresence(final List<StatusListener> statusListenerList, final Class<?> aClass) {
+		for (final StatusListener e : statusListenerList) {
+			if (e.getClass() == aClass) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    public void remove(StatusListener listener) {
-        synchronized (statusListenerListLock) {
-            statusListenerList.remove(listener);
-        }
-    }
+	@Override
+	public void remove(final StatusListener listener) {
+		synchronized (statusListenerListLock) {
+			statusListenerList.remove(listener);
+		}
+	}
 
-    public List<StatusListener> getCopyOfStatusListenerList() {
-        synchronized (statusListenerListLock) {
-            return new ArrayList<StatusListener>(statusListenerList);
-        }
-    }
+	@Override
+	public List<StatusListener> getCopyOfStatusListenerList() {
+		synchronized (statusListenerListLock) {
+			return new ArrayList<>(statusListenerList);
+		}
+	}
 
 }

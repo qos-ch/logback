@@ -19,7 +19,7 @@ import ch.qos.logback.classic.LoggerContext;
 
 /**
  * An interface that provides access to different contexts.
- * 
+ *
  * It is used by the LoggerFactory to access the context
  * it will use to retrieve loggers.
  *
@@ -28,13 +28,13 @@ import ch.qos.logback.classic.LoggerContext;
  */
 public interface ContextSelector {
 
-    LoggerContext getLoggerContext();
+	LoggerContext getLoggerContext();
 
-    LoggerContext getLoggerContext(String name);
+	LoggerContext getLoggerContext(String name);
 
-    LoggerContext getDefaultLoggerContext();
+	LoggerContext getDefaultLoggerContext();
 
-    LoggerContext detachLoggerContext(String loggerContextName);
+	LoggerContext detachLoggerContext(String loggerContextName);
 
-    List<String> getContextNames();
+	List<String> getContextNames();
 }

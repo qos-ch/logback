@@ -18,12 +18,12 @@ import ch.qos.logback.core.util.AggregationType;
 
 /**
  * Lump together several fields for use by {@link NestedBasicPropertyIA}.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class ImcplicitActionDataForBasicProperty extends ImplicitActionDataBase {
 
-	public ImcplicitActionDataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType, String propertyName) {
+	public ImcplicitActionDataForBasicProperty(final PropertySetter parentBean, final AggregationType aggregationType, final String propertyName) {
 		super(parentBean, aggregationType, propertyName);
 	}
 

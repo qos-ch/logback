@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.access.spi;
 
-import ch.qos.logback.core.spi.DeferredProcessingAware;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+
+import ch.qos.logback.core.spi.DeferredProcessingAware;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -35,106 +35,106 @@ import java.util.Map;
  */
 public interface IAccessEvent extends DeferredProcessingAware {
 
-    String NA = "-";
-    int SENTINEL = -1;
+	String NA = "-";
+	int SENTINEL = -1;
 
-    /**
-     * Returns the underlying HttpServletRequest. After serialization the returned
-     * value will be null.
-     *
-     * @return
-     */
-    HttpServletRequest getRequest();
+	/**
+	 * Returns the underlying HttpServletRequest. After serialization the returned
+	 * value will be null.
+	 *
+	 * @return
+	 */
+	HttpServletRequest getRequest();
 
-    /**
-     * Returns the underlying HttpServletResponse. After serialization the returned
-     * value will be null.
-     *
-     * @return
-     */
-    HttpServletResponse getResponse();
+	/**
+	 * Returns the underlying HttpServletResponse. After serialization the returned
+	 * value will be null.
+	 *
+	 * @return
+	 */
+	HttpServletResponse getResponse();
 
-    /**
-     * The number of milliseconds elapsed from 1/1/1970 until logging event was
-     * created.
-     */
-    long getTimeStamp();
+	/**
+	 * The number of milliseconds elapsed from 1/1/1970 until logging event was
+	 * created.
+	 */
+	long getTimeStamp();
 
-    /**
-     * The sequence number associated with this event. 
-     * 
-     * <p>Sequence numbers, if present, should be increasing monotonically.
-     *  
-     * @since 1.3.0
-     */
+	/**
+	 * The sequence number associated with this event.
+	 *
+	 * <p>Sequence numbers, if present, should be increasing monotonically.
+	 *
+	 * @since 1.3.0
+	 */
 
-    long getSequenceNumber();
-    
-    /**
-     * The time elapsed between receiving the request and logging it in milliseconds.
-     */
-    long getElapsedTime();
+	long getSequenceNumber();
 
-    /**
-    * The number of seconds elapsed between receiving the request and logging it.
-    */
-    long getElapsedSeconds();
+	/**
+	 * The time elapsed between receiving the request and logging it in milliseconds.
+	 */
+	long getElapsedTime();
 
-    String getRequestURI();
+	/**
+	 * The number of seconds elapsed between receiving the request and logging it.
+	 */
+	long getElapsedSeconds();
 
-    /**
-     * The first line of the request.
-     */
-    String getRequestURL();
+	String getRequestURI();
 
-    String getRemoteHost();
+	/**
+	 * The first line of the request.
+	 */
+	String getRequestURL();
 
-    String getRemoteUser();
+	String getRemoteHost();
 
-    String getProtocol();
+	String getRemoteUser();
 
-    String getMethod();
+	String getProtocol();
 
-    String getServerName();
+	String getMethod();
 
-    String getSessionID();
+	String getServerName();
 
-    void setThreadName(String threadName);
-    String getThreadName();
-    
-    String getQueryString();
-    
-    String getRemoteAddr();
+	String getSessionID();
 
-    String getRequestHeader(String key);
+	void setThreadName(String threadName);
+	String getThreadName();
 
-    Enumeration<String> getRequestHeaderNames();
+	String getQueryString();
 
-    Map<String, String> getRequestHeaderMap();
+	String getRemoteAddr();
 
-    Map<String, String[]> getRequestParameterMap();
+	String getRequestHeader(String key);
 
-    String getAttribute(String key);
+	Enumeration<String> getRequestHeaderNames();
 
-    String[] getRequestParameter(String key);
+	Map<String, String> getRequestHeaderMap();
 
-    String getCookie(String key);
+	Map<String, String[]> getRequestParameterMap();
 
-    long getContentLength();
+	String getAttribute(String key);
 
-    int getStatusCode();
+	String[] getRequestParameter(String key);
 
-    String getRequestContent();
+	String getCookie(String key);
 
-    String getResponseContent();
+	long getContentLength();
 
-    int getLocalPort();
+	int getStatusCode();
 
-    ServerAdapter getServerAdapter();
+	String getRequestContent();
 
-    String getResponseHeader(String key);
+	String getResponseContent();
 
-    Map<String, String> getResponseHeaderMap();
+	int getLocalPort();
 
-    List<String> getResponseHeaderNameList();
+	ServerAdapter getServerAdapter();
+
+	String getResponseHeader(String key);
+
+	Map<String, String> getResponseHeaderMap();
+
+	List<String> getResponseHeaderNameList();
 }

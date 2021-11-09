@@ -30,8 +30,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.net.DefaultSocketConnector;
 import ch.qos.logback.core.net.AbstractSocketAppender;
+import ch.qos.logback.core.net.DefaultSocketConnector;
 import ch.qos.logback.core.net.SocketConnector;
 import ch.qos.logback.core.util.CloseUtil;
 
@@ -43,179 +43,184 @@ import ch.qos.logback.core.util.CloseUtil;
  */
 public class SocketReceiver extends ReceiverBase implements Runnable, SocketConnector.ExceptionHandler {
 
-    private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
+	private static final int DEFAULT_ACCEPT_CONNECTION_DELAY = 5000;
 
-    private String remoteHost;
-    private InetAddress address;
-    private int port;
-    private int reconnectionDelay;
-    private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
+	private String remoteHost;
+	private InetAddress address;
+	private int port;
+	private int reconnectionDelay;
+	private int acceptConnectionTimeout = DEFAULT_ACCEPT_CONNECTION_DELAY;
 
-    private String receiverId;
-    private volatile Socket socket;
-    private Future<Socket> connectorTask;
+	private String receiverId;
+	private volatile Socket socket;
+	private Future<Socket> connectorTask;
 
-    /**
-     * {@inheritDoc}
-     */
-    protected boolean shouldStart() {
-        int errorCount = 0;
-        if (port == 0) {
-            errorCount++;
-            addError("No port was configured for receiver. " + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected boolean shouldStart() {
+		int errorCount = 0;
+		if (port == 0) {
+			errorCount++;
+			addError("No port was configured for receiver. " + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_port");
+		}
 
-        if (remoteHost == null) {
-            errorCount++;
-            addError("No host name or address was configured for receiver. "
-                            + "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
-        }
+		if (remoteHost == null) {
+			errorCount++;
+			addError("No host name or address was configured for receiver. "
+					+ "For more information, please visit http://logback.qos.ch/codes.html#receiver_no_host");
+		}
 
-        if (reconnectionDelay == 0) {
-            reconnectionDelay = AbstractSocketAppender.DEFAULT_RECONNECTION_DELAY;
-        }
+		if (reconnectionDelay == 0) {
+			reconnectionDelay = AbstractSocketAppender.DEFAULT_RECONNECTION_DELAY;
+		}
 
-        if (errorCount == 0) {
-            try {
-                address = InetAddress.getByName(remoteHost);
-            } catch (UnknownHostException ex) {
-                addError("unknown host: " + remoteHost);
-                errorCount++;
-            }
-        }
+		if (errorCount == 0) {
+			try {
+				address = InetAddress.getByName(remoteHost);
+			} catch (final UnknownHostException ex) {
+				addError("unknown host: " + remoteHost);
+				errorCount++;
+			}
+		}
 
-        if (errorCount == 0) {
-            receiverId = "receiver " + remoteHost + ":" + port + ": ";
-        }
+		if (errorCount == 0) {
+			receiverId = "receiver " + remoteHost + ":" + port + ": ";
+		}
 
-        return errorCount == 0;
-    }
+		return errorCount == 0;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void onStop() {
-        if (socket != null) {
-            CloseUtil.closeQuietly(socket);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void onStop() {
+		if (socket != null) {
+			CloseUtil.closeQuietly(socket);
+		}
+	}
 
-    @Override
-    protected Runnable getRunnableTask() {
-        return this;
-    }
+	@Override
+	protected Runnable getRunnableTask() {
+		return this;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void run() {
-        try {
-            LoggerContext lc = (LoggerContext) getContext();
-            while (!Thread.currentThread().isInterrupted()) {
-                SocketConnector connector = createConnector(address, port, 0, reconnectionDelay);
-                connectorTask = activateConnector(connector);
-                if (connectorTask == null) {
-                    break;
-                }
-                socket = waitForConnectorToReturnASocket();
-                if (socket == null)
-                    break;
-                dispatchEvents(lc);
-            }
-        } catch (InterruptedException ex) {
-            assert true; // ok... we'll exit now
-        }
-        addInfo("shutting down");
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void run() {
+		try {
+			final LoggerContext lc = (LoggerContext) getContext();
+			while (!Thread.currentThread().isInterrupted()) {
+				final SocketConnector connector = createConnector(address, port, 0, reconnectionDelay);
+				connectorTask = activateConnector(connector);
+				if (connectorTask == null) {
+					break;
+				}
+				socket = waitForConnectorToReturnASocket();
+				if (socket == null) {
+					break;
+				}
+				dispatchEvents(lc);
+			}
+		} catch (final InterruptedException ex) {
+			assert true; // ok... we'll exit now
+		}
+		addInfo("shutting down");
+	}
 
-    private SocketConnector createConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
-        SocketConnector connector = newConnector(address, port, initialDelay, retryDelay);
-        connector.setExceptionHandler(this);
-        connector.setSocketFactory(getSocketFactory());
-        return connector;
-    }
+	private SocketConnector createConnector(final InetAddress address, final int port, final int initialDelay, final int retryDelay) {
+		final SocketConnector connector = newConnector(address, port, initialDelay, retryDelay);
+		connector.setExceptionHandler(this);
+		connector.setSocketFactory(getSocketFactory());
+		return connector;
+	}
 
-    private Future<Socket> activateConnector(SocketConnector connector) {
-        try {
-            return getContext().getScheduledExecutorService().submit(connector);
-        } catch (RejectedExecutionException ex) {
-            return null;
-        }
-    }
+	private Future<Socket> activateConnector(final SocketConnector connector) {
+		try {
+			return getContext().getScheduledExecutorService().submit(connector);
+		} catch (final RejectedExecutionException ex) {
+			return null;
+		}
+	}
 
-    private Socket waitForConnectorToReturnASocket() throws InterruptedException {
-        try {
-            Socket s = connectorTask.get();
-            connectorTask = null;
-            return s;
-        } catch (ExecutionException e) {
-            return null;
-        }
-    }
+	private Socket waitForConnectorToReturnASocket() throws InterruptedException {
+		try {
+			final Socket s = connectorTask.get();
+			connectorTask = null;
+			return s;
+		} catch (final ExecutionException e) {
+			return null;
+		}
+	}
 
-    private void dispatchEvents(LoggerContext lc) {
-        ObjectInputStream ois = null;
-        try {
-            socket.setSoTimeout(acceptConnectionTimeout);
-            ois = new HardenedLoggingEventInputStream(socket.getInputStream());
-            socket.setSoTimeout(0);
-            addInfo(receiverId + "connection established");
-            while (true) {
-                ILoggingEvent event = (ILoggingEvent) ois.readObject();
-                Logger remoteLogger = lc.getLogger(event.getLoggerName());
-                if (remoteLogger.isEnabledFor(event.getLevel())) {
-                    remoteLogger.callAppenders(event);
-                }
-            }
-        } catch (EOFException ex) {
-            addInfo(receiverId + "end-of-stream detected");
-        } catch (IOException ex) {
-            addInfo(receiverId + "connection failed: " + ex);
-        } catch (ClassNotFoundException ex) {
-            addInfo(receiverId + "unknown event class: " + ex);
-        } finally {
-            CloseUtil.closeQuietly(ois);
-            CloseUtil.closeQuietly(socket);
-            socket = null;
-            addInfo(receiverId + "connection closed");
-        }
-    }
+	private void dispatchEvents(final LoggerContext lc) {
+		ObjectInputStream ois = null;
+		try {
+			socket.setSoTimeout(acceptConnectionTimeout);
+			ois = new HardenedLoggingEventInputStream(socket.getInputStream());
+			socket.setSoTimeout(0);
+			addInfo(receiverId + "connection established");
+			while (true) {
+				final ILoggingEvent event = (ILoggingEvent) ois.readObject();
+				final Logger remoteLogger = lc.getLogger(event.getLoggerName());
+				if (remoteLogger.isEnabledFor(event.getLevel())) {
+					remoteLogger.callAppenders(event);
+				}
+			}
+		} catch (final EOFException ex) {
+			addInfo(receiverId + "end-of-stream detected");
+		} catch (final IOException ex) {
+			addInfo(receiverId + "connection failed: " + ex);
+		} catch (final ClassNotFoundException ex) {
+			addInfo(receiverId + "unknown event class: " + ex);
+		} finally {
+			CloseUtil.closeQuietly(ois);
+			CloseUtil.closeQuietly(socket);
+			socket = null;
+			addInfo(receiverId + "connection closed");
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    public void connectionFailed(SocketConnector connector, Exception ex) {
-        if (ex instanceof InterruptedException) {
-            addInfo("connector interrupted");
-        } else if (ex instanceof ConnectException) {
-            addInfo(receiverId + "connection refused");
-        } else {
-            addInfo(receiverId + ex);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void connectionFailed(final SocketConnector connector, final Exception ex) {
+		if (ex instanceof InterruptedException) {
+			addInfo("connector interrupted");
+		} else if (ex instanceof ConnectException) {
+			addInfo(receiverId + "connection refused");
+		} else {
+			addInfo(receiverId + ex);
+		}
+	}
 
-    protected SocketConnector newConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
-        return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
-    }
+	protected SocketConnector newConnector(final InetAddress address, final int port, final int initialDelay, final int retryDelay) {
+		return new DefaultSocketConnector(address, port, initialDelay, retryDelay);
+	}
 
-    protected SocketFactory getSocketFactory() {
-        return SocketFactory.getDefault();
-    }
+	protected SocketFactory getSocketFactory() {
+		return SocketFactory.getDefault();
+	}
 
-    public void setRemoteHost(String remoteHost) {
-        this.remoteHost = remoteHost;
-    }
+	public void setRemoteHost(final String remoteHost) {
+		this.remoteHost = remoteHost;
+	}
 
-    public void setPort(int port) {
-        this.port = port;
-    }
+	public void setPort(final int port) {
+		this.port = port;
+	}
 
-    public void setReconnectionDelay(int reconnectionDelay) {
-        this.reconnectionDelay = reconnectionDelay;
-    }
+	public void setReconnectionDelay(final int reconnectionDelay) {
+		this.reconnectionDelay = reconnectionDelay;
+	}
 
-    public void setAcceptConnectionTimeout(int acceptConnectionTimeout) {
-        this.acceptConnectionTimeout = acceptConnectionTimeout;
-    }
+	public void setAcceptConnectionTimeout(final int acceptConnectionTimeout) {
+		this.acceptConnectionTimeout = acceptConnectionTimeout;
+	}
 
 }

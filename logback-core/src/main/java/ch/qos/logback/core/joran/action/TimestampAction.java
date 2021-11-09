@@ -24,45 +24,45 @@ import ch.qos.logback.core.util.OptionHelper;
  * Given a key and a date-and-time pattern, puts a property to the context, with
  * the specified key and value equal to the current time in the format
  * corresponding to the specified date-and-time pattern.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class TimestampAction extends BaseModelAction {
 
-    public static final String DATE_PATTERN_ATTRIBUTE = "datePattern";
-    public static final String TIME_REFERENCE_ATTRIBUTE = "timeReference";
+	public static final String DATE_PATTERN_ATTRIBUTE = "datePattern";
+	public static final String TIME_REFERENCE_ATTRIBUTE = "timeReference";
 
 
-    @Override
-    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        boolean valid = true;
-        String keyStr = attributes.getValue(KEY_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(keyStr)) {
-            addError("Attribute named [" + KEY_ATTRIBUTE + "] cannot be empty");
-            valid = false;
-        }
-        String datePatternStr = attributes.getValue(DATE_PATTERN_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(datePatternStr)) {
-            addError("Attribute named [" + DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
-            valid = false;
-        }
-        return valid;
-    }
+	@Override
+	protected boolean validPreconditions(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		boolean valid = true;
+		final String keyStr = attributes.getValue(KEY_ATTRIBUTE);
+		if (OptionHelper.isNullOrEmpty(keyStr)) {
+			addError("Attribute named [" + KEY_ATTRIBUTE + "] cannot be empty");
+			valid = false;
+		}
+		final String datePatternStr = attributes.getValue(DATE_PATTERN_ATTRIBUTE);
+		if (OptionHelper.isNullOrEmpty(datePatternStr)) {
+			addError("Attribute named [" + DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
+			valid = false;
+		}
+		return valid;
+	}
 
-    
-    @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        TimestampModel timestampModel = new TimestampModel();
 
-        timestampModel.setKey(attributes.getValue(KEY_ATTRIBUTE));
-        timestampModel.setDatePattern(attributes.getValue(DATE_PATTERN_ATTRIBUTE));
-        timestampModel.setTimeReference(attributes.getValue(TIME_REFERENCE_ATTRIBUTE));
-        timestampModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
-        
-        return timestampModel;
+	@Override
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		final TimestampModel timestampModel = new TimestampModel();
 
-    }
+		timestampModel.setKey(attributes.getValue(KEY_ATTRIBUTE));
+		timestampModel.setDatePattern(attributes.getValue(DATE_PATTERN_ATTRIBUTE));
+		timestampModel.setTimeReference(attributes.getValue(TIME_REFERENCE_ATTRIBUTE));
+		timestampModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
+
+		return timestampModel;
+
+	}
 
 
 

@@ -31,18 +31,18 @@ public class IncludeModelAction extends BaseModelAction {
 	private static final String OPTIONAL_ATTR = "optional";
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext intercon, String name, Attributes attributes) {
-		IncludeModel includeModel = new IncludeModel();
-		
-		
+	protected Model buildCurrentModel(final InterpretationContext intercon, final String name, final Attributes attributes) {
+		final IncludeModel includeModel = new IncludeModel();
+
+
 		includeModel.setOptional(attributes.getValue(OPTIONAL_ATTR));
 		includeModel.setFile(attributes.getValue(FILE_ATTR));
 		includeModel.setUrl(attributes.getValue(URL_ATTR));
 		includeModel.setResource(attributes.getValue(RESOURCE_ATTR));
-		ElementPath elementPath = intercon.getSaxEventInterpreter().getCopyOfElementPath();
-		
-		String lastPath = elementPath.peekLast();
-		
+		final ElementPath elementPath = intercon.getSaxEventInterpreter().getCopyOfElementPath();
+
+		final String lastPath = elementPath.peekLast();
+
 		if(!INCLUDE_TAG.equalsIgnoreCase(lastPath)) {
 			addWarn("expecting [include] but got ["+lastPath+"]");
 		}
@@ -54,10 +54,10 @@ public class IncludeModelAction extends BaseModelAction {
 	}
 
 	@Override
-	protected boolean validPreconditions(InterpretationContext intercon, String name, Attributes attributes) {
-		String fileAttribute = attributes.getValue(FILE_ATTR);
-		String urlAttribute = attributes.getValue(URL_ATTR);
-		String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
+	protected boolean validPreconditions(final InterpretationContext intercon, final String name, final Attributes attributes) {
+		final String fileAttribute = attributes.getValue(FILE_ATTR);
+		final String urlAttribute = attributes.getValue(URL_ATTR);
+		final String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
 
 		int count = 0;
 
@@ -71,12 +71,11 @@ public class IncludeModelAction extends BaseModelAction {
 			count++;
 		}
 
-		String attributeNames = "\"" + FILE_ATTR + "\", \"" + RESOURCE_ATTR + "\" or \"" + URL_ATTR + "\"";
+		final String attributeNames = "\"" + FILE_ATTR + "\", \"" + RESOURCE_ATTR + "\" or \"" + URL_ATTR + "\"";
 		if (count == 1) {
 			return true;
-		} else {
-			addError("One and only one of the attributes " + attributeNames + " should be set. " + nearLine(intercon));
-			return false;
 		}
+		addError("One and only one of the attributes " + attributeNames + " should be set. " + nearLine(intercon));
+		return false;
 	}
 }

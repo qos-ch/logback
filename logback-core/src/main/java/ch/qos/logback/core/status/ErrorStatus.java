@@ -15,12 +15,12 @@ package ch.qos.logback.core.status;
 
 public class ErrorStatus extends StatusBase {
 
-    public ErrorStatus(String msg, Object origin) {
-        super(Status.ERROR, msg, origin);
-    }
+	public ErrorStatus(final String msg, final Object origin) {
+		super(Status.ERROR, msg, origin);
+	}
 
-    public ErrorStatus(String msg, Object origin, Throwable t) {
-        super(Status.ERROR, msg, origin, t);
-    }
+	public ErrorStatus(final String msg, final Object origin, final Throwable t) {
+		super(Status.ERROR, msg, origin, t);
+	}
 
 }

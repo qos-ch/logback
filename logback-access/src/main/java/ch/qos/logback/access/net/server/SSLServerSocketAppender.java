@@ -21,22 +21,22 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 /**
  * An appender that listens on a TCP port for connections from remote
  * loggers.  Each event delivered to this appender is delivered to all
- * connected remote loggers. 
+ * connected remote loggers.
  *
  * @author Carl Harris
  */
 public class SSLServerSocketAppender extends SSLServerSocketAppenderBase<IAccessEvent> {
 
-    private static final PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
+	private static final PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
 
-    @Override
-    protected void postProcessEvent(IAccessEvent event) {
-        event.prepareForDeferredProcessing();
-    }
+	@Override
+	protected void postProcessEvent(final IAccessEvent event) {
+		event.prepareForDeferredProcessing();
+	}
 
-    @Override
-    protected PreSerializationTransformer<IAccessEvent> getPST() {
-        return pst;
-    }
+	@Override
+	protected PreSerializationTransformer<IAccessEvent> getPST() {
+		return pst;
+	}
 
 }

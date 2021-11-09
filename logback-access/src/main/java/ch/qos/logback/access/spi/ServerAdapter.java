@@ -24,11 +24,11 @@ import java.util.Map;
  */
 public interface ServerAdapter {
 
-    long getRequestTimestamp();
+	long getRequestTimestamp();
 
-    long getContentLength();
+	long getContentLength();
 
-    int getStatusCode();
+	int getStatusCode();
 
-    Map<String, String> buildResponseHeaderMap();
+	Map<String, String> buildResponseHeaderMap();
 }

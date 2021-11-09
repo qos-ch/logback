@@ -33,7 +33,7 @@ public class BeanDescription {
 	 * @param propertyNameToSetter map of property names to the associated setter.
 	 * @param propertyNameToAdder map of property names to the associated adder.
 	 */
-	protected BeanDescription(Class<?> clazz,Map<String, Method> propertyNameToGetter,Map<String, Method> propertyNameToSetter,Map<String, Method> propertyNameToAdder) {
+	protected BeanDescription(final Class<?> clazz,final Map<String, Method> propertyNameToGetter,final Map<String, Method> propertyNameToSetter,final Map<String, Method> propertyNameToAdder) {
 		this.clazz = clazz;
 		this.propertyNameToGetter = Collections.unmodifiableMap(propertyNameToGetter);
 		this.propertyNameToSetter = Collections.unmodifiableMap(propertyNameToSetter);
@@ -52,11 +52,11 @@ public class BeanDescription {
 		return propertyNameToSetter;
 	}
 
-	public Method getGetter(String propertyName) {
+	public Method getGetter(final String propertyName) {
 		return propertyNameToGetter.get(propertyName);
 	}
 
-	public Method getSetter(String propertyName) {
+	public Method getSetter(final String propertyName) {
 		return propertyNameToSetter.get(propertyName);
 	}
 
@@ -64,7 +64,7 @@ public class BeanDescription {
 		return propertyNameToAdder;
 	}
 
-	public Method getAdder(String propertyName) {
+	public Method getAdder(final String propertyName) {
 		return propertyNameToAdder.get(propertyName);
 	}
 

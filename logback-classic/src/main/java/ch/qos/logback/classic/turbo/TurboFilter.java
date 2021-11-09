@@ -22,52 +22,55 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 
 /**
- * TurboFilter is a specialized filter with a decide method that takes a bunch 
- * of parameters instead of a single event object. The latter is cleaner but 
+ * TurboFilter is a specialized filter with a decide method that takes a bunch
+ * of parameters instead of a single event object. The latter is cleaner but
  * the first is much more performant.
  * <p>
  * For more information about turbo filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html#TurboFilter
- * 
+ *
  * @author Ceki Gulcu
  */
 public abstract class TurboFilter extends ContextAwareBase implements LifeCycle {
 
-    private String name;
-    boolean start = false;
+	private String name;
+	boolean start = false;
 
-    /**
-     * Make a decision based on the multiple parameters passed as arguments.
-     * The returned value should be one of <code>{@link FilterReply#DENY}</code>, 
-     * <code>{@link FilterReply#NEUTRAL}</code>, or <code>{@link FilterReply#ACCEPT}</code>.
-    
-     * @param marker
-     * @param logger
-     * @param level
-     * @param format
-     * @param params
-     * @param t
-     * @return
-     */
-    public abstract FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t);
+	/**
+	 * Make a decision based on the multiple parameters passed as arguments.
+	 * The returned value should be one of <code>{@link FilterReply#DENY}</code>,
+	 * <code>{@link FilterReply#NEUTRAL}</code>, or <code>{@link FilterReply#ACCEPT}</code>.
 
-    public void start() {
-        this.start = true;
-    }
+	 * @param marker
+	 * @param logger
+	 * @param level
+	 * @param format
+	 * @param params
+	 * @param t
+	 * @return
+	 */
+	public abstract FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t);
 
-    public boolean isStarted() {
-        return this.start;
-    }
+	@Override
+	public void start() {
+		start = true;
+	}
 
-    public void stop() {
-        this.start = false;
-    }
+	@Override
+	public boolean isStarted() {
+		return start;
+	}
 
-    public String getName() {
-        return name;
-    }
+	@Override
+	public void stop() {
+		start = false;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
 }

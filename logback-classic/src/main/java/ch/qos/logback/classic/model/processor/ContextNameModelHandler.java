@@ -9,32 +9,32 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 
 public class ContextNameModelHandler extends ModelHandlerBase {
 
-	public ContextNameModelHandler(Context context) {
+	public ContextNameModelHandler(final Context context) {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new ContextNameModelHandler(context);
-	}	
-		
-	
+	}
+
+
 	@Override
 	protected Class<ContextNameModel> getSupportedModelClass() {
 		return ContextNameModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		ContextNameModel contextNameModel = (ContextNameModel) model;
-		
-		
-		String finalBody = intercon.subst(contextNameModel.getBodyText());
-        addInfo("Setting logger context name as [" + finalBody + "]");
-        try {
-            context.setName(finalBody);
-        } catch (IllegalStateException e) {
-            addError("Failed to rename context [" + context.getName() + "] as [" + finalBody + "]", e);
-        }
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+		final ContextNameModel contextNameModel = (ContextNameModel) model;
+
+
+		final String finalBody = intercon.subst(contextNameModel.getBodyText());
+		addInfo("Setting logger context name as [" + finalBody + "]");
+		try {
+			context.setName(finalBody);
+		} catch (final IllegalStateException e) {
+			addError("Failed to rename context [" + context.getName() + "] as [" + finalBody + "]", e);
+		}
 
 	}
 

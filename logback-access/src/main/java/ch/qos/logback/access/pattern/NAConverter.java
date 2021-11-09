@@ -17,15 +17,15 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 /**
  * Always returns the NA (not available) string which is "-" in the case
- * of access conversions. 
+ * of access conversions.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NAConverter extends AccessConverter {
 
-    @Override
-    public String convert(IAccessEvent accessEvent) {
-        return IAccessEvent.NA;
-    }
+	@Override
+	public String convert(final IAccessEvent accessEvent) {
+		return IAccessEvent.NA;
+	}
 
 }

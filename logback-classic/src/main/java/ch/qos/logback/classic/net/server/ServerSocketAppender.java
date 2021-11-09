@@ -21,34 +21,34 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 /**
  * An appender that listens on a TCP port for connections from remote
  * loggers.  Each event delivered to this appender is delivered to all
- * connected remote loggers. 
+ * connected remote loggers.
  *
  * @author Carl Harris
  */
 public class ServerSocketAppender extends AbstractServerSocketAppender<ILoggingEvent> {
 
-    private static final PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+	private static final PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
 
-    private boolean includeCallerData;
+	private boolean includeCallerData;
 
-    @Override
-    protected void postProcessEvent(ILoggingEvent event) {
-        if (isIncludeCallerData()) {
-            event.getCallerData();
-        }
-    }
+	@Override
+	protected void postProcessEvent(final ILoggingEvent event) {
+		if (isIncludeCallerData()) {
+			event.getCallerData();
+		}
+	}
 
-    @Override
-    protected PreSerializationTransformer<ILoggingEvent> getPST() {
-        return pst;
-    }
+	@Override
+	protected PreSerializationTransformer<ILoggingEvent> getPST() {
+		return pst;
+	}
 
-    public boolean isIncludeCallerData() {
-        return includeCallerData;
-    }
+	public boolean isIncludeCallerData() {
+		return includeCallerData;
+	}
 
-    public void setIncludeCallerData(boolean includeCallerData) {
-        this.includeCallerData = includeCallerData;
-    }
+	public void setIncludeCallerData(final boolean includeCallerData) {
+		this.includeCallerData = includeCallerData;
+	}
 
 }

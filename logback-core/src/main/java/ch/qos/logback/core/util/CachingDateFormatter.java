@@ -20,9 +20,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A CAS implementation of DateTimeFormatter (previously SimpleDateFormat) 
+ * A CAS implementation of DateTimeFormatter (previously SimpleDateFormat)
  * which caches results for the duration of a millisecond.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @since 0.9.29
  */
@@ -31,44 +31,43 @@ public class CachingDateFormatter {
 	final DateTimeFormatter dtf;
 	final ZoneId zoneId;
 	final AtomicReference<CacheTuple> atomicReference;
-	
+
 	static class CacheTuple {
 		final long lastTimestamp;
 		final String cachedStr;
-		
-		public CacheTuple(long lastTimestamp, String cachedStr) {
-			super();
+
+		public CacheTuple(final long lastTimestamp, final String cachedStr) {
 			this.lastTimestamp = lastTimestamp;
 			this.cachedStr = cachedStr;
 		}
 	}
-	
-	public CachingDateFormatter(String pattern) {
+
+	public CachingDateFormatter(final String pattern) {
 		this(pattern, null);
 	}
 
-	public CachingDateFormatter(String pattern, ZoneId aZoneId) {
+	public CachingDateFormatter(final String pattern, final ZoneId aZoneId) {
 		dtf = DateTimeFormatter.ofPattern(pattern);
 		if(aZoneId == null) {
-			this.zoneId = ZoneId.systemDefault();
+			zoneId = ZoneId.systemDefault();
 		} else {
-			this.zoneId = aZoneId;
-			
+			zoneId = aZoneId;
+
 		}
-		dtf.withZone(this.zoneId);
-		CacheTuple cacheTuple = new CacheTuple(-1, null);
-		this.atomicReference = new AtomicReference<>(cacheTuple);
+		dtf.withZone(zoneId);
+		final CacheTuple cacheTuple = new CacheTuple(-1, null);
+		atomicReference = new AtomicReference<>(cacheTuple);
 	}
 
-	
-	public final String format(long now) {
+
+	public final String format(final long now) {
 		CacheTuple localCacheTuple = atomicReference.get();
-		CacheTuple oldCacheTuple = localCacheTuple;
-		
+		final CacheTuple oldCacheTuple = localCacheTuple;
+
 		if (now != localCacheTuple.lastTimestamp) {
-			Instant instant = Instant.ofEpochMilli(now);
-			OffsetDateTime currentTime = OffsetDateTime.ofInstant(instant, this.zoneId);
-			String result = dtf.format(currentTime);
+			final Instant instant = Instant.ofEpochMilli(now);
+			final OffsetDateTime currentTime = OffsetDateTime.ofInstant(instant, zoneId);
+			final String result = dtf.format(currentTime);
 			localCacheTuple = new CacheTuple(now, result);
 			// allow a single thread to update the cache reference
 			atomicReference.compareAndSet(oldCacheTuple, localCacheTuple);

@@ -25,22 +25,22 @@ import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 /**
  * Contains mappings for the default type of nested components in
  * logback-classic.
- * 
+ *
  * @author Ceki Gulcu
- * 
+ *
  */
 public class DefaultNestedComponentRules {
 
-    static public void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-        registry.add(AppenderBase.class, "layout", PatternLayout.class);
-        registry.add(UnsynchronizedAppenderBase.class, "layout", PatternLayout.class);
+	static public void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {
+		registry.add(AppenderBase.class, "layout", PatternLayout.class);
+		registry.add(UnsynchronizedAppenderBase.class, "layout", PatternLayout.class);
 
-        registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
-        registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
+		registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
+		registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
 
-        registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
+		registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
 
-        SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
-    }
+		SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
+	}
 
 }

@@ -22,32 +22,32 @@ import ch.qos.logback.core.model.PropertyModel;
 /**
  * This class serves to build a model for properties which are to the ANT
  * &lt;property&gt; task which add/set properties of a given object.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class PropertyAction extends BaseModelAction {
 
-    static final String RESOURCE_ATTRIBUTE = "resource";
+	static final String RESOURCE_ATTRIBUTE = "resource";
 
 
-    @Override
-    protected boolean validPreconditions(InterpretationContext interpretationContext, String localName, Attributes attributes) {
-        if ("substitutionProperty".equals(localName)) {
-            addWarn("[substitutionProperty] element has been deprecated. Please use the [property] element instead.");
-        }
-        return true;
-    }
+	@Override
+	protected boolean validPreconditions(final InterpretationContext interpretationContext, final String localName, final Attributes attributes) {
+		if ("substitutionProperty".equals(localName)) {
+			addWarn("[substitutionProperty] element has been deprecated. Please use the [property] element instead.");
+		}
+		return true;
+	}
 
-    @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        PropertyModel propertyModel = new PropertyModel();
-        propertyModel.setName(attributes.getValue(NAME_ATTRIBUTE));
-        propertyModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
-        propertyModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
-        propertyModel.setFile(attributes.getValue(FILE_ATTRIBUTE));
-        propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
-        return propertyModel;
-    }
+	@Override
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		final PropertyModel propertyModel = new PropertyModel();
+		propertyModel.setName(attributes.getValue(NAME_ATTRIBUTE));
+		propertyModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
+		propertyModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
+		propertyModel.setFile(attributes.getValue(FILE_ATTRIBUTE));
+		propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
+		return propertyModel;
+	}
 
 
 }

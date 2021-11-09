@@ -25,51 +25,51 @@ import ch.qos.logback.core.db.dialect.SQLDialectCode;
  * {@link ConnectionSource} that obtains the Connection in the recommended JDBC
  * manner based on a {@link javax.sql.DataSource DataSource}.
  * <p>
- * 
+ *
  * For more information about this component, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#DBAppender
- * 
+ *
  * @author Ray DeCampo
  * @author Ceki G&uuml;lc&uuml;
  */
 public class DataSourceConnectionSource extends ConnectionSourceBase {
 
-    private DataSource dataSource;
+	private DataSource dataSource;
 
-    @Override
-    public void start() {
-        if (dataSource == null) {
-            addWarn("WARNING: No data source specified");
-        } else {
-            discoverConnectionProperties();
-            if (!supportsGetGeneratedKeys() && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
-                addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
-            }
-        }
-        super.start();
-    }
+	@Override
+	public void start() {
+		if (dataSource == null) {
+			addWarn("WARNING: No data source specified");
+		} else {
+			discoverConnectionProperties();
+			if (!supportsGetGeneratedKeys() && getSQLDialectCode() == SQLDialectCode.UNKNOWN_DIALECT) {
+				addWarn("Connection does not support GetGeneratedKey method and could not discover the dialect.");
+			}
+		}
+		super.start();
+	}
 
-    /**
-     * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
-     */
-    public Connection getConnection() throws SQLException {
-        if (dataSource == null) {
-            addError("WARNING: No data source specified");
-            return null;
-        }
+	/**
+	 * @see ch.qos.logback.core.db.ConnectionSource#getConnection()
+	 */
+	@Override
+	public Connection getConnection() throws SQLException {
+		if (dataSource == null) {
+			addError("WARNING: No data source specified");
+			return null;
+		}
 
-        if (getUser() == null) {
-            return dataSource.getConnection();
-        } else {
-            return dataSource.getConnection(getUser(), getPassword());
-        }
-    }
+		if (getUser() == null) {
+			return dataSource.getConnection();
+		}
+		return dataSource.getConnection(getUser(), getPassword());
+	}
 
-    public DataSource getDataSource() {
-        return dataSource;
-    }
+	public DataSource getDataSource() {
+		return dataSource;
+	}
 
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
+	public void setDataSource(final DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 }

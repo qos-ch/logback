@@ -26,75 +26,75 @@ import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * Holds the context selector for use in the current environment.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @since 0.9.19
  */
 public class ContextSelectorStaticBinder {
 
-    static ContextSelectorStaticBinder singleton = new ContextSelectorStaticBinder();
+	static ContextSelectorStaticBinder singleton = new ContextSelectorStaticBinder();
 
-    ContextSelector contextSelector;
-    Object key;
+	ContextSelector contextSelector;
+	Object key;
 
-    public static ContextSelectorStaticBinder getSingleton() {
-        return singleton;
-    }
+	public static ContextSelectorStaticBinder getSingleton() {
+		return singleton;
+	}
 
-    /**
-     * FOR INTERNAL USE. This method is intended for use by  StaticLoggerBinder.
-     *  
-     * @param defaultLoggerContext
-     * @throws ClassNotFoundException
-     * @throws NoSuchMethodException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    public void init(LoggerContext defaultLoggerContext, Object key) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
-                    IllegalAccessException, InvocationTargetException {
-        if (this.key == null) {
-            this.key = key;
-        } else if (this.key != key) {
-            throw new IllegalAccessException("Only certain classes can access this method.");
-        }
+	/**
+	 * FOR INTERNAL USE. This method is intended for use by  StaticLoggerBinder.
+	 *
+	 * @param defaultLoggerContext
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchMethodException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	public void init(final LoggerContext defaultLoggerContext, final Object key) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
+	IllegalAccessException, InvocationTargetException {
+		if (this.key == null) {
+			this.key = key;
+		} else if (this.key != key) {
+			throw new IllegalAccessException("Only certain classes can access this method.");
+		}
 
-        String contextSelectorStr = OptionHelper.getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
-        if (contextSelectorStr == null) {
-            contextSelector = new DefaultContextSelector(defaultLoggerContext);
-        } else if (contextSelectorStr.equals("JNDI")) {
-            // if jndi is specified, let's use the appropriate class
-            contextSelector = new ContextJNDISelector(defaultLoggerContext);
-        } else {
-            contextSelector = dynamicalContextSelector(defaultLoggerContext, contextSelectorStr);
-        }
-    }
+		final String contextSelectorStr = OptionHelper.getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+		if (contextSelectorStr == null) {
+			contextSelector = new DefaultContextSelector(defaultLoggerContext);
+		} else if (contextSelectorStr.equals("JNDI")) {
+			// if jndi is specified, let's use the appropriate class
+			contextSelector = new ContextJNDISelector(defaultLoggerContext);
+		} else {
+			contextSelector = dynamicalContextSelector(defaultLoggerContext, contextSelectorStr);
+		}
+	}
 
-    /**
-     * Instantiate the context selector class designated by the user. The selector
-     * must have a constructor taking a LoggerContext instance as an argument.
-     * 
-     * @param defaultLoggerContext
-     * @param contextSelectorStr
-     * @return an instance of the designated context selector class
-     * @throws ClassNotFoundException
-     * @throws SecurityException
-     * @throws NoSuchMethodException
-     * @throws IllegalArgumentException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws InvocationTargetException
-     */
-    static ContextSelector dynamicalContextSelector(LoggerContext defaultLoggerContext, String contextSelectorStr) throws ClassNotFoundException,
-                    SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-                    InvocationTargetException {
-        Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
-        Constructor<?> cons = contextSelectorClass.getConstructor(new Class[] { LoggerContext.class });
-        return (ContextSelector) cons.newInstance(defaultLoggerContext);
-    }
+	/**
+	 * Instantiate the context selector class designated by the user. The selector
+	 * must have a constructor taking a LoggerContext instance as an argument.
+	 *
+	 * @param defaultLoggerContext
+	 * @param contextSelectorStr
+	 * @return an instance of the designated context selector class
+	 * @throws ClassNotFoundException
+	 * @throws SecurityException
+	 * @throws NoSuchMethodException
+	 * @throws IllegalArgumentException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
+	static ContextSelector dynamicalContextSelector(final LoggerContext defaultLoggerContext, final String contextSelectorStr) throws ClassNotFoundException,
+	SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException,
+	InvocationTargetException {
+		final Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
+		final Constructor<?> cons = contextSelectorClass.getConstructor(LoggerContext.class);
+		return (ContextSelector) cons.newInstance(defaultLoggerContext);
+	}
 
-    public ContextSelector getContextSelector() {
-        return contextSelector;
-    }
+	public ContextSelector getContextSelector() {
+		return contextSelector;
+	}
 
 }

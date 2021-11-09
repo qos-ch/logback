@@ -17,7 +17,7 @@ import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import ch.qos.logback.core.joran.action.EventEvaluatorAction;
 
 public class ClassicEvaluatorAction extends EventEvaluatorAction {
-    protected String defaultClassName() {
-        return JaninoEventEvaluator.class.getName();
-    }
+	protected String defaultClassName() {
+		return JaninoEventEvaluator.class.getName();
+	}
 }

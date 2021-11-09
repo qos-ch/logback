@@ -34,11 +34,11 @@ import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * 
+ *
  * An InterpretationContext contains the contextual state of a Joran parsing
  * session. {@link Action} objects depend on this context to exchange and store
  * information.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class InterpretationContext extends ContextAwareBase implements PropertyContainer {
@@ -51,17 +51,17 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 
 	final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
 	final List<String> startedDependencies = new ArrayList<>();
-	
+
 	SaxEventInterpreter saxEventInterpreter;
 	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
 	private BeanDescriptionCache beanDescriptionCache;
 
-	public InterpretationContext(Context context, SaxEventInterpreter saxEventInterpreter) {
+	public InterpretationContext(final Context context, final SaxEventInterpreter saxEventInterpreter) {
 		this.context = context;
 		this.saxEventInterpreter = saxEventInterpreter;
-		this.objectStack = new Stack<>();
-		this.modelStack = new Stack<>();
-		this.implicitActionDataStack = new Stack<>();
+		objectStack = new Stack<>();
+		modelStack = new Stack<>();
+		implicitActionDataStack = new Stack<>();
 
 		objectMap = new HashMap<>(5);
 		propertiesMap = new HashMap<>(5);
@@ -78,32 +78,35 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		return defaultNestedComponentRegistry;
 	}
 
+	@Override
 	public Map<String, String> getCopyOfPropertyMap() {
-		return new HashMap<String, String>(propertiesMap);
+		return new HashMap<>(propertiesMap);
 	}
 
-	void setPropertiesMap(Map<String, String> propertiesMap) {
+	void setPropertiesMap(final Map<String, String> propertiesMap) {
 		this.propertiesMap = propertiesMap;
 	}
 
 	public HashMap<Model, List<String>> getDependenciesMap() {
 		return dependenciesMap;
 	}
-	
-	public boolean hasDependencies(String name) {
-		
-		Collection<List<String>> nameLists = dependenciesMap.values();
-		if(nameLists == null || nameLists.isEmpty())
+
+	public boolean hasDependencies(final String name) {
+
+		final Collection<List<String>> nameLists = dependenciesMap.values();
+		if(nameLists == null || nameLists.isEmpty()) {
 			return false;
-		
-		for(List<String> aList: nameLists) {
-			if(aList.contains(name))
+		}
+
+		for(final List<String> aList: nameLists) {
+			if(aList.contains(name)) {
 				return true;
+			}
 		}
 		return false;
 	}
 
-	public void addDependency(Model model, String ref) {
+	public void addDependency(final Model model, final String ref) {
 		List<String> refList = dependenciesMap.get(model);
 		if(refList == null) {
 			refList = new ArrayList<>();
@@ -112,28 +115,26 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		dependenciesMap.put(model, refList);
 	}
 
-	public List<String> getDependencies(Model model) {
+	public List<String> getDependencies(final Model model) {
 		return dependenciesMap.get(model);
 	}
-	
-	String updateLocationInfo(String msg) {
-		Locator locator = saxEventInterpreter.getLocator();
+
+	String updateLocationInfo(final String msg) {
+		final Locator locator = saxEventInterpreter.getLocator();
 
 		if (locator != null) {
 			return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
-		} else {
-			return msg;
 		}
+		return msg;
 	}
 
 	public String getLineNumber() {
-		Locator locator = saxEventInterpreter.getLocator();
+		final Locator locator = saxEventInterpreter.getLocator();
 
 		if (locator != null) {
 			return Integer.toString(locator.getLineNumber());
-		} else {
-			return "NA";
 		}
+		return "NA";
 	}
 
 	public Locator getLocator() {
@@ -153,12 +154,13 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	 *             instead
 	 * @return
 	 */
+	@Deprecated
 	public boolean isEmpty() {
 		return isObjectStackEmpty();
 	}
 
 	/**
-	 * 
+	 *
 	 * @return whether the objectStack is empty or not
 	 */
 	public boolean isObjectStackEmpty() {
@@ -169,7 +171,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		return objectStack.peek();
 	}
 
-	public void pushObject(Object o) {
+	public void pushObject(final Object o) {
 		objectStack.push(o);
 	}
 
@@ -193,7 +195,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		return modelStack.peek();
 	}
 
-	public void pushModel(Model m) {
+	public void pushModel(final Model m) {
 		modelStack.push(m);
 	}
 
@@ -204,14 +206,14 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	public Model popModel() {
 		return modelStack.pop();
 	}
-	
+
 	public Stack<Model> getCopyOfModelStack() {
-		Stack<Model> copy = new Stack<>();
+		final Stack<Model> copy = new Stack<>();
 		copy.addAll(modelStack);
 		return copy;
 	}
 
-	public Object getObject(int i) {
+	public Object getObject(final int i) {
 		return objectStack.get(i);
 	}
 
@@ -223,7 +225,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	 * Add a property to the properties of this execution context. If the property
 	 * exists already, it is overwritten.
 	 */
-	public void addSubstitutionProperty(String key, String value) {
+	public void addSubstitutionProperty(final String key, String value) {
 		if (key == null || value == null) {
 			return;
 		}
@@ -232,13 +234,13 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		propertiesMap.put(key, value);
 	}
 
-	public void addSubstitutionProperties(Properties props) {
+	public void addSubstitutionProperties(final Properties props) {
 		if (props == null) {
 			return;
 		}
-		for (Object keyObject : props.keySet()) {
-			String key = (String) keyObject;
-			String val = props.getProperty(key);
+		for (final Object keyObject : props.keySet()) {
+			final String key = (String) keyObject;
+			final String val = props.getProperty(key);
 			addSubstitutionProperty(key, val);
 		}
 	}
@@ -247,35 +249,35 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 	 * If a key is found in propertiesMap then return it. Otherwise, delegate to the
 	 * context.
 	 */
-	public String getProperty(String key) {
-		String v = propertiesMap.get(key);
+	@Override
+	public String getProperty(final String key) {
+		final String v = propertiesMap.get(key);
 		if (v != null) {
 			return v;
-		} else {
-			return context.getProperty(key);
 		}
+		return context.getProperty(key);
 	}
 
-	public String subst(String value) {
+	public String subst(final String value) {
 		if (value == null) {
 			return null;
 		}
-		
+
 		try  {
-		  return OptionHelper.substVars(value, this, context);
+			return OptionHelper.substVars(value, this, context);
 		} catch(ScanException|IllegalArgumentException e) {
 			addError("Problem while parsing ["+value+"]", e);
 			return value;
 		}
 	}
 
-	public void markStartOfNamedDependency(String name) {
+	public void markStartOfNamedDependency(final String name) {
 		startedDependencies.add(name);
 	}
-	public boolean isNamedDependencyStarted(String name) {
+	public boolean isNamedDependencyStarted(final String name) {
 		return startedDependencies.contains(name);
 	}
 
-	
+
 
 }

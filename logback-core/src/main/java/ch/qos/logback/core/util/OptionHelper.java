@@ -28,45 +28,44 @@ import ch.qos.logback.core.subst.NodeToStringTransformer;
  */
 public class OptionHelper {
 
-	public static Object instantiateByClassName(String className, Class<?> superClass, Context context)
+	public static Object instantiateByClassName(final String className, final Class<?> superClass, final Context context)
 			throws IncompatibleClassException, DynamicClassLoadingException {
-		ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
+		final ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
 		return instantiateByClassName(className, superClass, classLoader);
 	}
 
-	public static Object instantiateByClassNameAndParameter(String className, Class<?> superClass, Context context,
-			Class<?> type, Object param) throws IncompatibleClassException, DynamicClassLoadingException {
-		ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
+	public static Object instantiateByClassNameAndParameter(final String className, final Class<?> superClass, final Context context,
+			final Class<?> type, final Object param) throws IncompatibleClassException, DynamicClassLoadingException {
+		final ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
 		return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
 	}
 
-	public static Object instantiateByClassName(String className, Class<?> superClass, ClassLoader classLoader)
+	public static Object instantiateByClassName(final String className, final Class<?> superClass, final ClassLoader classLoader)
 			throws IncompatibleClassException, DynamicClassLoadingException {
 		return instantiateByClassNameAndParameter(className, superClass, classLoader, null, null);
 	}
 
-	public static Object instantiateByClassNameAndParameter(String className, Class<?> superClass,
-			ClassLoader classLoader, Class<?> type, Object parameter)
-			throws IncompatibleClassException, DynamicClassLoadingException {
+	public static Object instantiateByClassNameAndParameter(final String className, final Class<?> superClass,
+			final ClassLoader classLoader, final Class<?> type, final Object parameter)
+					throws IncompatibleClassException, DynamicClassLoadingException {
 
 		if (className == null) {
 			throw new NullPointerException();
 		}
 		try {
-			Class<?> classObj = null;
+			Class<?> classObj;
 			classObj = classLoader.loadClass(className);
 			if (!superClass.isAssignableFrom(classObj)) {
 				throw new IncompatibleClassException(superClass, classObj);
 			}
 			if (type == null) {
 				return classObj.getConstructor().newInstance();
-			} else {
-				Constructor<?> constructor = classObj.getConstructor(type);
-				return constructor.newInstance(parameter);
 			}
-		} catch (IncompatibleClassException ice) {
+			final Constructor<?> constructor = classObj.getConstructor(type);
+			return constructor.newInstance(parameter);
+		} catch (final IncompatibleClassException ice) {
 			throw ice;
-		} catch (Throwable t) {
+		} catch (final Throwable t) {
 			throw new DynamicClassLoadingException("Failed to instantiate type " + className, t);
 		}
 	}
@@ -101,21 +100,21 @@ public class OptionHelper {
 	/**
 	 * @see #substVars(String, PropertyContainer, PropertyContainer)
 	 */
-	public static String substVars(String val, PropertyContainer pc1)  throws ScanException {
+	public static String substVars(final String val, final PropertyContainer pc1)  throws ScanException {
 		return substVars(val, pc1, null);
 	}
 
 	/**
 	 * See http://logback.qos.ch/manual/configuration.html#variableSubstitution
 	 */
-	public static String substVars(String input, PropertyContainer pc0, PropertyContainer pc1)  throws ScanException {
+	public static String substVars(final String input, final PropertyContainer pc0, final PropertyContainer pc1)  throws ScanException {
 		// may throw IllegalArgumentException or ScanException
 		return NodeToStringTransformer.substituteVariable(input, pc0, pc1);
 
 	}
 
-	public static String propertyLookup(String key, PropertyContainer pc1, PropertyContainer pc2) {
-		String value = null;
+	public static String propertyLookup(final String key, final PropertyContainer pc1, final PropertyContainer pc2) {
+		String value;
 		// first try the props passed as parameter
 		value = pc1.getProperty(key);
 
@@ -142,10 +141,10 @@ public class OptionHelper {
 	 * @return the string value of the system property, or the default value if
 	 *         there is no property with that key.
 	 */
-	public static String getSystemProperty(String key, String def) {
+	public static String getSystemProperty(final String key, final String def) {
 		try {
 			return System.getProperty(key, def);
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			return def;
 		}
 	}
@@ -156,10 +155,10 @@ public class OptionHelper {
 	 * @param key
 	 * @return value corresponding to key from the OS environment
 	 */
-	public static String getEnv(String key) {
+	public static String getEnv(final String key) {
 		try {
 			return System.getenv(key);
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			return null;
 		}
 	}
@@ -171,26 +170,26 @@ public class OptionHelper {
 	 * @param key The key to search for.
 	 * @return the string value of the system property.
 	 */
-	public static String getSystemProperty(String key) {
+	public static String getSystemProperty(final String key) {
 		try {
 			return System.getProperty(key);
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			return null;
 		}
 	}
 
-	public static void setSystemProperties(ContextAware contextAware, Properties props) {
-		for (Object o : props.keySet()) {
-			String key = (String) o;
-			String value = props.getProperty(key);
+	public static void setSystemProperties(final ContextAware contextAware, final Properties props) {
+		for (final Object o : props.keySet()) {
+			final String key = (String) o;
+			final String value = props.getProperty(key);
 			setSystemProperty(contextAware, key, value);
 		}
 	}
 
-	public static void setSystemProperty(ContextAware contextAware, String key, String value) {
+	public static void setSystemProperty(final ContextAware contextAware, final String key, final String value) {
 		try {
 			System.setProperty(key, value);
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			contextAware.addError("Failed to set system property [" + key + "]", e);
 		}
 	}
@@ -204,7 +203,7 @@ public class OptionHelper {
 	public static Properties getSystemProperties() {
 		try {
 			return System.getProperties();
-		} catch (SecurityException e) {
+		} catch (final SecurityException e) {
 			return new Properties();
 		}
 	}
@@ -217,13 +216,14 @@ public class OptionHelper {
 	 * @param key
 	 * @return
 	 */
-	static public String[] extractDefaultReplacement(String key) {
-		String[] result = new String[2];
-		if (key == null)
+	static public String[] extractDefaultReplacement(final String key) {
+		final String[] result = new String[2];
+		if (key == null) {
 			return result;
+		}
 
 		result[0] = key;
-		int d = key.indexOf(DELIM_DEFAULT);
+		final int d = key.indexOf(DELIM_DEFAULT);
 		if (d != -1) {
 			result[0] = key.substring(0, d);
 			result[1] = key.substring(d + DELIM_DEFAULT_LEN);
@@ -238,12 +238,12 @@ public class OptionHelper {
 	 * <p>
 	 * Case of value is unimportant.
 	 */
-	public static boolean toBoolean(String value, boolean dEfault) {
+	public static boolean toBoolean(final String value, final boolean dEfault) {
 		if (value == null) {
 			return dEfault;
 		}
 
-		String trimmedVal = value.trim();
+		final String trimmedVal = value.trim();
 
 		if ("true".equalsIgnoreCase(trimmedVal)) {
 			return true;
@@ -256,8 +256,8 @@ public class OptionHelper {
 		return dEfault;
 	}
 
-	public static boolean isNullOrEmpty(String str) {
-		return ((str == null) || CoreConstants.EMPTY_STRING.equals(str.trim()));
+	public static boolean isNullOrEmpty(final String str) {
+		return str == null || CoreConstants.EMPTY_STRING.equals(str.trim());
 	}
 
 }

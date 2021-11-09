@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling.helper;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.pattern.Converter;
@@ -23,211 +24,210 @@ import ch.qos.logback.core.pattern.ConverterUtil;
 import ch.qos.logback.core.pattern.LiteralConverter;
 import ch.qos.logback.core.pattern.parser.Node;
 import ch.qos.logback.core.pattern.parser.Parser;
-import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.ScanException;
 
 /**
  * After parsing file name patterns, given a number or a date, instances of this
  * class can be used to compute a file name according to the file name pattern
  * and the current date or integer.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class FileNamePattern extends ContextAwareBase {
 
-    static final Map<String, String> CONVERTER_MAP = new HashMap<String, String>();
-    static {
-        CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY, IntegerTokenConverter.class.getName());
-        CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter.class.getName());
-    }
+	static final Map<String, String> CONVERTER_MAP = new HashMap<>();
+	static {
+		CONVERTER_MAP.put(IntegerTokenConverter.CONVERTER_KEY, IntegerTokenConverter.class.getName());
+		CONVERTER_MAP.put(DateTokenConverter.CONVERTER_KEY, DateTokenConverter.class.getName());
+	}
 
-    String pattern;
-    Converter<Object> headTokenConverter;
+	String pattern;
+	Converter<Object> headTokenConverter;
 
-    public FileNamePattern(String patternArg, Context contextArg) {
-        // the pattern is slashified
-        setPattern(FileFilterUtil.slashify(patternArg));
-        setContext(contextArg);
-        parse();
-        ConverterUtil.startConverters(this.headTokenConverter);
-    }
-
-    
-    void parse() {
-        try {
-            // http://jira.qos.ch/browse/LOGBACK-197
-            // we escape ')' for parsing purposes. Note that the original pattern is preserved
-            // because it is shown to the user in status messages. We don't want the escaped version
-            // to leak out.
-            String patternForParsing = escapeRightParantesis(pattern);
-            Parser<Object> p = new Parser<Object>(patternForParsing, new AlmostAsIsEscapeUtil());
-            p.setContext(context);
-            Node t = p.parse();
-            this.headTokenConverter = p.compile(t, CONVERTER_MAP);
-
-        } catch (ScanException sce) {
-            addError("Failed to parse pattern \"" + pattern + "\".", sce);
-        }
-    }
-
-    String escapeRightParantesis(String in) {
-        return pattern.replace(")", "\\)");
-    }
-
-    public String toString() {
-        return pattern;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
-        return result;
-    }
+	public FileNamePattern(final String patternArg, final Context contextArg) {
+		// the pattern is slashified
+		setPattern(FileFilterUtil.slashify(patternArg));
+		setContext(contextArg);
+		parse();
+		ConverterUtil.startConverters(headTokenConverter);
+	}
 
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        FileNamePattern other = (FileNamePattern) obj;
-        if (pattern == null) {
-            if (other.pattern != null)
-                return false;
-        } else if (!pattern.equals(other.pattern))
-            return false;
-        return true;
-    }
+	void parse() {
+		try {
+			// http://jira.qos.ch/browse/LOGBACK-197
+			// we escape ')' for parsing purposes. Note that the original pattern is preserved
+			// because it is shown to the user in status messages. We don't want the escaped version
+			// to leak out.
+			final String patternForParsing = escapeRightParantesis(pattern);
+			final Parser<Object> p = new Parser<>(patternForParsing, new AlmostAsIsEscapeUtil());
+			p.setContext(context);
+			final Node t = p.parse();
+			headTokenConverter = p.compile(t, CONVERTER_MAP);
+
+		} catch (final ScanException sce) {
+			addError("Failed to parse pattern \"" + pattern + "\".", sce);
+		}
+	}
+
+	String escapeRightParantesis(final String in) {
+		return pattern.replace(")", "\\)");
+	}
+
+	@Override
+	public String toString() {
+		return pattern;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		return prime * result + (pattern == null ? 0 : pattern.hashCode());
+	}
 
 
-    public DateTokenConverter<Object> getPrimaryDateTokenConverter() {
-        Converter<Object> p = headTokenConverter;
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if ((obj == null) || (getClass() != obj.getClass())) {
+			return false;
+		}
+		final FileNamePattern other = (FileNamePattern) obj;
+		if (!Objects.equals(pattern, other.pattern)) {
+			return false;
+		}
+		return true;
+	}
 
-        while (p != null) {
-            if (p instanceof DateTokenConverter) {
-                DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
-                // only primary converters should be returned as
-                if (dtc.isPrimary())
-                    return dtc;
-            }
 
-            p = p.getNext();
-        }
+	public DateTokenConverter<Object> getPrimaryDateTokenConverter() {
+		Converter<Object> p = headTokenConverter;
 
-        return null;
-    }
+		while (p != null) {
+			if (p instanceof DateTokenConverter) {
+				final DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
+				// only primary converters should be returned as
+				if (dtc.isPrimary()) {
+					return dtc;
+				}
+			}
 
-    public IntegerTokenConverter getIntegerTokenConverter() {
-        Converter<Object> p = headTokenConverter;
+			p = p.getNext();
+		}
 
-        while (p != null) {
-            if (p instanceof IntegerTokenConverter) {
-                return (IntegerTokenConverter) p;
-            }
+		return null;
+	}
 
-            p = p.getNext();
-        }
-        return null;
-    }
+	public IntegerTokenConverter getIntegerTokenConverter() {
+		Converter<Object> p = headTokenConverter;
 
-    public boolean hasIntegerTokenCOnverter() {
-        IntegerTokenConverter itc = getIntegerTokenConverter();
-        return itc != null;
-    }
-    
-    public String convertMultipleArguments(Object... objectList) {
-        StringBuilder buf = new StringBuilder();
-        Converter<Object> c = headTokenConverter;
-        while (c != null) {
-            if (c instanceof MonoTypedConverter) {
-                MonoTypedConverter monoTyped = (MonoTypedConverter) c;
-                for (Object o : objectList) {
-                    if (monoTyped.isApplicable(o)) {
-                        buf.append(c.convert(o));
-                    }
-                }
-            } else {
-                buf.append(c.convert(objectList));
-            }
-            c = c.getNext();
-        }
-        return buf.toString();
-    }
+		while (p != null) {
+			if (p instanceof IntegerTokenConverter) {
+				return (IntegerTokenConverter) p;
+			}
 
-    public String convert(Object o) {
-        StringBuilder buf = new StringBuilder();
-        Converter<Object> p = headTokenConverter;
-        while (p != null) {
-            buf.append(p.convert(o));
-            p = p.getNext();
-        }
-        return buf.toString();
-    }
+			p = p.getNext();
+		}
+		return null;
+	}
 
-    public String convertInt(int i) {
-        return convert(i);
-    }
+	public boolean hasIntegerTokenCOnverter() {
+		final IntegerTokenConverter itc = getIntegerTokenConverter();
+		return itc != null;
+	}
 
-    public void setPattern(String pattern) {
-        if (pattern != null) {
-            // Trailing spaces in the pattern are assumed to be undesired.
-            this.pattern = pattern.trim();
-        }
-    }
+	public String convertMultipleArguments(final Object... objectList) {
+		final StringBuilder buf = new StringBuilder();
+		Converter<Object> c = headTokenConverter;
+		while (c != null) {
+			if (c instanceof MonoTypedConverter) {
+				final MonoTypedConverter monoTyped = (MonoTypedConverter) c;
+				for (final Object o : objectList) {
+					if (monoTyped.isApplicable(o)) {
+						buf.append(c.convert(o));
+					}
+				}
+			} else {
+				buf.append(c.convert(objectList));
+			}
+			c = c.getNext();
+		}
+		return buf.toString();
+	}
 
-    public String getPattern() {
-        return pattern;
-    }
+	public String convert(final Object o) {
+		final StringBuilder buf = new StringBuilder();
+		Converter<Object> p = headTokenConverter;
+		while (p != null) {
+			buf.append(p.convert(o));
+			p = p.getNext();
+		}
+		return buf.toString();
+	}
 
-    
-    /**
-     * Given date, convert this instance to a regular expression.
-     *
-     * Used to compute sub-regex when the pattern has both %d and %i, and the
-     * date is known.
-     * 
-     * @param date - known date
-     */
-    public String toRegexForFixedDate(Date date) {
-        StringBuilder buf = new StringBuilder();
-        Converter<Object> p = headTokenConverter;
-        while (p != null) {
-            if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
-            } else if (p instanceof IntegerTokenConverter) {
-                buf.append("(\\d+)");
-            } else if (p instanceof DateTokenConverter) {
-                buf.append(p.convert(date));
-            }
-            p = p.getNext();
-        }
-        return buf.toString();
-    }
+	public String convertInt(final int i) {
+		return convert(i);
+	}
 
-    /**
-     * Given date, convert this instance to a regular expression
-     */
-    public String toRegex() {
-        StringBuilder buf = new StringBuilder();
-        Converter<Object> p = headTokenConverter;
-        while (p != null) {
-            if (p instanceof LiteralConverter) {
-                buf.append(p.convert(null));
-            } else if (p instanceof IntegerTokenConverter) {
-                buf.append("\\d+");
-            } else if (p instanceof DateTokenConverter) {
-                DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
-                buf.append(dtc.toRegex());
-            }
-            p = p.getNext();
-        }
-        return buf.toString();
-    }
+	public void setPattern(final String pattern) {
+		if (pattern != null) {
+			// Trailing spaces in the pattern are assumed to be undesired.
+			this.pattern = pattern.trim();
+		}
+	}
+
+	public String getPattern() {
+		return pattern;
+	}
+
+
+	/**
+	 * Given date, convert this instance to a regular expression.
+	 *
+	 * Used to compute sub-regex when the pattern has both %d and %i, and the
+	 * date is known.
+	 *
+	 * @param date - known date
+	 */
+	public String toRegexForFixedDate(final Date date) {
+		final StringBuilder buf = new StringBuilder();
+		Converter<Object> p = headTokenConverter;
+		while (p != null) {
+			if (p instanceof LiteralConverter) {
+				buf.append(p.convert(null));
+			} else if (p instanceof IntegerTokenConverter) {
+				buf.append("(\\d+)");
+			} else if (p instanceof DateTokenConverter) {
+				buf.append(p.convert(date));
+			}
+			p = p.getNext();
+		}
+		return buf.toString();
+	}
+
+	/**
+	 * Given date, convert this instance to a regular expression
+	 */
+	public String toRegex() {
+		final StringBuilder buf = new StringBuilder();
+		Converter<Object> p = headTokenConverter;
+		while (p != null) {
+			if (p instanceof LiteralConverter) {
+				buf.append(p.convert(null));
+			} else if (p instanceof IntegerTokenConverter) {
+				buf.append("\\d+");
+			} else if (p instanceof DateTokenConverter) {
+				final DateTokenConverter<Object> dtc = (DateTokenConverter<Object>) p;
+				buf.append(dtc.toRegex());
+			}
+			p = p.getNext();
+		}
+		return buf.toString();
+	}
 }

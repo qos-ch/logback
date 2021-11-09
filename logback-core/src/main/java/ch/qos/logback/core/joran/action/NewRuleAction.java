@@ -15,54 +15,56 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.ElementSelector;
+import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class NewRuleAction extends Action {
-    boolean inError = false;
+	boolean inError = false;
 
-    /**
-     * Instantiates an layout of the given class and sets its name.
-     */
-    public void begin(InterpretationContext ec, String localName, Attributes attributes) {
-        // Let us forget about previous errors (in this object)
-        inError = false;
-        String errorMsg;
-        String pattern = attributes.getValue(Action.PATTERN_ATTRIBUTE);
-        String actionClass = attributes.getValue(Action.ACTION_CLASS_ATTRIBUTE);
+	/**
+	 * Instantiates an layout of the given class and sets its name.
+	 */
+	@Override
+	public void begin(final InterpretationContext ec, final String localName, final Attributes attributes) {
+		// Let us forget about previous errors (in this object)
+		inError = false;
+		String errorMsg;
+		final String pattern = attributes.getValue(Action.PATTERN_ATTRIBUTE);
+		final String actionClass = attributes.getValue(Action.ACTION_CLASS_ATTRIBUTE);
 
-        if (OptionHelper.isNullOrEmpty(pattern)) {
-            inError = true;
-            errorMsg = "No 'pattern' attribute in <newRule>";
-            addError(errorMsg);
-            return;
-        }
+		if (OptionHelper.isNullOrEmpty(pattern)) {
+			inError = true;
+			errorMsg = "No 'pattern' attribute in <newRule>";
+			addError(errorMsg);
+			return;
+		}
 
-        if (OptionHelper.isNullOrEmpty(actionClass)) {
-            inError = true;
-            errorMsg = "No 'actionClass' attribute in <newRule>";
-            addError(errorMsg);
-            return;
-        }
+		if (OptionHelper.isNullOrEmpty(actionClass)) {
+			inError = true;
+			errorMsg = "No 'actionClass' attribute in <newRule>";
+			addError(errorMsg);
+			return;
+		}
 
-        try {
-            addInfo("About to add new Joran parsing rule [" + pattern + "," + actionClass + "].");
-            ec.getSaxEventInterpreter().getRuleStore().addRule(new ElementSelector(pattern), actionClass);
-        } catch (Exception oops) {
-            inError = true;
-            errorMsg = "Could not add new Joran parsing rule [" + pattern + "," + actionClass + "]";
-            addError(errorMsg);
-        }
-    }
+		try {
+			addInfo("About to add new Joran parsing rule [" + pattern + "," + actionClass + "].");
+			ec.getSaxEventInterpreter().getRuleStore().addRule(new ElementSelector(pattern), actionClass);
+		} catch (final Exception oops) {
+			inError = true;
+			errorMsg = "Could not add new Joran parsing rule [" + pattern + "," + actionClass + "]";
+			addError(errorMsg);
+		}
+	}
 
-    /**
-     * Once the children elements are also parsed, now is the time to activate the
-     * appender options.
-     */
-    public void end(InterpretationContext ec, String n) {
-    }
+	/**
+	 * Once the children elements are also parsed, now is the time to activate the
+	 * appender options.
+	 */
+	@Override
+	public void end(final InterpretationContext ec, final String n) {
+	}
 
-    public void finish(InterpretationContext ec) {
-    }
+	public void finish(final InterpretationContext ec) {
+	}
 }

@@ -58,64 +58,70 @@ import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
  */
 public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
-    @Override
-    public void addInstanceRules(RuleStore rs) {
-        super.addInstanceRules(rs);
+	@Override
+	public void addInstanceRules(final RuleStore rs) {
+		super.addInstanceRules(rs);
 
-        rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
-        rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
-        rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
-    }
+		rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
+		rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
+		rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
+	}
 
-    @Override
-    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-    	DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
-        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
-        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
-        
-        
-        defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
-        defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
- 
-        injectModelFilters(defaultProcessor);
-        
-    	return defaultProcessor;
-    	
-    }
+	@Override
+	protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
+		final DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+		defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
+		defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
+		defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
 
-	private void injectModelFilters(DefaultProcessor defaultProcessor) {
+
+		defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
+		defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
+
+		injectModelFilters(defaultProcessor);
+
+		return defaultProcessor;
+
+	}
+
+	private void injectModelFilters(final DefaultProcessor defaultProcessor) {
 		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { 
-				DefineModel.class, 
-				PropertyModel.class, 
-				TimestampModel.class, 
+		final
+		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] {
+				DefineModel.class,
+				PropertyModel.class,
+				TimestampModel.class,
 				ParamModel.class};
 
 		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] implicitModelClasses = new Class[] { 
-				ImplicitModel.class, 
+		final
+		Class<? extends Model>[] implicitModelClasses = new Class[] {
+				ImplicitModel.class,
 				ParamModel.class};
 
 		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { 
-				ConfigurationModel.class, 
+		final
+		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] {
+				ConfigurationModel.class,
 				EventEvaluatorModel.class,
-				ShutdownHookModel.class, 
-				EventEvaluatorModel.class, 
+				ShutdownHookModel.class,
+				EventEvaluatorModel.class,
 				IncludeModel.class,
-				};
+		};
 
 
 
-		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
-		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
+		final ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+		for (final Class<? extends Model> modelClass : variableDefinitionModelClasses) {
 			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
+		}
+		for (final Class<? extends Model> modelClass : otherFirstPhaseModelClasses) {
 			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : implicitModelClasses)
+		}
+		for (final Class<? extends Model> modelClass : implicitModelClasses) {
 			fistPhaseDefintionFilter.allow(modelClass);
-		
+		}
+
 		fistPhaseDefintionFilter.denyAll();
 		defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
 
@@ -124,16 +130,16 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 		defaultProcessor.setPhaseTwoFilter(new AllowAllModelFilter());
 
 	}
-	
-	
-    @Override
-    protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-        registry.add(AppenderBase.class, "layout", PatternLayout.class);
-        registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
 
-        registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
-        registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
-        SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
-    }
+
+	@Override
+	protected void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {
+		registry.add(AppenderBase.class, "layout", PatternLayout.class);
+		registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
+
+		registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
+		registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
+		SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
+	}
 
 }

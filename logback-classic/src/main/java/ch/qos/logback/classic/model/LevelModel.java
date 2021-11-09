@@ -5,7 +5,7 @@ import ch.qos.logback.core.model.Model;
 public class LevelModel extends Model {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7287549849308062148L;
 	String value;
@@ -14,10 +14,10 @@ public class LevelModel extends Model {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public void setValue(final String value) {
 		this.value = value;
 	}
 
 
-	
+
 }

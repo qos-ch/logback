@@ -6,5 +6,5 @@ import ch.qos.logback.core.model.processor.ModelHandlerBase;
 
 public interface ModelFactoryMethod {
 
-	public ModelHandlerBase make(Context context, InterpretationContext ic);
+	ModelHandlerBase make(Context context, InterpretationContext ic);
 }

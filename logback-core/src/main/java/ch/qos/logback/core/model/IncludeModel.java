@@ -5,7 +5,7 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 public class IncludeModel extends Model {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7613821942841993495L;
 	String optional;
@@ -13,14 +13,14 @@ public class IncludeModel extends Model {
 	String url;
 	String resource;
 	ElementPath elementPath;
-	
+
 
 
 	public String getOptional() {
 		return optional;
 	}
 
-	public void setOptional(String optional) {
+	public void setOptional(final String optional) {
 		this.optional = optional;
 	}
 
@@ -28,7 +28,7 @@ public class IncludeModel extends Model {
 		return file;
 	}
 
-	public void setFile(String file) {
+	public void setFile(final String file) {
 		this.file = file;
 	}
 
@@ -36,7 +36,7 @@ public class IncludeModel extends Model {
 		return url;
 	}
 
-	public void setUrl(String url) {
+	public void setUrl(final String url) {
 		this.url = url;
 	}
 
@@ -44,15 +44,15 @@ public class IncludeModel extends Model {
 		return resource;
 	}
 
-	public void setResource(String resource) {
+	public void setResource(final String resource) {
 		this.resource = resource;
 	}
-	
+
 	public ElementPath getElementPath() {
 		return elementPath;
 	}
 
-	public void setElementPath(ElementPath elementPath) {
+	public void setElementPath(final ElementPath elementPath) {
 		this.elementPath = elementPath;
 	}
 

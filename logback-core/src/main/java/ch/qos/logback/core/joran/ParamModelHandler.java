@@ -13,12 +13,12 @@ public class ParamModelHandler extends ModelHandlerBase {
 
 	private final BeanDescriptionCache beanDescriptionCache;
 
-	public ParamModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
+	public ParamModelHandler(final Context context, final BeanDescriptionCache beanDescriptionCache) {
 		super(context);
 		this.beanDescriptionCache = beanDescriptionCache;
 	}
-	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new ParamModelHandler(context, ic.getBeanDescriptionCache());
 	}
 
@@ -28,20 +28,20 @@ public class ParamModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
 
-		ParamModel paramModel = (ParamModel) model;
+		final ParamModel paramModel = (ParamModel) model;
 
-		String valueStr = intercon.subst(paramModel.getValue());
+		final String valueStr = intercon.subst(paramModel.getValue());
 
-		Object o = intercon.peekObject();
+		final Object o = intercon.peekObject();
 
-		PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
+		final PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
 		propSetter.setContext(context);
 
 		// allow for variable substitution for name as well
-		String finalName = intercon.subst(paramModel.getName());
-	     propSetter.setProperty(finalName, valueStr);
+		final String finalName = intercon.subst(paramModel.getName());
+		propSetter.setProperty(finalName, valueStr);
 	}
 
 }

@@ -17,28 +17,28 @@ import java.util.Iterator;
 
 public interface Status {
 
-    int INFO = 0;
-    int WARN = 1;
-    int ERROR = 2;
+	int INFO = 0;
+	int WARN = 1;
+	int ERROR = 2;
 
-    int getLevel();
+	int getLevel();
 
-    int getEffectiveLevel();
+	int getEffectiveLevel();
 
-    Object getOrigin();
+	Object getOrigin();
 
-    String getMessage();
+	String getMessage();
 
-    Throwable getThrowable();
+	Throwable getThrowable();
 
-    Long getDate();
+	Long getDate();
 
-    boolean hasChildren();
+	boolean hasChildren();
 
-    void add(Status child);
+	void add(Status child);
 
-    boolean remove(Status child);
+	boolean remove(Status child);
 
-    Iterator<Status> iterator();
+	Iterator<Status> iterator();
 
 }

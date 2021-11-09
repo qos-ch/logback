@@ -20,7 +20,7 @@ import ch.qos.logback.classic.Logger;
 /**
  * A trivial implementation LoggingEventBuilder which builds on
  * DefaultLoggingEventBuilder.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
@@ -28,15 +28,15 @@ public class LogbackLoggingEventBuilder extends DefaultLoggingEventBuilder {
 
 	LoggingEvent loggingEvent;
 
-    public static final String FQCN = LogbackLoggingEventBuilder.class.getName();
+	public static final String FQCN = LogbackLoggingEventBuilder.class.getName();
 
-	public LogbackLoggingEventBuilder(Logger logger, org.slf4j.event.Level level) {
+	public LogbackLoggingEventBuilder(final Logger logger, final org.slf4j.event.Level level) {
 		super(logger, level);
 	}
 
 	@Override
-	protected void log(org.slf4j.event.LoggingEvent sle) {
-		Logger logbackLogger = (Logger) this.logger;
+	protected void log(final org.slf4j.event.LoggingEvent sle) {
+		final Logger logbackLogger = (Logger) logger;
 		logbackLogger.log(sle);
 	}
 

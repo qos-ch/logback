@@ -21,32 +21,35 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * Return the event's marker value(s).
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class MarkerConverter extends ClassicConverter {
 
-    private static String EMPTY = "";
+	private static String EMPTY = "";
 
-    public String convert(ILoggingEvent le) {
-        List<Marker> markers = le.getMarkerList();
-        if (markers == null || markers.isEmpty()) {
-            return EMPTY;
-        } 
-        int size = markers.size() ;
-        
-        if(size == 1)
-            return markers.get(0).toString();
-        
-        StringBuffer buf = new StringBuffer(32);
-        for(int i = 0; i < size; i++) {
-        	if(i != 0)
-        		buf.append(' ');
-        	Marker m = markers.get(i);
-        	buf.append(m.toString());
-        }
-        return buf.toString();
-        
-    }
+	@Override
+	public String convert(final ILoggingEvent le) {
+		final List<Marker> markers = le.getMarkerList();
+		if (markers == null || markers.isEmpty()) {
+			return EMPTY;
+		}
+		final int size = markers.size() ;
+
+		if(size == 1) {
+			return markers.get(0).toString();
+		}
+
+		final StringBuilder buf = new StringBuilder(32);
+		for(int i = 0; i < size; i++) {
+			if(i != 0) {
+				buf.append(' ');
+			}
+			final Marker m = markers.get(i);
+			buf.append(m.toString());
+		}
+		return buf.toString();
+
+	}
 
 }

@@ -16,13 +16,13 @@ public class ChainedModelFilter implements ModelFiler {
 	static public ChainedModelFilter newInstance() {
 		return new ChainedModelFilter();
 	}
-	
-	public  ChainedModelFilter allow(Class<? extends Model> allowedType) {
+
+	public  ChainedModelFilter allow(final Class<? extends Model> allowedType) {
 		modelFilters.add(new AllowModelFilter(allowedType));
 		return this;
 	}
 
-	public  ChainedModelFilter deny(Class<? extends Model> allowedType) {
+	public  ChainedModelFilter deny(final Class<? extends Model> allowedType) {
 		modelFilters.add(new DenyModelFilter(allowedType));
 		return this;
 	}
@@ -39,11 +39,11 @@ public class ChainedModelFilter implements ModelFiler {
 	}
 
 	@Override
-	public FilterReply decide(Model model) {
-		
-		for(ModelFiler modelFilter: modelFilters) {
-			FilterReply reply = modelFilter.decide(model);
-			
+	public FilterReply decide(final Model model) {
+
+		for(final ModelFiler modelFilter: modelFilters) {
+			final FilterReply reply = modelFilter.decide(model);
+
 			switch(reply) {
 			case ACCEPT:
 			case DENY:

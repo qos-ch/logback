@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -26,82 +26,83 @@ import java.util.regex.Pattern;
  */
 public class StringCollectionUtil {
 
-    /**
-     * Retains all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
-     * <p>
-     * This method is a convenience overload for
-     * {@link #retainMatching(Collection, Collection)}.
-     *   
-     * @param values subject value collection 
-     * @param patterns patterns to match
-     */
-    public static void retainMatching(Collection<String> values, String... patterns) {
-        retainMatching(values, Arrays.asList(patterns));
-    }
+	/**
+	 * Retains all values in the subject collection that are matched by
+	 * at least one of a collection of regular expressions.
+	 * <p>
+	 * This method is a convenience overload for
+	 * {@link #retainMatching(Collection, Collection)}.
+	 *
+	 * @param values subject value collection
+	 * @param patterns patterns to match
+	 */
+	public static void retainMatching(final Collection<String> values, final String... patterns) {
+		retainMatching(values, Arrays.asList(patterns));
+	}
 
-    /**
-     * Retains all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
-     * <p>
-     * The semantics of this method are conceptually similar to
-     * {@link Collection#retainAll(Collection)}, but uses pattern matching
-     * instead of exact matching.
-     * 
-     * @param values subject value collection 
-     * @param patterns patterns to match
-     */
-    public static void retainMatching(Collection<String> values, Collection<String> patterns) {
-        if (patterns.isEmpty())
-            return;
-        List<String> matches = new ArrayList<String>(values.size());
-        for (String p : patterns) {
-            Pattern pattern = Pattern.compile(p);
-            for (String value : values) {
-                if (pattern.matcher(value).matches()) {
-                    matches.add(value);
-                }
-            }
-        }
-        values.retainAll(matches);
-    }
+	/**
+	 * Retains all values in the subject collection that are matched by
+	 * at least one of a collection of regular expressions.
+	 * <p>
+	 * The semantics of this method are conceptually similar to
+	 * {@link Collection#retainAll(Collection)}, but uses pattern matching
+	 * instead of exact matching.
+	 *
+	 * @param values subject value collection
+	 * @param patterns patterns to match
+	 */
+	public static void retainMatching(final Collection<String> values, final Collection<String> patterns) {
+		if (patterns.isEmpty()) {
+			return;
+		}
+		final List<String> matches = new ArrayList<>(values.size());
+		for (final String p : patterns) {
+			final Pattern pattern = Pattern.compile(p);
+			for (final String value : values) {
+				if (pattern.matcher(value).matches()) {
+					matches.add(value);
+				}
+			}
+		}
+		values.retainAll(matches);
+	}
 
-    /**
-     * Removes all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
-     * <p>
-     * This method is a convenience overload for
-     * {@link #removeMatching(Collection, Collection)}.
-     * 
-     * @param values subject value collection 
-     * @param patterns patterns to match
-     */
-    public static void removeMatching(Collection<String> values, String... patterns) {
-        removeMatching(values, Arrays.asList(patterns));
-    }
+	/**
+	 * Removes all values in the subject collection that are matched by
+	 * at least one of a collection of regular expressions.
+	 * <p>
+	 * This method is a convenience overload for
+	 * {@link #removeMatching(Collection, Collection)}.
+	 *
+	 * @param values subject value collection
+	 * @param patterns patterns to match
+	 */
+	public static void removeMatching(final Collection<String> values, final String... patterns) {
+		removeMatching(values, Arrays.asList(patterns));
+	}
 
-    /**
-     * Removes all values in the subject collection that are matched by
-     * at least one of a collection of regular expressions.
-     * <p>
-     * The semantics of this method are conceptually similar to
-     * {@link Collection#removeAll(Collection)}, but uses pattern matching
-     * instead of exact matching.
-     * 
-     * @param values subject value collection 
-     * @param patterns patterns to match
-     */
-    public static void removeMatching(Collection<String> values, Collection<String> patterns) {
-        List<String> matches = new ArrayList<String>(values.size());
-        for (String p : patterns) {
-            Pattern pattern = Pattern.compile(p);
-            for (String value : values) {
-                if (pattern.matcher(value).matches()) {
-                    matches.add(value);
-                }
-            }
-        }
-        values.removeAll(matches);
-    }
+	/**
+	 * Removes all values in the subject collection that are matched by
+	 * at least one of a collection of regular expressions.
+	 * <p>
+	 * The semantics of this method are conceptually similar to
+	 * {@link Collection#removeAll(Collection)}, but uses pattern matching
+	 * instead of exact matching.
+	 *
+	 * @param values subject value collection
+	 * @param patterns patterns to match
+	 */
+	public static void removeMatching(final Collection<String> values, final Collection<String> patterns) {
+		final List<String> matches = new ArrayList<>(values.size());
+		for (final String p : patterns) {
+			final Pattern pattern = Pattern.compile(p);
+			for (final String value : values) {
+				if (pattern.matcher(value).matches()) {
+					matches.add(value);
+				}
+			}
+		}
+		values.removeAll(matches);
+	}
 
 }

@@ -23,113 +23,113 @@ import java.util.List;
  * @since 1.1.0
  */
 public class ElementPath {
-    // contains String instances
-    ArrayList<String> partList = new ArrayList<String>();
+	// contains String instances
+	ArrayList<String> partList = new ArrayList<>();
 
-    public ElementPath() {
-    }
+	public ElementPath() {
+	}
 
-    public ElementPath(List<String> list) {
-        partList.addAll(list);
-    }
+	public ElementPath(final List<String> list) {
+		partList.addAll(list);
+	}
 
-    /**
-     * Build an elementPath from a string.
-     * <p>
-     * Note that "/x" is considered equivalent to "x" and to "x/"
-     */
-    public ElementPath(String pathStr) {
-        if (pathStr == null) {
-            return;
-        }
+	/**
+	 * Build an elementPath from a string.
+	 * <p>
+	 * Note that "/x" is considered equivalent to "x" and to "x/"
+	 */
+	public ElementPath(final String pathStr) {
+		if (pathStr == null) {
+			return;
+		}
 
-        String[] partArray = pathStr.split("/");
-        if (partArray == null)
-            return;
+		final String[] partArray = pathStr.split("/");
+		if (partArray == null) {
+			return;
+		}
 
-        for (String part : partArray) {
-            if (part.length() > 0) {
-                partList.add(part);
-            }
-        }
-    }
+		for (final String part : partArray) {
+			if (part.length() > 0) {
+				partList.add(part);
+			}
+		}
+	}
 
-    public ElementPath duplicate() {
-        ElementPath p = new ElementPath();
-        p.partList.addAll(this.partList);
-        return p;
-    }
+	public ElementPath duplicate() {
+		final ElementPath p = new ElementPath();
+		p.partList.addAll(partList);
+		return p;
+	}
 
-    // Joran error skipping relies on the equals method
-    @Override
-    public boolean equals(Object o) {
-        if ((o == null) || !(o instanceof ElementPath)) {
-            return false;
-        }
+	// Joran error skipping relies on the equals method
+	@Override
+	public boolean equals(final Object o) {
+		if (o == null || !(o instanceof ElementPath)) {
+			return false;
+		}
 
-        ElementPath r = (ElementPath) o;
+		final ElementPath r = (ElementPath) o;
 
-        if (r.size() != size()) {
-            return false;
-        }
+		if (r.size() != size()) {
+			return false;
+		}
 
-        int len = size();
+		final int len = size();
 
-        for (int i = 0; i < len; i++) {
-            if (!equalityCheck(get(i), r.get(i))) {
-                return false;
-            }
-        }
+		for (int i = 0; i < len; i++) {
+			if (!equalityCheck(get(i), r.get(i))) {
+				return false;
+			}
+		}
 
-        // if everything matches, then the two patterns are equal
-        return true;
-    }
+		// if everything matches, then the two patterns are equal
+		return true;
+	}
 
-    private boolean equalityCheck(String x, String y) {
-        return x.equalsIgnoreCase(y);
-    }
+	private boolean equalityCheck(final String x, final String y) {
+		return x.equalsIgnoreCase(y);
+	}
 
-    public List<String> getCopyOfPartList() {
-        return new ArrayList<String>(partList);
-    }
+	public List<String> getCopyOfPartList() {
+		return new ArrayList<>(partList);
+	}
 
-    public void push(String s) {
-        partList.add(s);
-    }
+	public void push(final String s) {
+		partList.add(s);
+	}
 
-    public String get(int i) {
-        return (String) partList.get(i);
-    }
+	public String get(final int i) {
+		return partList.get(i);
+	}
 
-    public void pop() {
-        if (!partList.isEmpty()) {
-            partList.remove(partList.size() - 1);
-        }
-    }
+	public void pop() {
+		if (!partList.isEmpty()) {
+			partList.remove(partList.size() - 1);
+		}
+	}
 
-    public String peekLast() {
-        if (!partList.isEmpty()) {
-            int size = partList.size();
-            return (String) partList.get(size - 1);
-        } else {
-            return null;
-        }
-    }
+	public String peekLast() {
+		if (!partList.isEmpty()) {
+			final int size = partList.size();
+			return partList.get(size - 1);
+		}
+		return null;
+	}
 
-    public int size() {
-        return partList.size();
-    }
+	public int size() {
+		return partList.size();
+	}
 
-    protected String toStableString() {
-        StringBuilder result = new StringBuilder();
-        for (String current : partList) {
-            result.append("[").append(current).append("]");
-        }
-        return result.toString();
-    }
+	protected String toStableString() {
+		final StringBuilder result = new StringBuilder();
+		for (final String current : partList) {
+			result.append("[").append(current).append("]");
+		}
+		return result.toString();
+	}
 
-    @Override
-    public String toString() {
-        return toStableString();
-    }
+	@Override
+	public String toString() {
+		return toStableString();
+	}
 }

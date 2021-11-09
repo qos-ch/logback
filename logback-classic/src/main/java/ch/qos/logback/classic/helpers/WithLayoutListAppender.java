@@ -22,7 +22,7 @@ import ch.qos.logback.core.AppenderBase;
 
 /**
  * An appender used for testing.
- * 
+ *
  * @author ceki
  * @param <E>
  * @since 1.3.0
@@ -45,12 +45,14 @@ public class WithLayoutListAppender extends AppenderBase<ILoggingEvent> {
 		patternLayout.setContext(context);
 		patternLayout.setPattern(pattern);
 		patternLayout.start();
-		if (patternLayout.isStarted())
+		if (patternLayout.isStarted()) {
 			super.start();
+		}
 	}
 
-	protected void append(ILoggingEvent e) {
-		String result = patternLayout.doLayout(e);
+	@Override
+	protected void append(final ILoggingEvent e) {
+		final String result = patternLayout.doLayout(e);
 		list.add(result);
 	}
 
@@ -58,7 +60,7 @@ public class WithLayoutListAppender extends AppenderBase<ILoggingEvent> {
 		return pattern;
 	}
 
-	public void setPattern(String pattern) {
+	public void setPattern(final String pattern) {
 		this.pattern = pattern;
 	}
 

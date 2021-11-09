@@ -19,60 +19,61 @@ public class LoggerModelHandler extends ModelHandlerBase {
 	Logger logger;
 	boolean inError = false;
 
-	public LoggerModelHandler(Context context) {
+	public LoggerModelHandler(final Context context) {
 		super(context);
 	}
-	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new LoggerModelHandler(context);
-	}	
-		
+	}
+
+	@Override
 	protected Class<LoggerModel> getSupportedModelClass() {
 		return LoggerModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
 		inError = false;
 
-		LoggerModel loggerModel = (LoggerModel) model;
+		final LoggerModel loggerModel = (LoggerModel) model;
 
-		String finalLoggerName = intercon.subst(loggerModel.getName());
+		final String finalLoggerName = intercon.subst(loggerModel.getName());
 
-		LoggerContext loggerContext = (LoggerContext) this.context;
-		
+		final LoggerContext loggerContext = (LoggerContext) context;
+
 		logger = loggerContext.getLogger(finalLoggerName);
 
-		String levelStr = intercon.subst(loggerModel.getLevel());
+		final String levelStr = intercon.subst(loggerModel.getLevel());
 		if (!OptionHelper.isNullOrEmpty(levelStr)) {
 			if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
 				addInfo("Setting level of logger [" + finalLoggerName + "] to null, i.e. INHERITED");
 				logger.setLevel(null);
 			} else {
-				Level level = Level.toLevel(levelStr);
+				final Level level = Level.toLevel(levelStr);
 				addInfo("Setting level of logger [" + finalLoggerName + "] to " + level);
 				logger.setLevel(level);
 			}
 		}
 
-		String additivityStr = intercon.subst(loggerModel.getAdditivity());
+		final String additivityStr = intercon.subst(loggerModel.getAdditivity());
 		if (!OptionHelper.isNullOrEmpty(additivityStr)) {
-			boolean additive = OptionHelper.toBoolean(additivityStr, true);
+			final boolean additive = OptionHelper.toBoolean(additivityStr, true);
 			addInfo("Setting additivity of logger [" + finalLoggerName + "] to " + additive);
 			logger.setAdditive(additive);
 		}
-		
+
 		intercon.pushObject(logger);
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) {
+	public void postHandle(final InterpretationContext intercon, final Model model) {
 		if (inError) {
 			return;
 		}
-		Object o = intercon.peekObject();
+		final Object o = intercon.peekObject();
 		if (o != logger) {
-			LoggerModel loggerModel = (LoggerModel) model;
+			final LoggerModel loggerModel = (LoggerModel) model;
 			addWarn("The object [" + o + "] on the top the of the stack is not the expected logger named "
 					+ loggerModel.getName());
 		} else {

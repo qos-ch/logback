@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.core;
 
-import ch.qos.logback.core.spi.AppenderAttachable;
-import ch.qos.logback.core.spi.AppenderAttachableImpl;
-import ch.qos.logback.core.util.InterruptUtil;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+
+import ch.qos.logback.core.spi.AppenderAttachable;
+import ch.qos.logback.core.spi.AppenderAttachableImpl;
+import ch.qos.logback.core.util.InterruptUtil;
 
 /**
  * This appender and derived classes, log events asynchronously. In order to
@@ -45,7 +45,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implements AppenderAttachable<E> {
 
-	AppenderAttachableImpl<E> aai = new AppenderAttachableImpl<E>();
+	AppenderAttachableImpl<E> aai = new AppenderAttachableImpl<>();
 	BlockingQueue<E> blockingQueue;
 
 	/**
@@ -81,7 +81,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 	 * @param eventObject
 	 * @return - true if the event can be discarded, false otherwise
 	 */
-	protected boolean isDiscardable(E eventObject) {
+	protected boolean isDiscardable(final E eventObject) {
 		return false;
 	}
 
@@ -91,13 +91,14 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 	 *
 	 * @param eventObject
 	 */
-	protected void preprocess(E eventObject) {
+	protected void preprocess(final E eventObject) {
 	}
 
 	@Override
 	public void start() {
-		if (isStarted())
+		if (isStarted()) {
 			return;
+		}
 		if (appenderCount == 0) {
 			addError("No attached appenders found.");
 			return;
@@ -106,10 +107,11 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 			addError("Invalid queue size [" + queueSize + "]");
 			return;
 		}
-		blockingQueue = new ArrayBlockingQueue<E>(queueSize);
+		blockingQueue = new ArrayBlockingQueue<>(queueSize);
 
-		if (discardingThreshold == UNDEFINED)
+		if (discardingThreshold == UNDEFINED) {
 			discardingThreshold = queueSize / 5;
+		}
 		addInfo("Setting discardingThreshold to " + discardingThreshold);
 		worker.setDaemon(true);
 		worker.setName("AsyncAppender-Worker-" + getName());
@@ -121,8 +123,9 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
 	@Override
 	public void stop() {
-		if (!isStarted())
+		if (!isStarted()) {
 			return;
+		}
 
 		// mark this appender as stopped so that Worker can also processPriorToRemoval
 		// if it is invoking
@@ -134,7 +137,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		// interruption can be consumed by sub-appenders
 		worker.interrupt();
 
-		InterruptUtil interruptUtil = new InterruptUtil(context);
+		final InterruptUtil interruptUtil = new InterruptUtil(context);
 
 		try {
 			interruptUtil.maskInterruptFlag();
@@ -149,8 +152,8 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 				addInfo("Queue flush finished successfully within timeout.");
 			}
 
-		} catch (InterruptedException e) {
-			int remaining = blockingQueue.size();
+		} catch (final InterruptedException e) {
+			final int remaining = blockingQueue.size();
 			addError("Failed to join worker thread. " + remaining + " queued events may be discarded.", e);
 		} finally {
 			interruptUtil.unmaskInterruptFlag();
@@ -158,7 +161,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 	}
 
 	@Override
-	protected void append(E eventObject) {
+	protected void append(final E eventObject) {
 		if (isQueueBelowDiscardingThreshold() && isDiscardable(eventObject)) {
 			return;
 		}
@@ -167,10 +170,10 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 	}
 
 	private boolean isQueueBelowDiscardingThreshold() {
-		return (blockingQueue.remainingCapacity() < discardingThreshold);
+		return blockingQueue.remainingCapacity() < discardingThreshold;
 	}
 
-	private void put(E eventObject) {
+	private void put(final E eventObject) {
 		if (neverBlock) {
 			blockingQueue.offer(eventObject);
 		} else {
@@ -178,14 +181,14 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		}
 	}
 
-	private void putUninterruptibly(E eventObject) {
+	private void putUninterruptibly(final E eventObject) {
 		boolean interrupted = false;
 		try {
 			while (true) {
 				try {
 					blockingQueue.put(eventObject);
 					break;
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					interrupted = true;
 				}
 			}
@@ -200,7 +203,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		return queueSize;
 	}
 
-	public void setQueueSize(int queueSize) {
+	public void setQueueSize(final int queueSize) {
 		this.queueSize = queueSize;
 	}
 
@@ -208,7 +211,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		return discardingThreshold;
 	}
 
-	public void setDiscardingThreshold(int discardingThreshold) {
+	public void setDiscardingThreshold(final int discardingThreshold) {
 		this.discardingThreshold = discardingThreshold;
 	}
 
@@ -216,7 +219,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		return maxFlushTime;
 	}
 
-	public void setMaxFlushTime(int maxFlushTime) {
+	public void setMaxFlushTime(final int maxFlushTime) {
 		this.maxFlushTime = maxFlushTime;
 	}
 
@@ -229,7 +232,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		return blockingQueue.size();
 	}
 
-	public void setNeverBlock(boolean neverBlock) {
+	public void setNeverBlock(final boolean neverBlock) {
 		this.neverBlock = neverBlock;
 	}
 
@@ -244,13 +247,14 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 	 * BlockingQueue#remainingCapacity()}
 	 *
 	 * @return the remaining capacity
-	 * 
+	 *
 	 */
 	public int getRemainingCapacity() {
 		return blockingQueue.remainingCapacity();
 	}
 
-	public void addAppender(Appender<E> newAppender) {
+	@Override
+	public void addAppender(final Appender<E> newAppender) {
 		if (appenderCount == 0) {
 			appenderCount++;
 			addInfo("Attaching appender named [" + newAppender.getName() + "] to AsyncAppender.");
@@ -261,47 +265,54 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 		}
 	}
 
+	@Override
 	public Iterator<Appender<E>> iteratorForAppenders() {
 		return aai.iteratorForAppenders();
 	}
 
-	public Appender<E> getAppender(String name) {
+	@Override
+	public Appender<E> getAppender(final String name) {
 		return aai.getAppender(name);
 	}
 
-	public boolean isAttached(Appender<E> eAppender) {
+	@Override
+	public boolean isAttached(final Appender<E> eAppender) {
 		return aai.isAttached(eAppender);
 	}
 
+	@Override
 	public void detachAndStopAllAppenders() {
 		aai.detachAndStopAllAppenders();
 	}
 
-	public boolean detachAppender(Appender<E> eAppender) {
+	@Override
+	public boolean detachAppender(final Appender<E> eAppender) {
 		return aai.detachAppender(eAppender);
 	}
 
-	public boolean detachAppender(String name) {
+	@Override
+	public boolean detachAppender(final String name) {
 		return aai.detachAppender(name);
 	}
 
 	class Worker extends Thread {
 
+		@Override
 		public void run() {
-			AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
-			AppenderAttachableImpl<E> aai = parent.aai;
+			final AsyncAppenderBase<E> parent = AsyncAppenderBase.this;
+			final AppenderAttachableImpl<E> aai = parent.aai;
 
 			// loop while the parent is started
 			while (parent.isStarted()) {
 				try {
-					List<E> elements = new ArrayList<E>();
-					E e0 = parent.blockingQueue.take();
+					final List<E> elements = new ArrayList<>();
+					final E e0 = parent.blockingQueue.take();
 					elements.add(e0);
 					parent.blockingQueue.drainTo(elements);
-					for (E e : elements) {
+					for (final E e : elements) {
 						aai.appendLoopOnAppenders(e);
 					}
-				} catch (InterruptedException e1) {
+				} catch (final InterruptedException e1) {
 					// exit if interrupted
 					break;
 				}
@@ -309,7 +320,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
 			addInfo("Worker thread will flush remaining events before exiting. ");
 
-			for (E e : parent.blockingQueue) {
+			for (final E e : parent.blockingQueue) {
 				aai.appendLoopOnAppenders(e);
 				parent.blockingQueue.remove(e);
 			}

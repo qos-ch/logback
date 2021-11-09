@@ -24,42 +24,43 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 	private final BeanDescriptionCache beanDescriptionCache;
 
 	static final String  PARENT_PROPPERTY_KEY = "parent";
-	
-	
+
+
 	boolean inError = false;
 
-	public ImplicitModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
+	public ImplicitModelHandler(final Context context, final BeanDescriptionCache beanDescriptionCache) {
 		super(context);
 		this.beanDescriptionCache = beanDescriptionCache;
 	}
 
+	@Override
 	protected Class<? extends ImplicitModel> getSupportedModelClass() {
 		return ImplicitModel.class;
 	}
 
-	static public ImplicitModelHandler makeInstance(Context context, InterpretationContext ic) {
+	static public ImplicitModelHandler makeInstance(final Context context, final InterpretationContext ic) {
 		return new ImplicitModelHandler(context, ic.getBeanDescriptionCache());
 	}
-	
-	@Override
-	public void handle(InterpretationContext intercon, Model model) {
 
-		ImplicitModel implicitModel = (ImplicitModel) model;
+	@Override
+	public void handle(final InterpretationContext intercon, final Model model) {
+
+		final ImplicitModel implicitModel = (ImplicitModel) model;
 
 		// calling intercon.peekObject with an empty stack will throw an exception
 		if (intercon.isObjectStackEmpty()) {
 			inError = true;
 			return;
 		}
-		String nestedElementTagName = implicitModel.getTag();
+		final String nestedElementTagName = implicitModel.getTag();
 
-		Object o = intercon.peekObject();
-		PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
+		final Object o = intercon.peekObject();
+		final PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
 		parentBean.setContext(context);
 
-		AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
+		final AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
 
-		Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
+		final Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
 
 		switch (aggregationType) {
 		case NOT_FOUND:
@@ -68,29 +69,28 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 			return;
 		case AS_BASIC_PROPERTY:
 		case AS_BASIC_PROPERTY_COLLECTION:
-			ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean,
+			final ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean,
 					aggregationType, nestedElementTagName);
 			actionDataStack.push(adBasicProperty);
 			doBasicProperty(intercon, model, adBasicProperty);
 			return;
-		// we only push action data if NestComponentIA is applicable
+			// we only push action data if NestComponentIA is applicable
 		case AS_COMPLEX_PROPERTY_COLLECTION:
 		case AS_COMPLEX_PROPERTY:
-			ImplicitActionDataForComplexProperty adComplex = new ImplicitActionDataForComplexProperty(parentBean,
+			final ImplicitActionDataForComplexProperty adComplex = new ImplicitActionDataForComplexProperty(parentBean,
 					aggregationType, nestedElementTagName);
 			actionDataStack.push(adComplex);
 			doComplex(intercon, implicitModel, adComplex);
 			return;
 		default:
 			addError("PropertySetter.computeAggregationType returned " + aggregationType);
-			return;
 		}
 
 	}
 
-	void doBasicProperty(InterpretationContext interpretationContext, Model model,
-			ImcplicitActionDataForBasicProperty actionData) {
-		String finalBody = interpretationContext.subst(model.getBodyText());
+	void doBasicProperty(final InterpretationContext interpretationContext, final Model model,
+			final ImcplicitActionDataForBasicProperty actionData) {
+		final String finalBody = interpretationContext.subst(model.getBodyText());
 		// get the action data object pushed in isApplicable() method call
 		// IADataForBasicProperty actionData = (IADataForBasicProperty)
 		// actionDataStack.peek();
@@ -106,8 +106,8 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 		}
 	}
 
-	public void doComplex(InterpretationContext interpretationContext, ComponentModel componentModel,
-			ImplicitActionDataForComplexProperty actionData) {
+	public void doComplex(final InterpretationContext interpretationContext, final ComponentModel componentModel,
+			final ImplicitActionDataForComplexProperty actionData) {
 
 		String className = componentModel.getClassName();
 		// perform variable name substitution
@@ -120,48 +120,48 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 				componentClass = Loader.loadClass(className, context);
 			} else {
 				// guess class name via implicit rules
-				PropertySetter parentBean = actionData.parentBean;
+				final PropertySetter parentBean = actionData.parentBean;
 				componentClass = parentBean.getClassNameViaImplicitRules(actionData.propertyName,
 						actionData.getAggregationType(), interpretationContext.getDefaultNestedComponentRegistry());
 			}
 
 			if (componentClass == null) {
 				actionData.inError = true;
-				String errMsg = "Could not find an appropriate class for property [" + componentModel.getTag() + "]";
+				final String errMsg = "Could not find an appropriate class for property [" + componentModel.getTag() + "]";
 				addError(errMsg);
 				return;
 			}
 
 			if (OptionHelper.isNullOrEmpty(className)) {
 				addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag()
-						+ "] property");
+				+ "] property");
 			}
 
 			actionData.setNestedComplexProperty(componentClass.getConstructor().newInstance());
 
 			// pass along the repository
 			if (actionData.getNestedComplexProperty() instanceof ContextAware) {
-				((ContextAware) actionData.getNestedComplexProperty()).setContext(this.context);
+				((ContextAware) actionData.getNestedComplexProperty()).setContext(context);
 			}
 			// addInfo("Pushing component [" + localName
 			// + "] on top of the object stack.");
 			interpretationContext.pushObject(actionData.getNestedComplexProperty());
 
-		} catch (Exception oops) {
+		} catch (final Exception oops) {
 			actionData.inError = true;
-			String msg = "Could not create component [" + componentModel.getTag() + "] of type [" + className + "]";
+			final String msg = "Could not create component [" + componentModel.getTag() + "] of type [" + className + "]";
 			addError(msg, oops);
 		}
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) {
+	public void postHandle(final InterpretationContext intercon, final Model model) {
 		if (inError) {
 			return;
 		}
 
-		Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
-		ImplicitActionDataBase actionData = actionDataStack.pop();
+		final Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
+		final ImplicitActionDataBase actionData = actionDataStack.pop();
 
 		if (actionData instanceof ImplicitActionDataForComplexProperty) {
 			postHandleComplex(intercon, model, actionData);
@@ -169,10 +169,10 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 	}
 
-	private void postHandleComplex(InterpretationContext intercon, Model model, ImplicitActionDataBase actionData) {
-		ImplicitActionDataForComplexProperty complexActionData = (ImplicitActionDataForComplexProperty) actionData;
+	private void postHandleComplex(final InterpretationContext intercon, final Model model, final ImplicitActionDataBase actionData) {
+		final ImplicitActionDataForComplexProperty complexActionData = (ImplicitActionDataForComplexProperty) actionData;
 
-		PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,
+		final PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,
 				complexActionData.getNestedComplexProperty());
 		nestedBean.setContext(context);
 
@@ -183,13 +183,13 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 		// start the nested complex property if it implements LifeCycle and is not
 		// marked with a @NoAutoStart annotation
-		Object nestedComplexProperty = complexActionData.getNestedComplexProperty();
+		final Object nestedComplexProperty = complexActionData.getNestedComplexProperty();
 		if (nestedComplexProperty instanceof LifeCycle
 				&& NoAutoStartUtil.notMarkedWithNoAutoStart(nestedComplexProperty)) {
 			((LifeCycle) nestedComplexProperty).start();
 		}
 
-		Object o = intercon.peekObject();
+		final Object o = intercon.peekObject();
 
 		if (o != complexActionData.getNestedComplexProperty()) {
 			addError("The object on the top the of the stack is not the component pushed earlier.");

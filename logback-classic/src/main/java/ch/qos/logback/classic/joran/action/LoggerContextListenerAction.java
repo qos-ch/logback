@@ -23,24 +23,24 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public class LoggerContextListenerAction extends BaseModelAction {
-    boolean inError = false;
-    LoggerContextListener lcl;
+	boolean inError = false;
+	LoggerContextListener lcl;
 
-    @Override
-    protected boolean validPreconditions(InterpretationContext ic, String name,
-    		Attributes attributes) {
-    	PreconditionValidator pv = new PreconditionValidator(this, ic, name, attributes);
-    	pv.validateClassAttribute();
-    	return pv.isValid();
-    }
-    
-    @Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-    	LoggerContextListenerModel loggerContextListenerModel = new LoggerContextListenerModel();
-    	loggerContextListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+	@Override
+	protected boolean validPreconditions(final InterpretationContext ic, final String name,
+			final Attributes attributes) {
+		final PreconditionValidator pv = new PreconditionValidator(this, ic, name, attributes);
+		pv.validateClassAttribute();
+		return pv.isValid();
+	}
+
+	@Override
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		final LoggerContextListenerModel loggerContextListenerModel = new LoggerContextListenerModel();
+		loggerContextListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
 		return loggerContextListenerModel;
 	}
-    
-	
+
+
 
 }

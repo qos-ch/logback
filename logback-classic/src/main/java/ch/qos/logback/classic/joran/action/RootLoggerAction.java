@@ -24,15 +24,15 @@ import ch.qos.logback.core.model.Model;
 
 public class RootLoggerAction extends BaseModelAction {
 
-    Logger root;
-    boolean inError = false;
+	Logger root;
+	boolean inError = false;
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-		RootLoggerModel rootLoggerModel = new RootLoggerModel();
-		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		final RootLoggerModel rootLoggerModel = new RootLoggerModel();
+		final String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
 		rootLoggerModel.setLevel(levelStr);
-	        
+
 		return rootLoggerModel;
 	}
 

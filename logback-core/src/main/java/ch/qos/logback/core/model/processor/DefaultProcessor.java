@@ -19,8 +19,8 @@ public class DefaultProcessor extends ContextAwareBase {
 	interface TraverseMethod {
 		int traverse(Model model, ModelFiler modelFiler);
 	}
-	
-	
+
+
 	final InterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
 	final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
@@ -28,29 +28,30 @@ public class DefaultProcessor extends ContextAwareBase {
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
 	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
 
-	public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
-		this.setContext(context);
+	public DefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
+		setContext(context);
 		this.interpretationContext = interpretationContext;
 	}
 
-	public void addHandler(Class<? extends Model> modelClass, ModelFactoryMethod modelFactoryMethod) {
+	public void addHandler(final Class<? extends Model> modelClass, final ModelFactoryMethod modelFactoryMethod) {
 		modelClassToHandlerMap.put(modelClass, modelFactoryMethod);
 	}
 
-	public void addAnalyser(Class<? extends Model> modelClass, ModelHandlerBase handler) {
+	public void addAnalyser(final Class<? extends Model> modelClass, final ModelHandlerBase handler) {
 		modelClassToDependencyAnalyserMap.put(modelClass, handler);
 	}
 
-	private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFiler modelfFilter, String phaseName) {
-		int LIMIT = 3;
+	private void traversalLoop(final TraverseMethod traverseMethod, final Model model, final ModelFiler modelfFilter, final String phaseName) {
+		final int LIMIT = 3;
 		for (int i = 0; i < LIMIT; i++) {
-			int handledModelCount = traverseMethod.traverse(model, modelfFilter);
-			if (handledModelCount == 0)
+			final int handledModelCount = traverseMethod.traverse(model, modelfFilter);
+			if (handledModelCount == 0) {
 				break;
+			}
 		}
 	}
 
-	public void process(Model model) {
+	public void process(final Model model) {
 
 		if (model == null) {
 			addError("Expecting non null model to process");
@@ -82,32 +83,32 @@ public class DefaultProcessor extends ContextAwareBase {
 		return phaseTwoFilter;
 	}
 
-	public void setPhaseOneFilter(ModelFiler phaseOneFilter) {
+	public void setPhaseOneFilter(final ModelFiler phaseOneFilter) {
 		this.phaseOneFilter = phaseOneFilter;
 	}
 
-	public void setPhaseTwoFilter(ModelFiler phaseTwoFilter) {
+	public void setPhaseTwoFilter(final ModelFiler phaseTwoFilter) {
 		this.phaseTwoFilter = phaseTwoFilter;
 	}
 
-	protected void analyseDependencies(Model model) {
-		ModelHandlerBase handler = modelClassToDependencyAnalyserMap.get(model.getClass());
+	protected void analyseDependencies(final Model model) {
+		final ModelHandlerBase handler = modelClassToDependencyAnalyserMap.get(model.getClass());
 
 		if (handler != null) {
 			try {
 				handler.handle(interpretationContext, model);
-			} catch (ModelHandlerException e) {
+			} catch (final ModelHandlerException e) {
 				addError("Failed to traverse model " + model.getTag(), e);
 			}
 		}
 
-		for (Model m : model.getSubModels()) {
+		for (final Model m : model.getSubModels()) {
 			analyseDependencies(m);
 		}
 		if (handler != null) {
 			try {
 				handler.postHandle(interpretationContext, model);
-			} catch (ModelHandlerException e) {
+			} catch (final ModelHandlerException e) {
 				addError("Failed to invole postHandle on model " + model.getTag(), e);
 			}
 		}
@@ -115,8 +116,8 @@ public class DefaultProcessor extends ContextAwareBase {
 
 	static final int DENIED = -1;
 
-	private ModelHandlerBase createHandler(Model model) {
-		ModelFactoryMethod modelFactoryMethod  = modelClassToHandlerMap.get(model.getClass());
+	private ModelHandlerBase createHandler(final Model model) {
+		final ModelFactoryMethod modelFactoryMethod  = modelClassToHandlerMap.get(model.getClass());
 
 		if (modelFactoryMethod == null) {
 			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
@@ -124,9 +125,10 @@ public class DefaultProcessor extends ContextAwareBase {
 			return null;
 		}
 
-		ModelHandlerBase handler = modelFactoryMethod.make(context, interpretationContext);
-		if (handler == null)
+		final ModelHandlerBase handler = modelFactoryMethod.make(context, interpretationContext);
+		if (handler == null) {
 			return null;
+		}
 		if (!handler.isSupportedModelType(model)) {
 			addWarn("Handler [" + handler.getClass() + "] does not support " + model.idString());
 			return null;
@@ -134,11 +136,12 @@ public class DefaultProcessor extends ContextAwareBase {
 		return handler;
 	}
 
-	protected int mainTraverse(Model model, ModelFiler modelFiler) {
+	protected int mainTraverse(final Model model, final ModelFiler modelFiler) {
 
-		FilterReply filterReply = modelFiler.decide(model);
-		if (filterReply == FilterReply.DENY)
+		final FilterReply filterReply = modelFiler.decide(model);
+		if (filterReply == FilterReply.DENY) {
 			return DENIED;
+		}
 
 		int count = 0;
 
@@ -154,21 +157,21 @@ public class DefaultProcessor extends ContextAwareBase {
 			}
 			// recurse into submodels handled or not
 
-			for (Model m : model.getSubModels()) {
+			for (final Model m : model.getSubModels()) {
 				count += mainTraverse(m, modelFiler);
 			}
 			if (handler != null) {
 				handler.postHandle(interpretationContext, model);
 			}
-		} catch (ModelHandlerException e) {
+		} catch (final ModelHandlerException e) {
 			addError("Failed to traverse model " + model.getTag(), e);
 		}
 		return count;
 	}
 
-	protected int secondPhaseTraverse(Model model, ModelFiler modelFilter) {
+	protected int secondPhaseTraverse(final Model model, final ModelFiler modelFilter) {
 
-		FilterReply filterReply = modelFilter.decide(model);
+		final FilterReply filterReply = modelFilter.decide(model);
 		if (filterReply == FilterReply.DENY) {
 			return 0;
 		}
@@ -177,7 +180,7 @@ public class DefaultProcessor extends ContextAwareBase {
 
 		try {
 
-			boolean allDependenciesStarted = allDependenciesStarted(model);
+			final boolean allDependenciesStarted = allDependenciesStarted(model);
 
 			ModelHandlerBase handler = null;
 			if (model.isUnhandled() && allDependenciesStarted) {
@@ -193,27 +196,27 @@ public class DefaultProcessor extends ContextAwareBase {
 				return count;
 			}
 
-			for (Model m : model.getSubModels()) {
+			for (final Model m : model.getSubModels()) {
 				count += secondPhaseTraverse(m, modelFilter);
 			}
 			if (handler != null) {
 				handler.postHandle(interpretationContext, model);
 			}
-		} catch (ModelHandlerException e) {
+		} catch (final ModelHandlerException e) {
 			addError("Failed to traverse model " + model.getTag(), e);
 		}
 		return count;
 	}
 
-	private boolean dependencyIsADirectSubmodel(Model model) {
-		List<String> dependecyList = this.interpretationContext.getDependencies(model);
+	private boolean dependencyIsADirectSubmodel(final Model model) {
+		final List<String> dependecyList = interpretationContext.getDependencies(model);
 		if (dependecyList == null || dependecyList.isEmpty()) {
 			return false;
 		}
-		for (Model submodel : model.getSubModels()) {
+		for (final Model submodel : model.getSubModels()) {
 			if (submodel instanceof NamedComponentModel) {
-				NamedComponentModel namedComponentModel = (NamedComponentModel) submodel;
-				String subModelName = namedComponentModel.getName();
+				final NamedComponentModel namedComponentModel = (NamedComponentModel) submodel;
+				final String subModelName = namedComponentModel.getName();
 				if (dependecyList.contains(subModelName)) {
 					return true;
 				}
@@ -223,27 +226,27 @@ public class DefaultProcessor extends ContextAwareBase {
 		return false;
 	}
 
-	private boolean allDependenciesStarted(Model model) {
-		List<String> dependecyList = this.interpretationContext.getDependencies(model);
+	private boolean allDependenciesStarted(final Model model) {
+		final List<String> dependecyList = interpretationContext.getDependencies(model);
 		if (dependecyList == null || dependecyList.isEmpty()) {
 			return true;
 		}
-		for (String name : dependecyList) {
-			boolean isStarted = interpretationContext.isNamedDependencyStarted(name);
-			if (isStarted == false) {
+		for (final String name : dependecyList) {
+			final boolean isStarted = interpretationContext.isNamedDependencyStarted(name);
+			if (!isStarted) {
 				return isStarted;
 			}
 		}
 		return true;
 	}
 
-	ModelHandlerBase instantiateHandler(Class<? extends ModelHandlerBase> handlerClass) {
+	ModelHandlerBase instantiateHandler(final Class<? extends ModelHandlerBase> handlerClass) {
 		try {
-			Constructor<? extends ModelHandlerBase> commonConstructor = getWithContextConstructor(handlerClass);
+			final Constructor<? extends ModelHandlerBase> commonConstructor = getWithContextConstructor(handlerClass);
 			if (commonConstructor != null) {
 				return commonConstructor.newInstance(context);
 			}
-			Constructor<? extends ModelHandlerBase> constructorWithBDC = getWithContextAndBDCConstructor(handlerClass);
+			final Constructor<? extends ModelHandlerBase> constructorWithBDC = getWithContextAndBDCConstructor(handlerClass);
 			if (constructorWithBDC != null) {
 				return constructorWithBDC.newInstance(context, interpretationContext.getBeanDescriptionCache());
 			}
@@ -257,25 +260,23 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 
 	private Constructor<? extends ModelHandlerBase> getWithContextConstructor(
-			Class<? extends ModelHandlerBase> handlerClass) {
+			final Class<? extends ModelHandlerBase> handlerClass) {
 		try {
-			Constructor<? extends ModelHandlerBase> constructor = handlerClass.getConstructor(Context.class);
-			return constructor;
-		} catch (NoSuchMethodException e) {
+			return handlerClass.getConstructor(Context.class);
+		} catch (final NoSuchMethodException e) {
 			return null;
 		}
 	}
 
 	private Constructor<? extends ModelHandlerBase> getWithContextAndBDCConstructor(
-			Class<? extends ModelHandlerBase> handlerClass) {
+			final Class<? extends ModelHandlerBase> handlerClass) {
 		try {
-			Constructor<? extends ModelHandlerBase> constructor = handlerClass.getConstructor(Context.class,
+			return handlerClass.getConstructor(Context.class,
 					BeanDescriptionCache.class);
-			return constructor;
-		} catch (NoSuchMethodException e) {
+		} catch (final NoSuchMethodException e) {
 			return null;
 		}
 	}
-	
-	
+
+
 }

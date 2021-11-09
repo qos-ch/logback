@@ -23,77 +23,77 @@ import ch.qos.logback.core.html.HTMLLayoutBase;
 import ch.qos.logback.core.pattern.Converter;
 
 /**
- * 
- * HTMLLayout outputs events in an HTML table. 
+ *
+ * HTMLLayout outputs events in an HTML table.
  * <p>
- * The content of the table columns are specified using a conversion pattern. 
+ * The content of the table columns are specified using a conversion pattern.
  * See {@link ch.qos.logback.access.PatternLayout} for documentation on the
  * available patterns.
  * <p>
  * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#AccessHTMLLayout
- * 
- * 
+ *
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class HTMLLayout extends HTMLLayoutBase<IAccessEvent> {
 
-    /**
-     * Default pattern string for log output.
-     */
-    static final String DEFAULT_CONVERSION_PATTERN = "%h%l%u%t%r%s%b";
+	/**
+	 * Default pattern string for log output.
+	 */
+	static final String DEFAULT_CONVERSION_PATTERN = "%h%l%u%t%r%s%b";
 
-    /**
-     * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
-     * 
-     */
-    public HTMLLayout() {
-        pattern = DEFAULT_CONVERSION_PATTERN;
-        cssBuilder = new DefaultCssBuilder();
-    }
+	/**
+	 * Constructs a PatternLayout using the DEFAULT_LAYOUT_PATTERN.
+	 *
+	 */
+	public HTMLLayout() {
+		pattern = DEFAULT_CONVERSION_PATTERN;
+		cssBuilder = new DefaultCssBuilder();
+	}
 
-    @Override
-    protected Map<String, String> getDefaultConverterMap() {
-        return PatternLayout.defaultConverterMap;
-    }
+	@Override
+	protected Map<String, String> getDefaultConverterMap() {
+		return PatternLayout.defaultConverterMap;
+	}
 
-    @Override
-    public String doLayout(IAccessEvent event) {
-        StringBuilder buf = new StringBuilder();
-        startNewTableIfLimitReached(buf);
+	@Override
+	public String doLayout(final IAccessEvent event) {
+		final StringBuilder buf = new StringBuilder();
+		startNewTableIfLimitReached(buf);
 
-        boolean odd = true;
-        if (((counter++) & 1) == 0) {
-            odd = false;
-        }
+		boolean odd = true;
+		if ((counter++ & 1) == 0) {
+			odd = false;
+		}
 
-        buf.append(LINE_SEPARATOR);
-        buf.append("<tr class=\"");
-        if (odd) {
-            buf.append(" odd\">");
-        } else {
-            buf.append(" even\">");
-        }
-        buf.append(LINE_SEPARATOR);
+		buf.append(LINE_SEPARATOR);
+		buf.append("<tr class=\"");
+		if (odd) {
+			buf.append(" odd\">");
+		} else {
+			buf.append(" even\">");
+		}
+		buf.append(LINE_SEPARATOR);
 
-        Converter<IAccessEvent> c = head;
-        while (c != null) {
-            appendEventToBuffer(buf, c, event);
-            c = c.getNext();
-        }
-        buf.append("</tr>");
-        buf.append(LINE_SEPARATOR);
+		Converter<IAccessEvent> c = head;
+		while (c != null) {
+			appendEventToBuffer(buf, c, event);
+			c = c.getNext();
+		}
+		buf.append("</tr>");
+		buf.append(LINE_SEPARATOR);
 
-        return buf.toString();
-    }
+		return buf.toString();
+	}
 
-    private void appendEventToBuffer(StringBuilder buf, Converter<IAccessEvent> c, IAccessEvent event) {
-        buf.append("<td class=\"");
-        buf.append(computeConverterName(c));
-        buf.append("\">");
-        c.write(buf, event);
-        buf.append("</td>");
-        buf.append(LINE_SEPARATOR);
-    }
+	private void appendEventToBuffer(final StringBuilder buf, final Converter<IAccessEvent> c, final IAccessEvent event) {
+		buf.append("<td class=\"");
+		buf.append(computeConverterName(c));
+		buf.append("\">");
+		c.write(buf, event);
+		buf.append("</td>");
+		buf.append(LINE_SEPARATOR);
+	}
 }

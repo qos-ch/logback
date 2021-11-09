@@ -13,9 +13,13 @@
  */
 package ch.qos.logback.classic.pattern.color;
 
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BLUE_FG;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.DEFAULT_FG;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.RED_FG;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
 import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
 
 /**
@@ -24,19 +28,19 @@ import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
  */
 public class HighlightingCompositeConverter extends ForegroundCompositeConverterBase<ILoggingEvent> {
 
-    @Override
-    protected String getForegroundColorCode(ILoggingEvent event) {
-        Level level = event.getLevel();
-        switch (level.toInt()) {
-        case Level.ERROR_INT:
-            return BOLD + RED_FG;
-        case Level.WARN_INT:
-            return RED_FG;
-        case Level.INFO_INT:
-            return BLUE_FG;
-        default:
-            return DEFAULT_FG;
-        }
+	@Override
+	protected String getForegroundColorCode(final ILoggingEvent event) {
+		final Level level = event.getLevel();
+		switch (level.toInt()) {
+		case Level.ERROR_INT:
+			return BOLD + RED_FG;
+		case Level.WARN_INT:
+			return RED_FG;
+		case Level.INFO_INT:
+			return BLUE_FG;
+		default:
+			return DEFAULT_FG;
+		}
 
-    }
+	}
 }

@@ -45,27 +45,27 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
 	protected SaxEventInterpreter interpreter;
 
-	public final void doConfigure(URL url) throws JoranException {
+	public final void doConfigure(final URL url) throws JoranException {
 		InputStream in = null;
 		try {
 			informContextOfURLUsedForConfiguration(getContext(), url);
-			URLConnection urlConnection = url.openConnection();
+			final URLConnection urlConnection = url.openConnection();
 			// per http://jira.qos.ch/browse/LBCORE-105
 			// per http://jira.qos.ch/browse/LBCORE-127
 			urlConnection.setUseCaches(false);
 
 			in = urlConnection.getInputStream();
 			doConfigure(in, url.toExternalForm());
-		} catch (IOException ioe) {
-			String errMsg = "Could not open URL [" + url + "].";
+		} catch (final IOException ioe) {
+			final String errMsg = "Could not open URL [" + url + "].";
 			addError(errMsg, ioe);
 			throw new JoranException(errMsg, ioe);
 		} finally {
 			if (in != null) {
 				try {
 					in.close();
-				} catch (IOException ioe) {
-					String errMsg = "Could not close input stream";
+				} catch (final IOException ioe) {
+					final String errMsg = "Could not close input stream";
 					addError(errMsg, ioe);
 					throw new JoranException(errMsg, ioe);
 				}
@@ -73,27 +73,27 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		}
 	}
 
-	public final void doConfigure(String filename) throws JoranException {
+	public final void doConfigure(final String filename) throws JoranException {
 		doConfigure(new File(filename));
 	}
 
-	public final void doConfigure(File file) throws JoranException {
+	public final void doConfigure(final File file) throws JoranException {
 		FileInputStream fis = null;
 		try {
-			URL url = file.toURI().toURL();
+			final URL url = file.toURI().toURL();
 			informContextOfURLUsedForConfiguration(getContext(), url);
 			fis = new FileInputStream(file);
 			doConfigure(fis, url.toExternalForm());
-		} catch (IOException ioe) {
-			String errMsg = "Could not open [" + file.getPath() + "].";
+		} catch (final IOException ioe) {
+			final String errMsg = "Could not open [" + file.getPath() + "].";
 			addError(errMsg, ioe);
 			throw new JoranException(errMsg, ioe);
 		} finally {
 			if (fis != null) {
 				try {
 					fis.close();
-				} catch (java.io.IOException ioe) {
-					String errMsg = "Could not close [" + file.getName() + "].";
+				} catch (final java.io.IOException ioe) {
+					final String errMsg = "Could not close [" + file.getName() + "].";
 					addError(errMsg, ioe);
 					throw new JoranException(errMsg, ioe);
 				}
@@ -101,16 +101,16 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		}
 	}
 
-	public static void informContextOfURLUsedForConfiguration(Context context, URL url) {
+	public static void informContextOfURLUsedForConfiguration(final Context context, final URL url) {
 		ConfigurationWatchListUtil.setMainWatchURL(context, url);
 	}
 
-	public final void doConfigure(InputStream inputStream) throws JoranException {
+	public final void doConfigure(final InputStream inputStream) throws JoranException {
 		doConfigure(new InputSource(inputStream));
 	}
 
-	public final void doConfigure(InputStream inputStream, String systemId) throws JoranException {
-		InputSource inputSource = new InputSource(inputStream);
+	public final void doConfigure(final InputStream inputStream, final String systemId) throws JoranException {
+		final InputSource inputSource = new InputSource(inputStream);
 		inputSource.setSystemId(systemId);
 		doConfigure(inputSource);
 	}
@@ -119,7 +119,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
 	protected abstract void addImplicitRules(SaxEventInterpreter interpreter);
 
-	protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
+	protected void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {
 
 	}
 
@@ -128,10 +128,10 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 	}
 
 	protected void buildInterpreter() {
-		RuleStore rs = new SimpleRuleStore(context);
+		final RuleStore rs = new SimpleRuleStore(context);
 		addInstanceRules(rs);
-		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
-		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
+		interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
+		final InterpretationContext interpretationContext = interpreter.getInterpretationContext();
 		interpretationContext.setContext(context);
 		addImplicitRules(interpreter);
 		addDefaultNestedComponentRegistryRules(interpretationContext.getDefaultNestedComponentRegistry());
@@ -141,42 +141,42 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 	// methods ultimately delegate
 	public final void doConfigure(final InputSource inputSource) throws JoranException {
 
-		long threshold = System.currentTimeMillis();
+		final long threshold = System.currentTimeMillis();
 		// if (!ConfigurationWatchListUtil.wasConfigurationWatchListReset(context)) {
 		// informContextOfURLUsedForConfiguration(getContext(), null);
 		// }
-		SaxEventRecorder recorder = new SaxEventRecorder(context);
+		final SaxEventRecorder recorder = new SaxEventRecorder(context);
 		recorder.recordEvents(inputSource);
 
 		playEventsAndProcessModel(recorder.saxEventList);
 
 		// no exceptions a this level
-		StatusUtil statusUtil = new StatusUtil(context);
+		final StatusUtil statusUtil = new StatusUtil(context);
 		if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
 			addInfo("Registering current configuration as safe fallback point");
 			registerSafeConfiguration(recorder.saxEventList);
 		}
 	}
 
-	
-	public void playEventsAndProcessModel(List<SaxEvent> saxEvents) throws JoranException {
+
+	public void playEventsAndProcessModel(final List<SaxEvent> saxEvents) throws JoranException {
 		buildInterpreter();
 		playSaxEvents(saxEvents);
-		Model top = interpreter.getInterpretationContext().peekModel();
+		final Model top = interpreter.getInterpretationContext().peekModel();
 		//serializeModel(top);
 		processModel(top);
 	}
 
-//	public static String TTT = "c:/tmp/x.model";
-//	void serializeModel(Model top) {
-//		try {
-//			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
-//			oos.writeObject(top);
-//			oos.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	//	public static String TTT = "c:/tmp/x.model";
+	//	void serializeModel(Model top) {
+	//		try {
+	//			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
+	//			oos.writeObject(top);
+	//			oos.close();
+	//		} catch (IOException e) {
+	//			e.printStackTrace();
+	//		}
+	//	}
 
 	private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
 		// disallow simultaneous configurations of the same context
@@ -186,14 +186,13 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 
 	}
 
-	protected void processModel(Model model) {
-		DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
+	protected void processModel(final Model model) {
+		final DefaultProcessor defaultProcessor = buildDefaultProcessor(context, interpreter.getInterpretationContext());
 		defaultProcessor.process(model);
 	}
 
-	protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-		DefaultProcessor defaultProcessor = new DefaultProcessor(context, interpreter.getInterpretationContext());
-		return defaultProcessor;
+	protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
+		return new DefaultProcessor(context, interpreter.getInterpretationContext());
 	}
 
 	/**
@@ -202,7 +201,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 	 *
 	 * @since 0.9.30
 	 */
-	public void registerSafeConfiguration(List<SaxEvent> eventList) {
+	public void registerSafeConfiguration(final List<SaxEvent> eventList) {
 		context.putObject(SAFE_JORAN_CONFIGURATION, eventList);
 	}
 

@@ -13,47 +13,47 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 public class AppenderRefModelHandler extends ModelHandlerBase {
 	boolean inError = false;
 
-	public AppenderRefModelHandler(Context context) {
+	public AppenderRefModelHandler(final Context context) {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new AppenderRefModelHandler(context);
-	}	
-		
+	}
+
 	@Override
 	protected Class<? extends AppenderRefModel> getSupportedModelClass() {
 		return AppenderRefModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext interpContext, final Model model) throws ModelHandlerException {
 
-		Object o = interpContext.peekObject();
+		final Object o = interpContext.peekObject();
 
 		if (!(o instanceof AppenderAttachable)) {
 			inError = true;
-			String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near "
+			final String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near "
 					+ model.idString();
 			addError(errMsg);
 			return;
 		}
 
-		AppenderRefModel appenderRefModel = (AppenderRefModel) model;
-		AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
+		final AppenderRefModel appenderRefModel = (AppenderRefModel) model;
+		final AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
 
 		attachRefencedAppenders(interpContext, appenderRefModel,appenderAttachable);
-		
+
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	void attachRefencedAppenders(InterpretationContext interpContext, AppenderRefModel appenderRefModel, AppenderAttachable<?> appenderAttachable) {
-		String appenderName = interpContext.subst(appenderRefModel.getRef());
-		
-		Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap()
+	void attachRefencedAppenders(final InterpretationContext interpContext, final AppenderRefModel appenderRefModel, final AppenderAttachable<?> appenderAttachable) {
+		final String appenderName = interpContext.subst(appenderRefModel.getRef());
+
+		final Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap()
 				.get(JoranConstants.APPENDER_BAG);
 
-		Appender appender = appenderBag.get(appenderName);
+		final Appender appender = appenderBag.get(appenderName);
 		if (appender == null) {
 			addError("Failed to find appender named [" + appenderName + "]");
 		} else {

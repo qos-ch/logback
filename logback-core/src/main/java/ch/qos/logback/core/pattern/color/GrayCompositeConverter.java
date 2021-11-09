@@ -13,7 +13,8 @@
  */
 package ch.qos.logback.core.pattern.color;
 
-import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BLACK_FG;
+import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;
 
 /**
  * Encloses a given set of converter output in gray using the appropriate ANSI
@@ -25,8 +26,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
  */
 public class GrayCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-    @Override
-    protected String getForegroundColorCode(E event) {
-        return BOLD + BLACK_FG;
-    }
+	@Override
+	protected String getForegroundColorCode(final E event) {
+		return BOLD + BLACK_FG;
+	}
 }

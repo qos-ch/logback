@@ -24,34 +24,34 @@ import ch.qos.logback.core.spi.FilterReply;
  * <p>
  * For more information about this filter, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html#levelFilter
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class LevelFilter extends AbstractMatcherFilter<ILoggingEvent> {
 
-    Level level;
+	Level level;
 
-    @Override
-    public FilterReply decide(ILoggingEvent event) {
-        if (!isStarted()) {
-            return FilterReply.NEUTRAL;
-        }
+	@Override
+	public FilterReply decide(final ILoggingEvent event) {
+		if (!isStarted()) {
+			return FilterReply.NEUTRAL;
+		}
 
-        if (event.getLevel().equals(level)) {
-            return onMatch;
-        } else {
-            return onMismatch;
-        }
-    }
+		if (event.getLevel().equals(level)) {
+			return onMatch;
+		}
+		return onMismatch;
+	}
 
-    public void setLevel(Level level) {
-        this.level = level;
-    }
+	public void setLevel(final Level level) {
+		this.level = level;
+	}
 
-    public void start() {
-        if (this.level != null) {
-            super.start();
-        }
-    }
+	@Override
+	public void start() {
+		if (level != null) {
+			super.start();
+		}
+	}
 }

@@ -22,23 +22,24 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * <p>
  * For more information on this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#SSLSocketAppender
- * 
+ *
  * @author Carl Harris
  */
 public class SSLSocketAppender extends AbstractSSLSocketAppender<IAccessEvent> {
 
-    private final PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
+	private final PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
 
-    public SSLSocketAppender() {
-    }
+	public SSLSocketAppender() {
+	}
 
-    @Override
-    protected void postProcessEvent(IAccessEvent event) {
-        event.prepareForDeferredProcessing();
-    }
+	@Override
+	protected void postProcessEvent(final IAccessEvent event) {
+		event.prepareForDeferredProcessing();
+	}
 
-    public PreSerializationTransformer<IAccessEvent> getPST() {
-        return pst;
-    }
+	@Override
+	public PreSerializationTransformer<IAccessEvent> getPST() {
+		return pst;
+	}
 
 }

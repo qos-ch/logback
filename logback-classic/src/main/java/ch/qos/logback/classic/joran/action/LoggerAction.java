@@ -24,33 +24,33 @@ import ch.qos.logback.core.model.Model;
 
 /**
  * Action which handles <logger> elements in configuration files.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class LoggerAction extends BaseModelAction {
 
-    @Override
-    protected boolean validPreconditions(InterpretationContext ic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
-    	validator.validateNameAttribute();
-    	return validator.isValid();
-    }
+	@Override
+	protected boolean validPreconditions(final InterpretationContext ic, final String name, final Attributes attributes) {
+		final PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
+		validator.validateNameAttribute();
+		return validator.isValid();
+	}
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
 
-		LoggerModel loggerModel = new LoggerModel();
-		
-		
-		String nameStr = attributes.getValue(NAME_ATTRIBUTE);
+		final LoggerModel loggerModel = new LoggerModel();
+
+
+		final String nameStr = attributes.getValue(NAME_ATTRIBUTE);
 		loggerModel.setName(nameStr);
-		
-		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+
+		final String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
 		loggerModel.setLevel(levelStr);
-	    
-		String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
+
+		final String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
 		loggerModel.setAdditivity(additivityStr);
-	    
+
 		return loggerModel;
 	}
 }

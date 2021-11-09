@@ -7,12 +7,12 @@ public class AllowModelFilter implements ModelFiler {
 
 	final Class<? extends Model> allowedModelType;
 
-	AllowModelFilter(Class<? extends Model> allowedType) {
-		this.allowedModelType = allowedType;
+	AllowModelFilter(final Class<? extends Model> allowedType) {
+		allowedModelType = allowedType;
 	}
 
 	@Override
-	public FilterReply decide(Model model) {
+	public FilterReply decide(final Model model) {
 
 		if (model.getClass() == allowedModelType) {
 			return FilterReply.ACCEPT;

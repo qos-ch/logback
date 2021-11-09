@@ -21,9 +21,9 @@ import java.lang.annotation.Target;
 /**
  * If a type (a class) has this annotation, then it will not be automatically
  * started by Joran at configuration time.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

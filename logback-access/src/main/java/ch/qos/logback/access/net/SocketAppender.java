@@ -21,28 +21,29 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 /**
  * Sends {@link IAccessEvent} objects to a remote a log server, usually a
  * {@link SocketNode}.
- * 
+ *
  * For more information about this appender, please refer to the online manual at
  * http://logback.qos.ch/manual/appenders.html#AccessSocketAppender
- *  
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
- * 
+ *
  */
 
 public class SocketAppender extends AbstractSocketAppender<IAccessEvent> {
 
-    PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
+	PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
 
-    public SocketAppender() {
-    }
+	public SocketAppender() {
+	}
 
-    @Override
-    protected void postProcessEvent(IAccessEvent event) {
-        event.prepareForDeferredProcessing();
-    }
+	@Override
+	protected void postProcessEvent(final IAccessEvent event) {
+		event.prepareForDeferredProcessing();
+	}
 
-    public PreSerializationTransformer<IAccessEvent> getPST() {
-        return pst;
-    }
+	@Override
+	public PreSerializationTransformer<IAccessEvent> getPST() {
+		return pst;
+	}
 }

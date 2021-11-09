@@ -25,183 +25,182 @@ import ch.qos.logback.core.util.OptionHelper;
 /**
  * This class implements the {@link RuleStore} interface. It is the rule store
  * implementation used by default in Joran.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
-    static String KLEENE_STAR = "*";
+	static String KLEENE_STAR = "*";
 
-    // key: Pattern instance, value: ArrayList containing actions
-    HashMap<ElementSelector, List<Action>> rules = new HashMap<ElementSelector, List<Action>>();
+	// key: Pattern instance, value: ArrayList containing actions
+	HashMap<ElementSelector, List<Action>> rules = new HashMap<>();
 
-    // public SimpleRuleStore() {
-    // }
+	// public SimpleRuleStore() {
+	// }
 
-    public SimpleRuleStore(Context context) {
-        setContext(context);
-    }
+	public SimpleRuleStore(final Context context) {
+		setContext(context);
+	}
 
-    /**
-     * Add a new rule, i.e. a pattern, action pair to the rule store. <p> Note
-     * that the added action's LoggerRepository will be set in the process.
-     */
-    public void addRule(ElementSelector elementSelector, Action action) {
-        action.setContext(context);
+	/**
+	 * Add a new rule, i.e. a pattern, action pair to the rule store. <p> Note
+	 * that the added action's LoggerRepository will be set in the process.
+	 */
+	@Override
+	public void addRule(final ElementSelector elementSelector, final Action action) {
+		action.setContext(context);
 
-        List<Action> a4p = rules.get(elementSelector);
+		List<Action> a4p = rules.get(elementSelector);
 
-        if (a4p == null) {
-            a4p = new ArrayList<Action>();
-            rules.put(elementSelector, a4p);
-        }
+		if (a4p == null) {
+			a4p = new ArrayList<>();
+			rules.put(elementSelector, a4p);
+		}
 
-        a4p.add(action);
-    }
+		a4p.add(action);
+	}
 
-    public void addRule(ElementSelector elementSelector, String actionClassName) {
-        Action action = null;
+	@Override
+	public void addRule(final ElementSelector elementSelector, final String actionClassName) {
+		Action action = null;
 
-        try {
-            action = (Action) OptionHelper.instantiateByClassName(actionClassName, Action.class, context);
-        } catch (Exception e) {
-            addError("Could not instantiate class [" + actionClassName + "]", e);
-        }
-        if (action != null) {
-            addRule(elementSelector, action);
-        }
-    }
+		try {
+			action = (Action) OptionHelper.instantiateByClassName(actionClassName, Action.class, context);
+		} catch (final Exception e) {
+			addError("Could not instantiate class [" + actionClassName + "]", e);
+		}
+		if (action != null) {
+			addRule(elementSelector, action);
+		}
+	}
 
-    // exact match has highest priority
-    // if no exact match, check for suffix (tail) match, i.e matches
-    // of type */x/y. Suffix match for */x/y has higher priority than match for
-    // */x
-    // if no suffix match, check for prefix match, i.e. matches for x/*
-    // match for x/y/* has higher priority than matches for x/*
+	// exact match has highest priority
+	// if no exact match, check for suffix (tail) match, i.e matches
+	// of type */x/y. Suffix match for */x/y has higher priority than match for
+	// */x
+	// if no suffix match, check for prefix match, i.e. matches for x/*
+	// match for x/y/* has higher priority than matches for x/*
 
-    public List<Action> matchActions(ElementPath elementPath) {
-        List<Action> actionList;
+	@Override
+	public List<Action> matchActions(final ElementPath elementPath) {
+		List<Action> actionList;
 
-        if ((actionList = fullPathMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = suffixMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = prefixMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = middleMatch(elementPath)) != null) {
-            return actionList;
-        } else {
-            return null;
-        }
-    }
+		if ((actionList = fullPathMatch(elementPath)) != null) {
+			return actionList;
+		}
+		if (((actionList = suffixMatch(elementPath)) != null) || ((actionList = prefixMatch(elementPath)) != null) || ((actionList = middleMatch(elementPath)) != null)) {
+			return actionList;
+		} else {
+			return null;
+		}
+	}
 
-    List<Action> fullPathMatch(ElementPath elementPath) {
-        for (ElementSelector selector : rules.keySet()) {
-            if (selector.fullPathMatch(elementPath))
-                return rules.get(selector);
-        }
-        return null;
-    }
+	List<Action> fullPathMatch(final ElementPath elementPath) {
+		for (final ElementSelector selector : rules.keySet()) {
+			if (selector.fullPathMatch(elementPath)) {
+				return rules.get(selector);
+			}
+		}
+		return null;
+	}
 
-    // Suffix matches are matches of type */x/y
-    List<Action> suffixMatch(ElementPath elementPath) {
-        int max = 0;
-        ElementSelector longestMatchingElementSelector = null;
+	// Suffix matches are matches of type */x/y
+	List<Action> suffixMatch(final ElementPath elementPath) {
+		int max = 0;
+		ElementSelector longestMatchingElementSelector = null;
 
-        for (ElementSelector selector : rules.keySet()) {
-            if (isSuffixPattern(selector)) {
-                int r = selector.getTailMatchLength(elementPath);
-                if (r > max) {
-                    max = r;
-                    longestMatchingElementSelector = selector;
-                }
-            }
-        }
+		for (final ElementSelector selector : rules.keySet()) {
+			if (isSuffixPattern(selector)) {
+				final int r = selector.getTailMatchLength(elementPath);
+				if (r > max) {
+					max = r;
+					longestMatchingElementSelector = selector;
+				}
+			}
+		}
 
-        if (longestMatchingElementSelector != null) {
-            return rules.get(longestMatchingElementSelector);
-        } else {
-            return null;
-        }
-    }
+		if (longestMatchingElementSelector != null) {
+			return rules.get(longestMatchingElementSelector);
+		}
+		return null;
+	}
 
-    private boolean isSuffixPattern(ElementSelector p) {
-        return (p.size() > 1) && p.get(0).equals(KLEENE_STAR);
-    }
+	private boolean isSuffixPattern(final ElementSelector p) {
+		return p.size() > 1 && p.get(0).equals(KLEENE_STAR);
+	}
 
-    List<Action> prefixMatch(ElementPath elementPath) {
-        int max = 0;
-        ElementSelector longestMatchingElementSelector = null;
+	List<Action> prefixMatch(final ElementPath elementPath) {
+		int max = 0;
+		ElementSelector longestMatchingElementSelector = null;
 
-        for (ElementSelector selector : rules.keySet()) {
-            String last = selector.peekLast();
-            if (isKleeneStar(last)) {
-                int r = selector.getPrefixMatchLength(elementPath);
-                // to qualify the match length must equal p's size omitting the '*'
-                if ((r == selector.size() - 1) && (r > max)) {
-                    max = r;
-                    longestMatchingElementSelector = selector;
-                }
-            }
-        }
+		for (final ElementSelector selector : rules.keySet()) {
+			final String last = selector.peekLast();
+			if (isKleeneStar(last)) {
+				final int r = selector.getPrefixMatchLength(elementPath);
+				// to qualify the match length must equal p's size omitting the '*'
+				if (r == selector.size() - 1 && r > max) {
+					max = r;
+					longestMatchingElementSelector = selector;
+				}
+			}
+		}
 
-        if (longestMatchingElementSelector != null) {
-            return rules.get(longestMatchingElementSelector);
-        } else {
-            return null;
-        }
-    }
+		if (longestMatchingElementSelector != null) {
+			return rules.get(longestMatchingElementSelector);
+		}
+		return null;
+	}
 
-    private boolean isKleeneStar(String last) {
-        return KLEENE_STAR.equals(last);
-    }
+	private boolean isKleeneStar(final String last) {
+		return KLEENE_STAR.equals(last);
+	}
 
-    List<Action> middleMatch(ElementPath path) {
+	List<Action> middleMatch(final ElementPath path) {
 
-        int max = 0;
-        ElementSelector longestMatchingElementSelector = null;
+		int max = 0;
+		ElementSelector longestMatchingElementSelector = null;
 
-        for (ElementSelector selector : rules.keySet()) {
-            String last = selector.peekLast();
-            String first = null;
-            if (selector.size() > 1) {
-                first = selector.get(0);
-            }
-            if (isKleeneStar(last) && isKleeneStar(first)) {
-                List<String> copyOfPartList = selector.getCopyOfPartList();
-                if (copyOfPartList.size() > 2) {
-                    copyOfPartList.remove(0);
-                    copyOfPartList.remove(copyOfPartList.size() - 1);
-                }
+		for (final ElementSelector selector : rules.keySet()) {
+			final String last = selector.peekLast();
+			String first = null;
+			if (selector.size() > 1) {
+				first = selector.get(0);
+			}
+			if (isKleeneStar(last) && isKleeneStar(first)) {
+				final List<String> copyOfPartList = selector.getCopyOfPartList();
+				if (copyOfPartList.size() > 2) {
+					copyOfPartList.remove(0);
+					copyOfPartList.remove(copyOfPartList.size() - 1);
+				}
 
-                int r = 0;
-                ElementSelector clone = new ElementSelector(copyOfPartList);
-                if (clone.isContainedIn(path)) {
-                    r = clone.size();
-                }
-                if (r > max) {
-                    max = r;
-                    longestMatchingElementSelector = selector;
-                }
-            }
-        }
+				int r = 0;
+				final ElementSelector clone = new ElementSelector(copyOfPartList);
+				if (clone.isContainedIn(path)) {
+					r = clone.size();
+				}
+				if (r > max) {
+					max = r;
+					longestMatchingElementSelector = selector;
+				}
+			}
+		}
 
-        if (longestMatchingElementSelector != null) {
-            return rules.get(longestMatchingElementSelector);
-        } else {
-            return null;
-        }
-    }
+		if (longestMatchingElementSelector != null) {
+			return rules.get(longestMatchingElementSelector);
+		}
+		return null;
+	}
 
-    public String toString() {
-        final String TAB = "  ";
+	@Override
+	public String toString() {
+		final String TAB = "  ";
 
-        StringBuilder retValue = new StringBuilder();
+		final StringBuilder retValue = new StringBuilder();
 
-        retValue.append("SimpleRuleStore ( ").append("rules = ").append(this.rules).append(TAB).append(" )");
+		retValue.append("SimpleRuleStore ( ").append("rules = ").append(rules).append(TAB).append(" )");
 
-        return retValue.toString();
-    }
+		return retValue.toString();
+	}
 
 }

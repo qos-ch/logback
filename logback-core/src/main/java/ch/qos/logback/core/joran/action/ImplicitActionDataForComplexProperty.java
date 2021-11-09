@@ -18,25 +18,25 @@ import ch.qos.logback.core.util.AggregationType;
 
 /**
  * Lump together several fields for use by {@link NestedComplexPropertyIA}.
- * 
+ *
  * @author Ceki
  */
 public class ImplicitActionDataForComplexProperty extends ImplicitActionDataBase {
-    
+
 
 	private Object nestedComplexProperty;
-    
-    public ImplicitActionDataForComplexProperty(PropertySetter parentBean, AggregationType aggregationType,
-			String propertyName) {
+
+	public ImplicitActionDataForComplexProperty(final PropertySetter parentBean, final AggregationType aggregationType,
+			final String propertyName) {
 		super(parentBean, aggregationType, propertyName);
-    }
+	}
 
-    public Object getNestedComplexProperty() {
-        return nestedComplexProperty;
-    }
+	public Object getNestedComplexProperty() {
+		return nestedComplexProperty;
+	}
 
-    public void setNestedComplexProperty(Object nestedComplexProperty) {
-        this.nestedComplexProperty = nestedComplexProperty;
-    }
+	public void setNestedComplexProperty(final Object nestedComplexProperty) {
+		this.nestedComplexProperty = nestedComplexProperty;
+	}
 
 }

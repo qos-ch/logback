@@ -18,14 +18,14 @@ package ch.qos.logback.classic.gaffer
  */
 public interface ConfigurationContributor {
 
-  /**
-   * The list of method mapping from the contributor into the configuration mechanism,
-   * e.g. the ConfiguratorDelegate
-   *
-   * <p>The key in the map is the method being contributed and the value is the name of
-   * the method in the target class.
-   * @return
-   */
-  public Map<String, String> getMappings()
+	/**
+	 * The list of method mapping from the contributor into the configuration mechanism,
+	 * e.g. the ConfiguratorDelegate
+	 *
+	 * <p>The key in the map is the method being contributed and the value is the name of
+	 * the method in the target class.
+	 * @return
+	 */
+	Map<String, String> getMappings()
 
 }

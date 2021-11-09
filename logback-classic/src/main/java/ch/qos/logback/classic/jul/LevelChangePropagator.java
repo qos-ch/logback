@@ -13,6 +13,12 @@
  */
 package ch.qos.logback.classic.jul;
 
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.LogManager;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -20,90 +26,92 @@ import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.LogManager;
-
 /**
  * Propagate level changes made to a logback logger into the equivalent logger in j.u.l.
  */
 public class LevelChangePropagator extends ContextAwareBase implements LoggerContextListener, LifeCycle {
 
-    private Set<java.util.logging.Logger> julLoggerSet = new HashSet<java.util.logging.Logger>();
-    boolean isStarted = false;
-    boolean resetJUL = false;
+	private final Set<java.util.logging.Logger> julLoggerSet = new HashSet<>();
+	boolean isStarted = false;
+	boolean resetJUL = false;
 
-    public void setResetJUL(boolean resetJUL) {
-        this.resetJUL = resetJUL;
-    }
+	public void setResetJUL(final boolean resetJUL) {
+		this.resetJUL = resetJUL;
+	}
 
-    public boolean isResetResistant() {
-        return false;
-    }
+	@Override
+	public boolean isResetResistant() {
+		return false;
+	}
 
-    public void onStart(LoggerContext context) {
-    }
+	@Override
+	public void onStart(final LoggerContext context) {
+	}
 
-    public void onReset(LoggerContext context) {
-    }
+	@Override
+	public void onReset(final LoggerContext context) {
+	}
 
-    public void onStop(LoggerContext context) {
-    }
+	@Override
+	public void onStop(final LoggerContext context) {
+	}
 
-    public void onLevelChange(Logger logger, Level level) {
-        propagate(logger, level);
-    }
+	@Override
+	public void onLevelChange(final Logger logger, final Level level) {
+		propagate(logger, level);
+	}
 
-    private void propagate(Logger logger, Level level) {
-        addInfo("Propagating " + level + " level on " + logger + " onto the JUL framework");
-        java.util.logging.Logger julLogger = JULHelper.asJULLogger(logger);
-        // prevent garbage collection of jul loggers whose level we set
-        // see also http://jira.qos.ch/browse/LBCLASSIC-256
-        julLoggerSet.add(julLogger);
-        java.util.logging.Level julLevel = JULHelper.asJULLevel(level);
-        julLogger.setLevel(julLevel);
-    }
+	private void propagate(final Logger logger, final Level level) {
+		addInfo("Propagating " + level + " level on " + logger + " onto the JUL framework");
+		final java.util.logging.Logger julLogger = JULHelper.asJULLogger(logger);
+		// prevent garbage collection of jul loggers whose level we set
+		// see also http://jira.qos.ch/browse/LBCLASSIC-256
+		julLoggerSet.add(julLogger);
+		final java.util.logging.Level julLevel = JULHelper.asJULLevel(level);
+		julLogger.setLevel(julLevel);
+	}
 
-    public void resetJULLevels() {
-        LogManager lm = LogManager.getLogManager();
+	public void resetJULLevels() {
+		final LogManager lm = LogManager.getLogManager();
 
-        Enumeration<String> e = lm.getLoggerNames();
-        while (e.hasMoreElements()) {
-            String loggerName = e.nextElement();
-            java.util.logging.Logger julLogger = lm.getLogger(loggerName);
-            if (JULHelper.isRegularNonRootLogger(julLogger) && julLogger.getLevel() != null) {
-                addInfo("Setting level of jul logger [" + loggerName + "] to null");
-                julLogger.setLevel(null);
-            }
-        }
-    }
+		final Enumeration<String> e = lm.getLoggerNames();
+		while (e.hasMoreElements()) {
+			final String loggerName = e.nextElement();
+			final java.util.logging.Logger julLogger = lm.getLogger(loggerName);
+			if (JULHelper.isRegularNonRootLogger(julLogger) && julLogger.getLevel() != null) {
+				addInfo("Setting level of jul logger [" + loggerName + "] to null");
+				julLogger.setLevel(null);
+			}
+		}
+	}
 
-    private void propagateExistingLoggerLevels() {
-        LoggerContext loggerContext = (LoggerContext) context;
-        List<Logger> loggerList = loggerContext.getLoggerList();
-        for (Logger l : loggerList) {
-            if (l.getLevel() != null) {
-                propagate(l, l.getLevel());
-            }
-        }
-    }
+	private void propagateExistingLoggerLevels() {
+		final LoggerContext loggerContext = (LoggerContext) context;
+		final List<Logger> loggerList = loggerContext.getLoggerList();
+		for (final Logger l : loggerList) {
+			if (l.getLevel() != null) {
+				propagate(l, l.getLevel());
+			}
+		}
+	}
 
-    public void start() {
-        if (resetJUL) {
-            resetJULLevels();
-        }
-        propagateExistingLoggerLevels();
+	@Override
+	public void start() {
+		if (resetJUL) {
+			resetJULLevels();
+		}
+		propagateExistingLoggerLevels();
 
-        isStarted = true;
-    }
+		isStarted = true;
+	}
 
-    public void stop() {
-        isStarted = false;
-    }
+	@Override
+	public void stop() {
+		isStarted = false;
+	}
 
-    public boolean isStarted() {
-        return isStarted;
-    }
+	@Override
+	public boolean isStarted() {
+		return isStarted;
+	}
 }

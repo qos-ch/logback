@@ -13,8 +13,9 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import java.util.concurrent.atomic.AtomicLong;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 /**
  * A converters based on a a locally incremented sequence number. The sequence number is
@@ -27,10 +28,10 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class LocalSequenceNumberConverter extends ClassicConverter {
 
-    AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
+	AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
 
-    @Override
-    public String convert(ILoggingEvent event) {
-        return Long.toString(sequenceNumber.getAndIncrement());
-    }
+	@Override
+	public String convert(final ILoggingEvent event) {
+		return Long.toString(sequenceNumber.getAndIncrement());
+	}
 }

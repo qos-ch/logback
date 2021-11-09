@@ -18,17 +18,19 @@ import org.xml.sax.Attributes;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
- * No operation (NOP) action that does strictly nothing. 
+ * No operation (NOP) action that does strictly nothing.
  * Setting a rule to this pattern is sometimes useful in order
  * to prevent implicit actions to kick in.
- *  
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NOPAction extends Action {
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-    }
+	@Override
+	public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
+	}
 
-    public void end(InterpretationContext ec, String name) {
-    }
+	@Override
+	public void end(final InterpretationContext ec, final String name) {
+	}
 }

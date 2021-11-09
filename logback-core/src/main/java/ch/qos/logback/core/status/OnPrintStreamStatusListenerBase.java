@@ -13,12 +13,12 @@
  */
 package ch.qos.logback.core.status;
 
+import java.io.PrintStream;
+import java.util.List;
+
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.StatusPrinter;
-
-import java.io.PrintStream;
-import java.util.List;
 
 /**
  *  Print all new incoming status messages on the on the designated PrintStream.
@@ -26,93 +26,100 @@ import java.util.List;
  */
 abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase implements StatusListener, LifeCycle {
 
-    boolean isStarted = false;
+	boolean isStarted = false;
 
-    static final long DEFAULT_RETROSPECTIVE = 300;
-    long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
-    
-    /**
-     * The prefix to place before each status message
-     * @since 1.1.10
-     */
-    String prefix;
-    
-    /**
-     * The PrintStream used by derived classes
-     * @return
-     */
-    abstract protected PrintStream getPrintStream();
+	static final long DEFAULT_RETROSPECTIVE = 300;
+	long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
 
-    private void print(Status status) {
-        StringBuilder sb = new StringBuilder();
-        if(prefix != null)
-            sb.append(prefix);
-        
-        StatusPrinter.buildStr(sb, "", status);
-        getPrintStream().print(sb);
-    }
+	/**
+	 * The prefix to place before each status message
+	 * @since 1.1.10
+	 */
+	String prefix;
 
-    public void addStatusEvent(Status status) {
-        if (!isStarted)
-            return;
-        print(status);
-    }
+	/**
+	 * The PrintStream used by derived classes
+	 * @return
+	 */
+	abstract protected PrintStream getPrintStream();
 
-    /**
-     * Print status messages retrospectively
-     */
-    private void retrospectivePrint() {
-        if (context == null)
-            return;
-        long now = System.currentTimeMillis();
-        StatusManager sm = context.getStatusManager();
-        List<Status> statusList = sm.getCopyOfStatusList();
-        for (Status status : statusList) {
-            long timestampOfStatusMesage = status.getDate();
-            if (isElapsedTimeLongerThanThreshold(now, timestampOfStatusMesage)) {
-                print(status);
-            }
-        }
-    }
+	private void print(final Status status) {
+		final StringBuilder sb = new StringBuilder();
+		if(prefix != null) {
+			sb.append(prefix);
+		}
 
-    private boolean isElapsedTimeLongerThanThreshold(long now, long timestamp) {
-        long elapsedTime = now - timestamp;
-        return elapsedTime < retrospectiveThresold;
-    }
+		StatusPrinter.buildStr(sb, "", status);
+		getPrintStream().print(sb);
+	}
 
-    /**
-     * Invoking the start method can cause the instance to print status messages created less than 
-     * value of retrospectiveThresold. 
-     */
-    public void start() {
-        isStarted = true;
-        if (retrospectiveThresold > 0) {
-            retrospectivePrint();
-        }
-    }
+	@Override
+	public void addStatusEvent(final Status status) {
+		if (!isStarted) {
+			return;
+		}
+		print(status);
+	}
 
-    public String getPrefix() {
-        return prefix;
-    }
+	/**
+	 * Print status messages retrospectively
+	 */
+	private void retrospectivePrint() {
+		if (context == null) {
+			return;
+		}
+		final long now = System.currentTimeMillis();
+		final StatusManager sm = context.getStatusManager();
+		final List<Status> statusList = sm.getCopyOfStatusList();
+		for (final Status status : statusList) {
+			final long timestampOfStatusMesage = status.getDate();
+			if (isElapsedTimeLongerThanThreshold(now, timestampOfStatusMesage)) {
+				print(status);
+			}
+		}
+	}
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-    
-    public void setRetrospective(long retrospective) {
-        this.retrospectiveThresold = retrospective;
-    }
+	private boolean isElapsedTimeLongerThanThreshold(final long now, final long timestamp) {
+		final long elapsedTime = now - timestamp;
+		return elapsedTime < retrospectiveThresold;
+	}
 
-    public long getRetrospective() {
-        return retrospectiveThresold;
-    }
+	/**
+	 * Invoking the start method can cause the instance to print status messages created less than
+	 * value of retrospectiveThresold.
+	 */
+	@Override
+	public void start() {
+		isStarted = true;
+		if (retrospectiveThresold > 0) {
+			retrospectivePrint();
+		}
+	}
 
-    public void stop() {
-        isStarted = false;
-    }
+	public String getPrefix() {
+		return prefix;
+	}
 
-    public boolean isStarted() {
-        return isStarted;
-    }
+	public void setPrefix(final String prefix) {
+		this.prefix = prefix;
+	}
+
+	public void setRetrospective(final long retrospective) {
+		retrospectiveThresold = retrospective;
+	}
+
+	public long getRetrospective() {
+		return retrospectiveThresold;
+	}
+
+	@Override
+	public void stop() {
+		isStarted = false;
+	}
+
+	@Override
+	public boolean isStarted() {
+		return isStarted;
+	}
 
 }

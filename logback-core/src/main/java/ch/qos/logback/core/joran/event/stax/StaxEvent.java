@@ -17,21 +17,21 @@ import javax.xml.stream.Location;
 
 public class StaxEvent {
 
-    final String name;
-    final Location location;
+	final String name;
+	final Location location;
 
-    StaxEvent(String name, Location location) {
-        this.name = name;
-        this.location = location;
+	StaxEvent(final String name, final Location location) {
+		this.name = name;
+		this.location = location;
 
-    }
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public Location getLocation() {
-        return location;
-    }
+	public Location getLocation() {
+		return location;
+	}
 
 }

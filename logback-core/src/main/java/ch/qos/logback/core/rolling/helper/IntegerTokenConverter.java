@@ -19,39 +19,41 @@ import ch.qos.logback.core.pattern.FormatInfo;
 /**
  * When asked to convert an integer, <code>IntegerTokenConverter</code> the
  * string value of that integer.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class IntegerTokenConverter extends DynamicConverter<Object> implements MonoTypedConverter {
 
-    public final static String CONVERTER_KEY = "i";
+	public final static String CONVERTER_KEY = "i";
 
-    public String convert(int i) {
-        String s = Integer.toString(i);
-        FormatInfo formattingInfo = getFormattingInfo();
-        if (formattingInfo == null) {
-            return s;
-        }
-        int min = formattingInfo.getMin();
-        StringBuilder sbuf = new StringBuilder();
-        for (int j = s.length(); j < min; ++j) {
-            sbuf.append('0');
-        }
-        return sbuf.append(s).toString();
-    }
+	public String convert(final int i) {
+		final String s = Integer.toString(i);
+		final FormatInfo formattingInfo = getFormattingInfo();
+		if (formattingInfo == null) {
+			return s;
+		}
+		final int min = formattingInfo.getMin();
+		final StringBuilder sbuf = new StringBuilder();
+		for (int j = s.length(); j < min; ++j) {
+			sbuf.append('0');
+		}
+		return sbuf.append(s).toString();
+	}
 
-    public String convert(Object o) {
-        if (o == null) {
-            throw new IllegalArgumentException("Null argument forbidden");
-        }
-        if (o instanceof Integer) {
-            Integer i = (Integer) o;
-            return convert(i.intValue());
-        }
-        throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
-    }
+	@Override
+	public String convert(final Object o) {
+		if (o == null) {
+			throw new IllegalArgumentException("Null argument forbidden");
+		}
+		if (o instanceof Integer) {
+			final Integer i = (Integer) o;
+			return convert(i);
+		}
+		throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
+	}
 
-    public boolean isApplicable(Object o) {
-        return (o instanceof Integer);
-    }
+	@Override
+	public boolean isApplicable(final Object o) {
+		return o instanceof Integer;
+	}
 }

@@ -17,66 +17,76 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class LayoutBase<E> extends ContextAwareBase implements Layout<E> {
 
-    protected boolean started;
+	protected boolean started;
 
-    String fileHeader;
-    String fileFooter;
-    String presentationHeader;
-    String presentationFooter;
+	String fileHeader;
+	String fileFooter;
+	String presentationHeader;
+	String presentationFooter;
 
-    public void setContext(Context context) {
-        this.context = context;
-    }
+	@Override
+	public void setContext(final Context context) {
+		this.context = context;
+	}
 
-    public Context getContext() {
-        return this.context;
-    }
+	@Override
+	public Context getContext() {
+		return context;
+	}
 
-    public void start() {
-        started = true;
-    }
+	@Override
+	public void start() {
+		started = true;
+	}
 
-    public void stop() {
-        started = false;
-    }
+	@Override
+	public void stop() {
+		started = false;
+	}
 
-    public boolean isStarted() {
-        return started;
-    }
+	@Override
+	public boolean isStarted() {
+		return started;
+	}
 
-    public String getFileHeader() {
-        return fileHeader;
-    }
+	@Override
+	public String getFileHeader() {
+		return fileHeader;
+	}
 
-    public String getPresentationHeader() {
-        return presentationHeader;
-    }
+	@Override
+	public String getPresentationHeader() {
+		return presentationHeader;
+	}
 
-    public String getPresentationFooter() {
-        return presentationFooter;
-    }
+	@Override
+	public String getPresentationFooter() {
+		return presentationFooter;
+	}
 
-    public String getFileFooter() {
-        return fileFooter;
-    }
+	@Override
+	public String getFileFooter() {
+		return fileFooter;
+	}
 
-    public String getContentType() {
-        return "text/plain";
-    }
+	@Override
+	public String getContentType() {
+		return "text/plain";
+	}
 
-    public void setFileHeader(String header) {
-        this.fileHeader = header;
-    }
+	public void setFileHeader(final String header) {
+		this.fileHeader = header;
+	}
 
-    public void setFileFooter(String footer) {
-        this.fileFooter = footer;
-    }
+	public void setFileFooter(final String footer) {
+		this.fileFooter = footer;
+	}
 
-    public void setPresentationHeader(String header) {
-        this.presentationHeader = header;
-    }
+	public void setPresentationHeader(final String header) {
+		this.presentationHeader = header;
+	}
 
-    public void setPresentationFooter(String footer) {
-        this.presentationFooter = footer;
-    }
+	public void setPresentationFooter(final String footer) {
+		this.presentationFooter = footer;
+	}
 }

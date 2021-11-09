@@ -17,7 +17,7 @@ import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * Interface describing a logback shutdown hook implementation
- * 
+ *
  * @author Mike Reinhold
  */
 public interface ShutdownHook extends Runnable, ContextAware {

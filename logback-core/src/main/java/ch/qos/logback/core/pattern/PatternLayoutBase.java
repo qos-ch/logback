@@ -27,130 +27,134 @@ import ch.qos.logback.core.status.StatusManager;
 
 abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
 
-    static final int INTIAL_STRING_BUILDER_SIZE = 256;
-    Converter<E> head;
-    String pattern;
-    protected PostCompileProcessor<E> postCompileProcessor;
-    
-    Map<String, String> instanceConverterMap = new HashMap<String, String>();
-    protected boolean outputPatternAsHeader = false;
-    
-    /**
-     * Concrete implementations of this class are responsible for elaborating the
-     * mapping between pattern words and converters.
-     * 
-     * @return A map associating pattern words to the names of converter classes
-     */
-    abstract public Map<String, String> getDefaultConverterMap();
+	static final int INTIAL_STRING_BUILDER_SIZE = 256;
+	Converter<E> head;
+	String pattern;
+	protected PostCompileProcessor<E> postCompileProcessor;
 
-    /**
-     * Returns a map where the default converter map is merged with the map
-     * contained in the context.
-     */
-    public Map<String, String> getEffectiveConverterMap() {
-        Map<String, String> effectiveMap = new HashMap<String, String>();
+	Map<String, String> instanceConverterMap = new HashMap<>();
+	protected boolean outputPatternAsHeader = false;
 
-        // add the least specific map fist
-        Map<String, String> defaultMap = getDefaultConverterMap();
-        if (defaultMap != null) {
-            effectiveMap.putAll(defaultMap);
-        }
+	/**
+	 * Concrete implementations of this class are responsible for elaborating the
+	 * mapping between pattern words and converters.
+	 *
+	 * @return A map associating pattern words to the names of converter classes
+	 */
+	abstract public Map<String, String> getDefaultConverterMap();
 
-        // contextMap is more specific than the default map
-        Context context = getContext();
-        if (context != null) {
-            @SuppressWarnings("unchecked")
-            Map<String, String> contextMap = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
-            if (contextMap != null) {
-                effectiveMap.putAll(contextMap);
-            }
-        }
-        // set the most specific map last
-        effectiveMap.putAll(instanceConverterMap);
-        return effectiveMap;
-    }
+	/**
+	 * Returns a map where the default converter map is merged with the map
+	 * contained in the context.
+	 */
+	public Map<String, String> getEffectiveConverterMap() {
+		final Map<String, String> effectiveMap = new HashMap<>();
 
-    public void start() {
-        if (pattern == null || pattern.length() == 0) {
-            addError("Empty or null pattern.");
-            return;
-        }
-        try {
-            Parser<E> p = new Parser<E>(pattern);
-            if (getContext() != null) {
-                p.setContext(getContext());
-            }
-            Node t = p.parse();
-            this.head = p.compile(t, getEffectiveConverterMap());
-            if (postCompileProcessor != null) {
-                postCompileProcessor.process(context, head);
-            }
-            ConverterUtil.setContextForConverters(getContext(), head);
-            ConverterUtil.startConverters(this.head);
-            super.start();
-        } catch (ScanException sce) {
-            StatusManager sm = getContext().getStatusManager();
-            sm.add(new ErrorStatus("Failed to parse pattern \"" + getPattern() + "\".", this, sce));
-        }
-    }
+		// add the least specific map fist
+		final Map<String, String> defaultMap = getDefaultConverterMap();
+		if (defaultMap != null) {
+			effectiveMap.putAll(defaultMap);
+		}
 
-    public void setPostCompileProcessor(PostCompileProcessor<E> postCompileProcessor) {
-        this.postCompileProcessor = postCompileProcessor;
-    }
+		// contextMap is more specific than the default map
+		final Context context = getContext();
+		if (context != null) {
+			@SuppressWarnings("unchecked")
+			final
+			Map<String, String> contextMap = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+			if (contextMap != null) {
+				effectiveMap.putAll(contextMap);
+			}
+		}
+		// set the most specific map last
+		effectiveMap.putAll(instanceConverterMap);
+		return effectiveMap;
+	}
 
-    /**
-     *
-     * @param head
-     * @deprecated  Use {@link ConverterUtil#setContextForConverters} instead. This method will
-     *  be removed in future releases.
-     */
-    protected void setContextForConverters(Converter<E> head) {
-        ConverterUtil.setContextForConverters(getContext(), head);
-    }
+	@Override
+	public void start() {
+		if (pattern == null || pattern.length() == 0) {
+			addError("Empty or null pattern.");
+			return;
+		}
+		try {
+			final Parser<E> p = new Parser<>(pattern);
+			if (getContext() != null) {
+				p.setContext(getContext());
+			}
+			final Node t = p.parse();
+			this.head = p.compile(t, getEffectiveConverterMap());
+			if (postCompileProcessor != null) {
+				postCompileProcessor.process(context, head);
+			}
+			ConverterUtil.setContextForConverters(getContext(), head);
+			ConverterUtil.startConverters(this.head);
+			super.start();
+		} catch (final ScanException sce) {
+			final StatusManager sm = getContext().getStatusManager();
+			sm.add(new ErrorStatus("Failed to parse pattern \"" + getPattern() + "\".", this, sce));
+		}
+	}
 
-    protected String writeLoopOnConverters(E event) {
-        StringBuilder strBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
-        Converter<E> c = head;
-        while (c != null) {
-            c.write(strBuilder, event);
-            c = c.getNext();
-        }
-        return strBuilder.toString();
-    }
+	public void setPostCompileProcessor(final PostCompileProcessor<E> postCompileProcessor) {
+		this.postCompileProcessor = postCompileProcessor;
+	}
 
-    public String getPattern() {
-        return pattern;
-    }
+	/**
+	 *
+	 * @param head
+	 * @deprecated  Use {@link ConverterUtil#setContextForConverters} instead. This method will
+	 *  be removed in future releases.
+	 */
+	@Deprecated
+	protected void setContextForConverters(final Converter<E> head) {
+		ConverterUtil.setContextForConverters(getContext(), head);
+	}
 
-    public void setPattern(String pattern) {
-        this.pattern = pattern;
-    }
+	protected String writeLoopOnConverters(final E event) {
+		final StringBuilder strBuilder = new StringBuilder(INTIAL_STRING_BUILDER_SIZE);
+		Converter<E> c = head;
+		while (c != null) {
+			c.write(strBuilder, event);
+			c = c.getNext();
+		}
+		return strBuilder.toString();
+	}
 
-    public String toString() {
-        return this.getClass().getName() + "(\"" + getPattern() + "\")";
-    }
+	public String getPattern() {
+		return pattern;
+	}
 
-    public Map<String, String> getInstanceConverterMap() {
-        return instanceConverterMap;
-    }
+	public void setPattern(final String pattern) {
+		this.pattern = pattern;
+	}
 
-    protected String getPresentationHeaderPrefix() {
-        return CoreConstants.EMPTY_STRING;
-    }
+	@Override
+	public String toString() {
+		return this.getClass().getName() + "(\"" + getPattern() + "\")";
+	}
 
-    public boolean isOutputPatternAsHeader() {
-        return outputPatternAsHeader;
-    }
+	public Map<String, String> getInstanceConverterMap() {
+		return instanceConverterMap;
+	}
 
-    public void setOutputPatternAsHeader(boolean outputPatternAsHeader) {
-        this.outputPatternAsHeader = outputPatternAsHeader;
-    }
+	protected String getPresentationHeaderPrefix() {
+		return CoreConstants.EMPTY_STRING;
+	}
 
-    @Override
-    public String getPresentationHeader() {
-        if (outputPatternAsHeader)
-            return getPresentationHeaderPrefix() + pattern;
-        else
-            return super.getPresentationHeader();
-    }
+	public boolean isOutputPatternAsHeader() {
+		return outputPatternAsHeader;
+	}
+
+	public void setOutputPatternAsHeader(final boolean outputPatternAsHeader) {
+		this.outputPatternAsHeader = outputPatternAsHeader;
+	}
+
+	@Override
+	public String getPresentationHeader() {
+		if (outputPatternAsHeader) {
+			return getPresentationHeaderPrefix() + pattern;
+		}
+		return super.getPresentationHeader();
+	}
 }

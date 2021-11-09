@@ -25,22 +25,23 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 	static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
 	static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
 
-	public ConfigurationModelHandler(Context context) {
+	public ConfigurationModelHandler(final Context context) {
 		super(context);
 	}
-	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new ConfigurationModelHandler(context);
-	}	
-		
+	}
+
+	@Override
 	protected Class<ConfigurationModel> getSupportedModelClass() {
 		return ConfigurationModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) {
+	public void handle(final InterpretationContext intercon, final Model model) {
 
-		ConfigurationModel configurationModel = (ConfigurationModel) model;
+		final ConfigurationModel configurationModel = (ConfigurationModel) model;
 
 		// See LOGBACK-527 (the system property is looked up first. Thus, it overrides
 		// the equivalent property in the config file. This reversal of scope priority
@@ -51,51 +52,50 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			debugAttrib = intercon.subst(configurationModel.getDebugStr());
 		}
 
-		if (!(OptionHelper.isNullOrEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
-				|| debugAttrib.equalsIgnoreCase("null"))) {
+		if ((!OptionHelper.isNullOrEmpty(debugAttrib) && !debugAttrib.equalsIgnoreCase("false") && !debugAttrib.equalsIgnoreCase("null"))) {
 			StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
 		}
 
 		processScanAttrib(intercon, configurationModel);
 
-		LoggerContext lc = (LoggerContext) context;
-		boolean packagingData = OptionHelper.toBoolean(intercon.subst(configurationModel.getPackagingDataStr()),
+		final LoggerContext lc = (LoggerContext) context;
+		final boolean packagingData = OptionHelper.toBoolean(intercon.subst(configurationModel.getPackagingDataStr()),
 				LoggerContext.DEFAULT_PACKAGING_DATA);
 		lc.setPackagingDataEnabled(packagingData);
 
-		ContextUtil contextUtil = new ContextUtil(context);
+		final ContextUtil contextUtil = new ContextUtil(context);
 		contextUtil.addGroovyPackages(lc.getFrameworkPackages());
 	}
 
-	String getSystemProperty(String name) {
+	String getSystemProperty(final String name) {
 		/*
 		 * LOGBACK-743: accessing a system property in the presence of a SecurityManager
 		 * (e.g. applet sandbox) can result in a SecurityException.
 		 */
 		try {
 			return System.getProperty(name);
-		} catch (SecurityException ex) {
+		} catch (final SecurityException ex) {
 			return null;
 		}
 	}
 
-	void processScanAttrib(InterpretationContext ic, ConfigurationModel configurationModel) {
-		String scanStr = ic.subst(configurationModel.getScanStr());
+	void processScanAttrib(final InterpretationContext ic, final ConfigurationModel configurationModel) {
+		final String scanStr = ic.subst(configurationModel.getScanStr());
 		if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
 
-			ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
-			URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
+			final ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
+			final URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
 			if (mainURL == null) {
 				addWarn("Due to missing top level configuration file, reconfiguration on change (configuration file scanning) cannot be done.");
 				return;
 			}
-			ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
+			final ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
 			rocTask.setContext(context);
 
 			context.putObject(CoreConstants.RECONFIGURE_ON_CHANGE_TASK, rocTask);
 
-			String scanPeriodStr = ic.subst(configurationModel.getScanPeriodStr());
-			Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
+			final String scanPeriodStr = ic.subst(configurationModel.getScanPeriodStr());
+			final Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
 
 			addInfo("Will scan for changes in [" + mainURL + "] ");
 			// Given that included files are encountered at a later phase, the complete list
@@ -106,13 +106,13 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			// the top level config file cannot be accessed.
 			addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
 
-			ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask,
+			final ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask,
 					duration.getMilliseconds(), duration.getMilliseconds(), TimeUnit.MILLISECONDS);
 			context.addScheduledFuture(scheduledFuture);
 		}
 	}
 
-	private Duration getDurationOfScanPeriodAttribute(String scanPeriodAttrib, Duration defaultDuration) {
+	private Duration getDurationOfScanPeriodAttribute(final String scanPeriodAttrib, final Duration defaultDuration) {
 		Duration duration = null;
 
 		if (!OptionHelper.isNullOrEmpty(scanPeriodAttrib)) {

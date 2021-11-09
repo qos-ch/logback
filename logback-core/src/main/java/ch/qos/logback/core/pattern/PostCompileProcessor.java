@@ -17,19 +17,19 @@ import ch.qos.logback.core.Context;
 
 /**
  * Implements this to perform post compile processing for a PatternLayout.
- * 
+ *
  * For example, PatternLayout in the classic module should add a converter for
  * exception handling (otherwise exceptions would not be printed).
- * 
+ *
  * @author Ceki Gulcu
  */
 public interface PostCompileProcessor<E> {
 
-    /**
-     * Post compile processing of the converter chain.
-     * 
-     * @param head
-     *                The first converter in the chain
-     */
-    void process(Context context, Converter<E> head);
+	/**
+	 * Post compile processing of the converter chain.
+	 *
+	 * @param head
+	 *                The first converter in the chain
+	 */
+	void process(Context context, Converter<E> head);
 }

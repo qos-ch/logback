@@ -16,23 +16,23 @@ public class LevelModelHandler extends ModelHandlerBase {
 
 	boolean inError = false;
 
-	public LevelModelHandler(Context context) {
+	public LevelModelHandler(final Context context) {
 		super(context);
 	}
-	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new LevelModelHandler(context);
-	}	
-	
+	}
+
 	@Override
 	protected Class<? extends LevelModel> getSupportedModelClass() {
 		return LevelModel.class;
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
 
-		Object o = intercon.peekObject();
+		final Object o = intercon.peekObject();
 
 		if (!(o instanceof Logger)) {
 			inError = true;
@@ -40,11 +40,11 @@ public class LevelModelHandler extends ModelHandlerBase {
 			return;
 		}
 
-		Logger l = (Logger) o;
-	    String loggerName = l.getName();
-	    
-		LevelModel levelModel = (LevelModel) model;
-		String levelStr = intercon.subst(levelModel.getValue());
+		final Logger l = (Logger) o;
+		final String loggerName = l.getName();
+
+		final LevelModel levelModel = (LevelModel) model;
+		final String levelStr = intercon.subst(levelModel.getValue());
 		if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
 			l.setLevel(null);
 		} else {

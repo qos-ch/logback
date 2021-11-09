@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.access.tomcat;
 
-import ch.qos.logback.access.spi.ServerAdapter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
 
-import java.util.HashMap;
-import java.util.Map;
+import ch.qos.logback.access.spi.ServerAdapter;
 
 /**
  * A tomcat specific implementation of the {@link ServerAdapter} interface.
@@ -28,36 +28,36 @@ import java.util.Map;
  */
 public class TomcatServerAdapter implements ServerAdapter {
 
-    Request request;
-    Response response;
+	Request request;
+	Response response;
 
-    public TomcatServerAdapter(Request tomcatRequest, Response tomcatResponse) {
-        this.request = tomcatRequest;
-        this.response = tomcatResponse;
-    }
+	public TomcatServerAdapter(final Request tomcatRequest, final Response tomcatResponse) {
+		request = tomcatRequest;
+		response = tomcatResponse;
+	}
 
-    @Override
-    public long getContentLength() {
-        return response.getContentLength();
-    }
+	@Override
+	public long getContentLength() {
+		return response.getContentLength();
+	}
 
-    @Override
-    public int getStatusCode() {
-        return response.getStatus();
-    }
+	@Override
+	public int getStatusCode() {
+		return response.getStatus();
+	}
 
-    @Override
-    public long getRequestTimestamp() {
-        return request.getCoyoteRequest().getStartTime();
-    }
+	@Override
+	public long getRequestTimestamp() {
+		return request.getCoyoteRequest().getStartTime();
+	}
 
-    @Override
-    public Map<String, String> buildResponseHeaderMap() {
-        Map<String, String> responseHeaderMap = new HashMap<String, String>();
-        for (String key : response.getHeaderNames()) {
-            String value = response.getHeader(key);
-            responseHeaderMap.put(key, value);
-        }
-        return responseHeaderMap;
-    }
+	@Override
+	public Map<String, String> buildResponseHeaderMap() {
+		final Map<String, String> responseHeaderMap = new HashMap<>();
+		for (final String key : response.getHeaderNames()) {
+			final String value = response.getHeader(key);
+			responseHeaderMap.put(key, value);
+		}
+		return responseHeaderMap;
+	}
 }

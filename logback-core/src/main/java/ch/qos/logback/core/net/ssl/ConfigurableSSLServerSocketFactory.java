@@ -22,62 +22,62 @@ import javax.net.ssl.SSLServerSocket;
 import javax.net.ssl.SSLServerSocketFactory;
 
 /**
- * An {@link SSLServerSocketFactory} that configures SSL parameters 
- * (those specified in {@link SSLParametersConfiguration} on each newly 
- * created socket. 
+ * An {@link SSLServerSocketFactory} that configures SSL parameters
+ * (those specified in {@link SSLParametersConfiguration} on each newly
+ * created socket.
  * <p>
- * When any of this factory's {@code createServerSocket} methods are invoked, 
- * it calls on a delegate {@link SSLServerSocketFactory} to create the socket, 
- * and then sets the SSL parameters of the socket (using the provided 
+ * When any of this factory's {@code createServerSocket} methods are invoked,
+ * it calls on a delegate {@link SSLServerSocketFactory} to create the socket,
+ * and then sets the SSL parameters of the socket (using the provided
  * configuration) before returning the socket to the caller.
  *
  * @author Carl Harris
  */
 public class ConfigurableSSLServerSocketFactory extends ServerSocketFactory {
 
-    private final SSLParametersConfiguration parameters;
-    private final SSLServerSocketFactory delegate;
+	private final SSLParametersConfiguration parameters;
+	private final SSLServerSocketFactory delegate;
 
-    /**
-     * Creates a new factory.
-     * @param parameters parameters that will be configured on each
-     *    socket created by the factory
-     * @param delegate socket factory that will be called upon to create
-     *    server sockets before configuration
-     */
-    public ConfigurableSSLServerSocketFactory(SSLParametersConfiguration parameters, SSLServerSocketFactory delegate) {
-        this.parameters = parameters;
-        this.delegate = delegate;
-    }
+	/**
+	 * Creates a new factory.
+	 * @param parameters parameters that will be configured on each
+	 *    socket created by the factory
+	 * @param delegate socket factory that will be called upon to create
+	 *    server sockets before configuration
+	 */
+	public ConfigurableSSLServerSocketFactory(final SSLParametersConfiguration parameters, final SSLServerSocketFactory delegate) {
+		this.parameters = parameters;
+		this.delegate = delegate;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServerSocket createServerSocket(int port, int backlog, InetAddress ifAddress) throws IOException {
-        SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(port, backlog, ifAddress);
-        parameters.configure(new SSLConfigurableServerSocket(socket));
-        return socket;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ServerSocket createServerSocket(final int port, final int backlog, final InetAddress ifAddress) throws IOException {
+		final SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(port, backlog, ifAddress);
+		parameters.configure(new SSLConfigurableServerSocket(socket));
+		return socket;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServerSocket createServerSocket(int port, int backlog) throws IOException {
-        SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(port, backlog);
-        parameters.configure(new SSLConfigurableServerSocket(socket));
-        return socket;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ServerSocket createServerSocket(final int port, final int backlog) throws IOException {
+		final SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(port, backlog);
+		parameters.configure(new SSLConfigurableServerSocket(socket));
+		return socket;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ServerSocket createServerSocket(int port) throws IOException {
-        SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(port);
-        parameters.configure(new SSLConfigurableServerSocket(socket));
-        return socket;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ServerSocket createServerSocket(final int port) throws IOException {
+		final SSLServerSocket socket = (SSLServerSocket) delegate.createServerSocket(port);
+		parameters.configure(new SSLConfigurableServerSocket(socket));
+		return socket;
+	}
 
 }

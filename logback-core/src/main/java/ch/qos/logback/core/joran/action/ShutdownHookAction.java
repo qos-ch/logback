@@ -21,29 +21,29 @@ import ch.qos.logback.core.model.ShutdownHookModel;
 
 /**
  * Action which builds {@link ShutdownHookModel} based on &lt;shutdownHook&gt; elements found in configuration files.
- * 
+ *
  * @author Mike Reinhold
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ShutdownHookAction extends BaseModelAction {
 
 
-    @Override
-    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        return true;
-    }
-    
-    @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        ShutdownHookModel shutdownHookModel = new ShutdownHookModel();
+	@Override
+	protected boolean validPreconditions(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		return true;
+	}
 
-        String className = attributes.getValue(CLASS_ATTRIBUTE);
-        shutdownHookModel.setClassName(className);
-        
-        return shutdownHookModel;
-    }
+	@Override
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		final ShutdownHookModel shutdownHookModel = new ShutdownHookModel();
 
-  
+		final String className = attributes.getValue(CLASS_ATTRIBUTE);
+		shutdownHookModel.setClassName(className);
+
+		return shutdownHookModel;
+	}
+
+
 
 
 }

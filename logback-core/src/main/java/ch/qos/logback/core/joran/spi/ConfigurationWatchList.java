@@ -13,90 +13,90 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import ch.qos.logback.core.spi.ContextAwareBase;
-
 import java.io.File;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.qos.logback.core.spi.ContextAwareBase;
+
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public class ConfigurationWatchList extends ContextAwareBase {
 
-    URL mainURL;
-    List<File> fileWatchList = new ArrayList<File>();
-    List<Long> lastModifiedList = new ArrayList<Long>();
+	URL mainURL;
+	List<File> fileWatchList = new ArrayList<>();
+	List<Long> lastModifiedList = new ArrayList<>();
 
-    public ConfigurationWatchList buildClone() {
-        ConfigurationWatchList out = new ConfigurationWatchList();
-        out.mainURL = this.mainURL;
-        out.fileWatchList = new ArrayList<File>(this.fileWatchList);
-        out.lastModifiedList = new ArrayList<Long>(this.lastModifiedList);
-        return out;
-    }
-    
-    public void clear() {
-        this.mainURL = null;
-        lastModifiedList.clear();
-        fileWatchList.clear();
-    }
+	public ConfigurationWatchList buildClone() {
+		final ConfigurationWatchList out = new ConfigurationWatchList();
+		out.mainURL = mainURL;
+		out.fileWatchList = new ArrayList<>(fileWatchList);
+		out.lastModifiedList = new ArrayList<>(lastModifiedList);
+		return out;
+	}
 
-    /**
-     * The mainURL for the configuration file. Null values are allowed.
-     * @param mainURL
-     */
-    public void setMainURL(URL mainURL) {
-        // main url can be null
-        this.mainURL = mainURL;
-        if (mainURL != null)
-            addAsFileToWatch(mainURL);
-    }
+	public void clear() {
+		mainURL = null;
+		lastModifiedList.clear();
+		fileWatchList.clear();
+	}
 
-    private void addAsFileToWatch(URL url) {
-        File file = convertToFile(url);
-        if (file != null) {
-            fileWatchList.add(file);
-            lastModifiedList.add(file.lastModified());
-        }
-    }
+	/**
+	 * The mainURL for the configuration file. Null values are allowed.
+	 * @param mainURL
+	 */
+	public void setMainURL(final URL mainURL) {
+		// main url can be null
+		this.mainURL = mainURL;
+		if (mainURL != null) {
+			addAsFileToWatch(mainURL);
+		}
+	}
 
-    public void addToWatchList(URL url) {
-        addAsFileToWatch(url);
-    }
+	private void addAsFileToWatch(final URL url) {
+		final File file = convertToFile(url);
+		if (file != null) {
+			fileWatchList.add(file);
+			lastModifiedList.add(file.lastModified());
+		}
+	}
 
-    public URL getMainURL() {
-        return mainURL;
-    }
+	public void addToWatchList(final URL url) {
+		addAsFileToWatch(url);
+	}
 
-    public List<File> getCopyOfFileWatchList() {
-        return new ArrayList<File>(fileWatchList);
-    }
+	public URL getMainURL() {
+		return mainURL;
+	}
 
-    public boolean changeDetected() {
-        int len = fileWatchList.size();
-        for (int i = 0; i < len; i++) {
-            long lastModified = lastModifiedList.get(i);
-            File file = fileWatchList.get(i);
-            if (lastModified != file.lastModified()) {
-                return true;
-            }
-        }
-        return false;
-        // return (lastModified != fileToScan.lastModified() && lastModified != SENTINEL);
-    }
+	public List<File> getCopyOfFileWatchList() {
+		return new ArrayList<>(fileWatchList);
+	}
 
-    @SuppressWarnings("deprecation")
-    File convertToFile(URL url) {
-        String protocol = url.getProtocol();
-        if ("file".equals(protocol)) {
-            return new File(URLDecoder.decode(url.getFile()));
-        } else {
-            addInfo("URL [" + url + "] is not of type file");
-            return null;
-        }
-    }
+	public boolean changeDetected() {
+		final int len = fileWatchList.size();
+		for (int i = 0; i < len; i++) {
+			final long lastModified = lastModifiedList.get(i);
+			final File file = fileWatchList.get(i);
+			if (lastModified != file.lastModified()) {
+				return true;
+			}
+		}
+		return false;
+		// return (lastModified != fileToScan.lastModified() && lastModified != SENTINEL);
+	}
+
+	@SuppressWarnings("deprecation")
+	File convertToFile(final URL url) {
+		final String protocol = url.getProtocol();
+		if ("file".equals(protocol)) {
+			return new File(URLDecoder.decode(url.getFile()));
+		}
+		addInfo("URL [" + url + "] is not of type file");
+		return null;
+	}
 
 }

@@ -23,131 +23,130 @@ import ch.qos.logback.core.joran.spi.NoAutoStartUtil
  */
 class ComponentDelegate extends ContextAwareBase {
 
-  final Object component;
+	final Object component;
 
-  final List fieldsToCascade = [];
+	final List fieldsToCascade = [];
 
-  ComponentDelegate(Object component) {
-    this.component = component;
-  }
+	ComponentDelegate(final Object component) {
+		this.component = component;
+	}
 
-  String getLabel() { "component" }
+	String getLabel() { "component" }
 
-  String getLabelFistLetterInUpperCase() { getLabel()[0].toUpperCase() + getLabel().substring(1) }
+	String getLabelFistLetterInUpperCase() { getLabel()[0].toUpperCase() + getLabel().substring(1) }
 
-  void methodMissing(String name, def args) {
-    NestingType nestingType = PropertyUtil.nestingType(component, name, null);
-    if (nestingType == NestingType.NA) {
-      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property.")
-      return;
-    }
+	void methodMissing(final String name, final def args) {
+		NestingType nestingType = PropertyUtil.nestingType(component, name, null);
+		if (nestingType == NestingType.NA) {
+			addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property.")
+			return;
+		}
 
-    String subComponentName
-    Class clazz
-    Closure closure
-    
-    (subComponentName, clazz, closure) = analyzeArgs(args)
-    if (clazz != null) {
-      Object subComponent = clazz.newInstance()
-      if (subComponentName && subComponent.hasProperty(name)) {
-        subComponent.name = subComponentName;
-      }
-      if (subComponent instanceof ContextAware) {
-        subComponent.context = context;
-      }
-      if (closure) {
-        ComponentDelegate subDelegate = new ComponentDelegate(subComponent)
+		String subComponentName
+		Class clazz
+		Closure closure
 
-        cascadeFields(subDelegate)
-        subDelegate.context = context
-        injectParent(subComponent)
-        closure.delegate = subDelegate
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure()
-      }
-      if (subComponent instanceof LifeCycle && NoAutoStartUtil.notMarkedWithNoAutoStart(subComponent)) {
-        subComponent.start();
-      }
-      PropertyUtil.attach(nestingType, component, subComponent, name)
-    } else {
-      addError("No 'class' argument specified for [${name}] in ${getLabel()} ${getComponentName()} of type [${component.getClass().canonicalName}]");
-    }
-  }
+		(final subComponentName, clazz, closure) = analyzeArgs(args)
+		if (clazz != null) {
+			Object subComponent = clazz.newInstance()
+					if (subComponentName && subComponent.hasProperty(name)) {
+						subComponent.name = subComponentName;
+					}
+			if (subComponent instanceof ContextAware) {
+				subComponent.context = context;
+			}
+			if (closure) {
+				ComponentDelegate subDelegate = new ComponentDelegate(subComponent)
 
-  void cascadeFields(ComponentDelegate subDelegate) {
-    for (String k: fieldsToCascade) {
-      subDelegate.metaClass."${k}" = this."${k}"
-    }
-  }
+						cascadeFields(subDelegate)
+						subDelegate.context = context
+						injectParent(subComponent)
+						closure.delegate = subDelegate
+						closure.resolveStrategy = Closure.DELEGATE_FIRST
+						closure()
+			}
+			if (subComponent instanceof LifeCycle && NoAutoStartUtil.notMarkedWithNoAutoStart(subComponent)) {
+				subComponent.start();
+			}
+			PropertyUtil.attach(nestingType, component, subComponent, name)
+		} else {
+			addError("No 'class' argument specified for [${name}] in ${getLabel()} ${getComponentName()} of type [${component.getClass().canonicalName}]");
+		}
+	}
 
-  void injectParent(Object subComponent) {
-    if(subComponent.hasProperty("parent")) {
-      subComponent.parent = component;
-    }
-  }
+	void cascadeFields(final ComponentDelegate subDelegate) {
+		for (final String k: fieldsToCascade) {
+			subDelegate.metaClass."${k}" = this."${k}"
+		}
+	}
 
-  void propertyMissing(String name, def value) {
-    NestingType nestingType = PropertyUtil.nestingType(component, name, value);
-    if (nestingType == NestingType.NA) {
-      addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
-      return;
-    }
-    PropertyUtil.attach(nestingType, component, value, name)
-  }
+	void injectParent(final Object subComponent) {
+		if(subComponent.hasProperty("parent")) {
+			subComponent.parent = component;
+		}
+	}
+
+	void propertyMissing(final String name, final def value) {
+		final NestingType nestingType = PropertyUtil.nestingType(component, name, value);
+		if (nestingType == NestingType.NA) {
+			addError("${getLabelFistLetterInUpperCase()} ${getComponentName()} of type [${component.getClass().canonicalName}] has no appplicable [${name}] property ")
+			return;
+		}
+		PropertyUtil.attach(nestingType, component, value, name)
+	}
 
 
-  def analyzeArgs(Object[] args) {
-    String name;
-    Class clazz;
-    Closure closure;
+	def analyzeArgs(Object[] args) {
+		String name;
+		Class clazz;
+		Closure closure;
 
-    if (args.size() > 3) {
-      addError("At most 3 arguments allowed but you passed $args")
-      return [name, clazz, closure]
-    }
+		if (args.size() > 3) {
+			addError("At most 3 arguments allowed but you passed $args")
+			return [name, clazz, closure]
+		}
 
-    if (args[-1] instanceof Closure) {
-      closure = args[-1]
-      args -= args[-1]
-    }
+		if (args[-1] instanceof Closure) {
+			closure = args[-1]
+					args -= args[-1]
+		}
 
-    if (args.size() == 1) {
-      clazz = parseClassArgument(args[0])
-    }
+		if (args.size() == 1) {
+			clazz = parseClassArgument(args[0])
+		}
 
-    if (args.size() == 2) {
-      name = parseNameArgument(args[0])
-      clazz = parseClassArgument(args[1])
-    }
+		if (args.size() == 2) {
+			name = parseNameArgument(args[0])
+					clazz = parseClassArgument(args[1])
+		}
 
-    return [name, clazz, closure]
-  }
+		return [name, clazz, closure]
+	}
 
-  Class parseClassArgument(arg) {
-    if (arg instanceof Class) {
-      return arg
-    } else if (arg instanceof String) {
-      return Class.forName(arg)
-    } else {
-      addError("Unexpected argument type ${arg.getClass().canonicalName}")
-      return null;
-    }
-  }
+	Class parseClassArgument(arg) {
+		if (arg instanceof Class) {
+			return arg
+		} else if (arg instanceof String) {
+			return Class.forName(arg)
+		} else {
+			addError("Unexpected argument type ${arg.getClass().canonicalName}")
+			return null;
+		}
+	}
 
-  String parseNameArgument(arg) {
-    if (arg instanceof String) {
-      return arg
-    } else {
-      addError("With 2 or 3 arguments, the first argument must be the component name, i.e of type string")
-      return null;
-    }
-  }
+	String parseNameArgument(arg) {
+		if (arg instanceof String) {
+			return arg
+		} else {
+			addError("With 2 or 3 arguments, the first argument must be the component name, i.e of type string")
+			return null;
+		}
+	}
 
-  String getComponentName() {
-    if (component.hasProperty("name"))
-      return "[${component.name}]"
-    else
-      return ""
+	String getComponentName() {
+		if (component.hasProperty("name"))
+			return "[${component.name}]"
+					return ""
 
-  }
+	}
 }

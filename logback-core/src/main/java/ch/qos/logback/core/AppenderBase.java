@@ -23,112 +23,123 @@ import ch.qos.logback.core.status.WarnStatus;
 
 /**
  * Sets a skeleton implementation for appenders.
- * 
+ *
  * <p> For more information about this appender, please refer to the online
  * manual at http://logback.qos.ch/manual/appenders.html#AppenderBase
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class AppenderBase<E> extends ContextAwareBase implements Appender<E> {
 
-    protected volatile boolean started = false;
+	protected volatile boolean started = false;
 
-    /**
-     * The guard prevents an appender from repeatedly calling its own doAppend
-     * method.
-     */
-    private boolean guard = false;
+	/**
+	 * The guard prevents an appender from repeatedly calling its own doAppend
+	 * method.
+	 */
+	private boolean guard = false;
 
-    /**
-     * Appenders are named.
-     */
-    protected String name;
+	/**
+	 * Appenders are named.
+	 */
+	protected String name;
 
-    private FilterAttachableImpl<E> fai = new FilterAttachableImpl<E>();
+	private final FilterAttachableImpl<E> fai = new FilterAttachableImpl<>();
 
-    public String getName() {
-        return name;
-    }
+	@Override
+	public String getName() {
+		return name;
+	}
 
-    private int statusRepeatCount = 0;
-    private int exceptionCount = 0;
+	private int statusRepeatCount = 0;
+	private int exceptionCount = 0;
 
-    static final int ALLOWED_REPEATS = 5;
+	static final int ALLOWED_REPEATS = 5;
 
-    public synchronized void doAppend(E eventObject) {
-        // WARNING: The guard check MUST be the first statement in the
-        // doAppend() method.
+	@Override
+	public synchronized void doAppend(final E eventObject) {
+		// WARNING: The guard check MUST be the first statement in the
+		// doAppend() method.
 
-        // prevent re-entry.
-        if (guard) {
-            return;
-        }
+		// prevent re-entry.
+		if (guard) {
+			return;
+		}
 
-        try {
-            guard = true;
+		try {
+			guard = true;
 
-            if (!this.started) {
-                if (statusRepeatCount++ < ALLOWED_REPEATS) {
-                    addStatus(new WarnStatus("Attempted to append to non started appender [" + name + "].", this));
-                }
-                return;
-            }
+			if (!this.started) {
+				if (statusRepeatCount++ < ALLOWED_REPEATS) {
+					addStatus(new WarnStatus("Attempted to append to non started appender [" + name + "].", this));
+				}
+				return;
+			}
 
-            if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
-                return;
-            }
+			if (getFilterChainDecision(eventObject) == FilterReply.DENY) {
+				return;
+			}
 
-            // ok, we now invoke derived class' implementation of append
-            this.append(eventObject);
+			// ok, we now invoke derived class' implementation of append
+			this.append(eventObject);
 
-        } catch (Exception e) {
-            if (exceptionCount++ < ALLOWED_REPEATS) {
-                addError("Appender [" + name + "] failed to append.", e);
-            }
-        } finally {
-            guard = false;
-        }
-    }
+		} catch (final Exception e) {
+			if (exceptionCount++ < ALLOWED_REPEATS) {
+				addError("Appender [" + name + "] failed to append.", e);
+			}
+		} finally {
+			guard = false;
+		}
+	}
 
-    abstract protected void append(E eventObject);
+	abstract protected void append(E eventObject);
 
-    /**
-     * Set the name of this appender.
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	/**
+	 * Set the name of this appender.
+	 */
+	@Override
+	public void setName(final String name) {
+		this.name = name;
+	}
 
-    public void start() {
-        started = true;
-    }
+	@Override
+	public void start() {
+		started = true;
+	}
 
-    public void stop() {
-        started = false;
-    }
+	@Override
+	public void stop() {
+		started = false;
+	}
 
-    public boolean isStarted() {
-        return started;
-    }
+	@Override
+	public boolean isStarted() {
+		return started;
+	}
 
-    public String toString() {
-        return this.getClass().getName() + "[" + name + "]";
-    }
+	@Override
+	public String toString() {
+		return this.getClass().getName() + "[" + name + "]";
+	}
 
-    public void addFilter(Filter<E> newFilter) {
-        fai.addFilter(newFilter);
-    }
+	@Override
+	public void addFilter(final Filter<E> newFilter) {
+		fai.addFilter(newFilter);
+	}
 
-    public void clearAllFilters() {
-        fai.clearAllFilters();
-    }
+	@Override
+	public void clearAllFilters() {
+		fai.clearAllFilters();
+	}
 
-    public List<Filter<E>> getCopyOfAttachedFiltersList() {
-        return fai.getCopyOfAttachedFiltersList();
-    }
+	@Override
+	public List<Filter<E>> getCopyOfAttachedFiltersList() {
+		return fai.getCopyOfAttachedFiltersList();
+	}
 
-    public FilterReply getFilterChainDecision(E event) {
-        return fai.getFilterChainDecision(event);
-    }
+	@Override
+	public FilterReply getFilterChainDecision(final E event) {
+		return fai.getFilterChainDecision(event);
+	}
 
 }

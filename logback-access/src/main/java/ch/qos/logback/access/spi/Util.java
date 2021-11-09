@@ -18,18 +18,18 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Util {
-    static final int BUF_SIZE = 128;
+	static final int BUF_SIZE = 128;
 
-    public static String readToString(InputStream in) throws IOException {
-        if (in == null) {
-            return null;
-        }
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buf = new byte[BUF_SIZE];
-        int n = 0;
-        while ((n = in.read(buf, 0, BUF_SIZE)) != -1) {
-            baos.write(buf, 0, n);
-        }
-        return baos.toString();
-    }
+	public static String readToString(final InputStream in) throws IOException {
+		if (in == null) {
+			return null;
+		}
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		final byte[] buf = new byte[BUF_SIZE];
+		int n = 0;
+		while ((n = in.read(buf, 0, BUF_SIZE)) != -1) {
+			baos.write(buf, 0, n);
+		}
+		return baos.toString();
+	}
 }

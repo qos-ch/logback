@@ -18,14 +18,16 @@ package ch.qos.logback.core.sift;
  */
 public class DefaultDiscriminator<E> extends AbstractDiscriminator<E> {
 
-    static public final String DEFAULT = "default";
+	static public final String DEFAULT = "default";
 
-    public String getDiscriminatingValue(E e) {
-        return DEFAULT;
-    }
+	@Override
+	public String getDiscriminatingValue(final E e) {
+		return DEFAULT;
+	}
 
-    public String getKey() {
-        return DEFAULT;
-    }
+	@Override
+	public String getKey() {
+		return DEFAULT;
+	}
 
 }

@@ -18,45 +18,45 @@ import java.util.Map;
 
 /**
  * A registry which maps a property in a host class to a default class.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
- * 
+ *
  */
 public class DefaultNestedComponentRegistry {
 
-    Map<HostClassAndPropertyDouble, Class<?>> defaultComponentMap = new HashMap<HostClassAndPropertyDouble, Class<?>>();
-    Map<String, Class<?>> tagToClassMap = new HashMap<>();
+	Map<HostClassAndPropertyDouble, Class<?>> defaultComponentMap = new HashMap<>();
+	Map<String, Class<?>> tagToClassMap = new HashMap<>();
 
-    public void add(Class<?> hostClass, String propertyName, Class<?> componentClass) {
-        HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName.toLowerCase());
-        defaultComponentMap.put(hpDouble, componentClass);
-        tagToClassMap.put(propertyName, componentClass);
-    }
+	public void add(final Class<?> hostClass, final String propertyName, final Class<?> componentClass) {
+		final HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName.toLowerCase());
+		defaultComponentMap.put(hpDouble, componentClass);
+		tagToClassMap.put(propertyName, componentClass);
+	}
 
 
-    public String findDefaultComponentTypeByTag(String tagName) {
-    	Class<?> defaultClass = tagToClassMap.get(tagName);
-    	if(defaultClass == null)
-    		return null;
-    	else 
-    		return defaultClass.getCanonicalName();
-    }
-    
-    public Class<?> findDefaultComponentType(Class<?> hostClass, String propertyName) {
-        propertyName = propertyName.toLowerCase();
-        while (hostClass != null) {
-            Class<?> componentClass = oneShotFind(hostClass, propertyName);
-            if (componentClass != null) {
-                return componentClass;
-            }
-            hostClass = hostClass.getSuperclass();
-        }
-        return null;
-    }
+	public String findDefaultComponentTypeByTag(final String tagName) {
+		final Class<?> defaultClass = tagToClassMap.get(tagName);
+		if(defaultClass == null) {
+			return null;
+		}
+		return defaultClass.getCanonicalName();
+	}
 
-    private Class<?> oneShotFind(Class<?> hostClass, String propertyName) {
-        HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName);
-        return defaultComponentMap.get(hpDouble);
-    }
+	public Class<?> findDefaultComponentType(Class<?> hostClass, String propertyName) {
+		propertyName = propertyName.toLowerCase();
+		while (hostClass != null) {
+			final Class<?> componentClass = oneShotFind(hostClass, propertyName);
+			if (componentClass != null) {
+				return componentClass;
+			}
+			hostClass = hostClass.getSuperclass();
+		}
+		return null;
+	}
+
+	private Class<?> oneShotFind(final Class<?> hostClass, final String propertyName) {
+		final HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName);
+		return defaultComponentMap.get(hpDouble);
+	}
 
 }

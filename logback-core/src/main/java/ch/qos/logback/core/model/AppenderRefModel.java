@@ -5,14 +5,14 @@ public class AppenderRefModel extends Model {
 	private static final long serialVersionUID = 5238705468395447547L;
 
 	String ref;
-	
+
 	public String getRef() {
 		return ref;
 	}
 
-	public void setRef(String ref) {
+	public void setRef(final String ref) {
 		this.ref = ref;
 	}
-	
-	
+
+
 }

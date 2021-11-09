@@ -21,29 +21,29 @@ import org.slf4j.Marker;
 import ch.qos.logback.classic.spi.ClassPackagingData;
 
 /**
- * 
+ *
  * @author Ceki Gulcu
  */
 public class Util {
 
-    static Map<String, ClassPackagingData> cache = new HashMap<String, ClassPackagingData>();
+	static Map<String, ClassPackagingData> cache = new HashMap<>();
 
-    static public boolean match(Marker marker, Marker[] markerArray) {
-        if (markerArray == null) {
-            throw new IllegalArgumentException("markerArray should not be null");
-        }
+	static public boolean match(final Marker marker, final Marker[] markerArray) {
+		if (markerArray == null) {
+			throw new IllegalArgumentException("markerArray should not be null");
+		}
 
-        // System.out.println("event marker="+marker);
+		// System.out.println("event marker="+marker);
 
-        final int size = markerArray.length;
-        for (int i = 0; i < size; i++) {
-            // System.out.println("other:"+markerArray[i]);
+		final int size = markerArray.length;
+		for (int i = 0; i < size; i++) {
+			// System.out.println("other:"+markerArray[i]);
 
-            if (marker.contains(markerArray[i])) {
-                return true;
-            }
-        }
-        return false;
-    }
+			if (marker.contains(markerArray[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

@@ -32,60 +32,62 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class BindDataSourceToJNDIAction extends Action {
 
-    static final String DATA_SOURCE_CLASS = "dataSourceClass";
-    static final String URL = "url";
-    static final String USER = "user";
-    static final String PASSWORD = "password";
+	static final String DATA_SOURCE_CLASS = "dataSourceClass";
+	static final String URL = "url";
+	static final String USER = "user";
+	static final String PASSWORD = "password";
 	private final BeanDescriptionCache beanDescriptionCache;
 
-    public BindDataSourceToJNDIAction(BeanDescriptionCache beanDescriptionCache) {
+	public BindDataSourceToJNDIAction(final BeanDescriptionCache beanDescriptionCache) {
 		this.beanDescriptionCache = beanDescriptionCache;
 	}
 
 	/**
-     * Instantiates an a data source and bind it to JNDI
-     * Most of the required parameters are placed in the ec.substitutionProperties
-     */
-    public void begin(InterpretationContext ec, String localName, Attributes attributes) {
-        String dsClassName = ec.getProperty(DATA_SOURCE_CLASS);
+	 * Instantiates an a data source and bind it to JNDI
+	 * Most of the required parameters are placed in the ec.substitutionProperties
+	 */
+	@Override
+	public void begin(final InterpretationContext ec, final String localName, final Attributes attributes) {
+		final String dsClassName = ec.getProperty(DATA_SOURCE_CLASS);
 
-        if (OptionHelper.isNullOrEmpty(dsClassName)) {
-            addWarn("dsClassName is a required parameter");
-            ec.addError("dsClassName is a required parameter");
+		if (OptionHelper.isNullOrEmpty(dsClassName)) {
+			addWarn("dsClassName is a required parameter");
+			ec.addError("dsClassName is a required parameter");
 
-            return;
-        }
+			return;
+		}
 
-        String urlStr = ec.getProperty(URL);
-        String userStr = ec.getProperty(USER);
-        String passwordStr = ec.getProperty(PASSWORD);
+		final String urlStr = ec.getProperty(URL);
+		final String userStr = ec.getProperty(USER);
+		final String passwordStr = ec.getProperty(PASSWORD);
 
-        try {
-            DataSource ds = (DataSource) OptionHelper.instantiateByClassName(dsClassName, DataSource.class, context);
+		try {
+			final DataSource ds = (DataSource) OptionHelper.instantiateByClassName(dsClassName, DataSource.class, context);
 
-            PropertySetter setter = new PropertySetter(beanDescriptionCache,ds);
-            setter.setContext(context);
+			final PropertySetter setter = new PropertySetter(beanDescriptionCache,ds);
+			setter.setContext(context);
 
-            if (!OptionHelper.isNullOrEmpty(urlStr)) {
-                setter.setProperty("url", urlStr);
-            }
+			if (!OptionHelper.isNullOrEmpty(urlStr)) {
+				setter.setProperty("url", urlStr);
+			}
 
-            if (!OptionHelper.isNullOrEmpty(userStr)) {
-                setter.setProperty("user", userStr);
-            }
+			if (!OptionHelper.isNullOrEmpty(userStr)) {
+				setter.setProperty("user", userStr);
+			}
 
-            if (!OptionHelper.isNullOrEmpty(passwordStr)) {
-                setter.setProperty("password", passwordStr);
-            }
+			if (!OptionHelper.isNullOrEmpty(passwordStr)) {
+				setter.setProperty("password", passwordStr);
+			}
 
-            Context ctx = new InitialContext();
-            ctx.rebind("dataSource", ds);
-        } catch (Exception oops) {
-            addError("Could not bind  datasource. Reported error follows.", oops);
-            ec.addError("Could not not bind  datasource of type [" + dsClassName + "].");
-        }
-    }
+			final Context ctx = new InitialContext();
+			ctx.rebind("dataSource", ds);
+		} catch (final Exception oops) {
+			addError("Could not bind  datasource. Reported error follows.", oops);
+			ec.addError("Could not not bind  datasource of type [" + dsClassName + "].");
+		}
+	}
 
-    public void end(InterpretationContext ec, String name) {
-    }
+	@Override
+	public void end(final InterpretationContext ec, final String name) {
+	}
 }

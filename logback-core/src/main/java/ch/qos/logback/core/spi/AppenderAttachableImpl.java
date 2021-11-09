@@ -25,117 +25,124 @@ import ch.qos.logback.core.util.COWArrayList;
  */
 public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 
-    @SuppressWarnings("unchecked")
-    final private COWArrayList<Appender<E>> appenderList = new COWArrayList<Appender<E>>(new Appender[0]);
+	@SuppressWarnings("unchecked")
+	final private COWArrayList<Appender<E>> appenderList = new COWArrayList<>(new Appender[0]);
 
-    /**
-     * Attach an appender. If the appender is already in the list in won't be
-     * added again.
-     */
-    public void addAppender(Appender<E> newAppender) {
-        if (newAppender == null) {
-            throw new IllegalArgumentException("Null argument disallowed");
-        }
-        appenderList.addIfAbsent(newAppender);
-    }
+	/**
+	 * Attach an appender. If the appender is already in the list in won't be
+	 * added again.
+	 */
+	@Override
+	public void addAppender(final Appender<E> newAppender) {
+		if (newAppender == null) {
+			throw new IllegalArgumentException("Null argument disallowed");
+		}
+		appenderList.addIfAbsent(newAppender);
+	}
 
-    /**
-     * Call the <code>doAppend</code> method on all attached appenders.
-     */
-    public int appendLoopOnAppenders(E e) {
-        int size = 0;
-        final Appender<E>[] appenderArray = appenderList.asTypedArray();
-        final int len = appenderArray.length;
-        for (int i = 0; i < len; i++) {
-            appenderArray[i].doAppend(e);
-            size++;
-        }
-        return size;
-    }
+	/**
+	 * Call the <code>doAppend</code> method on all attached appenders.
+	 */
+	public int appendLoopOnAppenders(final E e) {
+		int size = 0;
+		final Appender<E>[] appenderArray = appenderList.asTypedArray();
+		final int len = appenderArray.length;
+		for (int i = 0; i < len; i++) {
+			appenderArray[i].doAppend(e);
+			size++;
+		}
+		return size;
+	}
 
-    /**
-     * Get all attached appenders as an Enumeration. If there are no attached
-     * appenders <code>null</code> is returned.
-     *
-     * @return Iterator An iterator of attached appenders.
-     */
-    public Iterator<Appender<E>> iteratorForAppenders() {
-        return appenderList.iterator();
-    }
+	/**
+	 * Get all attached appenders as an Enumeration. If there are no attached
+	 * appenders <code>null</code> is returned.
+	 *
+	 * @return Iterator An iterator of attached appenders.
+	 */
+	@Override
+	public Iterator<Appender<E>> iteratorForAppenders() {
+		return appenderList.iterator();
+	}
 
-    /**
-     * Look for an attached appender named as <code>name</code>.
-     * 
-     * <p> Return the appender with that name if in the list. Return null
-     * otherwise.
-     */
-    public Appender<E> getAppender(String name) {
-        if (name == null) {
-            return null;
-        }
-        for (Appender<E> appender : appenderList) {
-            if (name.equals(appender.getName())) {
-                return appender;
-            }
-        }
-        return null;
-    }
+	/**
+	 * Look for an attached appender named as <code>name</code>.
+	 *
+	 * <p> Return the appender with that name if in the list. Return null
+	 * otherwise.
+	 */
+	@Override
+	public Appender<E> getAppender(final String name) {
+		if (name == null) {
+			return null;
+		}
+		for (final Appender<E> appender : appenderList) {
+			if (name.equals(appender.getName())) {
+				return appender;
+			}
+		}
+		return null;
+	}
 
-    /**
-     * Returns <code>true</code> if the specified appender is in the list of
-     * attached appenders, <code>false</code> otherwise.
-     *
-     * @since 1.2
-     */
-    public boolean isAttached(Appender<E> appender) {
-        if (appender == null) {
-            return false;
-        }
-        for (Appender<E> a : appenderList) {
-            if (a == appender)
-                return true;
-        }
-        return false;
-    }
+	/**
+	 * Returns <code>true</code> if the specified appender is in the list of
+	 * attached appenders, <code>false</code> otherwise.
+	 *
+	 * @since 1.2
+	 */
+	@Override
+	public boolean isAttached(final Appender<E> appender) {
+		if (appender == null) {
+			return false;
+		}
+		for (final Appender<E> a : appenderList) {
+			if (a == appender) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * Remove and processPriorToRemoval all previously attached appenders.
-     */
-    public void detachAndStopAllAppenders() {
-        for (Appender<E> a : appenderList) {
-            a.stop();
-        }
-        appenderList.clear();
-    }
+	/**
+	 * Remove and processPriorToRemoval all previously attached appenders.
+	 */
+	@Override
+	public void detachAndStopAllAppenders() {
+		for (final Appender<E> a : appenderList) {
+			a.stop();
+		}
+		appenderList.clear();
+	}
 
-    /**
-     * Remove the appender passed as parameter form the list of attached
-     * appenders.
-     */
-    public boolean detachAppender(Appender<E> appender) {
-        if (appender == null) {
-            return false;
-        }
-        boolean result;
-        result = appenderList.remove(appender);
-        return result;
-    }
+	/**
+	 * Remove the appender passed as parameter form the list of attached
+	 * appenders.
+	 */
+	@Override
+	public boolean detachAppender(final Appender<E> appender) {
+		if (appender == null) {
+			return false;
+		}
+		boolean result;
+		return appenderList.remove(appender);
+	}
 
-    /**
-     * Remove the appender with the name passed as parameter form the list of
-     * appenders.
-     */
-    public boolean detachAppender(String name) {
-        if (name == null) {
-            return false;
-        }
-        boolean removed = false;
-        for (Appender<E> a : appenderList.asTypedArray()) {
-            if (name.equals((a).getName())) {
-                removed = appenderList.remove(a);
-                break;
-            }
-        }
-        return removed;
-    }
+	/**
+	 * Remove the appender with the name passed as parameter form the list of
+	 * appenders.
+	 */
+	@Override
+	public boolean detachAppender(final String name) {
+		if (name == null) {
+			return false;
+		}
+		boolean removed = false;
+		for (final Appender<E> a : appenderList.asTypedArray()) {
+			if (name.equals(a.getName())) {
+				removed = appenderList.remove(a);
+				break;
+			}
+		}
+		return removed;
+	}
 }

@@ -16,25 +16,25 @@ import ch.qos.logback.core.status.Status;
  */
 public class StatusViaSLF4JLoggerFactory {
 
-    public static void addInfo(String msg, Object o) {
-        addStatus(new InfoStatus(msg, o));
-    }
+	public static void addInfo(final String msg, final Object o) {
+		addStatus(new InfoStatus(msg, o));
+	}
 
-    public static void addError(String msg, Object o) {
-        addStatus(new ErrorStatus(msg, o));
-    }
+	public static void addError(final String msg, final Object o) {
+		addStatus(new ErrorStatus(msg, o));
+	}
 
-    public static void addError(String msg, Object o, Throwable t) {
-        addStatus(new ErrorStatus(msg, o, t));
-    }
+	public static void addError(final String msg, final Object o, final Throwable t) {
+		addStatus(new ErrorStatus(msg, o, t));
+	}
 
-    public static void addStatus(Status status) {
-        ILoggerFactory iLoggerFactory = LoggerFactory.getILoggerFactory();
-        if (iLoggerFactory instanceof LoggerContext) {
-            ContextAwareBase contextAwareBase = new ContextAwareBase();
-            LoggerContext loggerContext = (LoggerContext) iLoggerFactory;
-            contextAwareBase.setContext(loggerContext);
-            contextAwareBase.addStatus(status);
-        }
-    }
+	public static void addStatus(final Status status) {
+		final ILoggerFactory iLoggerFactory = LoggerFactory.getILoggerFactory();
+		if (iLoggerFactory instanceof LoggerContext) {
+			final ContextAwareBase contextAwareBase = new ContextAwareBase();
+			final LoggerContext loggerContext = (LoggerContext) iLoggerFactory;
+			contextAwareBase.setContext(loggerContext);
+			contextAwareBase.addStatus(status);
+		}
+	}
 }

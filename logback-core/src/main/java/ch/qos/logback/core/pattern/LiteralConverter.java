@@ -15,14 +15,15 @@ package ch.qos.logback.core.pattern;
 
 public final class LiteralConverter<E> extends Converter<E> {
 
-    String literal;
+	String literal;
 
-    public LiteralConverter(String literal) {
-        this.literal = literal;
-    }
+	public LiteralConverter(final String literal) {
+		this.literal = literal;
+	}
 
-    public String convert(E o) {
-        return literal;
-    }
+	@Override
+	public String convert(final E o) {
+		return literal;
+	}
 
 }

@@ -23,26 +23,27 @@ import ch.qos.logback.core.spi.AppenderAttachable;
  */
 class AppenderDelegate extends ComponentDelegate {
 
-  Map<String, Appender<?>> appendersByName = [:]
+	Map<String, Appender<?>> appendersByName = [:]
 
-  AppenderDelegate(Appender appender) {
-    super(appender)
-  }
+			AppenderDelegate(final Appender appender) {
+		super(appender)
+	}
 
-  AppenderDelegate(Appender appender, List<Appender<?>> appenders) {
-    super(appender)
-    appendersByName = appenders.collectEntries { [(it.name) : it]}
-  }
+	AppenderDelegate(final Appender appender, final List<Appender<?>> appenders) {
+		super(appender)
+		appendersByName = appenders.collectEntries { [it.name : it]}
+	}
 
-  String getLabel() {
-    "appender"
-  }
+	@Override
+	String getLabel() {
+		"appender"
+	}
 
-  void appenderRef(String name){
-    if (!AppenderAttachable.class.isAssignableFrom(component.class)) {
-        def errorMessage= component.class.name + ' does not implement ' + AppenderAttachable.class.name + '.'
-        throw new IllegalArgumentException(errorMessage)
-    }
-    component.addAppender(appendersByName[name])
-  }
+	void appenderRef(final String name){
+		if (!AppenderAttachable.class.isAssignableFrom(component.class)) {
+			def errorMessage= component.class.name + ' does not implement ' + AppenderAttachable.class.name + '.'
+					throw new IllegalArgumentException(errorMessage)
+		}
+		component.addAppender(appendersByName[name])
+	}
 }

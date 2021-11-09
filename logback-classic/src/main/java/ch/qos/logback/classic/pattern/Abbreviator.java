@@ -15,10 +15,10 @@ package ch.qos.logback.classic.pattern;
 
 /**
  * An interface used for abbreviating strings according to different policies.
- * 
+ *
  * @author Ceki Gulcu
  */
 public interface Abbreviator {
 
-    String abbreviate(String in);
+	String abbreviate(String in);
 }

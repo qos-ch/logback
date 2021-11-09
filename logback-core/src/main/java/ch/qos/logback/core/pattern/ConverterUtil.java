@@ -23,45 +23,44 @@ public class ConverterUtil {
 	 *
 	 * @param head
 	 */
-	public static <E> void startConverters(Converter<E> head) {
+	public static <E> void startConverters(final Converter<E> head) {
 		Converter<E> c = head;
 		while (c != null) {
 			// CompositeConverter is a subclass of DynamicConverter
 			if (c instanceof CompositeConverter) {
-				CompositeConverter<E> cc = (CompositeConverter<E>) c;
-				Converter<E> childConverter = cc.childConverter;
+				final CompositeConverter<E> cc = (CompositeConverter<E>) c;
+				final Converter<E> childConverter = cc.childConverter;
 				startConverters(childConverter);
 				cc.start();
 			} else if (c instanceof DynamicConverter) {
-				DynamicConverter<E> dc = (DynamicConverter<E>) c;
+				final DynamicConverter<E> dc = (DynamicConverter<E>) c;
 				dc.start();
 			}
 			c = c.getNext();
 		}
 	}
 
-	public static <E> Converter<E> findTail(Converter<E> head) {
+	public static <E> Converter<E> findTail(final Converter<E> head) {
 		Converter<E> p = head;
 		while (p != null) {
-			Converter<E> next = p.getNext();
+			final Converter<E> next = p.getNext();
 			if (next == null) {
 				break;
-			} else {
-				p = next;
 			}
+			p = next;
 		}
 		return p;
 	}
 
-	public static <E> void setContextForConverters(Context context, Converter<E> head) {
+	public static <E> void setContextForConverters(final Context context, final Converter<E> head) {
 		Converter<E> c = head;
 		while (c != null) {
 			if (c instanceof ContextAware) {
 				((ContextAware) c).setContext(context);
 			}
 			if (c instanceof CompositeConverter) {
-				CompositeConverter<E> cc = (CompositeConverter<E>) c;
-				Converter<E> childConverter = cc.childConverter;
+				final CompositeConverter<E> cc = (CompositeConverter<E>) c;
+				final Converter<E> childConverter = cc.childConverter;
 				setContextForConverters(context, childConverter);
 			}
 			c = c.getNext();

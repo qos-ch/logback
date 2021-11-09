@@ -3,8 +3,8 @@ package ch.qos.logback.access.model;
 import ch.qos.logback.core.model.Model;
 
 public class ConfigurationModel extends Model {
-    /**
-	 * 
+	/**
+	 *
 	 */
 	private static final long serialVersionUID = 5447825021342728679L;
 
@@ -16,8 +16,8 @@ public class ConfigurationModel extends Model {
 		return debug;
 	}
 
-	public void setDebug(String debug) {
+	public void setDebug(final String debug) {
 		this.debug = debug;
 	}
-	
+
 }

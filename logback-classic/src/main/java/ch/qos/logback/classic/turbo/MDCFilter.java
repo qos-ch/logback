@@ -22,68 +22,69 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * This class allows output for a given MDC value.
- * 
+ *
  * <p>
- * When the given value is identified by this TurboFilter, 
+ * When the given value is identified by this TurboFilter,
  * the reply is based on the OnMatch option.
  * The information is taken from the MDC. For this TurboFilter to work,
- * one must set the key that will be used to 
+ * one must set the key that will be used to
  * access the information in the MDC.
- * 
+ *
  * <p>
  * To allow output for the value, set the OnMatch option
  * to ACCEPT. To disable output for the given value, set
  * the OnMatch option to DENY.
- * 
+ *
  * <p>
  * By default, values of the OnMatch and OnMisMatch
  * options are set to NEUTRAL.
- * 
+ *
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class MDCFilter extends MatchingFilter {
 
-    String MDCKey;
-    String value;
+	String MDCKey;
+	String value;
 
-    
-    @Override
-    public void start() {
-        int errorCount = 0;
-        if(value == null) {
-            addError("\'value\' parameter is mandatory. Cannot start.");
-            errorCount++;
-        }
-        if(MDCKey == null) {
-            addError("\'MDCKey\' parameter is mandatory. Cannot start.");
-            errorCount++;
-        }
-        
-        if(errorCount == 0)
-            this.start = true;
-    }
-    @Override
-    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        
-        if (!isStarted()) {
-            return FilterReply.NEUTRAL;
-        }
 
-        String value = MDC.get(MDCKey);
-        if (this.value.equals(value)) {
-            return onMatch;
-        }
-        return onMismatch;
-    }
+	@Override
+	public void start() {
+		int errorCount = 0;
+		if(value == null) {
+			addError("\'value\' parameter is mandatory. Cannot start.");
+			errorCount++;
+		}
+		if(MDCKey == null) {
+			addError("\'MDCKey\' parameter is mandatory. Cannot start.");
+			errorCount++;
+		}
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+		if(errorCount == 0) {
+			start = true;
+		}
+	}
+	@Override
+	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
 
-    public void setMDCKey(String MDCKey) {
-        this.MDCKey = MDCKey;
-    }
+		if (!isStarted()) {
+			return FilterReply.NEUTRAL;
+		}
+
+		final String value = MDC.get(MDCKey);
+		if (this.value.equals(value)) {
+			return onMatch;
+		}
+		return onMismatch;
+	}
+
+	public void setValue(final String value) {
+		this.value = value;
+	}
+
+	public void setMDCKey(final String MDCKey) {
+		this.MDCKey = MDCKey;
+	}
 
 }

@@ -15,6 +15,12 @@ package ch.qos.logback.classic.selector.servlet;
 
 import java.io.IOException;
 
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.selector.ContextJNDISelector;
+import ch.qos.logback.classic.selector.ContextSelector;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -22,19 +28,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.selector.ContextJNDISelector;
-import ch.qos.logback.classic.selector.ContextSelector;
-import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-
 /**
  * A servlet filter that puts the environment dependent LoggerContext in a
  * ThreadLocal variable, removing it after the request is processed.
- * 
+ *
  * <p>To use it, add the following lines to a web.xml file
- *  
+ *
  * <filter>
  *   <filter-name>LoggerContextFilter</filter-name>
  *   <filter-class>
@@ -45,36 +44,39 @@ import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
  *   <filter-name>LoggerContextFilter</filter-name>
  *   <url-pattern>/*</url-pattern>
  * </filter-mapping>
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class LoggerContextFilter implements Filter {
 
-    public void destroy() {
-        // do nothing
-    }
+	@Override
+	public void destroy() {
+		// do nothing
+	}
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	@Override
+	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
-        ContextJNDISelector sel = null;
+		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+		ContextJNDISelector sel = null;
 
-        if (selector instanceof ContextJNDISelector) {
-            sel = (ContextJNDISelector) selector;
-            sel.setLocalContext(lc);
-        }
+		if (selector instanceof ContextJNDISelector) {
+			sel = (ContextJNDISelector) selector;
+			sel.setLocalContext(lc);
+		}
 
-        try {
-            chain.doFilter(request, response);
-        } finally {
-            if (sel != null) {
-                sel.removeLocalContext();
-            }
-        }
-    }
+		try {
+			chain.doFilter(request, response);
+		} finally {
+			if (sel != null) {
+				sel.removeLocalContext();
+			}
+		}
+	}
 
-    public void init(FilterConfig arg0) throws ServletException {
-        // do nothing
-    }
+	@Override
+	public void init(final FilterConfig arg0) throws ServletException {
+		// do nothing
+	}
 }

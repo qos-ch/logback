@@ -18,13 +18,13 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class ClassOfCallerConverter extends NamedConverter {
 
-    protected String getFullyQualifiedName(ILoggingEvent event) {
+	@Override
+	protected String getFullyQualifiedName(final ILoggingEvent event) {
 
-        StackTraceElement[] cda = event.getCallerData();
-        if (cda != null && cda.length > 0) {
-            return cda[0].getClassName();
-        } else {
-            return CallerData.NA;
-        }
-    }
+		final StackTraceElement[] cda = event.getCallerData();
+		if (cda != null && cda.length > 0) {
+			return cda[0].getClassName();
+		}
+		return CallerData.NA;
+	}
 }

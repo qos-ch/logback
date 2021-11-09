@@ -18,34 +18,34 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class PropertyWrapperForScripts {
 
-    PropertyContainer local;
-    PropertyContainer context;
+	PropertyContainer local;
+	PropertyContainer context;
 
-    // this method is invoked by reflection in PropertyEvalScriptBuilder
-    public void setPropertyContainers(PropertyContainer local, PropertyContainer context) {
-        this.local = local;
-        this.context = context;
-    }
+	// this method is invoked by reflection in PropertyEvalScriptBuilder
+	public void setPropertyContainers(final PropertyContainer local, final PropertyContainer context) {
+		this.local = local;
+		this.context = context;
+	}
 
-    public boolean isNull(String k) {
-        String val = OptionHelper.propertyLookup(k, local, context);
-        return (val == null);
-    }
+	public boolean isNull(final String k) {
+		final String val = OptionHelper.propertyLookup(k, local, context);
+		return val == null;
+	}
 
-    public boolean isDefined(String k) {
-        String val = OptionHelper.propertyLookup(k, local, context);
-        return (val != null);
-    }
+	public boolean isDefined(final String k) {
+		final String val = OptionHelper.propertyLookup(k, local, context);
+		return val != null;
+	}
 
-    public String p(String k) {
-        return property(k);
-    }
+	public String p(final String k) {
+		return property(k);
+	}
 
-    public String property(String k) {
-        String val = OptionHelper.propertyLookup(k, local, context);
-        if (val != null)
-            return val;
-        else
-            return "";
-    }
+	public String property(final String k) {
+		final String val = OptionHelper.propertyLookup(k, local, context);
+		if (val != null) {
+			return val;
+		}
+		return "";
+	}
 }

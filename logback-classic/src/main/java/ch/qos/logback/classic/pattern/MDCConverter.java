@@ -13,78 +13,76 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
+import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
 
 import java.util.Map;
 
-import static ch.qos.logback.core.util.OptionHelper.extractDefaultReplacement;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 
 public class MDCConverter extends ClassicConverter {
 
-    private String key;
-    private String defaultValue = "";
+	private String key;
+	private String defaultValue = "";
 
-    @Override
-    public void start() {
-        String[] keyInfo = extractDefaultReplacement(getFirstOption());
-        key = keyInfo[0];
-        if (keyInfo[1] != null) {
-            defaultValue = keyInfo[1];
-        }
-        super.start();
-    }
+	@Override
+	public void start() {
+		final String[] keyInfo = extractDefaultReplacement(getFirstOption());
+		key = keyInfo[0];
+		if (keyInfo[1] != null) {
+			defaultValue = keyInfo[1];
+		}
+		super.start();
+	}
 
-    @Override
-    public void stop() {
-        key = null;
-        super.stop();
-    }
+	@Override
+	public void stop() {
+		key = null;
+		super.stop();
+	}
 
-    @Override
-    public String convert(ILoggingEvent event) {
-        Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
+	@Override
+	public String convert(final ILoggingEvent event) {
+		final Map<String, String> mdcPropertyMap = event.getMDCPropertyMap();
 
-        if (mdcPropertyMap == null) {
-            return defaultValue;
-        }
+		if (mdcPropertyMap == null) {
+			return defaultValue;
+		}
 
-        if (key == null) {
-            return outputMDCForAllKeys(mdcPropertyMap);
-        } else {
+		if (key == null) {
+			return outputMDCForAllKeys(mdcPropertyMap);
+		}
+		final String value = mdcPropertyMap.get(key);
+		if (value != null) {
+			return value;
+		} else {
+			return defaultValue;
+		}
+	}
 
-            String value = mdcPropertyMap.get(key);
-            if (value != null) {
-                return value;
-            } else {
-                return defaultValue;
-            }
-        }
-    }
+	/**
+	 * if no key is specified, return all the values present in the MDC, in the format "k1=v1, k2=v2, ..."
+	 */
+	private String outputMDCForAllKeys(final Map<String, String> mdcPropertyMap) {
+		final StringBuilder buf = new StringBuilder();
+		boolean first = true;
+		for (final Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
+			if (first) {
+				first = false;
+			} else {
+				buf.append(", ");
+			}
+			// format: key0=value0, key1=value1
+			buf.append(entry.getKey()).append('=').append(entry.getValue());
+		}
+		return buf.toString();
+	}
 
-    /**
-     * if no key is specified, return all the values present in the MDC, in the format "k1=v1, k2=v2, ..."
-     */
-    private String outputMDCForAllKeys(Map<String, String> mdcPropertyMap) {
-        StringBuilder buf = new StringBuilder();
-        boolean first = true;
-        for (Map.Entry<String, String> entry : mdcPropertyMap.entrySet()) {
-            if (first) {
-                first = false;
-            } else {
-                buf.append(", ");
-            }
-            // format: key0=value0, key1=value1
-            buf.append(entry.getKey()).append('=').append(entry.getValue());
-        }
-        return buf.toString();
-    }
-    
-    /**
-     * PrefixCompositeConverter needs the key
-     * @return
-     */
-    public String getKey() {
-    	return key;
-    }
-    
+	/**
+	 * PrefixCompositeConverter needs the key
+	 * @return
+	 */
+	public String getKey() {
+		return key;
+	}
+
 }

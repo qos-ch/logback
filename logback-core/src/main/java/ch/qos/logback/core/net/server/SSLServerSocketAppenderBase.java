@@ -22,56 +22,58 @@ import ch.qos.logback.core.net.ssl.SSLConfiguration;
 import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
 
 /**
- * 
- * This is the base class for module specific ServerSocketAppender 
+ *
+ * This is the base class for module specific ServerSocketAppender
  * implementations.
- * 
+ *
  * @author Carl Harris
  */
 public abstract class SSLServerSocketAppenderBase<E> extends AbstractServerSocketAppender<E> implements SSLComponent {
 
-    private SSLConfiguration ssl;
-    private ServerSocketFactory socketFactory;
+	private SSLConfiguration ssl;
+	private ServerSocketFactory socketFactory;
 
-    @Override
-    protected ServerSocketFactory getServerSocketFactory() {
-        return socketFactory;
-    }
+	@Override
+	protected ServerSocketFactory getServerSocketFactory() {
+		return socketFactory;
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void start() {
-        try {
-            SSLContext sslContext = getSsl().createContext(this);
-            SSLParametersConfiguration parameters = getSsl().getParameters();
-            parameters.setContext(getContext());
-            socketFactory = new ConfigurableSSLServerSocketFactory(parameters, sslContext.getServerSocketFactory());
-            super.start();
-        } catch (Exception ex) {
-            addError(ex.getMessage(), ex);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void start() {
+		try {
+			final SSLContext sslContext = getSsl().createContext(this);
+			final SSLParametersConfiguration parameters = getSsl().getParameters();
+			parameters.setContext(getContext());
+			socketFactory = new ConfigurableSSLServerSocketFactory(parameters, sslContext.getServerSocketFactory());
+			super.start();
+		} catch (final Exception ex) {
+			addError(ex.getMessage(), ex);
+		}
+	}
 
-    /**
-     * Gets the SSL configuration.
-     * @return SSL configuration; if no configuration has been set, a
-     *    default configuration is returned
-     */
-    public SSLConfiguration getSsl() {
-        if (ssl == null) {
-            ssl = new SSLConfiguration();
-        }
-        return ssl;
-    }
+	/**
+	 * Gets the SSL configuration.
+	 * @return SSL configuration; if no configuration has been set, a
+	 *    default configuration is returned
+	 */
+	@Override
+	public SSLConfiguration getSsl() {
+		if (ssl == null) {
+			ssl = new SSLConfiguration();
+		}
+		return ssl;
+	}
 
-    /**
-     * Sets the SSL configuration.
-     * @param ssl the SSL configuration to set
-     */
-    public void setSsl(SSLConfiguration ssl) {
-        this.ssl = ssl;
-    }
+	/**
+	 * Sets the SSL configuration.
+	 * @param ssl the SSL configuration to set
+	 */
+	@Override
+	public void setSsl(final SSLConfiguration ssl) {
+		this.ssl = ssl;
+	}
 
 }

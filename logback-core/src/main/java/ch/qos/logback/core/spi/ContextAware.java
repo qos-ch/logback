@@ -21,22 +21,22 @@ import ch.qos.logback.core.status.Status;
  */
 public interface ContextAware {
 
-    void setContext(Context context);
+	void setContext(Context context);
 
-    Context getContext();
+	Context getContext();
 
-    void addStatus(Status status);
+	void addStatus(Status status);
 
-    void addInfo(String msg);
+	void addInfo(String msg);
 
-    void addInfo(String msg, Throwable ex);
+	void addInfo(String msg, Throwable ex);
 
-    void addWarn(String msg);
+	void addWarn(String msg);
 
-    void addWarn(String msg, Throwable ex);
+	void addWarn(String msg, Throwable ex);
 
-    void addError(String msg);
+	void addError(String msg);
 
-    void addError(String msg, Throwable ex);
+	void addError(String msg, Throwable ex);
 
 }

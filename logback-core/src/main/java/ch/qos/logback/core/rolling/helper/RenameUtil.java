@@ -29,105 +29,104 @@ import ch.qos.logback.core.util.FileUtil;
  */
 public class RenameUtil extends ContextAwareBase {
 
-    static String RENAMING_ERROR_URL = CoreConstants.CODES_URL + "#renamingError";
+	static String RENAMING_ERROR_URL = CoreConstants.CODES_URL + "#renamingError";
 
-    /**
-     * A relatively robust file renaming method which in case of failure due to
-     * src and target being on different volumes, falls back onto
-     * renaming by copying.
-     *
-     * @param src
-     * @param target
-     * @throws RolloverFailure
-     */
-    public void rename(String src, String target) throws RolloverFailure {
-        if (src.equals(target)) {
-            addWarn("Source and target files are the same [" + src + "]. Skipping.");
-            return;
-        }
-        File srcFile = new File(src);
+	/**
+	 * A relatively robust file renaming method which in case of failure due to
+	 * src and target being on different volumes, falls back onto
+	 * renaming by copying.
+	 *
+	 * @param src
+	 * @param target
+	 * @throws RolloverFailure
+	 */
+	public void rename(final String src, final String target) throws RolloverFailure {
+		if (src.equals(target)) {
+			addWarn("Source and target files are the same [" + src + "]. Skipping.");
+			return;
+		}
+		final File srcFile = new File(src);
 
-        if (srcFile.exists()) {
-            File targetFile = new File(target);
-            createMissingTargetDirsIfNecessary(targetFile);
+		if (!srcFile.exists()) {
+			throw new RolloverFailure("File [" + src + "] does not exist.");
+		}
+		final File targetFile = new File(target);
+		createMissingTargetDirsIfNecessary(targetFile);
 
-            addInfo("Renaming file [" + srcFile + "] to [" + targetFile + "]");
+		addInfo("Renaming file [" + srcFile + "] to [" + targetFile + "]");
 
-            boolean result = srcFile.renameTo(targetFile);
+		final boolean result = srcFile.renameTo(targetFile);
 
-            if (!result) {
-                addWarn("Failed to rename file [" + srcFile + "] as [" + targetFile + "].");
-                Boolean areOnDifferentVolumes = areOnDifferentVolumes(srcFile, targetFile);
-                if (Boolean.TRUE.equals(areOnDifferentVolumes)) {
-                    addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
-                    renameByCopying(src, target);
-                    return;
-                } else {
-                    addWarn("Please consider leaving the [file] option of " + RollingFileAppender.class.getSimpleName() + " empty.");
-                    addWarn("See also " + RENAMING_ERROR_URL);
-                }
-            }
-        } else {
-            throw new RolloverFailure("File [" + src + "] does not exist.");
-        }
-    }
+		if (!result) {
+			addWarn("Failed to rename file [" + srcFile + "] as [" + targetFile + "].");
+			final Boolean areOnDifferentVolumes = areOnDifferentVolumes(srcFile, targetFile);
+			if (Boolean.TRUE.equals(areOnDifferentVolumes)) {
+				addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
+				renameByCopying(src, target);
+			} else {
+				addWarn("Please consider leaving the [file] option of " + RollingFileAppender.class.getSimpleName() + " empty.");
+				addWarn("See also " + RENAMING_ERROR_URL);
+			}
+		}
+	}
 
-    
-    
-    /**
-     * Attempts to determine whether both files are on different volumes. Returns true if we could determine that
-     * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
-     *
-     * @param srcFile
-     * @param targetFile
-     * @return true if on different volumes, false otherwise or if an error occurred
-     */
-    Boolean areOnDifferentVolumes(File srcFile, File targetFile) throws RolloverFailure {
-        if (!EnvUtil.isJDK7OrHigher())
-            return false;
 
-        // target file is not certain to exist but its parent has to exist given the call hierarchy of this method
-        File parentOfTarget = targetFile.getAbsoluteFile().getParentFile();
-        
-        if(parentOfTarget == null) {
-            addWarn("Parent of target file ["+targetFile+"] is null");
-            return null;
-        }
-        if(!parentOfTarget.exists()) {
-            addWarn("Parent of target file ["+targetFile+"] does not exist");
-            return null;
-        }
-        
-        try {
-            boolean onSameFileStore = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
-            return !onSameFileStore;
-        } catch (RolloverFailure rf) {
-            addWarn("Error while checking file store equality", rf);
-            return null;
-        }
-    }
 
-    public void renameByCopying(String src, String target) throws RolloverFailure {
+	/**
+	 * Attempts to determine whether both files are on different volumes. Returns true if we could determine that
+	 * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
+	 *
+	 * @param srcFile
+	 * @param targetFile
+	 * @return true if on different volumes, false otherwise or if an error occurred
+	 */
+	Boolean areOnDifferentVolumes(final File srcFile, final File targetFile) throws RolloverFailure {
+		if (!EnvUtil.isJDK7OrHigher()) {
+			return false;
+		}
 
-        FileUtil fileUtil = new FileUtil(getContext());
-        fileUtil.copy(src, target);
+		// target file is not certain to exist but its parent has to exist given the call hierarchy of this method
+		final File parentOfTarget = targetFile.getAbsoluteFile().getParentFile();
 
-        File srcFile = new File(src);
-        if (!srcFile.delete()) {
-            addWarn("Could not delete " + src);
-        }
+		if(parentOfTarget == null) {
+			addWarn("Parent of target file ["+targetFile+"] is null");
+			return null;
+		}
+		if(!parentOfTarget.exists()) {
+			addWarn("Parent of target file ["+targetFile+"] does not exist");
+			return null;
+		}
 
-    }
+		try {
+			final boolean onSameFileStore = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
+			return !onSameFileStore;
+		} catch (final RolloverFailure rf) {
+			addWarn("Error while checking file store equality", rf);
+			return null;
+		}
+	}
 
-    void createMissingTargetDirsIfNecessary(File toFile) throws RolloverFailure {
-        boolean result = FileUtil.createMissingParentDirectories(toFile);
-        if (!result) {
-            throw new RolloverFailure("Failed to create parent directories for [" + toFile.getAbsolutePath() + "]");
-        }
-    }
+	public void renameByCopying(final String src, final String target) throws RolloverFailure {
 
-    @Override
-    public String toString() {
-        return "c.q.l.co.rolling.helper.RenameUtil";
-    }
+		final FileUtil fileUtil = new FileUtil(getContext());
+		fileUtil.copy(src, target);
+
+		final File srcFile = new File(src);
+		if (!srcFile.delete()) {
+			addWarn("Could not delete " + src);
+		}
+
+	}
+
+	void createMissingTargetDirsIfNecessary(final File toFile) throws RolloverFailure {
+		final boolean result = FileUtil.createMissingParentDirectories(toFile);
+		if (!result) {
+			throw new RolloverFailure("Failed to create parent directories for [" + toFile.getAbsolutePath() + "]");
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "c.q.l.co.rolling.helper.RenameUtil";
+	}
 }

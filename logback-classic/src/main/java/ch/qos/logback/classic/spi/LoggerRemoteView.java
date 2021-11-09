@@ -22,29 +22,29 @@ import ch.qos.logback.classic.LoggerContext;
  * same way be client of the LoggingEvent object.
  * <p>
  * See {@link LoggerContextVO} for the rationale of this class.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class LoggerRemoteView implements Serializable {
 
-    private static final long serialVersionUID = 5028223666108713696L;
+	private static final long serialVersionUID = 5028223666108713696L;
 
-    final LoggerContextVO loggerContextView;
-    final String name;
+	final LoggerContextVO loggerContextView;
+	final String name;
 
-    public LoggerRemoteView(String name, LoggerContext lc) {
-        this.name = name;
-        assert lc.getLoggerContextRemoteView() != null;
-        loggerContextView = lc.getLoggerContextRemoteView();
-    }
+	public LoggerRemoteView(final String name, final LoggerContext lc) {
+		this.name = name;
+		assert lc.getLoggerContextRemoteView() != null;
+		loggerContextView = lc.getLoggerContextRemoteView();
+	}
 
-    public LoggerContextVO getLoggerContextView() {
-        return loggerContextView;
-    }
+	public LoggerContextVO getLoggerContextView() {
+		return loggerContextView;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
 }

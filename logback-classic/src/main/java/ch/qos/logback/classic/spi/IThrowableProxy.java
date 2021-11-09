@@ -14,23 +14,23 @@
 package ch.qos.logback.classic.spi;
 
 public interface IThrowableProxy {
-    String getMessage();
+	String getMessage();
 
-    String getClassName();
+	String getClassName();
 
-    StackTraceElementProxy[] getStackTraceElementProxyArray();
+	StackTraceElementProxy[] getStackTraceElementProxyArray();
 
-    int getCommonFrames();
+	int getCommonFrames();
 
-    IThrowableProxy getCause();
+	IThrowableProxy getCause();
 
-    IThrowableProxy[] getSuppressed();
+	IThrowableProxy[] getSuppressed();
 
-    /**
-     * Is this instance the result of a cyclic exception?
-     * 
-     * @return true if cyclic, false otherwise
-     * @sine 1.3.0
-     */
+	/**
+	 * Is this instance the result of a cyclic exception?
+	 *
+	 * @return true if cyclic, false otherwise
+	 * @sine 1.3.0
+	 */
 	boolean isCyclic();
 }

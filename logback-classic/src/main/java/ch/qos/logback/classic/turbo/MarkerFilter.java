@@ -21,47 +21,46 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * Checks whether the marker in the event matches the marker specified by the 
+ * Checks whether the marker in the event matches the marker specified by the
  * user.
  */
 public class MarkerFilter extends MatchingFilter {
 
-    Marker markerToMatch;
+	Marker markerToMatch;
 
-    @Override
-    public void start() {
-        if (markerToMatch != null) {
-            super.start();
-        } else {
-            addError("The marker property must be set for [" + getName() + "]");
-        }
-    }
+	@Override
+	public void start() {
+		if (markerToMatch != null) {
+			super.start();
+		} else {
+			addError("The marker property must be set for [" + getName() + "]");
+		}
+	}
 
-    @Override
-    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        if (!isStarted()) {
-            return FilterReply.NEUTRAL;
-        }
+	@Override
+	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
+		if (!isStarted()) {
+			return FilterReply.NEUTRAL;
+		}
 
-        if (marker == null) {
-            return onMismatch;
-        }
+		if (marker == null) {
+			return onMismatch;
+		}
 
-        if (marker.contains(markerToMatch)) {
-            return onMatch;
-        } else {
-            return onMismatch;
-        }
-    }
+		if (marker.contains(markerToMatch)) {
+			return onMatch;
+		}
+		return onMismatch;
+	}
 
-    /**
-     * The marker to match in the event.
-     * 
-     * @param markerStr
-     */
-    public void setMarker(String markerStr) {
-        if (markerStr != null) {
-            this.markerToMatch = MarkerFactory.getMarker(markerStr);
-        }
-    }
+	/**
+	 * The marker to match in the event.
+	 *
+	 * @param markerStr
+	 */
+	public void setMarker(final String markerStr) {
+		if (markerStr != null) {
+			markerToMatch = MarkerFactory.getMarker(markerStr);
+		}
+	}
 }

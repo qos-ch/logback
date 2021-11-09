@@ -22,44 +22,46 @@ import ch.qos.logback.core.util.CachingDateFormatter;
 
 public class DateConverter extends ClassicConverter {
 
-    long lastTimestamp = -1;
-    String timestampStrCache = null;
-    CachingDateFormatter cachingDateFormatter = null;
+	long lastTimestamp = -1;
+	String timestampStrCache = null;
+	CachingDateFormatter cachingDateFormatter = null;
 
-    public void start() {
+	@Override
+	public void start() {
 
-        String datePattern = getFirstOption();
-        if (datePattern == null) {
-            datePattern = CoreConstants.ISO8601_PATTERN;
-        }
+		String datePattern = getFirstOption();
+		if (datePattern == null) {
+			datePattern = CoreConstants.ISO8601_PATTERN;
+		}
 
-        if (datePattern.equals(CoreConstants.ISO8601_STR)) {
-            datePattern = CoreConstants.ISO8601_PATTERN;
-        }
+		if (datePattern.equals(CoreConstants.ISO8601_STR)) {
+			datePattern = CoreConstants.ISO8601_PATTERN;
+		}
 
-        List<String> optionList = getOptionList();
-        ZoneId zoneId = null;
-        // if the option list contains a TZ option, then set it.
-        if (optionList != null && optionList.size() > 1) {
-        	String zoneIdString = (String) optionList.get(1);
-        	zoneId = ZoneId.of(zoneIdString);
-        }
-        
-        try {
-            cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
-        } catch (IllegalArgumentException e) {
-            addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
-            // default to the ISO8601 format
-            cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN, zoneId);
-        }
+		final List<String> optionList = getOptionList();
+		ZoneId zoneId = null;
+		// if the option list contains a TZ option, then set it.
+		if (optionList != null && optionList.size() > 1) {
+			final String zoneIdString = optionList.get(1);
+			zoneId = ZoneId.of(zoneIdString);
+		}
 
-       
-        
-        super.start();
-    }
+		try {
+			cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
+		} catch (final IllegalArgumentException e) {
+			addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
+			// default to the ISO8601 format
+			cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN, zoneId);
+		}
 
-    public String convert(ILoggingEvent le) {
-        long timestamp = le.getTimeStamp();
-        return cachingDateFormatter.format(timestamp);
-    }
+
+
+		super.start();
+	}
+
+	@Override
+	public String convert(final ILoggingEvent le) {
+		final long timestamp = le.getTimeStamp();
+		return cachingDateFormatter.format(timestamp);
+	}
 }
