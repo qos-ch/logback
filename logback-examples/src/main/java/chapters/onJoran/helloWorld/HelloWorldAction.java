@@ -20,16 +20,18 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
  * A trivial action that writes "Hello world" on the console.
- * 
+ *
  * See the {@link HelloWorld} class for integration with Joran.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class HelloWorldAction extends Action {
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    @Override
+    public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
         System.out.println("Hello World");
     }
 
-    public void end(InterpretationContext ec, String name) {
+    @Override
+    public void end(final InterpretationContext ec, final String name) {
     }
 }

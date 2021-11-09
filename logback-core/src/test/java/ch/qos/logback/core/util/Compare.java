@@ -24,168 +24,167 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
 
 public class Compare {
-	static final int B1_NULL = -1;
-	static final int B2_NULL = -2;
+    static final int B1_NULL = -1;
+    static final int B2_NULL = -2;
 
-	public static boolean compare(final String file1, final String file2) throws FileNotFoundException, IOException {
-		if (file1.endsWith(".gz")) {
-			return gzFileCompare(file1, file2);
-		}
-		if (file1.endsWith(".zip")) {
-			return zipFileCompare(file1, file2);
-		} else {
-			return regularFileCompare(file1, file2);
-		}
-	}
+    public static boolean compare(final String file1, final String file2) throws FileNotFoundException, IOException {
+        if (file1.endsWith(".gz")) {
+            return gzFileCompare(file1, file2);
+        }
+        if (file1.endsWith(".zip")) {
+            return zipFileCompare(file1, file2);
+        }
+        return regularFileCompare(file1, file2);
+    }
 
-	static BufferedReader gzFileToBufferedReader(final String file) throws IOException {
-		final FileInputStream fis = new FileInputStream(file);
-		final GZIPInputStream gzis = new GZIPInputStream(fis);
-		return new BufferedReader(new InputStreamReader(gzis));
-	}
+    static BufferedReader gzFileToBufferedReader(final String file) throws IOException {
+        final FileInputStream fis = new FileInputStream(file);
+        final GZIPInputStream gzis = new GZIPInputStream(fis);
+        return new BufferedReader(new InputStreamReader(gzis));
+    }
 
-	static BufferedReader zipFileToBufferedReader(final String file) throws IOException {
-		final FileInputStream fis = new FileInputStream(file);
-		final ZipInputStream zis = new ZipInputStream(fis);
-		zis.getNextEntry();
-		return new BufferedReader(new InputStreamReader(zis));
-	}
+    static BufferedReader zipFileToBufferedReader(final String file) throws IOException {
+        final FileInputStream fis = new FileInputStream(file);
+        final ZipInputStream zis = new ZipInputStream(fis);
+        zis.getNextEntry();
+        return new BufferedReader(new InputStreamReader(zis));
+    }
 
-	public static boolean gzFileCompare(final String file1, final String file2) throws IOException {
-		final BufferedReader in1 = gzFileToBufferedReader(file1);
-		final BufferedReader in2 = gzFileToBufferedReader(file2);
-		return bufferCompare(in1, in2, file1, file2);
-	}
+    public static boolean gzFileCompare(final String file1, final String file2) throws IOException {
+        final BufferedReader in1 = gzFileToBufferedReader(file1);
+        final BufferedReader in2 = gzFileToBufferedReader(file2);
+        return bufferCompare(in1, in2, file1, file2);
+    }
 
-	public static boolean zipFileCompare(final String file1, final String file2) throws IOException {
-		final BufferedReader in1 = zipFileToBufferedReader(file1);
-		final BufferedReader in2 = zipFileToBufferedReader(file2);
-		return bufferCompare(in1, in2, file1, file2);
-	}
+    public static boolean zipFileCompare(final String file1, final String file2) throws IOException {
+        final BufferedReader in1 = zipFileToBufferedReader(file1);
+        final BufferedReader in2 = zipFileToBufferedReader(file2);
+        return bufferCompare(in1, in2, file1, file2);
+    }
 
-	public static boolean regularFileCompare(final String file1, final String file2) throws FileNotFoundException, IOException {
-		final BufferedReader in1 = new BufferedReader(new FileReader(file1));
-		final BufferedReader in2 = new BufferedReader(new FileReader(file2));
-		return bufferCompare(in1, in2, file1, file2);
-	}
+    public static boolean regularFileCompare(final String file1, final String file2) throws FileNotFoundException, IOException {
+        final BufferedReader in1 = new BufferedReader(new FileReader(file1));
+        final BufferedReader in2 = new BufferedReader(new FileReader(file2));
+        return bufferCompare(in1, in2, file1, file2);
+    }
 
-	public static boolean bufferCompare(final BufferedReader in1, final BufferedReader in2, final String file1, final String file2) throws FileNotFoundException, IOException {
+    public static boolean bufferCompare(final BufferedReader in1, final BufferedReader in2, final String file1, final String file2) throws FileNotFoundException, IOException {
 
-		String s1;
-		int lineCounter = 0;
+        String s1;
+        int lineCounter = 0;
 
-		while ((s1 = in1.readLine()) != null) {
-			lineCounter++;
+        while ((s1 = in1.readLine()) != null) {
+            lineCounter++;
 
-			final String s2 = in2.readLine();
+            final String s2 = in2.readLine();
 
-			if (!s1.equals(s2)) {
-				System.out.println("Files [" + file1 + "] and [" + file2 + "] differ on line " + lineCounter);
-				System.out.println("One reads:  [" + s1 + "].");
-				System.out.println("Other reads:[" + s2 + "].");
-				outputFile(file1);
-				outputFile(file2);
+            if (!s1.equals(s2)) {
+                System.out.println("Files [" + file1 + "] and [" + file2 + "] differ on line " + lineCounter);
+                System.out.println("One reads:  [" + s1 + "].");
+                System.out.println("Other reads:[" + s2 + "].");
+                outputFile(file1);
+                outputFile(file2);
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
-		// the second file is longer
-		if (in2.read() != -1) {
-			System.out.println("File [" + file2 + "] longer than file [" + file1 + "].");
-			outputFile(file1);
-			outputFile(file2);
+        // the second file is longer
+        if (in2.read() != -1) {
+            System.out.println("File [" + file2 + "] longer than file [" + file1 + "].");
+            outputFile(file1);
+            outputFile(file2);
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 *
-	 * Prints file on the console.
-	 *
-	 */
-	private static void outputFile(final String file) throws FileNotFoundException, IOException {
-		BufferedReader in1 = null;
+    /**
+     *
+     * Prints file on the console.
+     *
+     */
+    private static void outputFile(final String file) throws FileNotFoundException, IOException {
+        BufferedReader in1 = null;
 
-		try {
-			in1 = new BufferedReader(new FileReader(file));
-			String s1;
-			int lineCounter = 0;
-			System.out.println("--------------------------------");
-			System.out.println("Contents of " + file + ":");
+        try {
+            in1 = new BufferedReader(new FileReader(file));
+            String s1;
+            int lineCounter = 0;
+            System.out.println("--------------------------------");
+            System.out.println("Contents of " + file + ":");
 
-			while ((s1 = in1.readLine()) != null) {
-				lineCounter++;
-				System.out.print(lineCounter);
+            while ((s1 = in1.readLine()) != null) {
+                lineCounter++;
+                System.out.print(lineCounter);
 
-				if (lineCounter < 10) {
-					System.out.print("   : ");
-				} else if (lineCounter < 100) {
-					System.out.print("  : ");
-				} else if (lineCounter < 1000) {
-					System.out.print(" : ");
-				} else {
-					System.out.print(": ");
-				}
+                if (lineCounter < 10) {
+                    System.out.print("   : ");
+                } else if (lineCounter < 100) {
+                    System.out.print("  : ");
+                } else if (lineCounter < 1000) {
+                    System.out.print(" : ");
+                } else {
+                    System.out.print(": ");
+                }
 
-				System.out.println(s1);
-			}
-		} finally {
-			close(in1);
-		}
-	}
+                System.out.println(s1);
+            }
+        } finally {
+            close(in1);
+        }
+    }
 
-	public static boolean gzCompare(final String file1, final String file2) throws FileNotFoundException, IOException {
-		BufferedReader in1 = null;
-		BufferedReader in2 = null;
-		try {
-			in1 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file1))));
-			in2 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file2))));
+    public static boolean gzCompare(final String file1, final String file2) throws FileNotFoundException, IOException {
+        BufferedReader in1 = null;
+        BufferedReader in2 = null;
+        try {
+            in1 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file1))));
+            in2 = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(file2))));
 
-			String s1;
-			int lineCounter = 0;
+            String s1;
+            int lineCounter = 0;
 
-			while ((s1 = in1.readLine()) != null) {
-				lineCounter++;
+            while ((s1 = in1.readLine()) != null) {
+                lineCounter++;
 
-				final String s2 = in2.readLine();
+                final String s2 = in2.readLine();
 
-				if (!s1.equals(s2)) {
-					System.out.println("Files [" + file1 + "] and [" + file2 + "] differ on line " + lineCounter);
-					System.out.println("One reads:  [" + s1 + "].");
-					System.out.println("Other reads:[" + s2 + "].");
-					outputFile(file1);
-					outputFile(file2);
+                if (!s1.equals(s2)) {
+                    System.out.println("Files [" + file1 + "] and [" + file2 + "] differ on line " + lineCounter);
+                    System.out.println("One reads:  [" + s1 + "].");
+                    System.out.println("Other reads:[" + s2 + "].");
+                    outputFile(file1);
+                    outputFile(file2);
 
-					return false;
-				}
-			}
+                    return false;
+                }
+            }
 
-			// the second file is longer
-			if (in2.read() != -1) {
-				System.out.println("File [" + file2 + "] longer than file [" + file1 + "].");
-				outputFile(file1);
-				outputFile(file2);
+            // the second file is longer
+            if (in2.read() != -1) {
+                System.out.println("File [" + file2 + "] longer than file [" + file1 + "].");
+                outputFile(file1);
+                outputFile(file2);
 
-				return false;
-			}
+                return false;
+            }
 
-			return true;
-		} finally {
-			close(in1);
-			close(in2);
-		}
-	}
+            return true;
+        } finally {
+            close(in1);
+            close(in2);
+        }
+    }
 
-	static void close(final Reader r) {
-		if (r != null) {
-			try {
-				r.close();
-			} catch (final IOException e) {
-			}
-		}
-	}
+    static void close(final Reader r) {
+        if (r != null) {
+            try {
+                r.close();
+            } catch (final IOException e) {
+            }
+        }
+    }
 }

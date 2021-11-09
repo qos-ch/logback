@@ -33,58 +33,58 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class Log4jInvocation {
 
-	static final String HELLO = "Hello";
+    static final String HELLO = "Hello";
 
-	DummyLBAppender listAppender;
-	LoggerContext lc;
-	ch.qos.logback.classic.Logger rootLogger;
+    DummyLBAppender listAppender;
+    LoggerContext lc;
+    ch.qos.logback.classic.Logger rootLogger;
 
-	@Before
-	public void fixture() {
-		lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		lc.reset();
+    @Before
+    public void fixture() {
+        lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        lc.reset();
 
-		listAppender = new DummyLBAppender();
-		listAppender.setContext(lc);
-		listAppender.start();
-		rootLogger = lc.getLogger("root");
-		rootLogger.addAppender(listAppender);
-	}
+        listAppender = new DummyLBAppender();
+        listAppender.setContext(lc);
+        listAppender.start();
+        rootLogger = lc.getLogger("root");
+        rootLogger.addAppender(listAppender);
+    }
 
-	@Test
-	public void basic() {
-		assertEquals(0, listAppender.list.size());
+    @Test
+    public void basic() {
+        assertEquals(0, listAppender.list.size());
 
-		final Logger logger = Logger.getLogger("basic-test");
-		logger.debug(HELLO);
+        final Logger logger = Logger.getLogger("basic-test");
+        logger.debug(HELLO);
 
-		assertEquals(1, listAppender.list.size());
-		final ILoggingEvent event = listAppender.list.get(0);
-		assertEquals(HELLO, event.getMessage());
-	}
+        assertEquals(1, listAppender.list.size());
+        final ILoggingEvent event = listAppender.list.get(0);
+        assertEquals(HELLO, event.getMessage());
+    }
 
-	@Test
-	public void callerData() {
-		assertEquals(0, listAppender.list.size());
+    @Test
+    public void callerData() {
+        assertEquals(0, listAppender.list.size());
 
-		final PatternLayout pl = new PatternLayout();
-		pl.setPattern("%-5level [%class] %logger - %msg");
-		pl.setContext(lc);
-		pl.start();
-		listAppender.layout = pl;
+        final PatternLayout pl = new PatternLayout();
+        pl.setPattern("%-5level [%class] %logger - %msg");
+        pl.setContext(lc);
+        pl.start();
+        listAppender.layout = pl;
 
-		final Logger logger = Logger.getLogger("basic-test");
-		logger.trace("none");
-		assertEquals(0, listAppender.list.size());
+        final Logger logger = Logger.getLogger("basic-test");
+        logger.trace("none");
+        assertEquals(0, listAppender.list.size());
 
-		rootLogger.setLevel(Level.TRACE);
-		logger.trace(HELLO);
-		assertEquals(1, listAppender.list.size());
+        rootLogger.setLevel(Level.TRACE);
+        logger.trace(HELLO);
+        assertEquals(1, listAppender.list.size());
 
-		final ILoggingEvent event = listAppender.list.get(0);
-		assertEquals(HELLO, event.getMessage());
+        final ILoggingEvent event = listAppender.list.get(0);
+        assertEquals(HELLO, event.getMessage());
 
-		assertEquals(1, listAppender.stringList.size());
-		assertEquals("TRACE [" + Log4jInvocation.class.getName() + "] basic-test - Hello", listAppender.stringList.get(0));
-	}
+        assertEquals(1, listAppender.stringList.size());
+        assertEquals("TRACE [" + Log4jInvocation.class.getName() + "] basic-test - Hello", listAppender.stringList.get(0));
+    }
 }

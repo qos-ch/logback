@@ -20,19 +20,19 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class LocalIPAddressConverter extends AccessConverter {
 
-	String localIPAddressStr;
+    String localIPAddressStr;
 
-	public LocalIPAddressConverter() {
-		try {
-			localIPAddressStr = InetAddress.getLocalHost().getHostAddress();
-		} catch (final UnknownHostException uhe) {
-			localIPAddressStr = "127.0.0.1";
-		}
-	}
+    public LocalIPAddressConverter() {
+        try {
+            localIPAddressStr = InetAddress.getLocalHost().getHostAddress();
+        } catch (final UnknownHostException uhe) {
+            localIPAddressStr = "127.0.0.1";
+        }
+    }
 
-	@Override
-	public String convert(final IAccessEvent accessEvent) {
-		return localIPAddressStr;
-	}
+    @Override
+    public String convert(final IAccessEvent accessEvent) {
+        return localIPAddressStr;
+    }
 
 }

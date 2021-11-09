@@ -22,45 +22,45 @@ import ch.qos.logback.core.html.IThrowableRenderer;
 
 public class DefaultThrowableRenderer implements IThrowableRenderer<ILoggingEvent> {
 
-	static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
+    static final String TRACE_PREFIX = "<br />&nbsp;&nbsp;&nbsp;&nbsp;";
 
-	@Override
-	public void render(final StringBuilder sbuf, final ILoggingEvent event) {
-		IThrowableProxy tp = event.getThrowableProxy();
-		sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
-		while (tp != null) {
-			render(sbuf, tp);
-			tp = tp.getCause();
-		}
-		sbuf.append("</td></tr>");
-	}
+    @Override
+    public void render(final StringBuilder sbuf, final ILoggingEvent event) {
+        IThrowableProxy tp = event.getThrowableProxy();
+        sbuf.append("<tr><td class=\"Exception\" colspan=\"6\">");
+        while (tp != null) {
+            render(sbuf, tp);
+            tp = tp.getCause();
+        }
+        sbuf.append("</td></tr>");
+    }
 
-	void render(final StringBuilder sbuf, final IThrowableProxy tp) {
-		printFirstLine(sbuf, tp);
+    void render(final StringBuilder sbuf, final IThrowableProxy tp) {
+        printFirstLine(sbuf, tp);
 
-		final int commonFrames = tp.getCommonFrames();
-		final StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
+        final int commonFrames = tp.getCommonFrames();
+        final StackTraceElementProxy[] stepArray = tp.getStackTraceElementProxyArray();
 
-		for (int i = 0; i < stepArray.length - commonFrames; i++) {
-			final StackTraceElementProxy step = stepArray[i];
-			sbuf.append(TRACE_PREFIX);
-			sbuf.append(Transform.escapeTags(step.toString()));
-			sbuf.append(CoreConstants.LINE_SEPARATOR);
-		}
+        for (int i = 0; i < stepArray.length - commonFrames; i++) {
+            final StackTraceElementProxy step = stepArray[i];
+            sbuf.append(TRACE_PREFIX);
+            sbuf.append(Transform.escapeTags(step.toString()));
+            sbuf.append(CoreConstants.LINE_SEPARATOR);
+        }
 
-		if (commonFrames > 0) {
-			sbuf.append(TRACE_PREFIX);
-			sbuf.append("\t... ").append(commonFrames).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
-		}
-	}
+        if (commonFrames > 0) {
+            sbuf.append(TRACE_PREFIX);
+            sbuf.append("\t... ").append(commonFrames).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+        }
+    }
 
-	public void printFirstLine(final StringBuilder sb, final IThrowableProxy tp) {
-		final int commonFrames = tp.getCommonFrames();
-		if (commonFrames > 0) {
-			sb.append("<br />").append(CoreConstants.CAUSED_BY);
-		}
-		sb.append(tp.getClassName()).append(": ").append(Transform.escapeTags(tp.getMessage()));
-		sb.append(CoreConstants.LINE_SEPARATOR);
-	}
+    public void printFirstLine(final StringBuilder sb, final IThrowableProxy tp) {
+        final int commonFrames = tp.getCommonFrames();
+        if (commonFrames > 0) {
+            sb.append("<br />").append(CoreConstants.CAUSED_BY);
+        }
+        sb.append(tp.getClassName()).append(": ").append(Transform.escapeTags(tp.getMessage()));
+        sb.append(CoreConstants.LINE_SEPARATOR);
+    }
 
 }

@@ -32,111 +32,111 @@ import ch.qos.logback.core.util.CloseUtil;
  */
 class RemoteAppenderStreamClient implements RemoteAppenderClient {
 
-	private final String id;
-	private final Socket socket;
-	private final InputStream inputStream;
+    private final String id;
+    private final Socket socket;
+    private final InputStream inputStream;
 
-	private LoggerContext lc;
-	private Logger logger;
+    private LoggerContext lc;
+    private Logger logger;
 
-	/**
-	 * Constructs a new client.
-	 * @param id a display name for the client
-	 * @param inputStream input stream from which events will be read
-	 */
-	public RemoteAppenderStreamClient(final String id, final Socket socket) {
-		this.id = id;
-		this.socket = socket;
-		inputStream = null;
-	}
+    /**
+     * Constructs a new client.
+     * @param id a display name for the client
+     * @param inputStream input stream from which events will be read
+     */
+    public RemoteAppenderStreamClient(final String id, final Socket socket) {
+        this.id = id;
+        this.socket = socket;
+        inputStream = null;
+    }
 
-	/**
-	 * Constructs a new client.
-	 * <p>
-	 * This constructor is provided primarily to support unit tests for which
-	 * it is inconvenient to create a socket.
-	 *
-	 * @param id a display name for the client
-	 * @param inputStream input stream from which events will be read
-	 */
-	public RemoteAppenderStreamClient(final String id, final InputStream inputStream) {
-		this.id = id;
-		socket = null;
-		this.inputStream = inputStream;
-	}
+    /**
+     * Constructs a new client.
+     * <p>
+     * This constructor is provided primarily to support unit tests for which
+     * it is inconvenient to create a socket.
+     *
+     * @param id a display name for the client
+     * @param inputStream input stream from which events will be read
+     */
+    public RemoteAppenderStreamClient(final String id, final InputStream inputStream) {
+        this.id = id;
+        socket = null;
+        this.inputStream = inputStream;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setLoggerContext(final LoggerContext lc) {
-		this.lc = lc;
-		logger = lc.getLogger(getClass().getPackage().getName());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setLoggerContext(final LoggerContext lc) {
+        this.lc = lc;
+        logger = lc.getLogger(getClass().getPackage().getName());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void close() {
-		if (socket == null) {
-			return;
-		}
-		CloseUtil.closeQuietly(socket);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void close() {
+        if (socket == null) {
+            return;
+        }
+        CloseUtil.closeQuietly(socket);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void run() {
-		logger.info(this + ": connected");
-		HardenedObjectInputStream ois = null;
-		try {
-			ois = createObjectInputStream();
-			while (true) {
-				// read an event from the wire
-				final ILoggingEvent event = (ILoggingEvent) ois.readObject();
-				// get a logger from the hierarchy. The name of the logger is taken to
-				// be the name contained in the event.
-				final Logger remoteLogger = lc.getLogger(event.getLoggerName());
-				// apply the logger-level filter
-				if (remoteLogger.isEnabledFor(event.getLevel())) {
-					// finally log the event as if was generated locally
-					remoteLogger.callAppenders(event);
-				}
-			}
-		} catch (final EOFException ex) {
-			// this is normal and expected
-			assert true;
-		} catch (final IOException ex) {
-			logger.info(this + ": " + ex);
-		} catch (final ClassNotFoundException ex) {
-			logger.error(this + ": unknown event class");
-		} catch (final RuntimeException ex) {
-			logger.error(this + ": " + ex);
-		} finally {
-			if (ois != null) {
-				CloseUtil.closeQuietly(ois);
-			}
-			close();
-			logger.info(this + ": connection closed");
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+        logger.info(this + ": connected");
+        HardenedObjectInputStream ois = null;
+        try {
+            ois = createObjectInputStream();
+            while (true) {
+                // read an event from the wire
+                final ILoggingEvent event = (ILoggingEvent) ois.readObject();
+                // get a logger from the hierarchy. The name of the logger is taken to
+                // be the name contained in the event.
+                final Logger remoteLogger = lc.getLogger(event.getLoggerName());
+                // apply the logger-level filter
+                if (remoteLogger.isEnabledFor(event.getLevel())) {
+                    // finally log the event as if was generated locally
+                    remoteLogger.callAppenders(event);
+                }
+            }
+        } catch (final EOFException ex) {
+            // this is normal and expected
+            assert true;
+        } catch (final IOException ex) {
+            logger.info(this + ": " + ex);
+        } catch (final ClassNotFoundException ex) {
+            logger.error(this + ": unknown event class");
+        } catch (final RuntimeException ex) {
+            logger.error(this + ": " + ex);
+        } finally {
+            if (ois != null) {
+                CloseUtil.closeQuietly(ois);
+            }
+            close();
+            logger.info(this + ": connection closed");
+        }
+    }
 
-	private HardenedObjectInputStream createObjectInputStream() throws IOException {
-		if (inputStream != null) {
-			return new HardenedLoggingEventInputStream(inputStream);
-		}
-		return new HardenedLoggingEventInputStream(socket.getInputStream());
-	}
+    private HardenedObjectInputStream createObjectInputStream() throws IOException {
+        if (inputStream != null) {
+            return new HardenedLoggingEventInputStream(inputStream);
+        }
+        return new HardenedLoggingEventInputStream(socket.getInputStream());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return "client " + id;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "client " + id;
+    }
 
 }

@@ -23,23 +23,23 @@ package ch.qos.logback.core.contention;
  */
 public class ThreadedThroughputCalculator extends MultiThreadedHarness {
 
-	public ThreadedThroughputCalculator(final long overallDurationInMillis) {
-		super(overallDurationInMillis);
-	}
+    public ThreadedThroughputCalculator(final long overallDurationInMillis) {
+        super(overallDurationInMillis);
+    }
 
-	public void printThroughput(final String msg) throws InterruptedException {
-		printThroughput(msg, false);
-	}
+    public void printThroughput(final String msg) throws InterruptedException {
+        printThroughput(msg, false);
+    }
 
-	public void printThroughput(final String msg, final boolean detailed) throws InterruptedException {
-		long sum = 0;
-		for (final RunnableWithCounterAndDone r : runnableArray) {
-			if (detailed) {
-				System.out.println(r + " count=" + r.getCounter());
-			}
-			sum += r.getCounter();
-		}
+    public void printThroughput(final String msg, final boolean detailed) throws InterruptedException {
+        long sum = 0;
+        for (final RunnableWithCounterAndDone r : runnableArray) {
+            if (detailed) {
+                System.out.println(r + " count=" + r.getCounter());
+            }
+            sum += r.getCounter();
+        }
 
-		System.out.println(msg + "total of " + sum + " operations, or " + sum / overallDurationInMillis + " operations per millisecond");
-	}
+        System.out.println(msg + "total of " + sum + " operations, or " + sum / overallDurationInMillis + " operations per millisecond");
+    }
 }

@@ -29,23 +29,23 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class FullRequestConverter extends AccessConverter {
 
-	@Override
-	public String convert(final IAccessEvent ae) {
-		final StringBuilder buf = new StringBuilder();
-		buf.append(ae.getRequestURL());
-		buf.append(CoreConstants.LINE_SEPARATOR);
+    @Override
+    public String convert(final IAccessEvent ae) {
+        final StringBuilder buf = new StringBuilder();
+        buf.append(ae.getRequestURL());
+        buf.append(CoreConstants.LINE_SEPARATOR);
 
-		final Enumeration<String> headerNames = ae.getRequestHeaderNames();
-		while (headerNames.hasMoreElements()) {
-			final String name = headerNames.nextElement();
-			buf.append(name);
-			buf.append(": ");
-			buf.append(ae.getRequestHeader(name));
-			buf.append(CoreConstants.LINE_SEPARATOR);
-		}
-		buf.append(CoreConstants.LINE_SEPARATOR);
-		buf.append(ae.getRequestContent());
-		return buf.toString();
-	}
+        final Enumeration<String> headerNames = ae.getRequestHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            final String name = headerNames.nextElement();
+            buf.append(name);
+            buf.append(": ");
+            buf.append(ae.getRequestHeader(name));
+            buf.append(CoreConstants.LINE_SEPARATOR);
+        }
+        buf.append(CoreConstants.LINE_SEPARATOR);
+        buf.append(ae.getRequestContent());
+        return buf.toString();
+    }
 
 }

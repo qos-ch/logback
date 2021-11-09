@@ -24,62 +24,62 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class ConversionRuleAction extends Action {
-	boolean inError = false;
+    boolean inError = false;
 
-	/**
-	 * Instantiates an layout of the given class and sets its name.
-	 *
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public void begin(final InterpretationContext ec, final String localName, final Attributes attributes) {
-		// Let us forget about previous errors (in this object)
-		inError = false;
+    /**
+     * Instantiates an layout of the given class and sets its name.
+     *
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public void begin(final InterpretationContext ec, final String localName, final Attributes attributes) {
+        // Let us forget about previous errors (in this object)
+        inError = false;
 
-		String errorMsg;
-		final String conversionWord = attributes.getValue(JoranConstants.CONVERSION_WORD_ATTRIBUTE);
-		final String converterClass = attributes.getValue(JoranConstants.CONVERTER_CLASS_ATTRIBUTE);
+        String errorMsg;
+        final String conversionWord = attributes.getValue(JoranConstants.CONVERSION_WORD_ATTRIBUTE);
+        final String converterClass = attributes.getValue(JoranConstants.CONVERTER_CLASS_ATTRIBUTE);
 
-		if (OptionHelper.isNullOrEmpty(conversionWord)) {
-			inError = true;
-			errorMsg = "No 'conversionWord' attribute in <conversionRule>";
-			addError(errorMsg);
+        if (OptionHelper.isNullOrEmpty(conversionWord)) {
+            inError = true;
+            errorMsg = "No 'conversionWord' attribute in <conversionRule>";
+            addError(errorMsg);
 
-			return;
-		}
+            return;
+        }
 
-		if (OptionHelper.isNullOrEmpty(converterClass)) {
-			inError = true;
-			errorMsg = "No 'converterClass' attribute in <conversionRule>";
-			ec.addError(errorMsg);
+        if (OptionHelper.isNullOrEmpty(converterClass)) {
+            inError = true;
+            errorMsg = "No 'converterClass' attribute in <conversionRule>";
+            ec.addError(errorMsg);
 
-			return;
-		}
+            return;
+        }
 
-		try {
-			Map<String, String> ruleRegistry = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
-			if (ruleRegistry == null) {
-				ruleRegistry = new HashMap<>();
-				context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, ruleRegistry);
-			}
-			// put the new rule into the rule registry
-			addInfo("registering conversion word " + conversionWord + " with class [" + converterClass + "]");
-			ruleRegistry.put(conversionWord, converterClass);
-		} catch (final Exception oops) {
-			inError = true;
-			errorMsg = "Could not add conversion rule to PatternLayout.";
-			addError(errorMsg);
-		}
-	}
+        try {
+            Map<String, String> ruleRegistry = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+            if (ruleRegistry == null) {
+                ruleRegistry = new HashMap<>();
+                context.putObject(CoreConstants.PATTERN_RULE_REGISTRY, ruleRegistry);
+            }
+            // put the new rule into the rule registry
+            addInfo("registering conversion word " + conversionWord + " with class [" + converterClass + "]");
+            ruleRegistry.put(conversionWord, converterClass);
+        } catch (final Exception oops) {
+            inError = true;
+            errorMsg = "Could not add conversion rule to PatternLayout.";
+            addError(errorMsg);
+        }
+    }
 
-	/**
-	 * Once the children elements are also parsed, now is the time to activate
-	 * the appender options.
-	 */
-	@Override
-	public void end(final InterpretationContext ec, final String n) {
-	}
+    /**
+     * Once the children elements are also parsed, now is the time to activate
+     * the appender options.
+     */
+    @Override
+    public void end(final InterpretationContext ec, final String n) {
+    }
 
-	public void finish(final InterpretationContext ec) {
-	}
+    public void finish(final InterpretationContext ec) {
+    }
 }

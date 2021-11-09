@@ -7,25 +7,25 @@ import ch.qos.logback.core.model.Model;
 
 public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
-	public AppenderRefDependencyAnalyser(final Context context) {
-		super(context);
-	}
+    public AppenderRefDependencyAnalyser(final Context context) {
+        super(context);
+    }
 
-	@Override
-	protected Class<AppenderRefModel> getSupportedModelClass() {
-		return AppenderRefModel.class;
-	}
+    @Override
+    protected Class<AppenderRefModel> getSupportedModelClass() {
+        return AppenderRefModel.class;
+    }
 
-	@Override
-	public void handle(final InterpretationContext interpContext, final Model model) throws ModelHandlerException {
+    @Override
+    public void handle(final InterpretationContext interpContext, final Model model) throws ModelHandlerException {
 
-		final AppenderRefModel appenderRefModel = (AppenderRefModel) model;
+        final AppenderRefModel appenderRefModel = (AppenderRefModel) model;
 
-		final String ref = interpContext.subst(appenderRefModel.getRef());
+        final String ref = interpContext.subst(appenderRefModel.getRef());
 
 
-		final Model dependentModel = interpContext.peekModel();
-		interpContext.addDependency(dependentModel, ref);
-	}
+        final Model dependentModel = interpContext.peekModel();
+        interpContext.addDependency(dependentModel, ref);
+    }
 
 }

@@ -15,23 +15,23 @@ package ch.qos.logback.core.joran.implicitAction;
 
 public class Cake {
 
-	String type;
-	int code;
+    String type;
+    int code;
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(final String type) {
-		this.type = type;
-	}
+    public void setType(final String type) {
+        this.type = type;
+    }
 
-	public int getCode() {
-		return code;
-	}
+    public int getCode() {
+        return code;
+    }
 
-	public void setCode(final int code) {
-		this.code = code;
-	}
+    public void setCode(final int code) {
+        this.code = code;
+    }
 
 }

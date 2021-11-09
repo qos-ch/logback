@@ -5,21 +5,21 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class DenyModelFilter implements ModelFiler {
 
-	final Class<? extends Model> deniedModelType;
+    final Class<? extends Model> deniedModelType;
 
-	DenyModelFilter(final Class<? extends Model> deniedModelType) {
-		this.deniedModelType = deniedModelType;
-	}
+    DenyModelFilter(final Class<? extends Model> deniedModelType) {
+        this.deniedModelType = deniedModelType;
+    }
 
-	@Override
-	public FilterReply decide(final Model model) {
+    @Override
+    public FilterReply decide(final Model model) {
 
-		if (model.getClass() == deniedModelType) {
-			return FilterReply.DENY;
-		}
+        if (model.getClass() == deniedModelType) {
+            return FilterReply.DENY;
+        }
 
-		return FilterReply.NEUTRAL;
-	}
+        return FilterReply.NEUTRAL;
+    }
 
 
 

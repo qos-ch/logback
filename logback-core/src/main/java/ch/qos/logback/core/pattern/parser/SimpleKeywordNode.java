@@ -17,48 +17,48 @@ import java.util.List;
 
 public class SimpleKeywordNode extends FormattingNode {
 
-	List<String> optionList;
+    List<String> optionList;
 
-	SimpleKeywordNode(final Object value) {
-		super(Node.SIMPLE_KEYWORD, value);
-	}
+    SimpleKeywordNode(final Object value) {
+        super(Node.SIMPLE_KEYWORD, value);
+    }
 
-	protected SimpleKeywordNode(final int type, final Object value) {
-		super(type, value);
-	}
+    protected SimpleKeywordNode(final int type, final Object value) {
+        super(type, value);
+    }
 
-	public List<String> getOptions() {
-		return optionList;
-	}
+    public List<String> getOptions() {
+        return optionList;
+    }
 
-	public void setOptions(final List<String> optionList) {
-		this.optionList = optionList;
-	}
+    public void setOptions(final List<String> optionList) {
+        this.optionList = optionList;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!super.equals(o) || !(o instanceof SimpleKeywordNode)) {
-			return false;
-		}
-		final SimpleKeywordNode r = (SimpleKeywordNode) o;
+    @Override
+    public boolean equals(final Object o) {
+        if (!super.equals(o) || !(o instanceof SimpleKeywordNode)) {
+            return false;
+        }
+        final SimpleKeywordNode r = (SimpleKeywordNode) o;
 
-		return optionList != null ? optionList.equals(r.optionList) : r.optionList == null;
-	}
+        return optionList != null ? optionList.equals(r.optionList) : r.optionList == null;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder buf = new StringBuilder();
-		if (optionList == null) {
-			buf.append("KeyWord(" + value + "," + formatInfo + ")");
-		} else {
-			buf.append("KeyWord(" + value + ", " + formatInfo + "," + optionList + ")");
-		}
-		buf.append(printNext());
-		return buf.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder buf = new StringBuilder();
+        if (optionList == null) {
+            buf.append("KeyWord(" + value + "," + formatInfo + ")");
+        } else {
+            buf.append("KeyWord(" + value + ", " + formatInfo + "," + optionList + ")");
+        }
+        buf.append(printNext());
+        return buf.toString();
+    }
 }

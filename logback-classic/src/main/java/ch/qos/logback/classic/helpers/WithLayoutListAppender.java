@@ -29,39 +29,39 @@ import ch.qos.logback.core.AppenderBase;
  */
 public class WithLayoutListAppender extends AppenderBase<ILoggingEvent> {
 
-	public List<String> list = new ArrayList<>();
+    public List<String> list = new ArrayList<>();
 
-	String pattern;
+    String pattern;
 
-	PatternLayout patternLayout;
+    PatternLayout patternLayout;
 
-	@Override
-	public void start() {
-		if(pattern == null) {
-			addError("null pattern disallowed");
-			return;
-		}
-		patternLayout = new PatternLayout();
-		patternLayout.setContext(context);
-		patternLayout.setPattern(pattern);
-		patternLayout.start();
-		if (patternLayout.isStarted()) {
-			super.start();
-		}
-	}
+    @Override
+    public void start() {
+        if(pattern == null) {
+            addError("null pattern disallowed");
+            return;
+        }
+        patternLayout = new PatternLayout();
+        patternLayout.setContext(context);
+        patternLayout.setPattern(pattern);
+        patternLayout.start();
+        if (patternLayout.isStarted()) {
+            super.start();
+        }
+    }
 
-	@Override
-	protected void append(final ILoggingEvent e) {
-		final String result = patternLayout.doLayout(e);
-		list.add(result);
-	}
+    @Override
+    protected void append(final ILoggingEvent e) {
+        final String result = patternLayout.doLayout(e);
+        list.add(result);
+    }
 
-	public String getPattern() {
-		return pattern;
-	}
+    public String getPattern() {
+        return pattern;
+    }
 
-	public void setPattern(final String pattern) {
-		this.pattern = pattern;
-	}
+    public void setPattern(final String pattern) {
+        this.pattern = pattern;
+    }
 
 }

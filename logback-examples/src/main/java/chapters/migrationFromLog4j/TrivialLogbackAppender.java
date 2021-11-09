@@ -23,20 +23,20 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
 
     @Override
     public void start() {
-        if (this.layout == null) {
+        if (layout == null) {
             addError("No layout set for the appender named [" + name + "].");
             return;
         }
-        String header = layout.getFileHeader();
+        final String header = layout.getFileHeader();
         System.out.println(header);
         super.start();
     }
 
     @Override
-    protected void append(ILoggingEvent loggingEvent) {
+    protected void append(final ILoggingEvent loggingEvent) {
         // note that AppenderBase.doAppend will invoke this method only if
         // this appender was successfully started.
-        String eventAsStr = this.layout.doLayout(loggingEvent);
+        final String eventAsStr = layout.doLayout(loggingEvent);
         System.out.println(eventAsStr);
     }
 
@@ -45,7 +45,7 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
         return layout;
     }
 
-    public void setLayout(Layout<ILoggingEvent> layout) {
+    public void setLayout(final Layout<ILoggingEvent> layout) {
         this.layout = layout;
     }
 

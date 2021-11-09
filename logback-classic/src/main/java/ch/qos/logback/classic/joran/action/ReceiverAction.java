@@ -29,49 +29,49 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class ReceiverAction extends Action {
 
-	private ReceiverBase receiver;
-	private boolean inError;
+    private ReceiverBase receiver;
+    private boolean inError;
 
-	@Override
-	public void begin(final InterpretationContext ic, final String name, final Attributes attributes) throws ActionException {
+    @Override
+    public void begin(final InterpretationContext ic, final String name, final Attributes attributes) throws ActionException {
 
-		final String className = attributes.getValue(CLASS_ATTRIBUTE);
-		if (OptionHelper.isNullOrEmpty(className)) {
-			addError("Missing class name for receiver. Near [" + name + "] line " + getLineNumber(ic));
-			inError = true;
-			return;
-		}
+        final String className = attributes.getValue(CLASS_ATTRIBUTE);
+        if (OptionHelper.isNullOrEmpty(className)) {
+            addError("Missing class name for receiver. Near [" + name + "] line " + getLineNumber(ic));
+            inError = true;
+            return;
+        }
 
-		try {
-			addInfo("About to instantiate receiver of type [" + className + "]");
+        try {
+            addInfo("About to instantiate receiver of type [" + className + "]");
 
-			receiver = (ReceiverBase) OptionHelper.instantiateByClassName(className, ReceiverBase.class, context);
-			receiver.setContext(context);
+            receiver = (ReceiverBase) OptionHelper.instantiateByClassName(className, ReceiverBase.class, context);
+            receiver.setContext(context);
 
-			ic.pushObject(receiver);
-		} catch (final Exception ex) {
-			inError = true;
-			addError("Could not create a receiver of type [" + className + "].", ex);
-			throw new ActionException(ex);
-		}
-	}
+            ic.pushObject(receiver);
+        } catch (final Exception ex) {
+            inError = true;
+            addError("Could not create a receiver of type [" + className + "].", ex);
+            throw new ActionException(ex);
+        }
+    }
 
-	@Override
-	public void end(final InterpretationContext ic, final String name) throws ActionException {
+    @Override
+    public void end(final InterpretationContext ic, final String name) throws ActionException {
 
-		if (inError) {
-			return;
-		}
+        if (inError) {
+            return;
+        }
 
-		ic.getContext().register(receiver);
-		receiver.start();
+        ic.getContext().register(receiver);
+        receiver.start();
 
-		final Object o = ic.peekObject();
-		if (o != receiver) {
-			addWarn("The object at the of the stack is not the remote " + "pushed earlier.");
-		} else {
-			ic.popObject();
-		}
-	}
+        final Object o = ic.peekObject();
+        if (o != receiver) {
+            addWarn("The object at the of the stack is not the remote " + "pushed earlier.");
+        } else {
+            ic.popObject();
+        }
+    }
 
 }

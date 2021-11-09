@@ -23,17 +23,17 @@ import ch.qos.logback.core.util.Compare;
 
 public class ZRolloverChecker implements RolloverChecker {
 
-	String testId;
+    String testId;
 
-	public ZRolloverChecker(final String testId) {
-		this.testId = testId;
-	}
+    public ZRolloverChecker(final String testId) {
+        this.testId = testId;
+    }
 
-	@Override
-	public void check(final List<String> expectedFilenameList) throws IOException {
-		final int lastIndex = expectedFilenameList.size() - 1;
-		final String lastFile = expectedFilenameList.get(lastIndex);
-		final String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId;
-		assertTrue(Compare.compare(lastFile, witnessFileName));
-	}
+    @Override
+    public void check(final List<String> expectedFilenameList) throws IOException {
+        final int lastIndex = expectedFilenameList.size() - 1;
+        final String lastFile = expectedFilenameList.get(lastIndex);
+        final String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId;
+        assertTrue(Compare.compare(lastFile, witnessFileName));
+    }
 }

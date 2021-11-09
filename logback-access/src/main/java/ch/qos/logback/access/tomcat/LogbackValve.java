@@ -82,392 +82,392 @@ import jakarta.servlet.ServletException;
  */
 public class LogbackValve extends ValveBase implements Lifecycle, Context, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
-	public final static String DEFAULT_FILENAME = "logback-access.xml";
-	public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar + DEFAULT_FILENAME;
-	final static String CATALINA_BASE_KEY = "catalina.base";
-	final static String CATALINA_HOME_KEY = "catalina.home";
-
-	private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
-
-	private final long birthTime = System.currentTimeMillis();
-
-
-	LogbackLock configurationLock = new LogbackLock();
-
-	// Attributes from ContextBase:
-	private String name;
-	StatusManager sm = new BasicStatusManager();
-	// TODO propertyMap should be observable so that we can be notified
-	// when it changes so that a new instance of propertyMap can be
-	// serialized. For the time being, we ignore this shortcoming.
-	Map<String, String> propertyMap = new HashMap<>();
-	Map<String, Object> objectMap = new HashMap<>();
-	private final FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<>();
-
-	AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<>();
-	String filenameOption;
-	boolean quiet;
-	boolean started;
-	boolean alreadySetLogbackStatusManager = false;
-	private SequenceNumberGenerator sequenceNumberGenerator;
-
-
-	private ScheduledExecutorService scheduledExecutorService;
-
-	public LogbackValve() {
-		putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
-	}
-
-	public boolean isStarted() {
-		return started;
-	}
-
-	@Override
-	public void startInternal() throws LifecycleException {
-		scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
-
-		String filename;
-
-		if (filenameOption != null) {
-			filename = filenameOption;
-		} else {
-			addInfo("filename property not set. Assuming [" + DEFAULT_CONFIG_FILE + "]");
-			filename = DEFAULT_CONFIG_FILE;
-		}
-
-		// String catalinaBase = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
-		// String catalinaHome = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
-
-		File configFile = searchForConfigFileTomcatProperty(filename, CATALINA_BASE_KEY);
-		if (configFile == null) {
-			configFile = searchForConfigFileTomcatProperty(filename, CATALINA_HOME_KEY);
-		}
-
-		URL resourceURL;
-		if (configFile != null) {
-			resourceURL = fileToUrl(configFile);
-		} else {
-			resourceURL = searchAsResource(filename);
-		}
-
-		if (resourceURL != null) {
-			configureAsResource(resourceURL);
-		} else {
-			addWarn("Failed to find valid logback-access configuration file.");
-		}
-
-		if (!quiet) {
-			StatusListenerConfigHelper.addOnConsoleListenerInstance(this, new OnConsoleStatusListener());
-		}
-
-		started = true;
-		setState(LifecycleState.STARTING);
-	}
-
-	private URL fileToUrl(final File configFile) {
-		try {
-			return configFile.toURI().toURL();
-		} catch (final MalformedURLException e) {
-			throw new IllegalStateException("File to URL conversion failed", e);
-		}
-	}
-
-	private URL searchAsResource(final String filename) {
-		final URL result = Loader.getResource(filename, getClass().getClassLoader());
-		if (result != null) {
-			addInfo("Found [" + filename + "] as a resource.");
-		} else {
-			addInfo("Could NOT find [" + filename + "] as a resource.");
-		}
-		return result;
-	}
-
-	private File searchForConfigFileTomcatProperty(final String filename, final String propertyKey) {
-		final String propertyValue = OptionHelper.getSystemProperty(propertyKey);
-		final String candidatePath = propertyValue + File.separatorChar + filename;
-		if (propertyValue == null) {
-			addInfo("System property \"" + propertyKey + "\" is not set. Skipping configuration file search with ${" + propertyKey + "} path prefix.");
-			return null;
-		}
-		final File candidateFile = new File(candidatePath);
-		if (candidateFile.exists()) {
-			addInfo("Found configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
-			return candidateFile;
-		}
-		addInfo("Could NOT configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
-		return null;
-	}
-
-	public void addStatus(final Status status) {
-		final StatusManager sm = getStatusManager();
-		if (sm != null) {
-			sm.add(status);
-		}
-	}
-
-	public void addInfo(final String msg) {
-		addStatus(new InfoStatus(msg, this));
-	}
-
-	public void addWarn(final String msg) {
-		addStatus(new WarnStatus(msg, this));
-	}
-
-	public void addError(final String msg, final Throwable t) {
-		addStatus(new ErrorStatus(msg, this, t));
-	}
-
-	private void configureAsResource(final URL resourceURL) {
-		try {
-			final JoranConfigurator jc = new JoranConfigurator();
-			jc.setContext(this);
-			jc.doConfigure(resourceURL);
-			addInfo("Done configuring");
-		} catch (final JoranException e) {
-			addError("Failed to configure LogbackValve", e);
-		}
-	}
-
-	public String getFilename() {
-		return filenameOption;
-	}
-
-	public void setFilename(final String filename) {
-		filenameOption = filename;
-	}
-
-	public boolean isQuiet() {
-		return quiet;
-	}
-
-	public void setQuiet(final boolean quiet) {
-		this.quiet = quiet;
-	}
-
-	@Override
-	public void invoke(final Request request, final Response response) throws IOException, ServletException {
-		try {
-			if (!alreadySetLogbackStatusManager) {
-				alreadySetLogbackStatusManager = true;
-				final org.apache.catalina.Context tomcatContext = request.getContext();
-				if (tomcatContext != null) {
-					final ServletContext sc = tomcatContext.getServletContext();
-					if (sc != null) {
-						sc.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY, getStatusManager());
-					}
-				}
-			}
-
-			getNext().invoke(request, response);
-
-			final TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
-			final IAccessEvent accessEvent = new AccessEvent(this, request, response, adapter);
-
-			addThreadName(accessEvent);
-
-			if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
-				return;
-			}
-
-			// TODO better exception handling
-			aai.appendLoopOnAppenders(accessEvent);
-		} finally {
-			request.removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
-		}
-	}
-
-	private void addThreadName(final IAccessEvent accessEvent) {
-		try {
-			final String threadName = Thread.currentThread().getName();
-			if (threadName != null) {
-				accessEvent.setThreadName(threadName);
-			}
-		} catch (final Exception ignored) {
-		}
-	}
-
-	@Override
-	protected void stopInternal() throws LifecycleException {
-		started = false;
-		setState(LifecycleState.STOPPING);
-		lifeCycleManager.reset();
-		if (scheduledExecutorService != null) {
-			ExecutorServiceUtil.shutdown(scheduledExecutorService);
-			scheduledExecutorService = null;
-		}
-	}
-
-	@Override
-	public void addAppender(final Appender<IAccessEvent> newAppender) {
-		aai.addAppender(newAppender);
-	}
-
-	@Override
-	public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
-		return aai.iteratorForAppenders();
-	}
-
-	@Override
-	public Appender<IAccessEvent> getAppender(final String name) {
-		return aai.getAppender(name);
-	}
-
-	@Override
-	public boolean isAttached(final Appender<IAccessEvent> appender) {
-		return aai.isAttached(appender);
-	}
-
-	@Override
-	public void detachAndStopAllAppenders() {
-		aai.detachAndStopAllAppenders();
-
-	}
-
-	@Override
-	public boolean detachAppender(final Appender<IAccessEvent> appender) {
-		return aai.detachAppender(appender);
-	}
-
-	@Override
-	public boolean detachAppender(final String name) {
-		return aai.detachAppender(name);
-	}
-
-	public String getInfo() {
-		return "Logback's implementation of ValveBase";
-	}
-
-	// Methods from ContextBase:
-	@Override
-	public StatusManager getStatusManager() {
-		return sm;
-	}
-
-	public Map<String, String> getPropertyMap() {
-		return propertyMap;
-	}
-
-	@Override
-	public void putProperty(final String key, final String val) {
-		propertyMap.put(key, val);
-	}
-
-	@Override
-	public String getProperty(final String key) {
-		return propertyMap.get(key);
-	}
-
-	@Override
-	public Map<String, String> getCopyOfPropertyMap() {
-		return new HashMap<>(propertyMap);
-	}
-
-	@Override
-	public Object getObject(final String key) {
-		return objectMap.get(key);
-	}
-
-	@Override
-	public void putObject(final String key, final Object value) {
-		objectMap.put(key, value);
-	}
-
-	@Override
-	public void addFilter(final Filter<IAccessEvent> newFilter) {
-		fai.addFilter(newFilter);
-	}
-
-	@Override
-	public void clearAllFilters() {
-		fai.clearAllFilters();
-	}
-
-	@Override
-	public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
-		return fai.getCopyOfAttachedFiltersList();
-	}
-
-	@Override
-	public FilterReply getFilterChainDecision(final IAccessEvent event) {
-		return fai.getFilterChainDecision(event);
-	}
-
-	@Override
-	public ExecutorService getExecutorService() {
-		return getScheduledExecutorService();
-	}
-
-	@Override
-	public String getName() {
-		return name;
-	}
-
-	@Override
-	public void setName(final String name) {
-		if (this.name != null) {
-			throw new IllegalStateException("LogbackValve has been already given a name");
-		}
-		this.name = name;
-	}
-
-	@Override
-	public long getBirthTime() {
-		return birthTime;
-	}
-
-	@Override
-	public Object getConfigurationLock() {
-		return configurationLock;
-	}
-
-	@Override
-	public void register(final LifeCycle component) {
-		lifeCycleManager.register(component);
-	}
-
-	// ====== Methods from catalina Lifecycle =====
-
-	@Override
-	public void addLifecycleListener(final LifecycleListener arg0) {
-		// dummy NOP implementation
-	}
-
-	@Override
-	public LifecycleListener[] findLifecycleListeners() {
-		return new LifecycleListener[0];
-	}
-
-	@Override
-	public void removeLifecycleListener(final LifecycleListener arg0) {
-		// dummy NOP implementation
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder(this.getClass().getName());
-		sb.append('[');
-		sb.append(getName());
-		sb.append(']');
-		return sb.toString();
-	}
-
-	@Override
-	public ScheduledExecutorService getScheduledExecutorService() {
-		return scheduledExecutorService;
-	}
-
-	@Override
-	public void addScheduledFuture(final ScheduledFuture<?> scheduledFuture) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public SequenceNumberGenerator getSequenceNumberGenerator() {
-		return sequenceNumberGenerator;
-	}
-
-	@Override
-	public void setSequenceNumberGenerator(final SequenceNumberGenerator sequenceNumberGenerator) {
-		this.sequenceNumberGenerator = sequenceNumberGenerator;
-	}
+    public final static String DEFAULT_FILENAME = "logback-access.xml";
+    public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar + DEFAULT_FILENAME;
+    final static String CATALINA_BASE_KEY = "catalina.base";
+    final static String CATALINA_HOME_KEY = "catalina.home";
+
+    private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
+
+    private final long birthTime = System.currentTimeMillis();
+
+
+    LogbackLock configurationLock = new LogbackLock();
+
+    // Attributes from ContextBase:
+    private String name;
+    StatusManager sm = new BasicStatusManager();
+    // TODO propertyMap should be observable so that we can be notified
+    // when it changes so that a new instance of propertyMap can be
+    // serialized. For the time being, we ignore this shortcoming.
+    Map<String, String> propertyMap = new HashMap<>();
+    Map<String, Object> objectMap = new HashMap<>();
+    private final FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<>();
+
+    AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<>();
+    String filenameOption;
+    boolean quiet;
+    boolean started;
+    boolean alreadySetLogbackStatusManager = false;
+    private SequenceNumberGenerator sequenceNumberGenerator;
+
+
+    private ScheduledExecutorService scheduledExecutorService;
+
+    public LogbackValve() {
+        putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
+    @Override
+    public void startInternal() throws LifecycleException {
+        scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();
+
+        String filename;
+
+        if (filenameOption != null) {
+            filename = filenameOption;
+        } else {
+            addInfo("filename property not set. Assuming [" + DEFAULT_CONFIG_FILE + "]");
+            filename = DEFAULT_CONFIG_FILE;
+        }
+
+        // String catalinaBase = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
+        // String catalinaHome = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
+
+        File configFile = searchForConfigFileTomcatProperty(filename, CATALINA_BASE_KEY);
+        if (configFile == null) {
+            configFile = searchForConfigFileTomcatProperty(filename, CATALINA_HOME_KEY);
+        }
+
+        URL resourceURL;
+        if (configFile != null) {
+            resourceURL = fileToUrl(configFile);
+        } else {
+            resourceURL = searchAsResource(filename);
+        }
+
+        if (resourceURL != null) {
+            configureAsResource(resourceURL);
+        } else {
+            addWarn("Failed to find valid logback-access configuration file.");
+        }
+
+        if (!quiet) {
+            StatusListenerConfigHelper.addOnConsoleListenerInstance(this, new OnConsoleStatusListener());
+        }
+
+        started = true;
+        setState(LifecycleState.STARTING);
+    }
+
+    private URL fileToUrl(final File configFile) {
+        try {
+            return configFile.toURI().toURL();
+        } catch (final MalformedURLException e) {
+            throw new IllegalStateException("File to URL conversion failed", e);
+        }
+    }
+
+    private URL searchAsResource(final String filename) {
+        final URL result = Loader.getResource(filename, getClass().getClassLoader());
+        if (result != null) {
+            addInfo("Found [" + filename + "] as a resource.");
+        } else {
+            addInfo("Could NOT find [" + filename + "] as a resource.");
+        }
+        return result;
+    }
+
+    private File searchForConfigFileTomcatProperty(final String filename, final String propertyKey) {
+        final String propertyValue = OptionHelper.getSystemProperty(propertyKey);
+        final String candidatePath = propertyValue + File.separatorChar + filename;
+        if (propertyValue == null) {
+            addInfo("System property \"" + propertyKey + "\" is not set. Skipping configuration file search with ${" + propertyKey + "} path prefix.");
+            return null;
+        }
+        final File candidateFile = new File(candidatePath);
+        if (candidateFile.exists()) {
+            addInfo("Found configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
+            return candidateFile;
+        }
+        addInfo("Could NOT configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
+        return null;
+    }
+
+    public void addStatus(final Status status) {
+        final StatusManager sm = getStatusManager();
+        if (sm != null) {
+            sm.add(status);
+        }
+    }
+
+    public void addInfo(final String msg) {
+        addStatus(new InfoStatus(msg, this));
+    }
+
+    public void addWarn(final String msg) {
+        addStatus(new WarnStatus(msg, this));
+    }
+
+    public void addError(final String msg, final Throwable t) {
+        addStatus(new ErrorStatus(msg, this, t));
+    }
+
+    private void configureAsResource(final URL resourceURL) {
+        try {
+            final JoranConfigurator jc = new JoranConfigurator();
+            jc.setContext(this);
+            jc.doConfigure(resourceURL);
+            addInfo("Done configuring");
+        } catch (final JoranException e) {
+            addError("Failed to configure LogbackValve", e);
+        }
+    }
+
+    public String getFilename() {
+        return filenameOption;
+    }
+
+    public void setFilename(final String filename) {
+        filenameOption = filename;
+    }
+
+    public boolean isQuiet() {
+        return quiet;
+    }
+
+    public void setQuiet(final boolean quiet) {
+        this.quiet = quiet;
+    }
+
+    @Override
+    public void invoke(final Request request, final Response response) throws IOException, ServletException {
+        try {
+            if (!alreadySetLogbackStatusManager) {
+                alreadySetLogbackStatusManager = true;
+                final org.apache.catalina.Context tomcatContext = request.getContext();
+                if (tomcatContext != null) {
+                    final ServletContext sc = tomcatContext.getServletContext();
+                    if (sc != null) {
+                        sc.setAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY, getStatusManager());
+                    }
+                }
+            }
+
+            getNext().invoke(request, response);
+
+            final TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
+            final IAccessEvent accessEvent = new AccessEvent(this, request, response, adapter);
+
+            addThreadName(accessEvent);
+
+            if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
+                return;
+            }
+
+            // TODO better exception handling
+            aai.appendLoopOnAppenders(accessEvent);
+        } finally {
+            request.removeAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+        }
+    }
+
+    private void addThreadName(final IAccessEvent accessEvent) {
+        try {
+            final String threadName = Thread.currentThread().getName();
+            if (threadName != null) {
+                accessEvent.setThreadName(threadName);
+            }
+        } catch (final Exception ignored) {
+        }
+    }
+
+    @Override
+    protected void stopInternal() throws LifecycleException {
+        started = false;
+        setState(LifecycleState.STOPPING);
+        lifeCycleManager.reset();
+        if (scheduledExecutorService != null) {
+            ExecutorServiceUtil.shutdown(scheduledExecutorService);
+            scheduledExecutorService = null;
+        }
+    }
+
+    @Override
+    public void addAppender(final Appender<IAccessEvent> newAppender) {
+        aai.addAppender(newAppender);
+    }
+
+    @Override
+    public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
+        return aai.iteratorForAppenders();
+    }
+
+    @Override
+    public Appender<IAccessEvent> getAppender(final String name) {
+        return aai.getAppender(name);
+    }
+
+    @Override
+    public boolean isAttached(final Appender<IAccessEvent> appender) {
+        return aai.isAttached(appender);
+    }
+
+    @Override
+    public void detachAndStopAllAppenders() {
+        aai.detachAndStopAllAppenders();
+
+    }
+
+    @Override
+    public boolean detachAppender(final Appender<IAccessEvent> appender) {
+        return aai.detachAppender(appender);
+    }
+
+    @Override
+    public boolean detachAppender(final String name) {
+        return aai.detachAppender(name);
+    }
+
+    public String getInfo() {
+        return "Logback's implementation of ValveBase";
+    }
+
+    // Methods from ContextBase:
+    @Override
+    public StatusManager getStatusManager() {
+        return sm;
+    }
+
+    public Map<String, String> getPropertyMap() {
+        return propertyMap;
+    }
+
+    @Override
+    public void putProperty(final String key, final String val) {
+        propertyMap.put(key, val);
+    }
+
+    @Override
+    public String getProperty(final String key) {
+        return propertyMap.get(key);
+    }
+
+    @Override
+    public Map<String, String> getCopyOfPropertyMap() {
+        return new HashMap<>(propertyMap);
+    }
+
+    @Override
+    public Object getObject(final String key) {
+        return objectMap.get(key);
+    }
+
+    @Override
+    public void putObject(final String key, final Object value) {
+        objectMap.put(key, value);
+    }
+
+    @Override
+    public void addFilter(final Filter<IAccessEvent> newFilter) {
+        fai.addFilter(newFilter);
+    }
+
+    @Override
+    public void clearAllFilters() {
+        fai.clearAllFilters();
+    }
+
+    @Override
+    public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
+        return fai.getCopyOfAttachedFiltersList();
+    }
+
+    @Override
+    public FilterReply getFilterChainDecision(final IAccessEvent event) {
+        return fai.getFilterChainDecision(event);
+    }
+
+    @Override
+    public ExecutorService getExecutorService() {
+        return getScheduledExecutorService();
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(final String name) {
+        if (this.name != null) {
+            throw new IllegalStateException("LogbackValve has been already given a name");
+        }
+        this.name = name;
+    }
+
+    @Override
+    public long getBirthTime() {
+        return birthTime;
+    }
+
+    @Override
+    public Object getConfigurationLock() {
+        return configurationLock;
+    }
+
+    @Override
+    public void register(final LifeCycle component) {
+        lifeCycleManager.register(component);
+    }
+
+    // ====== Methods from catalina Lifecycle =====
+
+    @Override
+    public void addLifecycleListener(final LifecycleListener arg0) {
+        // dummy NOP implementation
+    }
+
+    @Override
+    public LifecycleListener[] findLifecycleListeners() {
+        return new LifecycleListener[0];
+    }
+
+    @Override
+    public void removeLifecycleListener(final LifecycleListener arg0) {
+        // dummy NOP implementation
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(this.getClass().getName());
+        sb.append('[');
+        sb.append(getName());
+        sb.append(']');
+        return sb.toString();
+    }
+
+    @Override
+    public ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
+    }
+
+    @Override
+    public void addScheduledFuture(final ScheduledFuture<?> scheduledFuture) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public SequenceNumberGenerator getSequenceNumberGenerator() {
+        return sequenceNumberGenerator;
+    }
+
+    @Override
+    public void setSequenceNumberGenerator(final SequenceNumberGenerator sequenceNumberGenerator) {
+        this.sequenceNumberGenerator = sequenceNumberGenerator;
+    }
 }

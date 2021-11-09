@@ -27,22 +27,22 @@ import ch.qos.logback.core.pattern.CompositeConverter;
  */
 abstract public class ForegroundCompositeConverterBase<E> extends CompositeConverter<E> {
 
-	final private static String SET_DEFAULT_COLOR = ESC_START + "0;" + DEFAULT_FG + ESC_END;
+    final private static String SET_DEFAULT_COLOR = ESC_START + "0;" + DEFAULT_FG + ESC_END;
 
-	@Override
-	protected String transform(final E event, final String in) {
-		final StringBuilder sb = new StringBuilder();
-		sb.append(ESC_START);
-		sb.append(getForegroundColorCode(event));
-		sb.append(ESC_END);
-		sb.append(in);
-		sb.append(SET_DEFAULT_COLOR);
-		return sb.toString();
-	}
+    @Override
+    protected String transform(final E event, final String in) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(ESC_START);
+        sb.append(getForegroundColorCode(event));
+        sb.append(ESC_END);
+        sb.append(in);
+        sb.append(SET_DEFAULT_COLOR);
+        return sb.toString();
+    }
 
-	/**
-	 * Derived classes return the foreground color specific to the derived class instance.
-	 * @return  the foreground color for this instance
-	 */
-	abstract protected String getForegroundColorCode(E event);
+    /**
+     * Derived classes return the foreground color specific to the derived class instance.
+     * @return  the foreground color for this instance
+     */
+    abstract protected String getForegroundColorCode(E event);
 }

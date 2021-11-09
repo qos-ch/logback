@@ -72,147 +72,147 @@ import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
  */
 public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
-	@Override
-	public void addInstanceRules(final RuleStore rs) {
-		// add parent rules
-		super.addInstanceRules(rs);
+    @Override
+    public void addInstanceRules(final RuleStore rs) {
+        // add parent rules
+        super.addInstanceRules(rs);
 
-		rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
+        rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
 
-		rs.addRule(new ElementSelector("configuration/contextName"), new ContextNameAction());
-		rs.addRule(new ElementSelector("configuration/contextListener"), new LoggerContextListenerAction());
-		rs.addRule(new ElementSelector("configuration/insertFromJNDI"), new InsertFromJNDIAction());
+        rs.addRule(new ElementSelector("configuration/contextName"), new ContextNameAction());
+        rs.addRule(new ElementSelector("configuration/contextListener"), new LoggerContextListenerAction());
+        rs.addRule(new ElementSelector("configuration/insertFromJNDI"), new InsertFromJNDIAction());
 
-		rs.addRule(new ElementSelector("configuration/logger"), new LoggerAction());
-		rs.addRule(new ElementSelector("configuration/logger/level"), new LevelAction());
+        rs.addRule(new ElementSelector("configuration/logger"), new LoggerAction());
+        rs.addRule(new ElementSelector("configuration/logger/level"), new LevelAction());
 
-		rs.addRule(new ElementSelector("configuration/root"), new RootLoggerAction());
-		rs.addRule(new ElementSelector("configuration/root/level"), new LevelAction());
-		rs.addRule(new ElementSelector("configuration/logger/appender-ref"), new AppenderRefAction());
-		rs.addRule(new ElementSelector("configuration/root/appender-ref"), new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/root"), new RootLoggerAction());
+        rs.addRule(new ElementSelector("configuration/root/level"), new LevelAction());
+        rs.addRule(new ElementSelector("configuration/logger/appender-ref"), new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/root/appender-ref"), new AppenderRefAction());
 
-		// add if-then-else support
-		// rs.addRule(new ElementSelector("*/if"), new IfAction());
-		// rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
-		// rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
-		// rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
-		// rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
+        // add if-then-else support
+        // rs.addRule(new ElementSelector("*/if"), new IfAction());
+        // rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
+        // rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
+        // rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
+        // rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
 
-		// add jmxConfigurator only if we have JMX available.
-		// If running under JDK 1.4 (retrotranslateed logback) then we
-		// might not have JMX.
-		if (PlatformInfo.hasJMXObjectName()) {
-			rs.addRule(new ElementSelector("configuration/jmxConfigurator"), new JMXConfiguratorAction());
-		}
-		rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
+        // add jmxConfigurator only if we have JMX available.
+        // If running under JDK 1.4 (retrotranslateed logback) then we
+        // might not have JMX.
+        if (PlatformInfo.hasJMXObjectName()) {
+            rs.addRule(new ElementSelector("configuration/jmxConfigurator"), new JMXConfiguratorAction());
+        }
+        rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
 
-		rs.addRule(new ElementSelector("configuration/consolePlugin"), new ConsolePluginAction());
+        rs.addRule(new ElementSelector("configuration/consolePlugin"), new ConsolePluginAction());
 
-		rs.addRule(new ElementSelector("configuration/receiver"), new ReceiverAction());
+        rs.addRule(new ElementSelector("configuration/receiver"), new ReceiverAction());
 
-	}
+    }
 
-	@Override
-	protected void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {
-		DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
-	}
+    @Override
+    protected void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {
+        DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
+    }
 
-	@Override
-	protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
-		final DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-		defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
-		defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler::makeInstance);
-		defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler::makeInstance);
+    @Override
+    protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
+        final DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
+        defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler::makeInstance);
+        defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler::makeInstance);
 
-		defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
+        defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
 
-		defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
-		defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
-		defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler::makeInstance);
-		defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
-		defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
+        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
+        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
+        defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler::makeInstance);
+        defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
+        defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
 
-		defaultProcessor.addAnalyser(LoggerModel.class, new RefContainerDependencyAnalyser(context, LoggerModel.class));
-		defaultProcessor.addAnalyser(RootLoggerModel.class,
-				new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
-		defaultProcessor.addAnalyser(AppenderModel.class,
-				new RefContainerDependencyAnalyser(context, AppenderModel.class));
-		defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(LoggerModel.class, new RefContainerDependencyAnalyser(context, LoggerModel.class));
+        defaultProcessor.addAnalyser(RootLoggerModel.class,
+                        new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
+        defaultProcessor.addAnalyser(AppenderModel.class,
+                        new RefContainerDependencyAnalyser(context, AppenderModel.class));
+        defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
 
-		injectModelFilters(defaultProcessor);
+        injectModelFilters(defaultProcessor);
 
-		return defaultProcessor;
-	}
+        return defaultProcessor;
+    }
 
-	private void injectModelFilters(final DefaultProcessor defaultProcessor) {
-		@SuppressWarnings("unchecked")
-		final
-		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
-				DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
+    private void injectModelFilters(final DefaultProcessor defaultProcessor) {
+        @SuppressWarnings("unchecked")
+        final
+        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
+                DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
 
-		@SuppressWarnings("unchecked")
-		final
-		Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
+        @SuppressWarnings("unchecked")
+        final
+        Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
 
-		@SuppressWarnings("unchecked")
-		final
-		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
-				EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
-				EventEvaluatorModel.class, IncludeModel.class, };
+        @SuppressWarnings("unchecked")
+        final
+        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
+                EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
+                EventEvaluatorModel.class, IncludeModel.class, };
 
-		//		@SuppressWarnings("unchecked")
-		//		Class<? extends Model>[] secondPhaseModelClasses = new Class[] {
-		//				LoggerModel.class,
-		//				RootLoggerModel.class,
-		//				AppenderModel.class,
-		//				AppenderRefModel.class };
+        //		@SuppressWarnings("unchecked")
+        //		Class<? extends Model>[] secondPhaseModelClasses = new Class[] {
+        //				LoggerModel.class,
+        //				RootLoggerModel.class,
+        //				AppenderModel.class,
+        //				AppenderRefModel.class };
 
-		// MOTE: AppenderModelHandler is delayed to second phase
+        // MOTE: AppenderModelHandler is delayed to second phase
 
-		final ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
-		for (final Class<? extends Model> modelClass : variableDefinitionModelClasses) {
-			fistPhaseDefintionFilter.allow(modelClass);
-		}
-		for (final Class<? extends Model> modelClass : otherFirstPhaseModelClasses) {
-			fistPhaseDefintionFilter.allow(modelClass);
-		}
-		for (final Class<? extends Model> modelClass : implicitModelClasses) {
-			fistPhaseDefintionFilter.allow(modelClass);
-		}
+        final ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+        for (final Class<? extends Model> modelClass : variableDefinitionModelClasses) {
+            fistPhaseDefintionFilter.allow(modelClass);
+        }
+        for (final Class<? extends Model> modelClass : otherFirstPhaseModelClasses) {
+            fistPhaseDefintionFilter.allow(modelClass);
+        }
+        for (final Class<? extends Model> modelClass : implicitModelClasses) {
+            fistPhaseDefintionFilter.allow(modelClass);
+        }
 
-		fistPhaseDefintionFilter.denyAll();
-		defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
+        fistPhaseDefintionFilter.denyAll();
+        defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
 
-		final ChainedModelFilter secondPhaseDefintionFilter = new ChainedModelFilter();
-		secondPhaseDefintionFilter.allowAll();
+        final ChainedModelFilter secondPhaseDefintionFilter = new ChainedModelFilter();
+        secondPhaseDefintionFilter.allowAll();
 
-		defaultProcessor.setPhaseTwoFilter(secondPhaseDefintionFilter);
+        defaultProcessor.setPhaseTwoFilter(secondPhaseDefintionFilter);
 
-	}
+    }
 
-	//	protected void miniBuildInterpreter() {
-	//		RuleStore rs = new SimpleRuleStore(context);
-	//		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
-	//		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
-	//		interpretationContext.setContext(context);
-	//		Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-	//		omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
-	//		omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
-	//	}
+    //	protected void miniBuildInterpreter() {
+    //		RuleStore rs = new SimpleRuleStore(context);
+    //		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
+    //		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
+    //		interpretationContext.setContext(context);
+    //		Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+    //		omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
+    //		omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+    //	}
 
-	//	public void doT() throws JoranException {
-	//		miniBuildInterpreter();
-	//		Model top;
-	//		try {
-	//			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
-	//			top = (Model) ois.readObject();
-	//			ois.close();
-	//			interpreter.getInterpretationContext().pushModel(top);
-	//			processModel(top);
-	//		} catch (IOException | ClassNotFoundException e1) {
-	//			e1.printStackTrace();
-	//		}
-	//
-	//	}
+    //	public void doT() throws JoranException {
+    //		miniBuildInterpreter();
+    //		Model top;
+    //		try {
+    //			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
+    //			top = (Model) ois.readObject();
+    //			ois.close();
+    //			interpreter.getInterpretationContext().pushModel(top);
+    //			processModel(top);
+    //		} catch (IOException | ClassNotFoundException e1) {
+    //			e1.printStackTrace();
+    //		}
+    //
+    //	}
 
 }

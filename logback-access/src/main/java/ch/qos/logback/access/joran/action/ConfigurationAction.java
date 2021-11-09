@@ -22,12 +22,12 @@ import ch.qos.logback.core.model.Model;
 
 public class ConfigurationAction extends BaseModelAction {
 
-	@Override
-	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		final ConfigurationModel configurationModel = new ConfigurationModel();
-		configurationModel.setDebug(attributes.getValue(ConfigurationModel.INTERNAL_DEBUG_ATTR));
-		return configurationModel;
-	}
+    @Override
+    protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        final ConfigurationModel configurationModel = new ConfigurationModel();
+        configurationModel.setDebug(attributes.getValue(ConfigurationModel.INTERNAL_DEBUG_ATTR));
+        return configurationModel;
+    }
 
 
 

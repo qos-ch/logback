@@ -126,130 +126,130 @@ import ch.qos.logback.core.spi.FilterReply;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class DynamicThresholdFilter extends TurboFilter {
-	private final Map<String, Level> valueLevelMap = new HashMap<>();
-	private Level defaultThreshold = Level.ERROR;
-	private String key;
+    private final Map<String, Level> valueLevelMap = new HashMap<>();
+    private Level defaultThreshold = Level.ERROR;
+    private String key;
 
-	private FilterReply onHigherOrEqual = FilterReply.NEUTRAL;
-	private FilterReply onLower = FilterReply.DENY;
+    private FilterReply onHigherOrEqual = FilterReply.NEUTRAL;
+    private FilterReply onLower = FilterReply.DENY;
 
-	/**
-	 * Get the MDC key whose value will be used as a level threshold
-	 *
-	 * @return the name of the MDC key.
-	 */
-	public String getKey() {
-		return key;
-	}
+    /**
+     * Get the MDC key whose value will be used as a level threshold
+     *
+     * @return the name of the MDC key.
+     */
+    public String getKey() {
+        return key;
+    }
 
-	/**
-	 * @see setKey
-	 */
-	public void setKey(final String key) {
-		this.key = key;
-	}
+    /**
+     * @see setKey
+     */
+    public void setKey(final String key) {
+        this.key = key;
+    }
 
-	/**
-	 * Get the default threshold value when the MDC key is not set.
-	 *
-	 * @return the default threshold value in the absence of a set MDC key
-	 */
-	public Level getDefaultThreshold() {
-		return defaultThreshold;
-	}
+    /**
+     * Get the default threshold value when the MDC key is not set.
+     *
+     * @return the default threshold value in the absence of a set MDC key
+     */
+    public Level getDefaultThreshold() {
+        return defaultThreshold;
+    }
 
-	public void setDefaultThreshold(final Level defaultThreshold) {
-		this.defaultThreshold = defaultThreshold;
-	}
+    public void setDefaultThreshold(final Level defaultThreshold) {
+        this.defaultThreshold = defaultThreshold;
+    }
 
-	/**
-	 * Get the FilterReply when the effective level is higher or equal to the
-	 * level of current logging request
-	 *
-	 * @return FilterReply
-	 */
-	public FilterReply getOnHigherOrEqual() {
-		return onHigherOrEqual;
-	}
+    /**
+     * Get the FilterReply when the effective level is higher or equal to the
+     * level of current logging request
+     *
+     * @return FilterReply
+     */
+    public FilterReply getOnHigherOrEqual() {
+        return onHigherOrEqual;
+    }
 
-	public void setOnHigherOrEqual(final FilterReply onHigherOrEqual) {
-		this.onHigherOrEqual = onHigherOrEqual;
-	}
+    public void setOnHigherOrEqual(final FilterReply onHigherOrEqual) {
+        this.onHigherOrEqual = onHigherOrEqual;
+    }
 
-	/**
-	 * Get the FilterReply when the effective level is lower than the level of
-	 * current logging request
-	 *
-	 * @return FilterReply
-	 */
-	public FilterReply getOnLower() {
-		return onLower;
-	}
+    /**
+     * Get the FilterReply when the effective level is lower than the level of
+     * current logging request
+     *
+     * @return FilterReply
+     */
+    public FilterReply getOnLower() {
+        return onLower;
+    }
 
-	public void setOnLower(final FilterReply onLower) {
-		this.onLower = onLower;
-	}
+    public void setOnLower(final FilterReply onLower) {
+        this.onLower = onLower;
+    }
 
-	/**
-	 * Add a new MDCValuePair
-	 */
-	public void addMDCValueLevelPair(final MDCValueLevelPair mdcValueLevelPair) {
-		if (valueLevelMap.containsKey(mdcValueLevelPair.getValue())) {
-			addError(mdcValueLevelPair.getValue() + " has been already set");
-		} else {
-			valueLevelMap.put(mdcValueLevelPair.getValue(), mdcValueLevelPair.getLevel());
-		}
-	}
+    /**
+     * Add a new MDCValuePair
+     */
+    public void addMDCValueLevelPair(final MDCValueLevelPair mdcValueLevelPair) {
+        if (valueLevelMap.containsKey(mdcValueLevelPair.getValue())) {
+            addError(mdcValueLevelPair.getValue() + " has been already set");
+        } else {
+            valueLevelMap.put(mdcValueLevelPair.getValue(), mdcValueLevelPair.getLevel());
+        }
+    }
 
-	/**
-	 *
-	 */
-	@Override
-	public void start() {
-		if (key == null) {
-			addError("No key name was specified");
-		}
-		super.start();
-	}
+    /**
+     *
+     */
+    @Override
+    public void start() {
+        if (key == null) {
+            addError("No key name was specified");
+        }
+        super.start();
+    }
 
-	/**
-	 * This method first finds the MDC value for 'key'. It then finds the level
-	 * threshold associated with this MDC value from the list of MDCValueLevelPair
-	 * passed to this filter. This value is stored in a variable called
-	 * 'levelAssociatedWithMDCValue'. If it null, then it is set to the
-	 *
-	 * @{link #defaultThreshold} value.
-	 *
-	 * If no such value exists, then
-	 *
-	 *
-	 * @param marker
-	 * @param logger
-	 * @param level
-	 * @param s
-	 * @param objects
-	 * @param throwable
-	 *
-	 * @return FilterReply - this filter's decision
-	 */
-	@Override
-	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String s, final Object[] objects, final Throwable throwable) {
+    /**
+     * This method first finds the MDC value for 'key'. It then finds the level
+     * threshold associated with this MDC value from the list of MDCValueLevelPair
+     * passed to this filter. This value is stored in a variable called
+     * 'levelAssociatedWithMDCValue'. If it null, then it is set to the
+     *
+     * @{link #defaultThreshold} value.
+     *
+     * If no such value exists, then
+     *
+     *
+     * @param marker
+     * @param logger
+     * @param level
+     * @param s
+     * @param objects
+     * @param throwable
+     *
+     * @return FilterReply - this filter's decision
+     */
+    @Override
+    public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String s, final Object[] objects, final Throwable throwable) {
 
-		final String mdcValue = MDC.get(key);
-		if (!isStarted()) {
-			return FilterReply.NEUTRAL;
-		}
+        final String mdcValue = MDC.get(key);
+        if (!isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
 
-		Level levelAssociatedWithMDCValue = null;
-		if (mdcValue != null) {
-			levelAssociatedWithMDCValue = valueLevelMap.get(mdcValue);
-		}
-		if (levelAssociatedWithMDCValue == null) {
-			levelAssociatedWithMDCValue = defaultThreshold;
-		}
-		if (level.isGreaterOrEqual(levelAssociatedWithMDCValue)) {
-			return onHigherOrEqual;
-		}
-		return onLower;
-	}
+        Level levelAssociatedWithMDCValue = null;
+        if (mdcValue != null) {
+            levelAssociatedWithMDCValue = valueLevelMap.get(mdcValue);
+        }
+        if (levelAssociatedWithMDCValue == null) {
+            levelAssociatedWithMDCValue = defaultThreshold;
+        }
+        if (level.isGreaterOrEqual(levelAssociatedWithMDCValue)) {
+            return onHigherOrEqual;
+        }
+        return onLower;
+    }
 }

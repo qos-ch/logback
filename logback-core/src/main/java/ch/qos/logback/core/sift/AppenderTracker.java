@@ -31,52 +31,52 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  */
 public class AppenderTracker<E> extends AbstractComponentTracker<Appender<E>> {
 
-	int nopaWarningCount = 0;
+    int nopaWarningCount = 0;
 
-	final Context context;
-	final AppenderFactory<E> appenderFactory;
-	final ContextAwareImpl contextAware;
+    final Context context;
+    final AppenderFactory<E> appenderFactory;
+    final ContextAwareImpl contextAware;
 
-	public AppenderTracker(final Context context, final AppenderFactory<E> appenderFactory) {
-		this.context = context;
-		this.appenderFactory = appenderFactory;
-		this.contextAware = new ContextAwareImpl(context, this);
-	}
+    public AppenderTracker(final Context context, final AppenderFactory<E> appenderFactory) {
+        this.context = context;
+        this.appenderFactory = appenderFactory;
+        this.contextAware = new ContextAwareImpl(context, this);
+    }
 
-	@Override
-	protected void processPriorToRemoval(final Appender<E> component) {
-		component.stop();
-	}
+    @Override
+    protected void processPriorToRemoval(final Appender<E> component) {
+        component.stop();
+    }
 
-	@Override
-	protected Appender<E> buildComponent(final String key) {
-		Appender<E> appender = null;
-		try {
-			appender = appenderFactory.buildAppender(context, key);
-		} catch (final JoranException je) {
-			contextAware.addError("Error while building appender with discriminating value [" + key + "]");
-		}
-		if (appender == null) {
-			appender = buildNOPAppender(key);
-		}
+    @Override
+    protected Appender<E> buildComponent(final String key) {
+        Appender<E> appender = null;
+        try {
+            appender = appenderFactory.buildAppender(context, key);
+        } catch (final JoranException je) {
+            contextAware.addError("Error while building appender with discriminating value [" + key + "]");
+        }
+        if (appender == null) {
+            appender = buildNOPAppender(key);
+        }
 
-		return appender;
-	}
+        return appender;
+    }
 
-	private NOPAppender<E> buildNOPAppender(final String key) {
-		if (nopaWarningCount < CoreConstants.MAX_ERROR_COUNT) {
-			nopaWarningCount++;
-			contextAware.addError("Building NOPAppender for discriminating value [" + key + "]");
-		}
-		final NOPAppender<E> nopa = new NOPAppender<>();
-		nopa.setContext(context);
-		nopa.start();
-		return nopa;
-	}
+    private NOPAppender<E> buildNOPAppender(final String key) {
+        if (nopaWarningCount < CoreConstants.MAX_ERROR_COUNT) {
+            nopaWarningCount++;
+            contextAware.addError("Building NOPAppender for discriminating value [" + key + "]");
+        }
+        final NOPAppender<E> nopa = new NOPAppender<>();
+        nopa.setContext(context);
+        nopa.start();
+        return nopa;
+    }
 
-	@Override
-	protected boolean isComponentStale(final Appender<E> appender) {
-		return !appender.isStarted();
-	}
+    @Override
+    protected boolean isComponentStale(final Appender<E> appender) {
+        return !appender.isStarted();
+    }
 
 }

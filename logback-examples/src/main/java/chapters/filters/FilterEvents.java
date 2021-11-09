@@ -25,21 +25,21 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class FilterEvents {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(final String[] args) throws InterruptedException {
         if (args.length == 0) {
             System.out.println("A configuration file must be passed as a parameter.");
             return;
         }
 
-        Logger logger = (Logger) LoggerFactory.getLogger(FilterEvents.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final Logger logger = LoggerFactory.getLogger(FilterEvents.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
             configurator.doConfigure(args[0]);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             je.printStackTrace();
         }
 
@@ -49,7 +49,7 @@ public class FilterEvents {
                 logger.debug("logging statement {}", i);
                 MDC.remove("username");
             } else if (i == 6) {
-                Marker billing = MarkerFactory.getMarker("billing");
+                final Marker billing = MarkerFactory.getMarker("billing");
                 logger.error(billing, "billing statement {}", i);
             } else {
                 logger.info("logging statement {}", i);

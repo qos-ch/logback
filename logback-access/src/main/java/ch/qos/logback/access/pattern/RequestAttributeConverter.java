@@ -18,25 +18,25 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class RequestAttributeConverter extends AccessConverter {
 
-	String key;
+    String key;
 
-	@Override
-	public void start() {
-		key = getFirstOption();
-		if (OptionHelper.isNullOrEmpty(key)) {
-			addWarn("Missing key for the request attribute");
-		} else {
-			super.start();
-		}
-	}
+    @Override
+    public void start() {
+        key = getFirstOption();
+        if (OptionHelper.isNullOrEmpty(key)) {
+            addWarn("Missing key for the request attribute");
+        } else {
+            super.start();
+        }
+    }
 
-	@Override
-	public String convert(final IAccessEvent accessEvent) {
-		if (!isStarted()) {
-			return "INACTIVE_REQUEST_ATTRIB_CONV";
-		}
+    @Override
+    public String convert(final IAccessEvent accessEvent) {
+        if (!isStarted()) {
+            return "INACTIVE_REQUEST_ATTRIB_CONV";
+        }
 
-		return accessEvent.getAttribute(key);
-	}
+        return accessEvent.getAttribute(key);
+    }
 
 }

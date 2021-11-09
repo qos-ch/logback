@@ -22,19 +22,19 @@ import ch.qos.logback.core.util.AggregationType;
  * @author Ceki
  */
 public class ImplicitActionDataBase {
-	public final PropertySetter parentBean;
-	public final AggregationType aggregationType;
-	public final String propertyName;
-	public boolean inError;
+    public final PropertySetter parentBean;
+    public final AggregationType aggregationType;
+    public final String propertyName;
+    public boolean inError;
 
-	public ImplicitActionDataBase(final PropertySetter parentBean, final AggregationType aggregationType, final String propertyName) {
-		this.parentBean = parentBean;
-		this.aggregationType = aggregationType;
-		this.propertyName = propertyName;
-	}
+    public ImplicitActionDataBase(final PropertySetter parentBean, final AggregationType aggregationType, final String propertyName) {
+        this.parentBean = parentBean;
+        this.aggregationType = aggregationType;
+        this.propertyName = propertyName;
+    }
 
-	public AggregationType getAggregationType() {
-		return aggregationType;
-	}
+    public AggregationType getAggregationType() {
+        return aggregationType;
+    }
 
 }

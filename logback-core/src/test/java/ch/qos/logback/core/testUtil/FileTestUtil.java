@@ -23,14 +23,14 @@ import java.io.File;
  */
 public class FileTestUtil {
 
-	public static void makeTestOutputDir() {
-		final File target = new File(CoreTestConstants.TARGET_DIR);
-		if (!target.exists() || !target.isDirectory()) {
-			throw new IllegalStateException(CoreTestConstants.TARGET_DIR + " does not exist");
-		}
-		final File testoutput = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
-		if (!testoutput.exists()) {
-			assertTrue(testoutput.mkdir());
-		}
-	}
+    public static void makeTestOutputDir() {
+        final File target = new File(CoreTestConstants.TARGET_DIR);
+        if (!target.exists() || !target.isDirectory()) {
+            throw new IllegalStateException(CoreTestConstants.TARGET_DIR + " does not exist");
+        }
+        final File testoutput = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
+        if (!testoutput.exists()) {
+            assertTrue(testoutput.mkdir());
+        }
+    }
 }

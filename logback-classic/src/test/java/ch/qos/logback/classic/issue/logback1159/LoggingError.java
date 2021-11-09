@@ -7,10 +7,10 @@ package ch.qos.logback.classic.issue.logback1159;
  */
 public class LoggingError extends Error {
 
-	private static final long serialVersionUID = -4881940499551760472L;
+    private static final long serialVersionUID = -4881940499551760472L;
 
-	public LoggingError(final String msg, final Throwable cause) {
-		super(msg, cause);
-	}
+    public LoggingError(final String msg, final Throwable cause) {
+        super(msg, cause);
+    }
 
 }

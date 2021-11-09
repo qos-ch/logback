@@ -42,241 +42,241 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class InterpretationContext extends ContextAwareBase implements PropertyContainer {
-	Stack<Object> objectStack;
-	Stack<Model> modelStack;
-	Stack<ImplicitActionDataBase> implicitActionDataStack;
+    Stack<Object> objectStack;
+    Stack<Model> modelStack;
+    Stack<ImplicitActionDataBase> implicitActionDataStack;
 
-	Map<String, Object> objectMap;
-	Map<String, String> propertiesMap;
+    Map<String, Object> objectMap;
+    Map<String, String> propertiesMap;
 
-	final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
-	final List<String> startedDependencies = new ArrayList<>();
+    final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
+    final List<String> startedDependencies = new ArrayList<>();
 
-	SaxEventInterpreter saxEventInterpreter;
-	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
-	private BeanDescriptionCache beanDescriptionCache;
+    SaxEventInterpreter saxEventInterpreter;
+    DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
+    private BeanDescriptionCache beanDescriptionCache;
 
-	public InterpretationContext(final Context context, final SaxEventInterpreter saxEventInterpreter) {
-		this.context = context;
-		this.saxEventInterpreter = saxEventInterpreter;
-		objectStack = new Stack<>();
-		modelStack = new Stack<>();
-		implicitActionDataStack = new Stack<>();
+    public InterpretationContext(final Context context, final SaxEventInterpreter saxEventInterpreter) {
+        this.context = context;
+        this.saxEventInterpreter = saxEventInterpreter;
+        objectStack = new Stack<>();
+        modelStack = new Stack<>();
+        implicitActionDataStack = new Stack<>();
 
-		objectMap = new HashMap<>(5);
-		propertiesMap = new HashMap<>(5);
-	}
+        objectMap = new HashMap<>(5);
+        propertiesMap = new HashMap<>(5);
+    }
 
-	public BeanDescriptionCache getBeanDescriptionCache() {
-		if (beanDescriptionCache == null) {
-			beanDescriptionCache = new BeanDescriptionCache(getContext());
-		}
-		return beanDescriptionCache;
-	}
+    public BeanDescriptionCache getBeanDescriptionCache() {
+        if (beanDescriptionCache == null) {
+            beanDescriptionCache = new BeanDescriptionCache(getContext());
+        }
+        return beanDescriptionCache;
+    }
 
-	public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
-		return defaultNestedComponentRegistry;
-	}
+    public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
+        return defaultNestedComponentRegistry;
+    }
 
-	@Override
-	public Map<String, String> getCopyOfPropertyMap() {
-		return new HashMap<>(propertiesMap);
-	}
+    @Override
+    public Map<String, String> getCopyOfPropertyMap() {
+        return new HashMap<>(propertiesMap);
+    }
 
-	void setPropertiesMap(final Map<String, String> propertiesMap) {
-		this.propertiesMap = propertiesMap;
-	}
+    void setPropertiesMap(final Map<String, String> propertiesMap) {
+        this.propertiesMap = propertiesMap;
+    }
 
-	public HashMap<Model, List<String>> getDependenciesMap() {
-		return dependenciesMap;
-	}
+    public HashMap<Model, List<String>> getDependenciesMap() {
+        return dependenciesMap;
+    }
 
-	public boolean hasDependencies(final String name) {
+    public boolean hasDependencies(final String name) {
 
-		final Collection<List<String>> nameLists = dependenciesMap.values();
-		if(nameLists == null || nameLists.isEmpty()) {
-			return false;
-		}
+        final Collection<List<String>> nameLists = dependenciesMap.values();
+        if(nameLists == null || nameLists.isEmpty()) {
+            return false;
+        }
 
-		for(final List<String> aList: nameLists) {
-			if(aList.contains(name)) {
-				return true;
-			}
-		}
-		return false;
-	}
+        for(final List<String> aList: nameLists) {
+            if(aList.contains(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public void addDependency(final Model model, final String ref) {
-		List<String> refList = dependenciesMap.get(model);
-		if(refList == null) {
-			refList = new ArrayList<>();
-		}
-		refList.add(ref);
-		dependenciesMap.put(model, refList);
-	}
+    public void addDependency(final Model model, final String ref) {
+        List<String> refList = dependenciesMap.get(model);
+        if(refList == null) {
+            refList = new ArrayList<>();
+        }
+        refList.add(ref);
+        dependenciesMap.put(model, refList);
+    }
 
-	public List<String> getDependencies(final Model model) {
-		return dependenciesMap.get(model);
-	}
+    public List<String> getDependencies(final Model model) {
+        return dependenciesMap.get(model);
+    }
 
-	String updateLocationInfo(final String msg) {
-		final Locator locator = saxEventInterpreter.getLocator();
+    String updateLocationInfo(final String msg) {
+        final Locator locator = saxEventInterpreter.getLocator();
 
-		if (locator != null) {
-			return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
-		}
-		return msg;
-	}
+        if (locator != null) {
+            return msg + locator.getLineNumber() + ":" + locator.getColumnNumber();
+        }
+        return msg;
+    }
 
-	public String getLineNumber() {
-		final Locator locator = saxEventInterpreter.getLocator();
+    public String getLineNumber() {
+        final Locator locator = saxEventInterpreter.getLocator();
 
-		if (locator != null) {
-			return Integer.toString(locator.getLineNumber());
-		}
-		return "NA";
-	}
+        if (locator != null) {
+            return Integer.toString(locator.getLineNumber());
+        }
+        return "NA";
+    }
 
-	public Locator getLocator() {
-		return saxEventInterpreter.getLocator();
-	}
+    public Locator getLocator() {
+        return saxEventInterpreter.getLocator();
+    }
 
-	public SaxEventInterpreter getSaxEventInterpreter() {
-		return saxEventInterpreter;
-	}
+    public SaxEventInterpreter getSaxEventInterpreter() {
+        return saxEventInterpreter;
+    }
 
-	public Stack<Object> getObjectStack() {
-		return objectStack;
-	}
+    public Stack<Object> getObjectStack() {
+        return objectStack;
+    }
 
-	/**
-	 * @deprecated Use {@link isObjectStackEmpty isObjectStackEmpty()} method
-	 *             instead
-	 * @return
-	 */
-	@Deprecated
-	public boolean isEmpty() {
-		return isObjectStackEmpty();
-	}
+    /**
+     * @deprecated Use {@link isObjectStackEmpty isObjectStackEmpty()} method
+     *             instead
+     * @return
+     */
+    @Deprecated
+    public boolean isEmpty() {
+        return isObjectStackEmpty();
+    }
 
-	/**
-	 *
-	 * @return whether the objectStack is empty or not
-	 */
-	public boolean isObjectStackEmpty() {
-		return objectStack.isEmpty();
-	}
+    /**
+     *
+     * @return whether the objectStack is empty or not
+     */
+    public boolean isObjectStackEmpty() {
+        return objectStack.isEmpty();
+    }
 
-	public Object peekObject() {
-		return objectStack.peek();
-	}
+    public Object peekObject() {
+        return objectStack.peek();
+    }
 
-	public void pushObject(final Object o) {
-		objectStack.push(o);
-	}
+    public void pushObject(final Object o) {
+        objectStack.push(o);
+    }
 
-	public Object popObject() {
-		return objectStack.pop();
-	}
+    public Object popObject() {
+        return objectStack.pop();
+    }
 
-	/**
-	 * actionDataStack contains ActionData instances We use a stack of ActionData
-	 * objects in order to support nested elements which are handled by the same
-	 * NestedComplexPropertyIA instance. We push a ActionData instance in the
-	 * isApplicable method (if the action is applicable) and pop it in the end()
-	 * method. The XML well-formedness property will guarantee that a push will
-	 * eventually be followed by a corresponding pop.
-	 */
-	public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
-		return implicitActionDataStack;
-	}
+    /**
+     * actionDataStack contains ActionData instances We use a stack of ActionData
+     * objects in order to support nested elements which are handled by the same
+     * NestedComplexPropertyIA instance. We push a ActionData instance in the
+     * isApplicable method (if the action is applicable) and pop it in the end()
+     * method. The XML well-formedness property will guarantee that a push will
+     * eventually be followed by a corresponding pop.
+     */
+    public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
+        return implicitActionDataStack;
+    }
 
-	public Model peekModel() {
-		return modelStack.peek();
-	}
+    public Model peekModel() {
+        return modelStack.peek();
+    }
 
-	public void pushModel(final Model m) {
-		modelStack.push(m);
-	}
+    public void pushModel(final Model m) {
+        modelStack.push(m);
+    }
 
-	public boolean isModelStackEmpty() {
-		return modelStack.isEmpty();
-	}
+    public boolean isModelStackEmpty() {
+        return modelStack.isEmpty();
+    }
 
-	public Model popModel() {
-		return modelStack.pop();
-	}
+    public Model popModel() {
+        return modelStack.pop();
+    }
 
-	public Stack<Model> getCopyOfModelStack() {
-		final Stack<Model> copy = new Stack<>();
-		copy.addAll(modelStack);
-		return copy;
-	}
+    public Stack<Model> getCopyOfModelStack() {
+        final Stack<Model> copy = new Stack<>();
+        copy.addAll(modelStack);
+        return copy;
+    }
 
-	public Object getObject(final int i) {
-		return objectStack.get(i);
-	}
+    public Object getObject(final int i) {
+        return objectStack.get(i);
+    }
 
-	public Map<String, Object> getObjectMap() {
-		return objectMap;
-	}
+    public Map<String, Object> getObjectMap() {
+        return objectMap;
+    }
 
-	/**
-	 * Add a property to the properties of this execution context. If the property
-	 * exists already, it is overwritten.
-	 */
-	public void addSubstitutionProperty(final String key, String value) {
-		if (key == null || value == null) {
-			return;
-		}
-		// values with leading or trailing spaces are bad. We remove them now.
-		value = value.trim();
-		propertiesMap.put(key, value);
-	}
+    /**
+     * Add a property to the properties of this execution context. If the property
+     * exists already, it is overwritten.
+     */
+    public void addSubstitutionProperty(final String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+        // values with leading or trailing spaces are bad. We remove them now.
+        value = value.trim();
+        propertiesMap.put(key, value);
+    }
 
-	public void addSubstitutionProperties(final Properties props) {
-		if (props == null) {
-			return;
-		}
-		for (final Object keyObject : props.keySet()) {
-			final String key = (String) keyObject;
-			final String val = props.getProperty(key);
-			addSubstitutionProperty(key, val);
-		}
-	}
+    public void addSubstitutionProperties(final Properties props) {
+        if (props == null) {
+            return;
+        }
+        for (final Object keyObject : props.keySet()) {
+            final String key = (String) keyObject;
+            final String val = props.getProperty(key);
+            addSubstitutionProperty(key, val);
+        }
+    }
 
-	/**
-	 * If a key is found in propertiesMap then return it. Otherwise, delegate to the
-	 * context.
-	 */
-	@Override
-	public String getProperty(final String key) {
-		final String v = propertiesMap.get(key);
-		if (v != null) {
-			return v;
-		}
-		return context.getProperty(key);
-	}
+    /**
+     * If a key is found in propertiesMap then return it. Otherwise, delegate to the
+     * context.
+     */
+    @Override
+    public String getProperty(final String key) {
+        final String v = propertiesMap.get(key);
+        if (v != null) {
+            return v;
+        }
+        return context.getProperty(key);
+    }
 
-	public String subst(final String value) {
-		if (value == null) {
-			return null;
-		}
+    public String subst(final String value) {
+        if (value == null) {
+            return null;
+        }
 
-		try  {
-			return OptionHelper.substVars(value, this, context);
-		} catch(ScanException|IllegalArgumentException e) {
-			addError("Problem while parsing ["+value+"]", e);
-			return value;
-		}
-	}
+        try  {
+            return OptionHelper.substVars(value, this, context);
+        } catch(ScanException|IllegalArgumentException e) {
+            addError("Problem while parsing ["+value+"]", e);
+            return value;
+        }
+    }
 
-	public void markStartOfNamedDependency(final String name) {
-		startedDependencies.add(name);
-	}
-	public boolean isNamedDependencyStarted(final String name) {
-		return startedDependencies.contains(name);
-	}
+    public void markStartOfNamedDependency(final String name) {
+        startedDependencies.add(name);
+    }
+    public boolean isNamedDependencyStarted(final String name) {
+        return startedDependencies.contains(name);
+    }
 
 
 

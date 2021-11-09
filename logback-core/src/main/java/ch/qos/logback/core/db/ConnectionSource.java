@@ -31,31 +31,31 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public interface ConnectionSource extends LifeCycle {
 
-	/**
-	 *  Obtain a {@link java.sql.Connection} for use.  The client is
-	 *  responsible for closing the {@link java.sql.Connection} when it is no
-	 *  longer required.
-	 *
-	 *  @throws SQLException  if a {@link java.sql.Connection} could not be
-	 *                        obtained
-	 */
-	Connection getConnection() throws SQLException;
+    /**
+     *  Obtain a {@link java.sql.Connection} for use.  The client is
+     *  responsible for closing the {@link java.sql.Connection} when it is no
+     *  longer required.
+     *
+     *  @throws SQLException  if a {@link java.sql.Connection} could not be
+     *                        obtained
+     */
+    Connection getConnection() throws SQLException;
 
-	/**
-	 * Get the SQL dialect that should be used for this connection. Note that the
-	 * dialect is not needed if the JDBC driver supports the getGeneratedKeys
-	 * method.
-	 */
-	SQLDialectCode getSQLDialectCode();
+    /**
+     * Get the SQL dialect that should be used for this connection. Note that the
+     * dialect is not needed if the JDBC driver supports the getGeneratedKeys
+     * method.
+     */
+    SQLDialectCode getSQLDialectCode();
 
-	/**
-	 * If the connection supports the JDBC 3.0 getGeneratedKeys method, then
-	 * we do not need any specific dialect support.
-	 */
-	boolean supportsGetGeneratedKeys();
+    /**
+     * If the connection supports the JDBC 3.0 getGeneratedKeys method, then
+     * we do not need any specific dialect support.
+     */
+    boolean supportsGetGeneratedKeys();
 
-	/**
-	 * If the connection does not support batch updates, we will avoid using them.
-	 */
-	boolean supportsBatchUpdates();
+    /**
+     * If the connection does not support batch updates, we will avoid using them.
+     */
+    boolean supportsBatchUpdates();
 }

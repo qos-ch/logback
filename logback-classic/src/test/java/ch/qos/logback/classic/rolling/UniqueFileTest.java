@@ -36,41 +36,41 @@ import ch.qos.logback.core.util.CachingDateFormatter;
  *
  */
 public class UniqueFileTest {
-	static String UNIK_DIFF = "UNIK_DIFF";
+    static String UNIK_DIFF = "UNIK_DIFF";
 
-	LoggerContext lc = new LoggerContext();
-	StatusChecker sc = new StatusChecker(lc);
-	Logger logger = lc.getLogger(this.getClass());
-	int diff = RandomUtil.getPositiveInt() % 1000;
-	String diffAsStr = Integer.toString(diff);
+    LoggerContext lc = new LoggerContext();
+    StatusChecker sc = new StatusChecker(lc);
+    Logger logger = lc.getLogger(this.getClass());
+    int diff = RandomUtil.getPositiveInt() % 1000;
+    String diffAsStr = Integer.toString(diff);
 
-	@Before
-	public void setUp() {
-		System.setProperty(UNIK_DIFF, diffAsStr);
-	}
+    @Before
+    public void setUp() {
+        System.setProperty(UNIK_DIFF, diffAsStr);
+    }
 
-	@After
-	public void tearDown() {
-		System.clearProperty(UNIK_DIFF);
-	}
+    @After
+    public void tearDown() {
+        System.clearProperty(UNIK_DIFF);
+    }
 
-	void loadConfig(final String confifFile) throws JoranException {
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(lc);
-		jc.doConfigure(confifFile);
-	}
+    void loadConfig(final String confifFile) throws JoranException {
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(lc);
+        jc.doConfigure(confifFile);
+    }
 
-	@Test
-	public void basic() throws Exception {
-		loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "unique.xml");
-		final CachingDateFormatter sdf = new CachingDateFormatter("yyyyMMdd'T'HHmm");
-		final String timestamp = sdf.format(System.currentTimeMillis());
+    @Test
+    public void basic() throws Exception {
+        loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "unique.xml");
+        final CachingDateFormatter sdf = new CachingDateFormatter("yyyyMMdd'T'HHmm");
+        final String timestamp = sdf.format(System.currentTimeMillis());
 
-		sc.assertIsErrorFree();
+        sc.assertIsErrorFree();
 
-		final Logger root = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-		root.info("hello");
+        final Logger root = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        root.info("hello");
 
-		ScaffoldingForRollingTests.existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX + "UNIK_" + timestamp + diffAsStr + "log.txt");
-	}
+        ScaffoldingForRollingTests.existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX + "UNIK_" + timestamp + diffAsStr + "log.txt");
+    }
 }

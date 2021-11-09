@@ -20,24 +20,26 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 /**
- * 
+ *
  * A rather trivial implicit action which is applicable if an element has a
  * printme attribute set to true.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class PrintMeImplicitAction extends ImplicitModelAction {
 
-    public boolean isApplicable(ElementPath elementPath, Attributes attributes, InterpretationContext ec) {
-        String printmeStr = attributes.getValue("printme");
+    public boolean isApplicable(final ElementPath elementPath, final Attributes attributes, final InterpretationContext ec) {
+        final String printmeStr = attributes.getValue("printme");
 
-        return Boolean.valueOf(printmeStr).booleanValue();
+        return Boolean.parseBoolean(printmeStr);
     }
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    @Override
+    public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
         System.out.println("Element [" + name + "] asked to be printed.");
     }
 
-    public void end(InterpretationContext ec, String name) {
+    @Override
+    public void end(final InterpretationContext ec, final String name) {
     }
 }

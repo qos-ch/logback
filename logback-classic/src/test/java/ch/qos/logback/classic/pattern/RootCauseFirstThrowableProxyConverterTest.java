@@ -37,103 +37,103 @@ import ch.qos.logback.classic.spi.LoggingEvent;
  */
 public class RootCauseFirstThrowableProxyConverterTest {
 
-	private final LoggerContext context = new LoggerContext();
-	private final ThrowableProxyConverter converter = new RootCauseFirstThrowableProxyConverter();
-	private final StringWriter stringWriter = new StringWriter();
-	private final PrintWriter printWriter = new PrintWriter(stringWriter);
+    private final LoggerContext context = new LoggerContext();
+    private final ThrowableProxyConverter converter = new RootCauseFirstThrowableProxyConverter();
+    private final StringWriter stringWriter = new StringWriter();
+    private final PrintWriter printWriter = new PrintWriter(stringWriter);
 
-	@Before
-	public void setUp() throws Exception {
-		converter.setContext(context);
-		converter.start();
-	}
+    @Before
+    public void setUp() throws Exception {
+        converter.setContext(context);
+        converter.start();
+    }
 
-	private ILoggingEvent createLoggingEvent(final Throwable t) {
-		return new LoggingEvent(this.getClass().getName(), context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
-	}
+    private ILoggingEvent createLoggingEvent(final Throwable t) {
+        return new LoggingEvent(this.getClass().getName(), context.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
+    }
 
-	@Test
-	public void integration() {
-		// given
-		context.setPackagingDataEnabled(true);
-		final PatternLayout pl = new PatternLayout();
-		pl.setContext(context);
-		pl.setPattern("%m%rEx%n");
-		pl.start();
+    @Test
+    public void integration() {
+        // given
+        context.setPackagingDataEnabled(true);
+        final PatternLayout pl = new PatternLayout();
+        pl.setContext(context);
+        pl.setPattern("%m%rEx%n");
+        pl.start();
 
-		// when
-		final ILoggingEvent e = createLoggingEvent(new Exception("x"));
-		final String result = pl.doLayout(e);
+        // when
+        final ILoggingEvent e = createLoggingEvent(new Exception("x"));
+        final String result = pl.doLayout(e);
 
-		// then
-		// make sure that at least some package data was output
-		final Pattern p = Pattern.compile("\\s*at .*?\\[.*?\\]");
-		final Matcher m = p.matcher(result);
-		int i = 0;
-		while (m.find()) {
-			i++;
-		}
-		assertThat(i).isGreaterThan(5);
-	}
+        // then
+        // make sure that at least some package data was output
+        final Pattern p = Pattern.compile("\\s*at .*?\\[.*?\\]");
+        final Matcher m = p.matcher(result);
+        int i = 0;
+        while (m.find()) {
+            i++;
+        }
+        assertThat(i).isGreaterThan(5);
+    }
 
-	@Test
-	public void smoke() {
-		// given
-		final Exception exception = new Exception("smoke");
-		exception.printStackTrace(printWriter);
+    @Test
+    public void smoke() {
+        // given
+        final Exception exception = new Exception("smoke");
+        exception.printStackTrace(printWriter);
 
-		// when
-		final ILoggingEvent le = createLoggingEvent(exception);
-		String result = converter.convert(le);
+        // when
+        final ILoggingEvent le = createLoggingEvent(exception);
+        String result = converter.convert(le);
 
-		// then
-		result = result.replace("common frames omitted", "more");
-		result = result.replaceAll(" ~?\\[.*\\]", "");
-		assertThat(result).isEqualTo(stringWriter.toString());
-	}
+        // then
+        result = result.replace("common frames omitted", "more");
+        result = result.replaceAll(" ~?\\[.*\\]", "");
+        assertThat(result).isEqualTo(stringWriter.toString());
+    }
 
-	@Test
-	public void nested() {
-		// given
-		final Throwable nestedException = makeNestedException(2);
-		nestedException.printStackTrace(printWriter);
+    @Test
+    public void nested() {
+        // given
+        final Throwable nestedException = makeNestedException(2);
+        nestedException.printStackTrace(printWriter);
 
-		// when
-		final ILoggingEvent le = createLoggingEvent(nestedException);
-		final String result = converter.convert(le);
+        // when
+        final ILoggingEvent le = createLoggingEvent(nestedException);
+        final String result = converter.convert(le);
 
-		// then
-		assertThat(result).startsWith("java.lang.Exception: nesting level=0");
-		assertThat(positionOf("nesting level=0").in(result)).isLessThan(positionOf("nesting level =1").in(result));
-		assertThat(positionOf("nesting level =1").in(result)).isLessThan(positionOf("nesting level =2").in(result));
-	}
+        // then
+        assertThat(result).startsWith("java.lang.Exception: nesting level=0");
+        assertThat(positionOf("nesting level=0").in(result)).isLessThan(positionOf("nesting level =1").in(result));
+        assertThat(positionOf("nesting level =1").in(result)).isLessThan(positionOf("nesting level =2").in(result));
+    }
 
-	@Test
-	public void cyclicCause() {
-		final Exception e = new Exception("foo");
-		final Exception e2 = new Exception(e);
-		e.initCause(e2);
-		final ILoggingEvent le = createLoggingEvent(e);
-		final String result = converter.convert(le);
+    @Test
+    public void cyclicCause() {
+        final Exception e = new Exception("foo");
+        final Exception e2 = new Exception(e);
+        e.initCause(e2);
+        final ILoggingEvent le = createLoggingEvent(e);
+        final String result = converter.convert(le);
 
-		assertThat(result).startsWith("[CIRCULAR REFERENCE: java.lang.Exception: foo]");
-	}
+        assertThat(result).startsWith("[CIRCULAR REFERENCE: java.lang.Exception: foo]");
+    }
 
 
-	@Test
-	public void cyclicSuppressed() {
-		final Exception e = new Exception("foo");
-		final Exception e2 = new Exception(e);
-		e.addSuppressed(e2);
-		final ILoggingEvent le = createLoggingEvent(e);
-		final String result = converter.convert(le);
+    @Test
+    public void cyclicSuppressed() {
+        final Exception e = new Exception("foo");
+        final Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        final ILoggingEvent le = createLoggingEvent(e);
+        final String result = converter.convert(le);
 
-		assertThat(result).startsWith("java.lang.Exception: foo");
-		final String circular = "Suppressed: [CIRCULAR REFERENCE: java.lang.Exception: foo]";
-		final String wrapped = "Wrapped by: java.lang.Exception: java.lang.Exception: foo";
+        assertThat(result).startsWith("java.lang.Exception: foo");
+        final String circular = "Suppressed: [CIRCULAR REFERENCE: java.lang.Exception: foo]";
+        final String wrapped = "Wrapped by: java.lang.Exception: java.lang.Exception: foo";
 
-		assertThat(positionOf(circular).in(result)).isLessThan(positionOf(wrapped).in(result));
-	}
+        assertThat(positionOf(circular).in(result)).isLessThan(positionOf(wrapped).in(result));
+    }
 
 
 }

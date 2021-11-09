@@ -33,44 +33,44 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public abstract class TurboFilter extends ContextAwareBase implements LifeCycle {
 
-	private String name;
-	boolean start = false;
+    private String name;
+    boolean start = false;
 
-	/**
-	 * Make a decision based on the multiple parameters passed as arguments.
-	 * The returned value should be one of <code>{@link FilterReply#DENY}</code>,
-	 * <code>{@link FilterReply#NEUTRAL}</code>, or <code>{@link FilterReply#ACCEPT}</code>.
+    /**
+     * Make a decision based on the multiple parameters passed as arguments.
+     * The returned value should be one of <code>{@link FilterReply#DENY}</code>,
+     * <code>{@link FilterReply#NEUTRAL}</code>, or <code>{@link FilterReply#ACCEPT}</code>.
 
-	 * @param marker
-	 * @param logger
-	 * @param level
-	 * @param format
-	 * @param params
-	 * @param t
-	 * @return
-	 */
-	public abstract FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t);
+     * @param marker
+     * @param logger
+     * @param level
+     * @param format
+     * @param params
+     * @param t
+     * @return
+     */
+    public abstract FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t);
 
-	@Override
-	public void start() {
-		start = true;
-	}
+    @Override
+    public void start() {
+        start = true;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return start;
-	}
+    @Override
+    public boolean isStarted() {
+        return start;
+    }
 
-	@Override
-	public void stop() {
-		start = false;
-	}
+    @Override
+    public void stop() {
+        start = false;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 }

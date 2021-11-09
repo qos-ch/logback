@@ -22,23 +22,23 @@ package ch.qos.logback.core.contention;
  */
 public class MultiThreadedHarness extends AbstractMultiThreadedHarness {
 
-	final long overallDurationInMillis;
+    final long overallDurationInMillis;
 
-	public MultiThreadedHarness(final long overallDurationInMillis) {
-		this.overallDurationInMillis = overallDurationInMillis;
-	}
+    public MultiThreadedHarness(final long overallDurationInMillis) {
+        this.overallDurationInMillis = overallDurationInMillis;
+    }
 
-	public void printEnvironmentInfo(final String msg) {
-		System.out.println("=== " + msg + " ===");
-		System.out.println("java.runtime.version = " + System.getProperty("java.runtime.version"));
-		System.out.println("java.vendor          = " + System.getProperty("java.vendor"));
-		System.out.println("java.version         = " + System.getProperty("java.version"));
-		System.out.println("os.name              = " + System.getProperty("os.name"));
-		System.out.println("os.version           = " + System.getProperty("os.version"));
-	}
+    public void printEnvironmentInfo(final String msg) {
+        System.out.println("=== " + msg + " ===");
+        System.out.println("java.runtime.version = " + System.getProperty("java.runtime.version"));
+        System.out.println("java.vendor          = " + System.getProperty("java.vendor"));
+        System.out.println("java.version         = " + System.getProperty("java.version"));
+        System.out.println("os.name              = " + System.getProperty("os.name"));
+        System.out.println("os.version           = " + System.getProperty("os.version"));
+    }
 
-	@Override
-	public void waitUntilEndCondition() throws InterruptedException {
-		Thread.sleep(overallDurationInMillis);
-	}
+    @Override
+    public void waitUntilEndCondition() throws InterruptedException {
+        Thread.sleep(overallDurationInMillis);
+    }
 }

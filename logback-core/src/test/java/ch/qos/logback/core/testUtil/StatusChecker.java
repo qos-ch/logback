@@ -25,35 +25,35 @@ import ch.qos.logback.core.status.StatusUtil;
  */
 public class StatusChecker extends StatusUtil {
 
-	public StatusChecker(final StatusManager sm) {
-		super(sm);
-	}
+    public StatusChecker(final StatusManager sm) {
+        super(sm);
+    }
 
-	public StatusChecker(final Context context) {
-		super(context);
-	}
+    public StatusChecker(final Context context) {
+        super(context);
+    }
 
-	public void assertContainsMatch(final int level, final String regex) {
-		assertTrue(containsMatch(level, regex));
-	}
+    public void assertContainsMatch(final int level, final String regex) {
+        assertTrue(containsMatch(level, regex));
+    }
 
-	public void assertNoMatch(final String regex) {
-		assertFalse(containsMatch(regex));
-	}
+    public void assertNoMatch(final String regex) {
+        assertFalse(containsMatch(regex));
+    }
 
-	public void assertContainsMatch(final String regex) {
-		assertTrue(containsMatch(regex));
-	}
+    public void assertContainsMatch(final String regex) {
+        assertTrue(containsMatch(regex));
+    }
 
-	public void asssertContainsException(final Class<?> scanExceptionClass) {
-		assertTrue(containsException(scanExceptionClass));
-	}
+    public void asssertContainsException(final Class<?> scanExceptionClass) {
+        assertTrue(containsException(scanExceptionClass));
+    }
 
-	public void assertIsErrorFree() {
-		assertTrue(isErrorFree(0));
-	}
+    public void assertIsErrorFree() {
+        assertTrue(isErrorFree(0));
+    }
 
-	public void assertIsWarningOrErrorFree() {
-		assertTrue(isWarningOrErrorFree(0));
-	}
+    public void assertIsWarningOrErrorFree() {
+        assertTrue(isWarningOrErrorFree(0));
+    }
 }

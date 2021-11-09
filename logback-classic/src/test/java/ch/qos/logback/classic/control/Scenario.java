@@ -19,21 +19,21 @@ import java.util.Vector;
 
 public class Scenario {
 
-	private final List<ScenarioAction> actionList = new Vector<>();
+    private final List<ScenarioAction> actionList = new Vector<>();
 
-	public void add(final ScenarioAction action) {
-		actionList.add(action);
-	}
+    public void add(final ScenarioAction action) {
+        actionList.add(action);
+    }
 
-	public List<ScenarioAction> getActionList() {
-		return new ArrayList<>(actionList);
-	}
+    public List<ScenarioAction> getActionList() {
+        return new ArrayList<>(actionList);
+    }
 
-	public int size() {
-		return actionList.size();
-	}
+    public int size() {
+        return actionList.size();
+    }
 
-	public ScenarioAction get(final int i) {
-		return actionList.get(i);
-	}
+    public ScenarioAction get(final int i) {
+        return actionList.get(i);
+    }
 }

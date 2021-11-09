@@ -18,44 +18,44 @@ import jakarta.servlet.ServletException;
  */
 public class LogbackServletContainerInitializer implements ServletContainerInitializer {
 
-	@Override
-	public void onStartup(final Set<Class<?>> c, final ServletContext ctx) throws ServletException {
+    @Override
+    public void onStartup(final Set<Class<?>> c, final ServletContext ctx) throws ServletException {
 
-		if (isDisabledByConfiguration(ctx)) {
-			StatusViaSLF4JLoggerFactory.addInfo("Due to deployment instructions will NOT register an instance of " + LogbackServletContextListener.class
-					+ " to the current web-app", this);
+        if (isDisabledByConfiguration(ctx)) {
+            StatusViaSLF4JLoggerFactory.addInfo("Due to deployment instructions will NOT register an instance of " + LogbackServletContextListener.class
+                            + " to the current web-app", this);
 
-			return;
-		}
+            return;
+        }
 
-		StatusViaSLF4JLoggerFactory.addInfo("Adding an instance of  " + LogbackServletContextListener.class + " to the current web-app", this);
-		final LogbackServletContextListener lscl = new LogbackServletContextListener();
-		ctx.addListener(lscl);
-	}
+        StatusViaSLF4JLoggerFactory.addInfo("Adding an instance of  " + LogbackServletContextListener.class + " to the current web-app", this);
+        final LogbackServletContextListener lscl = new LogbackServletContextListener();
+        ctx.addListener(lscl);
+    }
 
-	/**
-	 * Search for value of DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY in the web-app first, then as a system property and
-	 * as an environment variable last.
-	 *
-	 * @param ctx
-	 * @return True if value of DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY is available and set to "true", false otherwise.
-	 */
-	boolean isDisabledByConfiguration(final ServletContext ctx) {
-		String disableAttributeStr = null;
-		final Object disableAttribute = ctx.getInitParameter(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
-		if (disableAttribute instanceof String) {
-			disableAttributeStr = (String) disableAttribute;
-		}
+    /**
+     * Search for value of DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY in the web-app first, then as a system property and
+     * as an environment variable last.
+     *
+     * @param ctx
+     * @return True if value of DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY is available and set to "true", false otherwise.
+     */
+    boolean isDisabledByConfiguration(final ServletContext ctx) {
+        String disableAttributeStr = null;
+        final Object disableAttribute = ctx.getInitParameter(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
+        if (disableAttribute instanceof String) {
+            disableAttributeStr = (String) disableAttribute;
+        }
 
-		if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
-			disableAttributeStr = OptionHelper.getSystemProperty(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
-		}
+        if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
+            disableAttributeStr = OptionHelper.getSystemProperty(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
+        }
 
-		if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
-			disableAttributeStr = OptionHelper.getEnv(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
-		}
+        if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
+            disableAttributeStr = OptionHelper.getEnv(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
+        }
 
-		return Boolean.parseBoolean(disableAttributeStr);
-	}
+        return Boolean.parseBoolean(disableAttributeStr);
+    }
 
 }

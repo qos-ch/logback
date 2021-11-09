@@ -9,6 +9,6 @@ package ch.qos.logback.core.spi;
 public interface SequenceNumberGenerator extends ContextAware {
 
 
-	long nextSequenceNumber();
+    long nextSequenceNumber();
 
 }

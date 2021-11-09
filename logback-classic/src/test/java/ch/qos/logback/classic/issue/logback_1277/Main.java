@@ -23,26 +23,26 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class Main {
 
-	static Logger logger = LoggerFactory.getLogger(Main.class);
-	static String CONFIG_FILE = ClassicTestConstants.ISSUES_PREFIX + "logback-1277.xml";
+    static Logger logger = LoggerFactory.getLogger(Main.class);
+    static String CONFIG_FILE = ClassicTestConstants.ISSUES_PREFIX + "logback-1277.xml";
 
-	public static void main(final String[] args) throws JoranException, InterruptedException {
-		init(CONFIG_FILE);
-		final int runLen = 1000 * 1000;
-		for (int i = 0; i < runLen; i++) {
-			logger.debug("hello");
-		}
-		System.out.println("Will sleep for 60 seconds");
-		Thread.sleep(1000 * 60);
-		System.out.println("Exiting");
+    public static void main(final String[] args) throws JoranException, InterruptedException {
+        init(CONFIG_FILE);
+        final int runLen = 1000 * 1000;
+        for (int i = 0; i < runLen; i++) {
+            logger.debug("hello");
+        }
+        System.out.println("Will sleep for 60 seconds");
+        Thread.sleep(1000 * 60);
+        System.out.println("Exiting");
 
-	}
+    }
 
-	static void init(final String file) throws JoranException {
-		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(loggerContext);
-		loggerContext.reset();
-		jc.doConfigure(file);
-	}
+    static void init(final String file) throws JoranException {
+        final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        loggerContext.reset();
+        jc.doConfigure(file);
+    }
 }

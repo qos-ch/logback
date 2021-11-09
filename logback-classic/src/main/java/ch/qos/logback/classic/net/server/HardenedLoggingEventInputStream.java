@@ -21,36 +21,36 @@ import ch.qos.logback.core.net.HardenedObjectInputStream;
 
 public class HardenedLoggingEventInputStream extends HardenedObjectInputStream {
 
-	static final String ARRAY_PREFIX = "[L";
+    static final String ARRAY_PREFIX = "[L";
 
-	static public List<String> getWhilelist() {
-		final List<String> whitelist = new ArrayList<>();
-		whitelist.add(LoggingEventVO.class.getName());
-		whitelist.add(LoggerContextVO.class.getName());
-		whitelist.add(LoggerRemoteView.class.getName());
-		whitelist.add(ThrowableProxyVO.class.getName());
-		whitelist.add(BasicMarker.class.getName());
-		whitelist.add(Level.class.getName());
-		whitelist.add(Logger.class.getName());
-		whitelist.add(StackTraceElement.class.getName());
-		whitelist.add(StackTraceElement[].class.getName());
-		whitelist.add(ThrowableProxy.class.getName());
-		whitelist.add(ThrowableProxy[].class.getName());
-		whitelist.add(IThrowableProxy.class.getName());
-		whitelist.add(IThrowableProxy[].class.getName());
-		whitelist.add(StackTraceElementProxy.class.getName());
-		whitelist.add(StackTraceElementProxy[].class.getName());
-		whitelist.add(ClassPackagingData.class.getName());
+    static public List<String> getWhilelist() {
+        final List<String> whitelist = new ArrayList<>();
+        whitelist.add(LoggingEventVO.class.getName());
+        whitelist.add(LoggerContextVO.class.getName());
+        whitelist.add(LoggerRemoteView.class.getName());
+        whitelist.add(ThrowableProxyVO.class.getName());
+        whitelist.add(BasicMarker.class.getName());
+        whitelist.add(Level.class.getName());
+        whitelist.add(Logger.class.getName());
+        whitelist.add(StackTraceElement.class.getName());
+        whitelist.add(StackTraceElement[].class.getName());
+        whitelist.add(ThrowableProxy.class.getName());
+        whitelist.add(ThrowableProxy[].class.getName());
+        whitelist.add(IThrowableProxy.class.getName());
+        whitelist.add(IThrowableProxy[].class.getName());
+        whitelist.add(StackTraceElementProxy.class.getName());
+        whitelist.add(StackTraceElementProxy[].class.getName());
+        whitelist.add(ClassPackagingData.class.getName());
 
-		return whitelist;
-	}
+        return whitelist;
+    }
 
-	public HardenedLoggingEventInputStream(final InputStream is) throws IOException {
-		super(is, getWhilelist());
-	}
+    public HardenedLoggingEventInputStream(final InputStream is) throws IOException {
+        super(is, getWhilelist());
+    }
 
-	public HardenedLoggingEventInputStream(final InputStream is, final List<String> additionalAuthorizedClasses) throws IOException {
-		this(is);
-		super.addToWhitelist(additionalAuthorizedClasses);
-	}
+    public HardenedLoggingEventInputStream(final InputStream is, final List<String> additionalAuthorizedClasses) throws IOException {
+        this(is);
+        super.addToWhitelist(additionalAuthorizedClasses);
+    }
 }

@@ -23,17 +23,17 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class SampleLogging {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
-        Logger logger = LoggerFactory.getLogger(SampleLogging.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final Logger logger = LoggerFactory.getLogger(SampleLogging.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             lc.reset();
             configurator.setContext(lc);
             configurator.doConfigure(args[0]);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             // StatusPrinter will handle this
         }
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);

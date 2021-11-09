@@ -21,38 +21,38 @@ import jakarta.servlet.WriteListener;
 
 public class DummyServletOutputStream extends ServletOutputStream {
 
-	private final OutputStream targetStream;
+    private final OutputStream targetStream;
 
-	public DummyServletOutputStream(final OutputStream targetStream) {
-		this.targetStream = targetStream;
-	}
+    public DummyServletOutputStream(final OutputStream targetStream) {
+        this.targetStream = targetStream;
+    }
 
-	@Override
-	public void write(final int b) throws IOException {
-		targetStream.write(b);
-	}
+    @Override
+    public void write(final int b) throws IOException {
+        targetStream.write(b);
+    }
 
-	@Override
-	public void flush() throws IOException {
-		super.flush();
-		targetStream.flush();
-	}
+    @Override
+    public void flush() throws IOException {
+        super.flush();
+        targetStream.flush();
+    }
 
-	@Override
-	public void close() throws IOException {
-		super.close();
-		targetStream.close();
-	}
+    @Override
+    public void close() throws IOException {
+        super.close();
+        targetStream.close();
+    }
 
-	@Override
-	public boolean isReady() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean isReady() {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public void setWriteListener(final WriteListener listener) {
-		// TODO Auto-generated method stub
+    @Override
+    public void setWriteListener(final WriteListener listener) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 }

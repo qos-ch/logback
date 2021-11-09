@@ -37,17 +37,17 @@ public class IOPerformance extends Thread {
     LoggerContext context;
     double throughput;
 
-    public IOPerformance(boolean _immediateFlush, long _len) {
-        this.len = _len;
-        this.immediateFlush = _immediateFlush;
+    public IOPerformance(final boolean _immediateFlush, final long _len) {
+        len = _len;
+        immediateFlush = _immediateFlush;
         context = new LoggerContext();
         logger = context.getLogger("logger-" + getName());
 
         // A FileAppender is created according to the buffering and
         // immediate flush setting of this IO instance.
-        FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
+        final FileAppender<ILoggingEvent> fa = new FileAppender<>();
         fa.setName("FILE");
-        PatternLayoutEncoder pa = new PatternLayoutEncoder();
+        final PatternLayoutEncoder pa = new PatternLayoutEncoder();
         pa.setPattern("%r %5p %c [%t] - %m%n");
         pa.setContext(context);
         pa.start();
@@ -63,7 +63,7 @@ public class IOPerformance extends Thread {
         StatusPrinter.print(context);
     }
 
-    public static void main(String[] argv) throws Exception {
+    public static void main(final String[] argv) throws Exception {
         if (argv.length != 3) {
             usage("Wrong number of arguments.");
         }
@@ -84,7 +84,7 @@ public class IOPerformance extends Thread {
         // do not make sense.
     }
 
-    static void usage(String msg) {
+    static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + IOPerformance.class.getName() + " runLength logFile otherFile\n"
                         + "   runLength (integer) the number of logs to generate perthread\n" + "   logFile path to a logFile\n"
@@ -92,9 +92,9 @@ public class IOPerformance extends Thread {
         System.exit(1);
     }
 
-    static void perfCase(boolean immediateFlush, long len) throws Exception {
-        IOPerformance[] threads = new IOPerformance[NUM_THREADS];
-        OtherIO otherIOThread = new OtherIO();
+    static void perfCase(final boolean immediateFlush, final long len) throws Exception {
+        final IOPerformance[] threads = new IOPerformance[NUM_THREADS];
+        final OtherIO otherIOThread = new OtherIO();
         otherIOThread.start();
 
         // First create the threads
@@ -119,19 +119,20 @@ public class IOPerformance extends Thread {
         otherIOThread.interrupted = true;
         otherIOThread.join();
 
-        System.out.println("On total throughput of " + (sum) + " logs per microsecond.");
+        System.out.println("On total throughput of " + sum + " logs per microsecond.");
         System.out.println("------------------------------------------------");
     }
 
+    @Override
     public void run() {
 
-        long before = System.nanoTime();
+        final long before = System.nanoTime();
 
         for (int i = 0; i < len; i++) {
             logger.debug(MSG);
         }
 
-        throughput = (len * 1.0) / ((System.nanoTime() - before) / 1000);
+        throughput = len * 1.0 / ((System.nanoTime() - before) / 1000);
         System.out.println(getName() + ", immediateFlush: " + immediateFlush + ", throughput: " + throughput + " logs per microsecond.");
     }
 }
@@ -140,21 +141,22 @@ class OtherIO extends Thread {
     public boolean interrupted = false;
     public int counter = 0;
 
+    @Override
     public void run() {
-        long before = System.nanoTime();
+        final long before = System.nanoTime();
         try {
-            FileWriter fw = new FileWriter(IOPerformance.PARALLEL_FILE, true);
+            final FileWriter fw = new FileWriter(IOPerformance.PARALLEL_FILE, true);
 
             while (!interrupted) {
                 counter++;
                 fw.write("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                 fw.flush();
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
-        double tput = (counter * 1.0) / (System.nanoTime() - before);
+        final double tput = counter * 1.0 / (System.nanoTime() - before);
         System.out.println("Counter thread " + getName() + " incremented counter by " + tput + " per nanosecond.");
     }
 }

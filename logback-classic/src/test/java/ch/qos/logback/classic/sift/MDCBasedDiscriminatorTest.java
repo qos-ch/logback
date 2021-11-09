@@ -34,46 +34,46 @@ import ch.qos.logback.core.testUtil.RandomUtil;
  */
 public class MDCBasedDiscriminatorTest {
 
-	static String DEFAULT_VAL = "DEFAULT_VAL";
+    static String DEFAULT_VAL = "DEFAULT_VAL";
 
-	MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
-	LoggerContext context = new LoggerContext();
-	Logger logger = context.getLogger(this.getClass());
+    MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
+    LoggerContext context = new LoggerContext();
+    Logger logger = context.getLogger(this.getClass());
 
-	int diff = RandomUtil.getPositiveInt();
-	String key = "MDCBasedDiscriminatorTest_key" + diff;
-	String value = "MDCBasedDiscriminatorTest_val" + diff;
-	LoggingEvent event;
+    int diff = RandomUtil.getPositiveInt();
+    String key = "MDCBasedDiscriminatorTest_key" + diff;
+    String value = "MDCBasedDiscriminatorTest_val" + diff;
+    LoggingEvent event;
 
-	@Before
-	public void setUp() {
-		MDC.clear();
-		discriminator.setContext(context);
-		discriminator.setKey(key);
-		discriminator.setDefaultValue(DEFAULT_VAL);
-		discriminator.start();
-		assertTrue(discriminator.isStarted());
-	}
+    @Before
+    public void setUp() {
+        MDC.clear();
+        discriminator.setContext(context);
+        discriminator.setKey(key);
+        discriminator.setDefaultValue(DEFAULT_VAL);
+        discriminator.start();
+        assertTrue(discriminator.isStarted());
+    }
 
-	@After
-	public void teaDown() {
-		MDC.clear();
-	}
+    @After
+    public void teaDown() {
+        MDC.clear();
+    }
 
-	@Test
-	public void smoke() {
-		MDC.put(key, value);
-		event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
+    @Test
+    public void smoke() {
+        MDC.put(key, value);
+        event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
 
-		final String discriminatorValue = discriminator.getDiscriminatingValue(event);
-		assertEquals(value, discriminatorValue);
-	}
+        final String discriminatorValue = discriminator.getDiscriminatingValue(event);
+        assertEquals(value, discriminatorValue);
+    }
 
-	@Test
-	public void nullMDC() {
-		event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
-		assertEquals(new HashMap<String, String>(), event.getMDCPropertyMap());
-		final String discriminatorValue = discriminator.getDiscriminatingValue(event);
-		assertEquals(DEFAULT_VAL, discriminatorValue);
-	}
+    @Test
+    public void nullMDC() {
+        event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
+        assertEquals(new HashMap<String, String>(), event.getMDCPropertyMap());
+        final String discriminatorValue = discriminator.getDiscriminatingValue(event);
+        assertEquals(DEFAULT_VAL, discriminatorValue);
+    }
 }

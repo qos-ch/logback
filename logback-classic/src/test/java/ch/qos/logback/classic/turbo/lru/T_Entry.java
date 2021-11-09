@@ -15,33 +15,33 @@ package ch.qos.logback.classic.turbo.lru;
 
 public class T_Entry<K> implements Comparable<T_Entry<?>> {
 
-	K k;
-	long sequenceNumber;
+    K k;
+    long sequenceNumber;
 
-	T_Entry(final K k, final long sn) {
-		this.k = k;
-		this.sequenceNumber = sn;
-	}
+    T_Entry(final K k, final long sn) {
+        this.k = k;
+        this.sequenceNumber = sn;
+    }
 
-	@Override
-	public int compareTo(final T_Entry<?> o) {
-		if (!(o instanceof T_Entry)) {
-			throw new IllegalArgumentException("arguments must be of type " + T_Entry.class);
-		}
+    @Override
+    public int compareTo(final T_Entry<?> o) {
+        if (!(o instanceof T_Entry)) {
+            throw new IllegalArgumentException("arguments must be of type " + T_Entry.class);
+        }
 
-		final T_Entry<?> other = o;
-		if (sequenceNumber > other.sequenceNumber) {
-			return 1;
-		}
-		if (sequenceNumber == other.sequenceNumber) {
-			return 0;
-		}
-		return -1;
-	}
+        final T_Entry<?> other = o;
+        if (sequenceNumber > other.sequenceNumber) {
+            return 1;
+        }
+        if (sequenceNumber == other.sequenceNumber) {
+            return 0;
+        }
+        return -1;
+    }
 
-	@Override
-	public String toString() {
-		return "(" + k + "," + sequenceNumber + ")";
-		// return "("+k+")";
-	}
+    @Override
+    public String toString() {
+        return "(" + k + "," + sequenceNumber + ")";
+        // return "("+k+")";
+    }
 }

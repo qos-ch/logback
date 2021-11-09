@@ -39,53 +39,53 @@ import ch.qos.logback.classic.spi.LoggingEventVO;
  */
 public class RemoteAppenderStreamClientTest {
 
-	private MockAppender appender;
-	private Logger logger;
-	private LoggingEvent event;
-	private RemoteAppenderStreamClient client;
+    private MockAppender appender;
+    private Logger logger;
+    private LoggingEvent event;
+    private RemoteAppenderStreamClient client;
 
-	@Before
-	public void setUp() throws Exception {
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    @Before
+    public void setUp() throws Exception {
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-		appender = new MockAppender();
-		appender.start();
+        appender = new MockAppender();
+        appender.start();
 
-		logger = lc.getLogger(getClass());
-		logger.addAppender(appender);
+        logger = lc.getLogger(getClass());
+        logger.addAppender(appender);
 
-		event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
 
-		final LoggingEventVO eventVO = LoggingEventVO.build(event);
+        final LoggingEventVO eventVO = LoggingEventVO.build(event);
 
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		final ObjectOutputStream oos = new ObjectOutputStream(bos);
-		oos.writeObject(eventVO);
-		oos.close();
+        final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        final ObjectOutputStream oos = new ObjectOutputStream(bos);
+        oos.writeObject(eventVO);
+        oos.close();
 
-		final ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		client = new RemoteAppenderStreamClient("some client ID", bis);
-		client.setLoggerContext(lc);
-	}
+        final ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+        client = new RemoteAppenderStreamClient("some client ID", bis);
+        client.setLoggerContext(lc);
+    }
 
-	@Test
-	public void testWithEnabledLevel() throws Exception {
-		logger.setLevel(Level.DEBUG);
-		client.run();
-		client.close();
+    @Test
+    public void testWithEnabledLevel() throws Exception {
+        logger.setLevel(Level.DEBUG);
+        client.run();
+        client.close();
 
-		final ILoggingEvent rcvdEvent = appender.getLastEvent();
-		assertEquals(event.getLoggerName(), rcvdEvent.getLoggerName());
-		assertEquals(event.getLevel(), rcvdEvent.getLevel());
-		assertEquals(event.getMessage(), rcvdEvent.getMessage());
-	}
+        final ILoggingEvent rcvdEvent = appender.getLastEvent();
+        assertEquals(event.getLoggerName(), rcvdEvent.getLoggerName());
+        assertEquals(event.getLevel(), rcvdEvent.getLevel());
+        assertEquals(event.getMessage(), rcvdEvent.getMessage());
+    }
 
-	@Test
-	public void testWithDisabledLevel() throws Exception {
-		logger.setLevel(Level.INFO);
-		client.run();
-		client.close();
-		assertNull(appender.getLastEvent());
-	}
+    @Test
+    public void testWithDisabledLevel() throws Exception {
+        logger.setLevel(Level.INFO);
+        client.run();
+        client.close();
+        assertNull(appender.getLastEvent());
+    }
 
 }

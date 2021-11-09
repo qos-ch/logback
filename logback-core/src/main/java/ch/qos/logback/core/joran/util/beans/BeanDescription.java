@@ -15,57 +15,57 @@ import java.util.Map;
  */
 public class BeanDescription {
 
-	private final Class<?> clazz;
+    private final Class<?> clazz;
 
-	private final Map<String, Method> propertyNameToGetter;
+    private final Map<String, Method> propertyNameToGetter;
 
-	private final Map<String, Method> propertyNameToSetter;
+    private final Map<String, Method> propertyNameToSetter;
 
-	private final Map<String, Method> propertyNameToAdder;
+    private final Map<String, Method> propertyNameToAdder;
 
-	/**
-	 * Scope protected since only the {@link BeanDescriptionFactory} must create
-	 * BeanDescriptions in order to guarantee consistency between the given
-	 * parameters.
-	 *
-	 * @param clazz of the bean.
-	 * @param propertyNameToGetter map of property names to the associated getter.
-	 * @param propertyNameToSetter map of property names to the associated setter.
-	 * @param propertyNameToAdder map of property names to the associated adder.
-	 */
-	protected BeanDescription(final Class<?> clazz,final Map<String, Method> propertyNameToGetter,final Map<String, Method> propertyNameToSetter,final Map<String, Method> propertyNameToAdder) {
-		this.clazz = clazz;
-		this.propertyNameToGetter = Collections.unmodifiableMap(propertyNameToGetter);
-		this.propertyNameToSetter = Collections.unmodifiableMap(propertyNameToSetter);
-		this.propertyNameToAdder = Collections.unmodifiableMap(propertyNameToAdder);
-	}
+    /**
+     * Scope protected since only the {@link BeanDescriptionFactory} must create
+     * BeanDescriptions in order to guarantee consistency between the given
+     * parameters.
+     *
+     * @param clazz of the bean.
+     * @param propertyNameToGetter map of property names to the associated getter.
+     * @param propertyNameToSetter map of property names to the associated setter.
+     * @param propertyNameToAdder map of property names to the associated adder.
+     */
+    protected BeanDescription(final Class<?> clazz,final Map<String, Method> propertyNameToGetter,final Map<String, Method> propertyNameToSetter,final Map<String, Method> propertyNameToAdder) {
+        this.clazz = clazz;
+        this.propertyNameToGetter = Collections.unmodifiableMap(propertyNameToGetter);
+        this.propertyNameToSetter = Collections.unmodifiableMap(propertyNameToSetter);
+        this.propertyNameToAdder = Collections.unmodifiableMap(propertyNameToAdder);
+    }
 
-	public Class<?> getClazz() {
-		return clazz;
-	}
+    public Class<?> getClazz() {
+        return clazz;
+    }
 
-	public Map<String, Method> getPropertyNameToGetter() {
-		return propertyNameToGetter;
-	}
+    public Map<String, Method> getPropertyNameToGetter() {
+        return propertyNameToGetter;
+    }
 
-	public Map<String, Method> getPropertyNameToSetter() {
-		return propertyNameToSetter;
-	}
+    public Map<String, Method> getPropertyNameToSetter() {
+        return propertyNameToSetter;
+    }
 
-	public Method getGetter(final String propertyName) {
-		return propertyNameToGetter.get(propertyName);
-	}
+    public Method getGetter(final String propertyName) {
+        return propertyNameToGetter.get(propertyName);
+    }
 
-	public Method getSetter(final String propertyName) {
-		return propertyNameToSetter.get(propertyName);
-	}
+    public Method getSetter(final String propertyName) {
+        return propertyNameToSetter.get(propertyName);
+    }
 
-	public Map<String, Method> getPropertyNameToAdder() {
-		return propertyNameToAdder;
-	}
+    public Map<String, Method> getPropertyNameToAdder() {
+        return propertyNameToAdder;
+    }
 
-	public Method getAdder(final String propertyName) {
-		return propertyNameToAdder.get(propertyName);
-	}
+    public Method getAdder(final String propertyName) {
+        return propertyNameToAdder.get(propertyName);
+    }
 
 }

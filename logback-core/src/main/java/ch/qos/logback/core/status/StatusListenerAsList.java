@@ -24,15 +24,15 @@ import java.util.List;
  */
 public class StatusListenerAsList implements StatusListener {
 
-	List<Status> statusList = new ArrayList<>();
+    List<Status> statusList = new ArrayList<>();
 
-	@Override
-	public void addStatusEvent(final Status status) {
-		statusList.add(status);
-	}
+    @Override
+    public void addStatusEvent(final Status status) {
+        statusList.add(status);
+    }
 
-	public List<Status> getStatusList() {
-		return statusList;
-	}
+    public List<Status> getStatusList() {
+        return statusList;
+    }
 
 }

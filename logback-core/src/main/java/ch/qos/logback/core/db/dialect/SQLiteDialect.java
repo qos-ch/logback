@@ -22,10 +22,10 @@ package ch.qos.logback.core.db.dialect;
  * @author Anthony Trinh
  */
 public class SQLiteDialect implements SQLDialect {
-	public static final String SELECT_CURRVAL = "SELECT last_insert_rowid();";
+    public static final String SELECT_CURRVAL = "SELECT last_insert_rowid();";
 
-	@Override
-	public String getSelectInsertId() {
-		return SELECT_CURRVAL;
-	}
+    @Override
+    public String getSelectInsertId() {
+        return SELECT_CURRVAL;
+    }
 }

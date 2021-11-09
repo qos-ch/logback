@@ -23,43 +23,43 @@ import ch.qos.logback.core.joran.event.StartEvent;
 
 public class EventPlayer {
 
-	final SaxEventInterpreter interpreter;
-	List<SaxEvent> eventList;
-	int currentIndex;
+    final SaxEventInterpreter interpreter;
+    List<SaxEvent> eventList;
+    int currentIndex;
 
-	public EventPlayer(final SaxEventInterpreter interpreter) {
-		this.interpreter = interpreter;
-	}
+    public EventPlayer(final SaxEventInterpreter interpreter) {
+        this.interpreter = interpreter;
+    }
 
-	/**
-	 * Return a copy of the current event list in the player.
-	 * @return
-	 * @since 0.9.20
-	 */
-	public List<SaxEvent> getCopyOfPlayerEventList() {
-		return new ArrayList<>(eventList);
-	}
+    /**
+     * Return a copy of the current event list in the player.
+     * @return
+     * @since 0.9.20
+     */
+    public List<SaxEvent> getCopyOfPlayerEventList() {
+        return new ArrayList<>(eventList);
+    }
 
-	public void play(final List<SaxEvent> aSaxEventList) {
-		eventList = aSaxEventList;
-		SaxEvent se;
-		for (currentIndex = 0; currentIndex < eventList.size(); currentIndex++) {
-			se = eventList.get(currentIndex);
+    public void play(final List<SaxEvent> aSaxEventList) {
+        eventList = aSaxEventList;
+        SaxEvent se;
+        for (currentIndex = 0; currentIndex < eventList.size(); currentIndex++) {
+            se = eventList.get(currentIndex);
 
-			if (se instanceof StartEvent) {
-				interpreter.startElement((StartEvent) se);
-			}
-			if (se instanceof BodyEvent) {
-				interpreter.characters((BodyEvent) se);
-			}
-			if (se instanceof EndEvent) {
-				interpreter.endElement((EndEvent) se);
-			}
+            if (se instanceof StartEvent) {
+                interpreter.startElement((StartEvent) se);
+            }
+            if (se instanceof BodyEvent) {
+                interpreter.characters((BodyEvent) se);
+            }
+            if (se instanceof EndEvent) {
+                interpreter.endElement((EndEvent) se);
+            }
 
-		}
-	}
+        }
+    }
 
-	public void addEventsDynamically(final List<SaxEvent> eventList, final int offset) {
-		this.eventList.addAll(currentIndex + offset, eventList);
-	}
+    public void addEventsDynamically(final List<SaxEvent> eventList, final int offset) {
+        this.eventList.addAll(currentIndex + offset, eventList);
+    }
 }

@@ -33,230 +33,230 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
-	private SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = null;
-	private final RollingFileAppender<Object> rfa1 = new RollingFileAppender<>();
-	private final TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<>();
-	private final RollingFileAppender<Object> rfa2 = new RollingFileAppender<>();
-	private final TimeBasedRollingPolicy<Object> tbrp2 = new TimeBasedRollingPolicy<>();
+    private SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = null;
+    private final RollingFileAppender<Object> rfa1 = new RollingFileAppender<>();
+    private final TimeBasedRollingPolicy<Object> tbrp1 = new TimeBasedRollingPolicy<>();
+    private final RollingFileAppender<Object> rfa2 = new RollingFileAppender<>();
+    private final TimeBasedRollingPolicy<Object> tbrp2 = new TimeBasedRollingPolicy<>();
 
-	private final EchoEncoder<Object> encoder = new EchoEncoder<>();
-	int fileSize = 0;
-	int fileIndexCounter = 0;
-	int sizeThreshold = 0;
+    private final EchoEncoder<Object> encoder = new EchoEncoder<>();
+    int fileSize = 0;
+    int fileIndexCounter = 0;
+    int sizeThreshold = 0;
 
-	@Override
-	@Before
-	public void setUp() {
-		super.setUp();
-	}
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+    }
 
-	private void initRollingFileAppender(final RollingFileAppender<Object> rfa, final String filename) {
-		rfa.setContext(context);
-		rfa.setEncoder(encoder);
-		if (filename != null) {
-			rfa.setFile(filename);
-		}
-	}
+    private void initRollingFileAppender(final RollingFileAppender<Object> rfa, final String filename) {
+        rfa.setContext(context);
+        rfa.setEncoder(encoder);
+        if (filename != null) {
+            rfa.setFile(filename);
+        }
+    }
 
-	private void initPolicies(final RollingFileAppender<Object> rfa, final TimeBasedRollingPolicy<Object> tbrp, final String filenamePattern, final int sizeThreshold, final long givenTime,
-			final long lastCheck) {
-		sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<>();
-		tbrp.setContext(context);
-		sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
-		tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
-		tbrp.setFileNamePattern(filenamePattern);
-		tbrp.setParent(rfa);
-		tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime);
-		rfa.setRollingPolicy(tbrp);
-		tbrp.start();
-		rfa.start();
-	}
+    private void initPolicies(final RollingFileAppender<Object> rfa, final TimeBasedRollingPolicy<Object> tbrp, final String filenamePattern, final int sizeThreshold, final long givenTime,
+                    final long lastCheck) {
+        sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<>();
+        tbrp.setContext(context);
+        sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
+        tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);
+        tbrp.setFileNamePattern(filenamePattern);
+        tbrp.setParent(rfa);
+        tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime);
+        rfa.setRollingPolicy(tbrp);
+        tbrp.start();
+        rfa.start();
+    }
 
-	private void addExpectedFileNamedIfItsTime(final String randomOutputDir, final String testId, final String msg, final String compressionSuffix) {
-		fileSize = fileSize + msg.getBytes().length;
-		if (passThresholdTime(nextRolloverThreshold)) {
-			fileIndexCounter = 0;
-			fileSize = 0;
-			addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
-			recomputeRolloverThreshold(currentTime);
-			return;
-		}
+    private void addExpectedFileNamedIfItsTime(final String randomOutputDir, final String testId, final String msg, final String compressionSuffix) {
+        fileSize = fileSize + msg.getBytes().length;
+        if (passThresholdTime(nextRolloverThreshold)) {
+            fileIndexCounter = 0;
+            fileSize = 0;
+            addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
+            recomputeRolloverThreshold(currentTime);
+            return;
+        }
 
-		// windows can delay file size changes, so we only allow for fileIndexCounter 0
-		if (fileIndexCounter == 0 && fileSize > sizeThreshold) {
-			addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
-			fileIndexCounter = fileIndexCounter + 1;
-			fileSize = 0;
-		}
-	}
+        // windows can delay file size changes, so we only allow for fileIndexCounter 0
+        if (fileIndexCounter == 0 && fileSize > sizeThreshold) {
+            addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
+            fileIndexCounter = fileIndexCounter + 1;
+            fileSize = 0;
+        }
+    }
 
-	void generic(final String testId, final UnaryOperator<String> filenameFunction, final boolean withSecondPhase, final String compressionSuffix) throws IOException, InterruptedException, ExecutionException {
-		final String file = filenameFunction.apply(testId);
-		initRollingFileAppender(rfa1, file);
-		sizeThreshold = 300;
+    void generic(final String testId, final UnaryOperator<String> filenameFunction, final boolean withSecondPhase, final String compressionSuffix) throws IOException, InterruptedException, ExecutionException {
+        final String file = filenameFunction.apply(testId);
+        initRollingFileAppender(rfa1, file);
+        sizeThreshold = 300;
 
-		initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
-		addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
-		incCurrentTime(100);
-		tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-		int runLength = 100;
-		final String prefix = "Hello -----------------";
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+        addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
+        incCurrentTime(100);
+        tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+        int runLength = 100;
+        final String prefix = "Hello -----------------";
 
-		for (int i = 0; i < runLength; i++) {
-			final String msg = prefix + i;
-			rfa1.doAppend(msg);
-			addExpectedFileNamedIfItsTime(randomOutputDir, testId, msg, compressionSuffix);
-			incCurrentTime(20);
-			tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-			add(tbrp1.compressionFuture);
-			add(tbrp1.cleanUpFuture);
-		}
+        for (int i = 0; i < runLength; i++) {
+            final String msg = prefix + i;
+            rfa1.doAppend(msg);
+            addExpectedFileNamedIfItsTime(randomOutputDir, testId, msg, compressionSuffix);
+            incCurrentTime(20);
+            tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+            add(tbrp1.compressionFuture);
+            add(tbrp1.cleanUpFuture);
+        }
 
-		if (withSecondPhase) {
-			secondPhase(testId, filenameFunction, compressionSuffix, runLength, prefix);
-			runLength = runLength * 2;
-		}
+        if (withSecondPhase) {
+            secondPhase(testId, filenameFunction, compressionSuffix, runLength, prefix);
+            runLength = runLength * 2;
+        }
 
-		if (file != null) {
-			massageExpectedFilesToCorresponToCurrentTarget(testId, this::testId2FileName);
-		}
+        if (file != null) {
+            massageExpectedFilesToCorresponToCurrentTarget(testId, this::testId2FileName);
+        }
 
-		Thread.yield();
-		// wait for compression to finish
-		waitForJobsToComplete();
+        Thread.yield();
+        // wait for compression to finish
+        waitForJobsToComplete();
 
-		// StatusPrinter.print(context);
-		existenceCheck(expectedFilenameList);
-		sortedContentCheck(randomOutputDir, runLength, prefix);
-	}
+        // StatusPrinter.print(context);
+        existenceCheck(expectedFilenameList);
+        sortedContentCheck(randomOutputDir, runLength, prefix);
+    }
 
-	void secondPhase(final String testId, final UnaryOperator<String> filenameFunction, final String compressionSuffix, final int runLength, final String prefix) {
-		rfa1.stop();
+    void secondPhase(final String testId, final UnaryOperator<String> filenameFunction, final String compressionSuffix, final int runLength, final String prefix) {
+        rfa1.stop();
 
-		final String filename = filenameFunction.apply(testId);
-		if (filename != null) {
-			final File f = new File(filename);
-			f.setLastModified(currentTime);
-		}
+        final String filename = filenameFunction.apply(testId);
+        if (filename != null) {
+            final File f = new File(filename);
+            f.setLastModified(currentTime);
+        }
 
-		final StatusManager sm = context.getStatusManager();
-		sm.add(new InfoStatus("Time when rfa1 is stopped: " + new Date(currentTime), this));
-		sm.add(new InfoStatus("currentTime%1000=" + currentTime % 1000, this));
+        final StatusManager sm = context.getStatusManager();
+        sm.add(new InfoStatus("Time when rfa1 is stopped: " + new Date(currentTime), this));
+        sm.add(new InfoStatus("currentTime%1000=" + currentTime % 1000, this));
 
-		initRollingFileAppender(rfa2, filename);
-		initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+        initRollingFileAppender(rfa2, filename);
+        initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
 
-		for (int i = runLength; i < runLength * 2; i++) {
-			incCurrentTime(100);
-			tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-			final String msg = prefix + i;
-			rfa2.doAppend(msg);
-			addExpectedFileNamedIfItsTime(randomOutputDir, testId, msg, compressionSuffix);
-		}
-	}
+        for (int i = runLength; i < runLength * 2; i++) {
+            incCurrentTime(100);
+            tbrp2.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+            final String msg = prefix + i;
+            rfa2.doAppend(msg);
+            addExpectedFileNamedIfItsTime(randomOutputDir, testId, msg, compressionSuffix);
+        }
+    }
 
-	static final boolean FIRST_PHASE_ONLY = false;
-	static final boolean WITH_SECOND_PHASE = true;
-	static final String DEFAULT_COMPRESSION_SUFFIX = "";
+    static final boolean FIRST_PHASE_ONLY = false;
+    static final boolean WITH_SECOND_PHASE = true;
+    static final String DEFAULT_COMPRESSION_SUFFIX = "";
 
-	@Test
-	public void noCompression_FileSet_NoRestart_1() throws InterruptedException, ExecutionException, IOException {
-		generic("test1", this::testId2FileName, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
-	}
+    @Test
+    public void noCompression_FileSet_NoRestart_1() throws InterruptedException, ExecutionException, IOException {
+        generic("test1", this::testId2FileName, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
+    }
 
-	@Test
-	public void noCompression_FileBlank_NoRestart_2() throws Exception {
-		generic("test2", this::nullFileName, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
-	}
+    @Test
+    public void noCompression_FileBlank_NoRestart_2() throws Exception {
+        generic("test2", this::nullFileName, FIRST_PHASE_ONLY, DEFAULT_COMPRESSION_SUFFIX);
+    }
 
-	@Test
-	public void noCompression_FileBlank_WithStopStart_3() throws Exception {
-		generic("test3", this::nullFileName, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
-	}
+    @Test
+    public void noCompression_FileBlank_WithStopStart_3() throws Exception {
+        generic("test3", this::nullFileName, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
+    }
 
-	@Test
-	public void noCompression_FileSet_WithStopStart_4() throws Exception {
-		generic("test4", this::testId2FileName, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
-	}
+    @Test
+    public void noCompression_FileSet_WithStopStart_4() throws Exception {
+        generic("test4", this::testId2FileName, WITH_SECOND_PHASE, DEFAULT_COMPRESSION_SUFFIX);
+    }
 
-	@Test
-	public void withGZCompression_FileSet_NoRestart_5() throws Exception {
-		generic("test5", this::testId2FileName, FIRST_PHASE_ONLY, ".gz");
-	}
+    @Test
+    public void withGZCompression_FileSet_NoRestart_5() throws Exception {
+        generic("test5", this::testId2FileName, FIRST_PHASE_ONLY, ".gz");
+    }
 
-	@Test
-	public void withGZCompression_FileBlank_NoRestart_6() throws Exception {
-		generic("test6", this::nullFileName, FIRST_PHASE_ONLY, ".gz");
-	}
+    @Test
+    public void withGZCompression_FileBlank_NoRestart_6() throws Exception {
+        generic("test6", this::nullFileName, FIRST_PHASE_ONLY, ".gz");
+    }
 
-	@Test
-	public void withZipCompression_FileSet_NoRestart_7() throws Exception {
-		generic("test7", this::testId2FileName, FIRST_PHASE_ONLY, ".zip");
-		final List<String> zipFiles = filterElementsInListBySuffix(".zip");
-		checkZipEntryMatchesZipFilename(zipFiles);
-	}
+    @Test
+    public void withZipCompression_FileSet_NoRestart_7() throws Exception {
+        generic("test7", this::testId2FileName, FIRST_PHASE_ONLY, ".zip");
+        final List<String> zipFiles = filterElementsInListBySuffix(".zip");
+        checkZipEntryMatchesZipFilename(zipFiles);
+    }
 
-	@Test
-	public void checkMissingIntToken() {
-		final String stem = "toto.log";
-		final String testId = "checkMissingIntToken";
-		final String compressionSuffix = "gz";
+    @Test
+    public void checkMissingIntToken() {
+        final String stem = "toto.log";
+        final String testId = "checkMissingIntToken";
+        final String compressionSuffix = "gz";
 
-		final String file = stem != null ? randomOutputDir + stem : null;
-		initRollingFileAppender(rfa1, file);
-		sizeThreshold = 300;
-		initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+        final String file = stem != null ? randomOutputDir + stem : null;
+        initRollingFileAppender(rfa1, file);
+        sizeThreshold = 300;
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
 
-		// StatusPrinter.print(context);
-		assertFalse(rfa1.isStarted());
-		final StatusChecker checker = new StatusChecker(context);
-		checker.assertContainsMatch("Missing integer token");
-	}
+        // StatusPrinter.print(context);
+        assertFalse(rfa1.isStarted());
+        final StatusChecker checker = new StatusChecker(context);
+        checker.assertContainsMatch("Missing integer token");
+    }
 
-	@Test
-	public void checkDateCollision() {
-		final String stem = "toto.log";
-		final String testId = "checkDateCollision";
-		final String compressionSuffix = "gz";
+    @Test
+    public void checkDateCollision() {
+        final String stem = "toto.log";
+        final String testId = "checkDateCollision";
+        final String compressionSuffix = "gz";
 
-		final String file = stem != null ? randomOutputDir + stem : null;
-		initRollingFileAppender(rfa1, file);
-		sizeThreshold = 300;
-		initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{EE}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+        final String file = stem != null ? randomOutputDir + stem : null;
+        initRollingFileAppender(rfa1, file);
+        sizeThreshold = 300;
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{EE}.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
 
-		// StatusPrinter.print(context);
-		assertFalse(rfa1.isStarted());
-		final StatusChecker checker = new StatusChecker(context);
-		checker.assertContainsMatch("The date format in FileNamePattern");
-	}
+        // StatusPrinter.print(context);
+        assertFalse(rfa1.isStarted());
+        final StatusChecker checker = new StatusChecker(context);
+        checker.assertContainsMatch("The date format in FileNamePattern");
+    }
 
-	// @Test
-	// public void testHistoryAsFileCount() throws IOException {
-	// String testId = "testHistoryAsFileCount";
-	// int maxHistory = 10;
-	// initRollingFileAppender(rfa1, randomOutputDir + "~" + testId);
-	// sizeThreshold = 50;
-	// System.out.println("testHistoryAsFileCount started on "+new Date(currentTime));
-	// initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt",
-	// sizeThreshold, currentTime, 0, maxHistory, true);
-	//
-	// incCurrentTime(100);
-	// tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-	// int runLength = 1000;
-	//
-	// for (int i = 0; i < runLength; i++) {
-	// String msg = "" + i;
-	// rfa1.doAppend(msg);
-	// incCurrentTime(20);
-	// tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
-	// add(tbrp1.future);
-	// }
-	//
-	// Thread.yield();
-	// // wait for compression to finish
-	// waitForJobsToComplete();
-	//
-	// assertEquals(maxHistory + 1, getFilesInDirectory(randomOutputDir).length);
-	// sortedContentCheck(randomOutputDir, 1000, "", 863);
-	// }
+    // @Test
+    // public void testHistoryAsFileCount() throws IOException {
+    // String testId = "testHistoryAsFileCount";
+    // int maxHistory = 10;
+    // initRollingFileAppender(rfa1, randomOutputDir + "~" + testId);
+    // sizeThreshold = 50;
+    // System.out.println("testHistoryAsFileCount started on "+new Date(currentTime));
+    // initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt",
+    // sizeThreshold, currentTime, 0, maxHistory, true);
+    //
+    // incCurrentTime(100);
+    // tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+    // int runLength = 1000;
+    //
+    // for (int i = 0; i < runLength; i++) {
+    // String msg = "" + i;
+    // rfa1.doAppend(msg);
+    // incCurrentTime(20);
+    // tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
+    // add(tbrp1.future);
+    // }
+    //
+    // Thread.yield();
+    // // wait for compression to finish
+    // waitForJobsToComplete();
+    //
+    // assertEquals(maxHistory + 1, getFilesInDirectory(randomOutputDir).length);
+    // sortedContentCheck(randomOutputDir, 1000, "", 863);
+    // }
 }

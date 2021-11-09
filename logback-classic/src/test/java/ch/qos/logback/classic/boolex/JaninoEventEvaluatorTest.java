@@ -41,231 +41,231 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class JaninoEventEvaluatorTest {
 
-	LoggerContext loggerContext = new LoggerContext();
-	Logger logger = loggerContext.getLogger(ConverterTest.class);
+    LoggerContext loggerContext = new LoggerContext();
+    Logger logger = loggerContext.getLogger(ConverterTest.class);
 
-	Matcher matcherX = new Matcher();
+    Matcher matcherX = new Matcher();
 
-	JaninoEventEvaluator jee = new JaninoEventEvaluator();
+    JaninoEventEvaluator jee = new JaninoEventEvaluator();
 
-	int diff = RandomUtil.getPositiveInt();
+    int diff = RandomUtil.getPositiveInt();
 
-	public JaninoEventEvaluatorTest() {
-		jee.setContext(loggerContext);
+    public JaninoEventEvaluatorTest() {
+        jee.setContext(loggerContext);
 
-		matcherX.setName("x");
-		matcherX.setRegex("^Some\\s.*");
-		matcherX.start();
+        matcherX.setName("x");
+        matcherX.setRegex("^Some\\s.*");
+        matcherX.start();
 
-	}
+    }
 
-	LoggingEvent makeLoggingEvent(final Exception ex) {
-		return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, "Some message", ex, null);
-	}
+    LoggingEvent makeLoggingEvent(final Exception ex) {
+        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, "Some message", ex, null);
+    }
 
-	@Test
-	public void testBasic() throws Exception {
-		jee.setExpression("message.equals(\"Some message\")");
-		jee.start();
+    @Test
+    public void testBasic() throws Exception {
+        jee.setExpression("message.equals(\"Some message\")");
+        jee.start();
 
-		StatusPrinter.print(loggerContext);
-		final ILoggingEvent event = makeLoggingEvent(null);
-		assertTrue(jee.evaluate(event));
-	}
+        StatusPrinter.print(loggerContext);
+        final ILoggingEvent event = makeLoggingEvent(null);
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Test
-	public void testLevel() throws Exception {
-		jee.setExpression("level > DEBUG");
-		jee.start();
+    @Test
+    public void testLevel() throws Exception {
+        jee.setExpression("level > DEBUG");
+        jee.start();
 
-		final ILoggingEvent event = makeLoggingEvent(null);
-		assertTrue(jee.evaluate(event));
-	}
+        final ILoggingEvent event = makeLoggingEvent(null);
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Test
-	public void testtimeStamp() throws Exception {
-		jee.setExpression("timeStamp > 10");
-		jee.start();
+    @Test
+    public void testtimeStamp() throws Exception {
+        jee.setExpression("timeStamp > 10");
+        jee.start();
 
-		final ILoggingEvent event = makeLoggingEvent(null);
-		assertTrue(jee.evaluate(event));
-	}
+        final ILoggingEvent event = makeLoggingEvent(null);
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Test
-	public void testWithMatcher() throws Exception {
-		jee.setExpression("x.matches(message)");
-		jee.addMatcher(matcherX);
-		jee.start();
+    @Test
+    public void testWithMatcher() throws Exception {
+        jee.setExpression("x.matches(message)");
+        jee.addMatcher(matcherX);
+        jee.start();
 
-		final ILoggingEvent event = makeLoggingEvent(null);
-		assertTrue(jee.evaluate(event));
-	}
+        final ILoggingEvent event = makeLoggingEvent(null);
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Test
-	public void mdcAsString() throws Exception {
-		final String k = "key" + diff;
+    @Test
+    public void mdcAsString() throws Exception {
+        final String k = "key" + diff;
 
-		MDC.put("key" + diff, "value" + diff);
-		jee.setExpression("((String) mdc.get(\"" + k + "\")).contains(\"alue\")");
-		jee.start();
-		StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+        MDC.put("key" + diff, "value" + diff);
+        jee.setExpression("((String) mdc.get(\"" + k + "\")).contains(\"alue\")");
+        jee.start();
+        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
-		final LoggingEvent event = makeLoggingEvent(null);
-		assertTrue(jee.evaluate(event));
-		MDC.remove(k);
-	}
+        final LoggingEvent event = makeLoggingEvent(null);
+        assertTrue(jee.evaluate(event));
+        MDC.remove(k);
+    }
 
-	@Ignore
-	@Test
-	public void marker() throws Exception {
-		jee.setExpression("markerList.stream().anyMatch( m -> m.contains(\"BLUE\"))");
-		jee.start();
+    @Ignore
+    @Test
+    public void marker() throws Exception {
+        jee.setExpression("markerList.stream().anyMatch( m -> m.contains(\"BLUE\"))");
+        jee.start();
 
-		final LoggingEvent event = makeLoggingEvent(null);
-		event.addMarker(MarkerFactory.getMarker("BLUE"));
-		StatusPrinter.print(loggerContext);
-		assertTrue(jee.evaluate(event));
-	}
+        final LoggingEvent event = makeLoggingEvent(null);
+        event.addMarker(MarkerFactory.getMarker("BLUE"));
+        StatusPrinter.print(loggerContext);
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Ignore
-	@Test
-	public void withNullMarker_LBCORE_118() throws Exception {
-		jee.setExpression("markerList.contains(\"BLUE\")");
-		jee.start();
+    @Ignore
+    @Test
+    public void withNullMarker_LBCORE_118() throws Exception {
+        jee.setExpression("markerList.contains(\"BLUE\")");
+        jee.start();
 
-		final ILoggingEvent event = makeLoggingEvent(null);
-		try {
-			jee.evaluate(event);
-			fail("We should not reach this point");
-		} catch (final EvaluationException ee) {
-			// received an exception as expected
-		}
-	}
+        final ILoggingEvent event = makeLoggingEvent(null);
+        try {
+            jee.evaluate(event);
+            fail("We should not reach this point");
+        } catch (final EvaluationException ee) {
+            // received an exception as expected
+        }
+    }
 
-	@Test
-	public void evaluatorFilterWithNullMarker_LBCORE_118() throws Exception {
-		final EvaluatorFilter<ILoggingEvent> ef = new EvaluatorFilter<>();
-		ef.setContext(loggerContext);
+    @Test
+    public void evaluatorFilterWithNullMarker_LBCORE_118() throws Exception {
+        final EvaluatorFilter<ILoggingEvent> ef = new EvaluatorFilter<>();
+        ef.setContext(loggerContext);
 
-		ef.setOnMatch(FilterReply.ACCEPT);
-		ef.setOnMismatch(FilterReply.DENY);
+        ef.setOnMatch(FilterReply.ACCEPT);
+        ef.setOnMismatch(FilterReply.DENY);
 
-		jee.setExpression("marker.contains(\"BLUE\")");
-		jee.start();
+        jee.setExpression("marker.contains(\"BLUE\")");
+        jee.start();
 
-		ef.setEvaluator(jee);
-		ef.start();
-		final ILoggingEvent event = makeLoggingEvent(null);
-		assertEquals(FilterReply.NEUTRAL, ef.decide(event));
+        ef.setEvaluator(jee);
+        ef.start();
+        final ILoggingEvent event = makeLoggingEvent(null);
+        assertEquals(FilterReply.NEUTRAL, ef.decide(event));
 
-	}
+    }
 
-	@Test
-	public void testComplex() throws Exception {
-		jee.setExpression("level >= INFO && x.matches(message)");
-		jee.addMatcher(matcherX);
-		jee.start();
+    @Test
+    public void testComplex() throws Exception {
+        jee.setExpression("level >= INFO && x.matches(message)");
+        jee.addMatcher(matcherX);
+        jee.start();
 
-		final LoggingEvent event = makeLoggingEvent(null);
-		event.addMarker(MarkerFactory.getMarker("BLUE"));
-		assertTrue(jee.evaluate(event));
-	}
+        final LoggingEvent event = makeLoggingEvent(null);
+        event.addMarker(MarkerFactory.getMarker("BLUE"));
+        assertTrue(jee.evaluate(event));
+    }
 
-	/**
-	 * check that evaluator with bogus exp does not start
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void testBogusExp1() {
-		jee.setExpression("mzzzz.get(\"key\").equals(null)");
-		jee.setName("bogus");
-		jee.start();
+    /**
+     * check that evaluator with bogus exp does not start
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testBogusExp1() {
+        jee.setExpression("mzzzz.get(\"key\").equals(null)");
+        jee.setName("bogus");
+        jee.start();
 
-		assertFalse(jee.isStarted());
-	}
+        assertFalse(jee.isStarted());
+    }
 
-	// check that eval stops after errors
-	@Test
-	public void testBogusExp2() {
-		jee.setExpression("mdc.get(\"keyXN89\").equals(null)");
-		jee.setName("bogus");
-		jee.start();
+    // check that eval stops after errors
+    @Test
+    public void testBogusExp2() {
+        jee.setExpression("mdc.get(\"keyXN89\").equals(null)");
+        jee.setName("bogus");
+        jee.start();
 
-		assertTrue(jee.isStarted());
+        assertTrue(jee.isStarted());
 
-		final ILoggingEvent event = makeLoggingEvent(null);
+        final ILoggingEvent event = makeLoggingEvent(null);
 
-		for (int i = 0; i < JaninoEventEvaluatorBase.ERROR_THRESHOLD; i++) {
-			try {
-				jee.evaluate(event);
-				fail("should throw an exception");
-			} catch (final EvaluationException e) {
-			}
-		}
-		// after a few attempts the evaluator should processPriorToRemoval
-		assertFalse(jee.isStarted());
+        for (int i = 0; i < JaninoEventEvaluatorBase.ERROR_THRESHOLD; i++) {
+            try {
+                jee.evaluate(event);
+                fail("should throw an exception");
+            } catch (final EvaluationException e) {
+            }
+        }
+        // after a few attempts the evaluator should processPriorToRemoval
+        assertFalse(jee.isStarted());
 
-	}
+    }
 
-	static final long LEN = 10 * 1000;
+    static final long LEN = 10 * 1000;
 
-	// with 6 parameters 400 nanos
-	// with 7 parameters 460 nanos (all levels + selected fields from
-	// LoggingEvent)
-	// with 10 parameters 510 nanos (all levels + fields)
-	void loop(final JaninoEventEvaluator jee, final String msg) throws Exception {
-		final ILoggingEvent event = makeLoggingEvent(null);
-		// final long start = System.nanoTime();
-		for (int i = 0; i < LEN; i++) {
-			jee.evaluate(event);
-		}
-		// final long end = System.nanoTime();
-		// System.out.println(msg + (end - start) / LEN + " nanos");
-	}
+    // with 6 parameters 400 nanos
+    // with 7 parameters 460 nanos (all levels + selected fields from
+    // LoggingEvent)
+    // with 10 parameters 510 nanos (all levels + fields)
+    void loop(final JaninoEventEvaluator jee, final String msg) throws Exception {
+        final ILoggingEvent event = makeLoggingEvent(null);
+        // final long start = System.nanoTime();
+        for (int i = 0; i < LEN; i++) {
+            jee.evaluate(event);
+        }
+        // final long end = System.nanoTime();
+        // System.out.println(msg + (end - start) / LEN + " nanos");
+    }
 
-	@Test
-	public void testLoop1() throws Exception {
-		jee.setExpression("timeStamp > 10");
-		jee.start();
+    @Test
+    public void testLoop1() throws Exception {
+        jee.setExpression("timeStamp > 10");
+        jee.start();
 
-		loop(jee, "timestamp > 10]: ");
-	}
+        loop(jee, "timestamp > 10]: ");
+    }
 
-	@Test
-	public void testLoop2() throws Exception {
-		jee.setExpression("x.matches(message)");
-		jee.addMatcher(matcherX);
-		jee.start();
+    @Test
+    public void testLoop2() throws Exception {
+        jee.setExpression("x.matches(message)");
+        jee.addMatcher(matcherX);
+        jee.start();
 
-		loop(jee, "x.matches(message): ");
-	}
+        loop(jee, "x.matches(message): ");
+    }
 
-	@Test
-	public void throwable_LBCLASSIC_155_I() throws EvaluationException {
-		jee.setExpression("throwable instanceof java.io.IOException");
-		jee.start();
+    @Test
+    public void throwable_LBCLASSIC_155_I() throws EvaluationException {
+        jee.setExpression("throwable instanceof java.io.IOException");
+        jee.start();
 
-		final LoggingEvent event = makeLoggingEvent(new IOException(""));
-		assertTrue(jee.evaluate(event));
-	}
+        final LoggingEvent event = makeLoggingEvent(new IOException(""));
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Test
-	public void throwable_LBCLASSIC_155_II() throws EvaluationException {
-		jee.setExpression("throwableProxy.getClassName().contains(\"IO\")");
-		jee.start();
+    @Test
+    public void throwable_LBCLASSIC_155_II() throws EvaluationException {
+        jee.setExpression("throwableProxy.getClassName().contains(\"IO\")");
+        jee.start();
 
-		final LoggingEvent event = makeLoggingEvent(new IOException(""));
-		assertTrue(jee.evaluate(event));
-	}
+        final LoggingEvent event = makeLoggingEvent(new IOException(""));
+        assertTrue(jee.evaluate(event));
+    }
 
-	@Test
-	public void nullMDC() throws EvaluationException {
-		MDC.clear();
-		jee.setExpression("mdc.isEmpty()");
-		jee.start();
+    @Test
+    public void nullMDC() throws EvaluationException {
+        MDC.clear();
+        jee.setExpression("mdc.isEmpty()");
+        jee.start();
 
-		final LoggingEvent event = makeLoggingEvent(null);
-		assertTrue(jee.evaluate(event));
-	}
+        final LoggingEvent event = makeLoggingEvent(null);
+        assertTrue(jee.evaluate(event));
+    }
 }

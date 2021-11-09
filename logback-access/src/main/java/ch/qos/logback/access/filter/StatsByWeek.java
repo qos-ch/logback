@@ -17,16 +17,16 @@ import ch.qos.logback.core.util.TimeUtil;
 
 public class StatsByWeek extends PeriodicStats {
 
-	StatsByWeek() {
-	}
+    StatsByWeek() {
+    }
 
-	StatsByWeek(final long now) {
-		super(now);
-	}
+    StatsByWeek(final long now) {
+        super(now);
+    }
 
-	@Override
-	long computeStartOfNextPeriod(final long now) {
-		return TimeUtil.computeStartOfNextWeek(now);
-	}
+    @Override
+    long computeStartOfNextPeriod(final long now) {
+        return TimeUtil.computeStartOfNextWeek(now);
+    }
 
 }

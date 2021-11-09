@@ -24,51 +24,51 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public class URLEvaluator extends ContextAwareBase implements EventEvaluator<IAccessEvent>, LifeCycle {
 
-	boolean started;
-	String name;
-	private final List<String> URLList = new ArrayList<>();
+    boolean started;
+    String name;
+    private final List<String> URLList = new ArrayList<>();
 
-	public void addURL(final String url) {
-		URLList.add(url);
-	}
+    public void addURL(final String url) {
+        URLList.add(url);
+    }
 
-	@Override
-	public void start() {
-		if (URLList.size() == 0) {
-			addWarn("No URL was given to URLEvaluator");
-		} else {
-			started = true;
-		}
-	}
+    @Override
+    public void start() {
+        if (URLList.size() == 0) {
+            addWarn("No URL was given to URLEvaluator");
+        } else {
+            started = true;
+        }
+    }
 
-	@Override
-	public boolean evaluate(final IAccessEvent event) throws NullPointerException, EvaluationException {
-		final String url = event.getRequestURL();
-		for (final String expected : URLList) {
-			if (url.contains(expected)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean evaluate(final IAccessEvent event) throws NullPointerException, EvaluationException {
+        final String url = event.getRequestURL();
+        for (final String expected : URLList) {
+            if (url.contains(expected)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public void setName(final String name) {
-		this.name = name;
-	}
+    @Override
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public void stop() {
-		started = false;
-	}
+    @Override
+    public void stop() {
+        started = false;
+    }
 }

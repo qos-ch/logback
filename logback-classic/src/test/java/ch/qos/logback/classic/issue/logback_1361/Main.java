@@ -7,38 +7,38 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 
 public class Main {
-	private static Logger logger = LoggerFactory.getLogger(Main.class);
+    private static Logger logger = LoggerFactory.getLogger(Main.class);
 
-	private static String ONE_KB_STRING;
+    private static String ONE_KB_STRING;
 
-	public static void main(final String[] args) throws Exception {
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		lc.reset();
-		lc.putProperty("output_dir", ClassicTestConstants.OUTPUT_DIR_PREFIX+"logback_issue_1361/");
+    public static void main(final String[] args) throws Exception {
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        lc.reset();
+        lc.putProperty("output_dir", ClassicTestConstants.OUTPUT_DIR_PREFIX+"logback_issue_1361/");
 
-		final JoranConfigurator configurator = new JoranConfigurator();
-		configurator.setContext(lc);
-		configurator.doConfigure(ClassicTestConstants.INPUT_PREFIX+ "issue/logback_1361.xml");
+        final JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(lc);
+        configurator.doConfigure(ClassicTestConstants.INPUT_PREFIX+ "issue/logback_1361.xml");
 
-		log1MegaByteInOneSecond();
-	}
+        log1MegaByteInOneSecond();
+    }
 
-	static {
-		final StringBuilder sb = new StringBuilder();
-		for (int j = 0; j < 100; j++) {
-			final String message = "1234567890";
-			sb.append(message);
-		}
-		ONE_KB_STRING = sb.toString();
-	}
+    static {
+        final StringBuilder sb = new StringBuilder();
+        for (int j = 0; j < 100; j++) {
+            final String message = "1234567890";
+            sb.append(message);
+        }
+        ONE_KB_STRING = sb.toString();
+    }
 
 
-	private static void log1MegaByteInOneSecond() throws Exception {
-		for (int i = 0; i < 1000; i++) {
-			logger.warn(i + " - " + ONE_KB_STRING);
-			Thread.sleep(1);
-		}
-	}
+    private static void log1MegaByteInOneSecond() throws Exception {
+        for (int i = 0; i < 1000; i++) {
+            logger.warn(i + " - " + ONE_KB_STRING);
+            Thread.sleep(1);
+        }
+    }
 
 
 }

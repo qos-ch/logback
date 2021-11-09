@@ -27,31 +27,31 @@ import ch.qos.logback.core.pattern.FormatInfo;
  */
 public class IntegerTokenConverter extends DynamicConverter<Object> implements MonoTypedConverter {
 
-	public final static String CONVERTER_KEY = "i";
+    public final static String CONVERTER_KEY = "i";
 
-	private String formatString(final int i) {
-		final String s = Integer.toString(i);
-		final FormatInfo formattingInfo = getFormattingInfo();
-		if (formattingInfo == null) {
-			return s;
-		}
-		return IntStream.range(s.length(), formattingInfo.getMin()).mapToObj(k -> "0")
-				.collect(Collectors.joining("", "", s));
-	}
+    private String formatString(final int i) {
+        final String s = Integer.toString(i);
+        final FormatInfo formattingInfo = getFormattingInfo();
+        if (formattingInfo == null) {
+            return s;
+        }
+        return IntStream.range(s.length(), formattingInfo.getMin()).mapToObj(k -> "0")
+                        .collect(Collectors.joining("", "", s));
+    }
 
-	@Override
-	public String convert(final Object o) {
-		if (o == null) {
-			throw new IllegalArgumentException("Null argument forbidden");
-		}
-		if (o instanceof Integer) {
-			return formatString((Integer) o);
-		}
-		throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
-	}
+    @Override
+    public String convert(final Object o) {
+        if (o == null) {
+            throw new IllegalArgumentException("Null argument forbidden");
+        }
+        if (o instanceof Integer) {
+            return formatString((Integer) o);
+        }
+        throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
+    }
 
-	@Override
-	public boolean isApplicable(final Object o) {
-		return o instanceof Integer;
-	}
+    @Override
+    public boolean isApplicable(final Object o) {
+        return o instanceof Integer;
+    }
 }

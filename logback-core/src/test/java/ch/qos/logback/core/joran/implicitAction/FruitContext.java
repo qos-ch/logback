@@ -20,17 +20,17 @@ import ch.qos.logback.core.ContextBase;
 
 public class FruitContext extends ContextBase {
 
-	List<Fruit> fruitList = new ArrayList<>();
+    List<Fruit> fruitList = new ArrayList<>();
 
-	public void addFruit(final Fruit fs) {
-		fruitList.add(fs);
-	}
+    public void addFruit(final Fruit fs) {
+        fruitList.add(fs);
+    }
 
-	public List<Fruit> getFruitList() {
-		return fruitList;
-	}
+    public List<Fruit> getFruitList() {
+        return fruitList;
+    }
 
-	public void setFruitShellList(final List<Fruit> fruitList) {
-		this.fruitList = fruitList;
-	}
+    public void setFruitShellList(final List<Fruit> fruitList) {
+        this.fruitList = fruitList;
+    }
 }

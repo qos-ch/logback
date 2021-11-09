@@ -27,25 +27,24 @@ public class SampleTurboFilter extends TurboFilter {
     Marker markerToAccept;
 
     @Override
-    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
+    public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
 
         if (!isStarted()) {
             return FilterReply.NEUTRAL;
         }
 
-        if ((markerToAccept.equals(marker))) {
+        if (markerToAccept.equals(marker)) {
             return FilterReply.ACCEPT;
-        } else {
-            return FilterReply.NEUTRAL;
         }
+        return FilterReply.NEUTRAL;
     }
 
     public String getMarker() {
         return marker;
     }
 
-    public void setMarker(String markerStr) {
-        this.marker = markerStr;
+    public void setMarker(final String markerStr) {
+        marker = markerStr;
     }
 
     @Override

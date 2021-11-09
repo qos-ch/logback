@@ -26,33 +26,33 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class RecursiveLBAppender extends AppenderBase<ILoggingEvent> {
 
-	public List<ILoggingEvent> list = new ArrayList<>();
-	public List<String> stringList = new ArrayList<>();
+    public List<ILoggingEvent> list = new ArrayList<>();
+    public List<String> stringList = new ArrayList<>();
 
-	PatternLayout layout;
+    PatternLayout layout;
 
-	public RecursiveLBAppender() {
-		this(null);
-	}
+    public RecursiveLBAppender() {
+        this(null);
+    }
 
-	public RecursiveLBAppender(final PatternLayout layout) {
-		this.layout = layout;
-	}
+    public RecursiveLBAppender(final PatternLayout layout) {
+        this.layout = layout;
+    }
 
-	@Override
-	public void start() {
-		final int diff = RandomUtil.getPositiveInt();
-		final Logger logger = LoggerFactory.getLogger("ResursiveLBAppender" + diff);
-		logger.info("testing");
-		super.start();
-	}
+    @Override
+    public void start() {
+        final int diff = RandomUtil.getPositiveInt();
+        final Logger logger = LoggerFactory.getLogger("ResursiveLBAppender" + diff);
+        logger.info("testing");
+        super.start();
+    }
 
-	@Override
-	protected void append(final ILoggingEvent e) {
-		list.add(e);
-		if (layout != null) {
-			final String s = layout.doLayout(e);
-			stringList.add(s);
-		}
-	}
+    @Override
+    protected void append(final ILoggingEvent e) {
+        list.add(e);
+        if (layout != null) {
+            final String s = layout.doLayout(e);
+            stringList.add(s);
+        }
+    }
 }

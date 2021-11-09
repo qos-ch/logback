@@ -28,18 +28,18 @@ import chapters.onJoran.calculator.ComputationAction1;
 /**
  * This example illustrates the usage of NewRuleAction which allows the Joran
  * interpreter to learn new rules on the fly.
- * 
+ *
  * <p>This example relies heavily on the code from the joran.calculator
  * package.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NewRuleCalculator {
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
 
-        Context context = new ContextBase();
+        final Context context = new ContextBase();
 
-        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+        final Map<ElementSelector, Action> ruleMap = new HashMap<>();
 
         // we start with the rule for the top-most (root) element
         ruleMap.put(new ElementSelector("*/computation"), new ComputationAction1());
@@ -50,7 +50,7 @@ public class NewRuleCalculator {
         // We will let the XML file to teach the Joran interpreter about new rules
         ruleMap.put(new ElementSelector("/computation/newRule"), new NewRuleAction());
 
-        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        final SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
         // link the configurator with its context
         simpleConfigurator.setContext(context);
 

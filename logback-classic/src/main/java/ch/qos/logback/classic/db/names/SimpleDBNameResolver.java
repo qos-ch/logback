@@ -21,37 +21,37 @@ package ch.qos.logback.classic.db.names;
  */
 public class SimpleDBNameResolver implements DBNameResolver {
 
-	private String tableNamePrefix = "";
+    private String tableNamePrefix = "";
 
-	private String tableNameSuffix = "";
+    private String tableNameSuffix = "";
 
-	private String columnNamePrefix = "";
+    private String columnNamePrefix = "";
 
-	private String columnNameSuffix = "";
+    private String columnNameSuffix = "";
 
-	@Override
-	public <N extends Enum<?>> String getTableName(final N tableName) {
-		return tableNamePrefix + tableName.name().toLowerCase() + tableNameSuffix;
-	}
+    @Override
+    public <N extends Enum<?>> String getTableName(final N tableName) {
+        return tableNamePrefix + tableName.name().toLowerCase() + tableNameSuffix;
+    }
 
-	@Override
-	public <N extends Enum<?>> String getColumnName(final N columnName) {
-		return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
-	}
+    @Override
+    public <N extends Enum<?>> String getColumnName(final N columnName) {
+        return columnNamePrefix + columnName.name().toLowerCase() + columnNameSuffix;
+    }
 
-	public void setTableNamePrefix(final String tableNamePrefix) {
-		this.tableNamePrefix = tableNamePrefix != null ? tableNamePrefix : "";
-	}
+    public void setTableNamePrefix(final String tableNamePrefix) {
+        this.tableNamePrefix = tableNamePrefix != null ? tableNamePrefix : "";
+    }
 
-	public void setTableNameSuffix(final String tableNameSuffix) {
-		this.tableNameSuffix = tableNameSuffix != null ? tableNameSuffix : "";
-	}
+    public void setTableNameSuffix(final String tableNameSuffix) {
+        this.tableNameSuffix = tableNameSuffix != null ? tableNameSuffix : "";
+    }
 
-	public void setColumnNamePrefix(final String columnNamePrefix) {
-		this.columnNamePrefix = columnNamePrefix != null ? columnNamePrefix : "";
-	}
+    public void setColumnNamePrefix(final String columnNamePrefix) {
+        this.columnNamePrefix = columnNamePrefix != null ? columnNamePrefix : "";
+    }
 
-	public void setColumnNameSuffix(final String columnNameSuffix) {
-		this.columnNameSuffix = columnNameSuffix != null ? columnNameSuffix : "";
-	}
+    public void setColumnNameSuffix(final String columnNameSuffix) {
+        this.columnNameSuffix = columnNameSuffix != null ? columnNameSuffix : "";
+    }
 }

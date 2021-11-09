@@ -32,18 +32,18 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class SocketAppender extends AbstractSocketAppender<IAccessEvent> {
 
-	PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
+    PreSerializationTransformer<IAccessEvent> pst = new AccessEventPreSerializationTransformer();
 
-	public SocketAppender() {
-	}
+    public SocketAppender() {
+    }
 
-	@Override
-	protected void postProcessEvent(final IAccessEvent event) {
-		event.prepareForDeferredProcessing();
-	}
+    @Override
+    protected void postProcessEvent(final IAccessEvent event) {
+        event.prepareForDeferredProcessing();
+    }
 
-	@Override
-	public PreSerializationTransformer<IAccessEvent> getPST() {
-		return pst;
-	}
+    @Override
+    public PreSerializationTransformer<IAccessEvent> getPST() {
+        return pst;
+    }
 }

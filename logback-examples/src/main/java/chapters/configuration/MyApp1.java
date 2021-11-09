@@ -19,10 +19,10 @@ import org.slf4j.LoggerFactory;
 public class MyApp1 {
     final static Logger logger = LoggerFactory.getLogger(MyApp1.class);
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         logger.info("Entering application.");
 
-        Foo foo = new Foo();
+        final Foo foo = new Foo();
         foo.doIt();
         logger.info("Exiting application.");
     }

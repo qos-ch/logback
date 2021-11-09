@@ -22,16 +22,17 @@ public class MySampleLayout2 extends LayoutBase<ILoggingEvent> {
     String prefix = null;
     boolean printThreadName = true;
 
-    public void setPrefix(String prefix) {
+    public void setPrefix(final String prefix) {
         this.prefix = prefix;
     }
 
-    public void setPrintThreadName(boolean printThreadName) {
+    public void setPrintThreadName(final boolean printThreadName) {
         this.printThreadName = printThreadName;
     }
 
-    public String doLayout(ILoggingEvent event) {
-        StringBuilder sbuf = new StringBuilder(128);
+    @Override
+    public String doLayout(final ILoggingEvent event) {
+        final StringBuilder sbuf = new StringBuilder(128);
         if (prefix != null) {
             sbuf.append(prefix + ": ");
         }

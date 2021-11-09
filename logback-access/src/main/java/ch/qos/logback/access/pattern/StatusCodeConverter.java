@@ -17,9 +17,9 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class StatusCodeConverter extends AccessConverter {
 
-	@Override
-	public String convert(final IAccessEvent accessEvent) {
-		return Integer.toString(accessEvent.getStatusCode());
-	}
+    @Override
+    public String convert(final IAccessEvent accessEvent) {
+        return Integer.toString(accessEvent.getStatusCode());
+    }
 
 }

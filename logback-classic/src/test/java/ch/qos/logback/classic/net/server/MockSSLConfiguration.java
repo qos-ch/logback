@@ -32,17 +32,17 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 class MockSSLConfiguration extends SSLConfiguration {
 
-	private boolean contextCreated;
+    private boolean contextCreated;
 
-	@Override
-	public SSLContext createContext(final ContextAware context) throws NoSuchProviderException, NoSuchAlgorithmException, KeyManagementException,
-	UnrecoverableKeyException, KeyStoreException, CertificateException {
-		contextCreated = true;
-		return super.createContext(context);
-	}
+    @Override
+    public SSLContext createContext(final ContextAware context) throws NoSuchProviderException, NoSuchAlgorithmException, KeyManagementException,
+    UnrecoverableKeyException, KeyStoreException, CertificateException {
+        contextCreated = true;
+        return super.createContext(context);
+    }
 
-	public boolean isContextCreated() {
-		return contextCreated;
-	}
+    public boolean isContextCreated() {
+        return contextCreated;
+    }
 
 }

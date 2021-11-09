@@ -26,13 +26,13 @@ import org.junit.Test;
  */
 public class ConfigurationWatchListTest {
 
-	@Test
-	// See http://jira.qos.ch/browse/LBCORE-119
-	public void fileToURLAndBack() throws MalformedURLException {
-		final File file = new File("a b.xml");
-		final URL url = file.toURI().toURL();
-		final ConfigurationWatchList cwl = new ConfigurationWatchList();
-		final File back = cwl.convertToFile(url);
-		assertEquals(file.getName(), back.getName());
-	}
+    @Test
+    // See http://jira.qos.ch/browse/LBCORE-119
+    public void fileToURLAndBack() throws MalformedURLException {
+        final File file = new File("a b.xml");
+        final URL url = file.toURI().toURL();
+        final ConfigurationWatchList cwl = new ConfigurationWatchList();
+        final File back = cwl.convertToFile(url);
+        assertEquals(file.getName(), back.getName());
+    }
 }

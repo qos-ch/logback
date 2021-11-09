@@ -28,19 +28,19 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public interface Discriminator<E> extends LifeCycle {
 
-	/**
-	 * Given event 'e' return a discriminating value.
-	 *
-	 * @param e
-	 * @return
-	 */
-	String getDiscriminatingValue(E e);
+    /**
+     * Given event 'e' return a discriminating value.
+     *
+     * @param e
+     * @return
+     */
+    String getDiscriminatingValue(E e);
 
-	/**
-	 * The key or variable name under which the discriminating value should be
-	 * exported into the host environment.
-	 *
-	 * @return
-	 */
-	String getKey();
+    /**
+     * The key or variable name under which the discriminating value should be
+     * exported into the host environment.
+     *
+     * @return
+     */
+    String getKey();
 }

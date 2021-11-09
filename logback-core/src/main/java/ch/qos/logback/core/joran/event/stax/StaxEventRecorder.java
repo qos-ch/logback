@@ -33,85 +33,85 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class StaxEventRecorder extends ContextAwareBase {
 
-	List<StaxEvent> eventList = new ArrayList<>();
-	ElementPath globalElementPath = new ElementPath();
+    List<StaxEvent> eventList = new ArrayList<>();
+    ElementPath globalElementPath = new ElementPath();
 
-	public StaxEventRecorder(final Context context) {
-		setContext(context);
-	}
+    public StaxEventRecorder(final Context context) {
+        setContext(context);
+    }
 
-	public void recordEvents(final InputStream inputStream) throws JoranException {
-		try {
-			final XMLEventReader xmlEventReader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
-			read(xmlEventReader);
-		} catch (final XMLStreamException e) {
-			throw new JoranException("Problem parsing XML document. See previously reported errors.", e);
-		}
-	}
+    public void recordEvents(final InputStream inputStream) throws JoranException {
+        try {
+            final XMLEventReader xmlEventReader = XMLInputFactory.newInstance().createXMLEventReader(inputStream);
+            read(xmlEventReader);
+        } catch (final XMLStreamException e) {
+            throw new JoranException("Problem parsing XML document. See previously reported errors.", e);
+        }
+    }
 
-	public List<StaxEvent> getEventList() {
-		return eventList;
-	}
+    public List<StaxEvent> getEventList() {
+        return eventList;
+    }
 
-	private void read(final XMLEventReader xmlEventReader) throws XMLStreamException {
-		while (xmlEventReader.hasNext()) {
-			final XMLEvent xmlEvent = xmlEventReader.nextEvent();
-			switch (xmlEvent.getEventType()) {
-			case XMLStreamConstants.START_ELEMENT:
-				addStartElement(xmlEvent);
-				break;
-			case XMLStreamConstants.CHARACTERS:
-				addCharacters(xmlEvent);
-				break;
-			case XMLStreamConstants.END_ELEMENT:
-				addEndEvent(xmlEvent);
-				break;
-			default:
-				break;
-			}
-		}
-	}
+    private void read(final XMLEventReader xmlEventReader) throws XMLStreamException {
+        while (xmlEventReader.hasNext()) {
+            final XMLEvent xmlEvent = xmlEventReader.nextEvent();
+            switch (xmlEvent.getEventType()) {
+            case XMLStreamConstants.START_ELEMENT:
+                addStartElement(xmlEvent);
+                break;
+            case XMLStreamConstants.CHARACTERS:
+                addCharacters(xmlEvent);
+                break;
+            case XMLStreamConstants.END_ELEMENT:
+                addEndEvent(xmlEvent);
+                break;
+            default:
+                break;
+            }
+        }
+    }
 
-	private void addStartElement(final XMLEvent xmlEvent) {
-		final StartElement se = xmlEvent.asStartElement();
-		final String tagName = se.getName().getLocalPart();
-		globalElementPath.push(tagName);
-		final ElementPath current = globalElementPath.duplicate();
-		final StartEvent startEvent = new StartEvent(current, tagName, se.getAttributes(), se.getLocation());
-		eventList.add(startEvent);
-	}
+    private void addStartElement(final XMLEvent xmlEvent) {
+        final StartElement se = xmlEvent.asStartElement();
+        final String tagName = se.getName().getLocalPart();
+        globalElementPath.push(tagName);
+        final ElementPath current = globalElementPath.duplicate();
+        final StartEvent startEvent = new StartEvent(current, tagName, se.getAttributes(), se.getLocation());
+        eventList.add(startEvent);
+    }
 
-	private void addCharacters(final XMLEvent xmlEvent) {
-		final Characters characters = xmlEvent.asCharacters();
-		final StaxEvent lastEvent = getLastEvent();
+    private void addCharacters(final XMLEvent xmlEvent) {
+        final Characters characters = xmlEvent.asCharacters();
+        final StaxEvent lastEvent = getLastEvent();
 
-		if (lastEvent instanceof BodyEvent) {
-			final BodyEvent be = (BodyEvent) lastEvent;
-			be.append(characters.getData());
-		} else // ignore space only text if the previous event is not a BodyEvent
-			if (!characters.isWhiteSpace()) {
-				final BodyEvent bodyEvent = new BodyEvent(characters.getData(), xmlEvent.getLocation());
-				eventList.add(bodyEvent);
-			}
-	}
+        if (lastEvent instanceof BodyEvent) {
+            final BodyEvent be = (BodyEvent) lastEvent;
+            be.append(characters.getData());
+        } else // ignore space only text if the previous event is not a BodyEvent
+            if (!characters.isWhiteSpace()) {
+                final BodyEvent bodyEvent = new BodyEvent(characters.getData(), xmlEvent.getLocation());
+                eventList.add(bodyEvent);
+            }
+    }
 
-	private void addEndEvent(final XMLEvent xmlEvent) {
-		final EndElement ee = xmlEvent.asEndElement();
-		final String tagName = ee.getName().getLocalPart();
-		final EndEvent endEvent = new EndEvent(tagName, ee.getLocation());
-		eventList.add(endEvent);
-		globalElementPath.pop();
-	}
+    private void addEndEvent(final XMLEvent xmlEvent) {
+        final EndElement ee = xmlEvent.asEndElement();
+        final String tagName = ee.getName().getLocalPart();
+        final EndEvent endEvent = new EndEvent(tagName, ee.getLocation());
+        eventList.add(endEvent);
+        globalElementPath.pop();
+    }
 
-	StaxEvent getLastEvent() {
-		if (eventList.isEmpty()) {
-			return null;
-		}
-		final int size = eventList.size();
-		if (size == 0) {
-			return null;
-		}
-		return eventList.get(size - 1);
-	}
+    StaxEvent getLastEvent() {
+        if (eventList.isEmpty()) {
+            return null;
+        }
+        final int size = eventList.size();
+        if (size == 0) {
+            return null;
+        }
+        return eventList.get(size - 1);
+    }
 
 }

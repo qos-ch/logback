@@ -38,74 +38,74 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class EvaluatorJoranTest {
 
-	@Test
-	public void testSimpleEvaluator() throws NullPointerException, EvaluationException, JoranException {
-		final JoranConfigurator jc = new JoranConfigurator();
-		final LoggerContext loggerContext = new LoggerContext();
-		jc.setContext(loggerContext);
-		jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleEvaluator.xml");
+    @Test
+    public void testSimpleEvaluator() throws NullPointerException, EvaluationException, JoranException {
+        final JoranConfigurator jc = new JoranConfigurator();
+        final LoggerContext loggerContext = new LoggerContext();
+        jc.setContext(loggerContext);
+        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleEvaluator.xml");
 
-		@SuppressWarnings("unchecked")
-		final
-		Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
-		assertNotNull(evalMap);
-		final JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
-		assertNotNull(evaluator);
+        @SuppressWarnings("unchecked")
+        final
+        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+        assertNotNull(evalMap);
+        final JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
+        assertNotNull(evaluator);
 
-		final Logger logger = loggerContext.getLogger("xx");
-		final ILoggingEvent event0 = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
-		assertTrue(evaluator.evaluate(event0));
+        final Logger logger = loggerContext.getLogger("xx");
+        final ILoggingEvent event0 = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
+        assertTrue(evaluator.evaluate(event0));
 
-		final ILoggingEvent event1 = new LoggingEvent("foo", logger, Level.DEBUG, "random blurb", null, null);
-		assertFalse(evaluator.evaluate(event1));
-	}
+        final ILoggingEvent event1 = new LoggingEvent("foo", logger, Level.DEBUG, "random blurb", null, null);
+        assertFalse(evaluator.evaluate(event1));
+    }
 
-	@Ignore // markers are no longer suported in Janino
-	@Test
-	public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
-		final JoranConfigurator jc = new JoranConfigurator();
-		final LoggerContext loggerContext = new LoggerContext();
-		jc.setContext(loggerContext);
+    @Ignore // markers are no longer suported in Janino
+    @Test
+    public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
+        final JoranConfigurator jc = new JoranConfigurator();
+        final LoggerContext loggerContext = new LoggerContext();
+        jc.setContext(loggerContext);
 
-		jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
-		@SuppressWarnings("unchecked")
-		final
-		Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
-		assertNotNull(evalMap);
+        jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
+        @SuppressWarnings("unchecked")
+        final
+        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+        assertNotNull(evalMap);
 
-		final Logger logger = loggerContext.getLogger("xx");
+        final Logger logger = loggerContext.getLogger("xx");
 
-		final JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("IGNORE_EVAL");
-		final LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
+        final JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("IGNORE_EVAL");
+        final LoggingEvent event = new LoggingEvent("foo", logger, Level.DEBUG, "Hello world", null, null);
 
-		final Marker ignoreMarker = MarkerFactory.getMarker("IGNORE");
-		event.addMarker(ignoreMarker);
-		assertTrue(evaluator.evaluate(event));
+        final Marker ignoreMarker = MarkerFactory.getMarker("IGNORE");
+        event.addMarker(ignoreMarker);
+        assertTrue(evaluator.evaluate(event));
 
-		logger.debug("hello", new Exception("test"));
-		logger.debug(ignoreMarker, "hello ignore", new Exception("test"));
+        logger.debug("hello", new Exception("test"));
+        logger.debug(ignoreMarker, "hello ignore", new Exception("test"));
 
-		// logger.debug("hello", new Exception("test"));
+        // logger.debug("hello", new Exception("test"));
 
-		// StatusPrinter.print(loggerContext.getStatusManager());
-	}
+        // StatusPrinter.print(loggerContext.getStatusManager());
+    }
 
-	@Test
-	public void testMultipleConditionsInExpression() throws NullPointerException, EvaluationException {
-		final LoggerContext loggerContext = new LoggerContext();
-		final Logger logger = loggerContext.getLogger("xx");
-		final JaninoEventEvaluator ee = new JaninoEventEvaluator();
-		ee.setName("testEval");
-		ee.setContext(loggerContext);
-		// &#38;&#38;
-		// &amp;&amp;
-		ee.setExpression("message.contains(\"stacktrace\") && message.contains(\"logging\")");
-		ee.start();
-		// StatusPrinter.print(loggerContext);
+    @Test
+    public void testMultipleConditionsInExpression() throws NullPointerException, EvaluationException {
+        final LoggerContext loggerContext = new LoggerContext();
+        final Logger logger = loggerContext.getLogger("xx");
+        final JaninoEventEvaluator ee = new JaninoEventEvaluator();
+        ee.setName("testEval");
+        ee.setContext(loggerContext);
+        // &#38;&#38;
+        // &amp;&amp;
+        ee.setExpression("message.contains(\"stacktrace\") && message.contains(\"logging\")");
+        ee.start();
+        // StatusPrinter.print(loggerContext);
 
-		final String message = "stacktrace bla bla logging";
-		final ILoggingEvent event = new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, message, null, null);
+        final String message = "stacktrace bla bla logging";
+        final ILoggingEvent event = new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, message, null, null);
 
-		assertTrue(ee.evaluate(event));
-	}
+        assertTrue(ee.evaluate(event));
+    }
 }

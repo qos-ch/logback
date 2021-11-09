@@ -27,49 +27,49 @@ import java.util.zip.ZipFile;
 
 public class FileToBufferUtil {
 
-	static public void readIntoList(final File file, final List<String> stringList) throws IOException {
+    static public void readIntoList(final File file, final List<String> stringList) throws IOException {
 
-		if (file.getName().endsWith(".gz")) {
-			gzFileReadIntoList(file, stringList);
-		} else if (file.getName().endsWith(".zip")) {
-			zipFileReadIntoList(file, stringList);
-		} else {
-			regularReadIntoList(file, stringList);
-		}
-	}
+        if (file.getName().endsWith(".gz")) {
+            gzFileReadIntoList(file, stringList);
+        } else if (file.getName().endsWith(".zip")) {
+            zipFileReadIntoList(file, stringList);
+        } else {
+            regularReadIntoList(file, stringList);
+        }
+    }
 
-	private static void zipFileReadIntoList(final File file, final List<String> stringList) throws IOException {
-		System.out.println("Reading zip file [" + file + "]");
-		try (ZipFile zipFile = new ZipFile(file)) {
-			final Enumeration<? extends ZipEntry> entries = zipFile.entries();
-			final ZipEntry entry = entries.nextElement();
-			readInputStream(zipFile.getInputStream(entry), stringList);
-		}
-	}
+    private static void zipFileReadIntoList(final File file, final List<String> stringList) throws IOException {
+        System.out.println("Reading zip file [" + file + "]");
+        try (ZipFile zipFile = new ZipFile(file)) {
+            final Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            final ZipEntry entry = entries.nextElement();
+            readInputStream(zipFile.getInputStream(entry), stringList);
+        }
+    }
 
-	static void readInputStream(final InputStream is, final List<String> stringList) throws IOException {
-		final BufferedReader in = new BufferedReader(new InputStreamReader(is));
-		String line;
-		while ((line = in.readLine()) != null) {
-			stringList.add(line);
-		}
-		in.close();
-	}
+    static void readInputStream(final InputStream is, final List<String> stringList) throws IOException {
+        final BufferedReader in = new BufferedReader(new InputStreamReader(is));
+        String line;
+        while ((line = in.readLine()) != null) {
+            stringList.add(line);
+        }
+        in.close();
+    }
 
-	static public void regularReadIntoList(final File file, final List<String> stringList) throws IOException {
-		final FileInputStream fis = new FileInputStream(file);
-		final BufferedReader in = new BufferedReader(new InputStreamReader(fis));
-		String line;
-		while ((line = in.readLine()) != null) {
-			stringList.add(line);
-		}
-		in.close();
-	}
+    static public void regularReadIntoList(final File file, final List<String> stringList) throws IOException {
+        final FileInputStream fis = new FileInputStream(file);
+        final BufferedReader in = new BufferedReader(new InputStreamReader(fis));
+        String line;
+        while ((line = in.readLine()) != null) {
+            stringList.add(line);
+        }
+        in.close();
+    }
 
-	static public void gzFileReadIntoList(final File file, final List<String> stringList) throws IOException {
-		final FileInputStream fis = new FileInputStream(file);
-		final GZIPInputStream gzis = new GZIPInputStream(fis);
-		readInputStream(gzis, stringList);
-	}
+    static public void gzFileReadIntoList(final File file, final List<String> stringList) throws IOException {
+        final FileInputStream fis = new FileInputStream(file);
+        final GZIPInputStream gzis = new GZIPInputStream(fis);
+        readInputStream(gzis, stringList);
+    }
 
 }

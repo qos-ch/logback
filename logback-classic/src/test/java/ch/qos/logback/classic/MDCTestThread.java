@@ -17,23 +17,23 @@ import org.slf4j.MDC;
 
 public class MDCTestThread extends Thread {
 
-	String val;
+    String val;
 
-	public MDCTestThread(final String val) {
-		this.val = val;
-	}
+    public MDCTestThread(final String val) {
+        this.val = val;
+    }
 
-	String x0;
-	String x1;
-	String x2;
+    String x0;
+    String x1;
+    String x2;
 
-	@Override
-	public void run() {
-		x0 = MDC.get("x");
-		MDC.put("x", val);
-		x1 = MDC.get("x");
-		MDC.clear();
-		x2 = MDC.get("x");
-		// System.out.println("Exiting "+val);
-	}
+    @Override
+    public void run() {
+        x0 = MDC.get("x");
+        MDC.put("x", val);
+        x1 = MDC.get("x");
+        MDC.clear();
+        x2 = MDC.get("x");
+        // System.out.println("Exiting "+val);
+    }
 }

@@ -24,19 +24,19 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public abstract class ShutdownHookBase extends ContextAwareBase implements ShutdownHook {
 
-	public ShutdownHookBase() {
-	}
+    public ShutdownHookBase() {
+    }
 
-	/**
-	 * Default method for stopping the Logback context
-	 */
-	protected void stop() {
-		addInfo("Logback context being closed via shutdown hook");
+    /**
+     * Default method for stopping the Logback context
+     */
+    protected void stop() {
+        addInfo("Logback context being closed via shutdown hook");
 
-		final Context hookContext = getContext();
-		if (hookContext instanceof ContextBase) {
-			final ContextBase context = (ContextBase) hookContext;
-			context.stop();
-		}
-	}
+        final Context hookContext = getContext();
+        if (hookContext instanceof ContextBase) {
+            final ContextBase context = (ContextBase) hookContext;
+            context.stop();
+        }
+    }
 }

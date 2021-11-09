@@ -27,38 +27,38 @@ import ch.qos.logback.core.util.StatusPrinter;
  * However, only one message bears the  "NOTIFY_ADMIN" marker.
  * */
 public class Marked_EMail {
-    static public void main(String[] args) throws Exception {
+    static public void main(final String[] args) throws Exception {
         if (args.length != 1) {
             usage("Wrong number of arguments.");
         }
 
-        String configFile = args[0];
+        final String configFile = args[0];
 
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        JoranConfigurator configurator = new JoranConfigurator();
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final JoranConfigurator configurator = new JoranConfigurator();
         lc.reset();
         configurator.setContext(lc);
         configurator.doConfigure(configFile);
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
 
-        Logger logger = LoggerFactory.getLogger(Marked_EMail.class);
+        final Logger logger = LoggerFactory.getLogger(Marked_EMail.class);
 
-        int runLength = 100;
+        final int runLength = 100;
         for (int i = 1; i <= runLength; i++) {
-            if ((i % 10) < 9) {
+            if (i % 10 < 9) {
                 logger.debug("This is a debug message. Message number: " + i);
             } else {
                 logger.error("This is an error message. Message number: " + i);
             }
         }
 
-        Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
+        final Marker notifyAdmin = MarkerFactory.getMarker("NOTIFY_ADMIN");
         logger.error(notifyAdmin, "This is a serious an error requiring the admin's attention", new Exception("Just testing"));
 
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
     }
 
-    static void usage(String msg) {
+    static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + Marked_EMail.class.getName() + " configFile\n" + "   configFile a logback configuration file in XML format.");
         System.exit(1);

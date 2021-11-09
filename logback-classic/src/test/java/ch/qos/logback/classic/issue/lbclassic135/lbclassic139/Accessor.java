@@ -24,28 +24,28 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
  *
  */
 public class Accessor extends RunnableWithCounterAndDone {
-	private final Logger logger;
-	final Worker worker;
-	final LoggerContext loggerContext;
+    private final Logger logger;
+    final Worker worker;
+    final LoggerContext loggerContext;
 
-	Accessor(final Worker worker, final LoggerContext lc) {
-		this.worker = worker;
-		loggerContext = lc;
-		logger = lc.getLogger(this.getClass());
-	}
+    Accessor(final Worker worker, final LoggerContext lc) {
+        this.worker = worker;
+        loggerContext = lc;
+        logger = lc.getLogger(this.getClass());
+    }
 
-	@Override
-	public void run() {
-		print("entered run()");
-		// Thread.yield();
-		while (!isDone()) {
-			logger.info("Current worker status is: {}.", worker);
-		}
-		print("leaving run()");
-	}
+    @Override
+    public void run() {
+        print("entered run()");
+        // Thread.yield();
+        while (!isDone()) {
+            logger.info("Current worker status is: {}.", worker);
+        }
+        print("leaving run()");
+    }
 
-	void print(final String msg) {
-		final String thread = Thread.currentThread().getName();
-		System.out.println("[" + thread + "] " + msg);
-	}
+    void print(final String msg) {
+        final String thread = Thread.currentThread().getName();
+        System.out.println("[" + thread + "] " + msg);
+    }
 }

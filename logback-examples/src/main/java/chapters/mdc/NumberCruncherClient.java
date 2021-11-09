@@ -25,13 +25,13 @@ import java.rmi.RemoteException;
  * are displayed on the screen.
  * */
 public class NumberCruncherClient {
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         if (args.length == 1) {
             try {
-                String url = "rmi://" + args[0] + "/Factor";
-                NumberCruncher nc = (NumberCruncher) Naming.lookup(url);
+                final String url = "rmi://" + args[0] + "/Factor";
+                final NumberCruncher nc = (NumberCruncher) Naming.lookup(url);
                 loop(nc);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -39,14 +39,14 @@ public class NumberCruncherClient {
         }
     }
 
-    static void usage(String msg) {
+    static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java chapters.mdc.NumberCruncherClient HOST\n" + "   where HOST is the machine where the NumberCruncherServer is running.");
         System.exit(1);
     }
 
-    static void loop(NumberCruncher nc) {
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    static void loop(final NumberCruncher nc) {
+        final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         int i = 0;
 
         while (true) {
@@ -54,7 +54,7 @@ public class NumberCruncherClient {
 
             try {
                 i = Integer.parseInt(in.readLine());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
 
@@ -62,22 +62,21 @@ public class NumberCruncherClient {
                 System.out.print("Exiting loop.");
 
                 return;
-            } else {
-                try {
-                    System.out.println("Will attempt to factor " + i);
+            }
+            try {
+                System.out.println("Will attempt to factor " + i);
 
-                    int[] factors = nc.factor(i);
-                    System.out.print("The factors of " + i + " are");
+                final int[] factors = nc.factor(i);
+                System.out.print("The factors of " + i + " are");
 
-                    for (int k = 0; k < factors.length; k++) {
-                        System.out.print(" " + factors[k]);
-                    }
-
-                    System.out.println(".");
-                } catch (RemoteException e) {
-                    System.err.println("Could not factor " + i);
-                    e.printStackTrace();
+                for (final int factor : factors) {
+                    System.out.print(" " + factor);
                 }
+
+                System.out.println(".");
+            } catch (final RemoteException e) {
+                System.err.println("Could not factor " + i);
+                e.printStackTrace();
             }
         }
     }

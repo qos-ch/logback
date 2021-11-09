@@ -24,7 +24,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
 
     Layout<ILoggingEvent> layout;
 
-    public void setLimit(int limit) {
+    public void setLimit(final int limit) {
         this.limit = limit;
     }
 
@@ -34,22 +34,23 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
 
     @Override
     public void start() {
-        if (this.layout == null) {
+        if (layout == null) {
             addError("No layout set for the appender named [" + name + "].");
             return;
         }
 
-        String header = layout.getFileHeader();
+        final String header = layout.getFileHeader();
         System.out.print(header);
         super.start();
     }
 
-    public void append(ILoggingEvent event) {
+    @Override
+    public void append(final ILoggingEvent event) {
         if (counter >= limit) {
             return;
         }
         // output the events as formatted by patternLayout
-        String eventStr = this.layout.doLayout(event);
+        final String eventStr = layout.doLayout(event);
 
         System.out.print(eventStr);
 
@@ -61,7 +62,7 @@ public class CountingConsoleAppender extends AppenderBase<ILoggingEvent> {
         return layout;
     }
 
-    public void setLayout(Layout<ILoggingEvent> layout) {
+    public void setLayout(final Layout<ILoggingEvent> layout) {
         this.layout = layout;
     }
 }

@@ -13,9 +13,9 @@ import ch.qos.logback.core.model.TopModel;
  */
 public class TopElementAction extends BaseModelAction {
 
-	@Override
-	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		return new TopModel();
-	}
+    @Override
+    protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        return new TopModel();
+    }
 
 }

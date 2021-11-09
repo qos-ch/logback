@@ -26,63 +26,63 @@ import java.util.List;
  */
 public class T_LRUCache<K> {
 
-	int sequenceNumber;
-	final int cacheSize;
-	List<T_Entry<K>> cacheList = new LinkedList<>();
+    int sequenceNumber;
+    final int cacheSize;
+    List<T_Entry<K>> cacheList = new LinkedList<>();
 
-	public T_LRUCache(final int size) {
-		this.cacheSize = size;
-	}
+    public T_LRUCache(final int size) {
+        this.cacheSize = size;
+    }
 
-	synchronized public void put(final K k) {
-		sequenceNumber++;
-		T_Entry<K> te = getEntry(k);
-		if (te != null) {
-			te.sequenceNumber = sequenceNumber;
-		} else {
-			te = new T_Entry<>(k, sequenceNumber);
-			cacheList.add(te);
-		}
-		Collections.sort(cacheList);
-		while (cacheList.size() > cacheSize) {
-			cacheList.remove(0);
-		}
-	}
+    synchronized public void put(final K k) {
+        sequenceNumber++;
+        T_Entry<K> te = getEntry(k);
+        if (te != null) {
+            te.sequenceNumber = sequenceNumber;
+        } else {
+            te = new T_Entry<>(k, sequenceNumber);
+            cacheList.add(te);
+        }
+        Collections.sort(cacheList);
+        while (cacheList.size() > cacheSize) {
+            cacheList.remove(0);
+        }
+    }
 
-	synchronized public K get(final K k) {
-		final T_Entry<K> te = getEntry(k);
-		if (te == null) {
-			return null;
-		}
-		te.sequenceNumber = ++sequenceNumber;
-		Collections.sort(cacheList);
-		return te.k;
-	}
+    synchronized public K get(final K k) {
+        final T_Entry<K> te = getEntry(k);
+        if (te == null) {
+            return null;
+        }
+        te.sequenceNumber = ++sequenceNumber;
+        Collections.sort(cacheList);
+        return te.k;
+    }
 
-	synchronized public List<K> keyList() {
-		final List<K> keyList = new ArrayList<>();
-		for (final T_Entry<K> e : cacheList) {
-			keyList.add(e.k);
-		}
-		return keyList;
-	}
+    synchronized public List<K> keyList() {
+        final List<K> keyList = new ArrayList<>();
+        for (final T_Entry<K> e : cacheList) {
+            keyList.add(e.k);
+        }
+        return keyList;
+    }
 
-	private T_Entry<K> getEntry(final K k) {
-		for (final T_Entry<K> te : cacheList) {
-			if (te.k.equals(k)) {
-				return te;
-			}
-		}
-		return null;
-	}
+    private T_Entry<K> getEntry(final K k) {
+        for (final T_Entry<K> te : cacheList) {
+            if (te.k.equals(k)) {
+                return te;
+            }
+        }
+        return null;
+    }
 
-	public void dump() {
-		System.out.print("T:");
-		for (final T_Entry<K> te : cacheList) {
-			// System.out.print(te.toString()+"->");
-			System.out.print(te.k + ", ");
-		}
-		System.out.println();
-	}
+    public void dump() {
+        System.out.print("T:");
+        for (final T_Entry<K> te : cacheList) {
+            // System.out.print(te.toString()+"->");
+            System.out.print(te.k + ", ");
+        }
+        System.out.println();
+    }
 
 }

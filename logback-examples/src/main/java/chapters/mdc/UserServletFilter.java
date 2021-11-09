@@ -16,6 +16,8 @@ package chapters.mdc;
 import java.io.IOException;
 import java.security.Principal;
 
+import org.slf4j.MDC;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -24,12 +26,10 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
-import org.slf4j.MDC;
-
 /**
  * A simple servlet filter that puts the username
  * found either in the Principal.
- * 
+ *
  * <p> The value is removed from the MDC once the request has been
  * fully processed.
  *
@@ -39,19 +39,21 @@ public class UserServletFilter implements Filter {
 
     private final String USER_KEY = "username";
 
+    @Override
     public void destroy() {
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    @Override
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 
         boolean successfulRegistration = false;
-        HttpServletRequest req = (HttpServletRequest) request;
-        Principal principal = req.getUserPrincipal();
+        final HttpServletRequest req = (HttpServletRequest) request;
+        final Principal principal = req.getUserPrincipal();
         // Please note that we also could have used a cookie to
         // retrieve the user name
 
         if (principal != null) {
-            String username = principal.getName();
+            final String username = principal.getName();
             successfulRegistration = registerUsername(username);
         }
 
@@ -64,16 +66,17 @@ public class UserServletFilter implements Filter {
         }
     }
 
-    public void init(FilterConfig arg0) throws ServletException {
+    @Override
+    public void init(final FilterConfig arg0) throws ServletException {
     }
 
     /**
      * Register the user in the MDC under USER_KEY.
-     * 
+     *
      * @param username
      * @return true id the user can be successfully registered
      */
-    private boolean registerUsername(String username) {
+    private boolean registerUsername(final String username) {
         if (username != null && username.trim().length() > 0) {
             MDC.put(USER_KEY, username);
             return true;

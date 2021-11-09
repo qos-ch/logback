@@ -27,33 +27,33 @@ import ch.qos.logback.core.AsyncAppenderBase;
  */
 public class AsyncAppender extends AsyncAppenderBase<ILoggingEvent> {
 
-	boolean includeCallerData = false;
+    boolean includeCallerData = false;
 
-	/**
-	 * Events of level TRACE, DEBUG and INFO are deemed to be discardable.
-	 * @param event
-	 * @return true if the event is of level TRACE, DEBUG or INFO false otherwise.
-	 */
-	@Override
-	protected boolean isDiscardable(final ILoggingEvent event) {
-		final Level level = event.getLevel();
-		return level.toInt() <= Level.INFO_INT;
-	}
+    /**
+     * Events of level TRACE, DEBUG and INFO are deemed to be discardable.
+     * @param event
+     * @return true if the event is of level TRACE, DEBUG or INFO false otherwise.
+     */
+    @Override
+    protected boolean isDiscardable(final ILoggingEvent event) {
+        final Level level = event.getLevel();
+        return level.toInt() <= Level.INFO_INT;
+    }
 
-	@Override
-	protected void preprocess(final ILoggingEvent eventObject) {
-		eventObject.prepareForDeferredProcessing();
-		if (includeCallerData) {
-			eventObject.getCallerData();
-		}
-	}
+    @Override
+    protected void preprocess(final ILoggingEvent eventObject) {
+        eventObject.prepareForDeferredProcessing();
+        if (includeCallerData) {
+            eventObject.getCallerData();
+        }
+    }
 
-	public boolean isIncludeCallerData() {
-		return includeCallerData;
-	}
+    public boolean isIncludeCallerData() {
+        return includeCallerData;
+    }
 
-	public void setIncludeCallerData(final boolean includeCallerData) {
-		this.includeCallerData = includeCallerData;
-	}
+    public void setIncludeCallerData(final boolean includeCallerData) {
+        this.includeCallerData = includeCallerData;
+    }
 
 }

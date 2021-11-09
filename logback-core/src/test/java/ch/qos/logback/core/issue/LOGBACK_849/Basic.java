@@ -25,49 +25,49 @@ import ch.qos.logback.core.util.ExecutorServiceUtil;
 
 public class Basic {
 
-	ExecutorService executor = ExecutorServiceUtil.newScheduledExecutorService();
-	Context context = new ContextBase();
+    ExecutorService executor = ExecutorServiceUtil.newScheduledExecutorService();
+    Context context = new ContextBase();
 
-	@Test(timeout = 100)
-	public void withNoSubmittedTasksShutdownNowShouldReturnImmediately() throws InterruptedException {
-		executor.shutdownNow();
-		executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
-	}
+    @Test(timeout = 100)
+    public void withNoSubmittedTasksShutdownNowShouldReturnImmediately() throws InterruptedException {
+        executor.shutdownNow();
+        executor.awaitTermination(5000, TimeUnit.MILLISECONDS);
+    }
 
-	@Ignore
-	@Test
-	public void withOneSlowTask() throws InterruptedException {
-		executor.execute(new InterruptIgnoring(1000));
-		Thread.sleep(100);
-		ExecutorServiceUtil.shutdown(executor);
-	}
+    @Ignore
+    @Test
+    public void withOneSlowTask() throws InterruptedException {
+        executor.execute(new InterruptIgnoring(1000));
+        Thread.sleep(100);
+        ExecutorServiceUtil.shutdown(executor);
+    }
 
-	// InterruptIgnoring ===========================================
-	static class InterruptIgnoring implements Runnable {
+    // InterruptIgnoring ===========================================
+    static class InterruptIgnoring implements Runnable {
 
-		int delay;
+        int delay;
 
-		InterruptIgnoring(final int delay) {
-			this.delay = delay;
-		}
+        InterruptIgnoring(final int delay) {
+            this.delay = delay;
+        }
 
-		@Override
-		public void run() {
-			final long runUntil = System.currentTimeMillis() + delay;
+        @Override
+        public void run() {
+            final long runUntil = System.currentTimeMillis() + delay;
 
-			while (true) {
-				try {
-					final long sleep = runUntil - System.currentTimeMillis();
-					System.out.println("will sleep " + sleep);
-					if (sleep <= 0) {
-						return;
-					}
-					Thread.sleep(delay);
-				} catch (final InterruptedException e) {
-					// ignore the exception
-				}
-			}
-		}
-	}
+            while (true) {
+                try {
+                    final long sleep = runUntil - System.currentTimeMillis();
+                    System.out.println("will sleep " + sleep);
+                    if (sleep <= 0) {
+                        return;
+                    }
+                    Thread.sleep(delay);
+                } catch (final InterruptedException e) {
+                    // ignore the exception
+                }
+            }
+        }
+    }
 
 }

@@ -8,8 +8,8 @@ import ch.qos.logback.core.net.HardenedObjectInputStream;
 
 public class HardenedAccessEventInputStream extends HardenedObjectInputStream {
 
-	public HardenedAccessEventInputStream(final InputStream in) throws IOException {
-		super(in, new String[] {AccessEvent.class.getName(), String[].class.getName()});
-	}
+    public HardenedAccessEventInputStream(final InputStream in) throws IOException {
+        super(in, new String[] {AccessEvent.class.getName(), String[].class.getName()});
+    }
 
 }

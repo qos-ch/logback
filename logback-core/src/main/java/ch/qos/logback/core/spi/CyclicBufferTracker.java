@@ -25,46 +25,46 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
  */
 public class CyclicBufferTracker<E> extends AbstractComponentTracker<CyclicBuffer<E>> {
 
-	static final int DEFAULT_NUMBER_OF_BUFFERS = 64;
+    static final int DEFAULT_NUMBER_OF_BUFFERS = 64;
 
-	static final int DEFAULT_BUFFER_SIZE = 256;
-	int bufferSize = DEFAULT_BUFFER_SIZE;
+    static final int DEFAULT_BUFFER_SIZE = 256;
+    int bufferSize = DEFAULT_BUFFER_SIZE;
 
-	public CyclicBufferTracker() {
-		setMaxComponents(DEFAULT_NUMBER_OF_BUFFERS);
-	}
+    public CyclicBufferTracker() {
+        setMaxComponents(DEFAULT_NUMBER_OF_BUFFERS);
+    }
 
-	public int getBufferSize() {
-		return bufferSize;
-	}
+    public int getBufferSize() {
+        return bufferSize;
+    }
 
-	public void setBufferSize(final int bufferSize) {
-		this.bufferSize = bufferSize;
-	}
+    public void setBufferSize(final int bufferSize) {
+        this.bufferSize = bufferSize;
+    }
 
-	@Override
-	protected void processPriorToRemoval(final CyclicBuffer<E> component) {
-		component.clear();
-	}
+    @Override
+    protected void processPriorToRemoval(final CyclicBuffer<E> component) {
+        component.clear();
+    }
 
-	@Override
-	protected CyclicBuffer<E> buildComponent(final String key) {
-		return new CyclicBuffer<>(bufferSize);
-	}
+    @Override
+    protected CyclicBuffer<E> buildComponent(final String key) {
+        return new CyclicBuffer<>(bufferSize);
+    }
 
-	@Override
-	protected boolean isComponentStale(final CyclicBuffer<E> eCyclicBuffer) {
-		return false;
-	}
+    @Override
+    protected boolean isComponentStale(final CyclicBuffer<E> eCyclicBuffer) {
+        return false;
+    }
 
-	// for testing purposes
-	List<String> liveKeysAsOrderedList() {
-		return new ArrayList<>(liveMap.keySet());
-	}
+    // for testing purposes
+    List<String> liveKeysAsOrderedList() {
+        return new ArrayList<>(liveMap.keySet());
+    }
 
-	List<String> lingererKeysAsOrderedList() {
-		return new ArrayList<>(lingerersMap.keySet());
+    List<String> lingererKeysAsOrderedList() {
+        return new ArrayList<>(lingerersMap.keySet());
 
-	}
+    }
 
 }

@@ -32,211 +32,211 @@ import ch.qos.logback.core.util.StringCollectionUtil;
  */
 public class SSLParametersConfiguration extends ContextAwareBase {
 
-	private String includedProtocols;
-	private String excludedProtocols;
-	private String includedCipherSuites;
-	private String excludedCipherSuites;
-	private Boolean needClientAuth;
-	private Boolean wantClientAuth;
-	private String[] enabledProtocols;
-	private String[] enabledCipherSuites;
+    private String includedProtocols;
+    private String excludedProtocols;
+    private String includedCipherSuites;
+    private String excludedCipherSuites;
+    private Boolean needClientAuth;
+    private Boolean wantClientAuth;
+    private String[] enabledProtocols;
+    private String[] enabledCipherSuites;
 
-	/**
-	 * Configures SSL parameters on an {@link SSLConfigurable}.
-	 * @param socket the subject configurable
-	 */
-	public void configure(final SSLConfigurable socket) {
-		socket.setEnabledProtocols(enabledProtocols(socket.getSupportedProtocols(), socket.getDefaultProtocols()));
-		socket.setEnabledCipherSuites(enabledCipherSuites(socket.getSupportedCipherSuites(), socket.getDefaultCipherSuites()));
-		if (isNeedClientAuth() != null) {
-			socket.setNeedClientAuth(isNeedClientAuth());
-		}
-		if (isWantClientAuth() != null) {
-			socket.setWantClientAuth(isWantClientAuth());
-		}
-	}
+    /**
+     * Configures SSL parameters on an {@link SSLConfigurable}.
+     * @param socket the subject configurable
+     */
+    public void configure(final SSLConfigurable socket) {
+        socket.setEnabledProtocols(enabledProtocols(socket.getSupportedProtocols(), socket.getDefaultProtocols()));
+        socket.setEnabledCipherSuites(enabledCipherSuites(socket.getSupportedCipherSuites(), socket.getDefaultCipherSuites()));
+        if (isNeedClientAuth() != null) {
+            socket.setNeedClientAuth(isNeedClientAuth());
+        }
+        if (isWantClientAuth() != null) {
+            socket.setWantClientAuth(isWantClientAuth());
+        }
+    }
 
-	/**
-	 * Gets the set of enabled protocols based on the configuration.
-	 * @param supportedProtocols protocols supported by the SSL engine
-	 * @param defaultProtocols default protocols enabled by the SSL engine
-	 * @return enabled protocols
-	 */
-	private String[] enabledProtocols(final String[] supportedProtocols, final String[] defaultProtocols) {
-		if (enabledProtocols == null) {
-			// we're assuming that the same engine is used for all configurables
-			// so once we determine the enabled set, we won't do it again
-			if (OptionHelper.isNullOrEmpty(getIncludedProtocols()) && OptionHelper.isNullOrEmpty(getExcludedProtocols())) {
-				enabledProtocols = Arrays.copyOf(defaultProtocols, defaultProtocols.length);
-			} else {
-				enabledProtocols = includedStrings(supportedProtocols, getIncludedProtocols(), getExcludedProtocols());
-			}
-			for (final String protocol : enabledProtocols) {
-				addInfo("enabled protocol: " + protocol);
-			}
-		}
-		return enabledProtocols;
-	}
+    /**
+     * Gets the set of enabled protocols based on the configuration.
+     * @param supportedProtocols protocols supported by the SSL engine
+     * @param defaultProtocols default protocols enabled by the SSL engine
+     * @return enabled protocols
+     */
+    private String[] enabledProtocols(final String[] supportedProtocols, final String[] defaultProtocols) {
+        if (enabledProtocols == null) {
+            // we're assuming that the same engine is used for all configurables
+            // so once we determine the enabled set, we won't do it again
+            if (OptionHelper.isNullOrEmpty(getIncludedProtocols()) && OptionHelper.isNullOrEmpty(getExcludedProtocols())) {
+                enabledProtocols = Arrays.copyOf(defaultProtocols, defaultProtocols.length);
+            } else {
+                enabledProtocols = includedStrings(supportedProtocols, getIncludedProtocols(), getExcludedProtocols());
+            }
+            for (final String protocol : enabledProtocols) {
+                addInfo("enabled protocol: " + protocol);
+            }
+        }
+        return enabledProtocols;
+    }
 
-	/**
-	 * Gets the set of enabled cipher suites based on the configuration.
-	 * @param supportedCipherSuites cipher suites supported by the SSL engine
-	 * @param defaultCipherSuites default cipher suites enabled by the SSL engine
-	 * @return enabled cipher suites
-	 */
-	private String[] enabledCipherSuites(final String[] supportedCipherSuites, final String[] defaultCipherSuites) {
-		if (enabledCipherSuites == null) {
-			// we're assuming that the same engine is used for all configurables
-			// so once we determine the enabled set, we won't do it again
-			if (OptionHelper.isNullOrEmpty(getIncludedCipherSuites()) && OptionHelper.isNullOrEmpty(getExcludedCipherSuites())) {
-				enabledCipherSuites = Arrays.copyOf(defaultCipherSuites, defaultCipherSuites.length);
-			} else {
-				enabledCipherSuites = includedStrings(supportedCipherSuites, getIncludedCipherSuites(), getExcludedCipherSuites());
-			}
-			for (final String cipherSuite : enabledCipherSuites) {
-				addInfo("enabled cipher suite: " + cipherSuite);
-			}
-		}
-		return enabledCipherSuites;
-	}
+    /**
+     * Gets the set of enabled cipher suites based on the configuration.
+     * @param supportedCipherSuites cipher suites supported by the SSL engine
+     * @param defaultCipherSuites default cipher suites enabled by the SSL engine
+     * @return enabled cipher suites
+     */
+    private String[] enabledCipherSuites(final String[] supportedCipherSuites, final String[] defaultCipherSuites) {
+        if (enabledCipherSuites == null) {
+            // we're assuming that the same engine is used for all configurables
+            // so once we determine the enabled set, we won't do it again
+            if (OptionHelper.isNullOrEmpty(getIncludedCipherSuites()) && OptionHelper.isNullOrEmpty(getExcludedCipherSuites())) {
+                enabledCipherSuites = Arrays.copyOf(defaultCipherSuites, defaultCipherSuites.length);
+            } else {
+                enabledCipherSuites = includedStrings(supportedCipherSuites, getIncludedCipherSuites(), getExcludedCipherSuites());
+            }
+            for (final String cipherSuite : enabledCipherSuites) {
+                addInfo("enabled cipher suite: " + cipherSuite);
+            }
+        }
+        return enabledCipherSuites;
+    }
 
-	/**
-	 * Applies include and exclude patterns to an array of default string values
-	 * to produce an array of strings included by the patterns.
-	 * @param defaults default list of string values
-	 * @param included comma-separated patterns that identity values to include
-	 * @param excluded comma-separated patterns that identity string to exclude
-	 * @return an array of strings containing those strings from {@code defaults}
-	 *    that match at least one pattern in {@code included} that are not
-	 *    matched by any pattern in {@code excluded}
-	 */
-	private String[] includedStrings(final String[] defaults, final String included, final String excluded) {
-		final List<String> values = new ArrayList<>(defaults.length);
-		values.addAll(Arrays.asList(defaults));
-		if (included != null) {
-			StringCollectionUtil.retainMatching(values, stringToArray(included));
-		}
-		if (excluded != null) {
-			StringCollectionUtil.removeMatching(values, stringToArray(excluded));
-		}
-		return values.toArray(new String[values.size()]);
-	}
+    /**
+     * Applies include and exclude patterns to an array of default string values
+     * to produce an array of strings included by the patterns.
+     * @param defaults default list of string values
+     * @param included comma-separated patterns that identity values to include
+     * @param excluded comma-separated patterns that identity string to exclude
+     * @return an array of strings containing those strings from {@code defaults}
+     *    that match at least one pattern in {@code included} that are not
+     *    matched by any pattern in {@code excluded}
+     */
+    private String[] includedStrings(final String[] defaults, final String included, final String excluded) {
+        final List<String> values = new ArrayList<>(defaults.length);
+        values.addAll(Arrays.asList(defaults));
+        if (included != null) {
+            StringCollectionUtil.retainMatching(values, stringToArray(included));
+        }
+        if (excluded != null) {
+            StringCollectionUtil.removeMatching(values, stringToArray(excluded));
+        }
+        return values.toArray(new String[values.size()]);
+    }
 
-	/**
-	 * Splits a string containing comma-separated values into an array.
-	 * @param s the subject string
-	 * @return array of values contained in {@code s}
-	 */
-	private String[] stringToArray(final String s) {
-		return s.split("\\s*,\\s*");
-	}
+    /**
+     * Splits a string containing comma-separated values into an array.
+     * @param s the subject string
+     * @return array of values contained in {@code s}
+     */
+    private String[] stringToArray(final String s) {
+        return s.split("\\s*,\\s*");
+    }
 
-	/**
-	 * Gets the JSSE secure transport protocols to include.
-	 * @return a string containing comma-separated JSSE secure transport
-	 *    protocol names (e.g. {@code TLSv1})
-	 */
-	public String getIncludedProtocols() {
-		return includedProtocols;
-	}
+    /**
+     * Gets the JSSE secure transport protocols to include.
+     * @return a string containing comma-separated JSSE secure transport
+     *    protocol names (e.g. {@code TLSv1})
+     */
+    public String getIncludedProtocols() {
+        return includedProtocols;
+    }
 
-	/**
-	 * Sets the JSSE secure transport protocols to include.
-	 * @param protocols a string containing comma-separated JSSE secure
-	 *    transport protocol names
-	 * @see Java Cryptography Architecture Standard Algorithm Name Documentation
-	 */
-	public void setIncludedProtocols(final String protocols) {
-		includedProtocols = protocols;
-	}
+    /**
+     * Sets the JSSE secure transport protocols to include.
+     * @param protocols a string containing comma-separated JSSE secure
+     *    transport protocol names
+     * @see Java Cryptography Architecture Standard Algorithm Name Documentation
+     */
+    public void setIncludedProtocols(final String protocols) {
+        includedProtocols = protocols;
+    }
 
-	/**
-	 * Gets the JSSE secure transport protocols to exclude.
-	 * @return a string containing comma-separated JSSE secure transport
-	 *    protocol names (e.g. {@code TLSv1})
-	 */
-	public String getExcludedProtocols() {
-		return excludedProtocols;
-	}
+    /**
+     * Gets the JSSE secure transport protocols to exclude.
+     * @return a string containing comma-separated JSSE secure transport
+     *    protocol names (e.g. {@code TLSv1})
+     */
+    public String getExcludedProtocols() {
+        return excludedProtocols;
+    }
 
-	/**
-	 * Sets the JSSE secure transport protocols to exclude.
-	 * @param protocols a string containing comma-separated JSSE secure
-	 *    transport protocol names
-	 * @see Java Cryptography Architecture Standard Algorithm Name Documentation
-	 */
-	public void setExcludedProtocols(final String protocols) {
-		excludedProtocols = protocols;
-	}
+    /**
+     * Sets the JSSE secure transport protocols to exclude.
+     * @param protocols a string containing comma-separated JSSE secure
+     *    transport protocol names
+     * @see Java Cryptography Architecture Standard Algorithm Name Documentation
+     */
+    public void setExcludedProtocols(final String protocols) {
+        excludedProtocols = protocols;
+    }
 
-	/**
-	 * Gets the JSSE cipher suite names to include.
-	 * @return a string containing comma-separated JSSE cipher suite names
-	 *    (e.g. {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
-	 */
-	public String getIncludedCipherSuites() {
-		return includedCipherSuites;
-	}
+    /**
+     * Gets the JSSE cipher suite names to include.
+     * @return a string containing comma-separated JSSE cipher suite names
+     *    (e.g. {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
+     */
+    public String getIncludedCipherSuites() {
+        return includedCipherSuites;
+    }
 
-	/**
-	 * Sets the JSSE cipher suite names to include.
-	 * @param cipherSuites a string containing comma-separated JSSE cipher
-	 *    suite names
-	 * @see Java Cryptography Architecture Standard Algorithm Name Documentation
-	 */
-	public void setIncludedCipherSuites(final String cipherSuites) {
-		includedCipherSuites = cipherSuites;
-	}
+    /**
+     * Sets the JSSE cipher suite names to include.
+     * @param cipherSuites a string containing comma-separated JSSE cipher
+     *    suite names
+     * @see Java Cryptography Architecture Standard Algorithm Name Documentation
+     */
+    public void setIncludedCipherSuites(final String cipherSuites) {
+        includedCipherSuites = cipherSuites;
+    }
 
-	/**
-	 * Gets the JSSE cipher suite names to exclude.
-	 * @return a string containing comma-separated JSSE cipher suite names
-	 *    (e.g. {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
-	 */
-	public String getExcludedCipherSuites() {
-		return excludedCipherSuites;
-	}
+    /**
+     * Gets the JSSE cipher suite names to exclude.
+     * @return a string containing comma-separated JSSE cipher suite names
+     *    (e.g. {@code TLS_DHE_RSA_WITH_AES_256_CBC_SHA})
+     */
+    public String getExcludedCipherSuites() {
+        return excludedCipherSuites;
+    }
 
-	/**
-	 * Sets the JSSE cipher suite names to exclude.
-	 * @param cipherSuites a string containing comma-separated JSSE cipher
-	 *    suite names
-	 * @see Java Cryptography Architecture Standard Algorithm Name Documentation
-	 */
-	public void setExcludedCipherSuites(final String cipherSuites) {
-		excludedCipherSuites = cipherSuites;
-	}
+    /**
+     * Sets the JSSE cipher suite names to exclude.
+     * @param cipherSuites a string containing comma-separated JSSE cipher
+     *    suite names
+     * @see Java Cryptography Architecture Standard Algorithm Name Documentation
+     */
+    public void setExcludedCipherSuites(final String cipherSuites) {
+        excludedCipherSuites = cipherSuites;
+    }
 
-	/**
-	 * Gets a flag indicating whether client authentication is required.
-	 * @return flag state
-	 */
-	public Boolean isNeedClientAuth() {
-		return needClientAuth;
-	}
+    /**
+     * Gets a flag indicating whether client authentication is required.
+     * @return flag state
+     */
+    public Boolean isNeedClientAuth() {
+        return needClientAuth;
+    }
 
-	/**
-	 * Sets a flag indicating whether client authentication is required.
-	 * @param needClientAuth the flag state to set
-	 */
-	public void setNeedClientAuth(final Boolean needClientAuth) {
-		this.needClientAuth = needClientAuth;
-	}
+    /**
+     * Sets a flag indicating whether client authentication is required.
+     * @param needClientAuth the flag state to set
+     */
+    public void setNeedClientAuth(final Boolean needClientAuth) {
+        this.needClientAuth = needClientAuth;
+    }
 
-	/**
-	 * Gets a flag indicating whether client authentication is desired.
-	 * @return flag state
-	 */
-	public Boolean isWantClientAuth() {
-		return wantClientAuth;
-	}
+    /**
+     * Gets a flag indicating whether client authentication is desired.
+     * @return flag state
+     */
+    public Boolean isWantClientAuth() {
+        return wantClientAuth;
+    }
 
-	/**
-	 * Sets a flag indicating whether client authentication is desired.
-	 * @param wantClientAuth the flag state to set
-	 */
-	public void setWantClientAuth(final Boolean wantClientAuth) {
-		this.wantClientAuth = wantClientAuth;
-	}
+    /**
+     * Sets a flag indicating whether client authentication is desired.
+     * @param wantClientAuth the flag state to set
+     */
+    public void setWantClientAuth(final Boolean wantClientAuth) {
+        this.wantClientAuth = wantClientAuth;
+    }
 
 }

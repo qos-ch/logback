@@ -22,50 +22,50 @@ import javax.net.ssl.SSLServerSocket;
  */
 public class SSLConfigurableServerSocket implements SSLConfigurable {
 
-	private final SSLServerSocket delegate;
+    private final SSLServerSocket delegate;
 
-	public SSLConfigurableServerSocket(final SSLServerSocket delegate) {
-		this.delegate = delegate;
-	}
+    public SSLConfigurableServerSocket(final SSLServerSocket delegate) {
+        this.delegate = delegate;
+    }
 
-	@Override
-	public String[] getDefaultProtocols() {
-		return delegate.getEnabledProtocols();
-	}
+    @Override
+    public String[] getDefaultProtocols() {
+        return delegate.getEnabledProtocols();
+    }
 
-	@Override
-	public String[] getSupportedProtocols() {
-		return delegate.getSupportedProtocols();
-	}
+    @Override
+    public String[] getSupportedProtocols() {
+        return delegate.getSupportedProtocols();
+    }
 
-	@Override
-	public void setEnabledProtocols(final String[] protocols) {
-		delegate.setEnabledProtocols(protocols);
-	}
+    @Override
+    public void setEnabledProtocols(final String[] protocols) {
+        delegate.setEnabledProtocols(protocols);
+    }
 
-	@Override
-	public String[] getDefaultCipherSuites() {
-		return delegate.getEnabledCipherSuites();
-	}
+    @Override
+    public String[] getDefaultCipherSuites() {
+        return delegate.getEnabledCipherSuites();
+    }
 
-	@Override
-	public String[] getSupportedCipherSuites() {
-		return delegate.getSupportedCipherSuites();
-	}
+    @Override
+    public String[] getSupportedCipherSuites() {
+        return delegate.getSupportedCipherSuites();
+    }
 
-	@Override
-	public void setEnabledCipherSuites(final String[] suites) {
-		delegate.setEnabledCipherSuites(suites);
-	}
+    @Override
+    public void setEnabledCipherSuites(final String[] suites) {
+        delegate.setEnabledCipherSuites(suites);
+    }
 
-	@Override
-	public void setNeedClientAuth(final boolean state) {
-		delegate.setNeedClientAuth(state);
-	}
+    @Override
+    public void setNeedClientAuth(final boolean state) {
+        delegate.setNeedClientAuth(state);
+    }
 
-	@Override
-	public void setWantClientAuth(final boolean state) {
-		delegate.setWantClientAuth(state);
-	}
+    @Override
+    public void setWantClientAuth(final boolean state) {
+        delegate.setWantClientAuth(state);
+    }
 
 }

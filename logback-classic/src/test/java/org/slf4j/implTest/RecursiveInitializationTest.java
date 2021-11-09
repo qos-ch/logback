@@ -28,28 +28,28 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class RecursiveInitializationTest {
 
-	int diff = RandomUtil.getPositiveInt();
+    int diff = RandomUtil.getPositiveInt();
 
-	@Before
-	public void setUp() throws Exception {
-		System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "recursiveInit.xml");
-		LoggerFactoryFriend.reset();
-	}
+    @Before
+    public void setUp() throws Exception {
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "recursiveInit.xml");
+        LoggerFactoryFriend.reset();
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
-	}
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
+    }
 
-	@Test
-	public void recursiveLogbackInitialization() {
-		final Logger logger = LoggerFactory.getLogger("RecursiveInitializationTest" + diff);
-		logger.info("RecursiveInitializationTest");
+    @Test
+    public void recursiveLogbackInitialization() {
+        final Logger logger = LoggerFactory.getLogger("RecursiveInitializationTest" + diff);
+        logger.info("RecursiveInitializationTest");
 
-		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-		StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
-		final StatusChecker statusChecker = new StatusChecker(loggerContext);
-		statusChecker.assertIsErrorFree();
-	}
+        final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+        final StatusChecker statusChecker = new StatusChecker(loggerContext);
+        statusChecker.assertIsErrorFree();
+    }
 
 }

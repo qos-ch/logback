@@ -22,40 +22,40 @@ import ch.qos.logback.core.util.CachingDateFormatter;
  */
 public class TTLLLayout extends LayoutBase<ILoggingEvent> {
 
-	CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("HH:mm:ss.SSS");
-	ThrowableProxyConverter tpc = new ThrowableProxyConverter();
+    CachingDateFormatter cachingDateFormatter = new CachingDateFormatter("HH:mm:ss.SSS");
+    ThrowableProxyConverter tpc = new ThrowableProxyConverter();
 
-	@Override
-	public void start() {
-		tpc.start();
-		super.start();
-	}
+    @Override
+    public void start() {
+        tpc.start();
+        super.start();
+    }
 
-	@Override
-	public String doLayout(final ILoggingEvent event) {
-		if (!isStarted()) {
-			return CoreConstants.EMPTY_STRING;
-		}
-		final StringBuilder sb = new StringBuilder();
+    @Override
+    public String doLayout(final ILoggingEvent event) {
+        if (!isStarted()) {
+            return CoreConstants.EMPTY_STRING;
+        }
+        final StringBuilder sb = new StringBuilder();
 
-		final long timestamp = event.getTimeStamp();
+        final long timestamp = event.getTimeStamp();
 
-		sb.append(cachingDateFormatter.format(timestamp));
-		sb.append(" [");
-		sb.append(event.getThreadName());
-		sb.append("] ");
-		sb.append(event.getLevel().toString());
-		sb.append(" ");
-		sb.append(event.getLoggerName());
-		sb.append(" - ");
-		sb.append(event.getFormattedMessage());
-		sb.append(CoreConstants.LINE_SEPARATOR);
-		final IThrowableProxy tp = event.getThrowableProxy();
-		if (tp != null) {
-			final String stackTrace = tpc.convert(event);
-			sb.append(stackTrace);
-		}
-		return sb.toString();
-	}
+        sb.append(cachingDateFormatter.format(timestamp));
+        sb.append(" [");
+        sb.append(event.getThreadName());
+        sb.append("] ");
+        sb.append(event.getLevel().toString());
+        sb.append(" ");
+        sb.append(event.getLoggerName());
+        sb.append(" - ");
+        sb.append(event.getFormattedMessage());
+        sb.append(CoreConstants.LINE_SEPARATOR);
+        final IThrowableProxy tp = event.getThrowableProxy();
+        if (tp != null) {
+            final String stackTrace = tpc.convert(event);
+            sb.append(stackTrace);
+        }
+        return sb.toString();
+    }
 
 }

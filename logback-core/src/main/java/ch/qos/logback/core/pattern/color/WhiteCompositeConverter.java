@@ -21,8 +21,8 @@ package ch.qos.logback.core.pattern.color;
  */
 public class WhiteCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {
 
-	@Override
-	protected String getForegroundColorCode(final E event) {
-		return ANSIConstants.WHITE_FG;
-	}
+    @Override
+    protected String getForegroundColorCode(final E event) {
+        return ANSIConstants.WHITE_FG;
+    }
 }

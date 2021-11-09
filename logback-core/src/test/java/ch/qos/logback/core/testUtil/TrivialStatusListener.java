@@ -22,29 +22,29 @@ import ch.qos.logback.core.status.StatusListener;
 
 public class TrivialStatusListener implements StatusListener, LifeCycle {
 
-	public List<Status> list = new ArrayList<>();
-	boolean start = false;
+    public List<Status> list = new ArrayList<>();
+    boolean start = false;
 
-	@Override
-	public void addStatusEvent(final Status status) {
-		if (!isStarted()) {
-			return;
-		}
-		list.add(status);
-	}
+    @Override
+    public void addStatusEvent(final Status status) {
+        if (!isStarted()) {
+            return;
+        }
+        list.add(status);
+    }
 
-	@Override
-	public void start() {
-		start = true;
-	}
+    @Override
+    public void start() {
+        start = true;
+    }
 
-	@Override
-	public void stop() {
-		start = false;
-	}
+    @Override
+    public void stop() {
+        start = false;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return start;
-	}
+    @Override
+    public boolean isStarted() {
+        return start;
+    }
 }

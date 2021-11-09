@@ -33,87 +33,87 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class JettyBasicTest {
 
-	static RequestLogImpl REQUEST_LOG_IMPL;
-	static JettyFixtureWithListAndConsoleAppenders JETTY_FIXTURE;
+    static RequestLogImpl REQUEST_LOG_IMPL;
+    static JettyFixtureWithListAndConsoleAppenders JETTY_FIXTURE;
 
-	private static final int TIMEOUT = 5;
-	static int RANDOM_SERVER_PORT = RandomUtil.getRandomServerPort();
+    private static final int TIMEOUT = 5;
+    static int RANDOM_SERVER_PORT = RandomUtil.getRandomServerPort();
 
-	@BeforeClass
-	static public void startServer() throws Exception {
-		REQUEST_LOG_IMPL = new RequestLogImpl();
-		JETTY_FIXTURE = new JettyFixtureWithListAndConsoleAppenders(REQUEST_LOG_IMPL, RANDOM_SERVER_PORT);
-		JETTY_FIXTURE.start();
-	}
+    @BeforeClass
+    static public void startServer() throws Exception {
+        REQUEST_LOG_IMPL = new RequestLogImpl();
+        JETTY_FIXTURE = new JettyFixtureWithListAndConsoleAppenders(REQUEST_LOG_IMPL, RANDOM_SERVER_PORT);
+        JETTY_FIXTURE.start();
+    }
 
-	@AfterClass
-	static public void stopServer() throws Exception {
-		if (JETTY_FIXTURE != null) {
-			JETTY_FIXTURE.stop();
-		}
-	}
+    @AfterClass
+    static public void stopServer() throws Exception {
+        if (JETTY_FIXTURE != null) {
+            JETTY_FIXTURE.stop();
+        }
+    }
 
-	@Test
-	public void getRequest() throws Exception {
-		final URL url = new URL("http://localhost:" + RANDOM_SERVER_PORT + "/");
-		final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setDoInput(true);
+    @Test
+    public void getRequest() throws Exception {
+        final URL url = new URL("http://localhost:" + RANDOM_SERVER_PORT + "/");
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
 
-		final String result = Util.readToString(connection.getInputStream());
+        final String result = Util.readToString(connection.getInputStream());
 
-		assertEquals("hello world", result);
+        assertEquals("hello world", result);
 
-		final NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
-		listAppender.list.clear();
-	}
+        final NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
+        listAppender.list.clear();
+    }
 
-	@Test
-	public void eventGoesToAppenders() throws Exception {
-		final URL url = new URL(JETTY_FIXTURE.getUrl());
-		final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		connection.setDoInput(true);
+    @Test
+    public void eventGoesToAppenders() throws Exception {
+        final URL url = new URL(JETTY_FIXTURE.getUrl());
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setDoInput(true);
 
-		final String result = Util.readToString(connection.getInputStream());
+        final String result = Util.readToString(connection.getInputStream());
 
-		assertEquals("hello world", result);
+        assertEquals("hello world", result);
 
-		final NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
-		final IAccessEvent event = listAppender.list.poll(TIMEOUT, TimeUnit.SECONDS);
-		assertNotNull("No events received", event);
+        final NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
+        final IAccessEvent event = listAppender.list.poll(TIMEOUT, TimeUnit.SECONDS);
+        assertNotNull("No events received", event);
 
-		assertEquals("127.0.0.1", event.getRemoteHost());
-		assertEquals("localhost", event.getServerName());
-		listAppender.list.clear();
-	}
+        assertEquals("127.0.0.1", event.getRemoteHost());
+        assertEquals("localhost", event.getServerName());
+        listAppender.list.clear();
+    }
 
-	@Test
-	public void postContentConverter() throws Exception {
-		final URL url = new URL(JETTY_FIXTURE.getUrl());
-		final String msg = "test message";
+    @Test
+    public void postContentConverter() throws Exception {
+        final URL url = new URL(JETTY_FIXTURE.getUrl());
+        final String msg = "test message";
 
-		final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-		// this line is necessary to make the stream aware of when the message is
-		// over.
-		connection.setFixedLengthStreamingMode(msg.getBytes().length);
-		connection.setRequestMethod("POST");
-		connection.setDoOutput(true);
-		connection.setDoInput(true);
-		connection.setUseCaches(false);
-		connection.setRequestProperty("Content-Type", "text/plain");
+        final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        // this line is necessary to make the stream aware of when the message is
+        // over.
+        connection.setFixedLengthStreamingMode(msg.getBytes().length);
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        connection.setDoInput(true);
+        connection.setUseCaches(false);
+        connection.setRequestProperty("Content-Type", "text/plain");
 
-		final PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
-		output.print(msg);
-		output.flush();
-		output.close();
+        final PrintWriter output = new PrintWriter(new OutputStreamWriter(connection.getOutputStream()));
+        output.print(msg);
+        output.flush();
+        output.close();
 
-		// StatusPrinter.print(requestLogImpl.getStatusManager());
+        // StatusPrinter.print(requestLogImpl.getStatusManager());
 
-		final NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
+        final NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
 
-		final IAccessEvent event = listAppender.list.poll(TIMEOUT, TimeUnit.SECONDS);
-		assertNotNull("No events received", event);
+        final IAccessEvent event = listAppender.list.poll(TIMEOUT, TimeUnit.SECONDS);
+        assertNotNull("No events received", event);
 
-		// we should test the contents of the requests
-		// assertEquals(msg, event.getRequestContent());
-	}
+        // we should test the contents of the requests
+        // assertEquals(msg, event.getRequestContent());
+    }
 }

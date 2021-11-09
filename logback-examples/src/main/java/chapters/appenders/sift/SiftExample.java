@@ -23,20 +23,20 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class SiftExample {
 
-    public static void main(String[] args) throws JoranException {
+    public static void main(final String[] args) throws JoranException {
         if (args.length != 1) {
             usage("Wrong number of arguments.");
         }
 
-        String configFile = args[0];
+        final String configFile = args[0];
 
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        JoranConfigurator configurator = new JoranConfigurator();
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final JoranConfigurator configurator = new JoranConfigurator();
         lc.reset();
         configurator.setContext(lc);
         configurator.doConfigure(configFile);
 
-        Logger logger = LoggerFactory.getLogger(SiftExample.class);
+        final Logger logger = LoggerFactory.getLogger(SiftExample.class);
         logger.debug("Application started");
 
         MDC.put("userid", "Alice");
@@ -45,7 +45,7 @@ public class SiftExample {
         // StatusPrinter.print(lc);
     }
 
-    static void usage(String msg) {
+    static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + SiftExample.class.getName() + " configFile\n" + "   configFile a logback configuration file");
         System.exit(1);

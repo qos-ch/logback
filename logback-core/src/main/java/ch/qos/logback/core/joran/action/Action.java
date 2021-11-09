@@ -37,74 +37,74 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public abstract class Action extends ContextAwareBase {
 
-	public static final String NAME_ATTRIBUTE = "name";
-	public static final String KEY_ATTRIBUTE = "key";
-	public static final String VALUE_ATTRIBUTE = "value";
-	public static final String FILE_ATTRIBUTE = "file";
-	public static final String CLASS_ATTRIBUTE = "class";
-	public static final String PATTERN_ATTRIBUTE = "pattern";
-	public static final String SCOPE_ATTRIBUTE = "scope";
+    public static final String NAME_ATTRIBUTE = "name";
+    public static final String KEY_ATTRIBUTE = "key";
+    public static final String VALUE_ATTRIBUTE = "value";
+    public static final String FILE_ATTRIBUTE = "file";
+    public static final String CLASS_ATTRIBUTE = "class";
+    public static final String PATTERN_ATTRIBUTE = "pattern";
+    public static final String SCOPE_ATTRIBUTE = "scope";
 
-	public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
+    public static final String ACTION_CLASS_ATTRIBUTE = "actionClass";
 
-	/**
-	 * Called when the parser encounters an element matching a
-	 * {@link ch.qos.logback.core.joran.spi.ElementSelector Pattern}.
-	 */
-	public abstract void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException;
+    /**
+     * Called when the parser encounters an element matching a
+     * {@link ch.qos.logback.core.joran.spi.ElementSelector Pattern}.
+     */
+    public abstract void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException;
 
-	/**
-	 * Called to pass the body (as text) contained within an element.
-	 * @param ic
-	 * @param body
-	 * @throws ActionException
-	 */
-	public void body(final InterpretationContext intercon, final String body) throws ActionException {
-		// NOP
-	}
+    /**
+     * Called to pass the body (as text) contained within an element.
+     * @param ic
+     * @param body
+     * @throws ActionException
+     */
+    public void body(final InterpretationContext intercon, final String body) throws ActionException {
+        // NOP
+    }
 
-	/*
-	 * Called when the parser encounters an endElement event matching a {@link ch.qos.logback.core.joran.spi.Pattern
-	 * Pattern}.
-	 */
-	public abstract void end(InterpretationContext intercon, String name) throws ActionException;
+    /*
+     * Called when the parser encounters an endElement event matching a {@link ch.qos.logback.core.joran.spi.Pattern
+     * Pattern}.
+     */
+    public abstract void end(InterpretationContext intercon, String name) throws ActionException;
 
-	@Override
-	public String toString() {
-		return this.getClass().getName();
-	}
+    @Override
+    public String toString() {
+        return this.getClass().getName();
+    }
 
-	protected int getColumnNumber(final InterpretationContext intercon) {
-		final SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
-		final Locator locator = interpreter.getLocator();
-		if (locator != null) {
-			return locator.getColumnNumber();
-		}
-		return -1;
-	}
+    protected int getColumnNumber(final InterpretationContext intercon) {
+        final SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
+        final Locator locator = interpreter.getLocator();
+        if (locator != null) {
+            return locator.getColumnNumber();
+        }
+        return -1;
+    }
 
-	// move to InterpretationContext
-	static public int getLineNumber(final InterpretationContext intercon) {
-		final SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
-		if(interpreter == null) {
-			return -1;
-		}
-		final Locator locator = interpreter.getLocator();
-		if (locator != null) {
-			return locator.getLineNumber();
-		}
-		return -1;
-	}
+    // move to InterpretationContext
+    static public int getLineNumber(final InterpretationContext intercon) {
+        final SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
+        if(interpreter == null) {
+            return -1;
+        }
+        final Locator locator = interpreter.getLocator();
+        if (locator != null) {
+            return locator.getLineNumber();
+        }
+        return -1;
+    }
 
-	protected String getLineColStr(final InterpretationContext intercon) {
-		return "line: " + getLineNumber(intercon) + ", column: " + getColumnNumber(intercon);
-	}
+    protected String getLineColStr(final InterpretationContext intercon) {
+        return "line: " + getLineNumber(intercon) + ", column: " + getColumnNumber(intercon);
+    }
 
-	protected String atLine(final InterpretationContext intercon) {
-		return "At line "+intercon.getLineNumber();
-	}
+    protected String atLine(final InterpretationContext intercon) {
+        return "At line "+intercon.getLineNumber();
+    }
 
-	protected String nearLine(final InterpretationContext intercon) {
-		return "Near line "+intercon.getLineNumber();
-	}
+    protected String nearLine(final InterpretationContext intercon) {
+        return "Near line "+intercon.getLineNumber();
+    }
 }

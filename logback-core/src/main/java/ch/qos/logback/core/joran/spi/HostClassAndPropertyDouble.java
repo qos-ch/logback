@@ -27,43 +27,43 @@ import java.util.Objects;
  */
 public class HostClassAndPropertyDouble {
 
-	final Class<?> hostClass;
-	final String propertyName;
+    final Class<?> hostClass;
+    final String propertyName;
 
-	public HostClassAndPropertyDouble(final Class<?> hostClass, final String propertyName) {
-		this.hostClass = hostClass;
-		this.propertyName = propertyName;
-	}
+    public HostClassAndPropertyDouble(final Class<?> hostClass, final String propertyName) {
+        this.hostClass = hostClass;
+        this.propertyName = propertyName;
+    }
 
-	public Class<?> getHostClass() {
-		return hostClass;
-	}
+    public Class<?> getHostClass() {
+        return hostClass;
+    }
 
-	public String getPropertyName() {
-		return propertyName;
-	}
+    public String getPropertyName() {
+        return propertyName;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (hostClass == null ? 0 : hostClass.hashCode());
-		return prime * result + (propertyName == null ? 0 : propertyName.hashCode());
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (hostClass == null ? 0 : hostClass.hashCode());
+        return prime * result + (propertyName == null ? 0 : propertyName.hashCode());
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		final HostClassAndPropertyDouble other = (HostClassAndPropertyDouble) obj;
-		if (!Objects.equals(hostClass, other.hostClass) || !Objects.equals(propertyName, other.propertyName)) {
-			return false;
-		}
-		return true;
-	}
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final HostClassAndPropertyDouble other = (HostClassAndPropertyDouble) obj;
+        if (!Objects.equals(hostClass, other.hostClass) || !Objects.equals(propertyName, other.propertyName)) {
+            return false;
+        }
+        return true;
+    }
 
 }

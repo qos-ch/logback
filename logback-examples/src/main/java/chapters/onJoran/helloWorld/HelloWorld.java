@@ -24,21 +24,21 @@ import ch.qos.logback.core.util.StatusPrinter;
 import chapters.onJoran.SimpleConfigurator;
 
 /**
- * 
+ *
  * A hello world example using Joran.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class HelloWorld {
-    public static void main(String[] args) throws Exception {
-        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+    public static void main(final String[] args) throws Exception {
+        final Map<ElementSelector, Action> ruleMap = new HashMap<>();
 
         // Associate "hello-world" pattern with HelloWorldAction
         ruleMap.put(new ElementSelector("hello-world"), new HelloWorldAction());
 
         // Joran needs to work within a context.
-        Context context = new ContextBase();
-        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        final Context context = new ContextBase();
+        final SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
         // link the configurator with its context
         simpleConfigurator.setContext(context);
 

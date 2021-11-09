@@ -22,80 +22,80 @@ import org.junit.Test;
 
 public class LoggerNameUtilTest {
 
-	@Test
-	public void smoke0() {
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("a");
-		witnessList.add("b");
-		witnessList.add("c");
-		final List<String> partList = LoggerNameUtil.computeNameParts("a.b.c");
-		assertEquals(witnessList, partList);
-	}
+    @Test
+    public void smoke0() {
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("a");
+        witnessList.add("b");
+        witnessList.add("c");
+        final List<String> partList = LoggerNameUtil.computeNameParts("a.b.c");
+        assertEquals(witnessList, partList);
+    }
 
-	@Test
-	public void smoke1() {
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("com");
-		witnessList.add("foo");
-		witnessList.add("Bar");
-		final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar");
-		assertEquals(witnessList, partList);
-	}
+    @Test
+    public void smoke1() {
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("com");
+        witnessList.add("foo");
+        witnessList.add("Bar");
+        final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar");
+        assertEquals(witnessList, partList);
+    }
 
-	@Test
-	public void emptyStringShouldReturnAListContainingOneEmptyString() {
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("");
-		final List<String> partList = LoggerNameUtil.computeNameParts("");
-		assertEquals(witnessList, partList);
-	}
+    @Test
+    public void emptyStringShouldReturnAListContainingOneEmptyString() {
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("");
+        final List<String> partList = LoggerNameUtil.computeNameParts("");
+        assertEquals(witnessList, partList);
+    }
 
-	@Test
-	public void dotAtLastPositionShouldReturnAListWithAnEmptyStringAsLastElement() {
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("com");
-		witnessList.add("foo");
-		witnessList.add("");
+    @Test
+    public void dotAtLastPositionShouldReturnAListWithAnEmptyStringAsLastElement() {
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("com");
+        witnessList.add("foo");
+        witnessList.add("");
 
-		final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.");
-		assertEquals(witnessList, partList);
-	}
+        final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.");
+        assertEquals(witnessList, partList);
+    }
 
-	@Test
-	public void supportNestedClasses() {
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("com");
-		witnessList.add("foo");
-		witnessList.add("Bar");
-		witnessList.add("Nested");
+    @Test
+    public void supportNestedClasses() {
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("com");
+        witnessList.add("foo");
+        witnessList.add("Bar");
+        witnessList.add("Nested");
 
-		final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested");
-		assertEquals(witnessList, partList);
-	}
+        final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested");
+        assertEquals(witnessList, partList);
+    }
 
-	@Test
-	public void supportNestedClassesWithNestedDot() {
-		// LOGBACK-384
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("com");
-		witnessList.add("foo");
-		witnessList.add("Bar");
-		witnessList.add("Nested");
-		witnessList.add("dot");
+    @Test
+    public void supportNestedClassesWithNestedDot() {
+        // LOGBACK-384
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("com");
+        witnessList.add("foo");
+        witnessList.add("Bar");
+        witnessList.add("Nested");
+        witnessList.add("dot");
 
-		final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested.dot");
-		assertEquals(witnessList, partList);
-	}
+        final List<String> partList = LoggerNameUtil.computeNameParts("com.foo.Bar$Nested.dot");
+        assertEquals(witnessList, partList);
+    }
 
-	@Test
-	public void supportNestedClassesAtBeginning() {
-		final List<String> witnessList = new ArrayList<>();
-		witnessList.add("foo");
-		witnessList.add("Nested");
-		witnessList.add("bar");
+    @Test
+    public void supportNestedClassesAtBeginning() {
+        final List<String> witnessList = new ArrayList<>();
+        witnessList.add("foo");
+        witnessList.add("Nested");
+        witnessList.add("bar");
 
-		final List<String> partList = LoggerNameUtil.computeNameParts("foo$Nested.bar");
-		assertEquals(witnessList, partList);
-	}
+        final List<String> partList = LoggerNameUtil.computeNameParts("foo$Nested.bar");
+        assertEquals(witnessList, partList);
+    }
 
 }

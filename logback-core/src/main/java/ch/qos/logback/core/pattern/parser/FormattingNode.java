@@ -17,37 +17,37 @@ import ch.qos.logback.core.pattern.FormatInfo;
 
 public class FormattingNode extends Node {
 
-	FormatInfo formatInfo;
+    FormatInfo formatInfo;
 
-	FormattingNode(final int type) {
-		super(type);
-	}
+    FormattingNode(final int type) {
+        super(type);
+    }
 
-	FormattingNode(final int type, final Object value) {
-		super(type, value);
-	}
+    FormattingNode(final int type, final Object value) {
+        super(type, value);
+    }
 
-	public FormatInfo getFormatInfo() {
-		return formatInfo;
-	}
+    public FormatInfo getFormatInfo() {
+        return formatInfo;
+    }
 
-	public void setFormatInfo(final FormatInfo formatInfo) {
-		this.formatInfo = formatInfo;
-	}
+    public void setFormatInfo(final FormatInfo formatInfo) {
+        this.formatInfo = formatInfo;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!super.equals(o) || !(o instanceof FormattingNode)) {
-			return false;
-		}
-		final FormattingNode r = (FormattingNode) o;
+    @Override
+    public boolean equals(final Object o) {
+        if (!super.equals(o) || !(o instanceof FormattingNode)) {
+            return false;
+        }
+        final FormattingNode r = (FormattingNode) o;
 
-		return formatInfo != null ? formatInfo.equals(r.formatInfo) : r.formatInfo == null;
-	}
+        return formatInfo != null ? formatInfo.equals(r.formatInfo) : r.formatInfo == null;
+    }
 
-	@Override
-	public int hashCode() {
-		final int result = super.hashCode();
-		return 31 * result + (formatInfo != null ? formatInfo.hashCode() : 0);
-	}
+    @Override
+    public int hashCode() {
+        final int result = super.hashCode();
+        return 31 * result + (formatInfo != null ? formatInfo.hashCode() : 0);
+    }
 }

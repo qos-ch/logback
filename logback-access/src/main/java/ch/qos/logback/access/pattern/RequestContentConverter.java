@@ -26,9 +26,9 @@ import ch.qos.logback.access.spi.IAccessEvent;
  */
 public class RequestContentConverter extends AccessConverter {
 
-	@Override
-	public String convert(final IAccessEvent accessEvent) {
-		return accessEvent.getRequestContent();
-	}
+    @Override
+    public String convert(final IAccessEvent accessEvent) {
+        return accessEvent.getRequestContent();
+    }
 
 }

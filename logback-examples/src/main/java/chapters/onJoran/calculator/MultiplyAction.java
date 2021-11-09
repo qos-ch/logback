@@ -13,25 +13,26 @@
  */
 package chapters.onJoran.calculator;
 
+import java.util.EmptyStackException;
+
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
 
-import java.util.EmptyStackException;
-
 /**
- * 
+ *
  * This action multiplies the two integers at the top of the stack (they are
  * removed) and pushes the result on top the stack.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MultiplyAction extends Action {
 
-    public void begin(InterpretationContext ic, String name, Attributes attributes) {
-        int first = fetchInteger(ic);
-        int second = fetchInteger(ic);
+    @Override
+    public void begin(final InterpretationContext ic, final String name, final Attributes attributes) {
+        final int first = fetchInteger(ic);
+        final int second = fetchInteger(ic);
         ic.pushObject(first * second);
     }
 
@@ -39,27 +40,27 @@ public class MultiplyAction extends Action {
      * Pop the Integer object at the top of the stack. This code illustrates usage
      * of Joran's error handling paradigm.
      */
-    int fetchInteger(InterpretationContext ic) {
+    int fetchInteger(final InterpretationContext ic) {
         int result = 0;
 
         try {
-            Object o1 = ic.popObject();
+            final Object o1 = ic.popObject();
 
-            if (o1 instanceof Integer) {
-                result = ((Integer) o1).intValue();
-            } else {
-                String errMsg = "Object [" + o1 + "] currently at the top of the stack is not an integer.";
+            if (!(o1 instanceof Integer)) {
+                final String errMsg = "Object [" + o1 + "] currently at the top of the stack is not an integer.";
                 ic.addError(errMsg);
                 throw new IllegalArgumentException(errMsg);
             }
-        } catch (EmptyStackException ese) {
+            result = ((Integer) o1);
+        } catch (final EmptyStackException ese) {
             ic.addError("Expecting an integer on the execution stack.");
             throw ese;
         }
         return result;
     }
 
-    public void end(InterpretationContext ic, String name) {
+    @Override
+    public void end(final InterpretationContext ic, final String name) {
         // Nothing to do here.
     }
 }

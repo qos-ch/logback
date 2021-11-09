@@ -25,54 +25,54 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class CounterBasedEvaluator extends ContextAwareBase implements EventEvaluator<Object> {
 
-	static int DEFAULT_LIMIT = 1024;
-	int limit = DEFAULT_LIMIT;
-	int counter = 0;
-	String name;
-	boolean started;
+    static int DEFAULT_LIMIT = 1024;
+    int limit = DEFAULT_LIMIT;
+    int counter = 0;
+    String name;
+    boolean started;
 
-	@Override
-	public boolean evaluate(final Object event) throws NullPointerException, EvaluationException {
-		counter++;
+    @Override
+    public boolean evaluate(final Object event) throws NullPointerException, EvaluationException {
+        counter++;
 
-		if (counter == limit) {
-			counter = 0;
-			return true;
-		}
-		return false;
-	}
+        if (counter == limit) {
+            counter = 0;
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public void setName(final String name) {
-		this.name = name;
-	}
+    @Override
+    public void setName(final String name) {
+        this.name = name;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public void start() {
-		started = true;
-	}
+    @Override
+    public void start() {
+        started = true;
+    }
 
-	@Override
-	public void stop() {
-		started = false;
-	}
+    @Override
+    public void stop() {
+        started = false;
+    }
 
-	public int getLimit() {
-		return limit;
-	}
+    public int getLimit() {
+        return limit;
+    }
 
-	public void setLimit(final int limit) {
-		this.limit = limit;
-	}
+    public void setLimit(final int limit) {
+        this.limit = limit;
+    }
 
 }

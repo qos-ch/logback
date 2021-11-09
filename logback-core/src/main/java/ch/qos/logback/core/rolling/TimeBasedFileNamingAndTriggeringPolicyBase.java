@@ -28,120 +28,120 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
-	static private String COLLIDING_DATE_FORMAT_URL = CODES_URL + "#rfa_collision_in_dateFormat";
+    static private String COLLIDING_DATE_FORMAT_URL = CODES_URL + "#rfa_collision_in_dateFormat";
 
-	protected TimeBasedRollingPolicy<E> tbrp;
+    protected TimeBasedRollingPolicy<E> tbrp;
 
-	protected ArchiveRemover archiveRemover = null;
-	protected String elapsedPeriodsFileName;
-	protected RollingCalendar rc;
+    protected ArchiveRemover archiveRemover = null;
+    protected String elapsedPeriodsFileName;
+    protected RollingCalendar rc;
 
-	protected long artificialCurrentTime = -1;
-	protected Date dateInCurrentPeriod = null;
+    protected long artificialCurrentTime = -1;
+    protected Date dateInCurrentPeriod = null;
 
-	protected long nextCheck;
-	protected boolean started = false;
-	protected boolean errorFree = true;
+    protected long nextCheck;
+    protected boolean started = false;
+    protected boolean errorFree = true;
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public void start() {
-		final DateTokenConverter<Object> dtc = tbrp.fileNamePattern.getPrimaryDateTokenConverter();
-		if (dtc == null) {
-			throw new IllegalStateException("FileNamePattern [" + tbrp.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
-		}
+    @Override
+    public void start() {
+        final DateTokenConverter<Object> dtc = tbrp.fileNamePattern.getPrimaryDateTokenConverter();
+        if (dtc == null) {
+            throw new IllegalStateException("FileNamePattern [" + tbrp.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
+        }
 
-		if (dtc.getZoneId() != null) {
-			final TimeZone tz = TimeZone.getTimeZone(dtc.getZoneId());
-			rc = new RollingCalendar(dtc.getDatePattern(), tz, Locale.getDefault());
-		} else {
-			rc = new RollingCalendar(dtc.getDatePattern());
-		}
-		addInfo("The date pattern is '" + dtc.getDatePattern() + "' from file name pattern '" + tbrp.fileNamePattern.getPattern() + "'.");
-		rc.printPeriodicity(this);
+        if (dtc.getZoneId() != null) {
+            final TimeZone tz = TimeZone.getTimeZone(dtc.getZoneId());
+            rc = new RollingCalendar(dtc.getDatePattern(), tz, Locale.getDefault());
+        } else {
+            rc = new RollingCalendar(dtc.getDatePattern());
+        }
+        addInfo("The date pattern is '" + dtc.getDatePattern() + "' from file name pattern '" + tbrp.fileNamePattern.getPattern() + "'.");
+        rc.printPeriodicity(this);
 
-		if (!rc.isCollisionFree()) {
-			addError("The date format in FileNamePattern will result in collisions in the names of archived log files.");
-			addError(CoreConstants.MORE_INFO_PREFIX + COLLIDING_DATE_FORMAT_URL);
-			withErrors();
-			return;
-		}
+        if (!rc.isCollisionFree()) {
+            addError("The date format in FileNamePattern will result in collisions in the names of archived log files.");
+            addError(CoreConstants.MORE_INFO_PREFIX + COLLIDING_DATE_FORMAT_URL);
+            withErrors();
+            return;
+        }
 
-		setDateInCurrentPeriod(new Date(getCurrentTime()));
-		if (tbrp.getParentsRawFileProperty() != null) {
-			final File currentFile = new File(tbrp.getParentsRawFileProperty());
-			if (currentFile.exists() && currentFile.canRead()) {
-				setDateInCurrentPeriod(new Date(currentFile.lastModified()));
-			}
-		}
-		addInfo("Setting initial period to " + dateInCurrentPeriod);
-		computeNextCheck();
-	}
+        setDateInCurrentPeriod(new Date(getCurrentTime()));
+        if (tbrp.getParentsRawFileProperty() != null) {
+            final File currentFile = new File(tbrp.getParentsRawFileProperty());
+            if (currentFile.exists() && currentFile.canRead()) {
+                setDateInCurrentPeriod(new Date(currentFile.lastModified()));
+            }
+        }
+        addInfo("Setting initial period to " + dateInCurrentPeriod);
+        computeNextCheck();
+    }
 
-	@Override
-	public void stop() {
-		started = false;
-	}
+    @Override
+    public void stop() {
+        started = false;
+    }
 
-	protected void computeNextCheck() {
-		nextCheck = rc.getNextTriggeringDate(dateInCurrentPeriod).getTime();
-	}
+    protected void computeNextCheck() {
+        nextCheck = rc.getNextTriggeringDate(dateInCurrentPeriod).getTime();
+    }
 
-	protected void setDateInCurrentPeriod(final long now) {
-		dateInCurrentPeriod.setTime(now);
-	}
+    protected void setDateInCurrentPeriod(final long now) {
+        dateInCurrentPeriod.setTime(now);
+    }
 
-	// allow Test classes to act on the dateInCurrentPeriod field to simulate old
-	// log files needing rollover
-	public void setDateInCurrentPeriod(final Date _dateInCurrentPeriod) {
-		this.dateInCurrentPeriod = _dateInCurrentPeriod;
-	}
+    // allow Test classes to act on the dateInCurrentPeriod field to simulate old
+    // log files needing rollover
+    public void setDateInCurrentPeriod(final Date _dateInCurrentPeriod) {
+        this.dateInCurrentPeriod = _dateInCurrentPeriod;
+    }
 
-	@Override
-	public String getElapsedPeriodsFileName() {
-		return elapsedPeriodsFileName;
-	}
+    @Override
+    public String getElapsedPeriodsFileName() {
+        return elapsedPeriodsFileName;
+    }
 
-	@Override
-	public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
-		return tbrp.fileNamePatternWithoutCompSuffix.convert(dateInCurrentPeriod);
-	}
+    @Override
+    public String getCurrentPeriodsFileNameWithoutCompressionSuffix() {
+        return tbrp.fileNamePatternWithoutCompSuffix.convert(dateInCurrentPeriod);
+    }
 
-	@Override
-	public void setCurrentTime(final long timeInMillis) {
-		artificialCurrentTime = timeInMillis;
-	}
+    @Override
+    public void setCurrentTime(final long timeInMillis) {
+        artificialCurrentTime = timeInMillis;
+    }
 
-	@Override
-	public long getCurrentTime() {
-		// if time is forced return the time set by user
-		if (artificialCurrentTime >= 0) {
-			return artificialCurrentTime;
-		}
-		return System.currentTimeMillis();
-	}
+    @Override
+    public long getCurrentTime() {
+        // if time is forced return the time set by user
+        if (artificialCurrentTime >= 0) {
+            return artificialCurrentTime;
+        }
+        return System.currentTimeMillis();
+    }
 
-	@Override
-	public void setTimeBasedRollingPolicy(final TimeBasedRollingPolicy<E> _tbrp) {
-		this.tbrp = _tbrp;
+    @Override
+    public void setTimeBasedRollingPolicy(final TimeBasedRollingPolicy<E> _tbrp) {
+        this.tbrp = _tbrp;
 
-	}
+    }
 
-	@Override
-	public ArchiveRemover getArchiveRemover() {
-		return archiveRemover;
-	}
+    @Override
+    public ArchiveRemover getArchiveRemover() {
+        return archiveRemover;
+    }
 
-	protected void withErrors() {
-		errorFree = false;
-	}
+    protected void withErrors() {
+        errorFree = false;
+    }
 
-	protected boolean isErrorFree() {
-		return errorFree;
-	}
+    protected boolean isErrorFree() {
+        return errorFree;
+    }
 
 }

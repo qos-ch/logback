@@ -9,33 +9,33 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 
 public class ContextNameModelHandler extends ModelHandlerBase {
 
-	public ContextNameModelHandler(final Context context) {
-		super(context);
-	}
+    public ContextNameModelHandler(final Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
-		return new ContextNameModelHandler(context);
-	}
-
-
-	@Override
-	protected Class<ContextNameModel> getSupportedModelClass() {
-		return ContextNameModel.class;
-	}
-
-	@Override
-	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
-		final ContextNameModel contextNameModel = (ContextNameModel) model;
+    static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
+        return new ContextNameModelHandler(context);
+    }
 
 
-		final String finalBody = intercon.subst(contextNameModel.getBodyText());
-		addInfo("Setting logger context name as [" + finalBody + "]");
-		try {
-			context.setName(finalBody);
-		} catch (final IllegalStateException e) {
-			addError("Failed to rename context [" + context.getName() + "] as [" + finalBody + "]", e);
-		}
+    @Override
+    protected Class<ContextNameModel> getSupportedModelClass() {
+        return ContextNameModel.class;
+    }
 
-	}
+    @Override
+    public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+        final ContextNameModel contextNameModel = (ContextNameModel) model;
+
+
+        final String finalBody = intercon.subst(contextNameModel.getBodyText());
+        addInfo("Setting logger context name as [" + finalBody + "]");
+        try {
+            context.setName(finalBody);
+        } catch (final IllegalStateException e) {
+            addError("Failed to rename context [" + context.getName() + "] as [" + finalBody + "]", e);
+        }
+
+    }
 
 }

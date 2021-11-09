@@ -26,11 +26,11 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
  */
 public class NOPAction extends Action {
 
-	@Override
-	public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
-	}
+    @Override
+    public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
+    }
 
-	@Override
-	public void end(final InterpretationContext ec, final String name) {
-	}
+    @Override
+    public void end(final InterpretationContext ec, final String name) {
+    }
 }

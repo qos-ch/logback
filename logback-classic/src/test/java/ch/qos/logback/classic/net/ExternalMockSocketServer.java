@@ -21,71 +21,71 @@ import java.util.List;
 
 public class ExternalMockSocketServer {
 
-	static final String LOGGINGEVENT = "LoggingEvent";
-	static final String LOGGINGEVENT2 = "LoggingEvent2";
-	static final String MINIMALEXT = "MinimalExt";
-	static final String MINIMALSER = "MinimalSer";
+    static final String LOGGINGEVENT = "LoggingEvent";
+    static final String LOGGINGEVENT2 = "LoggingEvent2";
+    static final String MINIMALEXT = "MinimalExt";
+    static final String MINIMALSER = "MinimalSer";
 
-	static final int PORT = 4560;
+    static final int PORT = 4560;
 
-	// static int loopLen;
-	static int clientNumber;
+    // static int loopLen;
+    static int clientNumber;
 
-	static List<String> msgList = new ArrayList<>();
-	static boolean finished = false;
+    static List<String> msgList = new ArrayList<>();
+    static boolean finished = false;
 
-	String className = LOGGINGEVENT;
+    String className = LOGGINGEVENT;
 
-	public static void main(final String[] args) {
-		if (args.length == 1) {
-			clientNumber = Integer.parseInt(args[0]);
-			// loopLen = Integer.parseInt((args[1]));
-			runServer();
-		} else {
-			usage("Wrong number of arguments.");
-		}
-	}
+    public static void main(final String[] args) {
+        if (args.length == 1) {
+            clientNumber = Integer.parseInt(args[0]);
+            // loopLen = Integer.parseInt((args[1]));
+            runServer();
+        } else {
+            usage("Wrong number of arguments.");
+        }
+    }
 
-	static void usage(final String msg) {
-		System.err.println(msg);
-		System.err.println("Usage: java " + ExternalMockSocketServer.class.getName() + " loopNumber");
-		System.exit(1);
-	}
+    static void usage(final String msg) {
+        System.err.println(msg);
+        System.err.println("Usage: java " + ExternalMockSocketServer.class.getName() + " loopNumber");
+        System.exit(1);
+    }
 
-	static void runServer() {
+    static void runServer() {
 
-		try {
-			System.out.println("Starting Server...");
-			final ServerSocket serverSocket = new ServerSocket(PORT);
-			System.out.println("Listening on port " + PORT);
-			for (int j = 0; j < clientNumber; j++) {
-				final Socket socket = serverSocket.accept();
-				System.out.println("New client accepted.");
-				System.out.println("Connected to client at " + socket.getInetAddress());
+        try {
+            System.out.println("Starting Server...");
+            final ServerSocket serverSocket = new ServerSocket(PORT);
+            System.out.println("Listening on port " + PORT);
+            for (int j = 0; j < clientNumber; j++) {
+                final Socket socket = serverSocket.accept();
+                System.out.println("New client accepted.");
+                System.out.println("Connected to client at " + socket.getInetAddress());
 
-				final InputStream is = socket.getInputStream();
-				long sum = 0;
+                final InputStream is = socket.getInputStream();
+                long sum = 0;
 
-				while (true) {
-					// this call is blocking
-					final int val = is.read();
-					if (val == -1) {
-						break;
-					}
-					// if a byte is available, we skip it.
-					// this allows to pass all available bytes in a quick manner.
-					final int a = is.available();
-					sum += a + 1;
-					is.skip(a);
-				}
-				System.out.println(sum / 1000 + " KB");
-			}
-			serverSocket.close();
-		} catch (final Exception se) {
-			se.printStackTrace();
-		}
-		System.out.println("Server finished.");
-		finished = true;
-	}
+                while (true) {
+                    // this call is blocking
+                    final int val = is.read();
+                    if (val == -1) {
+                        break;
+                    }
+                    // if a byte is available, we skip it.
+                    // this allows to pass all available bytes in a quick manner.
+                    final int a = is.available();
+                    sum += a + 1;
+                    is.skip(a);
+                }
+                System.out.println(sum / 1000 + " KB");
+            }
+            serverSocket.close();
+        } catch (final Exception se) {
+            se.printStackTrace();
+        }
+        System.out.println("Server finished.");
+        finished = true;
+    }
 
 }

@@ -45,46 +45,46 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class MDCFilter extends MatchingFilter {
 
-	String MDCKey;
-	String value;
+    String MDCKey;
+    String value;
 
 
-	@Override
-	public void start() {
-		int errorCount = 0;
-		if(value == null) {
-			addError("\'value\' parameter is mandatory. Cannot start.");
-			errorCount++;
-		}
-		if(MDCKey == null) {
-			addError("\'MDCKey\' parameter is mandatory. Cannot start.");
-			errorCount++;
-		}
+    @Override
+    public void start() {
+        int errorCount = 0;
+        if(value == null) {
+            addError("\'value\' parameter is mandatory. Cannot start.");
+            errorCount++;
+        }
+        if(MDCKey == null) {
+            addError("\'MDCKey\' parameter is mandatory. Cannot start.");
+            errorCount++;
+        }
 
-		if(errorCount == 0) {
-			start = true;
-		}
-	}
-	@Override
-	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
+        if(errorCount == 0) {
+            start = true;
+        }
+    }
+    @Override
+    public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
 
-		if (!isStarted()) {
-			return FilterReply.NEUTRAL;
-		}
+        if (!isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
 
-		final String value = MDC.get(MDCKey);
-		if (this.value.equals(value)) {
-			return onMatch;
-		}
-		return onMismatch;
-	}
+        final String value = MDC.get(MDCKey);
+        if (this.value.equals(value)) {
+            return onMatch;
+        }
+        return onMismatch;
+    }
 
-	public void setValue(final String value) {
-		this.value = value;
-	}
+    public void setValue(final String value) {
+        this.value = value;
+    }
 
-	public void setMDCKey(final String MDCKey) {
-		this.MDCKey = MDCKey;
-	}
+    public void setMDCKey(final String MDCKey) {
+        this.MDCKey = MDCKey;
+    }
 
 }

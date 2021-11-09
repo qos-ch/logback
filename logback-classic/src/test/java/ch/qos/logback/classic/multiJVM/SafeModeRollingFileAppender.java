@@ -30,75 +30,75 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class SafeModeRollingFileAppender {
 
-	static long LEN;
-	static String FILENAME;
-	static String STAMP;
+    static long LEN;
+    static String FILENAME;
+    static String STAMP;
 
-	static final String DATE_PATTERN = "yyyy-MM-dd_HH_mm_ss";
+    static final String DATE_PATTERN = "yyyy-MM-dd_HH_mm_ss";
 
-	static public void main(final String[] argv) throws Exception {
-		if (argv.length != 3) {
-			usage("Wrong number of arguments.");
-		}
+    static public void main(final String[] argv) throws Exception {
+        if (argv.length != 3) {
+            usage("Wrong number of arguments.");
+        }
 
-		STAMP = argv[0];
-		LEN = Integer.parseInt(argv[1]);
-		FILENAME = argv[2];
-		writeContinously(STAMP, FILENAME, true);
-	}
+        STAMP = argv[0];
+        LEN = Integer.parseInt(argv[1]);
+        FILENAME = argv[2];
+        writeContinously(STAMP, FILENAME, true);
+    }
 
-	static void usage(final String msg) {
-		System.err.println(msg);
-		System.err.println("Usage: java " + SafeModeRollingFileAppender.class.getName() + " stamp runLength filename\n" + " stamp JVM instance stamp\n"
-				+ "   runLength (integer) the number of logs to generate perthread" + "    filename (string) the filename where to write\n");
-		System.exit(1);
-	}
+    static void usage(final String msg) {
+        System.err.println(msg);
+        System.err.println("Usage: java " + SafeModeRollingFileAppender.class.getName() + " stamp runLength filename\n" + " stamp JVM instance stamp\n"
+                        + "   runLength (integer) the number of logs to generate perthread" + "    filename (string) the filename where to write\n");
+        System.exit(1);
+    }
 
-	static LoggerContext buildLoggerContext(final String stamp, final String filename, final boolean safetyMode) {
-		final LoggerContext loggerContext = new LoggerContext();
+    static LoggerContext buildLoggerContext(final String stamp, final String filename, final boolean safetyMode) {
+        final LoggerContext loggerContext = new LoggerContext();
 
-		final RollingFileAppender<ILoggingEvent> rfa = new RollingFileAppender<>();
-		final PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
-		patternLayout.setPattern(stamp + " %5p - %-50m%n");
-		patternLayout.setContext(loggerContext);
-		patternLayout.start();
+        final RollingFileAppender<ILoggingEvent> rfa = new RollingFileAppender<>();
+        final PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
+        patternLayout.setPattern(stamp + " %5p - %-50m%n");
+        patternLayout.setContext(loggerContext);
+        patternLayout.start();
 
-		rfa.setEncoder(patternLayout);
+        rfa.setEncoder(patternLayout);
 
-		rfa.setAppend(true);
-		rfa.setPrudent(safetyMode);
-		rfa.setContext(loggerContext);
+        rfa.setAppend(true);
+        rfa.setPrudent(safetyMode);
+        rfa.setContext(loggerContext);
 
-		final TimeBasedRollingPolicy<ILoggingEvent> tbrp = new TimeBasedRollingPolicy<>();
+        final TimeBasedRollingPolicy<ILoggingEvent> tbrp = new TimeBasedRollingPolicy<>();
 
-		tbrp.setContext(loggerContext);
-		tbrp.setFileNamePattern(filename + "-%d{" + DATE_PATTERN + "}.log");
-		tbrp.setParent(rfa);
-		tbrp.start();
+        tbrp.setContext(loggerContext);
+        tbrp.setFileNamePattern(filename + "-%d{" + DATE_PATTERN + "}.log");
+        tbrp.setParent(rfa);
+        tbrp.start();
 
-		rfa.setRollingPolicy(tbrp);
+        rfa.setRollingPolicy(tbrp);
 
-		rfa.start();
+        rfa.start();
 
-		final ch.qos.logback.classic.Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-		root.addAppender(rfa);
+        final ch.qos.logback.classic.Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        root.addAppender(rfa);
 
-		return loggerContext;
-	}
+        return loggerContext;
+    }
 
-	static void writeContinously(final String stamp, final String filename, final boolean safetyMode) throws Exception {
-		final LoggerContext lc = buildLoggerContext(stamp, filename, safetyMode);
-		final Logger logger = lc.getLogger(SafeModeRollingFileAppender.class);
+    static void writeContinously(final String stamp, final String filename, final boolean safetyMode) throws Exception {
+        final LoggerContext lc = buildLoggerContext(stamp, filename, safetyMode);
+        final Logger logger = lc.getLogger(SafeModeRollingFileAppender.class);
 
-		final long before = System.nanoTime();
-		for (int i = 0; i < LEN; i++) {
-			logger.debug(LoggingThread.msgLong + " " + i);
-		}
-		lc.stop();
-		StatusPrinter.print(lc);
-		final double durationPerLog = (System.nanoTime() - before) / (LEN * 1000.0);
+        final long before = System.nanoTime();
+        for (int i = 0; i < LEN; i++) {
+            logger.debug(LoggingThread.msgLong + " " + i);
+        }
+        lc.stop();
+        StatusPrinter.print(lc);
+        final double durationPerLog = (System.nanoTime() - before) / (LEN * 1000.0);
 
-		System.out.println("Average duration of " + durationPerLog + " microseconds per log. Safety mode " + safetyMode);
-		System.out.println("------------------------------------------------");
-	}
+        System.out.println("Average duration of " + durationPerLog + " microseconds per log. Safety mode " + safetyMode);
+        System.out.println("------------------------------------------------");
+    }
 }

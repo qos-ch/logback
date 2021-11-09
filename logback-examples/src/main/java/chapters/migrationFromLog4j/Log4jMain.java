@@ -18,7 +18,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 /**
  * A minimal application making use of log4j and TrivialLog4jAppender.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
@@ -26,7 +26,7 @@ public class Log4jMain {
 
     static Logger logger = Logger.getLogger(Log4jMain.class);
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         PropertyConfigurator.configure("src/main/java/chapters/migrationFromLog4j/log4jTrivial.properties");
         logger.debug("Hello world");
     }

@@ -29,41 +29,41 @@ import jakarta.servlet.ServletContextListener;
 
 public class ContextDetachingSCL implements ServletContextListener {
 
-	@Override
-	public void contextInitialized(final ServletContextEvent arg0) {
-		// do nothing
-	}
+    @Override
+    public void contextInitialized(final ServletContextEvent arg0) {
+        // do nothing
+    }
 
-	@Override
-	public void contextDestroyed(final ServletContextEvent servletContextEvent) {
-		String loggerContextName = null;
+    @Override
+    public void contextDestroyed(final ServletContextEvent servletContextEvent) {
+        String loggerContextName = null;
 
-		try {
-			final Context ctx = JNDIUtil.getInitialContext();
-			loggerContextName = JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
-		} catch (final NamingException ne) {
-		}
+        try {
+            final Context ctx = JNDIUtil.getInitialContext();
+            loggerContextName = JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
+        } catch (final NamingException ne) {
+        }
 
-		if (loggerContextName != null) {
-			System.out.println("About to detach context named " + loggerContextName);
+        if (loggerContextName != null) {
+            System.out.println("About to detach context named " + loggerContextName);
 
-			final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
-			if (selector == null) {
-				System.out.println("Selector is null, cannot detach context. Skipping.");
-				return;
-			}
-			final LoggerContext context = selector.getLoggerContext(loggerContextName);
-			if (context != null) {
-				final Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
-				logger.warn("Stopping logger context " + loggerContextName);
-				selector.detachLoggerContext(loggerContextName);
-				// when the web-app is destroyed, its logger context should be stopped
-				context.stop();
-			} else {
-				System.out.println("No context named " + loggerContextName + " was found.");
-			}
-		}
-	}
+            final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+            if (selector == null) {
+                System.out.println("Selector is null, cannot detach context. Skipping.");
+                return;
+            }
+            final LoggerContext context = selector.getLoggerContext(loggerContextName);
+            if (context != null) {
+                final Logger logger = context.getLogger(Logger.ROOT_LOGGER_NAME);
+                logger.warn("Stopping logger context " + loggerContextName);
+                selector.detachLoggerContext(loggerContextName);
+                // when the web-app is destroyed, its logger context should be stopped
+                context.stop();
+            } else {
+                System.out.println("No context named " + loggerContextName + " was found.");
+            }
+        }
+    }
 
 
 

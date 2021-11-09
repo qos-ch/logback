@@ -26,32 +26,32 @@ import ch.qos.logback.core.spi.PropertyContainer;
 
 public class PropertyEvalScriptBuilder extends ContextAwareBase {
 
-	private static String SCRIPT_PREFIX = "" + "public boolean evaluate() { return ";
-	private static String SCRIPT_SUFFIX = "" + "; }";
+    private static String SCRIPT_PREFIX = "" + "public boolean evaluate() { return ";
+    private static String SCRIPT_SUFFIX = "" + "; }";
 
-	final PropertyContainer localPropContainer;
+    final PropertyContainer localPropContainer;
 
-	PropertyEvalScriptBuilder(final PropertyContainer localPropContainer) {
-		this.localPropContainer = localPropContainer;
-	}
+    PropertyEvalScriptBuilder(final PropertyContainer localPropContainer) {
+        this.localPropContainer = localPropContainer;
+    }
 
-	Map<String, String> map = new HashMap<>();
+    Map<String, String> map = new HashMap<>();
 
-	public Condition build(final String script) throws IllegalAccessException, CompileException, InstantiationException, SecurityException, NoSuchMethodException,
-	IllegalArgumentException, InvocationTargetException {
+    public Condition build(final String script) throws IllegalAccessException, CompileException, InstantiationException, SecurityException, NoSuchMethodException,
+    IllegalArgumentException, InvocationTargetException {
 
-		final ClassBodyEvaluator cbe = new ClassBodyEvaluator();
-		cbe.setImplementedInterfaces(new Class[] { Condition.class });
-		cbe.setExtendedClass(PropertyWrapperForScripts.class);
-		cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
-		cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
+        final ClassBodyEvaluator cbe = new ClassBodyEvaluator();
+        cbe.setImplementedInterfaces(new Class[] { Condition.class });
+        cbe.setExtendedClass(PropertyWrapperForScripts.class);
+        cbe.setParentClassLoader(ClassBodyEvaluator.class.getClassLoader());
+        cbe.cook(SCRIPT_PREFIX + script + SCRIPT_SUFFIX);
 
-		final Class<?> clazz = cbe.getClazz();
-		final Condition instance = (Condition) clazz.getDeclaredConstructor().newInstance();
-		final Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
-		setMapMethod.invoke(instance, localPropContainer, context);
+        final Class<?> clazz = cbe.getClazz();
+        final Condition instance = (Condition) clazz.getDeclaredConstructor().newInstance();
+        final Method setMapMethod = clazz.getMethod("setPropertyContainers", PropertyContainer.class, PropertyContainer.class);
+        setMapMethod.invoke(instance, localPropContainer, context);
 
-		return instance;
-	}
+        return instance;
+    }
 
 }

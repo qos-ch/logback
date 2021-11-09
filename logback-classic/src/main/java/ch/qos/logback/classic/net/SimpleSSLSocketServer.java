@@ -56,43 +56,43 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  */
 public class SimpleSSLSocketServer extends SimpleSocketServer {
 
-	private final ServerSocketFactory socketFactory;
+    private final ServerSocketFactory socketFactory;
 
-	public static void main(final String argv[]) throws Exception {
-		doMain(SimpleSSLSocketServer.class, argv);
-	}
+    public static void main(final String argv[]) throws Exception {
+        doMain(SimpleSSLSocketServer.class, argv);
+    }
 
-	/**
-	 * Creates a new server using the default SSL context.
-	 * @param lc logger context for received events
-	 * @param port port on which the server is to listen
-	 * @throws NoSuchAlgorithmException if the default SSL context cannot be
-	 *         created
-	 */
-	public SimpleSSLSocketServer(final LoggerContext lc, final int port) throws NoSuchAlgorithmException {
-		this(lc, port, SSLContext.getDefault());
-	}
+    /**
+     * Creates a new server using the default SSL context.
+     * @param lc logger context for received events
+     * @param port port on which the server is to listen
+     * @throws NoSuchAlgorithmException if the default SSL context cannot be
+     *         created
+     */
+    public SimpleSSLSocketServer(final LoggerContext lc, final int port) throws NoSuchAlgorithmException {
+        this(lc, port, SSLContext.getDefault());
+    }
 
-	/**
-	 * Creates a new server using a custom SSL context.
-	 * @param lc logger context for received events
-	 * @param port port on which the server is to listen
-	 * @param sslContext custom SSL context
-	 */
-	public SimpleSSLSocketServer(final LoggerContext lc, final int port, final SSLContext sslContext) {
-		super(lc, port);
-		if (sslContext == null) {
-			throw new NullPointerException("SSL context required");
-		}
-		final SSLParametersConfiguration parameters = new SSLParametersConfiguration();
+    /**
+     * Creates a new server using a custom SSL context.
+     * @param lc logger context for received events
+     * @param port port on which the server is to listen
+     * @param sslContext custom SSL context
+     */
+    public SimpleSSLSocketServer(final LoggerContext lc, final int port, final SSLContext sslContext) {
+        super(lc, port);
+        if (sslContext == null) {
+            throw new NullPointerException("SSL context required");
+        }
+        final SSLParametersConfiguration parameters = new SSLParametersConfiguration();
 
-		parameters.setContext(lc);
-		socketFactory = new ConfigurableSSLServerSocketFactory(parameters, sslContext.getServerSocketFactory());
-	}
+        parameters.setContext(lc);
+        socketFactory = new ConfigurableSSLServerSocketFactory(parameters, sslContext.getServerSocketFactory());
+    }
 
-	@Override
-	protected ServerSocketFactory getServerSocketFactory() {
-		return socketFactory;
-	}
+    @Override
+    protected ServerSocketFactory getServerSocketFactory() {
+        return socketFactory;
+    }
 
 }

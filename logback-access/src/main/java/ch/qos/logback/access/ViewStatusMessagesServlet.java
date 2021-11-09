@@ -21,28 +21,28 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ViewStatusMessagesServlet extends ViewStatusMessagesServletBase {
 
-	private static final long serialVersionUID = 443878494348593337L;
+    private static final long serialVersionUID = 443878494348593337L;
 
-	@Override
-	protected StatusManager getStatusManager(final HttpServletRequest req, final HttpServletResponse resp) {
+    @Override
+    protected StatusManager getStatusManager(final HttpServletRequest req, final HttpServletResponse resp) {
 
-		final ServletContext sc = getServletContext();
-		return (StatusManager) sc.getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+        final ServletContext sc = getServletContext();
+        return (StatusManager) sc.getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
 
-		// if (result != null) {
-		// System.out.println("from ServletContext");
-		// return result;
-		// } else {
-		// HttpSession httpSession = req.getSession(true);
-		//
-		// System.out.println("from httpSession");
-		// return (StatusManager) httpSession
-		// .getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
-		// }
-	}
+        // if (result != null) {
+        // System.out.println("from ServletContext");
+        // return result;
+        // } else {
+        // HttpSession httpSession = req.getSession(true);
+        //
+        // System.out.println("from httpSession");
+        // return (StatusManager) httpSession
+        // .getAttribute(AccessConstants.LOGBACK_STATUS_MANAGER_KEY);
+        // }
+    }
 
-	@Override
-	protected String getPageTitle(final HttpServletRequest req, final HttpServletResponse resp) {
-		return "<h2>Status messages for logback-access</h2>\r\n";
-	}
+    @Override
+    protected String getPageTitle(final HttpServletRequest req, final HttpServletResponse resp) {
+        return "<h2>Status messages for logback-access</h2>\r\n";
+    }
 }

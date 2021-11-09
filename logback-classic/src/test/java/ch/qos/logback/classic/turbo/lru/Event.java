@@ -15,19 +15,19 @@ package ch.qos.logback.classic.turbo.lru;
 
 public class Event<K> {
 
-	final public boolean put;
-	final public K k;
+    final public boolean put;
+    final public K k;
 
-	public Event(final boolean put, final K k) {
-		this.put = put;
-		this.k = k;
-	}
+    public Event(final boolean put, final K k) {
+        this.put = put;
+        this.k = k;
+    }
 
-	@Override
-	public String toString() {
-		if (put) {
-			return "Event: put, " + k;
-		}
-		return "Event: get, " + k;
-	}
+    @Override
+    public String toString() {
+        if (put) {
+            return "Event: put, " + k;
+        }
+        return "Event: get, " + k;
+    }
 }

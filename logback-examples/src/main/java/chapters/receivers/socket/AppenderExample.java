@@ -23,48 +23,47 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 
 /**
- * This application loads a configuration containing some form of 
+ * This application loads a configuration containing some form of
  * socket appender and then allows the user to enter messages
  * which will be relayed to remote clients via the appender.
  */
 public class AppenderExample {
 
-    static void usage(String msg) {
+    static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + AppenderExample.class.getName() + " configFile\n" + "   configFile a logback configuration file"
                         + "   in XML format.");
         System.exit(1);
     }
 
-    static public void main(String[] args) throws Exception {
+    static public void main(final String[] args) throws Exception {
         if (args.length != 1) {
             usage("Wrong number of arguments.");
         }
 
-        String configFile = args[0];
+        final String configFile = args[0];
 
         if (configFile.endsWith(".xml")) {
-            LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+            final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             lc.reset();
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             configurator.doConfigure(configFile);
         }
 
-        Logger logger = LoggerFactory.getLogger(AppenderExample.class);
+        final Logger logger = LoggerFactory.getLogger(AppenderExample.class);
 
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
         while (true) {
             System.out.println("Type a message to send to remote clients. Type 'q' to quit.");
 
-            String s = reader.readLine();
+            final String s = reader.readLine();
 
             if (s.equals("q")) {
                 break;
-            } else {
-                logger.debug(s);
             }
+            logger.debug(s);
         }
 
         ((LoggerContext) LoggerFactory.getILoggerFactory()).stop();

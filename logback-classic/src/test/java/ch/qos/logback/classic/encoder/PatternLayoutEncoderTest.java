@@ -32,56 +32,56 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class PatternLayoutEncoderTest {
 
-	PatternLayoutEncoder ple = new PatternLayoutEncoder();
-	LoggerContext context = new LoggerContext();
-	ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	Logger logger = context.getLogger(PatternLayoutEncoderTest.class);
-	Charset utf8Charset = Charset.forName("UTF-8");
+    PatternLayoutEncoder ple = new PatternLayoutEncoder();
+    LoggerContext context = new LoggerContext();
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Logger logger = context.getLogger(PatternLayoutEncoderTest.class);
+    Charset utf8Charset = Charset.forName("UTF-8");
 
-	@Before
-	public void setUp() {
-		ple.setPattern("%m");
-		ple.setContext(context);
-	}
+    @Before
+    public void setUp() {
+        ple.setPattern("%m");
+        ple.setContext(context);
+    }
 
-	ILoggingEvent makeLoggingEvent(final String message) {
-		return new LoggingEvent("", logger, Level.DEBUG, message, null, null);
-	}
+    ILoggingEvent makeLoggingEvent(final String message) {
+        return new LoggingEvent("", logger, Level.DEBUG, message, null, null);
+    }
 
-	@Test
-	public void smoke() throws IOException {
-		init(baos);
-		final String msg = "hello";
-		final ILoggingEvent event = makeLoggingEvent(msg);
-		final byte[] eventBytes = ple.encode(event);
-		baos.write(eventBytes);
-		ple.footerBytes();
-		assertEquals(msg, baos.toString());
-	}
+    @Test
+    public void smoke() throws IOException {
+        init(baos);
+        final String msg = "hello";
+        final ILoggingEvent event = makeLoggingEvent(msg);
+        final byte[] eventBytes = ple.encode(event);
+        baos.write(eventBytes);
+        ple.footerBytes();
+        assertEquals(msg, baos.toString());
+    }
 
-	void init(final ByteArrayOutputStream baos) throws IOException {
-		ple.start();
-		((PatternLayout) ple.getLayout()).setOutputPatternAsHeader(false);
-		final byte[] header = ple.headerBytes();
-		baos.write(header);
-	}
+    void init(final ByteArrayOutputStream baos) throws IOException {
+        ple.start();
+        ((PatternLayout) ple.getLayout()).setOutputPatternAsHeader(false);
+        final byte[] header = ple.headerBytes();
+        baos.write(header);
+    }
 
-	@Test
-	public void charset() throws IOException {
-		ple.setCharset(utf8Charset);
-		init(baos);
-		final String msg = "\u03b1";
-		final ILoggingEvent event = makeLoggingEvent(msg);
-		final byte[] eventBytes = ple.encode(event);
-		baos.write(eventBytes);
-		ple.footerBytes();
-		assertEquals(msg, new String(baos.toByteArray(), utf8Charset));
-	}
+    @Test
+    public void charset() throws IOException {
+        ple.setCharset(utf8Charset);
+        init(baos);
+        final String msg = "\u03b1";
+        final ILoggingEvent event = makeLoggingEvent(msg);
+        final byte[] eventBytes = ple.encode(event);
+        baos.write(eventBytes);
+        ple.footerBytes();
+        assertEquals(msg, new String(baos.toByteArray(), utf8Charset));
+    }
 
-	@Test
-	public void isStarted() throws IOException {
-		assertTrue(!ple.isStarted());
-		ple.start();
-		assertTrue(ple.isStarted());
-	}
+    @Test
+    public void isStarted() throws IOException {
+        assertTrue(!ple.isStarted());
+        ple.start();
+        assertTrue(ple.isStarted());
+    }
 }

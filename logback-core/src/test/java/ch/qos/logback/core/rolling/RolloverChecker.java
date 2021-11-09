@@ -17,5 +17,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface RolloverChecker {
-	void check(List<String> expectedFilenameList) throws IOException;
+    void check(List<String> expectedFilenameList) throws IOException;
 }

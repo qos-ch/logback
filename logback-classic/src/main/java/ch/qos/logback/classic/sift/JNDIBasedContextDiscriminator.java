@@ -31,52 +31,52 @@ import ch.qos.logback.core.sift.AbstractDiscriminator;
  */
 public class JNDIBasedContextDiscriminator extends AbstractDiscriminator<ILoggingEvent> {
 
-	private static final String KEY = "contextName";
-	private String defaultValue;
+    private static final String KEY = "contextName";
+    private String defaultValue;
 
-	/**
-	 * Return the name of the current context name as found in the logging event.
-	 */
-	@Override
-	public String getDiscriminatingValue(final ILoggingEvent event) {
-		final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+    /**
+     * Return the name of the current context name as found in the logging event.
+     */
+    @Override
+    public String getDiscriminatingValue(final ILoggingEvent event) {
+        final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
 
-		if (selector == null) {
-			return defaultValue;
-		}
+        if (selector == null) {
+            return defaultValue;
+        }
 
-		final LoggerContext lc = selector.getLoggerContext();
-		if (lc == null) {
-			return defaultValue;
-		}
+        final LoggerContext lc = selector.getLoggerContext();
+        if (lc == null) {
+            return defaultValue;
+        }
 
-		return lc.getName();
-	}
+        return lc.getName();
+    }
 
-	@Override
-	public String getKey() {
-		return KEY;
-	}
+    @Override
+    public String getKey() {
+        return KEY;
+    }
 
-	public void setKey(final String key) {
-		throw new UnsupportedOperationException("Key cannot be set. Using fixed key " + KEY);
-	}
+    public void setKey(final String key) {
+        throw new UnsupportedOperationException("Key cannot be set. Using fixed key " + KEY);
+    }
 
-	/**
-	 * @see #setDefaultValue(String)
-	 * @return
-	 */
-	public String getDefaultValue() {
-		return defaultValue;
-	}
+    /**
+     * @see #setDefaultValue(String)
+     * @return
+     */
+    public String getDefaultValue() {
+        return defaultValue;
+    }
 
-	/**
-	 * The default context name in case the context name is not set for the
-	 * current logging event.
-	 *
-	 * @param defaultValue
-	 */
-	public void setDefaultValue(final String defaultValue) {
-		this.defaultValue = defaultValue;
-	}
+    /**
+     * The default context name in case the context name is not set for the
+     * current logging event.
+     *
+     * @param defaultValue
+     */
+    public void setDefaultValue(final String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
 }

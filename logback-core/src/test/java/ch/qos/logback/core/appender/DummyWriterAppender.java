@@ -19,7 +19,7 @@ import ch.qos.logback.core.OutputStreamAppender;
 
 public class DummyWriterAppender<E> extends OutputStreamAppender<E> {
 
-	DummyWriterAppender(final OutputStream os) {
-		setOutputStream(os);
-	}
+    DummyWriterAppender(final OutputStream os) {
+        setOutputStream(os);
+    }
 }

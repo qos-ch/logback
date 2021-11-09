@@ -32,65 +32,65 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class PrudentFileAppenderInterruptTest {
 
-	FileAppender<Object> fa = new FileAppender<>();
-	Context context = new ContextBase();
-	int diff = RandomUtil.getPositiveInt();
-	String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "resilience-" + diff + "/";
-	String logfileStr = outputDirStr + "output.log";
+    FileAppender<Object> fa = new FileAppender<>();
+    Context context = new ContextBase();
+    int diff = RandomUtil.getPositiveInt();
+    String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "resilience-" + diff + "/";
+    String logfileStr = outputDirStr + "output.log";
 
-	@Before
-	public void setUp() throws InterruptedException {
-		context.getStatusManager().add(new OnConsoleStatusListener());
+    @Before
+    public void setUp() throws InterruptedException {
+        context.getStatusManager().add(new OnConsoleStatusListener());
 
-		final File outputDir = new File(outputDirStr);
-		outputDir.mkdirs();
+        final File outputDir = new File(outputDirStr);
+        outputDir.mkdirs();
 
-		fa.setContext(context);
-		fa.setName("FILE");
-		fa.setPrudent(true);
-		fa.setEncoder(new EchoEncoder<>());
-		fa.setFile(logfileStr);
-		fa.start();
-	}
+        fa.setContext(context);
+        fa.setName("FILE");
+        fa.setPrudent(true);
+        fa.setEncoder(new EchoEncoder<>());
+        fa.setFile(logfileStr);
+        fa.start();
+    }
 
-	@Test
-	public void smoke() throws InterruptedException, IOException {
-		final Runner runner = new Runner(fa);
-		final Thread t = new Thread(runner);
-		t.start();
+    @Test
+    public void smoke() throws InterruptedException, IOException {
+        final Runner runner = new Runner(fa);
+        final Thread t = new Thread(runner);
+        t.start();
 
-		runner.latch.await();
+        runner.latch.await();
 
-		fa.doAppend("hello not interrupted");
+        fa.doAppend("hello not interrupted");
 
-		final FileReader fr = new FileReader(logfileStr);
-		final BufferedReader br = new BufferedReader(fr);
+        final FileReader fr = new FileReader(logfileStr);
+        final BufferedReader br = new BufferedReader(fr);
 
-		int totalLines = 0;
-		while (br.readLine() != null) {
-			totalLines++; // In this test, the content of the file does not matter
-		}
-		fr.close();
-		br.close();
+        int totalLines = 0;
+        while (br.readLine() != null) {
+            totalLines++; // In this test, the content of the file does not matter
+        }
+        fr.close();
+        br.close();
 
-		assertEquals("Incorrect number of logged lines", 2, totalLines);
-	}
+        assertEquals("Incorrect number of logged lines", 2, totalLines);
+    }
 
-	class Runner extends RunnableWithCounterAndDone {
-		FileAppender<Object> fa;
-		CountDownLatch latch = new CountDownLatch(1); // Just to make sure this is executed before we log in the test
-		// method
+    class Runner extends RunnableWithCounterAndDone {
+        FileAppender<Object> fa;
+        CountDownLatch latch = new CountDownLatch(1); // Just to make sure this is executed before we log in the test
+        // method
 
-		Runner(final FileAppender<Object> fa) {
-			this.fa = fa;
-		}
+        Runner(final FileAppender<Object> fa) {
+            this.fa = fa;
+        }
 
-		@Override
-		public void run() {
-			Thread.currentThread().interrupt();
-			fa.doAppend("hello interrupted");
-			latch.countDown();
-		}
-	}
+        @Override
+        public void run() {
+            Thread.currentThread().interrupt();
+            fa.doAppend("hello interrupted");
+            latch.countDown();
+        }
+    }
 
 }

@@ -29,7 +29,7 @@ import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class SimpleMDC {
-    static public void main(String[] args) throws Exception {
+    static public void main(final String[] args) throws Exception {
         // You can put values in the MDC at any time. Before anything else
         // we put the first name
         MDC.put("first", "Dorothy");
@@ -43,7 +43,7 @@ public class SimpleMDC {
         //
         // programmaticConfiguration();
 
-        Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
+        final Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
         // We now put the last name
         MDC.put("last", "Parker");
 
@@ -60,31 +60,31 @@ public class SimpleMDC {
 
     static void programmaticConfiguration() {
         // Configure logback
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         loggerContext.reset();
-        PatternLayoutEncoder layout = new PatternLayoutEncoder();
+        final PatternLayoutEncoder layout = new PatternLayoutEncoder();
         layout.setContext(loggerContext);
         layout.setPattern("%X{first} %X{last} - %m%n");
         layout.start();
-        ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
+        final ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<>();
         appender.setContext(loggerContext);
         appender.setEncoder(layout);
         appender.start();
         // cast root logger to c.q.logback.classic.Logger so that we can attach
         // an appender to it
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root");
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("root");
         root.addAppender(appender);
     }
 
     static void configureViaXML_File() {
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
-            URL url = Loader.getResourceBySelfClassLoader("chapters/mdc/simpleMDC.xml");
+            final URL url = Loader.getResourceBySelfClassLoader("chapters/mdc/simpleMDC.xml");
             configurator.doConfigure(url);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             StatusPrinter.print(lc);
         }
     }

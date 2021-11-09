@@ -22,54 +22,54 @@ import ch.qos.logback.core.status.Status;
 
 abstract public class AccessConverter extends DynamicConverter<IAccessEvent> implements ContextAware {
 
-	public final static char SPACE_CHAR = ' ';
-	public final static char QUESTION_CHAR = '?';
+    public final static char SPACE_CHAR = ' ';
+    public final static char QUESTION_CHAR = '?';
 
-	ContextAwareBase cab = new ContextAwareBase();
+    ContextAwareBase cab = new ContextAwareBase();
 
-	@Override
-	public void setContext(final Context context) {
-		cab.setContext(context);
-	}
+    @Override
+    public void setContext(final Context context) {
+        cab.setContext(context);
+    }
 
-	@Override
-	public Context getContext() {
-		return cab.getContext();
-	}
+    @Override
+    public Context getContext() {
+        return cab.getContext();
+    }
 
-	@Override
-	public void addStatus(final Status status) {
-		cab.addStatus(status);
-	}
+    @Override
+    public void addStatus(final Status status) {
+        cab.addStatus(status);
+    }
 
-	@Override
-	public void addInfo(final String msg) {
-		cab.addInfo(msg);
-	}
+    @Override
+    public void addInfo(final String msg) {
+        cab.addInfo(msg);
+    }
 
-	@Override
-	public void addInfo(final String msg, final Throwable ex) {
-		cab.addInfo(msg, ex);
-	}
+    @Override
+    public void addInfo(final String msg, final Throwable ex) {
+        cab.addInfo(msg, ex);
+    }
 
-	@Override
-	public void addWarn(final String msg) {
-		cab.addWarn(msg);
-	}
+    @Override
+    public void addWarn(final String msg) {
+        cab.addWarn(msg);
+    }
 
-	@Override
-	public void addWarn(final String msg, final Throwable ex) {
-		cab.addWarn(msg, ex);
-	}
+    @Override
+    public void addWarn(final String msg, final Throwable ex) {
+        cab.addWarn(msg, ex);
+    }
 
-	@Override
-	public void addError(final String msg) {
-		cab.addError(msg);
-	}
+    @Override
+    public void addError(final String msg) {
+        cab.addError(msg);
+    }
 
-	@Override
-	public void addError(final String msg, final Throwable ex) {
-		cab.addError(msg, ex);
-	}
+    @Override
+    public void addError(final String msg, final Throwable ex) {
+        cab.addError(msg, ex);
+    }
 
 }

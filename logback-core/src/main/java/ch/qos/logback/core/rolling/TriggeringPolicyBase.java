@@ -24,21 +24,21 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 abstract public class TriggeringPolicyBase<E> extends ContextAwareBase implements TriggeringPolicy<E> {
 
-	private boolean start;
+    private boolean start;
 
-	@Override
-	public void start() {
-		start = true;
-	}
+    @Override
+    public void start() {
+        start = true;
+    }
 
-	@Override
-	public void stop() {
-		start = false;
-	}
+    @Override
+    public void stop() {
+        start = false;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return start;
-	}
+    @Override
+    public boolean isStarted() {
+        return start;
+    }
 
 }

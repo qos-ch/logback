@@ -25,11 +25,11 @@ import ch.qos.logback.core.Context;
  */
 public interface PostCompileProcessor<E> {
 
-	/**
-	 * Post compile processing of the converter chain.
-	 *
-	 * @param head
-	 *                The first converter in the chain
-	 */
-	void process(Context context, Converter<E> head);
+    /**
+     * Post compile processing of the converter chain.
+     *
+     * @param head
+     *                The first converter in the chain
+     */
+    void process(Context context, Converter<E> head);
 }

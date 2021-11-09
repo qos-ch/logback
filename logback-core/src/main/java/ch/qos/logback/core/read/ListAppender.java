@@ -20,10 +20,10 @@ import ch.qos.logback.core.AppenderBase;
 
 public class ListAppender<E> extends AppenderBase<E> {
 
-	public List<E> list = new ArrayList<>();
+    public List<E> list = new ArrayList<>();
 
-	@Override
-	protected void append(final E e) {
-		list.add(e);
-	}
+    @Override
+    protected void append(final E e) {
+        list.add(e);
+    }
 }

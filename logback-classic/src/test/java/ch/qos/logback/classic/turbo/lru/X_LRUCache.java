@@ -27,25 +27,24 @@ import java.util.Map;
  * @param <V>
  */
 public class X_LRUCache<K, V> extends LinkedHashMap<K, V> {
-	private static final long serialVersionUID = -6592964689843698200L;
+    private static final long serialVersionUID = -6592964689843698200L;
 
-	final int cacheSize;
+    final int cacheSize;
 
-	public X_LRUCache(final int cacheSize) {
-		super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
-		if (cacheSize < 1) {
-			throw new IllegalArgumentException("Cache size cannnot be smaller than 1");
-		}
-		this.cacheSize = cacheSize;
-	}
+    public X_LRUCache(final int cacheSize) {
+        super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
+        if (cacheSize < 1) {
+            throw new IllegalArgumentException("Cache size cannnot be smaller than 1");
+        }
+        this.cacheSize = cacheSize;
+    }
 
-	@Override
-	protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
-		return size() > cacheSize;
-	}
+    @Override
+    protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
+        return size() > cacheSize;
+    }
 
-	List<K> keyList() {
-		final ArrayList<K> al = new ArrayList<>(keySet());
-		return al;
-	}
+    List<K> keyList() {
+        return new ArrayList<>(keySet());
+    }
 }

@@ -26,41 +26,41 @@ import org.junit.Test;
  */
 public class KeyStoreFactoryBeanTest {
 
-	private final KeyStoreFactoryBean factoryBean = new KeyStoreFactoryBean();
+    private final KeyStoreFactoryBean factoryBean = new KeyStoreFactoryBean();
 
-	@Test
-	public void testDefaults() throws Exception {
-		factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
-		assertNotNull(factoryBean.createKeyStore());
-	}
+    @Test
+    public void testDefaults() throws Exception {
+        factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
+        assertNotNull(factoryBean.createKeyStore());
+    }
 
-	@Test
-	public void testExplicitProvider() throws Exception {
-		factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
-		final KeyStore keyStore = factoryBean.createKeyStore();
-		factoryBean.setProvider(keyStore.getProvider().getName());
-		assertNotNull(factoryBean.createKeyStore());
-	}
+    @Test
+    public void testExplicitProvider() throws Exception {
+        factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
+        final KeyStore keyStore = factoryBean.createKeyStore();
+        factoryBean.setProvider(keyStore.getProvider().getName());
+        assertNotNull(factoryBean.createKeyStore());
+    }
 
-	@Test
-	public void testExplicitType() throws Exception {
-		factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
-		factoryBean.setType(SSL.DEFAULT_KEYSTORE_TYPE);
-		assertNotNull(factoryBean.createKeyStore());
-	}
+    @Test
+    public void testExplicitType() throws Exception {
+        factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
+        factoryBean.setType(SSL.DEFAULT_KEYSTORE_TYPE);
+        assertNotNull(factoryBean.createKeyStore());
+    }
 
-	@Test
-	public void testPKCS12Type() throws Exception {
-		factoryBean.setLocation(SSLTestConstants.KEYSTORE_PKCS12_RESOURCE);
-		factoryBean.setType(SSLTestConstants.PKCS12_TYPE);
-		assertNotNull(factoryBean.createKeyStore());
-	}
+    @Test
+    public void testPKCS12Type() throws Exception {
+        factoryBean.setLocation(SSLTestConstants.KEYSTORE_PKCS12_RESOURCE);
+        factoryBean.setType(SSLTestConstants.PKCS12_TYPE);
+        assertNotNull(factoryBean.createKeyStore());
+    }
 
-	@Test
-	public void testExplicitPassphrase() throws Exception {
-		factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
-		factoryBean.setPassword(SSL.DEFAULT_KEYSTORE_PASSWORD);
-		assertNotNull(factoryBean.createKeyStore());
-	}
+    @Test
+    public void testExplicitPassphrase() throws Exception {
+        factoryBean.setLocation(SSLTestConstants.KEYSTORE_JKS_RESOURCE);
+        factoryBean.setPassword(SSL.DEFAULT_KEYSTORE_PASSWORD);
+        assertNotNull(factoryBean.createKeyStore());
+    }
 
 }

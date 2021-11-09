@@ -27,96 +27,96 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
 
-	RollingFileAppender<Object> rfa = new RollingFileAppender<>();
-	FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
-	SizeBasedTriggeringPolicy<Object> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
-	EchoEncoder<Object> encoder = new EchoEncoder<>();
+    RollingFileAppender<Object> rfa = new RollingFileAppender<>();
+    FixedWindowRollingPolicy fwrp = new FixedWindowRollingPolicy();
+    SizeBasedTriggeringPolicy<Object> sizeBasedTriggeringPolicy = new SizeBasedTriggeringPolicy<>();
+    EchoEncoder<Object> encoder = new EchoEncoder<>();
 
-	@Override
-	@Before
-	public void setUp() {
-		super.setUp();
-		fwrp.setContext(context);
-		fwrp.setParent(rfa);
-		rfa.setContext(context);
-		sizeBasedTriggeringPolicy.setContext(context);
-	}
+    @Override
+    @Before
+    public void setUp() {
+        super.setUp();
+        fwrp.setContext(context);
+        fwrp.setParent(rfa);
+        rfa.setContext(context);
+        sizeBasedTriggeringPolicy.setContext(context);
+    }
 
-	private void initRFA(final String filename) {
-		rfa.setEncoder(encoder);
-		if (filename != null) {
-			rfa.setFile(filename);
-		}
-	}
+    private void initRFA(final String filename) {
+        rfa.setEncoder(encoder);
+        if (filename != null) {
+            rfa.setFile(filename);
+        }
+    }
 
-	/**
-	 * Test whether FixedWindowRollingPolicy throws an exception when the
-	 * ActiveFileName is not set.
-	 */
-	@Test(expected = IllegalStateException.class)
-	public void activeFileNameNotSet() {
-		sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(100));
-		sizeBasedTriggeringPolicy.start();
+    /**
+     * Test whether FixedWindowRollingPolicy throws an exception when the
+     * ActiveFileName is not set.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void activeFileNameNotSet() {
+        sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(100));
+        sizeBasedTriggeringPolicy.start();
 
-		fwrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "sizeBased-test1.%i");
-		fwrp.start();
-		// The absence of activeFileName option should cause an exception.
-	}
+        fwrp.setFileNamePattern(CoreTestConstants.OUTPUT_DIR_PREFIX + "sizeBased-test1.%i");
+        fwrp.start();
+        // The absence of activeFileName option should cause an exception.
+    }
 
-	void generic(final String testName, final String fileName, final String filenamePattern, final List<String> expectedFilenameList) throws InterruptedException, IOException {
-		rfa.setName("ROLLING");
-		initRFA(randomOutputDir + fileName);
+    void generic(final String testName, final String fileName, final String filenamePattern, final List<String> expectedFilenameList) throws InterruptedException, IOException {
+        rfa.setName("ROLLING");
+        initRFA(randomOutputDir + fileName);
 
-		sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(100));
-		fwrp.setMinIndex(0);
-		fwrp.setFileNamePattern(randomOutputDir + filenamePattern);
+        sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(100));
+        fwrp.setMinIndex(0);
+        fwrp.setFileNamePattern(randomOutputDir + filenamePattern);
 
-		rfa.triggeringPolicy = sizeBasedTriggeringPolicy;
-		rfa.rollingPolicy = fwrp;
+        rfa.triggeringPolicy = sizeBasedTriggeringPolicy;
+        rfa.rollingPolicy = fwrp;
 
-		fwrp.start();
-		sizeBasedTriggeringPolicy.start();
-		rfa.start();
+        fwrp.start();
+        sizeBasedTriggeringPolicy.start();
+        rfa.start();
 
-		final int runLength = 40;
-		final String prefix = "hello";
-		for (int i = 0; i < runLength; i++) {
-			Thread.sleep(10);
-			rfa.doAppend(prefix + i);
-		}
-		rfa.stop();
+        final int runLength = 40;
+        final String prefix = "hello";
+        for (int i = 0; i < runLength; i++) {
+            Thread.sleep(10);
+            rfa.doAppend(prefix + i);
+        }
+        rfa.stop();
 
-		StatusPrinter.print(context);
-		existenceCheck(expectedFilenameList);
-		reverseSortedContentCheck(randomOutputDir, runLength, prefix);
-	}
+        StatusPrinter.print(context);
+        existenceCheck(expectedFilenameList);
+        reverseSortedContentCheck(randomOutputDir, runLength, prefix);
+    }
 
-	@Test
-	public void smoke() throws IOException, InterruptedException {
-		expectedFilenameList.add(randomOutputDir + "a-sizeBased-smoke.log");
-		expectedFilenameList.add(randomOutputDir + "sizeBased-smoke.0");
-		expectedFilenameList.add(randomOutputDir + "sizeBased-smoke.1");
-		generic("zipped", "a-sizeBased-smoke.log", "sizeBased-smoke.%i", expectedFilenameList);
+    @Test
+    public void smoke() throws IOException, InterruptedException {
+        expectedFilenameList.add(randomOutputDir + "a-sizeBased-smoke.log");
+        expectedFilenameList.add(randomOutputDir + "sizeBased-smoke.0");
+        expectedFilenameList.add(randomOutputDir + "sizeBased-smoke.1");
+        generic("zipped", "a-sizeBased-smoke.log", "sizeBased-smoke.%i", expectedFilenameList);
 
-	}
+    }
 
-	@Test
-	public void gz() throws IOException, InterruptedException {
-		expectedFilenameList.add(randomOutputDir + "a-sbr-gzed.log");
-		expectedFilenameList.add(randomOutputDir + "sbr-gzed.0.gz");
-		expectedFilenameList.add(randomOutputDir + "sbr-gzed.1.gz");
-		generic("gzed", "a-sbr-gzed.log", "sbr-gzed.%i.gz", expectedFilenameList);
-	}
+    @Test
+    public void gz() throws IOException, InterruptedException {
+        expectedFilenameList.add(randomOutputDir + "a-sbr-gzed.log");
+        expectedFilenameList.add(randomOutputDir + "sbr-gzed.0.gz");
+        expectedFilenameList.add(randomOutputDir + "sbr-gzed.1.gz");
+        generic("gzed", "a-sbr-gzed.log", "sbr-gzed.%i.gz", expectedFilenameList);
+    }
 
-	// see also LBCORE-199
-	@Test
-	public void zipped() throws IOException, InterruptedException {
-		expectedFilenameList.add(randomOutputDir + "a-sbr-zipped.log");
-		expectedFilenameList.add(randomOutputDir + "sbr-zipped.0.zip");
-		expectedFilenameList.add(randomOutputDir + "sbr-zipped.1.zip");
-		generic("zipped", "a-sbr-zipped.log", "sbr-zipped.%i.zip", expectedFilenameList);
+    // see also LBCORE-199
+    @Test
+    public void zipped() throws IOException, InterruptedException {
+        expectedFilenameList.add(randomOutputDir + "a-sbr-zipped.log");
+        expectedFilenameList.add(randomOutputDir + "sbr-zipped.0.zip");
+        expectedFilenameList.add(randomOutputDir + "sbr-zipped.1.zip");
+        generic("zipped", "a-sbr-zipped.log", "sbr-zipped.%i.zip", expectedFilenameList);
 
-		final List<String> zipFiles = filterElementsInListBySuffix(".zip");
-		zipEntryNameCheck(zipFiles, "sbr-zipped.20\\d{2}-\\d{2}-\\d{2}_\\d{4}");
-	}
+        final List<String> zipFiles = filterElementsInListBySuffix(".zip");
+        zipEntryNameCheck(zipFiles, "sbr-zipped.20\\d{2}-\\d{2}-\\d{2}_\\d{4}");
+    }
 }

@@ -11,37 +11,37 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 
 public class ParamModelHandler extends ModelHandlerBase {
 
-	private final BeanDescriptionCache beanDescriptionCache;
+    private final BeanDescriptionCache beanDescriptionCache;
 
-	public ParamModelHandler(final Context context, final BeanDescriptionCache beanDescriptionCache) {
-		super(context);
-		this.beanDescriptionCache = beanDescriptionCache;
-	}
+    public ParamModelHandler(final Context context, final BeanDescriptionCache beanDescriptionCache) {
+        super(context);
+        this.beanDescriptionCache = beanDescriptionCache;
+    }
 
-	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
-		return new ParamModelHandler(context, ic.getBeanDescriptionCache());
-	}
+    static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
+        return new ParamModelHandler(context, ic.getBeanDescriptionCache());
+    }
 
-	@Override
-	protected Class<ParamModel> getSupportedModelClass() {
-		return ParamModel.class;
-	}
+    @Override
+    protected Class<ParamModel> getSupportedModelClass() {
+        return ParamModel.class;
+    }
 
-	@Override
-	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+    @Override
+    public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
 
-		final ParamModel paramModel = (ParamModel) model;
+        final ParamModel paramModel = (ParamModel) model;
 
-		final String valueStr = intercon.subst(paramModel.getValue());
+        final String valueStr = intercon.subst(paramModel.getValue());
 
-		final Object o = intercon.peekObject();
+        final Object o = intercon.peekObject();
 
-		final PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
-		propSetter.setContext(context);
+        final PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
+        propSetter.setContext(context);
 
-		// allow for variable substitution for name as well
-		final String finalName = intercon.subst(paramModel.getName());
-		propSetter.setProperty(finalName, valueStr);
-	}
+        // allow for variable substitution for name as well
+        final String finalName = intercon.subst(paramModel.getName());
+        propSetter.setProperty(finalName, valueStr);
+    }
 
 }

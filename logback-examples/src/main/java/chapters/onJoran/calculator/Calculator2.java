@@ -27,17 +27,17 @@ import chapters.onJoran.SimpleConfigurator;
 /**
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
- * 
- * It differs from Calculator1 in that it supports arbitrary nesting of 
+ *
+ * It differs from Calculator1 in that it supports arbitrary nesting of
  * computation elements.
- * 
+ *
  * You can test this application with the sample XML file <em>calculator3.xml</em>.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class Calculator2 {
-    public static void main(String[] args) throws Exception {
-        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+    public static void main(final String[] args) throws Exception {
+        final Map<ElementSelector, Action> ruleMap = new HashMap<>();
 
         // Note the wild card character '*', in the paterns, signifying any level
         // of nesting.
@@ -47,14 +47,14 @@ public class Calculator2 {
         ruleMap.put(new ElementSelector("*/computation/add"), new AddAction());
         ruleMap.put(new ElementSelector("*/computation/multiply"), new MultiplyAction());
 
-        Context context = new ContextBase();
-        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        final Context context = new ContextBase();
+        final SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
         // link the configurator with its context
         simpleConfigurator.setContext(context);
 
         try {
             simpleConfigurator.doConfigure(args[0]);
-        } catch (JoranException e) {
+        } catch (final JoranException e) {
             // Print any errors that might have occured.
             StatusPrinter.print(context);
         }

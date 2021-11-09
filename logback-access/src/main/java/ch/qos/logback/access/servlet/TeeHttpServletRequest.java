@@ -30,52 +30,52 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
  */
 class TeeHttpServletRequest extends HttpServletRequestWrapper {
 
-	private TeeServletInputStream inStream;
-	private BufferedReader reader;
-	boolean postedParametersMode = false;
+    private TeeServletInputStream inStream;
+    private BufferedReader reader;
+    boolean postedParametersMode = false;
 
-	TeeHttpServletRequest(final HttpServletRequest request) {
-		super(request);
-		// we can't access the input stream and access the request parameters
-		// at the same time
-		if (Util.isFormUrlEncoded(request)) {
-			postedParametersMode = true;
-		} else {
-			inStream = new TeeServletInputStream(request);
-			// add the contents of the input buffer as an attribute of the request
-			request.setAttribute(LB_INPUT_BUFFER, inStream.getInputBuffer());
-			reader = new BufferedReader(new InputStreamReader(inStream));
-		}
+    TeeHttpServletRequest(final HttpServletRequest request) {
+        super(request);
+        // we can't access the input stream and access the request parameters
+        // at the same time
+        if (Util.isFormUrlEncoded(request)) {
+            postedParametersMode = true;
+        } else {
+            inStream = new TeeServletInputStream(request);
+            // add the contents of the input buffer as an attribute of the request
+            request.setAttribute(LB_INPUT_BUFFER, inStream.getInputBuffer());
+            reader = new BufferedReader(new InputStreamReader(inStream));
+        }
 
-	}
+    }
 
-	byte[] getInputBuffer() {
-		if (postedParametersMode) {
-			throw new IllegalStateException("Call disallowed in postedParametersMode");
-		}
-		return inStream.getInputBuffer();
-	}
+    byte[] getInputBuffer() {
+        if (postedParametersMode) {
+            throw new IllegalStateException("Call disallowed in postedParametersMode");
+        }
+        return inStream.getInputBuffer();
+    }
 
-	@Override
-	public ServletInputStream getInputStream() throws IOException {
-		if (!postedParametersMode) {
-			return inStream;
-		}
-		return super.getInputStream();
-	}
+    @Override
+    public ServletInputStream getInputStream() throws IOException {
+        if (!postedParametersMode) {
+            return inStream;
+        }
+        return super.getInputStream();
+    }
 
-	//
+    //
 
-	@Override
-	public BufferedReader getReader() throws IOException {
-		if (!postedParametersMode) {
-			return reader;
-		}
-		return super.getReader();
-	}
+    @Override
+    public BufferedReader getReader() throws IOException {
+        if (!postedParametersMode) {
+            return reader;
+        }
+        return super.getReader();
+    }
 
-	public boolean isPostedParametersMode() {
-		return postedParametersMode;
-	}
+    public boolean isPostedParametersMode() {
+        return postedParametersMode;
+    }
 
 }

@@ -22,24 +22,24 @@ import ch.qos.logback.core.model.Model;
 
 public class FruitContextAction extends Action {
 
-	FruitContextModel parentModel;
+    FruitContextModel parentModel;
 
-	@Override
-	public void begin(final InterpretationContext ic, final String name, final Attributes attributes) throws ActionException {
-		parentModel = new FruitContextModel();
-		parentModel.setTag(name);
-		ic.pushModel(parentModel);
-	}
+    @Override
+    public void begin(final InterpretationContext ic, final String name, final Attributes attributes) throws ActionException {
+        parentModel = new FruitContextModel();
+        parentModel.setTag(name);
+        ic.pushModel(parentModel);
+    }
 
-	@Override
-	public void end(final InterpretationContext ic, final String name) throws ActionException {
+    @Override
+    public void end(final InterpretationContext ic, final String name) throws ActionException {
 
-		final Model m = ic.peekModel();
+        final Model m = ic.peekModel();
 
-		if (m != parentModel) {
-			addWarn("The object at the of the stack is not the model named [" + parentModel.getTag() + "] pushed earlier.");
-		}
-		// NOTE: top level model is NOT popped
-	}
+        if (m != parentModel) {
+            addWarn("The object at the of the stack is not the model named [" + parentModel.getTag() + "] pushed earlier.");
+        }
+        // NOTE: top level model is NOT popped
+    }
 
 }

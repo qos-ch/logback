@@ -30,59 +30,59 @@ import ch.qos.logback.core.net.server.ServerRunner;
  */
 public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
 
-	private final ServerSocket serverSocket;
-	private final ServerListener<RemoteAppenderClient> listener;
-	private final ServerRunner<RemoteAppenderClient> runner;
+    private final ServerSocket serverSocket;
+    private final ServerListener<RemoteAppenderClient> listener;
+    private final ServerRunner<RemoteAppenderClient> runner;
 
-	@SuppressWarnings("rawtypes")
-	private ServerListener lastListener;
+    @SuppressWarnings("rawtypes")
+    private ServerListener lastListener;
 
-	public InstrumentedServerSocketReceiver(final ServerSocket serverSocket) {
-		this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
-	}
+    public InstrumentedServerSocketReceiver(final ServerSocket serverSocket) {
+        this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
+    }
 
-	public InstrumentedServerSocketReceiver(final ServerSocket serverSocket, final ServerListener<RemoteAppenderClient> listener, final ServerRunner<RemoteAppenderClient> runner) {
-		this.serverSocket = serverSocket;
-		this.listener = listener;
-		this.runner = runner;
-	}
+    public InstrumentedServerSocketReceiver(final ServerSocket serverSocket, final ServerListener<RemoteAppenderClient> listener, final ServerRunner<RemoteAppenderClient> runner) {
+        this.serverSocket = serverSocket;
+        this.listener = listener;
+        this.runner = runner;
+    }
 
-	@Override
-	protected ServerSocketFactory getServerSocketFactory() throws Exception {
-		return new ServerSocketFactory() {
+    @Override
+    protected ServerSocketFactory getServerSocketFactory() throws Exception {
+        return new ServerSocketFactory() {
 
-			@Override
-			public ServerSocket createServerSocket(final int port) throws IOException {
-				return serverSocket;
-			}
+            @Override
+            public ServerSocket createServerSocket(final int port) throws IOException {
+                return serverSocket;
+            }
 
-			@Override
-			public ServerSocket createServerSocket(final int port, final int backlog) throws IOException {
-				return serverSocket;
-			}
+            @Override
+            public ServerSocket createServerSocket(final int port, final int backlog) throws IOException {
+                return serverSocket;
+            }
 
-			@Override
-			public ServerSocket createServerSocket(final int port, final int backlog, final InetAddress ifAddress) throws IOException {
-				return serverSocket;
-			}
-		};
-	}
+            @Override
+            public ServerSocket createServerSocket(final int port, final int backlog, final InetAddress ifAddress) throws IOException {
+                return serverSocket;
+            }
+        };
+    }
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	protected ServerRunner createServerRunner(final ServerListener<RemoteAppenderClient> listener, final Executor executor) {
-		lastListener = listener;
-		return runner != null ? runner : super.createServerRunner(listener, executor);
-	}
+    @SuppressWarnings("rawtypes")
+    @Override
+    protected ServerRunner createServerRunner(final ServerListener<RemoteAppenderClient> listener, final Executor executor) {
+        lastListener = listener;
+        return runner != null ? runner : super.createServerRunner(listener, executor);
+    }
 
-	@Override
-	protected ServerListener<RemoteAppenderClient> createServerListener(final ServerSocket socket) {
-		return listener;
-	}
+    @Override
+    protected ServerListener<RemoteAppenderClient> createServerListener(final ServerSocket socket) {
+        return listener;
+    }
 
-	@SuppressWarnings("rawtypes")
-	public ServerListener getLastListener() {
-		return lastListener;
-	}
+    @SuppressWarnings("rawtypes")
+    public ServerListener getLastListener() {
+        return lastListener;
+    }
 
 }

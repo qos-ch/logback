@@ -38,184 +38,184 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class COWArrayList<E> implements List<E> {
 
-	// Implementation note: markAsStale() should always be invoked *after* list-modifying actions.
-	// If not, readers might get a stale array until the next write. The potential problem is nicely
-	// explained by Rob Eden. See https://github.com/qos-ch/logback/commit/32a2047a1adfc#commitcomment-20791176
+    // Implementation note: markAsStale() should always be invoked *after* list-modifying actions.
+    // If not, readers might get a stale array until the next write. The potential problem is nicely
+    // explained by Rob Eden. See https://github.com/qos-ch/logback/commit/32a2047a1adfc#commitcomment-20791176
 
-	AtomicBoolean fresh = new AtomicBoolean(false);
-	CopyOnWriteArrayList<E> underlyingList = new CopyOnWriteArrayList<>();
-	E[] ourCopy;
-	final E[] modelArray;
+    AtomicBoolean fresh = new AtomicBoolean(false);
+    CopyOnWriteArrayList<E> underlyingList = new CopyOnWriteArrayList<>();
+    E[] ourCopy;
+    final E[] modelArray;
 
-	public COWArrayList(final E[] modelArray) {
-		this.modelArray = modelArray;
-	}
+    public COWArrayList(final E[] modelArray) {
+        this.modelArray = modelArray;
+    }
 
-	@Override
-	public int size() {
-		return underlyingList.size();
-	}
+    @Override
+    public int size() {
+        return underlyingList.size();
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return underlyingList.isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return underlyingList.isEmpty();
+    }
 
-	@Override
-	public boolean contains(final Object o) {
-		return underlyingList.contains(o);
-	}
+    @Override
+    public boolean contains(final Object o) {
+        return underlyingList.contains(o);
+    }
 
-	@Override
-	public Iterator<E> iterator() {
-		return underlyingList.iterator();
-	}
+    @Override
+    public Iterator<E> iterator() {
+        return underlyingList.iterator();
+    }
 
-	private void refreshCopyIfNecessary() {
-		if (!isFresh()) {
-			refreshCopy();
-		}
-	}
+    private void refreshCopyIfNecessary() {
+        if (!isFresh()) {
+            refreshCopy();
+        }
+    }
 
-	private boolean isFresh() {
-		return fresh.get();
-	}
+    private boolean isFresh() {
+        return fresh.get();
+    }
 
-	private void refreshCopy() {
-		ourCopy = underlyingList.toArray(modelArray);
-		fresh.set(true);
-	}
+    private void refreshCopy() {
+        ourCopy = underlyingList.toArray(modelArray);
+        fresh.set(true);
+    }
 
-	@Override
-	public Object[] toArray() {
-		refreshCopyIfNecessary();
-		return ourCopy;
-	}
+    @Override
+    public Object[] toArray() {
+        refreshCopyIfNecessary();
+        return ourCopy;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> T[] toArray(final T[] a) {
-		refreshCopyIfNecessary();
-		return (T[]) ourCopy;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T[] toArray(final T[] a) {
+        refreshCopyIfNecessary();
+        return (T[]) ourCopy;
+    }
 
-	/**
-	 * Return an array of type E[]. The returned array is intended to be iterated over.
-	 * If the list is modified, subsequent calls to this method will return different/modified
-	 * array instances.
-	 *
-	 * @return
-	 */
-	public E[] asTypedArray() {
-		refreshCopyIfNecessary();
-		return ourCopy;
-	}
+    /**
+     * Return an array of type E[]. The returned array is intended to be iterated over.
+     * If the list is modified, subsequent calls to this method will return different/modified
+     * array instances.
+     *
+     * @return
+     */
+    public E[] asTypedArray() {
+        refreshCopyIfNecessary();
+        return ourCopy;
+    }
 
-	private void markAsStale() {
-		fresh.set(false);
-	}
+    private void markAsStale() {
+        fresh.set(false);
+    }
 
-	public void addIfAbsent(final E e) {
-		underlyingList.addIfAbsent(e);
-		markAsStale();
-	}
+    public void addIfAbsent(final E e) {
+        underlyingList.addIfAbsent(e);
+        markAsStale();
+    }
 
-	@Override
-	public boolean add(final E e) {
-		final boolean result = underlyingList.add(e);
-		markAsStale();
-		return result;
-	}
+    @Override
+    public boolean add(final E e) {
+        final boolean result = underlyingList.add(e);
+        markAsStale();
+        return result;
+    }
 
-	@Override
-	public boolean remove(final Object o) {
-		final boolean result = underlyingList.remove(o);
-		markAsStale();
-		return result;
-	}
+    @Override
+    public boolean remove(final Object o) {
+        final boolean result = underlyingList.remove(o);
+        markAsStale();
+        return result;
+    }
 
-	@Override
-	public boolean containsAll(final Collection<?> c) {
-		return underlyingList.containsAll(c);
-	}
+    @Override
+    public boolean containsAll(final Collection<?> c) {
+        return underlyingList.containsAll(c);
+    }
 
-	@Override
-	public boolean addAll(final Collection<? extends E> c) {
-		markAsStale();
-		return underlyingList.addAll(c);
-	}
+    @Override
+    public boolean addAll(final Collection<? extends E> c) {
+        markAsStale();
+        return underlyingList.addAll(c);
+    }
 
-	@Override
-	public boolean addAll(final int index, final Collection<? extends E> col) {
-		markAsStale();
-		return underlyingList.addAll(index, col);
-	}
+    @Override
+    public boolean addAll(final int index, final Collection<? extends E> col) {
+        markAsStale();
+        return underlyingList.addAll(index, col);
+    }
 
-	@Override
-	public boolean removeAll(final Collection<?> col) {
-		markAsStale();
-		return underlyingList.removeAll(col);
-	}
+    @Override
+    public boolean removeAll(final Collection<?> col) {
+        markAsStale();
+        return underlyingList.removeAll(col);
+    }
 
-	@Override
-	public boolean retainAll(final Collection<?> col) {
-		markAsStale();
-		return underlyingList.retainAll(col);
-	}
+    @Override
+    public boolean retainAll(final Collection<?> col) {
+        markAsStale();
+        return underlyingList.retainAll(col);
+    }
 
-	@Override
-	public void clear() {
-		markAsStale();
-		underlyingList.clear();
-	}
+    @Override
+    public void clear() {
+        markAsStale();
+        underlyingList.clear();
+    }
 
-	@Override
-	public E get(final int index) {
-		refreshCopyIfNecessary();
-		return ourCopy[index];
-	}
+    @Override
+    public E get(final int index) {
+        refreshCopyIfNecessary();
+        return ourCopy[index];
+    }
 
-	@Override
-	public E set(final int index, final E element) {
-		markAsStale();
-		return underlyingList.set(index, element);
-	}
+    @Override
+    public E set(final int index, final E element) {
+        markAsStale();
+        return underlyingList.set(index, element);
+    }
 
-	@Override
-	public void add(final int index, final E element) {
-		markAsStale();
-		underlyingList.add(index, element);
-	}
+    @Override
+    public void add(final int index, final E element) {
+        markAsStale();
+        underlyingList.add(index, element);
+    }
 
-	@Override
-	public E remove(final int index) {
-		markAsStale();
-		return underlyingList.remove(index);
-	}
+    @Override
+    public E remove(final int index) {
+        markAsStale();
+        return underlyingList.remove(index);
+    }
 
-	@Override
-	public int indexOf(final Object o) {
-		return underlyingList.indexOf(o);
-	}
+    @Override
+    public int indexOf(final Object o) {
+        return underlyingList.indexOf(o);
+    }
 
-	@Override
-	public int lastIndexOf(final Object o) {
-		return underlyingList.lastIndexOf(o);
-	}
+    @Override
+    public int lastIndexOf(final Object o) {
+        return underlyingList.lastIndexOf(o);
+    }
 
-	@Override
-	public ListIterator<E> listIterator() {
-		return underlyingList.listIterator();
-	}
+    @Override
+    public ListIterator<E> listIterator() {
+        return underlyingList.listIterator();
+    }
 
-	@Override
-	public ListIterator<E> listIterator(final int index) {
-		return underlyingList.listIterator(index);
-	}
+    @Override
+    public ListIterator<E> listIterator(final int index) {
+        return underlyingList.listIterator(index);
+    }
 
-	@Override
-	public List<E> subList(final int fromIndex, final int toIndex) {
-		return underlyingList.subList(fromIndex, toIndex);
-	}
+    @Override
+    public List<E> subList(final int fromIndex, final int toIndex) {
+        return underlyingList.subList(fromIndex, toIndex);
+    }
 
 }

@@ -23,92 +23,92 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 @Ignore
 public class LoggerNameConverterPerfTest {
 
-	static final String NAMES_FILE = ClassicTestConstants.INPUT_PREFIX + "fqcn.txt";
+    static final String NAMES_FILE = ClassicTestConstants.INPUT_PREFIX + "fqcn.txt";
 
-	static List<String> NAMES_LIST;
+    static List<String> NAMES_LIST;
 
-	static int SIZE;
-	static double MEAN;
-	static double DEVIATION;
-	static Gaussian G;
+    static int SIZE;
+    static double MEAN;
+    static double DEVIATION;
+    static Gaussian G;
 
-	LoggerContext loggerContext = new LoggerContext();
-	LoggerConverter loggerConverter = new LoggerConverter();
+    LoggerContext loggerContext = new LoggerContext();
+    LoggerConverter loggerConverter = new LoggerConverter();
 
-	LoggerNameOnlyLoggingEvent event = new LoggerNameOnlyLoggingEvent();
+    LoggerNameOnlyLoggingEvent event = new LoggerNameOnlyLoggingEvent();
 
-	Logger logger = LoggerFactory.getLogger(this.getClass());
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@BeforeClass
-	static public void loadClassNames() throws IOException {
+    @BeforeClass
+    static public void loadClassNames() throws IOException {
 
-		NAMES_LIST = Files.lines(Paths.get(NAMES_FILE)).collect(Collectors.toList());
+        NAMES_LIST = Files.lines(Paths.get(NAMES_FILE)).collect(Collectors.toList());
 
-		SIZE = NAMES_LIST.size();
-		MEAN = SIZE / 2;
-		DEVIATION = MEAN / 8;
-		G = new Gaussian(MEAN, DEVIATION);
-		System.out.println("names list size=" + SIZE);
-	}
+        SIZE = NAMES_LIST.size();
+        MEAN = SIZE / 2;
+        DEVIATION = MEAN / 8;
+        G = new Gaussian(MEAN, DEVIATION);
+        System.out.println("names list size=" + SIZE);
+    }
 
-	@Before
-	public void setUp() {
-		final OnConsoleStatusListener ocsl = new OnConsoleStatusListener();
-		ocsl.setContext(loggerContext);
-		ocsl.start();
-		loggerContext.getStatusManager().add(ocsl);
-		loggerConverter.setOptionList(Arrays.asList("30"));
-		loggerConverter.setContext(loggerContext);
-		loggerConverter.start();
-	}
+    @Before
+    public void setUp() {
+        final OnConsoleStatusListener ocsl = new OnConsoleStatusListener();
+        ocsl.setContext(loggerContext);
+        ocsl.start();
+        loggerContext.getStatusManager().add(ocsl);
+        loggerConverter.setOptionList(Arrays.asList("30"));
+        loggerConverter.setContext(loggerContext);
+        loggerConverter.start();
+    }
 
-	@After
-	public void tearDown() {
+    @After
+    public void tearDown() {
 
-	}
+    }
 
-	@Test
-	public void measureAbbreviationPerf() {
-		for(int i = 0; i < 10*1000; i++) {
-			performAbbreviation();
-		}
-		for(int i = 0; i < 10*1000; i++) {
-			performAbbreviation();
-		}
-		final int runLength = 1000*1000;
-		System.out.println("Start measurements");
-		final long start = System.nanoTime();
-		for(int i = 0; i < runLength; i++) {
-			performAbbreviation();
-		}
-		final long end = System.nanoTime();
-		final long diff = end - start;
-		final double average = diff*1.0D/runLength;
-		logger.atInfo().addArgument(average).log("Average = {} nanos");
-		final int cacheMisses = loggerConverter.getCacheMisses();
+    @Test
+    public void measureAbbreviationPerf() {
+        for(int i = 0; i < 10*1000; i++) {
+            performAbbreviation();
+        }
+        for(int i = 0; i < 10*1000; i++) {
+            performAbbreviation();
+        }
+        final int runLength = 1000*1000;
+        System.out.println("Start measurements");
+        final long start = System.nanoTime();
+        for(int i = 0; i < runLength; i++) {
+            performAbbreviation();
+        }
+        final long end = System.nanoTime();
+        final long diff = end - start;
+        final double average = diff*1.0D/runLength;
+        logger.atInfo().addArgument(average).log("Average = {} nanos");
+        final int cacheMisses = loggerConverter.getCacheMisses();
 
-		logger.atInfo().addArgument(cacheMisses).log("cacheMisses = {} ");
-		logger.atInfo().addArgument(runLength).log("total calls= = {} ");
+        logger.atInfo().addArgument(cacheMisses).log("cacheMisses = {} ");
+        logger.atInfo().addArgument(runLength).log("total calls= = {} ");
 
-		final double cacheMissRate = loggerConverter.getCacheMissRate()*100;
-		logger.atInfo().addArgument(cacheMissRate).log("cacheMiss rate %= {} ");
+        final double cacheMissRate = loggerConverter.getCacheMissRate()*100;
+        logger.atInfo().addArgument(cacheMissRate).log("cacheMiss rate %= {} ");
 
-	}
+    }
 
 
-	public void performAbbreviation() {
-		final String fqn = getFQN();
-		event.setLoggerName(fqn);
-		loggerConverter.convert(event);
-	}
+    public void performAbbreviation() {
+        final String fqn = getFQN();
+        event.setLoggerName(fqn);
+        loggerConverter.convert(event);
+    }
 
-	private String getFQN() {
-		while (true) {
-			final int index = (int) G.getGaussian();
-			if (index >= 0 && index < SIZE) {
-				return NAMES_LIST.get(index);
-			}
-		}
-	}
+    private String getFQN() {
+        while (true) {
+            final int index = (int) G.getGaussian();
+            if (index >= 0 && index < SIZE) {
+                return NAMES_LIST.get(index);
+            }
+        }
+    }
 
 }

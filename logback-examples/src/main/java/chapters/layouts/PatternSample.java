@@ -23,17 +23,17 @@ import ch.qos.logback.core.ConsoleAppender;
 
 public class PatternSample {
 
-    static public void main(String[] args) throws Exception {
-        Logger rootLogger = (Logger) LoggerFactory.getLogger("root");
-        LoggerContext loggerContext = rootLogger.getLoggerContext();
+    static public void main(final String[] args) throws Exception {
+        final Logger rootLogger = (Logger) LoggerFactory.getLogger("root");
+        final LoggerContext loggerContext = rootLogger.getLoggerContext();
         loggerContext.reset();
 
-        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        final PatternLayoutEncoder encoder = new PatternLayoutEncoder();
         encoder.setContext(loggerContext);
         encoder.setPattern("%-5level [%thread]: %message%n");
         encoder.start();
 
-        ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<ILoggingEvent>();
+        final ConsoleAppender<ILoggingEvent> appender = new ConsoleAppender<>();
         appender.setContext(loggerContext);
         appender.setEncoder(encoder);
         appender.start();

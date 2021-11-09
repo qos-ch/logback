@@ -24,69 +24,69 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle {
 
-	private boolean started;
+    private boolean started;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void start() {
-		if (isStarted()) {
-			return;
-		}
-		if (getContext() == null) {
-			throw new IllegalStateException("context not set");
-		}
-		if (shouldStart()) {
-			getContext().getScheduledExecutorService().execute(getRunnableTask());
-			started = true;
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void start() {
+        if (isStarted()) {
+            return;
+        }
+        if (getContext() == null) {
+            throw new IllegalStateException("context not set");
+        }
+        if (shouldStart()) {
+            getContext().getScheduledExecutorService().execute(getRunnableTask());
+            started = true;
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void stop() {
-		if (!isStarted()) {
-			return;
-		}
-		try {
-			onStop();
-		} catch (final RuntimeException ex) {
-			addError("on stop: " + ex, ex);
-		}
-		started = false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void stop() {
+        if (!isStarted()) {
+            return;
+        }
+        try {
+            onStop();
+        } catch (final RuntimeException ex) {
+            addError("on stop: " + ex, ex);
+        }
+        started = false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final boolean isStarted() {
-		return started;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final boolean isStarted() {
+        return started;
+    }
 
-	/**
-	 * Determines whether this receiver should start.
-	 * <p>
-	 * Subclasses will implement this method to do any subclass-specific
-	 * validation.  The subclass's {@link #getRunnableTask()} method will be
-	 * invoked (and the task returned will be submitted to the executor)
-	 * if and only if this method returns {@code true}
-	 * @return flag indicating whether this receiver should start
-	 */
-	protected abstract boolean shouldStart();
+    /**
+     * Determines whether this receiver should start.
+     * <p>
+     * Subclasses will implement this method to do any subclass-specific
+     * validation.  The subclass's {@link #getRunnableTask()} method will be
+     * invoked (and the task returned will be submitted to the executor)
+     * if and only if this method returns {@code true}
+     * @return flag indicating whether this receiver should start
+     */
+    protected abstract boolean shouldStart();
 
-	/**
-	 * Allows a subclass to participate in receiver shutdown.
-	 */
-	protected abstract void onStop();
+    /**
+     * Allows a subclass to participate in receiver shutdown.
+     */
+    protected abstract void onStop();
 
-	/**
-	 * Provides the runnable task this receiver will execute.
-	 * @return runnable task
-	 */
-	protected abstract Runnable getRunnableTask();
+    /**
+     * Provides the runnable task this receiver will execute.
+     * @return runnable task
+     */
+    protected abstract Runnable getRunnableTask();
 
 }

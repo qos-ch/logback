@@ -29,33 +29,33 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class BasicConfigurator extends ContextAwareBase implements Configurator {
 
-	public BasicConfigurator() {
-	}
+    public BasicConfigurator() {
+    }
 
-	@Override
-	public void configure(final LoggerContext lc) {
-		addInfo("Setting up default configuration.");
+    @Override
+    public void configure(final LoggerContext lc) {
+        addInfo("Setting up default configuration.");
 
-		final ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<>();
-		ca.setContext(lc);
-		ca.setName("console");
-		final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
-		encoder.setContext(lc);
+        final ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<>();
+        ca.setContext(lc);
+        ca.setName("console");
+        final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
+        encoder.setContext(lc);
 
 
-		// same as
-		// PatternLayout layout = new PatternLayout();
-		// layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
-		final TTLLLayout layout = new TTLLLayout();
+        // same as
+        // PatternLayout layout = new PatternLayout();
+        // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
+        final TTLLLayout layout = new TTLLLayout();
 
-		layout.setContext(lc);
-		layout.start();
-		encoder.setLayout(layout);
+        layout.setContext(lc);
+        layout.start();
+        encoder.setLayout(layout);
 
-		ca.setEncoder(encoder);
-		ca.start();
+        ca.setEncoder(encoder);
+        ca.start();
 
-		final Logger rootLogger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-		rootLogger.addAppender(ca);
-	}
+        final Logger rootLogger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+        rootLogger.addAppender(ca);
+    }
 }

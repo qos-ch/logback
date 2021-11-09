@@ -21,8 +21,8 @@ package ch.qos.logback.core.status;
  */
 public class NopStatusListener implements StatusListener {
 
-	@Override
-	public void addStatusEvent(final Status status) {
-		// nothing to do
-	}
+    @Override
+    public void addStatusEvent(final Status status) {
+        // nothing to do
+    }
 }

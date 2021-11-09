@@ -24,17 +24,17 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class Main {
 
-	public static void main(final String[] args) throws InterruptedException {
+    public static void main(final String[] args) throws InterruptedException {
 
-		final Logger logger = (Logger) LoggerFactory.getLogger(Main.class);
-		StatusPrinter.print((LoggerContext) LoggerFactory.getILoggerFactory());
-		final OThread ot = new OThread();
-		ot.start();
-		Thread.sleep(OThread.WAIT_MILLIS - 500);
-		logger.info("About to interrupt");
-		ot.interrupt();
-		logger.info("After interrupt");
-		logger.info("Leaving main");
+        final Logger logger = (Logger) LoggerFactory.getLogger(Main.class);
+        StatusPrinter.print((LoggerContext) LoggerFactory.getILoggerFactory());
+        final OThread ot = new OThread();
+        ot.start();
+        Thread.sleep(OThread.WAIT_MILLIS - 500);
+        logger.info("About to interrupt");
+        ot.interrupt();
+        logger.info("After interrupt");
+        logger.info("Leaving main");
 
-	}
+    }
 }

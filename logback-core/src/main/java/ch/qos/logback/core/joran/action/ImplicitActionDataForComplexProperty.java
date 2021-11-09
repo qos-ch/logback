@@ -24,19 +24,19 @@ import ch.qos.logback.core.util.AggregationType;
 public class ImplicitActionDataForComplexProperty extends ImplicitActionDataBase {
 
 
-	private Object nestedComplexProperty;
+    private Object nestedComplexProperty;
 
-	public ImplicitActionDataForComplexProperty(final PropertySetter parentBean, final AggregationType aggregationType,
-			final String propertyName) {
-		super(parentBean, aggregationType, propertyName);
-	}
+    public ImplicitActionDataForComplexProperty(final PropertySetter parentBean, final AggregationType aggregationType,
+                    final String propertyName) {
+        super(parentBean, aggregationType, propertyName);
+    }
 
-	public Object getNestedComplexProperty() {
-		return nestedComplexProperty;
-	}
+    public Object getNestedComplexProperty() {
+        return nestedComplexProperty;
+    }
 
-	public void setNestedComplexProperty(final Object nestedComplexProperty) {
-		this.nestedComplexProperty = nestedComplexProperty;
-	}
+    public void setNestedComplexProperty(final Object nestedComplexProperty) {
+        this.nestedComplexProperty = nestedComplexProperty;
+    }
 
 }

@@ -23,16 +23,16 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class CallerEvaluatorExample {
 
-    public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(CallerEvaluatorExample.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(final String[] args) {
+        final Logger logger = LoggerFactory.getLogger(CallerEvaluatorExample.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
             configurator.doConfigure(args[0]);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             // StatusPrinter will handle this
         }
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);

@@ -22,9 +22,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class MessageConverter extends ClassicConverter {
 
-	@Override
-	public String convert(final ILoggingEvent event) {
-		return event.getFormattedMessage();
-	}
+    @Override
+    public String convert(final ILoggingEvent event) {
+        return event.getFormattedMessage();
+    }
 
 }

@@ -22,10 +22,10 @@ package ch.qos.logback.core.db.dialect;
  * @author James Stauffer
  */
 public class MsSQLDialect implements SQLDialect {
-	public static final String SELECT_CURRVAL = "SELECT @@identity id";
+    public static final String SELECT_CURRVAL = "SELECT @@identity id";
 
-	@Override
-	public String getSelectInsertId() {
-		return SELECT_CURRVAL;
-	}
+    @Override
+    public String getSelectInsertId() {
+        return SELECT_CURRVAL;
+    }
 }

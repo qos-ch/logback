@@ -23,9 +23,9 @@ import ch.qos.logback.core.util.AggregationType;
  */
 public class ImcplicitActionDataForBasicProperty extends ImplicitActionDataBase {
 
-	public ImcplicitActionDataForBasicProperty(final PropertySetter parentBean, final AggregationType aggregationType, final String propertyName) {
-		super(parentBean, aggregationType, propertyName);
-	}
+    public ImcplicitActionDataForBasicProperty(final PropertySetter parentBean, final AggregationType aggregationType, final String propertyName) {
+        super(parentBean, aggregationType, propertyName);
+    }
 
 
 }

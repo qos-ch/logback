@@ -15,26 +15,26 @@ package ch.qos.logback.access.filter;
 
 public interface StatisticalView {
 
-	long getTotal();
+    long getTotal();
 
-	long getLastMinuteCount();
+    long getLastMinuteCount();
 
-	double getMinuteAverage();
+    double getMinuteAverage();
 
-	long getLastHoursCount();
+    long getLastHoursCount();
 
-	double getHourlyAverage();
+    double getHourlyAverage();
 
-	long getLastDaysCount();
+    long getLastDaysCount();
 
-	double getDailyAverage();
+    double getDailyAverage();
 
-	long getLastWeeksCount();
+    long getLastWeeksCount();
 
-	double getWeeklyAverage();
+    double getWeeklyAverage();
 
-	long getLastMonthsCount();
+    long getLastMonthsCount();
 
-	double getMonthlyAverage();
+    double getMonthlyAverage();
 
 }

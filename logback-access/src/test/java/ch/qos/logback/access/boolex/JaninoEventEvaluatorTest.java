@@ -29,49 +29,49 @@ import ch.qos.logback.core.boolex.EvaluationException;
 
 public class JaninoEventEvaluatorTest {
 
-	final String expectedURL1 = "testUrl1";
-	final String expectedURL2 = "testUrl2";
-	//Context context = new ContextBase();
-	JaninoEventEvaluator evaluator;
-	DummyRequest request;
-	DummyResponse response;
-	DummyServerAdapter serverAdapter;
-	AccessContext accessContext = new AccessContext();
+    final String expectedURL1 = "testUrl1";
+    final String expectedURL2 = "testUrl2";
+    //Context context = new ContextBase();
+    JaninoEventEvaluator evaluator;
+    DummyRequest request;
+    DummyResponse response;
+    DummyServerAdapter serverAdapter;
+    AccessContext accessContext = new AccessContext();
 
-	@Before
-	public void setUp() throws Exception {
-		evaluator = new JaninoEventEvaluator();
-		evaluator.setContext(accessContext);
-		request = new DummyRequest();
-		response = new DummyResponse();
-		serverAdapter = new DummyServerAdapter(request, response);
-	}
+    @Before
+    public void setUp() throws Exception {
+        evaluator = new JaninoEventEvaluator();
+        evaluator.setContext(accessContext);
+        request = new DummyRequest();
+        response = new DummyResponse();
+        serverAdapter = new DummyServerAdapter(request, response);
+    }
 
-	@Test
-	public void smoke() throws EvaluationException {
-		evaluator.setExpression("event.getProtocol().equals(\"testProtocol\")");
-		evaluator.start();
-		final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
-		assertTrue(evaluator.evaluate(ae));
-	}
+    @Test
+    public void smoke() throws EvaluationException {
+        evaluator.setExpression("event.getProtocol().equals(\"testProtocol\")");
+        evaluator.start();
+        final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
+        assertTrue(evaluator.evaluate(ae));
+    }
 
-	@Test
-	public void block() throws EvaluationException {
-		evaluator.setExpression("String protocol = event.getProtocol();" + "return protocol.equals(\"testProtocol\");");
-		evaluator.start();
-		final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
-		assertTrue(evaluator.evaluate(ae));
-	}
+    @Test
+    public void block() throws EvaluationException {
+        evaluator.setExpression("String protocol = event.getProtocol();" + "return protocol.equals(\"testProtocol\");");
+        evaluator.start();
+        final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
+        assertTrue(evaluator.evaluate(ae));
+    }
 
-	@Test
-	public void invalidExpression() throws EvaluationException {
-		evaluator.setExpression("return true");
-		evaluator.start();
-		final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
-		try {
-			evaluator.evaluate(ae);
-			fail("Was expecting an exception");
-		} catch (final IllegalStateException e) {
-		}
-	}
+    @Test
+    public void invalidExpression() throws EvaluationException {
+        evaluator.setExpression("return true");
+        evaluator.start();
+        final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
+        try {
+            evaluator.evaluate(ae);
+            fail("Was expecting an exception");
+        } catch (final IllegalStateException e) {
+        }
+    }
 }

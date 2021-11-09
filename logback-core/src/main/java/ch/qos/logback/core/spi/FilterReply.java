@@ -27,5 +27,5 @@ package ch.qos.logback.core.spi;
  * @author S&eacute;bastien Pennec
  */
 public enum FilterReply {
-	DENY, NEUTRAL, ACCEPT;
+    DENY, NEUTRAL, ACCEPT;
 }

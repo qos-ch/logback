@@ -8,51 +8,51 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class ChainedModelFilter implements ModelFiler {
 
-	List<ModelFiler> modelFilters = new ArrayList<>();
+    List<ModelFiler> modelFilters = new ArrayList<>();
 
-	public  ChainedModelFilter() {
-	}
+    public  ChainedModelFilter() {
+    }
 
-	static public ChainedModelFilter newInstance() {
-		return new ChainedModelFilter();
-	}
+    static public ChainedModelFilter newInstance() {
+        return new ChainedModelFilter();
+    }
 
-	public  ChainedModelFilter allow(final Class<? extends Model> allowedType) {
-		modelFilters.add(new AllowModelFilter(allowedType));
-		return this;
-	}
+    public  ChainedModelFilter allow(final Class<? extends Model> allowedType) {
+        modelFilters.add(new AllowModelFilter(allowedType));
+        return this;
+    }
 
-	public  ChainedModelFilter deny(final Class<? extends Model> allowedType) {
-		modelFilters.add(new DenyModelFilter(allowedType));
-		return this;
-	}
+    public  ChainedModelFilter deny(final Class<? extends Model> allowedType) {
+        modelFilters.add(new DenyModelFilter(allowedType));
+        return this;
+    }
 
-	public ChainedModelFilter denyAll() {
-		modelFilters.add(new DenyAllModelFilter());
-		return this;
-	}
+    public ChainedModelFilter denyAll() {
+        modelFilters.add(new DenyAllModelFilter());
+        return this;
+    }
 
 
-	public  ChainedModelFilter allowAll() {
-		modelFilters.add(new AllowAllModelFilter());
-		return this;
-	}
+    public  ChainedModelFilter allowAll() {
+        modelFilters.add(new AllowAllModelFilter());
+        return this;
+    }
 
-	@Override
-	public FilterReply decide(final Model model) {
+    @Override
+    public FilterReply decide(final Model model) {
 
-		for(final ModelFiler modelFilter: modelFilters) {
-			final FilterReply reply = modelFilter.decide(model);
+        for(final ModelFiler modelFilter: modelFilters) {
+            final FilterReply reply = modelFilter.decide(model);
 
-			switch(reply) {
-			case ACCEPT:
-			case DENY:
-				return reply;
-			case NEUTRAL:
-				// next
-			}
-		}
-		return FilterReply.NEUTRAL;
-	}
+            switch(reply) {
+            case ACCEPT:
+            case DENY:
+                return reply;
+            case NEUTRAL:
+                // next
+            }
+        }
+        return FilterReply.NEUTRAL;
+    }
 
 }

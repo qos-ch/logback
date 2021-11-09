@@ -23,23 +23,23 @@ import java.sql.Statement;
  */
 public class DBHelper {
 
-	static public void closeConnection(final Connection connection) {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (final SQLException sqle) {
-				// static utility classes should not log without an explicit repository
-				// reference
-			}
-		}
-	}
+    static public void closeConnection(final Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (final SQLException sqle) {
+                // static utility classes should not log without an explicit repository
+                // reference
+            }
+        }
+    }
 
-	public static void closeStatement(final Statement statement) {
-		if (statement != null) {
-			try {
-				statement.close();
-			} catch (final SQLException sqle) {
-			}
-		}
-	}
+    public static void closeStatement(final Statement statement) {
+        if (statement != null) {
+            try {
+                statement.close();
+            } catch (final SQLException sqle) {
+            }
+        }
+    }
 }

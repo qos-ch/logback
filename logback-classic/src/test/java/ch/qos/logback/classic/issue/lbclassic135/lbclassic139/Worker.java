@@ -24,52 +24,52 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
  *
  */
 public class Worker extends RunnableWithCounterAndDone {
-	static final int SLEEP_DUIRATION = 50;
+    static final int SLEEP_DUIRATION = 50;
 
-	private final Logger logger;
-	private final Object lock = new Object();
+    private final Logger logger;
+    private final Object lock = new Object();
 
-	final LoggerContext loggerContext;
+    final LoggerContext loggerContext;
 
-	Worker(final LoggerContext lc) {
-		loggerContext = lc;
-		logger = lc.getLogger(this.getClass());
-	}
+    Worker(final LoggerContext lc) {
+        loggerContext = lc;
+        logger = lc.getLogger(this.getClass());
+    }
 
-	@Override
-	public void run() {
-		print("entered run()");
-		while (!isDone()) {
-			synchronized (lock) {
-				sleep();
-				logger.info("lock the logger");
-			}
-		}
-		print("leaving run()");
-	}
+    @Override
+    public void run() {
+        print("entered run()");
+        while (!isDone()) {
+            synchronized (lock) {
+                sleep();
+                logger.info("lock the logger");
+            }
+        }
+        print("leaving run()");
+    }
 
-	@Override
-	public String toString() {
-		print("In Worker.toString() - about to access lock");
-		synchronized (lock) {
-			print("In Worker.toString() - got the lock");
-			// sleep();
-			return "STATUS";
-		}
-	}
+    @Override
+    public String toString() {
+        print("In Worker.toString() - about to access lock");
+        synchronized (lock) {
+            print("In Worker.toString() - got the lock");
+            // sleep();
+            return "STATUS";
+        }
+    }
 
-	public void sleep() {
-		try {
-			print("About to go to sleep");
-			Thread.sleep(SLEEP_DUIRATION);
-			print("just woke up");
-		} catch (final InterruptedException exc) {
-			exc.printStackTrace();
-		}
-	}
+    public void sleep() {
+        try {
+            print("About to go to sleep");
+            Thread.sleep(SLEEP_DUIRATION);
+            print("just woke up");
+        } catch (final InterruptedException exc) {
+            exc.printStackTrace();
+        }
+    }
 
-	void print(final String msg) {
-		final String thread = Thread.currentThread().getName();
-		System.out.println("[" + thread + "] " + msg);
-	}
+    void print(final String msg) {
+        final String thread = Thread.currentThread().getName();
+        System.out.println("[" + thread + "] " + msg);
+    }
 }

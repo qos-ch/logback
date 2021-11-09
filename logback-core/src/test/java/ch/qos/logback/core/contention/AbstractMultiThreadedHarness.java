@@ -15,27 +15,27 @@ package ch.qos.logback.core.contention;
 
 abstract public class AbstractMultiThreadedHarness {
 
-	RunnableWithCounterAndDone[] runnableArray;
+    RunnableWithCounterAndDone[] runnableArray;
 
-	abstract public void waitUntilEndCondition() throws InterruptedException;
+    abstract public void waitUntilEndCondition() throws InterruptedException;
 
-	public void execute(final RunnableWithCounterAndDone[] runnableArray) throws InterruptedException {
-		this.runnableArray = runnableArray;
-		final Thread[] threadArray = new Thread[runnableArray.length];
+    public void execute(final RunnableWithCounterAndDone[] runnableArray) throws InterruptedException {
+        this.runnableArray = runnableArray;
+        final Thread[] threadArray = new Thread[runnableArray.length];
 
-		for (int i = 0; i < runnableArray.length; i++) {
-			threadArray[i] = new Thread(runnableArray[i], "Harness[" + i + "]");
-		}
-		for (final Thread t : threadArray) {
-			t.start();
-		}
+        for (int i = 0; i < runnableArray.length; i++) {
+            threadArray[i] = new Thread(runnableArray[i], "Harness[" + i + "]");
+        }
+        for (final Thread t : threadArray) {
+            t.start();
+        }
 
-		waitUntilEndCondition();
-		for (final RunnableWithCounterAndDone r : runnableArray) {
-			r.setDone(true);
-		}
-		for (final Thread t : threadArray) {
-			t.join();
-		}
-	}
+        waitUntilEndCondition();
+        for (final RunnableWithCounterAndDone r : runnableArray) {
+            r.setDone(true);
+        }
+        for (final Thread t : threadArray) {
+            t.join();
+        }
+    }
 }

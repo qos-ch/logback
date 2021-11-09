@@ -22,39 +22,39 @@ import org.junit.Test;
 
 public class CyclicBufferTest {
 
-	void assertSize(final CyclicBuffer<String> cb, final int size) {
-		assertEquals(size, cb.length());
-	}
+    void assertSize(final CyclicBuffer<String> cb, final int size) {
+        assertEquals(size, cb.length());
+    }
 
-	@Test
-	public void smoke() {
-		final CyclicBuffer<String> cb = new CyclicBuffer<>(2);
-		assertSize(cb, 0);
-		cb.add("zero");
-		assertSize(cb, 1);
-		cb.add("one");
-		assertSize(cb, 2);
-		cb.add("two");
-		assertSize(cb, 2);
-		assertEquals("one", cb.get());
-		assertSize(cb, 1);
-		assertEquals("two", cb.get());
-		assertSize(cb, 0);
-	}
+    @Test
+    public void smoke() {
+        final CyclicBuffer<String> cb = new CyclicBuffer<>(2);
+        assertSize(cb, 0);
+        cb.add("zero");
+        assertSize(cb, 1);
+        cb.add("one");
+        assertSize(cb, 2);
+        cb.add("two");
+        assertSize(cb, 2);
+        assertEquals("one", cb.get());
+        assertSize(cb, 1);
+        assertEquals("two", cb.get());
+        assertSize(cb, 0);
+    }
 
-	@Test
-	public void cloning() {
-		final CyclicBuffer<String> cb = new CyclicBuffer<>(2);
-		cb.add("zero");
-		cb.add("one");
+    @Test
+    public void cloning() {
+        final CyclicBuffer<String> cb = new CyclicBuffer<>(2);
+        cb.add("zero");
+        cb.add("one");
 
-		final CyclicBuffer<String> clone = new CyclicBuffer<>(cb);
-		assertSize(clone, 2);
-		cb.clear();
-		assertSize(cb, 0);
+        final CyclicBuffer<String> clone = new CyclicBuffer<>(cb);
+        assertSize(clone, 2);
+        cb.clear();
+        assertSize(cb, 0);
 
-		final List<String> witness = Arrays.asList("zero", "one");
-		assertEquals(witness, clone.asList());
+        final List<String> witness = Arrays.asList("zero", "one");
+        assertEquals(witness, clone.asList());
 
-	}
+    }
 }

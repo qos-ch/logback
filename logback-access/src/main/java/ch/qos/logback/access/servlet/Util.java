@@ -19,22 +19,22 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class Util {
 
-	public static boolean isFormUrlEncoded(final HttpServletRequest request) {
+    public static boolean isFormUrlEncoded(final HttpServletRequest request) {
 
-		final String contentTypeStr = request.getContentType();
-		if ("POST".equalsIgnoreCase(request.getMethod()) && contentTypeStr != null && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
-			return true;
-		}
-		return false;
-	}
+        final String contentTypeStr = request.getContentType();
+        if ("POST".equalsIgnoreCase(request.getMethod()) && contentTypeStr != null && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
+            return true;
+        }
+        return false;
+    }
 
-	public static boolean isImageResponse(final HttpServletResponse response) {
+    public static boolean isImageResponse(final HttpServletResponse response) {
 
-		final String responseType = response.getContentType();
+        final String responseType = response.getContentType();
 
-		if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
-			return true;
-		}
-		return false;
-	}
+        if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
+            return true;
+        }
+        return false;
+    }
 }

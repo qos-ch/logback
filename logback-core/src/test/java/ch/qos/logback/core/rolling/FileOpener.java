@@ -22,11 +22,11 @@ import java.io.InputStream;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class FileOpener {
-	public static void main(final String[] args) throws Exception {
-		final InputStream is = new FileInputStream("output/test.log");
-		is.read();
-		Thread.sleep(10000);
-		is.close();
-		System.out.println("Exiting FileOpener");
-	}
+    public static void main(final String[] args) throws Exception {
+        final InputStream is = new FileInputStream("output/test.log");
+        is.read();
+        Thread.sleep(10000);
+        is.close();
+        System.out.println("Exiting FileOpener");
+    }
 }

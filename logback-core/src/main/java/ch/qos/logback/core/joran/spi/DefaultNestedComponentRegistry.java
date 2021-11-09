@@ -24,39 +24,39 @@ import java.util.Map;
  */
 public class DefaultNestedComponentRegistry {
 
-	Map<HostClassAndPropertyDouble, Class<?>> defaultComponentMap = new HashMap<>();
-	Map<String, Class<?>> tagToClassMap = new HashMap<>();
+    Map<HostClassAndPropertyDouble, Class<?>> defaultComponentMap = new HashMap<>();
+    Map<String, Class<?>> tagToClassMap = new HashMap<>();
 
-	public void add(final Class<?> hostClass, final String propertyName, final Class<?> componentClass) {
-		final HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName.toLowerCase());
-		defaultComponentMap.put(hpDouble, componentClass);
-		tagToClassMap.put(propertyName, componentClass);
-	}
+    public void add(final Class<?> hostClass, final String propertyName, final Class<?> componentClass) {
+        final HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName.toLowerCase());
+        defaultComponentMap.put(hpDouble, componentClass);
+        tagToClassMap.put(propertyName, componentClass);
+    }
 
 
-	public String findDefaultComponentTypeByTag(final String tagName) {
-		final Class<?> defaultClass = tagToClassMap.get(tagName);
-		if(defaultClass == null) {
-			return null;
-		}
-		return defaultClass.getCanonicalName();
-	}
+    public String findDefaultComponentTypeByTag(final String tagName) {
+        final Class<?> defaultClass = tagToClassMap.get(tagName);
+        if(defaultClass == null) {
+            return null;
+        }
+        return defaultClass.getCanonicalName();
+    }
 
-	public Class<?> findDefaultComponentType(Class<?> hostClass, String propertyName) {
-		propertyName = propertyName.toLowerCase();
-		while (hostClass != null) {
-			final Class<?> componentClass = oneShotFind(hostClass, propertyName);
-			if (componentClass != null) {
-				return componentClass;
-			}
-			hostClass = hostClass.getSuperclass();
-		}
-		return null;
-	}
+    public Class<?> findDefaultComponentType(Class<?> hostClass, String propertyName) {
+        propertyName = propertyName.toLowerCase();
+        while (hostClass != null) {
+            final Class<?> componentClass = oneShotFind(hostClass, propertyName);
+            if (componentClass != null) {
+                return componentClass;
+            }
+            hostClass = hostClass.getSuperclass();
+        }
+        return null;
+    }
 
-	private Class<?> oneShotFind(final Class<?> hostClass, final String propertyName) {
-		final HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName);
-		return defaultComponentMap.get(hpDouble);
-	}
+    private Class<?> oneShotFind(final Class<?> hostClass, final String propertyName) {
+        final HostClassAndPropertyDouble hpDouble = new HostClassAndPropertyDouble(hostClass, propertyName);
+        return defaultComponentMap.get(hpDouble);
+    }
 
 }

@@ -13,16 +13,16 @@
  */
 package chapters.appenders.socket;
 
-import ch.qos.logback.core.util.Duration;
+import static org.slf4j.Logger.ROOT_LOGGER_NAME;
+
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Logger;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.SocketAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
-import static org.slf4j.Logger.ROOT_LOGGER_NAME;
 
 /**
  * Created with IntelliJ IDEA. User: ceki Date: 27.06.12 Time: 19:35 To change
@@ -37,18 +37,18 @@ public class ConsolePluginClient {
     static long SLEEP = 1;
     static long RUN_LENGTH = 200 * 1000;
 
-    static public void main(String[] args) throws Exception {
+    static public void main(final String[] args) throws Exception {
         // Create a SocketAppender connected to hostname:port with a
         // reconnection delay of 10000 seconds.
-        String hostname = "localhost";
-        int port = 4321;
-        SocketAppender socketAppender = new SocketAppender();
+        final String hostname = "localhost";
+        final int port = 4321;
+        final SocketAppender socketAppender = new SocketAppender();
         socketAppender.setRemoteHost(hostname);
         socketAppender.setPort(port);
         socketAppender.setIncludeCallerData(true);
         socketAppender.setReconnectionDelay(new Duration(10000));
 
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         socketAppender.setContext(lc);
 
@@ -59,12 +59,12 @@ public class ConsolePluginClient {
         // of the next statement.
         socketAppender.start();
 
-        Logger rootLogger = (Logger) LoggerFactory.getLogger(ROOT_LOGGER_NAME);
+        final Logger rootLogger = (Logger) LoggerFactory.getLogger(ROOT_LOGGER_NAME);
         rootLogger.addAppender(socketAppender);
 
-        org.slf4j.Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
+        final org.slf4j.Logger logger = LoggerFactory.getLogger(LOGGER_NAME);
 
-        UglyBetty ub = new UglyBetty("ugly-betty-thread-234");
+        final UglyBetty ub = new UglyBetty("ugly-betty-thread-234");
         ub.start();
         for (int i = 0; i < RUN_LENGTH; i++) {
             if (i % 3 == 0) {
@@ -87,17 +87,18 @@ public class ConsolePluginClient {
      * @param logger
      * @param i
      */
-    static void toto(org.slf4j.Logger logger, int i) {
+    static void toto(final org.slf4j.Logger logger, final int i) {
         logger.debug("this is message number " + i);
     }
 
     static class UglyBetty extends Thread {
         org.slf4j.Logger logger = LoggerFactory.getLogger(UGLY_BETTY_LOGGER_NAME);
 
-        public UglyBetty(String name) {
+        public UglyBetty(final String name) {
             super(name);
         }
 
+        @Override
         public void run() {
             for (int i = 0; i < RUN_LENGTH; i++) {
                 if (i % 23 == 0) {
@@ -109,13 +110,13 @@ public class ConsolePluginClient {
                 }
                 try {
                     Thread.sleep(SLEEP);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         }
 
-        void count(org.slf4j.Logger logger, int i) {
+        void count(final org.slf4j.Logger logger, final int i) {
             logger.debug("Betty counts to " + i);
         }
     }

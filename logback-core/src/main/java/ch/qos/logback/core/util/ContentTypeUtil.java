@@ -21,25 +21,25 @@ package ch.qos.logback.core.util;
  */
 public class ContentTypeUtil {
 
-	public static boolean isTextual(final String contextType) {
-		if (contextType == null) {
-			return false;
-		}
-		return contextType.startsWith("text");
-	}
+    public static boolean isTextual(final String contextType) {
+        if (contextType == null) {
+            return false;
+        }
+        return contextType.startsWith("text");
+    }
 
-	public static String getSubType(final String contextType) {
-		if (contextType == null) {
-			return null;
-		}
-		final int index = contextType.indexOf('/');
-		if (index == -1) {
-			return null;
-		}
-		final int subTypeStartIndex = index + 1;
-		if (subTypeStartIndex < contextType.length()) {
-			return contextType.substring(subTypeStartIndex);
-		}
-		return null;
-	}
+    public static String getSubType(final String contextType) {
+        if (contextType == null) {
+            return null;
+        }
+        final int index = contextType.indexOf('/');
+        if (index == -1) {
+            return null;
+        }
+        final int subTypeStartIndex = index + 1;
+        if (subTypeStartIndex < contextType.length()) {
+            return contextType.substring(subTypeStartIndex);
+        }
+        return null;
+    }
 }

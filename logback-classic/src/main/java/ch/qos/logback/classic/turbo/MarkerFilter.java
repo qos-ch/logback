@@ -26,41 +26,41 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class MarkerFilter extends MatchingFilter {
 
-	Marker markerToMatch;
+    Marker markerToMatch;
 
-	@Override
-	public void start() {
-		if (markerToMatch != null) {
-			super.start();
-		} else {
-			addError("The marker property must be set for [" + getName() + "]");
-		}
-	}
+    @Override
+    public void start() {
+        if (markerToMatch != null) {
+            super.start();
+        } else {
+            addError("The marker property must be set for [" + getName() + "]");
+        }
+    }
 
-	@Override
-	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
-		if (!isStarted()) {
-			return FilterReply.NEUTRAL;
-		}
+    @Override
+    public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
+        if (!isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
 
-		if (marker == null) {
-			return onMismatch;
-		}
+        if (marker == null) {
+            return onMismatch;
+        }
 
-		if (marker.contains(markerToMatch)) {
-			return onMatch;
-		}
-		return onMismatch;
-	}
+        if (marker.contains(markerToMatch)) {
+            return onMatch;
+        }
+        return onMismatch;
+    }
 
-	/**
-	 * The marker to match in the event.
-	 *
-	 * @param markerStr
-	 */
-	public void setMarker(final String markerStr) {
-		if (markerStr != null) {
-			markerToMatch = MarkerFactory.getMarker(markerStr);
-		}
-	}
+    /**
+     * The marker to match in the event.
+     *
+     * @param markerStr
+     */
+    public void setMarker(final String markerStr) {
+        if (markerStr != null) {
+            markerToMatch = MarkerFactory.getMarker(markerStr);
+        }
+    }
 }

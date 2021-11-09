@@ -8,69 +8,69 @@ import ch.qos.logback.core.model.Model;
 
 public abstract class BaseModelAction extends Action {
 
-	Model parentModel;
-	Model currentModel;
-	boolean inError = false;
+    Model parentModel;
+    Model currentModel;
+    boolean inError = false;
 
-	@Override
-	public void begin(final InterpretationContext intercon, final String name, final Attributes attributes) throws ActionException {
-		parentModel = null;
-		inError = false;
+    @Override
+    public void begin(final InterpretationContext intercon, final String name, final Attributes attributes) throws ActionException {
+        parentModel = null;
+        inError = false;
 
-		if (!validPreconditions(intercon, name, attributes)) {
-			inError = true;
-			return;
-		}
+        if (!validPreconditions(intercon, name, attributes)) {
+            inError = true;
+            return;
+        }
 
-		currentModel = buildCurrentModel(intercon, name, attributes);
-		currentModel.setTag(name);
-		if(!intercon.isModelStackEmpty()) {
-			parentModel = intercon.peekModel();
-		}
-		final int lineNumber = getLineNumber(intercon);
-		currentModel.setLineNumber(lineNumber);
-		intercon.pushModel(currentModel);
-	}
+        currentModel = buildCurrentModel(intercon, name, attributes);
+        currentModel.setTag(name);
+        if(!intercon.isModelStackEmpty()) {
+            parentModel = intercon.peekModel();
+        }
+        final int lineNumber = getLineNumber(intercon);
+        currentModel.setLineNumber(lineNumber);
+        intercon.pushModel(currentModel);
+    }
 
 
-	abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
+    abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
 
-	/**
-	 * Validate preconditions of this action.
-	 *
-	 * By default, true is returned. Sub-classes should override appropriatelly.
-	 *
-	 * @param interpretationContext
-	 * @param name
-	 * @param attributes
-	 * @return
-	 */
-	protected boolean validPreconditions(final InterpretationContext intercon, final String name, final Attributes attributes) {
-		return true;
-	}
+    /**
+     * Validate preconditions of this action.
+     *
+     * By default, true is returned. Sub-classes should override appropriatelly.
+     *
+     * @param interpretationContext
+     * @param name
+     * @param attributes
+     * @return
+     */
+    protected boolean validPreconditions(final InterpretationContext intercon, final String name, final Attributes attributes) {
+        return true;
+    }
 
-	@Override
-	public void body(final InterpretationContext ec, final String body) {
-		currentModel.addText(body);
-	}
+    @Override
+    public void body(final InterpretationContext ec, final String body) {
+        currentModel.addText(body);
+    }
 
-	@Override
-	public void end(final InterpretationContext interpretationContext, final String name) throws ActionException {
-		if(inError) {
-			return;
-		}
+    @Override
+    public void end(final InterpretationContext interpretationContext, final String name) throws ActionException {
+        if(inError) {
+            return;
+        }
 
-		final Model m = interpretationContext.peekModel();
+        final Model m = interpretationContext.peekModel();
 
-		if (m != currentModel) {
-			addWarn("The object at the of the stack is not the model [" + currentModel.idString() + "] pushed earlier.");
-			addWarn("This is wholly unexpected.");
-		}
+        if (m != currentModel) {
+            addWarn("The object at the of the stack is not the model [" + currentModel.idString() + "] pushed earlier.");
+            addWarn("This is wholly unexpected.");
+        }
 
-		// do not pop nor add to parent if there is no parent
-		if(parentModel != null) {
-			parentModel.addSubModel(currentModel);
-			interpretationContext.popModel();
-		}
-	}
+        // do not pop nor add to parent if there is no parent
+        if(parentModel != null) {
+            parentModel.addSubModel(currentModel);
+            interpretationContext.popModel();
+        }
+    }
 }

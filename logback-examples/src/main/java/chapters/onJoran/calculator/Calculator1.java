@@ -26,15 +26,15 @@ import chapters.onJoran.SimpleConfigurator;
 /**
  * This examples illustrates collaboration between multiple actions through the
  * common execution context stack.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class Calculator1 {
 
-    public static void main(String[] args) throws Exception {
-        Context context = new ContextBase();
+    public static void main(final String[] args) throws Exception {
+        final Context context = new ContextBase();
 
-        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+        final Map<ElementSelector, Action> ruleMap = new HashMap<>();
 
         // Associate "/computation" pattern with ComputationAction1
         ruleMap.put(new ElementSelector("/computation"), new ComputationAction1());
@@ -44,7 +44,7 @@ public class Calculator1 {
         ruleMap.put(new ElementSelector("/computation/add"), new AddAction());
         ruleMap.put(new ElementSelector("/computation/multiply"), new MultiplyAction());
 
-        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
+        final SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap);
         // link the configurator with its context
         simpleConfigurator.setContext(context);
 

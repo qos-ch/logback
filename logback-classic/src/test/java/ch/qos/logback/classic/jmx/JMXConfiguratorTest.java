@@ -38,128 +38,128 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class JMXConfiguratorTest {
 
-	MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-	LoggerContext lc = new LoggerContext();
-	Logger testLogger = lc.getLogger(this.getClass());
+    MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+    LoggerContext lc = new LoggerContext();
+    Logger testLogger = lc.getLogger(this.getClass());
 
-	List<LoggerContextListener> listenerList;
-	int diff = RandomUtil.getPositiveInt();
+    List<LoggerContextListener> listenerList;
+    int diff = RandomUtil.getPositiveInt();
 
-	@Before
-	public void setUp() throws Exception {
-		lc.setName("context-" + diff);
-		assertNotNull(mbs);
-	}
+    @Before
+    public void setUp() throws Exception {
+        lc.setName("context-" + diff);
+        assertNotNull(mbs);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		lc.stop();
-	}
+    @After
+    public void tearDown() throws Exception {
+        lc.stop();
+    }
 
-	@Override
-	public String toString() {
-		return this.getClass().getName() + "(" + lc.getName() + ")";
-	}
+    @Override
+    public String toString() {
+        return this.getClass().getName() + "(" + lc.getName() + ")";
+    }
 
-	@Test
-	public void contextReset() throws Exception {
-		final String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+    @Test
+    public void contextReset() throws Exception {
+        final String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
 
-		final ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
-		final JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
-		mbs.registerMBean(jmxConfigurator, objectName);
+        final ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
+        final JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
+        mbs.registerMBean(jmxConfigurator, objectName);
 
-		listenerList = lc.getCopyOfListenerList();
-		assertEquals(1, listenerList.size());
+        listenerList = lc.getCopyOfListenerList();
+        assertEquals(1, listenerList.size());
 
-		lc.reset();
+        lc.reset();
 
-		// check that after lc.reset, jmxConfigurator should still be
-		// registered as a listener in the loggerContext and also as an
-		// MBean in mbs
-		listenerList = lc.getCopyOfListenerList();
-		assertEquals(1, listenerList.size());
-		assertTrue(listenerList.contains(jmxConfigurator));
+        // check that after lc.reset, jmxConfigurator should still be
+        // registered as a listener in the loggerContext and also as an
+        // MBean in mbs
+        listenerList = lc.getCopyOfListenerList();
+        assertEquals(1, listenerList.size());
+        assertTrue(listenerList.contains(jmxConfigurator));
 
-		assertTrue(mbs.isRegistered(objectName));
-	}
+        assertTrue(mbs.isRegistered(objectName));
+    }
 
-	@Test
-	public void contextStop() throws Exception {
-		final String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+    @Test
+    public void contextStop() throws Exception {
+        final String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
 
-		final ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
-		final JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
-		mbs.registerMBean(jmxConfigurator, objectName);
+        final ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
+        final JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
+        mbs.registerMBean(jmxConfigurator, objectName);
 
-		listenerList = lc.getCopyOfListenerList();
-		assertEquals(1, listenerList.size());
+        listenerList = lc.getCopyOfListenerList();
+        assertEquals(1, listenerList.size());
 
-		lc.stop();
+        lc.stop();
 
-		// check that after lc.processPriorToRemoval, jmxConfigurator is no longer
-		// registered as a listener in the loggerContext nor as an
-		// MBean in mbs
-		listenerList = lc.getCopyOfListenerList();
-		assertEquals(0, listenerList.size());
+        // check that after lc.processPriorToRemoval, jmxConfigurator is no longer
+        // registered as a listener in the loggerContext nor as an
+        // MBean in mbs
+        listenerList = lc.getCopyOfListenerList();
+        assertEquals(0, listenerList.size());
 
-		assertFalse(mbs.isRegistered(objectName));
-	}
+        assertFalse(mbs.isRegistered(objectName));
+    }
 
-	@Test
-	public void testNonRemovalOfPreviousIntanceFromTheContextListenerList() {
-		final String objectNameAsStr = "ch.qos.logback.toto" + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
-		final ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
-		final JMXConfigurator jmxConfigurator0 = new JMXConfigurator(lc, mbs, objectName);
+    @Test
+    public void testNonRemovalOfPreviousIntanceFromTheContextListenerList() {
+        final String objectNameAsStr = "ch.qos.logback.toto" + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+        final ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+        final JMXConfigurator jmxConfigurator0 = new JMXConfigurator(lc, mbs, objectName);
 
-		listenerList = lc.getCopyOfListenerList();
-		assertTrue(listenerList.contains(jmxConfigurator0));
+        listenerList = lc.getCopyOfListenerList();
+        assertTrue(listenerList.contains(jmxConfigurator0));
 
-		final JMXConfigurator jmxConfigurator1 = new JMXConfigurator(lc, mbs, objectName);
-		listenerList = lc.getCopyOfListenerList();
-		assertEquals(1, listenerList.size());
-		assertTrue("old configurator should be present", listenerList.contains(jmxConfigurator0));
-		assertFalse("new configurator should be absent", listenerList.contains(jmxConfigurator1));
-	}
+        final JMXConfigurator jmxConfigurator1 = new JMXConfigurator(lc, mbs, objectName);
+        listenerList = lc.getCopyOfListenerList();
+        assertEquals(1, listenerList.size());
+        assertTrue("old configurator should be present", listenerList.contains(jmxConfigurator0));
+        assertFalse("new configurator should be absent", listenerList.contains(jmxConfigurator1));
+    }
 
-	@Test
-	public void getLoggerLevel_LBCLASSIC_78() {
-		final String objectNameAsStr = "ch.qos" + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+    @Test
+    public void getLoggerLevel_LBCLASSIC_78() {
+        final String objectNameAsStr = "ch.qos" + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
 
-		final ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
-		final JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
-		assertEquals("", configurator.getLoggerLevel(testLogger.getName()));
-		MBeanUtil.unregister(lc, mbs, on, this);
-	}
+        final ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+        final JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
+        assertEquals("", configurator.getLoggerLevel(testLogger.getName()));
+        MBeanUtil.unregister(lc, mbs, on, this);
+    }
 
-	@Test
-	public void setLoggerLevel_LBCLASSIC_79() {
-		final String objectNameAsStr = "ch.qos" + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+    @Test
+    public void setLoggerLevel_LBCLASSIC_79() {
+        final String objectNameAsStr = "ch.qos" + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
 
-		final ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
-		final JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
-		configurator.setLoggerLevel(testLogger.getName(), "DEBUG");
-		assertEquals(Level.DEBUG, testLogger.getLevel());
+        final ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+        final JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
+        configurator.setLoggerLevel(testLogger.getName(), "DEBUG");
+        assertEquals(Level.DEBUG, testLogger.getLevel());
 
-		configurator.setLoggerLevel(testLogger.getName(), "null");
-		assertNull(testLogger.getLevel());
+        configurator.setLoggerLevel(testLogger.getName(), "null");
+        assertNull(testLogger.getLevel());
 
-		MBeanUtil.unregister(lc, mbs, on, this);
-	}
+        MBeanUtil.unregister(lc, mbs, on, this);
+    }
 
-	@Test
-	public void testReloadDefaultConfiguration() throws Exception {
-		final String objectNameAsStr = "ch.qos" + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+    @Test
+    public void testReloadDefaultConfiguration() throws Exception {
+        final String objectNameAsStr = "ch.qos" + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
 
-		final ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
-		final JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
-		configurator.setLoggerLevel(testLogger.getName(), "DEBUG");
-		assertEquals(Level.DEBUG, testLogger.getLevel());
+        final ObjectName on = MBeanUtil.string2ObjectName(lc, this, objectNameAsStr);
+        final JMXConfigurator configurator = new JMXConfigurator(lc, mbs, on);
+        configurator.setLoggerLevel(testLogger.getName(), "DEBUG");
+        assertEquals(Level.DEBUG, testLogger.getLevel());
 
-		configurator.reloadDefaultConfiguration();
-		assertNull(testLogger.getLevel());
-		assertEquals(Level.DEBUG, lc.getLogger(ROOT_LOGGER_NAME).getLevel());
-		MBeanUtil.unregister(lc, mbs, on, this);
-	}
+        configurator.reloadDefaultConfiguration();
+        assertNull(testLogger.getLevel());
+        assertEquals(Level.DEBUG, lc.getLogger(ROOT_LOGGER_NAME).getLevel());
+        MBeanUtil.unregister(lc, mbs, on, this);
+    }
 
 }

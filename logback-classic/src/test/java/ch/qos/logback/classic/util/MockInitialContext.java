@@ -21,18 +21,18 @@ import javax.naming.NamingException;
 
 public class MockInitialContext extends InitialContext {
 
-	public Map<String, Object> map = new HashMap<>();
+    public Map<String, Object> map = new HashMap<>();
 
-	public MockInitialContext() throws NamingException {
-	}
+    public MockInitialContext() throws NamingException {
+    }
 
-	@Override
-	public Object lookup(final String name) throws NamingException {
-		if (name == null) {
-			return null;
-		}
+    @Override
+    public Object lookup(final String name) throws NamingException {
+        if (name == null) {
+            return null;
+        }
 
-		return map.get(name);
-	}
+        return map.get(name);
+    }
 
 }

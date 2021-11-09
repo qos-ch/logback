@@ -20,76 +20,76 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class KeyValuePairConverter extends ClassicConverter {
 
-	static final String DOUBLE_OPTION_STR = "DOUBLE";
-	static final String SINGLE_OPTION_STR = "SINGLE";
-	static final String NONE_OPTION_STR = "NONE";
+    static final String DOUBLE_OPTION_STR = "DOUBLE";
+    static final String SINGLE_OPTION_STR = "SINGLE";
+    static final String NONE_OPTION_STR = "NONE";
 
-	enum ValueQuoteSpecification {
-		NONE, SINGLE, DOUBLE;
+    enum ValueQuoteSpecification {
+        NONE, SINGLE, DOUBLE;
 
-		Character asChar() {
-			switch (this) {
-			case NONE:
-				return null;
-			case DOUBLE:
-				return '"';
-			case SINGLE:
-				return '\'';
-			default:
-				throw new IllegalStateException();
-			}
-		}
-	}
+        Character asChar() {
+            switch (this) {
+            case NONE:
+                return null;
+            case DOUBLE:
+                return '"';
+            case SINGLE:
+                return '\'';
+            default:
+                throw new IllegalStateException();
+            }
+        }
+    }
 
-	ValueQuoteSpecification valueQuoteSpec = ValueQuoteSpecification.DOUBLE;
+    ValueQuoteSpecification valueQuoteSpec = ValueQuoteSpecification.DOUBLE;
 
-	@Override
-	public void start() {
-		final String optStr = getFirstOption();
-		valueQuoteSpec = optionStrToSpec(optStr);
-		super.start();
-	}
+    @Override
+    public void start() {
+        final String optStr = getFirstOption();
+        valueQuoteSpec = optionStrToSpec(optStr);
+        super.start();
+    }
 
-	private ValueQuoteSpecification optionStrToSpec(final String optStr) {
-		if (optStr == null || DOUBLE_OPTION_STR.equalsIgnoreCase(optStr)) {
-			return ValueQuoteSpecification.DOUBLE;
-		}
-		if (SINGLE_OPTION_STR.equalsIgnoreCase(optStr)) {
-			return ValueQuoteSpecification.SINGLE;
-		}
-		if (NONE_OPTION_STR.equalsIgnoreCase(optStr)) {
-			return ValueQuoteSpecification.NONE;
-		}
-		return ValueQuoteSpecification.DOUBLE;
-	}
+    private ValueQuoteSpecification optionStrToSpec(final String optStr) {
+        if (optStr == null || DOUBLE_OPTION_STR.equalsIgnoreCase(optStr)) {
+            return ValueQuoteSpecification.DOUBLE;
+        }
+        if (SINGLE_OPTION_STR.equalsIgnoreCase(optStr)) {
+            return ValueQuoteSpecification.SINGLE;
+        }
+        if (NONE_OPTION_STR.equalsIgnoreCase(optStr)) {
+            return ValueQuoteSpecification.NONE;
+        }
+        return ValueQuoteSpecification.DOUBLE;
+    }
 
-	@Override
-	public String convert(final ILoggingEvent event) {
+    @Override
+    public String convert(final ILoggingEvent event) {
 
-		final List<KeyValuePair> kvpList = event.getKeyValuePairs();
-		if (kvpList == null || kvpList.isEmpty()) {
-			return CoreConstants.EMPTY_STRING;
-		}
+        final List<KeyValuePair> kvpList = event.getKeyValuePairs();
+        if (kvpList == null || kvpList.isEmpty()) {
+            return CoreConstants.EMPTY_STRING;
+        }
 
-		final StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < kvpList.size(); i++) {
-			final KeyValuePair kvp = kvpList.get(i);
-			if (i != 0) {
-				sb.append(' ');
-			}
-			sb.append(String.valueOf(kvp.key));
-			sb.append('=');
-			final Character c = valueQuoteSpec.asChar();
-			if (c != null) {
-				sb.append(c);
-			}
-			sb.append(String.valueOf(kvp.value));
-			if (c != null) {
-				sb.append(c);
-			}
-		}
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < kvpList.size(); i++) {
+            final KeyValuePair kvp = kvpList.get(i);
+            if (i != 0) {
+                sb.append(' ');
+            }
+            sb.append(String.valueOf(kvp.key));
+            sb.append('=');
+            final Character c = valueQuoteSpec.asChar();
+            if (c != null) {
+                sb.append(c);
+            }
+            sb.append(String.valueOf(kvp.value));
+            if (c != null) {
+                sb.append(c);
+            }
+        }
 
-		return sb.toString();
-	}
+        return sb.toString();
+    }
 
 }

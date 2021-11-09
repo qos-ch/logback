@@ -32,34 +32,34 @@ import ch.qos.logback.core.testUtil.RandomUtil;
  */
 public class ResilientOutputStreamTest {
 
-	int diff = RandomUtil.getPositiveInt();
-	Context context = new ContextBase();
+    int diff = RandomUtil.getPositiveInt();
+    Context context = new ContextBase();
 
-	@BeforeClass
-	public static void setUp() {
-		final File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
-		file.mkdirs();
-	}
+    @BeforeClass
+    public static void setUp() {
+        final File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
+        file.mkdirs();
+    }
 
-	@Test
-	public void verifyRecuperationAfterFailure() throws Exception {
-		final File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "resilient" + diff + ".log");
-		final ResilientFileOutputStream rfos = new ResilientFileOutputStream(file, true, FileAppender.DEFAULT_BUFFER_SIZE);
-		rfos.setContext(context);
+    @Test
+    public void verifyRecuperationAfterFailure() throws Exception {
+        final File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "resilient" + diff + ".log");
+        final ResilientFileOutputStream rfos = new ResilientFileOutputStream(file, true, FileAppender.DEFAULT_BUFFER_SIZE);
+        rfos.setContext(context);
 
-		final ResilientFileOutputStream spy = spy(rfos);
+        final ResilientFileOutputStream spy = spy(rfos);
 
-		spy.write("a".getBytes());
-		spy.flush();
+        spy.write("a".getBytes());
+        spy.flush();
 
-		spy.getChannel().close();
-		spy.write("b".getBytes());
-		spy.flush();
-		Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN + 10);
-		spy.write("c".getBytes());
-		spy.flush();
-		verify(spy).openNewOutputStream();
+        spy.getChannel().close();
+        spy.write("b".getBytes());
+        spy.flush();
+        Thread.sleep(RecoveryCoordinator.BACKOFF_COEFFICIENT_MIN + 10);
+        spy.write("c".getBytes());
+        spy.flush();
+        verify(spy).openNewOutputStream();
 
-	}
+    }
 
 }

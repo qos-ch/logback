@@ -6,16 +6,16 @@ import ch.qos.logback.core.model.Model;
 
 public class NOPModelHandler extends ModelHandlerBase {
 
-	public NOPModelHandler(final Context context) {
-		super(context);
-	}
+    public NOPModelHandler(final Context context) {
+        super(context);
+    }
 
-	static public NOPModelHandler makeInstance(final Context context, final InterpretationContext ic) {
-		return new NOPModelHandler(context);
-	}
+    static public NOPModelHandler makeInstance(final Context context, final InterpretationContext ic) {
+        return new NOPModelHandler(context);
+    }
 
-	@Override
-	public void handle(final InterpretationContext interpretationContext, final Model model) {
-	}
+    @Override
+    public void handle(final InterpretationContext interpretationContext, final Model model) {
+    }
 
 }

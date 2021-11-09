@@ -37,275 +37,275 @@ import ch.qos.logback.core.CoreConstants;
  * @author David Roussel
  */
 abstract public class AbstractComponentTracker<C> implements ComponentTracker<C> {
-	private static final boolean ACCESS_ORDERED = true;
+    private static final boolean ACCESS_ORDERED = true;
 
-	// Components in lingering state last 10 seconds
-	final public static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
+    // Components in lingering state last 10 seconds
+    final public static long LINGERING_TIMEOUT = 10 * CoreConstants.MILLIS_IN_ONE_SECOND;
 
-	/**
-	 * The minimum amount of time that has to elapse between successive removal iterations.
-	 */
-	final public static long WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS = CoreConstants.MILLIS_IN_ONE_SECOND;
+    /**
+     * The minimum amount of time that has to elapse between successive removal iterations.
+     */
+    final public static long WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS = CoreConstants.MILLIS_IN_ONE_SECOND;
 
-	protected int maxComponents = DEFAULT_MAX_COMPONENTS;
-	protected long timeout = DEFAULT_TIMEOUT;
+    protected int maxComponents = DEFAULT_MAX_COMPONENTS;
+    protected long timeout = DEFAULT_TIMEOUT;
 
-	// an access ordered map. Least recently accessed element will be removed after a 'timeout'
-	LinkedHashMap<String, Entry<C>> liveMap = new LinkedHashMap<>(32, .75f, ACCESS_ORDERED);
+    // an access ordered map. Least recently accessed element will be removed after a 'timeout'
+    LinkedHashMap<String, Entry<C>> liveMap = new LinkedHashMap<>(32, .75f, ACCESS_ORDERED);
 
-	// an access ordered map. Least recently accessed element will be removed after LINGERING_TIMEOUT
-	LinkedHashMap<String, Entry<C>> lingerersMap = new LinkedHashMap<>(16, .75f, ACCESS_ORDERED);
-	long lastCheck = 0;
+    // an access ordered map. Least recently accessed element will be removed after LINGERING_TIMEOUT
+    LinkedHashMap<String, Entry<C>> lingerersMap = new LinkedHashMap<>(16, .75f, ACCESS_ORDERED);
+    long lastCheck = 0;
 
-	/**
-	 * Stop or clean the component.
-	 *
-	 * @param component
-	 */
-	abstract protected void processPriorToRemoval(C component);
+    /**
+     * Stop or clean the component.
+     *
+     * @param component
+     */
+    abstract protected void processPriorToRemoval(C component);
 
-	/**
-	 * Build a component based on the key.
-	 *
-	 * @param key
-	 * @return
-	 */
-	abstract protected C buildComponent(String key);
+    /**
+     * Build a component based on the key.
+     *
+     * @param key
+     * @return
+     */
+    abstract protected C buildComponent(String key);
 
-	/**
-	 * Components can declare themselves stale. Such components may be
-	 * removed before they time out.
-	 *
-	 * @param c
-	 * @return
-	 */
-	protected abstract boolean isComponentStale(C c);
+    /**
+     * Components can declare themselves stale. Such components may be
+     * removed before they time out.
+     *
+     * @param c
+     * @return
+     */
+    protected abstract boolean isComponentStale(C c);
 
-	@Override
-	public int getComponentCount() {
-		return liveMap.size() + lingerersMap.size();
-	}
+    @Override
+    public int getComponentCount() {
+        return liveMap.size() + lingerersMap.size();
+    }
 
-	/**
-	 * Get an entry from the liveMap, if not found search the lingerersMap.
-	 *
-	 * @param key
-	 * @return
-	 */
-	private Entry<C> getFromEitherMap(final String key) {
-		final Entry<C> entry = liveMap.get(key);
-		if (entry != null) {
-			return entry;
-		}
-		return lingerersMap.get(key);
-	}
+    /**
+     * Get an entry from the liveMap, if not found search the lingerersMap.
+     *
+     * @param key
+     * @return
+     */
+    private Entry<C> getFromEitherMap(final String key) {
+        final Entry<C> entry = liveMap.get(key);
+        if (entry != null) {
+            return entry;
+        }
+        return lingerersMap.get(key);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>Note that this method is synchronized.</p>
-	 *
-	 * @param key {@inheritDoc}
-	 * @return {@inheritDoc}
-	 *
-	 */
-	@Override
-	public synchronized C find(final String key) {
-		final Entry<C> entry = getFromEitherMap(key);
-		if (entry == null) {
-			return null;
-		}
-		return entry.component;
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Note that this method is synchronized.</p>
+     *
+     * @param key {@inheritDoc}
+     * @return {@inheritDoc}
+     *
+     */
+    @Override
+    public synchronized C find(final String key) {
+        final Entry<C> entry = getFromEitherMap(key);
+        if (entry == null) {
+            return null;
+        }
+        return entry.component;
+    }
 
-	/**
-	 *  {@inheritDoc}
-	 *
-	 * <p>Note that this method is atomic, i.e. synchronized.</p>
-	 *
-	 * @param key {@inheritDoc}
-	 * @param timestamp {@inheritDoc}
-	 * @return {@inheritDoc}
-	 */
-	@Override
-	public synchronized C getOrCreate(final String key, final long timestamp) {
-		Entry<C> entry = getFromEitherMap(key);
-		if (entry == null) {
-			final C c = buildComponent(key);
-			entry = new Entry<>(key, c, timestamp);
-			// new entries go into the main map
-			liveMap.put(key, entry);
-		} else {
-			entry.setTimestamp(timestamp);
-		}
-		return entry.component;
-	}
+    /**
+     *  {@inheritDoc}
+     *
+     * <p>Note that this method is atomic, i.e. synchronized.</p>
+     *
+     * @param key {@inheritDoc}
+     * @param timestamp {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public synchronized C getOrCreate(final String key, final long timestamp) {
+        Entry<C> entry = getFromEitherMap(key);
+        if (entry == null) {
+            final C c = buildComponent(key);
+            entry = new Entry<>(key, c, timestamp);
+            // new entries go into the main map
+            liveMap.put(key, entry);
+        } else {
+            entry.setTimestamp(timestamp);
+        }
+        return entry.component;
+    }
 
-	/**
-	 * Mark component identified by 'key' as having reached its end-of-life.
-	 *
-	 * @param key
-	 */
-	@Override
-	public void endOfLife(final String key) {
-		final Entry<C> entry = liveMap.remove(key);
-		if (entry == null) {
-			return;
-		}
-		lingerersMap.put(key, entry);
-	}
+    /**
+     * Mark component identified by 'key' as having reached its end-of-life.
+     *
+     * @param key
+     */
+    @Override
+    public void endOfLife(final String key) {
+        final Entry<C> entry = liveMap.remove(key);
+        if (entry == null) {
+            return;
+        }
+        lingerersMap.put(key, entry);
+    }
 
-	/**
-	 * Clear (and detach) components which are stale. Components which have not
-	 * been accessed for more than a user-specified duration are deemed stale.
-	 *
-	 * @param now
-	 */
-	@Override
-	public synchronized void removeStaleComponents(final long now) {
-		if (isTooSoonForRemovalIteration(now)) {
-			return;
-		}
-		removeExcedentComponents();
-		removeStaleComponentsFromMainMap(now);
-		removeStaleComponentsFromLingerersMap(now);
-	}
+    /**
+     * Clear (and detach) components which are stale. Components which have not
+     * been accessed for more than a user-specified duration are deemed stale.
+     *
+     * @param now
+     */
+    @Override
+    public synchronized void removeStaleComponents(final long now) {
+        if (isTooSoonForRemovalIteration(now)) {
+            return;
+        }
+        removeExcedentComponents();
+        removeStaleComponentsFromMainMap(now);
+        removeStaleComponentsFromLingerersMap(now);
+    }
 
-	private void removeExcedentComponents() {
-		genericStaleComponentRemover(liveMap, 0, byExcedent);
-	}
+    private void removeExcedentComponents() {
+        genericStaleComponentRemover(liveMap, 0, byExcedent);
+    }
 
-	private void removeStaleComponentsFromMainMap(final long now) {
-		genericStaleComponentRemover(liveMap, now, byTimeout);
-	}
+    private void removeStaleComponentsFromMainMap(final long now) {
+        genericStaleComponentRemover(liveMap, now, byTimeout);
+    }
 
-	private void removeStaleComponentsFromLingerersMap(final long now) {
-		genericStaleComponentRemover(lingerersMap, now, byLingering);
-	}
+    private void removeStaleComponentsFromLingerersMap(final long now) {
+        genericStaleComponentRemover(lingerersMap, now, byLingering);
+    }
 
-	private void genericStaleComponentRemover(final LinkedHashMap<String, Entry<C>> map, final long now, final RemovalPredicator<C> removalPredicator) {
-		final Iterator<Map.Entry<String, Entry<C>>> iter = map.entrySet().iterator();
-		while (iter.hasNext()) {
-			final Map.Entry<String, Entry<C>> mapEntry = iter.next();
-			final Entry<C> entry = mapEntry.getValue();
-			if (!removalPredicator.isSlatedForRemoval(entry, now)) {
-				break;
-			}
-			iter.remove();
-			final C c = entry.component;
-			processPriorToRemoval(c);
-		}
-	}
+    private void genericStaleComponentRemover(final LinkedHashMap<String, Entry<C>> map, final long now, final RemovalPredicator<C> removalPredicator) {
+        final Iterator<Map.Entry<String, Entry<C>>> iter = map.entrySet().iterator();
+        while (iter.hasNext()) {
+            final Map.Entry<String, Entry<C>> mapEntry = iter.next();
+            final Entry<C> entry = mapEntry.getValue();
+            if (!removalPredicator.isSlatedForRemoval(entry, now)) {
+                break;
+            }
+            iter.remove();
+            final C c = entry.component;
+            processPriorToRemoval(c);
+        }
+    }
 
-	private final RemovalPredicator<C> byExcedent = (entry, timestamp) -> liveMap.size() > maxComponents;
+    private final RemovalPredicator<C> byExcedent = (entry, timestamp) -> liveMap.size() > maxComponents;
 
-	private final RemovalPredicator<C> byTimeout = (entry, timestamp) -> isEntryStale(entry, timestamp);
-	private final RemovalPredicator<C> byLingering = (entry, timestamp) -> isEntryDoneLingering(entry, timestamp);
+    private final RemovalPredicator<C> byTimeout = (entry, timestamp) -> isEntryStale(entry, timestamp);
+    private final RemovalPredicator<C> byLingering = (entry, timestamp) -> isEntryDoneLingering(entry, timestamp);
 
-	private boolean isTooSoonForRemovalIteration(final long now) {
-		if (lastCheck + WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS > now) {
-			return true;
-		}
-		lastCheck = now;
-		return false;
-	}
+    private boolean isTooSoonForRemovalIteration(final long now) {
+        if (lastCheck + WAIT_BETWEEN_SUCCESSIVE_REMOVAL_ITERATIONS > now) {
+            return true;
+        }
+        lastCheck = now;
+        return false;
+    }
 
-	private boolean isEntryStale(final Entry<C> entry, final long now) {
-		// stopped or improperly started appenders are considered stale
-		// see also http://jira.qos.ch/browse/LBCLASSIC-316
-		final C c = entry.component;
-		if (isComponentStale(c)) {
-			return true;
-		}
+    private boolean isEntryStale(final Entry<C> entry, final long now) {
+        // stopped or improperly started appenders are considered stale
+        // see also http://jira.qos.ch/browse/LBCLASSIC-316
+        final C c = entry.component;
+        if (isComponentStale(c)) {
+            return true;
+        }
 
-		return entry.timestamp + timeout < now;
-	}
+        return entry.timestamp + timeout < now;
+    }
 
-	private boolean isEntryDoneLingering(final Entry<C> entry, final long now) {
-		return entry.timestamp + LINGERING_TIMEOUT < now;
-	}
+    private boolean isEntryDoneLingering(final Entry<C> entry, final long now) {
+        return entry.timestamp + LINGERING_TIMEOUT < now;
+    }
 
-	@Override
-	public Set<String> allKeys() {
-		final HashSet<String> allKeys = new HashSet<>(liveMap.keySet());
-		allKeys.addAll(lingerersMap.keySet());
-		return allKeys;
-	}
+    @Override
+    public Set<String> allKeys() {
+        final HashSet<String> allKeys = new HashSet<>(liveMap.keySet());
+        allKeys.addAll(lingerersMap.keySet());
+        return allKeys;
+    }
 
-	@Override
-	public Collection<C> allComponents() {
-		final List<C> allComponents = new ArrayList<>();
-		for (final Entry<C> e : liveMap.values()) {
-			allComponents.add(e.component);
-		}
-		for (final Entry<C> e : lingerersMap.values()) {
-			allComponents.add(e.component);
-		}
+    @Override
+    public Collection<C> allComponents() {
+        final List<C> allComponents = new ArrayList<>();
+        for (final Entry<C> e : liveMap.values()) {
+            allComponents.add(e.component);
+        }
+        for (final Entry<C> e : lingerersMap.values()) {
+            allComponents.add(e.component);
+        }
 
-		return allComponents;
-	}
+        return allComponents;
+    }
 
-	public long getTimeout() {
-		return timeout;
-	}
+    public long getTimeout() {
+        return timeout;
+    }
 
-	public void setTimeout(final long timeout) {
-		this.timeout = timeout;
-	}
+    public void setTimeout(final long timeout) {
+        this.timeout = timeout;
+    }
 
-	public int getMaxComponents() {
-		return maxComponents;
-	}
+    public int getMaxComponents() {
+        return maxComponents;
+    }
 
-	public void setMaxComponents(final int maxComponents) {
-		this.maxComponents = maxComponents;
-	}
+    public void setMaxComponents(final int maxComponents) {
+        this.maxComponents = maxComponents;
+    }
 
-	// ================================================================
-	private interface RemovalPredicator<C> {
-		boolean isSlatedForRemoval(Entry<C> entry, long timestamp);
-	}
+    // ================================================================
+    private interface RemovalPredicator<C> {
+        boolean isSlatedForRemoval(Entry<C> entry, long timestamp);
+    }
 
-	// ================================================================
-	private static class Entry<C> {
-		String key;
-		C component;
-		long timestamp;
+    // ================================================================
+    private static class Entry<C> {
+        String key;
+        C component;
+        long timestamp;
 
-		Entry(final String k, final C c, final long timestamp) {
-			this.key = k;
-			this.component = c;
-			this.timestamp = timestamp;
-		}
+        Entry(final String k, final C c, final long timestamp) {
+            this.key = k;
+            this.component = c;
+            this.timestamp = timestamp;
+        }
 
-		public void setTimestamp(final long timestamp) {
-			this.timestamp = timestamp;
-		}
+        public void setTimestamp(final long timestamp) {
+            this.timestamp = timestamp;
+        }
 
-		@Override
-		public int hashCode() {
-			return key.hashCode();
-		}
+        @Override
+        public int hashCode() {
+            return key.hashCode();
+        }
 
-		@Override
-		public boolean equals(final Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null || getClass() != obj.getClass()) {
-				return false;
-			}
-			@SuppressWarnings("unchecked")
-			final Entry<C> other = (Entry<C>) obj;
-			if (!Objects.equals(key, other.key) || !Objects.equals(component, other.component)) {
-				return false;
-			}
-			return true;
-		}
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || getClass() != obj.getClass()) {
+                return false;
+            }
+            @SuppressWarnings("unchecked")
+            final Entry<C> other = (Entry<C>) obj;
+            if (!Objects.equals(key, other.key) || !Objects.equals(component, other.component)) {
+                return false;
+            }
+            return true;
+        }
 
-		@Override
-		public String toString() {
-			return "(" + key + ", " + component + ")";
-		}
-	}
+        @Override
+        public String toString() {
+            return "(" + key + ", " + component + ")";
+        }
+    }
 }

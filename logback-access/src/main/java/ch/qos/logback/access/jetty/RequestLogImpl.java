@@ -114,214 +114,214 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.util.component.LifeCycle,  RequestLog, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
-	public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar + "logback-access.xml";
+    public final static String DEFAULT_CONFIG_FILE = "etc" + File.separatorChar + "logback-access.xml";
 
-	AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<>();
-	FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<>();
-	String fileName;
-	String resource;
-	boolean started = false;
-	boolean quiet = false;
+    AppenderAttachableImpl<IAccessEvent> aai = new AppenderAttachableImpl<>();
+    FilterAttachableImpl<IAccessEvent> fai = new FilterAttachableImpl<>();
+    String fileName;
+    String resource;
+    boolean started = false;
+    boolean quiet = false;
 
-	public RequestLogImpl() {
-		putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
-	}
+    public RequestLogImpl() {
+        putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
+    }
 
-	@Override
-	public void log(final Request jettyRequest, final Response jettyResponse) {
-		final JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest, jettyResponse);
-		final IAccessEvent accessEvent = new AccessEvent(this, jettyRequest, jettyResponse, adapter);
-		if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
-			return;
-		}
-		aai.appendLoopOnAppenders(accessEvent);
-	}
+    @Override
+    public void log(final Request jettyRequest, final Response jettyResponse) {
+        final JettyServerAdapter adapter = new JettyServerAdapter(jettyRequest, jettyResponse);
+        final IAccessEvent accessEvent = new AccessEvent(this, jettyRequest, jettyResponse, adapter);
+        if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
+            return;
+        }
+        aai.appendLoopOnAppenders(accessEvent);
+    }
 
-	private void addInfo(final String msg) {
-		getStatusManager().add(new InfoStatus(msg, this));
-	}
+    private void addInfo(final String msg) {
+        getStatusManager().add(new InfoStatus(msg, this));
+    }
 
-	private void addError(final String msg) {
-		getStatusManager().add(new ErrorStatus(msg, this));
-	}
+    private void addError(final String msg) {
+        getStatusManager().add(new ErrorStatus(msg, this));
+    }
 
-	@Override
-	public void start() {
-		configure();
-		if (!isQuiet()) {
-			StatusPrinter.print(getStatusManager());
-		}
-		started = true;
-	}
+    @Override
+    public void start() {
+        configure();
+        if (!isQuiet()) {
+            StatusPrinter.print(getStatusManager());
+        }
+        started = true;
+    }
 
-	protected void configure() {
-		final URL configURL = getConfigurationFileURL();
-		if (configURL != null) {
-			runJoranOnFile(configURL);
-		} else {
-			addError("Could not find configuration file for logback-access");
-		}
-	}
+    protected void configure() {
+        final URL configURL = getConfigurationFileURL();
+        if (configURL != null) {
+            runJoranOnFile(configURL);
+        } else {
+            addError("Could not find configuration file for logback-access");
+        }
+    }
 
-	protected URL getConfigurationFileURL() {
-		if (fileName != null) {
-			addInfo("Will use configuration file [" + fileName + "]");
-			final File file = new File(fileName);
-			if (!file.exists()) {
-				return null;
-			}
-			return FileUtil.fileToURL(file);
-		}
-		if (resource != null) {
-			addInfo("Will use configuration resource [" + resource + "]");
-			return this.getClass().getResource(resource);
-		}
+    protected URL getConfigurationFileURL() {
+        if (fileName != null) {
+            addInfo("Will use configuration file [" + fileName + "]");
+            final File file = new File(fileName);
+            if (!file.exists()) {
+                return null;
+            }
+            return FileUtil.fileToURL(file);
+        }
+        if (resource != null) {
+            addInfo("Will use configuration resource [" + resource + "]");
+            return this.getClass().getResource(resource);
+        }
 
-		final String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
-		String defaultConfigFile = DEFAULT_CONFIG_FILE;
-		if (!OptionHelper.isNullOrEmpty(jettyHomeProperty)) {
-			defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
-		} else {
-			addInfo("[jetty.home] system property not set.");
-		}
-		final File file = new File(defaultConfigFile);
-		addInfo("Assuming default configuration file [" + defaultConfigFile + "]");
-		if (!file.exists()) {
-			return null;
-		}
-		return FileUtil.fileToURL(file);
-	}
+        final String jettyHomeProperty = OptionHelper.getSystemProperty("jetty.home");
+        String defaultConfigFile = DEFAULT_CONFIG_FILE;
+        if (!OptionHelper.isNullOrEmpty(jettyHomeProperty)) {
+            defaultConfigFile = jettyHomeProperty + File.separatorChar + DEFAULT_CONFIG_FILE;
+        } else {
+            addInfo("[jetty.home] system property not set.");
+        }
+        final File file = new File(defaultConfigFile);
+        addInfo("Assuming default configuration file [" + defaultConfigFile + "]");
+        if (!file.exists()) {
+            return null;
+        }
+        return FileUtil.fileToURL(file);
+    }
 
-	private void runJoranOnFile(final URL configURL) {
-		try {
-			final JoranConfigurator jc = new JoranConfigurator();
-			jc.setContext(this);
-			jc.doConfigure(configURL);
-			if (getName() == null) {
-				setName("LogbackRequestLog");
-			}
-		} catch (final JoranException e) {
-			// errors have been registered as status messages
-		}
-	}
+    private void runJoranOnFile(final URL configURL) {
+        try {
+            final JoranConfigurator jc = new JoranConfigurator();
+            jc.setContext(this);
+            jc.doConfigure(configURL);
+            if (getName() == null) {
+                setName("LogbackRequestLog");
+            }
+        } catch (final JoranException e) {
+            // errors have been registered as status messages
+        }
+    }
 
-	@Override
-	public void stop() {
-		aai.detachAndStopAllAppenders();
-		started = false;
-	}
+    @Override
+    public void stop() {
+        aai.detachAndStopAllAppenders();
+        started = false;
+    }
 
-	@Override
-	public boolean isRunning() {
-		return started;
-	}
+    @Override
+    public boolean isRunning() {
+        return started;
+    }
 
-	public void setFileName(final String fileName) {
-		this.fileName = fileName;
-	}
+    public void setFileName(final String fileName) {
+        this.fileName = fileName;
+    }
 
-	public void setResource(final String resource) {
-		this.resource = resource;
-	}
+    public void setResource(final String resource) {
+        this.resource = resource;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public boolean isStarting() {
-		return false;
-	}
+    @Override
+    public boolean isStarting() {
+        return false;
+    }
 
-	@Override
-	public boolean isStopping() {
-		return false;
-	}
+    @Override
+    public boolean isStopping() {
+        return false;
+    }
 
-	@Override
-	public boolean isStopped() {
-		return !started;
-	}
+    @Override
+    public boolean isStopped() {
+        return !started;
+    }
 
-	@Override
-	public boolean isFailed() {
-		return false;
-	}
+    @Override
+    public boolean isFailed() {
+        return false;
+    }
 
-	public boolean isQuiet() {
-		return quiet;
-	}
+    public boolean isQuiet() {
+        return quiet;
+    }
 
-	public void setQuiet(final boolean quiet) {
-		this.quiet = quiet;
-	}
+    public void setQuiet(final boolean quiet) {
+        this.quiet = quiet;
+    }
 
-	@Override
-	public void addAppender(final Appender<IAccessEvent> newAppender) {
-		aai.addAppender(newAppender);
-	}
+    @Override
+    public void addAppender(final Appender<IAccessEvent> newAppender) {
+        aai.addAppender(newAppender);
+    }
 
-	@Override
-	public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
-		return aai.iteratorForAppenders();
-	}
+    @Override
+    public Iterator<Appender<IAccessEvent>> iteratorForAppenders() {
+        return aai.iteratorForAppenders();
+    }
 
-	@Override
-	public Appender<IAccessEvent> getAppender(final String name) {
-		return aai.getAppender(name);
-	}
+    @Override
+    public Appender<IAccessEvent> getAppender(final String name) {
+        return aai.getAppender(name);
+    }
 
-	@Override
-	public boolean isAttached(final Appender<IAccessEvent> appender) {
-		return aai.isAttached(appender);
-	}
+    @Override
+    public boolean isAttached(final Appender<IAccessEvent> appender) {
+        return aai.isAttached(appender);
+    }
 
-	@Override
-	public void detachAndStopAllAppenders() {
-		aai.detachAndStopAllAppenders();
-	}
+    @Override
+    public void detachAndStopAllAppenders() {
+        aai.detachAndStopAllAppenders();
+    }
 
-	@Override
-	public boolean detachAppender(final Appender<IAccessEvent> appender) {
-		return aai.detachAppender(appender);
-	}
+    @Override
+    public boolean detachAppender(final Appender<IAccessEvent> appender) {
+        return aai.detachAppender(appender);
+    }
 
-	@Override
-	public boolean detachAppender(final String name) {
-		return aai.detachAppender(name);
-	}
+    @Override
+    public boolean detachAppender(final String name) {
+        return aai.detachAppender(name);
+    }
 
-	@Override
-	public void addFilter(final Filter<IAccessEvent> newFilter) {
-		fai.addFilter(newFilter);
-	}
+    @Override
+    public void addFilter(final Filter<IAccessEvent> newFilter) {
+        fai.addFilter(newFilter);
+    }
 
-	@Override
-	public void clearAllFilters() {
-		fai.clearAllFilters();
-	}
+    @Override
+    public void clearAllFilters() {
+        fai.clearAllFilters();
+    }
 
-	@Override
-	public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
-		return fai.getCopyOfAttachedFiltersList();
-	}
+    @Override
+    public List<Filter<IAccessEvent>> getCopyOfAttachedFiltersList() {
+        return fai.getCopyOfAttachedFiltersList();
+    }
 
-	@Override
-	public FilterReply getFilterChainDecision(final IAccessEvent event) {
-		return fai.getFilterChainDecision(event);
-	}
+    @Override
+    public FilterReply getFilterChainDecision(final IAccessEvent event) {
+        return fai.getFilterChainDecision(event);
+    }
 
-	@Override
-	public boolean addEventListener(final EventListener listener) {
-		// we'll implement this when asked
-		return false;
-	}
+    @Override
+    public boolean addEventListener(final EventListener listener) {
+        // we'll implement this when asked
+        return false;
+    }
 
-	@Override
-	public boolean removeEventListener(final EventListener listener) {
-		// we'll implement this when asked
-		return false;
-	}
+    @Override
+    public boolean removeEventListener(final EventListener listener) {
+        // we'll implement this when asked
+        return false;
+    }
 
 }

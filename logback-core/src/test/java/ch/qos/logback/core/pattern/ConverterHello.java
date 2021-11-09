@@ -18,20 +18,20 @@ import java.util.List;
 public class ConverterHello extends DynamicConverter<Object> {
 
 
-	String firstOption;
+    String firstOption;
 
-	@Override
-	public void start() {
-		final List<String> options = getOptionList();
-		if(options != null && !options.isEmpty()) {
-			firstOption = options.get(0);
-		}
-		super.start();
-	}
+    @Override
+    public void start() {
+        final List<String> options = getOptionList();
+        if(options != null && !options.isEmpty()) {
+            firstOption = options.get(0);
+        }
+        super.start();
+    }
 
-	@Override
-	public String convert(final Object event) {
-		return "Hello";
-	}
+    @Override
+    public String convert(final Object event) {
+        return "Hello";
+    }
 
 }

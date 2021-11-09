@@ -21,55 +21,55 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ActionUtil {
 
-	public enum Scope {
-		LOCAL, CONTEXT, SYSTEM
-	}
+    public enum Scope {
+        LOCAL, CONTEXT, SYSTEM
+    }
 
-	/**
-	 * Convert a string into a scope. Scole.LOCAL is returned by default.
-	 * @param scopeStr
-	 * @return a scope corresponding to the input string;  Scope.LOCAL by default.
-	 */
-	static public Scope stringToScope(final String scopeStr) {
-		if (Scope.SYSTEM.toString().equalsIgnoreCase(scopeStr)) {
-			return Scope.SYSTEM;
-		}
-		if (Scope.CONTEXT.toString().equalsIgnoreCase(scopeStr)) {
-			return Scope.CONTEXT;
-		}
+    /**
+     * Convert a string into a scope. Scole.LOCAL is returned by default.
+     * @param scopeStr
+     * @return a scope corresponding to the input string;  Scope.LOCAL by default.
+     */
+    static public Scope stringToScope(final String scopeStr) {
+        if (Scope.SYSTEM.toString().equalsIgnoreCase(scopeStr)) {
+            return Scope.SYSTEM;
+        }
+        if (Scope.CONTEXT.toString().equalsIgnoreCase(scopeStr)) {
+            return Scope.CONTEXT;
+        }
 
-		return Scope.LOCAL;
-	}
+        return Scope.LOCAL;
+    }
 
-	static public void setProperty(final InterpretationContext ic, final String key, final String value, final Scope scope) {
-		switch (scope) {
-		case LOCAL:
-			ic.addSubstitutionProperty(key, value);
-			break;
-		case CONTEXT:
-			ic.getContext().putProperty(key, value);
-			break;
-		case SYSTEM:
-			OptionHelper.setSystemProperty(ic, key, value);
-		}
-	}
+    static public void setProperty(final InterpretationContext ic, final String key, final String value, final Scope scope) {
+        switch (scope) {
+        case LOCAL:
+            ic.addSubstitutionProperty(key, value);
+            break;
+        case CONTEXT:
+            ic.getContext().putProperty(key, value);
+            break;
+        case SYSTEM:
+            OptionHelper.setSystemProperty(ic, key, value);
+        }
+    }
 
-	/**
-	 * Add all the properties found in the argument named 'props' to an
-	 * InterpretationContext.
-	 */
-	static public void setProperties(final InterpretationContext ic, final Properties props, final Scope scope) {
-		switch (scope) {
-		case LOCAL:
-			ic.addSubstitutionProperties(props);
-			break;
-		case CONTEXT:
-			final ContextUtil cu = new ContextUtil(ic.getContext());
-			cu.addProperties(props);
-			break;
-		case SYSTEM:
-			OptionHelper.setSystemProperties(ic, props);
-		}
-	}
+    /**
+     * Add all the properties found in the argument named 'props' to an
+     * InterpretationContext.
+     */
+    static public void setProperties(final InterpretationContext ic, final Properties props, final Scope scope) {
+        switch (scope) {
+        case LOCAL:
+            ic.addSubstitutionProperties(props);
+            break;
+        case CONTEXT:
+            final ContextUtil cu = new ContextUtil(ic.getContext());
+            cu.addProperties(props);
+            break;
+        case SYSTEM:
+            OptionHelper.setSystemProperties(ic, props);
+        }
+    }
 
 }

@@ -7,16 +7,16 @@ import ch.qos.logback.core.pattern.CompositeConverter;
 
 public class XCompositeConverter extends CompositeConverter<ILoggingEvent>{
 
-	void assertNoNext() {
-		assertNull("converter instance has next element", getNext());
-	}
+    void assertNoNext() {
+        assertNull("converter instance has next element", getNext());
+    }
 
-	@Override
-	protected String transform(final ILoggingEvent event, final String in) {
-		if (event.getMessage().contains("assert")) {
-			assertNoNext();
-		}
-		return "";
-	}
+    @Override
+    protected String transform(final ILoggingEvent event, final String in) {
+        if (event.getMessage().contains("assert")) {
+            assertNoNext();
+        }
+        return "";
+    }
 
 }

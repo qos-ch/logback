@@ -17,16 +17,16 @@ import ch.qos.logback.core.util.TimeUtil;
 
 public class StatsByHour extends PeriodicStats {
 
-	StatsByHour() {
-	}
+    StatsByHour() {
+    }
 
-	StatsByHour(final long now) {
-		super(now);
-	}
+    StatsByHour(final long now) {
+        super(now);
+    }
 
-	@Override
-	long computeStartOfNextPeriod(final long now) {
-		return TimeUtil.computeStartOfNextHour(now);
-	}
+    @Override
+    long computeStartOfNextPeriod(final long now) {
+        return TimeUtil.computeStartOfNextHour(now);
+    }
 
 }

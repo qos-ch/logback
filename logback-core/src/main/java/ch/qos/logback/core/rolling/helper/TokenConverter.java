@@ -25,30 +25,30 @@ package ch.qos.logback.core.rolling.helper;
  */
 public class TokenConverter {
 
-	static final int IDENTITY = 0;
-	static final int INTEGER = 1;
-	static final int DATE = 1;
-	int type;
-	TokenConverter next;
+    static final int IDENTITY = 0;
+    static final int INTEGER = 1;
+    static final int DATE = 1;
+    int type;
+    TokenConverter next;
 
-	protected TokenConverter(final int t) {
-		type = t;
-	}
+    protected TokenConverter(final int t) {
+        type = t;
+    }
 
-	public TokenConverter getNext() {
-		return next;
-	}
+    public TokenConverter getNext() {
+        return next;
+    }
 
-	public void setNext(final TokenConverter next) {
-		this.next = next;
-	}
+    public void setNext(final TokenConverter next) {
+        this.next = next;
+    }
 
-	public int getType() {
-		return type;
-	}
+    public int getType() {
+        return type;
+    }
 
-	public void setType(final int i) {
-		type = i;
-	}
+    public void setType(final int i) {
+        type = i;
+    }
 
 }

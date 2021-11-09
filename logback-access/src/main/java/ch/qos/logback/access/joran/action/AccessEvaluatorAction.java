@@ -18,7 +18,7 @@ import ch.qos.logback.core.joran.action.EventEvaluatorAction;
 
 public class AccessEvaluatorAction extends EventEvaluatorAction {
 
-	protected String defaultClassName() {
-		return JaninoEventEvaluator.class.getName();
-	}
+    protected String defaultClassName() {
+        return JaninoEventEvaluator.class.getName();
+    }
 }

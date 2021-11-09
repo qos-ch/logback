@@ -30,31 +30,31 @@ import ch.qos.logback.core.boolex.EventEvaluatorBase;
  */
 public class OnMarkerEvaluator extends EventEvaluatorBase<ILoggingEvent> {
 
-	List<String> markerList = new ArrayList<>();
+    List<String> markerList = new ArrayList<>();
 
-	public void addMarker(final String markerStr) {
-		markerList.add(markerStr);
-	}
+    public void addMarker(final String markerStr) {
+        markerList.add(markerStr);
+    }
 
-	/**
-	 * Return true if event passed as parameter contains one of the specified
-	 * user-markers.
-	 */
-	@Override
-	public boolean evaluate(final ILoggingEvent event) throws NullPointerException, EvaluationException {
+    /**
+     * Return true if event passed as parameter contains one of the specified
+     * user-markers.
+     */
+    @Override
+    public boolean evaluate(final ILoggingEvent event) throws NullPointerException, EvaluationException {
 
-		final List<Marker> markerListInEvent = event.getMarkerList();
-		if (markerListInEvent == null || markerListInEvent.isEmpty()) {
-			return false;
-		}
+        final List<Marker> markerListInEvent = event.getMarkerList();
+        if (markerListInEvent == null || markerListInEvent.isEmpty()) {
+            return false;
+        }
 
-		for (final String markerStr : markerList) {
-			for (final Marker markerInEvent : markerListInEvent) {
-				if (markerInEvent.contains(markerStr)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+        for (final String markerStr : markerList) {
+            for (final Marker markerInEvent : markerListInEvent) {
+                if (markerInEvent.contains(markerStr)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

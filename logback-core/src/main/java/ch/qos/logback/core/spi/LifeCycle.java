@@ -15,10 +15,10 @@ package ch.qos.logback.core.spi;
 
 public interface LifeCycle {
 
-	void start();
+    void start();
 
-	void stop();
+    void stop();
 
-	boolean isStarted();
+    boolean isStarted();
 
 }

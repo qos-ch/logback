@@ -24,47 +24,47 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 
 public class StartEvent extends StaxEvent {
 
-	List<Attribute> attributes;
-	public ElementPath elementPath;
+    List<Attribute> attributes;
+    public ElementPath elementPath;
 
-	StartEvent(final ElementPath elementPath, final String name, final Iterator<Attribute> attributeIterator, final Location location) {
-		super(name, location);
-		populateAttributes(attributeIterator);
-		this.elementPath = elementPath;
-	}
+    StartEvent(final ElementPath elementPath, final String name, final Iterator<Attribute> attributeIterator, final Location location) {
+        super(name, location);
+        populateAttributes(attributeIterator);
+        this.elementPath = elementPath;
+    }
 
-	private void populateAttributes(final Iterator<Attribute> attributeIterator) {
-		while (attributeIterator.hasNext()) {
-			if (attributes == null) {
-				attributes = new ArrayList<>(2);
-			}
-			attributes.add(attributeIterator.next());
-		}
-	}
+    private void populateAttributes(final Iterator<Attribute> attributeIterator) {
+        while (attributeIterator.hasNext()) {
+            if (attributes == null) {
+                attributes = new ArrayList<>(2);
+            }
+            attributes.add(attributeIterator.next());
+        }
+    }
 
-	public ElementPath getElementPath() {
-		return elementPath;
-	}
+    public ElementPath getElementPath() {
+        return elementPath;
+    }
 
-	public List<Attribute> getAttributeList() {
-		return attributes;
-	}
+    public List<Attribute> getAttributeList() {
+        return attributes;
+    }
 
-	Attribute getAttributeByName(final String name) {
-		if (attributes == null) {
-			return null;
-		}
+    Attribute getAttributeByName(final String name) {
+        if (attributes == null) {
+            return null;
+        }
 
-		for (final Attribute attr : attributes) {
-			if (name.equals(attr.getName().getLocalPart())) {
-				return attr;
-			}
-		}
-		return null;
-	}
+        for (final Attribute attr : attributes) {
+            if (name.equals(attr.getName().getLocalPart())) {
+                return attr;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	public String toString() {
-		return "StartEvent(" + getName() + ")  [" + location.getLineNumber() + "," + location.getColumnNumber() + "]";
-	}
+    @Override
+    public String toString() {
+        return "StartEvent(" + getName() + ")  [" + location.getLineNumber() + "," + location.getColumnNumber() + "]";
+    }
 }

@@ -22,30 +22,29 @@ import org.xml.sax.InputSource;
 
 public class XHTMLEntityResolver implements EntityResolver {
 
-	// key: public id, value: relative path to DTD file
-	static Map<String, String> entityMap = new HashMap<>();
+    // key: public id, value: relative path to DTD file
+    static Map<String, String> entityMap = new HashMap<>();
 
-	static {
-		entityMap.put("-//W3C//DTD XHTML 1.0 Strict//EN", "/dtd/xhtml1-strict.dtd");
-		entityMap.put("-//W3C//ENTITIES Latin 1 for XHTML//EN", "/dtd/xhtml-lat1.ent");
-		entityMap.put("-//W3C//ENTITIES Symbols for XHTML//EN", "/dtd/xhtml-symbol.ent");
-		entityMap.put("-//W3C//ENTITIES Special for XHTML//EN", "/dtd/xhtml-special.ent");
-	}
+    static {
+        entityMap.put("-//W3C//DTD XHTML 1.0 Strict//EN", "/dtd/xhtml1-strict.dtd");
+        entityMap.put("-//W3C//ENTITIES Latin 1 for XHTML//EN", "/dtd/xhtml-lat1.ent");
+        entityMap.put("-//W3C//ENTITIES Symbols for XHTML//EN", "/dtd/xhtml-symbol.ent");
+        entityMap.put("-//W3C//ENTITIES Special for XHTML//EN", "/dtd/xhtml-special.ent");
+    }
 
-	@Override
-	public InputSource resolveEntity(final String publicId, final String systemId) {
-		// System.out.println(publicId);
-		final String relativePath = entityMap.get(publicId);
+    @Override
+    public InputSource resolveEntity(final String publicId, final String systemId) {
+        // System.out.println(publicId);
+        final String relativePath = entityMap.get(publicId);
 
-		if (relativePath == null) {
-			return null;
-		}
-		final Class<?> clazz = getClass();
-		final InputStream in = clazz.getResourceAsStream(relativePath);
-		if (in == null) {
-			return null;
-		} else {
-			return new InputSource(in);
-		}
-	}
+        if (relativePath == null) {
+            return null;
+        }
+        final Class<?> clazz = getClass();
+        final InputStream in = clazz.getResourceAsStream(relativePath);
+        if (in == null) {
+            return null;
+        }
+        return new InputSource(in);
+    }
 }

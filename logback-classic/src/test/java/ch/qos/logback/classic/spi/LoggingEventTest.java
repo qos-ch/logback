@@ -25,52 +25,52 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class LoggingEventTest {
 
-	LoggerContext loggerContext = new LoggerContext();
-	Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    LoggerContext loggerContext = new LoggerContext();
+    Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-	@Before
-	public void setUp() {
-	}
+    @Before
+    public void setUp() {
+    }
 
-	@Test
-	public void testFormattingOneArg() {
-		final String message = "x={}";
-		final Throwable throwable = null;
-		final Object[] argArray = { 12 };
+    @Test
+    public void testFormattingOneArg() {
+        final String message = "x={}";
+        final Throwable throwable = null;
+        final Object[] argArray = { 12 };
 
-		final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
-		assertNull(event.formattedMessage);
-		assertEquals("x=12", event.getFormattedMessage());
-	}
+        final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals("x=12", event.getFormattedMessage());
+    }
 
-	@Test
-	public void testFormattingTwoArg() {
-		final String message = "{}-{}";
-		final Throwable throwable = null;
-		final Object[] argArray = { 12, 13 };
-		final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+    @Test
+    public void testFormattingTwoArg() {
+        final String message = "{}-{}";
+        final Throwable throwable = null;
+        final Object[] argArray = { 12, 13 };
+        final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
 
-		assertNull(event.formattedMessage);
-		assertEquals("12-13", event.getFormattedMessage());
-	}
+        assertNull(event.formattedMessage);
+        assertEquals("12-13", event.getFormattedMessage());
+    }
 
-	@Test
-	public void testNoFormattingWithArgs() {
-		final String message = "testNoFormatting";
-		final Throwable throwable = null;
-		final Object[] argArray = { 12, 13 };
-		final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
-		assertNull(event.formattedMessage);
-		assertEquals(message, event.getFormattedMessage());
-	}
+    @Test
+    public void testNoFormattingWithArgs() {
+        final String message = "testNoFormatting";
+        final Throwable throwable = null;
+        final Object[] argArray = { 12, 13 };
+        final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals(message, event.getFormattedMessage());
+    }
 
-	@Test
-	public void testNoFormattingWithoutArgs() {
-		final String message = "testNoFormatting";
-		final Throwable throwable = null;
-		final Object[] argArray = null;
-		final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
-		assertNull(event.formattedMessage);
-		assertEquals(message, event.getFormattedMessage());
-	}
+    @Test
+    public void testNoFormattingWithoutArgs() {
+        final String message = "testNoFormatting";
+        final Throwable throwable = null;
+        final Object[] argArray = null;
+        final LoggingEvent event = new LoggingEvent("", logger, Level.INFO, message, throwable, argArray);
+        assertNull(event.formattedMessage);
+        assertEquals(message, event.getFormattedMessage());
+    }
 }

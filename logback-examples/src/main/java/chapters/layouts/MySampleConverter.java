@@ -21,8 +21,8 @@ public class MySampleConverter extends ClassicConverter {
     long start = System.nanoTime();
 
     @Override
-    public String convert(ILoggingEvent event) {
-        long nowInNanos = System.nanoTime();
+    public String convert(final ILoggingEvent event) {
+        final long nowInNanos = System.nanoTime();
         return Long.toString(nowInNanos - start);
     }
 }

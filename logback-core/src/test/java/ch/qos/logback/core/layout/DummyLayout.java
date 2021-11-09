@@ -18,19 +18,19 @@ import ch.qos.logback.core.LayoutBase;
 
 public class DummyLayout<E> extends LayoutBase<E> {
 
-	public static final String DUMMY = "dummy" + CoreConstants.LINE_SEPARATOR;
-	String val = DUMMY;
+    public static final String DUMMY = "dummy" + CoreConstants.LINE_SEPARATOR;
+    String val = DUMMY;
 
-	public DummyLayout() {
-	}
+    public DummyLayout() {
+    }
 
-	public DummyLayout(final String val) {
-		this.val = val;
-	}
+    public DummyLayout(final String val) {
+        this.val = val;
+    }
 
-	@Override
-	public String doLayout(final E event) {
-		return val;
-	}
+    @Override
+    public String doLayout(final E event) {
+        return val;
+    }
 
 }

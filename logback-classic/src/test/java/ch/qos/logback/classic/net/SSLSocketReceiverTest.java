@@ -30,21 +30,21 @@ import ch.qos.logback.classic.LoggerContext;
  */
 public class SSLSocketReceiverTest {
 
-	private final SSLSocketReceiver remote = new SSLSocketReceiver();
+    private final SSLSocketReceiver remote = new SSLSocketReceiver();
 
-	@Before
-	public void setUp() throws Exception {
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		remote.setContext(lc);
-	}
+    @Before
+    public void setUp() throws Exception {
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        remote.setContext(lc);
+    }
 
-	@Test
-	public void testUsingDefaultConfig() throws Exception {
-		// should be able to start successfully with no SSL configuration at all
-		remote.setRemoteHost(InetAddress.getLocalHost().getHostAddress());
-		remote.setPort(6000);
-		remote.start();
-		assertNotNull(remote.getSocketFactory());
-	}
+    @Test
+    public void testUsingDefaultConfig() throws Exception {
+        // should be able to start successfully with no SSL configuration at all
+        remote.setRemoteHost(InetAddress.getLocalHost().getHostAddress());
+        remote.setPort(6000);
+        remote.start();
+        assertNotNull(remote.getSocketFactory());
+    }
 
 }

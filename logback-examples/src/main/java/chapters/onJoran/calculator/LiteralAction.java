@@ -23,16 +23,17 @@ import ch.qos.logback.core.util.OptionHelper;
  * This action converts the value attribute of the associated element to an
  * integer and pushes the resulting Integer object on top of the execution
  * context stack.
- * 
+ *
  * <p>It also illustrates usage of Joran's error reporting/handling paradigm.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class LiteralAction extends Action {
     public static final String VALUE_ATR = "value";
 
-    public void begin(InterpretationContext ic, String name, Attributes attributes) {
-        String valueStr = attributes.getValue(VALUE_ATR);
+    @Override
+    public void begin(final InterpretationContext ic, final String name, final Attributes attributes) {
+        final String valueStr = attributes.getValue(VALUE_ATR);
 
         if (OptionHelper.isNullOrEmpty(valueStr)) {
             ic.addError("The literal action requires a value attribute");
@@ -40,15 +41,16 @@ public class LiteralAction extends Action {
         }
 
         try {
-            Integer i = Integer.valueOf(valueStr);
+            final Integer i = Integer.valueOf(valueStr);
             ic.pushObject(i);
-        } catch (NumberFormatException nfe) {
+        } catch (final NumberFormatException nfe) {
             ic.addError("The value [" + valueStr + "] could not be converted to an Integer", nfe);
             throw nfe;
         }
     }
 
-    public void end(InterpretationContext ic, String name) {
+    @Override
+    public void end(final InterpretationContext ic, final String name) {
         // Nothing to do here.
         // In general, the end() method of actions associated with elements
         // having no children do not need to perform any processing in their

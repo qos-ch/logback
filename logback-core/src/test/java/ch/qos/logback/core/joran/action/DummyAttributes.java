@@ -19,70 +19,70 @@ import org.xml.sax.Attributes;
 
 public class DummyAttributes implements Attributes {
 
-	HashMap<String, String> atts = new HashMap<>();
+    HashMap<String, String> atts = new HashMap<>();
 
-	@Override
-	public int getIndex(final String qName) {
-		return 0;
-	}
+    @Override
+    public int getIndex(final String qName) {
+        return 0;
+    }
 
-	@Override
-	public int getIndex(final String uri, final String localName) {
-		return 0;
-	}
+    @Override
+    public int getIndex(final String uri, final String localName) {
+        return 0;
+    }
 
-	@Override
-	public int getLength() {
-		return 0;
-	}
+    @Override
+    public int getLength() {
+        return 0;
+    }
 
-	@Override
-	public String getLocalName(final int index) {
-		return null;
-	}
+    @Override
+    public String getLocalName(final int index) {
+        return null;
+    }
 
-	@Override
-	public String getQName(final int index) {
-		return null;
-	}
+    @Override
+    public String getQName(final int index) {
+        return null;
+    }
 
-	@Override
-	public String getType(final int index) {
-		return null;
-	}
+    @Override
+    public String getType(final int index) {
+        return null;
+    }
 
-	@Override
-	public String getType(final String qName) {
-		return null;
-	}
+    @Override
+    public String getType(final String qName) {
+        return null;
+    }
 
-	@Override
-	public String getType(final String uri, final String localName) {
-		return null;
-	}
+    @Override
+    public String getType(final String uri, final String localName) {
+        return null;
+    }
 
-	@Override
-	public String getURI(final int index) {
-		return null;
-	}
+    @Override
+    public String getURI(final int index) {
+        return null;
+    }
 
-	@Override
-	public String getValue(final int index) {
-		return null;
-	}
+    @Override
+    public String getValue(final int index) {
+        return null;
+    }
 
-	@Override
-	public String getValue(final String qName) {
-		return atts.get(qName);
-	}
+    @Override
+    public String getValue(final String qName) {
+        return atts.get(qName);
+    }
 
-	public void setValue(final String key, final String value) {
-		atts.put(key, value);
-	}
+    public void setValue(final String key, final String value) {
+        atts.put(key, value);
+    }
 
-	@Override
-	public String getValue(final String uri, final String localName) {
-		return null;
-	}
+    @Override
+    public String getValue(final String uri, final String localName) {
+        return null;
+    }
 
 }

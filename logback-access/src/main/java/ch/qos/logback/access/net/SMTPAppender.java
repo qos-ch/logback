@@ -33,64 +33,64 @@ import ch.qos.logback.core.net.SMTPAppenderBase;
  */
 public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
 
-	static final String DEFAULT_SUBJECT_PATTERN = "%m";
+    static final String DEFAULT_SUBJECT_PATTERN = "%m";
 
-	/**
-	 * The default constructor will instantiate the appender with a
-	 * {@link EventEvaluator} that will trigger on events with level
-	 * ERROR or higher.
-	 */
-	public SMTPAppender() {
-	}
+    /**
+     * The default constructor will instantiate the appender with a
+     * {@link EventEvaluator} that will trigger on events with level
+     * ERROR or higher.
+     */
+    public SMTPAppender() {
+    }
 
-	/**
-	 * Use <code>evaluator</code> passed as parameter as the {@link
-	 * EventEvaluator} for this SMTPAppender.
-	 */
-	public SMTPAppender(final EventEvaluator<IAccessEvent> evaluator) {
-		eventEvaluator = evaluator;
-	}
+    /**
+     * Use <code>evaluator</code> passed as parameter as the {@link
+     * EventEvaluator} for this SMTPAppender.
+     */
+    public SMTPAppender(final EventEvaluator<IAccessEvent> evaluator) {
+        eventEvaluator = evaluator;
+    }
 
-	/**
-	 * Perform SMTPAppender specific appending actions, mainly adding the event to
-	 * the appropriate cyclic buffer.
-	 */
-	@Override
-	protected void subAppend(final CyclicBuffer<IAccessEvent> cb, final IAccessEvent event) {
-		cb.add(event);
-	}
+    /**
+     * Perform SMTPAppender specific appending actions, mainly adding the event to
+     * the appropriate cyclic buffer.
+     */
+    @Override
+    protected void subAppend(final CyclicBuffer<IAccessEvent> cb, final IAccessEvent event) {
+        cb.add(event);
+    }
 
-	@Override
-	protected void fillBuffer(final CyclicBuffer<IAccessEvent> cb, final StringBuffer sbuf) {
-		final int len = cb.length();
-		for (int i = 0; i < len; i++) {
-			// sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
-			final IAccessEvent event = cb.get();
-			sbuf.append(layout.doLayout(event));
-		}
-	}
+    @Override
+    protected void fillBuffer(final CyclicBuffer<IAccessEvent> cb, final StringBuffer sbuf) {
+        final int len = cb.length();
+        for (int i = 0; i < len; i++) {
+            // sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
+            final IAccessEvent event = cb.get();
+            sbuf.append(layout.doLayout(event));
+        }
+    }
 
-	@Override
-	protected Layout<IAccessEvent> makeSubjectLayout(String subjectStr) {
-		if (subjectStr == null) {
-			subjectStr = DEFAULT_SUBJECT_PATTERN;
-		}
-		final PatternLayout pl = new PatternLayout();
-		pl.setPattern(subjectStr);
-		pl.start();
-		return pl;
-	}
+    @Override
+    protected Layout<IAccessEvent> makeSubjectLayout(String subjectStr) {
+        if (subjectStr == null) {
+            subjectStr = DEFAULT_SUBJECT_PATTERN;
+        }
+        final PatternLayout pl = new PatternLayout();
+        pl.setPattern(subjectStr);
+        pl.start();
+        return pl;
+    }
 
-	@Override
-	protected PatternLayout makeNewToPatternLayout(final String toPattern) {
-		final PatternLayout pl = new PatternLayout();
-		pl.setPattern(toPattern);
-		return pl;
-	}
+    @Override
+    protected PatternLayout makeNewToPatternLayout(final String toPattern) {
+        final PatternLayout pl = new PatternLayout();
+        pl.setPattern(toPattern);
+        return pl;
+    }
 
-	@Override
-	protected boolean eventMarksEndOfLife(final IAccessEvent eventObject) {
-		return false;
-	}
+    @Override
+    protected boolean eventMarksEndOfLife(final IAccessEvent eventObject) {
+        return false;
+    }
 
 }

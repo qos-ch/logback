@@ -18,66 +18,66 @@ import java.util.Objects;
 
 public class StackTraceElementProxy implements Serializable {
 
-	private static final long serialVersionUID = -2374374378980555982L;
+    private static final long serialVersionUID = -2374374378980555982L;
 
-	final StackTraceElement ste;
-	// save a byte or two during serialization, as we can
-	// reconstruct this field from 'ste'
-	transient private String steAsString;
-	private ClassPackagingData cpd;
+    final StackTraceElement ste;
+    // save a byte or two during serialization, as we can
+    // reconstruct this field from 'ste'
+    transient private String steAsString;
+    private ClassPackagingData cpd;
 
-	public StackTraceElementProxy(final StackTraceElement ste) {
-		if (ste == null) {
-			throw new IllegalArgumentException("ste cannot be null");
-		}
-		this.ste = ste;
-	}
+    public StackTraceElementProxy(final StackTraceElement ste) {
+        if (ste == null) {
+            throw new IllegalArgumentException("ste cannot be null");
+        }
+        this.ste = ste;
+    }
 
-	public String getSTEAsString() {
-		if (steAsString == null) {
-			steAsString = "at " + ste.toString();
-		}
-		return steAsString;
-	}
+    public String getSTEAsString() {
+        if (steAsString == null) {
+            steAsString = "at " + ste.toString();
+        }
+        return steAsString;
+    }
 
-	public StackTraceElement getStackTraceElement() {
-		return ste;
-	}
+    public StackTraceElement getStackTraceElement() {
+        return ste;
+    }
 
-	public void setClassPackagingData(final ClassPackagingData cpd) {
-		if (this.cpd != null) {
-			throw new IllegalStateException("Packaging data has been already set");
-		}
-		this.cpd = cpd;
-	}
+    public void setClassPackagingData(final ClassPackagingData cpd) {
+        if (this.cpd != null) {
+            throw new IllegalStateException("Packaging data has been already set");
+        }
+        this.cpd = cpd;
+    }
 
-	public ClassPackagingData getClassPackagingData() {
-		return cpd;
-	}
+    public ClassPackagingData getClassPackagingData() {
+        return cpd;
+    }
 
-	@Override
-	public int hashCode() {
-		return ste.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return ste.hashCode();
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		final StackTraceElementProxy other = (StackTraceElementProxy) obj;
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final StackTraceElementProxy other = (StackTraceElementProxy) obj;
 
-		if (!ste.equals(other.ste) || !Objects.equals(cpd, other.cpd)) {
-			return false;
-		}
-		return true;
-	}
+        if (!ste.equals(other.ste) || !Objects.equals(cpd, other.cpd)) {
+            return false;
+        }
+        return true;
+    }
 
-	@Override
-	public String toString() {
-		return getSTEAsString();
-	}
+    @Override
+    public String toString() {
+        return getSTEAsString();
+    }
 }

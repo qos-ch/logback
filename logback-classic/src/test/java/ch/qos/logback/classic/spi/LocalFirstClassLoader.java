@@ -24,58 +24,58 @@ import java.net.URLClassLoader;
  */
 public class LocalFirstClassLoader extends URLClassLoader {
 
-	public LocalFirstClassLoader(final URL[] urls) {
-		super(urls);
-	}
+    public LocalFirstClassLoader(final URL[] urls) {
+        super(urls);
+    }
 
-	public LocalFirstClassLoader(final URL[] urls, final ClassLoader parent) {
-		super(urls, parent);
-	}
+    public LocalFirstClassLoader(final URL[] urls, final ClassLoader parent) {
+        super(urls, parent);
+    }
 
-	@Override
-	public void addURL(final URL url) {
-		super.addURL(url);
-	}
+    @Override
+    public void addURL(final URL url) {
+        super.addURL(url);
+    }
 
-	@Override
-	public Class<?> loadClass(final String name) throws ClassNotFoundException {
-		return loadClass(name, false);
-	}
+    @Override
+    public Class<?> loadClass(final String name) throws ClassNotFoundException {
+        return loadClass(name, false);
+    }
 
-	/**
-	 * We override the parent-first behavior established by java.lang.Classloader.
-	 *
-	 * The implementation is surprisingly straightforward.
-	 */
-	@Override
-	protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
+    /**
+     * We override the parent-first behavior established by java.lang.Classloader.
+     *
+     * The implementation is surprisingly straightforward.
+     */
+    @Override
+    protected Class<?> loadClass(final String name, final boolean resolve) throws ClassNotFoundException {
 
-		// First, check if the class has already been loaded
-		Class<?> c = findLoadedClass(name);
+        // First, check if the class has already been loaded
+        Class<?> c = findLoadedClass(name);
 
-		// if not loaded, search the local (child) resources
-		if (c == null) {
-			try {
-				c = findClass(name);
-			} catch (final ClassNotFoundException cnfe) {
-				// ignore
-			}
-		}
+        // if not loaded, search the local (child) resources
+        if (c == null) {
+            try {
+                c = findClass(name);
+            } catch (final ClassNotFoundException cnfe) {
+                // ignore
+            }
+        }
 
-		// if we could not find it, delegate to parent
-		// Note that we don't attempt to catch any ClassNotFoundException
-		if (c == null) {
-			if (getParent() != null) {
-				c = getParent().loadClass(name);
-			} else {
-				c = getSystemClassLoader().loadClass(name);
-			}
-		}
+        // if we could not find it, delegate to parent
+        // Note that we don't attempt to catch any ClassNotFoundException
+        if (c == null) {
+            if (getParent() != null) {
+                c = getParent().loadClass(name);
+            } else {
+                c = getSystemClassLoader().loadClass(name);
+            }
+        }
 
-		if (resolve) {
-			resolveClass(c);
-		}
+        if (resolve) {
+            resolveClass(c);
+        }
 
-		return c;
-	}
+        return c;
+    }
 }

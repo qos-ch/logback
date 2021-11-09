@@ -17,35 +17,35 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 abstract public class EventEvaluatorBase<E> extends ContextAwareBase implements EventEvaluator<E> {
 
-	String name;
-	boolean started;
+    String name;
+    boolean started;
 
-	@Override
-	public String getName() {
-		return name;
-	}
+    @Override
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public void setName(final String name) {
-		if (this.name != null) {
-			throw new IllegalStateException("name has been already set");
-		}
-		this.name = name;
-	}
+    @Override
+    public void setName(final String name) {
+        if (this.name != null) {
+            throw new IllegalStateException("name has been already set");
+        }
+        this.name = name;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public void start() {
-		started = true;
-	}
+    @Override
+    public void start() {
+        started = true;
+    }
 
-	@Override
-	public void stop() {
-		started = false;
-	}
+    @Override
+    public void stop() {
+        started = false;
+    }
 
 }

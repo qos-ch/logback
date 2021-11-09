@@ -22,25 +22,25 @@ import ch.qos.logback.core.model.ParamModel;
 
 public class ParamAction extends BaseModelAction {
 
-	@Override
-	protected boolean validPreconditions(final InterpretationContext intercon, final String name,
-			final Attributes attributes) {
-		final PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
-		pv.validateNameAttribute();
-		pv.validateValueAttribute();
+    @Override
+    protected boolean validPreconditions(final InterpretationContext intercon, final String name,
+                    final Attributes attributes) {
+        final PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
+        pv.validateNameAttribute();
+        pv.validateValueAttribute();
 
-		addWarn("<param> element is deprecated in favor of a more direct syntax." + atLine(intercon));
-		addWarn("For details see " + CoreConstants.CODES_URL + "#param");
+        addWarn("<param> element is deprecated in favor of a more direct syntax." + atLine(intercon));
+        addWarn("For details see " + CoreConstants.CODES_URL + "#param");
 
-		return pv.isValid();
+        return pv.isValid();
 
-	}
+    }
 
-	@Override
-	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		final ParamModel paramModel = new ParamModel();
-		paramModel.setName(attributes.getValue(NAME_ATTRIBUTE));
-		paramModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
-		return paramModel;
-	}
+    @Override
+    protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        final ParamModel paramModel = new ParamModel();
+        paramModel.setName(attributes.getValue(NAME_ATTRIBUTE));
+        paramModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
+        return paramModel;
+    }
 }

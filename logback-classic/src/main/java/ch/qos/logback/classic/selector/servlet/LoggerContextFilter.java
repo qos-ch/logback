@@ -49,34 +49,34 @@ import jakarta.servlet.ServletResponse;
  */
 public class LoggerContextFilter implements Filter {
 
-	@Override
-	public void destroy() {
-		// do nothing
-	}
+    @Override
+    public void destroy() {
+        // do nothing
+    }
 
-	@Override
-	public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
+    @Override
+    public void doFilter(final ServletRequest request, final ServletResponse response, final FilterChain chain) throws IOException, ServletException {
 
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
-		ContextJNDISelector sel = null;
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        ContextJNDISelector sel = null;
 
-		if (selector instanceof ContextJNDISelector) {
-			sel = (ContextJNDISelector) selector;
-			sel.setLocalContext(lc);
-		}
+        if (selector instanceof ContextJNDISelector) {
+            sel = (ContextJNDISelector) selector;
+            sel.setLocalContext(lc);
+        }
 
-		try {
-			chain.doFilter(request, response);
-		} finally {
-			if (sel != null) {
-				sel.removeLocalContext();
-			}
-		}
-	}
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            if (sel != null) {
+                sel.removeLocalContext();
+            }
+        }
+    }
 
-	@Override
-	public void init(final FilterConfig arg0) throws ServletException {
-		// do nothing
-	}
+    @Override
+    public void init(final FilterConfig arg0) throws ServletException {
+        // do nothing
+    }
 }

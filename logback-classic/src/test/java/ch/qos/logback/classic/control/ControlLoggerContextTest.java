@@ -24,34 +24,34 @@ import ch.qos.logback.classic.Level;
  * This class is for testing ControlLoggerContext which is a control class for testing HLoggerContext.
  */
 public class ControlLoggerContextTest {
-	ControlLoggerContext clc;
+    ControlLoggerContext clc;
 
-	@Before
-	public void setUp() throws Exception {
-		clc = new ControlLoggerContext();
-	}
+    @Before
+    public void setUp() throws Exception {
+        clc = new ControlLoggerContext();
+    }
 
-	@Test
-	public void smoke() {
-		final ControlLogger x = clc.getLogger("x");
-		assertEquals("x", x.getName());
-		assertEquals(clc.getRootLogger(), x.parent);
+    @Test
+    public void smoke() {
+        final ControlLogger x = clc.getLogger("x");
+        assertEquals("x", x.getName());
+        assertEquals(clc.getRootLogger(), x.parent);
 
-		final ControlLogger abc = clc.getLogger("a.b.c");
-		assertEquals("a.b.c", abc.getName());
-		assertEquals(Level.DEBUG, abc.getEffectiveLevel());
-	}
+        final ControlLogger abc = clc.getLogger("a.b.c");
+        assertEquals("a.b.c", abc.getName());
+        assertEquals(Level.DEBUG, abc.getEffectiveLevel());
+    }
 
-	@Test
-	public void testCreation() {
-		final ControlLogger xyz = clc.getLogger("x.y.z");
-		assertEquals("x.y.z", xyz.getName());
-		assertEquals("x.y", xyz.parent.getName());
-		assertEquals("x", xyz.parent.parent.getName());
-		assertEquals("root", xyz.parent.parent.parent.getName());
+    @Test
+    public void testCreation() {
+        final ControlLogger xyz = clc.getLogger("x.y.z");
+        assertEquals("x.y.z", xyz.getName());
+        assertEquals("x.y", xyz.parent.getName());
+        assertEquals("x", xyz.parent.parent.getName());
+        assertEquals("root", xyz.parent.parent.parent.getName());
 
-		final ControlLogger xyz_ = clc.exists("x.y.z");
-		assertEquals("x.y.z", xyz_.getName());
+        final ControlLogger xyz_ = clc.exists("x.y.z");
+        assertEquals("x.y.z", xyz_.getName());
 
-	}
+    }
 }

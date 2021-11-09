@@ -37,225 +37,221 @@ import ch.qos.logback.classic.Level;
  */
 public class LoggingEventVO implements ILoggingEvent, Serializable {
 
-	private static final long serialVersionUID = 6553722650255690312L;
+    private static final long serialVersionUID = 6553722650255690312L;
 
-	private static final int NULL_ARGUMENT_ARRAY = -1;
-	private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
+    private static final int NULL_ARGUMENT_ARRAY = -1;
+    private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
 
-	private String threadName;
-	private String loggerName;
-	private LoggerContextVO loggerContextVO;
+    private String threadName;
+    private String loggerName;
+    private LoggerContextVO loggerContextVO;
 
-	private transient Level level;
-	private String message;
+    private transient Level level;
+    private String message;
 
-	// we gain significant space at serialization time by marking
-	// formattedMessage as transient and constructing it lazily in
-	// getFormattedMessage()
-	private transient String formattedMessage;
+    // we gain significant space at serialization time by marking
+    // formattedMessage as transient and constructing it lazily in
+    // getFormattedMessage()
+    private transient String formattedMessage;
 
-	private transient Object[] argumentArray;
+    private transient Object[] argumentArray;
 
-	private ThrowableProxyVO throwableProxy;
-	private StackTraceElement[] callerDataArray;
-	private List<Marker> markerList;
-	private List<KeyValuePair> keyValuePairList;
-	private Map<String, String> mdcPropertyMap;
-	private long timeStamp;
-	private long sequenceNumber;
+    private ThrowableProxyVO throwableProxy;
+    private StackTraceElement[] callerDataArray;
+    private List<Marker> markerList;
+    private List<KeyValuePair> keyValuePairList;
+    private Map<String, String> mdcPropertyMap;
+    private long timeStamp;
+    private long sequenceNumber;
 
-	public static LoggingEventVO build(final ILoggingEvent le) {
-		final LoggingEventVO ledo = new LoggingEventVO();
-		ledo.loggerName = le.getLoggerName();
-		ledo.loggerContextVO = le.getLoggerContextVO();
-		ledo.threadName = le.getThreadName();
-		ledo.level = le.getLevel();
-		ledo.message = le.getMessage();
-		ledo.argumentArray = le.getArgumentArray();
-		ledo.markerList = le.getMarkerList();
-		ledo.keyValuePairList = le.getKeyValuePairs();
-		ledo.mdcPropertyMap = le.getMDCPropertyMap();
+    public static LoggingEventVO build(final ILoggingEvent le) {
+        final LoggingEventVO ledo = new LoggingEventVO();
+        ledo.loggerName = le.getLoggerName();
+        ledo.loggerContextVO = le.getLoggerContextVO();
+        ledo.threadName = le.getThreadName();
+        ledo.level = le.getLevel();
+        ledo.message = le.getMessage();
+        ledo.argumentArray = le.getArgumentArray();
+        ledo.markerList = le.getMarkerList();
+        ledo.keyValuePairList = le.getKeyValuePairs();
+        ledo.mdcPropertyMap = le.getMDCPropertyMap();
 
-		ledo.timeStamp = le.getTimeStamp();
-		ledo.sequenceNumber = le.getSequenceNumber();
-		ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
-		// add caller data only if it is there already
-		// fixes http://jira.qos.ch/browse/LBCLASSIC-145
-		if (le.hasCallerData()) {
-			ledo.callerDataArray = le.getCallerData();
-		}
-		return ledo;
-	}
+        ledo.timeStamp = le.getTimeStamp();
+        ledo.sequenceNumber = le.getSequenceNumber();
+        ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
+        // add caller data only if it is there already
+        // fixes http://jira.qos.ch/browse/LBCLASSIC-145
+        if (le.hasCallerData()) {
+            ledo.callerDataArray = le.getCallerData();
+        }
+        return ledo;
+    }
 
-	@Override
-	public String getThreadName() {
-		return threadName;
-	}
+    @Override
+    public String getThreadName() {
+        return threadName;
+    }
 
-	@Override
-	public LoggerContextVO getLoggerContextVO() {
-		return loggerContextVO;
-	}
+    @Override
+    public LoggerContextVO getLoggerContextVO() {
+        return loggerContextVO;
+    }
 
-	@Override
-	public String getLoggerName() {
-		return loggerName;
-	}
+    @Override
+    public String getLoggerName() {
+        return loggerName;
+    }
 
-	@Override
-	public Level getLevel() {
-		return level;
-	}
+    @Override
+    public Level getLevel() {
+        return level;
+    }
 
-	@Override
-	public String getMessage() {
-		return message;
-	}
+    @Override
+    public String getMessage() {
+        return message;
+    }
 
-	@Override
-	public String getFormattedMessage() {
-		if (formattedMessage != null) {
-			return formattedMessage;
-		}
+    @Override
+    public String getFormattedMessage() {
+        if (formattedMessage != null) {
+            return formattedMessage;
+        }
 
-		if (argumentArray != null) {
-			formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
-		} else {
-			formattedMessage = message;
-		}
+        if (argumentArray != null) {
+            formattedMessage = MessageFormatter.arrayFormat(message, argumentArray).getMessage();
+        } else {
+            formattedMessage = message;
+        }
 
-		return formattedMessage;
-	}
+        return formattedMessage;
+    }
 
-	@Override
-	public Object[] getArgumentArray() {
-		return argumentArray;
-	}
+    @Override
+    public Object[] getArgumentArray() {
+        return argumentArray;
+    }
 
-	@Override
-	public IThrowableProxy getThrowableProxy() {
-		return throwableProxy;
-	}
+    @Override
+    public IThrowableProxy getThrowableProxy() {
+        return throwableProxy;
+    }
 
-	@Override
-	public StackTraceElement[] getCallerData() {
-		return callerDataArray;
-	}
+    @Override
+    public StackTraceElement[] getCallerData() {
+        return callerDataArray;
+    }
 
-	@Override
-	public boolean hasCallerData() {
-		return callerDataArray != null;
-	}
+    @Override
+    public boolean hasCallerData() {
+        return callerDataArray != null;
+    }
 
-	@Override
-	public List<Marker> getMarkerList() {
-		return markerList;
-	}
+    @Override
+    public List<Marker> getMarkerList() {
+        return markerList;
+    }
 
-	@Override
-	public long getTimeStamp() {
-		return timeStamp;
-	}
+    @Override
+    public long getTimeStamp() {
+        return timeStamp;
+    }
 
-	@Override
-	public long getSequenceNumber() {
-		return sequenceNumber;
-	}
+    @Override
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
 
-	public long getContextBirthTime() {
-		return loggerContextVO.getBirthTime();
-	}
+    public long getContextBirthTime() {
+        return loggerContextVO.getBirthTime();
+    }
 
-	public LoggerContextVO getContextLoggerRemoteView() {
-		return loggerContextVO;
-	}
+    public LoggerContextVO getContextLoggerRemoteView() {
+        return loggerContextVO;
+    }
 
-	@Override
-	public Map<String, String> getMDCPropertyMap() {
-		return mdcPropertyMap;
-	}
+    @Override
+    public Map<String, String> getMDCPropertyMap() {
+        return mdcPropertyMap;
+    }
 
-	@Override
-	public Map<String, String> getMdc() {
-		return mdcPropertyMap;
-	}
+    @Override
+    public Map<String, String> getMdc() {
+        return mdcPropertyMap;
+    }
 
-	@Override
-	public List<KeyValuePair> getKeyValuePairs() {
-		return keyValuePairList;
-	}
+    @Override
+    public List<KeyValuePair> getKeyValuePairs() {
+        return keyValuePairList;
+    }
 
-	@Override
-	public void prepareForDeferredProcessing() {
-	}
+    @Override
+    public void prepareForDeferredProcessing() {
+    }
 
-	private void writeObject(final ObjectOutputStream out) throws IOException {
-		out.defaultWriteObject();
-		out.writeInt(level.levelInt);
-		if (argumentArray != null) {
-			final int len = argumentArray.length;
-			out.writeInt(len);
-			for (final Object element : argumentArray) {
-				if (element != null) {
-					out.writeObject(element.toString());
-				} else {
-					out.writeObject(NULL_ARGUMENT_ARRAY_ELEMENT);
-				}
-			}
-		} else {
-			out.writeInt(NULL_ARGUMENT_ARRAY);
-		}
+    private void writeObject(final ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeInt(level.levelInt);
+        if (argumentArray != null) {
+            final int len = argumentArray.length;
+            out.writeInt(len);
+            for (final Object element : argumentArray) {
+                if (element != null) {
+                    out.writeObject(element.toString());
+                } else {
+                    out.writeObject(NULL_ARGUMENT_ARRAY_ELEMENT);
+                }
+            }
+        } else {
+            out.writeInt(NULL_ARGUMENT_ARRAY);
+        }
 
-	}
+    }
 
-	private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
-		in.defaultReadObject();
-		final int levelInt = in.readInt();
-		level = Level.toLevel(levelInt);
+    private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        final int levelInt = in.readInt();
+        level = Level.toLevel(levelInt);
 
-		final int argArrayLen = in.readInt();
-		if (argArrayLen != NULL_ARGUMENT_ARRAY) {
-			argumentArray = new String[argArrayLen];
-			for (int i = 0; i < argArrayLen; i++) {
-				final Object val = in.readObject();
-				if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
-					argumentArray[i] = val;
-				}
-			}
-		}
-	}
+        final int argArrayLen = in.readInt();
+        if (argArrayLen != NULL_ARGUMENT_ARRAY) {
+            argumentArray = new String[argArrayLen];
+            for (int i = 0; i < argArrayLen; i++) {
+                final Object val = in.readObject();
+                if (!NULL_ARGUMENT_ARRAY_ELEMENT.equals(val)) {
+                    argumentArray[i] = val;
+                }
+            }
+        }
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (message == null ? 0 : message.hashCode());
-		result = prime * result + (threadName == null ? 0 : threadName.hashCode());
-		return prime * result + (int) (timeStamp ^ timeStamp >>> 32);
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (message == null ? 0 : message.hashCode());
+        result = prime * result + (threadName == null ? 0 : threadName.hashCode());
+        return prime * result + (int) (timeStamp ^ timeStamp >>> 32);
+    }
 
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || getClass() != obj.getClass()) {
-			return false;
-		}
-		final LoggingEventVO other = (LoggingEventVO) obj;
-		if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName) || (timeStamp != other.timeStamp)) {
-			return false;
-		}
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final LoggingEventVO other = (LoggingEventVO) obj;
+        if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName) || timeStamp != other.timeStamp) {
+            return false;
+        }
 
-		if (!Objects.equals(markerList, other.markerList)) {
-			return false;
-		}
-
-		if (!Objects.equals(mdcPropertyMap, other.mdcPropertyMap)) {
-			return false;
-		}
-		return true;
-	}
+        if (!Objects.equals(markerList, other.markerList) || !Objects.equals(mdcPropertyMap, other.mdcPropertyMap)) {
+            return false;
+        }
+        return true;
+    }
 
 
 }

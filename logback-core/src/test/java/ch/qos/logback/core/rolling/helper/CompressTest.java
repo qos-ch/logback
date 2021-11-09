@@ -36,86 +36,86 @@ import ch.qos.logback.core.util.Compare;
  */
 public class CompressTest {
 
-	Context context = new ContextBase();
+    Context context = new ContextBase();
 
-	@Before
-	public void setUp() throws IOException {
-		// Copy source files
-		// Delete output files
-		{
-			final File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.copy");
-			final File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt");
+    @Before
+    public void setUp() throws IOException {
+        // Copy source files
+        // Delete output files
+        {
+            final File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.copy");
+            final File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt");
 
-			copy(source, dest);
-			final File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
-			target.mkdirs();
-			target.delete();
-		}
-		{
-			final File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.copy");
-			final File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt");
-			copy(source, dest);
-			final File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz");
-			target.mkdirs();
-			target.delete();
-		}
-		{
-			final File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.copy");
-			final File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt");
-			copy(source, dest);
-			final File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt.zip");
-			target.mkdirs();
-			target.delete();
-		}
-	}
+            copy(source, dest);
+            final File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz");
+            target.mkdirs();
+            target.delete();
+        }
+        {
+            final File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.copy");
+            final File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt");
+            copy(source, dest);
+            final File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz");
+            target.mkdirs();
+            target.delete();
+        }
+        {
+            final File source = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.copy");
+            final File dest = new File(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt");
+            copy(source, dest);
+            final File target = new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt.zip");
+            target.mkdirs();
+            target.delete();
+        }
+    }
 
-	@Test
-	public void test1() throws Exception {
-		final Compressor compressor = new Compressor(CompressionMode.GZ);
-		compressor.setContext(context);
-		compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", null);
+    @Test
+    public void test1() throws Exception {
+        final Compressor compressor = new Compressor(CompressionMode.GZ);
+        compressor.setContext(context);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", null);
 
-		final StatusChecker checker = new StatusChecker(context);
-		assertTrue(checker.isErrorFree(0));
-		assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress1.txt.gz"));
-	}
+        final StatusChecker checker = new StatusChecker(context);
+        assertTrue(checker.isErrorFree(0));
+        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress1.txt.gz"));
+    }
 
-	@Test
-	public void test2() throws Exception {
-		final Compressor compressor = new Compressor(CompressionMode.GZ);
-		compressor.setContext(context);
-		compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt", null);
+    @Test
+    public void test2() throws Exception {
+        final Compressor compressor = new Compressor(CompressionMode.GZ);
+        compressor.setContext(context);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt", null);
 
-		final StatusChecker checker = new StatusChecker(context);
-		assertTrue(checker.isErrorFree(0));
+        final StatusChecker checker = new StatusChecker(context);
+        assertTrue(checker.isErrorFree(0));
 
-		assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.gz"));
-	}
+        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.gz"));
+    }
 
-	@Test
-	public void test3() throws Exception {
-		final Compressor compressor = new Compressor(CompressionMode.ZIP);
-		compressor.setContext(context);
-		compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt", "compress3.txt");
-		final StatusChecker checker = new StatusChecker(context);
-		assertTrue(checker.isErrorFree(0));
+    @Test
+    public void test3() throws Exception {
+        final Compressor compressor = new Compressor(CompressionMode.ZIP);
+        compressor.setContext(context);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt", "compress3.txt");
+        final StatusChecker checker = new StatusChecker(context);
+        assertTrue(checker.isErrorFree(0));
 
-		// we don't know how to compare .zip files
-		// assertTrue(Compare.compare(CoreTestConstants.OUTPUT_DIR_PREFIX
-		// + "compress3.txt.zip", CoreTestConstants.TEST_SRC_PREFIX
-		// + "witness/compress3.txt.zip"));
-	}
+        // we don't know how to compare .zip files
+        // assertTrue(Compare.compare(CoreTestConstants.OUTPUT_DIR_PREFIX
+        // + "compress3.txt.zip", CoreTestConstants.TEST_SRC_PREFIX
+        // + "witness/compress3.txt.zip"));
+    }
 
-	private void copy(final File src, final File dst) throws IOException {
-		final InputStream in = new FileInputStream(src);
-		final OutputStream out = new FileOutputStream(dst);
-		final byte[] buf = new byte[1024];
-		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		in.close();
-		out.close();
-	}
+    private void copy(final File src, final File dst) throws IOException {
+        final InputStream in = new FileInputStream(src);
+        final OutputStream out = new FileOutputStream(dst);
+        final byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
+        }
+        in.close();
+        out.close();
+    }
 
 }

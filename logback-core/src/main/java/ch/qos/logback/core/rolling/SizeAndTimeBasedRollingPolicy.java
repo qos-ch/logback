@@ -7,36 +7,36 @@ import ch.qos.logback.core.util.FileSize;
 
 public class SizeAndTimeBasedRollingPolicy<E> extends TimeBasedRollingPolicy<E> {
 
-	FileSize maxFileSize;
+    FileSize maxFileSize;
 
-	@Override
-	public void start() {
-		final SizeAndTimeBasedFNATP<E> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<>(Usage.EMBEDDED);
-		if(maxFileSize == null) {
-			addError("maxFileSize property is mandatory.");
-			return;
-		}
-		addInfo("Archive files will be limited to ["+maxFileSize+"] each.");
+    @Override
+    public void start() {
+        final SizeAndTimeBasedFNATP<E> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<>(Usage.EMBEDDED);
+        if(maxFileSize == null) {
+            addError("maxFileSize property is mandatory.");
+            return;
+        }
+        addInfo("Archive files will be limited to ["+maxFileSize+"] each.");
 
-		sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
-		timeBasedFileNamingAndTriggeringPolicy = sizeAndTimeBasedFNATP;
+        sizeAndTimeBasedFNATP.setMaxFileSize(maxFileSize);
+        timeBasedFileNamingAndTriggeringPolicy = sizeAndTimeBasedFNATP;
 
-		if(!isUnboundedTotalSizeCap() && totalSizeCap.getSize() < maxFileSize.getSize()) {
-			addError("totalSizeCap of ["+totalSizeCap+"] is smaller than maxFileSize ["+maxFileSize+"] which is non-sensical");
-			return;
-		}
+        if(!isUnboundedTotalSizeCap() && totalSizeCap.getSize() < maxFileSize.getSize()) {
+            addError("totalSizeCap of ["+totalSizeCap+"] is smaller than maxFileSize ["+maxFileSize+"] which is non-sensical");
+            return;
+        }
 
-		// most work is done by the parent
-		super.start();
-	}
+        // most work is done by the parent
+        super.start();
+    }
 
 
-	public void setMaxFileSize(final FileSize aMaxFileSize) {
-		this.maxFileSize = aMaxFileSize;
-	}
+    public void setMaxFileSize(final FileSize aMaxFileSize) {
+        this.maxFileSize = aMaxFileSize;
+    }
 
-	@Override
-	public String toString() {
-		return "c.q.l.core.rolling.SizeAndTimeBasedRollingPolicy@"+hashCode();
-	}
+    @Override
+    public String toString() {
+        return "c.q.l.core.rolling.SizeAndTimeBasedRollingPolicy@"+hashCode();
+    }
 }

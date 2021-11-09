@@ -30,28 +30,28 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class LevelFilter extends AbstractMatcherFilter<ILoggingEvent> {
 
-	Level level;
+    Level level;
 
-	@Override
-	public FilterReply decide(final ILoggingEvent event) {
-		if (!isStarted()) {
-			return FilterReply.NEUTRAL;
-		}
+    @Override
+    public FilterReply decide(final ILoggingEvent event) {
+        if (!isStarted()) {
+            return FilterReply.NEUTRAL;
+        }
 
-		if (event.getLevel().equals(level)) {
-			return onMatch;
-		}
-		return onMismatch;
-	}
+        if (event.getLevel().equals(level)) {
+            return onMatch;
+        }
+        return onMismatch;
+    }
 
-	public void setLevel(final Level level) {
-		this.level = level;
-	}
+    public void setLevel(final Level level) {
+        this.level = level;
+    }
 
-	@Override
-	public void start() {
-		if (level != null) {
-			super.start();
-		}
-	}
+    @Override
+    public void start() {
+        if (level != null) {
+            super.start();
+        }
+    }
 }

@@ -28,50 +28,50 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class MockServerRunner<T extends Client> extends ContextAwareBase implements ServerRunner<T> {
 
-	private IOException stopException;
-	private int startCount;
-	private boolean contextInjected;
+    private IOException stopException;
+    private int startCount;
+    private boolean contextInjected;
 
-	@Override
-	public void setContext(final Context context) {
-		contextInjected = true;
-		super.setContext(context);
-	}
+    @Override
+    public void setContext(final Context context) {
+        contextInjected = true;
+        super.setContext(context);
+    }
 
-	@Override
-	public void run() {
-		startCount++;
-	}
+    @Override
+    public void run() {
+        startCount++;
+    }
 
-	@Override
-	public void stop() throws IOException {
-		if (stopException != null) {
-			throw stopException;
-		}
-		startCount--;
-	}
+    @Override
+    public void stop() throws IOException {
+        if (stopException != null) {
+            throw stopException;
+        }
+        startCount--;
+    }
 
-	@Override
-	public boolean isRunning() {
-		return startCount > 0;
-	}
+    @Override
+    public boolean isRunning() {
+        return startCount > 0;
+    }
 
-	@Override
-	@SuppressWarnings("rawtypes")
-	public void accept(final ClientVisitor visitor) {
-		throw new UnsupportedOperationException();
-	}
+    @Override
+    @SuppressWarnings("rawtypes")
+    public void accept(final ClientVisitor visitor) {
+        throw new UnsupportedOperationException();
+    }
 
-	public int getStartCount() {
-		return startCount;
-	}
+    public int getStartCount() {
+        return startCount;
+    }
 
-	public boolean isContextInjected() {
-		return contextInjected;
-	}
+    public boolean isContextInjected() {
+        return contextInjected;
+    }
 
-	public void setStopException(final IOException stopException) {
-		this.stopException = stopException;
-	}
+    public void setStopException(final IOException stopException) {
+        this.stopException = stopException;
+    }
 
 }

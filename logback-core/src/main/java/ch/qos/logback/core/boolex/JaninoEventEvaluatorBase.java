@@ -27,69 +27,69 @@ import org.codehaus.janino.ScriptEvaluator;
  */
 abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> {
 
-	static Class<?> EXPRESSION_TYPE = boolean.class;
-	static Class<?>[] THROWN_EXCEPTIONS = new Class[1];
+    static Class<?> EXPRESSION_TYPE = boolean.class;
+    static Class<?>[] THROWN_EXCEPTIONS = new Class[1];
 
-	static public final int ERROR_THRESHOLD = 4;
-	static {
-		THROWN_EXCEPTIONS[0] = EvaluationException.class;
-	}
+    static public final int ERROR_THRESHOLD = 4;
+    static {
+        THROWN_EXCEPTIONS[0] = EvaluationException.class;
+    }
 
-	private String expression;
+    private String expression;
 
-	ScriptEvaluator scriptEvaluator;
-	private int errorCount = 0;
+    ScriptEvaluator scriptEvaluator;
+    private int errorCount = 0;
 
-	abstract protected String getDecoratedExpression();
+    abstract protected String getDecoratedExpression();
 
-	abstract protected String[] getParameterNames();
+    abstract protected String[] getParameterNames();
 
-	abstract protected Class<?>[] getParameterTypes();
+    abstract protected Class<?>[] getParameterTypes();
 
-	abstract protected Object[] getParameterValues(E event);
+    abstract protected Object[] getParameterValues(E event);
 
-	protected List<Matcher> matcherList = new ArrayList<>();
+    protected List<Matcher> matcherList = new ArrayList<>();
 
-	@Override
-	public void start() {
-		try {
-			assert context != null;
-			scriptEvaluator = new ScriptEvaluator(getDecoratedExpression(), EXPRESSION_TYPE, getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS);
-			super.start();
-		} catch (final Exception e) {
-			addError("Could not start evaluator with expression [" + expression + "]", e);
-		}
-	}
+    @Override
+    public void start() {
+        try {
+            assert context != null;
+            scriptEvaluator = new ScriptEvaluator(getDecoratedExpression(), EXPRESSION_TYPE, getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS);
+            super.start();
+        } catch (final Exception e) {
+            addError("Could not start evaluator with expression [" + expression + "]", e);
+        }
+    }
 
-	@Override
-	public boolean evaluate(final E event) throws EvaluationException {
-		if (!isStarted()) {
-			throw new IllegalStateException("Evaluator [" + name + "] was called in stopped state");
-		}
-		try {
-			return (Boolean) scriptEvaluator.evaluate(getParameterValues(event));
-		} catch (final Exception ex) {
-			errorCount++;
-			if (errorCount >= ERROR_THRESHOLD) {
-				stop();
-			}
-			throw new EvaluationException("Evaluator [" + name + "] caused an exception", ex);
-		}
-	}
+    @Override
+    public boolean evaluate(final E event) throws EvaluationException {
+        if (!isStarted()) {
+            throw new IllegalStateException("Evaluator [" + name + "] was called in stopped state");
+        }
+        try {
+            return (Boolean) scriptEvaluator.evaluate(getParameterValues(event));
+        } catch (final Exception ex) {
+            errorCount++;
+            if (errorCount >= ERROR_THRESHOLD) {
+                stop();
+            }
+            throw new EvaluationException("Evaluator [" + name + "] caused an exception", ex);
+        }
+    }
 
-	public String getExpression() {
-		return expression;
-	}
+    public String getExpression() {
+        return expression;
+    }
 
-	public void setExpression(final String expression) {
-		this.expression = expression;
-	}
+    public void setExpression(final String expression) {
+        this.expression = expression;
+    }
 
-	public void addMatcher(final Matcher matcher) {
-		matcherList.add(matcher);
-	}
+    public void addMatcher(final Matcher matcher) {
+        matcherList.add(matcher);
+    }
 
-	public List<Matcher> getMatcherList() {
-		return matcherList;
-	}
+    public List<Matcher> getMatcherList() {
+        return matcherList;
+    }
 }

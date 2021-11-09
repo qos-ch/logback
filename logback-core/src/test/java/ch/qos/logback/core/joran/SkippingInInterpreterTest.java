@@ -48,68 +48,68 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
  */
 public class SkippingInInterpreterTest {
 
-	HashMap<ElementSelector, Action> rulesMap = new HashMap<>();
-	Context context = new ContextBase();
-	StatusManager sm = context.getStatusManager();
+    HashMap<ElementSelector, Action> rulesMap = new HashMap<>();
+    Context context = new ContextBase();
+    StatusManager sm = context.getStatusManager();
 
-	SAXParser createParser() throws Exception {
-		final SAXParserFactory spf = SAXParserFactory.newInstance();
-		return spf.newSAXParser();
-	}
+    SAXParser createParser() throws Exception {
+        final SAXParserFactory spf = SAXParserFactory.newInstance();
+        return spf.newSAXParser();
+    }
 
-	void doTest(final String filename, final Integer expectedInt, final Class<?> exceptionClass) throws Exception {
+    void doTest(final String filename, final Integer expectedInt, final Class<?> exceptionClass) throws Exception {
 
-		rulesMap.put(new ElementSelector("test"), new TopElementAction());
-		rulesMap.put(new ElementSelector("test/badBegin"), new BadBeginAction());
-		rulesMap.put(new ElementSelector("test/badBegin/touch"), new TouchAction());
-		rulesMap.put(new ElementSelector("test/badEnd"), new BadEndAction());
-		rulesMap.put(new ElementSelector("test/badEnd/touch"), new TouchAction());
-		rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
+        rulesMap.put(new ElementSelector("test"), new TopElementAction());
+        rulesMap.put(new ElementSelector("test/badBegin"), new BadBeginAction());
+        rulesMap.put(new ElementSelector("test/badBegin/touch"), new TouchAction());
+        rulesMap.put(new ElementSelector("test/badEnd"), new BadEndAction());
+        rulesMap.put(new ElementSelector("test/badEnd/touch"), new TouchAction());
+        rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
 
-		rulesMap.put(new ElementSelector("test/isolate"), new NOPAction());
-		rulesMap.put(new ElementSelector("test/isolate/badEnd"), new BadEndAction());
-		rulesMap.put(new ElementSelector("test/isolate/badEnd/touch"), new TouchAction());
-		rulesMap.put(new ElementSelector("test/isolate/touch"), new TouchAction());
-		rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
+        rulesMap.put(new ElementSelector("test/isolate"), new NOPAction());
+        rulesMap.put(new ElementSelector("test/isolate/badEnd"), new BadEndAction());
+        rulesMap.put(new ElementSelector("test/isolate/badEnd/touch"), new TouchAction());
+        rulesMap.put(new ElementSelector("test/isolate/touch"), new TouchAction());
+        rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
 
-		final TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
-		tc.setContext(context);
-		tc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/skip/" + filename);
+        final TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
+        tc.setContext(context);
+        tc.doConfigure(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/skip/" + filename);
 
-		final String str = context.getProperty(HelloAction.PROPERTY_KEY);
-		assertEquals("Hello John Doe.", str);
+        final String str = context.getProperty(HelloAction.PROPERTY_KEY);
+        assertEquals("Hello John Doe.", str);
 
-		final Integer i = (Integer) context.getObject(TouchAction.KEY);
-		if (expectedInt == null) {
-			assertNull(i);
-		} else {
-			assertEquals(expectedInt, i);
-		}
+        final Integer i = (Integer) context.getObject(TouchAction.KEY);
+        if (expectedInt == null) {
+            assertNull(i);
+        } else {
+            assertEquals(expectedInt, i);
+        }
 
-		// check the existence of an ERROR status
-		final List<Status> statusList = sm.getCopyOfStatusList();
-		final Status s0 = statusList.get(0);
-		assertEquals(Status.ERROR, s0.getLevel());
-		assertTrue(s0.getThrowable().getClass() == exceptionClass);
-	}
+        // check the existence of an ERROR status
+        final List<Status> statusList = sm.getCopyOfStatusList();
+        final Status s0 = statusList.get(0);
+        assertEquals(Status.ERROR, s0.getLevel());
+        assertTrue(s0.getThrowable().getClass() == exceptionClass);
+    }
 
-	@Test
-	public void testSkippingRuntimeExInBadBegin() throws Exception {
-		doTest("badBegin1.xml", null, IllegalStateException.class);
-	}
+    @Test
+    public void testSkippingRuntimeExInBadBegin() throws Exception {
+        doTest("badBegin1.xml", null, IllegalStateException.class);
+    }
 
-	@Test
-	public void testSkippingActionExInBadBegin() throws Exception {
-		doTest("badBegin2.xml", null, ActionException.class);
-	}
+    @Test
+    public void testSkippingActionExInBadBegin() throws Exception {
+        doTest("badBegin2.xml", null, ActionException.class);
+    }
 
-	@Test
-	public void testSkippingRuntimeExInBadEnd() throws Exception {
-		doTest("badEnd1.xml", 2, IllegalStateException.class);
-	}
+    @Test
+    public void testSkippingRuntimeExInBadEnd() throws Exception {
+        doTest("badEnd1.xml", 2, IllegalStateException.class);
+    }
 
-	@Test
-	public void testSkippingActionExInBadEnd() throws Exception {
-		doTest("badEnd2.xml", 2, ActionException.class);
-	}
+    @Test
+    public void testSkippingActionExInBadEnd() throws Exception {
+        doTest("badEnd2.xml", 2, ActionException.class);
+    }
 }

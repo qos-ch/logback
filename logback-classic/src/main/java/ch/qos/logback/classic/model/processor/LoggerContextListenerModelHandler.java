@@ -13,60 +13,60 @@ import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class LoggerContextListenerModelHandler extends ModelHandlerBase {
-	boolean inError = false;
-	LoggerContextListener lcl;
+    boolean inError = false;
+    LoggerContextListener lcl;
 
-	public LoggerContextListenerModelHandler(final Context context) {
-		super(context);
-	}
+    public LoggerContextListenerModelHandler(final Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
-		return new LoggerContextListenerModelHandler(context);
-	}
+    static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
+        return new LoggerContextListenerModelHandler(context);
+    }
 
-	@Override
-	protected Class<LoggerContextListenerModel> getSupportedModelClass() {
-		return LoggerContextListenerModel.class;
-	}
+    @Override
+    protected Class<LoggerContextListenerModel> getSupportedModelClass() {
+        return LoggerContextListenerModel.class;
+    }
 
-	@Override
-	public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
-		final LoggerContextListenerModel LoggerContextListenerModel = (LoggerContextListenerModel) model;
+    @Override
+    public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
+        final LoggerContextListenerModel LoggerContextListenerModel = (LoggerContextListenerModel) model;
 
-		final String className = LoggerContextListenerModel.getClassName();
-		try {
-			lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class,
-					context);
+        final String className = LoggerContextListenerModel.getClassName();
+        try {
+            lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class,
+                            context);
 
-			if (lcl instanceof ContextAware) {
-				((ContextAware) lcl).setContext(context);
-			}
+            if (lcl instanceof ContextAware) {
+                ((ContextAware) lcl).setContext(context);
+            }
 
-			intercon.pushObject(lcl);
-			addInfo("Adding LoggerContextListener of type [" + className + "] to the object stack");
+            intercon.pushObject(lcl);
+            addInfo("Adding LoggerContextListener of type [" + className + "] to the object stack");
 
-		} catch (final Exception oops) {
-			inError = true;
-			addError("Could not create LoggerContextListener of type " + className + "].", oops);
-		}
-	}
+        } catch (final Exception oops) {
+            inError = true;
+            addError("Could not create LoggerContextListener of type " + className + "].", oops);
+        }
+    }
 
-	@Override
-	public void postHandle(final InterpretationContext interop, final Model model) throws ModelHandlerException {
-		if (inError) {
-			return;
-		}
-		final Object o = interop.peekObject();
+    @Override
+    public void postHandle(final InterpretationContext interop, final Model model) throws ModelHandlerException {
+        if (inError) {
+            return;
+        }
+        final Object o = interop.peekObject();
 
-		if (o != lcl) {
-			addWarn("The object on the top the of the stack is not the LoggerContextListener pushed earlier.");
-		} else {
-			if (lcl instanceof LifeCycle) {
-				((LifeCycle) lcl).start();
-				addInfo("Starting LoggerContextListener");
-			}
-			((LoggerContext) context).addListener(lcl);
-			interop.popObject();
-		}
-	}
+        if (o != lcl) {
+            addWarn("The object on the top the of the stack is not the LoggerContextListener pushed earlier.");
+        } else {
+            if (lcl instanceof LifeCycle) {
+                ((LifeCycle) lcl).start();
+                addInfo("Starting LoggerContextListener");
+            }
+            ((LoggerContext) context).addListener(lcl);
+            interop.popObject();
+        }
+    }
 }

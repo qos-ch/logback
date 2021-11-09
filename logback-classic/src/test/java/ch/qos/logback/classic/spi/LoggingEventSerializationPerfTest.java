@@ -48,96 +48,96 @@ import ch.qos.logback.core.testUtil.EnvUtilForTests;
 @Ignore
 public class LoggingEventSerializationPerfTest {
 
-	static int LOOP_LEN = 10 * 1000;
+    static int LOOP_LEN = 10 * 1000;
 
-	NOPOutputStream noos = new NOPOutputStream();
-	ObjectOutputStream oos;
+    NOPOutputStream noos = new NOPOutputStream();
+    ObjectOutputStream oos;
 
-	@Before
-	public void setUp() throws Exception {
-		MDC.clear();
-		oos = new ObjectOutputStream(noos);
-	}
+    @Before
+    public void setUp() throws Exception {
+        MDC.clear();
+        oos = new ObjectOutputStream(noos);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	double doLoop(final Builder<LoggingEvent> builder, final int loopLen) {
-		final long start = System.nanoTime();
-		int resetCounter = 0;
-		for (int i = 0; i < loopLen; i++) {
-			try {
-				final ILoggingEvent le = builder.build(i);
-				oos.writeObject(LoggingEventVO.build(le));
+    double doLoop(final Builder<LoggingEvent> builder, final int loopLen) {
+        final long start = System.nanoTime();
+        int resetCounter = 0;
+        for (int i = 0; i < loopLen; i++) {
+            try {
+                final ILoggingEvent le = builder.build(i);
+                oos.writeObject(LoggingEventVO.build(le));
 
-				oos.flush();
-				if (++resetCounter >= CoreConstants.OOS_RESET_FREQUENCY) {
-					oos.reset();
-					resetCounter = 0;
-				}
+                oos.flush();
+                if (++resetCounter >= CoreConstants.OOS_RESET_FREQUENCY) {
+                    oos.reset();
+                    resetCounter = 0;
+                }
 
-			} catch (final IOException ex) {
-				fail(ex.getMessage());
-			}
-		}
-		final long end = System.nanoTime();
-		return (end - start) / (1.0d * loopLen);
-	}
+            } catch (final IOException ex) {
+                fail(ex.getMessage());
+            }
+        }
+        final long end = System.nanoTime();
+        return (end - start) / (1.0d * loopLen);
+    }
 
-	@Test
-	public void testPerformance() {
-		if (EnvUtilForTests.isLinux()) {
-			return;
-		}
-		final TrivialLoggingEventBuilder builder = new TrivialLoggingEventBuilder();
+    @Test
+    public void testPerformance() {
+        if (EnvUtilForTests.isLinux()) {
+            return;
+        }
+        final TrivialLoggingEventBuilder builder = new TrivialLoggingEventBuilder();
 
-		for (int i = 0; i < 3; i++) {
-			doLoop(builder, LOOP_LEN);
-			noos.reset();
-		}
-		final double rt = doLoop(builder, LOOP_LEN);
-		System.out.println("average time per logging event " + rt + " nanoseconds");
+        for (int i = 0; i < 3; i++) {
+            doLoop(builder, LOOP_LEN);
+            noos.reset();
+        }
+        final double rt = doLoop(builder, LOOP_LEN);
+        System.out.println("average time per logging event " + rt + " nanoseconds");
 
-		final long averageSize = noos.size() / LOOP_LEN;
-		System.out.println("noos size " + noos.size() + " average size=" + averageSize);
-		final double averageSizeLimit = 62.1;
+        final long averageSize = noos.size() / LOOP_LEN;
+        System.out.println("noos size " + noos.size() + " average size=" + averageSize);
+        final double averageSizeLimit = 62.1;
 
-		assertTrue("average size " + averageSize + " should be less than " + averageSizeLimit, averageSizeLimit > averageSize);
+        assertTrue("average size " + averageSize + " should be less than " + averageSizeLimit, averageSizeLimit > averageSize);
 
-		// the reference was computed on Orion (Ceki's computer)
-		@SuppressWarnings("unused")
-		final
-		long referencePerf = 5000;
-		//BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
-	}
+        // the reference was computed on Orion (Ceki's computer)
+        @SuppressWarnings("unused")
+        final
+        long referencePerf = 5000;
+        //BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
+    }
 
-	@Test
-	public void testPerformanceWithParameters() {
-		if (EnvUtilForTests.isLinux()) {
-			return;
-		}
-		final LoggingEventWithParametersBuilder builder = new LoggingEventWithParametersBuilder();
+    @Test
+    public void testPerformanceWithParameters() {
+        if (EnvUtilForTests.isLinux()) {
+            return;
+        }
+        final LoggingEventWithParametersBuilder builder = new LoggingEventWithParametersBuilder();
 
-		// warm up
-		for (int i = 0; i < 3; i++) {
-			doLoop(builder, LOOP_LEN);
-			noos.reset();
-		}
-		@SuppressWarnings("unused")
-		final
-		double rt = doLoop(builder, LOOP_LEN);
-		final long averageSize = noos.size() / LOOP_LEN;
+        // warm up
+        for (int i = 0; i < 3; i++) {
+            doLoop(builder, LOOP_LEN);
+            noos.reset();
+        }
+        @SuppressWarnings("unused")
+        final
+        double rt = doLoop(builder, LOOP_LEN);
+        final long averageSize = noos.size() / LOOP_LEN;
 
-		System.out.println("noos size " + noos.size() + " average size=" + averageSize);
+        System.out.println("noos size " + noos.size() + " average size=" + averageSize);
 
-		final double averageSizeLimit = 160;
-		assertTrue("averageSize " + averageSize + " should be less than " + averageSizeLimit, averageSizeLimit > averageSize);
+        final double averageSizeLimit = 160;
+        assertTrue("averageSize " + averageSize + " should be less than " + averageSizeLimit, averageSizeLimit > averageSize);
 
-		// the reference was computed on Orion (Ceki's computer)
-		@SuppressWarnings("unused")
-		final
-		long referencePerf = 7000;
-		//BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
-	}
+        // the reference was computed on Orion (Ceki's computer)
+        @SuppressWarnings("unused")
+        final
+        long referencePerf = 7000;
+        //BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
+    }
 }

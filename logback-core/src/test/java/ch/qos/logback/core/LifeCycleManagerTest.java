@@ -24,15 +24,15 @@ import org.junit.Test;
  */
 public class LifeCycleManagerTest {
 
-	private final LifeCycleManager manager = new LifeCycleManager();
+    private final LifeCycleManager manager = new LifeCycleManager();
 
-	@Test
-	public void testRegisterAndReset() {
-		final MockLifeCycleComponent component = new MockLifeCycleComponent();
-		manager.register(component);
-		component.start();
-		manager.reset();
-		assertFalse(component.isStarted());
-	}
+    @Test
+    public void testRegisterAndReset() {
+        final MockLifeCycleComponent component = new MockLifeCycleComponent();
+        manager.register(component);
+        component.start();
+        manager.reset();
+        assertFalse(component.isStarted());
+    }
 
 }

@@ -16,24 +16,24 @@ package ch.qos.logback.classic.control;
 import ch.qos.logback.classic.Level;
 
 public class SetLevel extends ScenarioAction {
-	final String loggerName;
-	final Level level;
+    final String loggerName;
+    final Level level;
 
-	public SetLevel(final Level level, final String loggerName) {
-		this.level = level;
-		this.loggerName = loggerName;
-	}
+    public SetLevel(final Level level, final String loggerName) {
+        this.level = level;
+        this.loggerName = loggerName;
+    }
 
-	public Level getLevel() {
-		return level;
-	}
+    public Level getLevel() {
+        return level;
+    }
 
-	public String getLoggerName() {
-		return loggerName;
-	}
+    public String getLoggerName() {
+        return loggerName;
+    }
 
-	@Override
-	public String toString() {
-		return "SetLevel(" + level + ", " + loggerName + ")";
-	}
+    @Override
+    public String toString() {
+        return "SetLevel(" + level + ", " + loggerName + ")";
+    }
 }

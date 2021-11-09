@@ -17,16 +17,16 @@ import ch.qos.logback.core.util.TimeUtil;
 
 public class StatsByMonth extends PeriodicStats {
 
-	StatsByMonth() {
-	}
+    StatsByMonth() {
+    }
 
-	StatsByMonth(final long now) {
-		super(now);
-	}
+    StatsByMonth(final long now) {
+        super(now);
+    }
 
-	@Override
-	long computeStartOfNextPeriod(final long now) {
-		return TimeUtil.computeStartOfNextMonth(now);
-	}
+    @Override
+    long computeStartOfNextPeriod(final long now) {
+        return TimeUtil.computeStartOfNextMonth(now);
+    }
 
 }

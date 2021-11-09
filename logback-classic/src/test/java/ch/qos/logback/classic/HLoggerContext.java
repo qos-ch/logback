@@ -19,97 +19,97 @@ package ch.qos.logback.classic;
  */
 public class HLoggerContext {
 
-	private final HLogger root;
-	private int size;
+    private final HLogger root;
+    private int size;
 
-	public HLoggerContext() {
-		root = new HLogger("root", null);
-		root.setLevel(Level.DEBUG);
-		size = 1;
-	}
+    public HLoggerContext() {
+        root = new HLogger("root", null);
+        root.setLevel(Level.DEBUG);
+        size = 1;
+    }
 
-	/**
-	 * Return this contexts root logger
-	 *
-	 * @return
-	 */
-	public HLogger getRootLogger() {
-		return root;
-	}
+    /**
+     * Return this contexts root logger
+     *
+     * @return
+     */
+    public HLogger getRootLogger() {
+        return root;
+    }
 
-	public HLogger getLogger(final String name) {
+    public HLogger getLogger(final String name) {
 
-		int i = 0;
-		HLogger HLogger = root;
-		HLogger childHLogger = null;
-		String childName;
+        int i = 0;
+        HLogger HLogger = root;
+        HLogger childHLogger = null;
+        String childName;
 
-		while (true) {
-			final int h = name.indexOf('.', i);
-			if (h == -1) {
-				childName = name.substring(i);
-			} else {
-				childName = name.substring(i, h);
-			}
-			// move i left of the last point
-			i = h + 1;
+        while (true) {
+            final int h = name.indexOf('.', i);
+            if (h == -1) {
+                childName = name.substring(i);
+            } else {
+                childName = name.substring(i, h);
+            }
+            // move i left of the last point
+            i = h + 1;
 
-			synchronized (HLogger) {
-				childHLogger = HLogger.getChildBySuffix(childName);
-				if (childHLogger == null) {
-					childHLogger = HLogger.createChildByLastNamePart(childName);
-					incSize();
-				}
-			}
-			HLogger = childHLogger;
-			if (h == -1) {
-				return childHLogger;
-			}
-		}
-	}
+            synchronized (HLogger) {
+                childHLogger = HLogger.getChildBySuffix(childName);
+                if (childHLogger == null) {
+                    childHLogger = HLogger.createChildByLastNamePart(childName);
+                    incSize();
+                }
+            }
+            HLogger = childHLogger;
+            if (h == -1) {
+                return childHLogger;
+            }
+        }
+    }
 
-	private synchronized void incSize() {
-		size++;
-	}
+    private synchronized void incSize() {
+        size++;
+    }
 
-	int size() {
-		return size;
-	}
+    int size() {
+        return size;
+    }
 
-	/**
-	 * Check if the named logger exists in the hierarchy. If so return
-	 * its reference, otherwise returns <code>null</code>.
-	 *
-	 * @param name the name of the logger to search for.
-	 */
-	HLogger exists(final String name) {
-		int i = 0;
-		HLogger HLogger = root;
-		HLogger childHLogger = null;
-		String childName;
-		while (true) {
-			final int h = name.indexOf('.', i);
-			if (h == -1) {
-				childName = name.substring(i);
-			} else {
-				childName = name.substring(i, h);
-			}
-			// move i left of the last point
-			i = h + 1;
+    /**
+     * Check if the named logger exists in the hierarchy. If so return
+     * its reference, otherwise returns <code>null</code>.
+     *
+     * @param name the name of the logger to search for.
+     */
+    HLogger exists(final String name) {
+        int i = 0;
+        HLogger HLogger = root;
+        HLogger childHLogger = null;
+        String childName;
+        while (true) {
+            final int h = name.indexOf('.', i);
+            if (h == -1) {
+                childName = name.substring(i);
+            } else {
+                childName = name.substring(i, h);
+            }
+            // move i left of the last point
+            i = h + 1;
 
-			synchronized (HLogger) {
-				childHLogger = HLogger.getChildBySuffix(childName);
-				if (childHLogger == null) {
-					return null;
-				}
-			}
-			HLogger = childHLogger;
-			if (h == -1) {
-				if (childHLogger.getName().equals(name)) {
-					return childHLogger;
-				}
-				return null;
-			}
-		}
-	}
+            synchronized (HLogger) {
+                childHLogger = HLogger.getChildBySuffix(childName);
+                if (childHLogger == null) {
+                    return null;
+                }
+            }
+            HLogger = childHLogger;
+            if (h == -1) {
+                if (childHLogger.getName().equals(name)) {
+                    return childHLogger;
+                }
+                return null;
+            }
+        }
+    }
 }

@@ -13,24 +13,25 @@
  */
 package chapters.architecture;
 
-import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public class SelectionRule {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         // get a logger instance named "com.foo". Let us further assume that the
         // logger is of type ch.qos.logback.classic.Logger so that we can
         // set its level
-        ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
+        final ch.qos.logback.classic.Logger logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.foo");
         // set its Level to INFO. The setLevel() method requires a logback logger
         logger.setLevel(Level.INFO);
 
-        Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
+        final Logger barlogger = LoggerFactory.getLogger("com.foo.Bar");
 
         // This request is enabled, because WARN >= INFO
         logger.warn("Low fuel level.");

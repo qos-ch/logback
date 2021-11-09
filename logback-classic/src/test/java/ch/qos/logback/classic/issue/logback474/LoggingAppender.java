@@ -27,16 +27,16 @@ import ch.qos.logback.core.AppenderBase;
 
 public class LoggingAppender extends AppenderBase<ILoggingEvent> {
 
-	Logger logger;
+    Logger logger;
 
-	@Override
-	public void start() {
-		super.start();
-		logger = ((LoggerContext) getContext()).getLogger("Ignore");
-	}
+    @Override
+    public void start() {
+        super.start();
+        logger = ((LoggerContext) getContext()).getLogger("Ignore");
+    }
 
-	@Override
-	protected void append(final ILoggingEvent eventObject) {
-		logger.debug("Ignore this");
-	}
+    @Override
+    protected void append(final ILoggingEvent eventObject) {
+        logger.debug("Ignore this");
+    }
 }

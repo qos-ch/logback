@@ -31,57 +31,57 @@ import ch.qos.logback.classic.util.MockInitialContextFactory;
 @Ignore
 public class ContextDetachingSCLTest {
 
-	static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
+    static String INITIAL_CONTEXT_KEY = "java.naming.factory.initial";
 
-	ContextDetachingSCL contextDetachingSCL;
+    ContextDetachingSCL contextDetachingSCL;
 
-	@Before
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
-		System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
+        System.setProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR, "JNDI");
 
-		contextDetachingSCL = new ContextDetachingSCL();
+        contextDetachingSCL = new ContextDetachingSCL();
 
-		MockInitialContextFactory.initialize();
-		final MockInitialContext mic = MockInitialContextFactory.getContext();
-		mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
+        MockInitialContextFactory.initialize();
+        final MockInitialContext mic = MockInitialContextFactory.getContext();
+        mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
 
-		// The property must be set after we setup the Mock
-		System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
+        // The property must be set after we setup the Mock
+        System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
 
-		// reinitialize the LoggerFactory, These reset methods are reserved for internal use
-		LoggerFactoryFriend.reset();
+        // reinitialize the LoggerFactory, These reset methods are reserved for internal use
+        LoggerFactoryFriend.reset();
 
-		// this call will create the context "toto"
-		LoggerFactory.getLogger(ContextDetachingSCLTest.class);
-	}
+        // this call will create the context "toto"
+        LoggerFactory.getLogger(ContextDetachingSCLTest.class);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		System.clearProperty(INITIAL_CONTEXT_KEY);
-		// reinitialize the LoggerFactory, These resets method are reserved for internal use
-		LoggerFactoryFriend.reset();
-	}
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty(INITIAL_CONTEXT_KEY);
+        // reinitialize the LoggerFactory, These resets method are reserved for internal use
+        LoggerFactoryFriend.reset();
+    }
 
-	@Test
-	public void testDetach() {
-		final ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
-		contextDetachingSCL.contextDestroyed(null);
-		assertEquals(0, selector.getCount());
-	}
+    @Test
+    public void testDetach() {
+        final ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        contextDetachingSCL.contextDestroyed(null);
+        assertEquals(0, selector.getCount());
+    }
 
-	@Test
-	public void testDetachWithMissingContext() {
-		final MockInitialContext mic = MockInitialContextFactory.getContext();
-		mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "tata");
-		final ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
-		assertEquals("tata", selector.getLoggerContext().getName());
+    @Test
+    public void testDetachWithMissingContext() {
+        final MockInitialContext mic = MockInitialContextFactory.getContext();
+        mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "tata");
+        final ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        assertEquals("tata", selector.getLoggerContext().getName());
 
-		mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "titi");
-		assertEquals("titi", selector.getLoggerContext().getName());
-		contextDetachingSCL.contextDestroyed(null);
+        mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "titi");
+        assertEquals("titi", selector.getLoggerContext().getName());
+        contextDetachingSCL.contextDestroyed(null);
 
-		assertEquals(2, selector.getCount());
-	}
+        assertEquals(2, selector.getCount());
+    }
 
 }

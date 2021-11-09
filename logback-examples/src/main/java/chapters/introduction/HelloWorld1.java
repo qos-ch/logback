@@ -18,9 +18,9 @@ import org.slf4j.LoggerFactory;
 
 public class HelloWorld1 {
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
 
-        Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld1");
+        final Logger logger = LoggerFactory.getLogger("chapters.introduction.HelloWorld1");
         logger.debug("Hello world.");
     }
 }

@@ -18,21 +18,21 @@ import ch.qos.logback.core.spi.LifeCycle;
 @NoAutoStart
 public class DoNotAutoStart implements LifeCycle {
 
-	boolean started = false;
+    boolean started = false;
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public void start() {
-		started = true;
-	}
+    @Override
+    public void start() {
+        started = true;
+    }
 
-	@Override
-	public void stop() {
-		started = false;
-	}
+    @Override
+    public void stop() {
+        started = false;
+    }
 
 }

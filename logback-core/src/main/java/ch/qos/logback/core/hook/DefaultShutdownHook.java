@@ -24,41 +24,41 @@ import ch.qos.logback.core.util.Duration;
  * @author Mike Reinhold
  */
 public class DefaultShutdownHook extends ShutdownHookBase {
-	/**
-	 * The default is no delay before shutdown.
-	 */
-	public static final Duration DEFAULT_DELAY = Duration.buildByMilliseconds(0);
+    /**
+     * The default is no delay before shutdown.
+     */
+    public static final Duration DEFAULT_DELAY = Duration.buildByMilliseconds(0);
 
-	/**
-	 * The delay in milliseconds before the ShutdownHook stops the logback context
-	 */
-	private Duration delay = DEFAULT_DELAY;
+    /**
+     * The delay in milliseconds before the ShutdownHook stops the logback context
+     */
+    private Duration delay = DEFAULT_DELAY;
 
-	public DefaultShutdownHook() {
-	}
+    public DefaultShutdownHook() {
+    }
 
-	public Duration getDelay() {
-		return delay;
-	}
+    public Duration getDelay() {
+        return delay;
+    }
 
-	/**
-	 * The duration to wait before shutting down the current logback context.
-	 *
-	 * @param delay
-	 */
-	public void setDelay(final Duration delay) {
-		this.delay = delay;
-	}
+    /**
+     * The duration to wait before shutting down the current logback context.
+     *
+     * @param delay
+     */
+    public void setDelay(final Duration delay) {
+        this.delay = delay;
+    }
 
-	@Override
-	public void run() {
-		if (delay.getMilliseconds() > 0) {
-			addInfo("Sleeping for " + delay);
-			try {
-				Thread.sleep(delay.getMilliseconds());
-			} catch (final InterruptedException e) {
-			}
-		}
-		super.stop();
-	}
+    @Override
+    public void run() {
+        if (delay.getMilliseconds() > 0) {
+            addInfo("Sleeping for " + delay);
+            try {
+                Thread.sleep(delay.getMilliseconds());
+            } catch (final InterruptedException e) {
+            }
+        }
+        super.stop();
+    }
 }

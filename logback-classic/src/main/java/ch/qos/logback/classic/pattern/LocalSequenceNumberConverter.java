@@ -28,10 +28,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class LocalSequenceNumberConverter extends ClassicConverter {
 
-	AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
+    AtomicLong sequenceNumber = new AtomicLong(System.currentTimeMillis());
 
-	@Override
-	public String convert(final ILoggingEvent event) {
-		return Long.toString(sequenceNumber.getAndIncrement());
-	}
+    @Override
+    public String convert(final ILoggingEvent event) {
+        return Long.toString(sequenceNumber.getAndIncrement());
+    }
 }

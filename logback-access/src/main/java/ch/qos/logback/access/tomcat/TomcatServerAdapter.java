@@ -28,36 +28,36 @@ import ch.qos.logback.access.spi.ServerAdapter;
  */
 public class TomcatServerAdapter implements ServerAdapter {
 
-	Request request;
-	Response response;
+    Request request;
+    Response response;
 
-	public TomcatServerAdapter(final Request tomcatRequest, final Response tomcatResponse) {
-		request = tomcatRequest;
-		response = tomcatResponse;
-	}
+    public TomcatServerAdapter(final Request tomcatRequest, final Response tomcatResponse) {
+        request = tomcatRequest;
+        response = tomcatResponse;
+    }
 
-	@Override
-	public long getContentLength() {
-		return response.getContentLength();
-	}
+    @Override
+    public long getContentLength() {
+        return response.getContentLength();
+    }
 
-	@Override
-	public int getStatusCode() {
-		return response.getStatus();
-	}
+    @Override
+    public int getStatusCode() {
+        return response.getStatus();
+    }
 
-	@Override
-	public long getRequestTimestamp() {
-		return request.getCoyoteRequest().getStartTime();
-	}
+    @Override
+    public long getRequestTimestamp() {
+        return request.getCoyoteRequest().getStartTime();
+    }
 
-	@Override
-	public Map<String, String> buildResponseHeaderMap() {
-		final Map<String, String> responseHeaderMap = new HashMap<>();
-		for (final String key : response.getHeaderNames()) {
-			final String value = response.getHeader(key);
-			responseHeaderMap.put(key, value);
-		}
-		return responseHeaderMap;
-	}
+    @Override
+    public Map<String, String> buildResponseHeaderMap() {
+        final Map<String, String> responseHeaderMap = new HashMap<>();
+        for (final String key : response.getHeaderNames()) {
+            final String value = response.getHeader(key);
+            responseHeaderMap.put(key, value);
+        }
+        return responseHeaderMap;
+    }
 }

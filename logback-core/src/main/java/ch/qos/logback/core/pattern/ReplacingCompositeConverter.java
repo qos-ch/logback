@@ -18,35 +18,35 @@ import java.util.regex.Pattern;
 
 public class ReplacingCompositeConverter<E> extends CompositeConverter<E> {
 
-	Pattern pattern;
-	String regex;
-	String replacement;
+    Pattern pattern;
+    String regex;
+    String replacement;
 
-	@Override
-	public void start() {
-		final List<String> optionList = getOptionList();
-		if (optionList == null) {
-			addError("at least two options are expected whereas you have declared none");
-			return;
-		}
+    @Override
+    public void start() {
+        final List<String> optionList = getOptionList();
+        if (optionList == null) {
+            addError("at least two options are expected whereas you have declared none");
+            return;
+        }
 
-		final int numOpts = optionList.size();
+        final int numOpts = optionList.size();
 
-		if (numOpts < 2) {
-			addError("at least two options are expected whereas you have declared only " + numOpts + "as [" + optionList + "]");
-			return;
-		}
-		regex = optionList.get(0);
-		pattern = Pattern.compile(regex);
-		replacement = optionList.get(1);
-		super.start();
-	}
+        if (numOpts < 2) {
+            addError("at least two options are expected whereas you have declared only " + numOpts + "as [" + optionList + "]");
+            return;
+        }
+        regex = optionList.get(0);
+        pattern = Pattern.compile(regex);
+        replacement = optionList.get(1);
+        super.start();
+    }
 
-	@Override
-	protected String transform(final E event, final String in) {
-		if (!started) {
-			return in;
-		}
-		return pattern.matcher(in).replaceAll(replacement);
-	}
+    @Override
+    protected String transform(final E event, final String in) {
+        if (!started) {
+            return in;
+        }
+        return pattern.matcher(in).replaceAll(replacement);
+    }
 }

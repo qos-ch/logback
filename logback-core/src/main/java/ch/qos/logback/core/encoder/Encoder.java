@@ -29,26 +29,26 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public interface Encoder<E> extends ContextAware, LifeCycle {
 
-	/**
-	 * Get header bytes. This method is typically called upon opening of
-	 * an output stream.
-	 *
-	 * @return header bytes. Null values are allowed.
-	 */
-	byte[] headerBytes();
+    /**
+     * Get header bytes. This method is typically called upon opening of
+     * an output stream.
+     *
+     * @return header bytes. Null values are allowed.
+     */
+    byte[] headerBytes();
 
-	/**
-	 * Encode an event as bytes.
-	 *
-	 * @param event
-	 */
-	byte[] encode(E event);
+    /**
+     * Encode an event as bytes.
+     *
+     * @param event
+     */
+    byte[] encode(E event);
 
-	/**
-	 * Get footer bytes. This method is typically called prior to the closing
-	 * of the stream where events are written.
-	 *
-	 * @return footer bytes. Null values are allowed.
-	 */
-	byte[] footerBytes();
+    /**
+     * Get footer bytes. This method is typically called prior to the closing
+     * of the stream where events are written.
+     *
+     * @return footer bytes. Null values are allowed.
+     */
+    byte[] footerBytes();
 }

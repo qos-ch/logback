@@ -17,30 +17,30 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 public class LoggerContextLifeCycleTest {
 
 
-	LoggerContext loggerContext = new LoggerContext();
-	Logger logger = loggerContext.getLogger(this.getClass().getName());
-	Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-	StatusChecker checker = new StatusChecker(loggerContext);
-	int diff = RandomUtil.getPositiveInt();
+    LoggerContext loggerContext = new LoggerContext();
+    Logger logger = loggerContext.getLogger(this.getClass().getName());
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    StatusChecker checker = new StatusChecker(loggerContext);
+    int diff = RandomUtil.getPositiveInt();
 
-	void configure(final String file) throws JoranException {
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(loggerContext);
-		loggerContext.putProperty("diff", "" + diff);
-		jc.doConfigure(file);
-		loggerContext.start();
-	}
+    void configure(final String file) throws JoranException {
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        loggerContext.putProperty("diff", "" + diff);
+        jc.doConfigure(file);
+        loggerContext.start();
+    }
 
-	@Test
-	public void smoke() throws JoranException {
-		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "spi/contextListener.xml");
+    @Test
+    public void smoke() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "spi/contextListener.xml");
 
-		final List<LoggerContextListener> listenerList = loggerContext.getCopyOfListenerList();
-		assertEquals(1, listenerList.size());
+        final List<LoggerContextListener> listenerList = loggerContext.getCopyOfListenerList();
+        assertEquals(1, listenerList.size());
 
-		final ListContextListener lcl = (ListContextListener) listenerList.get(0);
-		//lcl.updateList.stream().forEach(System.out::println);
-		assertEquals(BasicContextListener.UpdateType.START, lcl.updateList.get(1));
+        final ListContextListener lcl = (ListContextListener) listenerList.get(0);
+        //lcl.updateList.stream().forEach(System.out::println);
+        assertEquals(BasicContextListener.UpdateType.START, lcl.updateList.get(1));
 
-	}
+    }
 }

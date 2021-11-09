@@ -20,10 +20,10 @@ import ch.qos.logback.core.AppenderBase;
 
 public class NotifyingListAppender extends AppenderBase<IAccessEvent> {
 
-	public final LinkedBlockingQueue<IAccessEvent> list = new LinkedBlockingQueue<>();
+    public final LinkedBlockingQueue<IAccessEvent> list = new LinkedBlockingQueue<>();
 
-	@Override
-	protected void append(final IAccessEvent e) {
-		list.add(e);
-	}
+    @Override
+    protected void append(final IAccessEvent e) {
+        list.add(e);
+    }
 }

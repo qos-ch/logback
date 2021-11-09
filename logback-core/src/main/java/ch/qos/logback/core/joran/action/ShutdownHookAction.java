@@ -28,20 +28,20 @@ import ch.qos.logback.core.model.ShutdownHookModel;
 public class ShutdownHookAction extends BaseModelAction {
 
 
-	@Override
-	protected boolean validPreconditions(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		return true;
-	}
+    @Override
+    protected boolean validPreconditions(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        return true;
+    }
 
-	@Override
-	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		final ShutdownHookModel shutdownHookModel = new ShutdownHookModel();
+    @Override
+    protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        final ShutdownHookModel shutdownHookModel = new ShutdownHookModel();
 
-		final String className = attributes.getValue(CLASS_ATTRIBUTE);
-		shutdownHookModel.setClassName(className);
+        final String className = attributes.getValue(CLASS_ATTRIBUTE);
+        shutdownHookModel.setClassName(className);
 
-		return shutdownHookModel;
-	}
+        return shutdownHookModel;
+    }
 
 
 

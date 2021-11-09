@@ -27,182 +27,182 @@ import ch.qos.logback.core.util.EnvUtil;
 
 public class ThrowableProxyTest {
 
-	StringWriter sw = new StringWriter();
-	PrintWriter pw = new PrintWriter(sw);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	// compares Throwable.printStackTrace with output by ThrowableProxy
-	public void verify(final Throwable t) {
-		t.printStackTrace(pw);
+    // compares Throwable.printStackTrace with output by ThrowableProxy
+    public void verify(final Throwable t) {
+        t.printStackTrace(pw);
 
-		final IThrowableProxy tp = new ThrowableProxy(t);
+        final IThrowableProxy tp = new ThrowableProxy(t);
 
-		String result = ThrowableProxyUtil.asString(tp);
-		result = result.replace("common frames omitted", "more");
-		final String expected = sw.toString();
+        String result = ThrowableProxyUtil.asString(tp);
+        result = result.replace("common frames omitted", "more");
+        final String expected = sw.toString();
 
-		//System.out.println("========expected");
-		//System.out.println(expected);
+        //System.out.println("========expected");
+        //System.out.println(expected);
 
-		//System.out.println("========result");
-		//System.out.println(result);
+        //System.out.println("========result");
+        //System.out.println(result);
 
-		assertEquals(expected, result);
-	}
+        assertEquals(expected, result);
+    }
 
-	@Test
-	public void smoke() {
-		final Exception e = new Exception("smoke");
-		verify(e);
-	}
+    @Test
+    public void smoke() {
+        final Exception e = new Exception("smoke");
+        verify(e);
+    }
 
-	@Test
-	public void nested() {
-		Exception w = null;
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			w = new Exception("wrapping", e);
-		}
-		verify(w);
-	}
+    @Test
+    public void nested() {
+        Exception w = null;
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            w = new Exception("wrapping", e);
+        }
+        verify(w);
+    }
 
-	@Test
-	public void suppressed() throws InvocationTargetException, IllegalAccessException {
-		Exception ex = null;
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			final Exception fooException = new Exception("Foo");
-			final Exception barException = new Exception("Bar");
-			e.addSuppressed(fooException);
-			e.addSuppressed(barException);
+    @Test
+    public void suppressed() throws InvocationTargetException, IllegalAccessException {
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            final Exception fooException = new Exception("Foo");
+            final Exception barException = new Exception("Bar");
+            e.addSuppressed(fooException);
+            e.addSuppressed(barException);
 
-			ex = e;
-		}
-		verify(ex);
-	}
+            ex = e;
+        }
+        verify(ex);
+    }
 
-	@Test
-	public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
-		// sense.
-		Exception ex = null;
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			ex = new Exception("Wrapper", e);
-			final Exception fooException = new Exception("Foo");
-			final Exception barException = new Exception("Bar");
+    @Test
+    public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
+        // sense.
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            ex = new Exception("Wrapper", e);
+            final Exception fooException = new Exception("Foo");
+            final Exception barException = new Exception("Bar");
 
-			ex.addSuppressed(fooException);
-			e.addSuppressed(barException);
+            ex.addSuppressed(fooException);
+            e.addSuppressed(barException);
 
-		}
-		verify(ex);
-	}
+        }
+        verify(ex);
+    }
 
-	@Test
-	public void suppressedWithSuppressed() throws Exception {
-		Exception ex = null;
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			ex = new Exception("Wrapper", e);
-			final Exception fooException = new Exception("Foo");
-			final Exception barException = new Exception("Bar");
-			barException.addSuppressed(fooException);
-			e.addSuppressed(barException);
+    @Test
+    public void suppressedWithSuppressed() throws Exception {
+        Exception ex = null;
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            ex = new Exception("Wrapper", e);
+            final Exception fooException = new Exception("Foo");
+            final Exception barException = new Exception("Bar");
+            barException.addSuppressed(fooException);
+            e.addSuppressed(barException);
 
-		}
-		verify(ex);
-	}
+        }
+        verify(ex);
+    }
 
-	// see also https://jira.qos.ch/browse/LOGBACK-453
-	@Test
-	public void nullSTE() {
-		final Throwable t = new Exception("someMethodWithNullException") {
-			private static final long serialVersionUID = 1L;
+    // see also https://jira.qos.ch/browse/LOGBACK-453
+    @Test
+    public void nullSTE() {
+        final Throwable t = new Exception("someMethodWithNullException") {
+            private static final long serialVersionUID = 1L;
 
-			@Override
-			public StackTraceElement[] getStackTrace() {
-				return null;
-			}
-		};
-		// we can't test output as Throwable.printStackTrace method uses
-		// the private getOurStackTrace method instead of getStackTrace
+            @Override
+            public StackTraceElement[] getStackTrace() {
+                return null;
+            }
+        };
+        // we can't test output as Throwable.printStackTrace method uses
+        // the private getOurStackTrace method instead of getStackTrace
 
-		// tests ThrowableProxyUtil.steArrayToStepArray
-		new ThrowableProxy(t);
+        // tests ThrowableProxyUtil.steArrayToStepArray
+        new ThrowableProxy(t);
 
-		// tests ThrowableProxyUtil.findNumberOfCommonFrames
-		final Exception top = new Exception("top", t);
-		new ThrowableProxy(top);
-	}
+        // tests ThrowableProxyUtil.findNumberOfCommonFrames
+        final Exception top = new Exception("top", t);
+        new ThrowableProxy(top);
+    }
 
-	@Test
-	public void multiNested() {
-		Exception w = null;
-		try {
-			someOtherMethod();
-		} catch (final Exception e) {
-			w = new Exception("wrapping", e);
-		}
-		verify(w);
-	}
+    @Test
+    public void multiNested() {
+        Exception w = null;
+        try {
+            someOtherMethod();
+        } catch (final Exception e) {
+            w = new Exception("wrapping", e);
+        }
+        verify(w);
+    }
 
-	// see also https://jira.qos.ch/browse/LOGBACK-1454
-	@Test
-	public void cyclicCause() {
-		// Earlier JDKs may formats things differently
-		if(!EnvUtil.isJDK16OrHigher()) {
-			return;
-		}
-		final Exception e = new Exception("foo");
-		final Exception e2 = new Exception(e);
-		e.initCause(e2);
-		verify(e);
-	}
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void cyclicCause() {
+        // Earlier JDKs may formats things differently
+        if(!EnvUtil.isJDK16OrHigher()) {
+            return;
+        }
+        final Exception e = new Exception("foo");
+        final Exception e2 = new Exception(e);
+        e.initCause(e2);
+        verify(e);
+    }
 
-	// see also https://jira.qos.ch/browse/LOGBACK-1454
-	@Test
-	public void cyclicSuppressed() {
-		// Earlier JDKs may formats things differently
-		if(!EnvUtil.isJDK16OrHigher()) {
-			return;
-		}
-		final Exception e = new Exception("foo");
-		final Exception e2 = new Exception(e);
-		e.addSuppressed(e2);
-		verify(e);
-	}
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void cyclicSuppressed() {
+        // Earlier JDKs may formats things differently
+        if(!EnvUtil.isJDK16OrHigher()) {
+            return;
+        }
+        final Exception e = new Exception("foo");
+        final Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        verify(e);
+    }
 
-	void someMethod() throws Exception {
-		throw new Exception("someMethod");
-	}
+    void someMethod() throws Exception {
+        throw new Exception("someMethod");
+    }
 
-	void someMethodWithNullException() throws Exception {
-		throw new Exception("someMethodWithNullException") {
-			private static final long serialVersionUID = -2419053636101615373L;
+    void someMethodWithNullException() throws Exception {
+        throw new Exception("someMethodWithNullException") {
+            private static final long serialVersionUID = -2419053636101615373L;
 
-			@Override
-			public StackTraceElement[] getStackTrace() {
-				return null;
-			}
-		};
-	}
+            @Override
+            public StackTraceElement[] getStackTrace() {
+                return null;
+            }
+        };
+    }
 
-	void someOtherMethod() throws Exception {
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			throw new Exception("someOtherMethod", e);
-		}
-	}
+    void someOtherMethod() throws Exception {
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            throw new Exception("someOtherMethod", e);
+        }
+    }
 }

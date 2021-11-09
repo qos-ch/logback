@@ -23,24 +23,24 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import chapters.appenders.sub.sample.Bar;
 
 /**
- * 
+ *
  * This java "application" configures logback using a configuration file
  * supplied on the class path and logs a few times.
- * 
+ *
  * @author S&eacute;bastien Pennec
  */
 public class ConfigurationTester {
 
-    public static void main(String[] args) throws InterruptedException {
-        Logger logger = (Logger) LoggerFactory.getLogger(ConfigurationTester.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(final String[] args) throws InterruptedException {
+        final Logger logger = LoggerFactory.getLogger(ConfigurationTester.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
             configurator.doConfigure(args[0]);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             je.printStackTrace();
         }
         // Next call forces status messages to be printed on the console
@@ -53,7 +53,7 @@ public class ConfigurationTester {
             logger.debug("logging statement {}", i);
             Thread.sleep(100);
         }
-        Bar bar = new Bar();
+        final Bar bar = new Bar();
         bar.createLoggingRequest();
     }
 }

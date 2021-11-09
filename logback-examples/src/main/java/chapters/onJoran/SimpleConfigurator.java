@@ -25,7 +25,7 @@ import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 /**
  * A minimal configurator extending GenericConfigurator.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  *
  */
@@ -34,32 +34,32 @@ public class SimpleConfigurator extends GenericConfigurator {
     final Map<ElementSelector, Action> ruleMap;
     final List<ImplicitModelAction> iaList;
 
-    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap) {
+    public SimpleConfigurator(final Map<ElementSelector, Action> ruleMap) {
         this(ruleMap, null);
     }
 
-    public SimpleConfigurator(Map<ElementSelector, Action> ruleMap, List<ImplicitModelAction> iaList) {
+    public SimpleConfigurator(final Map<ElementSelector, Action> ruleMap, final List<ImplicitModelAction> iaList) {
         this.ruleMap = ruleMap;
         this.iaList = iaList;
     }
 
     @Override
-    protected void addInstanceRules(RuleStore rs) {
-        for (ElementSelector elementSelector : ruleMap.keySet()) {
-            Action action = ruleMap.get(elementSelector);
+    protected void addInstanceRules(final RuleStore rs) {
+        for (final ElementSelector elementSelector : ruleMap.keySet()) {
+            final Action action = ruleMap.get(elementSelector);
             rs.addRule(elementSelector, action);
         }
     }
 
     @Override
-    protected void addImplicitRules(SaxEventInterpreter interpreter) {
+    protected void addImplicitRules(final SaxEventInterpreter interpreter) {
         if (iaList == null) {
             return;
         }
-        for (ImplicitModelAction ia : iaList) {
+        for (final ImplicitModelAction ia : iaList) {
             interpreter.addImplicitAction(ia);
         }
     }
 
-	
+
 }

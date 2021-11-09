@@ -18,49 +18,49 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 
 public class PatternLayoutEncoderBase<E> extends LayoutWrappingEncoder<E> {
 
-	String pattern;
+    String pattern;
 
-	// due to popular demand outputPatternAsHeader is set to false by default
-	protected boolean outputPatternAsHeader = false;
+    // due to popular demand outputPatternAsHeader is set to false by default
+    protected boolean outputPatternAsHeader = false;
 
-	public String getPattern() {
-		return pattern;
-	}
+    public String getPattern() {
+        return pattern;
+    }
 
-	public void setPattern(final String pattern) {
-		this.pattern = pattern;
-	}
+    public void setPattern(final String pattern) {
+        this.pattern = pattern;
+    }
 
-	public boolean isOutputPatternAsHeader() {
-		return outputPatternAsHeader;
-	}
+    public boolean isOutputPatternAsHeader() {
+        return outputPatternAsHeader;
+    }
 
-	/**
-	 * Print the pattern string as a header in log files
-	 *
-	 * @param outputPatternAsHeader
-	 * @since 1.0.3
-	 */
-	public void setOutputPatternAsHeader(final boolean outputPatternAsHeader) {
-		this.outputPatternAsHeader = outputPatternAsHeader;
-	}
+    /**
+     * Print the pattern string as a header in log files
+     *
+     * @param outputPatternAsHeader
+     * @since 1.0.3
+     */
+    public void setOutputPatternAsHeader(final boolean outputPatternAsHeader) {
+        this.outputPatternAsHeader = outputPatternAsHeader;
+    }
 
-	public boolean isOutputPatternAsPresentationHeader() {
-		return outputPatternAsHeader;
-	}
+    public boolean isOutputPatternAsPresentationHeader() {
+        return outputPatternAsHeader;
+    }
 
-	/**
-	 * @deprecated replaced by {@link #setOutputPatternAsHeader(boolean)}
-	 */
-	@Deprecated
-	public void setOutputPatternAsPresentationHeader(final boolean outputPatternAsHeader) {
-		addWarn("[outputPatternAsPresentationHeader] property is deprecated. Please use [outputPatternAsHeader] option instead.");
-		this.outputPatternAsHeader = outputPatternAsHeader;
-	}
+    /**
+     * @deprecated replaced by {@link #setOutputPatternAsHeader(boolean)}
+     */
+    @Deprecated
+    public void setOutputPatternAsPresentationHeader(final boolean outputPatternAsHeader) {
+        addWarn("[outputPatternAsPresentationHeader] property is deprecated. Please use [outputPatternAsHeader] option instead.");
+        this.outputPatternAsHeader = outputPatternAsHeader;
+    }
 
-	@Override
-	public void setLayout(final Layout<E> layout) {
-		throw new UnsupportedOperationException("one cannot set the layout of " + this.getClass().getName());
-	}
+    @Override
+    public void setLayout(final Layout<E> layout) {
+        throw new UnsupportedOperationException("one cannot set the layout of " + this.getClass().getName());
+    }
 
 }

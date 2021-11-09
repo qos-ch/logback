@@ -35,106 +35,106 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public interface IAccessEvent extends DeferredProcessingAware {
 
-	String NA = "-";
-	int SENTINEL = -1;
+    String NA = "-";
+    int SENTINEL = -1;
 
-	/**
-	 * Returns the underlying HttpServletRequest. After serialization the returned
-	 * value will be null.
-	 *
-	 * @return
-	 */
-	HttpServletRequest getRequest();
+    /**
+     * Returns the underlying HttpServletRequest. After serialization the returned
+     * value will be null.
+     *
+     * @return
+     */
+    HttpServletRequest getRequest();
 
-	/**
-	 * Returns the underlying HttpServletResponse. After serialization the returned
-	 * value will be null.
-	 *
-	 * @return
-	 */
-	HttpServletResponse getResponse();
+    /**
+     * Returns the underlying HttpServletResponse. After serialization the returned
+     * value will be null.
+     *
+     * @return
+     */
+    HttpServletResponse getResponse();
 
-	/**
-	 * The number of milliseconds elapsed from 1/1/1970 until logging event was
-	 * created.
-	 */
-	long getTimeStamp();
+    /**
+     * The number of milliseconds elapsed from 1/1/1970 until logging event was
+     * created.
+     */
+    long getTimeStamp();
 
-	/**
-	 * The sequence number associated with this event.
-	 *
-	 * <p>Sequence numbers, if present, should be increasing monotonically.
-	 *
-	 * @since 1.3.0
-	 */
+    /**
+     * The sequence number associated with this event.
+     *
+     * <p>Sequence numbers, if present, should be increasing monotonically.
+     *
+     * @since 1.3.0
+     */
 
-	long getSequenceNumber();
+    long getSequenceNumber();
 
-	/**
-	 * The time elapsed between receiving the request and logging it in milliseconds.
-	 */
-	long getElapsedTime();
+    /**
+     * The time elapsed between receiving the request and logging it in milliseconds.
+     */
+    long getElapsedTime();
 
-	/**
-	 * The number of seconds elapsed between receiving the request and logging it.
-	 */
-	long getElapsedSeconds();
+    /**
+     * The number of seconds elapsed between receiving the request and logging it.
+     */
+    long getElapsedSeconds();
 
-	String getRequestURI();
+    String getRequestURI();
 
-	/**
-	 * The first line of the request.
-	 */
-	String getRequestURL();
+    /**
+     * The first line of the request.
+     */
+    String getRequestURL();
 
-	String getRemoteHost();
+    String getRemoteHost();
 
-	String getRemoteUser();
+    String getRemoteUser();
 
-	String getProtocol();
+    String getProtocol();
 
-	String getMethod();
+    String getMethod();
 
-	String getServerName();
+    String getServerName();
 
-	String getSessionID();
+    String getSessionID();
 
-	void setThreadName(String threadName);
-	String getThreadName();
+    void setThreadName(String threadName);
+    String getThreadName();
 
-	String getQueryString();
+    String getQueryString();
 
-	String getRemoteAddr();
+    String getRemoteAddr();
 
-	String getRequestHeader(String key);
+    String getRequestHeader(String key);
 
-	Enumeration<String> getRequestHeaderNames();
+    Enumeration<String> getRequestHeaderNames();
 
-	Map<String, String> getRequestHeaderMap();
+    Map<String, String> getRequestHeaderMap();
 
-	Map<String, String[]> getRequestParameterMap();
+    Map<String, String[]> getRequestParameterMap();
 
-	String getAttribute(String key);
+    String getAttribute(String key);
 
-	String[] getRequestParameter(String key);
+    String[] getRequestParameter(String key);
 
-	String getCookie(String key);
+    String getCookie(String key);
 
-	long getContentLength();
+    long getContentLength();
 
-	int getStatusCode();
+    int getStatusCode();
 
-	String getRequestContent();
+    String getRequestContent();
 
-	String getResponseContent();
+    String getResponseContent();
 
-	int getLocalPort();
+    int getLocalPort();
 
-	ServerAdapter getServerAdapter();
+    ServerAdapter getServerAdapter();
 
-	String getResponseHeader(String key);
+    String getResponseHeader(String key);
 
-	Map<String, String> getResponseHeaderMap();
+    Map<String, String> getResponseHeaderMap();
 
-	List<String> getResponseHeaderNameList();
+    List<String> getResponseHeaderNameList();
 }

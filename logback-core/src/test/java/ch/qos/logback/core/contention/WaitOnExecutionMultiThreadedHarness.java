@@ -16,19 +16,19 @@ package ch.qos.logback.core.contention;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class WaitOnExecutionMultiThreadedHarness extends AbstractMultiThreadedHarness {
-	ThreadPoolExecutor threadPoolExecutor;
-	int count;
+    ThreadPoolExecutor threadPoolExecutor;
+    int count;
 
-	public WaitOnExecutionMultiThreadedHarness(final ThreadPoolExecutor threadPoolExecutor, final int count) {
-		this.threadPoolExecutor = threadPoolExecutor;
-		this.count = count;
+    public WaitOnExecutionMultiThreadedHarness(final ThreadPoolExecutor threadPoolExecutor, final int count) {
+        this.threadPoolExecutor = threadPoolExecutor;
+        this.count = count;
 
-	}
+    }
 
-	@Override
-	public void waitUntilEndCondition() throws InterruptedException {
-		while (threadPoolExecutor.getCompletedTaskCount() < count) {
-			Thread.yield();
-		}
-	}
+    @Override
+    public void waitUntilEndCondition() throws InterruptedException {
+        while (threadPoolExecutor.getCompletedTaskCount() < count) {
+            Thread.yield();
+        }
+    }
 }

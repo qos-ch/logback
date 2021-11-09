@@ -15,12 +15,12 @@ package ch.qos.logback.core.pattern;
 
 public class ExceptionalConverter extends DynamicConverter<Object> {
 
-	@Override
-	public String convert(final Object event) {
-		if (!isStarted()) {
-			throw new IllegalStateException("this converter must be started before use");
-		}
-		return "";
-	}
+    @Override
+    public String convert(final Object event) {
+        if (!isStarted()) {
+            throw new IllegalStateException("this converter must be started before use");
+        }
+        return "";
+    }
 
 }

@@ -29,22 +29,22 @@ import ch.qos.logback.core.util.StatusPrinter;
 @Ignore
 public class Lbcore211 {
 
-	@Test
-	public void lbcore211() throws JoranException {
+    @Test
+    public void lbcore211() throws JoranException {
 
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-		final JoranConfigurator configurator = new JoranConfigurator();
-		configurator.setContext(lc);
-		lc.reset();
-		configurator.doConfigure("/home/ceki/lbcore211.xml");
+        final JoranConfigurator configurator = new JoranConfigurator();
+        configurator.setContext(lc);
+        lc.reset();
+        configurator.doConfigure("/home/ceki/lbcore211.xml");
 
-		final Logger l = lc.getLogger("file.logger");
-		StatusPrinter.print(lc);
-		for (int i = 0; i < 10; i++) {
-			l.info("hello " + i);
-		}
+        final Logger l = lc.getLogger("file.logger");
+        StatusPrinter.print(lc);
+        for (int i = 0; i < 10; i++) {
+            l.info("hello " + i);
+        }
 
-		lc.stop();
-	}
+        lc.stop();
+    }
 }

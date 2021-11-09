@@ -19,50 +19,50 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class BasicContextListener implements LoggerContextListener {
 
-	enum UpdateType {
-		NONE, START, RESET, STOP, LEVEL_CHANGE
-	}
+    enum UpdateType {
+        NONE, START, RESET, STOP, LEVEL_CHANGE
+    }
 
-	UpdateType updateType = UpdateType.NONE;
-	LoggerContext context;
-	Logger logger;
-	Level level;
+    UpdateType updateType = UpdateType.NONE;
+    LoggerContext context;
+    Logger logger;
+    Level level;
 
-	boolean resetResistant;
+    boolean resetResistant;
 
-	public void setResetResistant(final boolean resetResistant) {
-		this.resetResistant = resetResistant;
-	}
+    public void setResetResistant(final boolean resetResistant) {
+        this.resetResistant = resetResistant;
+    }
 
-	@Override
-	public void onReset(final LoggerContext context) {
-		updateType = UpdateType.RESET;
-		this.context = context;
+    @Override
+    public void onReset(final LoggerContext context) {
+        updateType = UpdateType.RESET;
+        this.context = context;
 
-	}
+    }
 
-	@Override
-	public void onStart(final LoggerContext context) {
-		updateType = UpdateType.START;
-		this.context = context;
-	}
+    @Override
+    public void onStart(final LoggerContext context) {
+        updateType = UpdateType.START;
+        this.context = context;
+    }
 
-	@Override
-	public void onStop(final LoggerContext context) {
-		updateType = UpdateType.STOP;
-		this.context = context;
-	}
+    @Override
+    public void onStop(final LoggerContext context) {
+        updateType = UpdateType.STOP;
+        this.context = context;
+    }
 
-	@Override
-	public boolean isResetResistant() {
-		return resetResistant;
-	}
+    @Override
+    public boolean isResetResistant() {
+        return resetResistant;
+    }
 
-	@Override
-	public void onLevelChange(final Logger logger, final Level level) {
-		updateType = UpdateType.LEVEL_CHANGE;
-		this.logger = logger;
-		this.level = level;
-	}
+    @Override
+    public void onLevelChange(final Logger logger, final Level level) {
+        updateType = UpdateType.LEVEL_CHANGE;
+        this.logger = logger;
+        this.level = level;
+    }
 
 }

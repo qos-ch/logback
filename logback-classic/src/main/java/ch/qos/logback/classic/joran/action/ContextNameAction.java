@@ -23,9 +23,9 @@ import ch.qos.logback.core.model.Model;
 public class ContextNameAction extends BaseModelAction {
 
 
-	@Override
-	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		return new ContextNameModel();
-	}
+    @Override
+    protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        return new ContextNameModel();
+    }
 
 }

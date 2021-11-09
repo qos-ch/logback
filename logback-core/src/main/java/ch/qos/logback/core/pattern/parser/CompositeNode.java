@@ -14,45 +14,45 @@
 package ch.qos.logback.core.pattern.parser;
 
 public class CompositeNode extends SimpleKeywordNode {
-	Node childNode;
+    Node childNode;
 
-	CompositeNode(final String keyword) {
-		super(Node.COMPOSITE_KEYWORD, keyword);
+    CompositeNode(final String keyword) {
+        super(Node.COMPOSITE_KEYWORD, keyword);
 
-	}
+    }
 
-	public Node getChildNode() {
-		return childNode;
-	}
+    public Node getChildNode() {
+        return childNode;
+    }
 
-	public void setChildNode(final Node childNode) {
-		this.childNode = childNode;
-	}
+    public void setChildNode(final Node childNode) {
+        this.childNode = childNode;
+    }
 
-	@Override
-	public boolean equals(final Object o) {
-		if (!super.equals(o) || !(o instanceof CompositeNode)) {
-			return false;
-		}
-		final CompositeNode r = (CompositeNode) o;
+    @Override
+    public boolean equals(final Object o) {
+        if (!super.equals(o) || !(o instanceof CompositeNode)) {
+            return false;
+        }
+        final CompositeNode r = (CompositeNode) o;
 
-		return childNode != null ? childNode.equals(r.childNode) : r.childNode == null;
-	}
+        return childNode != null ? childNode.equals(r.childNode) : r.childNode == null;
+    }
 
-	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder buf = new StringBuilder();
-		if (childNode != null) {
-			buf.append("CompositeNode(" + childNode + ")");
-		} else {
-			buf.append("CompositeNode(no child)");
-		}
-		buf.append(printNext());
-		return buf.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder buf = new StringBuilder();
+        if (childNode != null) {
+            buf.append("CompositeNode(" + childNode + ")");
+        } else {
+            buf.append("CompositeNode(no child)");
+        }
+        buf.append(printNext());
+        return buf.toString();
+    }
 }

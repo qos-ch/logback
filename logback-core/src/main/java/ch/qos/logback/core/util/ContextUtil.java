@@ -27,48 +27,48 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class ContextUtil extends ContextAwareBase {
 
-	static final String GROOVY_RUNTIME_PACKAGE = "org.codehaus.groovy.runtime";
-	//static final String SYSTEM_LOGGER_FQCN = "java.lang.System$Logger";
+    static final String GROOVY_RUNTIME_PACKAGE = "org.codehaus.groovy.runtime";
+    //static final String SYSTEM_LOGGER_FQCN = "java.lang.System$Logger";
 
-	public ContextUtil(final Context context) {
-		setContext(context);
-	}
+    public ContextUtil(final Context context) {
+        setContext(context);
+    }
 
-	public void addProperties(final Properties props) {
-		if (props == null) {
-			return;
-		}
+    public void addProperties(final Properties props) {
+        if (props == null) {
+            return;
+        }
 
-		for(final Entry<Object, Object> e: props.entrySet()) {
-			final String key = (String) e.getKey();
-			context.putProperty(key, (String) e.getValue());
-		}
+        for(final Entry<Object, Object> e: props.entrySet()) {
+            final String key = (String) e.getKey();
+            context.putProperty(key, (String) e.getValue());
+        }
 
-	}
+    }
 
-	public static Map<String, String> getFilenameCollisionMap(final Context context) {
-		if (context == null) {
-			return null;
-		}
-		return (Map<String, String>) context.getObject(FA_FILENAME_COLLISION_MAP);
-	}
+    public static Map<String, String> getFilenameCollisionMap(final Context context) {
+        if (context == null) {
+            return null;
+        }
+        return (Map<String, String>) context.getObject(FA_FILENAME_COLLISION_MAP);
+    }
 
-	public static Map<String, FileNamePattern> getFilenamePatternCollisionMap(final Context context) {
-		if (context == null) {
-			return null;
-		}
-		return (Map<String, FileNamePattern>) context
-				.getObject(RFA_FILENAME_PATTERN_COLLISION_MAP);
-	}
+    public static Map<String, FileNamePattern> getFilenamePatternCollisionMap(final Context context) {
+        if (context == null) {
+            return null;
+        }
+        return (Map<String, FileNamePattern>) context
+                        .getObject(RFA_FILENAME_PATTERN_COLLISION_MAP);
+    }
 
-	public void addGroovyPackages(final List<String> frameworkPackages) {
-		addFrameworkPackage(frameworkPackages, GROOVY_RUNTIME_PACKAGE);
-	}
+    public void addGroovyPackages(final List<String> frameworkPackages) {
+        addFrameworkPackage(frameworkPackages, GROOVY_RUNTIME_PACKAGE);
+    }
 
-	public void addFrameworkPackage(final List<String> frameworkPackages, final String packageName) {
-		if (!frameworkPackages.contains(packageName)) {
-			frameworkPackages.add(packageName);
-		}
-	}
+    public void addFrameworkPackage(final List<String> frameworkPackages, final String packageName) {
+        if (!frameworkPackages.contains(packageName)) {
+            frameworkPackages.add(packageName);
+        }
+    }
 
 }

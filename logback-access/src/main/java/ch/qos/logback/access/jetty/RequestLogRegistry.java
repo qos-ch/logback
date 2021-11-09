@@ -19,14 +19,14 @@ import java.util.Map;
 // this class is currently not used
 public class RequestLogRegistry {
 
-	private static Map<String, RequestLogImpl> requestLogRegistry = new HashMap<>();
+    private static Map<String, RequestLogImpl> requestLogRegistry = new HashMap<>();
 
-	public static void register(final RequestLogImpl requestLogImpl) {
-		requestLogRegistry.put(requestLogImpl.getName(), requestLogImpl);
-	}
+    public static void register(final RequestLogImpl requestLogImpl) {
+        requestLogRegistry.put(requestLogImpl.getName(), requestLogImpl);
+    }
 
-	public static RequestLogImpl get(final String key) {
-		return requestLogRegistry.get(key);
-	}
+    public static RequestLogImpl get(final String key) {
+        return requestLogRegistry.get(key);
+    }
 
 }

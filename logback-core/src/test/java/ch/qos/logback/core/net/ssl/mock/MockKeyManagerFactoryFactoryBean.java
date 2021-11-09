@@ -27,16 +27,16 @@ import ch.qos.logback.core.net.ssl.KeyManagerFactoryFactoryBean;
  */
 public class MockKeyManagerFactoryFactoryBean extends KeyManagerFactoryFactoryBean {
 
-	private boolean factoryCreated;
+    private boolean factoryCreated;
 
-	@Override
-	public KeyManagerFactory createKeyManagerFactory() throws NoSuchProviderException, NoSuchAlgorithmException {
-		factoryCreated = true;
-		return super.createKeyManagerFactory();
-	}
+    @Override
+    public KeyManagerFactory createKeyManagerFactory() throws NoSuchProviderException, NoSuchAlgorithmException {
+        factoryCreated = true;
+        return super.createKeyManagerFactory();
+    }
 
-	public boolean isFactoryCreated() {
-		return factoryCreated;
-	}
+    public boolean isFactoryCreated() {
+        return factoryCreated;
+    }
 
 }

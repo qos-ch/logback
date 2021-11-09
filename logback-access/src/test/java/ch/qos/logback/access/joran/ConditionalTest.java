@@ -41,57 +41,57 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 @Ignore
 public class ConditionalTest {
 
-	AccessContext context = new AccessContext();
-	StatusChecker checker = new StatusChecker(context);
+    AccessContext context = new AccessContext();
+    StatusChecker checker = new StatusChecker(context);
 
-	int diff = RandomUtil.getPositiveInt();
-	String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
+    int diff = RandomUtil.getPositiveInt();
+    String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
-	@Before
-	public void setUp() {
-		InetAddress localhost = null;
-		try {
-			localhost = InetAddress.getLocalHost();
-			context.putProperty("aHost", localhost.getHostName());
-		} catch (final UnknownHostException e) {
-			e.printStackTrace();
-		}
-	}
+    @Before
+    public void setUp() {
+        InetAddress localhost = null;
+        try {
+            localhost = InetAddress.getLocalHost();
+            context.putProperty("aHost", localhost.getHostName());
+        } catch (final UnknownHostException e) {
+            e.printStackTrace();
+        }
+    }
 
-	void configure(final String file) throws JoranException {
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(context);
-		jc.doConfigure(file);
-	}
+    void configure(final String file) throws JoranException {
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(context);
+        jc.doConfigure(file);
+    }
 
-	@Test
-	public void conditionalConsoleApp_IF_THEN_True() throws JoranException, UnknownHostException {
-		configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
-		final ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
-		assertNotNull(consoleAppender);
-		assertTrue(checker.isErrorFree(0));
-	}
+    @Test
+    public void conditionalConsoleApp_IF_THEN_True() throws JoranException, UnknownHostException {
+        configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
+        final ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
+        assertNotNull(consoleAppender);
+        assertTrue(checker.isErrorFree(0));
+    }
 
-	@Test
-	public void conditionalConsoleApp_IF_THEN_False() throws JoranException, IOException, InterruptedException {
-		context.putProperty("aHost", null);
-		configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
+    @Test
+    public void conditionalConsoleApp_IF_THEN_False() throws JoranException, IOException, InterruptedException {
+        context.putProperty("aHost", null);
+        configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole.xml");
 
-		final ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
-		assertNull(consoleAppender);
+        final ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
+        assertNull(consoleAppender);
 
-		final StatusChecker checker = new StatusChecker(context);
-		assertTrue(checker.isErrorFree(0));
-	}
+        final StatusChecker checker = new StatusChecker(context);
+        assertTrue(checker.isErrorFree(0));
+    }
 
-	@Test
-	public void conditionalConsoleApp_ELSE() throws JoranException, IOException, InterruptedException {
-		configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole_ELSE.xml");
-		final ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
-		assertNull(consoleAppender);
+    @Test
+    public void conditionalConsoleApp_ELSE() throws JoranException, IOException, InterruptedException {
+        configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/conditional/conditionalConsole_ELSE.xml");
+        final ConsoleAppender<IAccessEvent> consoleAppender = (ConsoleAppender<IAccessEvent>) context.getAppender("CON");
+        assertNull(consoleAppender);
 
-		final ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context.getAppender("LIST");
-		assertNotNull(listAppender);
-		assertTrue(checker.isErrorFree(0));
-	}
+        final ListAppender<IAccessEvent> listAppender = (ListAppender<IAccessEvent>) context.getAppender("LIST");
+        assertNotNull(listAppender);
+        assertTrue(checker.isErrorFree(0));
+    }
 }

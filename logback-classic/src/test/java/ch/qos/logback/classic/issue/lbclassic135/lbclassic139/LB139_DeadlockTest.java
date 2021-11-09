@@ -21,37 +21,37 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class LB139_DeadlockTest {
 
-	LoggerContext loggerContext = new LoggerContext();
+    LoggerContext loggerContext = new LoggerContext();
 
-	@Before
-	public void setUp() {
-		loggerContext.setName("LB139");
-		final BasicConfigurator bc = new BasicConfigurator();
-		bc.setContext(loggerContext);
-		bc.configure(loggerContext);
-	}
+    @Before
+    public void setUp() {
+        loggerContext.setName("LB139");
+        final BasicConfigurator bc = new BasicConfigurator();
+        bc.setContext(loggerContext);
+        bc.configure(loggerContext);
+    }
 
-	@Test
-	// (timeout=3000)
-	public void test() throws Exception {
-		final Worker worker = new Worker(loggerContext);
-		final Accessor accessor = new Accessor(worker, loggerContext);
+    @Test
+    // (timeout=3000)
+    public void test() throws Exception {
+        final Worker worker = new Worker(loggerContext);
+        final Accessor accessor = new Accessor(worker, loggerContext);
 
-		final Thread workerThread = new Thread(worker, "WorkerThread");
-		final Thread accessorThread = new Thread(accessor, "AccessorThread");
+        final Thread workerThread = new Thread(worker, "WorkerThread");
+        final Thread accessorThread = new Thread(accessor, "AccessorThread");
 
-		workerThread.start();
-		accessorThread.start();
+        workerThread.start();
+        accessorThread.start();
 
-		final int sleep = Worker.SLEEP_DUIRATION * 10;
+        final int sleep = Worker.SLEEP_DUIRATION * 10;
 
-		System.out.println("Will sleep for " + sleep + " millis");
-		Thread.sleep(sleep);
-		System.out.println("Done sleeping (" + sleep + " millis)");
-		worker.setDone(true);
-		accessor.setDone(true);
+        System.out.println("Will sleep for " + sleep + " millis");
+        Thread.sleep(sleep);
+        System.out.println("Done sleeping (" + sleep + " millis)");
+        worker.setDone(true);
+        accessor.setDone(true);
 
-		workerThread.join();
-		accessorThread.join();
-	}
+        workerThread.join();
+        accessorThread.join();
+    }
 }

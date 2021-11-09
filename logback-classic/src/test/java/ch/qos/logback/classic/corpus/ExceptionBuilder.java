@@ -19,33 +19,33 @@ import javax.management.remote.JMXProviderException;
 
 public class ExceptionBuilder {
 
-	static Throwable build(final Random r, final double nestingProbability) {
-		final double rn = r.nextDouble();
-		boolean nested = false;
-		if (rn < nestingProbability) {
-			nested = true;
-		}
+    static Throwable build(final Random r, final double nestingProbability) {
+        final double rn = r.nextDouble();
+        boolean nested = false;
+        if (rn < nestingProbability) {
+            nested = true;
+        }
 
-		Throwable cause = null;
-		if (nested) {
-			cause = makeThrowable(r, null);
-		}
-		return makeThrowable(r, cause);
-	}
+        Throwable cause = null;
+        if (nested) {
+            cause = makeThrowable(r, null);
+        }
+        return makeThrowable(r, cause);
+    }
 
-	private static Throwable makeThrowable(final Random r, final Throwable cause) {
-		final int exType = r.nextInt(4);
-		switch (exType) {
-		case 0:
-			return new IllegalArgumentException("an illegal argument was passed", cause);
-		case 1:
-			return new Exception("this is a test", cause);
-		case 2:
-			return new JMXProviderException("jmx provider exception error occured", cause);
-		case 3:
-			return new OutOfMemoryError("ran out of memory");
-		}
-		return null;
-	}
+    private static Throwable makeThrowable(final Random r, final Throwable cause) {
+        final int exType = r.nextInt(4);
+        switch (exType) {
+        case 0:
+            return new IllegalArgumentException("an illegal argument was passed", cause);
+        case 1:
+            return new Exception("this is a test", cause);
+        case 2:
+            return new JMXProviderException("jmx provider exception error occured", cause);
+        case 3:
+            return new OutOfMemoryError("ran out of memory");
+        }
+        return null;
+    }
 
 }

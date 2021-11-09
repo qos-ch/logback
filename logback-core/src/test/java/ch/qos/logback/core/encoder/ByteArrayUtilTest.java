@@ -21,33 +21,33 @@ import org.junit.Test;
 
 public class ByteArrayUtilTest {
 
-	int BA_SIZE = 16;
-	byte[] byteArray = new byte[BA_SIZE];
+    int BA_SIZE = 16;
+    byte[] byteArray = new byte[BA_SIZE];
 
-	Random random = new Random(18532235);
+    Random random = new Random(18532235);
 
-	@Test
-	public void smoke() {
-		verifyLoop(byteArray, 0, 0);
-		verifyLoop(byteArray, 0, 10);
-		verifyLoop(byteArray, 0, Integer.MAX_VALUE);
-		verifyLoop(byteArray, 0, Integer.MIN_VALUE);
-	}
+    @Test
+    public void smoke() {
+        verifyLoop(byteArray, 0, 0);
+        verifyLoop(byteArray, 0, 10);
+        verifyLoop(byteArray, 0, Integer.MAX_VALUE);
+        verifyLoop(byteArray, 0, Integer.MIN_VALUE);
+    }
 
-	@Test
-	public void random() {
-		for (int i = 0; i < 100000; i++) {
-			final int rOffset = random.nextInt(BA_SIZE - 4);
-			final int rInt = random.nextInt();
-			verifyLoop(byteArray, rOffset, rInt);
-		}
-	}
+    @Test
+    public void random() {
+        for (int i = 0; i < 100000; i++) {
+            final int rOffset = random.nextInt(BA_SIZE - 4);
+            final int rInt = random.nextInt();
+            verifyLoop(byteArray, rOffset, rInt);
+        }
+    }
 
-	void verifyLoop(final byte[] ba, final int offset, final int expected) {
-		ByteArrayUtil.writeInt(byteArray, offset, expected);
-		final int back = ByteArrayUtil.readInt(byteArray, offset);
-		assertEquals(expected, back);
+    void verifyLoop(final byte[] ba, final int offset, final int expected) {
+        ByteArrayUtil.writeInt(byteArray, offset, expected);
+        final int back = ByteArrayUtil.readInt(byteArray, offset);
+        assertEquals(expected, back);
 
-	}
+    }
 
 }

@@ -29,52 +29,52 @@ import org.junit.Test;
  */
 public class StringCollectionUtilTest {
 
-	@Test
-	public void testRetainMatchingWithNoPatterns() throws Exception {
-		final Collection<String> values = stringToList("A");
-		StringCollectionUtil.retainMatching(values);
-		assertTrue(values.contains("A"));
-	}
+    @Test
+    public void testRetainMatchingWithNoPatterns() throws Exception {
+        final Collection<String> values = stringToList("A");
+        StringCollectionUtil.retainMatching(values);
+        assertTrue(values.contains("A"));
+    }
 
-	@Test
-	public void testRetainMatchingWithMatchingPattern() throws Exception {
-		final Collection<String> values = stringToList("A");
-		StringCollectionUtil.retainMatching(values, "A");
-		assertTrue(values.contains("A"));
-	}
+    @Test
+    public void testRetainMatchingWithMatchingPattern() throws Exception {
+        final Collection<String> values = stringToList("A");
+        StringCollectionUtil.retainMatching(values, "A");
+        assertTrue(values.contains("A"));
+    }
 
-	@Test
-	public void testRetainMatchingWithNoMatchingPattern() throws Exception {
-		final Collection<String> values = stringToList("A");
-		StringCollectionUtil.retainMatching(values, "B");
-		assertTrue(values.isEmpty());
-	}
+    @Test
+    public void testRetainMatchingWithNoMatchingPattern() throws Exception {
+        final Collection<String> values = stringToList("A");
+        StringCollectionUtil.retainMatching(values, "B");
+        assertTrue(values.isEmpty());
+    }
 
-	@Test
-	public void testRemoveMatchingWithNoPatterns() throws Exception {
-		final Collection<String> values = stringToList("A");
-		StringCollectionUtil.removeMatching(values);
-		assertTrue(values.contains("A"));
-	}
+    @Test
+    public void testRemoveMatchingWithNoPatterns() throws Exception {
+        final Collection<String> values = stringToList("A");
+        StringCollectionUtil.removeMatching(values);
+        assertTrue(values.contains("A"));
+    }
 
-	@Test
-	public void testRemoveMatchingWithMatchingPattern() throws Exception {
-		final Collection<String> values = stringToList("A");
-		StringCollectionUtil.removeMatching(values, "A");
-		assertTrue(values.isEmpty());
-	}
+    @Test
+    public void testRemoveMatchingWithMatchingPattern() throws Exception {
+        final Collection<String> values = stringToList("A");
+        StringCollectionUtil.removeMatching(values, "A");
+        assertTrue(values.isEmpty());
+    }
 
-	@Test
-	public void testRemoveMatchingWithNoMatchingPattern() throws Exception {
-		final Collection<String> values = stringToList("A");
-		StringCollectionUtil.removeMatching(values, "B");
-		assertTrue(values.contains("A"));
-	}
+    @Test
+    public void testRemoveMatchingWithNoMatchingPattern() throws Exception {
+        final Collection<String> values = stringToList("A");
+        StringCollectionUtil.removeMatching(values, "B");
+        assertTrue(values.contains("A"));
+    }
 
-	private List<String> stringToList(final String... values) {
-		final List<String> result = new ArrayList<>(values.length);
-		result.addAll(Arrays.asList(values));
-		return result;
-	}
+    private List<String> stringToList(final String... values) {
+        final List<String> result = new ArrayList<>(values.length);
+        result.addAll(Arrays.asList(values));
+        return result;
+    }
 
 }

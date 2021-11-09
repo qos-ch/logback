@@ -21,107 +21,107 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public class Matcher extends ContextAwareBase implements LifeCycle {
 
-	private String regex;
-	private String name;
-	private boolean caseSensitive = true;
-	private boolean canonEq = false;
-	private boolean unicodeCase = false;
+    private String regex;
+    private String name;
+    private boolean caseSensitive = true;
+    private boolean canonEq = false;
+    private boolean unicodeCase = false;
 
-	private boolean start = false;
-	private Pattern pattern;
+    private boolean start = false;
+    private Pattern pattern;
 
-	public String getRegex() {
-		return regex;
-	}
+    public String getRegex() {
+        return regex;
+    }
 
-	public void setRegex(final String regex) {
-		this.regex = regex;
-	}
+    public void setRegex(final String regex) {
+        this.regex = regex;
+    }
 
-	@Override
-	public void start() {
-		if (name == null) {
-			addError("All Matcher objects must be named");
-			return;
-		}
-		try {
-			int code = 0;
-			if (!caseSensitive) {
-				code |= Pattern.CASE_INSENSITIVE;
-			}
-			if (canonEq) {
-				code |= Pattern.CANON_EQ;
-			}
-			if (unicodeCase) {
-				code |= Pattern.UNICODE_CASE;
-			}
+    @Override
+    public void start() {
+        if (name == null) {
+            addError("All Matcher objects must be named");
+            return;
+        }
+        try {
+            int code = 0;
+            if (!caseSensitive) {
+                code |= Pattern.CASE_INSENSITIVE;
+            }
+            if (canonEq) {
+                code |= Pattern.CANON_EQ;
+            }
+            if (unicodeCase) {
+                code |= Pattern.UNICODE_CASE;
+            }
 
-			// code |= Pattern.DOTALL;
+            // code |= Pattern.DOTALL;
 
-			pattern = Pattern.compile(regex, code);
-			start = true;
-		} catch (final PatternSyntaxException pse) {
-			addError("Failed to compile regex [" + regex + "]", pse);
-		}
-	}
+            pattern = Pattern.compile(regex, code);
+            start = true;
+        } catch (final PatternSyntaxException pse) {
+            addError("Failed to compile regex [" + regex + "]", pse);
+        }
+    }
 
-	@Override
-	public void stop() {
-		start = false;
-	}
+    @Override
+    public void stop() {
+        start = false;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return start;
-	}
+    @Override
+    public boolean isStarted() {
+        return start;
+    }
 
-	// However, this method does
-	// not require that the entire region (of the input) be matched.
+    // However, this method does
+    // not require that the entire region (of the input) be matched.
 
-	/**
-	 * Checks whether the input matches the regular expression.
-	 *
-	 * @param input
-	 * @return
-	 * @throws EvaluationException
-	 */
-	public boolean matches(final String input) throws EvaluationException {
-		if (start) {
-			final java.util.regex.Matcher matcher = pattern.matcher(input);
-			return matcher.find();
-		}
-		throw new EvaluationException("Matcher [" + regex + "] not started");
-	}
+    /**
+     * Checks whether the input matches the regular expression.
+     *
+     * @param input
+     * @return
+     * @throws EvaluationException
+     */
+    public boolean matches(final String input) throws EvaluationException {
+        if (start) {
+            final java.util.regex.Matcher matcher = pattern.matcher(input);
+            return matcher.find();
+        }
+        throw new EvaluationException("Matcher [" + regex + "] not started");
+    }
 
-	public boolean isCanonEq() {
-		return canonEq;
-	}
+    public boolean isCanonEq() {
+        return canonEq;
+    }
 
-	public void setCanonEq(final boolean canonEq) {
-		this.canonEq = canonEq;
-	}
+    public void setCanonEq(final boolean canonEq) {
+        this.canonEq = canonEq;
+    }
 
-	public boolean isCaseSensitive() {
-		return caseSensitive;
-	}
+    public boolean isCaseSensitive() {
+        return caseSensitive;
+    }
 
-	public void setCaseSensitive(final boolean caseSensitive) {
-		this.caseSensitive = caseSensitive;
-	}
+    public void setCaseSensitive(final boolean caseSensitive) {
+        this.caseSensitive = caseSensitive;
+    }
 
-	public boolean isUnicodeCase() {
-		return unicodeCase;
-	}
+    public boolean isUnicodeCase() {
+        return unicodeCase;
+    }
 
-	public void setUnicodeCase(final boolean unicodeCase) {
-		this.unicodeCase = unicodeCase;
-	}
+    public void setUnicodeCase(final boolean unicodeCase) {
+        this.unicodeCase = unicodeCase;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 }

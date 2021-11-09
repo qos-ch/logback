@@ -16,8 +16,8 @@ package ch.qos.logback.core.html;
 
 public class NOPThrowableRenderer implements IThrowableRenderer<Object> {
 
-	@Override
-	public void render(final StringBuilder sbuf, final Object event) {
-	}
+    @Override
+    public void render(final StringBuilder sbuf, final Object event) {
+    }
 
 }

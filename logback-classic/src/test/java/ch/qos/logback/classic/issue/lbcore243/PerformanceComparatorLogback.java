@@ -25,48 +25,48 @@ import ch.qos.logback.core.joran.spi.JoranException;
 //Logback  without immediate flush: 1758 nanos per call
 
 public class PerformanceComparatorLogback {
-	static Logger logbacklogger = LoggerFactory.getLogger(PerformanceComparatorLogback.class);
+    static Logger logbacklogger = LoggerFactory.getLogger(PerformanceComparatorLogback.class);
 
-	public static void main(final String[] args) throws JoranException, InterruptedException {
-		initLogbackWithoutImmediateFlush();
-		logbackParametrizedDebugCall();
+    public static void main(final String[] args) throws JoranException, InterruptedException {
+        initLogbackWithoutImmediateFlush();
+        logbackParametrizedDebugCall();
 
-		initLogbackWithImmediateFlush();
-		logbackParametrizedDebugCall();
-		System.out.println("###############################################");
-		System.out.println("Logback  with    immediate flush: " + logbackParametrizedDebugCall() + " nanos per call");
+        initLogbackWithImmediateFlush();
+        logbackParametrizedDebugCall();
+        System.out.println("###############################################");
+        System.out.println("Logback  with    immediate flush: " + logbackParametrizedDebugCall() + " nanos per call");
 
-		initLogbackWithoutImmediateFlush();
-		System.out.println("Logback  without immediate flush: " + logbackParametrizedDebugCall() + " nanos per call");
+        initLogbackWithoutImmediateFlush();
+        System.out.println("Logback  without immediate flush: " + logbackParametrizedDebugCall() + " nanos per call");
 
-		System.out.println("###############################################");
-	}
+        System.out.println("###############################################");
+    }
 
-	private static long logbackParametrizedDebugCall() {
+    private static long logbackParametrizedDebugCall() {
 
-		final Integer j = 2;
-		final long start = System.nanoTime();
-		for (int i = 0; i < Common.loop; i++) {
-			logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
-		}
-		return (System.nanoTime() - start) / Common.loop;
-	}
+        final Integer j = 2;
+        final long start = System.nanoTime();
+        for (int i = 0; i < Common.loop; i++) {
+            logbacklogger.debug("SEE IF THIS IS LOGGED {}.", j);
+        }
+        return (System.nanoTime() - start) / Common.loop;
+    }
 
-	static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbcore243/";
+    static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbcore243/";
 
-	static void configure(final String file) throws JoranException {
-		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(loggerContext);
-		loggerContext.reset();
-		jc.doConfigure(file);
-	}
+    static void configure(final String file) throws JoranException {
+        final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        loggerContext.reset();
+        jc.doConfigure(file);
+    }
 
-	private static void initLogbackWithoutImmediateFlush() throws JoranException {
-		configure(DIR_PREFIX + "logback_without_immediateFlush.xml");
-	}
+    private static void initLogbackWithoutImmediateFlush() throws JoranException {
+        configure(DIR_PREFIX + "logback_without_immediateFlush.xml");
+    }
 
-	private static void initLogbackWithImmediateFlush() throws JoranException {
-		configure(DIR_PREFIX + "logback_with_immediateFlush.xml");
-	}
+    private static void initLogbackWithImmediateFlush() throws JoranException {
+        configure(DIR_PREFIX + "logback_with_immediateFlush.xml");
+    }
 }

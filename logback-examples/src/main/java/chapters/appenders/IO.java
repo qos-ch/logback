@@ -35,19 +35,19 @@ public class IO extends Thread {
     LoggerContext context;
     double throughput;
 
-    public IO(boolean _buffered, boolean _immediateFlush, long _len) {
-        this.len = _len;
-        this.buffered = _buffered;
-        this.immediateFlush = _immediateFlush;
+    public IO(final boolean _buffered, final boolean _immediateFlush, final long _len) {
+        len = _len;
+        buffered = _buffered;
+        immediateFlush = _immediateFlush;
         context = new LoggerContext();
         logger = context.getLogger("logger-" + getName());
 
         // A FileAppender is created according to the buffering and
         // immediate flush setting of this IO instance.
-        FileAppender<ILoggingEvent> fa = new FileAppender<ILoggingEvent>();
+        final FileAppender<ILoggingEvent> fa = new FileAppender<>();
 
         if (longMessage) {
-            PatternLayoutEncoder pa = new PatternLayoutEncoder();
+            final PatternLayoutEncoder pa = new PatternLayoutEncoder();
             pa.setPattern("%r %5p %c [%t] - %m%n");
             pa.setContext(context);
             pa.start();
@@ -63,7 +63,7 @@ public class IO extends Thread {
 
     }
 
-    public static void main(String[] argv) throws Exception {
+    public static void main(final String[] argv) throws Exception {
         if (argv.length != 4) {
             usage("Wrong number of arguments.");
         }
@@ -89,7 +89,7 @@ public class IO extends Thread {
         // do not make sense.
     }
 
-    static void usage(String msg) {
+    static void usage(final String msg) {
         System.err.println(msg);
         System.err.println("Usage: java " + IO.class.getName() + " runLength numThreads scarceCPU (short|long)\n"
                         + "   runLength (integer) the number of logs to generate perthread\n" + "   numThreads (integer) the number of threads.\n"
@@ -97,8 +97,8 @@ public class IO extends Thread {
         System.exit(1);
     }
 
-    static void perfCase(boolean buffered, boolean immediateFlush, long len) throws Exception {
-        IO[] threads = new IO[numThreads];
+    static void perfCase(final boolean buffered, final boolean immediateFlush, final long len) throws Exception {
+        final IO[] threads = new IO[numThreads];
         Counter counterThread = null;
 
         if (scarceCPU) {
@@ -130,10 +130,11 @@ public class IO extends Thread {
             counterThread.join();
         }
 
-        System.out.println("On average throughput of " + (sum / numThreads) * 1000 + " logs per microsecond.");
+        System.out.println("On average throughput of " + sum / numThreads * 1000 + " logs per microsecond.");
         System.out.println("------------------------------------------------");
     }
 
+    @Override
     public void run() {
         String msg = msgShort;
 
@@ -141,13 +142,13 @@ public class IO extends Thread {
             msg = msgLong;
         }
 
-        long before = System.nanoTime();
+        final long before = System.nanoTime();
 
         for (int i = 0; i < len; i++) {
             logger.debug(msg);
         }
 
-        throughput = (len * 1.0) / (System.nanoTime() - before);
+        throughput = len * 1.0 / (System.nanoTime() - before);
         System.out.println(getName() + ", buffered: " + buffered + ", immediateFlush: " + immediateFlush + ", throughput: " + throughput
                         + " logs per nanosecond.");
     }
@@ -157,8 +158,9 @@ class Counter extends Thread {
     public boolean interrupted = false;
     public double counter = 0;
 
+    @Override
     public void run() {
-        long before = System.nanoTime();
+        final long before = System.nanoTime();
 
         while (!interrupted) {
             if (counter % 1000 == 0) {
@@ -167,7 +169,7 @@ class Counter extends Thread {
             counter += 1.0;
         }
 
-        double tput = (counter * 1.0) / (System.nanoTime() - before);
+        final double tput = counter * 1.0 / (System.nanoTime() - before);
         System.out.println("Counter thread " + getName() + " incremented counter by " + tput + " per nanosecond.");
     }
 }

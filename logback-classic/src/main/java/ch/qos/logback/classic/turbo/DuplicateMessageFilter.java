@@ -29,61 +29,61 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class DuplicateMessageFilter extends TurboFilter {
 
-	/**
-	 * The default cache size.
-	 */
-	public static final int DEFAULT_CACHE_SIZE = 100;
-	/**
-	 * The default number of allows repetitions.
-	 */
-	public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
+    /**
+     * The default cache size.
+     */
+    public static final int DEFAULT_CACHE_SIZE = 100;
+    /**
+     * The default number of allows repetitions.
+     */
+    public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
 
-	public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
-	public int cacheSize = DEFAULT_CACHE_SIZE;
+    public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
+    public int cacheSize = DEFAULT_CACHE_SIZE;
 
-	private LRUMessageCache msgCache;
+    private LRUMessageCache msgCache;
 
-	@Override
-	public void start() {
-		msgCache = new LRUMessageCache(cacheSize);
-		super.start();
-	}
+    @Override
+    public void start() {
+        msgCache = new LRUMessageCache(cacheSize);
+        super.start();
+    }
 
-	@Override
-	public void stop() {
-		msgCache.clear();
-		msgCache = null;
-		super.stop();
-	}
+    @Override
+    public void stop() {
+        msgCache.clear();
+        msgCache = null;
+        super.stop();
+    }
 
-	@Override
-	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
-		final int count = msgCache.getMessageCountAndThenIncrement(format);
-		if (count <= allowedRepetitions) {
-			return FilterReply.NEUTRAL;
-		}
-		return FilterReply.DENY;
-	}
+    @Override
+    public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
+        final int count = msgCache.getMessageCountAndThenIncrement(format);
+        if (count <= allowedRepetitions) {
+            return FilterReply.NEUTRAL;
+        }
+        return FilterReply.DENY;
+    }
 
-	public int getAllowedRepetitions() {
-		return allowedRepetitions;
-	}
+    public int getAllowedRepetitions() {
+        return allowedRepetitions;
+    }
 
-	/**
-	 * The allowed number of repetitions before
-	 *
-	 * @param allowedRepetitions
-	 */
-	public void setAllowedRepetitions(final int allowedRepetitions) {
-		this.allowedRepetitions = allowedRepetitions;
-	}
+    /**
+     * The allowed number of repetitions before
+     *
+     * @param allowedRepetitions
+     */
+    public void setAllowedRepetitions(final int allowedRepetitions) {
+        this.allowedRepetitions = allowedRepetitions;
+    }
 
-	public int getCacheSize() {
-		return cacheSize;
-	}
+    public int getCacheSize() {
+        return cacheSize;
+    }
 
-	public void setCacheSize(final int cacheSize) {
-		this.cacheSize = cacheSize;
-	}
+    public void setCacheSize(final int cacheSize) {
+        this.cacheSize = cacheSize;
+    }
 
 }

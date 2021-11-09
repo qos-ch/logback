@@ -26,49 +26,49 @@ import ch.qos.logback.core.util.COWArrayList;
  */
 final public class FilterAttachableImpl<E> implements FilterAttachable<E> {
 
-	@SuppressWarnings("unchecked")
-	COWArrayList<Filter<E>> filterList = new COWArrayList<>(new Filter[0]);
+    @SuppressWarnings("unchecked")
+    COWArrayList<Filter<E>> filterList = new COWArrayList<>(new Filter[0]);
 
-	/**
-	 * Add a filter to end of the filter list.
-	 */
-	@Override
-	public void addFilter(final Filter<E> newFilter) {
-		filterList.add(newFilter);
-	}
+    /**
+     * Add a filter to end of the filter list.
+     */
+    @Override
+    public void addFilter(final Filter<E> newFilter) {
+        filterList.add(newFilter);
+    }
 
-	/**
-	 * Clear the filter chain
-	 */
-	@Override
-	public void clearAllFilters() {
-		filterList.clear();
-	}
+    /**
+     * Clear the filter chain
+     */
+    @Override
+    public void clearAllFilters() {
+        filterList.clear();
+    }
 
-	/**
-	 * Loop through the filters in the list. As soon as a filter decides on
-	 * ACCEPT or DENY, then that value is returned. If all of the filters return
-	 * NEUTRAL, then NEUTRAL is returned.
-	 */
-	@Override
-	public FilterReply getFilterChainDecision(final E event) {
+    /**
+     * Loop through the filters in the list. As soon as a filter decides on
+     * ACCEPT or DENY, then that value is returned. If all of the filters return
+     * NEUTRAL, then NEUTRAL is returned.
+     */
+    @Override
+    public FilterReply getFilterChainDecision(final E event) {
 
-		final Filter<E>[] filterArrray = filterList.asTypedArray();
-		final int len = filterArrray.length;
+        final Filter<E>[] filterArrray = filterList.asTypedArray();
+        final int len = filterArrray.length;
 
-		for (int i = 0; i < len; i++) {
-			final FilterReply r = filterArrray[i].decide(event);
-			if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
-				return r;
-			}
-		}
+        for (int i = 0; i < len; i++) {
+            final FilterReply r = filterArrray[i].decide(event);
+            if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
+                return r;
+            }
+        }
 
-		// no decision
-		return FilterReply.NEUTRAL;
-	}
+        // no decision
+        return FilterReply.NEUTRAL;
+    }
 
-	@Override
-	public List<Filter<E>> getCopyOfAttachedFiltersList() {
-		return new ArrayList<>(filterList);
-	}
+    @Override
+    public List<Filter<E>> getCopyOfAttachedFiltersList() {
+        return new ArrayList<>(filterList);
+    }
 }

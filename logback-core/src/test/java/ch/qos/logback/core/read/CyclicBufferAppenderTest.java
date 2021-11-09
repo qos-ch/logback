@@ -20,29 +20,29 @@ import org.junit.Test;
 
 public class CyclicBufferAppenderTest {
 
-	private CyclicBufferAppender<String> cyclicBufferAppender;
+    private CyclicBufferAppender<String> cyclicBufferAppender;
 
-	@Before
-	public void before() {
-		cyclicBufferAppender = new CyclicBufferAppender<>();
-		cyclicBufferAppender.start();
-	}
+    @Before
+    public void before() {
+        cyclicBufferAppender = new CyclicBufferAppender<>();
+        cyclicBufferAppender.start();
+    }
 
-	@Test
-	public void reset() {
+    @Test
+    public void reset() {
 
-		cyclicBufferAppender.append("foobar");
-		assertEquals(1, cyclicBufferAppender.getLength());
-		cyclicBufferAppender.reset();
-		assertEquals(0, cyclicBufferAppender.getLength());
-	}
+        cyclicBufferAppender.append("foobar");
+        assertEquals(1, cyclicBufferAppender.getLength());
+        cyclicBufferAppender.reset();
+        assertEquals(0, cyclicBufferAppender.getLength());
+    }
 
-	@Test
-	public void genericGet() {
-		cyclicBufferAppender.append("Some string");
-		// get() now has type information, assigning to String should work without cast.
-		final String foo = cyclicBufferAppender.get(0);
-		assertEquals("Some string", foo);
-	}
+    @Test
+    public void genericGet() {
+        cyclicBufferAppender.append("Some string");
+        // get() now has type information, assigning to String should work without cast.
+        final String foo = cyclicBufferAppender.get(0);
+        assertEquals("Some string", foo);
+    }
 
 }

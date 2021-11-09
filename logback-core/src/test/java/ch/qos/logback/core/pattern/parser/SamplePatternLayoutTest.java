@@ -26,80 +26,80 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Object> {
 
-	Context context = new ContextBase();
-	StatusChecker checker = new StatusChecker(context);
+    Context context = new ContextBase();
+    StatusChecker checker = new StatusChecker(context);
 
-	@Override
-	public PatternLayoutBase<Object> getPatternLayoutBase() {
-		return new SamplePatternLayout<>();
-	}
+    @Override
+    public PatternLayoutBase<Object> getPatternLayoutBase() {
+        return new SamplePatternLayout<>();
+    }
 
-	@Override
-	public Object getEventObject() {
-		return new Object();
-	}
+    @Override
+    public Object getEventObject() {
+        return new Object();
+    }
 
-	@Test
-	public void testOK() {
-		final PatternLayoutBase<Object> plb = getPatternLayoutBase();
-		final Context context = new ContextBase();
-		plb.setContext(context);
-		plb.setPattern("x%OTT");
-		plb.start();
-		final String s = plb.doLayout(new Object());
-		// System.out.println(s);
+    @Test
+    public void testOK() {
+        final PatternLayoutBase<Object> plb = getPatternLayoutBase();
+        final Context context = new ContextBase();
+        plb.setContext(context);
+        plb.setPattern("x%OTT");
+        plb.start();
+        final String s = plb.doLayout(new Object());
+        // System.out.println(s);
 
-		// StatusManager sm = context.getStatusManager();
-		// StatusPrinter.print(sm);
-		assertEquals("x123", s);
-	}
+        // StatusManager sm = context.getStatusManager();
+        // StatusPrinter.print(sm);
+        assertEquals("x123", s);
+    }
 
-	@Test
-	public void testEscapeClosingParentheses() {
-		final PatternLayoutBase<Object> plb = getPatternLayoutBase();
-		final Context context = new ContextBase();
-		plb.setContext(context);
-		plb.setPattern("x(%OTT\\)y");
-		plb.start();
-		final String s = plb.doLayout(new Object());
-		assertEquals("x(123)y", s);
-	}
+    @Test
+    public void testEscapeClosingParentheses() {
+        final PatternLayoutBase<Object> plb = getPatternLayoutBase();
+        final Context context = new ContextBase();
+        plb.setContext(context);
+        plb.setPattern("x(%OTT\\)y");
+        plb.start();
+        final String s = plb.doLayout(new Object());
+        assertEquals("x(123)y", s);
+    }
 
-	@Test
-	public void testEscapeBothParentheses() {
-		final PatternLayoutBase<Object> plb = getPatternLayoutBase();
-		final Context context = new ContextBase();
-		plb.setContext(context);
-		plb.setPattern("x\\(%OTT\\)y");
-		plb.start();
-		final String s = plb.doLayout(new Object());
-		assertEquals("x(123)y", s);
-	}
+    @Test
+    public void testEscapeBothParentheses() {
+        final PatternLayoutBase<Object> plb = getPatternLayoutBase();
+        final Context context = new ContextBase();
+        plb.setContext(context);
+        plb.setPattern("x\\(%OTT\\)y");
+        plb.start();
+        final String s = plb.doLayout(new Object());
+        assertEquals("x(123)y", s);
+    }
 
-	@Test
-	public void testPercentAsLiteral() {
-		final PatternLayoutBase<Object> plb = getPatternLayoutBase();
-		final Context context = new ContextBase();
-		plb.setContext(context);
-		plb.setPattern("hello \\% world");
-		plb.start();
-		final String s = plb.doLayout(new Object());
-		assertEquals("hello % world", s);
-	}
+    @Test
+    public void testPercentAsLiteral() {
+        final PatternLayoutBase<Object> plb = getPatternLayoutBase();
+        final Context context = new ContextBase();
+        plb.setContext(context);
+        plb.setPattern("hello \\% world");
+        plb.start();
+        final String s = plb.doLayout(new Object());
+        assertEquals("hello % world", s);
+    }
 
 
-	@Test
-	public void noClosingCurlyBrace() {
-		final PatternLayoutBase<Object> plb = getPatternLayoutBase();
-		plb.setContext(context);
-		plb.setPattern("%x %hello{asd");
-		plb.start();
+    @Test
+    public void noClosingCurlyBrace() {
+        final PatternLayoutBase<Object> plb = getPatternLayoutBase();
+        plb.setContext(context);
+        plb.setPattern("%x %hello{asd");
+        plb.start();
 
-		checker.assertContainsMatch(Status.ERROR, "Failed to parse pattern");
-	}
+        checker.assertContainsMatch(Status.ERROR, "Failed to parse pattern");
+    }
 
-	@Override
-	public Context getContext() {
-		return context;
-	}
+    @Override
+    public Context getContext() {
+        return context;
+    }
 }

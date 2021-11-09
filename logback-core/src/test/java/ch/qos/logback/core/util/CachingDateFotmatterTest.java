@@ -13,30 +13,30 @@ import org.junit.Test;
 
 public class CachingDateFotmatterTest {
 
-	final static String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm";
+    final static String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm";
 
-	SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
-	TimeZone perthTZ = TimeZone.getTimeZone("Australia/Perth");
-	TimeZone utcTZ = TimeZone.getTimeZone("UTC");
+    SimpleDateFormat sdf = new SimpleDateFormat(DATE_PATTERN);
+    TimeZone perthTZ = TimeZone.getTimeZone("Australia/Perth");
+    TimeZone utcTZ = TimeZone.getTimeZone("UTC");
 
-	@Before
-	public void setUp() {
-		sdf.setTimeZone(utcTZ);
-	}
+    @Before
+    public void setUp() {
+        sdf.setTimeZone(utcTZ);
+    }
 
-	@Test
-	public void timeZoneIsTakenIntoAccount() throws ParseException {
+    @Test
+    public void timeZoneIsTakenIntoAccount() throws ParseException {
 
-		final ZoneId perthZone = ZoneId.of("Australia/Perth");
-		final CachingDateFormatter cdf = new CachingDateFormatter(DATE_PATTERN, perthZone);
+        final ZoneId perthZone = ZoneId.of("Australia/Perth");
+        final CachingDateFormatter cdf = new CachingDateFormatter(DATE_PATTERN, perthZone);
 
-		final Date march26_2015_0949_UTC = sdf.parse("2015-03-26T09:49");
-		System.out.print(march26_2015_0949_UTC);
+        final Date march26_2015_0949_UTC = sdf.parse("2015-03-26T09:49");
+        System.out.print(march26_2015_0949_UTC);
 
-		final String result = cdf.format(march26_2015_0949_UTC.getTime());
-		// AWST (Perth) is 8 hours ahead of UTC
-		assertEquals("2015-03-26T17:49", result);
-	}
+        final String result = cdf.format(march26_2015_0949_UTC.getTime());
+        // AWST (Perth) is 8 hours ahead of UTC
+        assertEquals("2015-03-26T17:49", result);
+    }
 
 
 }

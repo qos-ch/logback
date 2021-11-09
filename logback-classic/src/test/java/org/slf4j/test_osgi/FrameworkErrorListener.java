@@ -21,31 +21,31 @@ import org.osgi.framework.FrameworkListener;
 
 public class FrameworkErrorListener implements FrameworkListener {
 
-	public List<FrameworkEvent> errorList = new ArrayList<>();
+    public List<FrameworkEvent> errorList = new ArrayList<>();
 
-	@Override
-	public void frameworkEvent(final FrameworkEvent fe) {
-		if (fe.getType() == FrameworkEvent.ERROR) {
-			errorList.add(fe);
-		}
-	}
+    @Override
+    public void frameworkEvent(final FrameworkEvent fe) {
+        if (fe.getType() == FrameworkEvent.ERROR) {
+            errorList.add(fe);
+        }
+    }
 
-	private void dump(final FrameworkEvent fe) {
-		final Throwable t = fe.getThrowable();
-		String tString = null;
-		if (t != null) {
-			tString = t.toString();
-		}
-		System.out.println("Framework ERROR:" + ", source " + fe.getSource() + ", bundle=" + fe.getBundle() + ", ex=" + tString);
-		if (t != null) {
-			t.printStackTrace();
-		}
-	}
+    private void dump(final FrameworkEvent fe) {
+        final Throwable t = fe.getThrowable();
+        String tString = null;
+        if (t != null) {
+            tString = t.toString();
+        }
+        System.out.println("Framework ERROR:" + ", source " + fe.getSource() + ", bundle=" + fe.getBundle() + ", ex=" + tString);
+        if (t != null) {
+            t.printStackTrace();
+        }
+    }
 
-	public void dumpAll() {
-		for (final FrameworkEvent element : errorList) {
-			final FrameworkEvent fe = element;
-			dump(fe);
-		}
-	}
+    public void dumpAll() {
+        for (final FrameworkEvent element : errorList) {
+            final FrameworkEvent fe = element;
+            dump(fe);
+        }
+    }
 }

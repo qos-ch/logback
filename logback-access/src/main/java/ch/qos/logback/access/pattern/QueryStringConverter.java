@@ -17,8 +17,8 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class QueryStringConverter extends AccessConverter {
 
-	@Override
-	public String convert(final IAccessEvent accessEvent) {
-		return accessEvent.getQueryString();
-	}
+    @Override
+    public String convert(final IAccessEvent accessEvent) {
+        return accessEvent.getQueryString();
+    }
 }

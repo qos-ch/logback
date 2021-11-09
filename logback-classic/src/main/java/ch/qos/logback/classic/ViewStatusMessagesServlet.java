@@ -22,18 +22,18 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ViewStatusMessagesServlet extends ViewStatusMessagesServletBase {
 
-	private static final long serialVersionUID = 443878494348593337L;
+    private static final long serialVersionUID = 443878494348593337L;
 
-	@Override
-	protected StatusManager getStatusManager(final HttpServletRequest req, final HttpServletResponse resp) {
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		return lc.getStatusManager();
-	}
+    @Override
+    protected StatusManager getStatusManager(final HttpServletRequest req, final HttpServletResponse resp) {
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        return lc.getStatusManager();
+    }
 
-	@Override
-	protected String getPageTitle(final HttpServletRequest req, final HttpServletResponse resp) {
-		final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		return "<h2>Status messages for LoggerContext named [" + lc.getName() + "]</h2>\r\n";
-	}
+    @Override
+    protected String getPageTitle(final HttpServletRequest req, final HttpServletResponse resp) {
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        return "<h2>Status messages for LoggerContext named [" + lc.getName() + "]</h2>\r\n";
+    }
 
 }

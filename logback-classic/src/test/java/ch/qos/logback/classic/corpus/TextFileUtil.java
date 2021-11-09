@@ -25,35 +25,35 @@ import java.util.List;
 
 public class TextFileUtil {
 
-	public static List<String> toWords(final URL url) throws IOException {
-		final InputStream is = url.openStream();
-		final InputStreamReader reader = new InputStreamReader(is);
-		final BufferedReader br = new BufferedReader(reader);
-		return toWords(br);
-	}
+    public static List<String> toWords(final URL url) throws IOException {
+        final InputStream is = url.openStream();
+        final InputStreamReader reader = new InputStreamReader(is);
+        final BufferedReader br = new BufferedReader(reader);
+        return toWords(br);
+    }
 
-	public static List<String> toWords(final String filename) throws IOException {
-		final FileReader fr = new FileReader(filename);
-		final BufferedReader br = new BufferedReader(fr);
-		return toWords(br);
-	}
+    public static List<String> toWords(final String filename) throws IOException {
+        final FileReader fr = new FileReader(filename);
+        final BufferedReader br = new BufferedReader(fr);
+        return toWords(br);
+    }
 
-	public static List<String> toWords(final BufferedReader br) throws IOException {
+    public static List<String> toWords(final BufferedReader br) throws IOException {
 
-		// (\\d+)$
-		// String regExp = "^(\\d+) "+ msg + " ([\\dabcdef-]+)$";
-		// Pattern p = Pattern.compile(regExp);
-		String line;
+        // (\\d+)$
+        // String regExp = "^(\\d+) "+ msg + " ([\\dabcdef-]+)$";
+        // Pattern p = Pattern.compile(regExp);
+        String line;
 
-		final List<String> wordList = new ArrayList<>();
+        final List<String> wordList = new ArrayList<>();
 
-		while ((line = br.readLine()) != null) {
-			// line = line.replaceAll("\\p{Punct}+", " ");
-			final String[] words = line.split("\\s");
-			Collections.addAll(wordList, words);
-		}
-		br.close();
+        while ((line = br.readLine()) != null) {
+            // line = line.replaceAll("\\p{Punct}+", " ");
+            final String[] words = line.split("\\s");
+            Collections.addAll(wordList, words);
+        }
+        br.close();
 
-		return wordList;
-	}
+        return wordList;
+    }
 }

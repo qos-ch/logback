@@ -28,29 +28,29 @@ import chapters.onJoran.SimpleConfigurator;
 
 /**
  * BEWARE: This examples are outdated with version 1.3. They need to be rewritten.
- * 
+ *
  * This example illustrates the usage of implicit actions.
- * 
+ *
  * <p>Keep in mind that implicit actions are not associated with any specific
  * pattern. Moreover, they are added directly to a Joran Interpreter instead of
  * a rule store.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class PrintMe {
 
-    public static void main(String[] args) throws Exception {
-        Context context = new ContextBase();
+    public static void main(final String[] args) throws Exception {
+        final Context context = new ContextBase();
 
-        Map<ElementSelector, Action> ruleMap = new HashMap<ElementSelector, Action>();
+        final Map<ElementSelector, Action> ruleMap = new HashMap<>();
 
         // we start with the rule for the top-most (root) element
         ruleMap.put(new ElementSelector("*/foo"), new NOPAction());
 
         // Add an implicit action.
-        List<ImplicitModelAction> iaList = new ArrayList<ImplicitModelAction>();
+        final List<ImplicitModelAction> iaList = new ArrayList<>();
         iaList.add(new PrintMeImplicitAction());
-        SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap, iaList);
+        final SimpleConfigurator simpleConfigurator = new SimpleConfigurator(ruleMap, iaList);
 
         // link the configurator with its context
         simpleConfigurator.setContext(context);

@@ -39,50 +39,50 @@ import ch.qos.logback.core.spi.FilterReply;
  */
 public class SocketNode implements Runnable {
 
-	Socket socket;
-	AccessContext context;
-	HardenedAccessEventInputStream hardenedOIS;
+    Socket socket;
+    AccessContext context;
+    HardenedAccessEventInputStream hardenedOIS;
 
-	public SocketNode(final Socket socket, final AccessContext context) {
-		this.socket = socket;
-		this.context = context;
-		try {
-			hardenedOIS = new HardenedAccessEventInputStream(new BufferedInputStream(socket.getInputStream()));
-		} catch (final Exception e) {
-			System.out.println("Could not open HardenedObjectInputStream to " + socket + e);
-		}
-	}
+    public SocketNode(final Socket socket, final AccessContext context) {
+        this.socket = socket;
+        this.context = context;
+        try {
+            hardenedOIS = new HardenedAccessEventInputStream(new BufferedInputStream(socket.getInputStream()));
+        } catch (final Exception e) {
+            System.out.println("Could not open HardenedObjectInputStream to " + socket + e);
+        }
+    }
 
-	@Override
-	public void run() {
-		IAccessEvent event;
+    @Override
+    public void run() {
+        IAccessEvent event;
 
-		try {
-			while (true) {
-				// read an event from the wire
-				event = (IAccessEvent) hardenedOIS.readObject();
-				// check that the event should be logged
-				if (context.getFilterChainDecision(event) == FilterReply.DENY) {
-					break;
-				}
-				// send it to the appenders
-				context.callAppenders(event);
-			}
-		} catch (final java.io.EOFException e) {
-			System.out.println("Caught java.io.EOFException closing connection.");
-		} catch (final java.net.SocketException e) {
-			System.out.println("Caught java.net.SocketException closing connection.");
-		} catch (final IOException e) {
-			System.out.println("Caught java.io.IOException: " + e);
-			System.out.println("Closing connection.");
-		} catch (final Exception e) {
-			System.out.println("Unexpected exception. Closing connection." + e);
-		}
+        try {
+            while (true) {
+                // read an event from the wire
+                event = (IAccessEvent) hardenedOIS.readObject();
+                // check that the event should be logged
+                if (context.getFilterChainDecision(event) == FilterReply.DENY) {
+                    break;
+                }
+                // send it to the appenders
+                context.callAppenders(event);
+            }
+        } catch (final java.io.EOFException e) {
+            System.out.println("Caught java.io.EOFException closing connection.");
+        } catch (final java.net.SocketException e) {
+            System.out.println("Caught java.net.SocketException closing connection.");
+        } catch (final IOException e) {
+            System.out.println("Caught java.io.IOException: " + e);
+            System.out.println("Closing connection.");
+        } catch (final Exception e) {
+            System.out.println("Unexpected exception. Closing connection." + e);
+        }
 
-		try {
-			hardenedOIS.close();
-		} catch (final Exception e) {
-			System.out.println("Could not close connection." + e);
-		}
-	}
+        try {
+            hardenedOIS.close();
+        } catch (final Exception e) {
+            System.out.println("Could not close connection." + e);
+        }
+    }
 }

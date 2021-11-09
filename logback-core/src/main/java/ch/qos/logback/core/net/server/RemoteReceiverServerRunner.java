@@ -25,30 +25,30 @@ import java.util.concurrent.Executor;
  */
 class RemoteReceiverServerRunner extends ConcurrentServerRunner<RemoteReceiverClient> {
 
-	private final int clientQueueSize;
+    private final int clientQueueSize;
 
-	/**
-	 * Constructs a new server runner.
-	 * @param listener the listener from which the server will accept new
-	 *    clients
-	 * @param executor that will be used to execute asynchronous tasks
-	 *    on behalf of the runner.
-	 * @param queueSize size of the event queue that will be maintained for
-	 *    each client
-	 */
-	public RemoteReceiverServerRunner(final ServerListener<RemoteReceiverClient> listener, final Executor executor, final int clientQueueSize) {
-		super(listener, executor);
-		this.clientQueueSize = clientQueueSize;
-	}
+    /**
+     * Constructs a new server runner.
+     * @param listener the listener from which the server will accept new
+     *    clients
+     * @param executor that will be used to execute asynchronous tasks
+     *    on behalf of the runner.
+     * @param queueSize size of the event queue that will be maintained for
+     *    each client
+     */
+    public RemoteReceiverServerRunner(final ServerListener<RemoteReceiverClient> listener, final Executor executor, final int clientQueueSize) {
+        super(listener, executor);
+        this.clientQueueSize = clientQueueSize;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean configureClient(final RemoteReceiverClient client) {
-		client.setContext(getContext());
-		client.setQueue(new ArrayBlockingQueue<Serializable>(clientQueueSize));
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean configureClient(final RemoteReceiverClient client) {
+        client.setContext(getContext());
+        client.setQueue(new ArrayBlockingQueue<Serializable>(clientQueueSize));
+        return true;
+    }
 
 }

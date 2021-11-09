@@ -46,125 +46,125 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 @Ignore
 public class DefaultSocketConnectorTest {
 
-	private static final int DELAY = 1000;
-	private static final int SHORT_DELAY = 10;
-	private static final int RETRY_DELAY = 10;
+    private static final int DELAY = 1000;
+    private static final int SHORT_DELAY = 10;
+    private static final int RETRY_DELAY = 10;
 
-	private final MockExceptionHandler exceptionHandler = new MockExceptionHandler();
+    private final MockExceptionHandler exceptionHandler = new MockExceptionHandler();
 
-	private ServerSocket serverSocket;
-	private DefaultSocketConnector connector;
+    private ServerSocket serverSocket;
+    private DefaultSocketConnector connector;
 
-	ExecutorService executor = Executors.newSingleThreadExecutor();
+    ExecutorService executor = Executors.newSingleThreadExecutor();
 
-	@Before
-	public void setUp() throws Exception {
-		serverSocket = ServerSocketUtil.createServerSocket();
-		connector = new DefaultSocketConnector(serverSocket.getInetAddress(), serverSocket.getLocalPort(), 0,
-				RETRY_DELAY);
-		connector.setExceptionHandler(exceptionHandler);
-	}
+    @Before
+    public void setUp() throws Exception {
+        serverSocket = ServerSocketUtil.createServerSocket();
+        connector = new DefaultSocketConnector(serverSocket.getInetAddress(), serverSocket.getLocalPort(), 0,
+                        RETRY_DELAY);
+        connector.setExceptionHandler(exceptionHandler);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		if (serverSocket != null) {
-			serverSocket.close();
-		}
-	}
+    @After
+    public void tearDown() throws Exception {
+        if (serverSocket != null) {
+            serverSocket.close();
+        }
+    }
 
-	@Test
-	public void testConnect() throws Exception {
-		final Future<Socket> connectorTask = executor.submit(connector);
+    @Test
+    public void testConnect() throws Exception {
+        final Future<Socket> connectorTask = executor.submit(connector);
 
-		final Socket socket = connectorTask.get(DELAY, TimeUnit.MILLISECONDS);
-		assertNotNull(socket);
-		connectorTask.cancel(true);
+        final Socket socket = connectorTask.get(DELAY, TimeUnit.MILLISECONDS);
+        assertNotNull(socket);
+        connectorTask.cancel(true);
 
-		assertTrue(connectorTask.isDone());
-		socket.close();
-	}
+        assertTrue(connectorTask.isDone());
+        socket.close();
+    }
 
-	@Test
-	public void testConnectionFails() throws Exception {
-		serverSocket.close();
-		final Future<Socket> connectorTask = executor.submit(connector);
+    @Test
+    public void testConnectionFails() throws Exception {
+        serverSocket.close();
+        final Future<Socket> connectorTask = executor.submit(connector);
 
-		// this connection attempt will always timeout
-		try {
-			connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
-			fail();
-		} catch (final TimeoutException e) {
-		}
-		final Exception lastException = exceptionHandler.awaitConnectionFailed();
-		assertTrue(lastException instanceof ConnectException);
-		assertFalse(connectorTask.isDone());
-		connectorTask.cancel(true);
+        // this connection attempt will always timeout
+        try {
+            connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
+            fail();
+        } catch (final TimeoutException e) {
+        }
+        final Exception lastException = exceptionHandler.awaitConnectionFailed();
+        assertTrue(lastException instanceof ConnectException);
+        assertFalse(connectorTask.isDone());
+        connectorTask.cancel(true);
 
-		// thread.join(4 * DELAY);
-		assertTrue(connectorTask.isCancelled());
-	}
+        // thread.join(4 * DELAY);
+        assertTrue(connectorTask.isCancelled());
+    }
 
-	@Test(timeout = 5000)
-	public void testConnectEventually() throws Exception {
-		serverSocket.close();
+    @Test(timeout = 5000)
+    public void testConnectEventually() throws Exception {
+        serverSocket.close();
 
-		final Future<Socket> connectorTask = executor.submit(connector);
-		// this connection attempt will always timeout
-		try {
-			connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
-			fail();
-		} catch (final TimeoutException e) {
-		}
+        final Future<Socket> connectorTask = executor.submit(connector);
+        // this connection attempt will always timeout
+        try {
+            connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
+            fail();
+        } catch (final TimeoutException e) {
+        }
 
-		// the following call requries over 1000 millis
-		final Exception lastException = exceptionHandler.awaitConnectionFailed();
-		assertNotNull(lastException);
-		assertTrue(lastException instanceof ConnectException);
+        // the following call requries over 1000 millis
+        final Exception lastException = exceptionHandler.awaitConnectionFailed();
+        assertNotNull(lastException);
+        assertTrue(lastException instanceof ConnectException);
 
-		// now rebind to the same local address
-		final SocketAddress address = serverSocket.getLocalSocketAddress();
-		serverSocket = new ServerSocket();
-		serverSocket.setReuseAddress(true);
-		serverSocket.bind(address);
+        // now rebind to the same local address
+        final SocketAddress address = serverSocket.getLocalSocketAddress();
+        serverSocket = new ServerSocket();
+        serverSocket.setReuseAddress(true);
+        serverSocket.bind(address);
 
-		// now we should be able to connect
-		final Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
+        // now we should be able to connect
+        final Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
 
-		assertNotNull(socket);
+        assertNotNull(socket);
 
-		assertFalse(connectorTask.isCancelled());
-		socket.close();
-	}
+        assertFalse(connectorTask.isCancelled());
+        socket.close();
+    }
 
-	private static class MockExceptionHandler implements ExceptionHandler {
+    private static class MockExceptionHandler implements ExceptionHandler {
 
-		private final CyclicBarrier failureBarrier = new CyclicBarrier(2);
+        private final CyclicBarrier failureBarrier = new CyclicBarrier(2);
 
-		private Exception lastException;
+        private Exception lastException;
 
-		@Override
-		public void connectionFailed(final SocketConnector connector, final Exception ex) {
-			lastException = ex;
-			try {
-				failureBarrier.await();
-			} catch (InterruptedException | BrokenBarrierException e) {
-				e.printStackTrace();
-			}
-		}
+        @Override
+        public void connectionFailed(final SocketConnector connector, final Exception ex) {
+            lastException = ex;
+            try {
+                failureBarrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        }
 
-		public Exception awaitConnectionFailed() throws InterruptedException {
-			if (lastException != null) {
-				return lastException;
-			}
+        public Exception awaitConnectionFailed() throws InterruptedException {
+            if (lastException != null) {
+                return lastException;
+            }
 
-			try {
-				failureBarrier.await();
-			} catch (InterruptedException | BrokenBarrierException e) {
-				e.printStackTrace();
-			}
-			return lastException;
-		}
+            try {
+                failureBarrier.await();
+            } catch (InterruptedException | BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+            return lastException;
+        }
 
-	}
+    }
 
 }

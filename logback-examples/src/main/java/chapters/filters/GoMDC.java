@@ -24,17 +24,17 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class GoMDC {
 
-    public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(GoMDC.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(final String[] args) {
+        final Logger logger = LoggerFactory.getLogger(GoMDC.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
             configurator.doConfigure("mdcFilter.xml");
 
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             StatusPrinter.print(lc);
         }
 

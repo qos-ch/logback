@@ -24,67 +24,67 @@ import jakarta.servlet.http.HttpServletRequest;
 
 class TeeServletInputStream extends ServletInputStream {
 
-	InputStream in;
-	byte[] inputBuffer;
+    InputStream in;
+    byte[] inputBuffer;
 
-	TeeServletInputStream(final HttpServletRequest request) {
-		duplicateInputStream(request);
-	}
+    TeeServletInputStream(final HttpServletRequest request) {
+        duplicateInputStream(request);
+    }
 
-	private void duplicateInputStream(final HttpServletRequest request) {
-		ServletInputStream originalSIS = null;
-		try {
-			originalSIS = request.getInputStream();
-			inputBuffer = consumeBufferAndReturnAsByteArray(originalSIS);
-			in = new ByteArrayInputStream(inputBuffer);
-		} catch (final IOException e) {
-			e.printStackTrace();
-		} finally {
-			closeStream(originalSIS);
-		}
-	}
+    private void duplicateInputStream(final HttpServletRequest request) {
+        ServletInputStream originalSIS = null;
+        try {
+            originalSIS = request.getInputStream();
+            inputBuffer = consumeBufferAndReturnAsByteArray(originalSIS);
+            in = new ByteArrayInputStream(inputBuffer);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeStream(originalSIS);
+        }
+    }
 
-	@Override
-	public int read() throws IOException {
-		return in.read();
-	}
+    @Override
+    public int read() throws IOException {
+        return in.read();
+    }
 
-	byte[] consumeBufferAndReturnAsByteArray(final InputStream is) throws IOException {
-		final int len = 1024;
-		final byte[] temp = new byte[len];
-		int c = -1;
-		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		while ((c = is.read(temp, 0, len)) != -1) {
-			baos.write(temp, 0, c);
-		}
-		return baos.toByteArray();
-	}
+    byte[] consumeBufferAndReturnAsByteArray(final InputStream is) throws IOException {
+        final int len = 1024;
+        final byte[] temp = new byte[len];
+        int c = -1;
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        while ((c = is.read(temp, 0, len)) != -1) {
+            baos.write(temp, 0, c);
+        }
+        return baos.toByteArray();
+    }
 
-	void closeStream(final ServletInputStream is) {
-		if (is != null) {
-			try {
-				is.close();
-			} catch (final IOException e) {
-			}
-		}
-	}
+    void closeStream(final ServletInputStream is) {
+        if (is != null) {
+            try {
+                is.close();
+            } catch (final IOException e) {
+            }
+        }
+    }
 
-	byte[] getInputBuffer() {
-		return inputBuffer;
-	}
+    byte[] getInputBuffer() {
+        return inputBuffer;
+    }
 
-	@Override
-	public boolean isFinished() {
-		throw new RuntimeException("Not yet implemented");
-	}
+    @Override
+    public boolean isFinished() {
+        throw new RuntimeException("Not yet implemented");
+    }
 
-	@Override
-	public boolean isReady() {
-		throw new RuntimeException("Not yet implemented");
-	}
+    @Override
+    public boolean isReady() {
+        throw new RuntimeException("Not yet implemented");
+    }
 
-	@Override
-	public void setReadListener(final ReadListener listener) {
-		throw new RuntimeException("Not yet implemented");
-	}
+    @Override
+    public void setReadListener(final ReadListener listener) {
+        throw new RuntimeException("Not yet implemented");
+    }
 }

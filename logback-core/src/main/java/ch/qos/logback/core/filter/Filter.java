@@ -30,42 +30,42 @@ import ch.qos.logback.core.spi.LifeCycle;
  */
 public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
 
-	private String name;
+    private String name;
 
-	boolean start = false;
+    boolean start = false;
 
-	@Override
-	public void start() {
-		this.start = true;
-	}
+    @Override
+    public void start() {
+        this.start = true;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return this.start;
-	}
+    @Override
+    public boolean isStarted() {
+        return this.start;
+    }
 
-	@Override
-	public void stop() {
-		this.start = false;
-	}
+    @Override
+    public void stop() {
+        this.start = false;
+    }
 
-	/**
-	 * If the decision is <code>{@link FilterReply#DENY}</code>, then the event will be
-	 * dropped. If the decision is <code>{@link FilterReply#NEUTRAL}</code>, then the next
-	 * filter, if any, will be invoked. If the decision is
-	 * <code>{@link FilterReply#ACCEPT}</code> then the event will be logged without
-	 * consulting with other filters in the chain.
-	 *
-	 * @param event
-	 *                The event to decide upon.
-	 */
-	public abstract FilterReply decide(E event);
+    /**
+     * If the decision is <code>{@link FilterReply#DENY}</code>, then the event will be
+     * dropped. If the decision is <code>{@link FilterReply#NEUTRAL}</code>, then the next
+     * filter, if any, will be invoked. If the decision is
+     * <code>{@link FilterReply#ACCEPT}</code> then the event will be logged without
+     * consulting with other filters in the chain.
+     *
+     * @param event
+     *                The event to decide upon.
+     */
+    public abstract FilterReply decide(E event);
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(final String name) {
-		this.name = name;
-	}
+    public void setName(final String name) {
+        this.name = name;
+    }
 }

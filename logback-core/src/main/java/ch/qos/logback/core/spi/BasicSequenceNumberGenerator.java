@@ -11,11 +11,11 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class BasicSequenceNumberGenerator extends ContextAwareBase implements SequenceNumberGenerator  {
 
-	private final AtomicLong atomicLong = new AtomicLong();
+    private final AtomicLong atomicLong = new AtomicLong();
 
-	@Override
-	public long nextSequenceNumber() {
-		return atomicLong.incrementAndGet();
-	}
+    @Override
+    public long nextSequenceNumber() {
+        return atomicLong.incrementAndGet();
+    }
 
 }

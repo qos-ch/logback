@@ -19,32 +19,32 @@ import ch.qos.logback.access.spi.ServerAdapter;
 
 public class DummyServerAdapter implements ServerAdapter {
 
-	DummyRequest request;
-	DummyResponse response;
+    DummyRequest request;
+    DummyResponse response;
 
-	public DummyServerAdapter(final DummyRequest dummyRequest, final DummyResponse dummyResponse) {
-		request = dummyRequest;
-		response = dummyResponse;
-	}
+    public DummyServerAdapter(final DummyRequest dummyRequest, final DummyResponse dummyResponse) {
+        request = dummyRequest;
+        response = dummyResponse;
+    }
 
-	@Override
-	public long getContentLength() {
-		return response.getContentCount();
-	}
+    @Override
+    public long getContentLength() {
+        return response.getContentCount();
+    }
 
-	@Override
-	public int getStatusCode() {
-		return response.getStatus();
-	}
+    @Override
+    public int getStatusCode() {
+        return response.getStatus();
+    }
 
-	@Override
-	public long getRequestTimestamp() {
-		return -1;
-	}
+    @Override
+    public long getRequestTimestamp() {
+        return -1;
+    }
 
-	@Override
-	public Map<String, String> buildResponseHeaderMap() {
-		return response.headerMap;
-	}
+    @Override
+    public Map<String, String> buildResponseHeaderMap() {
+        return response.headerMap;
+    }
 
 }

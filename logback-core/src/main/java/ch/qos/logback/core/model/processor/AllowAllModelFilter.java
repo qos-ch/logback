@@ -5,9 +5,9 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class AllowAllModelFilter implements ModelFiler {
 
-	@Override
-	public FilterReply decide(final Model model) {
-		return FilterReply.ACCEPT;
-	}
+    @Override
+    public FilterReply decide(final Model model) {
+        return FilterReply.ACCEPT;
+    }
 
 }

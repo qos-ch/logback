@@ -22,22 +22,22 @@ import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 public class TrivialConfigurator extends GenericConfigurator {
 
-	HashMap<ElementSelector, Action> rulesMap;
+    HashMap<ElementSelector, Action> rulesMap;
 
-	public TrivialConfigurator(final HashMap<ElementSelector, Action> rules) {
-		rulesMap = rules;
-	}
+    public TrivialConfigurator(final HashMap<ElementSelector, Action> rules) {
+        rulesMap = rules;
+    }
 
-	@Override
-	protected void addImplicitRules(final SaxEventInterpreter interpreter) {
-	}
+    @Override
+    protected void addImplicitRules(final SaxEventInterpreter interpreter) {
+    }
 
-	@Override
-	protected void addInstanceRules(final RuleStore rs) {
-		for (final ElementSelector elementSelector : rulesMap.keySet()) {
-			final Action action = rulesMap.get(elementSelector);
-			rs.addRule(elementSelector, action);
-		}
-	}
+    @Override
+    protected void addInstanceRules(final RuleStore rs) {
+        for (final ElementSelector elementSelector : rulesMap.keySet()) {
+            final Action action = rulesMap.get(elementSelector);
+            rs.addRule(elementSelector, action);
+        }
+    }
 
 }

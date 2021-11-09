@@ -17,22 +17,22 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public abstract class AbstractMatcherFilter<E> extends Filter<E> {
 
-	protected FilterReply onMatch = FilterReply.NEUTRAL;
-	protected FilterReply onMismatch = FilterReply.NEUTRAL;
+    protected FilterReply onMatch = FilterReply.NEUTRAL;
+    protected FilterReply onMismatch = FilterReply.NEUTRAL;
 
-	final public void setOnMatch(final FilterReply reply) {
-		this.onMatch = reply;
-	}
+    final public void setOnMatch(final FilterReply reply) {
+        this.onMatch = reply;
+    }
 
-	final public void setOnMismatch(final FilterReply reply) {
-		this.onMismatch = reply;
-	}
+    final public void setOnMismatch(final FilterReply reply) {
+        this.onMismatch = reply;
+    }
 
-	final public FilterReply getOnMatch() {
-		return onMatch;
-	}
+    final public FilterReply getOnMatch() {
+        return onMatch;
+    }
 
-	final public FilterReply getOnMismatch() {
-		return onMismatch;
-	}
+    final public FilterReply getOnMismatch() {
+        return onMismatch;
+    }
 }

@@ -22,22 +22,22 @@ import ch.qos.logback.classic.Level;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MDCValueLevelPair {
-	private String value;
-	private Level level;
+    private String value;
+    private Level level;
 
-	public String getValue() {
-		return value;
-	}
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(final String name) {
-		value = name;
-	}
+    public void setValue(final String name) {
+        value = name;
+    }
 
-	public Level getLevel() {
-		return level;
-	}
+    public Level getLevel() {
+        return level;
+    }
 
-	public void setLevel(final Level level) {
-		this.level = level;
-	}
+    public void setLevel(final Level level) {
+        this.level = level;
+    }
 }

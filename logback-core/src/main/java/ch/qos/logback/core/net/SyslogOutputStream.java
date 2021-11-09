@@ -28,67 +28,67 @@ import java.net.UnknownHostException;
  */
 public class SyslogOutputStream extends OutputStream {
 
-	/**
-	 * The maximum length after which we discard the existing string buffer and
-	 * start anew.
-	 */
-	private static final int MAX_LEN = 1024;
+    /**
+     * The maximum length after which we discard the existing string buffer and
+     * start anew.
+     */
+    private static final int MAX_LEN = 1024;
 
-	private InetAddress address;
-	private DatagramSocket ds;
-	private ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	final private int port;
+    private InetAddress address;
+    private DatagramSocket ds;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    final private int port;
 
-	public SyslogOutputStream(final String syslogHost, final int port) throws UnknownHostException, SocketException {
-		address = InetAddress.getByName(syslogHost);
-		this.port = port;
-		ds = new DatagramSocket();
-	}
+    public SyslogOutputStream(final String syslogHost, final int port) throws UnknownHostException, SocketException {
+        address = InetAddress.getByName(syslogHost);
+        this.port = port;
+        ds = new DatagramSocket();
+    }
 
-	@Override
-	public void write(final byte[] byteArray, final int offset, final int len) throws IOException {
-		baos.write(byteArray, offset, len);
-	}
+    @Override
+    public void write(final byte[] byteArray, final int offset, final int len) throws IOException {
+        baos.write(byteArray, offset, len);
+    }
 
-	@Override
-	public void flush() throws IOException {
-		final byte[] bytes = baos.toByteArray();
-		final DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);
+    @Override
+    public void flush() throws IOException {
+        final byte[] bytes = baos.toByteArray();
+        final DatagramPacket packet = new DatagramPacket(bytes, bytes.length, address, port);
 
-		// clean up for next round
-		if (baos.size() > MAX_LEN) {
-			baos = new ByteArrayOutputStream();
-		} else {
-			baos.reset();
-		}
+        // clean up for next round
+        if (baos.size() > MAX_LEN) {
+            baos = new ByteArrayOutputStream();
+        } else {
+            baos.reset();
+        }
 
-		// after a failure, it can happen that bytes.length is zero
-		// in that case, there is no point in sending out an empty message/
-		if (bytes.length == 0) {
-			return;
-		}
-		if (ds != null) {
-			ds.send(packet);
-		}
+        // after a failure, it can happen that bytes.length is zero
+        // in that case, there is no point in sending out an empty message/
+        if (bytes.length == 0) {
+            return;
+        }
+        if (ds != null) {
+            ds.send(packet);
+        }
 
-	}
+    }
 
-	@Override
-	public void close() {
-		address = null;
-		ds = null;
-	}
+    @Override
+    public void close() {
+        address = null;
+        ds = null;
+    }
 
-	public int getPort() {
-		return port;
-	}
+    public int getPort() {
+        return port;
+    }
 
-	@Override
-	public void write(final int b) throws IOException {
-		baos.write(b);
-	}
+    @Override
+    public void write(final int b) throws IOException {
+        baos.write(b);
+    }
 
-	int getSendBufferSize() throws SocketException {
-		return ds.getSendBufferSize();
-	}
+    int getSendBufferSize() throws SocketException {
+        return ds.getSendBufferSize();
+    }
 }

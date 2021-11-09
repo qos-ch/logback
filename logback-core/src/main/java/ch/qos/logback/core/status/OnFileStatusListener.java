@@ -6,52 +6,52 @@ import java.io.PrintStream;
 
 public class OnFileStatusListener extends OnPrintStreamStatusListenerBase {
 
-	String filename;
-	PrintStream ps;
+    String filename;
+    PrintStream ps;
 
-	@Override
-	public void start() {
-		if(filename ==  null) {
-			addInfo("File option not set. Defaulting to \"status.txt\"");
-			filename = "status.txt";
-		}
+    @Override
+    public void start() {
+        if(filename ==  null) {
+            addInfo("File option not set. Defaulting to \"status.txt\"");
+            filename = "status.txt";
+        }
 
-		try {
-			final FileOutputStream fos = new FileOutputStream(filename, true);
-			ps = new PrintStream(fos, true);
-		} catch (final FileNotFoundException e) {
-			addError("Failed to open ["+filename+"]", e);
-			return;
-		}
+        try {
+            final FileOutputStream fos = new FileOutputStream(filename, true);
+            ps = new PrintStream(fos, true);
+        } catch (final FileNotFoundException e) {
+            addError("Failed to open ["+filename+"]", e);
+            return;
+        }
 
-		super.start();
+        super.start();
 
-	}
+    }
 
-	@Override
-	public void stop() {
-		if(!isStarted) {
-			return;
-		}
-		if(ps != null) {
-			ps.close();
-		}
-		super.stop();
-	}
+    @Override
+    public void stop() {
+        if(!isStarted) {
+            return;
+        }
+        if(ps != null) {
+            ps.close();
+        }
+        super.stop();
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public void setFilename(final String filename) {
-		this.filename = filename;
-	}
+    public void setFilename(final String filename) {
+        this.filename = filename;
+    }
 
 
-	@Override
-	protected PrintStream getPrintStream() {
-		return ps;
-	}
+    @Override
+    protected PrintStream getPrintStream() {
+        return ps;
+    }
 
 
 

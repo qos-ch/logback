@@ -22,35 +22,35 @@ import ch.qos.logback.core.joran.spi.JoranException;
 
 public class PerformanceComparatorLog4j {
 
-	static org.apache.log4j.Logger log4jlogger = org.apache.log4j.Logger.getLogger(PerformanceComparatorLog4j.class);
+    static org.apache.log4j.Logger log4jlogger = org.apache.log4j.Logger.getLogger(PerformanceComparatorLog4j.class);
 
-	public static void main(final String[] args) throws JoranException, InterruptedException {
-		initLog4jWithoutImmediateFlush();
+    public static void main(final String[] args) throws JoranException, InterruptedException {
+        initLog4jWithoutImmediateFlush();
 
-		// Let's run once for Just In Time compiler
-		log4jDirectDebugCall();
+        // Let's run once for Just In Time compiler
+        log4jDirectDebugCall();
 
-		System.out.println("###############################################");
-		System.out.println("Log4j    without immediate flush: " + log4jDirectDebugCall() + " nanos per call");
-		System.out.println("###############################################");
-	}
+        System.out.println("###############################################");
+        System.out.println("Log4j    without immediate flush: " + log4jDirectDebugCall() + " nanos per call");
+        System.out.println("###############################################");
+    }
 
-	private static long log4jDirectDebugCall() {
-		final int j = 2;
-		final long start = System.nanoTime();
-		for (int i = 0; i < Common.loop; i++) {
-			log4jlogger.debug("SEE IF THIS IS LOGGED " + j + ".");
-		}
-		return (System.nanoTime() - start) / Common.loop;
-	}
+    private static long log4jDirectDebugCall() {
+        final int j = 2;
+        final long start = System.nanoTime();
+        for (int i = 0; i < Common.loop; i++) {
+            log4jlogger.debug("SEE IF THIS IS LOGGED " + j + ".");
+        }
+        return (System.nanoTime() - start) / Common.loop;
+    }
 
-	static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbcore243/";
+    static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbcore243/";
 
-	static void initLog4jWithoutImmediateFlush() {
-		DOMConfigurator.configure(DIR_PREFIX + "log4j_without_immediateFlush.xml");
-	}
+    static void initLog4jWithoutImmediateFlush() {
+        DOMConfigurator.configure(DIR_PREFIX + "log4j_without_immediateFlush.xml");
+    }
 
-	static void initLog4jWithImmediateFlush() {
-		DOMConfigurator.configure(DIR_PREFIX + "log4j_with_immediateFlush.xml");
-	}
+    static void initLog4jWithImmediateFlush() {
+        DOMConfigurator.configure(DIR_PREFIX + "log4j_with_immediateFlush.xml");
+    }
 }

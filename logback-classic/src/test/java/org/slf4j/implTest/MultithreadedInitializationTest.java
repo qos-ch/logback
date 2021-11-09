@@ -24,92 +24,92 @@ import ch.qos.logback.core.read.ListAppender;
 
 public class MultithreadedInitializationTest {
 
-	final static int THREAD_COUNT = 4 + Runtime.getRuntime().availableProcessors() * 2;
-	private static AtomicLong EVENT_COUNT = new AtomicLong(0);
-	final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
+    final static int THREAD_COUNT = 4 + Runtime.getRuntime().availableProcessors() * 2;
+    private static AtomicLong EVENT_COUNT = new AtomicLong(0);
+    final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
 
-	int diff = new Random().nextInt(10000);
-	String loggerName = "org.slf4j.impl.MultithreadedInitializationTest";
+    int diff = new Random().nextInt(10000);
+    String loggerName = "org.slf4j.impl.MultithreadedInitializationTest";
 
-	@Before
-	public void setUp() throws Exception {
-		System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
-		LoggerFactoryFriend.reset();
-	}
+    @Before
+    public void setUp() throws Exception {
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
+        LoggerFactoryFriend.reset();
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
-	}
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
+    }
 
-	@Test
-	public void multiThreadedInitialization() throws InterruptedException, BrokenBarrierException {
-		final LoggerAccessingThread[] accessors = harness();
+    @Test
+    public void multiThreadedInitialization() throws InterruptedException, BrokenBarrierException {
+        final LoggerAccessingThread[] accessors = harness();
 
-		for (final LoggerAccessingThread accessor : accessors) {
-			EVENT_COUNT.getAndIncrement();
-			accessor.logger.info("post harness");
-		}
+        for (final LoggerAccessingThread accessor : accessors) {
+            EVENT_COUNT.getAndIncrement();
+            accessor.logger.info("post harness");
+        }
 
-		final Logger logger = LoggerFactory.getLogger(loggerName + ".slowInitialization-" + diff);
-		logger.info("hello");
-		EVENT_COUNT.getAndIncrement();
+        final Logger logger = LoggerFactory.getLogger(loggerName + ".slowInitialization-" + diff);
+        logger.info("hello");
+        EVENT_COUNT.getAndIncrement();
 
-		final List<ILoggingEvent> events = getRecordedEvents();
-		assertEquals(EVENT_COUNT.get(), events.size());
-	}
+        final List<ILoggingEvent> events = getRecordedEvents();
+        assertEquals(EVENT_COUNT.get(), events.size());
+    }
 
-	private List<ILoggingEvent> getRecordedEvents() {
-		final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    private List<ILoggingEvent> getRecordedEvents() {
+        final ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
-		final ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
-		assertNotNull(la);
-		return la.list;
-	}
+        final ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(la);
+        return la.list;
+    }
 
-	private static LoggerAccessingThread[] harness() throws InterruptedException, BrokenBarrierException {
-		final LoggerAccessingThread[] threads = new LoggerAccessingThread[THREAD_COUNT];
-		final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
-		for (int i = 0; i < THREAD_COUNT; i++) {
-			threads[i] = new LoggerAccessingThread(barrier, i);
-			threads[i].start();
-		}
+    private static LoggerAccessingThread[] harness() throws InterruptedException, BrokenBarrierException {
+        final LoggerAccessingThread[] threads = new LoggerAccessingThread[THREAD_COUNT];
+        final CyclicBarrier barrier = new CyclicBarrier(THREAD_COUNT + 1);
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            threads[i] = new LoggerAccessingThread(barrier, i);
+            threads[i].start();
+        }
 
-		barrier.await();
-		for (int i = 0; i < THREAD_COUNT; i++) {
-			threads[i].join();
-		}
-		return threads;
-	}
+        barrier.await();
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            threads[i].join();
+        }
+        return threads;
+    }
 
-	static class LoggerAccessingThread extends Thread {
-		final CyclicBarrier barrier;
-		Logger logger;
-		int count;
+    static class LoggerAccessingThread extends Thread {
+        final CyclicBarrier barrier;
+        Logger logger;
+        int count;
 
-		LoggerAccessingThread(final CyclicBarrier barrier, final int count) {
-			this.barrier = barrier;
-			this.count = count;
-		}
+        LoggerAccessingThread(final CyclicBarrier barrier, final int count) {
+            this.barrier = barrier;
+            this.count = count;
+        }
 
-		@Override
-		public void run() {
-			try {
-				barrier.await();
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
-			logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + count);
-			logger.info("in run method");
-			if (logger instanceof SubstituteLogger) {
-				final SubstituteLogger substLogger = (SubstituteLogger) logger;
-				if (!substLogger.createdPostInitialization) {
-					EVENT_COUNT.getAndIncrement();
-				}
-			} else {
-				EVENT_COUNT.getAndIncrement();
-			}
-		}
-	}
+        @Override
+        public void run() {
+            try {
+                barrier.await();
+            } catch (final Exception e) {
+                e.printStackTrace();
+            }
+            logger = LoggerFactory.getLogger(this.getClass().getName() + "-" + count);
+            logger.info("in run method");
+            if (logger instanceof SubstituteLogger) {
+                final SubstituteLogger substLogger = (SubstituteLogger) logger;
+                if (!substLogger.createdPostInitialization) {
+                    EVENT_COUNT.getAndIncrement();
+                }
+            } else {
+                EVENT_COUNT.getAndIncrement();
+            }
+        }
+    }
 
 }

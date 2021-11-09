@@ -35,24 +35,24 @@ public class LevelAction extends BaseModelAction {
 
 
 
-	@Override
-	protected boolean validPreconditions(final InterpretationContext interpcont, final String name,
-			final Attributes attributes) {
-		final PreconditionValidator pv = new PreconditionValidator(this, interpcont, name, attributes);
-		pv.validateValueAttribute();
-		addWarn("<level> element is deprecated. Near [" + name + "] on line " + Action.getLineNumber(interpcont));
-		addWarn("Please use \"level\" attribute within <logger> or <root> elements instead.");
-		return pv.isValid();
-	}
+    @Override
+    protected boolean validPreconditions(final InterpretationContext interpcont, final String name,
+                    final Attributes attributes) {
+        final PreconditionValidator pv = new PreconditionValidator(this, interpcont, name, attributes);
+        pv.validateValueAttribute();
+        addWarn("<level> element is deprecated. Near [" + name + "] on line " + Action.getLineNumber(interpcont));
+        addWarn("Please use \"level\" attribute within <logger> or <root> elements instead.");
+        return pv.isValid();
+    }
 
-	@Override
-	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
-		final LevelModel lm = new LevelModel();
-		final String value = attributes.getValue(JoranConstants.VALUE_ATTR);
-		lm.setValue(value);
+    @Override
+    protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+        final LevelModel lm = new LevelModel();
+        final String value = attributes.getValue(JoranConstants.VALUE_ATTR);
+        lm.setValue(value);
 
-		return lm;
-	}
+        return lm;
+    }
 
 
 }

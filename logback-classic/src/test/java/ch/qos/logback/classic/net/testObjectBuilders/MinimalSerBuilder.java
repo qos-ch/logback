@@ -15,10 +15,10 @@ package ch.qos.logback.classic.net.testObjectBuilders;
 
 public class MinimalSerBuilder implements Builder<MinimalSer> {
 
-	@Override
-	public MinimalSer build(final int i) {
-		return new MinimalSer(i);
-	}
+    @Override
+    public MinimalSer build(final int i) {
+        return new MinimalSer(i);
+    }
 
 }
 

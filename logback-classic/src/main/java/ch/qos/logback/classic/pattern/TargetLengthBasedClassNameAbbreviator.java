@@ -17,69 +17,69 @@ import static ch.qos.logback.core.CoreConstants.DOT;
 
 public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
 
-	final int targetLength;
+    final int targetLength;
 
-	public TargetLengthBasedClassNameAbbreviator(final int targetLength) {
-		this.targetLength = targetLength;
-	}
+    public TargetLengthBasedClassNameAbbreviator(final int targetLength) {
+        this.targetLength = targetLength;
+    }
 
 
-	@Override
-	public String abbreviate(final String fqClassName) {
-		if (fqClassName == null) {
-			throw new IllegalArgumentException("Class name may not be null");
-		}
+    @Override
+    public String abbreviate(final String fqClassName) {
+        if (fqClassName == null) {
+            throw new IllegalArgumentException("Class name may not be null");
+        }
 
-		final int inLen = fqClassName.length();
-		if (inLen < targetLength) {
-			return fqClassName;
-		}
+        final int inLen = fqClassName.length();
+        if (inLen < targetLength) {
+            return fqClassName;
+        }
 
-		final StringBuilder buf = new StringBuilder(inLen);
+        final StringBuilder buf = new StringBuilder(inLen);
 
-		final int rightMostDotIndex = fqClassName.lastIndexOf(DOT);
+        final int rightMostDotIndex = fqClassName.lastIndexOf(DOT);
 
-		if (rightMostDotIndex == -1) {
-			return fqClassName;
-		}
+        if (rightMostDotIndex == -1) {
+            return fqClassName;
+        }
 
-		// length of last segment including the dot
-		final int lastSegmentLength = inLen - rightMostDotIndex;
+        // length of last segment including the dot
+        final int lastSegmentLength = inLen - rightMostDotIndex;
 
-		int leftSegments_TargetLen = targetLength - lastSegmentLength;
-		if (leftSegments_TargetLen < 0) {
-			leftSegments_TargetLen = 0;
-		}
+        int leftSegments_TargetLen = targetLength - lastSegmentLength;
+        if (leftSegments_TargetLen < 0) {
+            leftSegments_TargetLen = 0;
+        }
 
-		final int leftSegmentsLen = inLen - lastSegmentLength;
+        final int leftSegmentsLen = inLen - lastSegmentLength;
 
-		// maxPossibleTrim denotes the maximum number of characters we aim to trim
-		// the actual number of character trimmed may be higher since segments, when
-		// reduced, are reduced to just one character
-		final int maxPossibleTrim = leftSegmentsLen - leftSegments_TargetLen;
+        // maxPossibleTrim denotes the maximum number of characters we aim to trim
+        // the actual number of character trimmed may be higher since segments, when
+        // reduced, are reduced to just one character
+        final int maxPossibleTrim = leftSegmentsLen - leftSegments_TargetLen;
 
-		int trimmed = 0;
-		boolean inDotState = true;
+        int trimmed = 0;
+        boolean inDotState = true;
 
-		int i = 0;
-		for (; i < rightMostDotIndex; i++) {
-			final char c = fqClassName.charAt(i);
-			if (c == DOT) {
-				// if trimmed too many characters, let us stop
-				if (trimmed >= maxPossibleTrim) {
-					break;
-				}
-				buf.append(c);
-				inDotState = true;
-			} else if(inDotState) {
-				buf.append(c);
-				inDotState = false;
-			} else {
-				trimmed++;
-			}
-		}
-		// append from the position of i which may include the last seen DOT
-		buf.append(fqClassName.substring(i));
-		return buf.toString();
-	}
+        int i = 0;
+        for (; i < rightMostDotIndex; i++) {
+            final char c = fqClassName.charAt(i);
+            if (c == DOT) {
+                // if trimmed too many characters, let us stop
+                if (trimmed >= maxPossibleTrim) {
+                    break;
+                }
+                buf.append(c);
+                inDotState = true;
+            } else if(inDotState) {
+                buf.append(c);
+                inDotState = false;
+            } else {
+                trimmed++;
+            }
+        }
+        // append from the position of i which may include the last seen DOT
+        buf.append(fqClassName.substring(i));
+        return buf.toString();
+    }
 }

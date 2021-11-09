@@ -24,20 +24,20 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 public class MyAppWithConfigFile {
 
-    public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(MyAppWithConfigFile.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(final String[] args) {
+        final Logger logger = LoggerFactory.getLogger(MyAppWithConfigFile.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             lc.reset();
             configurator.setContext(lc);
             configurator.doConfigure(args[0]);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             StatusPrinter.print(lc.getStatusManager());
         }
         logger.info("Entering application.");
-        Bar bar = new Bar();
+        final Bar bar = new Bar();
         bar.doIt();
         logger.info("Exiting application.");
 

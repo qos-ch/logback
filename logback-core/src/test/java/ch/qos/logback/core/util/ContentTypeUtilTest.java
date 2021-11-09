@@ -22,24 +22,24 @@ import org.junit.Test;
 
 public class ContentTypeUtilTest {
 
-	@Test
-	public void smoke() {
-		final String contextType = "text/html";
-		assertTrue(ContentTypeUtil.isTextual(contextType));
-		assertEquals("html", ContentTypeUtil.getSubType(contextType));
-	}
+    @Test
+    public void smoke() {
+        final String contextType = "text/html";
+        assertTrue(ContentTypeUtil.isTextual(contextType));
+        assertEquals("html", ContentTypeUtil.getSubType(contextType));
+    }
 
-	@Test
-	public void nullContext() {
-		final String contextType = null;
-		assertFalse(ContentTypeUtil.isTextual(contextType));
-		assertNull(ContentTypeUtil.getSubType(contextType));
-	}
+    @Test
+    public void nullContext() {
+        final String contextType = null;
+        assertFalse(ContentTypeUtil.isTextual(contextType));
+        assertNull(ContentTypeUtil.getSubType(contextType));
+    }
 
-	@Test
-	public void emptySubtype() {
-		final String contextType = "text/";
-		assertTrue(ContentTypeUtil.isTextual(contextType));
-		assertNull(ContentTypeUtil.getSubType(contextType));
-	}
+    @Test
+    public void emptySubtype() {
+        final String contextType = "text/";
+        assertTrue(ContentTypeUtil.isTextual(contextType));
+        assertNull(ContentTypeUtil.getSubType(contextType));
+    }
 }

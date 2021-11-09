@@ -17,23 +17,23 @@ import jakarta.servlet.ServletContextListener;
  */
 public class LogbackServletContextListener implements ServletContextListener {
 
-	ContextAwareBase contextAwareBase = new ContextAwareBase();
+    ContextAwareBase contextAwareBase = new ContextAwareBase();
 
-	@Override
-	public void contextInitialized(final ServletContextEvent sce) {
+    @Override
+    public void contextInitialized(final ServletContextEvent sce) {
 
-	}
+    }
 
-	@Override
-	public void contextDestroyed(final ServletContextEvent sce) {
+    @Override
+    public void contextDestroyed(final ServletContextEvent sce) {
 
-		final ILoggerFactory iLoggerFactory = LoggerFactory.getILoggerFactory();
-		if (iLoggerFactory instanceof LoggerContext) {
-			final LoggerContext loggerContext = (LoggerContext) iLoggerFactory;
-			contextAwareBase.setContext(loggerContext);
-			StatusViaSLF4JLoggerFactory.addInfo("About to stop " + loggerContext.getClass().getCanonicalName() + " [" + loggerContext.getName() + "]", this);
-			loggerContext.stop();
-		}
-	}
+        final ILoggerFactory iLoggerFactory = LoggerFactory.getILoggerFactory();
+        if (iLoggerFactory instanceof LoggerContext) {
+            final LoggerContext loggerContext = (LoggerContext) iLoggerFactory;
+            contextAwareBase.setContext(loggerContext);
+            StatusViaSLF4JLoggerFactory.addInfo("About to stop " + loggerContext.getClass().getCanonicalName() + " [" + loggerContext.getName() + "]", this);
+            loggerContext.stop();
+        }
+    }
 
 }

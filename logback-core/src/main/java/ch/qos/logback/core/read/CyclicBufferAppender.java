@@ -25,56 +25,56 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
  */
 public class CyclicBufferAppender<E> extends AppenderBase<E> {
 
-	CyclicBuffer<E> cb;
-	int maxSize = 512;
+    CyclicBuffer<E> cb;
+    int maxSize = 512;
 
-	@Override
-	public void start() {
-		cb = new CyclicBuffer<>(maxSize);
-		super.start();
-	}
+    @Override
+    public void start() {
+        cb = new CyclicBuffer<>(maxSize);
+        super.start();
+    }
 
-	@Override
-	public void stop() {
-		cb = null;
-		super.stop();
-	}
+    @Override
+    public void stop() {
+        cb = null;
+        super.stop();
+    }
 
-	@Override
-	protected void append(final E eventObject) {
-		if (!isStarted()) {
-			return;
-		}
-		cb.add(eventObject);
-	}
+    @Override
+    protected void append(final E eventObject) {
+        if (!isStarted()) {
+            return;
+        }
+        cb.add(eventObject);
+    }
 
-	public int getLength() {
-		if (isStarted()) {
-			return cb.length();
-		}
-		return 0;
-	}
+    public int getLength() {
+        if (isStarted()) {
+            return cb.length();
+        }
+        return 0;
+    }
 
-	public E get(final int i) {
-		if (isStarted()) {
-			return cb.get(i);
-		}
-		return null;
-	}
+    public E get(final int i) {
+        if (isStarted()) {
+            return cb.get(i);
+        }
+        return null;
+    }
 
-	public void reset() {
-		cb.clear();
-	}
+    public void reset() {
+        cb.clear();
+    }
 
-	/**
-	 * Set the size of the cyclic buffer.
-	 */
-	public int getMaxSize() {
-		return maxSize;
-	}
+    /**
+     * Set the size of the cyclic buffer.
+     */
+    public int getMaxSize() {
+        return maxSize;
+    }
 
-	public void setMaxSize(final int maxSize) {
-		this.maxSize = maxSize;
-	}
+    public void setMaxSize(final int maxSize) {
+        this.maxSize = maxSize;
+    }
 
 }

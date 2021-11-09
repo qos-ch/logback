@@ -26,68 +26,68 @@ import ch.qos.logback.core.CoreConstants;
 
 public class ThrowableToStringArrayTest {
 
-	StringWriter sw = new StringWriter();
-	PrintWriter pw = new PrintWriter(sw);
+    StringWriter sw = new StringWriter();
+    PrintWriter pw = new PrintWriter(sw);
 
-	@Before
-	public void setUp() throws Exception {
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	public void verify(final Throwable t) {
-		t.printStackTrace(pw);
+    public void verify(final Throwable t) {
+        t.printStackTrace(pw);
 
-		final String[] sa = ThrowableToStringArray.convert(t);
-		final StringBuilder sb = new StringBuilder();
-		for (final String tdp : sa) {
-			sb.append(tdp);
-			sb.append(CoreConstants.LINE_SEPARATOR);
-		}
-		final String expected = sw.toString();
-		final String result = sb.toString().replace("common frames omitted", "more");
-		assertEquals(expected, result);
-	}
+        final String[] sa = ThrowableToStringArray.convert(t);
+        final StringBuilder sb = new StringBuilder();
+        for (final String tdp : sa) {
+            sb.append(tdp);
+            sb.append(CoreConstants.LINE_SEPARATOR);
+        }
+        final String expected = sw.toString();
+        final String result = sb.toString().replace("common frames omitted", "more");
+        assertEquals(expected, result);
+    }
 
-	@Test
-	public void smoke() {
-		final Exception e = new Exception("smoke");
-		verify(e);
-	}
+    @Test
+    public void smoke() {
+        final Exception e = new Exception("smoke");
+        verify(e);
+    }
 
-	@Test
-	public void nested() {
-		Exception w = null;
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			w = new Exception("wrapping", e);
-		}
-		verify(w);
-	}
+    @Test
+    public void nested() {
+        Exception w = null;
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            w = new Exception("wrapping", e);
+        }
+        verify(w);
+    }
 
-	@Test
-	public void multiNested() {
-		Exception w = null;
-		try {
-			someOtherMethod();
-		} catch (final Exception e) {
-			w = new Exception("wrapping", e);
-		}
-		verify(w);
-	}
+    @Test
+    public void multiNested() {
+        Exception w = null;
+        try {
+            someOtherMethod();
+        } catch (final Exception e) {
+            w = new Exception("wrapping", e);
+        }
+        verify(w);
+    }
 
-	void someMethod() throws Exception {
-		throw new Exception("someMethod");
-	}
+    void someMethod() throws Exception {
+        throw new Exception("someMethod");
+    }
 
-	void someOtherMethod() throws Exception {
-		try {
-			someMethod();
-		} catch (final Exception e) {
-			throw new Exception("someOtherMethod", e);
-		}
-	}
+    void someOtherMethod() throws Exception {
+        try {
+            someMethod();
+        } catch (final Exception e) {
+            throw new Exception("someOtherMethod", e);
+        }
+    }
 }

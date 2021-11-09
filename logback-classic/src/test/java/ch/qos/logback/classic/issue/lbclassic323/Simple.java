@@ -24,26 +24,26 @@ import ch.qos.logback.core.joran.spi.JoranException;
  */
 public class Simple {
 
-	static Logger logger = LoggerFactory.getLogger(Simple.class);
-	static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbclassic323/";
+    static Logger logger = LoggerFactory.getLogger(Simple.class);
+    static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbclassic323/";
 
-	public static void main(final String[] args) throws JoranException, InterruptedException {
-		init(DIR_PREFIX + "logback_smtp.xml");
+    public static void main(final String[] args) throws JoranException, InterruptedException {
+        init(DIR_PREFIX + "logback_smtp.xml");
 
-		for (int i = 0; i < 10; i++) {
-			logger.debug("SEE IF THIS IS LOGGED {}.", i);
-		}
-		logger.error("trigger");
-		System.out.println("done");
-		System.exit(0);
-	}
+        for (int i = 0; i < 10; i++) {
+            logger.debug("SEE IF THIS IS LOGGED {}.", i);
+        }
+        logger.error("trigger");
+        System.out.println("done");
+        System.exit(0);
+    }
 
-	static void init(final String file) throws JoranException {
-		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(loggerContext);
-		loggerContext.reset();
-		jc.doConfigure(file);
-	}
+    static void init(final String file) throws JoranException {
+        final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        loggerContext.reset();
+        jc.doConfigure(file);
+    }
 
 }

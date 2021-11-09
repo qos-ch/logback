@@ -20,31 +20,31 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class LoggingEventWithParametersBuilder implements Builder<LoggingEvent> {
 
-	final String MSG = "aaaaabbbbbcccc {} cdddddaaaaabbbbbcccccdddddaaaa {}";
+    final String MSG = "aaaaabbbbbcccc {} cdddddaaaaabbbbbcccccdddddaaaa {}";
 
-	LoggerContext loggerContext = new LoggerContext();
-	private final Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+    LoggerContext loggerContext = new LoggerContext();
+    private final Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-	@Override
-	public LoggingEvent build(final int i) {
+    @Override
+    public LoggingEvent build(final int i) {
 
-		final LoggingEvent le = new LoggingEvent();
-		le.setTimeStamp(System.currentTimeMillis());
+        final LoggingEvent le = new LoggingEvent();
+        le.setTimeStamp(System.currentTimeMillis());
 
-		final Object[] aa = { i, "HELLO WORLD [========== ]" + i };
+        final Object[] aa = { i, "HELLO WORLD [========== ]" + i };
 
-		le.setArgumentArray(aa);
-		final String msg = MSG + i;
-		le.setMessage(msg);
+        le.setArgumentArray(aa);
+        final String msg = MSG + i;
+        le.setMessage(msg);
 
-		// compute formatted message
-		// this forces le.formmatedMessage to be set (this is the whole point of the
-		// exercise)
-		le.getFormattedMessage();
-		le.setLevel(Level.DEBUG);
-		le.setLoggerName(logger.getName());
-		le.setLoggerContextRemoteView(loggerContext.getLoggerContextRemoteView());
-		le.setThreadName("threadName");
-		return le;
-	}
+        // compute formatted message
+        // this forces le.formmatedMessage to be set (this is the whole point of the
+        // exercise)
+        le.getFormattedMessage();
+        le.setLevel(Level.DEBUG);
+        le.setLoggerName(logger.getName());
+        le.setLoggerContextRemoteView(loggerContext.getLoggerContextRemoteView());
+        le.setThreadName("threadName");
+        return le;
+    }
 }

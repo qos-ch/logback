@@ -32,37 +32,37 @@ import ch.qos.logback.core.util.InvocationGate;
  */
 public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 
-	public static final String SEE_SIZE_FORMAT = "http://logback.qos.ch/codes.html#sbtp_size_format";
-	/**
-	 * The default maximum file size.
-	 */
-	public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
+    public static final String SEE_SIZE_FORMAT = "http://logback.qos.ch/codes.html#sbtp_size_format";
+    /**
+     * The default maximum file size.
+     */
+    public static final long DEFAULT_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-	FileSize maxFileSize = new FileSize(DEFAULT_MAX_FILE_SIZE);
+    FileSize maxFileSize = new FileSize(DEFAULT_MAX_FILE_SIZE);
 
-	public SizeBasedTriggeringPolicy() {
-	}
+    public SizeBasedTriggeringPolicy() {
+    }
 
-	InvocationGate invocationGate = new DefaultInvocationGate();
+    InvocationGate invocationGate = new DefaultInvocationGate();
 
-	@Override
-	public boolean isTriggeringEvent(final File activeFile, final E event) {
-		final long now = System.currentTimeMillis();
-		if (invocationGate.isTooSoon(now)) {
-			return false;
-		}
+    @Override
+    public boolean isTriggeringEvent(final File activeFile, final E event) {
+        final long now = System.currentTimeMillis();
+        if (invocationGate.isTooSoon(now)) {
+            return false;
+        }
 
-		return activeFile.length() >= maxFileSize.getSize();
-	}
-
-
-	public FileSize getMaxFileSize() {
-		return this.maxFileSize;
-	}
+        return activeFile.length() >= maxFileSize.getSize();
+    }
 
 
-	public void setMaxFileSize(final FileSize aMaxFileSize) {
-		this.maxFileSize = aMaxFileSize;
-	}
+    public FileSize getMaxFileSize() {
+        return this.maxFileSize;
+    }
+
+
+    public void setMaxFileSize(final FileSize aMaxFileSize) {
+        this.maxFileSize = aMaxFileSize;
+    }
 
 }

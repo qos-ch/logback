@@ -31,40 +31,40 @@ import ch.qos.logback.access.spi.ServerAdapter;
  */
 public class JettyServerAdapter implements ServerAdapter {
 
-	Request request;
-	Response response;
+    Request request;
+    Response response;
 
-	public JettyServerAdapter(final Request jettyRequest, final Response jettyResponse) {
-		request = jettyRequest;
-		response = jettyResponse;
-	}
+    public JettyServerAdapter(final Request jettyRequest, final Response jettyResponse) {
+        request = jettyRequest;
+        response = jettyResponse;
+    }
 
-	@Override
-	public long getContentLength() {
-		return response.getContentCount();
-	}
+    @Override
+    public long getContentLength() {
+        return response.getContentCount();
+    }
 
-	@Override
-	public int getStatusCode() {
-		return response.getStatus();
-	}
+    @Override
+    public int getStatusCode() {
+        return response.getStatus();
+    }
 
-	@Override
-	public long getRequestTimestamp() {
-		return request.getTimeStamp();
-	}
+    @Override
+    public long getRequestTimestamp() {
+        return request.getTimeStamp();
+    }
 
-	@Override
-	public Map<String, String> buildResponseHeaderMap() {
-		final Map<String, String> responseHeaderMap = new HashMap<>();
-		final HttpFields httpFields = response.getHttpFields();
-		final Enumeration<String> e = httpFields.getFieldNames();
-		while (e.hasMoreElements()) {
-			final String key = e.nextElement();
-			final String value = response.getHeader(key);
-			responseHeaderMap.put(key, value);
-		}
-		return responseHeaderMap;
-	}
+    @Override
+    public Map<String, String> buildResponseHeaderMap() {
+        final Map<String, String> responseHeaderMap = new HashMap<>();
+        final HttpFields httpFields = response.getHttpFields();
+        final Enumeration<String> e = httpFields.getFieldNames();
+        while (e.hasMoreElements()) {
+            final String key = e.nextElement();
+            final String value = response.getHeader(key);
+            responseHeaderMap.put(key, value);
+        }
+        return responseHeaderMap;
+    }
 
 }

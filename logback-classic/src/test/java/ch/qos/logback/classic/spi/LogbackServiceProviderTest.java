@@ -9,14 +9,14 @@ import ch.qos.logback.classic.LoggerContext;
 public class LogbackServiceProviderTest {
 
 
-	LogbackServiceProvider provider = new LogbackServiceProvider();
+    LogbackServiceProvider provider = new LogbackServiceProvider();
 
-	@Test
-	public void testContrxtStart() {
-		provider.initialize();
-		final LoggerContext loggerFactory = (LoggerContext) provider.getLoggerFactory();
+    @Test
+    public void testContrxtStart() {
+        provider.initialize();
+        final LoggerContext loggerFactory = (LoggerContext) provider.getLoggerFactory();
 
-		assertTrue(loggerFactory.isStarted());
+        assertTrue(loggerFactory.isStarted());
 
-	}
+    }
 }

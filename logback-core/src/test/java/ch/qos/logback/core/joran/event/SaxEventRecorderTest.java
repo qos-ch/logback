@@ -39,66 +39,66 @@ import ch.qos.logback.core.testUtil.StatusChecker;
  */
 public class SaxEventRecorderTest {
 
-	Context context = new ContextBase();
-	StatusChecker statusChecker = new StatusChecker(context);
+    Context context = new ContextBase();
+    StatusChecker statusChecker = new StatusChecker(context);
 
-	SAXParser createParser() throws Exception {
-		final SAXParserFactory spf = SAXParserFactory.newInstance();
-		return spf.newSAXParser();
-	}
+    SAXParser createParser() throws Exception {
+        final SAXParserFactory spf = SAXParserFactory.newInstance();
+        return spf.newSAXParser();
+    }
 
-	public List<SaxEvent> doTest(final String filename) throws Exception {
-		final SaxEventRecorder recorder = new SaxEventRecorder(context);
-		final FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + filename);
-		recorder.recordEvents(fis);
-		return recorder.getSaxEventList();
+    public List<SaxEvent> doTest(final String filename) throws Exception {
+        final SaxEventRecorder recorder = new SaxEventRecorder(context);
+        final FileInputStream fis = new FileInputStream(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + filename);
+        recorder.recordEvents(fis);
+        return recorder.getSaxEventList();
 
-	}
+    }
 
-	public void dump(final List<SaxEvent> seList) {
-		for (final SaxEvent se : seList) {
-			System.out.println(se);
-		}
-	}
+    public void dump(final List<SaxEvent> seList) {
+        for (final SaxEvent se : seList) {
+            System.out.println(se);
+        }
+    }
 
-	@Test
-	public void test1() throws Exception {
-		final List<SaxEvent> seList = doTest("event1.xml");
-		assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
-		// dump(seList);
-		assertEquals(11, seList.size());
-	}
+    @Test
+    public void test1() throws Exception {
+        final List<SaxEvent> seList = doTest("event1.xml");
+        assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+        // dump(seList);
+        assertEquals(11, seList.size());
+    }
 
-	@Test
-	public void test2() throws Exception {
-		final List<SaxEvent> seList = doTest("ampEvent.xml");
-		assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
-		// dump(seList);
-		assertEquals(3, seList.size());
+    @Test
+    public void test2() throws Exception {
+        final List<SaxEvent> seList = doTest("ampEvent.xml");
+        assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+        // dump(seList);
+        assertEquals(3, seList.size());
 
-		final BodyEvent be = (BodyEvent) seList.get(1);
-		assertEquals("xxx & yyy", be.getText());
-	}
+        final BodyEvent be = (BodyEvent) seList.get(1);
+        assertEquals("xxx & yyy", be.getText());
+    }
 
-	@Test
-	public void test3() throws Exception {
-		final List<SaxEvent> seList = doTest("inc.xml");
-		assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
-		// dump(seList);
-		assertEquals(4, seList.size());
+    @Test
+    public void test3() throws Exception {
+        final List<SaxEvent> seList = doTest("inc.xml");
+        assertTrue(statusChecker.getHighestLevel(0) == Status.INFO);
+        // dump(seList);
+        assertEquals(4, seList.size());
 
-		final StartEvent se = (StartEvent) seList.get(1);
-		final Attributes attr = se.getAttributes();
-		assertNotNull(attr);
-		assertEquals("1", attr.getValue("increment"));
-	}
+        final StartEvent se = (StartEvent) seList.get(1);
+        final Attributes attr = se.getAttributes();
+        assertNotNull(attr);
+        assertEquals("1", attr.getValue("increment"));
+    }
 
-	@Test
-	public void bodyWithSpacesAndQuotes() throws Exception {
-		final List<SaxEvent> seList = doTest("spacesAndQuotes.xml");
-		assertEquals(3, seList.size());
-		final BodyEvent be = (BodyEvent) seList.get(1);
-		assertEquals("[x][x] \"xyz\"%n", be.getText());
-	}
+    @Test
+    public void bodyWithSpacesAndQuotes() throws Exception {
+        final List<SaxEvent> seList = doTest("spacesAndQuotes.xml");
+        assertEquals(3, seList.size());
+        final BodyEvent be = (BodyEvent) seList.get(1);
+        assertEquals("[x][x] \"xyz\"%n", be.getText());
+    }
 
 }

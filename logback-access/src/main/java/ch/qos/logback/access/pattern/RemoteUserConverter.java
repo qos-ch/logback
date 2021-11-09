@@ -17,14 +17,14 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class RemoteUserConverter extends AccessConverter {
 
-	@Override
-	public String convert(final IAccessEvent accessEvent) {
+    @Override
+    public String convert(final IAccessEvent accessEvent) {
 
-		final String user = accessEvent.getRemoteUser();
-		if (user == null) {
-			return IAccessEvent.NA;
-		}
-		return user;
-	}
+        final String user = accessEvent.getRemoteUser();
+        if (user == null) {
+            return IAccessEvent.NA;
+        }
+        return user;
+    }
 
 }

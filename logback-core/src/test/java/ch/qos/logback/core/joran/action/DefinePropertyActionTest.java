@@ -49,90 +49,90 @@ import ch.qos.logback.core.util.StatusPrinter;
  */
 public class DefinePropertyActionTest {
 
-	private static final String DEFINE_INPUT_DIR = CoreTestConstants.JORAN_INPUT_PREFIX + "define/";
-	private static final String GOOD_XML = "good.xml";
-	private static final String NONAME_XML = "noname.xml";
-	private static final String NOCLASS_XML = "noclass.xml";
-	private static final String BADCLASS_XML = "badclass.xml";
+    private static final String DEFINE_INPUT_DIR = CoreTestConstants.JORAN_INPUT_PREFIX + "define/";
+    private static final String GOOD_XML = "good.xml";
+    private static final String NONAME_XML = "noname.xml";
+    private static final String NOCLASS_XML = "noclass.xml";
+    private static final String BADCLASS_XML = "badclass.xml";
 
-	SimpleConfigurator simpleConfigurator;
-	Context context = new ContextBase();
-	StatusChecker checker = new StatusChecker(context);
+    SimpleConfigurator simpleConfigurator;
+    Context context = new ContextBase();
+    StatusChecker checker = new StatusChecker(context);
 
-	@Before
-	public void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
 
-		final HashMap<ElementSelector, Action> rulesMap = new HashMap<>();
-		rulesMap.put(new ElementSelector("top"), new TopElementAction());
-		rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
+        final HashMap<ElementSelector, Action> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("top"), new TopElementAction());
+        rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
 
-		simpleConfigurator = new SimpleConfigurator(rulesMap) {
-			@Override
-			protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
-				final DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
-				defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
-				defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
-				defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
+        simpleConfigurator = new SimpleConfigurator(rulesMap) {
+            @Override
+            protected DefaultProcessor buildDefaultProcessor(final Context context, final InterpretationContext interpretationContext) {
+                final DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+                defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
+                defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
+                defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
 
-				return defaultProcessor;
-			}
-		};
-		simpleConfigurator.setContext(context);
-	}
+                return defaultProcessor;
+            }
+        };
+        simpleConfigurator.setContext(context);
+    }
 
-	@After
-	public void tearDown() throws Exception {
-	}
+    @After
+    public void tearDown() throws Exception {
+    }
 
-	@Test
-	public void good() throws JoranException {
-		simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
-		final InterpretationContext ic = simpleConfigurator.getInterpreter().getInterpretationContext();
-		final String inContextFoo = ic.getProperty("foo");
-		assertEquals("monster", inContextFoo);
-	}
+    @Test
+    public void good() throws JoranException {
+        simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
+        final InterpretationContext ic = simpleConfigurator.getInterpreter().getInterpretationContext();
+        final String inContextFoo = ic.getProperty("foo");
+        assertEquals("monster", inContextFoo);
+    }
 
-	@Test
-	public void noName() throws JoranException {
-		try {
-			simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
-		} finally {
-			StatusPrinter.print(context);
-		}
-		// get from context
-		final String inContextFoo = context.getProperty("foo");
-		assertNull(inContextFoo);
-		// check context errors
+    @Test
+    public void noName() throws JoranException {
+        try {
+            simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+        } finally {
+            StatusPrinter.print(context);
+        }
+        // get from context
+        final String inContextFoo = context.getProperty("foo");
+        assertNull(inContextFoo);
+        // check context errors
 
-		checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\] near line 2");
-	}
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\] near line 2");
+    }
 
-	@Test
-	public void noClass() throws JoranException {
-		simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
-		final String inContextFoo = context.getProperty("foo");
+    @Test
+    public void noClass() throws JoranException {
+        simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
+        final String inContextFoo = context.getProperty("foo");
 
-		StatusPrinter.print(context);
-		assertNull(inContextFoo);
-		checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\] near line 2");
-	}
+        StatusPrinter.print(context);
+        assertNull(inContextFoo);
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\] near line 2");
+    }
 
-	@Test
-	public void testBadClass() throws JoranException {
-		simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + BADCLASS_XML);
-		// get from context
-		final String inContextFoo = context.getProperty("foo");
-		assertNull(inContextFoo);
-		// check context errors
-		checker.assertContainsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
-	}
+    @Test
+    public void testBadClass() throws JoranException {
+        simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + BADCLASS_XML);
+        // get from context
+        final String inContextFoo = context.getProperty("foo");
+        assertNull(inContextFoo);
+        // check context errors
+        checker.assertContainsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
+    }
 
-	@Ignore // on certain hosts this test takes 5 seconds to complete
-	@Test
-	public void canonicalHostNameProperty() throws JoranException {
-		final String configFileAsStr = DEFINE_INPUT_DIR + "canonicalHostname.xml";
-		simpleConfigurator.doConfigure(configFileAsStr);
-		assertNotNull(context.getProperty("CANONICAL_HOST_NAME"));
-	}
+    @Ignore // on certain hosts this test takes 5 seconds to complete
+    @Test
+    public void canonicalHostNameProperty() throws JoranException {
+        final String configFileAsStr = DEFINE_INPUT_DIR + "canonicalHostname.xml";
+        simpleConfigurator.doConfigure(configFileAsStr);
+        assertNotNull(context.getProperty("CANONICAL_HOST_NAME"));
+    }
 
 }

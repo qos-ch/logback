@@ -17,28 +17,28 @@ import ch.qos.logback.core.CoreConstants;
 
 public class EchoEncoder<E> extends EncoderBase<E> {
 
-	String fileHeader;
-	String fileFooter;
+    String fileHeader;
+    String fileFooter;
 
-	@Override
-	public byte[] encode(final E event) {
-		final String val = event + CoreConstants.LINE_SEPARATOR;
-		return val.getBytes();
-	}
+    @Override
+    public byte[] encode(final E event) {
+        final String val = event + CoreConstants.LINE_SEPARATOR;
+        return val.getBytes();
+    }
 
-	@Override
-	public byte[] footerBytes()  {
-		if (fileFooter == null) {
-			return null;
-		}
-		return fileFooter.getBytes();
-	}
+    @Override
+    public byte[] footerBytes()  {
+        if (fileFooter == null) {
+            return null;
+        }
+        return fileFooter.getBytes();
+    }
 
-	@Override
-	public byte[] headerBytes()  {
-		if (fileHeader == null) {
-			return null;
-		}
-		return fileHeader.getBytes();
-	}
+    @Override
+    public byte[] headerBytes()  {
+        if (fileHeader == null) {
+            return null;
+        }
+        return fileHeader.getBytes();
+    }
 }

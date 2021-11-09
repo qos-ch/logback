@@ -32,64 +32,64 @@ import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
 @Ignore
 public class ReconfigurePerf {
-	final static int THREAD_COUNT = 500;
-	// final static int LOOP_LEN = 1000 * 1000;
+    final static int THREAD_COUNT = 500;
+    // final static int LOOP_LEN = 1000 * 1000;
 
-	// the space in the file name mandated by
-	// http://jira.qos.ch/browse/LBCORE-119
-	final static String CONF_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/scan_perf.xml";
+    // the space in the file name mandated by
+    // http://jira.qos.ch/browse/LBCORE-119
+    final static String CONF_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/scan_perf.xml";
 
-	// it actually takes time for Windows to propagate file modification changes
-	// values below 100 milliseconds can be problematic the same propagation
-	// latency occurs in Linux but is even larger (>600 ms)
-	final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 110;
+    // it actually takes time for Windows to propagate file modification changes
+    // values below 100 milliseconds can be problematic the same propagation
+    // latency occurs in Linux but is even larger (>600 ms)
+    final static int DEFAULT_SLEEP_BETWEEN_UPDATES = 110;
 
-	int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
+    int sleepBetweenUpdates = DEFAULT_SLEEP_BETWEEN_UPDATES;
 
-	static int numberOfCycles = 100;
-	static int totalTestDuration;
+    static int numberOfCycles = 100;
+    static int totalTestDuration;
 
-	LoggerContext loggerContext = new LoggerContext();
-	Logger logger = loggerContext.getLogger(this.getClass());
-	MultiThreadedHarness harness;
+    LoggerContext loggerContext = new LoggerContext();
+    Logger logger = loggerContext.getLogger(this.getClass());
+    MultiThreadedHarness harness;
 
-	@Before
-	public void setUp() {
-		// take into account propagation latency occurs on Linux
-		if (EnvUtilForTests.isLinux()) {
-			sleepBetweenUpdates = 850;
-			totalTestDuration = sleepBetweenUpdates * numberOfCycles;
-		} else {
-			totalTestDuration = sleepBetweenUpdates * numberOfCycles * 2;
-		}
-		harness = new MultiThreadedHarness(totalTestDuration);
-	}
+    @Before
+    public void setUp() {
+        // take into account propagation latency occurs on Linux
+        if (EnvUtilForTests.isLinux()) {
+            sleepBetweenUpdates = 850;
+            totalTestDuration = sleepBetweenUpdates * numberOfCycles;
+        } else {
+            totalTestDuration = sleepBetweenUpdates * numberOfCycles * 2;
+        }
+        harness = new MultiThreadedHarness(totalTestDuration);
+    }
 
-	void configure(final File file) throws JoranException {
-		final JoranConfigurator jc = new JoranConfigurator();
-		jc.setContext(loggerContext);
-		jc.doConfigure(file);
-	}
+    void configure(final File file) throws JoranException {
+        final JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        jc.doConfigure(file);
+    }
 
-	RunnableWithCounterAndDone[] buildRunnableArray() {
-		final RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
-		for (int i = 0; i < THREAD_COUNT; i++) {
-			rArray[i] = new LoggingRunnable(logger);
-		}
-		return rArray;
-	}
+    RunnableWithCounterAndDone[] buildRunnableArray() {
+        final RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
+        for (int i = 0; i < THREAD_COUNT; i++) {
+            rArray[i] = new LoggingRunnable(logger);
+        }
+        return rArray;
+    }
 
-	// Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
-	@Test
-	public void scan1() throws JoranException, IOException, InterruptedException {
-		final File file = new File(CONF_FILE_AS_STR);
-		configure(file);
-		System.out.println("Running scan1()");
-		doRun();
-	}
+    // Tests whether ConfigurationAction is installing ReconfigureOnChangeFilter
+    @Test
+    public void scan1() throws JoranException, IOException, InterruptedException {
+        final File file = new File(CONF_FILE_AS_STR);
+        configure(file);
+        System.out.println("Running scan1()");
+        doRun();
+    }
 
-	void doRun() throws InterruptedException {
-		final RunnableWithCounterAndDone[] runnableArray = buildRunnableArray();
-		harness.execute(runnableArray);
-	}
+    void doRun() throws InterruptedException {
+        final RunnableWithCounterAndDone[] runnableArray = buildRunnableArray();
+        harness.execute(runnableArray);
+    }
 }

@@ -19,13 +19,13 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class DummyAccessEventBuilder {
 
-	static public IAccessEvent buildNewAccessEvent() {
-		final DummyRequest request = new DummyRequest();
-		final DummyResponse response = new DummyResponse();
-		final DummyServerAdapter adapter = new DummyServerAdapter(request, response);
-		final AccessContext accessContext = new AccessContext();
+    static public IAccessEvent buildNewAccessEvent() {
+        final DummyRequest request = new DummyRequest();
+        final DummyResponse response = new DummyResponse();
+        final DummyServerAdapter adapter = new DummyServerAdapter(request, response);
+        final AccessContext accessContext = new AccessContext();
 
-		return new AccessEvent(accessContext, request, response, adapter);
-	}
+        return new AccessEvent(accessContext, request, response, adapter);
+    }
 
 }

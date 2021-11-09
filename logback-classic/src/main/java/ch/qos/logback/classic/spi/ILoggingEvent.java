@@ -31,111 +31,111 @@ import ch.qos.logback.core.spi.DeferredProcessingAware;
  */
 public interface ILoggingEvent extends DeferredProcessingAware {
 
-	String getThreadName();
+    String getThreadName();
 
-	Level getLevel();
+    Level getLevel();
 
-	String getMessage();
+    String getMessage();
 
-	Object[] getArgumentArray();
+    Object[] getArgumentArray();
 
-	String getFormattedMessage();
+    String getFormattedMessage();
 
-	String getLoggerName();
+    String getLoggerName();
 
-	LoggerContextVO getLoggerContextVO();
+    LoggerContextVO getLoggerContextVO();
 
-	IThrowableProxy getThrowableProxy();
+    IThrowableProxy getThrowableProxy();
 
-	/**
-	 * Return caller data associated with this event. Note that calling this event
-	 * may trigger the computation of caller data.
-	 *
-	 * @return the caller data associated with this event.
-	 *
-	 * @see #hasCallerData()
-	 */
-	StackTraceElement[] getCallerData();
+    /**
+     * Return caller data associated with this event. Note that calling this event
+     * may trigger the computation of caller data.
+     *
+     * @return the caller data associated with this event.
+     *
+     * @see #hasCallerData()
+     */
+    StackTraceElement[] getCallerData();
 
-	/**
-	 * If this event has caller data, then true is returned. Otherwise the
-	 * returned value is null.
-	 *
-	 * <p>Logback components wishing to use caller data if available without
-	 * causing it to be computed can invoke this method before invoking
-	 * {@link #getCallerData()}.
-	 *
-	 * @return whether this event has caller data
-	 */
-	boolean hasCallerData();
-
-
-	/**
-	 * Returns the first marker is the marker list or null if no markers are available.
-	 *
-	 * This method is deprecated and exists solely for backward compatibility reasons.
-	 * Logback components should use {@link #getMarkerList()} and cater for all available markers
-	 * and not the only the first one.
-	 *
-	 * @deprecated Replaced by {@link #getMarkerList()}
-	 * @return the first marker in the marker list or null if no markers are available
-	 */
-	@Deprecated
-	default Marker getMarker() {
-		final List<Marker> markers = getMarkerList();
-		if(markers == null || markers.isEmpty()) {
-			return null;
-		}
-
-		// return the first marker. Assuming that only the first marker is useful
-		// is obviously incorrect. However, we have no other choice if we wish
-		// to preserve binary compatibility.
-		return markers.get(0);
-	}
+    /**
+     * If this event has caller data, then true is returned. Otherwise the
+     * returned value is null.
+     *
+     * <p>Logback components wishing to use caller data if available without
+     * causing it to be computed can invoke this method before invoking
+     * {@link #getCallerData()}.
+     *
+     * @return whether this event has caller data
+     */
+    boolean hasCallerData();
 
 
-	/**
-	 * Since SLF4J 2.0.0, the slf4j logging API assumes the possibility of multiple
-	 * Marker instances in a logging event. Consequently, ILoggingEvent needs to cater
-	 * for this possibility.
-	 *
-	 * @return the marker list, may be null
-	 * @since 1.3.0
-	 */
-	List<Marker> getMarkerList();
+    /**
+     * Returns the first marker is the marker list or null if no markers are available.
+     *
+     * This method is deprecated and exists solely for backward compatibility reasons.
+     * Logback components should use {@link #getMarkerList()} and cater for all available markers
+     * and not the only the first one.
+     *
+     * @deprecated Replaced by {@link #getMarkerList()}
+     * @return the first marker in the marker list or null if no markers are available
+     */
+    @Deprecated
+    default Marker getMarker() {
+        final List<Marker> markers = getMarkerList();
+        if(markers == null || markers.isEmpty()) {
+            return null;
+        }
 
-	/**
-	 * Returns the MDC map. The returned value can be an empty map but not null.
-	 */
-	Map<String, String> getMDCPropertyMap();
+        // return the first marker. Assuming that only the first marker is useful
+        // is obviously incorrect. However, we have no other choice if we wish
+        // to preserve binary compatibility.
+        return markers.get(0);
+    }
 
-	/**
-	 * Synonym for [@link #getMDCPropertyMap}.
-	 * @deprecated  Replaced by [@link #getMDCPropertyMap}
-	 */
-	@Deprecated
-	Map<String, String> getMdc();
 
-	long getTimeStamp();
+    /**
+     * Since SLF4J 2.0.0, the slf4j logging API assumes the possibility of multiple
+     * Marker instances in a logging event. Consequently, ILoggingEvent needs to cater
+     * for this possibility.
+     *
+     * @return the marker list, may be null
+     * @since 1.3.0
+     */
+    List<Marker> getMarkerList();
 
-	/**
-	 * The sequence number associated with this event.
-	 *
-	 * <p>Sequence numbers, if present, should be increasing monotonically.
-	 *
-	 * @since 1.3.0
-	 */
-	long getSequenceNumber();
+    /**
+     * Returns the MDC map. The returned value can be an empty map but not null.
+     */
+    Map<String, String> getMDCPropertyMap();
 
-	/**
-	 * A list of {@link KeyValuePair} objects. The returned list may be null.
-	 *
-	 * @return may be null
-	 * @since 1.3.0
-	 */
-	List<KeyValuePair> getKeyValuePairs();
+    /**
+     * Synonym for [@link #getMDCPropertyMap}.
+     * @deprecated  Replaced by [@link #getMDCPropertyMap}
+     */
+    @Deprecated
+    Map<String, String> getMdc();
 
-	@Override
-	void prepareForDeferredProcessing();
+    long getTimeStamp();
+
+    /**
+     * The sequence number associated with this event.
+     *
+     * <p>Sequence numbers, if present, should be increasing monotonically.
+     *
+     * @since 1.3.0
+     */
+    long getSequenceNumber();
+
+    /**
+     * A list of {@link KeyValuePair} objects. The returned list may be null.
+     *
+     * @return may be null
+     * @since 1.3.0
+     */
+    List<KeyValuePair> getKeyValuePairs();
+
+    @Override
+    void prepareForDeferredProcessing();
 
 }

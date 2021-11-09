@@ -29,48 +29,48 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class MDCConverterTest {
 
-	LoggerContext lc;
-	MDCConverter converter;
-	int diff = RandomUtil.getPositiveInt();
+    LoggerContext lc;
+    MDCConverter converter;
+    int diff = RandomUtil.getPositiveInt();
 
-	@Before
-	public void setUp() throws Exception {
-		lc = new LoggerContext();
-		converter = new MDCConverter();
-		converter.start();
-		MDC.clear();
-	}
+    @Before
+    public void setUp() throws Exception {
+        lc = new LoggerContext();
+        converter = new MDCConverter();
+        converter.start();
+        MDC.clear();
+    }
 
-	@After
-	public void tearDown() throws Exception {
-		lc = null;
-		converter.stop();
-		converter = null;
-		MDC.clear();
-	}
+    @After
+    public void tearDown() throws Exception {
+        lc = null;
+        converter.stop();
+        converter = null;
+        MDC.clear();
+    }
 
-	@Test
-	public void testConvertWithOneEntry() {
-		final String k = "MDCConverterTest_k" + diff;
-		final String v = "MDCConverterTest_v" + diff;
+    @Test
+    public void testConvertWithOneEntry() {
+        final String k = "MDCConverterTest_k" + diff;
+        final String v = "MDCConverterTest_v" + diff;
 
-		MDC.put(k, v);
-		final ILoggingEvent le = createLoggingEvent();
-		final String result = converter.convert(le);
-		assertEquals(k + "=" + v, result);
-	}
+        MDC.put(k, v);
+        final ILoggingEvent le = createLoggingEvent();
+        final String result = converter.convert(le);
+        assertEquals(k + "=" + v, result);
+    }
 
-	@Test
-	public void testConvertWithMultipleEntries() {
-		MDC.put("testKey", "testValue");
-		MDC.put("testKey2", "testValue2");
-		final ILoggingEvent le = createLoggingEvent();
-		final String result = converter.convert(le);
-		final boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
-		assertTrue(result + " is not conform", isConform);
-	}
+    @Test
+    public void testConvertWithMultipleEntries() {
+        MDC.put("testKey", "testValue");
+        MDC.put("testKey2", "testValue2");
+        final ILoggingEvent le = createLoggingEvent();
+        final String result = converter.convert(le);
+        final boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
+        assertTrue(result + " is not conform", isConform);
+    }
 
-	private ILoggingEvent createLoggingEvent() {
-		return new LoggingEvent(this.getClass().getName(), lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
-	}
+    private ILoggingEvent createLoggingEvent() {
+        return new LoggingEvent(this.getClass().getName(), lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+    }
 }

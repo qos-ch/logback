@@ -22,16 +22,16 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class TrivialMain {
-    public static void main(String[] args) throws InterruptedException {
-        Logger logger = LoggerFactory.getLogger(TrivialMain.class);
-        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+    public static void main(final String[] args) throws InterruptedException {
+        final Logger logger = LoggerFactory.getLogger(TrivialMain.class);
+        final LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
         try {
-            JoranConfigurator configurator = new JoranConfigurator();
+            final JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
             configurator.doConfigure(args[0]);
-        } catch (JoranException je) {
+        } catch (final JoranException je) {
             // StatusPrinter will handle this
         }
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);

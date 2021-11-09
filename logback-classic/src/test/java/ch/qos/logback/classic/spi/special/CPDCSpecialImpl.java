@@ -20,28 +20,28 @@ import ch.qos.logback.classic.spi.ThrowableProxy;
 
 public class CPDCSpecialImpl implements CPDCSpecial {
 
-	Throwable throwable;
-	IThrowableProxy throwableProxy;
+    Throwable throwable;
+    IThrowableProxy throwableProxy;
 
-	@Override
-	public void doTest() {
-		nesting();
-	}
+    @Override
+    public void doTest() {
+        nesting();
+    }
 
-	private void nesting() {
-		throwable = new Throwable("x");
-		throwableProxy = new ThrowableProxy(throwable);
-		final PackagingDataCalculator pdc = new PackagingDataCalculator();
-		pdc.calculate(throwableProxy);
-	}
+    private void nesting() {
+        throwable = new Throwable("x");
+        throwableProxy = new ThrowableProxy(throwable);
+        final PackagingDataCalculator pdc = new PackagingDataCalculator();
+        pdc.calculate(throwableProxy);
+    }
 
-	@Override
-	public Throwable getThrowable() {
-		return throwable;
-	}
+    @Override
+    public Throwable getThrowable() {
+        return throwable;
+    }
 
-	@Override
-	public IThrowableProxy getThrowableProxy() {
-		return throwableProxy;
-	}
+    @Override
+    public IThrowableProxy getThrowableProxy() {
+        return throwableProxy;
+    }
 }

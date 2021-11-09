@@ -26,19 +26,19 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
  */
 public class LogStatement {
 
-	final String loggerName;
-	final MessageArgumentTuple mat;
-	final Level level;
-	final IThrowableProxy throwableProxy;
+    final String loggerName;
+    final MessageArgumentTuple mat;
+    final Level level;
+    final IThrowableProxy throwableProxy;
 
-	public LogStatement(final String loggerName, final Level level, final MessageArgumentTuple mat, final IThrowableProxy tp) {
-		this.loggerName = loggerName;
-		this.level = level;
-		this.mat = mat;
-		throwableProxy = tp;
-	}
+    public LogStatement(final String loggerName, final Level level, final MessageArgumentTuple mat, final IThrowableProxy tp) {
+        this.loggerName = loggerName;
+        this.level = level;
+        this.mat = mat;
+        throwableProxy = tp;
+    }
 
-	public String getLoggerName() {
-		return loggerName;
-	}
+    public String getLoggerName() {
+        return loggerName;
+    }
 }

@@ -15,12 +15,12 @@ package ch.qos.logback.core.status;
 
 public class WarnStatus extends StatusBase {
 
-	public WarnStatus(final String msg, final Object origin) {
-		super(Status.WARN, msg, origin);
-	}
+    public WarnStatus(final String msg, final Object origin) {
+        super(Status.WARN, msg, origin);
+    }
 
-	public WarnStatus(final String msg, final Object origin, final Throwable t) {
-		super(Status.WARN, msg, origin, t);
-	}
+    public WarnStatus(final String msg, final Object origin, final Throwable t) {
+        super(Status.WARN, msg, origin, t);
+    }
 
 }

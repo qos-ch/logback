@@ -25,76 +25,76 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * @author Ceki G&uuml;lc&uuml;
  */
 public abstract class RollingPolicyBase extends ContextAwareBase implements RollingPolicy {
-	protected CompressionMode compressionMode = CompressionMode.NONE;
+    protected CompressionMode compressionMode = CompressionMode.NONE;
 
-	FileNamePattern fileNamePattern;
-	// fileNamePatternStr is always slashified, see setter
-	protected String fileNamePatternStr;
+    FileNamePattern fileNamePattern;
+    // fileNamePatternStr is always slashified, see setter
+    protected String fileNamePatternStr;
 
-	private FileAppender<?> parent;
+    private FileAppender<?> parent;
 
-	// use to name files within zip file, i.e. the zipEntry
-	FileNamePattern zipEntryFileNamePattern;
-	private boolean started;
+    // use to name files within zip file, i.e. the zipEntry
+    FileNamePattern zipEntryFileNamePattern;
+    private boolean started;
 
-	/**
-	 * Given the FileNamePattern string, this method determines the compression
-	 * mode depending on last letters of the fileNamePatternStr. Patterns ending
-	 * with .gz imply GZIP compression, endings with '.zip' imply ZIP compression.
-	 * Otherwise and by default, there is no compression.
-	 *
-	 */
-	protected void determineCompressionMode() {
-		if (fileNamePatternStr.endsWith(".gz")) {
-			addInfo("Will use gz compression");
-			compressionMode = CompressionMode.GZ;
-		} else if (fileNamePatternStr.endsWith(".zip")) {
-			addInfo("Will use zip compression");
-			compressionMode = CompressionMode.ZIP;
-		} else {
-			addInfo("No compression will be used");
-			compressionMode = CompressionMode.NONE;
-		}
-	}
+    /**
+     * Given the FileNamePattern string, this method determines the compression
+     * mode depending on last letters of the fileNamePatternStr. Patterns ending
+     * with .gz imply GZIP compression, endings with '.zip' imply ZIP compression.
+     * Otherwise and by default, there is no compression.
+     *
+     */
+    protected void determineCompressionMode() {
+        if (fileNamePatternStr.endsWith(".gz")) {
+            addInfo("Will use gz compression");
+            compressionMode = CompressionMode.GZ;
+        } else if (fileNamePatternStr.endsWith(".zip")) {
+            addInfo("Will use zip compression");
+            compressionMode = CompressionMode.ZIP;
+        } else {
+            addInfo("No compression will be used");
+            compressionMode = CompressionMode.NONE;
+        }
+    }
 
-	public void setFileNamePattern(final String fnp) {
-		fileNamePatternStr = fnp;
-	}
+    public void setFileNamePattern(final String fnp) {
+        fileNamePatternStr = fnp;
+    }
 
-	public String getFileNamePattern() {
-		return fileNamePatternStr;
-	}
+    public String getFileNamePattern() {
+        return fileNamePatternStr;
+    }
 
-	@Override
-	public CompressionMode getCompressionMode() {
-		return compressionMode;
-	}
+    @Override
+    public CompressionMode getCompressionMode() {
+        return compressionMode;
+    }
 
-	@Override
-	public boolean isStarted() {
-		return started;
-	}
+    @Override
+    public boolean isStarted() {
+        return started;
+    }
 
-	@Override
-	public void start() {
-		started = true;
-	}
+    @Override
+    public void start() {
+        started = true;
+    }
 
-	@Override
-	public void stop() {
-		started = false;
-	}
+    @Override
+    public void stop() {
+        started = false;
+    }
 
-	@Override
-	public void setParent(final FileAppender<?> appender) {
-		parent = appender;
-	}
+    @Override
+    public void setParent(final FileAppender<?> appender) {
+        parent = appender;
+    }
 
-	public boolean isParentPrudent() {
-		return parent.isPrudent();
-	}
+    public boolean isParentPrudent() {
+        return parent.isPrudent();
+    }
 
-	public String getParentsRawFileProperty() {
-		return parent.rawFileProperty();
-	}
+    public String getParentsRawFileProperty() {
+        return parent.rawFileProperty();
+    }
 }

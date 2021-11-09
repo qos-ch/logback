@@ -43,71 +43,71 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class Corpus {
 
-	static public final int STANDARD_CORPUS_SIZE = 50 * 1000;
-	private static final int STANDARD_SEED = 34780;
+    static public final int STANDARD_CORPUS_SIZE = 50 * 1000;
+    private static final int STANDARD_SEED = 34780;
 
-	static public List<String> getStandatdCorpusWordList() throws IOException {
-		final ClassLoader classLoader = Corpus.class.getClassLoader();
-		final URL originOfSpeciesURL = classLoader.getResource("corpus/origin_of_species.txt");
-		return TextFileUtil.toWords(originOfSpeciesURL);
-	}
+    static public List<String> getStandatdCorpusWordList() throws IOException {
+        final ClassLoader classLoader = Corpus.class.getClassLoader();
+        final URL originOfSpeciesURL = classLoader.getResource("corpus/origin_of_species.txt");
+        return TextFileUtil.toWords(originOfSpeciesURL);
+    }
 
-	/**
-	 * Make a standard corpus. The standard corpus has
-	 * {@link #STANDARD_CORPUS_SIZE} elements.
-	 *
-	 * @return event array representing the standard corpus
-	 * @throws IOException
-	 */
-	static public ILoggingEvent[] makeStandardCorpus() throws IOException {
-		final List<String> worldList = getStandatdCorpusWordList();
-		final CorpusModel corpusMaker = new CorpusModel(STANDARD_SEED, worldList);
-		return make(corpusMaker, STANDARD_CORPUS_SIZE, true);
-	}
+    /**
+     * Make a standard corpus. The standard corpus has
+     * {@link #STANDARD_CORPUS_SIZE} elements.
+     *
+     * @return event array representing the standard corpus
+     * @throws IOException
+     */
+    static public ILoggingEvent[] makeStandardCorpus() throws IOException {
+        final List<String> worldList = getStandatdCorpusWordList();
+        final CorpusModel corpusMaker = new CorpusModel(STANDARD_SEED, worldList);
+        return make(corpusMaker, STANDARD_CORPUS_SIZE, true);
+    }
 
-	static public ILoggingEvent[] make(final CorpusModel corpusModel, final int n, final boolean withCallerData) {
-		final LoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
-		final PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
-		for (int i = 0; i < n; i++) {
-			final PubLoggingEventVO e = new PubLoggingEventVO();
-			plevoArray[i] = e;
-			e.loggerContextVO = lcVO;
-			e.timeStamp = corpusModel.getRandomTimeStamp();
+    static public ILoggingEvent[] make(final CorpusModel corpusModel, final int n, final boolean withCallerData) {
+        final LoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
+        final PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
+        for (int i = 0; i < n; i++) {
+            final PubLoggingEventVO e = new PubLoggingEventVO();
+            plevoArray[i] = e;
+            e.loggerContextVO = lcVO;
+            e.timeStamp = corpusModel.getRandomTimeStamp();
 
-			final LogStatement logStatement = corpusModel.getRandomLogStatementFromPool();
-			e.loggerName = logStatement.loggerName;
-			e.level = logStatement.level;
-			e.message = logStatement.mat.message;
-			e.argumentArray = corpusModel.getRandomArgumentArray(logStatement.mat.numberOfArguments);
+            final LogStatement logStatement = corpusModel.getRandomLogStatementFromPool();
+            e.loggerName = logStatement.loggerName;
+            e.level = logStatement.level;
+            e.message = logStatement.mat.message;
+            e.argumentArray = corpusModel.getRandomArgumentArray(logStatement.mat.numberOfArguments);
 
-			if (withCallerData) {
-				e.callerDataArray = corpusModel.getRandomCallerData(ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH, e.loggerName);
-			}
-			e.throwableProxy = logStatement.throwableProxy;
-			e.threadName = corpusModel.getRandomThreadNameFromPool();
-		}
-		return plevoArray;
-	}
+            if (withCallerData) {
+                e.callerDataArray = corpusModel.getRandomCallerData(ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH, e.loggerName);
+            }
+            e.throwableProxy = logStatement.throwableProxy;
+            e.threadName = corpusModel.getRandomThreadNameFromPool();
+        }
+        return plevoArray;
+    }
 
-	/**
-	 * Dump the events passed as argument into the file named targetFile.
-	 *
-	 * @param eventArray
-	 * @param targetFile
-	 * @throws IOException
-	 */
-	public static void dump(final ILoggingEvent[] eventArray, final String targetFile) throws IOException {
-		final FileWriter fw = new FileWriter(targetFile);
-		for (final ILoggingEvent e : eventArray) {
-			fw.write(e.toString());
-			fw.append(CoreConstants.LINE_SEPARATOR);
-			if (e.getThrowableProxy() != null) {
-				final IThrowableProxy tp = e.getThrowableProxy();
-				fw.write(ThrowableProxyUtil.asString(tp));
-			}
-		}
-		fw.flush();
-		fw.close();
-	}
+    /**
+     * Dump the events passed as argument into the file named targetFile.
+     *
+     * @param eventArray
+     * @param targetFile
+     * @throws IOException
+     */
+    public static void dump(final ILoggingEvent[] eventArray, final String targetFile) throws IOException {
+        final FileWriter fw = new FileWriter(targetFile);
+        for (final ILoggingEvent e : eventArray) {
+            fw.write(e.toString());
+            fw.append(CoreConstants.LINE_SEPARATOR);
+            if (e.getThrowableProxy() != null) {
+                final IThrowableProxy tp = e.getThrowableProxy();
+                fw.write(ThrowableProxyUtil.asString(tp));
+            }
+        }
+        fw.flush();
+        fw.close();
+    }
 
 }

@@ -21,38 +21,38 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 
 public class StartEvent extends SaxEvent {
 
-	final public Attributes attributes;
-	final public ElementPath elementPath;
+    final public Attributes attributes;
+    final public ElementPath elementPath;
 
-	StartEvent(final ElementPath elementPath, final String namespaceURI, final String localName, final String qName, final Attributes attributes, final Locator locator) {
-		super(namespaceURI, localName, qName, locator);
-		// locator impl is used to take a snapshot!
-		this.attributes = new AttributesImpl(attributes);
-		this.elementPath = elementPath;
-	}
+    StartEvent(final ElementPath elementPath, final String namespaceURI, final String localName, final String qName, final Attributes attributes, final Locator locator) {
+        super(namespaceURI, localName, qName, locator);
+        // locator impl is used to take a snapshot!
+        this.attributes = new AttributesImpl(attributes);
+        this.elementPath = elementPath;
+    }
 
-	public Attributes getAttributes() {
-		return attributes;
-	}
+    public Attributes getAttributes() {
+        return attributes;
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder b = new StringBuilder("StartEvent(");
-		b.append(getQName());
-		if(attributes != null) {
-			for(int i = 0; i < attributes.getLength(); i++) {
-				if(i > 0) {
-					b.append(' ');
-				}
-				b.append(attributes.getLocalName(i)).append("=\"").append(attributes.getValue(i)).append("\"");
-			}
-		}
-		b.append(")  [");
-		b.append( locator.getLineNumber());
-		b.append(",");
-		b.append(locator.getColumnNumber());
-		b.append("]");
-		return b.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder b = new StringBuilder("StartEvent(");
+        b.append(getQName());
+        if(attributes != null) {
+            for(int i = 0; i < attributes.getLength(); i++) {
+                if(i > 0) {
+                    b.append(' ');
+                }
+                b.append(attributes.getLocalName(i)).append("=\"").append(attributes.getValue(i)).append("\"");
+            }
+        }
+        b.append(")  [");
+        b.append( locator.getLineNumber());
+        b.append(",");
+        b.append(locator.getColumnNumber());
+        b.append("]");
+        return b.toString();
+    }
 
 }

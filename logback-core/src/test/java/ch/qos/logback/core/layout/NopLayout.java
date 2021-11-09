@@ -17,8 +17,8 @@ import ch.qos.logback.core.LayoutBase;
 
 public class NopLayout<E> extends LayoutBase<E> {
 
-	@Override
-	public String doLayout(final E event) {
-		return "";
-	}
+    @Override
+    public String doLayout(final E event) {
+        return "";
+    }
 }

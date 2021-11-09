@@ -2,17 +2,17 @@ package ch.qos.logback.core.model;
 
 public class AppenderRefModel extends Model {
 
-	private static final long serialVersionUID = 5238705468395447547L;
+    private static final long serialVersionUID = 5238705468395447547L;
 
-	String ref;
+    String ref;
 
-	public String getRef() {
-		return ref;
-	}
+    public String getRef() {
+        return ref;
+    }
 
-	public void setRef(final String ref) {
-		this.ref = ref;
-	}
+    public void setRef(final String ref) {
+        this.ref = ref;
+    }
 
 
 }

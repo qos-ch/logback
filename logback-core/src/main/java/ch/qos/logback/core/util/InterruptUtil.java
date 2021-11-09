@@ -27,27 +27,27 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class InterruptUtil extends ContextAwareBase {
 
-	final boolean previouslyInterrupted;
+    final boolean previouslyInterrupted;
 
-	public InterruptUtil(final Context context) {
-		setContext(context);
-		previouslyInterrupted = Thread.currentThread().isInterrupted();
-	}
+    public InterruptUtil(final Context context) {
+        setContext(context);
+        previouslyInterrupted = Thread.currentThread().isInterrupted();
+    }
 
-	public void maskInterruptFlag() {
-		if (previouslyInterrupted) {
-			Thread.interrupted();
-		}
-	}
+    public void maskInterruptFlag() {
+        if (previouslyInterrupted) {
+            Thread.interrupted();
+        }
+    }
 
-	public void unmaskInterruptFlag() {
-		if (previouslyInterrupted) {
-			try {
-				Thread.currentThread().interrupt();
-			} catch (final SecurityException se) {
-				addError("Failed to intrreupt current thread", se);
-			}
-		}
-	}
+    public void unmaskInterruptFlag() {
+        if (previouslyInterrupted) {
+            try {
+                Thread.currentThread().interrupt();
+            } catch (final SecurityException se) {
+                addError("Failed to intrreupt current thread", se);
+            }
+        }
+    }
 
 }

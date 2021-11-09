@@ -23,15 +23,15 @@ import java.util.HashMap;
  */
 public class CopyOnInheritThreadLocal extends InheritableThreadLocal<HashMap<String, String>> {
 
-	/**
-	 * Child threads should get a copy of the parent's hashmap.
-	 */
-	@Override
-	protected HashMap<String, String> childValue(final HashMap<String, String> parentValue) {
-		if (parentValue == null) {
-			return null;
-		}
-		return new HashMap<>(parentValue);
-	}
+    /**
+     * Child threads should get a copy of the parent's hashmap.
+     */
+    @Override
+    protected HashMap<String, String> childValue(final HashMap<String, String> parentValue) {
+        if (parentValue == null) {
+            return null;
+        }
+        return new HashMap<>(parentValue);
+    }
 
 }

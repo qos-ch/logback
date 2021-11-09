@@ -24,20 +24,20 @@ import ch.qos.logback.core.html.CssBuilder;
  */
 public class UrlCssBuilder implements CssBuilder {
 
-	String url = "http://logback.qos.ch/css/access.css";
+    String url = "http://logback.qos.ch/css/access.css";
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(final String url) {
-		this.url = url;
-	}
+    public void setUrl(final String url) {
+        this.url = url;
+    }
 
-	@Override
-	public void addCss(final StringBuilder sbuf) {
-		sbuf.append("<link REL=StyleSheet HREF=\"");
-		sbuf.append(url);
-		sbuf.append("\" TITLE=\"Basic\" />");
-	}
+    @Override
+    public void addCss(final StringBuilder sbuf) {
+        sbuf.append("<link REL=StyleSheet HREF=\"");
+        sbuf.append(url);
+        sbuf.append("\" TITLE=\"Basic\" />");
+    }
 }

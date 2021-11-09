@@ -23,31 +23,31 @@ import ch.qos.logback.core.util.Compare;
 
 public class DefaultRolloverChecker implements RolloverChecker {
 
-	final String testId;
-	final boolean withCompression;
-	final String compressionSuffix;
+    final String testId;
+    final boolean withCompression;
+    final String compressionSuffix;
 
-	public DefaultRolloverChecker(final String testId, final boolean withCompression, final String compressionSuffix) {
-		this.testId = testId;
-		this.withCompression = withCompression;
-		this.compressionSuffix = compressionSuffix;
-	}
+    public DefaultRolloverChecker(final String testId, final boolean withCompression, final String compressionSuffix) {
+        this.testId = testId;
+        this.withCompression = withCompression;
+        this.compressionSuffix = compressionSuffix;
+    }
 
-	@Override
-	public void check(final List<String> expectedFilenameList) throws IOException {
+    @Override
+    public void check(final List<String> expectedFilenameList) throws IOException {
 
-		int i = 0;
-		for (final String fn : expectedFilenameList) {
-			final String suffix = withCompression ? addGZIfNotLast(expectedFilenameList, i, compressionSuffix) : "";
+        int i = 0;
+        for (final String fn : expectedFilenameList) {
+            final String suffix = withCompression ? addGZIfNotLast(expectedFilenameList, i, compressionSuffix) : "";
 
-			final String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i + suffix;
-			assertTrue(Compare.compare(fn, witnessFileName));
-			i++;
-		}
-	}
+            final String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i + suffix;
+            assertTrue(Compare.compare(fn, witnessFileName));
+            i++;
+        }
+    }
 
-	String addGZIfNotLast(final List<String> expectedFilenameList, final int i, final String suff) {
-		final int lastIndex = expectedFilenameList.size() - 1;
-		return i != lastIndex ? suff : "";
-	}
+    String addGZIfNotLast(final List<String> expectedFilenameList, final int i, final String suff) {
+        final int lastIndex = expectedFilenameList.size() - 1;
+        return i != lastIndex ? suff : "";
+    }
 }

@@ -27,12 +27,12 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public interface TriggeringPolicy<E> extends LifeCycle {
 
-	/**
-	 * Should roll-over be triggered at this time?
-	 *
-	 * @param activeFile A reference to the currently active log file.
-	 * @param event A reference to the currently event.
-	 * @return true if a roll-over should occur.
-	 */
-	boolean isTriggeringEvent(final File activeFile, final E event);
+    /**
+     * Should roll-over be triggered at this time?
+     *
+     * @param activeFile A reference to the currently active log file.
+     * @param event A reference to the currently event.
+     * @return true if a roll-over should occur.
+     */
+    boolean isTriggeringEvent(final File activeFile, final E event);
 }

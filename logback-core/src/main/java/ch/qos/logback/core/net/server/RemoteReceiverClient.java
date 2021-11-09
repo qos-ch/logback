@@ -26,20 +26,20 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 interface RemoteReceiverClient extends Client, ContextAware {
 
-	/**
-	 * Sets the client's event queue.
-	 * <p>
-	 * This method must be invoked before the {@link #run()} method is invoked.
-	 * @param queue the queue to set
-	 */
-	void setQueue(BlockingQueue<Serializable> queue);
+    /**
+     * Sets the client's event queue.
+     * <p>
+     * This method must be invoked before the {@link #run()} method is invoked.
+     * @param queue the queue to set
+     */
+    void setQueue(BlockingQueue<Serializable> queue);
 
-	/**
-	 * Offers an event to the client.
-	 * @param event the subject event
-	 * @return {@code true} if the client's queue accepted the event,
-	 *    {@code false} if the client's queue is full
-	 */
-	boolean offer(Serializable event);
+    /**
+     * Offers an event to the client.
+     * @param event the subject event
+     * @return {@code true} if the client's queue accepted the event,
+     *    {@code false} if the client's queue is full
+     */
+    boolean offer(Serializable event);
 
 }

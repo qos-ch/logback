@@ -15,16 +15,16 @@ package ch.qos.logback.classic.corpus;
 
 public class MessageArgumentTuple {
 
-	final String message;
-	final int numberOfArguments;
+    final String message;
+    final int numberOfArguments;
 
-	MessageArgumentTuple(final String message) {
-		this(message, 0);
-	}
+    MessageArgumentTuple(final String message) {
+        this(message, 0);
+    }
 
-	public MessageArgumentTuple(final String message, final int numberOfArguments) {
-		this.message = message;
-		this.numberOfArguments = numberOfArguments;
-	}
+    public MessageArgumentTuple(final String message, final int numberOfArguments) {
+        this.message = message;
+        this.numberOfArguments = numberOfArguments;
+    }
 
 }

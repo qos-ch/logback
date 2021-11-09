@@ -22,19 +22,19 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class StackAction extends Action {
 
-	Stack<String> stack = new Stack<>();
+    Stack<String> stack = new Stack<>();
 
-	public Stack<String> getStack() {
-		return stack;
-	}
+    public Stack<String> getStack() {
+        return stack;
+    }
 
-	@Override
-	public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
-		stack.push(attributes.getValue("name"));
-	}
+    @Override
+    public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
+        stack.push(attributes.getValue("name"));
+    }
 
-	@Override
-	public void end(final InterpretationContext ec, final String name) {
-	}
+    @Override
+    public void end(final InterpretationContext ec, final String name) {
+    }
 
 }

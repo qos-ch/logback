@@ -27,27 +27,27 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class StatusUtilTest {
 
-	Context context = new ContextBase();
-	StatusUtil statusUtil = new StatusUtil(context);
+    Context context = new ContextBase();
+    StatusUtil statusUtil = new StatusUtil(context);
 
-	@Test
-	public void emptyStatusListShouldResultInNotFound() {
-		assertEquals(-1, statusUtil.timeOfLastReset());
-	}
+    @Test
+    public void emptyStatusListShouldResultInNotFound() {
+        assertEquals(-1, statusUtil.timeOfLastReset());
+    }
 
-	@Test
-	public void withoutResetsStatusUtilShouldReturnNotFound() {
-		context.getStatusManager().add(new InfoStatus("test", this));
-		assertEquals(-1, statusUtil.timeOfLastReset());
-	}
+    @Test
+    public void withoutResetsStatusUtilShouldReturnNotFound() {
+        context.getStatusManager().add(new InfoStatus("test", this));
+        assertEquals(-1, statusUtil.timeOfLastReset());
+    }
 
-	@Test
-	public void statusListShouldReturnLastResetTime() {
-		context.getStatusManager().add(new InfoStatus("test", this));
-		final long resetTime = System.currentTimeMillis();
-		context.getStatusManager().add(new InfoStatus(CoreConstants.RESET_MSG_PREFIX, this));
-		context.getStatusManager().add(new InfoStatus("bla", this));
-		assertTrue(resetTime <= statusUtil.timeOfLastReset());
-	}
+    @Test
+    public void statusListShouldReturnLastResetTime() {
+        context.getStatusManager().add(new InfoStatus("test", this));
+        final long resetTime = System.currentTimeMillis();
+        context.getStatusManager().add(new InfoStatus(CoreConstants.RESET_MSG_PREFIX, this));
+        context.getStatusManager().add(new InfoStatus("bla", this));
+        assertTrue(resetTime <= statusUtil.timeOfLastReset());
+    }
 
 }
