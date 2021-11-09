@@ -492,7 +492,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 		}
 		if (decision == FilterReply.DENY) {
 			return false;
-		} else if (decision == FilterReply.ACCEPT) {
+		}
+		if (decision == FilterReply.ACCEPT) {
 			return true;
 		} else {
 			throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -612,7 +613,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 		}
 		if (decision == FilterReply.DENY) {
 			return false;
-		} else if (decision == FilterReply.ACCEPT) {
+		}
+		if (decision == FilterReply.ACCEPT) {
 			return true;
 		} else {
 			throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -682,7 +684,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 		}
 		if (decision == FilterReply.DENY) {
 			return false;
-		} else if (decision == FilterReply.ACCEPT) {
+		}
+		if (decision == FilterReply.ACCEPT) {
 			return true;
 		} else {
 			throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -702,7 +705,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 		}
 		if (decision == FilterReply.DENY) {
 			return false;
-		} else if (decision == FilterReply.ACCEPT) {
+		}
+		if (decision == FilterReply.ACCEPT) {
 			return true;
 		} else {
 			throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -722,7 +726,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 		}
 		if (decision == FilterReply.DENY) {
 			return false;
-		} else if (decision == FilterReply.ACCEPT) {
+		}
+		if (decision == FilterReply.ACCEPT) {
 			return true;
 		} else {
 			throw new IllegalStateException("Unknown FilterReply value: " + decision);
@@ -737,7 +742,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
 		}
 		if (decision == FilterReply.DENY) {
 			return false;
-		} else if (decision == FilterReply.ACCEPT) {
+		}
+		if (decision == FilterReply.ACCEPT) {
 			return true;
 		} else {
 			throw new IllegalStateException("Unknown FilterReply value: " + decision);

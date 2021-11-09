@@ -30,54 +30,54 @@ import ch.qos.logback.core.boolex.EvaluationException;
 
 public class URLEvaluatorTest {
 
-    final String expectedURL1 = "testUrl1";
-    final String expectedURL2 = "testUrl2";
-    AccessContext accessContext = new AccessContext();
-    URLEvaluator evaluator;
-    DummyRequest request;
-    DummyResponse response;
-    DummyServerAdapter serverAdapter;
+	final String expectedURL1 = "testUrl1";
+	final String expectedURL2 = "testUrl2";
+	AccessContext accessContext = new AccessContext();
+	URLEvaluator evaluator;
+	DummyRequest request;
+	DummyResponse response;
+	DummyServerAdapter serverAdapter;
 
-    @Before
-    public void setUp() throws Exception {
-        evaluator = new URLEvaluator();
-        evaluator.setContext(accessContext);
-        evaluator.addURL(expectedURL1);
-        evaluator.start();
-        request = new DummyRequest();
-        response = new DummyResponse();
-        serverAdapter = new DummyServerAdapter(request, response);
-    }
+	@Before
+	public void setUp() throws Exception {
+		evaluator = new URLEvaluator();
+		evaluator.setContext(accessContext);
+		evaluator.addURL(expectedURL1);
+		evaluator.start();
+		request = new DummyRequest();
+		response = new DummyResponse();
+		serverAdapter = new DummyServerAdapter(request, response);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        evaluator.stop();
-        evaluator = null;
-        request = null;
-        response = null;
-        serverAdapter = null;
-        accessContext = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		evaluator.stop();
+		evaluator = null;
+		request = null;
+		response = null;
+		serverAdapter = null;
+		accessContext = null;
+	}
 
-    @Test
-    public void testExpectFalse() throws EvaluationException {
-        request.setRequestUri("test");
-        IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
-        assertFalse(evaluator.evaluate(ae));
-    }
+	@Test
+	public void testExpectFalse() throws EvaluationException {
+		request.setRequestUri("test");
+		final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
+		assertFalse(evaluator.evaluate(ae));
+	}
 
-    @Test
-    public void testExpectTrue() throws EvaluationException {
-        request.setRequestUri(expectedURL1);
-        IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
-        assertTrue(evaluator.evaluate(ae));
-    }
+	@Test
+	public void testExpectTrue() throws EvaluationException {
+		request.setRequestUri(expectedURL1);
+		final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
+		assertTrue(evaluator.evaluate(ae));
+	}
 
-    @Test
-    public void testExpectTrueMultiple() throws EvaluationException {
-        evaluator.addURL(expectedURL2);
-        request.setRequestUri(expectedURL2);
-        IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
-        assertTrue(evaluator.evaluate(ae));
-    }
+	@Test
+	public void testExpectTrueMultiple() throws EvaluationException {
+		evaluator.addURL(expectedURL2);
+		request.setRequestUri(expectedURL2);
+		final IAccessEvent ae = new AccessEvent(accessContext, request, response, serverAdapter);
+		assertTrue(evaluator.evaluate(ae));
+	}
 }

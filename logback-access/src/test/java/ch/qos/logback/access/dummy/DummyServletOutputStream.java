@@ -13,44 +13,46 @@
  */
 package ch.qos.logback.access.dummy;
 
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.WriteListener;
-
 import java.io.IOException;
 import java.io.OutputStream;
 
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.WriteListener;
+
 public class DummyServletOutputStream extends ServletOutputStream {
 
-    private final OutputStream targetStream;
+	private final OutputStream targetStream;
 
-    public DummyServletOutputStream(OutputStream targetStream) {
-        this.targetStream = targetStream;
-    }
+	public DummyServletOutputStream(final OutputStream targetStream) {
+		this.targetStream = targetStream;
+	}
 
-    @Override
-    public void write(int b) throws IOException {
-        this.targetStream.write(b);
-    }
+	@Override
+	public void write(final int b) throws IOException {
+		targetStream.write(b);
+	}
 
-    public void flush() throws IOException {
-        super.flush();
-        this.targetStream.flush();
-    }
+	@Override
+	public void flush() throws IOException {
+		super.flush();
+		targetStream.flush();
+	}
 
-    public void close() throws IOException {
-        super.close();
-        this.targetStream.close();
-    }
+	@Override
+	public void close() throws IOException {
+		super.close();
+		targetStream.close();
+	}
 
-    @Override
-    public boolean isReady() {
-        // TODO Auto-generated method stub
-        return false;
-    }
+	@Override
+	public boolean isReady() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
-    @Override
-    public void setWriteListener(WriteListener listener) {
-        // TODO Auto-generated method stub
-        
-    }
+	@Override
+	public void setWriteListener(final WriteListener listener) {
+		// TODO Auto-generated method stub
+
+	}
 }

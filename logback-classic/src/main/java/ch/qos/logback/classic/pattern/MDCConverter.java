@@ -54,9 +54,8 @@ public class MDCConverter extends ClassicConverter {
 		final String value = mdcPropertyMap.get(key);
 		if (value != null) {
 			return value;
-		} else {
-			return defaultValue;
 		}
+		return defaultValue;
 	}
 
 	/**

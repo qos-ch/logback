@@ -21,26 +21,28 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class BadEndAction extends Action {
 
-    static String EXCEPTION_TYPE = "type";
-    static final int RUNTIME_EXCEPTION = 0;
-    static final int ACTION_EXCEPTION = 1;
+	static String EXCEPTION_TYPE = "type";
+	static final int RUNTIME_EXCEPTION = 0;
+	static final int ACTION_EXCEPTION = 1;
 
-    int type;
+	int type;
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-        String exType = attributes.getValue(EXCEPTION_TYPE);
-        type = RUNTIME_EXCEPTION;
-        if ("ActionException".equals(exType)) {
-            type = ACTION_EXCEPTION;
-        }
-    }
+	@Override
+	public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
+		final String exType = attributes.getValue(EXCEPTION_TYPE);
+		type = RUNTIME_EXCEPTION;
+		if ("ActionException".equals(exType)) {
+			type = ACTION_EXCEPTION;
+		}
+	}
 
-    public void end(InterpretationContext ec, String name) throws ActionException {
-        switch (type) {
-        case ACTION_EXCEPTION:
-            throw new ActionException();
-        default:
-            throw new IllegalStateException("bad end");
-        }
-    }
+	@Override
+	public void end(final InterpretationContext ec, final String name) throws ActionException {
+		switch (type) {
+		case ACTION_EXCEPTION:
+			throw new ActionException();
+		default:
+			throw new IllegalStateException("bad end");
+		}
+	}
 }

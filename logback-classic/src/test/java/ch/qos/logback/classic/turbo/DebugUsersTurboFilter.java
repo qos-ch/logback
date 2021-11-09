@@ -26,38 +26,38 @@ import ch.qos.logback.core.spi.FilterReply;
 
 /**
  * This class allows output of debug level events to a certain list of users.
- * 
+ *
  * If the level passed as a parameter is of level DEBUG, then the "user" value
  * taken from the MDC is checked against the configured user list. When the user
  * belongs to the list, the request is accepted. Otherwise a NEUTRAL response
- * is sent, thus not influencing the filter chain.  
+ * is sent, thus not influencing the filter chain.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
 public class DebugUsersTurboFilter extends TurboFilter {
 
-    List<String> userList = new ArrayList<String>();
+	List<String> userList = new ArrayList<>();
 
-    @Override
-    public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable t) {
-        if (!level.equals(Level.DEBUG)) {
-            return FilterReply.NEUTRAL;
-        }
-        String user = MDC.get(ClassicConstants.USER_MDC_KEY);
-        if (user != null && userList.contains(user)) {
-            return FilterReply.ACCEPT;
-        }
-        return FilterReply.NEUTRAL;
-    }
+	@Override
+	public FilterReply decide(final Marker marker, final Logger logger, final Level level, final String format, final Object[] params, final Throwable t) {
+		if (!level.equals(Level.DEBUG)) {
+			return FilterReply.NEUTRAL;
+		}
+		final String user = MDC.get(ClassicConstants.USER_MDC_KEY);
+		if (user != null && userList.contains(user)) {
+			return FilterReply.ACCEPT;
+		}
+		return FilterReply.NEUTRAL;
+	}
 
-    public void addUser(String user) {
-        userList.add(user);
-    }
+	public void addUser(final String user) {
+		userList.add(user);
+	}
 
-    // test in BasicJoranTest only, to be removed asap.
-    public List<String> getUsers() {
-        return userList;
-    }
+	// test in BasicJoranTest only, to be removed asap.
+	public List<String> getUsers() {
+		return userList;
+	}
 
 }

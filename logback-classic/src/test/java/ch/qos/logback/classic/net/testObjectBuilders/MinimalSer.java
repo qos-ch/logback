@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 public class MinimalSer implements Serializable {
 
-    private static final long serialVersionUID = 2807646397580899815L;
+	private static final long serialVersionUID = 2807646397580899815L;
 
-    String message;
+	String message;
 
-    public MinimalSer(int i) {
-        message = Builder.MSG_PREFIX;
-    }
+	public MinimalSer(final int i) {
+		message = Builder.MSG_PREFIX;
+	}
 }

@@ -14,7 +14,7 @@ import ch.qos.logback.classic.spi.LoggerContextVO;
 public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
 
 	String loggerName = "";
-	
+
 	@Override
 	public String getThreadName() {
 		// TODO Auto-generated method stub
@@ -39,7 +39,7 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
 		return loggerName;
 	}
 
-	public void setLoggerName(String loggerName) {
+	public void setLoggerName(final String loggerName) {
 		this.loggerName = loggerName;
 	}
 
@@ -100,7 +100,7 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
 	public void prepareForDeferredProcessing() {
 		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public Object[] getArgumentArray() {
 		return null;

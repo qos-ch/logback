@@ -46,7 +46,8 @@ public class DBUtil extends ContextAwareBase {
 			}
 			if (dbName.indexOf(MYSQL_PART) != -1) {
 				return SQLDialectCode.MYSQL_DIALECT;
-			} else if (dbName.indexOf(ORACLE_PART) != -1) {
+			}
+			if (dbName.indexOf(ORACLE_PART) != -1) {
 				return SQLDialectCode.ORACLE_DIALECT;
 			} else if (dbName.indexOf(MSSQL_PART) != -1) {
 				return SQLDialectCode.MSSQL_DIALECT;
@@ -121,7 +122,7 @@ public class DBUtil extends ContextAwareBase {
 			//
 			// invoking JDBC 1.4 method by reflection
 			//
-			return ((Boolean) DatabaseMetaData.class.getMethod("supportsGetGeneratedKeys", (Class[]) null).invoke(meta, (Object[]) null));
+			return (Boolean) DatabaseMetaData.class.getMethod("supportsGetGeneratedKeys", (Class[]) null).invoke(meta, (Object[]) null);
 		} catch (final Throwable e) {
 			addInfo("Could not call supportsGetGeneratedKeys method. This may be recoverable");
 			return false;

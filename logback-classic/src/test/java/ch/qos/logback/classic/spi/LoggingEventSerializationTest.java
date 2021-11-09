@@ -24,7 +24,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -43,217 +42,217 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 public class LoggingEventSerializationTest {
 
-    LoggerContext loggerContext;
-    Logger logger;
+	LoggerContext loggerContext;
+	Logger logger;
 
-    ByteArrayOutputStream bos;
-    ObjectOutputStream oos;
-    ObjectInputStream inputStream;
-    PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
+	ByteArrayOutputStream bos;
+	ObjectOutputStream oos;
+	ObjectInputStream inputStream;
+	PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
 
-    @Before
-    public void setUp() throws Exception {
-        loggerContext = new LoggerContext();
-        loggerContext.setName("testContext");
-        logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-        // create the byte output stream
-        bos = new ByteArrayOutputStream();
-        oos = new ObjectOutputStream(bos);
-    }
+	@Before
+	public void setUp() throws Exception {
+		loggerContext = new LoggerContext();
+		loggerContext.setName("testContext");
+		logger = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		// create the byte output stream
+		bos = new ByteArrayOutputStream();
+		oos = new ObjectOutputStream(bos);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        loggerContext = null;
-        logger = null;
-        oos.close();
-    }
+	@After
+	public void tearDown() throws Exception {
+		loggerContext = null;
+		logger = null;
+		oos.close();
+	}
 
-    @Test
-    public void smoke() throws Exception {
-        ILoggingEvent event = createLoggingEvent();
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
-    }
+	@Test
+	public void smoke() throws Exception {
+		final ILoggingEvent event = createLoggingEvent();
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
+	}
 
-    @Test
-    public void context() throws Exception {
-        loggerContext.putProperty("testKey", "testValue");
-        ILoggingEvent event = createLoggingEvent();
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
+	@Test
+	public void context() throws Exception {
+		loggerContext.putProperty("testKey", "testValue");
+		final ILoggingEvent event = createLoggingEvent();
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
 
-        assertNotNull(remoteEvent.getLoggerName());
-        assertEquals(Logger.ROOT_LOGGER_NAME, remoteEvent.getLoggerName());
+		assertNotNull(remoteEvent.getLoggerName());
+		assertEquals(org.slf4j.Logger.ROOT_LOGGER_NAME, remoteEvent.getLoggerName());
 
-        LoggerContextVO loggerContextRemoteView = remoteEvent.getLoggerContextVO();
-        assertNotNull(loggerContextRemoteView);
-        assertEquals("testContext", loggerContextRemoteView.getName());
-        Map<String, String> props = loggerContextRemoteView.getPropertyMap();
-        assertNotNull(props);
-        assertEquals("testValue", props.get("testKey"));
-    }
+		final LoggerContextVO loggerContextRemoteView = remoteEvent.getLoggerContextVO();
+		assertNotNull(loggerContextRemoteView);
+		assertEquals("testContext", loggerContextRemoteView.getName());
+		final Map<String, String> props = loggerContextRemoteView.getPropertyMap();
+		assertNotNull(props);
+		assertEquals("testValue", props.get("testKey"));
+	}
 
-    @Test
-    public void MDC() throws Exception {
-        MDC.put("key", "testValue");
-        ILoggingEvent event = createLoggingEvent();
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
-        Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
-        assertEquals("testValue", MDCPropertyMap.get("key"));
-    }
+	@Test
+	public void MDC() throws Exception {
+		MDC.put("key", "testValue");
+		final ILoggingEvent event = createLoggingEvent();
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
+		final Map<String, String> MDCPropertyMap = remoteEvent.getMDCPropertyMap();
+		assertEquals("testValue", MDCPropertyMap.get("key"));
+	}
 
-    @Test
-    public void updatedMDC() throws Exception {
-        MDC.put("key", "testValue");
-        ILoggingEvent event1 = createLoggingEvent();
-        Serializable s1 = pst.transform(event1);
-        oos.writeObject(s1);
+	@Test
+	public void updatedMDC() throws Exception {
+		MDC.put("key", "testValue");
+		final ILoggingEvent event1 = createLoggingEvent();
+		final Serializable s1 = pst.transform(event1);
+		oos.writeObject(s1);
 
-        MDC.put("key", "updatedTestValue");
-        ILoggingEvent event2 = createLoggingEvent();
-        Serializable s2 = pst.transform(event2);
-        oos.writeObject(s2);
+		MDC.put("key", "updatedTestValue");
+		final ILoggingEvent event2 = createLoggingEvent();
+		final Serializable s2 = pst.transform(event2);
+		oos.writeObject(s2);
 
-        // create the input stream based on the ouput stream
-        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        inputStream = new ObjectInputStream(bis);
+		// create the input stream based on the ouput stream
+		final ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		inputStream = new ObjectInputStream(bis);
 
-        // skip over one object
-        inputStream.readObject();
-        ILoggingEvent remoteEvent2 = (ILoggingEvent) inputStream.readObject();
+		// skip over one object
+		inputStream.readObject();
+		final ILoggingEvent remoteEvent2 = (ILoggingEvent) inputStream.readObject();
 
-        // We observe the second logging event. It should provide us with
-        // the updated MDC property.
-        Map<String, String> MDCPropertyMap = remoteEvent2.getMDCPropertyMap();
-        assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
-    }
+		// We observe the second logging event. It should provide us with
+		// the updated MDC property.
+		final Map<String, String> MDCPropertyMap = remoteEvent2.getMDCPropertyMap();
+		assertEquals("updatedTestValue", MDCPropertyMap.get("key"));
+	}
 
-    @Test
-    public void nonSerializableParameters() throws Exception {
-        LoggingEvent event = createLoggingEvent();
-        LuckyCharms lucky0 = new LuckyCharms(0);
-        event.setArgumentArray(new Object[] { lucky0, null });
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
+	@Test
+	public void nonSerializableParameters() throws Exception {
+		final LoggingEvent event = createLoggingEvent();
+		final LuckyCharms lucky0 = new LuckyCharms(0);
+		event.setArgumentArray(new Object[] { lucky0, null });
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
 
-        Object[] aa = remoteEvent.getArgumentArray();
-        assertNotNull(aa);
-        assertEquals(2, aa.length);
-        assertEquals("LC(0)", aa[0]);
-        assertNull(aa[1]);
-    }
+		final Object[] aa = remoteEvent.getArgumentArray();
+		assertNotNull(aa);
+		assertEquals(2, aa.length);
+		assertEquals("LC(0)", aa[0]);
+		assertNull(aa[1]);
+	}
 
-    @Test
-    public void testWithThrowable() throws Exception {
-        Throwable throwable = new Throwable("just testing");
-        LoggingEvent event = createLoggingEventWithThrowable(throwable);
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
-    }
+	@Test
+	public void testWithThrowable() throws Exception {
+		final Throwable throwable = new Throwable("just testing");
+		final LoggingEvent event = createLoggingEventWithThrowable(throwable);
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
+	}
 
 
-    @Test
-    public void testWithMarker() throws Exception {
-        Marker marker = MarkerFactory.getMarker("A_MARKER");
-        LoggingEvent event = createLoggingEvent();
-        
-        
-        event.addMarker(marker);
-        assertNotNull(event.getMarkerList());
-        
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
+	@Test
+	public void testWithMarker() throws Exception {
+		final Marker marker = MarkerFactory.getMarker("A_MARKER");
+		final LoggingEvent event = createLoggingEvent();
 
-        assertNotNull(remoteEvent.getMarkerList());
-        assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
-    }
-    
-    @Test
-    public void testWithTwoMarkers() throws Exception {
-        Marker marker = MarkerFactory.getMarker("A_MARKER");
-        Marker marker2 = MarkerFactory.getMarker("B_MARKER");
-        marker.add(marker2);
-        LoggingEvent event = createLoggingEvent();
-        
-        event.addMarker(marker);
-        assertNotNull(event.getMarkerList());
-        
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
 
-        assertNotNull(remoteEvent.getMarkerList());
-        assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
-    }
-    
-    @Test
-    public void testWithCallerData() throws Exception {
-        LoggingEvent event = createLoggingEvent();
-        event.getCallerData();
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
-    }
+		event.addMarker(marker);
+		assertNotNull(event.getMarkerList());
 
-    @Test
-    public void extendendeThrowable() throws Exception {
-        LoggingEvent event = createLoggingEvent();
-        Throwable throwable = new Throwable("just testing");
-        ThrowableProxy tp = new ThrowableProxy(throwable);
-        event.setThrowableProxy(tp);
-        tp.calculatePackagingData();
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
-    }
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
 
-    @Test
-    public void serializeLargeArgs() throws Exception {
+		assertNotNull(remoteEvent.getMarkerList());
+		assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
+	}
 
-        StringBuilder buffer = new StringBuilder();
-        for (int i = 0; i < 100000; i++) {
-            buffer.append("X");
-        }
-        String largeString = buffer.toString();
-        Object[] argArray = new Object[] { new LuckyCharms(2), largeString };
+	@Test
+	public void testWithTwoMarkers() throws Exception {
+		final Marker marker = MarkerFactory.getMarker("A_MARKER");
+		final Marker marker2 = MarkerFactory.getMarker("B_MARKER");
+		marker.add(marker2);
+		final LoggingEvent event = createLoggingEvent();
 
-        LoggingEvent event = createLoggingEvent();
-        event.setArgumentArray(argArray);
+		event.addMarker(marker);
+		assertNotNull(event.getMarkerList());
 
-        ILoggingEvent remoteEvent = writeAndRead(event);
-        checkForEquality(event, remoteEvent);
-        Object[] aa = remoteEvent.getArgumentArray();
-        assertNotNull(aa);
-        assertEquals(2, aa.length);
-        String stringBack = (String) aa[1];
-        assertEquals(largeString, stringBack);
-    }
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
 
-    private LoggingEvent createLoggingEvent() {
-        return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, "test message", null, null);
-    }
+		assertNotNull(remoteEvent.getMarkerList());
+		assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
+	}
 
-    private LoggingEvent createLoggingEventWithThrowable(Throwable t) {
-        return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, "test message", t, null);
-    }
+	@Test
+	public void testWithCallerData() throws Exception {
+		final LoggingEvent event = createLoggingEvent();
+		event.getCallerData();
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
+	}
 
-    private void checkForEquality(ILoggingEvent original, ILoggingEvent afterSerialization) {
-        assertEquals(original.getLevel(), afterSerialization.getLevel());
-        assertEquals(original.getFormattedMessage(), afterSerialization.getFormattedMessage());
-        assertEquals(original.getMessage(), afterSerialization.getMessage());
+	@Test
+	public void extendendeThrowable() throws Exception {
+		final LoggingEvent event = createLoggingEvent();
+		final Throwable throwable = new Throwable("just testing");
+		final ThrowableProxy tp = new ThrowableProxy(throwable);
+		event.setThrowableProxy(tp);
+		tp.calculatePackagingData();
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
+	}
 
-        System.out.println();
+	@Test
+	public void serializeLargeArgs() throws Exception {
 
-        ThrowableProxyVO witness = ThrowableProxyVO.build(original.getThrowableProxy());
-        assertEquals(witness, afterSerialization.getThrowableProxy());
+		final StringBuilder buffer = new StringBuilder();
+		for (int i = 0; i < 100000; i++) {
+			buffer.append("X");
+		}
+		final String largeString = buffer.toString();
+		final Object[] argArray = { new LuckyCharms(2), largeString };
 
-    }
+		final LoggingEvent event = createLoggingEvent();
+		event.setArgumentArray(argArray);
 
-    private ILoggingEvent writeAndRead(ILoggingEvent event) throws IOException, ClassNotFoundException {
-        Serializable ser = pst.transform(event);
-        oos.writeObject(ser);
-        ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        inputStream = new HardenedLoggingEventInputStream(bis);
-        
-        return (ILoggingEvent) inputStream.readObject();
-    }
+		final ILoggingEvent remoteEvent = writeAndRead(event);
+		checkForEquality(event, remoteEvent);
+		final Object[] aa = remoteEvent.getArgumentArray();
+		assertNotNull(aa);
+		assertEquals(2, aa.length);
+		final String stringBack = (String) aa[1];
+		assertEquals(largeString, stringBack);
+	}
+
+	private LoggingEvent createLoggingEvent() {
+		return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, "test message", null, null);
+	}
+
+	private LoggingEvent createLoggingEventWithThrowable(final Throwable t) {
+		return new LoggingEvent(this.getClass().getName(), logger, Level.DEBUG, "test message", t, null);
+	}
+
+	private void checkForEquality(final ILoggingEvent original, final ILoggingEvent afterSerialization) {
+		assertEquals(original.getLevel(), afterSerialization.getLevel());
+		assertEquals(original.getFormattedMessage(), afterSerialization.getFormattedMessage());
+		assertEquals(original.getMessage(), afterSerialization.getMessage());
+
+		System.out.println();
+
+		final ThrowableProxyVO witness = ThrowableProxyVO.build(original.getThrowableProxy());
+		assertEquals(witness, afterSerialization.getThrowableProxy());
+
+	}
+
+	private ILoggingEvent writeAndRead(final ILoggingEvent event) throws IOException, ClassNotFoundException {
+		final Serializable ser = pst.transform(event);
+		oos.writeObject(ser);
+		final ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+		inputStream = new HardenedLoggingEventInputStream(bis);
+
+		return (ILoggingEvent) inputStream.readObject();
+	}
 
 }

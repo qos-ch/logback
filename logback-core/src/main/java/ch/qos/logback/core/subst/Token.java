@@ -43,7 +43,7 @@ public class Token {
 
 		final Token token = (Token) o;
 
-		if ((type != token.type) || (payload != null ? !payload.equals(token.payload) : token.payload != null)) {
+		if (type != token.type || (payload != null ? !payload.equals(token.payload) : token.payload != null)) {
 			return false;
 		}
 
@@ -52,13 +52,13 @@ public class Token {
 
 	@Override
 	public int hashCode() {
-		int result = type != null ? type.hashCode() : 0;
+		final int result = type != null ? type.hashCode() : 0;
 		return 31 * result + (payload != null ? payload.hashCode() : 0);
 	}
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder("Token{").append("type=").append(type);
+		final StringBuilder result = new StringBuilder("Token{").append("type=").append(type);
 		if (payload != null) {
 			result.append(", payload='").append(payload).append('\'');
 		}

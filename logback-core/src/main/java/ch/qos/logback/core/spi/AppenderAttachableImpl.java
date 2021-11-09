@@ -123,7 +123,7 @@ public class AppenderAttachableImpl<E> implements AppenderAttachable<E> {
 		if (appender == null) {
 			return false;
 		}
-		boolean result;
+		final boolean result;
 		return appenderList.remove(appender);
 	}
 

@@ -66,7 +66,7 @@ public class FileFilterUtil {
 	 */
 	public static File[] filesInFolderMatchingStemRegex(final File file, final String stemRegex) {
 
-		if ((file == null) || !file.exists() || !file.isDirectory()) {
+		if (file == null || !file.exists() || !file.isDirectory()) {
 			return new File[0];
 		}
 		return file.listFiles((FilenameFilter) (dir, name) -> name.matches(stemRegex));

@@ -86,7 +86,7 @@ public class RollingCalendar extends GregorianCalendar {
 				final Date next = innerGetEndOfThisPeriod(calendar, i, epoch);
 				final String r1 = simpleDateFormat.format(next);
 
-				// System.out.println("Type = "+i+", r0 = "+r0+", r1 = "+r1);
+				// System.out.println("Type = " + i + ", r0 = " + r0 + ", r1 = " + r1);
 				if (r0 != null && r1 != null && !r0.equals(r1)) {
 					return i;
 				}
@@ -101,23 +101,16 @@ public class RollingCalendar extends GregorianCalendar {
 		case TOP_OF_HOUR:
 			// isolated hh or KK
 			return !collision(12 * MILLIS_IN_ONE_HOUR);
-
 		case TOP_OF_DAY:
-			// EE or uu
-			
-			// isolated dd
-			// DD
-			if (collision(7 * MILLIS_IN_ONE_DAY) || collision(31 * MILLIS_IN_ONE_DAY) || collision(365 * MILLIS_IN_ONE_DAY)) {
+			// EE or uu & isolated dd & DD
+			if (collision(7 * MILLIS_IN_ONE_DAY) || collision(31 * MILLIS_IN_ONE_DAY)
+					|| collision(365 * MILLIS_IN_ONE_DAY)) {
 				return false;
 			}
 			return true;
 		case TOP_OF_WEEK:
-			// WW
-			if (collision(34 * MILLIS_IN_ONE_DAY)) {
-				return false;
-			}
-			// isolated ww
-			if (collision(366 * MILLIS_IN_ONE_DAY)) {
+			// WW & isolated ww
+			if (collision(34 * MILLIS_IN_ONE_DAY) || collision(366 * MILLIS_IN_ONE_DAY)) {
 				return false;
 			}
 			return true;
@@ -220,11 +213,13 @@ public class RollingCalendar extends GregorianCalendar {
 		return yearDiff * 12 + monthDiff;
 	}
 
-	static private Date innerGetEndOfThisPeriod(final Calendar cal, final PeriodicityType periodicityType, final Date now) {
+	static private Date innerGetEndOfThisPeriod(final Calendar cal, final PeriodicityType periodicityType,
+			final Date now) {
 		return innerGetEndOfNextNthPeriod(cal, periodicityType, now, 1);
 	}
 
-	static private Date innerGetEndOfNextNthPeriod(final Calendar cal, final PeriodicityType periodicityType, final Date now, final int numPeriods) {
+	static private Date innerGetEndOfNextNthPeriod(final Calendar cal, final PeriodicityType periodicityType,
+			final Date now, final int numPeriods) {
 		cal.setTime(now);
 		switch (periodicityType) {
 		case TOP_OF_MILLISECOND:

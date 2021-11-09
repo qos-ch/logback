@@ -13,47 +13,47 @@
  */
 package ch.qos.logback.core.testUtil;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.StatusUtil;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 /**
  * Extend  StatusUtil with assertions.
  */
 public class StatusChecker extends StatusUtil {
 
-    public StatusChecker(StatusManager sm) {
-        super(sm);
-    }
+	public StatusChecker(final StatusManager sm) {
+		super(sm);
+	}
 
-    public StatusChecker(Context context) {
-        super(context);
-    }
+	public StatusChecker(final Context context) {
+		super(context);
+	}
 
-    public void assertContainsMatch(int level, String regex) {
-        assertTrue(containsMatch(level, regex));
-    }
+	public void assertContainsMatch(final int level, final String regex) {
+		assertTrue(containsMatch(level, regex));
+	}
 
-    public void assertNoMatch(String regex) {
-        assertFalse(containsMatch(regex));
-    }
-    
-    public void assertContainsMatch(String regex) {
-        assertTrue(containsMatch(regex));
-    }
+	public void assertNoMatch(final String regex) {
+		assertFalse(containsMatch(regex));
+	}
 
-    public void asssertContainsException(Class<?> scanExceptionClass) {
-        assertTrue(containsException(scanExceptionClass));
-    }
+	public void assertContainsMatch(final String regex) {
+		assertTrue(containsMatch(regex));
+	}
 
-    public void assertIsErrorFree() {
-        assertTrue(isErrorFree(0));
-    }
+	public void asssertContainsException(final Class<?> scanExceptionClass) {
+		assertTrue(containsException(scanExceptionClass));
+	}
 
-    public void assertIsWarningOrErrorFree() {
-        assertTrue(isWarningOrErrorFree(0));
-    }
+	public void assertIsErrorFree() {
+		assertTrue(isErrorFree(0));
+	}
+
+	public void assertIsWarningOrErrorFree() {
+		assertTrue(isWarningOrErrorFree(0));
+	}
 }

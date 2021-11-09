@@ -33,116 +33,119 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
  */
 public class ServerSocketListenerTest {
 
-    private ServerSocket serverSocket;
-    @SuppressWarnings("rawtypes")
-    private ServerSocketListener listener;
+	private ServerSocket serverSocket;
+	@SuppressWarnings("rawtypes")
+	private ServerSocketListener listener;
 
-    @Before
-    public void setUp() throws Exception {
-        serverSocket = ServerSocketUtil.createServerSocket();
-        assertNotNull(serverSocket);
-        listener = new InstrumentedServerSocketListener(serverSocket);
-    }
+	@Before
+	public void setUp() throws Exception {
+		serverSocket = ServerSocketUtil.createServerSocket();
+		assertNotNull(serverSocket);
+		listener = new InstrumentedServerSocketListener(serverSocket);
+	}
 
-    @Test
-    public void testAcceptClient() throws Exception {
-        RunnableClient localClient = new RunnableClient(InetAddress.getLocalHost(), serverSocket.getLocalPort());
-        Thread thread = new Thread(localClient);
-        thread.start();
-        synchronized (localClient) {
-            int retries = 200;
-            while (retries-- > 0 && !localClient.isConnected()) {
-                localClient.wait(10);
-            }
-        }
-        assertTrue(localClient.isConnected());
-        localClient.close();
+	@Test
+	public void testAcceptClient() throws Exception {
+		final RunnableClient localClient = new RunnableClient(InetAddress.getLocalHost(), serverSocket.getLocalPort());
+		final Thread thread = new Thread(localClient);
+		thread.start();
+		synchronized (localClient) {
+			int retries = 200;
+			while (retries-- > 0 && !localClient.isConnected()) {
+				localClient.wait(10);
+			}
+		}
+		assertTrue(localClient.isConnected());
+		localClient.close();
 
-        serverSocket.setSoTimeout(5000);
-        Client client = listener.acceptClient();
-        assertNotNull(client);
-        client.close();
-    }
+		serverSocket.setSoTimeout(5000);
+		final Client client = listener.acceptClient();
+		assertNotNull(client);
+		client.close();
+	}
 
-    private static class InstrumentedServerSocketListener extends ServerSocketListener<RemoteClient> {
+	private static class InstrumentedServerSocketListener extends ServerSocketListener<RemoteClient> {
 
-        public InstrumentedServerSocketListener(ServerSocket serverSocket) {
-            super(serverSocket);
-        }
+		public InstrumentedServerSocketListener(final ServerSocket serverSocket) {
+			super(serverSocket);
+		}
 
-        @Override
-        protected RemoteClient createClient(String id, Socket socket) throws IOException {
-            return new RemoteClient(socket);
-        }
+		@Override
+		protected RemoteClient createClient(final String id, final Socket socket) throws IOException {
+			return new RemoteClient(socket);
+		}
 
-    }
+	}
 
-    private static class RemoteClient implements Client {
+	private static class RemoteClient implements Client {
 
-        private final Socket socket;
+		private final Socket socket;
 
-        public RemoteClient(Socket socket) {
-            this.socket = socket;
-        }
+		public RemoteClient(final Socket socket) {
+			this.socket = socket;
+		}
 
-        public void run() {
-        }
+		@Override
+		public void run() {
+		}
 
-        public void close() {
-            try {
-                socket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace(System.err);
-            }
-        }
+		@Override
+		public void close() {
+			try {
+				socket.close();
+			} catch (final IOException ex) {
+				ex.printStackTrace(System.err);
+			}
+		}
 
-    }
+	}
 
-    private static class RunnableClient implements Client {
+	private static class RunnableClient implements Client {
 
-        private final InetAddress inetAddress;
-        private final int port;
-        private boolean connected;
-        private boolean closed;
+		private final InetAddress inetAddress;
+		private final int port;
+		private boolean connected;
+		private boolean closed;
 
-        public RunnableClient(InetAddress inetAddress, int port) {
-            super();
-            this.inetAddress = inetAddress;
-            this.port = port;
-        }
+		public RunnableClient(final InetAddress inetAddress, final int port) {
+			this.inetAddress = inetAddress;
+			this.port = port;
+		}
 
-        public synchronized boolean isConnected() {
-            return connected;
-        }
+		public synchronized boolean isConnected() {
+			return connected;
+		}
 
-        public synchronized void setConnected(boolean connected) {
-            this.connected = connected;
-        }
+		public synchronized void setConnected(final boolean connected) {
+			this.connected = connected;
+		}
 
-        public void run() {
-            try {
-                Socket socket = new Socket(inetAddress, port);
-                synchronized (this) {
-                    setConnected(true);
-                    notifyAll();
-                    while (!closed && !Thread.currentThread().isInterrupted()) {
-                        try {
-                            wait();
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                    socket.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace(System.err);
-            }
-        }
+		@Override
+		public void run() {
+			try {
+				final Socket socket = new Socket(inetAddress, port);
+				synchronized (this) {
+					setConnected(true);
+					notifyAll();
+					while (!closed && !Thread.currentThread().isInterrupted()) {
+						try {
+							wait();
+						} catch (final InterruptedException ex) {
+							Thread.currentThread().interrupt();
+						}
+					}
+					socket.close();
+				}
+			} catch (final IOException ex) {
+				ex.printStackTrace(System.err);
+			}
+		}
 
-        public synchronized void close() {
-            closed = true;
-            notifyAll();
-        }
+		@Override
+		public synchronized void close() {
+			closed = true;
+			notifyAll();
+		}
 
-    }
+	}
 }

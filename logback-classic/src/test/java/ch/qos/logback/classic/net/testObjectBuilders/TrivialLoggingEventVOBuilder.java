@@ -21,11 +21,12 @@ import ch.qos.logback.classic.spi.LoggingEventVO;
  */
 public class TrivialLoggingEventVOBuilder implements Builder<LoggingEventVO> {
 
-    public LoggingEventVO build(int i) {
-        TrivialLoggingEventBuilder loggingEventBuilder = new TrivialLoggingEventBuilder();
-        LoggingEvent event = (LoggingEvent) loggingEventBuilder.build(i);
+	@Override
+	public LoggingEventVO build(final int i) {
+		final TrivialLoggingEventBuilder loggingEventBuilder = new TrivialLoggingEventBuilder();
+		final LoggingEvent event = loggingEventBuilder.build(i);
 
-        return LoggingEventVO.build(event);
-    }
+		return LoggingEventVO.build(event);
+	}
 
 }

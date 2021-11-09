@@ -31,78 +31,78 @@ import ch.qos.logback.core.spi.CyclicBufferTracker;
 
 public class DilutedSMTPAppenderTest {
 
-    SMTPAppender appender;
-    CyclicBufferTracker<ILoggingEvent> cbTracker;
-    CyclicBuffer<ILoggingEvent> cb;
+	SMTPAppender appender;
+	CyclicBufferTracker<ILoggingEvent> cbTracker;
+	CyclicBuffer<ILoggingEvent> cb;
 
-    @Before
-    public void setUp() throws Exception {
-        LoggerContext lc = new LoggerContext();
-        appender = new SMTPAppender();
-        appender.setContext(lc);
-        appender.setName("smtp");
-        appender.setFrom("user@host.dom");
-        appender.setLayout(buildLayout(lc));
-        appender.setSMTPHost("mail2.qos.ch");
-        appender.setSubject("logging report");
-        appender.addTo("sebastien.nospam@qos.ch");
-        appender.start();
-        cbTracker = appender.getCyclicBufferTracker();
-        cb = cbTracker.getOrCreate("", 0);
+	@Before
+	public void setUp() throws Exception {
+		final LoggerContext lc = new LoggerContext();
+		appender = new SMTPAppender();
+		appender.setContext(lc);
+		appender.setName("smtp");
+		appender.setFrom("user@host.dom");
+		appender.setLayout(buildLayout(lc));
+		appender.setSMTPHost("mail2.qos.ch");
+		appender.setSubject("logging report");
+		appender.addTo("sebastien.nospam@qos.ch");
+		appender.start();
+		cbTracker = appender.getCyclicBufferTracker();
+		cb = cbTracker.getOrCreate("", 0);
 
-    }
+	}
 
-    private static Layout<ILoggingEvent> buildLayout(LoggerContext lc) {
-        PatternLayout layout = new PatternLayout();
-        layout.setContext(lc);
-        layout.setFileHeader("Some header\n");
-        layout.setPattern("%-4relative [%thread] %-5level %class - %msg%n");
-        layout.setFileFooter("Some footer");
-        layout.start();
-        return layout;
-    }
+	private static Layout<ILoggingEvent> buildLayout(final LoggerContext lc) {
+		final PatternLayout layout = new PatternLayout();
+		layout.setContext(lc);
+		layout.setFileHeader("Some header\n");
+		layout.setPattern("%-4relative [%thread] %-5level %class - %msg%n");
+		layout.setFileFooter("Some footer");
+		layout.start();
+		return layout;
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        appender = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		appender = null;
+	}
 
-    @Test
-    public void testStart() {
-        assertEquals("sebastien.nospam@qos.ch%nopex", appender.getToAsListOfString().get(0));
+	@Test
+	public void testStart() {
+		assertEquals("sebastien.nospam@qos.ch%nopex", appender.getToAsListOfString().get(0));
 
-        assertEquals("logging report", appender.getSubject());
+		assertEquals("logging report", appender.getSubject());
 
-        assertTrue(appender.isStarted());
-    }
+		assertTrue(appender.isStarted());
+	}
 
-    @Test
-    public void testAppendNonTriggeringEvent() {
-        LoggingEvent event = new LoggingEvent();
-        event.setThreadName("thead name");
-        event.setLevel(Level.DEBUG);
-        appender.subAppend(cb, event);
-        assertEquals(1, cb.length());
-    }
+	@Test
+	public void testAppendNonTriggeringEvent() {
+		final LoggingEvent event = new LoggingEvent();
+		event.setThreadName("thead name");
+		event.setLevel(Level.DEBUG);
+		appender.subAppend(cb, event);
+		assertEquals(1, cb.length());
+	}
 
-    @Test
-    public void testEntryConditionsCheck() {
-        appender.checkEntryConditions();
-        assertEquals(0, appender.getContext().getStatusManager().getCount());
-    }
+	@Test
+	public void testEntryConditionsCheck() {
+		appender.checkEntryConditions();
+		assertEquals(0, appender.getContext().getStatusManager().getCount());
+	}
 
-    @Test
-    public void testTriggeringPolicy() {
-        appender.setEvaluator(null);
-        appender.checkEntryConditions();
-        assertEquals(1, appender.getContext().getStatusManager().getCount());
-    }
+	@Test
+	public void testTriggeringPolicy() {
+		appender.setEvaluator(null);
+		appender.checkEntryConditions();
+		assertEquals(1, appender.getContext().getStatusManager().getCount());
+	}
 
-    @Test
-    public void testEntryConditionsCheckNoLayout() {
-        appender.setLayout(null);
-        appender.checkEntryConditions();
-        assertEquals(1, appender.getContext().getStatusManager().getCount());
-    }
+	@Test
+	public void testEntryConditionsCheckNoLayout() {
+		appender.setLayout(null);
+		appender.checkEntryConditions();
+		assertEquals(1, appender.getContext().getStatusManager().getCount());
+	}
 
 }

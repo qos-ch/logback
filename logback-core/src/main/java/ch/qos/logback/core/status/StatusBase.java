@@ -164,14 +164,11 @@ abstract public class StatusBase implements Status {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		final StatusBase other = (StatusBase) obj;
-		if (level != other.level) {
-			return false;
-		}
-		if (!Objects.equals(message, other.message)) {
+		if ((level != other.level) || !Objects.equals(message, other.message)) {
 			return false;
 		}
 		return true;

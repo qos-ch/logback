@@ -34,11 +34,11 @@ public class LoggerNameConverterPerfTest {
 
 	LoggerContext loggerContext = new LoggerContext();
 	LoggerConverter loggerConverter = new LoggerConverter();
-	
+
 	LoggerNameOnlyLoggingEvent event = new LoggerNameOnlyLoggingEvent();
 
 	Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@BeforeClass
 	static public void loadClassNames() throws IOException {
 
@@ -53,7 +53,7 @@ public class LoggerNameConverterPerfTest {
 
 	@Before
 	public void setUp() {
-		OnConsoleStatusListener ocsl = new OnConsoleStatusListener();
+		final OnConsoleStatusListener ocsl = new OnConsoleStatusListener();
 		ocsl.setContext(loggerContext);
 		ocsl.start();
 		loggerContext.getStatusManager().add(ocsl);
@@ -61,12 +61,12 @@ public class LoggerNameConverterPerfTest {
 		loggerConverter.setContext(loggerContext);
 		loggerConverter.start();
 	}
-	
+
 	@After
 	public void tearDown() {
-		
+
 	}
-	
+
 	@Test
 	public void measureAbbreviationPerf() {
 		for(int i = 0; i < 10*1000; i++) {
@@ -77,38 +77,36 @@ public class LoggerNameConverterPerfTest {
 		}
 		final int runLength = 1000*1000;
 		System.out.println("Start measurements");
-		long start = System.nanoTime();
+		final long start = System.nanoTime();
 		for(int i = 0; i < runLength; i++) {
 			performAbbreviation();
 		}
-		long end = System.nanoTime();
-		long diff = end - start;
-		double average = diff*1.0D/runLength;
+		final long end = System.nanoTime();
+		final long diff = end - start;
+		final double average = diff*1.0D/runLength;
 		logger.atInfo().addArgument(average).log("Average = {} nanos");
-		int cacheMisses = loggerConverter.getCacheMisses();
-		
+		final int cacheMisses = loggerConverter.getCacheMisses();
+
 		logger.atInfo().addArgument(cacheMisses).log("cacheMisses = {} ");
 		logger.atInfo().addArgument(runLength).log("total calls= = {} ");
-		
-		double cacheMissRate = loggerConverter.getCacheMissRate()*100;
+
+		final double cacheMissRate = loggerConverter.getCacheMissRate()*100;
 		logger.atInfo().addArgument(cacheMissRate).log("cacheMiss rate %= {} ");
-		
+
 	}
 
-	
+
 	public void performAbbreviation() {
-		String fqn = getFQN();
+		final String fqn = getFQN();
 		event.setLoggerName(fqn);
 		loggerConverter.convert(event);
 	}
-	
+
 	private String getFQN() {
 		while (true) {
-			int index = (int) G.getGaussian();
+			final int index = (int) G.getGaussian();
 			if (index >= 0 && index < SIZE) {
 				return NAMES_LIST.get(index);
-			} else {
-				continue;
 			}
 		}
 	}

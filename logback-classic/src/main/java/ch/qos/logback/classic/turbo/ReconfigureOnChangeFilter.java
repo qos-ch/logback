@@ -95,7 +95,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
 		// for performance reasons, skip change detection (MASK-1) times out of MASK.
 		// Only once every MASK calls is change detection code executed
 		// Note that MASK is a variable itself.
-		if (!isStarted() || ((invocationCounter++ & mask) != mask)) {
+		if (!isStarted() || (invocationCounter++ & mask) != mask) {
 			return FilterReply.NEUTRAL;
 		}
 

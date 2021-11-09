@@ -32,9 +32,8 @@ public class LoggingEventPreSerializationTransformer implements PreSerialization
 		}
 		if (event instanceof LoggingEventVO) {
 			return (LoggingEventVO) event;
-		} else {
-			throw new IllegalArgumentException("Unsupported type " + event.getClass().getName());
 		}
+		throw new IllegalArgumentException("Unsupported type " + event.getClass().getName());
 	}
 
 }

@@ -23,39 +23,39 @@ import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 public class SimpleConfigurator extends GenericConfigurator {
 
-    HashMap<ElementSelector, Action> rulesMap;
+	HashMap<ElementSelector, Action> rulesMap;
 
-    public SimpleConfigurator(HashMap<ElementSelector, Action> rules) {
-        this.rulesMap = rules;
-    }
+	public SimpleConfigurator(final HashMap<ElementSelector, Action> rules) {
+		rulesMap = rules;
+	}
 
-    @Override
-    protected void addImplicitRules(SaxEventInterpreter interpreter) {
-//    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
-    	
-//        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
-//        nestedIA.setContext(context);
-//        interpreter.addImplicitAction(nestedIA);
+	@Override
+	protected void addImplicitRules(final SaxEventInterpreter interpreter) {
+		//    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
 
-//        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
-//        nestedSimpleIA.setContext(context);
-//        interpreter.addImplicitAction(nestedSimpleIA);
-        
-        
-        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
-        interpreter.addImplicitAction(implicitRuleModelAction);
+		//        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
+		//        nestedIA.setContext(context);
+		//        interpreter.addImplicitAction(nestedIA);
 
-    }
+		//        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
+		//        nestedSimpleIA.setContext(context);
+		//        interpreter.addImplicitAction(nestedSimpleIA);
 
-    public SaxEventInterpreter getInterpreter() {
-        return interpreter;
-    }
 
-    @Override
-    protected void addInstanceRules(RuleStore rs) {
-        for (ElementSelector elementSelector : rulesMap.keySet()) {
-            Action action = rulesMap.get(elementSelector);
-            rs.addRule(elementSelector, action);
-        }
-    }
+		final ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+		interpreter.addImplicitAction(implicitRuleModelAction);
+
+	}
+
+	public SaxEventInterpreter getInterpreter() {
+		return interpreter;
+	}
+
+	@Override
+	protected void addInstanceRules(final RuleStore rs) {
+		for (final ElementSelector elementSelector : rulesMap.keySet()) {
+			final Action action = rulesMap.get(elementSelector);
+			rs.addRule(elementSelector, action);
+		}
+	}
 }

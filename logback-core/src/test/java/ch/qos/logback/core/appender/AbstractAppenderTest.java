@@ -26,39 +26,39 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 abstract public class AbstractAppenderTest<E> {
 
-    abstract protected Appender<E> getAppender();
+	abstract protected Appender<E> getAppender();
 
-    abstract protected Appender<E> getConfiguredAppender();
+	abstract protected Appender<E> getConfiguredAppender();
 
-    Context context = new ContextBase();
+	Context context = new ContextBase();
 
-    @Test
-    public void testNewAppender() {
-        // new appenders should be inactive
-        Appender<E> appender = getAppender();
-        assertFalse(appender.isStarted());
-    }
+	@Test
+	public void testNewAppender() {
+		// new appenders should be inactive
+		final Appender<E> appender = getAppender();
+		assertFalse(appender.isStarted());
+	}
 
-    @Test
-    public void testConfiguredAppender() {
-        Appender<E> appender = getConfiguredAppender();
-        appender.start();
-        assertTrue(appender.isStarted());
+	@Test
+	public void testConfiguredAppender() {
+		final Appender<E> appender = getConfiguredAppender();
+		appender.start();
+		assertTrue(appender.isStarted());
 
-        appender.stop();
-        assertFalse(appender.isStarted());
+		appender.stop();
+		assertFalse(appender.isStarted());
 
-    }
+	}
 
-    @Test
-    public void testNoStart() {
-        Appender<E> appender = getAppender();
-        appender.setContext(context);
-        appender.setName("doh");
-        // is null OK?
-        appender.doAppend(null);
-        StatusChecker checker = new StatusChecker(context.getStatusManager());
-        StatusPrinter.print(context);
-        checker.assertContainsMatch("Attempted to append to non started appender \\[doh\\].");
-    }
+	@Test
+	public void testNoStart() {
+		final Appender<E> appender = getAppender();
+		appender.setContext(context);
+		appender.setName("doh");
+		// is null OK?
+		appender.doAppend(null);
+		final StatusChecker checker = new StatusChecker(context.getStatusManager());
+		StatusPrinter.print(context);
+		checker.assertContainsMatch("Attempted to append to non started appender \\[doh\\].");
+	}
 }

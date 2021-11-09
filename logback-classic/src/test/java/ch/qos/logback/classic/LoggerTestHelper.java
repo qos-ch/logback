@@ -19,17 +19,17 @@ import static org.junit.Assert.assertNull;
 
 public class LoggerTestHelper  {
 
-    static void assertNameEquals(Logger logger, String name) {
-        assertNotNull(logger);
-        assertEquals(name, logger.getName());
-    }
+	static void assertNameEquals(final Logger logger, final String name) {
+		assertNotNull(logger);
+		assertEquals(name, logger.getName());
+	}
 
-    static void assertLevels(Level level, Logger logger, Level effectiveLevel) {
-        if (level == null) {
-            assertNull(logger.getLevel());
-        } else {
-            assertEquals(level, logger.getLevel());
-        }
-        assertEquals(effectiveLevel, logger.getEffectiveLevel());
-    }
+	static void assertLevels(final Level level, final Logger logger, final Level effectiveLevel) {
+		if (level == null) {
+			assertNull(logger.getLevel());
+		} else {
+			assertEquals(level, logger.getLevel());
+		}
+		assertEquals(effectiveLevel, logger.getEffectiveLevel());
+	}
 }

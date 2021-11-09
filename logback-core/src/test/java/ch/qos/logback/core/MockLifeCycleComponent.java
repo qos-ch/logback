@@ -17,18 +17,21 @@ import ch.qos.logback.core.spi.LifeCycle;
 
 public class MockLifeCycleComponent implements LifeCycle {
 
-    private boolean started;
+	private boolean started;
 
-    public void start() {
-        started = true;
-    }
+	@Override
+	public void start() {
+		started = true;
+	}
 
-    public void stop() {
-        started = false;
-    }
+	@Override
+	public void stop() {
+		started = false;
+	}
 
-    public boolean isStarted() {
-        return started;
-    }
+	@Override
+	public boolean isStarted() {
+		return started;
+	}
 
 }

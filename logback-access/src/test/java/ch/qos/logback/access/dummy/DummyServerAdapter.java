@@ -13,34 +13,38 @@
  */
 package ch.qos.logback.access.dummy;
 
-import ch.qos.logback.access.spi.ServerAdapter;
-
 import java.util.Map;
+
+import ch.qos.logback.access.spi.ServerAdapter;
 
 public class DummyServerAdapter implements ServerAdapter {
 
-    DummyRequest request;
-    DummyResponse response;
+	DummyRequest request;
+	DummyResponse response;
 
-    public DummyServerAdapter(DummyRequest dummyRequest, DummyResponse dummyResponse) {
-        this.request = dummyRequest;
-        this.response = dummyResponse;
-    }
+	public DummyServerAdapter(final DummyRequest dummyRequest, final DummyResponse dummyResponse) {
+		request = dummyRequest;
+		response = dummyResponse;
+	}
 
-    public long getContentLength() {
-        return response.getContentCount();
-    }
+	@Override
+	public long getContentLength() {
+		return response.getContentCount();
+	}
 
-    public int getStatusCode() {
-        return response.getStatus();
-    }
+	@Override
+	public int getStatusCode() {
+		return response.getStatus();
+	}
 
-    public long getRequestTimestamp() {
-        return -1;
-    }
+	@Override
+	public long getRequestTimestamp() {
+		return -1;
+	}
 
-    public Map<String, String> buildResponseHeaderMap() {
-        return response.headerMap;
-    }
+	@Override
+	public Map<String, String> buildResponseHeaderMap() {
+		return response.headerMap;
+	}
 
 }

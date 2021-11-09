@@ -18,23 +18,23 @@ import java.util.List;
 
 public class Fruit {
 
-    String name;
-    List<String> textList = new ArrayList<String>();
-    List<Cake> cakeList = new ArrayList<Cake>();
+	String name;
+	List<String> textList = new ArrayList<>();
+	List<Cake> cakeList = new ArrayList<>();
 
-    public void setName(String n) {
-        this.name = n;
-    }
+	public void setName(final String n) {
+		name = n;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void addText(String s) {
-        textList.add(s);
-    }
+	public void addText(final String s) {
+		textList.add(s);
+	}
 
-    public void addCake(Cake c) {
-        cakeList.add(c);
-    }
+	public void addCake(final Cake c) {
+		cakeList.add(c);
+	}
 }

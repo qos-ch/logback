@@ -8,30 +8,30 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 
 public class FruitContextModelHandler extends ModelHandlerBase {
 
-    public FruitContextModelHandler(Context context) {
-        super(context);
-    }
-    
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	public FruitContextModelHandler(final Context context) {
+		super(context);
+	}
+
+	static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
 		return new FruitContextModelHandler(context);
-	}	
-		
+	}
+
 	@Override
-    public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
-        interpretationContext.pushObject(context);
-    }
+	public void handle(final InterpretationContext interpretationContext, final Model model) throws ModelHandlerException {
+		interpretationContext.pushObject(context);
+	}
 
-    @Override
-    public void postHandle(InterpretationContext ec, Model model) throws ModelHandlerException {
- 
-        Object o = ec.peekObject();
+	@Override
+	public void postHandle(final InterpretationContext ec, final Model model) throws ModelHandlerException {
 
-        if (o != context) {
-            addWarn("The object ["+o+"] at top of the stack is not the context named [" + context.getName() + "] pushed earlier.");
-        } else {
-            addInfo("Popping context named [" + context.getName() + "] from the object stack");
-            ec.popObject();
-        }
-    }
+		final Object o = ec.peekObject();
+
+		if (o != context) {
+			addWarn("The object ["+o+"] at top of the stack is not the context named [" + context.getName() + "] pushed earlier.");
+		} else {
+			addInfo("Popping context named [" + context.getName() + "] from the object stack");
+			ec.popObject();
+		}
+	}
 
 }

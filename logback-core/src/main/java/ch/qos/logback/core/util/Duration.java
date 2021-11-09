@@ -92,7 +92,8 @@ public class Duration {
 		final double doubleValue = Double.parseDouble(doubleStr);
 		if (unitStr.equalsIgnoreCase("milli") || unitStr.equalsIgnoreCase("millisecond") || unitStr.length() == 0) {
 			return buildByMilliseconds(doubleValue);
-		} else if (unitStr.equalsIgnoreCase("second") || unitStr.equalsIgnoreCase("seconde")) {
+		}
+		if (unitStr.equalsIgnoreCase("second") || unitStr.equalsIgnoreCase("seconde")) {
 			return buildBySeconds(doubleValue);
 		} else if (unitStr.equalsIgnoreCase("minute")) {
 			return buildByMinutes(doubleValue);
@@ -112,7 +113,8 @@ public class Duration {
 		}
 		if (millis < MINUTES_COEFFICIENT) {
 			return millis / SECONDS_COEFFICIENT + " seconds";
-		} else if (millis < HOURS_COEFFICIENT) {
+		}
+		if (millis < HOURS_COEFFICIENT) {
 			return millis / MINUTES_COEFFICIENT + " minutes";
 		} else {
 			return millis / HOURS_COEFFICIENT + " hours";

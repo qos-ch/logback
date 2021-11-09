@@ -16,10 +16,6 @@ package ch.qos.logback.access.jetty;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Request;
@@ -30,71 +26,76 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.util.ByteArrayISO8859Writer;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 public class JettyFixtureBase {
-    final protected RequestLogImpl requestLogImpl;
-    protected Handler handler = new BasicHandler();
-    private final int port;
-    Server server;
-    protected String url;
+	final protected RequestLogImpl requestLogImpl;
+	protected Handler handler = new BasicHandler();
+	private final int port;
+	Server server;
+	protected String url;
 
-    public JettyFixtureBase(RequestLogImpl impl, int port) {
-        requestLogImpl = impl;
-        this.port = port;
-        url = "http://localhost:" + port + "/";
-    }
+	public JettyFixtureBase(final RequestLogImpl impl, final int port) {
+		requestLogImpl = impl;
+		this.port = port;
+		url = "http://localhost:" + port + "/";
+	}
 
-    public String getName() {
-        return "Jetty Test Setup";
-    }
+	public String getName() {
+		return "Jetty Test Setup";
+	}
 
-    public String getUrl() {
-        return url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void start() throws Exception {
-        server = new Server();
-        ServerConnector connector = new ServerConnector (server);
-        connector.setPort(port);
-        server.setConnectors(new Connector[] { connector });
+	public void start() throws Exception {
+		server = new Server();
+		final ServerConnector connector = new ServerConnector (server);
+		connector.setPort(port);
+		server.setConnectors(new Connector[] { connector });
 
-        RequestLogHandler requestLogHandler = new RequestLogHandler();
-        configureRequestLogImpl();
-        requestLogHandler.setRequestLog(requestLogImpl);
+		final RequestLogHandler requestLogHandler = new RequestLogHandler();
+		configureRequestLogImpl();
+		requestLogHandler.setRequestLog(requestLogImpl);
 
-        HandlerList handlers = new HandlerList();
-        handlers.addHandler(requestLogHandler);
-        handlers.addHandler(getRequestHandler());
+		final HandlerList handlers = new HandlerList();
+		handlers.addHandler(requestLogHandler);
+		handlers.addHandler(getRequestHandler());
 
-        server.setHandler(handlers);
-        server.start();
-    }
+		server.setHandler(handlers);
+		server.start();
+	}
 
-    public void stop() throws Exception {
-        server.stop();
-        server = null;
-    }
+	public void stop() throws Exception {
+		server.stop();
+		server = null;
+	}
 
-    protected void configureRequestLogImpl() {
-        requestLogImpl.start();
-    }
+	protected void configureRequestLogImpl() {
+		requestLogImpl.start();
+	}
 
-    protected Handler getRequestHandler() {
-        return handler;
-    }
+	protected Handler getRequestHandler() {
+		return handler;
+	}
 
-    class BasicHandler extends AbstractHandler {
-        @SuppressWarnings("resource")
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-            OutputStream out = response.getOutputStream();
-            ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();
-            writer.write("hello world");
-            writer.flush();
-            response.setContentLength(writer.size());
-            writer.writeTo(out);
-            out.flush();
+	class BasicHandler extends AbstractHandler {
+		@Override
+		@SuppressWarnings("resource")
+		public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+			final OutputStream out = response.getOutputStream();
+			final ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();
+			writer.write("hello world");
+			writer.flush();
+			response.setContentLength(writer.size());
+			writer.writeTo(out);
+			out.flush();
 
-            baseRequest.setHandled(true);
+			baseRequest.setHandled(true);
 
-        }
-    }
+		}
+	}
 }

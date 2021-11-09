@@ -32,30 +32,30 @@ import ch.qos.logback.core.CoreConstants;
 
 public class ContextInitializerAutoConfigTest {
 
-    org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
-    Logger root = (Logger) LoggerFactory.getLogger("root");
+	org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
+	Logger root = (Logger) LoggerFactory.getLogger("root");
 
-    @Before
-    public void setUp() throws Exception {
-        logger.debug("Hello-didily-odily");
-    }
+	@Before
+	public void setUp() throws Exception {
+		logger.debug("Hello-didily-odily");
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
-        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
-    }
+	@After
+	public void tearDown() throws Exception {
+		System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
+		System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
+	}
 
-    @Test
-    @Ignore
-    // this test works only if logback-test.xml or logback.xml files are on the classpath.
-    // However, this is something we try to avoid in order to simplify the life
-    // of users trying to follows the manual and logback-examples from an IDE
-    public void autoconfig() {
-        LoggerContext iLoggerFactory = (LoggerContext) LoggerFactory.getILoggerFactory();
-        iLoggerFactory.reset();
-        Appender<ILoggingEvent> appender = root.getAppender("STDOUT");
-        assertNotNull(appender);
-        assertTrue(appender instanceof ConsoleAppender);
-    }
+	@Test
+	@Ignore
+	// this test works only if logback-test.xml or logback.xml files are on the classpath.
+	// However, this is something we try to avoid in order to simplify the life
+	// of users trying to follows the manual and logback-examples from an IDE
+	public void autoconfig() {
+		final LoggerContext iLoggerFactory = (LoggerContext) LoggerFactory.getILoggerFactory();
+		iLoggerFactory.reset();
+		final Appender<ILoggingEvent> appender = root.getAppender("STDOUT");
+		assertNotNull(appender);
+		assertTrue(appender instanceof ConsoleAppender);
+	}
 }

@@ -22,31 +22,33 @@ import java.io.PrintStream;
  * This stream writes its output to the target PrintStream supplied to its
  * constructor. At the same time, all the available bytes are collected and
  * returned by the toString() method.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class TeeOutputStream extends OutputStream {
 
-    final PrintStream targetPS;
-    public final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	final PrintStream targetPS;
+	public final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-    public TeeOutputStream(PrintStream targetPS) {
-        // allow for null arguments
-        this.targetPS = targetPS;
-    }
+	public TeeOutputStream(final PrintStream targetPS) {
+		// allow for null arguments
+		this.targetPS = targetPS;
+	}
 
-    public void write(int b) throws IOException {
-        baos.write(b);
-        if (targetPS != null) {
-            targetPS.write(b);
-        }
-    }
+	@Override
+	public void write(final int b) throws IOException {
+		baos.write(b);
+		if (targetPS != null) {
+			targetPS.write(b);
+		}
+	}
 
-    public String toString() {
-        return baos.toString();
-    }
+	@Override
+	public String toString() {
+		return baos.toString();
+	}
 
-    public byte[] toByteArray() {
-        return baos.toByteArray();
-    }
+	public byte[] toByteArray() {
+		return baos.toByteArray();
+	}
 }

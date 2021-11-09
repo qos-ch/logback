@@ -115,7 +115,8 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		if (count > 1) {
 			addError("Only one of \"file\", \"url\" or \"resource\" attributes should be set.");
 			return false;
-		} else if (count == 1) {
+		}
+		if (count == 1) {
 			return true;
 		}
 		throw new IllegalStateException("Count value [" + count + "] is not expected");

@@ -59,8 +59,8 @@ public class JoranConfiguratorTest {
 	StatusChecker checker = new StatusChecker(loggerContext);
 	int diff = RandomUtil.getPositiveInt();
 
-	void configure(String file) throws JoranException {
-		JoranConfigurator jc = new JoranConfigurator();
+	void configure(final String file) throws JoranException {
+		final JoranConfigurator jc = new JoranConfigurator();
 		jc.setContext(loggerContext);
 		loggerContext.putProperty("diff", "" + diff);
 		jc.doConfigure(file);
@@ -70,24 +70,24 @@ public class JoranConfiguratorTest {
 	@Test
 	public void simpleList() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleList.xml");
-		Logger logger = loggerContext.getLogger(this.getClass().getName());
-		Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final Logger logger = loggerContext.getLogger(this.getClass().getName());
+		final Logger root = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertNotNull(listAppender);
 		assertEquals(0, listAppender.list.size());
-		String msg = "hello world";
+		final String msg = "hello world";
 		logger.debug(msg);
 		assertEquals(1, listAppender.list.size());
-		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
+		final ILoggingEvent le = listAppender.list.get(0);
 		assertEquals(msg, le.getMessage());
 	}
 
 	@Test
 	public void level() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleLevel.xml");
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
-		String msg = "hello world";
+		final String msg = "hello world";
 		logger.debug(msg);
 		assertEquals(0, listAppender.list.size());
 	}
@@ -95,20 +95,20 @@ public class JoranConfiguratorTest {
 	@Test
 	public void additivity() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "additivity.xml");
-		Logger logger = loggerContext.getLogger("additivityTest");
+		final Logger logger = loggerContext.getLogger("additivityTest");
 		assertFalse(logger.isAdditive());
 	}
 
 	@Test
 	public void rootLoggerLevelSettingBySystemProperty() throws JoranException {
-		String propertyName = "logback.level";
+		final String propertyName = "logback.level";
 
 		System.setProperty(propertyName, "INFO");
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "rootLevelByProperty.xml");
 		// StatusPrinter.print(loggerContext);
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
-		String msg = "hello world";
+		final String msg = "hello world";
 		logger.debug(msg);
 		assertEquals(0, listAppender.list.size());
 		System.clearProperty(propertyName);
@@ -116,12 +116,12 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void loggerLevelSettingBySystemProperty() throws JoranException {
-		String propertyName = "logback.level";
+		final String propertyName = "logback.level";
 		System.setProperty(propertyName, "DEBUG");
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "loggerLevelByProperty.xml");
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
-		String msg = "hello world";
+		final String msg = "hello world";
 		logger.debug(msg);
 		assertEquals(1, listAppender.list.size());
 		System.clearProperty(propertyName);
@@ -145,7 +145,7 @@ public class JoranConfiguratorTest {
 	@Test
 	public void statusListener() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
-		StatusChecker checker = new StatusChecker(loggerContext);
+		final StatusChecker checker = new StatusChecker(loggerContext);
 		checker.assertIsErrorFree();
 		checker.assertContainsMatch(Status.WARN,
 				"Please use \"level\" attribute within <logger> or <root> elements instead.");
@@ -161,17 +161,17 @@ public class JoranConfiguratorTest {
 	@Test
 	public void eval() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "callerData.xml");
-		String msg = "hello world";
+		final String msg = "hello world";
 		logger.debug("toto");
 		logger.debug(msg);
 
-		StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
+		final StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
 				.getLogger("root").getAppender("STR_LIST");
 		assertNotNull(slAppender);
 		assertEquals(2, slAppender.strList.size());
 		assertTrue(slAppender.strList.get(0).contains(" DEBUG - toto"));
 
-		String str1 = slAppender.strList.get(1);
+		final String str1 = slAppender.strList.get(1);
 		assertTrue(str1.contains("Caller+0"));
 		assertTrue(str1.contains(" DEBUG - hello world"));
 	}
@@ -183,7 +183,7 @@ public class JoranConfiguratorTest {
 		// and place the relevant object correctly.
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "turbo.xml");
 
-		TurboFilter filter = loggerContext.getTurboFilterList().get(0);
+		final TurboFilter filter = loggerContext.getTurboFilterList().get(0);
 		assertTrue(filter instanceof NOPTurboFilter);
 	}
 
@@ -197,9 +197,9 @@ public class JoranConfiguratorTest {
 
 		// StatusPrinter.print(loggerContext.getStatusManager());
 
-		TurboFilter filter = loggerContext.getTurboFilterList().get(0);
+		final TurboFilter filter = loggerContext.getTurboFilterList().get(0);
 		assertTrue(filter instanceof DebugUsersTurboFilter);
-		DebugUsersTurboFilter dutf = (DebugUsersTurboFilter) filter;
+		final DebugUsersTurboFilter dutf = (DebugUsersTurboFilter) filter;
 		assertEquals(2, dutf.getUsers().size());
 	}
 
@@ -212,11 +212,11 @@ public class JoranConfiguratorTest {
 		logger.warn("hello");
 		logger.error("to be ignored");
 
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 
 		assertNotNull(listAppender);
 		assertEquals(1, listAppender.list.size());
-		ILoggingEvent back = listAppender.list.get(0);
+		final ILoggingEvent back = listAppender.list.get(0);
 		assertEquals(Level.WARN, back.getLevel());
 		assertEquals("hello", back.getMessage());
 	}
@@ -230,11 +230,11 @@ public class JoranConfiguratorTest {
 		logger.warn("hello");
 		logger.error("to be ignored");
 
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 
 		assertNotNull(listAppender);
 		assertEquals(1, listAppender.list.size());
-		ILoggingEvent back = listAppender.list.get(0);
+		final ILoggingEvent back = listAppender.list.get(0);
 		assertEquals(Level.WARN, back.getLevel());
 		assertEquals("hello", back.getMessage());
 	}
@@ -243,7 +243,7 @@ public class JoranConfiguratorTest {
 	public void testTurboDynamicThreshold() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "turboDynamicThreshold.xml");
 
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
 
 		// this one should be denied
@@ -254,7 +254,7 @@ public class JoranConfiguratorTest {
 		logger.debug("hello user2");
 
 		assertEquals(1, listAppender.list.size());
-		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
+		final ILoggingEvent le = listAppender.list.get(0);
 		assertEquals("hello user2", le.getMessage());
 	}
 
@@ -266,7 +266,7 @@ public class JoranConfiguratorTest {
 		} finally {
 			//StatusPrinter.print(loggerContext);
 		}
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertEquals(0, listAppender.list.size());
 
 		// this one should log
@@ -280,32 +280,32 @@ public class JoranConfiguratorTest {
 		logger.debug("hello user3");
 
 		assertEquals(2, listAppender.list.size());
-		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
+		ILoggingEvent le = listAppender.list.get(0);
 		assertEquals("hello user1", le.getMessage());
-		le = (ILoggingEvent) listAppender.list.get(1);
+		le = listAppender.list.get(1);
 		assertEquals("hello user2", le.getMessage());
 	}
 
 	@Test
 	public void timestamp() throws JoranException, IOException, InterruptedException {
 
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "timestamp-context.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "timestamp-context.xml";
 		configure(configFileAsStr);
 
-		String r = loggerContext.getProperty("testTimestamp");
+		final String r = loggerContext.getProperty("testTimestamp");
 		assertNotNull(r);
-		CachingDateFormatter sdf = new CachingDateFormatter("yyyy-MM");
-		String expected = sdf.format(System.currentTimeMillis());
+		final CachingDateFormatter sdf = new CachingDateFormatter("yyyy-MM");
+		final String expected = sdf.format(System.currentTimeMillis());
 		assertEquals("expected \"" + expected + "\" but got " + r, expected, r);
 	}
 
 	@Test
 	public void timestampLocal() throws JoranException, IOException, InterruptedException {
 
-		String sysProp = "ch.qos.logback.classic.joran.JoranConfiguratorTest.timestampLocal";
+		final String sysProp = "ch.qos.logback.classic.joran.JoranConfiguratorTest.timestampLocal";
 		System.setProperty(sysProp, "");
 
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "timestamp-local.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "timestamp-local.xml";
 		configure(configFileAsStr);
 
 		// It's hard to test the local variable has been set, as it's not
@@ -313,34 +313,34 @@ public class JoranConfiguratorTest {
 		// context. And check that a system property has been replaced with the
 		// contents of the local variable
 
-		String r = loggerContext.getProperty("testTimestamp");
+		final String r = loggerContext.getProperty("testTimestamp");
 		assertNull(r);
 
-		String expected = "today is " + new SimpleDateFormat("yyyy-MM").format(new Date());
-		String sysPropValue = System.getProperty(sysProp);
+		final String expected = "today is " + new SimpleDateFormat("yyyy-MM").format(new Date());
+		final String sysPropValue = System.getProperty(sysProp);
 		assertEquals(expected, sysPropValue);
 	}
 
 	@Test
 	public void encoderCharset() throws JoranException, IOException, InterruptedException {
 
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "encoderCharset.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "encoderCharset.xml";
 		configure(configFileAsStr);
 
-		ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CONSOLE");
+		final ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CONSOLE");
 		assertNotNull(consoleAppender);
-		LayoutWrappingEncoder<ILoggingEvent> encoder = (LayoutWrappingEncoder<ILoggingEvent>) consoleAppender
+		final LayoutWrappingEncoder<ILoggingEvent> encoder = (LayoutWrappingEncoder<ILoggingEvent>) consoleAppender
 				.getEncoder();
 
 		assertEquals("UTF-8", encoder.getCharset().displayName());
 
-		StatusChecker checker = new StatusChecker(loggerContext);
+		final StatusChecker checker = new StatusChecker(loggerContext);
 		checker.assertIsErrorFree();
 	}
 
-	void verifyJULLevel(String loggerName, Level expectedLevel) {
-		java.util.logging.Logger julLogger = JULHelper.asJULLogger(loggerName);
-		java.util.logging.Level julLevel = julLogger.getLevel();
+	void verifyJULLevel(final String loggerName, final Level expectedLevel) {
+		final java.util.logging.Logger julLogger = JULHelper.asJULLogger(loggerName);
+		final java.util.logging.Level julLevel = julLogger.getLevel();
 
 		if (expectedLevel == null) {
 			assertNull(julLevel);
@@ -352,37 +352,37 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void levelChangePropagator0() throws JoranException, IOException, InterruptedException {
-		String loggerName = "changePropagator0" + diff;
+		final String loggerName = "changePropagator0" + diff;
 		java.util.logging.Logger.getLogger(loggerName).setLevel(java.util.logging.Level.INFO);
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
 		configure(configFileAsStr);
-		StatusChecker checker = new StatusChecker(loggerContext);
+		final StatusChecker checker = new StatusChecker(loggerContext);
 
 		checker.assertIsErrorFree();
 		verifyJULLevel(loggerName, null);
 		verifyJULLevel("a.b.c." + diff, Level.WARN);
-		verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
+		verifyJULLevel(org.slf4j.Logger.ROOT_LOGGER_NAME, Level.TRACE);
 	}
 
 	@Test
 	public void levelChangePropagator1() throws JoranException, IOException, InterruptedException {
-		String loggerName = "changePropagator1" + diff;
-		java.util.logging.Logger logger1 = java.util.logging.Logger.getLogger(loggerName);
+		final String loggerName = "changePropagator1" + diff;
+		final java.util.logging.Logger logger1 = java.util.logging.Logger.getLogger(loggerName);
 		logger1.setLevel(java.util.logging.Level.INFO);
 		verifyJULLevel(loggerName, Level.INFO);
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator1.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator1.xml";
 		configure(configFileAsStr);
-		StatusChecker checker = new StatusChecker(loggerContext);
+		final StatusChecker checker = new StatusChecker(loggerContext);
 		checker.assertIsErrorFree();
 		verifyJULLevel(loggerName, Level.INFO); //
 		verifyJULLevel("a.b.c." + diff, Level.WARN);
-		verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
+		verifyJULLevel(org.slf4j.Logger.ROOT_LOGGER_NAME, Level.TRACE);
 	}
 
 	@Test
 	@Ignore
 	public void onConsoleRetro() throws JoranException, IOException, InterruptedException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/onConsoleRetro.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/onConsoleRetro.xml";
 		configure(configFileAsStr);
 		Thread.sleep(400);
 
@@ -392,7 +392,7 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void LOGBACK_111() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
+		final String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
 		configure(configFileAsStr);
 		checker.asssertContainsException(ScanException.class);
 		checker.assertContainsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
@@ -401,7 +401,7 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void properties() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "properties.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "properties.xml";
 		assertNull(System.getProperty("sys"));
 
 		configure(configFileAsStr);
@@ -416,7 +416,7 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void hostnameProperty() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "hostnameProperty.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "hostnameProperty.xml";
 		configure(configFileAsStr);
 		assertEquals("A", loggerContext.getProperty(CoreConstants.HOSTNAME_KEY));
 	}
@@ -425,7 +425,7 @@ public class JoranConfiguratorTest {
 	@Test
 	public void sysProps() throws JoranException {
 		System.setProperty("k.lbcore254", ClassicTestConstants.ISSUES_PREFIX + "lbcore254");
-		JoranConfigurator configurator = new JoranConfigurator();
+		final JoranConfigurator configurator = new JoranConfigurator();
 		configurator.setContext(loggerContext);
 		configurator.doConfigure(ClassicTestConstants.ISSUES_PREFIX + "lbcore254.xml");
 
@@ -435,22 +435,22 @@ public class JoranConfiguratorTest {
 	@Test
 	public void propsWithMissingRightCurlyBrace() throws JoranException {
 		System.setProperty("abc", "not important");
-		JoranConfigurator configurator = new JoranConfigurator();
+		final JoranConfigurator configurator = new JoranConfigurator();
 		configurator.setContext(loggerContext);
 		configurator.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "propsMissingRightCurlyBrace.xml");
 		checker.assertContainsMatch(Status.ERROR, "Problem while parsing");
 	}
-	
+
 	@Test
 	public void packageDataDisabledByConfigAttribute() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "packagingDataDisabled.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "packagingDataDisabled.xml";
 		configure(configFileAsStr);
 		assertFalse(loggerContext.isPackagingDataEnabled());
 	}
 
 	@Test
 	public void packageDataEnabledByConfigAttribute() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "packagingDataEnabled.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "packagingDataEnabled.xml";
 		try {
 			configure(configFileAsStr);
 		} finally {
@@ -461,14 +461,14 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void valueOfConvention() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "valueOfConvention.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "valueOfConvention.xml";
 		configure(configFileAsStr);
 		checker.assertIsWarningOrErrorFree();
 	}
 
 	@Test
 	public void shutdownHookTest() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1162.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1162.xml";
 		loggerContext.putProperty("output_dir", ClassicTestConstants.OUTPUT_DIR_PREFIX + "logback_issue_1162/");
 		configure(configFileAsStr);
 		assertNotNull(loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD));
@@ -476,17 +476,17 @@ public class JoranConfiguratorTest {
 
 	@Test
 	public void appenderRefBeforeAppenderTest() throws JoranException {
-		String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefBeforeAppender.xml";
+		final String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "appenderRefBeforeAppender.xml";
 		configure(configFileAsStr);
-		Logger logger = loggerContext.getLogger(this.getClass().getName());
-		Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		final Logger logger = loggerContext.getLogger(this.getClass().getName());
+		final Logger root = loggerContext.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
 		assertNotNull(listAppender);
 		assertEquals(0, listAppender.list.size());
-		String msg = "hello world";
+		final String msg = "hello world";
 		logger.debug(msg);
 		assertEquals(1, listAppender.list.size());
-		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
+		final ILoggingEvent le = listAppender.list.get(0);
 		assertEquals(msg, le.getMessage());
 		checker.assertIsErrorFree();
 	}
@@ -497,7 +497,7 @@ public class JoranConfiguratorTest {
 
 		final ListAppender<ILoggingEvent> listAppenderA = (ListAppender<ILoggingEvent>) root.getAppender("A");
 		assertNotNull(listAppenderA);
-		StatusChecker checker = new StatusChecker(loggerContext);
+		final StatusChecker checker = new StatusChecker(loggerContext);
 		checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
 	}
 
@@ -529,25 +529,25 @@ public class JoranConfiguratorTest {
 		assertTrue(listAppender.isStarted());
 		checker.assertContainsMatch(Status.WARN, "Ignoring unkown property \\[inexistent\\] in \\[ch.qos.logback.core.read.ListAppender\\]");
 	}
-	
+
 	@Test
 	public void kvp() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/kvp.xml");
-		
-		String msg = "hello kvp";
-		
-		KeyValuePair kvp1 = new KeyValuePair("k"+diff, "v"+diff);
-		KeyValuePair kvp2 = new KeyValuePair("k"+(diff+1), "v"+(diff+1));
-		KeyValuePair kvpNullKey = new KeyValuePair(null, "v"+(diff+2));
-		KeyValuePair kvpNullValue = new KeyValuePair("k"+(diff+3), null);
+
+		final String msg = "hello kvp";
+
+		final KeyValuePair kvp1 = new KeyValuePair("k"+diff, "v"+diff);
+		final KeyValuePair kvp2 = new KeyValuePair("k"+(diff+1), "v"+(diff+1));
+		final KeyValuePair kvpNullKey = new KeyValuePair(null, "v"+(diff+2));
+		final KeyValuePair kvpNullValue = new KeyValuePair("k"+(diff+3), null);
 
 		logger.atDebug().addKeyValue(kvp1.key, kvp1.value).log(msg);
 		logger.atDebug().addKeyValue(kvp2.key, kvp2.value).log(msg);
 		logger.atDebug().addKeyValue(kvpNullKey.key, kvpNullKey.value).log(msg);
 		logger.atDebug().addKeyValue(kvpNullValue.key, kvpNullValue.value).log(msg);
-		
 
-		StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
+
+		final StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
 				.getLogger("root").getAppender("LIST");
 		assertNotNull(slAppender);
 		assertEquals(4, slAppender.strList.size());
@@ -556,33 +556,33 @@ public class JoranConfiguratorTest {
 		assertTrue(slAppender.strList.get(2).contains("null=\""+kvpNullKey.value+"\" "+msg));
 		assertTrue(slAppender.strList.get(3).contains(kvpNullValue.key+ "=\"null\" " +msg));
 	}
-	
-	
-//	@Test
-//	public void doTest() throws JoranException {
-//		int LIMIT = 0;
-//		boolean oss = true;
-//		for (int i = 0; i < LIMIT; i++) {
-//			innerDoT(oss);
-//		}
-//		long start = System.currentTimeMillis();
-//		innerDoT(oss);
-//		long diff = System.currentTimeMillis() - start;
-//		double average = (1.0d * diff);
-//		System.out.println("Average time " + average + " ms. By serialization " + oss);
-//
-//	}
 
-//	private void innerDoT(boolean oss) throws JoranException {
-//		JoranConfigurator jc = new JoranConfigurator();
-//		jc.setContext(loggerContext);
-//		if (oss) {
-//			System.out.println("jc.doT");
-//			jc.doT();
-//		} else {
-//			System.out.println("jc.doConfigure");
-//			jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
-//		}
-//	}
+
+	//	@Test
+	//	public void doTest() throws JoranException {
+	//		int LIMIT = 0;
+	//		boolean oss = true;
+	//		for (int i = 0; i < LIMIT; i++) {
+	//			innerDoT(oss);
+	//		}
+	//		long start = System.currentTimeMillis();
+	//		innerDoT(oss);
+	//		long diff = System.currentTimeMillis() - start;
+	//		double average = (1.0d * diff);
+	//		System.out.println("Average time " + average + " ms. By serialization " + oss);
+	//
+	//	}
+
+	//	private void innerDoT(boolean oss) throws JoranException {
+	//		JoranConfigurator jc = new JoranConfigurator();
+	//		jc.setContext(loggerContext);
+	//		if (oss) {
+	//			System.out.println("jc.doT");
+	//			jc.doT();
+	//		} else {
+	//			System.out.println("jc.doConfigure");
+	//			jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
+	//		}
+	//	}
 
 }

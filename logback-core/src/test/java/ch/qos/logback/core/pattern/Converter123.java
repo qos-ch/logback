@@ -16,8 +16,9 @@ package ch.qos.logback.core.pattern;
 
 public class Converter123 extends DynamicConverter<Object> {
 
-    public String convert(Object event) {
-        return "123";
-    }
+	@Override
+	public String convert(final Object event) {
+		return "123";
+	}
 
 }

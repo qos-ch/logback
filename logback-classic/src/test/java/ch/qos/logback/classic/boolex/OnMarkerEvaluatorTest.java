@@ -27,39 +27,39 @@ import ch.qos.logback.core.boolex.EvaluationException;
 
 public class OnMarkerEvaluatorTest {
 
-    LoggerContext lc = new LoggerContext();
-    LoggingEvent event = makeEvent();
-    OnMarkerEvaluator evaluator = new OnMarkerEvaluator();
+	LoggerContext lc = new LoggerContext();
+	LoggingEvent event = makeEvent();
+	OnMarkerEvaluator evaluator = new OnMarkerEvaluator();
 
-    @Before
-    public void before() {
-        evaluator.setContext(lc);
-    }
+	@Before
+	public void before() {
+		evaluator.setContext(lc);
+	}
 
-    @Test
-    public void smoke() throws EvaluationException {
-        evaluator.addMarker("M");
-        evaluator.start();
+	@Test
+	public void smoke() throws EvaluationException {
+		evaluator.addMarker("M");
+		evaluator.start();
 
-        event.addMarker(MarkerFactory.getMarker("M"));
-        assertTrue(evaluator.evaluate(event));
-    }
+		event.addMarker(MarkerFactory.getMarker("M"));
+		assertTrue(evaluator.evaluate(event));
+	}
 
-    @Test
-    public void nullMarkerInEvent() throws EvaluationException {
-        evaluator.addMarker("M");
-        evaluator.start();
-        assertFalse(evaluator.evaluate(event));
-    }
+	@Test
+	public void nullMarkerInEvent() throws EvaluationException {
+		evaluator.addMarker("M");
+		evaluator.start();
+		assertFalse(evaluator.evaluate(event));
+	}
 
-    @Test
-    public void nullMarkerInEvaluator() throws EvaluationException {
-        evaluator.addMarker("M");
-        evaluator.start();
-        assertFalse(evaluator.evaluate(event));
-    }
+	@Test
+	public void nullMarkerInEvaluator() throws EvaluationException {
+		evaluator.addMarker("M");
+		evaluator.start();
+		assertFalse(evaluator.evaluate(event));
+	}
 
-    LoggingEvent makeEvent() {
-        return new LoggingEvent("x", lc.getLogger("x"), Level.DEBUG, "msg", null, null);
-    }
+	LoggingEvent makeEvent() {
+		return new LoggingEvent("x", lc.getLogger("x"), Level.DEBUG, "msg", null, null);
+	}
 }

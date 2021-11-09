@@ -11,30 +11,30 @@ import ch.qos.logback.classic.spi.BasicContextListener.UpdateType;
 public class ListContextListener implements LoggerContextListener  {
 
 	List<BasicContextListener.UpdateType> updateList = new ArrayList<>();
-	
+
 	@Override
 	public boolean isResetResistant() {
 		return false;
 	}
 
 	@Override
-	public void onStart(LoggerContext context) {
+	public void onStart(final LoggerContext context) {
 		updateList.add(UpdateType.START);
 	}
 
 	@Override
-	public void onReset(LoggerContext context) {
+	public void onReset(final LoggerContext context) {
 		updateList.add(UpdateType.RESET);
 	}
 
 	@Override
-	public void onStop(LoggerContext context) {
+	public void onStop(final LoggerContext context) {
 		updateList.add(UpdateType.STOP);
-		
+
 	}
 
 	@Override
-	public void onLevelChange(Logger logger, Level level) {
+	public void onLevelChange(final Logger logger, final Level level) {
 		updateList.add(UpdateType.LEVEL_CHANGE);
 	}
 

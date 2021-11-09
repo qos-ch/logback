@@ -62,7 +62,7 @@ public class Node {
 			}
 
 			recursive((Node) payload, payloadBuf);
-			StringBuilder r = new StringBuilder("Node{").append("type=").append(type).append(", payload='").append(payloadBuf.toString()).append("'");
+			final StringBuilder r = new StringBuilder("Node{").append("type=").append(type).append(", payload='").append(payloadBuf.toString()).append("'");
 			if (defaultPart != null) {
 				r.append(", defaultPart=").append(defaultPartBuf2.toString());
 			}
@@ -106,7 +106,7 @@ public class Node {
 
 		final Node node = (Node) o;
 
-		if ((type != node.type) || (payload != null ? !payload.equals(node.payload) : node.payload != null) || (defaultPart != null ? !defaultPart.equals(node.defaultPart) : node.defaultPart != null)
+		if (type != node.type || (payload != null ? !payload.equals(node.payload) : node.payload != null) || (defaultPart != null ? !defaultPart.equals(node.defaultPart) : node.defaultPart != null)
 				|| (next != null ? !next.equals(node.next) : node.next != null)) {
 			return false;
 		}

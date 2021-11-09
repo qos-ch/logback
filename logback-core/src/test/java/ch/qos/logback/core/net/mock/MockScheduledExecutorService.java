@@ -30,54 +30,60 @@ import java.util.concurrent.TimeUnit;
  */
 public class MockScheduledExecutorService extends AbstractExecutorService implements ScheduledExecutorService {
 
-    private Runnable lastCommand;
+	private Runnable lastCommand;
 
-    public Runnable getLastCommand() {
-        return lastCommand;
-    }
+	public Runnable getLastCommand() {
+		return lastCommand;
+	}
 
-    public void shutdown() {
-    }
+	@Override
+	public void shutdown() {
+	}
 
-    public List<Runnable> shutdownNow() {
-        return Collections.emptyList();
-    }
+	@Override
+	public List<Runnable> shutdownNow() {
+		return Collections.emptyList();
+	}
 
-    public boolean isShutdown() {
-        return true;
-    }
+	@Override
+	public boolean isShutdown() {
+		return true;
+	}
 
-    public boolean isTerminated() {
-        return true;
-    }
+	@Override
+	public boolean isTerminated() {
+		return true;
+	}
 
-    public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-        return true;
-    }
+	@Override
+	public boolean awaitTermination(final long timeout, final TimeUnit unit) throws InterruptedException {
+		return true;
+	}
 
-    public void execute(Runnable command) {
-        command.run();
-        lastCommand = command;
-    }
+	@Override
+	public void execute(final Runnable command) {
+		command.run();
+		lastCommand = command;
+	}
 
-    @Override
-    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public ScheduledFuture<?> schedule(final Runnable command, final long delay, final TimeUnit unit) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public <V> ScheduledFuture<V> schedule(final Callable<V> callable, final long delay, final TimeUnit unit) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public ScheduledFuture<?> scheduleAtFixedRate(final Runnable command, final long initialDelay, final long period, final TimeUnit unit) {
+		throw new UnsupportedOperationException();
+	}
 
-    @Override
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
-        throw new UnsupportedOperationException();
-    }
+	@Override
+	public ScheduledFuture<?> scheduleWithFixedDelay(final Runnable command, final long initialDelay, final long delay, final TimeUnit unit) {
+		throw new UnsupportedOperationException();
+	}
 
 }

@@ -13,27 +13,28 @@
  */
 package ch.qos.logback.classic.issue.lbclassic180;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.core.joran.spi.JoranException;
+
 public class Main {
 
-    static Logger logger = LoggerFactory.getLogger(Main.class);
-    static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbclassic180/";
+	static Logger logger = LoggerFactory.getLogger(Main.class);
+	static String DIR_PREFIX = "src/test/java/ch/qos/logback/classic/issue/lbclassic180/";
 
-    public static void main(String[] args) throws JoranException, InterruptedException {
-        init(DIR_PREFIX + "logback.xml");
-        logger.debug("<p>hello</p>");
-    }
+	public static void main(final String[] args) throws JoranException, InterruptedException {
+		init(DIR_PREFIX + "logback.xml");
+		logger.debug("<p>hello</p>");
+	}
 
-    static void init(String file) throws JoranException {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(loggerContext);
-        loggerContext.reset();
-        jc.doConfigure(file);
-    }
+	static void init(final String file) throws JoranException {
+		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		final JoranConfigurator jc = new JoranConfigurator();
+		jc.setContext(loggerContext);
+		loggerContext.reset();
+		jc.doConfigure(file);
+	}
 }

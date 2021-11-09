@@ -73,9 +73,8 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
 
 				if (indexAsStr == null || indexAsStr.isEmpty()) {
 					return NO_INDEX; // unreachable code?
-				} else {
-					return Integer.parseInt(indexAsStr);
 				}
+				return Integer.parseInt(indexAsStr);
 			}
 		});
 	}

@@ -129,7 +129,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
 		}
 		if ("USER".equalsIgnoreCase(facilityStr)) {
 			return SyslogConstants.LOG_USER;
-		} else if ("MAIL".equalsIgnoreCase(facilityStr)) {
+		}
+		if ("MAIL".equalsIgnoreCase(facilityStr)) {
 			return SyslogConstants.LOG_MAIL;
 		} else if ("DAEMON".equalsIgnoreCase(facilityStr)) {
 			return SyslogConstants.LOG_DAEMON;

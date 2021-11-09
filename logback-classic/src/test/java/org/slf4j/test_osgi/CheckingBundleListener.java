@@ -15,6 +15,8 @@ package org.slf4j.test_osgi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleEvent;
@@ -22,34 +24,23 @@ import org.osgi.framework.BundleListener;
 
 public class CheckingBundleListener implements BundleListener {
 
-    List<BundleEvent> eventList = new ArrayList<BundleEvent>();
+	private List<BundleEvent> eventList = new ArrayList<>();
 
-    public void bundleChanged(BundleEvent be) {
-        eventList.add(be);
-    }
+	@Override
+	public void bundleChanged(final BundleEvent be) {
+		eventList.add(be);
+	}
 
-    private void dump(BundleEvent be) {
-        System.out.println("BundleEvent:" + ", source " + be.getSource() + ", bundle=" + be.getBundle() + ", type=" + be.getType());
+	private void dump(final BundleEvent be) {
+		System.out.println("BundleEvent:, source " + be.getSource() + ", bundle=" + be.getBundle() + ", type=" + be.getType());
+	}
 
-    }
+	public void dumpAll() {
+		eventList.stream().forEach(this::dump);
+	}
 
-    public void dumpAll() {
-        for (int i = 0; i < eventList.size(); i++) {
-            BundleEvent fe = (BundleEvent) eventList.get(i);
-            dump(fe);
-        }
-    }
-
-    boolean exists(String bundleName) {
-        for (int i = 0; i < eventList.size(); i++) {
-            BundleEvent fe = (BundleEvent) eventList.get(i);
-            Bundle b = fe.getBundle();
-            System.out.println("===[" + b + "]");
-            if (bundleName.equals(b.getSymbolicName())) {
-                return true;
-            }
-        }
-        return false;
-    }
+	boolean exists(final String bundleName) {
+		return eventList.stream().map(BundleEvent::getBundle).peek(b -> System.out.println("===[" + b + "]")).anyMatch(b -> bundleName.equals(b.getSymbolicName()));
+	}
 
 }

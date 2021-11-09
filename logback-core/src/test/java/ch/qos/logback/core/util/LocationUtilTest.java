@@ -34,62 +34,62 @@ import org.junit.Test;
  */
 public class LocationUtilTest {
 
-    private static final String TEST_CLASSPATH_RESOURCE = "util/testResource.txt";
-    private static final String TEST_PATTERN = "TEST RESOURCE";
+	private static final String TEST_CLASSPATH_RESOURCE = "util/testResource.txt";
+	private static final String TEST_PATTERN = "TEST RESOURCE";
 
-    @Test
-    public void testImplicitClasspathUrl() throws Exception {
-        URL url = LocationUtil.urlForResource(TEST_CLASSPATH_RESOURCE);
-        validateResource(url);
-    }
+	@Test
+	public void testImplicitClasspathUrl() throws Exception {
+		final URL url = LocationUtil.urlForResource(TEST_CLASSPATH_RESOURCE);
+		validateResource(url);
+	}
 
-    @Test
-    public void testExplicitClasspathUrl() throws Exception {
-        URL url = LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + TEST_CLASSPATH_RESOURCE);
-        validateResource(url);
-    }
+	@Test
+	public void testExplicitClasspathUrl() throws Exception {
+		final URL url = LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + TEST_CLASSPATH_RESOURCE);
+		validateResource(url);
+	}
 
-    @Test
-    public void testExplicitClasspathUrlWithLeadingSlash() throws Exception {
-        URL url = LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + "/" + TEST_CLASSPATH_RESOURCE);
-        validateResource(url);
-    }
+	@Test
+	public void testExplicitClasspathUrlWithLeadingSlash() throws Exception {
+		final URL url = LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + "/" + TEST_CLASSPATH_RESOURCE);
+		validateResource(url);
+	}
 
-    @Test(expected = MalformedURLException.class)
-    public void testExplicitClasspathUrlEmptyPath() throws Exception {
-        LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME);
-    }
+	@Test(expected = MalformedURLException.class)
+	public void testExplicitClasspathUrlEmptyPath() throws Exception {
+		LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME);
+	}
 
-    @Test(expected = MalformedURLException.class)
-    public void testExplicitClasspathUrlWithRootPath() throws Exception {
-        LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + "/");
-    }
+	@Test(expected = MalformedURLException.class)
+	public void testExplicitClasspathUrlWithRootPath() throws Exception {
+		LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + "/");
+	}
 
-    @Test
-    public void testFileUrl() throws Exception {
-        File file = File.createTempFile("testResource", ".txt");
-        file.deleteOnExit();
-        PrintWriter writer = new PrintWriter(file);
-        writer.println(TEST_PATTERN);
-        writer.close();
-        URL url = file.toURI().toURL();
-        validateResource(url);
-    }
+	@Test
+	public void testFileUrl() throws Exception {
+		final File file = File.createTempFile("testResource", ".txt");
+		file.deleteOnExit();
+		final PrintWriter writer = new PrintWriter(file);
+		writer.println(TEST_PATTERN);
+		writer.close();
+		final URL url = file.toURI().toURL();
+		validateResource(url);
+	}
 
-    private void validateResource(URL url) throws IOException {
-        InputStream inputStream = url.openStream();
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = reader.readLine();
-            assertEquals(TEST_PATTERN, line);
-        } finally {
-            try {
-                inputStream.close();
-            } catch (IOException ex) {
-                // ignore close exception
-                ex.printStackTrace(System.err);
-            }
-        }
-    }
+	private void validateResource(final URL url) throws IOException {
+		final InputStream inputStream = url.openStream();
+		try {
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+			final String line = reader.readLine();
+			assertEquals(TEST_PATTERN, line);
+		} finally {
+			try {
+				inputStream.close();
+			} catch (final IOException ex) {
+				// ignore close exception
+				ex.printStackTrace(System.err);
+			}
+		}
+	}
 
 }

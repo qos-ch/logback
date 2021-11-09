@@ -29,62 +29,69 @@ import ch.qos.logback.core.status.StatusManager;
  */
 public class MockContext extends ContextBase {
 
-    private final ScheduledExecutorService scheduledExecutorService;
+	private final ScheduledExecutorService scheduledExecutorService;
 
-    private Status lastStatus;
+	private Status lastStatus;
 
-    public MockContext() {
-        this(new MockScheduledExecutorService());
-    }
+	public MockContext() {
+		this(new MockScheduledExecutorService());
+	}
 
-    public MockContext(ScheduledExecutorService executorService) {
-        this.setStatusManager(new MockStatusManager());
-        this.scheduledExecutorService = executorService;
-    }
+	public MockContext(final ScheduledExecutorService executorService) {
+		setStatusManager(new MockStatusManager());
+		scheduledExecutorService = executorService;
+	}
 
-    @Override
-    public ScheduledExecutorService getScheduledExecutorService() {
-        return scheduledExecutorService;
-    }
+	@Override
+	public ScheduledExecutorService getScheduledExecutorService() {
+		return scheduledExecutorService;
+	}
 
-    public Status getLastStatus() {
-        return lastStatus;
-    }
+	public Status getLastStatus() {
+		return lastStatus;
+	}
 
-    public void setLastStatus(Status lastStatus) {
-        this.lastStatus = lastStatus;
-    }
+	public void setLastStatus(final Status lastStatus) {
+		this.lastStatus = lastStatus;
+	}
 
-    private class MockStatusManager implements StatusManager {
+	private class MockStatusManager implements StatusManager {
 
-        public void add(Status status) {
-            lastStatus = status;
-        }
+		@Override
+		public void add(final Status status) {
+			lastStatus = status;
+		}
 
-        public List<Status> getCopyOfStatusList() {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public List<Status> getCopyOfStatusList() {
+			throw new UnsupportedOperationException();
+		}
 
-        public int getCount() {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public int getCount() {
+			throw new UnsupportedOperationException();
+		}
 
-        public boolean add(StatusListener listener) {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public boolean add(final StatusListener listener) {
+			throw new UnsupportedOperationException();
+		}
 
-        public void remove(StatusListener listener) {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public void remove(final StatusListener listener) {
+			throw new UnsupportedOperationException();
+		}
 
-        public void clear() {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public void clear() {
+			throw new UnsupportedOperationException();
+		}
 
-        public List<StatusListener> getCopyOfStatusListenerList() {
-            throw new UnsupportedOperationException();
-        }
+		@Override
+		public List<StatusListener> getCopyOfStatusListenerList() {
+			throw new UnsupportedOperationException();
+		}
 
-    }
+	}
 
 }

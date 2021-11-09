@@ -65,15 +65,12 @@ public class StackTraceElementProxy implements Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		final StackTraceElementProxy other = (StackTraceElementProxy) obj;
 
-		if (!ste.equals(other.ste)) {
-			return false;
-		}
-		if (!Objects.equals(cpd, other.cpd)) {
+		if (!ste.equals(other.ste) || !Objects.equals(cpd, other.cpd)) {
 			return false;
 		}
 		return true;

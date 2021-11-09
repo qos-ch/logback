@@ -20,45 +20,51 @@ import java.util.List;
 
 /**
  * This class is duplicated in slf4j-api-testsjar since 2.0.0-alpha4.
- * 
+ *
  * Use the copy in since 2.0.0-alpha4-tests.jar once it is released.
- * 
+ *
  * @author Ceki
  *
  */
 public class StringPrintStream extends PrintStream {
 
-    public static final String LINE_SEP = System.getProperty("line.separator");
-    PrintStream other;
-    boolean duplicate = false;
+	public static final String LINE_SEP = System.lineSeparator();
+	PrintStream other;
+	boolean duplicate = false;
 
-    public List<String> stringList = Collections.synchronizedList(new ArrayList<String>());
+	public List<String> stringList = Collections.synchronizedList(new ArrayList<String>());
 
-    public StringPrintStream(PrintStream ps, boolean duplicate) {
-        super(ps);
-        other = ps;
-        this.duplicate = duplicate;
-    }
+	public StringPrintStream(final PrintStream ps, final boolean duplicate) {
+		super(ps);
+		other = ps;
+		this.duplicate = duplicate;
+	}
 
-    public StringPrintStream(PrintStream ps) {
-        this(ps, false);
-    }
+	public StringPrintStream(final PrintStream ps) {
+		this(ps, false);
+	}
 
-    public void print(String s) {
-        if (duplicate)
-            other.print(s);
-        stringList.add(s);
-    }
+	@Override
+	public void print(final String s) {
+		if (duplicate) {
+			other.print(s);
+		}
+		stringList.add(s);
+	}
 
-    public void println(String s) {
-        if (duplicate)
-            other.println(s);
-        stringList.add(s);
-    }
+	@Override
+	public void println(final String s) {
+		if (duplicate) {
+			other.println(s);
+		}
+		stringList.add(s);
+	}
 
-    public void println(Object o) {
-        if (duplicate)
-            other.println(o);
-        stringList.add(o.toString());
-    }
+	@Override
+	public void println(final Object o) {
+		if (duplicate) {
+			other.println(o);
+		}
+		stringList.add(o.toString());
+	}
 }

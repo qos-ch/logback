@@ -386,7 +386,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 	private void copyAttributeMap() {
 
 		// attributeMap has been copied already. See also LOGBACK-1189
-		if ((httpRequest == null) || (attributeMap != null)) {
+		if (httpRequest == null || attributeMap != null) {
 			return;
 		}
 
@@ -404,18 +404,13 @@ public class AccessEvent implements Serializable, IAccessEvent {
 	}
 
 	private boolean shouldCopyAttribute(final String name, final Object value) {
-		if (AccessConstants.LB_INPUT_BUFFER.equals(name) || AccessConstants.LB_OUTPUT_BUFFER.equals(name)) {
-			// Do not copy attributes used by logback internally - these are available via other getters anyway
-			return false;
-		}
-		if (value == null) {
+		if (AccessConstants.LB_INPUT_BUFFER.equals(name) || AccessConstants.LB_OUTPUT_BUFFER.equals(name) || (value == null)) {
 			// No reasons to copy nulls - Map.get() will return null for missing keys and the list of attribute
 			// names is not available through IAccessEvent
 			return false;
-		} else {
-			// Only copy what is serializable
-			return value instanceof Serializable;
 		}
+		// Only copy what is serializable
+		return value instanceof Serializable;
 	}
 
 	@Override
@@ -451,7 +446,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
 	@Override
 	public long getContentLength() {
-		if ((contentLength == SENTINEL) && (httpResponse != null)) {
+		if (contentLength == SENTINEL && httpResponse != null) {
 			contentLength = serverAdapter.getContentLength();
 		}
 		return contentLength;
@@ -459,7 +454,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
 	@Override
 	public int getStatusCode() {
-		if ((statusCode == SENTINEL) && (httpResponse != null)) {
+		if (statusCode == SENTINEL && httpResponse != null) {
 			statusCode = serverAdapter.getStatusCode();
 		}
 		return statusCode;
@@ -559,7 +554,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
 	@Override
 	public int getLocalPort() {
-		if ((localPort == SENTINEL) && (httpRequest != null)) {
+		if (localPort == SENTINEL && httpRequest != null) {
 			localPort = httpRequest.getLocalPort();
 		}
 		return localPort;

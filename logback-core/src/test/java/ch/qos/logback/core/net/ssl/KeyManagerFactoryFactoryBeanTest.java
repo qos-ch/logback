@@ -27,24 +27,24 @@ import org.junit.Test;
  */
 public class KeyManagerFactoryFactoryBeanTest {
 
-    private KeyManagerFactoryFactoryBean factoryBean = new KeyManagerFactoryFactoryBean();
+	private final KeyManagerFactoryFactoryBean factoryBean = new KeyManagerFactoryFactoryBean();
 
-    @Test
-    public void testDefaults() throws Exception {
-        assertNotNull(factoryBean.createKeyManagerFactory());
-    }
+	@Test
+	public void testDefaults() throws Exception {
+		assertNotNull(factoryBean.createKeyManagerFactory());
+	}
 
-    @Test
-    public void testExplicitAlgorithm() throws Exception {
-        factoryBean.setAlgorithm(KeyManagerFactory.getDefaultAlgorithm());
-        assertNotNull(factoryBean.createKeyManagerFactory());
-    }
+	@Test
+	public void testExplicitAlgorithm() throws Exception {
+		factoryBean.setAlgorithm(KeyManagerFactory.getDefaultAlgorithm());
+		assertNotNull(factoryBean.createKeyManagerFactory());
+	}
 
-    @Test
-    public void testExplicitProvider() throws Exception {
-        KeyManagerFactory factory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-        factoryBean.setProvider(factory.getProvider().getName());
-        assertNotNull(factoryBean.createKeyManagerFactory());
-    }
+	@Test
+	public void testExplicitProvider() throws Exception {
+		final KeyManagerFactory factory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+		factoryBean.setProvider(factory.getProvider().getName());
+		assertNotNull(factoryBean.createKeyManagerFactory());
+	}
 
 }

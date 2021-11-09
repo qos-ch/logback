@@ -127,7 +127,7 @@ class Token {
 
 		final Token token = (Token) o;
 
-		if ((type != token.type) || (value != null ? !value.equals(token.value) : token.value != null)) {
+		if (type != token.type || (value != null ? !value.equals(token.value) : token.value != null)) {
 			return false;
 		}
 

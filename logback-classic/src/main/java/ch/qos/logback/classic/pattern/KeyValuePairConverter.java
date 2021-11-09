@@ -51,7 +51,7 @@ public class KeyValuePairConverter extends ClassicConverter {
 	}
 
 	private ValueQuoteSpecification optionStrToSpec(final String optStr) {
-		if ((optStr == null) || DOUBLE_OPTION_STR.equalsIgnoreCase(optStr)) {
+		if (optStr == null || DOUBLE_OPTION_STR.equalsIgnoreCase(optStr)) {
 			return ValueQuoteSpecification.DOUBLE;
 		}
 		if (SINGLE_OPTION_STR.equalsIgnoreCase(optStr)) {

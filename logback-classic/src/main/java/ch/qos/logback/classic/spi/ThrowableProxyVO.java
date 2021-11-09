@@ -70,7 +70,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		final int result = 1;
 		return prime * result + (className == null ? 0 : className.hashCode());
 	}
 
@@ -79,24 +79,12 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		final ThrowableProxyVO other = (ThrowableProxyVO) obj;
 
-		if (!Objects.equals(className, other.className)) {
-			return false;
-		}
-
-		if (!Arrays.equals(stackTraceElementProxyArray, other.stackTraceElementProxyArray)) {
-			return false;
-		}
-
-		if (!Arrays.equals(suppressed, other.suppressed)) {
-			return false;
-		}
-
-		if (!Objects.equals(cause, other.cause)) {
+		if (!Objects.equals(className, other.className) || !Arrays.equals(stackTraceElementProxyArray, other.stackTraceElementProxyArray) || !Arrays.equals(suppressed, other.suppressed) || !Objects.equals(cause, other.cause)) {
 			return false;
 		}
 

@@ -48,66 +48,64 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 @Ignore
 public class ServerSocketReceiverFunctionalTest {
 
-    private static final int EVENT_COUNT = 10;
-    private static final int SHUTDOWN_DELAY = 10000;
+	private static final int EVENT_COUNT = 10;
+	private static final int SHUTDOWN_DELAY = 10000;
 
-    private MockAppender appender;
-    private Logger logger;
-    private ServerSocket serverSocket;
-    private InstrumentedServerSocketReceiver receiver;
-    private LoggerContext lc;
+	private MockAppender appender;
+	private Logger logger;
+	private ServerSocket serverSocket;
+	private InstrumentedServerSocketReceiver receiver;
+	private LoggerContext lc;
 
-    @Before
-    public void setUp() throws Exception {
-        lc = new LoggerContext();
+	@Before
+	public void setUp() throws Exception {
+		lc = new LoggerContext();
 
-        appender = new MockAppender();
-        appender.start();
+		appender = new MockAppender();
+		appender.start();
 
-        logger = lc.getLogger(getClass());
-        logger.addAppender(appender);
+		logger = lc.getLogger(getClass());
+		logger.addAppender(appender);
 
-        serverSocket = ServerSocketUtil.createServerSocket();
+		serverSocket = ServerSocketUtil.createServerSocket();
 
-        receiver = new InstrumentedServerSocketReceiver(serverSocket);
+		receiver = new InstrumentedServerSocketReceiver(serverSocket);
 
-        receiver.setContext(lc);
-        receiver.start();
-    }
+		receiver.setContext(lc);
+		receiver.start();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        receiver.stop();
-        ExecutorService executor = lc.getExecutorService();
-        executor.shutdownNow();
-        executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
-        assertTrue(executor.isTerminated());
-    }
+	@After
+	public void tearDown() throws Exception {
+		receiver.stop();
+		final ExecutorService executor = lc.getExecutorService();
+		executor.shutdownNow();
+		executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
+		assertTrue(executor.isTerminated());
+	}
 
-    @Test
-    public void testLogEventFromClient() throws Exception {
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
-        Socket socket = new Socket(InetAddress.getLocalHost(), serverSocket.getLocalPort());
+	@Test
+	public void testLogEventFromClient() throws Exception {
+		final ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+		final Socket socket = new Socket(InetAddress.getLocalHost(), serverSocket.getLocalPort());
 
-        try {
-            LoggingEventVO eventVO = LoggingEventVO.build(event);
+		try (socket) {
+			final LoggingEventVO eventVO = LoggingEventVO.build(event);
 
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            for (int i = 0; i < EVENT_COUNT; i++) {
-                oos.writeObject(eventVO);
-            }
+			final ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+			for (int i = 0; i < EVENT_COUNT; i++) {
+				oos.writeObject(eventVO);
+			}
 
-            oos.writeObject(eventVO);
-            oos.flush();
-        } finally {
-            socket.close();
-        }
+			oos.writeObject(eventVO);
+			oos.flush();
+		}
 
-        ILoggingEvent rcvdEvent = appender.awaitAppend(SHUTDOWN_DELAY);
-        assertNotNull(rcvdEvent);
-        assertEquals(event.getLoggerName(), rcvdEvent.getLoggerName());
-        assertEquals(event.getLevel(), rcvdEvent.getLevel());
-        assertEquals(event.getMessage(), rcvdEvent.getMessage());
-    }
+		final ILoggingEvent rcvdEvent = appender.awaitAppend(SHUTDOWN_DELAY);
+		assertNotNull(rcvdEvent);
+		assertEquals(event.getLoggerName(), rcvdEvent.getLoggerName());
+		assertEquals(event.getLevel(), rcvdEvent.getLevel());
+		assertEquals(event.getMessage(), rcvdEvent.getMessage());
+	}
 
 }

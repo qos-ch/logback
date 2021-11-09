@@ -45,8 +45,7 @@ public final class PropertyConverter extends ClassicConverter {
 		final String val = map.get(key);
 		if (val != null) {
 			return val;
-		} else {
-			return System.getProperty(key);
 		}
+		return System.getProperty(key);
 	}
 }

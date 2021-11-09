@@ -53,7 +53,7 @@ public class ThrowableToStringArray {
 			prefix = CoreConstants.CAUSED_BY;
 		}
 
-		StringBuilder result = new StringBuilder().append(prefix).append(t.getClass().getName());
+		final StringBuilder result = new StringBuilder().append(prefix).append(t.getClass().getName());
 		if (t.getMessage() != null) {
 			result.append(": ").append(t.getMessage());
 		}

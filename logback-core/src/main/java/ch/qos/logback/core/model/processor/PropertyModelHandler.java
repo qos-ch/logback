@@ -110,7 +110,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
 		final String name = propertyModel.getName();
 		final String value = propertyModel.getValue();
 		final String resource = propertyModel.getResource();
-		return (!OptionHelper.isNullOrEmpty(name) && !OptionHelper.isNullOrEmpty(value)) && OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource);
+		return !OptionHelper.isNullOrEmpty(name) && !OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource);
 	}
 
 }

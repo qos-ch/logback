@@ -27,24 +27,24 @@ import org.junit.Test;
  */
 public class TrustManagerFactoryFactoryBeanTest {
 
-    private TrustManagerFactoryFactoryBean factoryBean = new TrustManagerFactoryFactoryBean();
+	private final TrustManagerFactoryFactoryBean factoryBean = new TrustManagerFactoryFactoryBean();
 
-    @Test
-    public void testDefaults() throws Exception {
-        assertNotNull(factoryBean.createTrustManagerFactory());
-    }
+	@Test
+	public void testDefaults() throws Exception {
+		assertNotNull(factoryBean.createTrustManagerFactory());
+	}
 
-    @Test
-    public void testExplicitAlgorithm() throws Exception {
-        factoryBean.setAlgorithm(TrustManagerFactory.getDefaultAlgorithm());
-        assertNotNull(factoryBean.createTrustManagerFactory());
-    }
+	@Test
+	public void testExplicitAlgorithm() throws Exception {
+		factoryBean.setAlgorithm(TrustManagerFactory.getDefaultAlgorithm());
+		assertNotNull(factoryBean.createTrustManagerFactory());
+	}
 
-    @Test
-    public void testExplicitProvider() throws Exception {
-        TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        factoryBean.setProvider(factory.getProvider().getName());
-        assertNotNull(factoryBean.createTrustManagerFactory());
-    }
+	@Test
+	public void testExplicitProvider() throws Exception {
+		final TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+		factoryBean.setProvider(factory.getProvider().getName());
+		assertNotNull(factoryBean.createTrustManagerFactory());
+	}
 
 }

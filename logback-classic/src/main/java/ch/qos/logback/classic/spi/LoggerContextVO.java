@@ -81,7 +81,7 @@ public class LoggerContextVO implements Serializable {
 
 		final LoggerContextVO that = (LoggerContextVO) o;
 
-		if ((birthTime != that.birthTime) || (name != null ? !name.equals(that.name) : that.name != null) || (propertyMap != null ? !propertyMap.equals(that.propertyMap) : that.propertyMap != null)) {
+		if (birthTime != that.birthTime || (name != null ? !name.equals(that.name) : that.name != null) || (propertyMap != null ? !propertyMap.equals(that.propertyMap) : that.propertyMap != null)) {
 			return false;
 		}
 

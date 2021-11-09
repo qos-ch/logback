@@ -41,361 +41,361 @@ import ch.qos.logback.core.pattern.FormatInfo;
 
 public class ConverterTest {
 
-    LoggerContext lc = new LoggerContext();
-    Logger logger = lc.getLogger(ConverterTest.class);
-    LoggingEvent le;
-    List<String> optionList = new ArrayList<String>();
+	LoggerContext lc = new LoggerContext();
+	Logger logger = lc.getLogger(ConverterTest.class);
+	LoggingEvent le;
+	List<String> optionList = new ArrayList<>();
 
-    // The LoggingEvent is massaged with an FCQN of FormattingConverter. This
-    // forces the returned caller information to match the caller stack for this
-    // this particular test.
-    LoggingEvent makeLoggingEvent(Exception ex) {
-        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, "Some message", ex, null);
-    }
+	// The LoggingEvent is massaged with an FCQN of FormattingConverter. This
+	// forces the returned caller information to match the caller stack for this
+	// this particular test.
+	LoggingEvent makeLoggingEvent(final Exception ex) {
+		return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, "Some message", ex, null);
+	}
 
-    Exception getException(String msg, Exception cause) {
-        return new Exception(msg, cause);
-    }
+	Exception getException(final String msg, final Exception cause) {
+		return new Exception(msg, cause);
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        Exception rootEx = getException("Innermost", null);
-        Exception nestedEx = getException("Nested", rootEx);
+	@Before
+	public void setUp() throws Exception {
+		final Exception rootEx = getException("Innermost", null);
+		final Exception nestedEx = getException("Nested", rootEx);
 
-        Exception ex = new Exception("Bogus exception", nestedEx);
+		final Exception ex = new Exception("Bogus exception", nestedEx);
 
-        le = makeLoggingEvent(ex);
-    }
+		le = makeLoggingEvent(ex);
+	}
 
-    @Test
-    public void testLineOfCaller() {
-        {
-            DynamicConverter<ILoggingEvent> converter = new LineOfCallerConverter();
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            // the number below should be the line number of the previous line
-            assertEquals("75", buf.toString());
-        }
-    }
+	@Test
+	public void testLineOfCaller() {
+		{
+			final DynamicConverter<ILoggingEvent> converter = new LineOfCallerConverter();
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			// the number below should be the line number of the previous line
+			assertEquals("75", buf.toString());
+		}
+	}
 
-    @Test
-    public void testLevel() {
-        {
-            DynamicConverter<ILoggingEvent> converter = new LevelConverter();
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            assertEquals("INFO", buf.toString());
-        }
-        {
-            DynamicConverter<ILoggingEvent> converter = new LevelConverter();
-            converter.setFormattingInfo(new FormatInfo(1, 1, true, false));
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            assertEquals("I", buf.toString());
-        }
-    }
+	@Test
+	public void testLevel() {
+		{
+			final DynamicConverter<ILoggingEvent> converter = new LevelConverter();
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			assertEquals("INFO", buf.toString());
+		}
+		{
+			final DynamicConverter<ILoggingEvent> converter = new LevelConverter();
+			converter.setFormattingInfo(new FormatInfo(1, 1, true, false));
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			assertEquals("I", buf.toString());
+		}
+	}
 
-    @Test
-    public void testThread() {
-        DynamicConverter<ILoggingEvent> converter = new ThreadConverter();
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
-        System.out.println(buf.toString());
-        String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
-        assertTrue(buf.toString().matches(regex));
-    }
+	@Test
+	public void testThread() {
+		final DynamicConverter<ILoggingEvent> converter = new ThreadConverter();
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, le);
+		System.out.println(buf.toString());
+		final String regex = ClassicTestConstants.NAKED_MAIN_REGEX;
+		assertTrue(buf.toString().matches(regex));
+	}
 
-    @Test
-    public void testMessage() {
-        DynamicConverter<ILoggingEvent> converter = new MessageConverter();
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
-        assertEquals("Some message", buf.toString());
-    }
+	@Test
+	public void testMessage() {
+		final DynamicConverter<ILoggingEvent> converter = new MessageConverter();
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, le);
+		assertEquals("Some message", buf.toString());
+	}
 
-    @Test
-    public void testLineSeparator() {
-        DynamicConverter<ILoggingEvent> converter = new LineSeparatorConverter();
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
-        assertEquals(CoreConstants.LINE_SEPARATOR, buf.toString());
-    }
+	@Test
+	public void testLineSeparator() {
+		final DynamicConverter<ILoggingEvent> converter = new LineSeparatorConverter();
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, le);
+		assertEquals(CoreConstants.LINE_SEPARATOR, buf.toString());
+	}
 
-    @Test
-    public void testException() {
-        {
-            DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-        }
+	@Test
+	public void testException() {
+		{
+			final DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+		}
 
-        {
-            DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
-            this.optionList.add("3");
-            converter.setOptionList(this.optionList);
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-        }
-    }
+		{
+			final DynamicConverter<ILoggingEvent> converter = new ThrowableProxyConverter();
+			optionList.add("3");
+			converter.setOptionList(optionList);
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+		}
+	}
 
-    @Test
-    public void testLogger() {
-        {
-            ClassicConverter converter = new LoggerConverter();
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            assertEquals(this.getClass().getName(), buf.toString());
-        }
+	@Test
+	public void testLogger() {
+		{
+			final ClassicConverter converter = new LoggerConverter();
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			assertEquals(this.getClass().getName(), buf.toString());
+		}
 
-        {
-            ClassicConverter converter = new LoggerConverter();
-            this.optionList.add("20");
-            converter.setOptionList(this.optionList);
-            converter.start();
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            assertEquals("c.q.l.c.p.ConverterTest", buf.toString());
-        }
+		{
+			final ClassicConverter converter = new LoggerConverter();
+			optionList.add("20");
+			converter.setOptionList(optionList);
+			converter.start();
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			assertEquals("c.q.l.c.p.ConverterTest", buf.toString());
+		}
 
-        {
-            DynamicConverter<ILoggingEvent> converter = new LoggerConverter();
-            this.optionList.clear();
-            this.optionList.add("0");
-            converter.setOptionList(this.optionList);
-            converter.start();
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            assertEquals("ConverterTest", buf.toString());
-        }
-    }
+		{
+			final DynamicConverter<ILoggingEvent> converter = new LoggerConverter();
+			optionList.clear();
+			optionList.add("0");
+			converter.setOptionList(optionList);
+			converter.start();
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			assertEquals("ConverterTest", buf.toString());
+		}
+	}
 
-    @Test
-    public void testVeryLongLoggerName() {
-        ClassicConverter converter = new LoggerConverter();
-        this.optionList.add("5");
-        converter.setOptionList(this.optionList);
-        converter.start();
-        StringBuilder buf = new StringBuilder();
+	@Test
+	public void testVeryLongLoggerName() {
+		final ClassicConverter converter = new LoggerConverter();
+		optionList.add("5");
+		converter.setOptionList(optionList);
+		converter.start();
+		final StringBuilder buf = new StringBuilder();
 
-        char c = 'a';
-        int extraParts = 3;
-        int totalParts = ClassicConstants.MAX_DOTS + extraParts;
-        StringBuilder loggerNameBuf = new StringBuilder();
-        StringBuilder witness = new StringBuilder();
+		final char c = 'a';
+		final int extraParts = 3;
+		final int totalParts = ClassicConstants.MAX_DOTS + extraParts;
+		final StringBuilder loggerNameBuf = new StringBuilder();
+		final StringBuilder witness = new StringBuilder();
 
-        for (int i = 0; i < totalParts; i++) {
-            loggerNameBuf.append(c).append(c).append(c);
-            witness.append(c);
-            loggerNameBuf.append('.');
-            witness.append('.');
-        }
-        loggerNameBuf.append("zzzzzz");
-        witness.append("zzzzzz");
+		for (int i = 0; i < totalParts; i++) {
+			loggerNameBuf.append(c).append(c).append(c);
+			witness.append(c);
+			loggerNameBuf.append('.');
+			witness.append('.');
+		}
+		loggerNameBuf.append("zzzzzz");
+		witness.append("zzzzzz");
 
-        le.setLoggerName(loggerNameBuf.toString());
-        converter.write(buf, le);
-        assertEquals(witness.toString(), buf.toString());
-    }
+		le.setLoggerName(loggerNameBuf.toString());
+		converter.write(buf, le);
+		assertEquals(witness.toString(), buf.toString());
+	}
 
-    @Test
-    public void testClass() {
-        DynamicConverter<ILoggingEvent> converter = new ClassOfCallerConverter();
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
-        assertEquals(this.getClass().getName(), buf.toString());
-    }
+	@Test
+	public void testClass() {
+		final DynamicConverter<ILoggingEvent> converter = new ClassOfCallerConverter();
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, le);
+		assertEquals(this.getClass().getName(), buf.toString());
+	}
 
-    @Test
-    public void testMethodOfCaller() {
-        DynamicConverter<ILoggingEvent> converter = new MethodOfCallerConverter();
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
-        assertEquals("testMethodOfCaller", buf.toString());
-    }
+	@Test
+	public void testMethodOfCaller() {
+		final DynamicConverter<ILoggingEvent> converter = new MethodOfCallerConverter();
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, le);
+		assertEquals("testMethodOfCaller", buf.toString());
+	}
 
-    @Test
-    public void testFileOfCaller() {
-        DynamicConverter<ILoggingEvent> converter = new FileOfCallerConverter();
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, le);
-        assertEquals("ConverterTest.java", buf.toString());
-    }
+	@Test
+	public void testFileOfCaller() {
+		final DynamicConverter<ILoggingEvent> converter = new FileOfCallerConverter();
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, le);
+		assertEquals("ConverterTest.java", buf.toString());
+	}
 
-    @Test
-    public void testCallerData() {
-        {
-            DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            converter.start();
+	@Test
+	public void testCallerData() {
+		{
+			final DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+			converter.start();
 
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            if (buf.length() < 10) {
-                fail("buf is too short");
-            }
-        }
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			if (buf.length() < 10) {
+				fail("buf is too short");
+			}
+		}
 
-        {
-            DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            converter.setOptionList(this.optionList);
-            converter.start();
+		{
+			final DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+			optionList.add("2");
+			optionList.add("XXX");
+			converter.setOptionList(optionList);
+			converter.start();
 
-            StringBuilder buf = new StringBuilder();
-            LoggingEvent event = makeLoggingEvent(null);
-            event.addMarker(MarkerFactory.getMarker("XXX"));
-            converter.write(buf, event);
-            if (buf.length() < 10) {
-                fail("buf is too short");
-            }
-        }
+			final StringBuilder buf = new StringBuilder();
+			final LoggingEvent event = makeLoggingEvent(null);
+			event.addMarker(MarkerFactory.getMarker("XXX"));
+			converter.write(buf, event);
+			if (buf.length() < 10) {
+				fail("buf is too short");
+			}
+		}
 
-        {
-            DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            this.optionList.add("*");
-            converter.setOptionList(this.optionList);
-            converter.start();
+		{
+			final DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+			optionList.clear();
+			optionList.add("2");
+			optionList.add("XXX");
+			optionList.add("*");
+			converter.setOptionList(optionList);
+			converter.start();
 
-            StringBuilder buf = new StringBuilder();
-            LoggingEvent event = makeLoggingEvent(null);
-            event.addMarker(MarkerFactory.getMarker("YYY"));
-            converter.write(buf, event);
-            if (buf.length() < 10) {
-                fail("buf is too short");
-            }
-        }
-        {
-            DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            this.optionList.add("+");
-            converter.setOptionList(this.optionList);
-            converter.start();
+			final StringBuilder buf = new StringBuilder();
+			final LoggingEvent event = makeLoggingEvent(null);
+			event.addMarker(MarkerFactory.getMarker("YYY"));
+			converter.write(buf, event);
+			if (buf.length() < 10) {
+				fail("buf is too short");
+			}
+		}
+		{
+			final DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+			optionList.clear();
+			optionList.add("2");
+			optionList.add("XXX");
+			optionList.add("+");
+			converter.setOptionList(optionList);
+			converter.start();
 
-            StringBuilder buf = new StringBuilder();
-            LoggingEvent event = makeLoggingEvent(null);
-            event.addMarker(MarkerFactory.getMarker("YYY"));
-            converter.write(buf, event);
-            if (buf.length() < 10) {
-                fail("buf is too short");
-            }
-        }
+			final StringBuilder buf = new StringBuilder();
+			final LoggingEvent event = makeLoggingEvent(null);
+			event.addMarker(MarkerFactory.getMarker("YYY"));
+			converter.write(buf, event);
+			if (buf.length() < 10) {
+				fail("buf is too short");
+			}
+		}
 
-        {
-            DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("2");
-            this.optionList.add("XXX");
-            this.optionList.add("*");
-            converter.setOptionList(this.optionList);
-            converter.start();
+		{
+			final DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+			optionList.clear();
+			optionList.add("2");
+			optionList.add("XXX");
+			optionList.add("*");
+			converter.setOptionList(optionList);
+			converter.start();
 
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            if (buf.length() < 10) {
-                fail("buf is too short");
-            }
-            // System.out.println(buf);
-        }
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			if (buf.length() < 10) {
+				fail("buf is too short");
+			}
+			// System.out.println(buf);
+		}
 
-        {
-            DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
-            this.optionList.clear();
-            this.optionList.add("4..5");
-            converter.setOptionList(this.optionList);
-            converter.start();
+		{
+			final DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
+			optionList.clear();
+			optionList.add("4..5");
+			converter.setOptionList(optionList);
+			converter.start();
 
-            StringBuilder buf = new StringBuilder();
-            converter.write(buf, le);
-            assertTrue("buf is too short", buf.length() >= 10);
+			final StringBuilder buf = new StringBuilder();
+			converter.write(buf, le);
+			assertTrue("buf is too short", buf.length() >= 10);
 
-            String expectedRegex = "Caller\\+4\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
-            String actual = buf.toString();
-            assertTrue("actual: "+actual, Pattern.compile(expectedRegex).matcher(actual).find());
-              
-        }
-    }
+			final String expectedRegex = "Caller\\+4\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
+			final String actual = buf.toString();
+			assertTrue("actual: "+actual, Pattern.compile(expectedRegex).matcher(actual).find());
 
-    @Test
-    public void testRelativeTime() throws Exception {
-        DynamicConverter<ILoggingEvent> converter = new RelativeTimeConverter();
-        StringBuilder buf0 = new StringBuilder();
-        StringBuilder buf1 = new StringBuilder();
-        long timestamp = System.currentTimeMillis();
-        LoggingEvent e0 = makeLoggingEvent(null);
-        e0.setTimeStamp(timestamp);
-        LoggingEvent e1 = makeLoggingEvent(null);
-        e1.setTimeStamp(timestamp);
-        converter.write(buf0, e0);
-        converter.write(buf1, e1);
-        assertEquals(buf0.toString(), buf1.toString());
-    }
+		}
+	}
 
-    @Test
-    public void testSyslogStart() throws Exception {
-        DynamicConverter<ILoggingEvent> converter = new SyslogStartConverter();
-        this.optionList.clear();
-        this.optionList.add("MAIL");
-        converter.setOptionList(this.optionList);
-        converter.start();
+	@Test
+	public void testRelativeTime() throws Exception {
+		final DynamicConverter<ILoggingEvent> converter = new RelativeTimeConverter();
+		final StringBuilder buf0 = new StringBuilder();
+		final StringBuilder buf1 = new StringBuilder();
+		final long timestamp = System.currentTimeMillis();
+		final LoggingEvent e0 = makeLoggingEvent(null);
+		e0.setTimeStamp(timestamp);
+		final LoggingEvent e1 = makeLoggingEvent(null);
+		e1.setTimeStamp(timestamp);
+		converter.write(buf0, e0);
+		converter.write(buf1, e1);
+		assertEquals(buf0.toString(), buf1.toString());
+	}
 
-        ILoggingEvent event = makeLoggingEvent(null);
+	@Test
+	public void testSyslogStart() throws Exception {
+		final DynamicConverter<ILoggingEvent> converter = new SyslogStartConverter();
+		optionList.clear();
+		optionList.add("MAIL");
+		converter.setOptionList(optionList);
+		converter.start();
 
-        StringBuilder buf = new StringBuilder();
-        converter.write(buf, event);
+		final ILoggingEvent event = makeLoggingEvent(null);
 
-        String expected = "<" + (SyslogConstants.LOG_MAIL + SyslogConstants.INFO_SEVERITY) + ">";
-        assertTrue(buf.toString().startsWith(expected));
-    }
+		final StringBuilder buf = new StringBuilder();
+		converter.write(buf, event);
 
-    @Test
-    public void testMDCConverter() throws Exception {
-        MDC.clear();
-        MDC.put("someKey", "someValue");
-        MDCConverter converter = new MDCConverter();
-        this.optionList.clear();
-        this.optionList.add("someKey");
-        converter.setOptionList(optionList);
-        converter.start();
+		final String expected = "<" + (SyslogConstants.LOG_MAIL + SyslogConstants.INFO_SEVERITY) + ">";
+		assertTrue(buf.toString().startsWith(expected));
+	}
 
-        ILoggingEvent event = makeLoggingEvent(null);
+	@Test
+	public void testMDCConverter() throws Exception {
+		MDC.clear();
+		MDC.put("someKey", "someValue");
+		final MDCConverter converter = new MDCConverter();
+		optionList.clear();
+		optionList.add("someKey");
+		converter.setOptionList(optionList);
+		converter.start();
 
-        String result = converter.convert(event);
-        assertEquals("someValue", result);
-    }
+		final ILoggingEvent event = makeLoggingEvent(null);
 
-    @Test
-    public void contextNameConverter() {
-        ClassicConverter converter = new ContextNameConverter();
-        // see http://jira.qos.ch/browse/LBCLASSIC-149
-        LoggerContext lcOther = new LoggerContext();
-        lcOther.setName("another");
-        converter.setContext(lcOther);
+		final String result = converter.convert(event);
+		assertEquals("someValue", result);
+	}
 
-        lc.setName("aValue");
-        ILoggingEvent event = makeLoggingEvent(null);
+	@Test
+	public void contextNameConverter() {
+		final ClassicConverter converter = new ContextNameConverter();
+		// see http://jira.qos.ch/browse/LBCLASSIC-149
+		final LoggerContext lcOther = new LoggerContext();
+		lcOther.setName("another");
+		converter.setContext(lcOther);
 
-        String result = converter.convert(event);
-        assertEquals("aValue", result);
-    }
+		lc.setName("aValue");
+		final ILoggingEvent event = makeLoggingEvent(null);
 
-    @Test
-    public void contextProperty() {
-        PropertyConverter converter = new PropertyConverter();
-        converter.setContext(lc);
-        List<String> ol = new ArrayList<String>();
-        ol.add("k");
-        converter.setOptionList(ol);
-        converter.start();
-        lc.setName("aValue");
-        lc.putProperty("k", "v");
-        ILoggingEvent event = makeLoggingEvent(null);
+		final String result = converter.convert(event);
+		assertEquals("aValue", result);
+	}
 
-        String result = converter.convert(event);
-        assertEquals("v", result);
-    }
+	@Test
+	public void contextProperty() {
+		final PropertyConverter converter = new PropertyConverter();
+		converter.setContext(lc);
+		final List<String> ol = new ArrayList<>();
+		ol.add("k");
+		converter.setOptionList(ol);
+		converter.start();
+		lc.setName("aValue");
+		lc.putProperty("k", "v");
+		final ILoggingEvent event = makeLoggingEvent(null);
+
+		final String result = converter.convert(event);
+		assertEquals("v", result);
+	}
 }

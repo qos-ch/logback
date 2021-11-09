@@ -21,20 +21,22 @@ import ch.qos.logback.core.AppenderBase;
 
 /**
  * An appender which calls logback recursively
- * 
+ *
  * @author Ralph Goers
  */
 
 public class LoggingAppender extends AppenderBase<ILoggingEvent> {
 
-    Logger logger;
+	Logger logger;
 
-    public void start() {
-        super.start();
-        logger = ((LoggerContext) getContext()).getLogger("Ignore");
-    }
+	@Override
+	public void start() {
+		super.start();
+		logger = ((LoggerContext) getContext()).getLogger("Ignore");
+	}
 
-    protected void append(ILoggingEvent eventObject) {
-        logger.debug("Ignore this");
-    }
+	@Override
+	protected void append(final ILoggingEvent eventObject) {
+		logger.debug("Ignore this");
+	}
 }

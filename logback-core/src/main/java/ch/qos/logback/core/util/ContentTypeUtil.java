@@ -39,8 +39,7 @@ public class ContentTypeUtil {
 		final int subTypeStartIndex = index + 1;
 		if (subTypeStartIndex < contextType.length()) {
 			return contextType.substring(subTypeStartIndex);
-		} else {
-			return null;
 		}
+		return null;
 	}
 }

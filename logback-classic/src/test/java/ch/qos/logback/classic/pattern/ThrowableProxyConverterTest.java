@@ -32,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -42,206 +41,208 @@ import ch.qos.logback.core.util.EnvUtil;
 
 public class ThrowableProxyConverterTest {
 
-    LoggerContext lc = new LoggerContext();
-    ThrowableProxyConverter tpc = new ThrowableProxyConverter();
-    StringWriter sw = new StringWriter();
-    PrintWriter pw = new PrintWriter(sw);
+	LoggerContext lc = new LoggerContext();
+	ThrowableProxyConverter tpc = new ThrowableProxyConverter();
+	StringWriter sw = new StringWriter();
+	PrintWriter pw = new PrintWriter(sw);
 
-    @Before
-    public void setUp() throws Exception {
-        tpc.setContext(lc);
-        tpc.start();
-    }
+	@Before
+	public void setUp() throws Exception {
+		tpc.setContext(lc);
+		tpc.start();
+	}
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
 
-    private ILoggingEvent createLoggingEvent(Throwable t) {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
-    }
+	private ILoggingEvent createLoggingEvent(final Throwable t) {
+		return new LoggingEvent(this.getClass().getName(), lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
+	}
 
-    @Test
-    public void suppressed() throws InvocationTargetException, IllegalAccessException {
-        Exception ex = null;
-        try {
-            someMethod();
-        } catch (Exception e) {
-            Exception fooException = new Exception("Foo");
-            Exception barException = new Exception("Bar");
-            e.addSuppressed(fooException);
-            e.addSuppressed(barException);
-            ex = e;
-        }
-        verify(ex);
-    }
+	@Test
+	public void suppressed() throws InvocationTargetException, IllegalAccessException {
+		Exception ex = null;
+		try {
+			someMethod();
+		} catch (final Exception e) {
+			final Exception fooException = new Exception("Foo");
+			final Exception barException = new Exception("Bar");
+			e.addSuppressed(fooException);
+			e.addSuppressed(barException);
+			ex = e;
+		}
+		verify(ex);
+	}
 
-    @Test
-    public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
-        Exception ex = null;
-        try {
-            someMethod();
-        } catch (Exception e) {
-            ex = new Exception("Wrapper", e);
-            Exception fooException = new Exception("Foo");
-            Exception barException = new Exception("Bar");
-            e.addSuppressed(fooException);
-            e.addSuppressed(barException);
-        }
-        verify(ex);
-    }
+	@Test
+	public void suppressedWithCause() throws InvocationTargetException, IllegalAccessException {
+		Exception ex = null;
+		try {
+			someMethod();
+		} catch (final Exception e) {
+			ex = new Exception("Wrapper", e);
+			final Exception fooException = new Exception("Foo");
+			final Exception barException = new Exception("Bar");
+			e.addSuppressed(fooException);
+			e.addSuppressed(barException);
+		}
+		verify(ex);
+	}
 
-    @Test
-    public void suppressedWithSuppressed() throws Exception {
-        Exception ex = null;
-        try {
-            someMethod();
-        } catch (Exception e) {
-            ex = new Exception("Wrapper", e);
-            Exception fooException = new Exception("Foo");
-            Exception barException = new Exception("Bar");
-            barException.addSuppressed(fooException);
-            e.addSuppressed(barException);
-        }
-        verify(ex);
-    }
+	@Test
+	public void suppressedWithSuppressed() throws Exception {
+		Exception ex = null;
+		try {
+			someMethod();
+		} catch (final Exception e) {
+			ex = new Exception("Wrapper", e);
+			final Exception fooException = new Exception("Foo");
+			final Exception barException = new Exception("Bar");
+			barException.addSuppressed(fooException);
+			e.addSuppressed(barException);
+		}
+		verify(ex);
+	}
 
-    @Test
-    public void smoke() {
-        Exception t = new Exception("smoke");
-        verify(t);
-    }
+	@Test
+	public void smoke() {
+		final Exception t = new Exception("smoke");
+		verify(t);
+	}
 
-    @Test
-    public void nested() {
-        Throwable t = TestHelper.makeNestedException(1);
-        verify(t);
-    }
+	@Test
+	public void nested() {
+		final Throwable t = TestHelper.makeNestedException(1);
+		verify(t);
+	}
 
-    @Test
-    public void cyclicCause() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
-        Exception e = new Exception("foo");
-        Exception e2 = new Exception(e);
-        e.initCause(e2);
-        verify(e);
-    }
- 
-    @Test
-    public void cyclicSuppressed() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
-        
-    	Exception e = new Exception("foo");
-        Exception e2 = new Exception(e);
-        e.addSuppressed(e2);
-        verify(e);
-    }
-    
-    @Test
-    public void withArgumentOfOne() throws Exception {
-        final Throwable t = TestHelper.makeNestedException(0);
-        t.printStackTrace(pw);
-        final ILoggingEvent le = createLoggingEvent(t);
+	@Test
+	public void cyclicCause() {
+		// Earlier JDKs may formats things differently
+		if(!EnvUtil.isJDK16OrHigher()) {
+			return;
+		}
+		final Exception e = new Exception("foo");
+		final Exception e2 = new Exception(e);
+		e.initCause(e2);
+		verify(e);
+	}
 
-        final List<String> optionList = Arrays.asList("1");
-        tpc.setOptionList(optionList);
-        tpc.start();
+	@Test
+	public void cyclicSuppressed() {
+		// Earlier JDKs may formats things differently
+		if(!EnvUtil.isJDK16OrHigher()) {
+			return;
+		}
 
-        final String result = tpc.convert(le);
+		final Exception e = new Exception("foo");
+		final Exception e2 = new Exception(e);
+		e.addSuppressed(e2);
+		verify(e);
+	}
 
-        final BufferedReader reader = new BufferedReader(new StringReader(result));
-        assertTrue(reader.readLine().contains(t.getMessage()));
-        assertNotNull(reader.readLine());
-        assertNull("Unexpected line in stack trace", reader.readLine());
-    }
+	@Test
+	public void withArgumentOfOne() throws Exception {
+		final Throwable t = TestHelper.makeNestedException(0);
+		t.printStackTrace(pw);
+		final ILoggingEvent le = createLoggingEvent(t);
 
-    @Test
-    public void withShortArgument() throws Exception {
-        final Throwable t = TestHelper.makeNestedException(0);
-        t.printStackTrace(pw);
-        final ILoggingEvent le = createLoggingEvent(t);
+		final List<String> optionList = Arrays.asList("1");
+		tpc.setOptionList(optionList);
+		tpc.start();
 
-        final List<String> options = Arrays.asList("short");
-        tpc.setOptionList(options);
-        tpc.start();
+		final String result = tpc.convert(le);
 
-        final String result = tpc.convert(le);
+		final BufferedReader reader = new BufferedReader(new StringReader(result));
+		assertTrue(reader.readLine().contains(t.getMessage()));
+		assertNotNull(reader.readLine());
+		assertNull("Unexpected line in stack trace", reader.readLine());
+	}
 
-        final BufferedReader reader = new BufferedReader(new StringReader(result));
-        assertTrue(reader.readLine().contains(t.getMessage()));
-        assertNotNull(reader.readLine());
-        assertNull("Unexpected line in stack trace", reader.readLine());
-    }
+	@Test
+	public void withShortArgument() throws Exception {
+		final Throwable t = TestHelper.makeNestedException(0);
+		t.printStackTrace(pw);
+		final ILoggingEvent le = createLoggingEvent(t);
 
-    @Test
-    public void skipSelectedLine() throws Exception {
-        String nameOfContainingMethod = "skipSelectedLine";
-        // given
-        final Throwable t = TestHelper.makeNestedException(0);
-        t.printStackTrace(pw);
-        final ILoggingEvent le = createLoggingEvent(t);
-        tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod));
-        tpc.start();
+		final List<String> options = Arrays.asList("short");
+		tpc.setOptionList(options);
+		tpc.start();
 
-        // when
-        final String result = tpc.convert(le);
+		final String result = tpc.convert(le);
 
-        // then
-        assertThat(result).doesNotContain(nameOfContainingMethod);
-        
-    }
+		final BufferedReader reader = new BufferedReader(new StringReader(result));
+		assertTrue(reader.readLine().contains(t.getMessage()));
+		assertNotNull(reader.readLine());
+		assertNull("Unexpected line in stack trace", reader.readLine());
+	}
 
-    @Test
-    public void skipMultipleLines() throws Exception {
-        String nameOfContainingMethod = "skipMultipleLines";
-        // given
-        final Throwable t = TestHelper.makeNestedException(0);
-        t.printStackTrace(pw);
-        final ILoggingEvent le = createLoggingEvent(t);
-        tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod, "junit"));
-        tpc.start();
+	@Test
+	public void skipSelectedLine() throws Exception {
+		final String nameOfContainingMethod = "skipSelectedLine";
+		// given
+		final Throwable t = TestHelper.makeNestedException(0);
+		t.printStackTrace(pw);
+		final ILoggingEvent le = createLoggingEvent(t);
+		tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod));
+		tpc.start();
 
-        // when
-        final String result = tpc.convert(le);
+		// when
+		final String result = tpc.convert(le);
 
-        // then
-        assertThat(result).doesNotContain(nameOfContainingMethod).doesNotContain("junit");
-    }
+		// then
+		assertThat(result).doesNotContain(nameOfContainingMethod);
 
-    @Test
-    public void shouldLimitTotalLinesExcludingSkipped() throws Exception {
-        // given
-        final Throwable t = TestHelper.makeNestedException(0);
-        t.printStackTrace(pw);
-        final ILoggingEvent le = createLoggingEvent(t);
-        tpc.setOptionList(Arrays.asList("3", "shouldLimitTotalLinesExcludingSkipped"));
-        tpc.start();
+	}
 
-        // when
-        final String result = tpc.convert(le);
+	@Test
+	public void skipMultipleLines() throws Exception {
+		final String nameOfContainingMethod = "skipMultipleLines";
+		// given
+		final Throwable t = TestHelper.makeNestedException(0);
+		t.printStackTrace(pw);
+		final ILoggingEvent le = createLoggingEvent(t);
+		tpc.setOptionList(Arrays.asList("full", nameOfContainingMethod, "junit"));
+		tpc.start();
 
-        // then
-        String[] lines = result.split(CoreConstants.LINE_SEPARATOR);
-        assertThat(lines).hasSize(3 + 1);
-    }
+		// when
+		final String result = tpc.convert(le);
 
- 
-    
-    void someMethod() throws Exception {
-        throw new Exception("someMethod");
-    }
+		// then
+		assertThat(result).doesNotContain(nameOfContainingMethod).doesNotContain("junit");
+	}
 
-    void verify(Throwable t) {
-        t.printStackTrace(pw);
+	@Test
+	public void shouldLimitTotalLinesExcludingSkipped() throws Exception {
+		// given
+		final Throwable t = TestHelper.makeNestedException(0);
+		t.printStackTrace(pw);
+		final ILoggingEvent le = createLoggingEvent(t);
+		tpc.setOptionList(Arrays.asList("3", "shouldLimitTotalLinesExcludingSkipped"));
+		tpc.start();
 
-        ILoggingEvent le = createLoggingEvent(t);
-        String result = tpc.convert(le);
-        //System.out.println(result);
-        result = result.replace("common frames omitted", "more");
-        assertEquals(sw.toString(), result);
-    }
+		// when
+		final String result = tpc.convert(le);
+
+		// then
+		final String[] lines = result.split(CoreConstants.LINE_SEPARATOR);
+		assertThat(lines).hasSize(3 + 1);
+	}
+
+
+
+	void someMethod() throws Exception {
+		throw new Exception("someMethod");
+	}
+
+	void verify(final Throwable t) {
+		t.printStackTrace(pw);
+
+		final ILoggingEvent le = createLoggingEvent(t);
+		String result = tpc.convert(le);
+		//System.out.println(result);
+		result = result.replace("common frames omitted", "more");
+		assertEquals(sw.toString(), result);
+	}
 }

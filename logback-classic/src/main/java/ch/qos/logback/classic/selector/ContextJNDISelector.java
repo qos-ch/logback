@@ -165,8 +165,7 @@ public class ContextJNDISelector implements ContextSelector {
 
 	@Override
 	public List<String> getContextNames() {
-		final List<String> list = new ArrayList<>(synchronizedContextMap.keySet());
-		return list;
+		return new ArrayList<>(synchronizedContextMap.keySet());
 	}
 
 	@Override

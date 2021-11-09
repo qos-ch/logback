@@ -13,11 +13,7 @@
  */
 package ch.qos.logback.access.servlet;
 
-import ch.qos.logback.access.dummy.DummyResponse;
-import ch.qos.logback.access.dummy.DummyServletOutputStream;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,43 +21,48 @@ import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.junit.Assert.assertArrayEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServletOutputStream;
 
 @RunWith(Parameterized.class)
 public class TeeHttpServletResponseTest {
 
-    String characterEncoding;
-    String testString;
-    byte[] expectedBytes; 
+	String characterEncoding;
+	String testString;
+	byte[] expectedBytes;
 
-    public TeeHttpServletResponseTest(String characterEncoding, String testString, byte[] expectedBytes) {
-        this.characterEncoding = characterEncoding;
-        this.testString = testString;
-        this.expectedBytes = expectedBytes;
-    }
+	public TeeHttpServletResponseTest(final String characterEncoding, final String testString, final byte[] expectedBytes) {
+		this.characterEncoding = characterEncoding;
+		this.testString = testString;
+		this.expectedBytes = expectedBytes;
+	}
 
-    @Parameterized.Parameters
-    public static Collection<?> inputValues() {
-        return Arrays.asList(new Object[][] {
-                { "utf-8", "G\u00FClc\u00FC", new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3, (byte) 0xBC } },
-                { "iso-8859-1", "G\u00FClc\u00FC", new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC } } });
-    }
+	@Parameterized.Parameters
+	public static Collection<?> inputValues() {
+		return Arrays.asList(new Object[][] {
+			{ "utf-8", "G\u00FClc\u00FC", new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3, (byte) 0xBC } },
+			{ "iso-8859-1", "G\u00FClc\u00FC", new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC } } });
+	}
 
-    @Test
-    public void testWriterEncoding() throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+	@Test
+	public void testWriterEncoding() throws IOException {
+		final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        DummyResponse dummyResponse = new DummyResponse();
-        dummyResponse.setCharacterEncoding(characterEncoding);
-        dummyResponse.setOutputStream(new DummyServletOutputStream(byteArrayOutputStream));
+		final DummyResponse dummyResponse = new DummyResponse();
+		dummyResponse.setCharacterEncoding(characterEncoding);
+		dummyResponse.setOutputStream(new DummyServletOutputStream(byteArrayOutputStream));
 
-        TeeHttpServletResponse teeServletResponse = new TeeHttpServletResponse(dummyResponse);
+		final TeeHttpServletResponse teeServletResponse = new TeeHttpServletResponse(dummyResponse);
 
-        PrintWriter writer = teeServletResponse.getWriter();
-        writer.write(testString);
-        writer.flush();
+		final PrintWriter writer = teeServletResponse.getWriter();
+		writer.write(testString);
+		writer.flush();
 
-        assertArrayEquals(expectedBytes, byteArrayOutputStream.toByteArray());
-    }
+		assertArrayEquals(expectedBytes, byteArrayOutputStream.toByteArray());
+	}
 
 }

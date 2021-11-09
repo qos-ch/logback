@@ -21,22 +21,22 @@ import java.security.NoSuchProviderException;
 import ch.qos.logback.core.net.ssl.KeyStoreFactoryBean;
 
 /**
- * A {@link KeyStoreFactoryBean} with test instrumentation. 
+ * A {@link KeyStoreFactoryBean} with test instrumentation.
  *
  * @author Carl Harris
  */
 public class MockKeyStoreFactoryBean extends KeyStoreFactoryBean {
 
-    private boolean keyStoreCreated;
+	private boolean keyStoreCreated;
 
-    @Override
-    public KeyStore createKeyStore() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException {
-        keyStoreCreated = true;
-        return super.createKeyStore();
-    }
+	@Override
+	public KeyStore createKeyStore() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException {
+		keyStoreCreated = true;
+		return super.createKeyStore();
+	}
 
-    public boolean isKeyStoreCreated() {
-        return keyStoreCreated;
-    }
+	public boolean isKeyStoreCreated() {
+		return keyStoreCreated;
+	}
 
 }

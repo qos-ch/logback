@@ -19,59 +19,59 @@ import org.junit.Test;
 
 public class FileSizeTest {
 
-    static long KB_CO = 1024;
-    static long MB_CO = 1024 * 1024;
-    static long GB_CO = 1024 * MB_CO;
+	static long KB_CO = 1024;
+	static long MB_CO = 1024 * 1024;
+	static long GB_CO = 1024 * MB_CO;
 
-    @Test
-    public void testValueOf() {
-        {
-            FileSize fs = FileSize.valueOf("8");
-            assertEquals(8, fs.getSize());
-        }
+	@Test
+	public void testValueOf() {
+		{
+			final FileSize fs = FileSize.valueOf("8");
+			assertEquals(8, fs.getSize());
+		}
 
-        {
-            FileSize fs = FileSize.valueOf("8 kbs");
-            assertEquals(8 * KB_CO, fs.getSize());
-        }
+		{
+			final FileSize fs = FileSize.valueOf("8 kbs");
+			assertEquals(8 * KB_CO, fs.getSize());
+		}
 
-        {
-            FileSize fs = FileSize.valueOf("8 kb");
-            assertEquals(8 * KB_CO, fs.getSize());
-        }
+		{
+			final FileSize fs = FileSize.valueOf("8 kb");
+			assertEquals(8 * KB_CO, fs.getSize());
+		}
 
-        {
-            FileSize fs = FileSize.valueOf("12 mb");
-            assertEquals(12 * MB_CO, fs.getSize());
-        }
+		{
+			final FileSize fs = FileSize.valueOf("12 mb");
+			assertEquals(12 * MB_CO, fs.getSize());
+		}
 
-        {
-            FileSize fs = FileSize.valueOf("5 GBs");
-            assertEquals(5 * GB_CO, fs.getSize());
-        }
-    }
-    
-    
-    @Test 
-    public void testToString() {
-        {
-            FileSize fs = new FileSize(8);
-            assertEquals("8 Bytes", fs.toString());
-        }
-        
-        {
-            FileSize fs = new FileSize(8*1024+3);
-            assertEquals("8 KB", fs.toString());
-        }
-        
-        {
-            FileSize fs = new FileSize(8*1024*1024+3*1024);
-            assertEquals("8 MB", fs.toString());
-        }
-        
-        {
-            FileSize fs = new FileSize(8*1024*1024*1024L);
-            assertEquals("8 GB", fs.toString());
-        }
-    }
+		{
+			final FileSize fs = FileSize.valueOf("5 GBs");
+			assertEquals(5 * GB_CO, fs.getSize());
+		}
+	}
+
+
+	@Test
+	public void testToString() {
+		{
+			final FileSize fs = new FileSize(8);
+			assertEquals("8 Bytes", fs.toString());
+		}
+
+		{
+			final FileSize fs = new FileSize(8*1024+3);
+			assertEquals("8 KB", fs.toString());
+		}
+
+		{
+			final FileSize fs = new FileSize(8*1024*1024+3*1024);
+			assertEquals("8 MB", fs.toString());
+		}
+
+		{
+			final FileSize fs = new FileSize(8*1024*1024*1024L);
+			assertEquals("8 GB", fs.toString());
+		}
+	}
 }

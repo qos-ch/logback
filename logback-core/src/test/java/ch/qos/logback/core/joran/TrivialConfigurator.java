@@ -17,27 +17,27 @@ import java.util.HashMap;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 public class TrivialConfigurator extends GenericConfigurator {
 
-    HashMap<ElementSelector, Action> rulesMap;
+	HashMap<ElementSelector, Action> rulesMap;
 
-    public TrivialConfigurator(HashMap<ElementSelector, Action> rules) {
-        this.rulesMap = rules;
-    }
+	public TrivialConfigurator(final HashMap<ElementSelector, Action> rules) {
+		rulesMap = rules;
+	}
 
-    @Override
-    protected void addImplicitRules(SaxEventInterpreter interpreter) {
-    }
+	@Override
+	protected void addImplicitRules(final SaxEventInterpreter interpreter) {
+	}
 
-    @Override
-    protected void addInstanceRules(RuleStore rs) {
-        for (ElementSelector elementSelector : rulesMap.keySet()) {
-            Action action = rulesMap.get(elementSelector);
-            rs.addRule(elementSelector, action);
-        }
-    }
+	@Override
+	protected void addInstanceRules(final RuleStore rs) {
+		for (final ElementSelector elementSelector : rulesMap.keySet()) {
+			final Action action = rulesMap.get(elementSelector);
+			rs.addRule(elementSelector, action);
+		}
+	}
 
 }

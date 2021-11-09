@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
 
@@ -26,18 +29,14 @@ public class IntegerTokenConverter extends DynamicConverter<Object> implements M
 
 	public final static String CONVERTER_KEY = "i";
 
-	public String convert(final int i) {
+	private String formatString(final int i) {
 		final String s = Integer.toString(i);
 		final FormatInfo formattingInfo = getFormattingInfo();
 		if (formattingInfo == null) {
 			return s;
 		}
-		final int min = formattingInfo.getMin();
-		final StringBuilder sbuf = new StringBuilder();
-		for (int j = s.length(); j < min; ++j) {
-			sbuf.append('0');
-		}
-		return sbuf.append(s).toString();
+		return IntStream.range(s.length(), formattingInfo.getMin()).mapToObj(k -> "0")
+				.collect(Collectors.joining("", "", s));
 	}
 
 	@Override
@@ -46,8 +45,7 @@ public class IntegerTokenConverter extends DynamicConverter<Object> implements M
 			throw new IllegalArgumentException("Null argument forbidden");
 		}
 		if (o instanceof Integer) {
-			final Integer i = (Integer) o;
-			return convert(i);
+			return formatString((Integer) o);
 		}
 		throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
 	}

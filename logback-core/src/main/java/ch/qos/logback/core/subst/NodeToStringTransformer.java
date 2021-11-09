@@ -131,8 +131,7 @@ public class NodeToStringTransformer {
 			return value;
 		}
 
-		value = OptionHelper.getEnv(key);
-		return value;
+		return OptionHelper.getEnv(key);
 	}
 
 	private void handleLiteral(final Node n, final StringBuilder stringBuilder) {
@@ -172,7 +171,7 @@ public class NodeToStringTransformer {
 	}
 
 	private boolean equalNodes(final Node node1, final Node node2) {
-		if ((node1.type != null && !node1.type.equals(node2.type)) || (node1.payload != null && !node1.payload.equals(node2.payload))) {
+		if (node1.type != null && !node1.type.equals(node2.type) || node1.payload != null && !node1.payload.equals(node2.payload)) {
 			return false;
 		}
 		if (node1.defaultPart != null && !node1.defaultPart.equals(node2.defaultPart)) {

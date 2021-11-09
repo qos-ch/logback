@@ -68,7 +68,7 @@ public class Node {
 
 	@Override
 	public int hashCode() {
-		int result = type;
+		final int result = type;
 		return 31 * result + (value != null ? value.hashCode() : 0);
 	}
 

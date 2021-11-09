@@ -15,7 +15,12 @@ package ch.qos.logback.access.dummy;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.Cookie;
@@ -23,166 +28,203 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class DummyResponse implements HttpServletResponse {
 
-    public static final int DUMMY_DEFAULT_STATUS = 200;
-    public static final int DUMMY_DEFAULT_CONTENT_COUNT = 1000;
-    public static final Map<String, String> DUMMY_DEFAULT_HDEADER_MAP = new HashMap<String, String>();;
+	public static final int DUMMY_DEFAULT_STATUS = 200;
+	public static final int DUMMY_DEFAULT_CONTENT_COUNT = 1000;
+	public static final Map<String, String> DUMMY_DEFAULT_HDEADER_MAP = new HashMap<>();
 
-    static {
-        DUMMY_DEFAULT_HDEADER_MAP.put("headerName1", "headerValue1");
-        DUMMY_DEFAULT_HDEADER_MAP.put("headerName2", "headerValue2");
-    }
+	static {
+		DUMMY_DEFAULT_HDEADER_MAP.put("headerName1", "headerValue1");
+		DUMMY_DEFAULT_HDEADER_MAP.put("headerName2", "headerValue2");
+	}
 
-    int status = DUMMY_DEFAULT_STATUS;
-    public Map<String, String> headerMap;
+	int status = DUMMY_DEFAULT_STATUS;
+	public Map<String, String> headerMap;
 
-    String characterEncoding = null;
-    ServletOutputStream outputStream = null;
+	String characterEncoding = null;
+	ServletOutputStream outputStream = null;
 
-    public DummyResponse() {
-        headerMap = DUMMY_DEFAULT_HDEADER_MAP;
-    }
+	public DummyResponse() {
+		headerMap = DUMMY_DEFAULT_HDEADER_MAP;
+	}
 
-    public void addCookie(Cookie arg0) {
-    }
+	@Override
+	public void addCookie(final Cookie arg0) {
+	}
 
-    public void addDateHeader(String arg0, long arg1) {
-    }
+	@Override
+	public void addDateHeader(final String arg0, final long arg1) {
+	}
 
-    public void addHeader(String arg0, String arg1) {
-    }
+	@Override
+	public void addHeader(final String arg0, final String arg1) {
+	}
 
-    public void addIntHeader(String arg0, int arg1) {
-    }
+	@Override
+	public void addIntHeader(final String arg0, final int arg1) {
+	}
 
-    public boolean containsHeader(String arg0) {
-        return false;
-    }
+	@Override
+	public boolean containsHeader(final String arg0) {
+		return false;
+	}
 
-    public String encodeRedirectURL(String arg0) {
-        return null;
-    }
+	@Override
+	public String encodeRedirectURL(final String arg0) {
+		return null;
+	}
 
-    public String encodeRedirectUrl(String arg0) {
-        return null;
-    }
+	@Override
+	public String encodeRedirectUrl(final String arg0) {
+		return null;
+	}
 
-    public String encodeURL(String arg0) {
-        return null;
-    }
+	@Override
+	public String encodeURL(final String arg0) {
+		return null;
+	}
 
-    public String encodeUrl(String arg0) {
-        return null;
-    }
+	@Override
+	public String encodeUrl(final String arg0) {
+		return null;
+	}
 
-    public void sendError(int arg0) throws IOException {
-    }
+	@Override
+	public void sendError(final int arg0) throws IOException {
+	}
 
-    public void sendError(int arg0, String arg1) throws IOException {
-    }
+	@Override
+	public void sendError(final int arg0, final String arg1) throws IOException {
+	}
 
-    public void sendRedirect(String arg0) throws IOException {
-    }
+	@Override
+	public void sendRedirect(final String arg0) throws IOException {
+	}
 
-    public void setDateHeader(String arg0, long arg1) {
-    }
+	@Override
+	public void setDateHeader(final String arg0, final long arg1) {
+	}
 
-    public void setHeader(String arg0, String arg1) {
-    }
+	@Override
+	public void setHeader(final String arg0, final String arg1) {
+	}
 
-    public void setIntHeader(String arg0, int arg1) {
-    }
+	@Override
+	public void setIntHeader(final String arg0, final int arg1) {
+	}
 
-    public void setStatus(int arg0, String arg1) {
-    }
+	@Override
+	public void setStatus(final int arg0, final String arg1) {
+	}
 
-    public void flushBuffer() throws IOException {
-    }
+	@Override
+	public void flushBuffer() throws IOException {
+	}
 
-    public int getBufferSize() {
-        return 0;
-    }
+	@Override
+	public int getBufferSize() {
+		return 0;
+	}
 
-    public String getCharacterEncoding() {
-        return characterEncoding;
-    }
+	@Override
+	public String getCharacterEncoding() {
+		return characterEncoding;
+	}
 
-    public String getContentType() {
-        return null;
-    }
+	@Override
+	public String getContentType() {
+		return null;
+	}
 
-    public Locale getLocale() {
-        return null;
-    }
+	@Override
+	public Locale getLocale() {
+		return null;
+	}
 
-    public ServletOutputStream getOutputStream() throws IOException {
-        return outputStream;
-    }
+	@Override
+	public ServletOutputStream getOutputStream() throws IOException {
+		return outputStream;
+	}
 
-    public void setOutputStream(ServletOutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
+	public void setOutputStream(final ServletOutputStream outputStream) {
+		this.outputStream = outputStream;
+	}
 
-    public PrintWriter getWriter() throws IOException {
-        return null;
-    }
+	@Override
+	public PrintWriter getWriter() throws IOException {
+		return null;
+	}
 
-    public boolean isCommitted() {
-        return false;
-    }
+	@Override
+	public boolean isCommitted() {
+		return false;
+	}
 
-    public void reset() {
-    }
+	@Override
+	public void reset() {
+	}
 
-    public void resetBuffer() {
-    }
+	@Override
+	public void resetBuffer() {
+	}
 
-    public void setBufferSize(int arg0) {
-    }
+	@Override
+	public void setBufferSize(final int arg0) {
+	}
 
-    public void setCharacterEncoding(String characterEncoding) {
-        this.characterEncoding = characterEncoding;
-    }
+	@Override
+	public void setCharacterEncoding(final String characterEncoding) {
+		this.characterEncoding = characterEncoding;
+	}
 
-    public void setContentLength(int arg0) {
-    }
+	@Override
+	public void setContentLength(final int arg0) {
+	}
 
-    public void setContentType(String arg0) {
-    }
+	@Override
+	public void setContentType(final String arg0) {
+	}
 
-    public void setLocale(Locale arg0) {
-    }
+	@Override
+	public void setLocale(final Locale arg0) {
+	}
 
-    public String getHeader(String key) {
-        return headerMap.get(key);
-    }
+	@Override
+	public String getHeader(final String key) {
+		return headerMap.get(key);
+	}
 
-    public Collection<String> getHeaders(String name) {
-        String val = headerMap.get(name);
-        List<String> list = new ArrayList<String>();
-        if (val != null)
-            list.add(val);
-        return list;
-    }
+	@Override
+	public Collection<String> getHeaders(final String name) {
+		final String val = headerMap.get(name);
+		final List<String> list = new ArrayList<>();
+		if (val != null) {
+			list.add(val);
+		}
+		return list;
+	}
 
-    public Collection<String> getHeaderNames() {
-        return headerMap.keySet();
-    }
+	@Override
+	public Collection<String> getHeaderNames() {
+		return headerMap.keySet();
+	}
 
-    public long getContentCount() {
-        return DUMMY_DEFAULT_CONTENT_COUNT;
-    }
+	public long getContentCount() {
+		return DUMMY_DEFAULT_CONTENT_COUNT;
+	}
 
-    public int getStatus() {
-        return status;
-    }
+	@Override
+	public int getStatus() {
+		return status;
+	}
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
+	@Override
+	public void setStatus(final int status) {
+		this.status = status;
+	}
 
-    @Override
-    public void setContentLengthLong(long length) {
-        // TODO Auto-generated method stub
-    }
+	@Override
+	public void setContentLengthLong(final long length) {
+		// TODO Auto-generated method stub
+	}
 
 }

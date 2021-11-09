@@ -13,46 +13,48 @@
  */
 package ch.qos.logback.access.jetty;
 
-import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.access.PatternLayoutEncoder;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.access.testUtil.NotifyingListAppender;
 import ch.qos.logback.core.ConsoleAppender;
 
 public class JettyFixtureWithListAndConsoleAppenders extends JettyFixtureBase {
 
-    public JettyFixtureWithListAndConsoleAppenders(RequestLogImpl impl, int port) {
-        super(impl, port);
-        url = "http://localhost:" + port + "/";
-    }
+	public JettyFixtureWithListAndConsoleAppenders(final RequestLogImpl impl, final int port) {
+		super(impl, port);
+		url = "http://localhost:" + port + "/";
+	}
 
-    public void start() throws Exception {
-        super.start();
-        Thread.yield();
-    }
+	@Override
+	public void start() throws Exception {
+		super.start();
+		Thread.yield();
+	}
 
-    public void stop() throws Exception {
-        super.stop();
-        Thread.sleep(500);
-    }
+	@Override
+	public void stop() throws Exception {
+		super.stop();
+		Thread.sleep(500);
+	}
 
-    @Override
-    protected void configureRequestLogImpl() {
-        NotifyingListAppender appender = new NotifyingListAppender();
-        appender.setContext(requestLogImpl);
-        appender.setName("list");
-        appender.start();
+	@Override
+	protected void configureRequestLogImpl() {
+		final NotifyingListAppender appender = new NotifyingListAppender();
+		appender.setContext(requestLogImpl);
+		appender.setName("list");
+		appender.start();
 
-        ConsoleAppender<IAccessEvent> console = new ConsoleAppender<IAccessEvent>();
-        console.setContext(requestLogImpl);
-        console.setName("console");
-        PatternLayoutEncoder layout = new PatternLayoutEncoder();
-        layout.setContext(requestLogImpl);
-        layout.setPattern("%date %server %clientHost");
-        console.setEncoder(layout);
-        layout.start();
-        console.start();
+		final ConsoleAppender<IAccessEvent> console = new ConsoleAppender<>();
+		console.setContext(requestLogImpl);
+		console.setName("console");
+		final PatternLayoutEncoder layout = new PatternLayoutEncoder();
+		layout.setContext(requestLogImpl);
+		layout.setPattern("%date %server %clientHost");
+		console.setEncoder(layout);
+		layout.start();
+		console.start();
 
-        requestLogImpl.addAppender(appender);
-        requestLogImpl.addAppender(console);
-    }
+		requestLogImpl.addAppender(appender);
+		requestLogImpl.addAppender(console);
+	}
 }

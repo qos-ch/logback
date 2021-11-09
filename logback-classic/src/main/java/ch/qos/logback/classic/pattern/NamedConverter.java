@@ -111,9 +111,8 @@ public abstract class NamedConverter extends ClassicConverter {
 		}
 		if (cacheEnabled) {
 			return viaCache(fqn);
-		} else {
-			return abbreviator.abbreviate(fqn);
 		}
+		return abbreviator.abbreviate(fqn);
 	}
 
 	/**
@@ -193,7 +192,7 @@ public abstract class NamedConverter extends ClassicConverter {
 			final double rate = cacheMissCalculator.getCacheMissRate();
 
 			// negative rate indicates insufficient sample size
-			if ((rate < 0) || (rate < CACHE_MISSRATE_TRIGGER)) {
+			if (rate < 0 || rate < CACHE_MISSRATE_TRIGGER) {
 				return false;
 			}
 

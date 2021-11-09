@@ -22,56 +22,56 @@ import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
 /**
  * Short sample code testing the throughput of a fair lock.
- * 
+ *
  * @author Ceki Gulcu
  */
 public class LoggingToFileThroughput {
 
-    static int THREAD_COUNT = 1;
-    static long OVERALL_DURATION_IN_MILLIS = 5000;
+	static int THREAD_COUNT = 1;
+	static long OVERALL_DURATION_IN_MILLIS = 5000;
 
-    public static void main(String args[]) throws InterruptedException {
+	public static void main(final String args[]) throws InterruptedException {
 
-        ThreadedThroughputCalculator tp = new ThreadedThroughputCalculator(OVERALL_DURATION_IN_MILLIS);
-        tp.printEnvironmentInfo("lbclassic135  LoggingToFileThrouhput");
+		final ThreadedThroughputCalculator tp = new ThreadedThroughputCalculator(OVERALL_DURATION_IN_MILLIS);
+		tp.printEnvironmentInfo("lbclassic135  LoggingToFileThrouhput");
 
-        LoggerContext lc = new LoggerContext();
-        Logger logger = buildLoggerContext(lc);
+		final LoggerContext lc = new LoggerContext();
+		final Logger logger = buildLoggerContext(lc);
 
-        for (int i = 0; i < 2; i++) {
-            tp.execute(buildArray(logger));
-        }
+		for (int i = 0; i < 2; i++) {
+			tp.execute(buildArray(logger));
+		}
 
-        tp.execute(buildArray(logger));
-        tp.printThroughput("File:   ");
-        lc.stop();
-    }
+		tp.execute(buildArray(logger));
+		tp.printThroughput("File:   ");
+		lc.stop();
+	}
 
-    static Logger buildLoggerContext(LoggerContext lc) {
-        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+	static Logger buildLoggerContext(final LoggerContext lc) {
+		final Logger root = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
-        PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
-        patternLayout.setContext(lc);
-        patternLayout.setPattern("%d %l [%t] - %msg%n");
-        patternLayout.start();
-        FileAppender<ILoggingEvent> fileAppender = new FileAppender<ILoggingEvent>();
-        fileAppender.setContext(lc);
-        fileAppender.setFile("target/lbclassic135.log");
-        fileAppender.setEncoder(patternLayout);
-        fileAppender.setAppend(false);
-        fileAppender.start();
-        root.addAppender(fileAppender);
-        return lc.getLogger(LoggingToFileThroughput.class);
-    }
+		final PatternLayoutEncoder patternLayout = new PatternLayoutEncoder();
+		patternLayout.setContext(lc);
+		patternLayout.setPattern("%d %l [%t] - %msg%n");
+		patternLayout.start();
+		final FileAppender<ILoggingEvent> fileAppender = new FileAppender<>();
+		fileAppender.setContext(lc);
+		fileAppender.setFile("target/lbclassic135.log");
+		fileAppender.setEncoder(patternLayout);
+		fileAppender.setAppend(false);
+		fileAppender.start();
+		root.addAppender(fileAppender);
+		return lc.getLogger(LoggingToFileThroughput.class);
+	}
 
-    static LoggingRunnable[] buildArray(Logger logger) {
+	static LoggingRunnable[] buildArray(final Logger logger) {
 
-        LoggingRunnable[] array = new LoggingRunnable[THREAD_COUNT];
-        for (int i = 0; i < THREAD_COUNT; i++) {
-            array[i] = new LoggingRunnable(logger);
-        }
-        return array;
-    }
+		final LoggingRunnable[] array = new LoggingRunnable[THREAD_COUNT];
+		for (int i = 0; i < THREAD_COUNT; i++) {
+			array[i] = new LoggingRunnable(logger);
+		}
+		return array;
+	}
 }
 
 // === lbclassic135 LoggingToFileThrouhput ===

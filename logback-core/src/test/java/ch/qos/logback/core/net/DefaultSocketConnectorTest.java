@@ -50,7 +50,7 @@ public class DefaultSocketConnectorTest {
 	private static final int SHORT_DELAY = 10;
 	private static final int RETRY_DELAY = 10;
 
-	private MockExceptionHandler exceptionHandler = new MockExceptionHandler();
+	private final MockExceptionHandler exceptionHandler = new MockExceptionHandler();
 
 	private ServerSocket serverSocket;
 	private DefaultSocketConnector connector;
@@ -74,9 +74,9 @@ public class DefaultSocketConnectorTest {
 
 	@Test
 	public void testConnect() throws Exception {
-		Future<Socket> connectorTask = executor.submit(connector);
+		final Future<Socket> connectorTask = executor.submit(connector);
 
-		Socket socket = connectorTask.get(DELAY, TimeUnit.MILLISECONDS);
+		final Socket socket = connectorTask.get(DELAY, TimeUnit.MILLISECONDS);
 		assertNotNull(socket);
 		connectorTask.cancel(true);
 
@@ -87,15 +87,15 @@ public class DefaultSocketConnectorTest {
 	@Test
 	public void testConnectionFails() throws Exception {
 		serverSocket.close();
-		Future<Socket> connectorTask = executor.submit(connector);
+		final Future<Socket> connectorTask = executor.submit(connector);
 
 		// this connection attempt will always timeout
 		try {
 			connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
 			fail();
-		} catch (TimeoutException e) {
+		} catch (final TimeoutException e) {
 		}
-		Exception lastException = exceptionHandler.awaitConnectionFailed();
+		final Exception lastException = exceptionHandler.awaitConnectionFailed();
 		assertTrue(lastException instanceof ConnectException);
 		assertFalse(connectorTask.isDone());
 		connectorTask.cancel(true);
@@ -108,27 +108,27 @@ public class DefaultSocketConnectorTest {
 	public void testConnectEventually() throws Exception {
 		serverSocket.close();
 
-		Future<Socket> connectorTask = executor.submit(connector);
+		final Future<Socket> connectorTask = executor.submit(connector);
 		// this connection attempt will always timeout
 		try {
 			connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
 			fail();
-		} catch (TimeoutException e) {
+		} catch (final TimeoutException e) {
 		}
 
 		// the following call requries over 1000 millis
-		Exception lastException = exceptionHandler.awaitConnectionFailed();
+		final Exception lastException = exceptionHandler.awaitConnectionFailed();
 		assertNotNull(lastException);
 		assertTrue(lastException instanceof ConnectException);
 
 		// now rebind to the same local address
-		SocketAddress address = serverSocket.getLocalSocketAddress();
+		final SocketAddress address = serverSocket.getLocalSocketAddress();
 		serverSocket = new ServerSocket();
 		serverSocket.setReuseAddress(true);
 		serverSocket.bind(address);
 
 		// now we should be able to connect
-		Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
+		final Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
 
 		assertNotNull(socket);
 
@@ -142,7 +142,8 @@ public class DefaultSocketConnectorTest {
 
 		private Exception lastException;
 
-		public void connectionFailed(SocketConnector connector, Exception ex) {
+		@Override
+		public void connectionFailed(final SocketConnector connector, final Exception ex) {
 			lastException = ex;
 			try {
 				failureBarrier.await();

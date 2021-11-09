@@ -52,7 +52,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			debugAttrib = intercon.subst(configurationModel.getDebugStr());
 		}
 
-		if ((!OptionHelper.isNullOrEmpty(debugAttrib) && !debugAttrib.equalsIgnoreCase("false") && !debugAttrib.equalsIgnoreCase("null"))) {
+		if (!OptionHelper.isNullOrEmpty(debugAttrib) && !debugAttrib.equalsIgnoreCase("false") && !debugAttrib.equalsIgnoreCase("null")) {
 			StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
 		}
 

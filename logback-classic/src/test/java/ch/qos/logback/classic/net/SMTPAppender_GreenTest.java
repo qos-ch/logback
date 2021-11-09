@@ -84,7 +84,7 @@ public class SMTPAppender_GreenTest {
 		MDC.clear();
 	}
 
-	void startSMTPServer(boolean withSSL) {
+	void startSMTPServer(final boolean withSSL) {
 		ServerSetup serverSetup;
 
 		if (withSSL) {
@@ -99,7 +99,7 @@ public class SMTPAppender_GreenTest {
 		// give the server a head start
 		try {
 			Thread.sleep(10);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 		}
 	}
 
@@ -108,7 +108,7 @@ public class SMTPAppender_GreenTest {
 		greenMailServer.stop();
 	}
 
-	void buildSMTPAppender(String subject, boolean synchronicity) throws Exception {
+	void buildSMTPAppender(final String subject, final boolean synchronicity) throws Exception {
 		smtpAppender = new SMTPAppender();
 		smtpAppender.setContext(loggerContext);
 		smtpAppender.setName("smtp");
@@ -120,8 +120,8 @@ public class SMTPAppender_GreenTest {
 		smtpAppender.setAsynchronousSending(synchronicity);
 	}
 
-	private Layout<ILoggingEvent> buildPatternLayout(String pattern) {
-		PatternLayout layout = new PatternLayout();
+	private Layout<ILoggingEvent> buildPatternLayout(final String pattern) {
+		final PatternLayout layout = new PatternLayout();
 		layout.setContext(loggerContext);
 		layout.setFileHeader(HEADER);
 		layout.setOutputPatternAsHeader(false);
@@ -132,27 +132,27 @@ public class SMTPAppender_GreenTest {
 	}
 
 	private Layout<ILoggingEvent> buildHTMLLayout() {
-		HTMLLayout layout = new HTMLLayout();
+		final HTMLLayout layout = new HTMLLayout();
 		layout.setContext(loggerContext);
 		layout.setPattern("%level%class%msg");
 		layout.start();
 		return layout;
 	}
 
-	private void waitForServerToReceiveEmails(int emailCount) throws InterruptedException {
+	private void waitForServerToReceiveEmails(final int emailCount) throws InterruptedException {
 		greenMailServer.waitForIncomingEmail(5000, emailCount);
 	}
 
-	private MimeMultipart verifyAndExtractMimeMultipart(String subject)
+	private MimeMultipart verifyAndExtractMimeMultipart(final String subject)
 			throws MessagingException, IOException, InterruptedException {
-		int oldCount = 0;
-		int expectedEmailCount = 1;
+		final int oldCount = 0;
+		final int expectedEmailCount = 1;
 		// wait for the server to receive the messages
 		waitForServerToReceiveEmails(expectedEmailCount);
-		MimeMessage[] mma = greenMailServer.getReceivedMessages();
+		final MimeMessage[] mma = greenMailServer.getReceivedMessages();
 		assertNotNull(mma);
 		assertEquals(expectedEmailCount, mma.length);
-		MimeMessage mm = mma[oldCount];
+		final MimeMessage mm = mma[oldCount];
 		// http://jira.qos.ch/browse/LBCLASSIC-67
 		assertEquals(subject, mm.getSubject());
 		return (MimeMultipart) mm.getContent();
@@ -166,7 +166,7 @@ public class SMTPAppender_GreenTest {
 	@Test
 	public void synchronousSmoke() throws Exception {
 		startSMTPServer(NO_SSL);
-		String subject = "synchronousSmoke";
+		final String subject = "synchronousSmoke";
 		buildSMTPAppender(subject, SYNCHRONOUS);
 
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
@@ -177,8 +177,8 @@ public class SMTPAppender_GreenTest {
 		logger.debug("hello");
 		logger.error("en error", new Exception("an exception"));
 
-		MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
-		String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
+		final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
 		assertTrue(body.startsWith(HEADER.trim()));
 		assertTrue(body.endsWith(FOOTER.trim()));
 	}
@@ -187,7 +187,7 @@ public class SMTPAppender_GreenTest {
 	public void asynchronousSmoke() throws Exception {
 		startSMTPServer(NO_SSL);
 
-		String subject = "asynchronousSmoke";
+		final String subject = "asynchronousSmoke";
 		buildSMTPAppender(subject, ASYNCHRONOUS);
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
 		smtpAppender.start();
@@ -197,8 +197,8 @@ public class SMTPAppender_GreenTest {
 		logger.error("en error", new Exception("an exception"));
 
 		waitUntilEmailIsSent();
-		MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
-		String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
+		final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
 		assertTrue(body.startsWith(HEADER.trim()));
 		assertTrue(body.endsWith(FOOTER.trim()));
 	}
@@ -207,7 +207,7 @@ public class SMTPAppender_GreenTest {
 	@Test
 	public void callerDataShouldBeCorrectlySetWithAsynchronousSending() throws Exception {
 		startSMTPServer(NO_SSL);
-		String subject = "LOGBACK-734";
+		final String subject = "LOGBACK-734";
 		buildSMTPAppender("LOGBACK-734", ASYNCHRONOUS);
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
 		smtpAppender.setIncludeCallerData(true);
@@ -217,8 +217,8 @@ public class SMTPAppender_GreenTest {
 		logger.error("callerData", new Exception("ShouldBeCorrectlySetWithAsynchronousSending"));
 
 		waitUntilEmailIsSent();
-		MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
-		String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
+		final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
 		assertTrue("actual [" + body + "]", body.contains("DEBUG " + this.getClass().getName() + " - LOGBACK-734"));
 	}
 
@@ -226,7 +226,7 @@ public class SMTPAppender_GreenTest {
 	@Test
 	public void LOGBACK_352() throws Exception {
 		startSMTPServer(NO_SSL);
-		String subject = "LOGBACK_352";
+		final String subject = "LOGBACK_352";
 		buildSMTPAppender(subject, SYNCHRONOUS);
 		smtpAppender.setAsynchronousSending(false);
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
@@ -237,8 +237,8 @@ public class SMTPAppender_GreenTest {
 		MDC.clear();
 		logger.error("en error", new Exception("test"));
 
-		MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
-		String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
+		final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
 		assertTrue(body.startsWith(HEADER.trim()));
 		System.out.println(body);
 		assertTrue(body.contains("key=val"));
@@ -248,7 +248,7 @@ public class SMTPAppender_GreenTest {
 	@Test
 	public void html() throws Exception {
 		startSMTPServer(NO_SSL);
-		String subject = "html";
+		final String subject = "html";
 		buildSMTPAppender(subject, SYNCHRONOUS);
 		smtpAppender.setAsynchronousSending(false);
 		smtpAppender.setLayout(buildHTMLLayout());
@@ -257,17 +257,17 @@ public class SMTPAppender_GreenTest {
 		logger.debug("html");
 		logger.error("en error", new Exception("an exception"));
 
-		MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
 
 		// verifyAndExtractMimeMultipart strict adherence to xhtml1-strict.dtd
-		SAXReader reader = new SAXReader();
+		final SAXReader reader = new SAXReader();
 		reader.setValidation(true);
 		reader.setEntityResolver(new XHTMLEntityResolver());
-		byte[] messageBytes = getAsByteArray(mp.getBodyPart(0).getInputStream());
-		ByteArrayInputStream bais = new ByteArrayInputStream(messageBytes);
+		final byte[] messageBytes = getAsByteArray(mp.getBodyPart(0).getInputStream());
+		final ByteArrayInputStream bais = new ByteArrayInputStream(messageBytes);
 		try {
 			reader.read(bais);
-		} catch (DocumentException de) {
+		} catch (final DocumentException de) {
 			System.out.println("incoming message:");
 			System.out.println(new String(messageBytes));
 			throw de;
@@ -276,10 +276,10 @@ public class SMTPAppender_GreenTest {
 		System.out.println(new String(messageBytes));
 	}
 
-	private byte[] getAsByteArray(InputStream inputStream) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	private byte[] getAsByteArray(final InputStream inputStream) throws IOException {
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-		byte[] buffer = new byte[1024];
+		final byte[] buffer = new byte[1024];
 		int n = -1;
 		while ((n = inputStream.read(buffer)) != -1) {
 			baos.write(buffer, 0, n);
@@ -287,8 +287,8 @@ public class SMTPAppender_GreenTest {
 		return baos.toByteArray();
 	}
 
-	private void configure(String file) throws JoranException {
-		JoranConfigurator jc = new JoranConfigurator();
+	private void configure(final String file) throws JoranException {
+		final JoranConfigurator jc = new JoranConfigurator();
 		jc.setContext(loggerContext);
 		loggerContext.putProperty("port", "" + port);
 		jc.doConfigure(file);
@@ -300,13 +300,13 @@ public class SMTPAppender_GreenTest {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "smtp/customEvaluator.xml");
 
 		logger.debug("test");
-		String msg2 = "CustomEvaluator";
+		final String msg2 = "CustomEvaluator";
 		logger.debug(msg2);
 		logger.debug("invisible");
 		waitUntilEmailIsSent();
-		MimeMultipart mp = verifyAndExtractMimeMultipart(
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(
 				"testCustomEvaluator " + this.getClass().getName() + " - " + msg2);
-		String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+		final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
 		assertEquals("testCustomEvaluator", body);
 	}
 
@@ -317,12 +317,12 @@ public class SMTPAppender_GreenTest {
 
 		logger.debug("invisible1");
 		logger.debug("invisible2");
-		String msg = "hello";
+		final String msg = "hello";
 		logger.error(msg);
 		waitUntilEmailIsSent();
-		MimeMultipart mp = verifyAndExtractMimeMultipart(
+		final MimeMultipart mp = verifyAndExtractMimeMultipart(
 				"testCustomBufferSize " + this.getClass().getName() + " - " + msg);
-		String body = GreenMailUtil.getBody(mp.getBodyPart(0));
+		final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
 		assertEquals(msg, body);
 	}
 
@@ -339,9 +339,9 @@ public class SMTPAppender_GreenTest {
 		logger.debug("testMultipleTo hello");
 		logger.error("testMultipleTo en error", new Exception("an exception"));
 		Thread.yield();
-		int expectedEmailCount = 3;
+		final int expectedEmailCount = 3;
 		waitForServerToReceiveEmails(expectedEmailCount);
-		MimeMessage[] mma = greenMailServer.getReceivedMessages();
+		final MimeMessage[] mma = greenMailServer.getReceivedMessages();
 		assertNotNull(mma);
 		assertEquals(expectedEmailCount, mma.length);
 	}
@@ -354,31 +354,32 @@ public class SMTPAppender_GreenTest {
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
 		smtpAppender.start();
 		logger.addAppender(smtpAppender);
-		String msg0 = "hello zero";
+		final String msg0 = "hello zero";
 		logger.debug(msg0);
 		logger.error("error zero");
 
-		String msg1 = "hello one";
+		final String msg1 = "hello one";
 		logger.debug(msg1);
 		logger.error("error one");
 
 		Thread.yield();
-		int oldCount = 0;
-		int expectedEmailCount = oldCount + 2;
+		final int oldCount = 0;
+		final int expectedEmailCount = oldCount + 2;
 		waitForServerToReceiveEmails(expectedEmailCount);
 
-		MimeMessage[] mma = greenMailServer.getReceivedMessages();
+		final MimeMessage[] mma = greenMailServer.getReceivedMessages();
 		assertNotNull(mma);
 		assertEquals(expectedEmailCount, mma.length);
 
-		MimeMessage mm0 = mma[oldCount];
-		MimeMultipart content0 = (MimeMultipart) mm0.getContent();
+		final MimeMessage mm0 = mma[oldCount];
+		final MimeMultipart content0 = (MimeMultipart) mm0.getContent();
 		@SuppressWarnings("unused")
+		final
 		String body0 = GreenMailUtil.getBody(content0.getBodyPart(0));
 
-		MimeMessage mm1 = mma[oldCount + 1];
-		MimeMultipart content1 = (MimeMultipart) mm1.getContent();
-		String body1 = GreenMailUtil.getBody(content1.getBodyPart(0));
+		final MimeMessage mm1 = mma[oldCount + 1];
+		final MimeMultipart content1 = (MimeMultipart) mm1.getContent();
+		final String body1 = GreenMailUtil.getBody(content1.getBodyPart(0));
 		// second body should not contain content from first message
 		assertFalse(body1.contains(msg0));
 	}
@@ -386,8 +387,8 @@ public class SMTPAppender_GreenTest {
 	@Test
 	public void multiLineSubjectTruncatedAtFirstNewLine() throws Exception {
 		startSMTPServer(NO_SSL);
-		String line1 = "line 1 of subject";
-		String subject = line1 + "\nline 2 of subject\n";
+		final String line1 = "line 1 of subject";
+		final String subject = line1 + "\nline 2 of subject\n";
 		buildSMTPAppender(subject, ASYNCHRONOUS);
 
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
@@ -400,7 +401,7 @@ public class SMTPAppender_GreenTest {
 		waitUntilEmailIsSent();
 		waitForServerToReceiveEmails(1);
 
-		MimeMessage[] mma = greenMailServer.getReceivedMessages();
+		final MimeMessage[] mma = greenMailServer.getReceivedMessages();
 		assertEquals(1, mma.length);
 		assertEquals(line1, mma[0].getSubject());
 	}
@@ -422,20 +423,20 @@ public class SMTPAppender_GreenTest {
 		waitUntilEmailIsSent();
 		waitForServerToReceiveEmails(1);
 
-		MimeMessage[] mma = greenMailServer.getReceivedMessages();
+		final MimeMessage[] mma = greenMailServer.getReceivedMessages();
 		assertNotNull(mma);
 		assertTrue("body should not be empty", mma.length == 1);
 	}
 
 	void setSystemPropertiesForStartTLS() {
-		String PREFIX = "mail.smtp.";
+		final String PREFIX = "mail.smtp.";
 		System.setProperty(PREFIX + "starttls.enable", "true");
 		System.setProperty(PREFIX + "socketFactory.class", DummySSLSocketFactory.class.getName());
 		System.setProperty(PREFIX + "socketFactory.fallback", "false");
 	}
 
 	void unsetSystemPropertiesForStartTLS() {
-		String PREFIX = "mail.smtp.";
+		final String PREFIX = "mail.smtp.";
 		System.clearProperty(PREFIX + "starttls.enable");
 		System.clearProperty(PREFIX + "socketFactory.class");
 		System.clearProperty(PREFIX + "socketFactory.fallback");
@@ -445,25 +446,25 @@ public class SMTPAppender_GreenTest {
 	public void authenticatedSSL() throws Exception {
 		try {
 			setSystemPropertiesForStartTLS();
-		
-		startSMTPServer(WITH_SSL);
-		buildSMTPAppender("testMultipleTo", SYNCHRONOUS);
-		smtpAppender.setUsername(REQUIRED_USERNAME);
-		smtpAppender.setPassword(REQUIRED_PASSWORD);
-		smtpAppender.setSTARTTLS(true);
-		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
-		smtpAppender.start();
 
-		logger.addAppender(smtpAppender);
-		logger.debug("authenticated");
-		logger.error("authenticated en error", new Exception("an exception"));
+			startSMTPServer(WITH_SSL);
+			buildSMTPAppender("testMultipleTo", SYNCHRONOUS);
+			smtpAppender.setUsername(REQUIRED_USERNAME);
+			smtpAppender.setPassword(REQUIRED_PASSWORD);
+			smtpAppender.setSTARTTLS(true);
+			smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
+			smtpAppender.start();
 
-		waitUntilEmailIsSent();
-		waitForServerToReceiveEmails(1);
+			logger.addAppender(smtpAppender);
+			logger.debug("authenticated");
+			logger.error("authenticated en error", new Exception("an exception"));
 
-		MimeMessage[] mma = greenMailServer.getReceivedMessages();
-		assertNotNull(mma);
-		assertTrue("body should not be empty", mma.length == 1);
+			waitUntilEmailIsSent();
+			waitForServerToReceiveEmails(1);
+
+			final MimeMessage[] mma = greenMailServer.getReceivedMessages();
+			assertNotNull(mma);
+			assertTrue("body should not be empty", mma.length == 1);
 		} finally {
 			unsetSystemPropertiesForStartTLS();
 		}
@@ -490,7 +491,7 @@ public class SMTPAppender_GreenTest {
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
 		smtpAppender.setSubject("authenticatedGmailStartTLS - %level %logger{20} - %m");
 		smtpAppender.start();
-		Logger logger = loggerContext.getLogger("authenticatedGmailSTARTTLS");
+		final Logger logger = loggerContext.getLogger("authenticatedGmailSTARTTLS");
 		logger.addAppender(smtpAppender);
 		logger.debug("authenticatedGmailStartTLS =- hello");
 		logger.error("en error", new Exception("an exception"));
@@ -511,7 +512,7 @@ public class SMTPAppender_GreenTest {
 		smtpAppender.setAsynchronousSending(false);
 		smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
 		smtpAppender.start();
-		Logger logger = loggerContext.getLogger("authenticatedGmail_SSL");
+		final Logger logger = loggerContext.getLogger("authenticatedGmail_SSL");
 		logger.addAppender(smtpAppender);
 		logger.debug("hello" + new java.util.Date());
 		logger.error("en error", new Exception("an exception"));

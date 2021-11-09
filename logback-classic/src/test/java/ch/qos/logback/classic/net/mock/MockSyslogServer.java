@@ -19,57 +19,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class MockSyslogServer extends Thread {
 
-    final int loopLen;
-    final int port;
+	final int loopLen;
+	final int port;
 
-    List<byte[]> msgList = new ArrayList<byte[]>();
-    boolean finished = false;
+	List<byte[]> msgList = new ArrayList<>();
+	boolean finished = false;
 
-    public MockSyslogServer(int loopLen, int port) {
-        super();
-        this.loopLen = loopLen;
-        this.port = port;
-    }
+	public MockSyslogServer(final int loopLen, final int port) {
+		this.loopLen = loopLen;
+		this.port = port;
+	}
 
-    @Override
-    public void run() {
-        // System.out.println("MockSyslogServer listening on port "+port);
-        DatagramSocket socket = null;
-        try {
-            socket = new DatagramSocket(port);
+	@Override
+	public void run() {
+		// System.out.println("MockSyslogServer listening on port "+port);
+		DatagramSocket socket = null;
+		try {
+			socket = new DatagramSocket(port);
 
-            for (int i = 0; i < loopLen; i++) {
-                byte[] buf = new byte[65536];
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                // System.out.println("Waiting for message");
-                socket.receive(packet);
-                byte[] out = new byte[packet.getLength()];
-                System.arraycopy(buf, 0, out, 0, out.length);
-                msgList.add(out);
-            }
-        } catch (Exception se) {
-            se.printStackTrace();
-        } finally {
-            if (socket != null) {
-                try {
-                    socket.close();
-                } catch (Exception e) {
-                }
-            }
-        }
-        finished = true;
-    }
+			for (int i = 0; i < loopLen; i++) {
+				final byte[] buf = new byte[65536];
+				final DatagramPacket packet = new DatagramPacket(buf, buf.length);
+				// System.out.println("Waiting for message");
+				socket.receive(packet);
+				final byte[] out = new byte[packet.getLength()];
+				System.arraycopy(buf, 0, out, 0, out.length);
+				msgList.add(out);
+			}
+		} catch (final Exception se) {
+			se.printStackTrace();
+		} finally {
+			if (socket != null) {
+				try {
+					socket.close();
+				} catch (final Exception e) {
+				}
+			}
+		}
+		finished = true;
+	}
 
-    public boolean isFinished() {
-        return finished;
-    }
+	public boolean isFinished() {
+		return finished;
+	}
 
-    public List<byte[]> getMessageList() {
-        return msgList;
-    }
+	public List<byte[]> getMessageList() {
+		return msgList;
+	}
 }

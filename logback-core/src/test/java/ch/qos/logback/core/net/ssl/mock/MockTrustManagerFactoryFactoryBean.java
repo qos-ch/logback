@@ -27,16 +27,16 @@ import ch.qos.logback.core.net.ssl.TrustManagerFactoryFactoryBean;
  */
 public class MockTrustManagerFactoryFactoryBean extends TrustManagerFactoryFactoryBean {
 
-    private boolean factoryCreated;
+	private boolean factoryCreated;
 
-    @Override
-    public TrustManagerFactory createTrustManagerFactory() throws NoSuchProviderException, NoSuchAlgorithmException {
-        factoryCreated = true;
-        return super.createTrustManagerFactory();
-    }
+	@Override
+	public TrustManagerFactory createTrustManagerFactory() throws NoSuchProviderException, NoSuchAlgorithmException {
+		factoryCreated = true;
+		return super.createTrustManagerFactory();
+	}
 
-    public boolean isFactoryCreated() {
-        return factoryCreated;
-    }
+	public boolean isFactoryCreated() {
+		return factoryCreated;
+	}
 
 }

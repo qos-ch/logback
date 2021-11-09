@@ -23,62 +23,62 @@ import ch.qos.logback.core.read.ListAppender;
 
 public class LoggerMessageFormattingTest {
 
-    LoggerContext lc;
-    ListAppender<ILoggingEvent> listAppender;
+	LoggerContext lc;
+	ListAppender<ILoggingEvent> listAppender;
 
-    @Before
-    public void setUp() {
-        lc = new LoggerContext();
-        Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        listAppender = new ListAppender<ILoggingEvent>();
-        listAppender.setContext(lc);
-        listAppender.start();
-        logger.addAppender(listAppender);
-    }
+	@Before
+	public void setUp() {
+		lc = new LoggerContext();
+		final Logger logger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		listAppender = new ListAppender<>();
+		listAppender.setContext(lc);
+		listAppender.start();
+		logger.addAppender(listAppender);
+	}
 
-    @Test
-    public void testFormattingOneArg() {
-        Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.debug("{}", Integer.valueOf(12));
-        ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
-        assertEquals("12", event.getFormattedMessage());
-    }
+	@Test
+	public void testFormattingOneArg() {
+		final Logger logger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		logger.debug("{}", Integer.valueOf(12));
+		final ILoggingEvent event = listAppender.list.get(0);
+		assertEquals("12", event.getFormattedMessage());
+	}
 
-    @Test
-    public void testFormattingTwoArg() {
-        Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.debug("{}-{}", Integer.valueOf(12), Integer.valueOf(13));
-        ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
-        assertEquals("12-13", event.getFormattedMessage());
-    }
+	@Test
+	public void testFormattingTwoArg() {
+		final Logger logger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		logger.debug("{}-{}", Integer.valueOf(12), Integer.valueOf(13));
+		final ILoggingEvent event = listAppender.list.get(0);
+		assertEquals("12-13", event.getFormattedMessage());
+	}
 
-    @Test
-    public void testNoFormatting() {
-        Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.debug("test", Integer.valueOf(12), Integer.valueOf(13));
-        ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
-        assertEquals("test", event.getFormattedMessage());
-    }
+	@Test
+	public void testNoFormatting() {
+		final Logger logger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		logger.debug("test", Integer.valueOf(12), Integer.valueOf(13));
+		final ILoggingEvent event = listAppender.list.get(0);
+		assertEquals("test", event.getFormattedMessage());
+	}
 
-    @Test
-    public void testNoFormatting2() {
-        Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.debug("test");
-        ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
-        assertEquals("test", event.getFormattedMessage());
-    }
+	@Test
+	public void testNoFormatting2() {
+		final Logger logger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		logger.debug("test");
+		final ILoggingEvent event = listAppender.list.get(0);
+		assertEquals("test", event.getFormattedMessage());
+	}
 
-    @Test
-    public void testMessageConverter() {
-        Logger logger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.debug("{}", 12);
-        ILoggingEvent event = (ILoggingEvent) listAppender.list.get(0);
-        PatternLayout layout = new PatternLayout();
-        layout.setContext(lc);
-        layout.setPattern("%m");
-        layout.start();
-        String formattedMessage = layout.doLayout(event);
-        assertEquals("12", formattedMessage);
-    }
+	@Test
+	public void testMessageConverter() {
+		final Logger logger = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+		logger.debug("{}", 12);
+		final ILoggingEvent event = listAppender.list.get(0);
+		final PatternLayout layout = new PatternLayout();
+		layout.setContext(lc);
+		layout.setPattern("%m");
+		layout.start();
+		final String formattedMessage = layout.doLayout(event);
+		assertEquals("12", formattedMessage);
+	}
 
 }

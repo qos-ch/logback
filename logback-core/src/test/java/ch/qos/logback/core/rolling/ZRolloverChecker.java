@@ -13,26 +13,27 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.util.Compare;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+import ch.qos.logback.core.util.Compare;
 
 public class ZRolloverChecker implements RolloverChecker {
 
-    String testId;
+	String testId;
 
-    public ZRolloverChecker(String testId) {
-        this.testId = testId;
-    }
+	public ZRolloverChecker(final String testId) {
+		this.testId = testId;
+	}
 
-    public void check(List<String> expectedFilenameList) throws IOException {
-        int lastIndex = expectedFilenameList.size() - 1;
-        String lastFile = expectedFilenameList.get(lastIndex);
-        String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId;
-        assertTrue(Compare.compare(lastFile, witnessFileName));
-    }
+	@Override
+	public void check(final List<String> expectedFilenameList) throws IOException {
+		final int lastIndex = expectedFilenameList.size() - 1;
+		final String lastFile = expectedFilenameList.get(lastIndex);
+		final String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId;
+		assertTrue(Compare.compare(lastFile, witnessFileName));
+	}
 }

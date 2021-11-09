@@ -205,7 +205,7 @@ public class ContextBase implements Context, LifeCycle {
 		if (name != null && name.equals(this.name)) {
 			return; // idempotent naming
 		}
-		if ((this.name != null) && !CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
+		if (this.name != null && !CoreConstants.DEFAULT_CONTEXT_NAME.equals(this.name)) {
 			throw new IllegalStateException("Context has been already given a name");
 		}
 		this.name = name;

@@ -20,41 +20,40 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TextFileUtil {
 
-    public static List<String> toWords(URL url) throws IOException {
-        InputStream is = url.openStream();
-        InputStreamReader reader = new InputStreamReader(is);
-        BufferedReader br = new BufferedReader(reader);
-        return toWords(br);
-    }
+	public static List<String> toWords(final URL url) throws IOException {
+		final InputStream is = url.openStream();
+		final InputStreamReader reader = new InputStreamReader(is);
+		final BufferedReader br = new BufferedReader(reader);
+		return toWords(br);
+	}
 
-    public static List<String> toWords(String filename) throws IOException {
-        FileReader fr = new FileReader(filename);
-        BufferedReader br = new BufferedReader(fr);
-        return toWords(br);
-    }
+	public static List<String> toWords(final String filename) throws IOException {
+		final FileReader fr = new FileReader(filename);
+		final BufferedReader br = new BufferedReader(fr);
+		return toWords(br);
+	}
 
-    public static List<String> toWords(BufferedReader br) throws IOException {
+	public static List<String> toWords(final BufferedReader br) throws IOException {
 
-        // (\\d+)$
-        // String regExp = "^(\\d+) "+ msg + " ([\\dabcdef-]+)$";
-        // Pattern p = Pattern.compile(regExp);
-        String line;
+		// (\\d+)$
+		// String regExp = "^(\\d+) "+ msg + " ([\\dabcdef-]+)$";
+		// Pattern p = Pattern.compile(regExp);
+		String line;
 
-        List<String> wordList = new ArrayList<String>();
+		final List<String> wordList = new ArrayList<>();
 
-        while ((line = br.readLine()) != null) {
-            // line = line.replaceAll("\\p{Punct}+", " ");
-            String[] words = line.split("\\s");
-            for (String word : words) {
-                wordList.add(word);
-            }
-        }
-        br.close();
+		while ((line = br.readLine()) != null) {
+			// line = line.replaceAll("\\p{Punct}+", " ");
+			final String[] words = line.split("\\s");
+			Collections.addAll(wordList, words);
+		}
+		br.close();
 
-        return wordList;
-    }
+		return wordList;
+	}
 }

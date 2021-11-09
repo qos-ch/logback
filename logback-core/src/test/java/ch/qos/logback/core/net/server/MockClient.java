@@ -23,37 +23,39 @@ package ch.qos.logback.core.net.server;
  */
 class MockClient implements Client {
 
-    private boolean running;
-    private boolean closed;
+	private boolean running;
+	private boolean closed;
 
-    public void run() {
-        synchronized (this) {
-            running = true;
-            notifyAll();
-            while (running && !Thread.currentThread().isInterrupted()) {
-                try {
-                    wait();
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-        }
-    }
+	@Override
+	public void run() {
+		synchronized (this) {
+			running = true;
+			notifyAll();
+			while (running && !Thread.currentThread().isInterrupted()) {
+				try {
+					wait();
+				} catch (final InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
+			}
+		}
+	}
 
-    public void close() {
-        synchronized (this) {
-            running = false;
-            closed = true;
-            notifyAll();
-        }
-    }
+	@Override
+	public void close() {
+		synchronized (this) {
+			running = false;
+			closed = true;
+			notifyAll();
+		}
+	}
 
-    public synchronized boolean isRunning() {
-        return running;
-    }
+	public synchronized boolean isRunning() {
+		return running;
+	}
 
-    public synchronized boolean isClosed() {
-        return closed;
-    }
+	public synchronized boolean isClosed() {
+		return closed;
+	}
 
 }

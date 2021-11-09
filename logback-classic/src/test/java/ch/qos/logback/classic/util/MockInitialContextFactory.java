@@ -20,27 +20,28 @@ import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
 
 public class MockInitialContextFactory implements InitialContextFactory {
-    static MockInitialContext mic;
+	static MockInitialContext mic;
 
-    static {
-        System.out.println("MockInitialContextFactory static called");
-        initialize();
-    }
+	static {
+		System.out.println("MockInitialContextFactory static called");
+		initialize();
+	}
 
-    public static void initialize() {
-        try {
-            mic = new MockInitialContext();
-        } catch (NamingException e) {
-            e.printStackTrace();
-        }
-    }
+	public static void initialize() {
+		try {
+			mic = new MockInitialContext();
+		} catch (final NamingException e) {
+			e.printStackTrace();
+		}
+	}
 
-    public Context getInitialContext(Hashtable<?, ?> environment) throws NamingException {
-        return mic;
-    }
+	@Override
+	public Context getInitialContext(final Hashtable<?, ?> environment) throws NamingException {
+		return mic;
+	}
 
-    public static MockInitialContext getContext() {
-        return mic;
-    }
+	public static MockInitialContext getContext() {
+		return mic;
+	}
 
 }

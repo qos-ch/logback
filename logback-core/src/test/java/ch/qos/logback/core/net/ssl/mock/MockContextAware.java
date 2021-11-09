@@ -26,43 +26,44 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  */
 public class MockContextAware extends ContextAwareBase implements ContextAware {
 
-    private final List<String> info = new LinkedList<String>();
-    private final List<String> warn = new LinkedList<String>();
-    private final List<String> error = new LinkedList<String>();
+	private final List<String> info = new LinkedList<>();
+	private final List<String> warn = new LinkedList<>();
+	private final List<String> error = new LinkedList<>();
 
-    @Override
-    public void addInfo(String msg) {
-        info.add(msg);
-    }
+	@Override
+	public void addInfo(final String msg) {
+		info.add(msg);
+	}
 
-    @Override
-    public void addWarn(String msg) {
-        warn.add(msg);
-    }
+	@Override
+	public void addWarn(final String msg) {
+		warn.add(msg);
+	}
 
-    @Override
-    public void addError(String msg) {
-        error.add(msg);
-    }
+	@Override
+	public void addError(final String msg) {
+		error.add(msg);
+	}
 
-    public boolean hasInfoMatching(String regex) {
-        return hasMatching(info, regex);
-    }
+	public boolean hasInfoMatching(final String regex) {
+		return hasMatching(info, regex);
+	}
 
-    public boolean hasWarnMatching(String regex) {
-        return hasMatching(info, regex);
-    }
+	public boolean hasWarnMatching(final String regex) {
+		return hasMatching(info, regex);
+	}
 
-    public boolean hasErrorMatching(String regex) {
-        return hasMatching(info, regex);
-    }
+	public boolean hasErrorMatching(final String regex) {
+		return hasMatching(info, regex);
+	}
 
-    private boolean hasMatching(List<String> messages, String regex) {
-        for (String message : messages) {
-            if (message.matches(regex))
-                return true;
-        }
-        return false;
-    }
+	private boolean hasMatching(final List<String> messages, final String regex) {
+		for (final String message : messages) {
+			if (message.matches(regex)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

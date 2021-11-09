@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -31,89 +31,89 @@ import ch.qos.logback.core.status.WarnStatus;
 
 public class StatusPrinterTest {
 
-    ByteArrayOutputStream outputStream;
-    PrintStream ps;
+	ByteArrayOutputStream outputStream;
+	PrintStream ps;
 
-    @Before
-    public void setUp() throws Exception {
-        outputStream = new ByteArrayOutputStream();
-        ps = new PrintStream(outputStream);
-        StatusPrinter.setPrintStream(ps);
-    }
+	@Before
+	public void setUp() throws Exception {
+		outputStream = new ByteArrayOutputStream();
+		ps = new PrintStream(outputStream);
+		StatusPrinter.setPrintStream(ps);
+	}
 
-    @After
-    public void tearDown() throws Exception {
-        StatusPrinter.setPrintStream(System.out);
-        ps = null;
-        outputStream = null;
-    }
+	@After
+	public void tearDown() throws Exception {
+		StatusPrinter.setPrintStream(System.out);
+		ps = null;
+		outputStream = null;
+	}
 
-    @Test
-    public void testBasic() {
-        Context context = new ContextBase();
-        context.getStatusManager().add(new InfoStatus("test", this));
-        StatusPrinter.print(context);
-        String result = outputStream.toString();
-        assertTrue(result.contains("|-INFO in " + this.getClass().getName()));
-    }
+	@Test
+	public void testBasic() {
+		final Context context = new ContextBase();
+		context.getStatusManager().add(new InfoStatus("test", this));
+		StatusPrinter.print(context);
+		final String result = outputStream.toString();
+		assertTrue(result.contains("|-INFO in " + this.getClass().getName()));
+	}
 
-    @Test
-    public void testNested() {
-        Status s0 = new ErrorStatus("test0", this);
-        Status s1 = new InfoStatus("test1", this);
-        Status s11 = new InfoStatus("test11", this);
-        Status s12 = new InfoStatus("test12", this);
-        s1.add(s11);
-        s1.add(s12);
+	@Test
+	public void testNested() {
+		final Status s0 = new ErrorStatus("test0", this);
+		final Status s1 = new InfoStatus("test1", this);
+		final Status s11 = new InfoStatus("test11", this);
+		final Status s12 = new InfoStatus("test12", this);
+		s1.add(s11);
+		s1.add(s12);
 
-        Status s2 = new InfoStatus("test2", this);
-        Status s21 = new InfoStatus("test21", this);
-        Status s211 = new WarnStatus("test211", this);
+		final Status s2 = new InfoStatus("test2", this);
+		final Status s21 = new InfoStatus("test21", this);
+		final Status s211 = new WarnStatus("test211", this);
 
-        Status s22 = new InfoStatus("test22", this);
-        s2.add(s21);
-        s2.add(s22);
-        s21.add(s211);
+		final Status s22 = new InfoStatus("test22", this);
+		s2.add(s21);
+		s2.add(s22);
+		s21.add(s211);
 
-        Context context = new ContextBase();
-        context.getStatusManager().add(s0);
-        context.getStatusManager().add(s1);
-        context.getStatusManager().add(s2);
+		final Context context = new ContextBase();
+		context.getStatusManager().add(s0);
+		context.getStatusManager().add(s1);
+		context.getStatusManager().add(s2);
 
-        StatusPrinter.print(context);
-        String result = outputStream.toString();
-        assertTrue(result.contains("+ INFO in " + this.getClass().getName()));
-        assertTrue(result.contains("+ WARN in " + this.getClass().getName()));
-        assertTrue(result.contains("    |-WARN in " + this.getClass().getName()));
-    }
+		StatusPrinter.print(context);
+		final String result = outputStream.toString();
+		assertTrue(result.contains("+ INFO in " + this.getClass().getName()));
+		assertTrue(result.contains("+ WARN in " + this.getClass().getName()));
+		assertTrue(result.contains("    |-WARN in " + this.getClass().getName()));
+	}
 
-    @Test
-    public void testWithException() {
-        Status s0 = new ErrorStatus("test0", this);
-        Status s1 = new InfoStatus("test1", this, new Exception("testEx"));
-        Status s11 = new InfoStatus("test11", this);
-        Status s12 = new InfoStatus("test12", this);
-        s1.add(s11);
-        s1.add(s12);
+	@Test
+	public void testWithException() {
+		final Status s0 = new ErrorStatus("test0", this);
+		final Status s1 = new InfoStatus("test1", this, new Exception("testEx"));
+		final Status s11 = new InfoStatus("test11", this);
+		final Status s12 = new InfoStatus("test12", this);
+		s1.add(s11);
+		s1.add(s12);
 
-        Status s2 = new InfoStatus("test2", this);
-        Status s21 = new InfoStatus("test21", this);
-        Status s211 = new WarnStatus("test211", this);
+		final Status s2 = new InfoStatus("test2", this);
+		final Status s21 = new InfoStatus("test21", this);
+		final Status s211 = new WarnStatus("test211", this);
 
-        Status s22 = new InfoStatus("test22", this);
-        s2.add(s21);
-        s2.add(s22);
-        s21.add(s211);
+		final Status s22 = new InfoStatus("test22", this);
+		s2.add(s21);
+		s2.add(s22);
+		s21.add(s211);
 
-        Context context = new ContextBase();
-        context.getStatusManager().add(s0);
-        context.getStatusManager().add(s1);
-        context.getStatusManager().add(s2);
-        StatusPrinter.print(context);
-        String result = outputStream.toString();
-        assertTrue(result.contains("|-ERROR in " + this.getClass().getName()));
-        assertTrue(result.contains("+ INFO in " + this.getClass().getName()));
-        assertTrue(result.contains("ch.qos.logback.core.util.StatusPrinterTest.testWithException"));
-    }
+		final Context context = new ContextBase();
+		context.getStatusManager().add(s0);
+		context.getStatusManager().add(s1);
+		context.getStatusManager().add(s2);
+		StatusPrinter.print(context);
+		final String result = outputStream.toString();
+		assertTrue(result.contains("|-ERROR in " + this.getClass().getName()));
+		assertTrue(result.contains("+ INFO in " + this.getClass().getName()));
+		assertTrue(result.contains("ch.qos.logback.core.util.StatusPrinterTest.testWithException"));
+	}
 
 }

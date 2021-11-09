@@ -56,14 +56,11 @@ public class HostClassAndPropertyDouble {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		final HostClassAndPropertyDouble other = (HostClassAndPropertyDouble) obj;
-		if (!Objects.equals(hostClass, other.hostClass)) {
-			return false;
-		}
-		if (!Objects.equals(propertyName, other.propertyName)) {
+		if (!Objects.equals(hostClass, other.hostClass) || !Objects.equals(propertyName, other.propertyName)) {
 			return false;
 		}
 		return true;

@@ -23,35 +23,35 @@ import java.util.regex.Pattern;
 
 public class ResilienceUtil {
 
-    static public void verify(String logfile, String regexp, long totalSteps, double successRatioLowerBound) throws NumberFormatException, IOException {
-        FileReader fr = new FileReader(logfile);
-        BufferedReader br = new BufferedReader(fr);
-        Pattern p = Pattern.compile(regexp);
-        String line;
+	static public void verify(final String logfile, final String regexp, final long totalSteps, final double successRatioLowerBound) throws NumberFormatException, IOException {
+		final FileReader fr = new FileReader(logfile);
+		final BufferedReader br = new BufferedReader(fr);
+		final Pattern p = Pattern.compile(regexp);
+		String line;
 
-        int totalLines = 0;
-        int oldNum = -1;
-        int gaps = 0;
-        while ((line = br.readLine()) != null) {
-            Matcher m = p.matcher(line);
-            if (m.matches()) {
-                totalLines++;
-                String g = m.group(1);
-                int num = Integer.parseInt(g);
-                if (oldNum != -1 && num != oldNum + 1) {
-                    gaps++;
-                }
-                oldNum = num;
-            }
-        }
-        fr.close();
-        br.close();
+		int totalLines = 0;
+		int oldNum = -1;
+		int gaps = 0;
+		while ((line = br.readLine()) != null) {
+			final Matcher m = p.matcher(line);
+			if (m.matches()) {
+				totalLines++;
+				final String g = m.group(1);
+				final int num = Integer.parseInt(g);
+				if (oldNum != -1 && num != oldNum + 1) {
+					gaps++;
+				}
+				oldNum = num;
+			}
+		}
+		fr.close();
+		br.close();
 
-        int lowerLimit = (int) (totalSteps * successRatioLowerBound);
-        assertTrue("totalLines=" + totalLines + " less than " + lowerLimit, totalLines > lowerLimit);
+		final int lowerLimit = (int) (totalSteps * successRatioLowerBound);
+		assertTrue("totalLines=" + totalLines + " less than " + lowerLimit, totalLines > lowerLimit);
 
-        // we want at least one gap indicating recuperation
-        assertTrue("gaps=" + gaps + " less than 1", gaps >= 1);
+		// we want at least one gap indicating recuperation
+		assertTrue("gaps=" + gaps + " less than 1", gaps >= 1);
 
-    }
+	}
 }

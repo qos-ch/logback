@@ -292,15 +292,12 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
 			if (this == obj) {
 				return true;
 			}
-			if ((obj == null) || (getClass() != obj.getClass())) {
+			if (obj == null || getClass() != obj.getClass()) {
 				return false;
 			}
 			@SuppressWarnings("unchecked")
 			final Entry<C> other = (Entry<C>) obj;
-			if (!Objects.equals(key, other.key)) {
-				return false;
-			}
-			if (!Objects.equals(component, other.component)) {
+			if (!Objects.equals(key, other.key) || !Objects.equals(component, other.component)) {
 				return false;
 			}
 			return true;

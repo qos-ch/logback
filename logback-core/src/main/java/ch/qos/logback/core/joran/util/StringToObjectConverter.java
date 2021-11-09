@@ -35,9 +35,10 @@ public class StringToObjectConverter {
 		if (parameterClass.isPrimitive()) {
 			return true;
 		}
-		if ((p != null && "java.lang".equals(p.getName())) || followsTheValueOfConvention(parameterClass) || parameterClass.isEnum()) {
+		if (p != null && "java.lang".equals(p.getName()) || followsTheValueOfConvention(parameterClass) || parameterClass.isEnum()) {
 			return true;
-		} else if (isOfTypeCharset(parameterClass)) {
+		}
+		if (isOfTypeCharset(parameterClass)) {
 			return true;
 		}
 		return false;
@@ -57,7 +58,8 @@ public class StringToObjectConverter {
 		}
 		if (Integer.TYPE.isAssignableFrom(type)) {
 			return Integer.valueOf(v);
-		} else if (Long.TYPE.isAssignableFrom(type)) {
+		}
+		if (Long.TYPE.isAssignableFrom(type)) {
 			return Long.valueOf(v);
 		} else if (Float.TYPE.isAssignableFrom(type)) {
 			return Float.valueOf(v);

@@ -8,15 +8,14 @@ import ch.qos.logback.core.model.TopModel;
 
 /**
  * Add a Model instance at the top of the InterpretationContext stack
- * 
+ *
  * @author Ceki Gulcu
  */
 public class TopElementAction extends BaseModelAction {
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
-        TopModel topModel = new TopModel();
-        return topModel;
+	protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
+		return new TopModel();
 	}
-	
+
 }

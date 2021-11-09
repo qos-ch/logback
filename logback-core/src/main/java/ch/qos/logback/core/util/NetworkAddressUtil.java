@@ -55,23 +55,23 @@ public class NetworkAddressUtil extends ContextAwareBase {
 	/**
 	 * Add the local host's name as a property
 	 */
-	 public String safelyGetLocalHostName() {
+	public String safelyGetLocalHostName() {
 		try {
 			return getLocalHostName();
 		} catch (UnknownHostException | SocketException | SecurityException e) {
 			addError("Failed to get local hostname", e);
 		}
 		return CoreConstants.UNKNOWN_LOCALHOST;
-	 }
+	}
 
-	 public String safelyGetCanonicalLocalHostName() {
-		 try {
-			 return getCanonicalLocalHostName();
-		 } catch (UnknownHostException | SocketException | SecurityException e) {
-			 addError("Failed to get canonical local hostname", e);
-		 }
-		 return CoreConstants.UNKNOWN_LOCALHOST;
+	public String safelyGetCanonicalLocalHostName() {
+		try {
+			return getCanonicalLocalHostName();
+		} catch (UnknownHostException | SocketException | SecurityException e) {
+			addError("Failed to get canonical local hostname", e);
+		}
+		return CoreConstants.UNKNOWN_LOCALHOST;
 
-	 }
+	}
 
 }

@@ -45,135 +45,135 @@ import ch.qos.logback.core.testUtil.TrivialStatusListener;
 
 public class TrivialConfiguratorTest {
 
-    Context context = new ContextBase();
-    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+	Context context = new ContextBase();
+	HashMap<ElementSelector, Action> rulesMap = new HashMap<>();
 
-    
-    @Before
-    public void setUp() {
-        // rule store is case insensitve
-        rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/inc"), new IncAction());
 
-    }
+	@Before
+	public void setUp() {
+		// rule store is case insensitve
+		rulesMap.put(new ElementSelector("x"), new TopElementAction());
+		rulesMap.put(new ElementSelector("x/inc"), new IncAction());
 
-    public void doTest(String filename) throws Exception {
-        TrivialConfigurator trivialConfigurator = new TrivialConfigurator(rulesMap);
+	}
 
-        trivialConfigurator.setContext(context);
-        trivialConfigurator.doConfigure(filename);
-    }
+	public void doTest(final String filename) throws Exception {
+		final TrivialConfigurator trivialConfigurator = new TrivialConfigurator(rulesMap);
 
-    @Test
-    public void smoke() throws Exception {
-        int oldBeginCount = IncAction.beginCount;
-        int oldEndCount = IncAction.endCount;
-        int oldErrorCount = IncAction.errorCount;
-        doTest(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "inc.xml");
-        assertEquals(oldErrorCount, IncAction.errorCount);
-        assertEquals(oldBeginCount + 1, IncAction.beginCount);
-        assertEquals(oldEndCount + 1, IncAction.endCount);
-    }
+		trivialConfigurator.setContext(context);
+		trivialConfigurator.doConfigure(filename);
+	}
 
-    @Test
-    public void inexistentFile() {
-        TrivialStatusListener tsl = new TrivialStatusListener();
-        tsl.start();
-        String filename = CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "nothereBLAH.xml";
-        context.getStatusManager().add(tsl);
-        try {
-            doTest(filename);
-        } catch (Exception e) {
-            assertTrue(e.getMessage().startsWith("Could not open ["));
-        }
-        assertTrue(tsl.list.size() + " should be greater than or equal to 1", tsl.list.size() >= 1);
-        Status s0 = tsl.list.get(0);
-        assertTrue(s0.getMessage().startsWith("Could not open ["));
-    }
+	@Test
+	public void smoke() throws Exception {
+		final int oldBeginCount = IncAction.beginCount;
+		final int oldEndCount = IncAction.endCount;
+		final int oldErrorCount = IncAction.errorCount;
+		doTest(CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "inc.xml");
+		assertEquals(oldErrorCount, IncAction.errorCount);
+		assertEquals(oldBeginCount + 1, IncAction.beginCount);
+		assertEquals(oldEndCount + 1, IncAction.endCount);
+	}
 
-    @Test
-    public void illFormedXML() {
-        TrivialStatusListener tsl = new TrivialStatusListener();
-        tsl.start();
-        String filename = CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "illformed.xml";
-        context.getStatusManager().add(tsl);
-        try {
-            doTest(filename);
-        } catch (Exception e) {
-        }
-        assertEquals(2, tsl.list.size());
-        Status s0 = tsl.list.get(0);
-        assertTrue(s0.getMessage().startsWith(CoreConstants.XML_PARSING));
-    }
+	@Test
+	public void inexistentFile() {
+		final TrivialStatusListener tsl = new TrivialStatusListener();
+		tsl.start();
+		final String filename = CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "nothereBLAH.xml";
+		context.getStatusManager().add(tsl);
+		try {
+			doTest(filename);
+		} catch (final Exception e) {
+			assertTrue(e.getMessage().startsWith("Could not open ["));
+		}
+		assertTrue(tsl.list.size() + " should be greater than or equal to 1", tsl.list.size() >= 1);
+		final Status s0 = tsl.list.get(0);
+		assertTrue(s0.getMessage().startsWith("Could not open ["));
+	}
 
-    @Test
-    public void lbcore105() throws IOException, JoranException {
-        String jarEntry = "buzz.xml";
-        File jarFile = makeRandomJarFile();
-        fillInJarFile(jarFile, jarEntry);
-        URL url = asURL(jarFile, jarEntry);
-        TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
-        tc.setContext(context);
-        tc.doConfigure(url);
-        // deleting an open file fails
-        assertTrue(jarFile.delete());
-        assertFalse(jarFile.exists());
-    }
+	@Test
+	public void illFormedXML() {
+		final TrivialStatusListener tsl = new TrivialStatusListener();
+		tsl.start();
+		final String filename = CoreTestConstants.TEST_SRC_PREFIX + "input/joran/" + "illformed.xml";
+		context.getStatusManager().add(tsl);
+		try {
+			doTest(filename);
+		} catch (final Exception e) {
+		}
+		assertEquals(2, tsl.list.size());
+		final Status s0 = tsl.list.get(0);
+		assertTrue(s0.getMessage().startsWith(CoreConstants.XML_PARSING));
+	}
 
-    @Test
-    public void lbcore127() throws IOException, JoranException {
-        String jarEntry = "buzz.xml";
-        String jarEntry2 = "lightyear.xml";
+	@Test
+	public void lbcore105() throws IOException, JoranException {
+		final String jarEntry = "buzz.xml";
+		final File jarFile = makeRandomJarFile();
+		fillInJarFile(jarFile, jarEntry);
+		final URL url = asURL(jarFile, jarEntry);
+		final TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
+		tc.setContext(context);
+		tc.doConfigure(url);
+		// deleting an open file fails
+		assertTrue(jarFile.delete());
+		assertFalse(jarFile.exists());
+	}
 
-        File jarFile = makeRandomJarFile();
-        fillInJarFile(jarFile, jarEntry, jarEntry2);
+	@Test
+	public void lbcore127() throws IOException, JoranException {
+		final String jarEntry = "buzz.xml";
+		final String jarEntry2 = "lightyear.xml";
 
-        URL url1 = asURL(jarFile, jarEntry);
-        URL url2 = asURL(jarFile, jarEntry2);
+		final File jarFile = makeRandomJarFile();
+		fillInJarFile(jarFile, jarEntry, jarEntry2);
 
-        URLConnection urlConnection2 = url2.openConnection();
-        urlConnection2.setUseCaches(false);
-        InputStream is = urlConnection2.getInputStream();
+		final URL url1 = asURL(jarFile, jarEntry);
+		final URL url2 = asURL(jarFile, jarEntry2);
 
-        TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
-        tc.setContext(context);
-        tc.doConfigure(url1);
+		final URLConnection urlConnection2 = url2.openConnection();
+		urlConnection2.setUseCaches(false);
+		final InputStream is = urlConnection2.getInputStream();
 
-        is.read();
-        is.close();
+		final TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
+		tc.setContext(context);
+		tc.doConfigure(url1);
 
-        // deleting an open file fails
-        assertTrue(jarFile.delete());
-        assertFalse(jarFile.exists());
-    }
+		is.read();
+		is.close();
 
-    File makeRandomJarFile() {
-        File outputDir = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
-        outputDir.mkdirs();
-        int randomPart = RandomUtil.getPositiveInt();
-        return new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "foo-" + randomPart + ".jar");
-    }
+		// deleting an open file fails
+		assertTrue(jarFile.delete());
+		assertFalse(jarFile.exists());
+	}
 
-    private void fillInJarFile(File jarFile, String jarEntryName) throws IOException {
-        fillInJarFile(jarFile, jarEntryName, null);
-    }
+	File makeRandomJarFile() {
+		final File outputDir = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
+		outputDir.mkdirs();
+		final int randomPart = RandomUtil.getPositiveInt();
+		return new File(CoreTestConstants.OUTPUT_DIR_PREFIX + "foo-" + randomPart + ".jar");
+	}
 
-    private void fillInJarFile(File jarFile, String jarEntryName1, String jarEntryName2) throws IOException {
-        JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
-        jos.putNextEntry(new ZipEntry(jarEntryName1));
-        jos.write("<x/>".getBytes());
-        jos.closeEntry();
-        if (jarEntryName2 != null) {
-            jos.putNextEntry(new ZipEntry(jarEntryName2));
-            jos.write("<y/>".getBytes());
-            jos.closeEntry();
-        }
-        jos.close();
-    }
+	private void fillInJarFile(final File jarFile, final String jarEntryName) throws IOException {
+		fillInJarFile(jarFile, jarEntryName, null);
+	}
 
-    URL asURL(File jarFile, String jarEntryName) throws IOException {
-        URL innerURL = jarFile.toURI().toURL();
-        return new URL("jar:" + innerURL + "!/" + jarEntryName);
-    }
+	private void fillInJarFile(final File jarFile, final String jarEntryName1, final String jarEntryName2) throws IOException {
+		final JarOutputStream jos = new JarOutputStream(new FileOutputStream(jarFile));
+		jos.putNextEntry(new ZipEntry(jarEntryName1));
+		jos.write("<x/>".getBytes());
+		jos.closeEntry();
+		if (jarEntryName2 != null) {
+			jos.putNextEntry(new ZipEntry(jarEntryName2));
+			jos.write("<y/>".getBytes());
+			jos.closeEntry();
+		}
+		jos.close();
+	}
+
+	URL asURL(final File jarFile, final String jarEntryName) throws IOException {
+		final URL innerURL = jarFile.toURI().toURL();
+		return new URL("jar:" + innerURL + "!/" + jarEntryName);
+	}
 
 }

@@ -34,39 +34,39 @@ import ch.qos.logback.core.testUtil.TeeOutputStream;
  */
 public class InitializationOutputTest {
 
-    int diff = RandomUtil.getPositiveInt();
+	int diff = RandomUtil.getPositiveInt();
 
-    TeeOutputStream tee;
-    PrintStream original;
+	TeeOutputStream tee;
+	PrintStream original;
 
-    @Before
-    public void setUp() {
-        original = System.out;
-        // tee will output bytes on System out but it will also
-        // collect them so that the output can be compared against
-        // some expected output data
+	@Before
+	public void setUp() {
+		original = System.out;
+		// tee will output bytes on System out but it will also
+		// collect them so that the output can be compared against
+		// some expected output data
 
-        // keep the console quiet
-        tee = new TeeOutputStream(null);
+		// keep the console quiet
+		tee = new TeeOutputStream(null);
 
-        // redirect System.out to tee
-        System.setOut(new PrintStream(tee));
-    }
+		// redirect System.out to tee
+		System.setOut(new PrintStream(tee));
+	}
 
-    @After
-    public void tearDown() {
-        System.setOut(original);
-        System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
-        System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
-    }
+	@After
+	public void tearDown() {
+		System.setOut(original);
+		System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
+		System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
+	}
 
-    @Test
-    public void noOutputIfContextHasAStatusListener() {
-        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
-        System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
+	@Test
+	public void noOutputIfContextHasAStatusListener() {
+		System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
+		System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
 
-        LoggerFactoryFriend.reset();
-        assertEquals(0, tee.baos.size());
-    }
+		LoggerFactoryFriend.reset();
+		assertEquals(0, tee.baos.size());
+	}
 
 }

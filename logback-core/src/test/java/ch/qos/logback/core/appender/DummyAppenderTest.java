@@ -27,26 +27,28 @@ import ch.qos.logback.core.layout.DummyLayout;
 
 public class DummyAppenderTest extends AbstractAppenderTest<Object> {
 
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    DummyWriterAppender<Object> da = new DummyWriterAppender<Object>(baos);
+	ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	DummyWriterAppender<Object> da = new DummyWriterAppender<>(baos);
 
-    protected Appender<Object> getAppender() {
-        return da;
-    }
+	@Override
+	protected Appender<Object> getAppender() {
+		return da;
+	}
 
-    protected Appender<Object> getConfiguredAppender() {
-        da.setEncoder(new DummyEncoder<Object>());
-        da.start();
-        return da;
-    }
+	@Override
+	protected Appender<Object> getConfiguredAppender() {
+		da.setEncoder(new DummyEncoder<>());
+		da.start();
+		return da;
+	}
 
-    @Test
-    public void testBasic() throws IOException {
-        Encoder<Object> encoder = new DummyEncoder<Object>();
-        da.setEncoder(encoder);
-        da.start();
-        da.doAppend(new Object());
-        assertEquals(DummyLayout.DUMMY, baos.toString());
-    }
+	@Test
+	public void testBasic() throws IOException {
+		final Encoder<Object> encoder = new DummyEncoder<>();
+		da.setEncoder(encoder);
+		da.start();
+		da.doAppend(new Object());
+		assertEquals(DummyLayout.DUMMY, baos.toString());
+	}
 
 }

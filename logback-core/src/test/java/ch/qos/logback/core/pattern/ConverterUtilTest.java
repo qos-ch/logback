@@ -20,7 +20,7 @@ import ch.qos.logback.core.spi.ScanException;
 // inspired by ch.qos.logback.core.pattern.parser.CompilerTest
 public class ConverterUtilTest {
 
-	Map<String, String> converterMap = new HashMap<String, String>();
+	Map<String, String> converterMap = new HashMap<>();
 	Context context = new ContextBase();
 
 	@Before
@@ -38,45 +38,45 @@ public class ConverterUtilTest {
 
 	}
 
-	private void testContextAndStart(String pattern) throws ScanException {
-		Parser<Object> p = new Parser<Object>(pattern);
+	private void testContextAndStart(final String pattern) throws ScanException {
+		final Parser<Object> p = new Parser<>(pattern);
 		p.setContext(context);
-		Node t = p.parse();
-		Converter<Object> head = p.compile(t, converterMap);
+		final Node t = p.parse();
+		final Converter<Object> head = p.compile(t, converterMap);
 		ConverterUtil.setContextForConverters(context, head);
 		checkContext(head);
 
 		ConverterUtil.startConverters(head);
 		checkStart(head);
 	}
-	
-	private void checkStart(Converter<Object> head) {
+
+	private void checkStart(final Converter<Object> head) {
 		Converter<Object> c = head;
 		while (c != null) {
 			if (c instanceof LifeCycle) {
-				LifeCycle ca = (LifeCycle) c;
+				final LifeCycle ca = (LifeCycle) c;
 				assertTrue(ca.isStarted());
 			}
 			if (c instanceof CompositeConverter) {
-				CompositeConverter<Object> cc = (CompositeConverter<Object>) c;
-				Converter<Object> childConverter = cc.childConverter;
+				final CompositeConverter<Object> cc = (CompositeConverter<Object>) c;
+				final Converter<Object> childConverter = cc.childConverter;
 				checkStart(childConverter);
 			}
 			c = c.getNext();
 		}
-		
+
 	}
 
-	void checkContext(Converter<Object> head) {
+	void checkContext(final Converter<Object> head) {
 		Converter<Object> c = head;
 		while (c != null) {
 			if (c instanceof ContextAware) {
-				ContextAware ca = (ContextAware) c;
+				final ContextAware ca = (ContextAware) c;
 				assertNotNull(ca.getContext());
 			}
 			if (c instanceof CompositeConverter) {
-				CompositeConverter<Object> cc = (CompositeConverter<Object>) c;
-				Converter<Object> childConverter = cc.childConverter;
+				final CompositeConverter<Object> cc = (CompositeConverter<Object>) c;
+				final Converter<Object> childConverter = cc.childConverter;
 				checkContext(childConverter);
 			}
 			c = c.getNext();

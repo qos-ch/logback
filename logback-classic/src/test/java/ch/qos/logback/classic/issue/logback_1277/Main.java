@@ -13,35 +13,36 @@
  */
 package ch.qos.logback.classic.issue.logback_1277;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Main {
 
-    static Logger logger = LoggerFactory.getLogger(Main.class);
-    static String CONFIG_FILE = ClassicTestConstants.ISSUES_PREFIX + "logback-1277.xml";
+	static Logger logger = LoggerFactory.getLogger(Main.class);
+	static String CONFIG_FILE = ClassicTestConstants.ISSUES_PREFIX + "logback-1277.xml";
 
-    public static void main(String[] args) throws JoranException, InterruptedException {
-        init(CONFIG_FILE);
-        int runLen = 1000 * 1000;
-        for (int i = 0; i < runLen; i++) {
-            logger.debug("hello");
-        }
-        System.out.println("Will sleep for 60 seconds");
-        Thread.sleep(1000 * 60);
-        System.out.println("Exiting");
+	public static void main(final String[] args) throws JoranException, InterruptedException {
+		init(CONFIG_FILE);
+		final int runLen = 1000 * 1000;
+		for (int i = 0; i < runLen; i++) {
+			logger.debug("hello");
+		}
+		System.out.println("Will sleep for 60 seconds");
+		Thread.sleep(1000 * 60);
+		System.out.println("Exiting");
 
-    }
+	}
 
-    static void init(String file) throws JoranException {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(loggerContext);
-        loggerContext.reset();
-        jc.doConfigure(file);
-    }
+	static void init(final String file) throws JoranException {
+		final LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+		final JoranConfigurator jc = new JoranConfigurator();
+		jc.setContext(loggerContext);
+		loggerContext.reset();
+		jc.doConfigure(file);
+	}
 }

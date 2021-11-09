@@ -156,7 +156,7 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
 
 	@Override
 	public void setLoggerLevel(String loggerName, String levelStr) {
-		if ((loggerName == null) || (levelStr == null)) {
+		if (loggerName == null || levelStr == null) {
 			return;
 		}
 		loggerName = loggerName.trim();

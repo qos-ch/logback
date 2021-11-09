@@ -1,6 +1,6 @@
 package ch.qos.logback.access.spi;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Map;
 
@@ -14,44 +14,44 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class AccessEventTest {
 
-    int diff = RandomUtil.getPositiveInt();
-    
-    @Before
-    public void setUp() throws Exception {
-    }
+	int diff = RandomUtil.getPositiveInt();
 
-    @After
-    public void tearDown() throws Exception {
-    }
+	@Before
+	public void setUp() throws Exception {
+	}
 
-    // See LOGBACK-1189
-    @Test
-    public void callingPrepareForDeferredProcessingShouldBeIdempotent() {
-        String key = "key-"+diff;
-        String val = "val-"+diff;
-        
-        IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
-        DummyRequest request = (DummyRequest) ae.getRequest();
-        Map<String, String> headersMap = request.getHeaders();
-        Map<String, String[]> parametersMap = request.getParameterMap();
-        
-        headersMap.put(key, val);
-        request.setAttribute(key, val);
-        parametersMap.put(key, new String[] {val});
-        ae.prepareForDeferredProcessing();
-        assertEquals(val, ae.getAttribute(key));
-        assertEquals(val, ae.getRequestHeader(key));
-        assertEquals(val, ae.getRequestParameter(key)[0]);
-        
-        
-        request.setAttribute(key, "change");
-        headersMap.put(key, "change");
-        parametersMap.put(key, new String[] {"change"});
-        ae.prepareForDeferredProcessing();
-        assertEquals(val, ae.getAttribute(key));
-        assertEquals(val, ae.getRequestHeader(key));
-        assertEquals(val, ae.getRequestParameter(key)[0]);
-        
-    }
+	@After
+	public void tearDown() throws Exception {
+	}
+
+	// See LOGBACK-1189
+	@Test
+	public void callingPrepareForDeferredProcessingShouldBeIdempotent() {
+		final String key = "key-"+diff;
+		final String val = "val-"+diff;
+
+		final IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
+		final DummyRequest request = (DummyRequest) ae.getRequest();
+		final Map<String, String> headersMap = request.getHeaders();
+		final Map<String, String[]> parametersMap = request.getParameterMap();
+
+		headersMap.put(key, val);
+		request.setAttribute(key, val);
+		parametersMap.put(key, new String[] {val});
+		ae.prepareForDeferredProcessing();
+		assertEquals(val, ae.getAttribute(key));
+		assertEquals(val, ae.getRequestHeader(key));
+		assertEquals(val, ae.getRequestParameter(key)[0]);
+
+
+		request.setAttribute(key, "change");
+		headersMap.put(key, "change");
+		parametersMap.put(key, new String[] {"change"});
+		ae.prepareForDeferredProcessing();
+		assertEquals(val, ae.getAttribute(key));
+		assertEquals(val, ae.getRequestHeader(key));
+		assertEquals(val, ae.getRequestParameter(key)[0]);
+
+	}
 
 }

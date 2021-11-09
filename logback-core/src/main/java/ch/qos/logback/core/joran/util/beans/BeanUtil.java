@@ -51,7 +51,7 @@ public class BeanUtil {
 		if (!methodName.startsWith(PREFIX_GETTER_GET) && !methodName.startsWith(PREFIX_GETTER_IS)) {
 			return false;
 		}
-		if (methodName.startsWith(PREFIX_GETTER_IS) && (!returnType.equals(boolean.class) && !returnType.equals(Boolean.class))) {
+		if (methodName.startsWith(PREFIX_GETTER_IS) && !returnType.equals(boolean.class) && !returnType.equals(Boolean.class)) {
 			return false;
 		}
 		return true;
@@ -113,7 +113,7 @@ public class BeanUtil {
 		if (string == null) {
 			return null;
 		}
-		if (string.isEmpty() || (string.length() > 1 && Character.isUpperCase(string.charAt(1)) && Character.isUpperCase(string.charAt(0)))) {
+		if (string.isEmpty() || string.length() > 1 && Character.isUpperCase(string.charAt(1)) && Character.isUpperCase(string.charAt(0))) {
 			return string;
 		}
 		final char chars[] = string.toCharArray();

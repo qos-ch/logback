@@ -136,8 +136,7 @@ public class HTMLLayout extends HTMLLayoutBase<ILoggingEvent> {
 		final String key = mc.getFirstOption();
 		if (key != null) {
 			return key;
-		} else {
-			return "MDC";
 		}
+		return "MDC";
 	}
 }

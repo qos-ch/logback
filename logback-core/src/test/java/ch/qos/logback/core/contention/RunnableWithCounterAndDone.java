@@ -15,25 +15,25 @@ package ch.qos.logback.core.contention;
 
 /**
  * A runnable with 'done' and 'counter' fields.
- * 
+ *
  * @author ceki
  *
  */
 abstract public class RunnableWithCounterAndDone implements Runnable {
 
-    protected boolean done = false;
-    protected long counter = 0;
+	protected boolean done = false;
+	protected long counter = 0;
 
-    public long getCounter() {
-        return counter;
-    }
+	public long getCounter() {
+		return counter;
+	}
 
-    public void setDone(boolean done) {
-        this.done = done;
-    }
+	public void setDone(final boolean done) {
+		this.done = done;
+	}
 
-    public boolean isDone() {
-        return done;
-    }
+	public boolean isDone() {
+		return done;
+	}
 
 }

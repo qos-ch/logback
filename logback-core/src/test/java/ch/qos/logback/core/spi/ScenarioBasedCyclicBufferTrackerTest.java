@@ -13,10 +13,10 @@
  */
 package ch.qos.logback.core.spi;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * A
@@ -25,50 +25,50 @@ import static org.junit.Assert.assertEquals;
  */
 public class ScenarioBasedCyclicBufferTrackerTest {
 
-    CyclicBufferTrackerSimulator simulator;
-    CyclicBufferTrackerSimulator.Parameters parameters = new CyclicBufferTrackerSimulator.Parameters();
+	CyclicBufferTrackerSimulator simulator;
+	CyclicBufferTrackerSimulator.Parameters parameters = new CyclicBufferTrackerSimulator.Parameters();
 
-    void verify() {
-        CyclicBufferTracker<Object> at = simulator.realCBTracker;
-        CyclicBufferTrackerT<Object> t_at = simulator.t_CBTracker;
-        assertEquals(t_at.liveKeysAsOrderedList(), at.liveKeysAsOrderedList());
-        assertEquals(t_at.lingererKeysAsOrderedList(), at.lingererKeysAsOrderedList());
-    }
+	void verify() {
+		final CyclicBufferTracker<Object> at = simulator.realCBTracker;
+		final CyclicBufferTrackerT<Object> t_at = simulator.t_CBTracker;
+		assertEquals(t_at.liveKeysAsOrderedList(), at.liveKeysAsOrderedList());
+		assertEquals(t_at.lingererKeysAsOrderedList(), at.lingererKeysAsOrderedList());
+	}
 
-    @Before
-    public void setUp() {
-        parameters.keySpaceLen = 128;
-        parameters.maxTimestampInc = ComponentTracker.DEFAULT_TIMEOUT / 2;
-    }
+	@Before
+	public void setUp() {
+		parameters.keySpaceLen = 128;
+		parameters.maxTimestampInc = ComponentTracker.DEFAULT_TIMEOUT / 2;
+	}
 
-    @Test
-    public void shortTest() {
-        parameters.keySpaceLen = 64;
-        parameters.maxTimestampInc = 500;
-        parameters.simulationLength = 70;
+	@Test
+	public void shortTest() {
+		parameters.keySpaceLen = 64;
+		parameters.maxTimestampInc = 500;
+		parameters.simulationLength = 70;
 
-        simulator = new CyclicBufferTrackerSimulator(parameters);
-        simulator.buildScenario();
-        simulator.simulate();
-        verify();
-    }
+		simulator = new CyclicBufferTrackerSimulator(parameters);
+		simulator.buildScenario();
+		simulator.simulate();
+		verify();
+	}
 
-    @Test
-    public void mediumTest() {
-        parameters.simulationLength = 20000;
+	@Test
+	public void mediumTest() {
+		parameters.simulationLength = 20000;
 
-        simulator = new CyclicBufferTrackerSimulator(parameters);
-        simulator.buildScenario();
-        simulator.simulate();
-        verify();
-    }
+		simulator = new CyclicBufferTrackerSimulator(parameters);
+		simulator.buildScenario();
+		simulator.simulate();
+		verify();
+	}
 
-    @Test
-    public void longTest() {
-        parameters.simulationLength = 100 * 1000;
-        simulator = new CyclicBufferTrackerSimulator(parameters);
-        simulator.buildScenario();
-        simulator.simulate();
-        verify();
-    }
+	@Test
+	public void longTest() {
+		parameters.simulationLength = 100 * 1000;
+		simulator = new CyclicBufferTrackerSimulator(parameters);
+		simulator.buildScenario();
+		simulator.simulate();
+		verify();
+	}
 }

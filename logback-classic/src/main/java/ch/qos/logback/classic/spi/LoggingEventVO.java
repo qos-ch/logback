@@ -239,22 +239,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		final LoggingEventVO other = (LoggingEventVO) obj;
-		if (!Objects.equals(message, other.message)) {
-			return false;
-		}
-
-		if (!Objects.equals(loggerName, other.loggerName)) {
-			return false;
-		}
-
-		if (!Objects.equals(threadName, other.threadName)) {
-			return false;
-		}
-		if (timeStamp != other.timeStamp) {
+		if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName) || (timeStamp != other.timeStamp)) {
 			return false;
 		}
 

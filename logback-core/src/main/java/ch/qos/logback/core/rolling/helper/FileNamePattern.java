@@ -85,7 +85,7 @@ public class FileNamePattern extends ContextAwareBase {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		final int result = 1;
 		return prime * result + (pattern == null ? 0 : pattern.hashCode());
 	}
 
@@ -95,7 +95,7 @@ public class FileNamePattern extends ContextAwareBase {
 		if (this == obj) {
 			return true;
 		}
-		if ((obj == null) || (getClass() != obj.getClass())) {
+		if (obj == null || getClass() != obj.getClass()) {
 			return false;
 		}
 		final FileNamePattern other = (FileNamePattern) obj;

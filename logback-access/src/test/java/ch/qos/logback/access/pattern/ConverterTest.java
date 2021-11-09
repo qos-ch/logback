@@ -18,9 +18,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.http.Cookie;
-
-import ch.qos.logback.access.spi.IAccessEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,170 +27,172 @@ import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
+import jakarta.servlet.http.Cookie;
 
 public class ConverterTest {
 
-    IAccessEvent event;
-    DummyRequest request = new DummyRequest();
-    DummyResponse response =  new DummyResponse();
-    AccessContext accessContext = new AccessContext();
-    
-    @Before
-    public void setUp() throws Exception {
-        event = createEvent();
-    }
+	IAccessEvent event;
+	DummyRequest request = new DummyRequest();
+	DummyResponse response =  new DummyResponse();
+	AccessContext accessContext = new AccessContext();
 
-    @After
-    public void tearDown() throws Exception {
-        event = null;
-        request = null;
-        response = null;
-    }
+	@Before
+	public void setUp() throws Exception {
+		event = createEvent();
+	}
 
-    @Test
-    public void testContentLengthConverter() {
-        ContentLengthConverter converter = new ContentLengthConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(Long.toString(event.getServerAdapter().getContentLength()), result);
-    }
+	@After
+	public void tearDown() throws Exception {
+		event = null;
+		request = null;
+		response = null;
+	}
 
-    @Test
-    public void testDateConverter() {
-        DateConverter converter = new DateConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(converter.cachingDateFormatter.format(event.getTimeStamp()), result);
-    }
+	@Test
+	public void testContentLengthConverter() {
+		final ContentLengthConverter converter = new ContentLengthConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(Long.toString(event.getServerAdapter().getContentLength()), result);
+	}
 
-    public void testLineLocalPortConverter() {
-        LocalPortConverter converter = new LocalPortConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(Integer.toString(request.getLocalPort()), result);
-    }
+	@Test
+	public void testDateConverter() {
+		final DateConverter converter = new DateConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(converter.cachingDateFormatter.format(event.getTimeStamp()), result);
+	}
 
-    @Test
-    public void testRemoteHostConverter() {
-        RemoteHostConverter converter = new RemoteHostConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getRemoteHost(), result);
-    }
+	public void testLineLocalPortConverter() {
+		final LocalPortConverter converter = new LocalPortConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(Integer.toString(request.getLocalPort()), result);
+	}
 
-    @Test
-    public void testRemoteIPAddressConverter() {
-        RemoteIPAddressConverter converter = new RemoteIPAddressConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getRemoteAddr(), result);
-    }
+	@Test
+	public void testRemoteHostConverter() {
+		final RemoteHostConverter converter = new RemoteHostConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getRemoteHost(), result);
+	}
 
-    @Test
-    public void testRemoteUserConverter() {
-        RemoteUserConverter converter = new RemoteUserConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getRemoteUser(), result);
-    }
+	@Test
+	public void testRemoteIPAddressConverter() {
+		final RemoteIPAddressConverter converter = new RemoteIPAddressConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getRemoteAddr(), result);
+	}
 
-    @Test
-    public void testRequestAttributeConverter() {
-        RequestAttributeConverter converter = new RequestAttributeConverter();
-        List<String> optionList = new ArrayList<String>();
-        optionList.add("testKey");
-        converter.setOptionList(optionList);
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getAttribute("testKey"), result);
-    }
+	@Test
+	public void testRemoteUserConverter() {
+		final RemoteUserConverter converter = new RemoteUserConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getRemoteUser(), result);
+	}
 
-    @Test
-    public void testRequestCookieConverter() {
-        RequestCookieConverter converter = new RequestCookieConverter();
-        List<String> optionList = new ArrayList<String>();
-        optionList.add("testName");
-        converter.setOptionList(optionList);
-        converter.start();
-        String result = converter.convert(event);
-        Cookie cookie = request.getCookies()[0];
-        assertEquals(cookie.getValue(), result);
-    }
+	@Test
+	public void testRequestAttributeConverter() {
+		final RequestAttributeConverter converter = new RequestAttributeConverter();
+		final List<String> optionList = new ArrayList<>();
+		optionList.add("testKey");
+		converter.setOptionList(optionList);
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getAttribute("testKey"), result);
+	}
 
-    @Test
-    public void testRequestHeaderConverter() {
-        RequestHeaderConverter converter = new RequestHeaderConverter();
-        List<String> optionList = new ArrayList<String>();
-        optionList.add("headerName1");
-        converter.setOptionList(optionList);
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getHeader("headerName1"), result);
-    }
+	@Test
+	public void testRequestCookieConverter() {
+		final RequestCookieConverter converter = new RequestCookieConverter();
+		final List<String> optionList = new ArrayList<>();
+		optionList.add("testName");
+		converter.setOptionList(optionList);
+		converter.start();
+		final String result = converter.convert(event);
+		final Cookie cookie = request.getCookies()[0];
+		assertEquals(cookie.getValue(), result);
+	}
 
-    @Test
-    public void testRequestMethodConverter() {
-        RequestMethodConverter converter = new RequestMethodConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getMethod(), result);
-    }
+	@Test
+	public void testRequestHeaderConverter() {
+		final RequestHeaderConverter converter = new RequestHeaderConverter();
+		final List<String> optionList = new ArrayList<>();
+		optionList.add("headerName1");
+		converter.setOptionList(optionList);
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getHeader("headerName1"), result);
+	}
 
-    @Test
-    public void testRequestProtocolConverter() {
-        RequestProtocolConverter converter = new RequestProtocolConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getProtocol(), result);
-    }
+	@Test
+	public void testRequestMethodConverter() {
+		final RequestMethodConverter converter = new RequestMethodConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getMethod(), result);
+	}
 
-    @Test
-    public void testRequestURIConverter() {
-        RequestURIConverter converter = new RequestURIConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getRequestURI(), result);
-    }
+	@Test
+	public void testRequestProtocolConverter() {
+		final RequestProtocolConverter converter = new RequestProtocolConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getProtocol(), result);
+	}
 
-    @Test
-    public void testRequestURLConverter() {
-        RequestURLConverter converter = new RequestURLConverter();
-        converter.start();
-        String result = converter.convert(event);
-        String expected = request.getMethod() + " " + request.getRequestURI() + " " + request.getProtocol();
-        assertEquals(expected, result);
-    }
+	@Test
+	public void testRequestURIConverter() {
+		final RequestURIConverter converter = new RequestURIConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getRequestURI(), result);
+	}
 
-    @Test
-    public void testResponseHeaderConverter() {
-        ResponseHeaderConverter converter = new ResponseHeaderConverter();
-        List<String> optionList = new ArrayList<String>();
-        optionList.add("headerName1");
-        converter.setOptionList(optionList);
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getHeader("headerName1"), result);
-    }
+	@Test
+	public void testRequestURLConverter() {
+		final RequestURLConverter converter = new RequestURLConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		final String expected = request.getMethod() + " " + request.getRequestURI() + " " + request.getProtocol();
+		assertEquals(expected, result);
+	}
 
-    @Test
-    public void testServerNameConverter() {
-        ServerNameConverter converter = new ServerNameConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(request.getServerName(), result);
-    }
+	@Test
+	public void testResponseHeaderConverter() {
+		final ResponseHeaderConverter converter = new ResponseHeaderConverter();
+		final List<String> optionList = new ArrayList<>();
+		optionList.add("headerName1");
+		converter.setOptionList(optionList);
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getHeader("headerName1"), result);
+	}
 
-    @Test
-    public void testStatusCodeConverter() {
-        StatusCodeConverter converter = new StatusCodeConverter();
-        converter.start();
-        String result = converter.convert(event);
-        assertEquals(Integer.toString(event.getServerAdapter().getStatusCode()), result);
-    }
+	@Test
+	public void testServerNameConverter() {
+		final ServerNameConverter converter = new ServerNameConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(request.getServerName(), result);
+	}
 
-    private IAccessEvent createEvent() {
-        DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
-        return new AccessEvent(accessContext, request, response, dummyAdapter);
-    }
+	@Test
+	public void testStatusCodeConverter() {
+		final StatusCodeConverter converter = new StatusCodeConverter();
+		converter.start();
+		final String result = converter.convert(event);
+		assertEquals(Integer.toString(event.getServerAdapter().getStatusCode()), result);
+	}
+
+	private IAccessEvent createEvent() {
+		final DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
+		return new AccessEvent(accessContext, request, response, dummyAdapter);
+	}
 
 }

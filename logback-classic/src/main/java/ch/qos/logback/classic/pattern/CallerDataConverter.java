@@ -143,7 +143,7 @@ public class CallerDataConverter extends ClassicConverter {
 		}
 
 		final StackTraceElement[] cda = le.getCallerData();
-		if ((cda == null) || (cda.length <= depthStart)) {
+		if (cda == null || cda.length <= depthStart) {
 			return CallerData.CALLER_DATA_NA;
 		}
 		final int limit = depthEnd < cda.length ? depthEnd : cda.length;

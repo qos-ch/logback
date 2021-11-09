@@ -20,21 +20,23 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 
 public class HelloAction extends Action {
 
-    static final public String PROPERTY_KEY = "name";
+	static final public String PROPERTY_KEY = "name";
 
-    /**
-     * Instantiates an layout of the given class and sets its name.
-     *
-     */
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
-        String str = "Hello " + attributes.getValue("name") + ".";
-        ec.getContext().putProperty(PROPERTY_KEY, str);
-    }
+	/**
+	 * Instantiates an layout of the given class and sets its name.
+	 *
+	 */
+	@Override
+	public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
+		final String str = "Hello " + attributes.getValue("name") + ".";
+		ec.getContext().putProperty(PROPERTY_KEY, str);
+	}
 
-    /**
-     * Once the children elements are also parsed, now is the time to activate
-     * the appender options.
-     */
-    public void end(InterpretationContext ec, String name) {
-    }
+	/**
+	 * Once the children elements are also parsed, now is the time to activate
+	 * the appender options.
+	 */
+	@Override
+	public void end(final InterpretationContext ec, final String name) {
+	}
 }

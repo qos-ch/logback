@@ -20,32 +20,32 @@ import java.util.Map;
 
 /**
  * An lru cache based on Java's LinkedHashMap.
- * 
+ *
  * @author Ceki Gulcu
  *
  * @param <K>
  * @param <V>
  */
 public class LRUCache<K, V> extends LinkedHashMap<K, V> {
-    private static final long serialVersionUID = -6592964689843698200L;
+	private static final long serialVersionUID = -6592964689843698200L;
 
-    final int cacheSize;
+	final int cacheSize;
 
-    public LRUCache(int cacheSize) {
-        super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
-        if (cacheSize < 1) {
-            throw new IllegalArgumentException("Cache size cannnot be smaller than 1");
-        }
-        this.cacheSize = cacheSize;
-    }
+	public LRUCache(final int cacheSize) {
+		super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
+		if (cacheSize < 1) {
+			throw new IllegalArgumentException("Cache size cannnot be smaller than 1");
+		}
+		this.cacheSize = cacheSize;
+	}
 
-    protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
-        return (size() > cacheSize);
-    }
+	@Override
+	protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
+		return size() > cacheSize;
+	}
 
-    List<K> keyList() {
-        ArrayList<K> al = new ArrayList<K>();
-        al.addAll(keySet());
-        return al;
-    }
+	List<K> keyList() {
+		final ArrayList<K> al = new ArrayList<>(keySet());
+		return al;
+	}
 }

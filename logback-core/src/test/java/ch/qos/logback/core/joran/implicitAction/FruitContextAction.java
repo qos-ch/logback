@@ -21,25 +21,25 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public class FruitContextAction extends Action {
-    
-    FruitContextModel parentModel;
-    
-    @Override
-    public void begin(InterpretationContext ic, String name, Attributes attributes) throws ActionException {
-        parentModel = new FruitContextModel();
-        parentModel.setTag(name);
-        ic.pushModel(parentModel);
-    }
 
-    @Override
-    public void end(InterpretationContext ic, String name) throws ActionException {
+	FruitContextModel parentModel;
 
-        Model m = ic.peekModel();
+	@Override
+	public void begin(final InterpretationContext ic, final String name, final Attributes attributes) throws ActionException {
+		parentModel = new FruitContextModel();
+		parentModel.setTag(name);
+		ic.pushModel(parentModel);
+	}
 
-        if (m != parentModel) {
-            addWarn("The object at the of the stack is not the model named [" + parentModel.getTag() + "] pushed earlier.");
-        }  
-        // NOTE: top level model is NOT popped
-    }
+	@Override
+	public void end(final InterpretationContext ic, final String name) throws ActionException {
+
+		final Model m = ic.peekModel();
+
+		if (m != parentModel) {
+			addWarn("The object at the of the stack is not the model named [" + parentModel.getTag() + "] pushed earlier.");
+		}
+		// NOTE: top level model is NOT popped
+	}
 
 }

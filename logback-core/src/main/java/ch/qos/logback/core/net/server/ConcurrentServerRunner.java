@@ -87,7 +87,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
 	@Override
 	public void stop() throws IOException {
 		listener.close();
-		accept(client -> client.close());
+		accept(Client::close);
 	}
 
 	/**

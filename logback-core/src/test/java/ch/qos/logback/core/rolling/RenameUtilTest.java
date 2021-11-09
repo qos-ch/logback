@@ -13,6 +13,19 @@
  */
 package ch.qos.logback.core.rolling;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.encoder.EchoEncoder;
@@ -23,109 +36,96 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class RenameUtilTest {
 
-    Encoder<Object> encoder;
-    Context context = new ContextBase();
-    StatusChecker statusChecker = new StatusChecker(context);
+	Encoder<Object> encoder;
+	Context context = new ContextBase();
+	StatusChecker statusChecker = new StatusChecker(context);
 
-    long currentTime = System.currentTimeMillis();
-    int diff = RandomUtil.getPositiveInt();
-    protected String randomOutputDirAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
-    protected File randomOutputDir = new File(randomOutputDirAsStr);
+	long currentTime = System.currentTimeMillis();
+	int diff = RandomUtil.getPositiveInt();
+	protected String randomOutputDirAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
+	protected File randomOutputDir = new File(randomOutputDirAsStr);
 
-    @Before
-    public void setUp() throws Exception {
-        encoder = new EchoEncoder<Object>();
-        // if this this the fist test run after 'build clean up' then the
-        // OUTPUT_DIR_PREFIX might be not yet created
-        randomOutputDir.mkdirs();
-    }
+	@Before
+	public void setUp() throws Exception {
+		encoder = new EchoEncoder<>();
+		// if this this the fist test run after 'build clean up' then the
+		// OUTPUT_DIR_PREFIX might be not yet created
+		randomOutputDir.mkdirs();
+	}
 
-    @Test
-    public void renameToNonExistingDirectory() throws IOException, RolloverFailure {
-        RenameUtil renameUtil = new RenameUtil();
-        renameUtil.setContext(context);
+	@Test
+	public void renameToNonExistingDirectory() throws IOException, RolloverFailure {
+		final RenameUtil renameUtil = new RenameUtil();
+		renameUtil.setContext(context);
 
-        int diff2 = RandomUtil.getPositiveInt();
-        File fromFile = File.createTempFile("from" + diff, "test", randomOutputDir);
+		final int diff2 = RandomUtil.getPositiveInt();
+		final File fromFile = File.createTempFile("from" + diff, "test", randomOutputDir);
 
-        String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff2;
+		final String randomTARGETDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff2;
 
-        renameUtil.rename(fromFile.toString(), new File(randomTARGETDir + "/to.test").toString());
-        StatusPrinter.printInCaseOfErrorsOrWarnings(context);
-        assertTrue(statusChecker.isErrorFree(0));
-    }
-
-    
-    @Test //  LOGBACK-1054 
-    public void renameLockedAbstractFile_LOGBACK_1054 () throws IOException, RolloverFailure {
-        RenameUtil renameUtil = new RenameUtil();
-        renameUtil.setContext(context);
-
-        String abstractFileName = "abstract_pathname-"+diff;
-        
-        String src = CoreTestConstants.OUTPUT_DIR_PREFIX+abstractFileName;
-        String target = abstractFileName + ".target";
-        
-        makeFile(src);
-        
-        FileInputStream fisLock = new FileInputStream(src);
-        renameUtil.rename(src,  target);
-        // release the lock
-        fisLock.close();
-        
-        StatusPrinter.print(context);
-        assertEquals(0, statusChecker.matchCount("Parent of target file ."+target+". is null"));
-    }
-
-    @Test
-    @Ignore
-    public void MANUAL_renamingOnDifferentVolumesOnLinux() throws IOException, RolloverFailure {
-        RenameUtil renameUtil = new RenameUtil();
-        renameUtil.setContext(context);
-
-        String src = "/tmp/ramdisk/foo.txt";
-        makeFile(src);
-
-        renameUtil.rename(src, "/tmp/foo" + diff + ".txt");
-        StatusPrinter.print(context);
-    }
+		renameUtil.rename(fromFile.toString(), new File(randomTARGETDir + "/to.test").toString());
+		StatusPrinter.printInCaseOfErrorsOrWarnings(context);
+		assertTrue(statusChecker.isErrorFree(0));
+	}
 
 
-    @Test
-    @Ignore
-    public void MANUAL_renamingOnDifferentVolumesOnWindows() throws IOException, RolloverFailure {
-        RenameUtil renameUtil = new RenameUtil();
-        renameUtil.setContext(context);
+	@Test //  LOGBACK-1054
+	public void renameLockedAbstractFile_LOGBACK_1054 () throws IOException, RolloverFailure {
+		final RenameUtil renameUtil = new RenameUtil();
+		renameUtil.setContext(context);
 
-        String src = "c:/tmp/foo.txt"; 
-        makeFile(src);
-        
-        renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
-        StatusPrinter.print(context);
-        assertTrue(statusChecker.isErrorFree(0));
-    }
+		final String abstractFileName = "abstract_pathname-"+diff;
 
-    private void makeFile(String src) throws FileNotFoundException, IOException {
-        
-        FileOutputStream fos = new FileOutputStream(src);
-        fos.write(("hello" + diff).getBytes());
-        fos.close();
-    }
+		final String src = CoreTestConstants.OUTPUT_DIR_PREFIX+abstractFileName;
+		final String target = abstractFileName + ".target";
 
-   
+		makeFile(src);
+
+		final FileInputStream fisLock = new FileInputStream(src);
+		renameUtil.rename(src,  target);
+		// release the lock
+		fisLock.close();
+
+		StatusPrinter.print(context);
+		assertEquals(0, statusChecker.matchCount("Parent of target file ."+target+". is null"));
+	}
+
+	@Test
+	@Ignore
+	public void MANUAL_renamingOnDifferentVolumesOnLinux() throws IOException, RolloverFailure {
+		final RenameUtil renameUtil = new RenameUtil();
+		renameUtil.setContext(context);
+
+		final String src = "/tmp/ramdisk/foo.txt";
+		makeFile(src);
+
+		renameUtil.rename(src, "/tmp/foo" + diff + ".txt");
+		StatusPrinter.print(context);
+	}
+
+
+	@Test
+	@Ignore
+	public void MANUAL_renamingOnDifferentVolumesOnWindows() throws IOException, RolloverFailure {
+		final RenameUtil renameUtil = new RenameUtil();
+		renameUtil.setContext(context);
+
+		final String src = "c:/tmp/foo.txt";
+		makeFile(src);
+
+		renameUtil.rename(src, "d:/tmp/foo" + diff + ".txt");
+		StatusPrinter.print(context);
+		assertTrue(statusChecker.isErrorFree(0));
+	}
+
+	private void makeFile(final String src) throws FileNotFoundException, IOException {
+
+		final FileOutputStream fos = new FileOutputStream(src);
+		fos.write(("hello" + diff).getBytes());
+		fos.close();
+	}
+
+
 }

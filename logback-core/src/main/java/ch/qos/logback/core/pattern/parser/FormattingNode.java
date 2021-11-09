@@ -47,7 +47,7 @@ public class FormattingNode extends Node {
 
 	@Override
 	public int hashCode() {
-		int result = super.hashCode();
+		final int result = super.hashCode();
 		return 31 * result + (formatInfo != null ? formatInfo.hashCode() : 0);
 	}
 }

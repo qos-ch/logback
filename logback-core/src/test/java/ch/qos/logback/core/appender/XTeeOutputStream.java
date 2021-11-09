@@ -20,19 +20,19 @@ import ch.qos.logback.core.testUtil.TeeOutputStream;
 
 public class XTeeOutputStream extends TeeOutputStream {
 
-    boolean closed = false;
+	boolean closed = false;
 
-    public XTeeOutputStream(PrintStream targetPS) {
-        super(targetPS);
-    }
+	public XTeeOutputStream(final PrintStream targetPS) {
+		super(targetPS);
+	}
 
-    @Override
-    public void close() throws IOException {
-        closed = true;
-        super.close();
-    }
+	@Override
+	public void close() throws IOException {
+		closed = true;
+		super.close();
+	}
 
-    public boolean isClosed() {
-        return closed;
-    }
+	public boolean isClosed() {
+		return closed;
+	}
 }

@@ -13,40 +13,41 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.util.Compare;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+import ch.qos.logback.core.util.Compare;
 
 public class DefaultRolloverChecker implements RolloverChecker {
 
-    final String testId;
-    final boolean withCompression;
-    final String compressionSuffix;
+	final String testId;
+	final boolean withCompression;
+	final String compressionSuffix;
 
-    public DefaultRolloverChecker(String testId, boolean withCompression, String compressionSuffix) {
-        this.testId = testId;
-        this.withCompression = withCompression;
-        this.compressionSuffix = compressionSuffix;
-    }
+	public DefaultRolloverChecker(final String testId, final boolean withCompression, final String compressionSuffix) {
+		this.testId = testId;
+		this.withCompression = withCompression;
+		this.compressionSuffix = compressionSuffix;
+	}
 
-    public void check(List<String> expectedFilenameList) throws IOException {
+	@Override
+	public void check(final List<String> expectedFilenameList) throws IOException {
 
-        int i = 0;
-        for (String fn : expectedFilenameList) {
-            String suffix = withCompression ? addGZIfNotLast(expectedFilenameList, i, compressionSuffix) : "";
+		int i = 0;
+		for (final String fn : expectedFilenameList) {
+			final String suffix = withCompression ? addGZIfNotLast(expectedFilenameList, i, compressionSuffix) : "";
 
-            String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i + suffix;
-            assertTrue(Compare.compare(fn, witnessFileName));
-            i++;
-        }
-    }
+			final String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i + suffix;
+			assertTrue(Compare.compare(fn, witnessFileName));
+			i++;
+		}
+	}
 
-    String addGZIfNotLast(List<String> expectedFilenameList, int i, String suff) {
-        int lastIndex = expectedFilenameList.size() - 1;
-        return (i != lastIndex) ? suff : "";
-    }
+	String addGZIfNotLast(final List<String> expectedFilenameList, final int i, final String suff) {
+		final int lastIndex = expectedFilenameList.size() - 1;
+		return i != lastIndex ? suff : "";
+	}
 }

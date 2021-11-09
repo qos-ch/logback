@@ -21,79 +21,80 @@ import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 
 /**
  * A runnable which behaves differently depending on the desired locking model.
- * 
+ *
  * @author Ralph Goers
  * @author Ceki Gulcu
  */
 public class SelectiveDateFormattingRunnable extends RunnableWithCounterAndDone {
 
-    public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
+	public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
 
-    enum FormattingModel {
-        SDF, JODA;
-    }
+	enum FormattingModel {
+		SDF, JODA;
+	}
 
-    FormattingModel model;
-    static long CACHE = 0;
+	FormattingModel model;
+	static long CACHE = 0;
 
-    static SimpleDateFormat SDF = new SimpleDateFormat(ISO8601_PATTERN);
+	static SimpleDateFormat SDF = new SimpleDateFormat(ISO8601_PATTERN);
 
-    // static final DateTimeFormatter JODA = DateTimeFormat
-    // .forPattern(ISO8601_PATTERN);
+	// static final DateTimeFormatter JODA = DateTimeFormat
+	// .forPattern(ISO8601_PATTERN);
 
-    SelectiveDateFormattingRunnable(FormattingModel model) {
-        this.model = model;
-    }
+	SelectiveDateFormattingRunnable(final FormattingModel model) {
+		this.model = model;
+	}
 
-    public void run() {
-        switch (model) {
-        case SDF:
-            sdfRun();
-            break;
-        case JODA:
-            jodaRun();
-            break;
-        }
-    }
+	@Override
+	public void run() {
+		switch (model) {
+		case SDF:
+			sdfRun();
+			break;
+		case JODA:
+			jodaRun();
+			break;
+		}
+	}
 
-    void sdfRun() {
+	void sdfRun() {
 
-        for (;;) {
-            synchronized (SDF) {
-                long now = System.currentTimeMillis();
-                if (CACHE != now) {
-                    CACHE = now;
-                    SDF.format(now);
-                }
-            }
-            counter++;
-            if (done) {
-                return;
-            }
-        }
-    }
+		for (;;) {
+			synchronized (SDF) {
+				final long now = System.currentTimeMillis();
+				if (CACHE != now) {
+					CACHE = now;
+					SDF.format(now);
+				}
+			}
+			counter++;
+			if (done) {
+				return;
+			}
+		}
+	}
 
-    void jodaRun() {
-        for (;;) {
-            long now = System.currentTimeMillis();
-            if (isCacheStale(now)) {
-                // JODA.print(now);
-            }
-            counter++;
-            if (done) {
-                return;
-            }
-        }
-    }
+	void jodaRun() {
+		for (;;) {
+			final long now = System.currentTimeMillis();
+			if (isCacheStale(now)) {
+				// JODA.print(now);
+			}
+			counter++;
+			if (done) {
+				return;
+			}
+		}
+	}
 
-    private static boolean isCacheStale(long now) {
-        // synchronized (JODA) {
-        // if (CACHE != now) {
-        // CACHE = now;
-        // return true;
-        // }
-        // }
-        return false;
-    }
+	private static boolean isCacheStale(final long now) {
+		// synchronized (JODA) {
+		// if (CACHE != now) {
+		// CACHE = now;
+		// return true;
+		// }
+		// }
+		return false;
+	}
 
 }

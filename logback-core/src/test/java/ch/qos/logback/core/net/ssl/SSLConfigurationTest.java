@@ -24,11 +24,11 @@ import org.junit.Test;
  */
 public class SSLConfigurationTest {
 
-    private SSLConfiguration configuration = new SSLConfiguration();
+	private final SSLConfiguration configuration = new SSLConfiguration();
 
-    @Test
-    public void testParameters() throws Exception {
-        assertNotNull(configuration.getParameters());
-    }
+	@Test
+	public void testParameters() throws Exception {
+		assertNotNull(configuration.getParameters());
+	}
 
 }

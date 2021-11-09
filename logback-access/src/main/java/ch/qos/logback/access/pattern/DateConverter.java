@@ -32,7 +32,7 @@ public class DateConverter extends AccessConverter {
 			datePattern = CoreConstants.CLF_DATE_PATTERN;
 		}
 
-		if (datePattern.equals(CoreConstants.ISO8601_STR)) {
+		if (CoreConstants.ISO8601_STR.equals(datePattern)) {
 			datePattern = CoreConstants.ISO8601_PATTERN;
 		}
 		ZoneId zoneId = null;
@@ -52,8 +52,6 @@ public class DateConverter extends AccessConverter {
 			addWarn("Defaulting to  " + CoreConstants.CLF_DATE_PATTERN);
 			cachingDateFormatter = new CachingDateFormatter(CoreConstants.CLF_DATE_PATTERN, zoneId);
 		}
-
-
 
 	}
 
