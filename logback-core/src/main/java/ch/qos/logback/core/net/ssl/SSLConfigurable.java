@@ -21,6 +21,7 @@ package ch.qos.logback.core.net.ssl;
  * testing.
  *
  * @author Carl Harris
+ * @author Bruno Harbulot 
  */
 public interface SSLConfigurable {
 
@@ -82,5 +83,7 @@ public interface SSLConfigurable {
      * @param state the flag state to set
      */
     void setWantClientAuth(boolean state);
+    
+    void setHostnameVerification(boolean verifyHostname);
 
 }

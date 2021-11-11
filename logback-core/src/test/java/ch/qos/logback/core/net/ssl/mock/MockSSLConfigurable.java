@@ -100,4 +100,8 @@ public class MockSSLConfigurable implements SSLConfigurable {
         this.wantClientAuth = wantClientAuth;
     }
 
+	@Override
+	public void setHostnameVerification(boolean verifyHostname) {
+	}
+
 }
