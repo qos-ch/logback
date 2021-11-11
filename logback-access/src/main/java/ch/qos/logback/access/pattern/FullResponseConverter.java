@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.access.pattern;
 
-import java.util.List;
-
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
 
@@ -23,24 +21,13 @@ public class FullResponseConverter extends AccessConverter {
     @Override
     public String convert(final IAccessEvent ae) {
         final StringBuilder buf = new StringBuilder();
-
-        buf.append("HTTP/1.1 ");
         final int statusCode = ae.getStatusCode();
-        buf.append(statusCode);
-        buf.append(" ");
-        buf.append(getStatusCodeDescription(statusCode));
-        buf.append(CoreConstants.LINE_SEPARATOR);
 
-        final List<String> hnList = ae.getResponseHeaderNameList();
-        for (final String headerName : hnList) {
-            buf.append(headerName);
-            buf.append(": ");
-            buf.append(ae.getResponseHeader(headerName));
-            buf.append(CoreConstants.LINE_SEPARATOR);
-        }
-        buf.append(CoreConstants.LINE_SEPARATOR);
-        buf.append(ae.getResponseContent());
-        buf.append(CoreConstants.LINE_SEPARATOR);
+        buf.append("HTTP/1.1 ").append(statusCode).append(" ").append(getStatusCodeDescription(statusCode)).append(CoreConstants.LINE_SEPARATOR);
+
+        ae.getResponseHeaderNameList().forEach(name -> buf.append(name).append(": ").append(ae.getResponseHeader(name)).append(CoreConstants.LINE_SEPARATOR));
+
+        buf.append(CoreConstants.LINE_SEPARATOR).append(ae.getResponseContent()).append(CoreConstants.LINE_SEPARATOR);
         return buf.toString();
     }
 
