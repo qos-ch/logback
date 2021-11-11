@@ -187,13 +187,14 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
             }
         }
     }
+
     protected void writeOut(final E event) throws IOException {
         final byte[] byteArray = this.encoder.encode(event);
         writeBytes(byteArray);
     }
 
     private void writeBytes(final byte[] byteArray) throws IOException {
-        if(byteArray == null || byteArray.length == 0) {
+        if (byteArray == null || byteArray.length == 0) {
             return;
         }
 

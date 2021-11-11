@@ -34,7 +34,7 @@ public class ConverterTest {
 
     IAccessEvent event;
     DummyRequest request = new DummyRequest();
-    DummyResponse response =  new DummyResponse();
+    DummyResponse response = new DummyResponse();
     AccessContext accessContext = new AccessContext();
 
     @Before

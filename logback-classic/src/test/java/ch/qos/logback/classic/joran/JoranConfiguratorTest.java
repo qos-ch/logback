@@ -147,8 +147,7 @@ public class JoranConfiguratorTest {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
         final StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertIsErrorFree();
-        checker.assertContainsMatch(Status.WARN,
-                        "Please use \"level\" attribute within <logger> or <root> elements instead.");
+        checker.assertContainsMatch(Status.WARN, "Please use \"level\" attribute within <logger> or <root> elements instead.");
     }
 
     @Test
@@ -165,8 +164,7 @@ public class JoranConfiguratorTest {
         logger.debug("toto");
         logger.debug(msg);
 
-        final StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
-                        .getLogger("root").getAppender("STR_LIST");
+        final StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext.getLogger("root").getAppender("STR_LIST");
         assertNotNull(slAppender);
         assertEquals(2, slAppender.strList.size());
         assertTrue(slAppender.strList.get(0).contains(" DEBUG - toto"));
@@ -264,7 +262,7 @@ public class JoranConfiguratorTest {
         try {
             configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "turboDynamicThreshold2.xml");
         } finally {
-            //StatusPrinter.print(loggerContext);
+            // StatusPrinter.print(loggerContext);
         }
         final ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertEquals(0, listAppender.list.size());
@@ -329,8 +327,7 @@ public class JoranConfiguratorTest {
 
         final ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CONSOLE");
         assertNotNull(consoleAppender);
-        final LayoutWrappingEncoder<ILoggingEvent> encoder = (LayoutWrappingEncoder<ILoggingEvent>) consoleAppender
-                        .getEncoder();
+        final LayoutWrappingEncoder<ILoggingEvent> encoder = (LayoutWrappingEncoder<ILoggingEvent>) consoleAppender.getEncoder();
 
         assertEquals("UTF-8", encoder.getCharset().displayName());
 
@@ -536,53 +533,50 @@ public class JoranConfiguratorTest {
 
         final String msg = "hello kvp";
 
-        final KeyValuePair kvp1 = new KeyValuePair("k"+diff, "v"+diff);
-        final KeyValuePair kvp2 = new KeyValuePair("k"+(diff+1), "v"+(diff+1));
-        final KeyValuePair kvpNullKey = new KeyValuePair(null, "v"+(diff+2));
-        final KeyValuePair kvpNullValue = new KeyValuePair("k"+(diff+3), null);
+        final KeyValuePair kvp1 = new KeyValuePair("k" + diff, "v" + diff);
+        final KeyValuePair kvp2 = new KeyValuePair("k" + (diff + 1), "v" + (diff + 1));
+        final KeyValuePair kvpNullKey = new KeyValuePair(null, "v" + (diff + 2));
+        final KeyValuePair kvpNullValue = new KeyValuePair("k" + (diff + 3), null);
 
         logger.atDebug().addKeyValue(kvp1.key, kvp1.value).log(msg);
         logger.atDebug().addKeyValue(kvp2.key, kvp2.value).log(msg);
         logger.atDebug().addKeyValue(kvpNullKey.key, kvpNullKey.value).log(msg);
         logger.atDebug().addKeyValue(kvpNullValue.key, kvpNullValue.value).log(msg);
 
-
-        final StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
-                        .getLogger("root").getAppender("LIST");
+        final StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext.getLogger("root").getAppender("LIST");
         assertNotNull(slAppender);
         assertEquals(4, slAppender.strList.size());
-        assertTrue(slAppender.strList.get(0).contains(kvp1.key+ "=\""+kvp1.value+"\" "+msg));
-        assertTrue(slAppender.strList.get(1).contains(kvp2.key+ "=\""+kvp2.value+"\" "+msg));
-        assertTrue(slAppender.strList.get(2).contains("null=\""+kvpNullKey.value+"\" "+msg));
-        assertTrue(slAppender.strList.get(3).contains(kvpNullValue.key+ "=\"null\" " +msg));
+        assertTrue(slAppender.strList.get(0).contains(kvp1.key + "=\"" + kvp1.value + "\" " + msg));
+        assertTrue(slAppender.strList.get(1).contains(kvp2.key + "=\"" + kvp2.value + "\" " + msg));
+        assertTrue(slAppender.strList.get(2).contains("null=\"" + kvpNullKey.value + "\" " + msg));
+        assertTrue(slAppender.strList.get(3).contains(kvpNullValue.key + "=\"null\" " + msg));
     }
 
-
-    //	@Test
-    //	public void doTest() throws JoranException {
-    //		int LIMIT = 0;
-    //		boolean oss = true;
-    //		for (int i = 0; i < LIMIT; i++) {
-    //			innerDoT(oss);
-    //		}
-    //		long start = System.currentTimeMillis();
-    //		innerDoT(oss);
-    //		long diff = System.currentTimeMillis() - start;
-    //		double average = (1.0d * diff);
-    //		System.out.println("Average time " + average + " ms. By serialization " + oss);
+    // @Test
+    // public void doTest() throws JoranException {
+    // int LIMIT = 0;
+    // boolean oss = true;
+    // for (int i = 0; i < LIMIT; i++) {
+    // innerDoT(oss);
+    // }
+    // long start = System.currentTimeMillis();
+    // innerDoT(oss);
+    // long diff = System.currentTimeMillis() - start;
+    // double average = (1.0d * diff);
+    // System.out.println("Average time " + average + " ms. By serialization " + oss);
     //
-    //	}
+    // }
 
-    //	private void innerDoT(boolean oss) throws JoranException {
-    //		JoranConfigurator jc = new JoranConfigurator();
-    //		jc.setContext(loggerContext);
-    //		if (oss) {
-    //			System.out.println("jc.doT");
-    //			jc.doT();
-    //		} else {
-    //			System.out.println("jc.doConfigure");
-    //			jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
-    //		}
-    //	}
+    // private void innerDoT(boolean oss) throws JoranException {
+    // JoranConfigurator jc = new JoranConfigurator();
+    // jc.setContext(loggerContext);
+    // if (oss) {
+    // System.out.println("jc.doT");
+    // jc.doT();
+    // } else {
+    // System.out.println("jc.doConfigure");
+    // jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "twoAppenders.xml");
+    // }
+    // }
 
 }

@@ -76,7 +76,7 @@ public class ReconfigureOnChangeTaskTest {
 
     final static String INCLUSION_SCAN_INNER1_AS_STR = "target/test-classes/asResource/inner1.xml";
 
-    private static final String SCAN_PERIOD_DEFAULT_FILE_AS_STR =  JORAN_INPUT_PREFIX + "roct/scan_period_default.xml";
+    private static final String SCAN_PERIOD_DEFAULT_FILE_AS_STR = JORAN_INPUT_PREFIX + "roct/scan_period_default.xml";
 
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
@@ -99,10 +99,10 @@ public class ReconfigureOnChangeTaskTest {
         jc.doConfigure(is);
     }
 
-    //    void gConfigure(File file) throws JoranException {
-    //        GafferConfigurator gc = new GafferConfigurator(loggerContext);
-    //        gc.run(file);
-    //    }
+    // void gConfigure(File file) throws JoranException {
+    // GafferConfigurator gc = new GafferConfigurator(loggerContext);
+    // gc.run(file);
+    // }
 
     @Test(timeout = 4000L)
     public void checkBasicLifecyle() throws JoranException, IOException, InterruptedException {
@@ -237,7 +237,7 @@ public class ReconfigureOnChangeTaskTest {
         return (ReconfigureOnChangeTask) loggerContext.getObject(RECONFIGURE_ON_CHANGE_TASK);
     }
 
-    class RunMethodInvokedListener extends ReconfigureOnChangeTaskListener {
+    static class RunMethodInvokedListener extends ReconfigureOnChangeTaskListener {
         CountDownLatch countDownLatch;
 
         RunMethodInvokedListener(final CountDownLatch countDownLatch) {
@@ -250,7 +250,7 @@ public class ReconfigureOnChangeTaskTest {
         }
     }
 
-    class ChangeDetectedListener extends ReconfigureOnChangeTaskListener {
+    static class ChangeDetectedListener extends ReconfigureOnChangeTaskListener {
         CountDownLatch countDownLatch;
 
         ChangeDetectedListener(final CountDownLatch countDownLatch) {
@@ -263,7 +263,7 @@ public class ReconfigureOnChangeTaskTest {
         }
     }
 
-    class ReconfigurationDoneListener extends ReconfigureOnChangeTaskListener {
+    static class ReconfigurationDoneListener extends ReconfigureOnChangeTaskListener {
         CountDownLatch countDownLatch;
 
         ReconfigurationDoneListener(final CountDownLatch countDownLatch) {
@@ -378,7 +378,7 @@ public class ReconfigureOnChangeTaskTest {
         fw.close();
         // on linux changes to last modified are not propagated if the
         // time stamp is near the previous time stamp hence the random delta
-        file.setLastModified(System.currentTimeMillis()+RandomUtil.getPositiveInt());
+        file.setLastModified(System.currentTimeMillis() + RandomUtil.getPositiveInt());
     }
 
     class Harness extends AbstractMultiThreadedHarness {

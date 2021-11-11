@@ -43,7 +43,7 @@ public class PrefixCompositeConverter extends CompositeConverter<ILoggingEvent> 
                 final String classOfConverter = c.getClass().getName();
 
                 final String key = PatternLayout.CONVERTER_CLASS_TO_KEY_MAP.get(classOfConverter);
-                if(key != null) {
+                if (key != null) {
                     buf.append(key).append("=");
                 }
             }
@@ -57,4 +57,3 @@ public class PrefixCompositeConverter extends CompositeConverter<ILoggingEvent> 
         throw new UnsupportedOperationException();
     }
 }
-

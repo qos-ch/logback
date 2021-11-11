@@ -14,8 +14,6 @@ public class IncludeModel extends Model {
     String resource;
     ElementPath elementPath;
 
-
-
     public String getOptional() {
         return optional;
     }
@@ -55,6 +53,5 @@ public class IncludeModel extends Model {
     public void setElementPath(final ElementPath elementPath) {
         this.elementPath = elementPath;
     }
-
 
 }

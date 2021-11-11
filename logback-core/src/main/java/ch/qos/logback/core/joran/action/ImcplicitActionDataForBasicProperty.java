@@ -27,5 +27,4 @@ public class ImcplicitActionDataForBasicProperty extends ImplicitActionDataBase 
         super(parentBean, aggregationType, propertyName);
     }
 
-
 }

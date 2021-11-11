@@ -90,7 +90,7 @@ public class ExtendedThrowableProxyConverterTest {
         // the identical formatting check, see verify(e) call below, fails
         // under JDK 11. this does not mean that the presently tested code is wrong
         // but that JDK 11 formats things differently
-        if(!EnvUtil.isJDK16OrHigher()) {
+        if (!EnvUtil.isJDK16OrHigher()) {
             return;
         }
 
@@ -105,7 +105,7 @@ public class ExtendedThrowableProxyConverterTest {
         // the identical formatting check, see verify(e) call below, fails
         // under JDK 11. this does not mean that the presently tested code is wrong
         // but that JDK 11 formats things differently
-        if(!EnvUtil.isJDK16OrHigher()) {
+        if (!EnvUtil.isJDK16OrHigher()) {
             return;
         }
 

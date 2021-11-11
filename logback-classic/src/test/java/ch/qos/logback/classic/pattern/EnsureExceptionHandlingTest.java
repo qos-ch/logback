@@ -27,13 +27,12 @@ public class EnsureExceptionHandlingTest {
     }
 
     ILoggingEvent makeLoggingEvent(final String msg, final Exception ex) {
-        return new LoggingEvent(EnsureExceptionHandlingTest.class.getName(), logger,
-                        Level.INFO, msg, ex, null);
+        return new LoggingEvent(EnsureExceptionHandlingTest.class.getName(), logger, Level.INFO, msg, ex, null);
     }
 
     @Test
     public void smoke() {
-        pl.setPattern("%m %"+XTH+")");
+        pl.setPattern("%m %" + XTH + ")");
         pl.start();
         final ILoggingEvent le = makeLoggingEvent("assert", null);
         pl.doLayout(le);
@@ -41,7 +40,7 @@ public class EnsureExceptionHandlingTest {
 
     @Test
     public void withinComposite() {
-        pl.setPattern("%m %"+XCC+"(%"+XTH+")");
+        pl.setPattern("%m %" + XCC + "(%" + XTH + ")");
         pl.start();
         final ILoggingEvent le = makeLoggingEvent("assert", null);
         pl.doLayout(le);

@@ -48,7 +48,7 @@ public class CachingDateFormatter {
 
     public CachingDateFormatter(final String pattern, final ZoneId aZoneId) {
         dtf = DateTimeFormatter.ofPattern(pattern);
-        if(aZoneId == null) {
+        if (aZoneId == null) {
             zoneId = ZoneId.systemDefault();
         } else {
             zoneId = aZoneId;
@@ -58,7 +58,6 @@ public class CachingDateFormatter {
         final CacheTuple cacheTuple = new CacheTuple(-1, null);
         atomicReference = new AtomicReference<>(cacheTuple);
     }
-
 
     public final String format(final long now) {
         CacheTuple localCacheTuple = atomicReference.get();
@@ -74,7 +73,5 @@ public class CachingDateFormatter {
         }
         return localCacheTuple.cachedStr;
     }
-
-
 
 }

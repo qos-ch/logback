@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
-public class BasicSequenceNumberGenerator extends ContextAwareBase implements SequenceNumberGenerator  {
+public class BasicSequenceNumberGenerator extends ContextAwareBase implements SequenceNumberGenerator {
 
     private final AtomicLong atomicLong = new AtomicLong();
 

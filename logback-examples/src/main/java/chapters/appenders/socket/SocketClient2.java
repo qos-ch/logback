@@ -30,8 +30,8 @@ import ch.qos.logback.classic.joran.JoranConfigurator;
 public class SocketClient2 {
     static void usage(final String msg) {
         System.err.println(msg);
-        System.err.println("Usage: java " + SocketClient2.class.getName() + " configFile\n" + "   configFile a logback configuration file"
-                        + "   in XML format.");
+        System.err.println(
+                        "Usage: java " + SocketClient2.class.getName() + " configFile\n" + "   configFile a logback configuration file" + "   in XML format.");
         System.exit(1);
     }
 
@@ -59,7 +59,7 @@ public class SocketClient2 {
 
             final String s = reader.readLine();
 
-            if (s.equals("q")) {
+            if ("q".equals(s)) {
                 break;
             }
             logger.debug(s);

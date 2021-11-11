@@ -63,7 +63,8 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
         // The absence of activeFileName option should cause an exception.
     }
 
-    void generic(final String testName, final String fileName, final String filenamePattern, final List<String> expectedFilenameList) throws InterruptedException, IOException {
+    void generic(final String testName, final String fileName, final String filenamePattern, final List<String> expectedFilenameList)
+                    throws InterruptedException, IOException {
         rfa.setName("ROLLING");
         initRFA(randomOutputDir + fileName);
 

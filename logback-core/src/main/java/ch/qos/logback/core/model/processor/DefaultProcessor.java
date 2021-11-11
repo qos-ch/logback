@@ -20,7 +20,6 @@ public class DefaultProcessor extends ContextAwareBase {
         int traverse(Model model, ModelFiler modelFiler);
     }
 
-
     final InterpretationContext interpretationContext;
     final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
     final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
@@ -117,11 +116,10 @@ public class DefaultProcessor extends ContextAwareBase {
     static final int DENIED = -1;
 
     private ModelHandlerBase createHandler(final Model model) {
-        final ModelFactoryMethod modelFactoryMethod  = modelClassToHandlerMap.get(model.getClass());
+        final ModelFactoryMethod modelFactoryMethod = modelClassToHandlerMap.get(model.getClass());
 
         if (modelFactoryMethod == null) {
-            addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
-                            + model.getLineNumber());
+            addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line " + model.getLineNumber());
             return null;
         }
 
@@ -252,15 +250,13 @@ public class DefaultProcessor extends ContextAwareBase {
             }
             addError("Failed to find suitable constructor for class [" + handlerClass + "]");
             return null;
-        } catch (InstantiationException | IllegalAccessException | SecurityException | IllegalArgumentException
-                        | InvocationTargetException e1) {
+        } catch (InstantiationException | IllegalAccessException | SecurityException | IllegalArgumentException | InvocationTargetException e1) {
             addError("Failed to instantiate " + handlerClass);
             return null;
         }
     }
 
-    private Constructor<? extends ModelHandlerBase> getWithContextConstructor(
-                    final Class<? extends ModelHandlerBase> handlerClass) {
+    private Constructor<? extends ModelHandlerBase> getWithContextConstructor(final Class<? extends ModelHandlerBase> handlerClass) {
         try {
             return handlerClass.getConstructor(Context.class);
         } catch (final NoSuchMethodException e) {
@@ -268,15 +264,12 @@ public class DefaultProcessor extends ContextAwareBase {
         }
     }
 
-    private Constructor<? extends ModelHandlerBase> getWithContextAndBDCConstructor(
-                    final Class<? extends ModelHandlerBase> handlerClass) {
+    private Constructor<? extends ModelHandlerBase> getWithContextAndBDCConstructor(final Class<? extends ModelHandlerBase> handlerClass) {
         try {
-            return handlerClass.getConstructor(Context.class,
-                            BeanDescriptionCache.class);
+            return handlerClass.getConstructor(Context.class, BeanDescriptionCache.class);
         } catch (final NoSuchMethodException e) {
             return null;
         }
     }
-
 
 }

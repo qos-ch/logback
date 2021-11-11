@@ -31,7 +31,7 @@ public class JaninoEventEvaluatorTest {
 
     final String expectedURL1 = "testUrl1";
     final String expectedURL2 = "testUrl2";
-    //Context context = new ContextBase();
+    // Context context = new ContextBase();
     JaninoEventEvaluator evaluator;
     DummyRequest request;
     DummyResponse response;

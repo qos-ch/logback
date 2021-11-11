@@ -23,8 +23,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
     private final BeanDescriptionCache beanDescriptionCache;
 
-    static final String  PARENT_PROPPERTY_KEY = "parent";
-
+    static final String PARENT_PROPPERTY_KEY = "parent";
 
     boolean inError = false;
 
@@ -64,21 +63,20 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
         switch (aggregationType) {
         case NOT_FOUND:
-            addWarn("Ignoring unkown property ["+nestedElementTagName+"] in ["+o.getClass().getName()+"]");
+            addWarn("Ignoring unkown property [" + nestedElementTagName + "] in [" + o.getClass().getName() + "]");
             inError = true;
             return;
         case AS_BASIC_PROPERTY:
         case AS_BASIC_PROPERTY_COLLECTION:
-            final ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean,
-                            aggregationType, nestedElementTagName);
+            final ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean, aggregationType,
+                            nestedElementTagName);
             actionDataStack.push(adBasicProperty);
             doBasicProperty(intercon, model, adBasicProperty);
             return;
-            // we only push action data if NestComponentIA is applicable
+        // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:
         case AS_COMPLEX_PROPERTY:
-            final ImplicitActionDataForComplexProperty adComplex = new ImplicitActionDataForComplexProperty(parentBean,
-                            aggregationType, nestedElementTagName);
+            final ImplicitActionDataForComplexProperty adComplex = new ImplicitActionDataForComplexProperty(parentBean, aggregationType, nestedElementTagName);
             actionDataStack.push(adComplex);
             doComplex(intercon, implicitModel, adComplex);
             return;
@@ -88,8 +86,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
     }
 
-    void doBasicProperty(final InterpretationContext interpretationContext, final Model model,
-                    final ImcplicitActionDataForBasicProperty actionData) {
+    void doBasicProperty(final InterpretationContext interpretationContext, final Model model, final ImcplicitActionDataForBasicProperty actionData) {
         final String finalBody = interpretationContext.subst(model.getBodyText());
         // get the action data object pushed in isApplicable() method call
         // IADataForBasicProperty actionData = (IADataForBasicProperty)
@@ -121,8 +118,8 @@ public class ImplicitModelHandler extends ModelHandlerBase {
             } else {
                 // guess class name via implicit rules
                 final PropertySetter parentBean = actionData.parentBean;
-                componentClass = parentBean.getClassNameViaImplicitRules(actionData.propertyName,
-                                actionData.getAggregationType(), interpretationContext.getDefaultNestedComponentRegistry());
+                componentClass = parentBean.getClassNameViaImplicitRules(actionData.propertyName, actionData.getAggregationType(),
+                                interpretationContext.getDefaultNestedComponentRegistry());
             }
 
             if (componentClass == null) {
@@ -133,8 +130,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
             }
 
             if (OptionHelper.isNullOrEmpty(className)) {
-                addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag()
-                + "] property");
+                addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag() + "] property");
             }
 
             actionData.setNestedComplexProperty(componentClass.getConstructor().newInstance());
@@ -172,8 +168,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
     private void postHandleComplex(final InterpretationContext intercon, final Model model, final ImplicitActionDataBase actionData) {
         final ImplicitActionDataForComplexProperty complexActionData = (ImplicitActionDataForComplexProperty) actionData;
 
-        final PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,
-                        complexActionData.getNestedComplexProperty());
+        final PropertySetter nestedBean = new PropertySetter(beanDescriptionCache, complexActionData.getNestedComplexProperty());
         nestedBean.setContext(context);
 
         // have the nested element point to its parent if possible
@@ -184,8 +179,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         // start the nested complex property if it implements LifeCycle and is not
         // marked with a @NoAutoStart annotation
         final Object nestedComplexProperty = complexActionData.getNestedComplexProperty();
-        if (nestedComplexProperty instanceof LifeCycle
-                        && NoAutoStartUtil.notMarkedWithNoAutoStart(nestedComplexProperty)) {
+        if (nestedComplexProperty instanceof LifeCycle && NoAutoStartUtil.notMarkedWithNoAutoStart(nestedComplexProperty)) {
             ((LifeCycle) nestedComplexProperty).start();
         }
 

@@ -21,4 +21,3 @@ public class MinimalSerBuilder implements Builder<MinimalSer> {
     }
 
 }
-

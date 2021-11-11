@@ -119,7 +119,6 @@ public class RootCauseFirstThrowableProxyConverterTest {
         assertThat(result).startsWith("[CIRCULAR REFERENCE: java.lang.Exception: foo]");
     }
 
-
     @Test
     public void cyclicSuppressed() {
         final Exception e = new Exception("foo");
@@ -134,6 +133,5 @@ public class RootCauseFirstThrowableProxyConverterTest {
 
         assertThat(positionOf(circular).in(result)).isLessThan(positionOf(wrapped).in(result));
     }
-
 
 }

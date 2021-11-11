@@ -53,7 +53,7 @@ public class JettyFixtureBase {
 
     public void start() throws Exception {
         server = new Server();
-        final ServerConnector connector = new ServerConnector (server);
+        final ServerConnector connector = new ServerConnector(server);
         connector.setPort(port);
         server.setConnectors(new Connector[] { connector });
 
@@ -82,10 +82,11 @@ public class JettyFixtureBase {
         return handler;
     }
 
-    class BasicHandler extends AbstractHandler {
+    static class BasicHandler extends AbstractHandler {
         @Override
         @SuppressWarnings("resource")
-        public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+        public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response)
+                        throws IOException, ServletException {
             final OutputStream out = response.getOutputStream();
             final ByteArrayISO8859Writer writer = new ByteArrayISO8859Writer();
             writer.write("hello world");

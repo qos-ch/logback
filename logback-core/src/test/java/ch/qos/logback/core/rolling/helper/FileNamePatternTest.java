@@ -123,7 +123,8 @@ public class FileNamePatternTest {
         }
 
         {
-            final FileNamePattern fnp = new FileNamePattern("folder/%d{yyyy/MM, aux, Australia/Perth}/test.%d{yyyy-MM-dd'T'HHmm, Australia/Perth}.log", context);
+            final FileNamePattern fnp = new FileNamePattern("folder/%d{yyyy/MM, aux, Australia/Perth}/test.%d{yyyy-MM-dd'T'HHmm, Australia/Perth}.log",
+                            context);
             assertEquals("folder/2003/05/test.2003-05-20T1855.log", fnp.convert(cal.getTime()));
             assertNotNull(fnp.getPrimaryDateTokenConverter());
         }

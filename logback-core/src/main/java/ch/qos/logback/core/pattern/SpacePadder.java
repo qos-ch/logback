@@ -18,7 +18,7 @@ public class SpacePadder {
     final static String[] SPACES = { " ", "  ", "    ", "        ", // 1,2,4,8
             // spaces
             "                ", // 16 spaces
-    "                                " }; // 32 spaces
+            "                                " }; // 32 spaces
 
     final static public void leftPad(final StringBuilder buf, final String s, final int desiredLength) {
         int actualLen = 0;

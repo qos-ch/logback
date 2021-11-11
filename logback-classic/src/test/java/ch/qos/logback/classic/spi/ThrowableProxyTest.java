@@ -48,11 +48,11 @@ public class ThrowableProxyTest {
         result = result.replace("common frames omitted", "more");
         final String expected = sw.toString();
 
-        //System.out.println("========expected");
-        //System.out.println(expected);
+        // System.out.println("========expected");
+        // System.out.println(expected);
 
-        //System.out.println("========result");
-        //System.out.println(result);
+        // System.out.println("========result");
+        // System.out.println(result);
 
         assertEquals(expected, result);
     }
@@ -161,7 +161,7 @@ public class ThrowableProxyTest {
     @Test
     public void cyclicCause() {
         // Earlier JDKs may formats things differently
-        if(!EnvUtil.isJDK16OrHigher()) {
+        if (!EnvUtil.isJDK16OrHigher()) {
             return;
         }
         final Exception e = new Exception("foo");
@@ -174,7 +174,7 @@ public class ThrowableProxyTest {
     @Test
     public void cyclicSuppressed() {
         // Earlier JDKs may formats things differently
-        if(!EnvUtil.isJDK16OrHigher()) {
+        if (!EnvUtil.isJDK16OrHigher()) {
             return;
         }
         final Exception e = new Exception("foo");

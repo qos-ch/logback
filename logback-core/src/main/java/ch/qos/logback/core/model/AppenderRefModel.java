@@ -14,5 +14,4 @@ public class AppenderRefModel extends Model {
         this.ref = ref;
     }
 
-
 }

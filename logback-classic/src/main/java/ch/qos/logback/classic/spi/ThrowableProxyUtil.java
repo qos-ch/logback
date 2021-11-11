@@ -180,7 +180,7 @@ public class ThrowableProxyUtil {
     }
 
     private static void subjoinExceptionMessage(final StringBuilder buf, final IThrowableProxy tp) {
-        if(tp.isCyclic()) {
+        if (tp.isCyclic()) {
             buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage()).append(']');
         } else {
             buf.append(tp.getClassName()).append(": ").append(tp.getMessage());

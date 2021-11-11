@@ -20,6 +20,4 @@ public abstract class Citrus<T> {
 
     public abstract void foo();
 
-
-
 }

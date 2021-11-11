@@ -142,9 +142,9 @@ public class Reduce {
     private static Structure buildStructure(final String relTime, final String t, final String opStr) {
         final long r = Long.parseLong(relTime);
         OperationType operationType;
-        if (opStr.equals("LOCK")) {
+        if ("LOCK".equals(opStr)) {
             operationType = OperationType.LOCK;
-        } else if (opStr.equals("UNLOCK")) {
+        } else if ("UNLOCK".equals(opStr)) {
             operationType = OperationType.UNLOCK;
         } else {
             throw new IllegalArgumentException(opStr + " is not LOCK|UNLOCK");

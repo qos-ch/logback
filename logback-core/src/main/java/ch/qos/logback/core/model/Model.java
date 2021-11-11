@@ -10,7 +10,7 @@ import java.util.List;
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
-public class Model  implements Serializable {
+public class Model implements Serializable {
 
     private static final long serialVersionUID = -797372668713068159L;
 
@@ -25,6 +25,7 @@ public class Model  implements Serializable {
     public boolean isHandled() {
         return handled;
     }
+
     public void markAsHandled() {
         handled = true;
     }
@@ -72,16 +73,12 @@ public class Model  implements Serializable {
     }
 
     public String idString() {
-        return "<"+tag+"> at line "+lineNumber;
+        return "<" + tag + "> at line " + lineNumber;
     }
-
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" [tag=" + tag + ", bodyText=" + bodyText + "]";
+        return this.getClass().getSimpleName() + " [tag=" + tag + ", bodyText=" + bodyText + "]";
     }
-
-
-
 
 }

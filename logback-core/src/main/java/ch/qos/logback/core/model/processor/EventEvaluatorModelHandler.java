@@ -41,8 +41,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
             final String defaultClassName = defaultClassName(intercon, eem);
             if (OptionHelper.isNullOrEmpty(defaultClassName)) {
                 inError = true;
-                addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator> at line "
-                                + intercon.getLineNumber());
+                addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator> at line " + intercon.getLineNumber());
                 addError("No default classname could be found.");
                 return;
             }
@@ -52,8 +51,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 
         final String evaluatorName = intercon.subst(eem.getName());
         try {
-            evaluator = (EventEvaluator<?>) OptionHelper.instantiateByClassName(className,
-                            ch.qos.logback.core.boolex.EventEvaluator.class, context);
+            evaluator = (EventEvaluator<?>) OptionHelper.instantiateByClassName(className, ch.qos.logback.core.boolex.EventEvaluator.class, context);
             evaluator.setContext(context);
             evaluator.setName(evaluatorName);
             intercon.pushObject(evaluator);
@@ -90,9 +88,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 
             try {
                 @SuppressWarnings("unchecked")
-                final
-                Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
-                .getObject(CoreConstants.EVALUATOR_MAP);
+                final Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context.getObject(CoreConstants.EVALUATOR_MAP);
                 if (evaluatorMap == null) {
                     addError("Could not find EvaluatorMap");
                 } else {

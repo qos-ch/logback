@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.net.server;
 
-
 /**
  *
  * A mock {@link Client} that notifies waiting thread when it has started,

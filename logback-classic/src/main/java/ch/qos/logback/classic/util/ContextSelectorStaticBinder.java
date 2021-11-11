@@ -51,8 +51,8 @@ public class ContextSelectorStaticBinder {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    public void init(final LoggerContext defaultLoggerContext, final Object key) throws ClassNotFoundException, NoSuchMethodException, InstantiationException,
-    IllegalAccessException, InvocationTargetException {
+    public void init(final LoggerContext defaultLoggerContext, final Object key)
+                    throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException {
         if (this.key == null) {
             this.key = key;
         } else if (this.key != key) {
@@ -62,7 +62,7 @@ public class ContextSelectorStaticBinder {
         final String contextSelectorStr = OptionHelper.getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
         if (contextSelectorStr == null) {
             contextSelector = new DefaultContextSelector(defaultLoggerContext);
-        } else if (contextSelectorStr.equals("JNDI")) {
+        } else if ("JNDI".equals(contextSelectorStr)) {
             // if jndi is specified, let's use the appropriate class
             contextSelector = new ContextJNDISelector(defaultLoggerContext);
         } else {
@@ -85,9 +85,9 @@ public class ContextSelectorStaticBinder {
      * @throws IllegalAccessException
      * @throws InvocationTargetException
      */
-    static ContextSelector dynamicalContextSelector(final LoggerContext defaultLoggerContext, final String contextSelectorStr) throws ClassNotFoundException,
-    SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException, IllegalAccessException,
-    InvocationTargetException {
+    static ContextSelector dynamicalContextSelector(final LoggerContext defaultLoggerContext, final String contextSelectorStr)
+                    throws ClassNotFoundException, SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
+                    IllegalAccessException, InvocationTargetException {
         final Class<?> contextSelectorClass = Loader.loadClass(contextSelectorStr);
         final Constructor<?> cons = contextSelectorClass.getConstructor(LoggerContext.class);
         return (ContextSelector) cons.newInstance(defaultLoggerContext);

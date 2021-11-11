@@ -143,8 +143,7 @@ public class SMTPAppender_GreenTest {
         greenMailServer.waitForIncomingEmail(5000, emailCount);
     }
 
-    private MimeMultipart verifyAndExtractMimeMultipart(final String subject)
-                    throws MessagingException, IOException, InterruptedException {
+    private MimeMultipart verifyAndExtractMimeMultipart(final String subject) throws MessagingException, IOException, InterruptedException {
         final int oldCount = 0;
         final int expectedEmailCount = 1;
         // wait for the server to receive the messages
@@ -304,8 +303,7 @@ public class SMTPAppender_GreenTest {
         logger.debug(msg2);
         logger.debug("invisible");
         waitUntilEmailIsSent();
-        final MimeMultipart mp = verifyAndExtractMimeMultipart(
-                        "testCustomEvaluator " + this.getClass().getName() + " - " + msg2);
+        final MimeMultipart mp = verifyAndExtractMimeMultipart("testCustomEvaluator " + this.getClass().getName() + " - " + msg2);
         final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
         assertEquals("testCustomEvaluator", body);
     }
@@ -320,8 +318,7 @@ public class SMTPAppender_GreenTest {
         final String msg = "hello";
         logger.error(msg);
         waitUntilEmailIsSent();
-        final MimeMultipart mp = verifyAndExtractMimeMultipart(
-                        "testCustomBufferSize " + this.getClass().getName() + " - " + msg);
+        final MimeMultipart mp = verifyAndExtractMimeMultipart("testCustomBufferSize " + this.getClass().getName() + " - " + msg);
         final String body = GreenMailUtil.getBody(mp.getBodyPart(0));
         assertEquals(msg, body);
     }
@@ -374,8 +371,7 @@ public class SMTPAppender_GreenTest {
         final MimeMessage mm0 = mma[oldCount];
         final MimeMultipart content0 = (MimeMultipart) mm0.getContent();
         @SuppressWarnings("unused")
-        final
-        String body0 = GreenMailUtil.getBody(content0.getBodyPart(0));
+        final String body0 = GreenMailUtil.getBody(content0.getBodyPart(0));
 
         final MimeMessage mm1 = mma[oldCount + 1];
         final MimeMultipart content1 = (MimeMultipart) mm1.getContent();

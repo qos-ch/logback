@@ -241,16 +241,15 @@ public class IncludeActionTest {
         verifyConfig(new String[] { "IA", "IB", "SECOND" });
     }
 
-
     // See LOGBACK-1465 - xxe vulnerability
     @Test
     public void includeAsEntity() throws JoranException {
         tc.doConfigure(TOP_BY_ENTITY);
         // when entity inclusion is enabled
-        //verifyConfig(new String[] { "EA", "EB" });
+        // verifyConfig(new String[] { "EA", "EB" });
 
         // when entity inclusion disabled
-        verifyConfig(new String[] { });
+        verifyConfig(new String[] {});
     }
 
     void verifyConfig(final String[] expected) {
@@ -258,7 +257,5 @@ public class IncludeActionTest {
         witness.addAll(Arrays.asList(expected));
         assertEquals(witness, stackAction.getStack());
     }
-
-
 
 }

@@ -127,8 +127,7 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
             if (parent instanceof OutputStreamAppender) {
                 addWarn("Setting the \"immediateFlush\" property of the enclosing appender to " + immediateFlush);
                 @SuppressWarnings("unchecked")
-                final
-                OutputStreamAppender<E> parentOutputStreamAppender = (OutputStreamAppender<E>) parent;
+                final OutputStreamAppender<E> parentOutputStreamAppender = (OutputStreamAppender<E>) parent;
                 parentOutputStreamAppender.setImmediateFlush(immediateFlush);
             } else {
                 addError("Could not set the \"immediateFlush\" property of the enclosing appender.");

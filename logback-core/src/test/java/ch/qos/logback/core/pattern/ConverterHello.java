@@ -17,13 +17,12 @@ import java.util.List;
 
 public class ConverterHello extends DynamicConverter<Object> {
 
-
     String firstOption;
 
     @Override
     public void start() {
         final List<String> options = getOptionList();
-        if(options != null && !options.isEmpty()) {
+        if (options != null && !options.isEmpty()) {
             firstOption = options.get(0);
         }
         super.start();

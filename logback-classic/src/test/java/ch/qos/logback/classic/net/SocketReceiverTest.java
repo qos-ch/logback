@@ -270,7 +270,8 @@ public class SocketReceiverTest {
         }
 
         @Override
-        public Socket createSocket(final String host, final int port, final InetAddress localHost, final int localPort) throws IOException, UnknownHostException {
+        public Socket createSocket(final String host, final int port, final InetAddress localHost, final int localPort)
+                        throws IOException, UnknownHostException {
             throw new UnsupportedOperationException();
         }
 

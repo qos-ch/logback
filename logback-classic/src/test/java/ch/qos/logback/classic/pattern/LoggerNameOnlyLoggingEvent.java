@@ -33,7 +33,6 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
         return null;
     }
 
-
     @Override
     public String getLoggerName() {
         return loggerName;
@@ -115,6 +114,5 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
     public List<KeyValuePair> getKeyValuePairs() {
         return null;
     }
-
 
 }

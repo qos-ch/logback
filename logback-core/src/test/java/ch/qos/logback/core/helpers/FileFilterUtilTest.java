@@ -26,7 +26,6 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 
-
 public class FileFilterUtilTest {
 
     Context context = new ContextBase();
@@ -38,7 +37,7 @@ public class FileFilterUtilTest {
                 "c:/log/debug-old-2010-08-10.11.log", "c:/log/debug-old-2010-08-10.12.log", "c:/log/debug-old-2010-08-10.2.log",
                 "c:/log/debug-old-2010-08-10.3.log", "c:/log/debug-old-2010-08-10.4.log", "c:/log/debug-old-2010-08-10.5.log",
                 "c:/log/debug-old-2010-08-10.6.log", "c:/log/debug-old-2010-08-10.7.log", "c:/log/debug-old-2010-08-10.8.log",
-        "c:/log/debug-old-2010-08-10.9.log" };
+                "c:/log/debug-old-2010-08-10.9.log" };
 
         final File[] matchingFileArray = new File[sa.length];
         for (int i = 0; i < sa.length; i++) {

@@ -36,7 +36,7 @@ public class SocketAppenderMessageLossTest {
 
     static final int TIMEOUT = 3000;
 
-    @Test  // (timeout = TIMEOUT)
+    @Test // (timeout = TIMEOUT)
     public void synchronousSocketAppender() throws Exception {
 
         final SocketAppender socketAppender = new SocketAppender();
@@ -125,7 +125,6 @@ public class SocketAppenderMessageLossTest {
         allMessagesReceivedLatch.await();
         loggerContext.stop();
         simpleSocketServer.close();
-
 
     }
 }

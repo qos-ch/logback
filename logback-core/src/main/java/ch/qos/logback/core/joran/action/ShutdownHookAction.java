@@ -27,7 +27,6 @@ import ch.qos.logback.core.model.ShutdownHookModel;
  */
 public class ShutdownHookAction extends BaseModelAction {
 
-
     @Override
     protected boolean validPreconditions(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
         return true;
@@ -42,8 +41,5 @@ public class ShutdownHookAction extends BaseModelAction {
 
         return shutdownHookModel;
     }
-
-
-
 
 }

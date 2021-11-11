@@ -15,7 +15,6 @@ package ch.qos.logback.classic.util;
 
 public class TestHelper {
 
-
     static public Throwable makeNestedException(final int level) {
         if (level == 0) {
             return new Exception("nesting level=" + level);

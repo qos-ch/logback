@@ -6,10 +6,8 @@ import org.junit.Test;
 
 public class LevelTest {
 
-
-
     @Test
-    public void smoke( ) {
+    public void smoke() {
         assertEquals(Level.TRACE, Level.toLevel("TRACE"));
         assertEquals(Level.DEBUG, Level.toLevel("DEBUG"));
         assertEquals(Level.INFO, Level.toLevel("INFO"));
@@ -18,7 +16,7 @@ public class LevelTest {
     }
 
     @Test
-    public void withSpaceSuffix( ) {
+    public void withSpaceSuffix() {
         assertEquals(Level.INFO, Level.toLevel("INFO "));
     }
 }

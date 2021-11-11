@@ -113,7 +113,7 @@ public class CyclicBufferTrackerSimulator {
         INSERT, END_OF_LIFE, REMOVE_STALE;
     }
 
-    class SimulationEvent {
+    static class SimulationEvent {
         final public String key;
         final public long timestamp;
         final EventType eventType;

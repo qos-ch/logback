@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.pattern;
 
-
 public class Converter123 extends DynamicConverter<Object> {
 
     @Override

@@ -217,9 +217,9 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
     @Override
     public void start() {
-        if (getPattern().equalsIgnoreCase(CLF_PATTERN_NAME) || getPattern().equalsIgnoreCase(CLF_PATTERN_NAME_2)) {
+        if (CLF_PATTERN_NAME.equalsIgnoreCase(getPattern()) || CLF_PATTERN_NAME_2.equalsIgnoreCase(getPattern())) {
             setPattern(CLF_PATTERN);
-        } else if (getPattern().equalsIgnoreCase(COMBINED_PATTERN_NAME)) {
+        } else if (COMBINED_PATTERN_NAME.equalsIgnoreCase(getPattern())) {
             setPattern(COMBINED_PATTERN);
         }
         super.start();

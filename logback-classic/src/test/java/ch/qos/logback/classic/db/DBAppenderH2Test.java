@@ -137,8 +137,8 @@ public class DBAppenderH2Test {
 
     @Test
     public void withNullArgument() throws SQLException {
-        final ILoggingEvent event = createLoggingEvent("Processing code {}; code type is {}; request date {}; record from date {}", new Object[] { 1, 2, new Date(),
-                null });
+        final ILoggingEvent event = createLoggingEvent("Processing code {}; code type is {}; request date {}; record from date {}",
+                        new Object[] { 1, 2, new Date(), null });
         appender.append(event);
 
         final Statement stmt = connectionSource.getConnection().createStatement();

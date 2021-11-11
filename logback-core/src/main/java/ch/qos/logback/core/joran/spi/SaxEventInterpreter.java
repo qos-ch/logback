@@ -114,7 +114,6 @@ public class SaxEventInterpreter {
         return elementPath.duplicate();
     }
 
-
     public void setInterpretationContextPropertiesMap(final Map<String, String> propertiesMap) {
         interpretationContext.setPropertiesMap(propertiesMap);
     }
@@ -125,7 +124,6 @@ public class SaxEventInterpreter {
 
     public void startDocument() {
     }
-
 
     public void startElement(final StartEvent se) {
         setDocumentLocator(se.getLocator());
@@ -227,7 +225,6 @@ public class SaxEventInterpreter {
     public void addImplicitAction(final Action ia) {
         implicitActions.add(ia);
     }
-
 
     /**
      * Return the list of applicable patterns for this

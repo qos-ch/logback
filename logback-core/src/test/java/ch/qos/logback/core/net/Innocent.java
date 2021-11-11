@@ -52,7 +52,7 @@ public class Innocent implements java.io.Serializable {
             return false;
         }
         final Innocent other = (Innocent) obj;
-        if (!Objects.equals(aString, other.aString) || (anInt != other.anInt) || !Objects.equals(anInteger, other.anInteger)) {
+        if (!Objects.equals(aString, other.aString) || anInt != other.anInt || !Objects.equals(anInteger, other.anInteger)) {
             return false;
         }
         return true;

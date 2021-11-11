@@ -153,7 +153,7 @@ public class LoggerTest {
         assertEquals(Level.INFO, a_b.getEffectiveLevel());
     }
 
-    class Inner {
+    static class Inner {
     }
 
     @Test

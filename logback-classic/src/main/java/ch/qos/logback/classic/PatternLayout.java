@@ -103,7 +103,6 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_MAP.put("p", LevelConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(LevelConverter.class.getName(), "level");
 
-
         DEFAULT_CONVERTER_MAP.put("t", ThreadConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("thread", ThreadConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(ThreadConverter.class.getName(), "thread");
@@ -162,7 +161,6 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
         DEFAULT_CONVERTER_MAP.put("kvp", KeyValuePairConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(KeyValuePairConverter.class.getName(), "kvp");
-
 
         DEFAULT_CONVERTER_MAP.put("property", PropertyConverter.class.getName());
 

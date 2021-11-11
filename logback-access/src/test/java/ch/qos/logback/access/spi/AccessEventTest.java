@@ -27,8 +27,8 @@ public class AccessEventTest {
     // See LOGBACK-1189
     @Test
     public void callingPrepareForDeferredProcessingShouldBeIdempotent() {
-        final String key = "key-"+diff;
-        final String val = "val-"+diff;
+        final String key = "key-" + diff;
+        final String val = "val-" + diff;
 
         final IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();
         final DummyRequest request = (DummyRequest) ae.getRequest();
@@ -37,16 +37,15 @@ public class AccessEventTest {
 
         headersMap.put(key, val);
         request.setAttribute(key, val);
-        parametersMap.put(key, new String[] {val});
+        parametersMap.put(key, new String[] { val });
         ae.prepareForDeferredProcessing();
         assertEquals(val, ae.getAttribute(key));
         assertEquals(val, ae.getRequestHeader(key));
         assertEquals(val, ae.getRequestParameter(key)[0]);
 
-
         request.setAttribute(key, "change");
         headersMap.put(key, "change");
-        parametersMap.put(key, new String[] {"change"});
+        parametersMap.put(key, new String[] { "change" });
         ae.prepareForDeferredProcessing();
         assertEquals(val, ae.getAttribute(key));
         assertEquals(val, ae.getRequestHeader(key));

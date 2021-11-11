@@ -23,8 +23,7 @@ import ch.qos.logback.core.model.Model;
 public class AppenderRefAction extends BaseModelAction {
 
     @Override
-    protected boolean validPreconditions(final InterpretationContext intercon, final String name,
-                    final Attributes attributes) {
+    protected boolean validPreconditions(final InterpretationContext intercon, final String name, final Attributes attributes) {
         final PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
         pv.validateRefAttribute();
         return pv.isValid();

@@ -35,7 +35,6 @@ public class PropertyModelHandler extends ModelHandlerBase {
         return PropertyModel.class;
     }
 
-
     @Override
     public void handle(final InterpretationContext interpretationContext, final Model model) {
 
@@ -93,7 +92,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         final String value = propertyModel.getValue();
         final String resource = propertyModel.getResource();
 
-        return !OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(name) && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(resource);
+        return !OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(name) && OptionHelper.isNullOrEmpty(value)
+                        && OptionHelper.isNullOrEmpty(resource);
     }
 
     boolean checkResourceAttributeSanity(final PropertyModel propertyModel) {
@@ -102,7 +102,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         final String value = propertyModel.getValue();
         final String resource = propertyModel.getResource();
 
-        return !OptionHelper.isNullOrEmpty(resource) && OptionHelper.isNullOrEmpty(name) && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file);
+        return !OptionHelper.isNullOrEmpty(resource) && OptionHelper.isNullOrEmpty(name) && OptionHelper.isNullOrEmpty(value)
+                        && OptionHelper.isNullOrEmpty(file);
     }
 
     boolean checkValueNameAttributesSanity(final PropertyModel propertyModel) {
@@ -110,7 +111,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         final String name = propertyModel.getName();
         final String value = propertyModel.getValue();
         final String resource = propertyModel.getResource();
-        return !OptionHelper.isNullOrEmpty(name) && !OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource);
+        return !OptionHelper.isNullOrEmpty(name) && !OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file)
+                        && OptionHelper.isNullOrEmpty(resource);
     }
 
 }

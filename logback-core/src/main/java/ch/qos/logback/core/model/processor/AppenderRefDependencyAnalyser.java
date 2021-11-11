@@ -23,7 +23,6 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
         final String ref = interpContext.subst(appenderRefModel.getRef());
 
-
         final Model dependentModel = interpContext.peekModel();
         interpContext.addDependency(dependentModel, ref);
     }

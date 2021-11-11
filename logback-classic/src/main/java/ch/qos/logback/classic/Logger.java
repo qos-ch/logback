@@ -355,8 +355,8 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
     Logger createChildByName(final String childName) {
         final int i_index = LoggerNameUtil.getSeparatorIndexOf(childName, name.length() + 1);
         if (i_index != -1) {
-            throw new IllegalArgumentException("For logger [" + name + "] child name [" + childName
-                            + " passed as parameter, may not include '.' after index" + (name.length() + 1));
+            throw new IllegalArgumentException("For logger [" + name + "] child name [" + childName + " passed as parameter, may not include '.' after index"
+                            + (name.length() + 1));
         }
 
         if (childrenList == null) {
@@ -865,20 +865,19 @@ public final class Logger implements org.slf4j.Logger, LocationAwareLogger, Appe
         // slf4j-jdk-platform-logging
 
         String callerBoundary = slf4jEvent.getCallerBoundary();
-        if(callerBoundary==null) {
+        if (callerBoundary == null) {
             callerBoundary = FQCN;
         }
 
-        final LoggingEvent lle = new LoggingEvent(callerBoundary, this, logbackLevel,  slf4jEvent.getMessage(), slf4jEvent.getThrowable(),
+        final LoggingEvent lle = new LoggingEvent(callerBoundary, this, logbackLevel, slf4jEvent.getMessage(), slf4jEvent.getThrowable(),
                         slf4jEvent.getArgumentArray());
         final List<Marker> markers = slf4jEvent.getMarkers();
 
-        if(markers != null) {
+        if (markers != null) {
             markers.forEach(m -> lle.addMarker(m));
         }
 
         lle.setKeyValuePairs(slf4jEvent.getKeyValuePairs());
-
 
         // Note that at this point, any calls made with a logger disabled
         // for a given level, will be already filtered out/in. TurboFilters cannot

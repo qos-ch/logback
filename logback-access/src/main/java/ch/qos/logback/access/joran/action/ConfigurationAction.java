@@ -29,6 +29,4 @@ public class ConfigurationAction extends BaseModelAction {
         return configurationModel;
     }
 
-
-
 }

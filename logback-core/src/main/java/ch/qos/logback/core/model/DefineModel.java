@@ -16,5 +16,4 @@ public class DefineModel extends NamedComponentModel {
         this.scopeStr = scopeStr;
     }
 
-
 }

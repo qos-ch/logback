@@ -214,7 +214,7 @@ public class SimpleRuleStoreTest {
         }
     }
 
-    class XAction extends Action {
+    static class XAction extends Action {
         int id = 0;
 
         XAction() {
@@ -241,7 +241,7 @@ public class SimpleRuleStoreTest {
         }
     }
 
-    class YAction extends Action {
+    static class YAction extends Action {
         @Override
         public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
         }
@@ -254,7 +254,7 @@ public class SimpleRuleStoreTest {
         }
     }
 
-    class ZAction extends Action {
+    static class ZAction extends Action {
         @Override
         public void begin(final InterpretationContext ec, final String name, final Attributes attributes) {
         }

@@ -52,7 +52,7 @@ public class AddAction extends Action {
                 ic.addError(errMsg);
                 throw new IllegalArgumentException(errMsg);
             }
-            result = ((Integer) o1);
+            result = (Integer) o1;
         } catch (final EmptyStackException ese) {
             ic.addError("Expecting an integer on the execution stack.");
             throw ese;

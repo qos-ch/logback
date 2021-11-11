@@ -37,7 +37,7 @@ public class WithLayoutListAppender extends AppenderBase<ILoggingEvent> {
 
     @Override
     public void start() {
-        if(pattern == null) {
+        if (pattern == null) {
             addError("null pattern disallowed");
             return;
         }

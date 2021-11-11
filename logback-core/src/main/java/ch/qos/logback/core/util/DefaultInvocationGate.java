@@ -28,7 +28,7 @@ public class DefaultInvocationGate implements InvocationGate {
     static final int DEFAULT_MASK = 0xF;
 
     private volatile long mask = DEFAULT_MASK;
-    //private volatile long lastMaskCheck = System.currentTimeMillis();
+    // private volatile long lastMaskCheck = System.currentTimeMillis();
 
     // IMPORTANT: This field can be updated by multiple threads. It follows that
     // its values may *not* be incremented sequentially. However, we don't care
@@ -44,12 +44,11 @@ public class DefaultInvocationGate implements InvocationGate {
     // then the mask should be decreased
     private static final long MASK_DECREASE_THRESHOLD = MASK_INCREASE_THRESHOLD * 8;
 
-
     public DefaultInvocationGate() {
         this(MASK_INCREASE_THRESHOLD, MASK_DECREASE_THRESHOLD, System.currentTimeMillis());
     }
 
-    public  DefaultInvocationGate(final long minDelayThreshold, final long maxDelayThreshold, final long currentTime) {
+    public DefaultInvocationGate(final long minDelayThreshold, final long maxDelayThreshold, final long currentTime) {
         this.minDelayThreshold = minDelayThreshold;
         this.maxDelayThreshold = maxDelayThreshold;
         lowerLimitForMaskMatch = currentTime + minDelayThreshold;
@@ -88,7 +87,6 @@ public class DefaultInvocationGate implements InvocationGate {
         lowerLimitForMaskMatch = currentTime + minDelayThreshold;
         upperLimitForNoMaskMatch = currentTime + maxDelayThreshold;
     }
-
 
     // package private, for testing purposes only
     long getMask() {

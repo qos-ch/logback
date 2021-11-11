@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  */
 public class BeanUtil {
 
-    //public static final BeanUtil SINGLETON = new BeanUtil();
+    // public static final BeanUtil SINGLETON = new BeanUtil();
 
     public static final String PREFIX_GETTER_IS = "is";
     public static final String PREFIX_GETTER_GET = "get";

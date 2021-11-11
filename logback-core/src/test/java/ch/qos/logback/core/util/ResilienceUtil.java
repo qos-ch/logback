@@ -23,7 +23,8 @@ import java.util.regex.Pattern;
 
 public class ResilienceUtil {
 
-    static public void verify(final String logfile, final String regexp, final long totalSteps, final double successRatioLowerBound) throws NumberFormatException, IOException {
+    static public void verify(final String logfile, final String regexp, final long totalSteps, final double successRatioLowerBound)
+                    throws NumberFormatException, IOException {
         final FileReader fr = new FileReader(logfile);
         final BufferedReader br = new BufferedReader(fr);
         final Pattern p = Pattern.compile(regexp);

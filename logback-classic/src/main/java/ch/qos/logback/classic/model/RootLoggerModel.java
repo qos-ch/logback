@@ -10,6 +10,7 @@ public class RootLoggerModel extends Model {
     public String getLevel() {
         return level;
     }
+
     public void setLevel(final String level) {
         this.level = level;
     }

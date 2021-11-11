@@ -132,8 +132,8 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
                         addError("Exception thrown for evaluator named [" + ee.getName() + "]", eex);
                     } else if (errorCount == CoreConstants.MAX_ERROR_COUNT) {
                         final ErrorStatus errorStatus = new ErrorStatus("Exception thrown for evaluator named [" + ee.getName() + "].", this, eex);
-                        errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors."
-                                        + "We don't want the StatusManager to get flooded.", this));
+                        errorStatus.add(new ErrorStatus(
+                                        "This was the last warning about this evaluator's errors." + "We don't want the StatusManager to get flooded.", this));
                         addStatus(errorStatus);
                     }
                 }
@@ -180,7 +180,7 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
 
     private void subjoinExceptionMessage(final StringBuilder buf, final IThrowableProxy tp) {
-        if(tp.isCyclic()) {
+        if (tp.isCyclic()) {
             buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage()).append(']');
         } else {
             buf.append(tp.getClassName()).append(": ").append(tp.getMessage());

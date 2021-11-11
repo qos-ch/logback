@@ -133,10 +133,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
 
         defaultProcessor.addAnalyser(LoggerModel.class, new RefContainerDependencyAnalyser(context, LoggerModel.class));
-        defaultProcessor.addAnalyser(RootLoggerModel.class,
-                        new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
-        defaultProcessor.addAnalyser(AppenderModel.class,
-                        new RefContainerDependencyAnalyser(context, AppenderModel.class));
+        defaultProcessor.addAnalyser(RootLoggerModel.class, new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
+        defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
         defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
 
         injectModelFilters(defaultProcessor);
@@ -146,26 +144,22 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
     private void injectModelFilters(final DefaultProcessor defaultProcessor) {
         @SuppressWarnings("unchecked")
-        final
-        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
-                DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
+        final Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class, DefineModel.class, PropertyModel.class,
+                TimestampModel.class, ParamModel.class };
 
         @SuppressWarnings("unchecked")
-        final
-        Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
+        final Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
 
         @SuppressWarnings("unchecked")
-        final
-        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
-                EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
-                EventEvaluatorModel.class, IncludeModel.class, };
+        final Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class, EventEvaluatorModel.class,
+                LoggerContextListenerModel.class, ShutdownHookModel.class, EventEvaluatorModel.class, IncludeModel.class, };
 
-        //		@SuppressWarnings("unchecked")
-        //		Class<? extends Model>[] secondPhaseModelClasses = new Class[] {
-        //				LoggerModel.class,
-        //				RootLoggerModel.class,
-        //				AppenderModel.class,
-        //				AppenderRefModel.class };
+        // @SuppressWarnings("unchecked")
+        // Class<? extends Model>[] secondPhaseModelClasses = new Class[] {
+        // LoggerModel.class,
+        // RootLoggerModel.class,
+        // AppenderModel.class,
+        // AppenderRefModel.class };
 
         // MOTE: AppenderModelHandler is delayed to second phase
 
@@ -190,29 +184,29 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
     }
 
-    //	protected void miniBuildInterpreter() {
-    //		RuleStore rs = new SimpleRuleStore(context);
-    //		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
-    //		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
-    //		interpretationContext.setContext(context);
-    //		Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-    //		omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
-    //		omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
-    //	}
+    // protected void miniBuildInterpreter() {
+    // RuleStore rs = new SimpleRuleStore(context);
+    // this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
+    // InterpretationContext interpretationContext = interpreter.getInterpretationContext();
+    // interpretationContext.setContext(context);
+    // Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+    // omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
+    // omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+    // }
 
-    //	public void doT() throws JoranException {
-    //		miniBuildInterpreter();
-    //		Model top;
-    //		try {
-    //			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
-    //			top = (Model) ois.readObject();
-    //			ois.close();
-    //			interpreter.getInterpretationContext().pushModel(top);
-    //			processModel(top);
-    //		} catch (IOException | ClassNotFoundException e1) {
-    //			e1.printStackTrace();
-    //		}
+    // public void doT() throws JoranException {
+    // miniBuildInterpreter();
+    // Model top;
+    // try {
+    // ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
+    // top = (Model) ois.readObject();
+    // ois.close();
+    // interpreter.getInterpretationContext().pushModel(top);
+    // processModel(top);
+    // } catch (IOException | ClassNotFoundException e1) {
+    // e1.printStackTrace();
+    // }
     //
-    //	}
+    // }
 
 }

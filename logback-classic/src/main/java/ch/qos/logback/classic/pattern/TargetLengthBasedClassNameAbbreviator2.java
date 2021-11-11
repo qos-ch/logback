@@ -49,16 +49,16 @@ public class TargetLengthBasedClassNameAbbreviator2 implements Abbreviator {
         if (dotCount == 0) {
             return fqClassName;
         }
-        //printArray("dotArray: ", dotIndexesArray);
+        // printArray("dotArray: ", dotIndexesArray);
         computeLengthArray(fqClassName, dotIndexesArray, lengthArray, dotCount);
-        //printArray("lengthArray: ", lengthArray);
+        // printArray("lengthArray: ", lengthArray);
         for (int i = 0; i <= dotCount; i++) {
             if (i == 0) {
                 buf.append(fqClassName.substring(0, lengthArray[i] - 1));
             } else {
                 buf.append(fqClassName.substring(dotIndexesArray[i - 1], dotIndexesArray[i - 1] + lengthArray[i]));
             }
-            //System.out.println("i=" + i + ", buf=" + buf);
+            // System.out.println("i=" + i + ", buf=" + buf);
         }
 
         return buf.toString();
@@ -91,28 +91,27 @@ public class TargetLengthBasedClassNameAbbreviator2 implements Abbreviator {
 
     void computeLengthArray(final String className, final int[] dotArray, final int[] lengthArray, final int dotCount) {
         int toTrim = className.length() - targetLength;
-        //System.out.println("dotCount=" + dotCount);
+        // System.out.println("dotCount=" + dotCount);
 
         int len;
         for (int i = 0; i < dotCount; i++) {
-            //System.out.println("i=" + i + ", toTrim = " + toTrim);
-
+            // System.out.println("i=" + i + ", toTrim = " + toTrim);
 
             // if i==0, previousDotPosition = -1, otherwise dotArray[i - 1]
             final int previousDotPosition = i == 0 ? -1 : dotArray[i - 1];
-            //System.out.println("i="+i+ " previousDotPosition="+previousDotPosition);
+            // System.out.println("i="+i+ " previousDotPosition="+previousDotPosition);
 
-            // number of characters within the segment, i.e/ within the previous dot position and the current dot position
+            // number of characters within the segment, i.e/ within the previous dot position and the current dot
+            // position
             final int charactersInSegment = dotArray[i] - previousDotPosition - 1;
-            //System.out.println("i=" + i + ", charactersInSegment = " + charactersInSegment);
-
+            // System.out.println("i=" + i + ", charactersInSegment = " + charactersInSegment);
 
             if (toTrim > 0) {
                 len = charactersInSegment < 1 ? charactersInSegment : 1;
             } else {
                 len = charactersInSegment;
             }
-            //System.out.println("i=" + i + ", len = " + len);
+            // System.out.println("i=" + i + ", len = " + len);
 
             toTrim -= charactersInSegment - len;
             lengthArray[i] = len + 1;

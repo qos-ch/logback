@@ -243,7 +243,8 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
             return false;
         }
         final LoggingEventVO other = (LoggingEventVO) obj;
-        if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName) || timeStamp != other.timeStamp) {
+        if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName)
+                        || timeStamp != other.timeStamp) {
             return false;
         }
 
@@ -252,6 +253,5 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         }
         return true;
     }
-
 
 }

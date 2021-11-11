@@ -76,7 +76,6 @@ public class ControlLogger extends LegacyAbstractLogger {
         return name.hashCode();
     }
 
-
     @Override
     public final void trace(final String o) {
         if (getEffectiveLevel().levelInt <= Level.TRACE_INT) {
@@ -91,16 +90,14 @@ public class ControlLogger extends LegacyAbstractLogger {
         }
     }
 
-
-
     @Override
     protected String getFullyQualifiedCallerName() {
         return ControlLogger.class.getName();
     }
 
     @Override
-    protected void handleNormalizedLoggingCall(final org.slf4j.event.Level level, final Marker marker, final String msg,
-                    final Object[] arguments, final Throwable throwable) {
+    protected void handleNormalizedLoggingCall(final org.slf4j.event.Level level, final Marker marker, final String msg, final Object[] arguments,
+                    final Throwable throwable) {
         // TODO Auto-generated method stub
 
     }

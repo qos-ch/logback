@@ -246,7 +246,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         expectedFileAndDirCount(9, expectedDirMin, expectDirMax);
     }
 
-
     @Test
     public void dailySizeBasedRolloverWithoutCap() {
         final SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<>();
@@ -334,7 +333,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         rfa.stop();
     }
 
-
     // LOGBACK-1562
     @Test
     public void cleanHistoryOnStartWithHourPattern() {
@@ -388,8 +386,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         }
         checkFileCount(expectedCountWithoutFolders(maxHistory));
     }
-
-
 
     int expectedCountWithoutFolders(final int maxHistory) {
         return maxHistory + 1;
@@ -452,7 +448,6 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
             waitForJobsToComplete();
         }
 
-
         try {
             Thread.sleep(100);
         } catch (final InterruptedException e) {
@@ -461,7 +456,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         }
         rfa.stop();
 
-        //System.out.println("Current time at end of loop: "+new Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
+        // System.out.println("Current time at end of loop: "+new
+        // Date(tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime()));
         return tbrp.timeBasedFileNamingAndTriggeringPolicy.getCurrentTime();
     }
 
@@ -503,7 +499,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         findAllDirsOrStringContainsFilesRecursively(dir, fileList, "clean");
         final int fileListSize = fileList.size();
 
-        assertTrue("file list size "+ fileListSize+", expectedCount="+expectedCount, fileListSize <= expectedCount);
+        assertTrue("file list size " + fileListSize + ", expectedCount=" + expectedCount, fileListSize <= expectedCount);
     }
 
     int expectedCountWithoutFoldersWithInactivity(final int maxHistory, final int totalPeriods, final int endOfInactivity) {

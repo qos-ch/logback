@@ -69,7 +69,6 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      */
     boolean hasCallerData();
 
-
     /**
      * Returns the first marker is the marker list or null if no markers are available.
      *
@@ -83,7 +82,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
     @Deprecated
     default Marker getMarker() {
         final List<Marker> markers = getMarkerList();
-        if(markers == null || markers.isEmpty()) {
+        if (markers == null || markers.isEmpty()) {
             return null;
         }
 
@@ -92,7 +91,6 @@ public interface ILoggingEvent extends DeferredProcessingAware {
         // to preserve binary compatibility.
         return markers.get(0);
     }
-
 
     /**
      * Since SLF4J 2.0.0, the slf4j logging API assumes the possibility of multiple

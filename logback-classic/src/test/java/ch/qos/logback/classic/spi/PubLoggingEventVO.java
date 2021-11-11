@@ -218,15 +218,12 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
             return false;
         }
         final PubLoggingEventVO other = (PubLoggingEventVO) obj;
-        if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName) || (timeStamp != other.timeStamp)) {
+        if (!Objects.equals(message, other.message) || !Objects.equals(loggerName, other.loggerName) || !Objects.equals(threadName, other.threadName)
+                        || timeStamp != other.timeStamp) {
             return false;
         }
 
-        if (!Objects.equals(markerList, other.markerList)) {
-            return false;
-        }
-
-        if (!Objects.equals(mdcPropertyMap, other.mdcPropertyMap)) {
+        if (!Objects.equals(markerList, other.markerList) || !Objects.equals(mdcPropertyMap, other.mdcPropertyMap)) {
             return false;
         }
         return true;
@@ -246,7 +243,5 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         sb.append(getFormattedMessage());
         return sb.toString();
     }
-
-
 
 }

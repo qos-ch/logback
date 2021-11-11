@@ -11,7 +11,7 @@ import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class TimestampModelHandler  extends ModelHandlerBase {
+public class TimestampModelHandler extends ModelHandlerBase {
 
     boolean inError = false;
 
@@ -22,7 +22,6 @@ public class TimestampModelHandler  extends ModelHandlerBase {
     static public ModelHandlerBase makeInstance(final Context context, final InterpretationContext ic) {
         return new TimestampModelHandler(context);
     }
-
 
     @Override
     protected Class<TimestampModel> getSupportedModelClass() {

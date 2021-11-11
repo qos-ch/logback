@@ -26,7 +26,6 @@ import java.net.URL;
 
 import org.junit.Test;
 
-
 /**
  * Unit tests for {@link LocationUtil}.
  *

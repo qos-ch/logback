@@ -2,7 +2,6 @@ package ch.qos.logback.core.model;
 
 public class PropertyModel extends NamedModel {
 
-
     /**
      *
      */
@@ -12,7 +11,6 @@ public class PropertyModel extends NamedModel {
 
     String file;
     String resource;
-
 
     public String getValue() {
         return value;

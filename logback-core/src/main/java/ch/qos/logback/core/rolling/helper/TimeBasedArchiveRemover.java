@@ -47,6 +47,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     int callCount = 0;
+
     @Override
     public void clean(final Date now) {
 
@@ -111,7 +112,6 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
         addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
     }
-
 
     protected void descendingSort(final File[] matchingFileArray, final Date date) {
         // nothing to do in super class

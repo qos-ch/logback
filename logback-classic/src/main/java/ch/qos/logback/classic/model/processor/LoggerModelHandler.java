@@ -74,8 +74,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
         final Object o = intercon.peekObject();
         if (o != logger) {
             final LoggerModel loggerModel = (LoggerModel) model;
-            addWarn("The object [" + o + "] on the top the of the stack is not the expected logger named "
-                            + loggerModel.getName());
+            addWarn("The object [" + o + "] on the top the of the stack is not the expected logger named " + loggerModel.getName());
         } else {
             intercon.popObject();
         }

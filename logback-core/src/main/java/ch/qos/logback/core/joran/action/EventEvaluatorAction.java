@@ -39,5 +39,4 @@ public class EventEvaluatorAction extends BaseModelAction {
         return eem;
     }
 
-
 }

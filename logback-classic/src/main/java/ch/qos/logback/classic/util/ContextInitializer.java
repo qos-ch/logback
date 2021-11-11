@@ -153,8 +153,8 @@ public class ContextInitializer {
                     c.setContext(loggerContext);
                     c.configure(loggerContext);
                 } catch (final Exception e) {
-                    throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader", c != null ? c.getClass()
-                                    .getCanonicalName() : "null"), e);
+                    throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader",
+                                    c != null ? c.getClass().getCanonicalName() : "null"), e);
                 }
             } else {
                 final BasicConfigurator basicConfigurator = new BasicConfigurator();

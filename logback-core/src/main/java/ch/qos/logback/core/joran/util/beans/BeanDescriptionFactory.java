@@ -34,7 +34,7 @@ public class BeanDescriptionFactory extends ContextAwareBase {
         final Map<String, Method> propertyNameToAdder = new HashMap<>();
         final Method[] methods = clazz.getMethods();
         for (final Method method : methods) {
-            if(method.isBridge()) {
+            if (method.isBridge()) {
                 // we can safely ignore bridge methods
                 continue;
             }
@@ -45,21 +45,24 @@ public class BeanDescriptionFactory extends ContextAwareBase {
                     if (oldGetter.getName().startsWith(BeanUtil.PREFIX_GETTER_IS)) {
                         propertyNameToGetter.put(propertyName, oldGetter);
                     }
-                    final String message = String.format("Class '%s' contains multiple getters for the same property '%s'.", clazz.getCanonicalName(), propertyName);
+                    final String message = String.format("Class '%s' contains multiple getters for the same property '%s'.", clazz.getCanonicalName(),
+                                    propertyName);
                     addWarn(message);
                 }
             } else if (BeanUtil.isSetter(method)) {
                 final String propertyName = BeanUtil.getPropertyName(method);
                 final Method oldSetter = propertyNameToSetter.put(propertyName, method);
                 if (oldSetter != null) {
-                    final String message = String.format("Class '%s' contains multiple setters for the same property '%s'.", clazz.getCanonicalName(), propertyName);
+                    final String message = String.format("Class '%s' contains multiple setters for the same property '%s'.", clazz.getCanonicalName(),
+                                    propertyName);
                     addWarn(message);
                 }
             } else if (BeanUtil.isAdder(method)) {
                 final String propertyName = BeanUtil.getPropertyName(method);
                 final Method oldAdder = propertyNameToAdder.put(propertyName, method);
                 if (oldAdder != null) {
-                    final String message = String.format("Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(), propertyName);
+                    final String message = String.format("Class '%s' contains multiple adders for the same property '%s'.", clazz.getCanonicalName(),
+                                    propertyName);
                     addWarn(message);
                 }
             }

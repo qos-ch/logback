@@ -8,7 +8,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.BasicContextListener.UpdateType;
 
-public class ListContextListener implements LoggerContextListener  {
+public class ListContextListener implements LoggerContextListener {
 
     List<BasicContextListener.UpdateType> updateList = new ArrayList<>();
 

@@ -24,14 +24,13 @@ public abstract class BaseModelAction extends Action {
 
         currentModel = buildCurrentModel(intercon, name, attributes);
         currentModel.setTag(name);
-        if(!intercon.isModelStackEmpty()) {
+        if (!intercon.isModelStackEmpty()) {
             parentModel = intercon.peekModel();
         }
         final int lineNumber = getLineNumber(intercon);
         currentModel.setLineNumber(lineNumber);
         intercon.pushModel(currentModel);
     }
-
 
     abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
 
@@ -56,7 +55,7 @@ public abstract class BaseModelAction extends Action {
 
     @Override
     public void end(final InterpretationContext interpretationContext, final String name) throws ActionException {
-        if(inError) {
+        if (inError) {
             return;
         }
 
@@ -68,7 +67,7 @@ public abstract class BaseModelAction extends Action {
         }
 
         // do not pop nor add to parent if there is no parent
-        if(parentModel != null) {
+        if (parentModel != null) {
             parentModel.addSubModel(currentModel);
             interpretationContext.popModel();
         }

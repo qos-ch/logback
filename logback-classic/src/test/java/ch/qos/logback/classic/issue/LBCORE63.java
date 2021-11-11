@@ -78,7 +78,7 @@ public class LBCORE63 extends Thread {
         }
     }
 
-    class Task implements Runnable {
+    static class Task implements Runnable {
         private final Logger logger = LoggerFactory.getLogger(Task.class);
         // private final Logger logger_main = LoggerFactory.getLogger(LBCORE63.class);
         final String name;

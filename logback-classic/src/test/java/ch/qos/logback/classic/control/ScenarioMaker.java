@@ -70,7 +70,7 @@ public class ScenarioMaker {
             } else {
                 for (int i = 0; i < randomChildrenCount; i++) {
                     String childName;
-                    if (loggerName.equals("")) {
+                    if ("".equals(loggerName)) {
                         childName = ScenarioRandomUtil.randomId();
                     } else {
                         childName = loggerName + CoreConstants.DOT + ScenarioRandomUtil.randomId();

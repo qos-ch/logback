@@ -29,7 +29,6 @@ public class PropertyAction extends BaseModelAction {
 
     static final String RESOURCE_ATTRIBUTE = "resource";
 
-
     @Override
     protected boolean validPreconditions(final InterpretationContext interpretationContext, final String localName, final Attributes attributes) {
         if ("substitutionProperty".equals(localName)) {
@@ -48,6 +47,5 @@ public class PropertyAction extends BaseModelAction {
         propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
         return propertyModel;
     }
-
 
 }

@@ -15,6 +15,7 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StatusPrinter;
+
 @Ignore
 public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTests {
 
@@ -67,14 +68,14 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
 
         currentTime = FRI_2016_05_13_T_170415_GMT;
 
-        final Date d = new Date(FRI_2016_05_13_T_170415_GMT); //WED_2016_03_23_T_230705_CET);
+        final Date d = new Date(FRI_2016_05_13_T_170415_GMT); // WED_2016_03_23_T_230705_CET);
         System.out.println(d);
         System.out.print(d.getTime());
 
         final int ticksPerHour = 100;
         final int hours = 7;
-        final int totalTicks = ticksPerHour*hours;
-        final long singleTickDuration = CoreConstants.MILLIS_IN_ONE_HOUR/ticksPerHour;
+        final int totalTicks = ticksPerHour * hours;
+        final long singleTickDuration = CoreConstants.MILLIS_IN_ONE_HOUR / ticksPerHour;
 
         final String fileNamePatternStr = randomOutputDir + patternPrefix + "-%d{" + DATE_PATTERN_BY_DAY + ", GMT}" + compressionSuffix;
         initTRBP(rfa, tbrp, fileNamePatternStr, currentTime);
@@ -85,7 +86,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
         for (int i = 0; i < totalTicks; i++) {
             final StringBuilder sb = new StringBuilder(1000);
             sb.append("Hello");
-            for(int j = 0; j < 100; j++) {
+            for (int j = 0; j < 100; j++) {
                 sb.append(RandomUtil.getPositiveInt());
             }
             sb.append(i);
@@ -95,9 +96,6 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
             incCurrentTime(singleTickDuration);
             tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
         }
-
-
-
 
         // String nameOfExpectedZipFile = randomOutputDir + patternPrefix+"-2016-05-13.zip";;
 

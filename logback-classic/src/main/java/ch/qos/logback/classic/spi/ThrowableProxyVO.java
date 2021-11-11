@@ -29,8 +29,6 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     private IThrowableProxy[] suppressed;
     private boolean cyclic;
 
-
-
     @Override
     public String getMessage() {
         return message;
@@ -61,7 +59,6 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         return suppressed;
     }
 
-
     @Override
     public boolean isCyclic() {
         return cyclic;
@@ -84,7 +81,8 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         }
         final ThrowableProxyVO other = (ThrowableProxyVO) obj;
 
-        if (!Objects.equals(className, other.className) || !Arrays.equals(stackTraceElementProxyArray, other.stackTraceElementProxyArray) || !Arrays.equals(suppressed, other.suppressed) || !Objects.equals(cause, other.cause)) {
+        if (!Objects.equals(className, other.className) || !Arrays.equals(stackTraceElementProxyArray, other.stackTraceElementProxyArray)
+                        || !Arrays.equals(suppressed, other.suppressed) || !Objects.equals(cause, other.cause)) {
             return false;
         }
 

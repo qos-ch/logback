@@ -55,7 +55,6 @@ public class FileNamePattern extends ContextAwareBase {
         ConverterUtil.startConverters(headTokenConverter);
     }
 
-
     void parse() {
         try {
             // http://jira.qos.ch/browse/LOGBACK-197
@@ -89,7 +88,6 @@ public class FileNamePattern extends ContextAwareBase {
         return prime * result + (pattern == null ? 0 : pattern.hashCode());
     }
 
-
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -104,7 +102,6 @@ public class FileNamePattern extends ContextAwareBase {
         }
         return true;
     }
-
 
     public DateTokenConverter<Object> getPrimaryDateTokenConverter() {
         Converter<Object> p = headTokenConverter;
@@ -185,7 +182,6 @@ public class FileNamePattern extends ContextAwareBase {
     public String getPattern() {
         return pattern;
     }
-
 
     /**
      * Given date, convert this instance to a regular expression.

@@ -33,8 +33,7 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 
         if (!(o instanceof AppenderAttachable)) {
             inError = true;
-            final String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near "
-                            + model.idString();
+            final String errMsg = "Could not find an AppenderAttachable at the top of execution stack. Near " + model.idString();
             addError(errMsg);
             return;
         }
@@ -42,22 +41,22 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
         final AppenderRefModel appenderRefModel = (AppenderRefModel) model;
         final AppenderAttachable<?> appenderAttachable = (AppenderAttachable<?>) o;
 
-        attachRefencedAppenders(interpContext, appenderRefModel,appenderAttachable);
+        attachRefencedAppenders(interpContext, appenderRefModel, appenderAttachable);
 
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    void attachRefencedAppenders(final InterpretationContext interpContext, final AppenderRefModel appenderRefModel, final AppenderAttachable<?> appenderAttachable) {
+    void attachRefencedAppenders(final InterpretationContext interpContext, final AppenderRefModel appenderRefModel,
+                    final AppenderAttachable<?> appenderAttachable) {
         final String appenderName = interpContext.subst(appenderRefModel.getRef());
 
-        final Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap()
-                        .get(JoranConstants.APPENDER_BAG);
+        final Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap().get(JoranConstants.APPENDER_BAG);
 
         final Appender appender = appenderBag.get(appenderName);
         if (appender == null) {
             addError("Failed to find appender named [" + appenderName + "]");
         } else {
-            addInfo("Attaching appender named [" + appenderName + "] to " +appenderAttachable );
+            addInfo("Attaching appender named [" + appenderName + "] to " + appenderAttachable);
             appenderAttachable.addAppender(appender);
         }
 

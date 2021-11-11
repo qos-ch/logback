@@ -46,8 +46,7 @@ public class EvaluatorJoranTest {
         jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleEvaluator.xml");
 
         @SuppressWarnings("unchecked")
-        final
-        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+        final Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
         assertNotNull(evalMap);
         final JaninoEventEvaluator evaluator = (JaninoEventEvaluator) evalMap.get("msgEval");
         assertNotNull(evaluator);
@@ -69,8 +68,7 @@ public class EvaluatorJoranTest {
 
         jc.doConfigure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ignore.xml");
         @SuppressWarnings("unchecked")
-        final
-        Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
+        final Map<String, EventEvaluator<?>> evalMap = (Map<String, EventEvaluator<?>>) loggerContext.getObject(CoreConstants.EVALUATOR_MAP);
         assertNotNull(evalMap);
 
         final Logger logger = loggerContext.getLogger("xx");

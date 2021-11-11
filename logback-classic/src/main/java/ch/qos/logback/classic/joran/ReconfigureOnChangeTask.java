@@ -20,14 +20,11 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
     static final String RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION = "Re-registering previous fallback configuration once more as a fallback configuration point";
     static final String FALLING_BACK_TO_SAFE_CONFIGURATION = "Given previous errors, falling back to previously registered safe configuration.";
 
-
-
     long birthdate = System.currentTimeMillis();
     List<ReconfigureOnChangeTaskListener> listeners;
 
-
     void addListener(final ReconfigureOnChangeTaskListener listener) {
-        if(listeners==null) {
+        if (listeners == null) {
             listeners = new ArrayList<>();
         }
         listeners.add(listener);
@@ -69,32 +66,31 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
     }
 
     private void fireEnteredRunMethod() {
-        if(listeners == null) {
+        if (listeners == null) {
             return;
         }
 
-        for(final ReconfigureOnChangeTaskListener listener: listeners) {
+        for (final ReconfigureOnChangeTaskListener listener : listeners) {
             listener.enteredRunMethod();
         }
     }
 
     private void fireChangeDetected() {
-        if(listeners == null) {
+        if (listeners == null) {
             return;
         }
 
-        for(final ReconfigureOnChangeTaskListener listener: listeners) {
+        for (final ReconfigureOnChangeTaskListener listener : listeners) {
             listener.changeDetected();
         }
     }
 
-
     private void fireDoneReconfiguring() {
-        if(listeners == null) {
+        if (listeners == null) {
             return;
         }
 
-        for(final ReconfigureOnChangeTaskListener listener: listeners) {
+        for (final ReconfigureOnChangeTaskListener listener : listeners) {
             listener.doneReconfiguring();
         }
     }

@@ -18,6 +18,4 @@ public class LevelModel extends Model {
         this.value = value;
     }
 
-
-
 }

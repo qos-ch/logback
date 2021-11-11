@@ -108,7 +108,6 @@ public final class Level implements java.io.Serializable {
         return levelInt;
     }
 
-
     static public Level convertAnSLF4JLevel(final org.slf4j.event.Level slf4jLevel) {
         final int levelInt = slf4jLevel.toInt();
         return fromLocationAwareLoggerInteger(levelInt);
@@ -211,25 +210,25 @@ public final class Level implements java.io.Serializable {
         // see LOGBACK-1288
         final String in = sArg.trim();
 
-        if (in.equalsIgnoreCase("ALL")) {
+        if ("ALL".equalsIgnoreCase(in)) {
             return Level.ALL;
         }
-        if (in.equalsIgnoreCase("TRACE")) {
+        if ("TRACE".equalsIgnoreCase(in)) {
             return Level.TRACE;
         }
-        if (in.equalsIgnoreCase("DEBUG")) {
+        if ("DEBUG".equalsIgnoreCase(in)) {
             return Level.DEBUG;
         }
-        if (in.equalsIgnoreCase("INFO")) {
+        if ("INFO".equalsIgnoreCase(in)) {
             return Level.INFO;
         }
-        if (in.equalsIgnoreCase("WARN")) {
+        if ("WARN".equalsIgnoreCase(in)) {
             return Level.WARN;
         }
-        if (in.equalsIgnoreCase("ERROR")) {
+        if ("ERROR".equalsIgnoreCase(in)) {
             return Level.ERROR;
         }
-        if (in.equalsIgnoreCase("OFF")) {
+        if ("OFF".equalsIgnoreCase(in)) {
             return Level.OFF;
         }
         return defaultLevel;

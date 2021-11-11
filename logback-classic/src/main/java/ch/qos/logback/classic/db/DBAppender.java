@@ -254,7 +254,8 @@ public class DBAppender extends DBAppenderBase<ILoggingEvent> {
         }
     }
 
-    short buildExceptionStatement(final IThrowableProxy tp, short baseIndex, final PreparedStatement insertExceptionStatement, final long eventId) throws SQLException {
+    short buildExceptionStatement(final IThrowableProxy tp, short baseIndex, final PreparedStatement insertExceptionStatement, final long eventId)
+                    throws SQLException {
 
         final StringBuilder buf = new StringBuilder();
         ThrowableProxyUtil.subjoinFirstLine(buf, tp);

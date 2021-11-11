@@ -33,7 +33,6 @@ public class TimestampAction extends BaseModelAction {
     public static final String DATE_PATTERN_ATTRIBUTE = "datePattern";
     public static final String TIME_REFERENCE_ATTRIBUTE = "timeReference";
 
-
     @Override
     protected boolean validPreconditions(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
         boolean valid = true;
@@ -50,7 +49,6 @@ public class TimestampAction extends BaseModelAction {
         return valid;
     }
 
-
     @Override
     protected Model buildCurrentModel(final InterpretationContext interpretationContext, final String name, final Attributes attributes) {
         final TimestampModel timestampModel = new TimestampModel();
@@ -63,8 +61,5 @@ public class TimestampAction extends BaseModelAction {
         return timestampModel;
 
     }
-
-
-
 
 }

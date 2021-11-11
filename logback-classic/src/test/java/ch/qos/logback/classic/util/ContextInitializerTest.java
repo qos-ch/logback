@@ -153,17 +153,17 @@ public class ContextInitializerTest {
         assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
     }
 
-    //    @Test
-    //    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
-    //        LoggerContext loggerContext = new LoggerContext();
-    //        ContextInitializer initializer = new ContextInitializer(loggerContext);
-    //        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+    // @Test
+    // public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
+    // LoggerContext loggerContext = new LoggerContext();
+    // ContextInitializer initializer = new ContextInitializer(loggerContext);
+    // assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
     //
-    //        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
-    //        initializer.configureByResource(configurationFileUrl);
+    // URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
+    // initializer.configureByResource(configurationFileUrl);
     //
-    //        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-    //    }
+    // assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+    // }
 
     @Test
     public void shouldThrowExceptionIfUnexpectedConfigurationFileExtension() throws JoranException {
@@ -181,7 +181,7 @@ public class ContextInitializerTest {
 
     private static boolean isJDK5() {
         final String ver = System.getProperty("java.version");
-        return ver.startsWith("1.5.") || ver.equals("1.5");
+        return ver.startsWith("1.5.") || "1.5".equals(ver);
     }
 
     private void setupMockServiceLoader() {

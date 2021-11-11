@@ -21,7 +21,6 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
         return new ShutdownHookModelHandler(context);
     }
 
-
     @Override
     protected Class<ShutdownHookModel> getSupportedModelClass() {
         return ShutdownHookModel.class;
@@ -31,7 +30,6 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
     public void handle(final InterpretationContext interpretationContext, final Model model) {
 
         final ShutdownHookModel shutdownHookModel = (ShutdownHookModel) model;
-
 
         String className = shutdownHookModel.getClassName();
         if (OptionHelper.isNullOrEmpty(className)) {
@@ -48,7 +46,7 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
             addError("Could not create a shutdown hook of type [" + className + "].", e);
         }
 
-        if(hook == null) {
+        if (hook == null) {
             return;
         }
 
@@ -56,7 +54,6 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
         addInfo("Registeting shuthown hook with JVM runtime.");
         context.putObject(CoreConstants.SHUTDOWN_HOOK_THREAD, hookThread);
         Runtime.getRuntime().addShutdownHook(hookThread);
-
 
     }
 

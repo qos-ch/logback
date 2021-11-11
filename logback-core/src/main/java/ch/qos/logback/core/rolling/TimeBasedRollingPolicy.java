@@ -112,7 +112,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
                 cleanUpFuture = archiveRemover.cleanAsynchronously(now);
             }
         } else if (!isUnboundedTotalSizeCap()) {
-            addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value ["+totalSizeCap+"]");
+            addWarn("'maxHistory' is not set, ignoring 'totalSizeCap' option with value [" + totalSizeCap + "]");
         }
 
         super.start();
@@ -258,11 +258,11 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
 
     @Override
     public String toString() {
-        return "c.q.l.core.rolling.TimeBasedRollingPolicy@"+hashCode();
+        return "c.q.l.core.rolling.TimeBasedRollingPolicy@" + hashCode();
     }
 
     public void setTotalSizeCap(final FileSize totalSizeCap) {
-        addInfo("setting totalSizeCap to "+totalSizeCap.toString());
+        addInfo("setting totalSizeCap to " + totalSizeCap.toString());
         this.totalSizeCap = totalSizeCap;
     }
 }

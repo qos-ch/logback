@@ -10,7 +10,6 @@ public class LoggerModel extends Model {
     String level;
     String additivity;
 
-
     public String getName() {
         return name;
     }
@@ -22,6 +21,7 @@ public class LoggerModel extends Model {
     public String getLevel() {
         return level;
     }
+
     public void setLevel(final String level) {
         this.level = level;
     }
@@ -36,6 +36,6 @@ public class LoggerModel extends Model {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" name=" + name + "]";
+        return this.getClass().getSimpleName() + " name=" + name + "]";
     }
 }

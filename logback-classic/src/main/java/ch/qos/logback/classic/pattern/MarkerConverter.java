@@ -34,15 +34,15 @@ public class MarkerConverter extends ClassicConverter {
         if (markers == null || markers.isEmpty()) {
             return EMPTY;
         }
-        final int size = markers.size() ;
+        final int size = markers.size();
 
-        if(size == 1) {
+        if (size == 1) {
             return markers.get(0).toString();
         }
 
         final StringBuilder buf = new StringBuilder(32);
-        for(int i = 0; i < size; i++) {
-            if(i != 0) {
+        for (int i = 0; i < size; i++) {
+            if (i != 0) {
                 buf.append(' ');
             }
             final Marker m = markers.get(i);

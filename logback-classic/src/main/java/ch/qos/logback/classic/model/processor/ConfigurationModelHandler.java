@@ -52,15 +52,14 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
             debugAttrib = intercon.subst(configurationModel.getDebugStr());
         }
 
-        if (!OptionHelper.isNullOrEmpty(debugAttrib) && !debugAttrib.equalsIgnoreCase("false") && !debugAttrib.equalsIgnoreCase("null")) {
+        if (!OptionHelper.isNullOrEmpty(debugAttrib) && !"false".equalsIgnoreCase(debugAttrib) && !"null".equalsIgnoreCase(debugAttrib)) {
             StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
         }
 
         processScanAttrib(intercon, configurationModel);
 
         final LoggerContext lc = (LoggerContext) context;
-        final boolean packagingData = OptionHelper.toBoolean(intercon.subst(configurationModel.getPackagingDataStr()),
-                        LoggerContext.DEFAULT_PACKAGING_DATA);
+        final boolean packagingData = OptionHelper.toBoolean(intercon.subst(configurationModel.getPackagingDataStr()), LoggerContext.DEFAULT_PACKAGING_DATA);
         lc.setPackagingDataEnabled(packagingData);
 
         final ContextUtil contextUtil = new ContextUtil(context);
@@ -69,8 +68,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
     String getSystemProperty(final String name) {
         /*
-         * LOGBACK-743: accessing a system property in the presence of a SecurityManager
-         * (e.g. applet sandbox) can result in a SecurityException.
+         * LOGBACK-743: accessing a system property in the presence of a SecurityManager (e.g. applet sandbox) can
+         * result in a SecurityException.
          */
         try {
             return System.getProperty(name);
@@ -106,8 +105,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
             // the top level config file cannot be accessed.
             addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
 
-            final ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask,
-                            duration.getMilliseconds(), duration.getMilliseconds(), TimeUnit.MILLISECONDS);
+            final ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask, duration.getMilliseconds(),
+                            duration.getMilliseconds(), TimeUnit.MILLISECONDS);
             context.addScheduledFuture(scheduledFuture);
         }
     }

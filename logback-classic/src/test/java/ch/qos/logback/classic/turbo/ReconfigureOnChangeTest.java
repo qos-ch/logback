@@ -125,10 +125,10 @@ public class ReconfigureOnChangeTest {
         jc.doConfigure(is);
     }
 
-    //    void gConfigure(File file) throws JoranException {
-    //        GafferConfigurator gc = new GafferConfigurator(loggerContext);
-    //        gc.run(file);
-    //    }
+    // void gConfigure(File file) throws JoranException {
+    // GafferConfigurator gc = new GafferConfigurator(loggerContext);
+    // gc.run(file);
+    // }
 
     RunnableWithCounterAndDone[] buildRunnableArray(final File configFile, final UpdateType updateType) {
         final RunnableWithCounterAndDone[] rArray = new RunnableWithCounterAndDone[THREAD_COUNT];
@@ -150,23 +150,23 @@ public class ReconfigureOnChangeTest {
         StatusPrinter.print(loggerContext);
     }
 
-    //    @Test
-    //    public void gafferInstallFilter() throws JoranException, IOException, InterruptedException {
-    //        File file = new File(G_SCAN1_FILE_AS_STR);
-    //        gConfigure(file);
-    //        List<File> fileList = getConfigurationFileList(loggerContext);
-    //        assertThatListContainsFile(fileList, file);
-    //        assertThatFirstFilterIsROCF();
+    // @Test
+    // public void gafferInstallFilter() throws JoranException, IOException, InterruptedException {
+    // File file = new File(G_SCAN1_FILE_AS_STR);
+    // gConfigure(file);
+    // List<File> fileList = getConfigurationFileList(loggerContext);
+    // assertThatListContainsFile(fileList, file);
+    // assertThatFirstFilterIsROCF();
     //
-    //        rocfDetachReconfigurationToNewThreadAndAwaitTermination();
+    // rocfDetachReconfigurationToNewThreadAndAwaitTermination();
     //
-    //        fileList = getConfigurationFileList(loggerContext);
-    //        assertThatListContainsFile(fileList, file);
-    //        assertThatFirstFilterIsROCF();
+    // fileList = getConfigurationFileList(loggerContext);
+    // assertThatListContainsFile(fileList, file);
+    // assertThatFirstFilterIsROCF();
     //
-    //        // check that rcof filter installed on two occasions
-    //        assertEquals(2, checker.matchCount("Will scan for changes in"));
-    //    }
+    // // check that rcof filter installed on two occasions
+    // assertEquals(2, checker.matchCount("Will scan for changes in"));
+    // }
 
     private void rocfDetachReconfigurationToNewThreadAndAwaitTermination() throws InterruptedException {
         final ReconfigureOnChangeFilter reconfigureOnChangeFilter = (ReconfigureOnChangeFilter) getFirstTurboFilter();
@@ -351,9 +351,8 @@ public class ReconfigureOnChangeTest {
         System.out.println(avg);
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
-        final
-        long referencePerf = 68;
-        //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+        final long referencePerf = 68;
+        // BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     void addInfo(final String msg, final Object o) {

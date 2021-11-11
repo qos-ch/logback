@@ -68,8 +68,8 @@ public class DummyRequest implements HttpServletRequest {
         headerMap.put("headerName1", "headerValue1");
         headerMap.put("headerName2", "headerValue2");
 
-        parameterMap =  new Hashtable<>();
-        parameterMap.put("param1", new String[] {"value1"});
+        parameterMap = new Hashtable<>();
+        parameterMap.put("param1", new String[] { "value1" });
 
         attributes = new HashMap<>(DUMMY_DEFAULT_ATTR_MAP);
     }
@@ -100,9 +100,8 @@ public class DummyRequest implements HttpServletRequest {
         return headerMap.get(key);
     }
 
-
     @Override
-    public Enumeration<String>  getHeaderNames() {
+    public Enumeration<String> getHeaderNames() {
         return headerMap.keys();
     }
 
@@ -114,7 +113,6 @@ public class DummyRequest implements HttpServletRequest {
     public Map<String, String> getHeaders() {
         return headerMap;
     }
-
 
     @Override
     public int getIntHeader(final String arg0) {
@@ -324,7 +322,7 @@ public class DummyRequest implements HttpServletRequest {
     @Override
     public String getParameter(final String arg) {
         final String[] stringArray = parameterMap.get(arg);
-        if(stringArray == null || stringArray.length == 0) {
+        if (stringArray == null || stringArray.length == 0) {
             return null;
         }
         return stringArray[0];
@@ -338,7 +336,7 @@ public class DummyRequest implements HttpServletRequest {
     @Override
     public Enumeration<String> getParameterNames() {
         return parameterMap.keys();
-        //eturn Collections.enumeration(parameterMap.keySet());
+        // eturn Collections.enumeration(parameterMap.keySet());
     }
 
     @Override

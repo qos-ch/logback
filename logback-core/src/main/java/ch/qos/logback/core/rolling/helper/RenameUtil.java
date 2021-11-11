@@ -70,8 +70,6 @@ public class RenameUtil extends ContextAwareBase {
         }
     }
 
-
-
     /**
      * Attempts to determine whether both files are on different volumes. Returns true if we could determine that
      * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
@@ -88,12 +86,12 @@ public class RenameUtil extends ContextAwareBase {
         // target file is not certain to exist but its parent has to exist given the call hierarchy of this method
         final File parentOfTarget = targetFile.getAbsoluteFile().getParentFile();
 
-        if(parentOfTarget == null) {
-            addWarn("Parent of target file ["+targetFile+"] is null");
+        if (parentOfTarget == null) {
+            addWarn("Parent of target file [" + targetFile + "] is null");
             return null;
         }
-        if(!parentOfTarget.exists()) {
-            addWarn("Parent of target file ["+targetFile+"] does not exist");
+        if (!parentOfTarget.exists()) {
+            addWarn("Parent of target file [" + targetFile + "] does not exist");
             return null;
         }
 

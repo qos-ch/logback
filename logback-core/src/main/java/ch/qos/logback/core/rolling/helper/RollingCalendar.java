@@ -103,8 +103,7 @@ public class RollingCalendar extends GregorianCalendar {
             return !collision(12 * MILLIS_IN_ONE_HOUR);
         case TOP_OF_DAY:
             // EE or uu & isolated dd & DD
-            if (collision(7 * MILLIS_IN_ONE_DAY) || collision(31 * MILLIS_IN_ONE_DAY)
-                            || collision(365 * MILLIS_IN_ONE_DAY)) {
+            if (collision(7 * MILLIS_IN_ONE_DAY) || collision(31 * MILLIS_IN_ONE_DAY) || collision(365 * MILLIS_IN_ONE_DAY)) {
                 return false;
             }
             return true;
@@ -213,13 +212,11 @@ public class RollingCalendar extends GregorianCalendar {
         return yearDiff * 12 + monthDiff;
     }
 
-    static private Date innerGetEndOfThisPeriod(final Calendar cal, final PeriodicityType periodicityType,
-                    final Date now) {
+    static private Date innerGetEndOfThisPeriod(final Calendar cal, final PeriodicityType periodicityType, final Date now) {
         return innerGetEndOfNextNthPeriod(cal, periodicityType, now, 1);
     }
 
-    static private Date innerGetEndOfNextNthPeriod(final Calendar cal, final PeriodicityType periodicityType,
-                    final Date now, final int numPeriods) {
+    static private Date innerGetEndOfNextNthPeriod(final Calendar cal, final PeriodicityType periodicityType, final Date now, final int numPeriods) {
         cal.setTime(now);
         switch (periodicityType) {
         case TOP_OF_MILLISECOND:

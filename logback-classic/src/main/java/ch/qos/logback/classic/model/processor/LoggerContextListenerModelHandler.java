@@ -35,8 +35,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 
         final String className = LoggerContextListenerModel.getClassName();
         try {
-            lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class,
-                            context);
+            lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class, context);
 
             if (lcl instanceof ContextAware) {
                 ((ContextAware) lcl).setContext(context);

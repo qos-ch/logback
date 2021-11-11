@@ -33,7 +33,7 @@ public class SocketMin {
         }
 
         // NDC.push("some context");
-        if (argv[2].equals("true")) {
+        if ("true".equals(argv[2])) {
             loop();
         } else {
             test();

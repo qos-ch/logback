@@ -86,7 +86,7 @@ public abstract class Action extends ContextAwareBase {
     // move to InterpretationContext
     static public int getLineNumber(final InterpretationContext intercon) {
         final SaxEventInterpreter interpreter = intercon.getSaxEventInterpreter();
-        if(interpreter == null) {
+        if (interpreter == null) {
             return -1;
         }
         final Locator locator = interpreter.getLocator();
@@ -101,10 +101,10 @@ public abstract class Action extends ContextAwareBase {
     }
 
     protected String atLine(final InterpretationContext intercon) {
-        return "At line "+intercon.getLineNumber();
+        return "At line " + intercon.getLineNumber();
     }
 
     protected String nearLine(final InterpretationContext intercon) {
-        return "Near line "+intercon.getLineNumber();
+        return "Near line " + intercon.getLineNumber();
     }
 }

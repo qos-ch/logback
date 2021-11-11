@@ -22,14 +22,14 @@ public class JULHelper {
         if (julLogger == null) {
             return false;
         }
-        return !julLogger.getName().equals("");
+        return !"".equals(julLogger.getName());
     }
 
     static public final boolean isRoot(final java.util.logging.Logger julLogger) {
         if (julLogger == null) {
             return false;
         }
-        return julLogger.getName().equals("");
+        return "".equals(julLogger.getName());
     }
 
     static public java.util.logging.Level asJULLevel(final Level lbLevel) {

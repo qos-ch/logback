@@ -94,12 +94,12 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
     public boolean hasDependencies(final String name) {
 
         final Collection<List<String>> nameLists = dependenciesMap.values();
-        if(nameLists == null || nameLists.isEmpty()) {
+        if (nameLists == null || nameLists.isEmpty()) {
             return false;
         }
 
-        for(final List<String> aList: nameLists) {
-            if(aList.contains(name)) {
+        for (final List<String> aList : nameLists) {
+            if (aList.contains(name)) {
                 return true;
             }
         }
@@ -108,7 +108,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 
     public void addDependency(final Model model, final String ref) {
         List<String> refList = dependenciesMap.get(model);
-        if(refList == null) {
+        if (refList == null) {
             refList = new ArrayList<>();
         }
         refList.add(ref);
@@ -263,10 +263,10 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
             return null;
         }
 
-        try  {
+        try {
             return OptionHelper.substVars(value, this, context);
-        } catch(ScanException|IllegalArgumentException e) {
-            addError("Problem while parsing ["+value+"]", e);
+        } catch (ScanException | IllegalArgumentException e) {
+            addError("Problem while parsing [" + value + "]", e);
             return value;
         }
     }
@@ -274,10 +274,9 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
     public void markStartOfNamedDependency(final String name) {
         startedDependencies.add(name);
     }
+
     public boolean isNamedDependencyStarted(final String name) {
         return startedDependencies.contains(name);
     }
-
-
 
 }

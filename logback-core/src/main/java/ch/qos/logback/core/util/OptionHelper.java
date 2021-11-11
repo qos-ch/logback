@@ -34,8 +34,8 @@ public class OptionHelper {
         return instantiateByClassName(className, superClass, classLoader);
     }
 
-    public static Object instantiateByClassNameAndParameter(final String className, final Class<?> superClass, final Context context,
-                    final Class<?> type, final Object param) throws IncompatibleClassException, DynamicClassLoadingException {
+    public static Object instantiateByClassNameAndParameter(final String className, final Class<?> superClass, final Context context, final Class<?> type,
+                    final Object param) throws IncompatibleClassException, DynamicClassLoadingException {
         final ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
         return instantiateByClassNameAndParameter(className, superClass, classLoader, type, param);
     }
@@ -45,9 +45,8 @@ public class OptionHelper {
         return instantiateByClassNameAndParameter(className, superClass, classLoader, null, null);
     }
 
-    public static Object instantiateByClassNameAndParameter(final String className, final Class<?> superClass,
-                    final ClassLoader classLoader, final Class<?> type, final Object parameter)
-                                    throws IncompatibleClassException, DynamicClassLoadingException {
+    public static Object instantiateByClassNameAndParameter(final String className, final Class<?> superClass, final ClassLoader classLoader,
+                    final Class<?> type, final Object parameter) throws IncompatibleClassException, DynamicClassLoadingException {
 
         if (className == null) {
             throw new NullPointerException();
@@ -100,14 +99,14 @@ public class OptionHelper {
     /**
      * @see #substVars(String, PropertyContainer, PropertyContainer)
      */
-    public static String substVars(final String val, final PropertyContainer pc1)  throws ScanException {
+    public static String substVars(final String val, final PropertyContainer pc1) throws ScanException {
         return substVars(val, pc1, null);
     }
 
     /**
      * See http://logback.qos.ch/manual/configuration.html#variableSubstitution
      */
-    public static String substVars(final String input, final PropertyContainer pc0, final PropertyContainer pc1)  throws ScanException {
+    public static String substVars(final String input, final PropertyContainer pc0, final PropertyContainer pc1) throws ScanException {
         // may throw IllegalArgumentException or ScanException
         return NodeToStringTransformer.substituteVariable(input, pc0, pc1);
 

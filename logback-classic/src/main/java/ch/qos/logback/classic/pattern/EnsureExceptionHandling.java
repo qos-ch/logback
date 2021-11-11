@@ -65,7 +65,8 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
     public boolean chainHandlesThrowable(final Converter<ILoggingEvent> head) {
         Converter<ILoggingEvent> c = head;
         while (c != null) {
-            if (c instanceof ThrowableHandlingConverter || c instanceof CompositeConverter && compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c)) {
+            if (c instanceof ThrowableHandlingConverter
+                            || c instanceof CompositeConverter && compositeHandlesThrowable((CompositeConverter<ILoggingEvent>) c)) {
                 return true;
             }
             c = c.getNext();

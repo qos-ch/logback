@@ -34,12 +34,11 @@ public class CollisionDetectionTest {
     public void tearDown() throws Exception {
     }
 
-
     FileAppender<String> buildFileAppender(final String name, final String filenameSuffix) {
         final FileAppender<String> fileAppender = new FileAppender<>();
         fileAppender.setName(name);
         fileAppender.setContext(context);
-        fileAppender.setFile(randomOutputDir+filenameSuffix);
+        fileAppender.setFile(randomOutputDir + filenameSuffix);
         fileAppender.setEncoder(new NopEncoder<String>());
         return fileAppender;
     }
@@ -48,22 +47,20 @@ public class CollisionDetectionTest {
         final RollingFileAppender<String> rollingFileAppender = new RollingFileAppender<>();
         rollingFileAppender.setName(name);
         rollingFileAppender.setContext(context);
-        rollingFileAppender.setFile(randomOutputDir+filenameSuffix);
+        rollingFileAppender.setFile(randomOutputDir + filenameSuffix);
         rollingFileAppender.setEncoder(new NopEncoder<String>());
 
         final TimeBasedRollingPolicy<String> tbrp = new TimeBasedRollingPolicy<>();
         tbrp.setContext(context);
-        tbrp.setFileNamePattern(randomOutputDir+patternSuffix);
+        tbrp.setFileNamePattern(randomOutputDir + patternSuffix);
         tbrp.setParent(rollingFileAppender);
-        //tbrp.timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
-        //tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime);
+        // tbrp.timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
+        // tbrp.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(givenTime);
         rollingFileAppender.setRollingPolicy(tbrp);
         tbrp.start();
 
-
         return rollingFileAppender;
     }
-
 
     @Test
     public void collisionImpossibleForSingleAppender() {
@@ -83,20 +80,18 @@ public class CollisionDetectionTest {
         assertCollisionMapHasNoEntry(FA_FILENAME_COLLISION_MAP, key);
         statusChecker.assertIsErrorFree();
 
-
     }
 
     private void assertCollisionMapHasEntry(final String mapName, final String key) {
         @SuppressWarnings("unchecked")
-        final
-        Map<String, ?> map = (Map<String, ?>) context.getObject(mapName);
+        final Map<String, ?> map = (Map<String, ?>) context.getObject(mapName);
         Assert.assertNotNull(map);
         Assert.assertNotNull(map.get(key));
     }
+
     private void assertCollisionMapHasNoEntry(final String mapName, final String key) {
         @SuppressWarnings("unchecked")
-        final
-        Map<String, ?> map = (Map<String, ?>) context.getObject(mapName);
+        final Map<String, ?> map = (Map<String, ?>) context.getObject(mapName);
         Assert.assertNotNull(map);
         Assert.assertNull(map.get(key));
     }
@@ -111,7 +106,7 @@ public class CollisionDetectionTest {
         final FileAppender<String> fileAppender2 = buildFileAppender("FA2", suffix);
         fileAppender2.start();
         statusChecker.assertContainsMatch(Status.ERROR, "'File' option has the same value");
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
     }
 
     @Test

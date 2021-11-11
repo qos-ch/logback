@@ -91,7 +91,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
 
     private final long birthTime = System.currentTimeMillis();
 
-
     LogbackLock configurationLock = new LogbackLock();
 
     // Attributes from ContextBase:
@@ -110,7 +109,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     boolean started;
     boolean alreadySetLogbackStatusManager = false;
     private SequenceNumberGenerator sequenceNumberGenerator;
-
 
     private ScheduledExecutorService scheduledExecutorService;
 

@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import ch.qos.logback.core.helpers.CyclicBuffer;
 
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */

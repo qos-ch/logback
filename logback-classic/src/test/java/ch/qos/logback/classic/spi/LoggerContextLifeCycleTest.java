@@ -16,7 +16,6 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 
 public class LoggerContextLifeCycleTest {
 
-
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
@@ -39,7 +38,7 @@ public class LoggerContextLifeCycleTest {
         assertEquals(1, listenerList.size());
 
         final ListContextListener lcl = (ListContextListener) listenerList.get(0);
-        //lcl.updateList.stream().forEach(System.out::println);
+        // lcl.updateList.stream().forEach(System.out::println);
         assertEquals(BasicContextListener.UpdateType.START, lcl.updateList.get(1));
 
     }

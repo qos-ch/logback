@@ -218,7 +218,7 @@ public class PropertySetter extends ContextAwareBase {
                 return true;
             }
             return false;
-        } catch (InstantiationException|IllegalAccessException | InvocationTargetException | NoSuchMethodException  e) {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             return false;
         }
     }

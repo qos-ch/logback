@@ -207,9 +207,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return packagingDataEnabled;
     }
 
-
     private void cancelScheduledTasks() {
-        for(final ScheduledFuture<?> sf: scheduledFutures) {
+        for (final ScheduledFuture<?> sf : scheduledFutures) {
             sf.cancel(false);
         }
         scheduledFutures.clear();

@@ -164,18 +164,16 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         assertFalse(rfa.isStarted());
     }
 
-
     // see also LOGBACK-1176
     @Test
     public void timeAndSizeWithoutMaxFileSize() throws Exception {
         final String testId = "timeAndSizeWithoutMaxFileSize";
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
         final Logger root = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        //expectedFilenameList.add(randomOutputDir + "z" + testId);
+        // expectedFilenameList.add(randomOutputDir + "z" + testId);
         final RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
 
-
-        //statusChecker.assertContainsMatch("Missing integer token");
+        // statusChecker.assertContainsMatch("Missing integer token");
         assertFalse(rfa.isStarted());
         StatusPrinter.print(lc);
     }
@@ -186,7 +184,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         lc.putProperty("testId", testId);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
         final Logger root = lc.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-        //expectedFilenameList.add(randomOutputDir + "z" + testId);
+        // expectedFilenameList.add(randomOutputDir + "z" + testId);
         final RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
 
         statusChecker.assertContainsMatch("totalSizeCap of \\[\\d* \\w*\\] is smaller than maxFileSize \\[\\d* \\w*\\] which is non-sensical");

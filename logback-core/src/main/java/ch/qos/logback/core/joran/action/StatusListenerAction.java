@@ -44,5 +44,4 @@ public class StatusListenerAction extends BaseModelAction {
         return statusListenerModel;
     }
 
-
 }

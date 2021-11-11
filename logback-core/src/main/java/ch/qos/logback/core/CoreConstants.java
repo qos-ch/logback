@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core;
 
-
 public class CoreConstants {
 
     final public static String DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY = "logbackDisableServletContainerInitializer";
@@ -32,7 +31,6 @@ public class CoreConstants {
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
     // We thus set a pool size > 0 for tests to pass.
     public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 1;
-
 
     /**
      * Maximum number of threads to allow in a context's executor service.
@@ -150,8 +148,8 @@ public class CoreConstants {
     public static final char TAB = '\t';
     public static final char DOLLAR = '$';
 
-    public static final String SEE_FNP_NOT_SET = "See also "+CODES_URL+"#tbr_fnp_not_set";
-    public static final String SEE_MISSING_INTEGER_TOKEN = "See also "+CODES_URL+"#sat_missing_integer_token";
+    public static final String SEE_FNP_NOT_SET = "See also " + CODES_URL + "#tbr_fnp_not_set";
+    public static final String SEE_MISSING_INTEGER_TOKEN = "See also " + CODES_URL + "#sat_missing_integer_token";
 
     public static final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
     public static final String CONFIGURATION_WATCH_LIST_RESET_X = "CONFIGURATION_WATCH_LIST_RESET";

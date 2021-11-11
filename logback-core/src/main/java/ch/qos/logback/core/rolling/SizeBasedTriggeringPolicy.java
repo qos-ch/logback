@@ -55,11 +55,9 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         return activeFile.length() >= maxFileSize.getSize();
     }
 
-
     public FileSize getMaxFileSize() {
         return this.maxFileSize;
     }
-
 
     public void setMaxFileSize(final FileSize aMaxFileSize) {
         this.maxFileSize = aMaxFileSize;

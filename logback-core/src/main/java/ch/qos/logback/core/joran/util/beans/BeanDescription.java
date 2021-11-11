@@ -33,7 +33,8 @@ public class BeanDescription {
      * @param propertyNameToSetter map of property names to the associated setter.
      * @param propertyNameToAdder map of property names to the associated adder.
      */
-    protected BeanDescription(final Class<?> clazz,final Map<String, Method> propertyNameToGetter,final Map<String, Method> propertyNameToSetter,final Map<String, Method> propertyNameToAdder) {
+    protected BeanDescription(final Class<?> clazz, final Map<String, Method> propertyNameToGetter, final Map<String, Method> propertyNameToSetter,
+                    final Map<String, Method> propertyNameToAdder) {
         this.clazz = clazz;
         this.propertyNameToGetter = Collections.unmodifiableMap(propertyNameToGetter);
         this.propertyNameToSetter = Collections.unmodifiableMap(propertyNameToSetter);

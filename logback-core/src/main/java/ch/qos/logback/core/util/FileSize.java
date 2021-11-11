@@ -64,13 +64,13 @@ public class FileSize {
         final String unitStr = matcher.group(UNIT_GROUP);
 
         final long lenValue = Long.parseLong(lenStr);
-        if (unitStr.equalsIgnoreCase("")) {
+        if ("".equalsIgnoreCase(unitStr)) {
             coefficient = 1;
-        } else if (unitStr.equalsIgnoreCase("kb")) {
+        } else if ("kb".equalsIgnoreCase(unitStr)) {
             coefficient = KB_COEFFICIENT;
-        } else if (unitStr.equalsIgnoreCase("mb")) {
+        } else if ("mb".equalsIgnoreCase(unitStr)) {
             coefficient = MB_COEFFICIENT;
-        } else if (unitStr.equalsIgnoreCase("gb")) {
+        } else if ("gb".equalsIgnoreCase(unitStr)) {
             coefficient = GB_COEFFICIENT;
         } else {
             throw new IllegalStateException("Unexpected " + unitStr);
@@ -82,17 +82,17 @@ public class FileSize {
     public String toString() {
         final long inKB = size / KB_COEFFICIENT;
 
-        if(inKB == 0) {
+        if (inKB == 0) {
             return size + " Bytes";
         }
 
         final long inMB = size / MB_COEFFICIENT;
-        if(inMB == 0) {
+        if (inMB == 0) {
             return inKB + " KB";
         }
 
         final long inGB = size / GB_COEFFICIENT;
-        if(inGB == 0) {
+        if (inGB == 0) {
             return inMB + " MB";
         }
 

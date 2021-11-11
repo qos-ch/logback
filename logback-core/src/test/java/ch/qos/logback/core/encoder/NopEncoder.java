@@ -15,19 +15,18 @@ package ch.qos.logback.core.encoder;
 
 public class NopEncoder<E> extends EncoderBase<E> {
 
-
     @Override
-    public byte[] encode(final E event)  {
+    public byte[] encode(final E event) {
         return null;
     }
 
     @Override
-    public byte[] headerBytes()  {
+    public byte[] headerBytes() {
         return null;
     }
 
     @Override
-    public byte[] footerBytes()  {
+    public byte[] footerBytes() {
         return null;
     }
 

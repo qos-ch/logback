@@ -65,6 +65,4 @@ public class ContextDetachingSCL implements ServletContextListener {
         }
     }
 
-
-
 }

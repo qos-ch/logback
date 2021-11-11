@@ -198,7 +198,8 @@ public class PropertySetterTest {
         final Class<?> spClass = setter.getDefaultClassNameByAnnonation("SwimmingPool", relevantMethod);
         assertEquals(SwimmingPoolImpl.class, spClass);
 
-        final Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
+        final Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY,
+                        defaultComponentRegistry);
         assertEquals(SwimmingPoolImpl.class, classViaImplicitRules);
     }
 

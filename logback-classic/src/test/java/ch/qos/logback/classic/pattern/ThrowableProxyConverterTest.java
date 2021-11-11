@@ -120,7 +120,7 @@ public class ThrowableProxyConverterTest {
     @Test
     public void cyclicCause() {
         // Earlier JDKs may formats things differently
-        if(!EnvUtil.isJDK16OrHigher()) {
+        if (!EnvUtil.isJDK16OrHigher()) {
             return;
         }
         final Exception e = new Exception("foo");
@@ -132,7 +132,7 @@ public class ThrowableProxyConverterTest {
     @Test
     public void cyclicSuppressed() {
         // Earlier JDKs may formats things differently
-        if(!EnvUtil.isJDK16OrHigher()) {
+        if (!EnvUtil.isJDK16OrHigher()) {
             return;
         }
 
@@ -230,8 +230,6 @@ public class ThrowableProxyConverterTest {
         assertThat(lines).hasSize(3 + 1);
     }
 
-
-
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
@@ -241,7 +239,7 @@ public class ThrowableProxyConverterTest {
 
         final ILoggingEvent le = createLoggingEvent(t);
         String result = tpc.convert(le);
-        //System.out.println(result);
+        // System.out.println(result);
         result = result.replace("common frames omitted", "more");
         assertEquals(sw.toString(), result);
     }

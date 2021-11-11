@@ -191,7 +191,8 @@ public class ScaffoldingForRollingTests {
         expectedFilenameList.add(fn.toString());
     }
 
-    protected void addExpectedFileName_ByFileIndexCounter(final String randomOutputDir, final String testId, final long millis, final int fileIndexCounter, final String compressionSuffix) {
+    protected void addExpectedFileName_ByFileIndexCounter(final String randomOutputDir, final String testId, final long millis, final int fileIndexCounter,
+                    final String compressionSuffix) {
         final String fn = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt" + compressionSuffix;
         expectedFilenameList.add(fn);
     }

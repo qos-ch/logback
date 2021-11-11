@@ -109,7 +109,6 @@ public interface Context extends PropertyContainer {
      */
     Object getConfigurationLock();
 
-
     /**
      * Returns the ScheduledExecutorService for this context.
      * @return
@@ -131,6 +130,7 @@ public interface Context extends PropertyContainer {
      */
     @Deprecated
     ExecutorService getExecutorService();
+
     /**
      * Register a component that participates in the context's life cycle.
      * <p>
@@ -144,7 +144,7 @@ public interface Context extends PropertyContainer {
     void addScheduledFuture(ScheduledFuture<?> scheduledFuture);
 
     SequenceNumberGenerator getSequenceNumberGenerator();
-    void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator);
 
+    void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator);
 
 }

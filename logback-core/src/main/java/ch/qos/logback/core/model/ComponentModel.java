@@ -22,7 +22,7 @@ public class ComponentModel extends Model {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText + "]";
+        return this.getClass().getSimpleName() + " [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText + "]";
     }
 
 }

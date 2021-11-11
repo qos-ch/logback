@@ -63,8 +63,7 @@ public class SimpleSocketServer {
         try {
             System.out.println("Listening on port " + port);
             @SuppressWarnings("resource")
-            final
-            ServerSocket serverSocket = new ServerSocket(port);
+            final ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
                 System.out.println("Waiting to accept a new client.");
                 final Socket socket = serverSocket.accept();

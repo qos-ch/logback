@@ -89,10 +89,10 @@ public class StaxEventRecorder extends ContextAwareBase {
             final BodyEvent be = (BodyEvent) lastEvent;
             be.append(characters.getData());
         } else // ignore space only text if the previous event is not a BodyEvent
-            if (!characters.isWhiteSpace()) {
-                final BodyEvent bodyEvent = new BodyEvent(characters.getData(), xmlEvent.getLocation());
-                eventList.add(bodyEvent);
-            }
+        if (!characters.isWhiteSpace()) {
+            final BodyEvent bodyEvent = new BodyEvent(characters.getData(), xmlEvent.getLocation());
+            eventList.add(bodyEvent);
+        }
     }
 
     private void addEndEvent(final XMLEvent xmlEvent) {

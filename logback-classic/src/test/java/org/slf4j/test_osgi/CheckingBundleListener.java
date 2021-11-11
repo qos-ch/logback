@@ -37,7 +37,8 @@ public class CheckingBundleListener implements BundleListener {
     }
 
     boolean exists(final String bundleName) {
-        return eventList.stream().map(BundleEvent::getBundle).peek(b -> System.out.println("===[" + b + "]")).anyMatch(b -> bundleName.equals(b.getSymbolicName()));
+        return eventList.stream().map(BundleEvent::getBundle).peek(b -> System.out.println("===[" + b + "]"))
+                        .anyMatch(b -> bundleName.equals(b.getSymbolicName()));
     }
 
 }

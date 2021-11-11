@@ -37,8 +37,8 @@ import ch.qos.logback.core.rolling.helper.RenameUtil;
  */
 public class FixedWindowRollingPolicy extends RollingPolicyBase {
     static final String FNP_NOT_SET = "The \"FileNamePattern\" property must be set before using FixedWindowRollingPolicy. ";
-    static final String PRUDENT_MODE_UNSUPPORTED = "See also "+CODES_URL+"#tbr_fnp_prudent_unsupported";
-    static final String SEE_PARENT_FN_NOT_SET = "Please refer to "+CODES_URL+"#fwrp_parentFileName_not_set";
+    static final String PRUDENT_MODE_UNSUPPORTED = "See also " + CODES_URL + "#tbr_fnp_prudent_unsupported";
+    static final String SEE_PARENT_FN_NOT_SET = "Please refer to " + CODES_URL + "#fwrp_parentFileName_not_set";
     int maxIndex;
     int minIndex;
     RenameUtil util = new RenameUtil();

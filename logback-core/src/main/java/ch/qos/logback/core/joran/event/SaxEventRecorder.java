@@ -44,7 +44,6 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     public List<SaxEvent> saxEventList = new ArrayList<>();
     Locator locator;
 
-
     public SaxEventRecorder(final Context context) {
         this(context, new ElementPath());
     }
@@ -53,8 +52,6 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         contextAwareImpl = new ContextAwareImpl(context, this);
         this.elementPath = elementPath;
     }
-
-
 
     final public void recordEvents(final InputStream inputStream) throws JoranException {
         recordEvents(new InputSource(inputStream));
@@ -85,7 +82,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         try {
             final SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setValidating(false);
-            //spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             // See LOGBACK-1465
             spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
             spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -114,11 +111,12 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     protected boolean shouldIgnoreForElementPath(final String tagName) {
         return false;
     }
+
     @Override
     public void startElement(final String namespaceURI, final String localName, final String qName, final Attributes atts) {
 
         final String tagName = getTagName(localName, qName);
-        if(!shouldIgnoreForElementPath(tagName)) {
+        if (!shouldIgnoreForElementPath(tagName)) {
             elementPath.push(tagName);
         }
         final ElementPath current = elementPath.duplicate();
@@ -133,9 +131,9 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
             final BodyEvent be = (BodyEvent) lastEvent;
             be.append(bodyStr);
         } else // ignore space only text if the previous event is not a BodyEvent
-            if (!isSpaceOnly(bodyStr)) {
-                saxEventList.add(new BodyEvent(bodyStr, getLocator()));
-            }
+        if (!isSpaceOnly(bodyStr)) {
+            saxEventList.add(new BodyEvent(bodyStr, getLocator()));
+        }
     }
 
     boolean isSpaceOnly(final String bodyStr) {
@@ -155,7 +153,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     public void endElement(final String namespaceURI, final String localName, final String qName) {
         saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
         final String tagName = getTagName(localName, qName);
-        if(!shouldIgnoreForElementPath(tagName)) {
+        if (!shouldIgnoreForElementPath(tagName)) {
             elementPath.pop();
         }
     }

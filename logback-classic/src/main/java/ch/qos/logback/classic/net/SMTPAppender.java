@@ -103,8 +103,8 @@ public class SMTPAppender extends SMTPAppenderBase<ILoggingEvent> {
             return false;
         }
 
-        for(final Marker marker: markers) {
-            if(marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER)) {
+        for (final Marker marker : markers) {
+            if (marker.contains(ClassicConstants.FINALIZE_SESSION_MARKER)) {
                 return true;
             }
         }

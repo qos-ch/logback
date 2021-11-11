@@ -40,7 +40,6 @@ public class TrivialLogbackAppender extends AppenderBase<ILoggingEvent> {
         System.out.println(eventAsStr);
     }
 
-
     public Layout<ILoggingEvent> getLayout() {
         return layout;
     }

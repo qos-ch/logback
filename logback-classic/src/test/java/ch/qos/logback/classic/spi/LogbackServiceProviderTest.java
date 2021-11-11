@@ -8,7 +8,6 @@ import ch.qos.logback.classic.LoggerContext;
 
 public class LogbackServiceProviderTest {
 
-
     LogbackServiceProvider provider = new LogbackServiceProvider();
 
     @Test

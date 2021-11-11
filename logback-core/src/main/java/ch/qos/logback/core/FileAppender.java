@@ -156,8 +156,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             return false;
         }
         @SuppressWarnings("unchecked")
-        final
-        Map<String, String> previousFilesMap = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        final Map<String, String> previousFilesMap = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
         if (previousFilesMap == null) {
             return collisionsDetected;
         }
@@ -234,7 +233,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     }
 
     public void setBufferSize(final FileSize bufferSize) {
-        addInfo("Setting bufferSize to ["+bufferSize.toString()+"]");
+        addInfo("Setting bufferSize to [" + bufferSize.toString() + "]");
         this.bufferSize = bufferSize;
     }
 

@@ -60,8 +60,7 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         final Context context = getContext();
         if (context != null) {
             @SuppressWarnings("unchecked")
-            final
-            Map<String, String> contextMap = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+            final Map<String, String> contextMap = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);
             }

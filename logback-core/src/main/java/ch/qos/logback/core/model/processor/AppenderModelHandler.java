@@ -37,29 +37,28 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 
         final String appenderName = interpContext.subst(appenderModel.getName());
 
-        if(!interpContext.hasDependencies(appenderName)) {
-            addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
+        if (!interpContext.hasDependencies(appenderName)) {
+            addWarn("Appender named [" + appenderName + "] not referenced. Skipping further processing.");
             skipped = true;
             return;
         }
 
-        //		//this.appenderAttachable = appenderRefBag.get(appenderName);
+        // //this.appenderAttachable = appenderRefBag.get(appenderName);
         //
-        //		if(this.appenderAttachable == null) {
-        //			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
-        //			skipped = true;
-        //			return;
-        //		}
+        // if(this.appenderAttachable == null) {
+        // addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
+        // skipped = true;
+        // return;
+        // }
 
-        addInfo("Processing appender named ["+appenderName+"]");
+        addInfo("Processing appender named [" + appenderName + "]");
 
         final String className = appenderModel.getClassName();
 
         try {
             addInfo("About to instantiate appender of type [" + className + "]");
 
-            appender = (Appender<E>) OptionHelper.instantiateByClassName(className, ch.qos.logback.core.Appender.class,
-                            context);
+            appender = (Appender<E>) OptionHelper.instantiateByClassName(className, ch.qos.logback.core.Appender.class, context);
             appender.setContext(context);
             appender.setName(appenderName);
             interpContext.pushObject(appender);
@@ -83,16 +82,14 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
         final Object o = interpContext.peekObject();
 
         @SuppressWarnings("unchecked")
-        final
-        Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) interpContext.getObjectMap()
-        .get(JoranConstants.APPENDER_BAG);
+        final Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) interpContext.getObjectMap().get(JoranConstants.APPENDER_BAG);
         appenderBag.put(appender.getName(), appender);
 
         if (o != appender) {
             addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
         } else {
-            //        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
-            //        	appenderAttachable.addAppender(appender);
+            // addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
+            // appenderAttachable.addAppender(appender);
             interpContext.popObject();
         }
 

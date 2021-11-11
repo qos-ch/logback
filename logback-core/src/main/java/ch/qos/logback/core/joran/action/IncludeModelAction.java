@@ -34,7 +34,6 @@ public class IncludeModelAction extends BaseModelAction {
     protected Model buildCurrentModel(final InterpretationContext intercon, final String name, final Attributes attributes) {
         final IncludeModel includeModel = new IncludeModel();
 
-
         includeModel.setOptional(attributes.getValue(OPTIONAL_ATTR));
         includeModel.setFile(attributes.getValue(FILE_ATTR));
         includeModel.setUrl(attributes.getValue(URL_ATTR));
@@ -43,8 +42,8 @@ public class IncludeModelAction extends BaseModelAction {
 
         final String lastPath = elementPath.peekLast();
 
-        if(!INCLUDE_TAG.equalsIgnoreCase(lastPath)) {
-            addWarn("expecting [include] but got ["+lastPath+"]");
+        if (!INCLUDE_TAG.equalsIgnoreCase(lastPath)) {
+            addWarn("expecting [include] but got [" + lastPath + "]");
         }
 
         // remove [include] part

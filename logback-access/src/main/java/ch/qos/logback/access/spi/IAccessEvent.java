@@ -100,6 +100,7 @@ public interface IAccessEvent extends DeferredProcessingAware {
     String getSessionID();
 
     void setThreadName(String threadName);
+
     String getThreadName();
 
     String getQueryString();

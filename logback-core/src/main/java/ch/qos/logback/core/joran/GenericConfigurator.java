@@ -158,25 +158,24 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         }
     }
 
-
     public void playEventsAndProcessModel(final List<SaxEvent> saxEvents) throws JoranException {
         buildInterpreter();
         playSaxEvents(saxEvents);
         final Model top = interpreter.getInterpretationContext().peekModel();
-        //serializeModel(top);
+        // serializeModel(top);
         processModel(top);
     }
 
-    //	public static String TTT = "c:/tmp/x.model";
-    //	void serializeModel(Model top) {
-    //		try {
-    //			ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
-    //			oos.writeObject(top);
-    //			oos.close();
-    //		} catch (IOException e) {
-    //			e.printStackTrace();
-    //		}
-    //	}
+    // public static String TTT = "c:/tmp/x.model";
+    // void serializeModel(Model top) {
+    // try {
+    // ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(TTT));
+    // oos.writeObject(top);
+    // oos.close();
+    // } catch (IOException e) {
+    // e.printStackTrace();
+    // }
+    // }
 
     private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
         // disallow simultaneous configurations of the same context

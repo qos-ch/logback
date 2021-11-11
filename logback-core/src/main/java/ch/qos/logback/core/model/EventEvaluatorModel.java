@@ -16,5 +16,4 @@ public class EventEvaluatorModel extends ComponentModel {
         this.name = name;
     }
 
-
 }

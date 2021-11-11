@@ -48,7 +48,6 @@ public class TrivialConfiguratorTest {
     Context context = new ContextBase();
     HashMap<ElementSelector, Action> rulesMap = new HashMap<>();
 
-
     @Before
     public void setUp() {
         // rule store is case insensitve

@@ -72,7 +72,7 @@ public class SSLContextFactoryBean {
      *    contents of a certificate
      */
     public SSLContext createContext(final ContextAware context) throws NoSuchProviderException, NoSuchAlgorithmException, KeyManagementException,
-    UnrecoverableKeyException, KeyStoreException, CertificateException {
+                    UnrecoverableKeyException, KeyStoreException, CertificateException {
 
         final SSLContext sslContext = getProvider() != null ? SSLContext.getInstance(getProtocol(), getProvider()) : SSLContext.getInstance(getProtocol());
 
@@ -97,8 +97,8 @@ public class SSLContextFactoryBean {
      *    provider
      * @throws KeyStoreException if an error occurs in reading a key store
      */
-    private KeyManager[] createKeyManagers(final ContextAware context) throws NoSuchProviderException, NoSuchAlgorithmException, UnrecoverableKeyException,
-    KeyStoreException {
+    private KeyManager[] createKeyManagers(final ContextAware context)
+                    throws NoSuchProviderException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyStoreException {
 
         if (getKeyStore() == null) {
             return null;

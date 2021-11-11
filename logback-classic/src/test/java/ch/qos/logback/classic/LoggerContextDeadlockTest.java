@@ -47,7 +47,7 @@ public class LoggerContextDeadlockTest {
         }
     }
 
-    class GetLoggerThread extends Thread {
+    static class GetLoggerThread extends Thread {
 
         final LoggerContext loggerContext;
 

@@ -54,7 +54,6 @@ public class ContextBase implements Context, LifeCycle {
     private LifeCycleManager lifeCycleManager;
     private SequenceNumberGenerator sequenceNumberGenerator;
 
-
     private boolean started;
 
     public ContextBase() {
@@ -250,10 +249,10 @@ public class ContextBase implements Context, LifeCycle {
             removeObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
 
             try {
-                sm.add(new InfoStatus("Removing shutdownHook "+hook, this));
+                sm.add(new InfoStatus("Removing shutdownHook " + hook, this));
                 final Runtime runtime = Runtime.getRuntime();
                 final boolean result = runtime.removeShutdownHook(hook);
-                sm.add(new InfoStatus("ShutdownHook removal result: "+ result, this));
+                sm.add(new InfoStatus("ShutdownHook removal result: " + result, this));
             } catch (final IllegalStateException e) {
                 // if JVM is already shutting down, ISE is thrown
                 // no need to do anything else

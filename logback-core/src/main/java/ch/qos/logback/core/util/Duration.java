@@ -90,17 +90,17 @@ public class Duration {
         final String unitStr = matcher.group(UNIT_GROUP);
 
         final double doubleValue = Double.parseDouble(doubleStr);
-        if (unitStr.equalsIgnoreCase("milli") || unitStr.equalsIgnoreCase("millisecond") || unitStr.length() == 0) {
+        if ("milli".equalsIgnoreCase(unitStr) || "millisecond".equalsIgnoreCase(unitStr) || unitStr.length() == 0) {
             return buildByMilliseconds(doubleValue);
         }
-        if (unitStr.equalsIgnoreCase("second") || unitStr.equalsIgnoreCase("seconde")) {
+        if ("second".equalsIgnoreCase(unitStr) || "seconde".equalsIgnoreCase(unitStr)) {
             return buildBySeconds(doubleValue);
         }
-        if (unitStr.equalsIgnoreCase("minute")) {
+        if ("minute".equalsIgnoreCase(unitStr)) {
             return buildByMinutes(doubleValue);
-        } else if (unitStr.equalsIgnoreCase("hour")) {
+        } else if ("hour".equalsIgnoreCase(unitStr)) {
             return buildByHours(doubleValue);
-        } else if (unitStr.equalsIgnoreCase("day")) {
+        } else if ("day".equalsIgnoreCase(unitStr)) {
             return buildByDays(doubleValue);
         } else {
             throw new IllegalStateException("Unexpected " + unitStr);

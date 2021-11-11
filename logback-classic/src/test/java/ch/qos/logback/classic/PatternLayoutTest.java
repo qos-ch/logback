@@ -62,7 +62,6 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, msg, ex, null);
     }
 
-
     @Override
     public ILoggingEvent getEventObject() {
         return makeLoggingEvent("Some message", null);
@@ -252,7 +251,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         pl.setPattern(pattern);
         pl.start();
         final String val = pl.doLayout(makeLoggingEvent("hello", null));
-        assertEquals("logger="+logger.getName() + " hello", val);
+        assertEquals("logger=" + logger.getName() + " hello", val);
     }
 
     @Test
@@ -260,14 +259,14 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         final String mdcKey = "boo";
         final String mdcVal = "moo";
 
-        final String pattern = "%prefix(%level %logger %X{"+mdcKey+"}) %message";
+        final String pattern = "%prefix(%level %logger %X{" + mdcKey + "}) %message";
         pl.setPattern(pattern);
         pl.start();
         MDC.put(mdcKey, mdcVal);
         try {
             final String val = pl.doLayout(makeLoggingEvent("hello", null));
 
-            assertEquals("level="+"INFO logger="+logger.getName() +" "+mdcKey+"="+mdcVal+ " hello", val);
+            assertEquals("level=" + "INFO logger=" + logger.getName() + " " + mdcKey + "=" + mdcVal + " hello", val);
 
         } finally {
             MDC.remove(mdcKey);
@@ -283,13 +282,13 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
             System.setProperty(propertyKey, propertyVal);
 
-            final String pattern = "%prefix(%logger %property{"+propertyKey+"}) %message";
+            final String pattern = "%prefix(%logger %property{" + propertyKey + "}) %message";
             pl.setPattern(pattern);
             pl.start();
 
             final String val = pl.doLayout(makeLoggingEvent("hello", null));
 
-            assertEquals("logger="+logger.getName() +" "+propertyKey+"="+propertyVal+ " hello", val);
+            assertEquals("logger=" + logger.getName() + " " + propertyKey + "=" + propertyVal + " hello", val);
 
         } finally {
             System.clearProperty("px");

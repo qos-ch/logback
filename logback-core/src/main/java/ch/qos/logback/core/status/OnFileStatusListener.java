@@ -11,7 +11,7 @@ public class OnFileStatusListener extends OnPrintStreamStatusListenerBase {
 
     @Override
     public void start() {
-        if(filename ==  null) {
+        if (filename == null) {
             addInfo("File option not set. Defaulting to \"status.txt\"");
             filename = "status.txt";
         }
@@ -20,7 +20,7 @@ public class OnFileStatusListener extends OnPrintStreamStatusListenerBase {
             final FileOutputStream fos = new FileOutputStream(filename, true);
             ps = new PrintStream(fos, true);
         } catch (final FileNotFoundException e) {
-            addError("Failed to open ["+filename+"]", e);
+            addError("Failed to open [" + filename + "]", e);
             return;
         }
 
@@ -30,10 +30,10 @@ public class OnFileStatusListener extends OnPrintStreamStatusListenerBase {
 
     @Override
     public void stop() {
-        if(!isStarted) {
+        if (!isStarted) {
             return;
         }
-        if(ps != null) {
+        if (ps != null) {
             ps.close();
         }
         super.stop();
@@ -47,12 +47,9 @@ public class OnFileStatusListener extends OnPrintStreamStatusListenerBase {
         this.filename = filename;
     }
 
-
     @Override
     protected PrintStream getPrintStream() {
         return ps;
     }
-
-
 
 }

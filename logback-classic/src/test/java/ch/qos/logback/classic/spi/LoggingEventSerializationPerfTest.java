@@ -107,9 +107,8 @@ public class LoggingEventSerializationPerfTest {
 
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
-        final
-        long referencePerf = 5000;
-        //BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
+        final long referencePerf = 5000;
+        // BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     @Test
@@ -125,8 +124,7 @@ public class LoggingEventSerializationPerfTest {
             noos.reset();
         }
         @SuppressWarnings("unused")
-        final
-        double rt = doLoop(builder, LOOP_LEN);
+        final double rt = doLoop(builder, LOOP_LEN);
         final long averageSize = noos.size() / LOOP_LEN;
 
         System.out.println("noos size " + noos.size() + " average size=" + averageSize);
@@ -136,8 +134,7 @@ public class LoggingEventSerializationPerfTest {
 
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
-        final
-        long referencePerf = 7000;
-        //BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
+        final long referencePerf = 7000;
+        // BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 }

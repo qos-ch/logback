@@ -176,8 +176,7 @@ public abstract class NamedConverter extends ClassicConverter {
 
                 final int missRate = (int) (cacheMissCalculator.getCacheMissRate() * 100);
 
-                NamedConverter.this.addInfo("Doubling nameCache removalThreshold to " + removalThreshold
-                                + " previous cacheMissRate=" + missRate + "%");
+                NamedConverter.this.addInfo("Doubling nameCache removalThreshold to " + removalThreshold + " previous cacheMissRate=" + missRate + "%");
                 cacheMissCalculator.updateMilestones();
             }
 

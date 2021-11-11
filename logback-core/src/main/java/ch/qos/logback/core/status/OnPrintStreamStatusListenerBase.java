@@ -45,7 +45,7 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
 
     private void print(final Status status) {
         final StringBuilder sb = new StringBuilder();
-        if(prefix != null) {
+        if (prefix != null) {
             sb.append(prefix);
         }
 

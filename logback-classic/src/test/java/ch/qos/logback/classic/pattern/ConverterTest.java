@@ -38,7 +38,6 @@ import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
 
-
 public class ConverterTest {
 
     LoggerContext lc = new LoggerContext();
@@ -315,7 +314,7 @@ public class ConverterTest {
 
             final String expectedRegex = "Caller\\+4\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
             final String actual = buf.toString();
-            assertTrue("actual: "+actual, Pattern.compile(expectedRegex).matcher(actual).find());
+            assertTrue("actual: " + actual, Pattern.compile(expectedRegex).matcher(actual).find());
 
         }
     }

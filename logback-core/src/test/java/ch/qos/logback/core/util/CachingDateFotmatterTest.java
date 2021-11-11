@@ -38,5 +38,4 @@ public class CachingDateFotmatterTest {
         assertEquals("2015-03-26T17:49", result);
     }
 
-
 }

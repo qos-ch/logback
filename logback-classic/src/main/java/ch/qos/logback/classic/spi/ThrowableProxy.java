@@ -74,8 +74,7 @@ public class ThrowableProxy implements IThrowableProxy {
                 cause = new ThrowableProxy(nested, true);
             } else {
                 cause = new ThrowableProxy(nested, alreadyProcessedSet);
-                cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(),
-                                stackTraceElementProxyArray);
+                cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
             }
         }
 
@@ -88,8 +87,7 @@ public class ThrowableProxy implements IThrowableProxy {
                     suppressedList.add(throwableProxy);
                 } else {
                     final ThrowableProxy throwableProxy = new ThrowableProxy(sup, alreadyProcessedSet);
-                    throwableProxy.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(sup.getStackTrace(),
-                                    stackTraceElementProxyArray);
+                    throwableProxy.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(sup.getStackTrace(), stackTraceElementProxyArray);
                     suppressedList.add(throwableProxy);
                 }
             }
@@ -120,7 +118,6 @@ public class ThrowableProxy implements IThrowableProxy {
     public StackTraceElementProxy[] getStackTraceElementProxyArray() {
         return stackTraceElementProxyArray;
     }
-
 
     @Override
     public boolean isCyclic() {

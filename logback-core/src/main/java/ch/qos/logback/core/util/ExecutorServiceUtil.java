@@ -53,7 +53,6 @@ public class ExecutorServiceUtil {
         return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE, THREAD_FACTORY);
     }
 
-
     /**
      * Creates an executor service suitable for use by logback components.
      * @return executor service

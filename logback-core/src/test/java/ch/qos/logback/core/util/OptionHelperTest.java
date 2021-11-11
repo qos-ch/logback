@@ -65,8 +65,7 @@ public class OptionHelperTest {
 
         try {
             @SuppressWarnings("unused")
-            final
-            String result = OptionHelper.substVars(noSubst, context);
+            final String result = OptionHelper.substVars(noSubst, context);
             fail();
         } catch (final IllegalArgumentException e) {
             // ok

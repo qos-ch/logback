@@ -151,12 +151,10 @@ public class LoggingEventSerializationTest {
         checkForEquality(event, remoteEvent);
     }
 
-
     @Test
     public void testWithMarker() throws Exception {
         final Marker marker = MarkerFactory.getMarker("A_MARKER");
         final LoggingEvent event = createLoggingEvent();
-
 
         event.addMarker(marker);
         assertNotNull(event.getMarkerList());

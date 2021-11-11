@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-
 /**
  * @author ceki
  */

@@ -41,7 +41,7 @@ public class DummyEncoder<E> extends EncoderBase<E> {
     }
 
     @Override
-    public byte[] encode(final E event)  {
+    public byte[] encode(final E event) {
         return encodeString(val);
     }
 
@@ -76,7 +76,7 @@ public class DummyEncoder<E> extends EncoderBase<E> {
     }
 
     @Override
-    public byte[] footerBytes()  {
+    public byte[] footerBytes() {
         if (fileFooter == null) {
             return null;
         }

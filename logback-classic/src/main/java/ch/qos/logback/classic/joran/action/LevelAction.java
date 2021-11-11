@@ -33,11 +33,8 @@ import ch.qos.logback.core.model.Model;
  */
 public class LevelAction extends BaseModelAction {
 
-
-
     @Override
-    protected boolean validPreconditions(final InterpretationContext interpcont, final String name,
-                    final Attributes attributes) {
+    protected boolean validPreconditions(final InterpretationContext interpcont, final String name, final Attributes attributes) {
         final PreconditionValidator pv = new PreconditionValidator(this, interpcont, name, attributes);
         pv.validateValueAttribute();
         addWarn("<level> element is deprecated. Near [" + name + "] on line " + Action.getLineNumber(interpcont));
@@ -53,6 +50,5 @@ public class LevelAction extends BaseModelAction {
 
         return lm;
     }
-
 
 }

@@ -27,7 +27,7 @@ public class EchoEncoder<E> extends EncoderBase<E> {
     }
 
     @Override
-    public byte[] footerBytes()  {
+    public byte[] footerBytes() {
         if (fileFooter == null) {
             return null;
         }
@@ -35,7 +35,7 @@ public class EchoEncoder<E> extends EncoderBase<E> {
     }
 
     @Override
-    public byte[] headerBytes()  {
+    public byte[] headerBytes() {
         if (fileHeader == null) {
             return null;
         }

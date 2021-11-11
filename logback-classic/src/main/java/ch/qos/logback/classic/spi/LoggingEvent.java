@@ -120,17 +120,16 @@ public class LoggingEvent implements ILoggingEvent {
 
         this.message = message;
         argumentArray = argArray;
-        //List<Object> l =		Arrays.asList(argArray);
+        // List<Object> l = Arrays.asList(argArray);
 
         timeStamp = System.currentTimeMillis();
 
-        if(loggerContext != null) {
+        if (loggerContext != null) {
             final SequenceNumberGenerator sequenceNumberGenerator = loggerContext.getSequenceNumberGenerator();
-            if(sequenceNumberGenerator != null) {
+            if (sequenceNumberGenerator != null) {
                 sequenceNumber = sequenceNumberGenerator.nextSequenceNumber();
             }
         }
-
 
         if (throwable == null) {
             throwable = extractThrowableAnRearrangeArguments(argArray);
@@ -143,7 +142,6 @@ public class LoggingEvent implements ILoggingEvent {
                 throwableProxy.calculatePackagingData();
             }
         }
-
 
     }
 
@@ -168,7 +166,7 @@ public class LoggingEvent implements ILoggingEvent {
     }
 
     public void addKeyValuePair(final KeyValuePair kvp) {
-        if(keyValuePairs == null) {
+        if (keyValuePairs == null) {
             keyValuePairs = new ArrayList<>(4);
         }
         keyValuePairs.add(kvp);
@@ -182,7 +180,6 @@ public class LoggingEvent implements ILoggingEvent {
     public List<KeyValuePair> getKeyValuePairs() {
         return keyValuePairs;
     }
-
 
     @Override
     public Level getLevel() {
@@ -252,7 +249,6 @@ public class LoggingEvent implements ILoggingEvent {
         getMDCPropertyMap();
     }
 
-
     public void setLoggerContext(final LoggerContext lc) {
         loggerContext = lc;
     }
@@ -316,8 +312,8 @@ public class LoggingEvent implements ILoggingEvent {
     @Override
     public StackTraceElement[] getCallerData() {
         if (callerDataArray == null) {
-            callerDataArray = CallerData
-                            .extract(new Throwable(), fqnOfLoggerClass, loggerContext.getMaxCallerDataDepth(), loggerContext.getFrameworkPackages());
+            callerDataArray = CallerData.extract(new Throwable(), fqnOfLoggerClass, loggerContext.getMaxCallerDataDepth(),
+                            loggerContext.getFrameworkPackages());
         }
         return callerDataArray;
     }
@@ -331,7 +327,6 @@ public class LoggingEvent implements ILoggingEvent {
         this.callerDataArray = callerDataArray;
     }
 
-
     @Override
     public List<Marker> getMarkerList() {
         return markerList;
@@ -341,7 +336,7 @@ public class LoggingEvent implements ILoggingEvent {
         if (marker == null) {
             return;
         }
-        if(markerList==null) {
+        if (markerList == null) {
             markerList = new ArrayList<>(4);
         }
         markerList.add(marker);
@@ -426,9 +421,8 @@ public class LoggingEvent implements ILoggingEvent {
      * @since 1.0.11
      */
     private void writeObject(final ObjectOutputStream out) throws IOException {
-        throw new UnsupportedOperationException(this.getClass() + " does not support serialization. "
-                        + "Use LoggerEventVO instance instead. See also LoggerEventVO.build method.");
+        throw new UnsupportedOperationException(
+                        this.getClass() + " does not support serialization. " + "Use LoggerEventVO instance instead. See also LoggerEventVO.build method.");
     }
-
 
 }

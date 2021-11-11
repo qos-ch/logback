@@ -21,7 +21,6 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         return new ConfigurationModelHandler(context);
     }
 
-
     @Override
     protected Class<ConfigurationModel> getSupportedModelClass() {
         return ConfigurationModel.class;
@@ -38,7 +37,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         if (debug == null) {
             debug = configurationModel.getDebug();
         }
-        if (OptionHelper.isNullOrEmpty(debug) || debug.equals("false") || debug.equals("null")) {
+        if (OptionHelper.isNullOrEmpty(debug) || "false".equals(debug) || "null".equals(debug)) {
             addInfo(ConfigurationModel.INTERNAL_DEBUG_ATTR + " attribute not set");
         } else {
             StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());

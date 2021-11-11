@@ -24,10 +24,10 @@ public class LoggerComparator implements Comparator<Logger> {
         if (l1.getName().equals(l2.getName())) {
             return 0;
         }
-        if (l1.getName().equals(org.slf4j.Logger.ROOT_LOGGER_NAME)) {
+        if (org.slf4j.Logger.ROOT_LOGGER_NAME.equals(l1.getName())) {
             return -1;
         }
-        if (l2.getName().equals(org.slf4j.Logger.ROOT_LOGGER_NAME)) {
+        if (org.slf4j.Logger.ROOT_LOGGER_NAME.equals(l2.getName())) {
             return 1;
         }
         return l1.getName().compareTo(l2.getName());

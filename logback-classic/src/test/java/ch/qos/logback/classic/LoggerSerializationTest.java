@@ -121,7 +121,7 @@ public class LoggerSerializationTest {
     private Foo writeAndRead(final Foo foo) throws IOException, ClassNotFoundException {
         writeObject(oos, foo);
         final ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-        hardenedLoggingEventInputStream =  new HardenedLoggingEventInputStream(bis, whitelist);
+        hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(bis, whitelist);
         final Foo fooBack = readFooObject(hardenedLoggingEventInputStream);
         hardenedLoggingEventInputStream.close();
         return fooBack;
@@ -144,7 +144,9 @@ public class LoggerSerializationTest {
     @Test
     public void testCompatibilityWith_v1_0_11() throws IOException, ClassNotFoundException {
         final FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX + "logger_v1.0.11.ser");
-        final HardenedObjectInputStream ois = new HardenedLoggingEventInputStream(fis); // new String[] {Logger.class.getName(), LoggerRemoteView.class.getName()});
+        final HardenedObjectInputStream ois = new HardenedLoggingEventInputStream(fis); // new String[]
+                                                                                        // {Logger.class.getName(),
+                                                                                        // LoggerRemoteView.class.getName()});
         final Logger a = (Logger) ois.readObject();
         ois.close();
         assertEquals("a", a.getName());
@@ -156,7 +158,7 @@ public class LoggerSerializationTest {
     @Test
     public void testCompatibilityWith_v1_0_12() throws IOException, ClassNotFoundException {
         final FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX + "logger_v1.0.12.ser");
-        final HardenedObjectInputStream ois = new HardenedObjectInputStream(fis, new String[] {Logger.class.getName()});
+        final HardenedObjectInputStream ois = new HardenedObjectInputStream(fis, new String[] { Logger.class.getName() });
         final Logger a = (Logger) ois.readObject();
         ois.close();
         assertEquals("a", a.getName());

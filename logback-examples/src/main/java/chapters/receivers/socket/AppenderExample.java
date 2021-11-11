@@ -60,7 +60,7 @@ public class AppenderExample {
 
             final String s = reader.readLine();
 
-            if (s.equals("q")) {
+            if ("q".equals(s)) {
                 break;
             }
             logger.debug(s);

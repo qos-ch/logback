@@ -137,7 +137,7 @@ public class ContextJNDISelector implements ContextSelector {
         final URL url = urlByResourceName(sm, jndiEntryForConfigResource);
         if (url == null) {
             final String msg = "The jndi resource [" + jndiEntryForConfigResource + "] for context [" + loggerContext.getName()
-            + "] does not lead to a valid file";
+                            + "] does not lead to a valid file";
             sm.add(new WarnStatus(msg, this));
         }
         return url;

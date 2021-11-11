@@ -42,7 +42,6 @@ public class BasicConfigurator extends ContextAwareBase implements Configurator 
         final LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<>();
         encoder.setContext(lc);
 
-
         // same as
         // PatternLayout layout = new PatternLayout();
         // layout.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");

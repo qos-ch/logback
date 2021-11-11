@@ -107,7 +107,8 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
     }
 
     // LOGBACK-411 and LOGBACK-750
-    private void handleThrowableFirstLine(final OutputStream sw, final IThrowableProxy tp, final String stackTracePrefix, final boolean isRootException) throws IOException {
+    private void handleThrowableFirstLine(final OutputStream sw, final IThrowableProxy tp, final String stackTracePrefix, final boolean isRootException)
+                    throws IOException {
         final StringBuilder sb = new StringBuilder().append(stackTracePrefix);
 
         if (!isRootException) {

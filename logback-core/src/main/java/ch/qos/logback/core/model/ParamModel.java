@@ -11,6 +11,7 @@ public class ParamModel extends NamedModel {
     public String getValue() {
         return value;
     }
+
     public void setValue(final String value) {
         this.value = value;
     }

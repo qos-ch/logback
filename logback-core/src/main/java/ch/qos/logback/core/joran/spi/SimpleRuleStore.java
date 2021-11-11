@@ -86,7 +86,8 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     public List<Action> matchActions(final ElementPath elementPath) {
         List<Action> actionList;
 
-        if ((actionList = fullPathMatch(elementPath)) != null || (actionList = suffixMatch(elementPath)) != null || (actionList = prefixMatch(elementPath)) != null || (actionList = middleMatch(elementPath)) != null) {
+        if ((actionList = fullPathMatch(elementPath)) != null || (actionList = suffixMatch(elementPath)) != null
+                        || (actionList = prefixMatch(elementPath)) != null || (actionList = middleMatch(elementPath)) != null) {
             return actionList;
         }
         return null;

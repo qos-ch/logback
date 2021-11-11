@@ -78,13 +78,12 @@ public class LayoutInsteadOfEncoderTest {
 
         checker.assertContainsMatch(Status.WARN, "As of version 1.2.0 \"immediateFlush\" property should be set within the enclosing Appender.");
         checker.assertContainsMatch(Status.WARN, "Please move \"immediateFlush\" property into the enclosing appender.");
-        checker.assertContainsMatch(Status.WARN, "Setting the \"immediateFlush\" property of the enclosing appender to "+immediateFlush);
+        checker.assertContainsMatch(Status.WARN, "Setting the \"immediateFlush\" property of the enclosing appender to " + immediateFlush);
 
         final ch.qos.logback.classic.Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         final FileAppender<ILoggingEvent> fileAppender = (FileAppender<ILoggingEvent>) root.getAppender("LIOE");
         assertTrue(fileAppender.isStarted());
         assertEquals(immediateFlush, Boolean.valueOf(fileAppender.isImmediateFlush()));
     }
-
 
 }

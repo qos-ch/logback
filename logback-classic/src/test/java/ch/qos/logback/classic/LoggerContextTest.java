@@ -251,7 +251,8 @@ public class LoggerContextTest {
         assertNotNull(fileCollisions);
         assertTrue(fileCollisions.isEmpty());
 
-        final Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+        final Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc
+                        .getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         assertNotNull(filenamePatternCollisionMap);
         assertTrue(filenamePatternCollisionMap.isEmpty());
     }

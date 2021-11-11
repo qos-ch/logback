@@ -25,7 +25,4 @@ public class Gaussian {
         return mean + random.nextGaussian() * variance;
     }
 
-
-
-
 }

@@ -88,7 +88,7 @@ public class CallerData {
     static boolean isInFrameworkSpace(final String currentClass, final String fqnOfInvokingClass, final List<String> frameworkPackageList) {
         // the check for org.apache.log4j.Category class is intended to support
         // log4j-over-slf4j. it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
-        if (currentClass.equals(fqnOfInvokingClass) || currentClass.equals(LOG4J_CATEGORY) || currentClass.startsWith(SLF4J_BOUNDARY)
+        if (currentClass.equals(fqnOfInvokingClass) || LOG4J_CATEGORY.equals(currentClass) || currentClass.startsWith(SLF4J_BOUNDARY)
                         || isInFrameworkSpaceList(currentClass, frameworkPackageList)) {
             return true;
         }

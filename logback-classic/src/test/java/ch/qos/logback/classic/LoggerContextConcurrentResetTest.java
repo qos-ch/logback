@@ -26,7 +26,7 @@ public class LoggerContextConcurrentResetTest {
         statusChecker.assertIsErrorFree();
     }
 
-    class Harness extends AbstractMultiThreadedHarness {
+    static class Harness extends AbstractMultiThreadedHarness {
         int desiredResetCount;
         Resetter resetter;
 

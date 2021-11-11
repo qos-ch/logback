@@ -106,7 +106,8 @@ public class Node {
 
         final Node node = (Node) o;
 
-        if (type != node.type || (payload != null ? !payload.equals(node.payload) : node.payload != null) || (defaultPart != null ? !defaultPart.equals(node.defaultPart) : node.defaultPart != null)
+        if (type != node.type || (payload != null ? !payload.equals(node.payload) : node.payload != null)
+                        || (defaultPart != null ? !defaultPart.equals(node.defaultPart) : node.defaultPart != null)
                         || (next != null ? !next.equals(node.next) : node.next != null)) {
             return false;
         }

@@ -57,7 +57,7 @@ public class SyslogStartConverterTest {
         // RFC 3164, section 4.1.2:
         // If the day of the month is less than 10, then it MUST be represented as
         // a space and then the number. For example, the 7th day of August would be
-        // represented as "Aug  7", with two spaces between the "g" and the "7".
+        // represented as "Aug 7", with two spaces between the "g" and the "7".
         final LoggingEvent le = createLoggingEvent();
         calendar.set(2012, Calendar.AUGUST, 7, 13, 15, 0);
         le.setTimeStamp(calendar.getTimeInMillis());

@@ -41,7 +41,8 @@ public class InstrumentedServerSocketReceiver extends ServerSocketReceiver {
         this(serverSocket, new RemoteAppenderServerListener(serverSocket), null);
     }
 
-    public InstrumentedServerSocketReceiver(final ServerSocket serverSocket, final ServerListener<RemoteAppenderClient> listener, final ServerRunner<RemoteAppenderClient> runner) {
+    public InstrumentedServerSocketReceiver(final ServerSocket serverSocket, final ServerListener<RemoteAppenderClient> listener,
+                    final ServerRunner<RemoteAppenderClient> runner) {
         this.serverSocket = serverSocket;
         this.listener = listener;
         this.runner = runner;

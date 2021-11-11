@@ -76,7 +76,7 @@ public class PrudentFileAppenderInterruptTest {
         assertEquals("Incorrect number of logged lines", 2, totalLines);
     }
 
-    class Runner extends RunnableWithCounterAndDone {
+    static class Runner extends RunnableWithCounterAndDone {
         FileAppender<Object> fa;
         CountDownLatch latch = new CountDownLatch(1); // Just to make sure this is executed before we log in the test
         // method

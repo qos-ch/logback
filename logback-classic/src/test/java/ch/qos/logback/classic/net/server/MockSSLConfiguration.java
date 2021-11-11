@@ -36,7 +36,7 @@ class MockSSLConfiguration extends SSLConfiguration {
 
     @Override
     public SSLContext createContext(final ContextAware context) throws NoSuchProviderException, NoSuchAlgorithmException, KeyManagementException,
-    UnrecoverableKeyException, KeyStoreException, CertificateException {
+                    UnrecoverableKeyException, KeyStoreException, CertificateException {
         contextCreated = true;
         return super.createContext(context);
     }

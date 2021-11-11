@@ -35,6 +35,7 @@ import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.recovery.RecoveryCoordinator;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
+
 @Ignore
 public class SyslogAppenderTest {
 
@@ -201,7 +202,8 @@ public class SyslogAppenderTest {
         final int maxMessageSize = sa.getMaxMessageSize();
         final String largeMsg = new String(mockServer.getMessageList().get(0));
         assertTrue(largeMsg.startsWith(expected));
-        final String largeRegex = SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " " + "a{" + (maxMessageSize - 2000) + "," + maxMessageSize + "}";
+        final String largeRegex = SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " " + "a{" + (maxMessageSize - 2000) + "," + maxMessageSize
+                        + "}";
         checkRegexMatch(largeMsg, largeRegex);
 
         final String msg = new String(mockServer.getMessageList().get(1));

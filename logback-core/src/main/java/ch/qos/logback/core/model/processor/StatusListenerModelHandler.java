@@ -11,7 +11,6 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class StatusListenerModelHandler extends ModelHandlerBase {
 
-
     boolean inError = false;
     Boolean effectivelyAdded = null;
     StatusListener statusListener = null;

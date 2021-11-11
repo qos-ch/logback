@@ -21,6 +21,4 @@ public class DenyModelFilter implements ModelFiler {
         return FilterReply.NEUTRAL;
     }
 
-
-
 }

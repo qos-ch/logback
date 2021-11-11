@@ -151,8 +151,7 @@ public class CyclicBuffer<E> {
         if (newSize < 0) {
             throw new IllegalArgumentException("Negative array size [" + newSize + "] not allowed.");
         }
-        if (newSize == numElems)
-        {
+        if (newSize == numElems) {
             return; // nothing to do
         }
 

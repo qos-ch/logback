@@ -87,7 +87,6 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         assertEquals("hello % world", s);
     }
 
-
     @Test
     public void noClosingCurlyBrace() {
         final PatternLayoutBase<Object> plb = getPatternLayoutBase();

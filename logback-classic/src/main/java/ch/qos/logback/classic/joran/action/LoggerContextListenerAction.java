@@ -27,8 +27,7 @@ public class LoggerContextListenerAction extends BaseModelAction {
     LoggerContextListener lcl;
 
     @Override
-    protected boolean validPreconditions(final InterpretationContext ic, final String name,
-                    final Attributes attributes) {
+    protected boolean validPreconditions(final InterpretationContext ic, final String name, final Attributes attributes) {
         final PreconditionValidator pv = new PreconditionValidator(this, ic, name, attributes);
         pv.validateClassAttribute();
         return pv.isValid();
@@ -40,7 +39,5 @@ public class LoggerContextListenerAction extends BaseModelAction {
         loggerContextListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
         return loggerContextListenerModel;
     }
-
-
 
 }

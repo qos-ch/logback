@@ -23,7 +23,6 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
         this.targetLength = targetLength;
     }
 
-
     @Override
     public String abbreviate(final String fqClassName) {
         if (fqClassName == null) {
@@ -71,7 +70,7 @@ public class TargetLengthBasedClassNameAbbreviator implements Abbreviator {
                 }
                 buf.append(c);
                 inDotState = true;
-            } else if(inDotState) {
+            } else if (inDotState) {
                 buf.append(c);
                 inDotState = false;
             } else {

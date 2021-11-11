@@ -35,8 +35,7 @@ public class IntegerTokenConverter extends DynamicConverter<Object> implements M
         if (formattingInfo == null) {
             return s;
         }
-        return IntStream.range(s.length(), formattingInfo.getMin()).mapToObj(k -> "0")
-                        .collect(Collectors.joining("", "", s));
+        return IntStream.range(s.length(), formattingInfo.getMin()).mapToObj(k -> "0").collect(Collectors.joining("", "", s));
     }
 
     @Override

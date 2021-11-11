@@ -55,7 +55,7 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
         }
         final Object o = ic.peekObject();
         if (o != root) {
-            addWarn("The object ["+o+"] on the top the of the stack is not the root logger");
+            addWarn("The object [" + o + "] on the top the of the stack is not the root logger");
         } else {
             ic.popObject();
         }

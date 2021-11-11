@@ -23,11 +23,9 @@ import ch.qos.logback.core.util.AggregationType;
  */
 public class ImplicitActionDataForComplexProperty extends ImplicitActionDataBase {
 
-
     private Object nestedComplexProperty;
 
-    public ImplicitActionDataForComplexProperty(final PropertySetter parentBean, final AggregationType aggregationType,
-                    final String propertyName) {
+    public ImplicitActionDataForComplexProperty(final PropertySetter parentBean, final AggregationType aggregationType, final String propertyName) {
         super(parentBean, aggregationType, propertyName);
     }
 

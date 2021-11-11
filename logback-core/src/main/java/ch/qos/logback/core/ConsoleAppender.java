@@ -44,7 +44,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
     private final static String wrapSystemOut_METHOD_NAME = "wrapSystemOut";
     private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
-    private final static Class<?>[] ARGUMENT_TYPES = {PrintStream.class};
+    private final static Class<?>[] ARGUMENT_TYPES = { PrintStream.class };
 
     /**
      * Sets the value of the <b>Target</b> option. Recognized values are

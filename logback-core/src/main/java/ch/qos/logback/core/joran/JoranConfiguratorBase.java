@@ -53,7 +53,6 @@ import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.model.processor.TimestampModelHandler;
 import ch.qos.logback.core.spi.AppenderAttachable;
 
-
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
 // see also http://tinyurl.com/c2rp5
 
@@ -102,15 +101,15 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     @Override
     protected void addImplicitRules(final SaxEventInterpreter interpreter) {
         // The following line adds the capability to parse nested components
-        //        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
-        //        nestedComplexPropertyIA.setContext(context);
-        //        interpreter.addImplicitAction(nestedComplexPropertyIA);
+        // NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
+        // nestedComplexPropertyIA.setContext(context);
+        // interpreter.addImplicitAction(nestedComplexPropertyIA);
         //
-        //        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
-        //        nestedBasicIA.setContext(context);
-        //        interpreter.addImplicitAction(nestedBasicIA);
+        // NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
+        // nestedBasicIA.setContext(context);
+        // interpreter.addImplicitAction(nestedBasicIA);
 
-        final ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+        final ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
         implicitRuleModelAction.setContext(context);
         interpreter.addImplicitAction(implicitRuleModelAction);
     }
@@ -122,7 +121,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
 
-        //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+        // omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 
     public InterpretationContext getInterpretationContext() {

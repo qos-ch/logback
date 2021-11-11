@@ -69,32 +69,31 @@ public class LoggerNameConverterPerfTest {
 
     @Test
     public void measureAbbreviationPerf() {
-        for(int i = 0; i < 10*1000; i++) {
+        for (int i = 0; i < 10 * 1000; i++) {
             performAbbreviation();
         }
-        for(int i = 0; i < 10*1000; i++) {
+        for (int i = 0; i < 10 * 1000; i++) {
             performAbbreviation();
         }
-        final int runLength = 1000*1000;
+        final int runLength = 1000 * 1000;
         System.out.println("Start measurements");
         final long start = System.nanoTime();
-        for(int i = 0; i < runLength; i++) {
+        for (int i = 0; i < runLength; i++) {
             performAbbreviation();
         }
         final long end = System.nanoTime();
         final long diff = end - start;
-        final double average = diff*1.0D/runLength;
+        final double average = diff * 1.0D / runLength;
         logger.atInfo().addArgument(average).log("Average = {} nanos");
         final int cacheMisses = loggerConverter.getCacheMisses();
 
         logger.atInfo().addArgument(cacheMisses).log("cacheMisses = {} ");
         logger.atInfo().addArgument(runLength).log("total calls= = {} ");
 
-        final double cacheMissRate = loggerConverter.getCacheMissRate()*100;
+        final double cacheMissRate = loggerConverter.getCacheMissRate() * 100;
         logger.atInfo().addArgument(cacheMissRate).log("cacheMiss rate %= {} ");
 
     }
-
 
     public void performAbbreviation() {
         final String fqn = getFQN();

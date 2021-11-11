@@ -32,8 +32,7 @@ public class InitializationIntegrationTest {
     @Test
     public void smoke() {
         @SuppressWarnings("unused")
-        final
-        Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
+        final Logger logger = (Logger) LoggerFactory.getLogger(this.getClass());
         final Logger root = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
         final ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(la);

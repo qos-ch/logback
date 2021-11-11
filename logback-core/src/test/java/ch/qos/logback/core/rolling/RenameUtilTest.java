@@ -70,26 +70,25 @@ public class RenameUtilTest {
         assertTrue(statusChecker.isErrorFree(0));
     }
 
-
-    @Test //  LOGBACK-1054
-    public void renameLockedAbstractFile_LOGBACK_1054 () throws IOException, RolloverFailure {
+    @Test // LOGBACK-1054
+    public void renameLockedAbstractFile_LOGBACK_1054() throws IOException, RolloverFailure {
         final RenameUtil renameUtil = new RenameUtil();
         renameUtil.setContext(context);
 
-        final String abstractFileName = "abstract_pathname-"+diff;
+        final String abstractFileName = "abstract_pathname-" + diff;
 
-        final String src = CoreTestConstants.OUTPUT_DIR_PREFIX+abstractFileName;
+        final String src = CoreTestConstants.OUTPUT_DIR_PREFIX + abstractFileName;
         final String target = abstractFileName + ".target";
 
         makeFile(src);
 
         final FileInputStream fisLock = new FileInputStream(src);
-        renameUtil.rename(src,  target);
+        renameUtil.rename(src, target);
         // release the lock
         fisLock.close();
 
         StatusPrinter.print(context);
-        assertEquals(0, statusChecker.matchCount("Parent of target file ."+target+". is null"));
+        assertEquals(0, statusChecker.matchCount("Parent of target file ." + target + ". is null"));
     }
 
     @Test
@@ -104,7 +103,6 @@ public class RenameUtilTest {
         renameUtil.rename(src, "/tmp/foo" + diff + ".txt");
         StatusPrinter.print(context);
     }
-
 
     @Test
     @Ignore
@@ -126,6 +124,5 @@ public class RenameUtilTest {
         fos.write(("hello" + diff).getBytes());
         fos.close();
     }
-
 
 }

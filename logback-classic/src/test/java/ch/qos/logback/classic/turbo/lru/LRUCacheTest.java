@@ -95,7 +95,7 @@ public class LRUCacheTest {
         assertEquals(tlruCache.keyList(), lruCache.keyList());
     }
 
-    private class SimulatorRunnable extends Thread {
+    private static class SimulatorRunnable extends Thread {
 
         LRUCache<String, String> lruCache;
         T_LRUCache<String> tlruCache;

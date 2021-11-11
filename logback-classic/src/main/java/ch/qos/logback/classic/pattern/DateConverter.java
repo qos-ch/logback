@@ -34,7 +34,7 @@ public class DateConverter extends ClassicConverter {
             datePattern = CoreConstants.ISO8601_PATTERN;
         }
 
-        if (datePattern.equals(CoreConstants.ISO8601_STR)) {
+        if (CoreConstants.ISO8601_STR.equals(datePattern)) {
             datePattern = CoreConstants.ISO8601_PATTERN;
         }
 
@@ -53,8 +53,6 @@ public class DateConverter extends ClassicConverter {
             // default to the ISO8601 format
             cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN, zoneId);
         }
-
-
 
         super.start();
     }

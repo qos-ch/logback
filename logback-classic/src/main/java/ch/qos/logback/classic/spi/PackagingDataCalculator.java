@@ -42,8 +42,8 @@ public class PackagingDataCalculator {
         // sun.reflect.Reflection class. However, this class will *not compile*
         // on JDKs lacking sun.reflect.Reflection.
         try {
-            //Reflection.getCallerClass(2);
-            //GET_CALLER_CLASS_METHOD_AVAILABLE = true;
+            // Reflection.getCallerClass(2);
+            // GET_CALLER_CLASS_METHOD_AVAILABLE = true;
         } catch (final NoClassDefFoundError | NoSuchMethodError | UnsupportedOperationException e) {
         } catch (final Throwable e) {
             System.err.println("Unexpected exception");
@@ -81,7 +81,7 @@ public class PackagingDataCalculator {
         for (int i = 0; i < commonFrames; i++) {
             final Class<?> callerClass = null;
             if (GET_CALLER_CLASS_METHOD_AVAILABLE) {
-                //callerClass = Reflection.getCallerClass(localFirstCommon + i - missfireCount + 1);
+                // callerClass = Reflection.getCallerClass(localFirstCommon + i - missfireCount + 1);
             }
             final StackTraceElementProxy step = stepArray[stepFirstCommon + i];
             final String stepClassname = step.ste.getClassName();

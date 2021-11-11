@@ -58,8 +58,8 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         }
     }
 
-    private void initPolicies(final RollingFileAppender<Object> rfa, final TimeBasedRollingPolicy<Object> tbrp, final String filenamePattern, final int sizeThreshold, final long givenTime,
-                    final long lastCheck) {
+    private void initPolicies(final RollingFileAppender<Object> rfa, final TimeBasedRollingPolicy<Object> tbrp, final String filenamePattern,
+                    final int sizeThreshold, final long givenTime, final long lastCheck) {
         sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<>();
         tbrp.setContext(context);
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
@@ -90,12 +90,14 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         }
     }
 
-    void generic(final String testId, final UnaryOperator<String> filenameFunction, final boolean withSecondPhase, final String compressionSuffix) throws IOException, InterruptedException, ExecutionException {
+    void generic(final String testId, final UnaryOperator<String> filenameFunction, final boolean withSecondPhase, final String compressionSuffix)
+                    throws IOException, InterruptedException, ExecutionException {
         final String file = filenameFunction.apply(testId);
         initRollingFileAppender(rfa1, file);
         sizeThreshold = 300;
 
-        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+        initPolicies(rfa1, tbrp1, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime,
+                        0);
         addExpectedFileName_ByFileIndexCounter(randomOutputDir, testId, getMillisOfCurrentPeriodsStart(), fileIndexCounter, compressionSuffix);
         incCurrentTime(100);
         tbrp1.timeBasedFileNamingAndTriggeringPolicy.setCurrentTime(currentTime);
@@ -130,7 +132,8 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         sortedContentCheck(randomOutputDir, runLength, prefix);
     }
 
-    void secondPhase(final String testId, final UnaryOperator<String> filenameFunction, final String compressionSuffix, final int runLength, final String prefix) {
+    void secondPhase(final String testId, final UnaryOperator<String> filenameFunction, final String compressionSuffix, final int runLength,
+                    final String prefix) {
         rfa1.stop();
 
         final String filename = filenameFunction.apply(testId);
@@ -144,7 +147,8 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         sm.add(new InfoStatus("currentTime%1000=" + currentTime % 1000, this));
 
         initRollingFileAppender(rfa2, filename);
-        initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime, 0);
+        initPolicies(rfa2, tbrp2, randomOutputDir + testId + "-%d{" + DATE_PATTERN_WITH_SECONDS + "}-%i.txt" + compressionSuffix, sizeThreshold, currentTime,
+                        0);
 
         for (int i = runLength; i < runLength * 2; i++) {
             incCurrentTime(100);

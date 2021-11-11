@@ -51,7 +51,6 @@ public class FileSizeTest {
         }
     }
 
-
     @Test
     public void testToString() {
         {
@@ -60,17 +59,17 @@ public class FileSizeTest {
         }
 
         {
-            final FileSize fs = new FileSize(8*1024+3);
+            final FileSize fs = new FileSize(8 * 1024 + 3);
             assertEquals("8 KB", fs.toString());
         }
 
         {
-            final FileSize fs = new FileSize(8*1024*1024+3*1024);
+            final FileSize fs = new FileSize(8 * 1024 * 1024 + 3 * 1024);
             assertEquals("8 MB", fs.toString());
         }
 
         {
-            final FileSize fs = new FileSize(8*1024*1024*1024L);
+            final FileSize fs = new FileSize(8 * 1024 * 1024 * 1024L);
             assertEquals("8 GB", fs.toString());
         }
     }

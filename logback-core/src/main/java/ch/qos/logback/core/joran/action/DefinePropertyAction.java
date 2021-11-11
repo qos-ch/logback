@@ -44,6 +44,4 @@ public class DefinePropertyAction extends BaseModelAction {
         return defineModel;
     }
 
-
-
 }

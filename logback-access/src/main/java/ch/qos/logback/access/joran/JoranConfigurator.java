@@ -74,7 +74,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
 
-
         defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
         defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
 
@@ -86,30 +85,15 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
     private void injectModelFilters(final DefaultProcessor defaultProcessor) {
         @SuppressWarnings("unchecked")
-        final
-        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] {
-                DefineModel.class,
-                PropertyModel.class,
-                TimestampModel.class,
-                ParamModel.class};
+        final Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { DefineModel.class, PropertyModel.class, TimestampModel.class,
+                ParamModel.class };
 
         @SuppressWarnings("unchecked")
-        final
-        Class<? extends Model>[] implicitModelClasses = new Class[] {
-                ImplicitModel.class,
-                ParamModel.class};
+        final Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class, ParamModel.class };
 
         @SuppressWarnings("unchecked")
-        final
-        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] {
-                ConfigurationModel.class,
-                EventEvaluatorModel.class,
-                ShutdownHookModel.class,
-                EventEvaluatorModel.class,
-                IncludeModel.class,
-        };
-
-
+        final Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class, EventEvaluatorModel.class, ShutdownHookModel.class,
+                EventEvaluatorModel.class, IncludeModel.class, };
 
         final ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
         for (final Class<? extends Model> modelClass : variableDefinitionModelClasses) {
@@ -130,7 +114,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         defaultProcessor.setPhaseTwoFilter(new AllowAllModelFilter());
 
     }
-
 
     @Override
     protected void addDefaultNestedComponentRegistryRules(final DefaultNestedComponentRegistry registry) {

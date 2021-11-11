@@ -28,10 +28,10 @@ public class ImplicitModelAction extends Action {
         currentImplicitModel.setTag(name);
 
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if(className == null) {
+        if (className == null) {
             final String implicitClassName = interpretationContext.getDefaultNestedComponentRegistry().findDefaultComponentTypeByTag(name);
-            if(implicitClassName != null) {
-                addInfo("Assuming default class name ["+implicitClassName+"] for tag ["+name+"]");
+            if (implicitClassName != null) {
+                addInfo("Assuming default class name [" + implicitClassName + "] for tag [" + name + "]");
                 className = implicitClassName;
             }
         }
@@ -52,8 +52,8 @@ public class ImplicitModelAction extends Action {
         final ImplicitModel implicitModel = currentImplicitModelStack.peek();
         final Model otherImplicitModel = interpretationContext.popModel();
 
-        if(implicitModel != otherImplicitModel) {
-            addError(implicitModel+ " does not match "+otherImplicitModel);
+        if (implicitModel != otherImplicitModel) {
+            addError(implicitModel + " does not match " + otherImplicitModel);
             return;
         }
         final Model parentModel = interpretationContext.peekModel();
@@ -61,7 +61,5 @@ public class ImplicitModelAction extends Action {
         currentImplicitModelStack.pop();
 
     }
-
-
 
 }

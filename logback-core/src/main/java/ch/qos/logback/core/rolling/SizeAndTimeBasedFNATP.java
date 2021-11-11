@@ -31,8 +31,9 @@ import ch.qos.logback.core.util.InvocationGate;
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
 
-    enum Usage {EMBEDDED, DIRECT}
-
+    enum Usage {
+        EMBEDDED, DIRECT
+    }
 
     int currentPeriodsCounter = 0;
     FileSize maxFileSize;
@@ -57,15 +58,14 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         // we depend on certain fields having been initialized in super class
         super.start();
 
-        if(usage == Usage.DIRECT) {
+        if (usage == Usage.DIRECT) {
             addWarn(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
-            addWarn("For more information see "+MANUAL_URL_PREFIX+"appenders.html#SizeAndTimeBasedRollingPolicy");
+            addWarn("For more information see " + MANUAL_URL_PREFIX + "appenders.html#SizeAndTimeBasedRollingPolicy");
         }
 
         if (!super.isErrorFree()) {
             return;
         }
-
 
         if (maxFileSize == null) {
             addError("maxFileSize property is mandatory.");

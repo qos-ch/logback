@@ -43,7 +43,6 @@ public class DefineModelHandler extends ModelHandlerBase {
         inError = false;
         propertyName = null;
 
-
         final DefineModel defineModel = (DefineModel) model;
 
         propertyName = defineModel.getName();
@@ -105,7 +104,7 @@ public class DefineModelHandler extends ModelHandlerBase {
             // not null
             final String propertyValue = definer.getPropertyValue();
             if (propertyValue != null) {
-                addInfo("Setting property "+propertyName+"="+propertyValue+" in scope "+scope);
+                addInfo("Setting property " + propertyName + "=" + propertyValue + " in scope " + scope);
                 ActionUtil.setProperty(interpretationContext, propertyName, propertyValue, scope);
             }
         }

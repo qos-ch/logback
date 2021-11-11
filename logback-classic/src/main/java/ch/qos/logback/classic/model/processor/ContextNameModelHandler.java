@@ -17,7 +17,6 @@ public class ContextNameModelHandler extends ModelHandlerBase {
         return new ContextNameModelHandler(context);
     }
 
-
     @Override
     protected Class<ContextNameModel> getSupportedModelClass() {
         return ContextNameModel.class;
@@ -26,7 +25,6 @@ public class ContextNameModelHandler extends ModelHandlerBase {
     @Override
     public void handle(final InterpretationContext intercon, final Model model) throws ModelHandlerException {
         final ContextNameModel contextNameModel = (ContextNameModel) model;
-
 
         final String finalBody = intercon.subst(contextNameModel.getBodyText());
         addInfo("Setting logger context name as [" + finalBody + "]");

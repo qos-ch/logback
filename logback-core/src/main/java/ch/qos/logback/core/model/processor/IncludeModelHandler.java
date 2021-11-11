@@ -66,8 +66,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
                 // remove the <included> tag from the beginning and </included> from the end
                 trimHeadAndTail(localRecorder, INCLUDED_TAG);
 
-                final SaxEventInterpreter localInterpreter = intercon.getSaxEventInterpreter()
-                                .duplicate(includeModel.getElementPath());
+                final SaxEventInterpreter localInterpreter = intercon.getSaxEventInterpreter().duplicate(includeModel.getElementPath());
                 // add models
                 localInterpreter.getEventPlayer().play(localRecorder.saxEventList);
                 transferModelStack(includeModel, localInterpreter);
