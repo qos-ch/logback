@@ -16,12 +16,14 @@ package ch.qos.logback.access.servlet;
 import static ch.qos.logback.access.AccessConstants.LB_OUTPUT_BUFFER;
 import static ch.qos.logback.access.AccessConstants.TEE_FILTER_EXCLUDES_PARAM;
 import static ch.qos.logback.access.AccessConstants.TEE_FILTER_INCLUDES_PARAM;
+import static java.util.Objects.requireNonNullElse;
 
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -74,31 +76,12 @@ public class TeeFilter implements Filter {
         final String localhostName = getLocalhostName();
 
         active = computeActivation(localhostName, includeListAsStr, excludeListAsStr);
-        if (active) {
-            System.out.println("TeeFilter will be ACTIVE on this host [" + localhostName + "]");
-        } else {
-            System.out.println("TeeFilter will be DISABLED on this host [" + localhostName + "]");
-        }
 
+        System.out.println(String.format("TeeFilter will be %s on this host [%s]", active ? "ACTIVE" : "DISABLE", localhostName));
     }
 
     static List<String> extractNameList(String nameListAsStr) {
-        final List<String> nameList = new ArrayList<>();
-        if (nameListAsStr == null) {
-            return nameList;
-        }
-
-        nameListAsStr = nameListAsStr.trim();
-        if (nameListAsStr.length() == 0) {
-            return nameList;
-        }
-
-        final String[] nameArray = nameListAsStr.split("[,;]");
-        for (String n : nameArray) {
-            n = n.trim();
-            nameList.add(n);
-        }
-        return nameList;
+        return Arrays.stream(requireNonNullElse(nameListAsStr, "").split("[,;]")).map(String::trim).collect(Collectors.toList());
     }
 
     static String getLocalhostName() {
