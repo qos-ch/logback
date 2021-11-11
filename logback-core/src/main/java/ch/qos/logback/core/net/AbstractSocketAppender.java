@@ -191,8 +191,11 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
                     ObjectWriter objectWriter = createObjectWriterForSocket();
                     addInfo(peerId + "connection established");
                     dispatchEvents(objectWriter);
+                } catch (javax.net.ssl.SSLHandshakeException she) {
+                	// FIXME 
+                    Thread.sleep(DEFAULT_RECONNECTION_DELAY);
                 } catch (IOException ex) {
-                    addInfo(peerId + "connection failed: " + ex);
+                    addInfo(peerId + "connection failed: ", ex);
                 } finally {
                     CloseUtil.closeQuietly(socket);
                     socket = null;

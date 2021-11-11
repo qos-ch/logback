@@ -46,7 +46,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class DefaultSocketConnectorTest {
 
-    private static final int DELAY = 1000;
+    private static final int DELAY = 2000;
     private static final int SHORT_DELAY = 10;
     private static final int RETRY_DELAY = 10;
 
