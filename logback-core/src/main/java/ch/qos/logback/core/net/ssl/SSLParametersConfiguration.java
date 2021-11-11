@@ -29,6 +29,7 @@ import ch.qos.logback.core.util.StringCollectionUtil;
  * A configuration of SSL parameters for an {@link SSLEngine}.
  *
  * @author Carl Harris
+ * @author Bruno Harbulot 
  */
 public class SSLParametersConfiguration extends ContextAwareBase {
 
@@ -40,7 +41,8 @@ public class SSLParametersConfiguration extends ContextAwareBase {
     private Boolean wantClientAuth;
     private String[] enabledProtocols;
     private String[] enabledCipherSuites;
-
+    private Boolean hostnameVerification;
+    
     /**
      * Configures SSL parameters on an {@link SSLConfigurable}.
      * @param socket the subject configurable
@@ -54,8 +56,23 @@ public class SSLParametersConfiguration extends ContextAwareBase {
         if (isWantClientAuth() != null) {
             socket.setWantClientAuth(isWantClientAuth());
         }
+        if(hostnameVerification != null) {
+        	addInfo("hostnameVerification="+hostnameVerification);
+            socket.setHostnameVerification(hostnameVerification);
+        }
     }
 
+ 
+    public boolean getHostnameVerification() {
+    	if(hostnameVerification == null)
+    		return false;
+    	return hostnameVerification;
+    }
+
+    public void setHostnameVerification(boolean hostnameVerification) {
+    	this.hostnameVerification = hostnameVerification;
+    }
+    
     /**
      * Gets the set of enabled protocols based on the configuration.
      * @param supportedProtocols protocols supported by the SSL engine
