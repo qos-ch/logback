@@ -15,6 +15,9 @@ package ch.qos.logback.access.boolex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -45,35 +48,26 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<IAccessEvent>
     @Override
     protected String[] getParameterNames() {
         final List<String> fullNameList = new ArrayList<>(DEFAULT_PARAM_NAME_LIST);
-        for (int i = 0; i < matcherList.size(); i++) {
-            final Matcher m = matcherList.get(i);
-            fullNameList.add(m.getName());
-        }
-
-        return fullNameList.toArray(CoreConstants.EMPTY_STRING_ARRAY);
+        return matcherList.stream().map(matcher -> fullNameList.add(matcher.getName())).collect(Collectors.toList()).toArray(CoreConstants.EMPTY_STRING_ARRAY);
     }
 
     @Override
     protected Class<?>[] getParameterTypes() {
         final List<Class<?>> fullTypeList = new ArrayList<>(DEFAULT_PARAM_TYPE_LIST);
-        for (int i = 0; i < matcherList.size(); i++) {
-            fullTypeList.add(Matcher.class);
-        }
-        return fullTypeList.toArray(CoreConstants.EMPTY_CLASS_ARRAY);
+        return matcherList.stream().map(matcher -> fullTypeList.add(Matcher.class)).collect(Collectors.toList()).toArray(CoreConstants.EMPTY_CLASS_ARRAY);
     }
 
     @Override
     protected Object[] getParameterValues(final IAccessEvent accessEvent) {
         final int matcherListSize = matcherList.size();
 
-        int i = 0;
+        final AtomicInteger i = new AtomicInteger(0);
+
         final Object[] values = new Object[DEFAULT_PARAM_NAME_LIST.size() + matcherListSize];
 
-        values[i++] = accessEvent;
+        values[i.getAndIncrement()] = accessEvent;
 
-        for (int j = 0; j < matcherListSize; j++) {
-            values[i++] = matcherList.get(j);
-        }
+        IntStream.range(0, matcherListSize).forEach(j -> values[i.getAndIncrement()] = matcherList.get(j));
 
         return values;
     }
