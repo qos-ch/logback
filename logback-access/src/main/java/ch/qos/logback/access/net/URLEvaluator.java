@@ -34,7 +34,7 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator<IAc
 
     @Override
     public void start() {
-        if (URLList.size() == 0) {
+        if (URLList.isEmpty()) {
             addWarn("No URL was given to URLEvaluator");
         } else {
             started = true;
@@ -43,13 +43,7 @@ public class URLEvaluator extends ContextAwareBase implements EventEvaluator<IAc
 
     @Override
     public boolean evaluate(final IAccessEvent event) throws NullPointerException, EvaluationException {
-        final String url = event.getRequestURL();
-        for (final String expected : URLList) {
-            if (url.contains(expected)) {
-                return true;
-            }
-        }
-        return false;
+        return URLList.stream().anyMatch(expected -> event.getRequestURL().contains(expected));
     }
 
     @Override
