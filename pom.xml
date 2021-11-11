@@ -271,6 +271,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+        	<fork>true</fork>
+        	<useIncrementalCompilation>true</useIncrementalCompilation>
+
+        </configuration>\n
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -398,6 +403,11 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+        	<fork>true</fork>
+        	<useIncrementalCompilation>true</useIncrementalCompilation>
+
+        </configuration>\n
       </plugin>
  
       <plugin>
