@@ -32,7 +32,6 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
@@ -43,10 +42,9 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
  *
  * @author Carl Harris
  */
-@Ignore
 public class DefaultSocketConnectorTest {
 
-	private static final int DELAY = 1000;
+	private static final int DELAY = 2000;
 	private static final int SHORT_DELAY = 10;
 	private static final int RETRY_DELAY = 10;
 
