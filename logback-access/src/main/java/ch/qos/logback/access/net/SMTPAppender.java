@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.access.net;
 
+import java.util.stream.IntStream;
+
 import ch.qos.logback.access.PatternLayout;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.Layout;
@@ -62,12 +64,7 @@ public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
 
     @Override
     protected void fillBuffer(final CyclicBuffer<IAccessEvent> cb, final StringBuffer sbuf) {
-        final int len = cb.length();
-        for (int i = 0; i < len; i++) {
-            // sbuf.append(MimeUtility.encodeText(layout.format(cb.getOrCreate())));
-            final IAccessEvent event = cb.get();
-            sbuf.append(layout.doLayout(event));
-        }
+        IntStream.range(0, cb.length()).mapToObj(i -> cb.get()).forEach(event -> sbuf.append(layout.doLayout(event)));
     }
 
     @Override
