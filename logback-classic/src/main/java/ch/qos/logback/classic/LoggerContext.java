@@ -16,13 +16,11 @@ package ch.qos.logback.classic;
 import static ch.qos.logback.core.CoreConstants.EVALUATOR_MAP;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
+import java.util.stream.Collectors;
 
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
@@ -38,7 +36,6 @@ import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
-import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
 
@@ -189,10 +186,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     public List<Logger> getLoggerList() {
-        final Collection<Logger> collection = loggerCache.values();
-        final List<Logger> loggerList = new ArrayList<>(collection);
-        Collections.sort(loggerList, new LoggerComparator());
-        return loggerList;
+        return loggerCache.values().stream().sorted(new LoggerComparator()).collect(Collectors.toList());
     }
 
     public LoggerContextVO getLoggerContextRemoteView() {
@@ -208,17 +202,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     private void cancelScheduledTasks() {
-        for (final ScheduledFuture<?> sf : scheduledFutures) {
-            sf.cancel(false);
-        }
+        scheduledFutures.parallelStream().forEach(sf -> sf.cancel(false));
         scheduledFutures.clear();
     }
 
     private void resetStatusListeners() {
         final StatusManager sm = getStatusManager();
-        for (final StatusListener sl : sm.getCopyOfStatusListenerList()) {
-            sm.remove(sl);
-        }
+        sm.getCopyOfStatusListenerList().parallelStream().forEach(sm::remove);
     }
 
     public TurboFilterList getTurboFilterList() {
@@ -234,15 +224,13 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
      * list.
      */
     public void resetTurboFilterList() {
-        for (final TurboFilter tf : turboFilterList) {
-            tf.stop();
-        }
+        turboFilterList.parallelStream().forEach(TurboFilter::stop);
         turboFilterList.clear();
     }
 
     final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker, final Logger logger, final Level level, final String format,
                     final Object[] params, final Throwable t) {
-        if (turboFilterList.size() == 0) {
+        if (turboFilterList.isEmpty()) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, params, t);
@@ -250,7 +238,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     final FilterReply getTurboFilterChainDecision_1(final Marker marker, final Logger logger, final Level level, final String format, final Object param,
                     final Throwable t) {
-        if (turboFilterList.size() == 0) {
+        if (turboFilterList.isEmpty()) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param }, t);
@@ -258,7 +246,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     final FilterReply getTurboFilterChainDecision_2(final Marker marker, final Logger logger, final Level level, final String format, final Object param1,
                     final Object param2, final Throwable t) {
-        if (turboFilterList.size() == 0) {
+        if (turboFilterList.isEmpty()) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param1, param2 }, t);
@@ -274,13 +262,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     private void resetListenersExceptResetResistant() {
-        final List<LoggerContextListener> toRetain = new ArrayList<>();
-
-        for (final LoggerContextListener lcl : loggerContextListenerList) {
-            if (lcl.isResetResistant()) {
-                toRetain.add(lcl);
-            }
-        }
+        final List<LoggerContextListener> toRetain = loggerContextListenerList.parallelStream().filter(LoggerContextListener::isResetResistant)
+                        .collect(Collectors.toList());
         loggerContextListenerList.retainAll(toRetain);
     }
 
@@ -293,27 +276,19 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     void fireOnLevelChange(final Logger logger, final Level level) {
-        for (final LoggerContextListener listener : loggerContextListenerList) {
-            listener.onLevelChange(logger, level);
-        }
+        loggerContextListenerList.parallelStream().forEach(listener -> listener.onLevelChange(logger, level));
     }
 
     private void fireOnReset() {
-        for (final LoggerContextListener listener : loggerContextListenerList) {
-            listener.onReset(this);
-        }
+        loggerContextListenerList.parallelStream().forEach(listener -> listener.onReset(this));
     }
 
     private void fireOnStart() {
-        for (final LoggerContextListener listener : loggerContextListenerList) {
-            listener.onStart(this);
-        }
+        loggerContextListenerList.parallelStream().forEach(listener -> listener.onStart(this));
     }
 
     private void fireOnStop() {
-        for (final LoggerContextListener listener : loggerContextListenerList) {
-            listener.onStop(this);
-        }
+        loggerContextListenerList.parallelStream().forEach(listener -> listener.onStop(this));
     }
 
     // === end listeners ==============================================
