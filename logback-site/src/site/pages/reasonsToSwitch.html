@@ -24,22 +24,26 @@
     </div>
 
     <div id="content">
-		
-		<h2>Reasons to prefer logback over log4j</h2>
+      
+      <h2>Reasons to prefer logback over log4j 1.x</h2>
 
-    <p>Logback brings a very large number of improvements over log4j,
+      <p>We should like to emphasize that logback is unrelated to
+      log4j 2.x. It does not share code nor vulnerabilities with log4j
+      2.x. </p>
+      
+    <p>Logback brings a large number of improvements over log4j 1.x,
     big and small. They are too many to enumerate exhaustively.
     Nevertheless, here is a non-exhaustive list of reasons for
-    switching to logback from log4j. Keep in mind that logback is
-    conceptually very similar to log4j as both projects were founded
-    by the same developer. If you are already familiar with log4j, you
-    will quickly feel at home using logback. If you like log4j, you
-    will probably love logback.</p>
+    switching to logback from log4j 1.x. Keep in mind that logback is
+    conceptually very similar to log4j 1.x as both projects were
+    founded by the same developer. If you are already familiar with
+    log4j 1.x, you will quickly feel at home using logback. If you
+    like log4j 1.x, you will probably love logback.</p>
 
 
     <h3 class="doAnchor" name="fasterImpl">Faster implementation</h3>
 
-    <p>Based on our previous work on log4j, logback internals have
+    <p>Based on our previous work on log4j 1.x, logback internals have
     been re-written to perform about ten times faster on certain
     critical execution paths. Not only are logback components faster,
     they have a smaller memory footprint as well.</p>
@@ -48,9 +52,9 @@
 
     <p>Logback comes with a very extensive battery of tests developed
     over the course of several years and untold hours of work. While
-    log4j is also tested, logback takes testing to a completely
+    log4j 1.x is also tested, logback takes testing to a completely
     different level. In our opinion, this is the single most important
-    reason to prefer logback over log4j.  You want your logging
+    reason to prefer logback over log4j 1.x.  You want your logging
     framework to be rock solid and dependable even under adverse
     conditions.
     </p>
@@ -63,7 +67,7 @@
     invoking an SLF4J logger with logback-classic as the underlying
     implementation. Moreover, since logback-classic strongly
     encourages the use of SLF4J as its client API, if you need to
-    switch to log4j or to j.u.l., you can do so by replacing one jar
+    switch to log4j 1.x or to j.u.l., you can do so by replacing one jar
     file with another. You will not need to touch your code logging
     via the SLF4J API. This can drastically reduce the work involved
     in switching logging frameworks.
@@ -153,12 +157,6 @@
     <code>RollingFileAppender</code>.
     </p>
 
-    <h3 class="doAnchor" name="lilith">Lilith</h3>
-
-    <p><a href="http://lilith.huxhorn.de/">Lilith</a> is a logging and
-    access event viewer for logback. It is comparable to log4j's
-    chainsaw, except that Lilith is designed to handle large amounts of
-    logging data without flinching.</p>
   
     <h3 class="doAnchor" name="conditional">Conditional processing of
     configuration files</h3>
@@ -180,7 +178,7 @@
 
     <p>Logback comes with a wide array of <a
     href="manual/filters.html">filtering capabilities</a> going much
-    further than what log4j has to offer. For example, let's assume
+    further than what log4j 1.x has to offer. For example, let's assume
     that you have a business-critical application deployed on a
     production server.  Given the large volume of transactions
     processed, logging level is set to WARN so that only warnings and
@@ -190,7 +188,7 @@
     between those two environments (production/testing).
     </p>
 
-    <p>With log4j, your only choice is to lower the logging level to
+    <p>With log4j 1.x, your only choice is to lower the logging level to
     DEBUG on the production system in an attempt to identify the
     problem. Unfortunately, this will generate large volume of logging
     data, making analysis difficult. More importantly, extensive
@@ -273,8 +271,8 @@ java.lang.Exception: 99 is invalid
     <h3 class="doAnchor" name="inSummary">In summary</h3>
 
     <p>We have listed a number of reasons for preferring logback over
-    log4j. Given that logback builds upon on our previous work on
-    log4j, simply put, logback is just a better log4j.</p>
+    log4j 1.x. Given that logback builds upon on our previous work on
+    log4j 1.x, simply put, logback is just a better log4j 1.x.</p>
 
     <script src="templates/footer.js" type="text/javascript"></script>	   
     </div>
