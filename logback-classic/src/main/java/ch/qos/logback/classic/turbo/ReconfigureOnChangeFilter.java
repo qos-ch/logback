@@ -63,7 +63,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
                 addWarn("Due to missing top level configuration file, automatic reconfiguration is impossible.");
                 return;
             }
-            List<File> watchList = configurationWatchList.getCopyOfFileWatchList();
+            List<URL> watchList = configurationWatchList.getCopyOfURLWatchList();
             long inSeconds = refreshPeriod / 1000;
             addInfo("Will scan for changes in [" + watchList + "] every " + inSeconds + " seconds. ");
             synchronized (configurationWatchList) {
@@ -148,7 +148,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     // locks held by the current thread, in particular, the AppenderAttachable
     // reader lock.
     void detachReconfigurationToNewThread() {
-        addInfo("Detected change in [" + configurationWatchList.getCopyOfFileWatchList() + "]");
+        addInfo("Detected change in [" + configurationWatchList.getCopyOfURLWatchList() + "]");
         context.getExecutorService().submit(new ReconfiguringThread());
     }
 

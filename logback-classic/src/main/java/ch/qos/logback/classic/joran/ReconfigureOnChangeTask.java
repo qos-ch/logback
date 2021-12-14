@@ -1,6 +1,5 @@
 package ch.qos.logback.classic.joran;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
             return;
         }
 
-        List<File> filesToWatch = configurationWatchList.getCopyOfFileWatchList();
+        List<URL> filesToWatch = configurationWatchList.getCopyOfURLWatchList();
         if (filesToWatch == null || filesToWatch.isEmpty()) {
             addInfo("Empty watch file list. Disabling ");
             return;
