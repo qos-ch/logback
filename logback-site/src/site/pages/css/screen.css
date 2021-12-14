@@ -38,8 +38,9 @@ p.menu {
 }
 
 #left {
-  position: absolute;
-  left: 0px;
+    //position: absolute;
+    //left: 0px;
+    float: left;
   width: 15em;
   margin: 4px 0px 0px 4px; 
   padding: 0px;
@@ -124,9 +125,10 @@ p.menu_header {
 /* ------------------------------------------- */
 
 #right {
-  position: absolute;
-  right: 0px;        
-  width: 12em;
+    //position: absolute;
+    //right: 0px;
+    float: right;    
+    width: 12em;
   color: #564b47;
   margin: 4px 4px 0px 0px; 
   padding: 0px;
