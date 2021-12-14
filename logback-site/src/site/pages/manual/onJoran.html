@@ -13,18 +13,20 @@
   <body  onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script type="text/javascript"> src="../templates/header.js"</script>
     <script type="text/javascript" src="../js/jquery-min.js"></script>
     <script type="text/javascript" src="../js/decorator.js"></script>
 
-    <div id="left">
-      <noscript>Please turn on Javascript to view this menu</noscript>
-      <script src="../templates/left.js" type="text/javascript"></script>
-    </div>
-    <div id="right">
-      <script src="menu.js" type="text/javascript"></script>
-    </div>
-    <div id="content">
+    <div id="container">
+      <script type="text/javascript"> src="../templates/header.js"</script>
+          
+      <div id="left">
+        <noscript>Please turn on Javascript to view this menu</noscript>
+        <script src="../templates/left.js" type="text/javascript"></script>
+      </div>
+      <div id="right">
+        <script src="menu.js" type="text/javascript"></script>
+      </div>
+      <div id="content">
       
     <h1>Chapter 11: Joran</h1>
 
@@ -785,6 +787,7 @@ Element [abc] asked to be printed.
 
 
   <script src="../templates/footer.js" type="text/javascript"></script>
-</div>
+      </div>
+</div>      
 </body>
 </html>
