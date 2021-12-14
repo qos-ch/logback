@@ -26,6 +26,8 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
 import ch.qos.logback.classic.util.JNDIUtil;
+import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.OptionHelper;
 
 public class ContextDetachingSCL implements ServletContextListener {
 
@@ -42,7 +44,7 @@ public class ContextDetachingSCL implements ServletContextListener {
         } catch (NamingException ne) {
         }
 
-        if (loggerContextName != null) {
+        if (!OptionHelper.isEmpty(loggerContextName)) {
             System.out.println("About to detach context named " + loggerContextName);
 
             ContextSelector selector = ContextSelectorStaticBinder.getSingleton().getContextSelector();

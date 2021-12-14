@@ -22,7 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
         ch.qos.logback.classic.control.PackageTest.class, ch.qos.logback.classic.joran.PackageTest.class, ch.qos.logback.classic.rolling.PackageTest.class,
         ch.qos.logback.classic.jmx.PackageTest.class, ch.qos.logback.classic.boolex.PackageTest.class, ch.qos.logback.classic.selector.PackageTest.class,
         ch.qos.logback.classic.html.PackageTest.class, ch.qos.logback.classic.net.PackageTest.class, ch.qos.logback.classic.pattern.PackageTest.class,
-        ch.qos.logback.classic.encoder.PackageTest.class, ch.qos.logback.classic.db.PackageTest.class, ch.qos.logback.classic.spi.PackageTest.class,
+        ch.qos.logback.classic.encoder.PackageTest.class, ch.qos.logback.classic.spi.PackageTest.class,
         ch.qos.logback.classic.turbo.PackageTest.class, ch.qos.logback.classic.sift.PackageTest.class, ch.qos.logback.classic.jul.PackageTest.class,
         ch.qos.logback.classic.issue.PackageTest.class })
 public class AllClassicTest {

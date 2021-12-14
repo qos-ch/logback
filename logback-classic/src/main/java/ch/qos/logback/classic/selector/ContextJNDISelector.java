@@ -36,6 +36,7 @@ import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.status.WarnStatus;
 import ch.qos.logback.core.util.Loader;
+import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
 
 /**
@@ -88,7 +89,7 @@ public class ContextJNDISelector implements ContextSelector {
             // We can't log here
         }
 
-        if (contextName == null) {
+        if (OptionHelper.isEmpty(contextName)) {
             // We return the default context
             return defaultContext;
         } else {

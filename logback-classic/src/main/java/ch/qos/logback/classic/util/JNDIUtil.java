@@ -17,8 +17,13 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import ch.qos.logback.core.CoreConstants;
+
 /**
  * A simple utility class to create and use a JNDI Context.
+ *
+ * <b>Given JNDI based attacks, replaced with emtpy code returning null or "" 
+ * until better options are found.</b>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -27,18 +32,23 @@ import javax.naming.NamingException;
 public class JNDIUtil {
 
     public static Context getInitialContext() throws NamingException {
-        return new InitialContext();
+        return null; 
+        //new InitialContext();
     }
 
+    static int counter = 0;
+    
     public static String lookup(Context ctx, String name) {
-        if (ctx == null) {
-            return null;
-        }
-        try {
-            Object lookup = ctx.lookup(name);
-            return lookup == null ? null : lookup.toString();
-        } catch (NamingException e) {
-            return null;
-        }
+    	return CoreConstants.EMPTY_STRING;
+    	
+//    	if (ctx == null) {
+//            return null;
+//        }
+//        try {
+//            Object lookup = ctx.lookup(name);
+//            return lookup == null ? null : lookup.toString();
+//        } catch (NamingException e) {
+//            return null;
+//        }
     }
 }
