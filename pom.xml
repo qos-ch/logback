@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.2.8-SNAPSHOT</version>
+  <version>1.2.8</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -170,26 +170,6 @@
         <groupId>dom4j</groupId>
         <artifactId>dom4j</artifactId>
         <version>1.6.1</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>2.3.4</version>
-      </dependency>
-      <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>1.2.132</version>
-      </dependency>
-      <dependency>
-        <groupId>postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>8.4-701.jdbc4</version>
-      </dependency>
-      <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.9</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>
