@@ -125,7 +125,11 @@ public class ContextJNDISelector implements ContextSelector {
     private URL findConfigFileURL(Context ctx, LoggerContext loggerContext) {
         StatusManager sm = loggerContext.getStatusManager();
 
-        String jndiEntryForConfigResource = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
+        String jndiEntryForConfigResource = null;
+        try {
+            jndiEntryForConfigResource = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
+        } catch (NamingException ne) {
+        }
         // Do we have a dedicated configuration file?
         if (jndiEntryForConfigResource != null) {
             sm.add(new InfoStatus("Searching for [" + jndiEntryForConfigResource + "]", this));
