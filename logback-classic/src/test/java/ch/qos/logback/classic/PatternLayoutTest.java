@@ -43,7 +43,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     String aMessage = "Some message";
     
-    ILoggingEvent le;
+    LoggingEvent le;
 
     public PatternLayoutTest() {
         super();
@@ -56,7 +56,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         pl.setContext(lc);
     }
 
-    ILoggingEvent makeLoggingEvent(String msg, Exception ex) {
+    LoggingEvent makeLoggingEvent(String msg, Exception ex) {
         return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, msg, ex, null);
     }
 
@@ -171,6 +171,17 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals("aValue", val);
     }
 
+    @Test 
+    public void micros() {
+    	le.setNanoseconds(123456);
+    	
+    	pl.setPattern("%micros %message");
+    	pl.start();
+    	String val = pl.doLayout(getEventObject());
+        assertEquals("aValue", val);
+    	
+    }
+    
     @Override
     public Context getContext() {
         return lc;
@@ -194,6 +205,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
     }
 
+    
     @Test
     public void smokeReplace() {
         pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");

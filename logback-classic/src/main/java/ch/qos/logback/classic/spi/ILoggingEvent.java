@@ -115,6 +115,10 @@ public interface ILoggingEvent extends DeferredProcessingAware {
 
     long getTimeStamp();
     
+    default int getNanoseconds() {
+    	return 0;
+    }
+    
     /**
      * The sequence number associated with this event. 
      * 

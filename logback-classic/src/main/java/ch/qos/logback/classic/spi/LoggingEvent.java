@@ -15,6 +15,8 @@ package ch.qos.logback.classic.spi;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +52,8 @@ import ch.qos.logback.core.spi.SequenceNumberGenerator;
  */
 public class LoggingEvent implements ILoggingEvent {
 
-    /**
+	
+	/**
      * Fully qualified name of the calling Logger class. This field does not
      * survive serialization.
      * <p/>
@@ -106,7 +109,10 @@ public class LoggingEvent implements ILoggingEvent {
      */
     private long timeStamp;
 
+	private int nanoseconds;
+
     private long sequenceNumber;
+
 
     public LoggingEvent() {
     }
@@ -121,8 +127,9 @@ public class LoggingEvent implements ILoggingEvent {
         this.message = message;
         this.argumentArray = argArray;
         //List<Object> l =		Arrays.asList(argArray);
-        
-        timeStamp = System.currentTimeMillis();
+        Instant instant = Clock.systemUTC().instant();
+        timeStamp = instant.getEpochSecond();
+        nanoseconds = instant.getNano();
        
         if(loggerContext != null) {
             SequenceNumberGenerator sequenceNumberGenerator = loggerContext.getSequenceNumberGenerator();
@@ -270,12 +277,36 @@ public class LoggingEvent implements ILoggingEvent {
         this.message = message;
     }
 
+    /**
+     * Return the number of elapsed seconds since epoch in UTC.
+     */
     public long getTimeStamp() {
         return timeStamp;
     }
-
+    /**
+     * Set the number of elapsed seconds since epoch in UTC.
+     */
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    /**
+     * Return the number of nanoseconds after timestamp.
+     * @since 1.3
+     */
+    @Override
+    public int getNanoseconds() {
+        return nanoseconds;
+    }
+
+    /**
+     * Set the nanoseconds part of the timestamp. 
+     * 
+     * @since 1.3
+     * @param nanos
+     */
+    public void setNanoseconds(int nanos) {
+        this.nanoseconds = nanos;
     }
 
     @Override
