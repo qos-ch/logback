@@ -173,12 +173,14 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     @Test 
     public void micros() {
-    	le.setNanoseconds(123456);
+    	le.setNanoseconds(122091800);
     	
-    	pl.setPattern("%micros %message");
+    	pl.setPattern("%micros %message%nopex");
     	pl.start();
-    	String val = pl.doLayout(getEventObject());
-        assertEquals("aValue", val);
+    	getEventObject();
+    	
+    	String val = pl.doLayout(le);
+        assertEquals("122091 Some message", val);
     	
     }
     
