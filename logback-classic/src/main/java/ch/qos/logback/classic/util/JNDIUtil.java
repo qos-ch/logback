@@ -17,13 +17,11 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * A simple utility class to create and use a JNDI Context.
- *
- * <b>Given JNDI based attacks, replaced with emtpy code returning null or "" 
- * until better options are found.</b>
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -32,23 +30,23 @@ import ch.qos.logback.core.CoreConstants;
 public class JNDIUtil {
 
     public static Context getInitialContext() throws NamingException {
-        return null; 
-        //new InitialContext();
+        return new InitialContext();
     }
 
-    static int counter = 0;
-    
-    public static String lookup(Context ctx, String name) {
-    	return CoreConstants.EMPTY_STRING;
-    	
-//    	if (ctx == null) {
-//            return null;
-//        }
-//        try {
-//            Object lookup = ctx.lookup(name);
-//            return lookup == null ? null : lookup.toString();
-//        } catch (NamingException e) {
-//            return null;
-//        }
+    public static String lookup(Context ctx, String name) throws NamingException {
+        if (ctx == null) {
+            return null;
+        }
+
+        if (OptionHelper.isEmpty(name)) {
+            return null;
+        }
+
+        if (!name.startsWith(ClassicConstants.JNDI_JAVA_NAMESPACE)) {
+            throw new NamingException("JNDI name must start with " + ClassicConstants.JNDI_JAVA_NAMESPACE);
+        }
+
+        Object lookup = ctx.lookup(name);
+        return lookup == null ? null : lookup.toString();
     }
 }

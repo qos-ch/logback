@@ -26,7 +26,7 @@ import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**
- * Insert an env-entry found in JNDI as a new context variable  
+ * Insert an env-entry found in JNDI as a new context variable
 
  * @author Ceki Gulcu
  *
@@ -73,7 +73,7 @@ public class InsertFromJNDIAction extends Action {
                 ActionUtil.setProperty(ec, asKey, envEntryValue, scope);
             }
         } catch (NamingException e) {
-            addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");
+            addError("Failed to lookup JNDI env-entry [" + envEntryName + "]", e);
         }
 
     }
