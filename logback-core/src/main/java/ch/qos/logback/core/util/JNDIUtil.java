@@ -11,14 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.util;
+package ch.qos.logback.core.util;
+
+import static ch.qos.logback.core.CoreConstants.JNDI_JAVA_NAMESPACE;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * A simple utility class to create and use a JNDI Context.
@@ -30,6 +29,8 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 
 public class JNDIUtil {
+
+	static final String RESTRICTION_MSG = "JNDI name must start with " + JNDI_JAVA_NAMESPACE + " but was ";
 
     public static Context getInitialContext() throws NamingException {
         return new InitialContext();
@@ -44,11 +45,15 @@ public class JNDIUtil {
               return null;
           }
 
-          if (!name.startsWith(ClassicConstants.JNDI_JAVA_NAMESPACE)) {
-              throw new NamingException("JNDI name must start with " + ClassicConstants.JNDI_JAVA_NAMESPACE);
-          }
+          jndiNameSecurityCheck(name);
 
           Object lookup = ctx.lookup(name);
           return lookup == null ? null : lookup.toString();
     }
+
+	public static void jndiNameSecurityCheck(String name) throws NamingException {
+		if (!name.startsWith(JNDI_JAVA_NAMESPACE)) {
+			  throw new NamingException(RESTRICTION_MSG + name);
+          }
+	}
 }

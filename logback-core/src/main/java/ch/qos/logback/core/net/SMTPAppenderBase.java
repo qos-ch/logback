@@ -30,7 +30,6 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import javax.naming.Context;
-import javax.naming.InitialContext;
 
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.CoreConstants;
@@ -43,6 +42,7 @@ import ch.qos.logback.core.sift.DefaultDiscriminator;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
 import ch.qos.logback.core.util.ContentTypeUtil;
+import ch.qos.logback.core.util.JNDIUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
 // Contributors:
@@ -134,11 +134,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     private Session lookupSessionInJNDI() {
         addInfo("Looking up javax.mail.Session at JNDI location [" + jndiLocation + "]");
         try {
-            Context initialContext = new InitialContext();
-            Object obj = initialContext.lookup(jndiLocation);
+            Context initialContext = JNDIUtil.getInitialContext();
+            Object obj = JNDIUtil.lookup(initialContext, jndiLocation);
             return (Session) obj;
         } catch (Exception e) {
-            addError("Failed to obtain javax.mail.Session from JNDI location [" + jndiLocation + "]");
+            addError("Failed to obtain javax.mail.Session from JNDI location [" + jndiLocation + "]", e);
             return null;
         }
     }

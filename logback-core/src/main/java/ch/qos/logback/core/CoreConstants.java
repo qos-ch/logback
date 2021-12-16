@@ -137,12 +137,10 @@ public class CoreConstants {
     // this avoid serious memory leaks
     public static final int OOS_RESET_FREQUENCY = 70;
 
-    /**
-     * The reference bogo instructions per second on
-     * Ceki's machine (Orion)
-     */
-    public static long REFERENCE_BIPS = 9000;
-
+    // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
+	// there are the java:comp, java:module, java:app, java:global namespaces
+    public static final String JNDI_JAVA_NAMESPACE = "java:";
+    
     // the max number of times an error should be reported
     public static final int MAX_ERROR_COUNT = 4;
 
@@ -203,5 +201,7 @@ public class CoreConstants {
     
     public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
     public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
+	
+
 
 }

@@ -25,7 +25,7 @@ import org.slf4j.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.classic.util.JNDIUtil;
+import ch.qos.logback.core.util.JNDIUtil;
 
 public class ContextDetachingSCL implements ServletContextListener {
 
