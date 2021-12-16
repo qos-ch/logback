@@ -22,9 +22,11 @@ public class ClassicConstants {
     public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
     public static final String CONFIG_FILE_PROPERTY = "logback.configurationFile";
 
-    public static final String JNDI_JAVA_COMP_NAMESPACE = "java:comp";
-    public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_COMP_NAMESPACE + "/env/logback/configuration-resource";
-    public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_COMP_NAMESPACE + "/env/logback/context-name";
+    // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
+    // there are the java:comp, java:module, java:app, java:global namespaces
+    public static final String JNDI_JAVA_NAMESPACE = "java:";
+    public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_NAMESPACE + "comp/env/logback/configuration-resource";
+    public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_NAMESPACE + "comp/env/logback/context-name";
     
     /**
      * The maximum number of package separators (dots) that abbreviation

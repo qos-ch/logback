@@ -44,8 +44,8 @@ public class JNDIUtil {
               return null;
           }
 
-          if (!name.startsWith(ClassicConstants.JNDI_JAVA_COMP_NAMESPACE)) {
-              throw new NamingException("JNDI name must start with " + ClassicConstants.JNDI_JAVA_COMP_NAMESPACE);
+          if (!name.startsWith(ClassicConstants.JNDI_JAVA_NAMESPACE)) {
+              throw new NamingException("JNDI name must start with " + ClassicConstants.JNDI_JAVA_NAMESPACE);
           }
 
           Object lookup = ctx.lookup(name);
