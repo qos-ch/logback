@@ -17,11 +17,16 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.core.util.OptionHelper;
+
 /**
  * A simple utility class to create and use a JNDI Context.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @author Michael Osipov 
  * @author S&eacute;bastien Pennec
+ * 
  */
 
 public class JNDIUtil {
@@ -30,15 +35,20 @@ public class JNDIUtil {
         return new InitialContext();
     }
 
-    public static String lookup(Context ctx, String name) {
-        if (ctx == null) {
-            return null;
-        }
-        try {
-            Object lookup = ctx.lookup(name);
-            return lookup == null ? null : lookup.toString();
-        } catch (NamingException e) {
-            return null;
-        }
+    public static String lookup(Context ctx, String name) throws NamingException {
+    	  if (ctx == null) {
+              return null;
+          }
+
+          if (OptionHelper.isNullOrEmpty(name)) {
+              return null;
+          }
+
+          if (!name.startsWith(ClassicConstants.JNDI_JAVA_COMP_NAMESPACE)) {
+              throw new NamingException("JNDI name must start with " + ClassicConstants.JNDI_JAVA_COMP_NAMESPACE);
+          }
+
+          Object lookup = ctx.lookup(name);
+          return lookup == null ? null : lookup.toString();
     }
 }

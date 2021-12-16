@@ -255,7 +255,20 @@ public class OptionHelper {
 
 		return dEfault;
 	}
-
+	
+	/**
+	 * @deprecated
+	 * @since 1.3
+	 */
+    public static boolean isEmpty(String str) {
+        return isNullOrEmpty(str);
+    }
+    /**
+     * Returns true if input str is null or empty.
+     * 
+     * @param str
+     * @return
+     */
 	public static boolean isNullOrEmpty(String str) {
 		return ((str == null) || CoreConstants.EMPTY_STRING.equals(str.trim()));
 	}
