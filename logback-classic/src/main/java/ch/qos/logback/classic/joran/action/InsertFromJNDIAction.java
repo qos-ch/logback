@@ -18,11 +18,11 @@ import javax.naming.NamingException;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.classic.util.JNDIUtil;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.util.JNDIUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
 /**

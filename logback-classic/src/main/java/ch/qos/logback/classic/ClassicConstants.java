@@ -13,14 +13,18 @@
  */
 package ch.qos.logback.classic;
 
+import static ch.qos.logback.core.CoreConstants.JNDI_JAVA_NAMESPACE;
+
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
+
+import ch.qos.logback.core.CoreConstants;
 
 public class ClassicConstants {
     public static final String USER_MDC_KEY = "user";
 
     public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
-    public static final String JNDI_JAVA_NAMESPACE = "java:";
+    
     public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_NAMESPACE + "comp/env/logback/configuration-resource";
     public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_NAMESPACE + "comp/env/logback/context-name";
 

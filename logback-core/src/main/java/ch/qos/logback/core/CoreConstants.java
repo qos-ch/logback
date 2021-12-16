@@ -150,6 +150,10 @@ public class CoreConstants {
     public static final char TAB = '\t';
     public static final char DOLLAR = '$';
 
+    // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
+	// there are the java:comp, java:module, java:app, java:global namespaces
+    public static final String JNDI_JAVA_NAMESPACE = "java:";
+    
     public static final String SEE_FNP_NOT_SET = "See also "+CODES_URL+"#tbr_fnp_not_set";
     public static final String SEE_MISSING_INTEGER_TOKEN = "See also "+CODES_URL+"#sat_missing_integer_token";
 

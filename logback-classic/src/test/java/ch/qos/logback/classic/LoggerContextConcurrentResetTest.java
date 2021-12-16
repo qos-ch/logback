@@ -12,7 +12,7 @@ public class LoggerContextConcurrentResetTest {
     static int CONCURRENT_RESET_THREAD_COUNT = 10;
 
     // see http://jira.qos.ch/browse/LOGBACK-397
-    @Test(timeout = 1000)
+    @Test(timeout = 2000)
     public void concurrentReset() throws InterruptedException {
         LoggerContext loggerContext = new LoggerContext();
         CyclicBarrier cyclicBarrier = new CyclicBarrier(CONCURRENT_RESET_THREAD_COUNT);
