@@ -12,7 +12,6 @@ module ch.qos.logback.core {
     
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
-    exports ch.qos.logback.core.db;
     
     exports ch.qos.logback.core.rolling;
     exports ch.qos.logback.core.rolling.helper;

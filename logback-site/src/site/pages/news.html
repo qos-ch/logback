@@ -56,11 +56,19 @@
     dropped temporarily.
     </p>
 
-    <p>Hardened loggack's JNDI lookup mechanism to only honor requests
+    <p>&bull; Hardened loggack's JNDI lookup mechanism to only honor requests
     to <code>java:comp</code> namespace. All other types of requests
     are ignored. Many thanks to Michael Osipov for suggesting this
     change and providing the relvant PR.
     </p>
+
+    <p>&bull; Temporarily removed DB support for security reasons.</p>
+
+    <p>&bull; Removed Groovy configuration support. As logging is a
+    pevasive need and configuration with Groovy perhaps too powerful,
+    it unlikely to be reinstated for security reasons.</p>
+
+    
     
     <p>&bull; Migrated from <code>javax.servlet</code>
     to <code>jakarta.servlet</code>. This entails migration to Tomcat
@@ -140,27 +148,6 @@
     <hr width="80%" align="center" />
 
     <h3>23rd of August, 2021, Release of version 1.3.0-alpha10</h3>
-
-    <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
-    modularized and requires slf4j-api version 2.0.x. However, the
-    1.3.x series requires Java&nbsp;8 or later at <b>runtime</b>.</p>
-
-    <p>The 1.3.x series is Jigsaw/Java&nbsp;9 modularized and requires
-    slf4j-api version 2.0.x. Moreover, the 1.3.x series requires
-    Java&nbsp;8 or later at <b>runtime</b> whereas building logback
-    from source requires Java&nbsp;9.  <br/></p>
-
-    <p>Joran, logback's configuration system, has been rewritten to
-    use an internal representation model which can be processed
-    separately. As a side-effect, logback configuration scripts are
-    now largely order-free. For example, appenders can now be defined
-    after they are first referenced in a logger. Moreover,
-    unreferenced appenders are no longer instantiated. Given the
-    breadth of the changes in Joran codebase, support for
-    <code>SiftingAppender</code> and Groovy configuration have been
-    dropped temporarily.
-    </p>
-
 
     <p>&bull; <code>CachingDateFormatter</code> is now
     synchronization-free and performs about 30 times faster. This fixes
