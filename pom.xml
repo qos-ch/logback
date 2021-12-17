@@ -42,14 +42,14 @@
     <module>logback-core</module>
     <module>logback-core-blackbox</module>
     <module>logback-classic</module>
-    <module>logback-classic-blackbox</module>    
+    <module>logback-classic-blackbox</module>
     <module>logback-access</module>
     <module>logback-examples</module>
   </modules>
 
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
-    <project.build.outputTimestamp>2022-10-07T20:47:29Z</project.build.outputTimestamp>    
+    <project.build.outputTimestamp>2022-10-07T20:47:29Z</project.build.outputTimestamp>
     <jdk.version>11</jdk.version>
     <maven.compiler.release>${jdk.version}</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,7 +76,7 @@
     <tomcat.version>10.0.10</tomcat.version>
     <jetty.version>11.0.12</jetty.version>
 
-    <jansi.version>1.18</jansi.version>
+    <jansi.version>2.4.0</jansi.version>
     <mockito-core.version>4.8.0</mockito-core.version>
     <byte-buddy.version>1.12.14</byte-buddy.version>
 
