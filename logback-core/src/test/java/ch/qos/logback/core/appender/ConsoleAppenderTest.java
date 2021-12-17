@@ -177,8 +177,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.setWithJansi(true);
         ca.start();
         assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
-        ca.doAppend(new Object());
-        assertEquals(DummyLayout.DUMMY, teeOut.toString());
+        // Jansi uses FileDescriptor.out instead of System.out, thus we can't intercept the output
     }
 
     @Test
@@ -191,7 +190,6 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.setWithJansi(true);
         ca.start();
         assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
-        ca.doAppend(new Object());
-        assertEquals(DummyLayout.DUMMY, teeErr.toString());
+        // Jansi uses FileDescriptor.err instead of System.err, thus we can't intercept the output
     }
 }
