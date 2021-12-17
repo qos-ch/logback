@@ -34,8 +34,61 @@
 
     <hr width="80%" align="center" />
 
+    <h3>16th of December, 2021, Release of version 1.2.9</h3>
+
+    
+    <p class="highlight">We note that the vulnerability mentioned in
+    CVE-2021-42550 requires write access to logback's configuration
+    file as a prerequisite. <span class="green"><b>Please understand
+    that <a href="https://cve.report/CVE-2021-44228">log4Shell</a> and
+    <a href="https://cve.report/CVE-2021-42550">CVE-2021-42550</a> are
+    of different severity levels.</b></span></p>
+    
+    <p>In response to <a
+    href="https://cve.report/CVE-2021-42550">CVE-2021-42550</a> (aka <a
+    href="https://jira.qos.ch/browse/LOGBACK-1591">LOGBACK-1591</a>) we
+    have decided to make the following steps.</p>
+     
+    <p>1) Hardened logback's JNDI lookup mechanism to only honor
+    requests in the <code>java:</code> namespace. All other types of
+    requests are ignored. Many thanks to Michael Osipov for suggesting
+    this change and providing the relvant PR.
+    </p>
+
+    <p>2) <code>SMTPAppender</code> was hardened.
+    
+    <p>3) Temporarily removed DB support for security reasons.</p>
+
+    <p>4) Removed Groovy configuration support. As logging is so
+    pevasive and configuration with Groovy is probably too powerful,
+    this feature is unlikely to be reinstated for security
+    reasons.</p>
+    
+    <p>We note that the aforementioned vulnerability requires write
+    access to logback's configuration file as a prerequisite. Please
+    understand that <a
+    href="https://cve.report/CVE-2021-44228">log4Shell/CVE-2021-44228</a>
+    and <a href="https://cve.report/CVE-2021-42550">CVE-2021-42550</a>
+    are of different severity levels. A successul RCE attack with
+    CVE-2021-42550 requires <em>all</em> of the following conditions
+    to be met:</p>
+    
+    <ol>
+      <li>write access to logback.xml</li>      
+      <li>use of versions &lt; 1.2.9</li>
+      <li>reloading of poisoned configuration data, which implies
+      application restart or scan="true" set prior to attack</li>
+    </ol>
+
+    <p>As an additional extra precaution, in addition to upgrading to
+    logback version 1.2.9, we also recommend users to set their
+    logback configuration files as read-only.</p>
+
     <h3>16th of December, 2021, Release of version 1.3.0-alpha11</h3>
 
+    <p><b>Note that 1.3.0-alpha11 contains the same security related
+    changes as 1.2.9.</b></p>
+    
     <p class="highlight">The 1.3.x series is JPMS/Jigsaw/Java&nbsp;9
     modularized and requires slf4j-api version 2.0.x. However, the
     1.3.x series requires Java&nbsp;8 or later at <b>runtime</b>.</p>
@@ -56,17 +109,6 @@
     dropped temporarily.
     </p>
 
-    <p>&bull; Hardened loggack's JNDI lookup mechanism to only honor
-    requests to <code>java:</code> namespace. All other types of
-    requests are ignored. Many thanks to Michael Osipov for suggesting
-    this change and providing the relvant PR.
-    </p>
-
-    <p>&bull; Temporarily removed DB support for security reasons.</p>
-
-    <p>&bull; Removed Groovy configuration support. As logging is a
-    pevasive need and configuration with Groovy perhaps too powerful,
-    it unlikely to be reinstated for security reasons.</p>
 
     
     
@@ -84,43 +126,22 @@
 
     <h3>14th of December, 2021, Release of version 1.2.8</h3>
 
-    <p class="highlight">We note that the vulnerability mentioned in
-    LOGBACK-1591 requires write access to logback's configuration file
-    as a prerequisite. <span class="green"><b>Please understand that
-    log4Shell/CVE-2021-44228 and LOGBACK-1591 are of different
-    severity levels.</b></span></p>
 
     
     <p>&bull; In response to <a
-    href="https://jira.qos.ch/browse/LOGBACK-1591">LOGBACK-1591</a>,
-    we have disabled all JNDI lookup code in logback until further
+    href="https://cve.report/CVE-2021-42550">CVE-2021-42550</a> and <a
+    href="https://jira.qos.ch/browse/LOGBACK-1591">LOGBACK-1591</a> we
+    have decided to make the following steps.</p>
+
+    <p>1) we have disabled all JNDI lookup code in logback until further
     notice. This impacts <a
     href="manual/loggingSeparation.html#ContextJNDISelector">ContextJNDISelector</a>
     and &lt;insertFromJNDI&gt; element in configuration files.
     </p>
 
-    <p>&bull; Also in response to <a
-    href="https://jira.qos.ch/browse/LOGBACK-1591">LOGBACK-1591</a>,
-    we have removed all database (JDBC) related code in the project
-    with no replacement.</p>
+    <p>2) we have removed all database (JDBC) related code in the
+    project with no replacement.</p>
 
-    <p>We note that the vulnerability mentioned in LOGBACK-1591
-    requires write access to logback's configuration file as a
-    prerequisite. Please understand that log4Shell/CVE-2021-44228 and
-    LOGBACK-1591 are of different severity levels. A successul RCE
-    attack requires <em>all</em> of the following conditions to be
-    met:</p>
-    
-    <ol>
-      <li>write access to logback.xml</li>      
-      <li>use of versions &lt; 1.2.8</li>
-      <li>reloading of poisoned configuration data, which implies
-      application restart or scan="true" set prior to attack</li>
-    </ol>
-
-    <p>As an additional extra precaution, in addition to upgrading to
-    logback version 1.2.8, we also recommend users to set their
-    logback configuration files as read-only.</p>
     
     <hr width="80%" align="center" />
 
