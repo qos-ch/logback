@@ -65,7 +65,7 @@ public class ContextInitializer {
         final String urlString = url.toString();
         if (urlString.endsWith("groovy")) {
             StatusManager sm = loggerContext.getStatusManager();
-            sm.add(new ErrorStatus("Groovy configuration disabled due to Java 9 compilation issues.", loggerContext));
+            sm.add(new ErrorStatus("Groovy configuration no longer supported.", loggerContext));
         } else if (urlString.endsWith("xml")) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);
