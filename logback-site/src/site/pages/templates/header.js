@@ -1,13 +1,9 @@
-document.write('<table width="100%" border="0"><tr>');
-document.write('<td><a href="http://logback.qos.ch/">');
-document.write('<img src="' + prefix + 'images/logos/lblogo.jpg" alt="" border="0"/>');
-document.write('</a></td>')
+document.write(`
+<header id="header">
+  <a href="http://logback.qos.ch/">
+    <img src="${prefix}images/logos/lblogo.jpg" alt="LOGBack logo" />
+  </a>
 
-document.write('<td>&nbsp;</td>');
-
-document.write('</tr></table>')
-
-
-document.write('<div id="headerLine"></div>');
-
-
+  <hr id="headerLine" />
+</header>
+`)

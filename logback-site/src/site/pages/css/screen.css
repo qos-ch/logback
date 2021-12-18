@@ -1,4 +1,4 @@
-html { 
+html {
 /*  padding:0px;
   margin:0px; */
 }
@@ -6,7 +6,7 @@ html {
 body {
   background-color: #fff;
   font-family: Verdana, Arial, SunSans-Regular, Sans-Serif;
-  color: #000;  
+  color: #000;
   padding: 0px;
   margin: 0px;
   counter-reset: example;  /* Create an example counter scope */
@@ -15,9 +15,9 @@ body {
 .footer {
   color: #564b47;
   background-color: #fff;
-  padding:0px;
+  padding: 1rem 0;
   border-top:  1px solid #CCCCCC;
-  margin-top: 3ex;
+  margin-top: 1rem;
 	font-size: smaller;
 }
 
@@ -31,25 +31,35 @@ body {
 
 p.menu {
  padding-top: 0px;
- padding-bottom: 0px; 
+ padding-bottom: 0px;
  margin-top: 0px;
  margin-bottom: 0px;
  font-size: smaller;
 }
 
+#container {
+  display: grid;
+  grid-template-columns: 15em 1fr 15em;
+  grid-template-areas:
+    "header header  header"
+    "left   content right";
+}
+
+#header {
+  grid-area: header;
+}
+
 #left {
-    //position: absolute;
-    //left: 0px;
-    float: left;
+  grid-area: left;
   width: 15em;
-  margin: 4px 0px 0px 4px; 
+  margin: 4px 0px 0px 4px;
   padding: 0px;
   font-size: 80%;
   background-color: #ffffff;
 }
 
 .menuGroup {
-  border: 1px solid #cccccc;  
+  border: 1px solid #cccccc;
   background-color: #fff8e8;
   color: #564b47;
   border: 1px solid #cccccc;
@@ -59,26 +69,26 @@ p.menu {
 }
 
 #left a, #right a {
-  display: block; 
-  margin: 0px; 
-  padding: 2px; 
-  border: solid 1px #fff8e8; 
-  color: #0066cc; 
+  display: block;
+  margin: 0px;
+  padding: 2px;
+  border: solid 1px #fff8e8;
+  color: #0066cc;
   text-decoration: none;
 }
 
 p.menu_header {
-  margin: 0px; 
+  margin: 0px;
   padding: 2px;
-  font-weight: normal; 
-  background-color: #ffd0a0; 
+  font-weight: normal;
+  background-color: #ffd0a0;
   border-top: solid 1px #CCCCCC;
   border-bottom: solid 1px #CCCCCC;
 }
 
 #left a:hover, #right a:hover {
-  border: solid 1px #FFFFFF; 
-  background-color: #3333CC; 
+  border: solid 1px #FFFFFF;
+  background-color: #3333CC;
   color: #ffffff;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -119,20 +129,17 @@ p.menu_header {
 #left div.jobadd a, div.jobadd a:hover {
   background-color: transparent;
   color: #fff;
-  border-width: 0px;	
+  border-width: 0px;
 }
 
 /* ------------------------------------------- */
 
 #right {
-    //position: absolute;
-    //right: 0px;
-    float: right;    
-    width: 12em;
+  grid-area: right;
   color: #564b47;
-  margin: 4px 4px 0px 0px; 
+  margin: 4px 4px 0px 0px;
   padding: 0px;
-  background-color: #ffffff;    
+  background-color: #ffffff;
   border: 1px solid #cccccc;
   font-size: 80%;
 }
@@ -147,10 +154,10 @@ p.menu_header {
 }
 
 #content {
-  margin: 0px 15em 0px 15em;
+  grid-area: content;
   padding: 0px;
   line-height: 130%;
-  background-color: #ffffff;  
+  background-color: #ffffff;
 }
 
 #content img {
@@ -161,21 +168,21 @@ p.menu_header {
 }
 
 span.asGroovy {
-   background: #fff; 
-   color: #0079C5;   
+   background: #fff;
+   color: #0079C5;
    font-family: "Comic Sans MS", sans-serif;
    white-space: nowrap;
    font-size: 80%;
 
-   border-top:    2px solid #DDD;  
-   border-left:   2px solid #DDD;  
-   border-right:  2px solid #888;  
-   border-bottom: 2px solid #888;    
+   border-top:    2px solid #DDD;
+   border-left:   2px solid #DDD;
+   border-right:  2px solid #888;
+   border-bottom: 2px solid #888;
    padding: 0px 1em 0px 1em;
-   margin:  -4px 4px 0 4px; 
+   margin:  -4px 4px 0 4px;
    float: right;
 }
- 
+
 span.asGroovy:hover {
    background: #E0E0EF;
    cursor: pointer;
@@ -197,13 +204,11 @@ h3:hover .anchor { margin-left: -16px; }
 h4:hover .anchor { margin-left: -12px; }
 td:hover .anchor { margin-left: -12px; }
 
-h1:hover .anchor, 
-h2:hover .anchor,  
-h3:hover .anchor, 
+h1:hover .anchor,
+h2:hover .anchor,
+h3:hover .anchor,
 h4:hover .anchor,
 td:hover .anchor {
   display: inline-block;
   text-decoration: none;
 }
-
-
