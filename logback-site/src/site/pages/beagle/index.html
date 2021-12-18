@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -9,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
-    
+
   </head>
   <body onload="prettyPrint(); decorate();">
     <script type="text/javascript">prefix='../';</script>
@@ -31,9 +30,9 @@
 
     <div id="content">
 
-    <img style="float:left; margin-right: 1em;" src="images/sailing-ship-128x128.png" alt=""/>             
+    <img style="float:left; margin-right: 1em;" src="images/sailing-ship-128x128.png" alt=""/>
       <h1>Logback-beagle</h1>
-	
+
 
       <script src="../templates/creative.js" type="text/javascript"></script>
 
@@ -52,7 +51,7 @@
     replacement for viewing logs via the console. It offers several
     advantages over the plain-old console:
     </p>
-    
+
     <ul>
 
       <li>Events of level WARN and ERROR are marked by an orange flag
@@ -64,7 +63,7 @@
 
       <li>Easly view and jump to the callers of any log statement upto
       eight levels deep</li>
-  
+
       <li>Change the output format on-the-fly</li>
 
       <li>quickly filter-out events by setting the level of existing
@@ -81,18 +80,18 @@
 
     <dl>
       <dt>Step 1: Nebula Grid</dt>
-      
+
       <dd>
       <p>The Nebula Grid plug-in which can be installed from
       <b>http://download.eclipse.org/technology/nebula/snapshot/</b>. Only
       the "Nebula Grid Feature" needs to be installed.</p>
-      
+
       <p><img src="images/nebulaFeature.png" alt=""/></p>
-      
+
       </dd>
 
       <dt>Step 2: Logbak-beagle</dt>
-      
+
       <dd><p>The logback-beagle plug-in can be installed from
       <b>http://logback.qos.ch/p2/</b>. You need to select "Logback",
       "Logback Beagle" and "SLF4J" bundles for installation as shown
@@ -101,8 +100,8 @@
       <p><img src="images/beagleFeature.png" alt=""/></p>
       </dd>
     </dl>
-        
-    
+
+
     <p>Restarting Eclipse should load the plugin. To access the Beagle
     View, either type A"lt-Shift-Q, Q" or select: <em>Window &gt; Show
     view &gt; Other... </em>. You should see the <em>Beagle</em> view
@@ -112,18 +111,18 @@
     <p><img src="images/beagleView0.png" alt=""/></p>
 
     <h3>Configuring the client (logback.xml)</h3>
-    
+
     <p>A single additional configuration line in <em>logback.xml</em>
     is sufficient to send log events from your application to
     logback-beagle.
     </p>
-    
+
     <pre class="prettyprint source">&lt;configuration debug="true">
   &lt;!-- sends logs to logback-beagle --&gt;
   <b>&lt;consolePlugin /></b>
 &lt;/configuration></pre>
-  
-	
+
+
    <p>Under the hood, <code>&lt;consolePlugin></code> element creates
    a <code>SocketAppender</code> which will send logging events to a
    TCP socket on <code>localhost</code> port
@@ -150,9 +149,9 @@
    </p>
 
    <h3 class="doAnchor" name="using">Jump to caller/Expand caller data</h3>
-   
+
    <p>Right-clicking on any line will reveal the following menu:</p>
-   
+
    <p><img src="images/menu.png" alt=""/></p>
 
    <p>Selecting "Jump to caller" will move the edit cursor to the file
@@ -176,7 +175,7 @@
     data" from the said menu.</p>
 
     <h2 class="doAnchor">Preferences</h2>
-    
+
     <p>Logback-beagle preferences can be found under the "Beagle"
     label nested under "Run/Debug" category. You can customize the
     output pattern to best suit your preferences. Changes take effect
@@ -191,7 +190,7 @@
     below:</p>
 
      <p><img src="images/font.png" alt=""/></p>
-    
+
     <script src="templates/footer.js" type="text/javascript"></script>
     </div>
     </div>

@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
@@ -19,10 +18,10 @@
 
       <script type="text/javascript" src="../templates/header.js" ></script>
 
-      <div id="left">      
+      <div id="left">
         <noscript>Please turn on Javascript to view this menu</noscript>
         <script src="../templates/left.js" type="text/javascript"></script>
-      </div>    
+      </div>
       <div id="right">
         <script src="menu.js" type="text/javascript"></script>
       </div>
@@ -89,7 +88,7 @@
     is the <a
     href="../xref/ch/qos/logback/core/encoder/Encoder.html">Encoder
     interface:</a>
-   
+
     </p>
     <pre class="prettyprint source">package ch.qos.logback.core.encoder;
 
@@ -146,7 +145,7 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
 
   protected Layout&lt;E> layout;
   private Charset charset;
- 
+
    // encode a given event as a byte[]
    public byte[] encode(E event) {
      String txt = layout.doLayout(event);
@@ -159,14 +158,14 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     } else {
       return s.getBytes(charset);
     }
-  } 
+  }
 }</pre>
 
     <p>The <code>doEncode</code>() method starts by having the wrapped
     layout convert the incoming event into string. The resulting text
     string is converted to bytes according to the charset encoding
     chosen by the user.</p>
-    
+
 
     <h2 class="doAnchor">PatternLayoutEncoder</h2>
 
@@ -202,14 +201,14 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
     property to 'true' for relevant
     <code>PatternLayoutEncoder</code>. Here is an example:</p>
 
-<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"> 
+<pre class="prettyprint">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
   &lt;file>foo.log&lt;/file>
   &lt;encoder>
     &lt;pattern>%d %-5level [%thread] %logger{0}: %msg%n&lt;/pattern>
     <b>&lt;outputPatternAsHeader>true&lt;/outputPatternAsHeader></b>
-  &lt;/encoder> 
+  &lt;/encoder>
 &lt;/appender></pre>
-    
+
     <p>This will result output akin to the following in the log file:</p>
 
     <pre>#logback.classic pattern: %d [%thread] %-5level %logger{36} - %msg%n
@@ -220,8 +219,8 @@ public class LayoutWrappingEncoder&lt;E> extends EncoderBase&lt;E> {
      <p>The line starting with "#logback.classic pattern" is newly
      inserted pattern line.</p>
 
-    
-     
+
+
 
     <script src="../templates/footer.js" type="text/javascript"></script>
 

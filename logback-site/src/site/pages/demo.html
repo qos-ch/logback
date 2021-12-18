@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -22,21 +21,21 @@
       </div>
 
     <div id="content">
-      
-	
+
+
     <h2>Logback Demo</h2>
 
     <p>Welcome to the logback demo! This document will take you through
     a tour of some of logback's major features.
     </p>
-    
+
     <h3>Installation</h3>
 
     <p> First, please download the logback demo. You will need to
     install a <a href="http://git-scm.com/">git</a>
     client and issue the following command on a console:
     </p>
-  
+
     <p class="source">git clone git://github.com/qos-ch/logback-demo.git logback-demo</p>
 
     <p>This will retrieve a copy of the logback demonstration
@@ -54,7 +53,7 @@
     </p>
 
     <div class="source"><pre>mvn package jetty:run</pre></div>
-    
+
     <p>Then, visit <a
     href="http://localhost:8080/">http://localhost:8080/</a>
     to view the main page of the logback demo.
@@ -247,7 +246,7 @@
 <div class="source"><pre>logger.debug("Hello, my name is" + username + ", I am " + age + " years old.");</pre></div>
 
   <p>In the above call, the cost of constructing the message of type
-  String is borne even if the log request is disabled. 
+  String is borne even if the log request is disabled.
   </p>
 
   <p>SLF4J offers the following alternative:
@@ -303,7 +302,7 @@
     &lt;Marker>HOWDY&lt;/Marker>
     &lt;OnMatch>DENY&lt;/OnMatch>
 &lt;/turboFilter> </p>
-  
+
   <p>After you have set the root logger's level back to <em>DEBUG</em>
   and uncommented the MarkerFilter block in <em>logback.xml</em>,
   restart the server.
@@ -328,16 +327,16 @@
   <p>Here is a rather minimal configuration for logback-access:</p>
 
 <div class="source"><pre>&lt;configuration>
- 
+
   &lt;appender name="STDOUT"
     class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout class="ch.qos.logback.access.PatternLayout">
       &lt;Pattern>%h %l %u %t \"%r\" %s %b&lt;/Pattern>
     &lt;/layout>
   &lt;/appender>
-  
+
   &lt;appender-ref ref="STDOUT" />
-  
+
 &lt;/configuration></pre></div>
 
   <p>Note that logback-classic and logback-access are configured via
@@ -477,18 +476,18 @@
   calculation directly, without restarting the server. The <em>View
   logs</em> page should show the <em>DEBUG</em> and <em>INFO</em> logs.
   </p>
-  
+
   <p>Now, if you set the level of the <em>ch.qos.logback.demo.prime</em>
   logger to <em>INFO</em>, and run a prime calculation again, you should
   not see the <em>DEBUG</em> level logs anymore.
   </p>
-  
+
   <p>This demo of logback is now over. Do not hesitate to play around
   with the configuration files.  You might want to check the <a
   href="http://logback.qos.ch/documentation.html"> logback documentation
   page</a> for more information about any component you'd like to test.
   </p>
-	
+
   <script src="templates/footer.js" type="text/javascript"></script>
     </div>
     </div>

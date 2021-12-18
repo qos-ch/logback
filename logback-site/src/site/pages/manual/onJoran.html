@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -18,7 +17,7 @@
 
     <div id="container">
       <script type="text/javascript"> src="../templates/header.js"</script>
-          
+
       <div id="left">
         <noscript>Please turn on Javascript to view this menu</noscript>
         <script src="../templates/left.js" type="text/javascript"></script>
@@ -27,7 +26,7 @@
         <script src="menu.js" type="text/javascript"></script>
       </div>
       <div id="content">
-      
+
     <h1>Chapter 11: Joran</h1>
 
     <a href="onJoran_ja.html">&#x548C;&#x8A33; (Japanese translation)</a>
@@ -35,13 +34,13 @@
     <div class="quote">
       <p><em>The answer, my friend, is blowin' in the wind, The answer
       is blowin' in the wind.</em></p>
-      
+
       <p>&mdash;BOB DYLAN, <em>The Freewheelin' Bob Dylan</em></p>
     </div>
 
     <p class="big red">This chapter is outdated and needs to be
     re-written to account for the massive changes occuring in 1.3</p>
-    
+
     <p>Joran stands for a cold north-west wind which, every now and
     then, blows forcefully on Lake Geneva. Located right in the middle
     of Western-Europe, the surface of Lake Geneva is smaller than many
@@ -74,7 +73,7 @@
     href="../download.html">download</a> logback and add
     <em>logback-core-${project.version}.jar</em> to your
     classpath.</p>
-    
+
     <h2 class="doAnchor">Historical perspective</h2>
 
     <p>Reflection is a powerful feature of the Java language, making
@@ -136,7 +135,7 @@
     equally problematic. More generally, the DOM API allows the user to
     perform searches on all the elements and make forward jumps.
     </p>
-    
+
     <p>This extra flexibility initially led us to choose the DOM API
     as the underlying parsing API for Joran. After some
     experimentation, it quickly became clear that dealing with jumps
@@ -152,7 +151,7 @@
     error occurred. Location information comes in very handy in the
     identification of parsing problems.
     </p>
-    
+
     <h3>Non goals</h3>
 
     <p>Given its highly dynamic nature, the Joran API is not intended
@@ -179,7 +178,7 @@
     </p>
 
     <h3 class="doAnchor" name="action">Actions</h3>
-    
+
     <p>As mentioned above, Joran parsing rules consists of the
     association of patterns. Actions extend the <a
     href="../xref/ch/qos/logback/core/joran/action/Action.html"><code>Action</code></a>
@@ -229,7 +228,7 @@ public abstract class Action extends ContextAwareBase {
    <p>As mentioned previously, the invocation of actions according to
    matching patterns is a central concept in Joran. A rule is an
    association of a pattern and an action. Rules are stored in a <a
-   href="../xref/ch/qos/logback/core/joran/spi/RuleStore.html">RuleStore</a>.   
+   href="../xref/ch/qos/logback/core/joran/spi/RuleStore.html">RuleStore</a>.
    </p>
 
    <p>As mentioned above, Joran is built on top of the SAX API. As an
@@ -249,7 +248,7 @@ public abstract class Action extends ContextAwareBase {
    href="../xref/ch/qos/logback/core/joran/spi/SimpleRuleStore.html">SimpleRuleStore</a>
    class.
    </p>
-   
+
 
    <h3 class="doAnchor" name="interpretationContext">Interpretation
    context</h3>
@@ -263,16 +262,16 @@ public abstract class Action extends ContextAwareBase {
    class for the exact list of fields contained in the interpretation
    context.
    </p>
-   
+
    <p>Actions can collaborate together by fetching, pushing or popping
    objects from the common object stack, or by putting and fetching
    keyed objects on the common object map. Actions can report any error
    conditions by adding error items on the interpretation context's
    <code>StatusManager</code>.
    </p>
-   
+
    <h3 class="doAnchor" name="helloWorld">Hello world</h3>
-   
+
    <p>The first example in this chapter illustrates the minimal
    plumbing required for using Joran. The example consists of a
    trivial action called <a
@@ -307,10 +306,10 @@ public abstract class Action extends ContextAwareBase {
     <em>logback-examples/src/main/java/chapters/onJoran/helloWorld/</em>
     folder for exact contents.
     </p>
- 
+
     <p>Running the HelloWorld application with <em>hello.xml</em> file
     will print "Hello World" on the console.</p>
-   
+
     <p class="command">java chapters.onJoran.helloWorld.HelloWorld src/main/java/chapters/onJoran/helloWorld/hello.xml</p>
 
     <p>You are highly encouraged to poke about in this example, by adding
@@ -321,7 +320,7 @@ public abstract class Action extends ContextAwareBase {
     <!-- ====================================================== -->
 
     <h3 class="doAnchor" name="calculator">Collaborating actions</h3>
-   
+
     <p>The <em>logback-examples/src/main/java/joran/calculator/</em>
     directory includes several actions which collaborate together
     through the common object stack in order to accomplish simple
@@ -344,7 +343,7 @@ public abstract class Action extends ContextAwareBase {
     <p>In the <a href="../xref/chapters/onJoran/calculator/Calculator1.html">
     <code>Calculator1</code></a> application, we declare various
     parsing rules (patterns and actions) collaborating together to
-    compute a result based on the contents of an XML document. 
+    compute a result based on the contents of an XML document.
     </p>
 
     <p> Running <code>Calculator1</code> application with
@@ -450,11 +449,11 @@ public abstract class Action extends ContextAwareBase {
   </p>
 
   <p class="command">java chapters.onJoran.calculator.Calculator1 src/main/java/chapters/onJoran/calculator/calculator2.xml </p>
-  
+
   <p>will yield</p>
 
   <p class="console">The computation named [toto] resulted in the value 30 </p>
-  
+
 
   <!--
 
@@ -471,8 +470,8 @@ public abstract class Action extends ContextAwareBase {
     &lt;literal value="7"/&gt;
     &lt;literal value="3"/&gt;
     &lt;add/&gt;
-  &lt;/computation&gt;   
- 
+  &lt;/computation&gt;
+
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre>
@@ -590,7 +589,7 @@ Element [abc] asked to be printed.
 
   <h3 class="doAnchor" name="iaPractice">Implicit actions in
   practice</h3>
-  
+
   <p>The respective Joran configurators of logback-classic and
   logback-access include just two implicit actions, namely <a
   href="../xref/ch/qos/logback/core/joran/action/NestedBasicPropertyIA.html">
@@ -615,7 +614,7 @@ Element [abc] asked to be printed.
   href="../xref/ch/qos/logback/core/util/FileSize.html"><code>FileSize</code></a>
   classes follow this convention.
   </p>
-  
+
   <p><code>NestedComplexPropertyIA</code> action is applicable, in the
   remaining cases where <code>NestedBasicPropertyIA</code> is not
   applicable <em>and</em> if the object at the top of the object stack
@@ -706,10 +705,10 @@ Element [abc] asked to be printed.
   <code>addDefaultNestedComponentRegistryRules</code> method for the
   latest rules.
   </p>
-  
+
   <h4 class="doAnchor">Collection of properties</h4>
 
-  
+
   <p>Note that in addition to single simple properties or single
   complex properties, logback's implicit actions support collections of
   properties, be they simple or complex. Instead of a setter method,
@@ -758,19 +757,19 @@ Element [abc] asked to be printed.
   (logback-examples/src/main/java/chapters/onJoran/newrule/newRule.xml)</em>
 
   <pre class="prettyprint source">&lt;computation name="toto"&gt;
-  &lt;newRule pattern="*/computation/literal" 
+  &lt;newRule pattern="*/computation/literal"
             actionClass="chapters.onJoran.calculator.LiteralAction"/&gt;
-  &lt;newRule pattern="*/computation/add" 
+  &lt;newRule pattern="*/computation/add"
             actionClass="chapters.onJoran.calculator.AddAction"/&gt;
-  &lt;newRule pattern="*/computation/multiply" 
+  &lt;newRule pattern="*/computation/multiply"
             actionClass="chapters.onJoran.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
     &lt;literal value="3"/&gt;
     &lt;add/&gt;
-  &lt;/computation&gt;   
- 
+  &lt;/computation&gt;
+
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre>
@@ -788,6 +787,6 @@ Element [abc] asked to be printed.
 
   <script src="../templates/footer.js" type="text/javascript"></script>
       </div>
-</div>      
+</div>
 </body>
 </html>

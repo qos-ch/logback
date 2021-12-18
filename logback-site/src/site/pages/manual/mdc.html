@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -19,7 +18,7 @@
 
     <div id="container">
       <script type="text/javascript" src="../templates/header.js"></script>
-      
+
       <div id="left">
         <noscript>Please turn on Javascript to view this menu</noscript>
         <script src="../templates/left.js" type="text/javascript"></script>
@@ -28,18 +27,18 @@
         <script src="menu.js" type="text/javascript"></script>
       </div>
       <div id="content">
-      
+
     <h1>Chapter 8: Mapped Diagnostic Context</h1>
 
     <a href="mdc_ja.html">&#x548C;&#x8A33; (Japanese translation)</a>
 
-    <div class="quote">     
+    <div class="quote">
       <p><em>Lock the doors.</em></p>
       <p>&mdash;LEROY CAIN, Flight Director, Columbia Mission Control</p>
     </div>
-    
+
     <script src="../templates/creative.js" type="text/javascript"></script>
-    
+
 		<p>One of the design goals of logback is to audit and debug
 		complex distributed applications.  Most real-world distributed
 		systems need to deal with multiple clients simultaneously.  In a
@@ -50,10 +49,10 @@
 		logger for each client.  This technique promotes the proliferation
 		of loggers and may increase their management overhead.
 		</p>
-		
+
     <script src="../templates/setup.js" type="text/javascript"></script>
 
-    
+
     <p>A lighter technique consists of uniquely stamping each log
    	request servicing a given client. Neil Harrison described this
    	method in the book <em>Patterns for Logging Diagnostic
@@ -62,7 +61,7 @@
    	1997). Logback leverages a variant of this technique included in
    	the SLF4J API: Mapped Diagnostic Contexts (MDC).
 		</p>
-		
+
 		<p>To uniquely stamp each request, the user puts contextual
 		information into the <code>MDC</code>, the abbreviation of Mapped
 		Diagnostic Context.  The salient parts of the MDC class are shown
@@ -106,8 +105,8 @@ public class MDC {
     the mapped diagnostic context of its parent.</p>
 
 		<p>
-			The next application named 
-			<code><a href="../xref/chapters/mdc/SimpleMDC.html">SimpleMDC</a></code> 
+			The next application named
+			<code><a href="../xref/chapters/mdc/SimpleMDC.html">SimpleMDC</a></code>
 			demonstrates this basic principle.
 		</p>
 <em>Example 7.1: Basic MDC usage (<a href="../xref/chapters/mdc/SimpleMDC.html">
@@ -129,7 +128,7 @@ public class SimpleMDC {
     MDC.put("first", "Dorothy");
 
     [ SNIP ]
-    
+
     Logger logger = LoggerFactory.getLogger(SimpleMDC.class);
     // We now put the last name
     MDC.put("last", "Parker");
@@ -162,12 +161,12 @@ public class SimpleMDC {
     is the relevant section from that file.
     </p>
 
- <pre class="prettyprint source">&lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender"> 
+ <pre class="prettyprint source">&lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
   &lt;layout>
     &lt;Pattern><b>%X{first} %X{last}</b> - %m%n&lt;/Pattern>
-  &lt;/layout> 
+  &lt;/layout>
 &lt;/appender></pre>
-    
+
 
 
     <p>Note the usage of the <em>%X</em> specifier within the
@@ -194,9 +193,9 @@ Richard Nixon - Attributed to the former US president. 17 Nov 1973.</pre></div>
 		into the <code>MDC</code> can be used by multiple logger
 		invocations.
 		</p>
-		
+
 		<h3 class="doAnchor">Advanced Use</h3>
-		
+
 		<p>Mapped Diagnostic Contexts shine brightest within client server
 		architectures.  Typically, multiple clients will be served by
 		multiple threads on the server.  Although the methods in the
@@ -243,9 +242,9 @@ public interface NumberCruncher extends Remote {
 }</pre>
 
 		<p>
-			The <code>NumberCruncherServer</code> application, listed in Example 7.3 below, 
-			implements the <code>NumberCruncher</code> interface. Its main method exports 
-			an RMI Registry on the local host that accepts requests on a well-known port.  
+			The <code>NumberCruncherServer</code> application, listed in Example 7.3 below,
+			implements the <code>NumberCruncher</code> interface. Its main method exports
+			an RMI Registry on the local host that accepts requests on a well-known port.
 		</p>
 
 <em>Example 7.3: The server side (<a href="../xref/chapters/mdc/NumberCruncherServer.html">
@@ -294,7 +293,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
     // The information contained within the request is another source
     // of distinctive information. It might reveal the users name,
     // date of request, request ID etc. In servlet type environments,
-    // useful information is contained in the HttpRequest or in the  
+    // useful information is contained in the HttpRequest or in the
     // HttpSession.
     <b>MDC.put("number", String.valueOf(number));</b>
 
@@ -313,7 +312,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
     for (int i = 2; (i &lt;= n) &amp;&amp; ((i * i) &lt;= number); i++) {
       // It is bad practice to place log requests within tight loops.
       // It is done here to show interleaved log output from
-      // different requests. 
+      // different requests.
       logger.debug("Trying " + i + " as a factor.");
 
       if ((n % i) == 0) {
@@ -416,15 +415,15 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		that whenever possible, <code>remove()</code> operations be
 		performed within finally blocks, ensuring their invocation
 		regardless of the execution path of the code.
-		</p>	
-		
+		</p>
+
 		<p>
-			After these theoretical explanations, we are ready to run the number 
+			After these theoretical explanations, we are ready to run the number
 			cruncher example. Start the server with the following command:
 		</p>
-		
+
 <div class="source"><pre>java chapters.mdc.NumberCruncherServer src/main/java/chapters/mdc/mdc1.xml</pre></div>
-		
+
 		<p>
 			The <em>mdc1.xml</em> configuration file is listed below:
 		</p>
@@ -433,37 +432,37 @@ public class NumberCruncherServer extends UnicastRemoteObject
   &lt;appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     &lt;layout>
       &lt;Pattern>%-4r [%thread] %-5level <b>C:%X{client} N:%X{number}</b> - %msg%n&lt;/Pattern>
-    &lt;/layout>	    
+    &lt;/layout>
   &lt;/appender>
-  
+
   &lt;root level="debug">
     &lt;appender-ref ref="CONSOLE"/>
-  &lt;/root>  
+  &lt;/root>
 &lt;/configuration></pre>
 
 		<p>
-			Note the use of the <em>%X</em> conversion specifier within the 
+			Note the use of the <em>%X</em> conversion specifier within the
 			<span class="option">Pattern</span> option.
 		</p>
-	
+
 		<p>
-			The following command starts an instance of <code>NumberCruncherClient</code> 
-			application:  	
+			The following command starts an instance of <code>NumberCruncherClient</code>
+			application:
 		</p>
-		
+
 <div class="source"><pre>java chapters.mdc.NumberCruncherClient <em>hostname</em></pre></div>
 
 		<p>
-			where <em>hostname</em> is the host where the 
+			where <em>hostname</em> is the host where the
 			<code>NumberCruncherServer</code> is running
 		</p>
-		
+
 		<p>
-			Executing multiple instances of the client and requesting the server to factor 
-			the numbers 129 from the first client and shortly thereafter 
+			Executing multiple instances of the client and requesting the server to factor
+			the numbers 129 from the first client and shortly thereafter
 			the number 71 from the second client, the server outputs the following:
 		</p>
-		
+
 <div class="source"><pre>
 <b>70984 [RMI TCP Connection(4)-192.168.1.6] INFO  C:orion N:129 - Beginning to factor.</b>
 70984 [RMI TCP Connection(4)-192.168.1.6] DEBUG C:orion N:129 - Trying 2 as a factor.
@@ -489,28 +488,28 @@ public class NumberCruncherServer extends UnicastRemoteObject
 72156 [RMI TCP Connection(5)-192.168.1.6] INFO  C:orion N:71 - Found factor 71</pre></div>
 
 		<p>
-			The clients were run from a machine called <em>orion</em> as can be seen in 
-			the above output. Even if the server processes the requests of clients 
-			near-simultaneously in separate threads, the logging output pertaining 
-			to each client request can be distinguished by studying the output of the 
-			<code>MDC</code>. Note for example the stamp associated with <em>number</em>, 
-			i.e. the number to factor. 
+			The clients were run from a machine called <em>orion</em> as can be seen in
+			the above output. Even if the server processes the requests of clients
+			near-simultaneously in separate threads, the logging output pertaining
+			to each client request can be distinguished by studying the output of the
+			<code>MDC</code>. Note for example the stamp associated with <em>number</em>,
+			i.e. the number to factor.
 		</p>
-		
+
 		<p>
-			The attentive reader might have observed that the thread name could 
-			also have been used to distinguish each request. The thread name can cause 
-			confusion if the server side technology recycles threads. In that case, 
-			it may be hard to determine the boundaries of each request, that is, 
+			The attentive reader might have observed that the thread name could
+			also have been used to distinguish each request. The thread name can cause
+			confusion if the server side technology recycles threads. In that case,
+			it may be hard to determine the boundaries of each request, that is,
 			when a given thread finishes servicing a request and when it begins servicing the next.
-			Because the <code>MDC</code> is under the control of the application developer, 
-			<code>MDC</code> stamps do not suffer from this problem. 
+			Because the <code>MDC</code> is under the control of the application developer,
+			<code>MDC</code> stamps do not suffer from this problem.
 		</p>
-		
-		
-		
+
+
+
 		<h3 class="doAnchor" name="autoMDC">Automating access to the <code>MDC</code></h3>
-		
+
 		<p>As we've seen, the <code>MDC</code> is very useful when dealing
 			with multiple clients. In the case of a web application that
 			manages user authentication, one simple solution could be to set
@@ -521,7 +520,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			server that recycles threads might lead to false information
 			contained in the <code>MDC</code>.
 		</p>
-		
+
 		<p>To allow the information contained in the <code>MDC</code> to
 			be correct at all times when a request is processed, a possible
 			approach would be to store the username at the beginning of the
@@ -529,7 +528,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 			href="http://java.sun.com/javaee/5/docs/api/javax/servlet/Filter.html">
 			<code>Filter</code></a> comes in handy in this case.
 		</p>
-		
+
 		<p>Within the servlet filter's <code>doFilter</code> method, we
 		can retrieve the relevant user data through the request (or a
 		cookie therein), store it the <code>MDC</code>.  Subsequent
@@ -538,7 +537,7 @@ public class NumberCruncherServer extends UnicastRemoteObject
 		when our servlet filter regains control, we have an opportunity to
 		clean MDC data.
 		</p>
-		
+
 		<p>Here is an implementation of such a filter:</p>
 
 <em>Example 7.5: User servlet filter (<a href="../xref/chapters/mdc/UserServletFilter.html">
@@ -562,7 +561,7 @@ import org.slf4j.MDC;
 public class UserServletFilter implements Filter {
 
   private final String USER_KEY = "username";
-  
+
   public void destroy() {
   }
 
@@ -571,15 +570,15 @@ public class UserServletFilter implements Filter {
 
     boolean successfulRegistration = false;
 
-    HttpServletRequest req = (HttpServletRequest) request;    
+    HttpServletRequest req = (HttpServletRequest) request;
     Principal principal = req.getUserPrincipal();
-    // Please note that we could have also used a cookie to 
+    // Please note that we could have also used a cookie to
     // retrieve the user name
 
     if (principal != null) {
       String username = principal.getName();
       successfulRegistration = registerUsername(username);
-    } 
+    }
 
     try {
       chain.doFilter(request, response);
@@ -592,11 +591,11 @@ public class UserServletFilter implements Filter {
 
   public void init(FilterConfig arg0) throws ServletException {
   }
-  
+
 
   /**
    * Register the user in the MDC under USER_KEY.
-   * 
+   *
    * @param username
    * @return true id the user can be successfully registered
    */
@@ -615,7 +614,7 @@ public class UserServletFilter implements Filter {
 	authenticated user. If a user information is found, it is registered
 	in the <code>MDC</code>.
 	</p>
-		
+
 	<p>Once the filter chain has completed, the filter removes the user
 		information from the <code>MDC</code>.
 	</p>
@@ -624,7 +623,7 @@ public class UserServletFilter implements Filter {
   of the request and only for the thread processing it. Other threads
   are unaffected. Furthermore, any given thread will contain correct
   MDC data at any point in time.</p>
-		
+
 
 
   <h3 class="doAnchor" name="managedThreads">MDC And Managed
@@ -751,7 +750,7 @@ public class UserServletFilter implements Filter {
   host followed by the request URI on one line, the date followed by
   the message on the next, you would set <code>PatternLayout</code>'s
   pattern to:
-  
+
   </p>
 
   <p class="source">%X{req.remoteHost} %X{req.requestURI}%n%d - %m%n</p>
