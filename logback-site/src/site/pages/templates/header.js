@@ -1,6 +1,6 @@
 document.write(`
 <header id="header">
-  <a href="http://logback.qos.ch/">
+  <a href="${prefix}/">
     <img src="${prefix}images/logos/lblogo.jpg" alt="LOGBack logo" />
   </a>
 
