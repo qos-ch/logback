@@ -19,6 +19,8 @@ import org.junit.Test;
 
 import ch.qos.logback.core.spi.FilterReply;
 
+import java.lang.reflect.Field;
+
 public class DuplicateMessageFilterTest {
 
     @Test
@@ -72,6 +74,32 @@ public class DuplicateMessageFilterTest {
         dmf.start();
         assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, null, null, null));
         assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, null, null, null));
+    }
+
+    @Test
+    // Time based cache eviction
+    // https://jira.qos.ch/browse/LOGBACK-715
+    public void timeBasedCacheEviction() {
+        DuplicateMessageFilter dmf = new DuplicateMessageFilter();
+        dmf.setAllowedRepetitions(0);
+        dmf.setCacheSize(10);
+        dmf.setCacheResetWindow(1000);
+        dmf.start();
+        assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "a", null, null));
+        assertEquals(FilterReply.DENY, dmf.decide(null, null, null, "a", null, null));
+
+        try {
+            Field msgCache = DuplicateMessageFilter.class.getDeclaredField("msgCache");
+            msgCache.setAccessible(true);
+            LRUMessageCache cache = (LRUMessageCache)msgCache.get(dmf);
+            Field lastReset = LRUMessageCache.class.getDeclaredField("lastReset");
+            lastReset.setAccessible(true);
+            assertEquals(FilterReply.DENY, dmf.decide(null, null, null, "a", null, null));
+            lastReset.set(cache, 0L);
+            assertEquals(FilterReply.NEUTRAL, dmf.decide(null, null, null, "a", null, null));
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            fail("test failed for " + e.getMessage() + " " + e.getClass());
+        }
     }
 
 }
