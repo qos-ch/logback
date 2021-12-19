@@ -16,21 +16,25 @@ package ch.qos.logback.classic.turbo;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Clients of this class should only use the  {@link #getMessageCountAndThenIncrement} method. 
- * Other methods inherited via LinkedHashMap are not thread safe.
- */
-class LRUMessageCache extends LinkedHashMap<String, Integer> {
+class LRUMessageCache {
 
     private static final long serialVersionUID = 1L;
     final int cacheSize;
+    private final InternalHashMap cache = new InternalHashMap();
+    private final long cacheResetWindow;
+    private long lastReset;
 
     LRUMessageCache(int cacheSize) {
-        super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
+        this(cacheSize, Long.MAX_VALUE);
+    }
+
+    LRUMessageCache(int cacheSize, long cacheResetWindow) {
         if (cacheSize < 1) {
             throw new IllegalArgumentException("Cache size cannot be smaller than 1");
         }
         this.cacheSize = cacheSize;
+        this.cacheResetWindow = cacheResetWindow;
+        this.lastReset = System.currentTimeMillis();
     }
 
     int getMessageCountAndThenIncrement(String msg) {
@@ -39,28 +43,39 @@ class LRUMessageCache extends LinkedHashMap<String, Integer> {
             return 0;
         }
 
-        Integer i;
+        int i;
         // LinkedHashMap is not LinkedHashMap. See also LBCLASSIC-255
         synchronized (this) {
-            i = super.get(msg);
-            if (i == null) {
-                i = 0;
-            } else {
-                i = i + 1;
+            if (cacheResetWindow != Long.MAX_VALUE && lastReset + cacheResetWindow < System.currentTimeMillis()) {
+                cache.clear();
+                lastReset = System.currentTimeMillis();
             }
-            super.put(msg, i);
+            // new message will get 0, existing one will get its value inc by 1
+            i = cache.getOrDefault(msg, -1) + 1;
+            cache.put(msg, i);
         }
         return i;
     }
 
-    // called indirectly by get() or put() which are already supposed to be
-    // called from within a synchronized block
-    protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
-        return (size() > cacheSize);
+    synchronized public void clear() {
+        cache.clear();
     }
 
-    @Override
-    synchronized public void clear() {
-        super.clear();
+    // Thread safety is provided due to the fact that this can only be called from the thread safe
+    // getMessageCountAndThenIncrement method, no way to access the internal implementation
+    private class InternalHashMap extends LinkedHashMap<String, Integer> {
+
+        public InternalHashMap() {
+            super((int) (cacheSize * (4.0f / 3)), 0.75f, true);
+        }
+
+        protected boolean removeEldestEntry(Map.Entry<String, Integer> eldest) {
+            return (size() > cacheSize);
+        }
+
+        @Override
+        synchronized public void clear() {
+            super.clear();
+        }
     }
 }
