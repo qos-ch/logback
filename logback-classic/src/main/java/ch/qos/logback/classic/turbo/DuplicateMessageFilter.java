@@ -37,15 +37,20 @@ public class DuplicateMessageFilter extends TurboFilter {
      * The default number of allows repetitions.
      */
     public static final int DEFAULT_ALLOWED_REPETITIONS = 5;
+    /**
+     * The default time before cache reset.
+     */
+    public static final long DEFAULT_CACHE_RESET_WINDOW = Long.MAX_VALUE;
 
     public int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
     public int cacheSize = DEFAULT_CACHE_SIZE;
+    public long cacheResetWindow = DEFAULT_CACHE_RESET_WINDOW;
 
     private LRUMessageCache msgCache;
 
     @Override
     public void start() {
-        msgCache = new LRUMessageCache(cacheSize);
+        msgCache = new LRUMessageCache(cacheSize, cacheResetWindow);
         super.start();
     }
 
@@ -87,4 +92,16 @@ public class DuplicateMessageFilter extends TurboFilter {
         this.cacheSize = cacheSize;
     }
 
+    public long getCacheResetWindow() {
+        return cacheResetWindow;
+    }
+
+    /**
+     * The time window in ms before the cache resets
+     *
+     * @param cacheResetWindow
+     */
+    public void setCacheResetWindow(long cacheResetWindow) {
+        this.cacheResetWindow = cacheResetWindow;
+    }
 }
