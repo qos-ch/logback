@@ -37,12 +37,31 @@ p.menu {
  font-size: smaller;
 }
 
+/* TODO: remove right-most column once ad is removed */
 #container {
   display: grid;
-  grid-template-columns: 15em 1fr 15em;
+  max-width: 1024px;
+  padding: 1rem;
+  grid-template-columns: 15rem 1fr;
   grid-template-areas:
-    "header header  header"
-    "left   content right";
+    "header header"
+    "left   content";
+  gap: 1rem 2rem;
+}
+
+#content {
+  max-width: 75ch;
+}
+
+@media (max-width: 640px) {
+  #container {
+    max-width: 100%;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "left"
+      "content";
+  }
 }
 
 #header {
@@ -51,7 +70,6 @@ p.menu {
 
 #left {
   grid-area: left;
-  width: 15em;
   margin: 4px 0px 0px 4px;
   padding: 0px;
   font-size: 80%;
