@@ -67,6 +67,12 @@ p.menu {
   grid-area: header;
 }
 
+@media (max-width: 640px) {
+  .logo {
+    width: 150px;
+  }
+}
+
 #left {
   grid-area: left;
   padding: 0px;
@@ -226,4 +232,22 @@ h4:hover .anchor,
 td:hover .anchor {
   display: inline-block;
   text-decoration: none;
+}
+
+/* UTILITIES */
+
+.flex {
+  display: flex;
+}
+
+.items-end {
+  align-items: end;
+}
+
+.ml-auto {
+  margin-left: auto;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
 }
