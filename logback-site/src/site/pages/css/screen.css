@@ -12,6 +12,10 @@ body {
   counter-reset: example;  /* Create an example counter scope */
 }
 
+pre {
+  overflow: auto;
+}
+
 .footer {
   color: #564b47;
   background-color: #fff;
