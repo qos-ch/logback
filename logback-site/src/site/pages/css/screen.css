@@ -37,12 +37,11 @@ p.menu {
  font-size: smaller;
 }
 
-/* TODO: remove right-most column once ad is removed */
 #container {
   display: grid;
   max-width: 1024px;
   padding: 1rem;
-  grid-template-columns: 15rem 1fr;
+  grid-template-columns: 13rem 1fr;
   grid-template-areas:
     "header header"
     "left   content";
@@ -70,7 +69,6 @@ p.menu {
 
 #left {
   grid-area: left;
-  margin: 4px 0px 0px 4px;
   padding: 0px;
   font-size: 80%;
   background-color: #ffffff;
@@ -167,7 +165,6 @@ p.menu_header {
   background-color:#FFD0A0;
   border:1px solid #CCCCCC;
   font-size:small;
-  margin:0 4px;
   padding:3px 10px;
 }
 
