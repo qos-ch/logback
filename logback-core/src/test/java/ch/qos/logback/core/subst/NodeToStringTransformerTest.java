@@ -14,126 +14,169 @@
 package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import ch.qos.logback.core.spi.ScanException;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public class NodeToStringTransformerTest {
 
-    ContextBase propertyContainer0 = new ContextBase();
+	ContextBase propertyContainer0 = new ContextBase();
 
-    @Before
-    public void setUp() {
-        propertyContainer0.putProperty("k0", "v0");
-        propertyContainer0.putProperty("zero", "0");
-        propertyContainer0.putProperty("v0.jdbc.url", "http://..");
-        propertyContainer0.putProperty("host", "local");
+	@Before
+	public void setUp() {
+		propertyContainer0.putProperty("k0", "v0");
+		propertyContainer0.putProperty("zero", "0");
+		propertyContainer0.putProperty("v0.jdbc.url", "http://..");
+		propertyContainer0.putProperty("host", "local");
 
-    }
+	}
 
-    private Node makeNode(String input) throws ScanException {
-        Tokenizer tokenizer = new Tokenizer(input);
-        Parser parser = new Parser(tokenizer.tokenize());
-        return parser.parse();
-    }
+	private Node makeNode(String input) throws ScanException {
+		Tokenizer tokenizer = new Tokenizer(input);
+		Parser parser = new Parser(tokenizer.tokenize());
+		return parser.parse();
+	}
 
-    @Test
-    public void literal() throws ScanException {
-        String input = "abv";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals(input, nodeToStringTransformer.transform());
-    }
+	@Test
+	public void literal() throws ScanException {
+		String input = "abv";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals(input, nodeToStringTransformer.transform());
+	}
 
-    void checkInputEqualsOutput(String input) throws ScanException {
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals(input, nodeToStringTransformer.transform());
-    }
+	void checkInputEqualsOutput(String input) throws ScanException {
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals(input, nodeToStringTransformer.transform());
+	}
 
-    @Test
-    public void literalWithNestedAccolades() throws ScanException {
-        checkInputEqualsOutput("%logger{35}");
-        checkInputEqualsOutput("%a{35} %b{35} c");
-        checkInputEqualsOutput("%replace(%msg){'\\d{14,16}', 'XXXX'}");
-        checkInputEqualsOutput("TEST %d{HHmmssSSS} [%thread] %-5level %logger{36} - %msg%n");
-    }
+	@Test
+	public void literalWithNestedAccolades() throws ScanException {
+		checkInputEqualsOutput("%logger{35}");
+		checkInputEqualsOutput("%a{35} %b{35} c");
+		checkInputEqualsOutput("%replace(%msg){'\\d{14,16}', 'XXXX'}");
+		checkInputEqualsOutput("TEST %d{HHmmssSSS} [%thread] %-5level %logger{36} - %msg%n");
+	}
 
-    @Test
-    public void variable() throws ScanException {
-        String input = "${k0}";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("v0", nodeToStringTransformer.transform());
-    }
+	@Test
+	public void variable() throws ScanException {
+		String input = "${k0}";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("v0", nodeToStringTransformer.transform());
+	}
 
-    @Test
-    public void literalVariableLiteral() throws ScanException {
-        String input = "a${k0}c";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("av0c", nodeToStringTransformer.transform());
-    }
+	@Test
+	public void recursion0() throws ScanException {
+		assumeCycle("${nested:-${nested}}");
+		assumeCycle("${:-${}}");
+		assumeCycle("${$a:-${a:-${a:-b}}");
+	}
 
-    @Test
-    public void nestedVariable() throws ScanException {
-        String input = "a${k${zero}}b";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("av0b", nodeToStringTransformer.transform());
-    }
+	@Test
+	public void recursion1() throws ScanException {
+		propertyContainer0.putProperty("k", "${a}");
+		propertyContainer0.putProperty("a", "${k}");
+		assumeCycle("${k}");
+	}
 
-    @Test
-    public void LOGBACK729() throws ScanException {
-        String input = "${${k0}.jdbc.url}";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("http://..", nodeToStringTransformer.transform());
-    }
+	// Is this a feature or a bug?
+	@Test
+	public void cascadedTransformation() throws ScanException {
+		propertyContainer0.putProperty("x", "${a}");
+		propertyContainer0.putProperty("a", "b");
+		propertyContainer0.putProperty("b", "c");
+		String result = transform("${${x}}");
+		assertEquals("c", result);
+	}
 
-    @Test
-    public void LOGBACK744_withColon() throws ScanException {
-        String input = "%d{HH:mm:ss.SSS} host:${host} %logger{36} - %msg%n";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        System.out.println(nodeToStringTransformer.transform());
-        assertEquals("%d{HH:mm:ss.SSS} host:local %logger{36} - %msg%n", nodeToStringTransformer.transform());
-    }
+	
+	public void assumeCycle(String input) throws ScanException {
 
-    @Test
-    public void loneColonShouldReadLikeAnyOtherCharacter() throws ScanException {
-        String input = "java:comp/env/jdbc/datasource";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals(input, nodeToStringTransformer.transform());
-    }
+		try {
+			transform(input);
+		} catch (IllegalArgumentException e) {
+			return;
+		}
+		fail("circular reference should have been caught input=" + input);
+	}
 
-    @Test
-    public void withDefaultValue() throws ScanException {
-        String input = "${k67:-b}c";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("bc", nodeToStringTransformer.transform());
-    }
+	private String transform(String input) throws ScanException {
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		return nodeToStringTransformer.transform();
+	}
 
-    @Test
-    public void defaultValueNestedAsVar() throws ScanException {
-        String input = "a${k67:-x${k0}}c";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("axv0c", nodeToStringTransformer.transform());
-    }
+	@Test
+	public void literalVariableLiteral() throws ScanException {
+		String input = "a${k0}c";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("av0c", nodeToStringTransformer.transform());
+	}
 
-    @Test
-    public void LOGBACK_1101() throws ScanException {
-        String input = "a: {y}";
-        Node node = makeNode(input);
-        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
-        assertEquals("a: {y}", nodeToStringTransformer.transform());
-    }
+	@Test
+	public void nestedVariable() throws ScanException {
+		String input = "a${k${zero}}b";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("av0b", nodeToStringTransformer.transform());
+	}
+
+	@Test
+	public void LOGBACK729() throws ScanException {
+		String input = "${${k0}.jdbc.url}";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("http://..", nodeToStringTransformer.transform());
+	}
+
+	@Test
+	public void LOGBACK744_withColon() throws ScanException {
+		String input = "%d{HH:mm:ss.SSS} host:${host} %logger{36} - %msg%n";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		System.out.println(nodeToStringTransformer.transform());
+		assertEquals("%d{HH:mm:ss.SSS} host:local %logger{36} - %msg%n", nodeToStringTransformer.transform());
+	}
+
+	@Test
+	public void loneColonShouldReadLikeAnyOtherCharacter() throws ScanException {
+		String input = "java:comp/env/jdbc/datasource";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals(input, nodeToStringTransformer.transform());
+	}
+
+	@Test
+	public void withDefaultValue() throws ScanException {
+		String input = "${k67:-b}c";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("bc", nodeToStringTransformer.transform());
+	}
+
+	@Test
+	public void defaultValueNestedAsVar() throws ScanException {
+		String input = "a${k67:-x${k0}}c";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("axv0c", nodeToStringTransformer.transform());
+	}
+
+	@Test
+	public void LOGBACK_1101() throws ScanException {
+		String input = "a: {y}";
+		Node node = makeNode(input);
+		NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+		assertEquals("a: {y}", nodeToStringTransformer.transform());
+	}
 }

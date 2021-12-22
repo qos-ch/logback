@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -107,8 +108,9 @@ public class LoggingEvent implements ILoggingEvent {
      * The number of milliseconds elapsed from 1/1/1970 until logging event was
      * created.
      */
-    private long timeStamp;
+    private Instant instant;
 
+    private long timeStamp;
 	private int nanoseconds;
 
     private long sequenceNumber;
@@ -127,10 +129,11 @@ public class LoggingEvent implements ILoggingEvent {
         this.message = message;
         this.argumentArray = argArray;
         //List<Object> l =		Arrays.asList(argArray);
-        Instant instant = Clock.systemUTC().instant();
-        timeStamp = instant.getEpochSecond();
-        nanoseconds = instant.getNano();
-       
+        
+    	Instant instant = Clock.systemUTC().instant();
+        initTmestampFields(instant);
+        
+        
         if(loggerContext != null) {
             SequenceNumberGenerator sequenceNumberGenerator = loggerContext.getSequenceNumberGenerator();
             if(sequenceNumberGenerator != null)
@@ -149,9 +152,15 @@ public class LoggingEvent implements ILoggingEvent {
                 this.throwableProxy.calculatePackagingData();
             }
         }
-
-        
     }
+
+	void initTmestampFields(Instant instant) {
+		this.instant = instant;
+		long epochSecond = instant.getEpochSecond();
+        this.nanoseconds = instant.getNano();
+        long milliseconds = nanoseconds/1000_000;
+        this.timeStamp = (epochSecond*1000)+(milliseconds);
+	}
 
 	private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
         Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
@@ -277,38 +286,41 @@ public class LoggingEvent implements ILoggingEvent {
         this.message = message;
     }
 
+    
+
+    /**
+     * Return the {@link Instant} corresponding to the creation of this event.
+     * 
+     * @since 1.3
+     */
+    public Instant getInstant() {
+        return instant;
+    }
+    
+    /**
+     * Set {@link Instant} corresponding to the creation of this event.
+     */
+    public void setInstant(Instant  instant) {
+        initTmestampFields(instant);
+    }
+
+    
     /**
      * Return the number of elapsed seconds since epoch in UTC.
      */
     public long getTimeStamp() {
         return timeStamp;
     }
+    
     /**
      * Set the number of elapsed seconds since epoch in UTC.
      */
     public void setTimeStamp(long timeStamp) {
-        this.timeStamp = timeStamp;
+    	Instant instant = Instant.ofEpochMilli(timeStamp);
+    	setInstant(instant);
     }
 
-    /**
-     * Return the number of nanoseconds after timestamp.
-     * @since 1.3
-     */
-    @Override
-    public int getNanoseconds() {
-        return nanoseconds;
-    }
-
-    /**
-     * Set the nanoseconds part of the timestamp. 
-     * 
-     * @since 1.3
-     * @param nanos
-     */
-    public void setNanoseconds(int nanos) {
-        this.nanoseconds = nanos;
-    }
-
+    
     @Override
     public long getSequenceNumber() {
         return sequenceNumber;

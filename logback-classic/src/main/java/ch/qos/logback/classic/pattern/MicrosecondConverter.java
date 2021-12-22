@@ -14,22 +14,29 @@
 package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-
+import ch.qos.logback.core.pattern.FormatInfo;
 
 /**
  * Outputs the number of microseconds of the timestamp.
  * 
- *  
+ * 
  * @author ceki
  * @since 1.3.0
  */
-public class MicrosecondConverter  extends ClassicConverter {
+public class MicrosecondConverter extends ClassicConverter {
 
 	@Override
 	public String convert(ILoggingEvent event) {
-		int nano = event.getNanoseconds();
-		int micro = nano/1000;
-		return Integer.toString(micro);
+		int nanos = event.getNanoseconds();
+		int millis_and_micros = nanos / 1000;
+		int micros = millis_and_micros % 1000;
+
+		if (micros >= 100)
+			return Integer.toString(micros);
+		else if (micros >= 10)
+			return "0" + Integer.toString(micros);
+		else
+			return "00" + Integer.toString(micros);
 	}
 
 }

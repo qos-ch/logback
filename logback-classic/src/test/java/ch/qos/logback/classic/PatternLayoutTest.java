@@ -34,6 +34,8 @@ import static ch.qos.logback.classic.ClassicTestConstants.ISO_REGEX;
 import static ch.qos.logback.classic.ClassicTestConstants.MAIN_REGEX;
 import static org.junit.Assert.*;
 
+import java.time.Instant;
+
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
     private PatternLayout pl = new PatternLayout();
@@ -173,15 +175,21 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     @Test 
     public void micros() {
-    	le.setNanoseconds(122091800);
+    	verifyMicros(122_891_479, "2011-12-03 10:15:30.122 891 Some message");
+       	verifyMicros(122_091_479, "2011-12-03 10:15:30.122 091 Some message");
+       	verifyMicros(122_001_479, "2011-12-03 10:15:30.122 001 Some message");
+    }
+
+    void verifyMicros(int nanos, String expected) {
+    	Instant instant = Instant.parse("2011-12-03T10:15:30Z");
+    	instant = instant.plusNanos(nanos);
+    	le.setInstant(instant);
     	
-    	pl.setPattern("%micros %message%nopex");
+    	pl.setPattern("%date{yyyy-MM-dd HH:mm:ss.SSS, UTC} %micros %message%nopex");
     	pl.start();
-    	getEventObject();
     	
     	String val = pl.doLayout(le);
-        assertEquals("122091 Some message", val);
-    	
+        assertEquals(expected, val);	
     }
     
     @Override

@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.spi;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -113,13 +114,43 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      */
     Map<String, String> getMdc();
 
+    /**
+     * Return the number of elapsed milliseconds since epoch.
+     * 
+     * @return the number of elapsed milliseconds since epoch
+     * @since 1.3
+     */
     long getTimeStamp();
     
-    default int getNanoseconds() {
-    	return 0;
-    }
-    
     /**
+     * Return the number of elapsed nanoseconds found in {@link #getInstant()} 
+     * 
+     * Will return 0 if getInstant() returns null;
+     * 
+     * @return the number of elapsed nanoseconds since epoch
+     * @since 1.3
+     */
+    default int getNanoseconds() {
+    	Instant instant = getInstant(); 
+    	if(instant == null)
+    		return 0;
+    	int nanoseconds = instant.getNano();
+    	return nanoseconds;
+    }
+
+    /**
+     * Return the Instant the event was created.
+     * 
+     * Default implementation returns null.
+     * 
+     * @return the Instant the event was created.
+     * @since 1.3
+     */
+    default Instant getInstant() {
+    	return null;
+    }
+
+	/**
      * The sequence number associated with this event. 
      * 
      * <p>Sequence numbers, if present, should be increasing monotonically.
