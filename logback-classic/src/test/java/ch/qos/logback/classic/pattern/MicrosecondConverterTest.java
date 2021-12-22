@@ -30,14 +30,12 @@ public class MicrosecondConverterTest {
 	@Test
 	public void smoke() {
 		LoggingEvent le = new LoggingEvent();
-		le.setNanoseconds(123456);
+		Instant instant = Instant.parse("2011-12-03T10:15:30Z");
+    	instant = instant.plusNanos(123_456_789);
+    	le.setInstant(instant);
+    	
 		String result = mc.convert(le);
-		assertEquals("123", result);
+		assertEquals("456", result);
 	}
 	
-	void computeNano() {
-        Instant instant = Clock.systemUTC().instant();
-        timeStamp = instant.getEpochSecond();
-        nanoseconds = instant.getNano();
-	}
 }
