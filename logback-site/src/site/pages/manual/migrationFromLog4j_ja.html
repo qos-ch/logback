@@ -18,16 +18,14 @@
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
     </div>
-    <div id="right">
-      <script src="menu_ja.js" type="text/javascript"></script>
-    </div>
+
     <div id="content">
-      
-    <h1>第13章 log4jからの移行</h1> 
+
+    <h1>第13章 log4jからの移行</h1>
 
     <div class="quote">
       <p><em>多くのものが変化し、多くのものがそのままである。</em></p>
-      
+
       <p>—ALPHONSE KARR, <em>Les Guêpes</em></p>
     </div>
 
@@ -40,12 +38,12 @@
     <p>広い観点から見ると、log4jとlogback-classicは密接に関連し合っています。ロガーやアペンダー、レイアウトといった基本的なコンポーネントはどちらのフレームワークにもありますし、目的も同じです。同様に、どちらのフレームワークにも一番重要な内部データ構造として<code>LoggingEvent</code>がありますが、実装まで完全に同じわけではありません。一番の違いは、logback-classic の<code>LoggingEvent</code>は<code>ILoggingEvent</code>インターフェイスを実装しているところです。log4jのコンポーネントをlogback-classicに移行するために必要な変更のほとんどは、<code>LoggingEvent</code>の実装の差異を埋めることに費やされます。差異があるといってもその範囲は限られているので安心してください。出来る限りの努力をしたにも関わらず移行がうまくいかなかったら、<a href="http://logback.qos.ch/mailinglist.html">logback-dev メーリングリスト</a>で質問してください。logbackの開発者たちがアドバイスしてくれるはずです。
     </p>
 
-    
+
     <h3 class="doAnchor" name="log4jLayout">log4jのレイアウトを移行する</h3>
 
     <p>さあ移行してみましょう。対象はlog4j の単純なレイアウト<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLog4jLayout.html">TrivialLog4jLayout</a>ということにします。これはロギングイベントのメッセージを指定された書式で書式化した文字列を返すものです。コードを見てください。
     </p>
-    
+
 
     <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
@@ -68,7 +66,7 @@ public class TrivialLog4jLayout extends Layout {
 }</pre>
 
     <p>logback-classicで等価なレイアウト<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLogbackLayout.html">TrivialLogbackLayout</a>は次のようになります。</p>
-    
+
     <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -80,7 +78,7 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent&gt;</b>
     return loggingEvent.getMessage();
   }
 }    </pre>
- 
+
    <p>ご覧のように、文字列を書式化するメソッドはlog4jでは<code>format()</code>でしたが、logback-classic では<code>doLayout()</code>なのです。また、logback-classic には<code>ignoresThrowable()</code>に相当するメソッドはありません。logback-classicのレイアウトは<code>LayoutBase&lt;ILoggingEvent&gt;</code>を継承しなければならないので気をつけてください。
    </p>
 
@@ -91,9 +89,9 @@ public class TrivialLogbackLayout extends <b>LayoutBase&lt;ILoggingEvent&gt;</b>
    </p>
 
    <h3 class="doAnchor" name="log4jAppender">log4jのアペンダーを移行する</h3>
-   
+
    <p>アペンダーの移行は、レイアウトの移行とほとんど同じです。単純なアペンダー<a href="http://logback.qos.ch/xref/chapters/migrationFromLog4j/TrivialLog4jAppender.html">TrivialLog4jAppender</a>を移行することを考えてみましょう。このアペンダーはレイアウトの返す文字列をコンソールに出力するだけのものです。</p>
-   
+
     <pre class="prettyprint source">package chapters.migrationFromLog4j;
 
 import org.apache.log4j.AppenderSkeleton;
@@ -139,7 +137,7 @@ public class TrivialLogbackAppender extends AppenderBase&lt;ILoggingEvent&gt; {
   protected void append(ILoggingEvent loggingevent) {
     // note that AppenderBase.doAppend will invoke this method only if
     // this appender was successfully started.
-    
+
     String s = this.layout.doLayout(loggingevent);
     System.out.println(s);
   }

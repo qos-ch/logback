@@ -1,20 +1,19 @@
-html { 
+html {
 /*  padding:0px;
   margin:0px; */
 }
 
 
-a { 
- color: #4183c4; 
+a {
+ color: #4183c4;
  background-color:transparent;
- text-decoration: none; 
+ text-decoration: none;
 }
 
 
-#container {  
+#container {
   margin-left: auto;
   margin-right: auto;
-  max-width: 100em;
 }
 
 #content a:hover {
@@ -32,9 +31,9 @@ div.source {
 }
 
 div.breaking {
-   border: 1px solid #F44; 
-   background-color: #FED; 
-   padding-left: 1ex; 
+   border: 1px solid #F44;
+   background-color: #FED;
+   padding-left: 1ex;
    padding-right: 1ex;
 }
 
@@ -42,7 +41,7 @@ div.breaking {
   overflow: scroll;
 }
 
-.source, .command, .console { 
+.source, .command, .console {
   border-top: 1px solid #DDDDDD;
   border-bottom: 1px solid #DDDDDD;
   background: #f5f5f5;
@@ -64,15 +63,15 @@ div.breaking {
 .console {
 }
 
-pre { 
+pre {
  padding: 0px;
- margin: 0px; 
+ margin: 0px;
  background-color:transparent;
  font-family: Courier, Monaco, Monospace;
 }
 
 .alignright {
- margin-top: 0; 
+ margin-top: 0;
  text-align: right;
  font-size: 10px;
 }
@@ -80,7 +79,7 @@ pre {
 
 h1, h2, h3, h4 {
   color: #505050;
-  padding-top: 0ex; 
+  padding-top: 0ex;
   background-color: transparent;
 }
 
@@ -115,16 +114,16 @@ table.footer {
 
 p.menu {
  padding-top: 0px;
- padding-bottom: 0px; 
+ padding-bottom: 0px;
  margin-top: 0px;
  margin-bottom: 0px;
 }
 
-.small { 
+.small {
 	font-size: smaller;
 }
 
-.strong, .bold { 
+.strong, .bold {
   /*font-size: 13px;*/
   font-weight: bold;
 }
@@ -220,7 +219,7 @@ td.word {
 }
 
 .blue {
-	color: blue;	
+	color: blue;
 }
 
 .red {
@@ -229,21 +228,21 @@ td.word {
 
 .redBold {
 	color: red;
-	font-weight: bold;	
+	font-weight: bold;
 }
 
 .greenBold {
-	color: green;	
-  font-weight: bold;	
+	color: green;
+  font-weight: bold;
 }
 
 .code {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;    
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     background-color: #EEE;
 }
 
 .pattern {
-    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;    
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     background-color: #DDD;
 }
 
@@ -251,18 +250,18 @@ code {
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
     background-color: #EEE;
 }
-    
+
 
 .variable {
     font-family: Courier, monospace;
-    font-style:italic;  
+    font-style:italic;
 }
 
 
 
 .attr {
 	font-family: Courier, monospace;
-  font-style:italic; 
+  font-style:italic;
 
 }
 
@@ -279,7 +278,7 @@ code {
 /*  background:#FFCC99;	*/
 .highlight {
   width: 18em;
-  float: right;	
+  float: right;
   display: inline;
   font-size: 110%;
 
@@ -287,7 +286,7 @@ code {
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
-  background:#FFE0B0;	
+  background:#FFE0B0;
   padding-top: 1ex;
   padding-left: 1ex;
   padding-right: 1ex;

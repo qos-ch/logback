@@ -1,14 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>Chapter 7: Filters</title>
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
-    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" /> 
+    <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
 
   </head>
   <body onload="prettyPrint(); decorate();">
@@ -20,16 +20,14 @@
 
     <div id="container">
       <script type="text/javascript" src="../templates/header.js"></script>
-      
+
       <div id="left">
         <noscript>Please turn on Javascript to view this menu</noscript>
         <script src="../templates/left.js" type="text/javascript"></script>
       </div>
-      <div id="right">
-        <script src="menu.js" type="text/javascript"></script>
-      </div>
+
     <div id="content">
-	
+
     <h1>Chapter 7: Filters</h1>
 
    <a href="filters_ja.html">&#x548C;&#x8A33; (Japanese translation)</a>
@@ -38,19 +36,19 @@
       <p><em>Have lots of ideas and throw away the bad ones. You aren't
       going to have good ideas unless you have lots of ideas and some
       sort of principle of selection.</em></p>
-      
+
       <p>&mdash;LINUS PAULING</p>
     </div>
 
     <script src="../templates/creative.js" type="text/javascript"></script>
 
-		
+
 		<p>In the preceding chapters, the <a
 		href="architecture.html#basic_selection">basic selection rule</a>,
 		which lies at the heart of logback-classic, has been presented. In
 		this chapter, additional filtering methods will be introduced.
     </p>
-	
+
 
     <p>Logback filters are based on ternary logic allowing them to be
     assembled or chained together to compose an arbitrarily complex
@@ -65,7 +63,7 @@
 		<p>Logback-classic offers two types of filters, regular filters
 		and turbo filters.
 		</p>
-		
+
     <h3 class="doAnchor" name="filter">Regular filters</h3>
 
 		<p>Regular logback-classic filters extend the <a
@@ -74,7 +72,7 @@
 		<code>decide()</code> method taking an <code>ILoggingEvent</code>
 		instance as its parameter.
 		</p>
-		
+
 
 		<p>Filters are organized as an ordered list and are based on
 		ternary logic. The <code>decide(ILoggingEvent event)</code> method
@@ -92,28 +90,28 @@
 		event is processed immediately skipping the invocation of the
 		remaining filters.
     </p>
-    
+
     <p>In logback-classic, filters can be added to
     <code>Appender</code> instances. By adding one or more filters to
     an appender, you can filter events by arbitrary criteria, such as
     the contents of the log message, the contents of the MDC, the time
     of day or any other part of the logging event.
     </p>
-    
+
 		<h3 class="doAnchor" name="yourOwnFilter">Implementing your own
 		Filter</h3>
-		
+
 		<p>Creating your own filter is easy. All you have to do is extend
 		the <code>Filter</code> abstract class and implement the
 		<code>decide()</code> method.
 		</p>
-		
+
 		<p>The SampleFilter class shown below provides an example. Its
 		<code>decide</code> method returns ACCEPT for logging events
 		containing the string "sample" in its message field. For other
 		events, the value NEUTRAL is returned.
 		</p>
-		
+
     <em>Example: Basic custom filter (<a
     href="../xref/chapters/filters/SampleFilter.html">logback-examples/src/main/java/chapters/filters/SampleFilter.java</a>)</em>
     <pre class="prettyprint source">package chapters.filters;
@@ -125,7 +123,7 @@ import ch.qos.logback.core.spi.FilterReply;
 public class SampleFilter extends Filter&lt;ILoggingEvent> {
 
   @Override
-  public FilterReply decide(ILoggingEvent event) {    
+  public FilterReply decide(ILoggingEvent event) {
     if (event.getMessage().contains("sample")) {
       return FilterReply.ACCEPT;
     } else {
@@ -152,7 +150,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
       &lt;/pattern>
     &lt;/encoder>
   &lt;/appender>
-	
+
   &lt;root>
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
@@ -163,15 +161,15 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
 		easy. After adding the corresponding setter method in the filter
 		class, specify the value of the property in an xml element named
 		after the property, nesting it within a <code>&lt;filter></code>
-		element. 
+		element.
 		</p>
-		
+
 		<p>Often, the desired filter logic consists of two
 		orthogonal parts, a match/mismatch test and a response depending
 		on the match/mismatch. For example, for a given test, e.g. message
 		equals "foobar", one filter might respond ACCEPT on match and
 		NEUTRAL on mismatch, and another filter might respond NEUTRAL on
-		match and DENY on mismatch. 
+		match and DENY on mismatch.
     </p>
 
     <p>Taking notice of this orthogonality, logback ships with the <a
@@ -183,9 +181,9 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
     filters included in logback are derived from
     <code>AbstractMatcherFilter</code>.
     </p>
-		
+
 		<h3 class="doAnchor" name="levelFilter">LevelFilter</h3>
-		
+
 		<p><a href="../xref/ch/qos/logback/classic/filter/LevelFilter.html">
 		<code>LevelFilter</code></a> filters events based on exact level
 		matching. If the event's level is equal to the configured level,
@@ -194,7 +192,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
 		class="option">onMismatch</span> properties. Here is a sample
 		configuration file.
 		</p>
-		
+
     <em>Example: Sample LevelFilter configuration
     (logback-examples/src/main/resources/chapters/filters/levelFilterConfig.xml)</em>
     <span class="asGroovy" onclick="return asGroovy('levelFilterConfig');">View as .groovy</span>
@@ -270,12 +268,12 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
     can implement your own event evaluation logic by sub-classing
     <code>EventEvaluator</code>.
     </p>
-    
+
 
     <!-- ======================== GEventEvaluator ========================= -->
 
     <h3 class="doAnchor" name="GEventEvaluator">GEventEvaluator</h3>
-    
+
     <p><a
     href="../xref/ch/qos/logback/classic/boolex/GEventEvaluator.html">GEventEvaluator</a>
     is a concrete <a
@@ -317,10 +315,10 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
 
     <span class="asGroovy" onclick="return asGroovy('GEventEvaluator');">View as .groovy</span>
     <pre id="GEventEvaluator"  class="prettyprint source">&lt;configuration>
-    
+
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
-      &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator"> 
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator">
         &lt;expression>
            e.level.toInt() >= WARN.toInt() &amp;amp;&amp;amp;  &lt;!-- Stands for &amp;&amp; in XML -->
            !(e.mdc?.get("req.userAgent") =~ /Googlebot|msnbot|Yahoo/ )
@@ -353,7 +351,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
     dereferencing operator</a>, that is the ?. operator. The equivalent
     logic would have been much longer if expressed in Java.
     </p>
-    
+
     <p>If you are wondering how the identifier for the user agent was
     inserted into the MDC under the 'req.userAgent' key, it behooves
     us to mention that logback ships with a servlet filter named <a
@@ -363,10 +361,10 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
     </p>
 
     <!-- ==================== JaninoEventEvaluator ======================== -->
-    
+
     <h3 class="doAnchor"
     name="JaninoEventEvaluator">JaninoEventEvaluator</h3>
-    
+
 
     <p>Logback-classic ships with another concrete
     <code>EventEvaluator</code> implementation called <a
@@ -425,7 +423,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
         <em>l</em>, when you write l.info("Hello {}", name); where
         name is assigned the value "Alice", then "Hello {}" is the
         message.</td> </tr>
-		
+
       <tr>
 				<td>formattedMessage</td>
         <td><code>String</code></td>
@@ -434,7 +432,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
         where name is assigned the value "Alice", then "Hello Alice"
         is the formatted message.</td>
 			</tr>
-		
+
       <tr class="alt">
 				<td>logger</td>
 				<td><code>String</code></td>
@@ -524,7 +522,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
 				</td>
 			</tr>
 
-    
+
 
 		</table>
 
@@ -537,7 +535,7 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
     <pre id="basicEventEvaluator" class="prettyprint source longline">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">      
+    <b>&lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
       &lt;evaluator> &lt;!-- defaults to type ch.qos.logback.classic.boolex.JaninoEventEvaluator -->
         &lt;expression><span class="green">return message.contains("billing");</span>&lt;/expression>
       &lt;/evaluator>
@@ -586,11 +584,11 @@ public class SampleFilter extends Filter&lt;ILoggingEvent> {
     application issues ten logging requests, numbered 0 to 9. Let us
     first run <code>FilterEvents</code> class without any filters:
 		</p>
-		
+
 <div class="source"><pre>
 java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfiguration.xml
 </pre></div>
-		
+
 		<p>All requests will be displayed, as shown below:</p>
 
 <div class="source"><pre>0    [main] INFO  chapters.filters.FilterEvents - logging statement 0
@@ -615,7 +613,7 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
     <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/basicEventEvaluator.xml</p>
     <p>we obtain:
 		</p>
-		
+
     <p class="source">0    [main] INFO  chapters.filters.FilterEvents - logging statement 0
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 1
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 2
@@ -625,7 +623,7 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 7
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 8
 0    [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
-		
+
 
     <p>Evaluation expressions can be Java blocks. For example, the
     following is a valid expression.</p>
@@ -672,13 +670,13 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-      &lt;evaluator>        
+      &lt;evaluator>
         <b>&lt;matcher>
           &lt;Name>odd&lt;/Name>
           &lt;!-- filter out odd numbered statements -->
           &lt;regex>statement [13579]&lt;/regex>
         &lt;/matcher>
-        
+
         &lt;expression>odd.matches(formattedMessage)&lt;/expression></b>
       &lt;/evaluator>
       &lt;OnMismatch>NEUTRAL&lt;/OnMismatch>
@@ -698,7 +696,7 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
     <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/evaluatorWithMatcher.xml</p>
     <p>we obtain:
 		</p>
-		
+
     <p class="source">260  [main] INFO  chapters.filters.FilterEvents - logging statement 0
 264  [main] INFO  chapters.filters.FilterEvents - logging statement 2
 264  [main] INFO  chapters.filters.FilterEvents - logging statement 4
@@ -717,25 +715,25 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
     <!-- ================================================================ -->
 
     <h2 class="doAnchor" name="TurboFilter">TurboFilters</h2>
-    
+
     <p><code>TurboFilter</code> objects all extend the
     	<a href="../xref/ch/qos/logback/classic/turbo/TurboFilter.html">
     	<code>TurboFilter</code></a> abstract class. Like the regular
     	filters, they use ternary logic to return their evaluation of
     	the logging event.
     </p>
-    
+
     <p>Overall, they work much like the previously mentioned
     filters. However, there are two main differences between
     <code>Filter</code> and <code>TurboFilter</code> objects.
     </p>
-    
+
    	<p><code>TurboFilter</code> objects are tied to the logging
    	context. Hence, they are called not only when a given appender is
    	used, but each and every time a logging request is issued. Their
    	scope is wider than appender-attached filters.
    	</p>
-   	
+
    	<p>More importantly, they are called before the
    	<code>LoggingEvent</code> object creation.
    	<code>TurboFilter</code> objects do not require the instantiation
@@ -744,10 +742,10 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
 	events, even before the events are created.
     </p>
 
-   	
+
    	<h3 class="doAnchor" name="yourOwnTurboFilter">Implementing your
    	own TurboFilter</h3>
-    
+
     <p>To create your own <code>TurboFilter</code> component, just
     extend the <code>TurboFilter</code> abstract class. As previously,
     when implementing a customized filter object, developing a custom
@@ -755,8 +753,8 @@ java chapters.filters.FilterEvents src/main/java/chapters/filters/basicConfigura
     <code>decide()</code> method. In the next example, we create a
     slightly more complex filter:
     </p>
-    
-<em>Example: Basic custom <code>TurboFilter</code> (<a href="../xref/chapters/filters/SampleTurboFilter.html">logback-examples/src/main/java/chapters/filters/SampleTurboFilter.java</a>)</em>		
+
+<em>Example: Basic custom <code>TurboFilter</code> (<a href="../xref/chapters/filters/SampleTurboFilter.html">logback-examples/src/main/java/chapters/filters/SampleTurboFilter.java</a>)</em>
 <pre class="prettyprint source">package chapters.filters;
 
 import org.slf4j.Marker;
@@ -799,7 +797,7 @@ public class SampleTurboFilter extends TurboFilter {
   public void start() {
     if (marker != null &amp;&amp; marker.trim().length() > 0) {
       markerToAccept = MarkerFactory.getMarker(marker);
-      super.start(); 
+      super.start();
     }
   }
 }
@@ -809,18 +807,18 @@ public class SampleTurboFilter extends TurboFilter {
 		a specific marker.  If said marker is not found, then the filter
 		passes the responsibility to the next filter in the chain.
 		</p>
-		
+
 		<p>To allow more flexibility, the marker that will be tested can
 		be specified in the configuration file, hence the getter and
 		setter methods. We also implemented the <code>start()</code>
 		method, to check that the option has been specified during the
 		configuration process.
 		</p>
-		
+
 		<p>Here is a sample configuration that makes use of our newly
 		created <code>TurboFilter</code>.
 		</p>
-		
+
     <em>Example: Basic custom <code>TurboFilter</code> configuration
     (logback-examples/src/main/resources/chapters/filters/sampleTurboFilterConfig.xml)</em>
 
@@ -842,7 +840,7 @@ public class SampleTurboFilter extends TurboFilter {
   &lt;root>
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre>  
+&lt;/configuration></pre>
 
    	<p>Logback classic ships with several <code>TurboFilter</code>
    	classes ready for use.  The <a
@@ -855,11 +853,11 @@ public class SampleTurboFilter extends TurboFilter {
    	checks for the presence of a specific marker associated with the
    	logging request.
    	</p>
-   	
+
    	<p>Here is a sample configuration, using both
    	<code>MDCFilter</code> and <code>MarkerFilter</code>.
    	</p>
-   	
+
     <em>Example: <code>MDCFilter</code> and <code>MarkerFilter</code>
     configuration
     (logback-examples/src/main/resources/chapters/filters/turboFilters.xml)</em>
@@ -872,7 +870,7 @@ public class SampleTurboFilter extends TurboFilter {
     &lt;Value>sebastien&lt;/Value>
     &lt;OnMatch>ACCEPT&lt;/OnMatch>
   &lt;/turboFilter>
-	
+
   &lt;turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
     &lt;Marker>billing&lt;/Marker>
     &lt;OnMatch>DENY&lt;/OnMatch>
@@ -886,13 +884,13 @@ public class SampleTurboFilter extends TurboFilter {
 
   &lt;root level="INFO">
     &lt;appender-ref ref="console" />
-  &lt;/root>  
+  &lt;/root>
 &lt;/configuration></pre>
 
 		<p>You can see this configuration in action by issuing the
 		following command:
 		</p>
-    
+
     <p class="source">java chapters.filters.FilterEvents src/main/java/chapters/filters/turboFilters.xml</p>
 
 		<p>As we've seen previously, the <a
@@ -909,7 +907,7 @@ public class SampleTurboFilter extends TurboFilter {
 		"billing". As such, it is denied by the MarkerFilter (the second
 		turbo filter in the configuration).
 		</p>
-		
+
 		<p>Thus, the output of <code>FilterEvents</code> application
 		configured with <em>turboFilters.xml</em> file shown above is:
 		</p>
@@ -923,24 +921,24 @@ public class SampleTurboFilter extends TurboFilter {
 2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 7
 2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 8
 2006-12-04 15:17:22,875 [main] INFO  chapters.filters.FilterEvents - logging statement 9</p>
-			
-			
+
+
 		<p>One can see that the 3rd request, which should not be displayed
 		if we only followed the overall <em>INFO</em> level, appears
 		anyway, because it matched the first <code>TurboFilter</code>
 		requirements and was accepted.
-		</p>    
-		
+		</p>
+
 		<p>On the other hand, the 6th request, that is an <em>ERROR</em>
 		level request should have been displayed. But it satisfied the
 		second <code>TurboFilter</code> whose <span
 		class="option">OnMatch</span> option is set to <em>DENY</em>.
 		Thus, the 6th request was not displayed.
 		</p>
-		
 
 
-		  
+
+
     <h3 class="doAnchor"
     name="DuplicateMessageFilter">DuplicateMessageFilter</h3>
 
@@ -957,7 +955,7 @@ public class SampleTurboFilter extends TurboFilter {
 
     <pre class="prettyprint source">logger.debug("Hello "+name0);
 logger.debug("Hello "+name1);</pre>
-  
+
     <p>Assuming <code>name0</code> and <code>name1</code> have
     different values, the two "Hello" messages will be considered as
     unrelated. Depending on user demand, future releases may check for
@@ -973,7 +971,7 @@ logger.debug("Hello "+name1);</pre>
 
     <pre class="prettyprint source">logger.debug("Hello {}.", name0);
 logger.debug("Hello {}.", name1);</pre>
-  
+
     <p>The number of allowed repetitions can be specified by the <span
     class="option">AllowedRepetitions</span> property. For example, if
     the property is set to 1, then the 2nd and subsequent
@@ -989,8 +987,8 @@ logger.debug("Hello {}.", name1);</pre>
     property. By the default, this is set to 100.
     </p>
 
-    
-    <em>Example: <code>DuplicateMessageFilter</code> 
+
+    <em>Example: <code>DuplicateMessageFilter</code>
     configuration (logback-examples/src/main/resources/chapters/filters/duplicateMessage.xml)</em>
 
     <span class="asGroovy" onclick="return asGroovy('duplicateMessage');">View as .groovy</span>
@@ -1006,7 +1004,7 @@ logger.debug("Hello {}.", name1);</pre>
 
   &lt;root level="INFO">
     &lt;appender-ref ref="console" />
-  &lt;/root>  
+  &lt;/root>
 &lt;/configuration></pre>
 
   <p>Thus, the output for <code>FilterEvents</code> application
@@ -1038,7 +1036,7 @@ logger.debug("Hello {}.", name1);</pre>
     </p>
 
     <h1 class="doAnchor" name="logbac-access">In logback-access</h1>
-    
+
     <p>Logback-access offers most of the features available with
     logback-classic. In particular, <code>Filter</code> objects are
     available and work in the same way as their logback-classic
@@ -1053,7 +1051,7 @@ logger.debug("Hello {}.", name1);</pre>
 
 		<h2 class="doAnchor"
 		name="countingFilter"><code>CountingFilter</code></h2>
-		
+
 		<p>With the help of <a
 		href="xref/ch/qos/logback/access/filter/CountingFilter.html"><code>CountingFilter</code></a>
 		class, logback-access can provide statistical data about access to
@@ -1064,7 +1062,7 @@ logger.debug("Hello {}.", name1);</pre>
 		statistics such the count for the preceding week, day, hour or
 		month as well as the total count are also available.
 		</p>
-		
+
 		<p>The following <em>logback-access.xml</em> configuration file
 		declares a <code>CountingFilter</code>.  </p>
 
@@ -1090,11 +1088,11 @@ logger.debug("Hello {}.", name1);</pre>
 
 
     <img alt="CountingFilter via jconsole" src="images/chapters/filters/countingFilter.png" />
-	
+
 
     <h3 class="doAnchor" name="access_EvalutorFilter">EvaluatorFilter</h3>
 
-    
+
     <p><a
     href="../xref/ch/qos/logback/core/filter/EvaluatorFilter.html"><code>EvaluatorFilter</code></a>
     is a generic filter encapsulating an
@@ -1144,13 +1142,13 @@ logger.debug("Hello {}.", name1);</pre>
     href="../xref/ch/qos/logback/access/spi/AccessEvent.html"><code>AccessEvent</code>
     class source code</a> for the exact list.
     </p>
-    
+
     <p>The next logback-access configuration file illustrates
     filtering based on the <a
     href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.5">404
     (Not Found)</a> HTTP response code. Every request resulting in a
     404 will be printed on the console.</p>
-   	
+
 <em>Example: Access Evaluator (logback-examples/src/main/resources/chapters/filters/accessEventEvaluator.xml)</em>
 <pre class="prettyprint source">&lt;configuration>
   &lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
@@ -1170,7 +1168,7 @@ logger.debug("Hello {}.", name1);</pre>
 
 		<p>In the next example, we still log requests resulting in 404 errors,
 		except those requests asking for CSS files.
-		</p>	
+		</p>
 
 
     <em>Example 6.10: Access Evaluator (logback-examples/src/main/resources/chapters/filters/accessEventEvaluator2.xml)</em>
@@ -1194,7 +1192,7 @@ logger.debug("Hello {}.", name1);</pre>
   &lt;appender-ref ref="STDOUT" />
 &lt;/configuration>
     </pre>
-	
+
     <script src="../templates/footer.js" type="text/javascript"></script>
 </div>
   </div>

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>Logback Error Codes</title>
 
@@ -19,31 +19,28 @@
       }
     </style>
   </head>
-  
+
   <body  onload="prettyPrint(); decorate();">
     <script type="text/javascript" src="js/prettify.js"></script>
     <script type="text/javascript">prefix='';</script>
     <script type="text/javascript" src="js/jquery-min.js"></script>
     <script type="text/javascript" src="js/decorator.js"></script>
 
-    <div id="container">    
+    <div id="container">
 
       <script type="text/javascript" src="templates/header.js"></script>
-          
+
       <div id="left">
         <script src="templates/left.js" type="text/javascript"></script>
       </div>
-      <div id="right">
-        <script type="text/javascript" src="templates/right.js" ></script>
-      </div>
 
   <div id="content">
-    
+
   <h2><a name="top">Logback error messages and their meanings</a></h2>
-  
+
 
   <h3 class="doAnchor" name="null_CS">The contextSelector cannot be
-  null in <code>StaticLoggerBinder</code>.  
+  null in <code>StaticLoggerBinder</code>.
   </h3>
 
   <p>An <code>IllegalStateException</code> is thrown when no
@@ -56,7 +53,7 @@
   <p>It should not happen when you are using the default or JNDI
   context selectors.
   </p>
-  
+
 
   <!-- =========================================================== -->
   <h3 class="doAnchor" name="layoutInsteadOfEncoder">This appender no
@@ -73,9 +70,9 @@
 
   <p>In practical terms, this means that configuration files need to
   be changed</p>
-  
+
   <p class="red bold">from (DEPRECATED)</p>
-  
+
   <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
   &lt;file>testFile.log&lt;/file>
   ...
@@ -104,13 +101,13 @@
     &lt;pattern>%msg%n&lt;/pattern>
   &lt;/encoder>
 &lt;/appender>   </pre>
- 
+
   <p class="green bold">or the shorter equivalent (GOOD)</p>
 
    <pre class="prettyprint source">&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
   &lt;file>testFile.log&lt;/file>
   ...
-  &lt;!-- encoders are assigned the type 
+  &lt;!-- encoders are assigned the type
        ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
   &lt;encoder>
     &lt;pattern>%msg%n&lt;/pattern>
@@ -144,8 +141,8 @@
     &lt;/layout>
   &lt;/encoder>
 &lt;/appender> </pre>
-  
-  
+
+
 
   <p>We hope to make up for this inconvenience with cool new features
   which are only possible using encoders. <b>During a transition
@@ -154,21 +151,21 @@
   layout instead of encoder) will continue to work unmodified.</b>
   </p>
 
-  
-  
+
+
 
   <!-- =========================================================== -->
 
   <h3 class="doAnchor" name="socket_no_host">No remote host or address
   is set for <code>SocketAppender</code>
-    
+
   </h3>
 
   <p>A remote host or address is mandatory for SocketAppender. </p>
   <p>You can specify the remote host in the configuration file
   as follows.
   </p>
-  
+
   <pre class="prettyprint source">&lt;appender name="SOCKET"
   class="ch.qos.logback.classic.net.SocketAppender">
   ...
@@ -177,29 +174,29 @@
 &lt;/appender&gt;</pre>
 
 
-  
+
 
   <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="socket_no_port">No remote port is set for
-  <code>SocketAppender</code>    
+  <code>SocketAppender</code>
   </h3>
-    
+
   <p>A remote port is mandatory for SocketAppender.</p>
-      
+
   <p>You can specify the remote port in the configuration file
   like this:
   </p>
-      
+
   <pre class="prettyprint source">&lt;appender name="SOCKET" class=&quot;ch.qos.logback.classic.net.SocketAppender&quot;&gt;
   ...
   &lt;port>4560&lt;/port>
   ...
 &lt;/appender&gt;</pre>
-				
 
 
-  
+
+
 
   <!-- ============================================================= -->
 
@@ -211,11 +208,11 @@
   <code>SMTPAppender</code>. It allows SMTPAppender to format logging
   events before sending an email.
   </p>
-      
+
   <p>You can specify the <code>Layout</code> in a configuration file
   as follows:
   </p>
-      
+
   <pre class="prettyprint source">&lt;appender name=&quot;SMTP&quot; class=&quot;ch.qos.logback.classic.net.SMTPAppender&quot;&gt;
   ...
   &lt;layout class=&quot;ch.qos.logback.classic.PatternLayout&quot;&gt;
@@ -223,7 +220,7 @@
   &lt;/layout&gt;
   ...
 &lt;/appender&gt;</pre>
-      
+
   <p>SMTPAppender is known to work well with <a
   href="manual/layouts.html#ClassicPatternLayout">PatternLayout</a>
   and <a
@@ -231,46 +228,46 @@
   </p>
 
 
-  
-      
+
+
   <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="sbtp_size_format">Specified number is not
-  in proper int form, or not expected format.    
+  in proper int form, or not expected format.
   </h3>
-    
+
   <p>When you specify the MaxFileSize to be used by the
   SizeBasedRollingPolicy, logback expects a rather precise
   format:
   </p>
-  
+
   <ul>
     <li>The number has to be an integer</li>
     <li>You can add 'KB', 'MB' or 'GB' after the number.
     </li>
   </ul>
-      
+
   <p>Here are some correct values: 500KB, 15MB, 2GB.</p>
-  
-  
-      
+
+
+
   <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="rfa_no_tp">No
   <code>TriggeringPolicy</code> was set for the
   <code>RollingFileAppender</code>.
-    
+
   </h3>
-    
+
   <p>The <code>RollingFileAppender</code> must be set up with a
   <code>TriggeringPolicy</code>. It permits the Appender to know when
   the rollover must be activated.
   </p>
-  
+
   <p>To find more information about <code>TriggeringPolicy</code>
   objects, please read the following javadocs:
   </p>
-  
+
   <ul>
     <li>
       <a
@@ -283,19 +280,19 @@
       </a>
     </li>
   </ul>
-  
+
   <p>Please note that the <code>TimeBasedRollingPolicy</code>
   is a TriggeringPolicy <em>and</em> and
   <code>RollingPolicy</code> at the same time.
   </p>
-      
+
   <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="#sat_missing_integer_token">Missing
   integer token, that is %i, in FileNamePattern [...].
-    
+
   </h3>
-  
+
   <p>The %i conversion token is mandatory for <a
   href="manual/appenders.html#SizeAndTimeBasedFNATP">size and time
   based archiving</a>. In case the %i token is missing,
@@ -304,22 +301,22 @@
   not start.
   </p>
 
-      
+
   <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="rfa_no_rp">No <code>RollingPolicy</code>
-  was set for the <code>RollingFileAppender</code>.    
+  was set for the <code>RollingFileAppender</code>.
   </h3>
-  
+
   <p>The <code>RollingFileAppender</code> must be set up with
   a <code>RollingPolicy</code>. It permits the Appender to
   know what to do when a rollover is requested.
   </p>
-    
+
   <p>To find more information about <code>RollingPolicy</code>
   objects, please read the following javadocs:
   </p>
-    
+
   <ul>
     <li>
       <a href="apidocs/ch/qos/logback/core/rolling/FixedWindowRollingPolicy.html">
@@ -332,28 +329,28 @@
       </a>
     </li>
   </ul>
-  
+
   <p>Please note that the <code>TimeBasedRollingPolicy</code> is a
   <code>TriggeringPolicy</code> <em>and</em> and RollingPolicy at
   the same time.
   </p>
-  
-  
-  
+
+
+
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="tbr_fnp_not_set">The <span
   class="option">FileNamePattern</span> property is mandatory for both
   <code>TimeBasedRollingPolicy</code> and
-  <code>FixedWindowRollingPolicy</code>.    
+  <code>FixedWindowRollingPolicy</code>.
   </h3>
 
-  
+
   <p>The <span class="option">FileNamePattern</span> property for both
   <code>TimeBasedRollingPolicy</code> and
   <code>FixedWindowRollingPolicy</code> is mandatory.
   </p>
-  
+
   <p>Please refer to the documentation of <a
   href="manual/appenders.html#TimeBasedRollingPolicy">TimeBasedRollingPolicy</a>
   and <a
@@ -362,13 +359,13 @@
   </p>
 
 
-  
+
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="rfa_file_after">The <span
   class="option">File</span> property must be set before any rolling
   policy or triggering policy.
-    
+
   </h3>
 
   <p>The <span class="option">File</span> property, if present, must
@@ -378,7 +375,7 @@
   triggering policy declarations.
   </p>
 
-  <!-- ============================================================= -->  
+  <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="rfa_collision"><span
   class="option">File</span> property collides with <span
@@ -400,7 +397,7 @@
   <code>RollingFileAppender</code> will emit an error message and
   refuse to start.</p>
 
-  <!-- ============================================================= -->  
+  <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="rfa_collision_in_dateFormat">The date
   format in <span class="option">fileNamePattern</span> will result in
@@ -421,7 +418,7 @@
   possible collisions and will not start if any collisions are
   detected.</p>
 
-  <!-- ============================================================= -->  
+  <!-- ============================================================= -->
 
   <h3 class="doAnchor" name="earlier_fa_collision"><span
   class="option">File</span>/<span
@@ -443,7 +440,7 @@
   class="option">FileNamePattern</span> option of
   RollingFileAppender. Make sure that each RollingFileAppender has a
   unique <span class="option">FileNamePattern</span> option</p>
-  
+
   <!-- =============================================================
        -->
   <h3 class="doAnchor" name="renamingError">Failed to rename file [x]
@@ -503,9 +500,9 @@
    <p>Note that for <code>FixedWindowRollingPolicy</code>, the <span
    class="option">file</span> property is mandatory.
    </p>
- 
+
    <h4 class="doAnchor" name="renamingErrorOnUnix">On Unix-*</h4>
-  
+
    <p>On the Unix platform, the basic/quick rename method supplied by
    the JDK does not work if the source and target files are located on
    different file systems. In order to deal with this contingency,
@@ -523,7 +520,7 @@
 
    <p>The code for determining the file system of a file requires Java
    7. No rename by copying will be performed on Java 6 or earlier.</p>
-   
+
    <p>As explained in the Windows section above, renaming can be
    avoided altogether by omitting the <span class="option">file</span>
    property.
@@ -532,7 +529,7 @@
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="fwrp_parentFileName_not_set">The <span
   class="option">File</span> property must be set before
-  <code>FixedWindowRollingPolicy</code>    
+  <code>FixedWindowRollingPolicy</code>
   </h3>
 
   <p>The <span class="option">File</span> property is mandatory with
@@ -540,13 +537,13 @@
   class="option">File</span> option must be set before the
   <code>FixedWindowRollingPolicy</code> element.
   </p>
-      
+
   <p>Refer to the logback manual on
   <a href="manual/appenders.html#FixedWindowRollingPolicy">
     FixedWindowRollingPolicy </a> for more information.
   </p>
-			
-  
+
+
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="tbr_fnp_prudent_unsupported">Prudent mode
   is not supported with <code>FixedWindowRollingPolicy</code>.
@@ -559,8 +556,8 @@
   <code>FixedWindowRollingPolicy</code>.
   </p>
 
-  
-  
+
+
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="syslog_layout">SyslogAppender does not
   admit a layout.
@@ -573,27 +570,27 @@
   class="option">SuffixPattern</span> option instead to influence the
   contents of the message sent to the syslog daemon.
   </p>
-  
+
   <p>For more information on SyslogAppender please refer to the <a
   href="manual/appenders.html#SyslogAppender">its documentation.</a>
   </p>
 
-  
+
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="1andOnly1">Only and only one appender can
   be nested the &lt;sift> element in
   <code>SiftingAppender</code>.</h3>
-  
-  <p>SiftingAppender admits one and only one nested appender. 
+
+  <p>SiftingAppender admits one and only one nested appender.
   </p>
-  
+
 
   <!-- ============================================================= -->
   <h3 class="doAnchor" name="ifJanino">Could not find Janino library
   on the class path. Skipping conditional processing.
   </h3>
-  
+
   <p><a href="manual/configuration.html#conditional">Conditional
   processing</a> in configuration files requires the <a
   href="http://docs.codehaus.org/display/JANINO/Home">Janino
@@ -656,8 +653,8 @@ return false;</pre>
    </h3>
 
 
-   <p class="red bold">Instead of writing (DEPRECATED)</p>  
-   
+   <p class="red bold">Instead of writing (DEPRECATED)</p>
+
    <pre class="prettyprint source">
     &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
       &lt;encoder>
@@ -680,7 +677,7 @@ return false;</pre>
    <h3 class="doAnchor" name="missingRightParenthesis">In a conversion
    pattern, opened parenthesis must be closed.
    </h3>
-   
+
    <p>In conversion patterns, <a
    href="manual/layouts.html#Parentheses">parentheses are special</a>
    because they are treated as grouping tokens. If a parenthesis
@@ -688,13 +685,13 @@ return false;</pre>
    by preceding each parenthesis with a backslash. As in,
    <b>\(</b>%d{HH:mm:ss.SSS} [%thread]<b>\) </b>.
    </p>
-  
+
 
    <!-- ============================================================= -->
    <h3 class="doAnchor" name="appender_order">Appenders must be
    defined before they are referenced.
    </h3>
-   
+
    <p>In a configuration file, at the point where an appender is
    referenced by name, it must be defined earlier in the configuration
    file. Referencing an appender defined later in the file is not
@@ -719,7 +716,7 @@ return false;</pre>
   &lt;root level="DEBUG">
     &lt;!-- appender referenced after it is defined -->
     <b class="big">&lt;appender-ref ref="STDOUT"/></b>
-  &lt;/root> 
+  &lt;/root>
 &lt;/configuration></pre>
 
   <p>Below is an example of an incorrect ordering, where appender
@@ -742,7 +739,7 @@ return false;</pre>
 &lt;/configuration>
    </pre>
 
- 
+
   <script src="templates/footer.js" type="text/javascript"></script>
    </div>
    </div>

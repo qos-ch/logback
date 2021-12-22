@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>Chapter12: Groovy configuration</title>
-    
+
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
@@ -25,15 +25,13 @@
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
     </div>
-    <div id="right">
-      <script src="menu.js" type="text/javascript"></script>
-    </div>
+
     <div id="content" class="chapter">
-      
+
     <h1>Chapter 12: Groovy Configuration</h1>
 
     <a href="groovy_ja.html">&#x548C;&#x8A33; (Japanese translation)</a>
-      
+
 
     <div class="quote">
       <p><em>It is better to be a human being dissatisfied than a pig
@@ -71,7 +69,7 @@
 
 
     <h2 class="doAnchor">General philosophy</h2>
-    
+
     <p>As a general rule, <em>logback.groovy</em> files are Groovy
     programs. And since Groovy is a super-set of Java, whatever
     configuration actions you can perform in Java, you can do the same
@@ -139,7 +137,7 @@
     exception: appenders MUST be defined before they can be attached
     to a logger.</p>
 
-    
+
 
     <!-- ========================================================== -->
 
@@ -156,7 +154,7 @@
 
     <pre class="prettyprint source">root(WARN)</pre>
 
-    <p>To set the level of the root logger to INFO, and attach 
+    <p>To set the level of the root logger to INFO, and attach
     appenders named "CONSOLE" and "FILE" to root, you would write:</p>
 
     <pre class="prettyprint source">root(INFO, ["CONSOLE", "FILE"])</pre>
@@ -183,7 +181,7 @@
     <code>Boolean</code> is also optional and controls the <a
     href="architecture.html#additivity">additivity flag</a>. If
     omitted, it defaults to <code>null</code>.
-    </p> 
+    </p>
 
     <p>For example, the following script sets the level of the
     "com.foo" logger to INFO.</p>
@@ -194,7 +192,7 @@
     DEBUG, and attaches the appender named "CONSOLE" to it.</p>
 
   <pre class="prettyprint source">logger("com.foo", DEBUG, ["CONSOLE"])</pre>
-    
+
    <p>The next script is similar to the previous one, except that it
    also sets the the additivity flag of the "com.foo" logger to
    false.</p>
@@ -220,7 +218,7 @@
     sub-components of any appender sub-component. This approach is at
     the heart of <em>logback.groovy</em> scripts and is probably the
     only convention that needs learning.</p>
-    
+
     <p>For example, the following script instantiates a
     <code>FileAppender</code> named "FILE", setting its <span
     class="option">file</span> property to "testFile.log" and its
@@ -243,8 +241,8 @@ root(DEBUG, ["FILE"])</pre>
     <p>
     </p>
 
-    
-    <!-- ========================================================== -->        
+
+    <!-- ========================================================== -->
     <h3>&#8226; <span class="code">timestamp(String datePattern, long timeReference = -1)</span></h3>
 
     <p>The <code>timestamp()</code> method method returns a string
@@ -276,7 +274,7 @@ appender("FILE", FileAppender) {
 }
 root(DEBUG, ["FILE"])</pre>
 
-    <!-- ========================================================== -->        
+    <!-- ========================================================== -->
     <h3>&#8226; <span class="code">conversionRule(String conversionWord, Class converterClass)</span></h3>
 
     <p>After creating your own <a
@@ -315,7 +313,7 @@ root(DEBUG, ["STDOUT"])</pre>
     </p>
 
     <pre class="prettyprint source">scan("30 seconds")</pre>
-    
+
     <p>If no unit of time is specified, then the unit of time is
     assumed to be milliseconds, which is usually inappropriate. If you
     change the default scanning period, do not forget to specify a
@@ -323,9 +321,9 @@ root(DEBUG, ["STDOUT"])</pre>
     refer to the <a href="configuration.html#autoScan">section on
     automatic reloading</a>.
     </p>
-    
+
     <!-- ========================================================== -->
-  
+
     <h3>&#8226; <span class="code">statusListener(Class listenerClass)</span></h3>
 
     <p>You can add a status listener by invoking the
@@ -337,7 +335,7 @@ root(DEBUG, ["STDOUT"])</pre>
 <b>// We highly recommended that you always add a status listener just</b>
 <b>// after the last import statement and before all other statements</b>
 <b>statusListener(OnConsoleStatusListener)</b></pre>
- 
+
     <p><a href="configuration.html#statusListener">Status listeners</a> were described in an earlier
     chapter.</p>
 
@@ -389,7 +387,7 @@ root(DEBUG, ["STDOUT"])</pre>
     <em>logback.groovy</em> file, then use the variable within a
     GString. Here is an example.</p>
 
-    <pre class="prettyprint source">// define the USER_HOME variable setting its value 
+    <pre class="prettyprint source">// define the USER_HOME variable setting its value
 // to that of the "user.home" system property
 <b>def USER_HOME = System.getProperty("user.home")</b>
 
@@ -413,7 +411,7 @@ root(DEBUG, ["FILE"])</pre>
 
 appender("FILE", FileAppender) {
   <b>println "Setting [file] property to [${USER_HOME}/myApp.log]"</b>
-  file = "${USER_HOME}/myApp.log"  
+  file = "${USER_HOME}/myApp.log"
   encoder(PatternLayoutEncoder) {
     pattern = "%msg%n"
   }
@@ -452,7 +450,7 @@ println "Hostname is ${HOSTNAME}"
 
 appender("STDOUT", ConsoleAppender) {
   // will print "hostname is x" where x is the current host's name
-  println "Hostname is ${HOSTNAME}" 
+  println "Hostname is ${HOSTNAME}"
 }</pre>
 
 
@@ -483,7 +481,7 @@ def USER_HOME = System.getProperty("user.home");
 appender("FILE", FileAppender) {
   // add a status message regarding the file property
   <b>addInfo("Setting [file] property to [${USER_HOME}/myApp.log]")</b>
-  file = "${USER_HOME}/myApp.log"  
+  file = "${USER_HOME}/myApp.log"
   encoder(PatternLayoutEncoder) {
     pattern = "%msg%n"
   }
@@ -492,7 +490,7 @@ root(DEBUG, ["FILE"])</pre>
 
 
    <h3 class="doAnchor">Conditional configuration</h3>
-   
+
    <p>Given that Groovy is a fully-fledged programming language,
    conditional statements allow for a single <em>logback.groovy</em>
    file to adapt to various environments such as development, testing
@@ -502,7 +500,7 @@ root(DEBUG, ["FILE"])</pre>
    other than pixie or orion, our production machines. Note that the
    output directory of the rolling file appender also depends on the
    host.</p>
-   
+
    <pre class="prettyprint source">// always a good idea to add an on console status listener
 statusListener(OnConsoleStatusListener)
 
@@ -512,8 +510,8 @@ def consoleAppender = true;
 
 // does hostname match pixie or orion?
 if (hostname =~ /pixie|orion/) {
-  WEBAPP_DIR = "/opt/myapp"     
-  consoleAppender = false   
+  WEBAPP_DIR = "/opt/myapp"
+  consoleAppender = false
 } else {
   appenderList.add("CONSOLE")
 }
