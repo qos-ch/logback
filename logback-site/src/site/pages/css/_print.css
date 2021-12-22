@@ -28,3 +28,6 @@ table.bodyTable th {
 	text-align:center;
 }
 
+.no-print {
+	display: none;
+}
