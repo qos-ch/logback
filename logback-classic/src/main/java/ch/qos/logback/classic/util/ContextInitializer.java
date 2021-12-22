@@ -44,7 +44,6 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
  */
 public class ContextInitializer {
 
-    final public static String GROOVY_AUTOCONFIG_FILE = "logback.groovy";
     final public static String AUTOCONFIG_FILE = "logback.xml";
     final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
     /**
@@ -63,15 +62,12 @@ public class ContextInitializer {
             throw new IllegalArgumentException("URL argument cannot be null");
         }
         final String urlString = url.toString();
-        if (urlString.endsWith("groovy")) {
-            StatusManager sm = loggerContext.getStatusManager();
-            sm.add(new ErrorStatus("Groovy configuration no longer supported.", loggerContext));
-        } else if (urlString.endsWith("xml")) {
+        if (urlString.endsWith("xml")) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);
             configurator.doConfigure(url);
         } else {
-            throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be either .groovy or .xml");
+            throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be .xml");
         }
     }
 
@@ -120,11 +116,6 @@ public class ContextInitializer {
         }
 
         url = getResource(TEST_AUTOCONFIG_FILE, myClassLoader, updateStatus);
-        if (url != null) {
-            return url;
-        }
-
-        url = getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader, updateStatus);
         if (url != null) {
             return url;
         }
