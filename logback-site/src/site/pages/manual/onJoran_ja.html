@@ -18,16 +18,14 @@
       <noscript>Please turn on Javascript to view this menu</noscript>
       <script src="../templates/left.js" type="text/javascript"></script>
     </div>
-    <div id="right">
-      <script src="menu_ja.js" type="text/javascript"></script>
-    </div>
+
     <div id="content">
-      
+
     <h1>第11章 Joran</h1>
 
     <div class="quote">
       <p><em>答えは風に吹かれている。答えは風に吹かれている。</em></p>
-      
+
       <p>—BOB DYLAN, <em>The Freewheelin' Bob Dylan</em></p>
     </div>
 
@@ -45,7 +43,7 @@
     </p>
 
     <p>Joranのインストールは簡単です。<a href="http://logback.qos.ch/download.html">logbackをダウンロード</a>して、クラスパスに<em>logback-core-1.1.2.jar</em>を追加するだけです。</p>
-    
+
     <h2 class="doAnchor">歴史的な観点</h2>
 
     <p>リフレクションは、宣言的にソフトウェアシステムを設定できるようにしてくれる、Java言語の強力な機能です。たとえば、EJBの重要なプロパティの多くは<em>ejb.xml</em>で設定します。EJBがJavaで実装されているとしても、それらのプロパティのほとんどが<em>ejb.xml</em>で指定されるのです。同じように、logbackの設定もXML形式の設定ファイルで指定します。JDK1.5から導入されたアノテーションは、以前ならXMLで設定されていたものを置き換えるためにEJB3.0で多用されています。Joranもアノテーションは利用しますが、ほんの少しだけです。EJBに比べてlogbackの設定には動的な要素が多いので、Joranでアノテーションを活用できる範囲が限られてしまうのです。
@@ -61,13 +59,13 @@
 
     <p>SAXのAPIはイベントベースのアーキテクチャなので、SAXをベースにしたツールで前方参照を扱うのは決して簡単なことではありません。前方参照とは、現在の要素よりも後で定義される要素を参照することです。同様に循環参照も手強い相手です。一般的な話ですが、DOM APIなら全要素を検索対象にできるし、前方の要素にジャンプすることもできるのです。
     </p>
-    
+
     <p>こういった柔軟性についてのあれこれを鑑みて、Joranでは当初DOM APIを使ってパースしていました。試行錯誤の後、パターンとアクションの形式で表現されたルールを解釈する上で、DOMツリーをパースしてる途中で離れた要素にジャンプできても意味が無いことが明らかになりました。<em>Joranに必要だったのは、XMLドキュメントの要素を、深さ優先で逐次的に走査していくことだけだったのです。</em>
     </p>
 
     <p>また、SAX APIには要素の位置を取得するものがあったので、Joranは問題のあった行番号と列番号を表示できるようにもなりました。位置情報があれば、パースエラーの起きている場所を簡単に特定することができます。
     </p>
-    
+
     <h3>対象外事項</h3>
 
     <p>高度な可変性を求められていることもあり、JoranのAPIは数千要素にもなる巨大なXMLドキュメントを扱うようには設計されていません。
@@ -82,7 +80,7 @@
     </p>
 
     <h3 class="doAnchor" name="action">アクション</h3>
-    
+
     <p>前に述べたように、Joranはパターンに関連付けられたルールをパースします。アクションは、<a href="http://logback.qos.ch/xref/ch/qos/logback/core/joran/action/Action.html"><code>Action</code></a>クラスを継承したもので、次のような抽象メソッドで肉付けします。他のメソッドは簡潔にするために省略されています。
     </p>
 
@@ -128,18 +126,18 @@ public abstract class Action {
 
    <p>今のパターンにいくつかのルールがマッチするときは、正確なマッチが接尾辞マッチより優先されます。そして接尾辞マッチは接頭辞マッチより優先されます。実装の詳細については<a href="http://logback.qos.ch/xref/ch/qos/logback/core/joran/spi/SimpleRuleStore.html">SimpleRuleStoreの</a>を参照してください。
    </p>
-   
+
 
    <h3 class="doAnchor" name="interpretationContext">解釈コンテキスト</h3>
 
    <p>いろいろなアクションが協調して動作させるため、beginメソッドとendメソッドの一つ目の引数に解釈コンテキストが渡されます。解釈コンテキストには、オブジェクトスタック、オブジェクトマップ、エラーリスト、アクションを呼び出したJoranインタプリタへの参照が含まれています。解釈コンテキストの完全なフィールドが知りたければ<a href="http://logback.qos.ch/xref/ch/qos/logback/core/joran/spi/InterpretationContext.html"><code>InterpretationContext</code></a>を見てください。
    </p>
-   
+
    <p>アクションは、共通のオブジェクトスタックに対するフェッチ、プッシュ、ポップといった操作や、共通のオブジェクトマップに対してキーと共にオブジェクトをプットしたりフェッチしたりすることで、他のアクションと共同作業をすることができます。また、解釈コンテキストの<code>StatusManager</code>にエラーを追加することで、問題が起きたことを報告することができます。
    </p>
-   
+
    <h3 class="doAnchor" name="helloWorld">こんにちは</h3>
-   
+
    <p>最初に、Joranを使うために必要最低限の構成を見てもらいます。<code><a href="http://logback.qos.ch/xref/chapters/onJoran/helloWorld/HelloWorldAction.html">HelloWorldAction</a></code>は、<code>begin()</code>でコンソールに"Hello World"と出力するだけの小さなアクションです。XMLファイルはコンフィギュレーターでパースします。この章の説明用に、非常に小さくて単純な<a href="http://logback.qos.ch/xref/chapters/onJoran/SimpleConfigurator.html"><code>SimpleConfigurator</code></a>というコンフィギュレーターを用意しました。<a href="http://logback.qos.ch/xref/chapters/onJoran/helloWorld/HelloWorld.html"><code>HelloWorld</code></a>アプリケーションはこれらの部品を全部使用します。</p>
 
    <ul>
@@ -152,9 +150,9 @@ public abstract class Action {
 
     <p><em>hello.xml</em>には何もネストしていない1つのhello-world要素があります。<em>logback-examples/src/main/java/chapters/onJoran/helloWorld/</em>フォルダを参照してください。
     </p>
- 
+
     <p><em>hello.xml</em>ファイルを指定してHelloWorldアプリケーションを実行すると、コンソールに"Hello World"と出力します。</p>
-   
+
     <p class="command">java chapters.onJoran.helloWorld.HelloWorld src/main/java/chapters/onJoran/helloWorld/hello.xml</p>
 
     <p>ルールストアに新しいルールを追加したり、XMLドキュメントを変更してみたり、新しいアクションを追加するなど、いろいろと試してみたくなったでしょう？
@@ -163,7 +161,7 @@ public abstract class Action {
     <!-- ====================================================== -->
 
     <h3 class="doAnchor" name="calculator">アクションの協調</h3>
-   
+
     <p>共通のオブジェクトスタックを通じて協調して簡単な計算をするアクションが、<em>logback-examples/src/main/java/joran/calculator/</em>ディレクトリに入っています。
     </p>
 
@@ -227,11 +225,11 @@ public abstract class Action {
   <p>前の例と同じく、literal要素に対応する<code><a href="http://logback.qos.ch/xref/chapters/onJoran/calculator/LiteralAction.html">LiteralAction</a></code>は、解釈コンテキストのオブジェクトスタックに整数値を登録します。ここ（<em>calculator2.xml</em>）ではまず7と3が登録されています。add要素には<a href="http://logback.qos.ch/xref/chapters/onJoran/calculator/AddAction.html"><code>AddAction</code></a>が関連付けられています。これはオブジェクトスタックから二回整数値をポップして、それらを加算した結果をオブジェクトスタックにプッシュするものです。次のliteral要素に対応するLiteralActionは、オブジェクトスタックの一番上に整数値3をプッシュします。multiply要素には<a href="http://logback.qos.ch/xref/chapters/onJoran/calculator/MultiplyAction.html"><code>MultiplyAction</code></a>が関連付けられています。これはオブジェクトスタックから二回整数値をポップして、それらをかけあわせた結果をオブジェクトスタックにプッシュするものです。ここでは、計算結果の30がオブジェクトスタックの一番上にプッシュされることになります。一番最後に、computation要素に関連付けられたComputationAction1（のend()メソッド）によって、オブジェクトスタックの一番上の値が出力されます。実行してみましょう。</p>
 
   <p class="command">java chapters.onJoran.calculator.Calculator1 src/main/java/chapters/onJoran/calculator/calculator2.xml </p>
-  
+
   <p>そうすると、次のように出力されます。</p>
 
   <p class="console">The computation named [toto] resulted in the value 30 </p>
-  
+
 
   <!--
 
@@ -248,8 +246,8 @@ public abstract class Action {
     &lt;literal value="7"/&gt;
     &lt;literal value="3"/&gt;
     &lt;add/&gt;
-  &lt;/computation&gt;   
- 
+  &lt;/computation&gt;
+
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre>
@@ -309,12 +307,12 @@ Element [abc] asked to be printed.
   </p>
 
   <h3 class="doAnchor" name="iaPractice">暗黙的なアクションの実装</h3>
-  
+
   <p>logback-classic モジュールと logback-access モジュールのそれぞれの Joran コンフィギュレーターには、暗黙的なアクションが2つだけ含まれています。<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/joran/action/NestedBasicPropertyIA.html">NestedBasicPropertyIA</a></code>と<a href="http://logback.qos.ch/xref/ch/qos/logback/core/joran/action/NestedComplexPropertyIA.html"><code>NestedComplexPropertyIA</code></a>です。</p>
 
   <p><code>NestedBasicPropertyIA</code>は、プリミティブ型あるいはそのラッパークラス、列挙型、"valueOf" 規約に則った任意のクラスのプロパティに適用可能なアクションです。このアクションが適用可能なプロパティは<em>基本型</em>あるいは<em>単純型</em>と呼ばれています。"valueOf" 規約に則るというのは、<code>java.lang.String</code>を引数とする静的メソッド<code>valueOf()</code>によってインスタンス化できる、ということです。<a href="http://logback.qos.ch/xref/ch/qos/logback/classic/Level.html"><code>Level</code></a>や<a href="http://logback.qos.ch/xref/ch/qos/logback/core/util/Duration.html"><code>Duration</code></a>、<a href="http://logback.qos.ch/xref/ch/qos/logback/core/util/FileSize.html"><code>FileSize</code></a>がこの規約に従っています。
   </p>
-  
+
   <p><code>NestedComplexPropertyIA</code>は、<code>NestedBasicPropertyIA</code>が適用できない場合に、<em>かつ</em>、オブジェクトスタックの一番上のオブジェクトに、現在の要素名に対応するセッターあるいはアダーメソッドがある場合に適用可能なアクションです。このアクションが適用可能なプロパティは、更に他のコンポーネントを内包することがあるので注意しましょう。このアクションが適用可能なプロパティは<em>複雑型</em>と呼ばれています。<code><a href="http://logback.qos.ch/xref/ch/qos/logback/core/joran/action/NestedComplexPropertyIA.html">NestedComplexPropertyIA</a></code>が複雑型のプロパティを見つけると、ネストされたコンポーネントに対応する適切なクラスをインスタンス化して、親のコンポーネント（オブジェクトスタックの一番上のオブジェクト）に設定します。<span class="attr">class属性</span>でインスタンス化するクラスを指定することができます。<span class="attr">class属性</span>が指定されていない場合、次のいずれかを条件に従ってクラス名が決定されます。</p>
 
   <ol>
@@ -372,10 +370,10 @@ Element [abc] asked to be printed.
   <p>logback-accessモジュールのルールも似たようなものです。ネストするコンポーネントのデフォルトクラスについては、パッケージ名を ch.qos.logback.classic から ch.qos.logback.access に読み替えてください。最新のルールについては、logback-access モジュールの<a href="http://logback.qos.ch/xref/ch/qos/logback/access/joran/JoranConfigurator.html">JoranConfigurator</a>の<code>addDefaultNestedComponentRegistryRules()</code>メソッドを参照してください。
 
   </p>
-  
+
   <h4 class="doAnchor">コレクション型のプロパティ</h4>
 
-  
+
   <p>logbackの暗黙的なアクションは、単独の基本型プロパティ、複雑型プロパティに加えて、コレクション型のプロパティにも対応しています。ただし、セッターメソッドの代わりに、アダーメソッドを用意する必要があります。</p>
 
   <h3 class="doAnchor" name="newRule">その場で新しいルールを定義する</h3>
@@ -399,19 +397,19 @@ Element [abc] asked to be printed.
   <p class="example">例10: 動的にルールを定義する設定例（<a href="http://logback.qos.ch/xref/chapters/onJoran/newrule/newRule.xml">logback-examples/src/main/java/chapters/onJoran/newrule/newRule.xml</a>）</p>
 
   <pre class="prettyprint source">&lt;computation name="toto"&gt;
-  &lt;newRule pattern="*/computation/literal" 
+  &lt;newRule pattern="*/computation/literal"
             actionClass="chapters.onJoran.calculator.LiteralAction"/&gt;
-  &lt;newRule pattern="*/computation/add" 
+  &lt;newRule pattern="*/computation/add"
             actionClass="chapters.onJoran.calculator.AddAction"/&gt;
-  &lt;newRule pattern="*/computation/multiply" 
+  &lt;newRule pattern="*/computation/multiply"
             actionClass="chapters.onJoran.calculator.MultiplyAction"/&gt;
 
   &lt;computation&gt;
     &lt;literal value="7"/&gt;
     &lt;literal value="3"/&gt;
     &lt;add/&gt;
-  &lt;/computation&gt;   
- 
+  &lt;/computation&gt;
+
   &lt;literal value="3"/&gt;
   &lt;multiply/&gt;
 &lt;/computation&gt;</pre>
