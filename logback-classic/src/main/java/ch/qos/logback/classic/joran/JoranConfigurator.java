@@ -155,7 +155,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
 				EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
-				EventEvaluatorModel.class, IncludeModel.class, };
+				IncludeModel.class, };
 
 //		@SuppressWarnings("unchecked")
 //		Class<? extends Model>[] secondPhaseModelClasses = new Class[] { 

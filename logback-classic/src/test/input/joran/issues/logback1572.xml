@@ -1,0 +1,21 @@
+<configuration debug="${log.debug:-false}">
+    <!-- <property resource="configuration.properties"/> -->
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+             <!-- <pattern>%date %level [%thread] %logger(%file:%line\\) - %msg%n</pattern>     -->
+            <pattern>%date %level [%thread] %logger(%file:%line\)</pattern>
+        </encoder>
+    </appender>
+
+
+	<appender name="EMAIL" 	class="ch.qos.logback.classic.net.SMTPAppender">
+		<evaluator class="ch.qos.logback.classic.boolex.OnErrorEvaluator" />
+		<smtpHost>smtp.gmail.com</smtpHost>
+	</appender>
+   
+
+    <root level="DEBUG}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>

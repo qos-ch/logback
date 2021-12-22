@@ -19,8 +19,7 @@ public class DefaultProcessor extends ContextAwareBase {
 	interface TraverseMethod {
 		int traverse(Model model, ModelFiler modelFiler);
 	}
-	
-	
+
 	final InterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
 	final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
@@ -116,7 +115,7 @@ public class DefaultProcessor extends ContextAwareBase {
 	static final int DENIED = -1;
 
 	private ModelHandlerBase createHandler(Model model) {
-		ModelFactoryMethod modelFactoryMethod  = modelClassToHandlerMap.get(model.getClass());
+		ModelFactoryMethod modelFactoryMethod = modelClassToHandlerMap.get(model.getClass());
 
 		if (modelFactoryMethod == null) {
 			addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "
@@ -154,8 +153,10 @@ public class DefaultProcessor extends ContextAwareBase {
 			}
 			// recurse into submodels handled or not
 
-			for (Model m : model.getSubModels()) {
-				count += mainTraverse(m, modelFiler);
+			if (!model.isSkipped()) {
+				for (Model m : model.getSubModels()) {
+					count += mainTraverse(m, modelFiler);
+				}
 			}
 			if (handler != null) {
 				handler.postHandle(interpretationContext, model);
@@ -193,8 +194,10 @@ public class DefaultProcessor extends ContextAwareBase {
 				return count;
 			}
 
-			for (Model m : model.getSubModels()) {
-				count += secondPhaseTraverse(m, modelFilter);
+			if (!model.isSkipped()) {
+				for (Model m : model.getSubModels()) {
+					count += secondPhaseTraverse(m, modelFilter);
+				}
 			}
 			if (handler != null) {
 				handler.postHandle(interpretationContext, model);
@@ -276,6 +279,5 @@ public class DefaultProcessor extends ContextAwareBase {
 			return null;
 		}
 	}
-	
-	
+
 }

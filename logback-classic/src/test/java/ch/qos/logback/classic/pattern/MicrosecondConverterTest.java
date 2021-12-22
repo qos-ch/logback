@@ -15,7 +15,6 @@ package ch.qos.logback.classic.pattern;
 
 import static org.junit.Assert.assertEquals;
 
-import java.time.Clock;
 import java.time.Instant;
 
 import org.junit.Test;

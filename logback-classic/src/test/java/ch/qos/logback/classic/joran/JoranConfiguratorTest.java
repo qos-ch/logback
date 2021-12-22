@@ -389,7 +389,14 @@ public class JoranConfiguratorTest {
 		loggerContext.reset();
 		configure(configFileAsStr);
 	}
-
+	
+	@Test
+	public void unreferencedAppenderShouldNotTriggerUnknownPropertyMessages() throws JoranException {
+		String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "/logback1572.xml";
+		configure(configFileAsStr);
+		checker.assertContainsMatch(Status.WARN, "Appender named \\[EMAIL\\] not referenced. Skipping further processing.");
+		checker.assertNoMatch("Ignoring unkown property \\[evaluator\\]");
+	}
 	@Test
 	public void LOGBACK_111() throws JoranException {
 		String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
