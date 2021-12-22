@@ -59,7 +59,10 @@ public class ContextInitializer {
             throw new IllegalArgumentException("URL argument cannot be null");
         }
         final String urlString = url.toString();
-        if (urlString.endsWith("xml")) {
+        if (urlString.endsWith("groovy")) {
+            StatusManager sm = loggerContext.getStatusManager();
+            sm.add(new ErrorStatus("Groovy configuration no longer supported.", loggerContext));
+        } else if (urlString.endsWith("xml")) {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(loggerContext);
             configurator.doConfigure(url);
