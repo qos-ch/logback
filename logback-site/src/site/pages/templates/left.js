@@ -10,15 +10,15 @@ document.write('<p class="menu"><a href="' + prefix + 'news.html">News</a></p>')
 document.write('<p class="menu_header">Support</p>');
 document.write('<p class="menu"><a href="' + prefix + 'mailinglist.html">Mailing Lists</a></p>');
 document.write('<p class="menu"><a href="' + prefix + 'bugreport.html">Bug Report</a></p>');
-document.write('<p class="menu"><a href="https://github.com/qos-ch/logback">Source Repository</a></p>');
+document.write('<p class="menu"><a href="https://github.com/qos-ch/logback" target="_blank" rel="noopener">Source Repository</a></p>');
 document.write('<p class="menu"><a href="' + prefix + 'volunteer.html">Call for volunteers</a>');
-document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/professionalSupport">Support offerings</a>');
+document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/professionalSupport" target="_blank" rel="noopener">Support offerings</a>');
 
 //document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/training">Training</a>');
 
 document.write('<p class="menu_header">Online Tools</p>');
-document.write('<p class="menu"><a href="https://logback.qos.ch/translator/">log4j.properties Translator</a>');
-document.write('<p class="menu"><a href="https://logback.qos.ch/translator/asGroovy.html">logback.XML to Groovy</a>');
+document.write('<p class="menu"><a href="https://logback.qos.ch/translator/" target="_blank" rel="noopener">log4j.properties Translator</a>');
+document.write('<p class="menu"><a href="https://logback.qos.ch/translator/asGroovy.html" target="_blank" rel="noopener">logback.XML to Groovy</a>');
 
 document.write('</p>');
 document.write('</div>');
