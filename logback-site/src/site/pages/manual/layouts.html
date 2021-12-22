@@ -165,7 +165,7 @@ public class MySampleLayout extends LayoutBase&lt;ILoggingEvent> {
 		
 		<em>Example: Configuration of MySampleLayout
 		(logback-examples/src/main/resources/chapters/layouts/sampleLayoutConfig.xml)</em>
-    <span class="asGroovy" onclick="return asGroovy('sampleLayoutConfig');">View as .groovy</span>
+
 <pre id="sampleLayoutConfig" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -273,7 +273,6 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     </p> 
 
 
-    <span class="asGroovy" onclick="return asGroovy('MySampleLayout2');">View as .groovy</span>
     <pre id="MySampleLayout2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -293,16 +292,16 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
    <p></p>
 
 
-		<h2 class="doAnchor" name="ClassicPatternLayout">PatternLayout</h2>
+     <h2 class="doAnchor" name="ClassicPatternLayout">PatternLayout</h2>
 
-		<p>Logback classic ships with a flexible layout called <a
-		href="../xref/ch/qos/logback/classic/PatternLayout.html">
-		<code>PatternLayout</code></a>.  As all layouts,
-		<code>PatternLayout</code> takes a logging event and returns a
-		<code>String</code>. However, this <code>String</code> can be
-		customized by tweaking <code>PatternLayout</code>'s
-		conversion pattern.
-		</p>   
+     <p>Logback classic ships with a flexible layout called <a
+     href="../xref/ch/qos/logback/classic/PatternLayout.html">
+     <code>PatternLayout</code></a>.  As all layouts,
+     <code>PatternLayout</code> takes a logging event and returns a
+     <code>String</code>. However, this <code>String</code> can be
+     customized by tweaking <code>PatternLayout</code>'s conversion
+     pattern.
+     </p>   
 
     <p>The conversion pattern of <code>PatternLayout</code> is closely
     related to the conversion pattern of the <code>printf()</code>
@@ -316,7 +315,7 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     field to convert, e.g. logger name, level, date or thread
     name. The format modifiers control field width, padding, and left
     or right justification.
-		</p>
+    </p>
 
     <p>As already mentioned on several occasions,
     <code>FileAppender</code> and sub-classes expect an
@@ -333,12 +332,12 @@ public class MySampleLayout2 extends LayoutBase&lt;ILoggingEvent> {
     <code>PatternLayoutEncoder</code>:</p>
 
  
-		<em>
-			Example: Sample usage of a PatternLayout
-			<a href="../xref/chapters/layouts/PatternSample.html">
-			(logback-examples/src/main/java/chapters/layouts/PatternSample.java)</a>
-		</em>
-		<pre class="prettyprint source">package chapters.layouts;
+    <em>
+      Example: Sample usage of a PatternLayout
+      <a href="../xref/chapters/layouts/PatternSample.html">
+      (logback-examples/src/main/java/chapters/layouts/PatternSample.java)</a>
+    </em>
+    <pre class="prettyprint source">package chapters.layouts;
 
 import org.slf4j.LoggerFactory;
 
@@ -545,14 +544,17 @@ WARN  [main]: Message 2</p>
          <p>Used to output the date of the logging event.  The date
          conversion word admits a pattern string as a parameter. The
          pattern syntax is compatible with the format accepted by <a
-         href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>.</p>
-
+         href="https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html"><code>java.text.SimpleDateFormat</code></a>
+         (in logback 1.2.x) and <a
+         href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html">java.time.format.DateTimeFormatter</a>
+         (in logback 1.3.x). </p>
+         
          <p>You can specify the string <em>"ISO8601"</em> for the
          ISO8601 date format. Note that the %date conversion word
          defaults to the <a
          href="http://en.wikipedia.org/wiki/ISO_8601">ISO 8601 date
          format</a> in the absence of a pattern parameter.</p>
-
+         
          <p>Here are some sample parameter values. They assume that
          the actual date is Friday 20th of October, 2006 and that the
          author has returned to working on this document just after
@@ -597,13 +599,18 @@ WARN  [main]: Message 2</p>
           method specification.
           </p>
 
+
+          If the option includes special characters such as a braces, spaces or commas, you can enclose it between single or double quotes.
+          
           <p><span class="label">common error</span> Given that the
           comma ',' character is interpreted as the parameter
           separator, the pattern <code>HH:mm:ss,SSS</code> will be
           interpreted as the pattern <code>HM:mm:ss</code> and the
           timezone <code>SSS</code>. If you wish to include a comma in
           your date pattern, then simply enclose the pattern between
-          quotes. For example, %date{<b>"</b>HH:mm:ss,SSS<b>"</b>}.
+          single or double quotes. For example,
+          %date{<b>"</b>HH:mm:ss,SSS<b>"</b>} or
+          %date{<b>'</b>HH:mm:ss,SSS<b>'</b>}.
           </p>
 	</td>
          </tr>
@@ -1469,8 +1476,6 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 			(logback-examples/src/main/resources/chapters/layouts/highlighted.xml)
 		</em>
 
-    <span class="asGroovy" onclick="return asGroovy('highlighted');">View as .groovy</span>
-
 
 <pre id="highlighted" class="prettyprint">&lt;configuration debug="true">
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -1553,8 +1558,6 @@ Wrapped by: org.springframework.BeanCreationException: Error creating bean with 
 			Example: Sample usage of EventEvaluators
 			(logback-examples/src/main/resources/chapters/layouts/callerEvaluatorConfig.xml)
 		</em>
-
-    <span class="asGroovy" onclick="return asGroovy('callerEvaluatorConfig');">View as .groovy</span>
 
 
 		<pre id="callerEvaluatorConfig" class="prettyprint source">&lt;configuration>
@@ -1837,7 +1840,7 @@ java.lang.Exception: display
 		new conversion word in the configuration file, as shown below:</p>
 		
 <em> Example: Sample Converter Example (src/main/java/chapters/layouts/mySampleConverterConfig.xml)</em>
- <span class="asGroovy" onclick="return asGroovy('mySampleConverterConfig');">View as .groovy</span>
+
 <pre id="mySampleConverterConfig" class="prettyprint source">&lt;configuration>
 
   <b>&lt;conversionRule conversionWord="nanos" 
@@ -1916,7 +1919,7 @@ java.lang.Exception: display
     </p>
 
 <em> Example: HTMLLayout Example (src/main/java/chapters/layouts/htmlLayoutConfig1.xml)</em>
-<span class="asGroovy" onclick="return asGroovy('htmlLayoutConfig1');">View as .groovy</span>
+
 <pre id="htmlLayoutConfig1" class="prettyprint source">&lt;configuration debug="true"&gt;
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender"&gt;
     &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
@@ -2029,7 +2032,7 @@ java.lang.Exception: display
     <p>Here is a sample configuration</p>
 
 <em> Example: Log4jXMLLayout Example (src/main/java/chapters/layouts/log4jXMLLayout.xml)</em>
-<span class="asGroovy" onclick="return asGroovy('log4jXMLLayout');">View as .groovy</span>
+
     <pre id="log4jXMLLayout" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>test.xml&lt;/file>

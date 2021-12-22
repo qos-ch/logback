@@ -87,13 +87,6 @@
         href="../faq.html#configFileLocation">in the
         classpath</a>.</p> </li>
 
-      <li>
-        <p>If no such file is found, logback tries to find a file called
-        <em>logback.groovy</em> <a
-        href="../faq.html#configFileLocation">in the
-        classpath</a>.</p>
-      </li>
-
 
       <li><p>If no such file is found, it checks for the file
       <em>logback.xml</em>  <a
@@ -129,7 +122,11 @@
     configuration file.
     </p>
 
-
+    <p><span class="label notice">Groovy</span> Given that Groovy is a
+    full-fledged language, we have dropped support for
+    <em>logback.groovy</em> in order to protect the innocent.
+    </p>
+    
     <p>If you are using Maven and if you place the
     <em>logback-test.xml</em> under the <em>src/test/resources</em>
     folder, Maven will ensure that it won't be included in the
@@ -259,8 +256,6 @@ public class Foo {
 
    <p class="example">Example: Basic configuration file
    (logback-examples/src/main/resources/chapters/configuration/sample0.xml)</p>
-   <span class="asGroovy" onclick="return asGroovy('sample0');">View as .groovy</span>
-
 
   <pre id="sample0" class="prettyprint source">&lt;configuration>
 
@@ -355,7 +350,7 @@ public static void main(String[] args) {
 
    <p class="example">Example: Registering a status listener
    (logback-examples/src/main/resources/chapters/configuration/onConsoleStatusListener.xml)</p>
-   <span class="asGroovy" onclick="return asGroovy('onConsoleStatusListener');">View as .groovy</span>   
+
    <pre id="onConsoleStatusListener" class="prettyprint source">&lt;configuration>
   &lt;-- Recommendation: place status listeners towards the the top of the configuration file --&gt;
   <b>&lt;statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" /></b>  
@@ -407,7 +402,6 @@ public static void main(String[] args) {
   <p class="example">Example: Basic configuration file using debug
    mode
    (logback-examples/src/main/resources/chapters/configuration/sample1.xml)</p>
-   <span class="asGroovy" onclick="return asGroovy('sample1');">View as .groovy</span>
 
    <pre id="sample1" class="prettyprint source">
 &lt;configuration <span class="bold">debug="true"</span>> 
@@ -580,7 +574,6 @@ public class ServerMain {
    file and automatic re-configuration
    (logback-examples/src/main/resources/chapters/configuration/scan1.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('scan1');">View as .groovy</span>
 <pre id="scan1" class="prettyprint source">
 &lt;configuration <b>scan="true"</b>> 
   ... 
@@ -596,7 +589,7 @@ public class ServerMain {
 
   <p class="example">Example: Specifying a different scanning period
   (logback-examples/src/main/resources/chapters/configuration/scan2.xml)</p>
-  <span class="asGroovy" onclick="return asGroovy('scan2');">View as .groovy</span>
+
   <pre id="scan2" class="prettyprint source">
 &lt;configuration scan="true" <b>scanPeriod="30 seconds"</b> > 
   ...
@@ -978,7 +971,6 @@ import ch.qos.logback.classic.LoggerContext;
    <p class="example">Example: Setting the level of a logger
    (logback-examples/src/main/resources/chapters/configuration/sample2.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('sample2');">View as .groovy</span>
    <pre id="sample2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -1019,7 +1011,6 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="example">Example: Setting the level of multiple loggers
   (logback-examples/src/main/resources/chapters/configuration/sample3.xml)</p>
   
-  <span class="asGroovy" onclick="return asGroovy('sample3');">View as .groovy</span>
   <pre id="sample3" class="source prettyprint">&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -1100,7 +1091,7 @@ import ch.qos.logback.classic.LoggerContext;
 
   <p class="example">Example: Logger level sample
   (logback-examples/src/main/resources/chapters/configuration/sample4.xml)</p>
-  <span class="asGroovy" onclick="return asGroovy('sample4');">View as .groovy</span>
+
   <pre id="sample4" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT"
@@ -1226,7 +1217,6 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="example">Example: Multiple loggers
   (logback-examples/src/main/resources/chapters/configuration/multiple.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('multiple');">View as .groovy</span>
   <pre id="multiple" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
@@ -1281,7 +1271,6 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="example">Example: Duplicate appender
   (logback-examples/src/main/resources/chapters/configuration/duplicate.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('duplicate');">View as .groovy</span>
   <pre id="duplicate" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -1330,7 +1319,7 @@ import ch.qos.logback.classic.LoggerContext;
 
   <p class="example">Example: Multiple appender
   (logback-examples/src/main/resources/chapters/configuration/restricted.xml)</p>
-  <span class="asGroovy" onclick="return asGroovy('restricted');">View as .groovy</span>
+
   <pre id="restricted" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -1374,7 +1363,6 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="example">Example: Additivity flag
   (logback-examples/src/main/resources/chapters/configuration/additivityFlag.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('additivityFlag');">View as .groovy</span>
   <pre id="additivityFlag" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -1430,7 +1418,6 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="example">Example: Set the context name and display it
   (logback-examples/src/main/resources/chapters/configuration/contextName.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('contextName');">View as .groovy</span>
   <pre id="contextName" class="prettyprint source">&lt;configuration>
   <b>&lt;contextName>myAppName&lt;/contextName></b>
   &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -1508,7 +1495,6 @@ import ch.qos.logback.classic.LoggerContext;
   (logback-examples/src/main/resources/chapters/configuration/variableSubstitution1.xml)
   </p>
 
-  <span class="asGroovy" onclick="return asGroovy('variableSubstitution1');">View as .groovy</span>
   <pre id="variableSubstitution1" class="prettyprint source">&lt;configuration>
 
   <b>&lt;property name="USER_HOME" value="/home/sebastien" /></b>
@@ -1536,7 +1522,7 @@ import ch.qos.logback.classic.LoggerContext;
   <p class="example">Example: System Variable substitution
   (logback-examples/src/main/resources/chapters/configuration/variableSubstitution2.xml)
   </p>
-  <span class="asGroovy" onclick="return asGroovy('variableSubstitution2');">View as .groovy</span>
+
   <pre id="variableSubstitution2" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -1561,7 +1547,7 @@ import ch.qos.logback.classic.LoggerContext;
   separate file
   (logback-examples/src/main/resources/chapters/configuration/variableSubstitution3.xml)
   </p>
-  <span class="asGroovy" onclick="return asGroovy('variableSubstitution3');">View as .groovy</span>
+
   <pre id="variableSubstitution3" class="prettyprint source">&lt;configuration>
 
   <b>&lt;property file="src/main/java/chapters/configuration/variables1.properties" /></b>
@@ -1662,8 +1648,6 @@ import ch.qos.logback.classic.LoggerContext;
    (logback-examples/src/main/resources/chapters/configuration/contextScopedVariable.xml)
    </p>
 
-  <span class="asGroovy" onclick="return
-  asGroovy('contextScopedVariable');">View as .groovy</span>
   <pre id="contextScopedVariable" class="prettyprint source">&lt;configuration>
 
   &lt;property <b class="big">scope="context"</b> name="nodeId" value="firstNode" />

@@ -11,10 +11,9 @@ document.write('<p class="menu"><a href="mdc.html"><b>Ch8: Mapped Diagnostic Con
 document.write('<p class="menu"><a href="loggingSeparation.html"><b>Ch9: Logging Separation</b></a></p>');
 document.write('<p class="menu"><a href="jmxConfig.html"><b>Ch10: JMX Configurator</b></a></p>');
 document.write('<p class="menu"><a href="onJoran.html"><b>Ch11: Joran</b></a></p>');
-document.write('<p class="menu"><a href="groovy.html"><b>Ch12: Groovy Configuration</b></a></p>');
-document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch13: Migration from log4j</b></a></p>');
-document.write('<p class="menu"><a href="receivers.html"><b>Ch14: Receivers</b></a></p>');
-document.write('<p class="menu"><a href="usingSSL.html"><b>Ch15: Using SSL</b></a></p>');
+document.write('<p class="menu"><a href="migrationFromLog4j.html"><b>Ch12: Migration from log4j</b></a></p>');
+document.write('<p class="menu"><a href="receivers.html"><b>Ch13: Receivers</b></a></p>');
+document.write('<p class="menu"><a href="usingSSL.html"><b>Ch14: Using SSL</b></a></p>');
 
 document.write('<p style="border: 1px solid #cccccc;"></p>');
 document.write('<p style="border: 1px solid #cccccc;"></p>');
