@@ -43,7 +43,6 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
  */
 public class ContextInitializer {
 
-    final public static String GROOVY_AUTOCONFIG_FILE = "logback.groovy";
     final public static String AUTOCONFIG_FILE = "logback.xml";
     final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
     final public static String CONFIG_FILE_PROPERTY = "logback.configurationFile";
@@ -64,7 +63,7 @@ public class ContextInitializer {
             configurator.setContext(loggerContext);
             configurator.doConfigure(url);
         } else {
-            throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be either .groovy or .xml");
+            throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be .xml");
         }
     }
 
@@ -116,12 +115,7 @@ public class ContextInitializer {
         if (url != null) {
             return url;
         }
-
-        url = getResource(GROOVY_AUTOCONFIG_FILE, myClassLoader, updateStatus);
-        if (url != null) {
-            return url;
-        }
-
+    
         return getResource(AUTOCONFIG_FILE, myClassLoader, updateStatus);
     }
 
