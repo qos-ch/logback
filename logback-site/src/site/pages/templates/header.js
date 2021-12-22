@@ -1,11 +1,9 @@
-// <img src="${prefix}images/logos/lblogo.jpg" alt="LOGBack logo" class="logo" />
-
 document.write(`
 <header id="header">
   <div class="flex items-end">
     <div>
       <a href="${prefix}/">
-        <img src="images/logos/lblogo.jpg" alt="LOGBack logo" class="logo" />
+        <img src="${prefix}images/logos/lblogo.jpg" alt="LOGBack logo" class="logo" />
       </a>
     </div>
 
