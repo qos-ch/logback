@@ -373,8 +373,6 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   <p class="example">Example: ConsoleAppender configuration
   (logback-examples/src/main/resources/chapters/appenders/conf/logback-Console.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('logback_Console');">View as .groovy</span>
-
   <pre id="logback_Console" class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
@@ -538,7 +536,6 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <p class="example">Example: FileAppender configuration
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-fileAppender.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('logback-fileAppender');">View as .groovy</span>
    <pre id="logback-fileAppender"  class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -581,7 +578,6 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    configuration by timestamp
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-timestamp.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('logback-timestamp');">View as .groovy</span>
    <pre id="logback-timestamp" class="prettyprint source">&lt;configuration>
 
   &lt;!-- Insert the current time formatted as "yyyyMMdd'T'HHmmss" under
@@ -638,7 +634,6 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <p class="example">Example: Timestamp using context birth date as time reference
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-timestamp-contextBirth.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('logback-timestamp-contextBirth');">View as .groovy</span>   
    <pre id="logback-timestamp-contextBirth" class="prettyprint source">&lt;configuration>
   &lt;timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss" 
              <b>timeReference="contextBirth"</b>/>
@@ -1176,7 +1171,6 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingTimeBased.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('logback-RollingTimeBased');">View as .groovy</span>
    <pre id="logback-RollingTimeBased" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>logFile.log&lt;/file>
@@ -1211,7 +1205,6 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-PrudentTimeBasedRolling.xml)</p>
 
-  <span class="asGroovy" onclick="return asGroovy('logback-PrudentTimeBasedRolling');">View as .groovy</span>
   <pre id="logback-PrudentTimeBasedRolling" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;!-- Support multiple-JVM writing to the same log file --></b>
@@ -1460,7 +1453,6 @@ public interface RollingPolicy extends LifeCycle {
    <p class="example">Example: Sample configuration of a <code>RollingFileAppender</code> using a 
    <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingFixedWindow.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('logback-RollingFixedWindow');">View as .groovy</span>
    <pre id="logback-RollingFixedWindow" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;file>test.log&lt;/file></b>
@@ -1555,7 +1547,6 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <code>SizeBasedTriggeringPolicy</code>
     (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingSizeBased.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('logback-RollingSizeBased');">View as .groovy</span>
     <pre id="logback-RollingSizeBased" class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>test.log&lt;/file>
@@ -1848,7 +1839,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 		<p class="example">Example: SocketAppender configuration
 		(logback-examples/src/main/resources/chapters/appenders/socket/client1.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('client1');">View as .groovy</span>
+
 <pre id="client1" class="prettyprint source">&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
@@ -1961,7 +1952,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
       
    	<p class="example">Example: SSLSocketAppender configuration
 		(logback-examples/src/main/resources/chapters/appenders/socket/ssl/client.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('sslclient');">View as .groovy</span>
+
 <pre id="sslclient" class="prettyprint source">&lt;configuration debug="true">
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender">
@@ -2506,7 +2497,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		</p>	
 		
     <p class="example">Example: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/mail/mail1.xml)</p>	
-    <span class="asGroovy" onclick="return asGroovy('mail1');">View as .groovy</span>	
+
     <pre id="mail1" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/smtpHost>
@@ -2704,7 +2695,7 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
 
     <p class="example">Example: <code>SMTPAppender</code> with custom 
     <code>Evaluator</code> and buffer size (logback-examples/src/main/resources/chapters/appenders/mail/mail3.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('mail3');">View as .groovy</span>	
+
     <pre id="mail3" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;evaluator class="chapters.appenders.mail.CounterBasedEvaluator" /></b>
@@ -2755,7 +2746,7 @@ logger.error(<b>notifyAdmin</b>,
    <p class="example">Example: <code>SMTPAppender</code> with 
    <code>OnMarkerEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('mailWithMarker');">View as .groovy</span>	
+
    <pre id="mailWithMarker" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
@@ -2799,7 +2790,6 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: <code>SMTPAppender</code> with 
    <code>JaninoEventEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker_Janino.xml)</p>
 
-   <span class="asGroovy" onclick="return asGroovy('mailWithMarker_Janino');">View as .groovy</span>	
     <pre id="mailWithMarker_Janino" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
@@ -2820,7 +2810,7 @@ logger.error(<b>notifyAdmin</b>,
 
     <p class="example">Example: the same with 
    <code>GEventEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker_GEvent.xml)</p>
-   <span class="asGroovy" onclick="return asGroovy('mailWithMarker_GEventEvaluator');">View as .groovy</span>	
+
 
    <pre id="mailWithMarker_GEventEvaluator" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2861,7 +2851,6 @@ logger.error(<b>notifyAdmin</b>,
     using SSL
     (logback-examples/src/main/resources/chapters/appenders/mail/gmailSSL.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('gmailSSLExample');">View as .groovy</span>	
     <pre id="gmailSSLExample" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;smtpHost>smtp.gmail.com&lt;/smtpHost></b>
@@ -2893,7 +2882,7 @@ logger.error(<b>notifyAdmin</b>,
 
     <p class="example">Example: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/resources/chapters/appenders/mail/gmailSTARTTLS.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('gmailSTARTTLSExample');">View as .groovy</span>	
+
     <pre id="gmailSTARTTLSExample" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>smtp.gmail.com&lt;/smtpHost>
@@ -2939,7 +2928,6 @@ logger.error(<b>notifyAdmin</b>,
     MDCBasedDsicriminator
     (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMDCBasedDiscriminator.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('mailWithMDCBasedDiscriminator');">View as .groovy</span>	
     <pre id="mailWithMDCBasedDiscriminator" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/smtpHost>
@@ -3330,7 +3318,7 @@ logger.error(<b>notifyAdmin</b>,
 		</p>
 		
     <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-driverManager.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-driverManager');">View as .groovy</span>	
+
     <pre id="append-toMySQL-with-driverManager" class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -3412,7 +3400,6 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/db/append-with-datasource.xml)</p>	
 
 
-    <span class="asGroovy" onclick="return asGroovy('append-with-datasource');">View as .groovy</span>	
     <pre id="append-with-datasource" class="prettyprint source">&lt;configuration  debug="true">
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -3520,9 +3507,6 @@ logger.error(<b>notifyAdmin</b>,
    by <code>JNDIConnectionSource</code>
    (logback-examples/src/main/resources/chapters/appenders/db/append-via-jndi.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('append-via-jndi');">View as .groovy</span>	
- 
-
 <pre id="append-via-jndi" class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
@@ -3564,7 +3548,6 @@ logger.error(<b>notifyAdmin</b>,
     without pooling
     (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-datasource.xml)</p>
 
-    <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-datasource');">View as .groovy</span>	
     <pre id="append-toMySQL-with-datasource" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -3600,7 +3583,6 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: <code>DBAppender</code> configuration
     with pooling
     (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-datasource-and-pooling.xml)</p>
-    <span class="asGroovy" onclick="return asGroovy('append-toMySQL-with-datasource-and-pooling');">View as .groovy</span>	
     <pre id="append-toMySQL-with-datasource-and-pooling" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
@@ -3729,7 +3711,7 @@ logger.error(<b>notifyAdmin</b>,
 		<code>SyslogAppender</code>.</p>
 		
     <p class="example">Example: <code>SyslogAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/conf/logback-syslog.xml)</p>	
-    <span class="asGroovy" onclick="return asGroovy('logback-syslog');">View as .groovy</span>	
+
     <pre id="logback-syslog" class="prettyprint source">&lt;configuration>
 
   &lt;appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
@@ -3828,8 +3810,6 @@ logger.debug("Alice says hello"); </p>
     <p class="example">Example: <code>SiftingAppender</code>
     configuration
     (logback-examples/src/main/resources/chapters/appenders/sift/byUserid.xml)</p>
-
-    <span class="asGroovy" onclick="return asGroovy('byUserid');">View as .groovy</span>
 
     <pre id="byUserid" class="prettyprint source">&lt;configuration>
 
@@ -4117,8 +4097,6 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     <p class="example">Example: <code>AsyncAppender</code>
     configuration
     (logback-examples/src/main/resources/chapters/appenders/conc/logback-async.xml)</p>
-
-    <span class="asGroovy" onclick="return asGroovy('asyncAppender');">View as .groovy</span>
 
     <pre id="asyncAppender" class="prettyprint source">&lt;configuration>
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
