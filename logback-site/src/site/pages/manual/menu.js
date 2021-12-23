@@ -28,3 +28,4 @@ document.write('     data-ad-format="auto"></ins>');
 document.write('<script>');
 document.write('(adsbygoogle = window.adsbygoogle || []).push({});');
 document.write('</script>');
+

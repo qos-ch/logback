@@ -8,7 +8,6 @@
     
     <link rel="stylesheet" type="text/css" href="../css/common.css" />
     <link rel="stylesheet" type="text/css" href="../css/screen.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="../css/_print.css" media="print" />
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen" />
 
   </head>
@@ -16,21 +15,22 @@
 
     <script type="text/javascript">prefix='../'</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
-    <script type="text/javascript" src="../js/dsl.js"></script>
     <script type="text/javascript" src="../js/jquery-min.js"></script>
     <script type="text/javascript" src="../js/decorator.js"></script>
 
     <div id="container">
-      <script src="../templates/header.js" type="text/javascript"></script>
+      <script type="text/javascript" src="../templates/header.js"></script>      
       
       <div id="left">
         <noscript>Please turn on Javascript to view this menu</noscript>
         <script src="../templates/left.js" type="text/javascript"></script>
       </div>
+
       <div id="right">
         <script src="menu.js" type="text/javascript"></script>
       </div>
-      <div id="content" class="chapter">
+
+      <div id="content">
       
     <h1>Chapter 3: Logback configuration</h1>
 
@@ -45,7 +45,6 @@
 
 
     <script src="../templates/creative.js" type="text/javascript"></script>
-
 
     <p>We start by presenting ways for configuring logback, with many
     example configuration scripts.  Joran, the configuration framework
@@ -277,6 +276,7 @@ public class Foo {
    directory accessible from the class path. Running the <em>MyApp1</em>
    application should give identical results to its previous run.</p>
 
+   
    <h4 class="doAnchor" name="automaticStatusPrinting">Automatic
    printing of status messages in case of warning or errors</h4>
 
@@ -314,7 +314,7 @@ public static void main(String[] args) {
 
   <p>If everything goes well, you should see the following output on the console</p>
 
-   <div class="source longline"><pre>17:44:58,578 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-test.xml]
+  <div class="source longline">17:44:58,578 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback-test.xml]
 17:44:58,671 |-INFO in ch.qos.logback.classic.joran.action.ConfigurationAction - debug attribute not set
 17:44:58,671 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
 17:44:58,687 |-INFO in ch.qos.logback.core.joran.action.AppenderAction - Naming appender as [STDOUT]
@@ -325,7 +325,7 @@ public static void main(String[] args) {
 17:44:58.828 [main] INFO  chapters.configuration.MyApp2 - Entering application.
 17:44:58.828 [main] DEBUG chapters.configuration.Foo - Did it again!
 17:44:58.828 [main] INFO  chapters.configuration.MyApp2 - Exiting application.
-</pre></div>
+</div>
 
   <p>At the end of this output, you can recognize the lines that were
   printed in the previous example. You should also notice the
@@ -392,6 +392,7 @@ public static void main(String[] args) {
    generated in case of errors.
    </p>
 
+   
    <h4>Shorthand</h4>
    
    <p>As a shorthand, it is possible to register an
@@ -517,6 +518,7 @@ public static void main(String[] args) {
    registration directives at top of the configuration file before
    other directives.</p>
 
+      
 
    <!-- =========================================================== -->
 
@@ -614,7 +616,6 @@ public class ServerMain {
    in case the latest version of the configuration file has XML syntax
    errors, it will fall back to a previous configuration file free of
    XML syntax errors.</p>
-
 
    
    <h4 class="doAnchor" name="packagingData">Enabling packaging data in stack traces</h4>
@@ -826,7 +827,6 @@ import ch.qos.logback.classic.LoggerContext;
     variable. The most local setting has priority, i.e. web-app first,
     system property second and OS environment last.</p>
 
-   
 
    <!-- =================================================================== -->
    <!-- =================================================================== -->
@@ -859,11 +859,10 @@ import ch.qos.logback.classic.LoggerContext;
    following diagram illustrates this basic structure.</p>
 
   
-  <p align="left">
-    <img src="images/chapters/configuration/basicSyntax.png" 
-         alt="basic Syntax" title="Basic configuration file structure"/>
-  </p>
-
+   <p align="left">
+     <img src="images/chapters/configuration/basicSyntax.png" 
+          alt="basic Syntax" title="Basic configuration file structure"/>
+   </p>
 
     <p class="highlight">If you are unsure which case to use for a
     given tag name, just follow the <a
@@ -874,7 +873,8 @@ import ch.qos.logback.classic.LoggerContext;
     tag names</h4>
    
     <p>Since logback version 0.9.17, tag names pertaining to explicit
-    rules are case insensitive.  For example, <code>&lt;logger></code>, <code>&lt;Logger></code> and
+    rules are case insensitive.  For example,
+    <code>&lt;logger></code>, <code>&lt;Logger></code> and
     <code>&lt;LOGGER></code> are valid configuration elements and will
     be interpreted in the same way. Note that XML well-formedness
     rules still apply, if you open a tag as <code>&lt;xyz></code> you
@@ -883,19 +883,21 @@ import ch.qos.logback.classic.LoggerContext;
     rules</a>, tag names are case sensitive except for the first
     letter.  Thus, <code>&lt;xyz></code> and <code>&lt;Xyz></code> are
     equivalent but not <code>&lt;xYz></code>.  Implicit rules usually
-    follow the <a href="http://en.wikipedia.org/wiki/CamelCase">camelCase</a>
-    convention, common in the Java world. Since it is not
-    easy to tell when a tag is associated with an explicit action and
-    when it is associated with an implicit action, it is not trivial
-    to say whether an XML tag is case-sensitive or insensitive with
-    respect to the first letter. If you are unsure which case to use
-    for a given tag name, just follow the camelCase convention which
-    is almost always the correct convention.
+    follow the <a
+    href="http://en.wikipedia.org/wiki/CamelCase">camelCase</a>
+    convention, common in the Java world. Since it is not easy to tell
+    when a tag is associated with an explicit action and when it is
+    associated with an implicit action, it is not trivial to say
+    whether an XML tag is case-sensitive or insensitive with respect
+    to the first letter. If you are unsure which case to use for a
+    given tag name, just follow the camelCase convention which is
+    almost always the correct convention.
     </p>
 
     <h4 class="doAnchor" name="loggerElement">Configuring loggers, or
     the <code>&lt;logger></code> element</h4>
 
+    
     <p>At this point you should have at least some understanding of <a
     href="architecture.html#effectiveLevel">level inheritance</a> and
     the <a href="architecture.html#basic_selection">basic selection
@@ -994,7 +996,7 @@ import ch.qos.logback.classic.LoggerContext;
   <p>When the above configuration file is given as argument to the
   <em>MyApp3</em> application, it will yield the following output:
   </p>
-
+  
 <pre class="source">17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Entering application.
 17:34:07.578 [main] INFO  chapters.configuration.MyApp3 - Exiting application.</pre>
 
@@ -1826,7 +1828,6 @@ fileName=myApp.log
       local host. Note that obtaining the canonical host name may take several seconds.
       </td>
     </tr>
-    <tr>
 
     <tr>
       <td><a
@@ -1837,10 +1838,12 @@ fileName=myApp.log
       otherwise.
       </td>
     </tr>
+
     <tr>
       <td><a
       href="../apidocs/ch/qos/logback/core/property/FileExistsPropertyDefiner.html"><code>ResourceExistsPropertyDefiner</code></a>
       </td>
+
       <td>Set the named variable to "true" if the <span
       class="prop">resource</span> specified by the user is available
       on the class path, to "false" otherwise.
@@ -1848,6 +1851,7 @@ fileName=myApp.log
     </tr>
   </table>
 
+  
   <!-- ============================================================== -->
 
   <h3 class="doAnchor" name="conditional">Conditional processing of
@@ -1885,6 +1889,8 @@ fileName=myApp.log
     &lt;/else>    
   &lt;/if></pre>  
 
+  
+  
   <p>The condition is a Java expression in which only context
   properties or system properties are accessible. For a key passed as
   argument, the <code>property</code>() or its shorter equivalent
@@ -1902,6 +1908,7 @@ fileName=myApp.log
   <code>isNull()</code> method is provided. Example:
   <code>isNull("k")</code>.</p>
 
+  
   <pre class="prettyprint source">&lt;configuration debug="true">
 
   <b>&lt;if condition='property("HOSTNAME").contains("torino")'></b>
@@ -2110,9 +2117,9 @@ fileName=myApp.log
 &lt;/configuration></pre>
   <p>
   </p>
-  
 
   <script src="../templates/footer.js" type="text/javascript"></script>
+  </div>
 </div>
 </body>
 </html>
