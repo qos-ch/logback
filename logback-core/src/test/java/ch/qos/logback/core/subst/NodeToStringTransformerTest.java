@@ -14,7 +14,6 @@
 package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 import ch.qos.logback.core.spi.ScanException;
 import org.junit.Before;
 import org.junit.Test;

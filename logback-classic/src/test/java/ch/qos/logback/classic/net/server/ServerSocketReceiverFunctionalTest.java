@@ -78,7 +78,7 @@ public class ServerSocketReceiverFunctionalTest {
     @After
     public void tearDown() throws Exception {
         receiver.stop();
-        ExecutorService executor = lc.getExecutorService();
+        ExecutorService executor = lc.getScheduledExecutorService();
         executor.shutdownNow();
         executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
         assertTrue(executor.isTerminated());

@@ -6,7 +6,6 @@ import org.slf4j.event.KeyValuePair;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.util.OptionHelper;
 
 /**
  * Convert the contents of {@link KeyValuePair} list to a String.

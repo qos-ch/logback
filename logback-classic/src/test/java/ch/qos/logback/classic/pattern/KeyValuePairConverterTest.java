@@ -18,15 +18,11 @@ import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.IMarkerFactory;
-import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
-import org.slf4j.helpers.BasicMarkerFactory;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class KeyValuePairConverterTest {

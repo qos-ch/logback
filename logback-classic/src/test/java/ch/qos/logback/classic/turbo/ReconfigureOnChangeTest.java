@@ -78,12 +78,12 @@ public class ReconfigureOnChangeTest {
 
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(this.getClass());
-    ExecutorService executorService = loggerContext.getExecutorService();
+    ExecutorService executorService = loggerContext.getScheduledExecutorService();
 
     StatusChecker checker = new StatusChecker(loggerContext);
     AbstractMultiThreadedHarness harness;
 
-    ThreadPoolExecutor executor = (ThreadPoolExecutor) loggerContext.getExecutorService();
+    ThreadPoolExecutor executor = (ThreadPoolExecutor) loggerContext.getScheduledExecutorService();
 
     int expectedResets = 2;
 
