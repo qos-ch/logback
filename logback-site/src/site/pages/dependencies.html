@@ -5,10 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>Logback Dependencies</title>
     
-    <link rel="stylesheet" type="text/css" href="css/common.css" />
-    <link rel="stylesheet" type="text/css" href="css/screen.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="css/_print.css" media="print" />
-    
+    <link rel="stylesheet" type="text/css" href="css/site.css" />    
   </head>
   <body>
     <script type="text/javascript">prefix='';</script>
@@ -60,7 +57,7 @@
           <ul>         
             <li><a
             href="https://glassfish.dev.java.net/javaee5/mail/">JavaMail
-            API</a> version ${javax.mail.version},
+            API</a> version ${jakarta.mail.version},
             </li>
             <li><a
             href="http://java.sun.com/products/javabeans/jaf/index.jsp">JavaBeans
@@ -106,7 +103,7 @@
         <td>
           <ul>
             <li><a href="http://www.slf4j.org">slf4j-api</a> version
-            <span class="big red">1.8.0 or later</span>
+            <span class="big red">${slf4j.version} or later</span>
             </li>
           </ul>
         </td>       
@@ -116,7 +113,7 @@
         <td>ch.qos.logback.classic.selector.*</td>
         <td>
           <ul>
-            <li>servlet-api version 2.5
+            <li>servlet-api version ${servlet-api.version}
             </li>
           </ul>
         </td>       
