@@ -26,6 +26,12 @@
         <targetPath>../../../target/site</targetPath>
         <filtering>true</filtering>
       </resource>
+      <resource>
+        <directory>src/site/resources</directory>
+        <targetPath>../../../target/site</targetPath>
+        <filtering>false</filtering>
+      </resource>
+      
     </resources>
 
     <plugins>
