@@ -47,13 +47,13 @@
     
     <h2 class="doAnchor" name="whatIsAnAppender">What is an Appender?</h2>
     
-		<p>Logback delegates the task of writing a logging event to
-		components called appenders.  Appenders must implement the <a
-		href="../xref/ch/qos/logback/core/Appender.html"><code>ch.qos.logback.core.Appender</code></a>
-		interface.  The salient methods of this interface are summarized
-		below:
-		</p>
-		<pre class="prettyprint source">package ch.qos.logback.core;
+    <p>Logback delegates the task of writing a logging event to
+      components called appenders.  Appenders must implement
+      the <a href="../xref/ch/qos/logback/core/Appender.html"><code>ch.qos.logback.core.Appender</code></a>
+      interface.  The salient methods of this interface are summarized
+      below:
+    </p>
+    <div class="prettyprint source">package ch.qos.logback.core;
   
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.FilterAttachable;
@@ -66,7 +66,7 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   public void setName(String name);
   <b>void doAppend(E event);</b>
   
-}</pre>
+}</div>
 
 	<p>Most of the methods in the <code>Appender</code> interface are
 	setters and getters. A notable exception is the
