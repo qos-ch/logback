@@ -19,6 +19,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -406,7 +407,7 @@ public class LoggingEvent implements ILoggingEvent {
         }
         // mdcPropertyMap still null, use emptyMap()
         if (mdcPropertyMap == null)
-            mdcPropertyMap = Collections.emptyMap();
+            mdcPropertyMap = new HashMap<>();
 
         return mdcPropertyMap;
     }
