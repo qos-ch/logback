@@ -1,15 +1,11 @@
 
-
+/* used in example headers */
 .example {
     width: 90%;
     font-style: italic;
 }
 
-
-div.source {
-    margin-top: 1em;
-}
-
+/* for highligting breaking changes */
 div.breaking {
     border: 1px solid #F44; 
     background-color: #FED; 

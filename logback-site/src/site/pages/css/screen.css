@@ -257,6 +257,10 @@ td:hover .anchor {
 }
 
 
+div.source {
+    margin-top: 1em;
+}
+
 .source, .command, .console {
     overflow-x: auto;  
     border-top: 1px solid #DDDDDD;
@@ -265,6 +269,7 @@ td:hover .anchor {
     font-family: Courier, "MS Courier New", Prestige, monospace;
     padding-left: 1ex;
     white-space: pre;
+    font-size: 16px;
 }
 
 .source {
@@ -349,7 +354,7 @@ td.word {
 
 /* EOF =============== bodyTable =============== */
 
-// cosmetics
+/* cosmetics */
 
 
 .big {
