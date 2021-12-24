@@ -19,6 +19,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -30,9 +36,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
+//import org.joda.time.DateTimeZone;
+//import org.joda.time.Days;
+//import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -141,7 +147,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         long SAT_2016_03_26_T_230705_CET = WED_2016_03_23_T_230705_CET + 3 * CoreConstants.MILLIS_IN_ONE_DAY;
         long MON_2016_03_28_T_000705_CET = SAT_2016_03_26_T_230705_CET + CoreConstants.MILLIS_IN_ONE_DAY;
 
-        int result = computeCrossedDayBarriers(SAT_2016_03_26_T_230705_CET, MON_2016_03_28_T_000705_CET, "CET");
+        long result = computeCrossedDayBarriers(SAT_2016_03_26_T_230705_CET, MON_2016_03_28_T_000705_CET, "CET");
         assertEquals(2, result);
     }
 
@@ -150,14 +156,19 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     private int computeCrossedDayBarriers(long currentTime, long millisAtEnd, String timeZoneID) {
-        DateTimeZone dateTimeZone = DateTimeZone.getDefault();
+        ZoneId dateTimeZone = ZoneId.systemDefault();
         if (timeZoneID != null) {
-            dateTimeZone = DateTimeZone.forID(timeZoneID);
+            dateTimeZone = ZoneId.of(timeZoneID);
         }
-        LocalDate startInstant = new LocalDate(currentTime, dateTimeZone);
-        LocalDate endInstant = new LocalDate(millisAtEnd, dateTimeZone);
-        Days days = Days.daysBetween(startInstant, endInstant);
-        return days.getDays();
+        
+        Instant startInstant = Instant.ofEpochMilli(currentTime);
+        ZonedDateTime startZDT = startInstant.atZone(dateTimeZone);
+
+        Instant endInstant = Instant.ofEpochMilli(millisAtEnd);
+        ZonedDateTime endZDT = endInstant.atZone(dateTimeZone);
+        
+        Period period = Period.between(startZDT.toLocalDate(), endZDT.toLocalDate());
+        return   period.getDays();
     }
 
     @Test
