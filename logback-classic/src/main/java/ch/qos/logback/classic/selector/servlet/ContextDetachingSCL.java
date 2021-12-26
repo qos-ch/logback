@@ -40,7 +40,7 @@ public class ContextDetachingSCL implements ServletContextListener {
 
         try {
             Context ctx = JNDIUtil.getInitialContext();
-            loggerContextName = (String) JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
+            loggerContextName = (String) JNDIUtil.lookupString(ctx, JNDI_CONTEXT_NAME);
         } catch (NamingException ne) {
         }
 
