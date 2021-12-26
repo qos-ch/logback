@@ -12,4 +12,5 @@ logback-classic/jdbc:hsqldb:mem:test.log
 logback-classic/jdbc:hsqldb:mem:test.properties
 logback-classic/jdbc:hsqldb:mem:test.script
 cobertura.ser
-#*#
+# ignore files with pound characters
+\#*\#
