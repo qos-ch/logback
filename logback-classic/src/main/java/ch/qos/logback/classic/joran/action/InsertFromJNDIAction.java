@@ -65,7 +65,7 @@ public class InsertFromJNDIAction extends Action {
 
         try {
             Context ctx = JNDIUtil.getInitialContext();
-            envEntryValue = JNDIUtil.lookup(ctx, envEntryName);
+            envEntryValue = JNDIUtil.lookupString(ctx, envEntryName);
             if (OptionHelper.isNullOrEmpty(envEntryValue)) {
                 addError("[" + envEntryName + "] has null or empty value");
             } else {

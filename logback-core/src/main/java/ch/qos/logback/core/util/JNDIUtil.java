@@ -36,7 +36,7 @@ public class JNDIUtil {
         return new InitialContext();
     }
 
-    public static String lookup(Context ctx, String name) throws NamingException {
+    public static Object lookupObject(Context ctx, String name) throws NamingException {
     	  if (ctx == null) {
               return null;
           }
@@ -48,12 +48,18 @@ public class JNDIUtil {
           jndiNameSecurityCheck(name);
 
           Object lookup = ctx.lookup(name);
-          return lookup == null ? null : lookup.toString();
+          return lookup;
     }
 
 	public static void jndiNameSecurityCheck(String name) throws NamingException {
 		if (!name.startsWith(JNDI_JAVA_NAMESPACE)) {
 			  throw new NamingException(RESTRICTION_MSG + name);
-          }
+         }
 	}
+	
+	public static String lookupString(Context ctx, String name) throws NamingException {
+		Object lookup = lookupObject(ctx, name);
+		return lookup == null ? null : lookup.toString();
+	}
+
 }

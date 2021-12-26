@@ -135,7 +135,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         addInfo("Looking up javax.mail.Session at JNDI location [" + jndiLocation + "]");
         try {
             Context initialContext = JNDIUtil.getInitialContext();
-            Object obj = JNDIUtil.lookup(initialContext, jndiLocation);
+            Object obj = JNDIUtil.lookupObject(initialContext, jndiLocation);
             return (Session) obj;
         } catch (Exception e) {
             addError("Failed to obtain javax.mail.Session from JNDI location [" + jndiLocation + "]", e);

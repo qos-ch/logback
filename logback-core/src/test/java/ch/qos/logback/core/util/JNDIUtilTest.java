@@ -14,7 +14,7 @@ public class JNDIUtilTest {
 		Context ctxt = JNDIUtil.getInitialContext();
 
 		try {
-			JNDIUtil.lookup(ctxt, "ldap:...");
+			JNDIUtil.lookupObject(ctxt, "ldap:...");
 		} catch (NamingException e) {
 			String excaptionMsg = e.getMessage();
 			if(excaptionMsg.startsWith(JNDIUtil.RESTRICTION_MSG)) 

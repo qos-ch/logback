@@ -83,7 +83,7 @@ public class ContextJNDISelector implements ContextSelector {
             // We first try to find the name of our
             // environment's LoggerContext
             ctx = JNDIUtil.getInitialContext();
-            contextName = (String) JNDIUtil.lookup(ctx, JNDI_CONTEXT_NAME);
+            contextName = (String) JNDIUtil.lookupString(ctx, JNDI_CONTEXT_NAME);
         } catch (NamingException ne) {
             // We can't log here
         }
@@ -127,7 +127,7 @@ public class ContextJNDISelector implements ContextSelector {
         String jndiEntryForConfigResource = null;
         
         try {
-        	jndiEntryForConfigResource = JNDIUtil.lookup(ctx, JNDI_CONFIGURATION_RESOURCE);
+        	jndiEntryForConfigResource = JNDIUtil.lookupString(ctx, JNDI_CONFIGURATION_RESOURCE);
         } catch(NamingException e) {
         	sm.add(new WarnStatus("JNDI lookup failed", this, e));
         }
