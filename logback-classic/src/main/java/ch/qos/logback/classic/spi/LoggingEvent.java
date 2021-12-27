@@ -290,6 +290,7 @@ public class LoggingEvent implements ILoggingEvent {
     /**
      * Return the {@link Instant} corresponding to the creation of this event.
      * 
+     * @see {@link #getTimeStamp()}
      * @since 1.3
      */
     public Instant getInstant() {
@@ -298,6 +299,8 @@ public class LoggingEvent implements ILoggingEvent {
     
     /**
      * Set {@link Instant} corresponding to the creation of this event.
+     * 
+     * The value of {@link #getTimeStamp()} will be overridden as well.
      */
     public void setInstant(Instant  instant) {
         initTmestampFields(instant);
@@ -305,14 +308,18 @@ public class LoggingEvent implements ILoggingEvent {
 
     
     /**
-     * Return the number of elapsed seconds since epoch in UTC.
+     * Return the number of elapsed milliseconds since epoch in UTC.
      */
     public long getTimeStamp() {
         return timeStamp;
     }
     
     /**
-     * Set the number of elapsed seconds since epoch in UTC.
+     * Set the number of elapsed milliseconds since epoch in UTC.
+     * 
+     * Setting the timestamp will override the value contained in {@link #getInstant}. 
+     * Nanoseconds value will be computed form the provided millisecond value.
+     * 
      */
     public void setTimeStamp(long timeStamp) {
     	Instant instant = Instant.ofEpochMilli(timeStamp);
