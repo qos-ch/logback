@@ -15,6 +15,8 @@ package ch.qos.logback.core.util;
 
 import static ch.qos.logback.core.CoreConstants.JNDI_JAVA_NAMESPACE;
 
+import java.util.Hashtable;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -34,6 +36,10 @@ public class JNDIUtil {
 
 	public static Context getInitialContext() throws NamingException {
 		return new InitialContext();
+	}
+
+	public static Context getInitialContext(Hashtable<?,?> props) throws NamingException {
+		return new InitialContext(props);
 	}
 
 	public static Object lookupObject(Context ctx, String name) throws NamingException {

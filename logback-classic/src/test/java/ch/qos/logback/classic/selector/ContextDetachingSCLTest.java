@@ -23,8 +23,9 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.classic.util.MockInitialContext;
-import ch.qos.logback.classic.util.MockInitialContextFactory;
+import ch.qos.logback.core.testUtil.MockInitialContext;
+import ch.qos.logback.core.testUtil.MockInitialContextFactory;
+
 import org.slf4j.LoggerFactoryFriend;
 import org.slf4j.impl.StaticLoggerBinderFriend;
 

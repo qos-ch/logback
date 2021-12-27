@@ -29,4 +29,5 @@ public class CoreTestConstants {
     public static final String BASH_PATH_ON_LINUX = "bash";
 
     public static final String SLOW_JENKINS = "slowJenkins";
+    public static final String JAVA_NAMING_FACTORY_INITIAL = "java.naming.factory.initial";
 }
