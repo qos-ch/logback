@@ -12,7 +12,7 @@
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.testUtil;
-
+ 
 public class CoreTestConstants {
 
     public static final String TEST_SRC_PREFIX = "src/test/";
@@ -29,4 +29,5 @@ public class CoreTestConstants {
     public static final String BASH_PATH_ON_LINUX = "bash";
 
     public static final String SLOW_JENKINS = "slowJenkins";
+    public static final String JAVA_NAMING_FACTORY_INITIAL = "java.naming.factory.initial";
 }

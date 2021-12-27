@@ -24,9 +24,9 @@ import org.slf4j.LoggerFactoryFriend;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.classic.util.MockInitialContext;
-import ch.qos.logback.classic.util.MockInitialContextFactory;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.testUtil.MockInitialContext;
+import ch.qos.logback.core.testUtil.MockInitialContextFactory;
 
 @Ignore
 public class ContextJNDISelectorTest {
