@@ -156,7 +156,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
         LoginAuthenticator loginAuthenticator = null;
 
-        if (username != null && username.length() > 0) {
+        if (!OptionHelper.isEmpty(username)) {
             loginAuthenticator = new LoginAuthenticator(username, password);
             props.put("mail.smtp.auth", "true");
         }
@@ -543,7 +543,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         if (to == null || to.length() == 0) {
             throw new IllegalArgumentException("Null or empty <to> property");
         }
-        PatternLayoutBase plb = makeNewToPatternLayout(to.trim());
+        PatternLayoutBase<E> plb = makeNewToPatternLayout(to.trim());
         plb.setContext(context);
         plb.start();
         this.toPatternLayoutList.add(plb);
@@ -553,7 +553,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
     public List<String> getToAsListOfString() {
         List<String> toList = new ArrayList<String>();
-        for (PatternLayoutBase plb : toPatternLayoutList) {
+        for (PatternLayoutBase<E> plb : toPatternLayoutList) {
             toList.add(plb.getPattern());
         }
         return toList;
