@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import java.util.Properties;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
@@ -270,7 +269,17 @@ public class OptionHelper {
      * @return
      */
 	public static boolean isNullOrEmpty(String str) {
-		return ((str == null) || CoreConstants.EMPTY_STRING.equals(str.trim()));
+		return ((str == null) || str.trim().length() == 0);
+	}
+
+    /**
+     * Returns true if input string is not null and not empty.
+     * 
+     * @param str
+     * @return
+     */
+	public static boolean isNotNullNorEmpty(String str) {
+		return !isNullOrEmpty(str);
 	}
 
 }
