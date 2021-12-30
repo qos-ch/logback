@@ -36,6 +36,7 @@ import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.ImportModel;
 import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
@@ -86,6 +87,10 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
 	private void injectModelFilters(DefaultProcessor defaultProcessor) {
 		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
+		
+		
+		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { 
 				DefineModel.class, 
 				PropertyModel.class, 
@@ -109,6 +114,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
 
 		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+		for (Class<? extends Model> modelClass : importModelClasses)
+			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)

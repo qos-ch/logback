@@ -40,6 +40,8 @@ public class ReceiverAction extends Action {
             addError("Missing class name for receiver. Near [" + name + "] line " + getLineNumber(ic));
             inError = true;
             return;
+        } else {
+        	className = ic.getImport(className);
         }
 
         try {

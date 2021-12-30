@@ -33,7 +33,14 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
 		LoggerContextListenerModel lclModel = (LoggerContextListenerModel) model;
 
-		String className = intercon.getImport(lclModel.getClassName());
+		String className = lclModel.getClassName();
+		if(OptionHelper.isNullOrEmpty(className)) {
+			addError("Empty class name for LoggerContextListener");
+			inError = true;
+		} else {
+			className = intercon.getImport(className);
+		}
+		
 		
 		try {
 			lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class,

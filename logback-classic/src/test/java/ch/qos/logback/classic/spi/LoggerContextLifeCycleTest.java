@@ -41,6 +41,18 @@ public class LoggerContextLifeCycleTest {
 		ListContextListener lcl = (ListContextListener) listenerList.get(0);
 		//lcl.updateList.stream().forEach(System.out::println);
 		assertEquals(BasicContextListener.UpdateType.START, lcl.updateList.get(1));
-		
 	}
+	
+	@Test
+	public void smokeWithImports() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "spi/contextListenerWithImports.xml");
+		
+		List<LoggerContextListener> listenerList = loggerContext.getCopyOfListenerList();
+		assertEquals(1, listenerList.size());
+		
+		ListContextListener lcl = (ListContextListener) listenerList.get(0);
+		//lcl.updateList.stream().forEach(System.out::println);
+		assertEquals(BasicContextListener.UpdateType.START, lcl.updateList.get(1));
+	}
+
 }

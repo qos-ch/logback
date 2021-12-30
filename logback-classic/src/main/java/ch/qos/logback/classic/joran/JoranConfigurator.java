@@ -51,6 +51,7 @@ import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.ImportModel;
 import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
@@ -146,6 +147,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
 	private void injectModelFilters(DefaultProcessor defaultProcessor) {
 		@SuppressWarnings("unchecked")
+		Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
+		
+		@SuppressWarnings("unchecked")
 		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
 				DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
 
@@ -167,6 +171,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 		// MOTE: AppenderModelHandler is delayed to second phase
 
 		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+		for (Class<? extends Model> modelClass : importModelClasses)
+			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
 			fistPhaseDefintionFilter.allow(modelClass);
 		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
