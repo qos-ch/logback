@@ -49,6 +49,8 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 				addInfo("Assuming default evaluator class [" + defaultClassName + "]");
 				className = defaultClassName;
 			}
+		} else {
+			className = intercon.getImport(className);
 		}
 
 		String evaluatorName = intercon.subst(eem.getName());

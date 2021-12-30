@@ -111,13 +111,16 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 		String className = componentModel.getClassName();
 		// perform variable name substitution
-		className = interpretationContext.subst(className);
-
+		String substClassName = interpretationContext.subst(className);
+		
+		String fqcn = interpretationContext.getImport(substClassName);
+		
+		
 		Class<?> componentClass = null;
 		try {
 
-			if (!OptionHelper.isNullOrEmpty(className)) {
-				componentClass = Loader.loadClass(className, context);
+			if (!OptionHelper.isNullOrEmpty(fqcn)) {
+				componentClass = Loader.loadClass(fqcn, context);
 			} else {
 				// guess class name via implicit rules
 				PropertySetter parentBean = actionData.parentBean;
@@ -132,7 +135,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 				return;
 			}
 
-			if (OptionHelper.isNullOrEmpty(className)) {
+			if (OptionHelper.isNullOrEmpty(fqcn)) {
 				addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag()
 						+ "] property");
 			}
@@ -149,7 +152,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 		} catch (Exception oops) {
 			actionData.inError = true;
-			String msg = "Could not create component [" + componentModel.getTag() + "] of type [" + className + "]";
+			String msg = "Could not create component [" + componentModel.getTag() + "] of type [" + fqcn + "]";
 			addError(msg, oops);
 		}
 	}

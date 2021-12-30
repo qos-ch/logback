@@ -46,6 +46,8 @@ public class SequenceNumberGeneratorAction extends Action {
         if (OptionHelper.isNullOrEmpty(className)) {
             className = BasicSequenceNumberGenerator.class.getName();
             addInfo("Assuming className [" + className + "]");
+        } else {
+        	className = ic.getImport(className);
         }
 
         try {

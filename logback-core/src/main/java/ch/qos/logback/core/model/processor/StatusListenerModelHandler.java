@@ -34,6 +34,14 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
         
         StatusListenerModel slModel = (StatusListenerModel) model;
         
+        String className = slModel.getClassName();
+        if(OptionHelper.isNullOrEmpty(className)) {
+        	addWarn("Empty class name for StatusListener");
+        	inError = true;
+        	return;
+        } else {
+        	className = ic.getImport(className);
+        }
         try {
             statusListener = (StatusListener) OptionHelper.instantiateByClassName(slModel.getClassName(), StatusListener.class, context);
             effectivelyAdded = ic.getContext().getStatusManager().add(statusListener);

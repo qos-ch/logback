@@ -50,6 +50,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
+import ch.qos.logback.core.util.StatusPrinter;
 
 public class JoranConfiguratorTest {
 
@@ -82,6 +83,22 @@ public class JoranConfiguratorTest {
 		assertEquals(msg, le.getMessage());
 	}
 
+	@Test
+	public void simpleListWithImports() throws JoranException {
+		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleListWithImports.xml");
+		StatusPrinter.print(loggerContext);
+		Logger logger = loggerContext.getLogger(this.getClass().getName());
+		Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+		ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+		assertNotNull(listAppender);
+		assertEquals(0, listAppender.list.size());
+		String msg = "hello world";
+		logger.debug(msg);
+		assertEquals(1, listAppender.list.size());
+		ILoggingEvent le = (ILoggingEvent) listAppender.list.get(0);
+		assertEquals(msg, le.getMessage());
+	}
+	
 	@Test
 	public void level() throws JoranException {
 		configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleLevel.xml");

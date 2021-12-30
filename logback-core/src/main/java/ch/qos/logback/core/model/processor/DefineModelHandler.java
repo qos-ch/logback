@@ -61,6 +61,8 @@ public class DefineModelHandler extends ModelHandlerBase {
         if (OptionHelper.isNullOrEmpty(className)) {
             addError("Missing class name for property definer. Near [" + model.getTag() + "] line " + model.getLineNumber());
             inError = true;
+        } else {
+        	className = interpretationContext.getImport(className);
         }
 
         if (inError)

@@ -48,7 +48,8 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 
 	Map<String, Object> objectMap;
 	Map<String, String> propertiesMap;
-
+	Map<String, String> importMap;
+	
 	final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
 	final List<String> startedDependencies = new ArrayList<>();
 	
@@ -65,6 +66,7 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 
 		objectMap = new HashMap<>(5);
 		propertiesMap = new HashMap<>(5);
+		importMap = new HashMap<>(5); 
 	}
 
 	public BeanDescriptionCache getBeanDescriptionCache() {
@@ -276,6 +278,35 @@ public class InterpretationContext extends ContextAwareBase implements PropertyC
 		return startedDependencies.contains(name);
 	}
 
-	
+	/**
+	 * Add an import to the importMao
+	 * @param stem the class to import
+	 * @param fqcn the fully qualified name of the class
+	 * 
+	 * @since 1.3
+	 */
+	public void addImport(String stem, String fqcn) {
+		importMap.put(stem, fqcn);
+	}
+
+	/**
+	 * Given a stem, get the fully qualified name of the class corresponding to the stem. 
+	 * For unknown stems, returns the stem as is. If stem is null, null is returned.
+	 * 
+	 * @param stem may be null
+	 * @return fully qualified name of the class corresponding to the stem. For unknown stems, returns the stem as is. 
+	 * If stem is null, null is returned.
+	 * @since 1.3
+	 */
+	public String getImport(String stem) {
+		if(stem == null)
+			return null;
+		
+		String result = importMap.get(stem);
+		if(result == null)
+			return stem;
+		else 
+			return result;
+	}
 
 }

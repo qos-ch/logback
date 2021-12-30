@@ -67,7 +67,8 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		
 		addInfo("Processing appender named ["+appenderName+"]");
 		
-		String className = appenderModel.getClassName();
+		String originalClassName = appenderModel.getClassName();
+		String className = interpContext.getImport(originalClassName);
 		
 		try {
 			addInfo("About to instantiate appender of type [" + className + "]");

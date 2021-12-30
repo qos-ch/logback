@@ -31,9 +31,10 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 
 	@Override
 	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
-		LoggerContextListenerModel LoggerContextListenerModel = (LoggerContextListenerModel) model;
+		LoggerContextListenerModel lclModel = (LoggerContextListenerModel) model;
 
-		String className = LoggerContextListenerModel.getClassName();
+		String className = intercon.getImport(lclModel.getClassName());
+		
 		try {
 			lcl = (LoggerContextListener) OptionHelper.instantiateByClassName(className, LoggerContextListener.class,
 					context);

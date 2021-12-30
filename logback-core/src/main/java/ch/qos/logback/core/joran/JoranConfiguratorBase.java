@@ -25,6 +25,7 @@ import ch.qos.logback.core.joran.action.ConversionRuleAction;
 import ch.qos.logback.core.joran.action.DefinePropertyAction;
 import ch.qos.logback.core.joran.action.EventEvaluatorAction;
 import ch.qos.logback.core.joran.action.ImplicitModelAction;
+import ch.qos.logback.core.joran.action.ImportAction;
 import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.PropertyAction;
@@ -38,6 +39,7 @@ import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.ImportModel;
 import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
@@ -47,6 +49,7 @@ import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.ImportModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
@@ -74,6 +77,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
 
         // is "configuration/variable" referenced in the docs?
         rs.addRule(new ElementSelector("configuration/variable"), new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/import"),   new ImportAction());
         rs.addRule(new ElementSelector("configuration/property"), new PropertyAction());
 
         rs.addRule(new ElementSelector("configuration/substitutionProperty"), new PropertyAction());
@@ -132,6 +136,8 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+        defaultProcessor.addHandler(ImportModel.class, ImportModelHandler::makeInstance);
+        
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);
         defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
         defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);

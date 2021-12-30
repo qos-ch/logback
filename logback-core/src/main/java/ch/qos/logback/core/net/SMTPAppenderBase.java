@@ -156,7 +156,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
         LoginAuthenticator loginAuthenticator = null;
 
-        if (OptionHelper.isNotNullNorEmpty(username)) {
+        if (!OptionHelper.isNullOrEmpty(username)) {
             loginAuthenticator = new LoginAuthenticator(username, password);
             props.put("mail.smtp.auth", "true");
         }

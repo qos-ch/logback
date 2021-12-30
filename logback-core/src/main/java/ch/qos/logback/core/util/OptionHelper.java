@@ -272,14 +272,5 @@ public class OptionHelper {
 		return ((str == null) || str.trim().length() == 0);
 	}
 
-    /**
-     * Returns true if input string is not null and not empty.
-     * 
-     * @param str
-     * @return
-     */
-	public static boolean isNotNullNorEmpty(String str) {
-		return !isNullOrEmpty(str);
-	}
 
 }
