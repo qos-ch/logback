@@ -25,6 +25,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -138,6 +140,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     long generateDailyRolloverAndCheckFileCount(ConfigParameters cp) {
         long millisAtEnd = generateDailyRollover(cp);
         int periodBarriersCrossed = computeCrossedDayBarriers(currentTime, millisAtEnd);
+        StatusPrinter.print(context);
         checkFileCount(expectedCountWithoutFoldersWithInactivity(cp.maxHistory, periodBarriersCrossed, cp.startInactivity + cp.numInactivityPeriods));
         return millisAtEnd;
     }
@@ -163,12 +166,17 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         
         Instant startInstant = Instant.ofEpochMilli(currentTime);
         ZonedDateTime startZDT = startInstant.atZone(dateTimeZone);
-
+     // truncate to beginning of day as DAYS.between computes fully elapsed days
+        ZonedDateTime startZDT0 = startZDT.truncatedTo(ChronoUnit.DAYS);
+        
         Instant endInstant = Instant.ofEpochMilli(millisAtEnd);
         ZonedDateTime endZDT = endInstant.atZone(dateTimeZone);
-        
-        Period period = Period.between(startZDT.toLocalDate(), endZDT.toLocalDate());
-        return   period.getDays();
+        // truncate to beginning of day as DAYS.between computes fully elapsed days
+        ZonedDateTime endZDT0 = endZDT.truncatedTo(ChronoUnit.DAYS);
+
+        // computes fully elapsed days
+        long dayCount = ChronoUnit.DAYS.between(startZDT0, endZDT0);
+        return (int) dayCount;
     }
 
     @Test
