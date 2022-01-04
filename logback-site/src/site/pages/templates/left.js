@@ -33,6 +33,6 @@ document.write('</div>');
 //document.write('    </a>');
 //document.write('</div>');
 
-document.write('<p>&nbsp;</p>');
-document.write('<div class="pub"><img src="https://travis-ci.com/qos-ch-ro/logback.svg?branch=master"/></div>');
+//document.write('<p>&nbsp;</p>');
+//document.write('<div class="pub"><img src="https://travis-ci.com/qos-ch-ro/logback.svg?branch=master"/></div>');
 
