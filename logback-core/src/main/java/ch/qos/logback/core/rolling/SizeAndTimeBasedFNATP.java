@@ -180,4 +180,8 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         this.maxFileSize = aMaxFileSize;
     }
 
+    public FileSize getMaxFileSize() {
+        return maxFileSize;
+    }
+
 }
