@@ -46,7 +46,7 @@ public class InterruptUtil extends ContextAwareBase {
             try {
                 Thread.currentThread().interrupt();
             } catch (SecurityException se) {
-                addError("Failed to intrreupt current thread", se);
+                addError("Failed to interrupt current thread", se);
             }
         }
     }
