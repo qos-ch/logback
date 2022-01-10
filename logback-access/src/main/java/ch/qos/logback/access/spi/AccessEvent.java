@@ -69,6 +69,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     String responseContent;
     String sessionID;
     long elapsedTime;
+    long firstByteElapsedTime;
 
     Map<String, String> requestHeaderMap;
     Map<String, String[]> requestParameterMap;
@@ -486,6 +487,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
             return -1;
         }
         return getTimeStamp() - serverAdapter.getRequestTimestamp();
+    }
+
+    public long getFirstByteElapsedTime() {
+        return serverAdapter.getCommitTime();
     }
 
     public String getRequestContent() {

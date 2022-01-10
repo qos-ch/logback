@@ -18,6 +18,7 @@ import ch.qos.logback.access.pattern.DateConverter;
 import ch.qos.logback.access.pattern.ElapsedSecondsConverter;
 import ch.qos.logback.access.pattern.ElapsedTimeConverter;
 import ch.qos.logback.access.pattern.EnsureLineSeparation;
+import ch.qos.logback.access.pattern.FirstByteElapsedTimeConverter;
 import ch.qos.logback.access.pattern.FullRequestConverter;
 import ch.qos.logback.access.pattern.FullResponseConverter;
 import ch.qos.logback.access.pattern.LineSeparatorConverter;
@@ -156,7 +157,10 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
         defaultConverterMap.put("elapsedSeconds", ElapsedSecondsConverter.class.getName());
         defaultConverterMap.put("T", ElapsedSecondsConverter.class.getName());
-        
+
+        defaultConverterMap.put("F", FirstByteElapsedTimeConverter.class.getName());
+        defaultConverterMap.put("firstByteElapsedTime", FirstByteElapsedTimeConverter.class.getName());
+
         defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
 
         defaultConverterMap.put("black", BlackCompositeConverter.class.getName());

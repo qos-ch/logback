@@ -191,6 +191,14 @@ public class ConverterTest {
         assertEquals(Integer.toString(event.getServerAdapter().getStatusCode()), result);
     }
 
+    @Test
+    public void testFirstByteElapsedTimeConverter() {
+        FirstByteElapsedTimeConverter converter = new FirstByteElapsedTimeConverter();
+        converter.start();
+        String result = converter.convert(event);
+        assertEquals(Long.toString(event.getServerAdapter().getCommitTime()), result);
+    }
+
     private IAccessEvent createEvent() {
         DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
         return new AccessEvent(accessContext, request, response, dummyAdapter);
