@@ -15,8 +15,6 @@ package ch.qos.logback.core.util;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 /**
  * Static utility method for {@link Closeable} objects.
@@ -27,42 +25,13 @@ public class CloseUtil {
 
     /**
      * Closes a closeable while suppressing any {@code IOException} that occurs.
-     * @param closeable the socket to close
+     * @param closeable the closeable to close
      */
     public static void closeQuietly(Closeable closeable) {
         if (closeable == null)
             return;
         try {
             closeable.close();
-        } catch (IOException ex) {
-            assert true; // avoid an empty catch
-        }
-    }
-
-    /**
-     * Closes a socket while suppressing any {@code IOException} that occurs.
-     * @param socket the socket to close
-     */
-    public static void closeQuietly(Socket socket) {
-        if (socket == null)
-            return;
-        try {
-            socket.close();
-        } catch (IOException ex) {
-            assert true; // avoid an empty catch
-        }
-    }
-
-    /**
-     * Closes a server socket while suppressing any {@code IOException} that 
-     * occurs.
-     * @param serverSocket the socket to close
-     */
-    public static void closeQuietly(ServerSocket serverSocket) {
-        if (serverSocket == null)
-            return;
-        try {
-            serverSocket.close();
         } catch (IOException ex) {
             assert true; // avoid an empty catch
         }
