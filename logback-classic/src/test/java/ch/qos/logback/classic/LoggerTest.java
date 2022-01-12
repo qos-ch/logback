@@ -20,13 +20,17 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
+import java.util.Map;
 
-import org.junit.Test;
-import org.slf4j.LoggerFactory;
-
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.Status;
+import org.junit.Test;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+import org.slf4j.event.KeyValuePair;
 
 public class LoggerTest {
 
@@ -222,4 +226,102 @@ public class LoggerTest {
         assertEquals(root.getEffectiveLevel(), child.getEffectiveLevel());
     }
 
+    @Test
+    public void setLoggingEventTransformer() {
+        listAppender.start();
+        root.addAppender(listAppender);
+        loggerTest.addAppender(listAppender);
+        root.setLoggingEventTransformer(event -> new ILoggingEvent() {
+            @Override
+            public String getThreadName() {
+                return event.getThreadName();
+            }
+
+            @Override
+            public Level getLevel() {
+                return event.getLevel();
+            }
+
+            @Override
+            public String getMessage() {
+                return event.getMessage();
+            }
+
+            @Override
+            public Object[] getArgumentArray() {
+                return event.getArgumentArray();
+            }
+
+            @Override
+            public String getFormattedMessage() {
+                return event.getFormattedMessage().replace("sensitive", "***");
+            }
+
+            @Override
+            public String getLoggerName() {
+                return event.getLoggerName();
+            }
+
+            @Override
+            public LoggerContextVO getLoggerContextVO() {
+                return event.getLoggerContextVO();
+            }
+
+            @Override
+            public IThrowableProxy getThrowableProxy() {
+                return event.getThrowableProxy();
+            }
+
+            @Override
+            public StackTraceElement[] getCallerData() {
+                return event.getCallerData();
+            }
+
+            @Override
+            public boolean hasCallerData() {
+                return event.hasCallerData();
+            }
+
+            @Override
+            public List<Marker> getMarkerList() {
+                return event.getMarkerList();
+            }
+
+            @Override
+            public Map<String, String> getMDCPropertyMap() {
+                return event.getMDCPropertyMap();
+            }
+
+            @Override
+            public Map<String, String> getMdc() {
+                return event.getMdc();
+            }
+
+            @Override
+            public long getTimeStamp() {
+                return event.getTimeStamp();
+            }
+
+            @Override
+            public long getSequenceNumber() {
+                return event.getSequenceNumber();
+            }
+
+            @Override
+            public List<KeyValuePair> getKeyValuePairs() {
+                return event.getKeyValuePairs();
+            }
+
+            @Override
+            public void prepareForDeferredProcessing() {
+                event.prepareForDeferredProcessing();
+            }
+        });
+
+        root.info("foo and sensitive");
+        assertEquals(1, listAppender.list.size());
+        assertEquals("foo and ***", listAppender.list.get(0).getFormattedMessage());
+
+        root.setLoggingEventTransformer(null);
+    }
 }
