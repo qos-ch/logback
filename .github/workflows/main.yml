@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/software-installed-on-github-hosted-runners
+
+concurrency:
+  # On master/release, we don't want any jobs cancelled so the sha is used to name the group
+  # On PR branches, we cancel the job if new commits are pushed
+  # More info: https://stackoverflow.com/a/68422069/253468
+  group: ${{ (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+  matrix_prep:
+    name: Matrix Preparation
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    env:
+      # Ask matrix.js to produce 7 jobs
+      MATRIX_JOBS: 7
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 50
+      - id: set-matrix
+        run: |
+          node .github/workflows/matrix.js
+
+  Test:
+    needs: matrix_prep
+    name: '${{ matrix.name }}'
+    runs-on: ${{ matrix.os }}
+    env:
+      TZ: ${{ matrix.tz }}
+    strategy:
+      matrix: ${{fromJson(needs.matrix_prep.outputs.matrix)}}
+      fail-fast: false
+      max-parallel: 4
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 50
+    - name: Set up Java ${{ matrix.java_version }}, ${{ matrix.java_distribution }}
+      uses: actions/setup-java@v2
+      with:
+        java-version: ${{ matrix.java_version }}
+        distribution: ${{ matrix.java_distribution }}
+        architecture: x64
+    - name: Test
+      run: mvn -B --no-transfer-progress install
+      env:
+        _JAVA_OPTIONS: ${{ matrix.testExtraJvmArgs }}
