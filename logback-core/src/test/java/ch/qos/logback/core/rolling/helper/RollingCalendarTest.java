@@ -176,24 +176,18 @@ public class RollingCalendarTest {
 
         // weekly
         checkCollisionFreeness("yyyy-MM-WW", true);
-        dumpCurrentLocale(Locale.getDefault());
         checkCollisionFreeness("yyyy-WW", false);
         checkCollisionFreeness("yyyy-ww", true);
         checkCollisionFreeness("ww", false);
     }
 
-    private void dumpCurrentLocale(Locale locale) {
-       System.out.println("***Current default locale is "+locale);
-        
-    }
-
     private void checkCollisionFreeness(String pattern, boolean expected) {
         RollingCalendar rc = new RollingCalendar(pattern);
-        if (expected) {
-            assertTrue(rc.isCollisionFree());
-        } else {
-            assertFalse(rc.isCollisionFree());
-        }
+        assertEquals(
+            "new RollingCalendar(" + pattern + ").isCollisionFree(), default locale=" + Locale.getDefault(),
+            expected,
+            rc.isCollisionFree()
+        );
     }
 
     @Test
