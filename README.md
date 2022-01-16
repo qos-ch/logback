@@ -1,4 +1,9 @@
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ch.qos.logback/logback-core/badge.svg?subject=stable&version=1.2*)](https://maven-badges.herokuapp.com/maven-central/ch.qos.logback/logback-core)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ch.qos.logback/logback-core/badge.svg?subject=experimental&version=1.3*)](https://maven-badges.herokuapp.com/maven-central/ch.qos.logback/logback-core)
+[![GitHub CI](https://github.com/qos-ch/logback/workflows/CI/badge.svg?branch=master)](https://github.com/qos-ch/logback/actions?query=branch%3Amaster)
+[![Travis CI](https://travis-ci.org/qos-ch/slf4j.png)](https://travis-ci.org/qos-ch/slf4j)
+
 # About logback
 
 Thank you for your interest in logback, the reliable, generic, fast
@@ -53,7 +58,3 @@ looks forward to your contribution. Please follow this process:
 
 6. Submit a pull request to logback from from your commit page on
    github.
-
-
-# Build Status
-[![Build Status](https://travis-ci.org/qos-ch/slf4j.png)](https://travis-ci.org/qos-ch/slf4j)
