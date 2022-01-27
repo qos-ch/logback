@@ -127,7 +127,6 @@ public class LoggingEvent implements ILoggingEvent {
 
         this.message = message;
         this.argumentArray = argArray;
-        //List<Object> l =		Arrays.asList(argArray);
         
     	Instant instant = Clock.systemUTC().instant();
         initTmestampFields(instant);

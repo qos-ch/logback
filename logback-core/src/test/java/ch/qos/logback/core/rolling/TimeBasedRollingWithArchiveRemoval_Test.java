@@ -19,14 +19,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -52,7 +48,6 @@ import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.FixedRateInvocationGate;
-import ch.qos.logback.core.util.StatusPrinter;
 
 public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRollingTests {
     String MONTHLY_DATE_PATTERN = "yyyy-MM";
@@ -140,7 +135,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     long generateDailyRolloverAndCheckFileCount(ConfigParameters cp) {
         long millisAtEnd = generateDailyRollover(cp);
         int periodBarriersCrossed = computeCrossedDayBarriers(currentTime, millisAtEnd);
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         checkFileCount(expectedCountWithoutFoldersWithInactivity(cp.maxHistory, periodBarriersCrossed, cp.startInactivity + cp.numInactivityPeriods));
         return millisAtEnd;
     }
@@ -205,7 +200,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         final int verySmallCapSize = 1;
         cp.maxHistory(5).simulatedNumberOfPeriods(3).sizeCap(verySmallCapSize);
         generateDailyRollover(cp);
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         checkFileCountAtMost(1);
        
     }
