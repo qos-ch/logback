@@ -47,6 +47,8 @@
   </modules>
 
   <properties>
+    <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
+    <project.build.outputTimestamp>2022-01-27T00:00:00Z</project.build.outputTimestamp>    
     <latest.stable.version>1.2.10</latest.stable.version>
     <jdk.version>8</jdk.version>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
@@ -77,12 +79,12 @@
     <maven-source-plugin.version>3.2.0</maven-source-plugin.version>
     <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     <license-maven-plugin.version>3.0</license-maven-plugin.version>
-    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+    <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
     <maven-jxr-plugin.version>3.1.1</maven-jxr-plugin.version>
     <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
-    <maven-bundle-plugin.version>5.1.2</maven-bundle-plugin.version>
+    <maven-bundle-plugin.version>5.1.4</maven-bundle-plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
   </properties>
 
@@ -296,6 +298,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
+          <configuration>
+            <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
