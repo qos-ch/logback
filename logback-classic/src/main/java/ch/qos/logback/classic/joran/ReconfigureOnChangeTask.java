@@ -141,11 +141,11 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
             try {
                 lc.reset();
                 ConfigurationWatchListUtil.registerConfigurationWatchList(context, newCWL);
-                joranConfigurator.playEventsAndProcessModel(failsafeEvents);
+                joranConfigurator.buildAndProcessModel(failsafeEvents);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
-                joranConfigurator.registerSafeConfiguration(eventList);
+                joranConfigurator.registerSafeConfiguration(failsafeEvents);
                 
-                addInfo("after registerSafeConfiguration: " + eventList);
+                addInfo("after registerSafeConfiguration: " + failsafeEvents);
             } catch (JoranException e) {
                 addError("Unexpected exception thrown by a configuration considered safe.", e);
             }

@@ -1,3 +1,16 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
@@ -5,7 +18,6 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.joran.action.TimestampAction;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.util.CachingDateFormatter;
@@ -19,7 +31,7 @@ public class TimestampModelHandler  extends ModelHandlerBase {
         super(context);
     }
     
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new TimestampModelHandler(context);
 	}	
 		
@@ -30,7 +42,7 @@ public class TimestampModelHandler  extends ModelHandlerBase {
     }
     
     @Override
-    public void handle(InterpretationContext interpretationContext, Model model) {
+    public void handle(ModelInterpretationContext interpretationContext, Model model) {
         TimestampModel timestampModel = (TimestampModel) model;
         String keyStr = timestampModel.getKey();
         if (OptionHelper.isNullOrEmpty(keyStr)) {

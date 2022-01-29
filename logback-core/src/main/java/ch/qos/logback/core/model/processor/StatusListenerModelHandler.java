@@ -1,7 +1,7 @@
 package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.spi.ContextAware;
@@ -20,7 +20,7 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
         super(context);
     }
     
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new StatusListenerModelHandler(context);
 	}	
     
@@ -30,7 +30,7 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
     }
 
     @Override
-    public void handle(InterpretationContext ic, Model model) throws ModelHandlerException {
+    public void handle(ModelInterpretationContext ic, Model model) throws ModelHandlerException {
         
         StatusListenerModel slModel = (StatusListenerModel) model;
         
@@ -60,7 +60,7 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
     }
     
     @Override
-    public void postHandle(InterpretationContext ic, Model m) {
+    public void postHandle(ModelInterpretationContext mic, Model m) {
         if (inError) {
             return;
         }
@@ -68,11 +68,11 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
         if (isEffectivelyAdded() && statusListener instanceof LifeCycle) {
             ((LifeCycle) statusListener).start();
         }
-        Object o = ic.peekObject();
+        Object o = mic.peekObject();
         if (o != statusListener) {
             addWarn("The object at the of the stack is not the statusListener pushed earlier.");
         } else {
-            ic.popObject();
+            mic.popObject();
         }
     }
     

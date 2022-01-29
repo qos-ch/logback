@@ -11,22 +11,12 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.model;
+package ch.qos.logback.classic.model;
 
-public class NamedModel extends Model implements INamedModel {
+import ch.qos.logback.core.model.ComponentModel;
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 3549881638769570183L;
-	
-	String name;
+public class ReceiverModel extends ComponentModel {
 
-	public String getName() {
-		return name;
-	}
+	private static final long serialVersionUID = -3161852321892056675L;
 
-	public void setName(String name) {
-		this.name = name;
-	}
 }

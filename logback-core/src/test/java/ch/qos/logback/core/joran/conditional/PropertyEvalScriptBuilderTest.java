@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
-import static org.junit.Assert.*;
-
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.Before;
@@ -23,12 +23,13 @@ import org.junit.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class PropertyEvalScriptBuilderTest {
 
     Context context = new ContextBase();
-    InterpretationContext localPropContainer = new InterpretationContext(context, null);
+    ModelInterpretationContext localPropContainer = new ModelInterpretationContext(context);
     PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(localPropContainer);
     int diff = RandomUtil.getPositiveInt();
 

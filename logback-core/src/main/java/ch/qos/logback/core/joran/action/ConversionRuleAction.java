@@ -20,7 +20,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class ConversionRuleAction extends Action {
@@ -31,7 +31,7 @@ public class ConversionRuleAction extends Action {
      *
      */
     @SuppressWarnings("unchecked")
-    public void begin(InterpretationContext ec, String localName, Attributes attributes) {
+    public void begin(SaxEventInterpretationContext ec, String localName, Attributes attributes) {
         // Let us forget about previous errors (in this object)
         inError = false;
 
@@ -75,9 +75,9 @@ public class ConversionRuleAction extends Action {
      * Once the children elements are also parsed, now is the time to activate
      * the appender options.
      */
-    public void end(InterpretationContext ec, String n) {
+    public void end(SaxEventInterpretationContext ec, String n) {
     }
 
-    public void finish(InterpretationContext ec) {
+    public void finish(SaxEventInterpretationContext ec) {
     }
 }

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelFactoryMethod;
@@ -20,14 +20,14 @@ public class DefaultProcessor extends ContextAwareBase {
 		int traverse(Model model, ModelFiler modelFiler);
 	}
 
-	final InterpretationContext interpretationContext;
+	final ModelInterpretationContext interpretationContext;
 	final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
 	final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
 
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
 	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
 
-	public DefaultProcessor(Context context, InterpretationContext interpretationContext) {
+	public DefaultProcessor(Context context, ModelInterpretationContext interpretationContext) {
 		this.setContext(context);
 		this.interpretationContext = interpretationContext;
 	}

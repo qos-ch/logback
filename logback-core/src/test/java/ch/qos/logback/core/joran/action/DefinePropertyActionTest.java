@@ -28,7 +28,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.ImplicitModel;
@@ -36,6 +36,7 @@ import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -68,8 +69,8 @@ public class DefinePropertyActionTest {
         
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+            protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
+                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
@@ -87,8 +88,8 @@ public class DefinePropertyActionTest {
     @Test
     public void good() throws JoranException {
         simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + GOOD_XML);
-        InterpretationContext ic = simpleConfigurator.getInterpreter().getInterpretationContext();
-        String inContextFoo = ic.getProperty("foo");
+        ModelInterpretationContext mic = simpleConfigurator.getModelInterpretationContext();
+        String inContextFoo = mic.getProperty("foo");
         assertEquals("monster", inContextFoo);
     }
 
@@ -104,7 +105,7 @@ public class DefinePropertyActionTest {
         assertNull(inContextFoo);
         // check context errors
       
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\] near line 2");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\]");
     }
 
     @Test
@@ -114,7 +115,7 @@ public class DefinePropertyActionTest {
        
         StatusPrinter.print(context);
         assertNull(inContextFoo);
-        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\] near line 2");
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\]");
     }
 
     @Test

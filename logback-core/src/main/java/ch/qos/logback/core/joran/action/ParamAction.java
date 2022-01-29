@@ -16,14 +16,14 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
 
 public class ParamAction extends BaseModelAction {
 
 	@Override
-	protected boolean validPreconditions(InterpretationContext intercon, String name,
+	protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name,
 			Attributes attributes) {
 		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
 		pv.validateNameAttribute();
@@ -37,7 +37,7 @@ public class ParamAction extends BaseModelAction {
 	}
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
 		ParamModel paramModel = new ParamModel();
 		paramModel.setName(attributes.getValue(NAME_ATTRIBUTE));
 		paramModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));

@@ -10,10 +10,11 @@ import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
@@ -29,7 +30,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
 		return new ConfigurationModelHandler(context);
 	}	
 		
@@ -38,7 +39,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) {
+	public void handle(ModelInterpretationContext mic, Model model) {
 
 		ConfigurationModel configurationModel = (ConfigurationModel) model;
 
@@ -48,7 +49,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 		// by the use case: the admin trying to chase rogue config file
 		String debugAttrib = getSystemProperty(DEBUG_SYSTEM_PROPERTY_KEY);
 		if (debugAttrib == null) {
-			debugAttrib = intercon.subst(configurationModel.getDebugStr());
+			debugAttrib = mic.subst(configurationModel.getDebugStr());
 		}
 
 		if (!(OptionHelper.isNullOrEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
@@ -56,10 +57,10 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 			StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
 		}
 
-		processScanAttrib(intercon, configurationModel);
+		processScanAttrib(mic, configurationModel);
 
 		LoggerContext lc = (LoggerContext) context;
-		boolean packagingData = OptionHelper.toBoolean(intercon.subst(configurationModel.getPackagingDataStr()),
+		boolean packagingData = OptionHelper.toBoolean(mic.subst(configurationModel.getPackagingDataStr()),
 				LoggerContext.DEFAULT_PACKAGING_DATA);
 		lc.setPackagingDataEnabled(packagingData);
 
@@ -79,8 +80,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 		}
 	}
 
-	void processScanAttrib(InterpretationContext ic, ConfigurationModel configurationModel) {
-		String scanStr = ic.subst(configurationModel.getScanStr());
+	void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
+		String scanStr = mic.subst(configurationModel.getScanStr());
 		if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
 
 			ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
@@ -94,7 +95,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
 			context.putObject(CoreConstants.RECONFIGURE_ON_CHANGE_TASK, rocTask);
 
-			String scanPeriodStr = ic.subst(configurationModel.getScanPeriodStr());
+			String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
 			Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
 
 			addInfo("Will scan for changes in [" + mainURL + "] ");

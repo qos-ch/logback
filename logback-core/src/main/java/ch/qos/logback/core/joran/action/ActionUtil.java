@@ -15,7 +15,8 @@ package ch.qos.logback.core.joran.action;
 
 import java.util.Properties;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -39,7 +40,21 @@ public class ActionUtil {
         return Scope.LOCAL;
     }
 
-    static public void setProperty(InterpretationContext ic, String key, String value, Scope scope) {
+//    static public void setProperty(SaxEventInterpretationContext ic, String key, String value, Scope scope) {
+//        switch (scope) {
+//        case LOCAL:
+//            ic.addSubstitutionProperty(key, value);
+//            break;
+//        case CONTEXT:
+//            ic.getContext().putProperty(key, value);
+//            break;
+//        case SYSTEM:
+//            OptionHelper.setSystemProperty(ic, key, value);
+//        }
+//    }
+
+    
+    static public void setProperty(ModelInterpretationContext ic, String key, String value, Scope scope) {
         switch (scope) {
         case LOCAL:
             ic.addSubstitutionProperty(key, value);
@@ -52,22 +67,22 @@ public class ActionUtil {
         }
     }
 
-    /**
-     * Add all the properties found in the argument named 'props' to an
-     * InterpretationContext.
-     */
-    static public void setProperties(InterpretationContext ic, Properties props, Scope scope) {
-        switch (scope) {
-        case LOCAL:
-            ic.addSubstitutionProperties(props);
-            break;
-        case CONTEXT:
-            ContextUtil cu = new ContextUtil(ic.getContext());
-            cu.addProperties(props);
-            break;
-        case SYSTEM:
-            OptionHelper.setSystemProperties(ic, props);
-        }
-    }
+//    /**
+//     * Add all the properties found in the argument named 'props' to an
+//     * InterpretationContext.
+//     */
+//    static public void setProperties(SaxEventInterpretationContext ic, Properties props, Scope scope) {
+//        switch (scope) {
+//        case LOCAL:
+//            ic.addSubstitutionProperties(props);
+//            break;
+//        case CONTEXT:
+//            ContextUtil cu = new ContextUtil(ic.getContext());
+//            cu.addProperties(props);
+//            break;
+//        case SYSTEM:
+//            OptionHelper.setSystemProperties(ic, props);
+//        }
+//    }
 
 }

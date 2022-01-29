@@ -3,7 +3,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.OptionHelper;
@@ -11,11 +11,11 @@ import ch.qos.logback.core.util.OptionHelper;
 public class PreconditionValidator extends ContextAwareBase {
 
 	boolean valid = true;
-	InterpretationContext intercon;
+	SaxEventInterpretationContext intercon;
 	Attributes attributes;
 	String tag;
 
-	public PreconditionValidator(ContextAware origin, InterpretationContext intercon, String name, Attributes attributes) {
+	public PreconditionValidator(ContextAware origin, SaxEventInterpretationContext intercon, String name, Attributes attributes) {
 		super(origin);
 		this.setContext(origin.getContext());
 		this.intercon = intercon;

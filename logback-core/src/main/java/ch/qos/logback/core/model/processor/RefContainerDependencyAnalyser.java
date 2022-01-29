@@ -1,7 +1,7 @@
 package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public class RefContainerDependencyAnalyser extends ModelHandlerBase {
@@ -27,12 +27,12 @@ public class RefContainerDependencyAnalyser extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 		intercon.pushModel(model);
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void postHandle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 		Model poppedModel = intercon.popModel();
 		if (model != poppedModel) {
 			addError("Popped model [" + poppedModel + "] different than expected [" + model + "]");

@@ -1,10 +1,11 @@
 package ch.qos.logback.core.model;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 public interface ModelFactoryMethod {
 
-	public ModelHandlerBase make(Context context, InterpretationContext ic);
+	public ModelHandlerBase make(Context context, ModelInterpretationContext ic);
 }

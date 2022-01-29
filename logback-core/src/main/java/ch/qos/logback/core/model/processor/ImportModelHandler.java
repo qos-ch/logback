@@ -2,7 +2,7 @@ package ch.qos.logback.core.model.processor;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.ImportModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.util.OptionHelper;
@@ -13,7 +13,7 @@ public class ImportModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new ImportModelHandler(context);
 	}	
 	
@@ -24,7 +24,7 @@ public class ImportModelHandler extends ModelHandlerBase {
 
     
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 		ImportModel importModel = (ImportModel) model;
 		
 		String className = importModel.getClassName();

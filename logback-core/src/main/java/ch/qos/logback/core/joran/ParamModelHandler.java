@@ -1,13 +1,14 @@
 package ch.qos.logback.core.joran;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 public class ParamModelHandler extends ModelHandlerBase {
 
@@ -18,7 +19,7 @@ public class ParamModelHandler extends ModelHandlerBase {
 		this.beanDescriptionCache = beanDescriptionCache;
 	}
 	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new ParamModelHandler(context, ic.getBeanDescriptionCache());
 	}
 
@@ -28,7 +29,7 @@ public class ParamModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 
 		ParamModel paramModel = (ParamModel) model;
 

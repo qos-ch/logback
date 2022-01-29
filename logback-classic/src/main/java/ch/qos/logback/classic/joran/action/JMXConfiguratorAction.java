@@ -25,7 +25,7 @@ import ch.qos.logback.classic.jmx.JMXConfigurator;
 import ch.qos.logback.classic.jmx.MBeanUtil;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class JMXConfiguratorAction extends Action {
@@ -35,7 +35,7 @@ public class JMXConfiguratorAction extends Action {
     static final char JMX_NAME_SEPARATOR = ',';
 
     @Override
-    public void begin(InterpretationContext ec, String name, Attributes attributes) throws ActionException {
+    public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) throws ActionException {
         addInfo("begin");
 
         String contextName = context.getName();
@@ -75,7 +75,7 @@ public class JMXConfiguratorAction extends Action {
     }
 
     @Override
-    public void end(InterpretationContext ec, String name) throws ActionException {
+    public void end(SaxEventInterpretationContext ec, String name) throws ActionException {
 
     }
 

@@ -20,7 +20,7 @@ import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.action.BaseModelAction;
 import ch.qos.logback.core.joran.action.PreconditionValidator;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 /**
@@ -36,7 +36,7 @@ public class LevelAction extends BaseModelAction {
 	
 
 	@Override
-	protected boolean validPreconditions(InterpretationContext interpcont, String name,
+	protected boolean validPreconditions(SaxEventInterpretationContext interpcont, String name,
 			Attributes attributes) {
 		PreconditionValidator pv = new PreconditionValidator(this, interpcont, name, attributes);
 		pv.validateValueAttribute();
@@ -46,7 +46,7 @@ public class LevelAction extends BaseModelAction {
 	}
 	
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
 		LevelModel lm = new LevelModel();
 		String value = attributes.getValue(JoranConstants.VALUE_ATTR);
 		lm.setValue(value);

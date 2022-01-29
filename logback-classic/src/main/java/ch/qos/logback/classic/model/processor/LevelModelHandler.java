@@ -7,10 +7,11 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.model.LevelModel;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 public class LevelModelHandler extends ModelHandlerBase {
 
@@ -20,7 +21,7 @@ public class LevelModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new LevelModelHandler(context);
 	}	
 	
@@ -30,9 +31,9 @@ public class LevelModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 
-		Object o = intercon.peekObject();
+		Object o = mic.peekObject();
 
 		if (!(o instanceof Logger)) {
 			inError = true;
@@ -44,7 +45,7 @@ public class LevelModelHandler extends ModelHandlerBase {
 	    String loggerName = l.getName();
 	    
 		LevelModel levelModel = (LevelModel) model;
-		String levelStr = intercon.subst(levelModel.getValue());
+		String levelStr = mic.subst(levelModel.getValue());
 		if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
 			l.setLevel(null);
 		} else {

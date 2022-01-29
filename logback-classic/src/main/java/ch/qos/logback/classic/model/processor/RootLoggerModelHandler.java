@@ -5,10 +5,11 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.RootLoggerModel;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class RootLoggerModelHandler extends ModelHandlerBase {
@@ -20,7 +21,7 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new RootLoggerModelHandler(context);
 	}	
 	
@@ -29,7 +30,7 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		inError = false;
 
 		RootLoggerModel rootLoggerModel = (RootLoggerModel) model;
@@ -37,26 +38,26 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
 		LoggerContext loggerContext = (LoggerContext) this.context;
 		root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-		String levelStr = interpretationContext.subst(rootLoggerModel.getLevel());
+		String levelStr = mic.subst(rootLoggerModel.getLevel());
 		if (!OptionHelper.isNullOrEmpty(levelStr)) {
 			Level level = Level.toLevel(levelStr);
 			addInfo("Setting level of ROOT logger to " + level);
 			root.setLevel(level);
 		}
 		
-		interpretationContext.pushObject(root);
+		mic.pushObject(root);
 	}
 
 	@Override
-	public void postHandle(InterpretationContext ic, Model model) {
+	public void postHandle(ModelInterpretationContext mic, Model model) {
 		if (inError) {
 			return;
 		}
-		Object o = ic.peekObject();
+		Object o = mic.peekObject();
 		if (o != root) {
 			addWarn("The object ["+o+"] on the top the of the stack is not the root logger");
 		} else {
-			ic.popObject();
+			mic.popObject();
 		}
 	}
 

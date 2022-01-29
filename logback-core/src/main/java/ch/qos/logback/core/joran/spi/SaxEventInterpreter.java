@@ -63,10 +63,10 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * 
  */
 public class SaxEventInterpreter {
-	private static List<Action> EMPTY_LIST = new ArrayList<Action>(0);
+	private static List<Action> EMPTY_LIST = new ArrayList<>(0);
 
 	final private RuleStore ruleStore;
-	final private InterpretationContext interpretationContext;
+	final private SaxEventInterpretationContext interpretationContext;
 	final private ArrayList<Action> implicitActions;
 	final private CAI_WithLocatorSupport cai;
 	private ElementPath elementPath;
@@ -92,7 +92,7 @@ public class SaxEventInterpreter {
 	public SaxEventInterpreter(Context context, RuleStore rs, ElementPath initialElementPath) {
 		this.cai = new CAI_WithLocatorSupport(context, this);
 		ruleStore = rs;
-		interpretationContext = new InterpretationContext(context, this);
+		interpretationContext = new SaxEventInterpretationContext(context, this);
 		implicitActions = new ArrayList<Action>(3);
 		this.elementPath = initialElementPath;
 		actionListStack = new Stack<List<Action>>();
@@ -115,11 +115,11 @@ public class SaxEventInterpreter {
 	}
 	
 	
-	public void setInterpretationContextPropertiesMap(Map<String, String> propertiesMap) {
-		interpretationContext.setPropertiesMap(propertiesMap);
-	}
+//	public void setInterpretationContextPropertiesMap(Map<String, String> propertiesMap) {
+//		interpretationContext.setPropertiesMap(propertiesMap);
+//	}
 
-	public InterpretationContext getInterpretationContext() {
+	public SaxEventInterpretationContext getInterpretationContext() {
 		return interpretationContext;
 	}
 

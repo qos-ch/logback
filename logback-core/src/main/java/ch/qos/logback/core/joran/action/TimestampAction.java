@@ -15,7 +15,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.util.OptionHelper;
@@ -35,7 +35,7 @@ public class TimestampAction extends BaseModelAction {
 
 
     @Override
-    protected boolean validPreconditions(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
         boolean valid = true;
         String keyStr = attributes.getValue(KEY_ATTRIBUTE);
         if (OptionHelper.isNullOrEmpty(keyStr)) {
@@ -52,7 +52,7 @@ public class TimestampAction extends BaseModelAction {
 
     
     @Override
-    protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
         TimestampModel timestampModel = new TimestampModel();
 
         timestampModel.setKey(attributes.getValue(KEY_ATTRIBUTE));

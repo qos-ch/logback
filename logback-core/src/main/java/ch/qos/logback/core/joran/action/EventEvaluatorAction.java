@@ -15,21 +15,21 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.Model;
 
 public class EventEvaluatorAction extends BaseModelAction {
 
 	@Override
-	protected boolean validPreconditions(InterpretationContext intercon, String name, Attributes attributes) {
+	protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
 		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
 		pv.validateNameAttribute();
 		return pv.isValid();
 	}
 	
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
 		
 		EventEvaluatorModel eem = new EventEvaluatorModel();
 		

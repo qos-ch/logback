@@ -27,12 +27,12 @@ import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -55,8 +55,8 @@ public class ImplicitActionTest {
         rulesMap.put(new ElementSelector("/context/statusListener"), new StatusListenerAction());
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+            protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
+                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
                 defaultProcessor.addHandler(FruitContextModel.class, FruitContextModelHandler::makeInstance);
                 defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);

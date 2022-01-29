@@ -13,20 +13,8 @@
  */
 package ch.qos.logback.core.model;
 
-public class NamedModel extends Model implements INamedModel {
+public class SequenceNumberGeneratorModel extends ComponentModel  {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 3549881638769570183L;
-	
-	String name;
+	private static final long serialVersionUID = 4109015583434648277L;
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 }

@@ -15,7 +15,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
@@ -24,6 +24,7 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
+// unused class
 public class IncludeModelHandler extends ModelHandlerBase {
 
 	private boolean optional;
@@ -33,7 +34,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new IncludeModelHandler(context);
 	}	
 
@@ -43,7 +44,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		IncludeModel includeModel = (IncludeModel) model;
 		SaxEventRecorder localRecorder = new SaxEventRecorder(context, includeModel.getElementPath()) {
 			@Override
@@ -58,7 +59,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 			return;
 		}
 
-		InputStream in = getInputStream(intercon, includeModel);
+		InputStream in = getInputStream(mic, includeModel);
 		try {
 			if (in != null) {
 
@@ -66,11 +67,11 @@ public class IncludeModelHandler extends ModelHandlerBase {
 				// remove the <included> tag from the beginning and </included> from the end
 				trimHeadAndTail(localRecorder, INCLUDED_TAG);
 
-				SaxEventInterpreter localInterpreter = intercon.getSaxEventInterpreter()
-						.duplicate(includeModel.getElementPath());
+				//SaxEventInterpreter localInterpreter = mic.getSaxEventInterpreter()
+				//		.duplicate(includeModel.getElementPath());
 				// add models
-				localInterpreter.getEventPlayer().play(localRecorder.saxEventList);
-				transferModelStack(includeModel, localInterpreter);
+				//localInterpreter.getEventPlayer().play(localRecorder.saxEventList);
+				//transferModelStack(includeModel, localInterpreter);
 			}
 		} catch (JoranException e) {
 			addError("Error while parsing  " + attributeInUse, e);
@@ -120,7 +121,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		throw new IllegalStateException("Count value [" + count + "] is not expected");
 	}
 
-	private InputStream getInputStream(InterpretationContext ec, IncludeModel includeModel) {
+	private InputStream getInputStream(ModelInterpretationContext ec, IncludeModel includeModel) {
 		URL inputURL = getInputURL(ec, includeModel);
 		if (inputURL == null)
 			return null;
@@ -129,7 +130,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 		return openURL(inputURL);
 	}
 
-	private URL getInputURL(InterpretationContext ec, IncludeModel includeModel) {
+	private URL getInputURL(ModelInterpretationContext ec, IncludeModel includeModel) {
 		String fileAttribute = includeModel.getFile();
 		String urlAttribute = includeModel.getUrl();
 		String resourceAttribute = includeModel.getResource();

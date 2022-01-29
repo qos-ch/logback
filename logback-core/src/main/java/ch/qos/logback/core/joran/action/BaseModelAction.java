@@ -3,7 +3,7 @@ package ch.qos.logback.core.joran.action;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public abstract class BaseModelAction extends Action {
@@ -13,7 +13,7 @@ public abstract class BaseModelAction extends Action {
     boolean inError = false;
 
     @Override
-    public void begin(InterpretationContext intercon, String name, Attributes attributes) throws ActionException {
+    public void begin(SaxEventInterpretationContext intercon, String name, Attributes attributes) throws ActionException {
         parentModel = null;
         inError = false;
         
@@ -33,7 +33,7 @@ public abstract class BaseModelAction extends Action {
     }
 
     
-    abstract protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes);
+    abstract protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes);
 
     /**
      * Validate preconditions of this action.
@@ -45,17 +45,17 @@ public abstract class BaseModelAction extends Action {
      * @param attributes
      * @return
      */
-    protected boolean validPreconditions(InterpretationContext intercon, String name, Attributes attributes) {
+    protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
     	return true;
     }
 
     @Override
-    public void body(InterpretationContext ec, String body) {
+    public void body(SaxEventInterpretationContext ec, String body) {
     	currentModel.addText(body);
     }
 
     @Override
-    public void end(InterpretationContext interpretationContext, String name) throws ActionException {
+    public void end(SaxEventInterpretationContext interpretationContext, String name) throws ActionException {
         if(inError)
             return;
         

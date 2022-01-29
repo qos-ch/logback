@@ -8,10 +8,11 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class LoggerModelHandler extends ModelHandlerBase {
@@ -23,7 +24,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 	
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
 		return new LoggerModelHandler(context);
 	}	
 		
@@ -32,18 +33,18 @@ public class LoggerModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		inError = false;
 
 		LoggerModel loggerModel = (LoggerModel) model;
 
-		String finalLoggerName = intercon.subst(loggerModel.getName());
+		String finalLoggerName = mic.subst(loggerModel.getName());
 
 		LoggerContext loggerContext = (LoggerContext) this.context;
 		
 		logger = loggerContext.getLogger(finalLoggerName);
 
-		String levelStr = intercon.subst(loggerModel.getLevel());
+		String levelStr = mic.subst(loggerModel.getLevel());
 		if (!OptionHelper.isNullOrEmpty(levelStr)) {
 			if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
 				addInfo("Setting level of logger [" + finalLoggerName + "] to null, i.e. INHERITED");
@@ -55,28 +56,28 @@ public class LoggerModelHandler extends ModelHandlerBase {
 			}
 		}
 
-		String additivityStr = intercon.subst(loggerModel.getAdditivity());
+		String additivityStr = mic.subst(loggerModel.getAdditivity());
 		if (!OptionHelper.isNullOrEmpty(additivityStr)) {
 			boolean additive = OptionHelper.toBoolean(additivityStr, true);
 			addInfo("Setting additivity of logger [" + finalLoggerName + "] to " + additive);
 			logger.setAdditive(additive);
 		}
 		
-		intercon.pushObject(logger);
+		mic.pushObject(logger);
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) {
+	public void postHandle(ModelInterpretationContext mic, Model model) {
 		if (inError) {
 			return;
 		}
-		Object o = intercon.peekObject();
+		Object o = mic.peekObject();
 		if (o != logger) {
 			LoggerModel loggerModel = (LoggerModel) model;
 			addWarn("The object [" + o + "] on the top the of the stack is not the expected logger named "
 					+ loggerModel.getName());
 		} else {
-			intercon.popObject();
+			mic.popObject();
 		}
 
 	}

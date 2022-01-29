@@ -4,10 +4,11 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerContextListenerModel;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
@@ -20,7 +21,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new LoggerContextListenerModelHandler(context);
 	}	
 	
@@ -30,7 +31,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		LoggerContextListenerModel lclModel = (LoggerContextListenerModel) model;
 
 		String className = lclModel.getClassName();
@@ -38,7 +39,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 			addError("Empty class name for LoggerContextListener");
 			inError = true;
 		} else {
-			className = intercon.getImport(className);
+			className = mic.getImport(className);
 		}
 		
 		
@@ -50,7 +51,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 				((ContextAware) lcl).setContext(context);
 			}
 
-			intercon.pushObject(lcl);
+			mic.pushObject(lcl);
 			addInfo("Adding LoggerContextListener of type [" + className + "] to the object stack");
 
 		} catch (Exception oops) {
@@ -60,11 +61,11 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void postHandle(InterpretationContext interop, Model model) throws ModelHandlerException {
+	public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		if (inError) {
 			return;
 		}
-		Object o = interop.peekObject();
+		Object o = mic.peekObject();
 
 		if (o != lcl) {
 			addWarn("The object on the top the of the stack is not the LoggerContextListener pushed earlier.");
@@ -74,7 +75,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
 				addInfo("Starting LoggerContextListener");
 			}
 			((LoggerContext) context).addListener(lcl);
-			interop.popObject();
+			mic.popObject();
 		}
 	}
 }

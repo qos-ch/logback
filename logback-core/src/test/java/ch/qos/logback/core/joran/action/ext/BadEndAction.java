@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 
 public class BadEndAction extends Action {
 
@@ -27,7 +27,7 @@ public class BadEndAction extends Action {
 
     int type;
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {
         String exType = attributes.getValue(EXCEPTION_TYPE);
         type = RUNTIME_EXCEPTION;
         if ("ActionException".equals(exType)) {
@@ -35,7 +35,7 @@ public class BadEndAction extends Action {
         }
     }
 
-    public void end(InterpretationContext ec, String name) throws ActionException {
+    public void end(SaxEventInterpretationContext ec, String name) throws ActionException {
         switch (type) {
         case ACTION_EXCEPTION:
             throw new ActionException();

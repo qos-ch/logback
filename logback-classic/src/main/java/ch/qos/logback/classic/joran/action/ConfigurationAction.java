@@ -17,7 +17,7 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.joran.action.BaseModelAction;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public class ConfigurationAction extends BaseModelAction {
@@ -27,7 +27,7 @@ public class ConfigurationAction extends BaseModelAction {
 	static final String PACKAGING_DATA_ATTR = "packagingData";
 
 	@Override
-	protected Model buildCurrentModel(InterpretationContext interpretationContext, String name, Attributes attributes) {
+	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
 		ConfigurationModel configurationModel = new ConfigurationModel();
 		configurationModel.setDebugStr(attributes.getValue(INTERNAL_DEBUG_ATTR));
 		configurationModel.setScanStr(attributes.getValue(SCAN_ATTR));

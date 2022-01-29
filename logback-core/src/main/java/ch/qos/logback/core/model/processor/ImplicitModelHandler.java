@@ -6,7 +6,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ImcplicitActionDataForBasicProperty;
 import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
 import ch.qos.logback.core.joran.action.ImplicitActionDataForComplexProperty;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -37,12 +36,13 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 		return ImplicitModel.class;
 	}
 
-	static public ImplicitModelHandler makeInstance(Context context, InterpretationContext ic) {
-		return new ImplicitModelHandler(context, ic.getBeanDescriptionCache());
+	static public ImplicitModelHandler makeInstance(Context context, ModelInterpretationContext ic) {
+		BeanDescriptionCache beanDescriptionCache  = ic.getBeanDescriptionCache();
+		return new ImplicitModelHandler(context, beanDescriptionCache);
 	}
 	
 	@Override
-	public void handle(InterpretationContext intercon, Model model) {
+	public void handle(ModelInterpretationContext intercon, Model model) {
 
 		ImplicitModel implicitModel = (ImplicitModel) model;
 
@@ -88,7 +88,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 	}
 
-	void doBasicProperty(InterpretationContext interpretationContext, Model model,
+	void doBasicProperty(ModelInterpretationContext interpretationContext, Model model,
 			ImcplicitActionDataForBasicProperty actionData) {
 		String finalBody = interpretationContext.subst(model.getBodyText());
 		// get the action data object pushed in isApplicable() method call
@@ -106,7 +106,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 		}
 	}
 
-	public void doComplex(InterpretationContext interpretationContext, ComponentModel componentModel,
+	public void doComplex(ModelInterpretationContext interpretationContext, ComponentModel componentModel,
 			ImplicitActionDataForComplexProperty actionData) {
 
 		String className = componentModel.getClassName();
@@ -158,7 +158,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) {
+	public void postHandle(ModelInterpretationContext intercon, Model model) {
 		if (inError) {
 			return;
 		}
@@ -172,7 +172,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
 	}
 
-	private void postHandleComplex(InterpretationContext intercon, Model model, ImplicitActionDataBase actionData) {
+	private void postHandleComplex(ModelInterpretationContext intercon, Model model, ImplicitActionDataBase actionData) {
 		ImplicitActionDataForComplexProperty complexActionData = (ImplicitActionDataForComplexProperty) actionData;
 
 		PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,

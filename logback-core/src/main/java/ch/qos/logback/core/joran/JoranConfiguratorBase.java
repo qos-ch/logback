@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2021, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -33,7 +33,7 @@ import ch.qos.logback.core.joran.action.ShutdownHookAction;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.action.TimestampAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.model.DefineModel;
@@ -50,6 +50,7 @@ import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ImportModelHandler;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
@@ -120,22 +121,22 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     }
 
     @Override
-    protected void buildInterpreter() {
+	public void buildInterpreter() {
         super.buildInterpreter();
-        Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
+        Map<String, Object> omap = modelInterpretationContext.getObjectMap();
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
         
         //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 
-    public InterpretationContext getInterpretationContext() {
+    public SaxEventInterpretationContext getInterpretationContext() {
         return interpreter.getInterpretationContext();
     }
 
     @Override
-    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+    protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
+        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
         defaultProcessor.addHandler(ImportModel.class, ImportModelHandler::makeInstance);
         
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);

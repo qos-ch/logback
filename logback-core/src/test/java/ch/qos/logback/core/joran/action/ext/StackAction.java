@@ -18,7 +18,7 @@ import java.util.Stack;
 import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 
 public class StackAction extends Action {
 
@@ -28,11 +28,11 @@ public class StackAction extends Action {
         return stack;
     }
 
-    public void begin(InterpretationContext ec, String name, Attributes attributes) {
+    public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {
         stack.push(attributes.getValue("name"));
     }
 
-    public void end(InterpretationContext ec, String name) {
+    public void end(SaxEventInterpretationContext ec, String name) {
     }
 
 }

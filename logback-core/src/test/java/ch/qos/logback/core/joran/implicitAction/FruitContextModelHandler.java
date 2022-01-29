@@ -1,10 +1,11 @@
 package ch.qos.logback.core.joran.implicitAction;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 public class FruitContextModelHandler extends ModelHandlerBase {
 
@@ -12,17 +13,17 @@ public class FruitContextModelHandler extends ModelHandlerBase {
         super(context);
     }
     
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new FruitContextModelHandler(context);
 	}	
 		
 	@Override
-    public void handle(InterpretationContext interpretationContext, Model model) throws ModelHandlerException {
+    public void handle(ModelInterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         interpretationContext.pushObject(context);
     }
 
     @Override
-    public void postHandle(InterpretationContext ec, Model model) throws ModelHandlerException {
+    public void postHandle(ModelInterpretationContext ec, Model model) throws ModelHandlerException {
  
         Object o = ec.peekObject();
 

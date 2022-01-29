@@ -25,13 +25,14 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.ActionException;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.status.ErrorStatus;
@@ -46,7 +47,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class PropertyActionTest {
 
     Context context;
-    InterpretationContext interpretationContext;
+    SaxEventInterpretationContext interpretationContext;
+    ModelInterpretationContext mic;
     SaxEventInterpreter x;
     
     PropertyAction propertyAction;
@@ -58,12 +60,13 @@ public class PropertyActionTest {
     @Before
     public void setUp() throws Exception {
         context = new ContextBase();
-        interpretationContext = new InterpretationContext(context, null);
+        interpretationContext = new SaxEventInterpretationContext(context, null);
+        mic = new ModelInterpretationContext(context);
         topModel.setTag("top");
-        interpretationContext.pushModel(topModel);
+        mic.pushModel(topModel);
         propertyAction = new PropertyAction();
         propertyAction.setContext(context);
-        defaultProcessor = new DefaultProcessor(context, interpretationContext);
+        defaultProcessor = new DefaultProcessor(context, mic);
         defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
         defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
         defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
@@ -84,7 +87,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("work", interpretationContext.getProperty("v1"));
+        assertEquals("work", mic.getProperty("v1"));
     }
 
     @Test
@@ -95,7 +98,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("work", interpretationContext.getProperty("v1"));
+        assertEquals("work", mic.getProperty("v1"));
     }
 
     @Test
@@ -146,8 +149,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", interpretationContext.getProperty("v1"));
-        assertEquals("toto", interpretationContext.getProperty("v2"));
+        assertEquals("tata", mic.getProperty("v1"));
+        assertEquals("toto", mic.getProperty("v2"));
     }
 
     @Test
@@ -156,8 +159,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", interpretationContext.getProperty("v1"));
-        assertEquals("toto", interpretationContext.getProperty("v2"));
+        assertEquals("tata", mic.getProperty("v1"));
+        assertEquals("toto", mic.getProperty("v2"));
     }
 
     @Test
@@ -166,8 +169,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", interpretationContext.getProperty("r1"));
-        assertEquals("toto", interpretationContext.getProperty("r2"));
+        assertEquals("tata", mic.getProperty("r1"));
+        assertEquals("toto", mic.getProperty("r2"));
     }
 
     @Test
@@ -177,8 +180,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", interpretationContext.getProperty("r1"));
-        assertEquals("toto", interpretationContext.getProperty("r2"));
+        assertEquals("tata", mic.getProperty("r1"));
+        assertEquals("toto", mic.getProperty("r2"));
     }
 
     @Test

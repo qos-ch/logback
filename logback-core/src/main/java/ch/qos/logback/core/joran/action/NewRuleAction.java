@@ -15,7 +15,7 @@ package ch.qos.logback.core.joran.action;
 
 import org.xml.sax.Attributes;
 
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -25,7 +25,7 @@ public class NewRuleAction extends Action {
     /**
      * Instantiates an layout of the given class and sets its name.
      */
-    public void begin(InterpretationContext ec, String localName, Attributes attributes) {
+    public void begin(SaxEventInterpretationContext ec, String localName, Attributes attributes) {
         // Let us forget about previous errors (in this object)
         inError = false;
         String errorMsg;
@@ -60,9 +60,9 @@ public class NewRuleAction extends Action {
      * Once the children elements are also parsed, now is the time to activate the
      * appender options.
      */
-    public void end(InterpretationContext ec, String n) {
+    public void end(SaxEventInterpretationContext ec, String n) {
     }
 
-    public void finish(InterpretationContext ec) {
+    public void finish(SaxEventInterpretationContext ec) {
     }
 }

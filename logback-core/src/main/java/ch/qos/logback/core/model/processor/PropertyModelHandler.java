@@ -10,8 +10,8 @@ import java.util.Properties;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.util.Loader;
@@ -26,7 +26,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
         super(context);
     }
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new PropertyModelHandler(context);
 	}	
 	
@@ -37,7 +37,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
 
     
     @Override
-    public void handle(InterpretationContext interpretationContext, Model model) {
+    public void handle(ModelInterpretationContext interpretationContext, Model model) {
 
         PropertyModel propertyModel = (PropertyModel) model;
         
@@ -80,11 +80,11 @@ public class PropertyModelHandler extends ModelHandlerBase {
         }
     }
 
-    void loadAndSetProperties(InterpretationContext interpretationContext, InputStream istream, Scope scope) throws IOException {
+    void loadAndSetProperties(ModelInterpretationContext mic, InputStream istream, Scope scope) throws IOException {
         Properties props = new Properties();
         props.load(istream);
         istream.close();
-        ActionUtil.setProperties(interpretationContext, props, scope);
+        ModelUtil.setProperties(mic, props, scope);
     }
 
     boolean checkFileAttributeSanity(PropertyModel propertyModel) {

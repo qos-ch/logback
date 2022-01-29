@@ -8,7 +8,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.LifeCycle;
@@ -23,7 +23,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new EventEvaluatorModelHandler(context);
 	}	
 	
@@ -33,7 +33,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 		EventEvaluatorModel eem = (EventEvaluatorModel) model;
 
 		String className = eem.getClassName();
@@ -41,8 +41,7 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 			String defaultClassName = defaultClassName(intercon, eem);
 			if (OptionHelper.isNullOrEmpty(defaultClassName)) {
 				inError = true;
-				addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator> at line "
-						+ intercon.getLineNumber());
+				addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator>");
 				addError("No default classname could be found.");
 				return;
 			} else {
@@ -68,13 +67,13 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 
 	}
 
-	private String defaultClassName(InterpretationContext intercon, EventEvaluatorModel model) {
+	private String defaultClassName(ModelInterpretationContext intercon, EventEvaluatorModel model) {
 		DefaultNestedComponentRegistry registry = intercon.getDefaultNestedComponentRegistry();
 		return registry.findDefaultComponentTypeByTag(model.getTag());
 	}
 
 	@Override
-	public void postHandle(InterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void postHandle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 		if (inError) {
 			return;
 		}

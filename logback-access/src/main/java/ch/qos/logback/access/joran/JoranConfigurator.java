@@ -26,10 +26,10 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
-import ch.qos.logback.core.joran.action.IncludeModelAction;
+import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
@@ -49,6 +49,7 @@ import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
+import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
@@ -65,12 +66,12 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
         rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
         rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
-        rs.addRule(new ElementSelector("configuration/include"), new IncludeModelAction());
+        rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
     }
 
     @Override
-    protected DefaultProcessor buildDefaultProcessor(Context context, InterpretationContext interpretationContext) {
-    	DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, interpretationContext);
+    protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
+    	DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
         defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);

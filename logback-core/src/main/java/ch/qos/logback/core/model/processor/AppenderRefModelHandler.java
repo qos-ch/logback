@@ -5,7 +5,7 @@ import java.util.Map;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -17,7 +17,7 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 		super(context);
 	}
 
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
 		return new AppenderRefModelHandler(context);
 	}	
 		
@@ -27,7 +27,7 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext interpContext, Model model) throws ModelHandlerException {
 
 		Object o = interpContext.peekObject();
 
@@ -47,10 +47,10 @@ public class AppenderRefModelHandler extends ModelHandlerBase {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	void attachRefencedAppenders(InterpretationContext interpContext, AppenderRefModel appenderRefModel, AppenderAttachable<?> appenderAttachable) {
-		String appenderName = interpContext.subst(appenderRefModel.getRef());
+	void attachRefencedAppenders(ModelInterpretationContext mic, AppenderRefModel appenderRefModel, AppenderAttachable<?> appenderAttachable) {
+		String appenderName = mic.subst(appenderRefModel.getRef());
 		
-		Map<String, Appender> appenderBag = (Map<String, Appender>) interpContext.getObjectMap()
+		Map<String, Appender> appenderBag = (Map<String, Appender>) mic.getObjectMap()
 				.get(JoranConstants.APPENDER_BAG);
 
 		Appender appender = appenderBag.get(appenderName);

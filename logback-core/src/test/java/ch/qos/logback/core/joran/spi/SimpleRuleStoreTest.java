@@ -224,13 +224,13 @@ public class SimpleRuleStoreTest {
             this.id = id;
         }
 
-        public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {
         }
 
-        public void end(InterpretationContext ec, String name) {
+        public void end(SaxEventInterpretationContext ec, String name) {
         }
 
-        public void finish(InterpretationContext ec) {
+        public void finish(SaxEventInterpretationContext ec) {
         }
 
         public String toString() {
@@ -239,24 +239,24 @@ public class SimpleRuleStoreTest {
     }
 
     class YAction extends Action {
-        public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {
         }
 
-        public void end(InterpretationContext ec, String name) {
+        public void end(SaxEventInterpretationContext ec, String name) {
         }
 
-        public void finish(InterpretationContext ec) {
+        public void finish(SaxEventInterpretationContext ec) {
         }
     }
 
     class ZAction extends Action {
-        public void begin(InterpretationContext ec, String name, Attributes attributes) {
+        public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {
         }
 
-        public void end(InterpretationContext ec, String name) {
+        public void end(SaxEventInterpretationContext ec, String name) {
         }
 
-        public void finish(InterpretationContext ec) {
+        public void finish(SaxEventInterpretationContext ec) {
         }
     }
 

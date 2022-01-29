@@ -18,7 +18,7 @@ import java.util.Map;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.InterpretationContext;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.AppenderAttachable;
@@ -36,21 +36,21 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 	}
 
 	@SuppressWarnings("rawtypes")
-	static public ModelHandlerBase makeInstance(Context context, InterpretationContext ic) {
+	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
 		return new AppenderModelHandler(context);
 	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
-	public void handle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		this.appender = null;
 		this.inError = false;
 		
 		AppenderModel appenderModel = (AppenderModel) model;
 
-		String appenderName = interpContext.subst(appenderModel.getName());
+		String appenderName = mic.subst(appenderModel.getName());
 	
-		if(!interpContext.hasDependencies(appenderName)) {
+		if(!mic.hasDependencies(appenderName)) {
 			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
 			skipped = true;
 			appenderModel.markAsSkipped();
@@ -68,7 +68,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		addInfo("Processing appender named ["+appenderName+"]");
 		
 		String originalClassName = appenderModel.getClassName();
-		String className = interpContext.getImport(originalClassName);
+		String className = mic.getImport(originalClassName);
 		
 		try {
 			addInfo("About to instantiate appender of type [" + className + "]");
@@ -77,7 +77,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 					context);
 			appender.setContext(context);
             appender.setName(appenderName);
-			interpContext.pushObject(appender);
+			mic.pushObject(appender);
 		} catch (Exception oops) {
 			inError = true;
 			addError("Could not create an Appender of type [" + className + "].", oops);
@@ -85,19 +85,19 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 		}
 	}
 
-	public void postHandle(InterpretationContext interpContext, Model model) throws ModelHandlerException {
+	public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		if (inError || skipped) {
 			return;
 		}
 	    if (appender instanceof LifeCycle) {
             ((LifeCycle) appender).start();
         }
-        interpContext.markStartOfNamedDependency(appender.getName());
+        mic.markStartOfNamedDependency(appender.getName());
         
-        Object o = interpContext.peekObject();
+        Object o = mic.peekObject();
 
     	@SuppressWarnings("unchecked")
-		Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) interpContext.getObjectMap()
+		Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) mic.getObjectMap()
 				.get(JoranConstants.APPENDER_BAG);
     	appenderBag.put(appender.getName(), appender);
     	
@@ -106,7 +106,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
         } else {
 //        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
 //        	appenderAttachable.addAppender(appender);
-        	interpContext.popObject();
+        	mic.popObject();
         }
     
 	}
