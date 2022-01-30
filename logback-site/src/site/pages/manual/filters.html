@@ -985,6 +985,14 @@ logger.debug("Hello {}.", name1);</pre>
     property. By the default, this is set to 100.
     </p>
 
+    <p>The cache can be truncated periodically so that messages
+    will be written even if they have repetitions - but no more
+    than x times every time period.
+    The period after which the cache is truncated is in milliseconds
+    and is set by the <span class="option">CacheResetWindow</span>
+    property. By default it is switched off by being set to Long.MaxLong.
+    </p>
+
     
     <em>Example: <code>DuplicateMessageFilter</code> 
     configuration (logback-examples/src/main/resources/chapters/filters/duplicateMessage.xml)</em>
