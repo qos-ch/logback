@@ -44,7 +44,7 @@ import ch.qos.logback.core.status.StatusUtil;
 
 public abstract class GenericConfigurator extends ContextAwareBase {
 
-	protected SaxEventInterpreter interpreter;
+	protected SaxEventInterpreter saxEventInterpreter;
 	protected ModelInterpretationContext modelInterpretationContext;
 
 	
@@ -127,23 +127,27 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 	protected abstract void addImplicitRules(SaxEventInterpreter interpreter);
 
 	protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-
+		// nothing bu default
 	}
 
 	protected ElementPath initialElementPath() {
 		return new ElementPath();
 	}
 
-	protected void buildInterpreter() {
+	protected void buildTwoInterpreters() {
 		RuleStore rs = new SimpleRuleStore(context);
 		addInstanceRules(rs);
-		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
-		SaxEventInterpretationContext interpretationContext = interpreter.getInterpretationContext();
+		this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath());
+		SaxEventInterpretationContext interpretationContext = saxEventInterpreter.getSaxEventInterpretationContext();
 		interpretationContext.setContext(context);
-		addImplicitRules(interpreter);
+		modelInterpretationContext = new ModelInterpretationContext(context);
+		addImplicitRules(saxEventInterpreter);
+		
 		addDefaultNestedComponentRegistryRules(modelInterpretationContext.getDefaultNestedComponentRegistry());
 	}
 
+
+	
 	// this is the most inner form of doConfigure whereto other doConfigure
 	// methods ultimately delegate
 	public final void doConfigure(final InputSource inputSource) throws JoranException {
@@ -151,7 +155,8 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		long threshold = System.currentTimeMillis();
 	
 		SaxEventRecorder recorder = populateSaxEventRecorder(inputSource);
-		Model top = buildAndProcessModel(recorder.saxEventList);
+        Model top = buildModelFromSaxEventList(recorder.saxEventList);
+        processModel(top);
 
 		// no exceptions a this level
 		StatusUtil statusUtil = new StatusUtil(context);
@@ -162,7 +167,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 	}
 
 	public Model buildAndProcessModel(List<SaxEvent> saxEventList) throws JoranException {
-		Model top = buildModel(saxEventList);
+		Model top = buildModelFromSaxEventList(saxEventList);
 		processModel(top);
 		return top;
 	}
@@ -173,24 +178,23 @@ public abstract class GenericConfigurator extends ContextAwareBase {
 		return recorder;
 	}
 
-	public Model buildModel(List<SaxEvent> saxEvents) throws JoranException {
-		buildInterpreter();
+	public Model buildModelFromSaxEventList(List<SaxEvent> saxEvents) throws JoranException {
+		buildTwoInterpreters();
 		playSaxEvents(saxEvents);
-		Model top = interpreter.getInterpretationContext().peekModel();
+		Model top = saxEventInterpreter.getSaxEventInterpretationContext().peekModel();
 		return top;
 	}
 
 	private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
-		// disallow simultaneous configurations of the same context
-		synchronized (context.getConfigurationLock()) {
-			interpreter.getEventPlayer().play(eventList);
-		}
-
+		saxEventInterpreter.getEventPlayer().play(eventList);
 	}
 
 	public void processModel(Model model) {
 		DefaultProcessor defaultProcessor = buildDefaultProcessor(context, modelInterpretationContext);
-		defaultProcessor.process(model);
+		// disallow simultaneous configurations of the same context
+		synchronized (context.getConfigurationLock()) {
+			defaultProcessor.process(model);
+		}
 	}
 
 	protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {

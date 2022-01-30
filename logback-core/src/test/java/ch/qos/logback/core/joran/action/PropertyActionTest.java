@@ -63,6 +63,7 @@ public class PropertyActionTest {
         interpretationContext = new SaxEventInterpretationContext(context, null);
         mic = new ModelInterpretationContext(context);
         topModel.setTag("top");
+        interpretationContext.pushModel(topModel);
         mic.pushModel(topModel);
         propertyAction = new PropertyAction();
         propertyAction.setContext(context);

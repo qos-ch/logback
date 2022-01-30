@@ -28,4 +28,12 @@ public class NamedComponentModel extends ComponentModel implements INamedModel {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	@Override
+	public String toString() {
+		return "NamedComponentModel [name=" + name + ", className=" + className + ", tag=" + tag + ", bodyText="
+				+ bodyText + "]";
+	}
+
+	
 }

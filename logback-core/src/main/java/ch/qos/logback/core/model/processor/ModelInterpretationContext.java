@@ -29,7 +29,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
 	Map<String, String> propertiesMap;
 	Map<String, String> importMap;
 
-	final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
+	final Map<Model, List<String>> dependenciesMap = new HashMap<>();
 	final List<String> startedDependencies = new ArrayList<>();
 	
 	final private BeanDescriptionCache beanDescriptionCache;
@@ -51,7 +51,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
 	}
 
 
-	// moodelStack
+	// moodelStack =================================
 	
 	public void pushModel(Model m) {
 		modelStack.push(m);

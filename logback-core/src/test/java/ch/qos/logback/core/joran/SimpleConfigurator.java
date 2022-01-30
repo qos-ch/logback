@@ -48,7 +48,7 @@ public class SimpleConfigurator extends GenericConfigurator {
     }
 
     public SaxEventInterpreter getInterpreter() {
-        return interpreter;
+        return saxEventInterpreter;
     }
 
     @Override

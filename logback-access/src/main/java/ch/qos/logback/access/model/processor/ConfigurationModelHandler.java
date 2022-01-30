@@ -1,8 +1,20 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.access.model.processor;
 
 import ch.qos.logback.access.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
@@ -28,7 +40,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 	}
 
 	@Override
-	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 		ConfigurationModel configurationModel = (ConfigurationModel) model;
 		// See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
 		// the equivalent property in the config file. This reversal of scope priority

@@ -16,7 +16,6 @@ package ch.qos.logback.core.joran.spi;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import org.xml.sax.Attributes;
@@ -119,7 +118,7 @@ public class SaxEventInterpreter {
 //		interpretationContext.setPropertiesMap(propertiesMap);
 //	}
 
-	public SaxEventInterpretationContext getInterpretationContext() {
+	public SaxEventInterpretationContext getSaxEventInterpretationContext() {
 		return interpretationContext;
 	}
 

@@ -81,7 +81,7 @@ public class IncludeModelHandler extends ModelHandlerBase {
 	}
 
 	private void transferModelStack(IncludeModel includeModel, SaxEventInterpreter subInterpreter) {
-		Stack<Model> copy = subInterpreter.getInterpretationContext().getCopyOfModelStack();
+		Stack<Model> copy = subInterpreter.getSaxEventInterpretationContext().getCopyOfModelStack();
 		for (Model m : copy) {
 			includeModel.addSubModel(m);
 		}

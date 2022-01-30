@@ -228,8 +228,8 @@ public class IncludeActionTest {
         tc.doConfigure(TOP_BY_FILE);
         Stack<String> expected = new Stack<String>();
         expected.push("a");
-        expected.push("c");
         expected.push("b");
+        expected.push("c");
         assertEquals(expected, stackAction.getStack());
     }
 

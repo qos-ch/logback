@@ -121,8 +121,8 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     }
 
     @Override
-	public void buildInterpreter() {
-        super.buildInterpreter();
+	public void buildTwoInterpreters() {
+        super.buildTwoInterpreters();
         Map<String, Object> omap = modelInterpretationContext.getObjectMap();
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
@@ -131,7 +131,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     }
 
     public SaxEventInterpretationContext getInterpretationContext() {
-        return interpreter.getInterpretationContext();
+        return saxEventInterpreter.getSaxEventInterpretationContext();
     }
 
     @Override

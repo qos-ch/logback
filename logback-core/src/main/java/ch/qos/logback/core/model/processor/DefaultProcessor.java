@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelFactoryMethod;
@@ -20,16 +19,16 @@ public class DefaultProcessor extends ContextAwareBase {
 		int traverse(Model model, ModelFiler modelFiler);
 	}
 
-	final ModelInterpretationContext interpretationContext;
+	final ModelInterpretationContext mic;
 	final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
 	final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
 
 	ModelFiler phaseOneFilter = new AllowAllModelFilter();
 	ModelFiler phaseTwoFilter = new DenyAllModelFilter();
 
-	public DefaultProcessor(Context context, ModelInterpretationContext interpretationContext) {
+	public DefaultProcessor(Context context, ModelInterpretationContext mic) {
 		this.setContext(context);
-		this.interpretationContext = interpretationContext;
+		this.mic = mic;
 	}
 
 	public void addHandler(Class<? extends Model> modelClass, ModelFactoryMethod modelFactoryMethod) {
@@ -66,11 +65,11 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 
 	private void finalObjectPop() {
-		interpretationContext.popObject();
+		mic.popObject();
 	}
 
 	private void initialObjectPush() {
-		interpretationContext.pushObject(context);
+		mic.pushObject(context);
 	}
 
 	public ModelFiler getPhaseOneFilter() {
@@ -94,7 +93,7 @@ public class DefaultProcessor extends ContextAwareBase {
 
 		if (handler != null) {
 			try {
-				handler.handle(interpretationContext, model);
+				handler.handle(mic, model);
 			} catch (ModelHandlerException e) {
 				addError("Failed to traverse model " + model.getTag(), e);
 			}
@@ -105,7 +104,7 @@ public class DefaultProcessor extends ContextAwareBase {
 		}
 		if (handler != null) {
 			try {
-				handler.postHandle(interpretationContext, model);
+				handler.postHandle(mic, model);
 			} catch (ModelHandlerException e) {
 				addError("Failed to invole postHandle on model " + model.getTag(), e);
 			}
@@ -123,7 +122,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			return null;
 		}
 
-		ModelHandlerBase handler = modelFactoryMethod.make(context, interpretationContext);
+		ModelHandlerBase handler = modelFactoryMethod.make(context, mic);
 		if (handler == null)
 			return null;
 		if (!handler.isSupportedModelType(model)) {
@@ -146,7 +145,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			if (model.isUnhandled()) {
 				handler = createHandler(model);
 				if (handler != null) {
-					handler.handle(interpretationContext, model);
+					handler.handle(mic, model);
 					model.markAsHandled();
 					count++;
 				}
@@ -159,7 +158,7 @@ public class DefaultProcessor extends ContextAwareBase {
 				}
 			}
 			if (handler != null) {
-				handler.postHandle(interpretationContext, model);
+				handler.postHandle(mic, model);
 			}
 		} catch (ModelHandlerException e) {
 			addError("Failed to traverse model " + model.getTag(), e);
@@ -184,7 +183,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			if (model.isUnhandled() && allDependenciesStarted) {
 				handler = createHandler(model);
 				if (handler != null) {
-					handler.handle(interpretationContext, model);
+					handler.handle(mic, model);
 					model.markAsHandled();
 					count++;
 				}
@@ -200,7 +199,7 @@ public class DefaultProcessor extends ContextAwareBase {
 				}
 			}
 			if (handler != null) {
-				handler.postHandle(interpretationContext, model);
+				handler.postHandle(mic, model);
 			}
 		} catch (ModelHandlerException e) {
 			addError("Failed to traverse model " + model.getTag(), e);
@@ -209,7 +208,7 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 
 	private boolean dependencyIsADirectSubmodel(Model model) {
-		List<String> dependecyList = this.interpretationContext.getDependencies(model);
+		List<String> dependecyList = this.mic.getDependencies(model);
 		if (dependecyList == null || dependecyList.isEmpty()) {
 			return false;
 		}
@@ -227,14 +226,14 @@ public class DefaultProcessor extends ContextAwareBase {
 	}
 
 	private boolean allDependenciesStarted(Model model) {
-		List<String> dependecyList = this.interpretationContext.getDependencies(model);
+		List<String> dependecyList = this.mic.getDependencies(model);
 		if (dependecyList == null || dependecyList.isEmpty()) {
 			return true;
 		}
 		for (String name : dependecyList) {
-			boolean isStarted = interpretationContext.isNamedDependencyStarted(name);
+			boolean isStarted = mic.isNamedDependencyStarted(name);
 			if (isStarted == false) {
-				return isStarted;
+				return false;
 			}
 		}
 		return true;
@@ -248,7 +247,7 @@ public class DefaultProcessor extends ContextAwareBase {
 			}
 			Constructor<? extends ModelHandlerBase> constructorWithBDC = getWithContextAndBDCConstructor(handlerClass);
 			if (constructorWithBDC != null) {
-				return constructorWithBDC.newInstance(context, interpretationContext.getBeanDescriptionCache());
+				return constructorWithBDC.newInstance(context, mic.getBeanDescriptionCache());
 			}
 			addError("Failed to find suitable constructor for class [" + handlerClass + "]");
 			return null;
