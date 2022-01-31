@@ -36,8 +36,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: ${{ matrix.jdk }}
-    - name: Compile
+    - name: Install
       # download dependencies, etc, so test log looks better
-      run: mvn -B package
+      run: mvn -B install
 
 
