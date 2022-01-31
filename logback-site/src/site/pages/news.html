@@ -56,8 +56,12 @@
 
     <p>&bull;&nbsp; Logback releases are now reproducible. This means
     that anyone checking out the code corresponding to the release
-    version from github and building the software, will get the
-    indentical binary as the release binary.
+    version from github and building that local copy, will get obtain
+    an identical binary to the binary found on Maven central. Note
+    that due to <a
+    href="https://issues.apache.org/jira/browse/MJAR-275">issue
+    MJAR-275</a> with the <em>module-info.java</em> produced in
+    earlier java versions, reproducible builds require Java 18.
     </p>
     
     <p>&bull;&nbsp; Once the <code>Model</code> is created from XML
