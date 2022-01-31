@@ -28,8 +28,9 @@ public class ActionUtil {
 
     /**
      * Convert a string into a scope. Scole.LOCAL is returned by default.
+     * 
      * @param scopeStr
-     * @return a scope corresponding to the input string;  Scope.LOCAL by default.
+     * @return a scope corresponding to the input string; Scope.LOCAL by default.
      */
     static public Scope stringToScope(String scopeStr) {
         if (Scope.SYSTEM.toString().equalsIgnoreCase(scopeStr))
@@ -53,7 +54,6 @@ public class ActionUtil {
 //        }
 //    }
 
-    
     static public void setProperty(ModelInterpretationContext ic, String key, String value, Scope scope) {
         switch (scope) {
         case LOCAL:

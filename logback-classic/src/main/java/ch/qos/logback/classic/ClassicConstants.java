@@ -24,15 +24,16 @@ public class ClassicConstants {
     public static final String LOGBACK_CONTEXT_SELECTOR = "logback.ContextSelector";
     public static final String CONFIG_FILE_PROPERTY = "logback.configurationFile";
 
-    public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_NAMESPACE + "comp/env/logback/configuration-resource";
+    public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_NAMESPACE
+            + "comp/env/logback/configuration-resource";
     public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_NAMESPACE + "comp/env/logback/context-name";
-    
+
     /**
-     * The maximum number of package separators (dots) that abbreviation
-     * algorithms can handle. Class or logger names with more separators will have
-     * their first MAX_DOTS parts shortened.
+     * The maximum number of package separators (dots) that abbreviation algorithms
+     * can handle. Class or logger names with more separators will have their first
+     * MAX_DOTS parts shortened.
      * 
-     * Since 1.3.0, no longer unused 
+     * Since 1.3.0, no longer unused
      */
     public static final int MAX_DOTS = 16;
 

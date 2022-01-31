@@ -38,8 +38,10 @@ abstract public class ForegroundCompositeConverterBase<E> extends CompositeConve
     }
 
     /**
-     * Derived classes return the foreground color specific to the derived class instance.
-     * @return  the foreground color for this instance
+     * Derived classes return the foreground color specific to the derived class
+     * instance.
+     * 
+     * @return the foreground color for this instance
      */
     abstract protected String getForegroundColorCode(E event);
 }

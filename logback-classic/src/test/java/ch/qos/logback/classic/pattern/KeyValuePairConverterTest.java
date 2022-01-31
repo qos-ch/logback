@@ -29,6 +29,7 @@ public class KeyValuePairConverterTest {
     LoggerContext lc;
     KeyValuePairConverter converter;
     LoggingEvent event;
+
     @Before
     public void setUp() throws Exception {
         lc = new LoggerContext();
@@ -46,21 +47,21 @@ public class KeyValuePairConverterTest {
 
     @Test
     public void testWithNullKVPList() {
-    	//event.getKeyValuePairs().add(new KeyValuePair("k", "v"));
+        // event.getKeyValuePairs().add(new KeyValuePair("k", "v"));
         String result = converter.convert(event);
         assertEquals("", result);
     }
-    
 
     @Test
     public void testWithOnelKVP() {
-    	event.addKeyValuePair(new KeyValuePair("k", "v"));
+        event.addKeyValuePair(new KeyValuePair("k", "v"));
         String result = converter.convert(event);
         assertEquals("k=\"v\"", result);
     }
-    
+
     private LoggingEvent createLoggingEvent() {
-        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME),
+                Level.DEBUG, "test message", null, null);
         return le;
     }
 }

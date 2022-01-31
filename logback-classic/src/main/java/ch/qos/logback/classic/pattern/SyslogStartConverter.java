@@ -78,9 +78,9 @@ public class SyslogStartConverter extends ClassicConverter {
     }
 
     /**
-     * This method gets the network name of the machine we are running on.
-     * Returns "UNKNOWN_LOCALHOST" in the unlikely case where the host name 
-     * cannot be found.
+     * This method gets the network name of the machine we are running on. Returns
+     * "UNKNOWN_LOCALHOST" in the unlikely case where the host name cannot be found.
+     * 
      * @return String the name of the local host
      */
     public String getLocalHostname() {
@@ -95,15 +95,16 @@ public class SyslogStartConverter extends ClassicConverter {
 
     String computeTimeStampString(long now) {
         synchronized (this) {
-            // Since the formatted output is only precise to the second, we can use the same cached string if the
+            // Since the formatted output is only precise to the second, we can use the same
+            // cached string if the
             // current
             // second is the same (stripping off the milliseconds).
             if ((now / 1000) != lastTimestamp) {
                 lastTimestamp = now / 1000;
                 Date nowDate = new Date(now);
                 calendar.setTime(nowDate);
-                timesmapStr = String.format("%s %2d %s", simpleMonthFormat.format(nowDate), calendar.get(Calendar.DAY_OF_MONTH),
-                                simpleTimeFormat.format(nowDate));
+                timesmapStr = String.format("%s %2d %s", simpleMonthFormat.format(nowDate),
+                        calendar.get(Calendar.DAY_OF_MONTH), simpleTimeFormat.format(nowDate));
             }
             return timesmapStr;
         }

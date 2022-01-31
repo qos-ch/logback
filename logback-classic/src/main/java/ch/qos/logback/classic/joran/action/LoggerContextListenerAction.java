@@ -27,20 +27,18 @@ public class LoggerContextListenerAction extends BaseModelAction {
     LoggerContextListener lcl;
 
     @Override
-    protected boolean validPreconditions(SaxEventInterpretationContext ic, String name,
-    		Attributes attributes) {
-    	PreconditionValidator pv = new PreconditionValidator(this, ic, name, attributes);
-    	pv.validateClassAttribute();
-    	return pv.isValid();
+    protected boolean validPreconditions(SaxEventInterpretationContext ic, String name, Attributes attributes) {
+        PreconditionValidator pv = new PreconditionValidator(this, ic, name, attributes);
+        pv.validateClassAttribute();
+        return pv.isValid();
     }
-    
+
     @Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
-    	LoggerContextListenerModel loggerContextListenerModel = new LoggerContextListenerModel();
-    	loggerContextListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
-		return loggerContextListenerModel;
-	}
-    
-	
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        LoggerContextListenerModel loggerContextListenerModel = new LoggerContextListenerModel();
+        loggerContextListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        return loggerContextListenerModel;
+    }
 
 }

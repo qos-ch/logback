@@ -117,7 +117,8 @@ abstract public class ResilientOutputStreamBase extends OutputStream {
         } catch (IOException e) {
         }
 
-        addStatusIfCountNotOverLimit(new InfoStatus("Attempting to recover from IO failure on " + getDescription(), this));
+        addStatusIfCountNotOverLimit(
+                new InfoStatus("Attempting to recover from IO failure on " + getDescription(), this));
 
         // subsequent writes must always be in append mode
         try {

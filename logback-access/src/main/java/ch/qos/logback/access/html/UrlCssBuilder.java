@@ -16,9 +16,9 @@ package ch.qos.logback.access.html;
 import ch.qos.logback.core.html.CssBuilder;
 
 /**
- * This class helps the HTMLLayout build the CSS link.
- * It either provides the HTMLLayout with a default css file,
- * or builds the link to an external, user-specified, file.
+ * This class helps the HTMLLayout build the CSS link. It either provides the
+ * HTMLLayout with a default css file, or builds the link to an external,
+ * user-specified, file.
  *
  * @author S&eacute;bastien Pennec
  */

@@ -14,7 +14,8 @@
 package ch.qos.logback.core.contention;
 
 /**
- * Useful scaffolding/harness to start and processPriorToRemoval multiple threads.
+ * Useful scaffolding/harness to start and processPriorToRemoval multiple
+ * threads.
  * 
  * @author Joern Huxhorn
  * @author Ralph Goers

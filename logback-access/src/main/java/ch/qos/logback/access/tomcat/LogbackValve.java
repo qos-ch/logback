@@ -75,13 +75,15 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
  * 
  * <p>
  * For more information on using LogbackValve please refer to the online
- * documentation on <a
- * href="http://logback.qos.ch/access.html#tomcat">logback-acces and tomcat</a>.
+ * documentation on
+ * <a href="http://logback.qos.ch/access.html#tomcat">logback-acces and
+ * tomcat</a>.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */
-public class LogbackValve extends ValveBase implements Lifecycle, Context, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
+public class LogbackValve extends ValveBase
+        implements Lifecycle, Context, AppenderAttachable<IAccessEvent>, FilterAttachable<IAccessEvent> {
 
     public final static String DEFAULT_FILENAME = "logback-access.xml";
     public final static String DEFAULT_CONFIG_FILE = "conf" + File.separatorChar + DEFAULT_FILENAME;
@@ -91,8 +93,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     private final LifeCycleManager lifeCycleManager = new LifeCycleManager();
 
     private long birthTime = System.currentTimeMillis();
-   
-    
+
     LogbackLock configurationLock = new LogbackLock();
 
     // Attributes from ContextBase:
@@ -111,7 +112,6 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     boolean started;
     boolean alreadySetLogbackStatusManager = false;
     private SequenceNumberGenerator sequenceNumberGenerator;
- 
 
     private ScheduledExecutorService scheduledExecutorService;
 
@@ -185,7 +185,8 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
         String propertyValue = OptionHelper.getSystemProperty(propertyKey);
         String candidatePath = propertyValue + File.separatorChar + filename;
         if (propertyValue == null) {
-            addInfo("System property \"" + propertyKey + "\" is not set. Skipping configuration file search with ${" + propertyKey + "} path prefix.");
+            addInfo("System property \"" + propertyKey + "\" is not set. Skipping configuration file search with ${"
+                    + propertyKey + "} path prefix.");
             return null;
         }
         File candidateFile = new File(candidatePath);
@@ -460,7 +461,7 @@ public class LogbackValve extends ValveBase implements Lifecycle, Context, Appen
     public void addScheduledFuture(ScheduledFuture<?> scheduledFuture) {
         throw new UnsupportedOperationException();
     }
-    
+
     public SequenceNumberGenerator getSequenceNumberGenerator() {
         return sequenceNumberGenerator;
     }

@@ -59,8 +59,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     private FileSize bufferSize = new FileSize(DEFAULT_BUFFER_SIZE);
 
     /**
-     * The <b>File</b> property takes a string value which should be the name of
-     * the file to append to.
+     * The <b>File</b> property takes a string value which should be the name of the
+     * file to append to.
      */
     public void setFile(String file) {
         if (file == null) {
@@ -101,9 +101,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     }
 
     /**
-     * If the value of <b>File</b> is not <code>null</code>, then
-     * {@link #openFile} is called with the values of <b>File</b> and
-     * <b>Append</b> properties.
+     * If the value of <b>File</b> is not <code>null</code>, then {@link #openFile}
+     * is called with the values of <b>File</b> and <b>Append</b> properties.
      */
     public void start() {
         int errors = 0;
@@ -156,7 +155,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             return false;
         }
         @SuppressWarnings("unchecked")
-        Map<String, String> previousFilesMap = (Map<String, String>) context.getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
+        Map<String, String> previousFilesMap = (Map<String, String>) context
+                .getObject(CoreConstants.FA_FILENAME_COLLISION_MAP);
         if (previousFilesMap == null) {
             return collisionsDetected;
         }
@@ -173,7 +173,8 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     }
 
     protected void addErrorForCollision(String optionName, String optionValue, String appenderName) {
-        addError("'" + optionName + "' option has the same value \"" + optionValue + "\" as that given for appender [" + appenderName + "] defined earlier.");
+        addError("'" + optionName + "' option has the same value \"" + optionValue + "\" as that given for appender ["
+                + appenderName + "] defined earlier.");
     }
 
     /**
@@ -182,15 +183,13 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
      * file must be writable.
      * 
      * <p>
-     * If there was already an opened file, then the previous file is closed
-     * first.
+     * If there was already an opened file, then the previous file is closed first.
      * 
      * <p>
-     * <b>Do not use this method directly. To configure a FileAppender or one of
-     * its subclasses, set its properties one by one and then call start().</b>
+     * <b>Do not use this method directly. To configure a FileAppender or one of its
+     * subclasses, set its properties one by one and then call start().</b>
      * 
-     * @param file_name
-     *          The path to the log file.
+     * @param file_name The path to the log file.
      */
     public void openFile(String file_name) throws IOException {
         lock.lock();
@@ -231,9 +230,9 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
     public void setAppend(boolean append) {
         this.append = append;
     }
-    
+
     public void setBufferSize(FileSize bufferSize) {
-        addInfo("Setting bufferSize to ["+bufferSize.toString()+"]");
+        addInfo("Setting bufferSize to [" + bufferSize.toString() + "]");
         this.bufferSize = bufferSize;
     }
 

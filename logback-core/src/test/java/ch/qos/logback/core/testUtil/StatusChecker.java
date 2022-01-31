@@ -21,7 +21,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 /**
- * Extend  StatusUtil with assertions.
+ * Extend StatusUtil with assertions.
  */
 public class StatusChecker extends StatusUtil {
 
@@ -40,7 +40,7 @@ public class StatusChecker extends StatusUtil {
     public void assertNoMatch(String regex) {
         assertFalse(containsMatch(regex));
     }
-    
+
     public void assertContainsMatch(String regex) {
         assertTrue(containsMatch(regex));
     }

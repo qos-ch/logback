@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core;
 
-
 public class CoreConstants {
 
     final public static String DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY = "logbackDisableServletContainerInitializer";
@@ -25,15 +24,17 @@ public class CoreConstants {
      */
     public static final int CORE_POOL_SIZE = 0;
 
-    // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be submitted from 
-    // within a running task unless the pool has worker threads already available. ThreadPoolExecutor 
+    // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be
+    // submitted from
+    // within a running task unless the pool has worker threads already available.
+    // ThreadPoolExecutor
     // does not have this limitation.
-    // This causes tests failures in SocketReceiverTest.testDispatchEventForEnabledLevel and
+    // This causes tests failures in
+    // SocketReceiverTest.testDispatchEventForEnabledLevel and
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
     // We thus set a pool size > 0 for tests to pass.
     public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 1;
 
-    
     /**
      * Maximum number of threads to allow in a context's executor service.
      */
@@ -47,7 +48,7 @@ public class CoreConstants {
     public static final int LINE_SEPARATOR_LEN = LINE_SEPARATOR.length();
 
     public static final String CODES_URL = "http://logback.qos.ch/codes.html";
-    public static final String MANUAL_URL_PREFIX = "http://logback.qos.ch/manual/";   
+    public static final String MANUAL_URL_PREFIX = "http://logback.qos.ch/manual/";
     public static final String MORE_INFO_PREFIX = "For more information, please visit ";
 
     /**
@@ -63,7 +64,7 @@ public class CoreConstants {
     public static final String ISO8601_STR = "ISO8601";
     public static final String ISO8601_PATTERN = "yyyy-MM-dd HH:mm:ss,SSS";
     public static final String DAILY_DATE_PATTERN = "yyyy-MM-dd";
- 
+
     /**
      * Time format used in Common Log Format
      */
@@ -75,23 +76,25 @@ public class CoreConstants {
     public static final String EVALUATOR_MAP = "EVALUATOR_MAP";
 
     /**
-     * Key used to locate a map Files used by FileAppender instances in context's object map.
+     * Key used to locate a map Files used by FileAppender instances in context's
+     * object map.
      * 
-     * Said map consists of entries of the type (appender name, File option) 
+     * Said map consists of entries of the type (appender name, File option)
      */
     public static final String FA_FILENAME_COLLISION_MAP = "FA_FILENAMES_MAP";
 
     /**
-     * Key used to locate a collision map for RollingFileAppender instances in context's object map.
+     * Key used to locate a collision map for RollingFileAppender instances in
+     * context's object map.
      * 
-     * The collision map consists of entities of the type (appender name, FileNamePattern option)
+     * The collision map consists of entities of the type (appender name,
+     * FileNamePattern option)
      */
     public static final String RFA_FILENAME_PATTERN_COLLISION_MAP = "RFA_FILENAME_PATTERN_COLLISION_MAP";
 
     /**
-     * By convention, we assume that the static method named "valueOf" taking
-     * a string argument can restore a given object from its string
-     * representation.
+     * By convention, we assume that the static method named "valueOf" taking a
+     * string argument can restore a given object from its string representation.
      */
     public static final String VALUE_OF = "valueOf";
 
@@ -128,8 +131,8 @@ public class CoreConstants {
     public static final String DEFAULT_VALUE_SEPARATOR = ":-";
 
     /**
-     * Number of rows before in an HTML table before,
-     * we close the table and create a new one
+     * Number of rows before in an HTML table before, we close the table and create
+     * a new one
      */
     public static final int TABLE_ROW_LIMIT = 10000;
 
@@ -138,9 +141,9 @@ public class CoreConstants {
     public static final int OOS_RESET_FREQUENCY = 70;
 
     // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
-	// there are the java:comp, java:module, java:app, java:global namespaces
+    // there are the java:comp, java:module, java:app, java:global namespaces
     public static final String JNDI_JAVA_NAMESPACE = "java:";
-    
+
     // the max number of times an error should be reported
     public static final int MAX_ERROR_COUNT = 4;
 
@@ -148,8 +151,8 @@ public class CoreConstants {
     public static final char TAB = '\t';
     public static final char DOLLAR = '$';
 
-    public static final String SEE_FNP_NOT_SET = "See also "+CODES_URL+"#tbr_fnp_not_set";
-    public static final String SEE_MISSING_INTEGER_TOKEN = "See also "+CODES_URL+"#sat_missing_integer_token";
+    public static final String SEE_FNP_NOT_SET = "See also " + CODES_URL + "#tbr_fnp_not_set";
+    public static final String SEE_MISSING_INTEGER_TOKEN = "See also " + CODES_URL + "#sat_missing_integer_token";
 
     public static final String CONFIGURATION_WATCH_LIST = "CONFIGURATION_WATCH_LIST";
     public static final String CONFIGURATION_WATCH_LIST_RESET_X = "CONFIGURATION_WATCH_LIST_RESET";
@@ -161,8 +164,7 @@ public class CoreConstants {
     public static final String SHUTDOWN_HOOK_THREAD = "SHUTDOWN_HOOK";
 
     /**
-     * The key under which the local host name is registered in the logger
-     * context.
+     * The key under which the local host name is registered in the logger context.
      */
     public static final String HOSTNAME_KEY = "HOSTNAME";
 
@@ -198,10 +200,8 @@ public class CoreConstants {
     public static final String RIGHT_ACCOLADE = new String(new char[] { CURLY_RIGHT });
     public static final long UNBOUNDED_TOTAL_SIZE_CAP = 0;
     public static final int UNBOUND_HISTORY = 0;
-    
+
     public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
     public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
-	
-
 
 }

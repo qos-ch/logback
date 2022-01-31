@@ -18,7 +18,7 @@ import ch.qos.logback.core.CoreConstants;
 public class LogbackServletContainerInitializerTest {
 
     LogbackServletContainerInitializer lsci = new LogbackServletContainerInitializer();
-    
+
     @Before
     public void setUp() throws Exception {
     }
@@ -37,7 +37,8 @@ public class LogbackServletContainerInitializerTest {
     @Test
     public void noListenerShouldBeAddedWhenDisabled() throws ServletException {
         ServletContext mockedServletContext = mock(ServletContext.class);
-        when(mockedServletContext.getInitParameter(CoreConstants.DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY)).thenReturn("true");
+        when(mockedServletContext.getInitParameter(CoreConstants.DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY))
+                .thenReturn("true");
         lsci.onStartup(null, mockedServletContext);
         verify(mockedServletContext, times(0)).addListener(any(LogbackServletContextListener.class));
     }

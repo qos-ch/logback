@@ -21,7 +21,7 @@ import java.security.NoSuchProviderException;
 import ch.qos.logback.core.net.ssl.KeyStoreFactoryBean;
 
 /**
- * A {@link KeyStoreFactoryBean} with test instrumentation. 
+ * A {@link KeyStoreFactoryBean} with test instrumentation.
  *
  * @author Carl Harris
  */

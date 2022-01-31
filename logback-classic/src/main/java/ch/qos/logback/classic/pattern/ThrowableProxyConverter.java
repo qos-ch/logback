@@ -72,8 +72,10 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
             for (int i = 1; i < optionListSize; i++) {
                 String evaluatorOrIgnoredStackTraceLine = (String) optionList.get(i);
                 Context context = getContext();
-                Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context.getObject(CoreConstants.EVALUATOR_MAP);
-                EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap.get(evaluatorOrIgnoredStackTraceLine);
+                Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
+                        .getObject(CoreConstants.EVALUATOR_MAP);
+                EventEvaluator<ILoggingEvent> ee = (EventEvaluator<ILoggingEvent>) evaluatorMap
+                        .get(evaluatorOrIgnoredStackTraceLine);
                 if (ee != null) {
                     addEvaluator(ee);
                 } else {
@@ -129,9 +131,10 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
                     if (errorCount < CoreConstants.MAX_ERROR_COUNT) {
                         addError("Exception thrown for evaluator named [" + ee.getName() + "]", eex);
                     } else if (errorCount == CoreConstants.MAX_ERROR_COUNT) {
-                        ErrorStatus errorStatus = new ErrorStatus("Exception thrown for evaluator named [" + ee.getName() + "].", this, eex);
+                        ErrorStatus errorStatus = new ErrorStatus(
+                                "Exception thrown for evaluator named [" + ee.getName() + "].", this, eex);
                         errorStatus.add(new ErrorStatus("This was the last warning about this evaluator's errors."
-                                        + "We don't want the StatusManager to get flooded.", this));
+                                + "We don't want the StatusManager to get flooded.", this));
                         addStatus(errorStatus);
                     }
                 }
@@ -162,7 +165,8 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
         IThrowableProxy[] suppressed = tp.getSuppressed();
         if (suppressed != null) {
             for (IThrowableProxy current : suppressed) {
-                recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + ThrowableProxyUtil.SUPPRESSED_EXCEPTION_INDENT, current);
+                recursiveAppend(sb, CoreConstants.SUPPRESSED, indent + ThrowableProxyUtil.SUPPRESSED_EXCEPTION_INDENT,
+                        current);
             }
         }
         recursiveAppend(sb, CoreConstants.CAUSED_BY, indent, tp.getCause());
@@ -177,11 +181,12 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
     }
 
     private void subjoinExceptionMessage(StringBuilder buf, IThrowableProxy tp) {
-    	if(tp.isCyclic()) {
-          buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage()).append(']');
-    	} else {
-          buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
-    	}
+        if (tp.isCyclic()) {
+            buf.append("[CIRCULAR REFERENCE: ").append(tp.getClassName()).append(": ").append(tp.getMessage())
+                    .append(']');
+        } else {
+            buf.append(tp.getClassName()).append(": ").append(tp.getMessage());
+        }
     }
 
     protected void subjoinSTEPArray(StringBuilder buf, int indent, IThrowableProxy tp) {
@@ -217,7 +222,8 @@ public class ThrowableProxyConverter extends ThrowableHandlingConverter {
 
         if (commonFrames > 0 && unrestrictedPrinting) {
             ThrowableProxyUtil.indent(buf, indent);
-            buf.append("... ").append(tp.getCommonFrames()).append(" common frames omitted").append(CoreConstants.LINE_SEPARATOR);
+            buf.append("... ").append(tp.getCommonFrames()).append(" common frames omitted")
+                    .append(CoreConstants.LINE_SEPARATOR);
         }
     }
 

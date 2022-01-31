@@ -42,7 +42,8 @@ public class LoggerContextDeadlockTest {
 
         getLoggerThread.start();
         for (int i = 0; i < 500; i++) {
-            ByteArrayInputStream baos = new ByteArrayInputStream("<configuration><root level=\"DEBUG\"/></configuration>".getBytes());
+            ByteArrayInputStream baos = new ByteArrayInputStream(
+                    "<configuration><root level=\"DEBUG\"/></configuration>".getBytes());
             jc.doConfigure(baos);
         }
     }

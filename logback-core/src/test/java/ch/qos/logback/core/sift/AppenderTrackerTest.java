@@ -123,7 +123,8 @@ public class AppenderTrackerTest {
         long numComponentsCreated = timeout + 1;
         assertEquals(numComponentsCreated, appenderTracker.allKeys().size());
 
-        // cleaning only happens in removeStaleComponents. The first appender should timeout
+        // cleaning only happens in removeStaleComponents. The first appender should
+        // timeout
         appenderTracker.removeStaleComponents(now++);
 
         // the first appender should have been removed

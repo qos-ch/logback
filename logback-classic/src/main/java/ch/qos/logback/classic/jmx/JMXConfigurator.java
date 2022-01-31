@@ -43,13 +43,15 @@ import ch.qos.logback.core.util.StatusPrinter;
 /**
  * A class that provides access to logback components via JMX.
  * 
- * <p>Since this class implements {@link JMXConfiguratorMBean} it has to be
- * named as JMXConfigurator}.
+ * <p>
+ * Since this class implements {@link JMXConfiguratorMBean} it has to be named
+ * as JMXConfigurator}.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 
- * Contributor: Sebastian Davids See http://bugzilla.qos.ch/show_bug.cgi?id=35
+ *         Contributor: Sebastian Davids See
+ *         http://bugzilla.qos.ch/show_bug.cgi?id=35
  */
 public class JMXConfigurator extends ContextAwareBase implements JMXConfiguratorMBean, LoggerContextListener {
 
@@ -74,7 +76,8 @@ public class JMXConfigurator extends ContextAwareBase implements JMXConfigurator
         this.objectName = objectName;
         this.objectNameAsString = objectName.toString();
         if (previouslyRegisteredListenerWithSameObjectName()) {
-            addError("Previously registered JMXConfigurator named [" + objectNameAsString + "] in the logger context named [" + loggerContext.getName() + "]");
+            addError("Previously registered JMXConfigurator named [" + objectNameAsString
+                    + "] in the logger context named [" + loggerContext.getName() + "]");
         } else {
             // register as a listener only if there are no homonyms
             loggerContext.addListener(this);

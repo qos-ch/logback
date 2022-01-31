@@ -20,7 +20,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */

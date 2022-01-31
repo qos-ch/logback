@@ -17,7 +17,8 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;
 import static ch.qos.logback.core.pattern.color.ANSIConstants.CYAN_FG;
 
 /**
- * Encloses a given set of converter output in bold cyan using the appropriate ANSI escape codes.
+ * Encloses a given set of converter output in bold cyan using the appropriate
+ * ANSI escape codes.
  *
  * @param <E>
  * @author Ceki G&uuml;lc&uuml;

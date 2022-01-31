@@ -114,7 +114,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.setContext(context);
         rfa.setRollingPolicy(tbrp);
         rfa.setFile("x");
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
         StatusChecker statusChecker = new StatusChecker(context.getStatusManager());
         statusChecker.assertContainsMatch(Status.ERROR, "File property must be set before any triggeringPolicy ");
     }
@@ -131,7 +131,8 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     @Test
     public void testFileNameWithParenthesis() {
         // if ')' is not escaped, the test throws
-        // java.lang.IllegalStateException: FileNamePattern [.../program(x86)/toto-%d.log] does not contain a valid
+        // java.lang.IllegalStateException: FileNamePattern
+        // [.../program(x86)/toto-%d.log] does not contain a valid
         // DateToken
         rfa.setContext(context);
         tbrp.setFileNamePattern(randomOutputDir + "program(x86)/toto-%d.log");
@@ -150,7 +151,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.setRollingPolicy(tbrp);
         rfa.start();
 
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
         assertTrue(tbrp.isStarted());
         assertTrue(rfa.isStarted());
         rfa.stop();
@@ -178,7 +179,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
 
         rfa.start();
 
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
         assertTrue(fwRollingPolicy.isStarted());
         assertTrue(sbTriggeringPolicy.isStarted());
         assertTrue(rfa.isStarted());
@@ -222,7 +223,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         StatusChecker checker = new StatusChecker(context);
         assertFalse(rfa.isStarted());
         assertEquals(Status.ERROR, checker.getHighestLevel(0));
-        //StatusPrinter.print(context);
+        // StatusPrinter.print(context);
         checker.assertContainsMatch("The date format in FileNamePattern will result");
     }
 
@@ -262,5 +263,5 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         StatusChecker checker = new StatusChecker(context);
         checker.assertContainsMatch(Status.ERROR, "'FileNamePattern' option has the same value");
     }
-    
+
 }

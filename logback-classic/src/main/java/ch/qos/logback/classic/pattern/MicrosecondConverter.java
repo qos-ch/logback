@@ -24,18 +24,18 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class MicrosecondConverter extends ClassicConverter {
 
-	@Override
-	public String convert(ILoggingEvent event) {
-		int nanos = event.getNanoseconds();
-		int millis_and_micros = nanos / 1000;
-		int micros = millis_and_micros % 1000;
+    @Override
+    public String convert(ILoggingEvent event) {
+        int nanos = event.getNanoseconds();
+        int millis_and_micros = nanos / 1000;
+        int micros = millis_and_micros % 1000;
 
-		if (micros >= 100)
-			return Integer.toString(micros);
-		else if (micros >= 10)
-			return "0" + Integer.toString(micros);
-		else
-			return "00" + Integer.toString(micros);
-	}
+        if (micros >= 100)
+            return Integer.toString(micros);
+        else if (micros >= 10)
+            return "0" + Integer.toString(micros);
+        else
+            return "00" + Integer.toString(micros);
+    }
 
 }

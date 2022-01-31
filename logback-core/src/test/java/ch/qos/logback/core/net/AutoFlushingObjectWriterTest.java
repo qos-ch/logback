@@ -95,7 +95,7 @@ public class AutoFlushingObjectWriterTest {
     private static class InstrumentedObjectOutputStream extends ObjectOutputStream {
 
         protected InstrumentedObjectOutputStream() throws IOException, SecurityException {
-        	super();
+            super();
         }
 
         @Override

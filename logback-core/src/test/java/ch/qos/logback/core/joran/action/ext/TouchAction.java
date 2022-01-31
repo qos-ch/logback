@@ -36,8 +36,8 @@ public class TouchAction extends Action {
     }
 
     /**
-     * Once the children elements are also parsed, now is the time to activate
-     * the appender options.
+     * Once the children elements are also parsed, now is the time to activate the
+     * appender options.
      */
     public void end(SaxEventInterpretationContext ec, String name) {
     }

@@ -37,8 +37,8 @@ public class FixedDelay implements DelayStrategy {
     }
 
     /**
-     * Initialize a new {@code FixedDelay} with fixed delay value given by {@code delay}
-     * parameter.
+     * Initialize a new {@code FixedDelay} with fixed delay value given by
+     * {@code delay} parameter.
      *
      * @param delay value for all delays
      */

@@ -40,7 +40,7 @@ public class DummyEncoder<E> extends EncoderBase<E> {
         this.val = val;
     }
 
-    public byte[] encode(E event)  {
+    public byte[] encode(E event) {
         return encodeString(val);
     }
 
@@ -74,7 +74,7 @@ public class DummyEncoder<E> extends EncoderBase<E> {
         return header();
     }
 
-    public byte[] footerBytes()  {
+    public byte[] footerBytes() {
         if (fileFooter == null) {
             return null;
         }

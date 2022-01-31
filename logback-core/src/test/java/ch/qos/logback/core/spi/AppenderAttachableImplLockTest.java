@@ -71,7 +71,7 @@ public class AppenderAttachableImplLockTest {
 
     @SuppressWarnings("unchecked")
     @Test(timeout = 15000)
-    //@Test
+    // @Test
     public void detachAppenderBoom() throws InterruptedException {
         Appender<Integer> mockAppender = mock(Appender.class);
         when(mockAppender.getName()).thenThrow(new RuntimeException("oops"));
@@ -85,7 +85,7 @@ public class AppenderAttachableImplLockTest {
                     // appender.getName called as a result of next statement
                     aai.detachAppender("foo");
                 } catch (RuntimeException e) {
-                	System.out.println("Caught "+e.toString());
+                    System.out.println("Caught " + e.toString());
                     // this leaves the write lock locked.
                 }
             }

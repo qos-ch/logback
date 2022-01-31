@@ -24,13 +24,13 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 
 /**
- * An {@link SSLSocketFactory} that configures SSL parameters 
- * (those covered by {@link SSLParameters}) on each newly created socket. 
+ * An {@link SSLSocketFactory} that configures SSL parameters (those covered by
+ * {@link SSLParameters}) on each newly created socket.
  * <p>
- * When any of this factory's {@code createSocket} methods are invoked, it
- * calls on a {@link SSLSocketFactory} delegate to create the socket, and 
- * then sets the SSL parameters of the socket (using the provided 
- * configuration) before returning the socket to the caller.
+ * When any of this factory's {@code createSocket} methods are invoked, it calls
+ * on a {@link SSLSocketFactory} delegate to create the socket, and then sets
+ * the SSL parameters of the socket (using the provided configuration) before
+ * returning the socket to the caller.
  *
  * @author Carl Harris
  */
@@ -41,10 +41,11 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
 
     /**
      * Creates a new factory.
-     * @param parameters parameters that will be configured on each
-     *    socket created by the factory
-     * @param delegate socket factory that will be called upon to create
-     *    sockets before configuration
+     * 
+     * @param parameters parameters that will be configured on each socket created
+     *                   by the factory
+     * @param delegate   socket factory that will be called upon to create sockets
+     *                   before configuration
      */
     public ConfigurableSSLSocketFactory(SSLParametersConfiguration parameters, SSLSocketFactory delegate) {
         this.parameters = parameters;
@@ -55,7 +56,8 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
      * {@inheritDoc}
      */
     @Override
-    public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+    public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
+            throws IOException {
         SSLSocket socket = (SSLSocket) delegate.createSocket(address, port, localAddress, localPort);
         parameters.configure(new SSLConfigurableSocket(socket));
         return socket;
@@ -75,7 +77,8 @@ public class ConfigurableSSLSocketFactory extends SocketFactory {
      * {@inheritDoc}
      */
     @Override
-    public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+    public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+            throws IOException, UnknownHostException {
         SSLSocket socket = (SSLSocket) delegate.createSocket(host, port, localHost, localPort);
         parameters.configure(new SSLConfigurableSocket(socket));
         return socket;

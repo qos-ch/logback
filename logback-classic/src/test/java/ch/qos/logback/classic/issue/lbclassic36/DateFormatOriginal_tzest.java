@@ -31,8 +31,7 @@ public class DateFormatOriginal_tzest extends TestCase {
     /**
      * Create the test case
      * 
-     * @param testName
-     *                name of the test case
+     * @param testName name of the test case
      */
     public DateFormatOriginal_tzest(String testName) {
         super(testName);
@@ -237,7 +236,8 @@ public class DateFormatOriginal_tzest extends TestCase {
     // DateTime date;
     // long iterCount;
     //
-    // public DateTimeFormatThread(JodaFormatter f, DateTime date, long iterations) {
+    // public DateTimeFormatThread(JodaFormatter f, DateTime date, long iterations)
+    // {
     // this.formatter = f;
     // this.date = date;
     // this.iterCount = iterations;

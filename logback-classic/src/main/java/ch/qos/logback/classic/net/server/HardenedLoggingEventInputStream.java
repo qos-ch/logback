@@ -35,7 +35,7 @@ import ch.qos.logback.core.net.HardenedObjectInputStream;
 public class HardenedLoggingEventInputStream extends HardenedObjectInputStream {
 
     static final String ARRAY_PREFIX = "[L";
-    
+
     static public List<String> getWhilelist() {
         List<String> whitelist = new ArrayList<String>();
         whitelist.add(LoggingEventVO.class.getName());
@@ -57,12 +57,13 @@ public class HardenedLoggingEventInputStream extends HardenedObjectInputStream {
 
         return whitelist;
     }
-   
+
     public HardenedLoggingEventInputStream(InputStream is) throws IOException {
         super(is, getWhilelist());
     }
-    
-    public HardenedLoggingEventInputStream(InputStream is, List<String> additionalAuthorizedClasses) throws IOException {
+
+    public HardenedLoggingEventInputStream(InputStream is, List<String> additionalAuthorizedClasses)
+            throws IOException {
         this(is);
         super.addToWhitelist(additionalAuthorizedClasses);
     }

@@ -33,7 +33,6 @@ public class COWArrayListTest {
         assertArrayEquals(new Integer[] { 1 }, result);
     }
 
-    
     @Test
     public void basicToArrayTyped() {
         cowaList.add(1);

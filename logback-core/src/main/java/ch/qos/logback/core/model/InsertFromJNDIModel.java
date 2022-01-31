@@ -15,34 +15,37 @@ package ch.qos.logback.core.model;
 
 public class InsertFromJNDIModel extends Model {
 
-	private static final long serialVersionUID = -7803377963650426197L;
-	
+    private static final long serialVersionUID = -7803377963650426197L;
+
     public static final String ENV_ENTRY_NAME_ATTR = "env-entry-name";
     public static final String AS_ATTR = "as";
-    
-	String as;
-	String envEntryName;
-	String scopeStr;
-	
-	public String getScopeStr() {
-		return scopeStr;
-	}
-	public void setScopeStr(String scopeStr) {
-		this.scopeStr = scopeStr;
-	}
-	public String getAs() {
-		return as;
-	}
-	public void setAs(String as) {
-		this.as = as;
-	}
-	public String getEnvEntryName() {
-		return envEntryName;
-	}
-	public void setEnvEntryName(String envEntryName) {
-		this.envEntryName = envEntryName;
-	}
-	
-	
-	
+
+    String as;
+    String envEntryName;
+    String scopeStr;
+
+    public String getScopeStr() {
+        return scopeStr;
+    }
+
+    public void setScopeStr(String scopeStr) {
+        this.scopeStr = scopeStr;
+    }
+
+    public String getAs() {
+        return as;
+    }
+
+    public void setAs(String as) {
+        this.as = as;
+    }
+
+    public String getEnvEntryName() {
+        return envEntryName;
+    }
+
+    public void setEnvEntryName(String envEntryName) {
+        this.envEntryName = envEntryName;
+    }
+
 }

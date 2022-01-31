@@ -42,6 +42,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * Test {@link PropertyAction}.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 public class PropertyActionTest {
@@ -50,13 +51,13 @@ public class PropertyActionTest {
     SaxEventInterpretationContext interpretationContext;
     ModelInterpretationContext mic;
     SaxEventInterpreter x;
-    
+
     PropertyAction propertyAction;
     DummyAttributes atts = new DummyAttributes();
     DefaultProcessor defaultProcessor;
     TopModel topModel = new TopModel();
     String tagName = "property";
-    
+
     @Before
     public void setUp() throws Exception {
         context = new ContextBase();

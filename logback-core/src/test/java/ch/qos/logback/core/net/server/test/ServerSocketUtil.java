@@ -20,8 +20,8 @@ import java.net.ServerSocket;
 import javax.net.ServerSocketFactory;
 
 /**
- * Static utility methods for obtaining a {@link ServerSocket} bound to
- * a random unused port.
+ * Static utility methods for obtaining a {@link ServerSocket} bound to a random
+ * unused port.
  *
  * @author Carl Harris
  */
@@ -30,9 +30,10 @@ public class ServerSocketUtil {
     /**
      * Creates a new {@link ServerSocket} bound to a random unused port.
      * <p>
-     * This method is a convenience overload for 
-     * {@link #createServerSocket(ServerSocketFactory)} using the platform's
-     * default {@link ServerSocketFactory}.
+     * This method is a convenience overload for
+     * {@link #createServerSocket(ServerSocketFactory)} using the platform's default
+     * {@link ServerSocketFactory}.
+     * 
      * @return socket
      * @throws IOException
      */
@@ -42,8 +43,8 @@ public class ServerSocketUtil {
 
     /**
      * Creates a new {@link ServerSocket} bound to a random unused port.
-     * @param socketFactory socket factory that will be used to create the 
-     *    socket
+     * 
+     * @param socketFactory socket factory that will be used to create the socket
      * @return socket
      * @throws IOException
      */

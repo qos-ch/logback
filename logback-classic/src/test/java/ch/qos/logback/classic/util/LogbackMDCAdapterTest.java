@@ -36,8 +36,7 @@ public class LogbackMDCAdapterTest {
     private final LogbackMDCAdapter mdcAdapter = new LogbackMDCAdapter();
 
     /**
-     * Test that CopyOnInheritThreadLocal does not barf when the
-     * MDC hashmap is null
+     * Test that CopyOnInheritThreadLocal does not barf when the MDC hashmap is null
      *
      * @throws InterruptedException
      */
@@ -97,8 +96,8 @@ public class LogbackMDCAdapterTest {
     // =================================================
 
     /**
-     * Test that LogbackMDCAdapter does not copy its hashmap when a child
-     * thread inherits it.
+     * Test that LogbackMDCAdapter does not copy its hashmap when a child thread
+     * inherits it.
      *
      * @throws InterruptedException
      */
@@ -160,7 +159,8 @@ public class LogbackMDCAdapterTest {
     public void nearSimultaneousPutsShouldNotCauseConcurrentModificationException() throws InterruptedException {
         // For the weirdest reason, modifications to mdcAdapter must be done
         // before the definition anonymous ChildThread class below. Otherwise, the
-        // map in the child thread, the one contained in mdcAdapter.copyOnInheritThreadLocal,
+        // map in the child thread, the one contained in
+        // mdcAdapter.copyOnInheritThreadLocal,
         // is null. How strange is that?
 
         // let the map have lots of elements so that copying it takes time
@@ -229,7 +229,8 @@ public class LogbackMDCAdapterTest {
             this(logbackMDCAdapter, firstKey, secondKey, null);
         }
 
-        ChildThread(LogbackMDCAdapter logbackMDCAdapter, String firstKey, String secondKey, CountDownLatch countDownLatch) {
+        ChildThread(LogbackMDCAdapter logbackMDCAdapter, String firstKey, String secondKey,
+                CountDownLatch countDownLatch) {
             super("chil");
             this.logbackMDCAdapter = logbackMDCAdapter;
             this.firstKey = firstKey;

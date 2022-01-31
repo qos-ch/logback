@@ -57,8 +57,7 @@ public class Loader {
     }
 
     /**
-     * Compute the number of occurrences a resource can be found by a class
-     * loader.
+     * Compute the number of occurrences a resource can be found by a class loader.
      *
      * @param resource
      * @param classLoader
@@ -108,8 +107,7 @@ public class Loader {
 
     /**
      * Get the Thread Context Loader which is a JDK 1.2 feature. If we are running
-     * under JDK 1.1 or anything else goes wrong the method returns
-     * {@code null}.
+     * under JDK 1.1 or anything else goes wrong the method returns {@code null}.
      */
     public static ClassLoader getTCL() {
         return Thread.currentThread().getContextClassLoader();
@@ -152,8 +150,8 @@ public class Loader {
     }
 
     /**
-     * Return the class loader which loaded the class passed as argument. Return
-     * the system class loader if appropriate.
+     * Return the class loader which loaded the class passed as argument. Return the
+     * system class loader if appropriate.
      *
      * @param clazz
      * @return

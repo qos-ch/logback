@@ -33,9 +33,9 @@ public class TimestampAction extends BaseModelAction {
     public static final String DATE_PATTERN_ATTRIBUTE = "datePattern";
     public static final String TIME_REFERENCE_ATTRIBUTE = "timeReference";
 
-
     @Override
-    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         boolean valid = true;
         String keyStr = attributes.getValue(KEY_ATTRIBUTE);
         if (OptionHelper.isNullOrEmpty(keyStr)) {
@@ -50,21 +50,18 @@ public class TimestampAction extends BaseModelAction {
         return valid;
     }
 
-    
     @Override
-    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         TimestampModel timestampModel = new TimestampModel();
 
         timestampModel.setKey(attributes.getValue(KEY_ATTRIBUTE));
         timestampModel.setDatePattern(attributes.getValue(DATE_PATTERN_ATTRIBUTE));
         timestampModel.setTimeReference(attributes.getValue(TIME_REFERENCE_ATTRIBUTE));
         timestampModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
-        
+
         return timestampModel;
 
     }
-
-
-
 
 }

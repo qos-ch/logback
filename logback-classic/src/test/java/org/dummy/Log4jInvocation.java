@@ -85,6 +85,7 @@ public class Log4jInvocation {
         assertEquals(HELLO, event.getMessage());
 
         assertEquals(1, listAppender.stringList.size());
-        assertEquals("TRACE [" + Log4jInvocation.class.getName() + "] basic-test - Hello", listAppender.stringList.get(0));
+        assertEquals("TRACE [" + Log4jInvocation.class.getName() + "] basic-test - Hello",
+                listAppender.stringList.get(0));
     }
 }

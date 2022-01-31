@@ -22,11 +22,11 @@ import ch.qos.logback.core.model.Model;
 
 public class ContextNameAction extends BaseModelAction {
 
-    
     @Override
-    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
-    	ContextNameModel contextNameModel = new ContextNameModel();
-    	return contextNameModel;
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        ContextNameModel contextNameModel = new ContextNameModel();
+        return contextNameModel;
     }
- 
+
 }

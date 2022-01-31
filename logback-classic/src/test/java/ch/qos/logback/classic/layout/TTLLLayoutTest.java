@@ -27,9 +27,10 @@ public class TTLLLayoutTest {
         LoggingEvent event = new LoggingEvent("", logger, Level.INFO, null, null, null);
         event.setTimeStamp(0);
         String result = layout.doLayout(event);
-        
+
         String resultSuffix = result.substring(13).trim();
-        
-        assertTrue("[" + resultSuffix + "] did not match regexs", resultSuffix.matches("\\[.*\\] INFO ch.qos.logback.classic.layout.TTLLLayoutTest - null"));
+
+        assertTrue("[" + resultSuffix + "] did not match regexs",
+                resultSuffix.matches("\\[.*\\] INFO ch.qos.logback.classic.layout.TTLLLayoutTest - null"));
     }
 }

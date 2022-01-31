@@ -35,7 +35,7 @@ public class DummyRequest implements HttpServletRequest {
 
     Hashtable<String, String> headerMap;
     Hashtable<String, String[]> parameterMap;
-    
+
     String uri;
     Map<String, Object> attributes;
 
@@ -50,9 +50,9 @@ public class DummyRequest implements HttpServletRequest {
         headerMap.put("headerName1", "headerValue1");
         headerMap.put("headerName2", "headerValue2");
 
-        parameterMap =  new Hashtable<String, String[]>();
-        parameterMap.put("param1", new String[] {"value1"});
-        
+        parameterMap = new Hashtable<String, String[]>();
+        parameterMap.put("param1", new String[] { "value1" });
+
         attributes = new HashMap<String, Object>(DUMMY_DEFAULT_ATTR_MAP);
     }
 
@@ -77,9 +77,8 @@ public class DummyRequest implements HttpServletRequest {
         return headerMap.get(key);
     }
 
-
     @Override
-    public Enumeration<String>  getHeaderNames() {
+    public Enumeration<String> getHeaderNames() {
         return headerMap.keys();
     }
 
@@ -92,7 +91,6 @@ public class DummyRequest implements HttpServletRequest {
         return headerMap;
     }
 
-    
     public int getIntHeader(String arg0) {
         return 0;
     }
@@ -260,7 +258,7 @@ public class DummyRequest implements HttpServletRequest {
 
     public String getParameter(String arg) {
         String[] stringArray = parameterMap.get(arg);
-        if(stringArray == null || stringArray.length == 0)
+        if (stringArray == null || stringArray.length == 0)
             return null;
         else
             return stringArray[0];
@@ -273,7 +271,7 @@ public class DummyRequest implements HttpServletRequest {
 
     public Enumeration<String> getParameterNames() {
         return parameterMap.keys();
-        //eturn Collections.enumeration(parameterMap.keySet());
+        // eturn Collections.enumeration(parameterMap.keySet());
     }
 
     public String[] getParameterValues(String arg) {
@@ -350,7 +348,8 @@ public class DummyRequest implements HttpServletRequest {
     }
 
     @Override
-    public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass) throws IOException, ServletException {
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> httpUpgradeHandlerClass)
+            throws IOException, ServletException {
         return null;
     }
 }

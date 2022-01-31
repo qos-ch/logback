@@ -19,8 +19,9 @@ import java.util.List;
 /**
  * CyclicBuffer holds values in a cyclic array.
  * 
- * <p>It allows read access to any element in the buffer not just the first or
- * last element.
+ * <p>
+ * It allows read access to any element in the buffer not just the first or last
+ * element.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -37,8 +38,7 @@ public class CyclicBuffer<E> {
      * 
      * The <code>maxSize</code> argument must a positive integer.
      * 
-     * @param maxSize
-     *                The maximum number of elements in the buffer.
+     * @param maxSize The maximum number of elements in the buffer.
      */
     public CyclicBuffer(int maxSize) throws IllegalArgumentException {
         if (maxSize < 1) {
@@ -89,9 +89,9 @@ public class CyclicBuffer<E> {
     }
 
     /**
-     * Get the <i>i</i>th oldest event currently in the buffer. If <em>i</em>
-     * is outside the range 0 to the number of elements currently in the buffer,
-     * then <code>null</code> is returned.
+     * Get the <i>i</i>th oldest event currently in the buffer. If <em>i</em> is
+     * outside the range 0 to the number of elements currently in the buffer, then
+     * <code>null</code> is returned.
      */
     public E get(int i) {
         if (i < 0 || i >= numElems)
@@ -129,8 +129,8 @@ public class CyclicBuffer<E> {
     }
 
     /**
-     * Get the number of elements in the buffer. This number is guaranteed to be
-     * in the range 0 to <code>maxSize</code> (inclusive).
+     * Get the number of elements in the buffer. This number is guaranteed to be in
+     * the range 0 to <code>maxSize</code> (inclusive).
      */
     public int length() {
         return numElems;
@@ -139,8 +139,7 @@ public class CyclicBuffer<E> {
     /**
      * Resize the cyclic buffer to <code>newSize</code>.
      * 
-     * @throws IllegalArgumentException
-     *                 if <code>newSize</code> is negative.
+     * @throws IllegalArgumentException if <code>newSize</code> is negative.
      */
     @SuppressWarnings("unchecked")
     public void resize(int newSize) {

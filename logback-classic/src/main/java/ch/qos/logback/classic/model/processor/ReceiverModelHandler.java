@@ -30,65 +30,65 @@ import ch.qos.logback.core.util.OptionHelper;
  */
 public class ReceiverModelHandler extends ModelHandlerBase {
 
-	private ReceiverBase receiver;
-	private boolean inError;
+    private ReceiverBase receiver;
+    private boolean inError;
 
-	public ReceiverModelHandler(Context context) {
-		super(context);
-	}
+    public ReceiverModelHandler(Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new ReceiverModelHandler(context);
-	}
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new ReceiverModelHandler(context);
+    }
 
-	@Override
-	protected Class<ReceiverModel> getSupportedModelClass() {
-		return ReceiverModel.class;
-	}
+    @Override
+    protected Class<ReceiverModel> getSupportedModelClass() {
+        return ReceiverModel.class;
+    }
 
-	@Override
-	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-		ReceiverModel receiverModel = (ReceiverModel) model;
-		String className = receiverModel.getClassName();
+    @Override
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        ReceiverModel receiverModel = (ReceiverModel) model;
+        String className = receiverModel.getClassName();
 
-		if (OptionHelper.isNullOrEmpty(className)) {
-			addError("Missing class name for receiver. ");
-			inError = true;
-			return;
-		} else {
-			className = mic.getImport(className);
-		}
+        if (OptionHelper.isNullOrEmpty(className)) {
+            addError("Missing class name for receiver. ");
+            inError = true;
+            return;
+        } else {
+            className = mic.getImport(className);
+        }
 
-		try {
-			addInfo("About to instantiate receiver of type [" + className + "]");
+        try {
+            addInfo("About to instantiate receiver of type [" + className + "]");
 
-			receiver = (ReceiverBase) OptionHelper.instantiateByClassName(className, ReceiverBase.class, context);
-			receiver.setContext(context);
+            receiver = (ReceiverBase) OptionHelper.instantiateByClassName(className, ReceiverBase.class, context);
+            receiver.setContext(context);
 
-			mic.pushObject(receiver);
-		} catch (Exception ex) {
-			inError = true;
-			addError("Could not create a receiver of type [" + className + "].", ex);
-			throw new ModelHandlerException(ex);
-		}
+            mic.pushObject(receiver);
+        } catch (Exception ex) {
+            inError = true;
+            addError("Could not create a receiver of type [" + className + "].", ex);
+            throw new ModelHandlerException(ex);
+        }
 
-	}
+    }
 
-	@Override
-	public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-		if (inError) {
-			return;
-		}
+    @Override
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        if (inError) {
+            return;
+        }
 
-		Object o = mic.peekObject();
-		if (o != receiver) {
-			addWarn("The object at the of the stack is not the receiver pushed earlier.");
-		} else {
-			mic.popObject();
-			addInfo("Registering receiver with context.");
-			mic.getContext().register(receiver);
-			receiver.start();
+        Object o = mic.peekObject();
+        if (o != receiver) {
+            addWarn("The object at the of the stack is not the receiver pushed earlier.");
+        } else {
+            mic.popObject();
+            addInfo("Registering receiver with context.");
+            mic.getContext().register(receiver);
+            receiver.start();
 
-		}
-	}
+        }
+    }
 }

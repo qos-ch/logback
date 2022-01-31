@@ -19,9 +19,9 @@ import ch.qos.logback.core.net.server.SSLServerSocketAppenderBase;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 
 /**
- * An appender that listens on a TCP port for connections from remote
- * loggers.  Each event delivered to this appender is delivered to all
- * connected remote loggers. 
+ * An appender that listens on a TCP port for connections from remote loggers.
+ * Each event delivered to this appender is delivered to all connected remote
+ * loggers.
  *
  * @author Carl Harris
  */

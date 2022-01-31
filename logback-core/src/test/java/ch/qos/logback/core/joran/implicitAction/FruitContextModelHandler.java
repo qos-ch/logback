@@ -12,23 +12,24 @@ public class FruitContextModelHandler extends ModelHandlerBase {
     public FruitContextModelHandler(Context context) {
         super(context);
     }
-    
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new FruitContextModelHandler(context);
-	}	
-		
-	@Override
+
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new FruitContextModelHandler(context);
+    }
+
+    @Override
     public void handle(ModelInterpretationContext interpretationContext, Model model) throws ModelHandlerException {
         interpretationContext.pushObject(context);
     }
 
     @Override
     public void postHandle(ModelInterpretationContext ec, Model model) throws ModelHandlerException {
- 
+
         Object o = ec.peekObject();
 
         if (o != context) {
-            addWarn("The object ["+o+"] at top of the stack is not the context named [" + context.getName() + "] pushed earlier.");
+            addWarn("The object [" + o + "] at top of the stack is not the context named [" + context.getName()
+                    + "] pushed earlier.");
         } else {
             addInfo("Popping context named [" + context.getName() + "] from the object stack");
             ec.popObject();

@@ -28,21 +28,23 @@ public class StatusListenerAction extends BaseModelAction {
     StatusListener statusListener = null;
 
     @Override
-    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         String className = attributes.getValue(CLASS_ATTRIBUTE);
         if (OptionHelper.isNullOrEmpty(className)) {
-            addError("Missing class name for statusListener. Near [" + name + "] line " + getLineNumber(interpretationContext));
+            addError("Missing class name for statusListener. Near [" + name + "] line "
+                    + getLineNumber(interpretationContext));
             return false;
         }
         return true;
     }
 
     @Override
-    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         StatusListenerModel statusListenerModel = new StatusListenerModel();
         statusListenerModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
         return statusListenerModel;
     }
-
 
 }

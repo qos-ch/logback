@@ -66,7 +66,8 @@ public class ContextInitializerTest {
 
     @Test
     @Ignore
-    // this test works only if logback-test.xml or logback.xml files are on the classpath.
+    // this test works only if logback-test.xml or logback.xml files are on the
+    // classpath.
     // However, this is something we try to avoid in order to simplify the life
     // of users trying to follow the manual and logback-examples from an IDE
     public void reset() throws JoranException {
@@ -147,7 +148,8 @@ public class ContextInitializerTest {
         ContextInitializer initializer = new ContextInitializer(loggerContext);
         assertNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
 
-        URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml", Thread.currentThread().getContextClassLoader());
+        URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml",
+                Thread.currentThread().getContextClassLoader());
         initializer.configureByResource(configurationFileUrl);
 
         assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));

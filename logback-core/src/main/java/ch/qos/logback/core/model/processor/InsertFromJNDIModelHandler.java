@@ -13,27 +13,25 @@ import ch.qos.logback.core.model.ModelUtil;
 
 public class InsertFromJNDIModelHandler extends ModelHandlerBase {
 
-	public InsertFromJNDIModelHandler(Context context) {
-		super(context);
-	}
-	
+    public InsertFromJNDIModelHandler(Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new InsertFromJNDIModelHandler(context);
-	}
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new InsertFromJNDIModelHandler(context);
+    }
 
-	@Override
-	protected Class<InsertFromJNDIModel> getSupportedModelClass() {
-		return InsertFromJNDIModel.class;
-	}
+    @Override
+    protected Class<InsertFromJNDIModel> getSupportedModelClass() {
+        return InsertFromJNDIModel.class;
+    }
 
-	@Override
-	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+    @Override
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         int errorCount = 0;
-        
+
         InsertFromJNDIModel ifjm = (InsertFromJNDIModel) model;
-        
-        
+
         String envEntryName = mic.subst(ifjm.getEnvEntryName());
         String asKey = mic.subst(ifjm.getAs());
 
@@ -57,7 +55,7 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
         }
 
         try {
-        	javax.naming.Context ctx = JNDIUtil.getInitialContext();
+            javax.naming.Context ctx = JNDIUtil.getInitialContext();
             envEntryValue = JNDIUtil.lookupString(ctx, envEntryName);
             if (OptionHelper.isNullOrEmpty(envEntryValue)) {
                 addError("[" + envEntryName + "] has null or empty value");
@@ -69,7 +67,6 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
             addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");
         }
 
-		
-	}
+    }
 
 }

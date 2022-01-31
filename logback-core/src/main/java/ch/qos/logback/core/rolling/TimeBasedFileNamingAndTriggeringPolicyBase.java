@@ -26,7 +26,8 @@ import ch.qos.logback.core.rolling.helper.DateTokenConverter;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
-abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends ContextAwareBase implements TimeBasedFileNamingAndTriggeringPolicy<E> {
+abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends ContextAwareBase
+        implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
     static private String COLLIDING_DATE_FORMAT_URL = CODES_URL + "#rfa_collision_in_dateFormat";
 
@@ -50,20 +51,23 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     public void start() {
         DateTokenConverter<Object> dtc = tbrp.fileNamePattern.getPrimaryDateTokenConverter();
         if (dtc == null) {
-            throw new IllegalStateException("FileNamePattern [" + tbrp.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
+            throw new IllegalStateException(
+                    "FileNamePattern [" + tbrp.fileNamePattern.getPattern() + "] does not contain a valid DateToken");
         }
 
         if (dtc.getZoneId() != null) {
-        	TimeZone tz = TimeZone.getTimeZone(dtc.getZoneId()); 
+            TimeZone tz = TimeZone.getTimeZone(dtc.getZoneId());
             rc = new RollingCalendar(dtc.getDatePattern(), tz, Locale.getDefault());
         } else {
             rc = new RollingCalendar(dtc.getDatePattern());
         }
-        addInfo("The date pattern is '" + dtc.getDatePattern() + "' from file name pattern '" + tbrp.fileNamePattern.getPattern() + "'.");
+        addInfo("The date pattern is '" + dtc.getDatePattern() + "' from file name pattern '"
+                + tbrp.fileNamePattern.getPattern() + "'.");
         rc.printPeriodicity(this);
 
         if (!rc.isCollisionFree()) {
-            addError("The date format in FileNamePattern will result in collisions in the names of archived log files.");
+            addError(
+                    "The date format in FileNamePattern will result in collisions in the names of archived log files.");
             addError(CoreConstants.MORE_INFO_PREFIX + COLLIDING_DATE_FORMAT_URL);
             withErrors();
             return;
@@ -131,7 +135,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     protected void withErrors() {
         errorFree = false;
     }
-    
+
     protected boolean isErrorFree() {
         return errorFree;
     }

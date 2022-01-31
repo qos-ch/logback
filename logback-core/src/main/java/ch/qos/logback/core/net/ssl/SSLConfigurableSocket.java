@@ -20,7 +20,7 @@ import javax.net.ssl.SSLSocket;
  * An {@link SSLConfigurable} wrapper for an {@link SSLSocket}.
  *
  * @author Carl Harris
- * @author Bruno Harbulot 
+ * @author Bruno Harbulot
  */
 public class SSLConfigurableSocket implements SSLConfigurable {
 
@@ -65,11 +65,11 @@ public class SSLConfigurableSocket implements SSLConfigurable {
     @Override
     public void setHostnameVerification(boolean hostnameVerification) {
         if (!hostnameVerification) {
-           return;
+            return;
         }
         SSLParameters sslParameters = delegate.getSSLParameters();
         sslParameters.setEndpointIdentificationAlgorithm("HTTPS");
         delegate.setSSLParameters(sslParameters);
     }
-    
+
 }

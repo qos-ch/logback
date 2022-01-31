@@ -25,7 +25,7 @@ import ch.qos.logback.core.net.HardenedObjectInputStream;
 import ch.qos.logback.core.util.CloseUtil;
 
 /**
- * A {@link RemoteAppenderClient} that reads serialized {@link ILoggingEvent} 
+ * A {@link RemoteAppenderClient} that reads serialized {@link ILoggingEvent}
  * objects from an {@link InputStream}.
  *
  * @author Carl Harris
@@ -40,8 +40,9 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
     private Logger logger;
 
     /**
-     * Constructs a new client.  
-     * @param id a display name for the client
+     * Constructs a new client.
+     * 
+     * @param id          a display name for the client
      * @param inputStream input stream from which events will be read
      */
     public RemoteAppenderStreamClient(String id, Socket socket) {
@@ -53,10 +54,10 @@ class RemoteAppenderStreamClient implements RemoteAppenderClient {
     /**
      * Constructs a new client.
      * <p>
-     * This constructor is provided primarily to support unit tests for which
-     * it is inconvenient to create a socket.
-     *  
-     * @param id a display name for the client
+     * This constructor is provided primarily to support unit tests for which it is
+     * inconvenient to create a socket.
+     * 
+     * @param id          a display name for the client
      * @param inputStream input stream from which events will be read
      */
     public RemoteAppenderStreamClient(String id, InputStream inputStream) {

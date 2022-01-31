@@ -16,93 +16,93 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class EventEvaluatorModelHandler extends ModelHandlerBase {
 
-	EventEvaluator<?> evaluator;
-	boolean inError = false;
+    EventEvaluator<?> evaluator;
+    boolean inError = false;
 
-	public EventEvaluatorModelHandler(Context context) {
-		super(context);
-	}
+    public EventEvaluatorModelHandler(Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new EventEvaluatorModelHandler(context);
-	}	
-	
-	@Override
-	protected Class<EventEvaluatorModel> getSupportedModelClass() {
-		return EventEvaluatorModel.class;
-	}
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new EventEvaluatorModelHandler(context);
+    }
 
-	@Override
-	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
-		EventEvaluatorModel eem = (EventEvaluatorModel) model;
+    @Override
+    protected Class<EventEvaluatorModel> getSupportedModelClass() {
+        return EventEvaluatorModel.class;
+    }
 
-		String className = eem.getClassName();
-		if (OptionHelper.isNullOrEmpty(className)) {
-			String defaultClassName = defaultClassName(intercon, eem);
-			if (OptionHelper.isNullOrEmpty(defaultClassName)) {
-				inError = true;
-				addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator>");
-				addError("No default classname could be found.");
-				return;
-			} else {
-				addInfo("Assuming default evaluator class [" + defaultClassName + "]");
-				className = defaultClassName;
-			}
-		} else {
-			className = intercon.getImport(className);
-		}
+    @Override
+    public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+        EventEvaluatorModel eem = (EventEvaluatorModel) model;
 
-		String evaluatorName = intercon.subst(eem.getName());
-		try {
-			evaluator = (EventEvaluator<?>) OptionHelper.instantiateByClassName(className,
-					ch.qos.logback.core.boolex.EventEvaluator.class, context);
-			evaluator.setContext(this.context);
-			evaluator.setName(evaluatorName);
-			intercon.pushObject(evaluator);
+        String className = eem.getClassName();
+        if (OptionHelper.isNullOrEmpty(className)) {
+            String defaultClassName = defaultClassName(intercon, eem);
+            if (OptionHelper.isNullOrEmpty(defaultClassName)) {
+                inError = true;
+                addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator>");
+                addError("No default classname could be found.");
+                return;
+            } else {
+                addInfo("Assuming default evaluator class [" + defaultClassName + "]");
+                className = defaultClassName;
+            }
+        } else {
+            className = intercon.getImport(className);
+        }
 
-		} catch (Exception oops) {
-			inError = true;
-			addError("Could not create evaluator of type " + className + "].", oops);
-		}
+        String evaluatorName = intercon.subst(eem.getName());
+        try {
+            evaluator = (EventEvaluator<?>) OptionHelper.instantiateByClassName(className,
+                    ch.qos.logback.core.boolex.EventEvaluator.class, context);
+            evaluator.setContext(this.context);
+            evaluator.setName(evaluatorName);
+            intercon.pushObject(evaluator);
 
-	}
+        } catch (Exception oops) {
+            inError = true;
+            addError("Could not create evaluator of type " + className + "].", oops);
+        }
 
-	private String defaultClassName(ModelInterpretationContext intercon, EventEvaluatorModel model) {
-		DefaultNestedComponentRegistry registry = intercon.getDefaultNestedComponentRegistry();
-		return registry.findDefaultComponentTypeByTag(model.getTag());
-	}
+    }
 
-	@Override
-	public void postHandle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
-		if (inError) {
-			return;
-		}
+    private String defaultClassName(ModelInterpretationContext intercon, EventEvaluatorModel model) {
+        DefaultNestedComponentRegistry registry = intercon.getDefaultNestedComponentRegistry();
+        return registry.findDefaultComponentTypeByTag(model.getTag());
+    }
 
-		if (evaluator instanceof LifeCycle) {
-			((LifeCycle) evaluator).start();
-			addInfo("Starting evaluator named [" + evaluator.getName() + "]");
-		}
+    @Override
+    public void postHandle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+        if (inError) {
+            return;
+        }
 
-		Object o = intercon.peekObject();
+        if (evaluator instanceof LifeCycle) {
+            ((LifeCycle) evaluator).start();
+            addInfo("Starting evaluator named [" + evaluator.getName() + "]");
+        }
 
-		if (o != evaluator) {
-			addWarn("The object on the top the of the stack is not the evaluator pushed earlier.");
-		} else {
-			intercon.popObject();
+        Object o = intercon.peekObject();
 
-			try {
-				@SuppressWarnings("unchecked")
-				Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
-						.getObject(CoreConstants.EVALUATOR_MAP);
-				if (evaluatorMap == null) {
-					addError("Could not find EvaluatorMap");
-				} else {
-					evaluatorMap.put(evaluator.getName(), evaluator);
-				}
-			} catch (Exception ex) {
-				addError("Could not set evaluator named [" + evaluator + "].", ex);
-			}
-		}
-	}
+        if (o != evaluator) {
+            addWarn("The object on the top the of the stack is not the evaluator pushed earlier.");
+        } else {
+            intercon.popObject();
+
+            try {
+                @SuppressWarnings("unchecked")
+                Map<String, EventEvaluator<?>> evaluatorMap = (Map<String, EventEvaluator<?>>) context
+                        .getObject(CoreConstants.EVALUATOR_MAP);
+                if (evaluatorMap == null) {
+                    addError("Could not find EvaluatorMap");
+                } else {
+                    evaluatorMap.put(evaluator.getName(), evaluator);
+                }
+            } catch (Exception ex) {
+                addError("Could not set evaluator named [" + evaluator + "].", ex);
+            }
+        }
+    }
 
 }

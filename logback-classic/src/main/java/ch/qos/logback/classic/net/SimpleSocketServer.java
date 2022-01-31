@@ -146,8 +146,8 @@ public class SimpleSocketServer extends Thread {
     }
 
     /**
-     * Signal another thread that we have established a connection
-     * This is useful for testing purposes.
+     * Signal another thread that we have established a connection This is useful
+     * for testing purposes.
      */
     void signalAlmostReadiness() {
         if (latch != null && latch.getCount() != 0) {
@@ -158,6 +158,7 @@ public class SimpleSocketServer extends Thread {
 
     /**
      * Used for testing purposes
+     * 
      * @param latch
      */
     void setLatch(CountDownLatch latch) {
@@ -165,8 +166,8 @@ public class SimpleSocketServer extends Thread {
     }
 
     /**
-      * Used for testing purposes
-      */
+     * Used for testing purposes
+     */
     public CountDownLatch getLatch() {
         return latch;
     }

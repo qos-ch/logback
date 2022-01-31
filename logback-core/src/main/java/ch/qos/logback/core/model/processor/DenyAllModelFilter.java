@@ -5,9 +5,9 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public class DenyAllModelFilter implements ModelFiler {
 
-	@Override
-	public FilterReply decide(Model model) {
-		return FilterReply.DENY;
-	}
+    @Override
+    public FilterReply decide(Model model) {
+        return FilterReply.DENY;
+    }
 
 }

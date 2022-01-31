@@ -16,8 +16,8 @@ package ch.qos.logback.core.util;
 import java.text.DateFormatSymbols;
 
 /**
- * This class supports mapping character sequences to
- * regular expressions as appropriate for SimpleDateFormatter.
+ * This class supports mapping character sequences to regular expressions as
+ * appropriate for SimpleDateFormatter.
  *
  * @author Ceki
  */
@@ -115,7 +115,8 @@ class CharSequenceToRegexMapper {
         int max = 0;
         for (String symbol : symbols) {
             int len = symbol.length();
-            // some SENTINEL values can be empty strings, the month at index 12 or the weekday at index 0
+            // some SENTINEL values can be empty strings, the month at index 12 or the
+            // weekday at index 0
             if (len == 0)
                 continue;
             min = Math.min(min, len);

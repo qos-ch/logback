@@ -62,12 +62,12 @@ public class StatusListenerConfigHelper {
     }
 
     /**
-       * This utility method adds a new OnConsoleStatusListener to the context
-       * passed as parameter.
-       *
-       * @param context
-       * @since 1.0.1
-       */
+     * This utility method adds a new OnConsoleStatusListener to the context passed
+     * as parameter.
+     *
+     * @param context
+     * @since 1.0.1
+     */
     static public void addOnConsoleListenerInstance(Context context, OnConsoleStatusListener onConsoleStatusListener) {
         onConsoleStatusListener.setContext(context);
         boolean effectivelyAdded = context.getStatusManager().add(onConsoleStatusListener);

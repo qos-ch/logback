@@ -67,7 +67,8 @@ public class ContextInitializer {
             configurator.setContext(loggerContext);
             configurator.doConfigure(url);
         } else {
-            throw new LogbackException("Unexpected filename extension of file [" + url.toString() + "]. Should be .xml");
+            throw new LogbackException(
+                    "Unexpected filename extension of file [" + url.toString() + "]. Should be .xml");
         }
     }
 
@@ -143,8 +144,10 @@ public class ContextInitializer {
                     c.setContext(loggerContext);
                     c.configure(loggerContext);
                 } catch (Exception e) {
-                    throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader", c != null ? c.getClass()
-                                    .getCanonicalName() : "null"), e);
+                    throw new LogbackException(
+                            String.format("Failed to initialize Configurator: %s using ServiceLoader",
+                                    c != null ? c.getClass().getCanonicalName() : "null"),
+                            e);
                 }
             } else {
                 BasicConfigurator basicConfigurator = new BasicConfigurator();
@@ -173,9 +176,11 @@ public class ContextInitializer {
             sm.add(new ErrorStatus("Failed to get url list for resource [" + resourceName + "]", loggerContext, e));
         }
         if (urlSet != null && urlSet.size() > 1) {
-            sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.", loggerContext));
+            sm.add(new WarnStatus("Resource [" + resourceName + "] occurs multiple times on the classpath.",
+                    loggerContext));
             for (URL url : urlSet) {
-                sm.add(new WarnStatus("Resource [" + resourceName + "] occurs at [" + url.toString() + "]", loggerContext));
+                sm.add(new WarnStatus("Resource [" + resourceName + "] occurs at [" + url.toString() + "]",
+                        loggerContext));
             }
         }
     }

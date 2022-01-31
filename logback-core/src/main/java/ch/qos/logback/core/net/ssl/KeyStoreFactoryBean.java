@@ -27,8 +27,8 @@ import ch.qos.logback.core.util.LocationUtil;
 /**
  * A factory bean for a JCA {@link KeyStore}.
  * <p>
- * This object holds the configurable properties of a key store and uses
- * them to create and load a {@link KeyStore} instance.
+ * This object holds the configurable properties of a key store and uses them to
+ * create and load a {@link KeyStore} instance.
  *
  * @author Carl Harris
  */
@@ -41,15 +41,19 @@ public class KeyStoreFactoryBean {
 
     /**
      * Creates a new {@link KeyStore} using the receiver's configuration.
+     * 
      * @return key store
-     * @throws NoSuchProviderException if the provider specified by 
-     *    {@link #setProvider(String)} is not known to the platform
+     * @throws NoSuchProviderException  if the provider specified by
+     *                                  {@link #setProvider(String)} is not known to
+     *                                  the platform
      * @throws NoSuchAlgorithmException if the key store type specified by
-     *    {@link #setType(String)} is not known to the specified provider
-     *    (or the platform's default provider if the provider isn't specified)
-     * @throws KeyStoreException if some other error occurs in loading
-     *    the key store from the resource specified by 
-     *    {@link #setLocation(String)}
+     *                                  {@link #setType(String)} is not known to the
+     *                                  specified provider (or the platform's
+     *                                  default provider if the provider isn't
+     *                                  specified)
+     * @throws KeyStoreException        if some other error occurs in loading the
+     *                                  key store from the resource specified by
+     *                                  {@link #setLocation(String)}
      */
     public KeyStore createKeyStore() throws NoSuchProviderException, NoSuchAlgorithmException, KeyStoreException {
 
@@ -84,8 +88,8 @@ public class KeyStoreFactoryBean {
     }
 
     /**
-     * Invokes the appropriate JCE factory method to obtain a new
-     * {@link KeyStore} object.
+     * Invokes the appropriate JCE factory method to obtain a new {@link KeyStore}
+     * object.
      */
     private KeyStore newKeyStore() throws NoSuchAlgorithmException, NoSuchProviderException, KeyStoreException {
 
@@ -94,6 +98,7 @@ public class KeyStoreFactoryBean {
 
     /**
      * Gets the location of the key store resource.
+     * 
      * @return a String containing a URL for the resource
      */
     public String getLocation() {
@@ -102,9 +107,10 @@ public class KeyStoreFactoryBean {
 
     /**
      * Sets the location of the key store resource.
-     * @param location a String containing a URL for the resource; if the 
-     *    URL string isn't prefixed by a scheme, the path is assumed to be 
-     *    relative to the root of the classpath.
+     * 
+     * @param location a String containing a URL for the resource; if the URL string
+     *                 isn't prefixed by a scheme, the path is assumed to be
+     *                 relative to the root of the classpath.
      */
     public void setLocation(String location) {
         this.location = location;
@@ -112,8 +118,10 @@ public class KeyStoreFactoryBean {
 
     /**
      * Gets the type of key store to load.
-     * @return a key store type name (e.g. {@code JKS}); the 
-     *    {@link SSL#DEFAULT_KEYSTORE_TYPE} is returned if no type has been configured
+     * 
+     * @return a key store type name (e.g. {@code JKS}); the
+     *         {@link SSL#DEFAULT_KEYSTORE_TYPE} is returned if no type has been
+     *         configured
      */
     public String getType() {
         if (type == null) {
@@ -124,10 +132,11 @@ public class KeyStoreFactoryBean {
 
     /**
      * Sets the type of key store to load.
-     * @param type a key store type name (e.g. {@code JKS}, {@code PKCS12});
-     *    the type specified must be supported by the provider specified by
-     *    {@link #setProvider(String)} or by the platform's default provider
-     *    if no provider is specified
+     * 
+     * @param type a key store type name (e.g. {@code JKS}, {@code PKCS12}); the
+     *             type specified must be supported by the provider specified by
+     *             {@link #setProvider(String)} or by the platform's default
+     *             provider if no provider is specified
      */
     public void setType(String type) {
         this.type = type;
@@ -135,6 +144,7 @@ public class KeyStoreFactoryBean {
 
     /**
      * Gets the JCA key store provider name.
+     * 
      * @return provider name or {@code null} if no provider has been configured
      */
     public String getProvider() {
@@ -143,8 +153,8 @@ public class KeyStoreFactoryBean {
 
     /**
      * Sets the JCA key store provider name.
-     * @param provider name of the JCA provider to utilize in creating the
-     *    key store
+     * 
+     * @param provider name of the JCA provider to utilize in creating the key store
      */
     public void setProvider(String provider) {
         this.provider = provider;
@@ -152,8 +162,9 @@ public class KeyStoreFactoryBean {
 
     /**
      * Gets the password to use to access the key store.
-     * @return password string; the {@link SSL#DEFAULT_KEYSTORE_PASSWORD} is returned
-     *    if no password has been configured
+     * 
+     * @return password string; the {@link SSL#DEFAULT_KEYSTORE_PASSWORD} is
+     *         returned if no password has been configured
      */
     public String getPassword() {
         if (password == null) {
@@ -164,6 +175,7 @@ public class KeyStoreFactoryBean {
 
     /**
      * Sets the password to use to access the keystore.
+     * 
      * @param password the password to set
      */
     public void setPassword(String password) {

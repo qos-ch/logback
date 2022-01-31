@@ -23,7 +23,6 @@ import java.security.SecureRandom;
 
 import org.junit.Test;
 
-
 /**
  * Unit tests for {@link SecureRandomFactoryBean}.
  *

@@ -27,10 +27,8 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
     private IThrowableProxy cause;
     private IThrowableProxy[] suppressed;
     private boolean cyclic;
-    
 
-
-	public String getMessage() {
+    public String getMessage() {
         return message;
     }
 
@@ -54,11 +52,10 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         return suppressed;
     }
 
-    
     public boolean isCyclic() {
-		return cyclic;
-	}
-    
+        return cyclic;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -108,7 +105,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
         tpvo.commonFramesCount = throwableProxy.getCommonFrames();
         tpvo.stackTraceElementProxyArray = throwableProxy.getStackTraceElementProxyArray();
         tpvo.cyclic = throwableProxy.isCyclic();
-        
+
         IThrowableProxy cause = throwableProxy.getCause();
         if (cause != null) {
             tpvo.cause = ThrowableProxyVO.build(cause);
@@ -120,7 +117,7 @@ public class ThrowableProxyVO implements IThrowableProxy, Serializable {
                 tpvo.suppressed[i] = ThrowableProxyVO.build(suppressed[i]);
             }
         }
-        
+
         return tpvo;
     }
 }

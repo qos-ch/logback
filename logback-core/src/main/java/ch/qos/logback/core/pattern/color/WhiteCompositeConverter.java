@@ -14,9 +14,11 @@
 package ch.qos.logback.core.pattern.color;
 
 /**
- * Encloses a given set of converter output in white using the appropriate ANSI escape codes.
+ * Encloses a given set of converter output in white using the appropriate ANSI
+ * escape codes.
+ * 
  * @param <E>
- * @author  Ceki G&uuml;lc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  * @since 1.0.5
  */
 public class WhiteCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {

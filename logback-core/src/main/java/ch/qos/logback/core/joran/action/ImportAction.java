@@ -14,19 +14,19 @@ import ch.qos.logback.core.model.Model;
  */
 public class ImportAction extends BaseModelAction {
 
-	@Override
-	protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name,
-			Attributes attributes) {
-		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
-		pv.validateClassAttribute();
-		return pv.isValid();
-	}
-	
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String localName, Attributes attributes) {
-		ImportModel importModel = new ImportModel();
-		importModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
-		return importModel;
-	}
+    @Override
+    protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
+        PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
+        pv.validateClassAttribute();
+        return pv.isValid();
+    }
+
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String localName,
+            Attributes attributes) {
+        ImportModel importModel = new ImportModel();
+        importModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        return importModel;
+    }
 
 }

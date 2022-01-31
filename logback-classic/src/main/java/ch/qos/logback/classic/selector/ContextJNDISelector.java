@@ -125,19 +125,19 @@ public class ContextJNDISelector implements ContextSelector {
         StatusManager sm = loggerContext.getStatusManager();
 
         String jndiEntryForConfigResource = null;
-        
+
         try {
-        	jndiEntryForConfigResource = JNDIUtil.lookupString(ctx, JNDI_CONFIGURATION_RESOURCE);
-        } catch(NamingException e) {
-        	sm.add(new WarnStatus("JNDI lookup failed", this, e));
+            jndiEntryForConfigResource = JNDIUtil.lookupString(ctx, JNDI_CONFIGURATION_RESOURCE);
+        } catch (NamingException e) {
+            sm.add(new WarnStatus("JNDI lookup failed", this, e));
         }
         // Do we have a dedicated configuration file?
         if (jndiEntryForConfigResource != null) {
             sm.add(new InfoStatus("Searching for [" + jndiEntryForConfigResource + "]", this));
             URL url = urlByResourceName(sm, jndiEntryForConfigResource);
             if (url == null) {
-                String msg = "The jndi resource [" + jndiEntryForConfigResource + "] for context [" + loggerContext.getName()
-                                + "] does not lead to a valid file";
+                String msg = "The jndi resource [" + jndiEntryForConfigResource + "] for context ["
+                        + loggerContext.getName() + "] does not lead to a valid file";
                 sm.add(new WarnStatus(msg, this));
             }
             return url;
@@ -189,8 +189,8 @@ public class ContextJNDISelector implements ContextSelector {
     /**
      * These methods are used by the LoggerContextFilter.
      * <p/>
-     * They provide a way to tell the selector which context to use, thus saving
-     * the cost of a JNDI call at each new request.
+     * They provide a way to tell the selector which context to use, thus saving the
+     * cost of a JNDI call at each new request.
      *
      * @param context
      */

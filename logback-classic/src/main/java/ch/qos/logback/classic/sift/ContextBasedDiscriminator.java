@@ -61,8 +61,8 @@ public class ContextBasedDiscriminator extends AbstractDiscriminator<ILoggingEve
     }
 
     /**
-     * The default context name in case the context name is not set for the
-     * current logging event.
+     * The default context name in case the context name is not set for the current
+     * logging event.
      * 
      * @param defaultValue
      */

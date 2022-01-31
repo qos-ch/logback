@@ -25,7 +25,10 @@ import ch.qos.logback.core.spi.ContextAware;
  */
 public interface ArchiveRemover extends ContextAware {
     void clean(Date now);
+
     void setMaxHistory(int maxHistory);
+
     void setTotalSizeCap(long totalSizeCap);
+
     Future<?> cleanAsynchronously(Date now);
 }

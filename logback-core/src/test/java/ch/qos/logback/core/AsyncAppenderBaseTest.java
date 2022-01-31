@@ -118,7 +118,7 @@ public class AsyncAppenderBaseTest {
         for (int i = 0; i < loopLen; i++) {
             asyncAppenderBase.doAppend(i);
         }
-        
+
         asyncAppenderBase.stop();
         verify(delayingListAppender, loopLen);
     }
@@ -194,7 +194,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.setMaxFlushTime(maxRuntime);
         asyncAppenderBase.start();
         asyncAppenderBase.worker.suspend();
-        
+
         for (int i = 0; i < loopLen; i++) {
             asyncAppenderBase.doAppend(i);
         }
@@ -216,7 +216,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.addAppender(la);
         asyncAppenderBase.setMaxFlushTime(maxFlushTime);
         asyncAppenderBase.start();
-        
+
         for (int i = 0; i < loopLen; i++) {
             asyncAppenderBase.doAppend(i);
         }
@@ -245,7 +245,7 @@ public class AsyncAppenderBaseTest {
         Thread.interrupted();
     }
 
-    // Interruption of current thread should not prevent logging. 
+    // Interruption of current thread should not prevent logging.
     // See also http://jira.qos.ch/browse/LOGBACK-910
     // and https://jira.qos.ch/browse/LOGBACK-1247
     @Test
@@ -262,7 +262,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.stop();
         verify(listAppender, 3);
     }
-   
+
     @Test
     public void verifyInterruptionFlagWhenStopping_INTERUPPTED() {
         asyncAppenderBase.addAppender(listAppender);
@@ -272,7 +272,7 @@ public class AsyncAppenderBaseTest {
         assertTrue(Thread.currentThread().isInterrupted());
         Thread.interrupted();
     }
-    
+
     @Test
     public void verifyInterruptionFlagWhenStopping_NOT_INTERUPPTED() {
         asyncAppenderBase.addAppender(listAppender);
@@ -280,8 +280,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.stop();
         assertFalse(Thread.currentThread().isInterrupted());
     }
-    
-    
+
     // In JDK non started threads can be interrupted
     @Ignore
     @Test
@@ -294,7 +293,7 @@ public class AsyncAppenderBaseTest {
     }
 
     private void verify(ListAppender<Integer> la, int atLeast) {
-    	// ListAppender passes as parameter should be stopped at this stage
+        // ListAppender passes as parameter should be stopped at this stage
         assertFalse(la.isStarted());
         assertTrue(atLeast + " <= " + la.list.size(), atLeast <= la.list.size());
         statusChecker.assertIsErrorFree();
@@ -315,10 +314,12 @@ public class AsyncAppenderBaseTest {
 
         // we don't need mockito for this test, but if we did here is how it would look
         // AsyncAppenderBase<Integer> spied = Mockito.spy(asyncAppenderBase);
-        // Mockito.doThrow(new IllegalStateException("non idempotent start")).when((UnsynchronizedAppenderBase<Integer>)
+        // Mockito.doThrow(new IllegalStateException("non idempotent
+        // start")).when((UnsynchronizedAppenderBase<Integer>)
         // spied).start();
 
-        // a second invocation of start will cause a IllegalThreadStateException thrown by the asyncAppenderBase.worker
+        // a second invocation of start will cause a IllegalThreadStateException thrown
+        // by the asyncAppenderBase.worker
         // thread
         asyncAppenderBase.start();
     }

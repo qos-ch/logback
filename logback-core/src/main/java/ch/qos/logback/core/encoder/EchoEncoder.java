@@ -25,14 +25,14 @@ public class EchoEncoder<E> extends EncoderBase<E> {
         return val.getBytes();
     }
 
-    public byte[] footerBytes()  {
+    public byte[] footerBytes() {
         if (fileFooter == null) {
             return null;
         }
         return fileFooter.getBytes();
     }
 
-    public byte[] headerBytes()  {
+    public byte[] headerBytes() {
         if (fileHeader == null) {
             return null;
         }

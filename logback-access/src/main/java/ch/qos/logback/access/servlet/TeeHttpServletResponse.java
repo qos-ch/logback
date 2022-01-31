@@ -41,7 +41,8 @@ public class TeeHttpServletResponse extends HttpServletResponseWrapper {
     @Override
     public PrintWriter getWriter() throws IOException {
         if (this.teeWriter == null) {
-            this.teeWriter = new PrintWriter(new OutputStreamWriter(getOutputStream(), this.getResponse().getCharacterEncoding()), true);
+            this.teeWriter = new PrintWriter(
+                    new OutputStreamWriter(getOutputStream(), this.getResponse().getCharacterEncoding()), true);
         }
         return this.teeWriter;
     }

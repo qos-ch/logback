@@ -41,10 +41,10 @@ public class DateConverter extends ClassicConverter {
         ZoneId zoneId = null;
         // if the option list contains a TZ option, then set it.
         if (optionList != null && optionList.size() > 1) {
-        	String zoneIdString = (String) optionList.get(1);
-        	zoneId = ZoneId.of(zoneIdString);
+            String zoneIdString = (String) optionList.get(1);
+            zoneId = ZoneId.of(zoneIdString);
         }
-        
+
         try {
             cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
         } catch (IllegalArgumentException e) {
@@ -53,8 +53,6 @@ public class DateConverter extends ClassicConverter {
             cachingDateFormatter = new CachingDateFormatter(CoreConstants.ISO8601_PATTERN, zoneId);
         }
 
-       
-        
         super.start();
     }
 

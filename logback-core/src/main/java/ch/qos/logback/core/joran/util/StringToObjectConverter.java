@@ -23,6 +23,7 @@ import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * Utility class which can convert string into objects.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  *
  */
@@ -120,7 +121,8 @@ public class StringToObjectConverter {
             Method valueOfMethod = type.getMethod(CoreConstants.VALUE_OF, STRING_CLASS_PARAMETER);
             return valueOfMethod.invoke(null, val);
         } catch (Exception e) {
-            ca.addError("Failed to invoke " + CoreConstants.VALUE_OF + "{} method in class [" + type.getName() + "] with value [" + val + "]");
+            ca.addError("Failed to invoke " + CoreConstants.VALUE_OF + "{} method in class [" + type.getName()
+                    + "] with value [" + val + "]");
             return null;
         }
     }

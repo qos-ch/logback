@@ -35,6 +35,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 import java.nio.charset.Charset;
+
 @Ignore
 public class SyslogAppenderTest {
 
@@ -126,7 +127,8 @@ public class SyslogAppenderTest {
         String expected = "<" + (SyslogConstants.LOG_MAIL + SyslogConstants.DEBUG_SEVERITY) + ">";
         assertTrue(msg.startsWith(expected));
 
-        checkRegexMatch(msg, SYSLOG_PREFIX_REGEX + "test/something \\[" + threadName + "\\] " + loggerName + " " + logMsg);
+        checkRegexMatch(msg,
+                SYSLOG_PREFIX_REGEX + "test/something \\[" + threadName + "\\] " + loggerName + " " + logMsg);
 
     }
 
@@ -201,7 +203,8 @@ public class SyslogAppenderTest {
         final int maxMessageSize = sa.getMaxMessageSize();
         String largeMsg = new String(mockServer.getMessageList().get(0));
         assertTrue(largeMsg.startsWith(expected));
-        String largeRegex = SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " " + "a{" + (maxMessageSize - 2000) + "," + maxMessageSize + "}";
+        String largeRegex = SYSLOG_PREFIX_REGEX + "\\[" + threadName + "\\] " + loggerName + " " + "a{"
+                + (maxMessageSize - 2000) + "," + maxMessageSize + "}";
         checkRegexMatch(largeMsg, largeRegex);
 
         String msg = new String(mockServer.getMessageList().get(1));
@@ -238,7 +241,8 @@ public class SyslogAppenderTest {
         // See LOGBACK-732
         setMockServerAndConfigure(1);
 
-        // Use a string that can be encoded in a somewhat odd encoding (ISO-8859-4) to minimize
+        // Use a string that can be encoded in a somewhat odd encoding (ISO-8859-4) to
+        // minimize
         // the probability of the encoding test to work by accident
         String logMsg = "R\u0129ga"; // Riga spelled with the i having a tilda on top
 

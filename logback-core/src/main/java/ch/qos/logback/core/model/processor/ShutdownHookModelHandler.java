@@ -30,29 +30,27 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
     }
 
     static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new ShutdownHookModelHandler(context);
-	}	
-	
-    
+        return new ShutdownHookModelHandler(context);
+    }
+
     @Override
     protected Class<ShutdownHookModel> getSupportedModelClass() {
-    	return ShutdownHookModel.class;
+        return ShutdownHookModel.class;
     }
-    
+
     @Override
     public void handle(ModelInterpretationContext interpretationContext, Model model) {
 
-    	ShutdownHookModel shutdownHookModel = (ShutdownHookModel) model;
+        ShutdownHookModel shutdownHookModel = (ShutdownHookModel) model;
 
-        
         String className = shutdownHookModel.getClassName();
         if (OptionHelper.isNullOrEmpty(className)) {
             className = DefaultShutdownHook.class.getName();
             addInfo("Assuming className [" + className + "]");
         } else {
-        	className = interpretationContext.getImport(className);
+            className = interpretationContext.getImport(className);
         }
-                
+
         addInfo("About to instantiate shutdown hook of type [" + className + "]");
         ShutdownHookBase hook = null;
         try {
@@ -62,15 +60,14 @@ public class ShutdownHookModelHandler extends ModelHandlerBase {
             addError("Could not create a shutdown hook of type [" + className + "].", e);
         }
 
-        if(hook == null)
+        if (hook == null)
             return;
-        
+
         Thread hookThread = new Thread(hook, "Logback shutdown hook [" + context.getName() + "]");
         addInfo("Registeting shuthown hook with JVM runtime.");
         context.putObject(CoreConstants.SHUTDOWN_HOOK_THREAD, hookThread);
         Runtime.getRuntime().addShutdownHook(hookThread);
 
-        
     }
 
 }

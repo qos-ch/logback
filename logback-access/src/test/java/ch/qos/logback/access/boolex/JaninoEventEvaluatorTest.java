@@ -31,13 +31,13 @@ public class JaninoEventEvaluatorTest {
 
     final String expectedURL1 = "testUrl1";
     final String expectedURL2 = "testUrl2";
-    //Context context = new ContextBase();
+    // Context context = new ContextBase();
     JaninoEventEvaluator evaluator;
     DummyRequest request;
     DummyResponse response;
     DummyServerAdapter serverAdapter;
     AccessContext accessContext = new AccessContext();
-    
+
     @Before
     public void setUp() throws Exception {
         evaluator = new JaninoEventEvaluator();

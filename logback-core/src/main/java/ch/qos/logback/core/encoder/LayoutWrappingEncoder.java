@@ -27,8 +27,8 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     /**
      * The charset to use when converting a String into bytes.
      * <p>
-     * By default this property has the value {@code null} which corresponds to
-     * the system's default charset.
+     * By default this property has the value {@code null} which corresponds to the
+     * system's default charset.
      */
     private Charset charset;
 
@@ -48,11 +48,11 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     /**
-     * Set the charset to use when converting the string returned by the layout
-     * into bytes.
+     * Set the charset to use when converting the string returned by the layout into
+     * bytes.
      * <p>
-     * By default this property has the value {@code null} which corresponds to
-     * the system's default charset.
+     * By default this property has the value {@code null} which corresponds to the
+     * system's default charset.
      *
      * @param charset
      */
@@ -61,9 +61,10 @@ public class LayoutWrappingEncoder<E> extends EncoderBase<E> {
     }
 
     /**
-     * Sets the immediateFlush option. The default value for immediateFlush is 'true'. If set to true,
-     * the doEncode() method will immediately flush the underlying OutputStream. Although immediate flushing
-     * is safer, it also significantly degrades logging throughput.
+     * Sets the immediateFlush option. The default value for immediateFlush is
+     * 'true'. If set to true, the doEncode() method will immediately flush the
+     * underlying OutputStream. Although immediate flushing is safer, it also
+     * significantly degrades logging throughput.
      *
      * @since 1.0.3
      */

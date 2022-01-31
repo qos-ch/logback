@@ -122,7 +122,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public void setSequenceNumber(long sequenceNumber) {
         this.sequenceNumber = sequenceNumber;
     }
-    
+
     public long getContextBirthTime() {
         return loggerContextVO.getBirthTime();
     }
@@ -142,11 +142,11 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public void prepareForDeferredProcessing() {
     }
 
-	@Override
-	public List<KeyValuePair> getKeyValuePairs() {
-		return kvpList;
-	}
-	
+    @Override
+    public List<KeyValuePair> getKeyValuePairs() {
+        return kvpList;
+    }
+
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         out.writeInt(level.levelInt);
@@ -249,7 +249,5 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         sb.append(getFormattedMessage());
         return sb.toString();
     }
-
-
 
 }

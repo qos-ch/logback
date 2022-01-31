@@ -19,12 +19,13 @@ import ch.qos.logback.core.joran.action.Action;
 
 /**
  * 
- * As its name indicates, a RuleStore contains 2-tuples consists of a ElementSelector
- * and an Action.
+ * As its name indicates, a RuleStore contains 2-tuples consists of a
+ * ElementSelector and an Action.
  * 
- * <p>As a joran configurator goes through the elements in a document, it asks
- * the rule store whether there are rules matching the current pattern by
- * invoking the {@link #matchActions(ElementPath)} method.
+ * <p>
+ * As a joran configurator goes through the elements in a document, it asks the
+ * rule store whether there are rules matching the current pattern by invoking
+ * the {@link #matchActions(ElementPath)} method.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 

@@ -17,12 +17,13 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A converters based on a a locally incremented sequence number. The sequence number is
- * initialized to the number of milliseconds elapsed since 1970-01-01 until this instance
- * is initialized.
+ * A converters based on a a locally incremented sequence number. The sequence
+ * number is initialized to the number of milliseconds elapsed since 1970-01-01
+ * until this instance is initialized.
  *
  * <p>
- * <b>EXPERIMENTAL</b> This class is experimental and may be removed in the future.
+ * <b>EXPERIMENTAL</b> This class is experimental and may be removed in the
+ * future.
  *
  */
 public class LocalSequenceNumberConverter extends ClassicConverter {

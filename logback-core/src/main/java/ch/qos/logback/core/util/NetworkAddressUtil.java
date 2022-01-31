@@ -49,7 +49,8 @@ public class NetworkAddressUtil extends ContextAwareBase {
     }
 
     private static boolean acceptableAddress(InetAddress address) {
-        return address != null && !address.isLoopbackAddress() && !address.isAnyLocalAddress() && !address.isLinkLocalAddress();
+        return address != null && !address.isLoopbackAddress() && !address.isAnyLocalAddress()
+                && !address.isLinkLocalAddress();
     }
 
     /**

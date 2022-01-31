@@ -29,8 +29,8 @@ import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.CachingDateFormatter;
 
 /**
- * Test that we can create time-stamped log files with the help of
- * the &lt;timestamp> element in configuration files.
+ * Test that we can create time-stamped log files with the help of the
+ * &lt;timestamp> element in configuration files.
  * 
  * @author Ceki G&uuml;lc&uuml;
  *
@@ -71,6 +71,7 @@ public class UniqueFileTest {
         Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
         root.info("hello");
 
-        ScaffoldingForRollingTests.existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX + "UNIK_" + timestamp + diffAsStr + "log.txt");
+        ScaffoldingForRollingTests
+                .existenceCheck(CoreTestConstants.OUTPUT_DIR_PREFIX + "UNIK_" + timestamp + diffAsStr + "log.txt");
     }
 }

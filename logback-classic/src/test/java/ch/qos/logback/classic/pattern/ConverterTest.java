@@ -38,7 +38,6 @@ import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
 
-
 public class ConverterTest {
 
     LoggerContext lc = new LoggerContext();
@@ -50,7 +49,8 @@ public class ConverterTest {
     // forces the returned caller information to match the caller stack for this
     // this particular test.
     LoggingEvent makeLoggingEvent(Exception ex) {
-        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, "Some message", ex, null);
+        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO,
+                "Some message", ex, null);
     }
 
     Exception getException(String msg, Exception cause) {
@@ -315,8 +315,8 @@ public class ConverterTest {
 
             String expectedRegex = "Caller\\+4\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
             String actual = buf.toString();
-            assertTrue("actual: "+actual, Pattern.compile(expectedRegex).matcher(actual).find());
-              
+            assertTrue("actual: " + actual, Pattern.compile(expectedRegex).matcher(actual).find());
+
         }
     }
 

@@ -23,18 +23,19 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 public class MicrosecondConverterTest {
 
-	MicrosecondConverter mc = new MicrosecondConverter();
-	public long timeStamp;
-	public int nanoseconds;
-	@Test
-	public void smoke() {
-		LoggingEvent le = new LoggingEvent();
-		Instant instant = Instant.parse("2011-12-03T10:15:30Z");
-    	instant = instant.plusNanos(123_456_789);
-    	le.setInstant(instant);
-    	
-		String result = mc.convert(le);
-		assertEquals("456", result);
-	}
-	
+    MicrosecondConverter mc = new MicrosecondConverter();
+    public long timeStamp;
+    public int nanoseconds;
+
+    @Test
+    public void smoke() {
+        LoggingEvent le = new LoggingEvent();
+        Instant instant = Instant.parse("2011-12-03T10:15:30Z");
+        instant = instant.plusNanos(123_456_789);
+        le.setInstant(instant);
+
+        String result = mc.convert(le);
+        assertEquals("456", result);
+    }
+
 }

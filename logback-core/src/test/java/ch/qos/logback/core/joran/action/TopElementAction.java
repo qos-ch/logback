@@ -13,10 +13,11 @@ import ch.qos.logback.core.model.TopModel;
  */
 public class TopElementAction extends BaseModelAction {
 
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         TopModel topModel = new TopModel();
         return topModel;
-	}
-	
+    }
+
 }

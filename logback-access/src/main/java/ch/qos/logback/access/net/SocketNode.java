@@ -52,7 +52,7 @@ public class SocketNode implements Runnable {
             System.out.println("Could not open HardenedObjectInputStream to " + socket + e);
         }
     }
-    
+
     @Override
     public void run() {
         IAccessEvent event;

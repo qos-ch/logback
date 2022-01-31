@@ -41,8 +41,8 @@ public class InstrumentedServerSocketAppenderBase extends AbstractServerSocketAp
         this(serverSocket, new RemoteReceiverServerListener(serverSocket), null);
     }
 
-    public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket, ServerListener<RemoteReceiverClient> listener,
-                    ServerRunner<RemoteReceiverClient> runner) {
+    public InstrumentedServerSocketAppenderBase(ServerSocket serverSocket,
+            ServerListener<RemoteReceiverClient> listener, ServerRunner<RemoteReceiverClient> runner) {
         this.serverSocket = serverSocket;
         this.listener = listener;
         this.runner = runner;
@@ -83,7 +83,8 @@ public class InstrumentedServerSocketAppenderBase extends AbstractServerSocketAp
     }
 
     @Override
-    protected ServerRunner<RemoteReceiverClient> createServerRunner(ServerListener<RemoteReceiverClient> listener, Executor executor) {
+    protected ServerRunner<RemoteReceiverClient> createServerRunner(ServerListener<RemoteReceiverClient> listener,
+            Executor executor) {
         lastListener = listener;
         return runner != null ? runner : super.createServerRunner(listener, executor);
     }

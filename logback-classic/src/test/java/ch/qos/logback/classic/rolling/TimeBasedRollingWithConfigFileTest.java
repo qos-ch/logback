@@ -103,7 +103,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         StatusPrinter.print(lc);
         statusChecker.assertContainsMatch(Status.WARN, CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
     }
-    
+
     @Test
     public void timeAndSize() throws Exception {
         String testId = "timeAndSize";
@@ -116,11 +116,11 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         sizeThreshold = prefix.length() * approxWritesPerPeriod;
         lc.putProperty("sizeThreshold", "" + sizeThreshold);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
-        
+
         StatusPrinter.print(lc);
         // Test http://jira.qos.ch/browse/LOGBACK-1236
         statusChecker.assertNoMatch(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
-        
+
         Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
         expectedFilenameList.add(randomOutputDir + "z" + testId);
@@ -148,7 +148,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         // match exactly the expected archive files. Thus, we aim for
         // an approximate match
         assertTrue("exitenceCount=" + eCount + ", expectedFilenameList.size=" + expectedFilenameList.size(),
-                        eCount >= 4 && eCount > expectedFilenameList.size() / 2);
+                eCount >= 4 && eCount > expectedFilenameList.size() / 2);
     }
 
     @Test
@@ -164,18 +164,16 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         assertFalse(rfa.isStarted());
     }
 
-
     // see also LOGBACK-1176
     @Test
     public void timeAndSizeWithoutMaxFileSize() throws Exception {
         String testId = "timeAndSizeWithoutMaxFileSize";
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
         Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        //expectedFilenameList.add(randomOutputDir + "z" + testId);
+        // expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
-      
 
-        //statusChecker.assertContainsMatch("Missing integer token");
+        // statusChecker.assertContainsMatch("Missing integer token");
         assertFalse(rfa.isStarted());
         StatusPrinter.print(lc);
     }
@@ -186,12 +184,13 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         lc.putProperty("testId", testId);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
         Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
-        //expectedFilenameList.add(randomOutputDir + "z" + testId);
+        // expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
-      
-        statusChecker.assertContainsMatch("totalSizeCap of \\[\\d* \\w*\\] is smaller than maxFileSize \\[\\d* \\w*\\] which is non-sensical");
+
+        statusChecker.assertContainsMatch(
+                "totalSizeCap of \\[\\d* \\w*\\] is smaller than maxFileSize \\[\\d* \\w*\\] which is non-sensical");
         assertFalse(rfa.isStarted());
-      
+
     }
 
     void addExpectedFileNamedIfItsTime(String testId, String msg, boolean gzExtension) {

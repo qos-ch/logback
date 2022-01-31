@@ -38,8 +38,8 @@ import java.util.Vector;
 /**
  * The Access module's internal representation of logging events. When the
  * logging component instance is called in the container to log then a
- * <code>AccessEvent</code> instance is created. This instance is passed
- * around to the different logback components.
+ * <code>AccessEvent</code> instance is created. This instance is passed around
+ * to the different logback components.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
@@ -89,7 +89,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     private long sequenceNumber = 0;
 
-    public AccessEvent(Context context, HttpServletRequest httpRequest, HttpServletResponse httpResponse, ServerAdapter adapter) {
+    public AccessEvent(Context context, HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+            ServerAdapter adapter) {
         this.httpRequest = httpRequest;
         this.httpResponse = httpResponse;
         this.timeStamp = System.currentTimeMillis();
@@ -374,7 +375,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
     public String getAttribute(String key) {
         Object value = null;
         if (attributeMap != null) {
-            // Event was prepared for deferred processing so we have a copy of attribute map and must use that copy
+            // Event was prepared for deferred processing so we have a copy of attribute map
+            // and must use that copy
             value = attributeMap.get(key);
         } else if (httpRequest != null) {
             // We have original request so take attribute from it
@@ -410,10 +412,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     private boolean shouldCopyAttribute(String name, Object value) {
         if (AccessConstants.LB_INPUT_BUFFER.equals(name) || AccessConstants.LB_OUTPUT_BUFFER.equals(name)) {
-            // Do not copy attributes used by logback internally - these are available via other getters anyway
+            // Do not copy attributes used by logback internally - these are available via
+            // other getters anyway
             return false;
         } else if (value == null) {
-            // No reasons to copy nulls - Map.get() will return null for missing keys and the list of attribute
+            // No reasons to copy nulls - Map.get() will return null for missing keys and
+            // the list of attribute
             // names is not available through IAccessEvent
             return false;
         } else {

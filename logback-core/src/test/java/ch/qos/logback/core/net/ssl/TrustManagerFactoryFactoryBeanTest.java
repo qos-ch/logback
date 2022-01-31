@@ -19,7 +19,6 @@ import javax.net.ssl.TrustManagerFactory;
 
 import org.junit.Test;
 
-
 /**
  * Unit tests for {@link TrustManagerFactoryFactoryBean}.
  *

@@ -33,7 +33,8 @@ public class MultithreadedInitializationTest {
 
     @Before
     public void setUp() throws Exception {
-        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY,
+                ClassicTestConstants.INPUT_PREFIX + "listAppender.xml");
         LoggerFactoryFriend.reset();
     }
 
@@ -60,7 +61,8 @@ public class MultithreadedInitializationTest {
     }
 
     private List<ILoggingEvent> getRecordedEvents() {
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(Logger.ROOT_LOGGER_NAME);
 
         ListAppender<ILoggingEvent> la = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(la);

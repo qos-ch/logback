@@ -46,7 +46,7 @@ public class ImplicitActionTest {
     FruitContext fruitContext = new FruitContext();
     SimpleConfigurator simpleConfigurator;
     StatusChecker checker = new StatusChecker(fruitContext);
-    
+
     @Before
     public void setUp() throws Exception {
         fruitContext.setName("fruits");
@@ -61,7 +61,7 @@ public class ImplicitActionTest {
                 defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
                 defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
-                
+
                 return defaultProcessor;
             }
 
@@ -146,7 +146,7 @@ public class ImplicitActionTest {
 
     @Test
     public void statusListenerWithPrefix() throws Exception {
-        try {                                             
+        try {
             simpleConfigurator.doConfigure(IMPLCIT_DIR + "statusListenerWithPrefix.xml");
             StatusPrinter.print(fruitContext);
             checker.assertIsErrorFree();

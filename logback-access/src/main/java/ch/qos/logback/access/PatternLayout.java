@@ -101,7 +101,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
         defaultConverterMap.put("I", ThreadNameConverter.class.getName());
         defaultConverterMap.put("threadName", ThreadNameConverter.class.getName());
-        
+
         defaultConverterMap.put("l", NAConverter.class.getName());
 
         defaultConverterMap.put("m", RequestMethodConverter.class.getName());
@@ -109,7 +109,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
         defaultConverterMap.put("q", QueryStringConverter.class.getName());
         defaultConverterMap.put("queryString", QueryStringConverter.class.getName());
-        
+
         defaultConverterMap.put("r", RequestURLConverter.class.getName());
         defaultConverterMap.put("requestURL", RequestURLConverter.class.getName());
 
@@ -118,7 +118,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
         defaultConverterMap.put("S", SessionIDConverter.class.getName());
         defaultConverterMap.put("sessionID", SessionIDConverter.class.getName());
-        
+
         defaultConverterMap.put("t", DateConverter.class.getName());
         defaultConverterMap.put("date", DateConverter.class.getName());
 
@@ -156,7 +156,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
 
         defaultConverterMap.put("elapsedSeconds", ElapsedSecondsConverter.class.getName());
         defaultConverterMap.put("T", ElapsedSecondsConverter.class.getName());
-        
+
         defaultConverterMap.put("n", LineSeparatorConverter.class.getName());
 
         defaultConverterMap.put("black", BlackCompositeConverter.class.getName());

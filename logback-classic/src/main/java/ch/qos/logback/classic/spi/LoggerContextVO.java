@@ -67,7 +67,8 @@ public class LoggerContextVO implements Serializable {
 
     @Override
     public String toString() {
-        return "LoggerContextVO{" + "name='" + name + '\'' + ", propertyMap=" + propertyMap + ", birthTime=" + birthTime + '}';
+        return "LoggerContextVO{" + "name='" + name + '\'' + ", propertyMap=" + propertyMap + ", birthTime=" + birthTime
+                + '}';
     }
 
     @Override

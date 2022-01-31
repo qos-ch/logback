@@ -69,8 +69,8 @@ public class ConditionalTest {
     @Test
     public void conditionalConsoleApp_IF_THEN_True() throws JoranException, IOException, InterruptedException {
         InetAddress localhost = InetAddress.getLocalHost();
-        System.out.println("In conditionalConsoleApp_IF_THEN_True, canonicalHostName=\"" + localhost.getCanonicalHostName() + "] and hostNmae=\""
-                        + localhost.getHostName() + "\"");
+        System.out.println("In conditionalConsoleApp_IF_THEN_True, canonicalHostName=\""
+                + localhost.getCanonicalHostName() + "] and hostNmae=\"" + localhost.getHostName() + "\"");
         context.putProperty("aHost", localhost.getHostName());
 
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/conditionalConsoleApp.xml";
@@ -123,10 +123,11 @@ public class ConditionalTest {
     @Test
     public void conditionalInclusionWithExistingFile() throws JoranException, IOException, InterruptedException {
 
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/conditionalIncludeExistingFile.xml";
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+                + "conditional/conditionalIncludeExistingFile.xml";
         configure(configFileAsStr);
         StatusPrinter.print(context);
-        
+
         ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
         assertNotNull(consoleAppender);
         StatusChecker checker = new StatusChecker(context);
@@ -136,7 +137,8 @@ public class ConditionalTest {
     @Test
     public void conditionalInclusionWithInexistentFile() throws JoranException, IOException, InterruptedException {
 
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/conditionalIncludeInexistentFile.xml";
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX
+                + "conditional/conditionalIncludeInexistentFile.xml";
         configure(configFileAsStr);
 
         ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");

@@ -5,7 +5,6 @@ import ch.qos.logback.core.spi.FilterReply;
 
 public interface ModelFiler {
 
-	
-	FilterReply decide(Model model);
-	
+    FilterReply decide(Model model);
+
 }

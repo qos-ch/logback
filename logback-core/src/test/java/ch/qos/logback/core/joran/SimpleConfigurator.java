@@ -32,7 +32,7 @@ public class SimpleConfigurator extends GenericConfigurator {
     @Override
     protected void addImplicitRules(SaxEventInterpreter interpreter) {
 //    	BeanDescriptionCache bdc = interpreter.getInterpretationContext().getBeanDescriptionCache();
-    	
+
 //        NestedComplexPropertyIA nestedIA = new NestedComplexPropertyIA(bdc);
 //        nestedIA.setContext(context);
 //        interpreter.addImplicitAction(nestedIA);
@@ -40,9 +40,8 @@ public class SimpleConfigurator extends GenericConfigurator {
 //        NestedBasicPropertyIA nestedSimpleIA = new NestedBasicPropertyIA(bdc);
 //        nestedSimpleIA.setContext(context);
 //        interpreter.addImplicitAction(nestedSimpleIA);
-        
-        
-        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+
+        ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
         interpreter.addImplicitAction(implicitRuleModelAction);
 
     }

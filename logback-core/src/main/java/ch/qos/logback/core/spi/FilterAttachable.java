@@ -31,17 +31,16 @@ public interface FilterAttachable<E> {
     void clearAllFilters();
 
     /**
-     * Get a copy of all the filters contained within this FilterAttachable
-     * object.
+     * Get a copy of all the filters contained within this FilterAttachable object.
      * 
      * @return all attached filters as a list
      */
     List<Filter<E>> getCopyOfAttachedFiltersList();
 
     /**
-     * Loop through the filters in the chain. As soon as a filter decides on
-     * ACCEPT or DENY, then that value is returned. If all of the filters return
-     * NEUTRAL, then NEUTRAL is returned.
+     * Loop through the filters in the chain. As soon as a filter decides on ACCEPT
+     * or DENY, then that value is returned. If all of the filters return NEUTRAL,
+     * then NEUTRAL is returned.
      */
     FilterReply getFilterChainDecision(E event);
 }

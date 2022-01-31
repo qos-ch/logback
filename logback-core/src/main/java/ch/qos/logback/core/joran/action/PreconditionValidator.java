@@ -10,47 +10,48 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class PreconditionValidator extends ContextAwareBase {
 
-	boolean valid = true;
-	SaxEventInterpretationContext intercon;
-	Attributes attributes;
-	String tag;
+    boolean valid = true;
+    SaxEventInterpretationContext intercon;
+    Attributes attributes;
+    String tag;
 
-	public PreconditionValidator(ContextAware origin, SaxEventInterpretationContext intercon, String name, Attributes attributes) {
-		super(origin);
-		this.setContext(origin.getContext());
-		this.intercon = intercon;
-		this.tag = name;
-		this.attributes = attributes;
-	}
+    public PreconditionValidator(ContextAware origin, SaxEventInterpretationContext intercon, String name,
+            Attributes attributes) {
+        super(origin);
+        this.setContext(origin.getContext());
+        this.intercon = intercon;
+        this.tag = name;
+        this.attributes = attributes;
+    }
 
-	public PreconditionValidator validateClassAttribute() {
-		return generic(Action.CLASS_ATTRIBUTE);
-	}
+    public PreconditionValidator validateClassAttribute() {
+        return generic(Action.CLASS_ATTRIBUTE);
+    }
 
-	public PreconditionValidator validateNameAttribute() {
-		return generic(Action.NAME_ATTRIBUTE);
-	}
+    public PreconditionValidator validateNameAttribute() {
+        return generic(Action.NAME_ATTRIBUTE);
+    }
 
-	public PreconditionValidator validateValueAttribute() {
-		return generic(JoranConstants.VALUE_ATTR);
-	}
+    public PreconditionValidator validateValueAttribute() {
+        return generic(JoranConstants.VALUE_ATTR);
+    }
 
-	public PreconditionValidator validateRefAttribute() {
-		return generic(JoranConstants.REF_ATTRIBUTE);
-	}
-	
-	public PreconditionValidator generic(String attributeName) {
-		String attributeValue = attributes.getValue(attributeName);
-		if (OptionHelper.isNullOrEmpty(attributeValue)) {
-			addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line " + Action.getLineNumber(intercon));
-			this.valid = false;
-		}
-		return this;
-	}
+    public PreconditionValidator validateRefAttribute() {
+        return generic(JoranConstants.REF_ATTRIBUTE);
+    }
 
-	public boolean isValid() {
-		return valid;
-	}
+    public PreconditionValidator generic(String attributeName) {
+        String attributeValue = attributes.getValue(attributeName);
+        if (OptionHelper.isNullOrEmpty(attributeValue)) {
+            addError("Missing attribute [" + attributeName + "] in element [" + tag + "] near line "
+                    + Action.getLineNumber(intercon));
+            this.valid = false;
+        }
+        return this;
+    }
 
+    public boolean isValid() {
+        return valid;
+    }
 
 }

@@ -22,63 +22,63 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class SequenceNumberGeneratorModelHandler extends ModelHandlerBase {
 
-	SequenceNumberGenerator sequenceNumberGenerator;
-	private boolean inError;
+    SequenceNumberGenerator sequenceNumberGenerator;
+    private boolean inError;
 
-	public SequenceNumberGeneratorModelHandler(Context context) {
-		super(context);
-	}
+    public SequenceNumberGeneratorModelHandler(Context context) {
+        super(context);
+    }
 
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new ShutdownHookModelHandler(context);
-	}
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new ShutdownHookModelHandler(context);
+    }
 
-	@Override
-	protected Class<SequenceNumberGeneratorModel> getSupportedModelClass() {
-		return SequenceNumberGeneratorModel.class;
-	}
+    @Override
+    protected Class<SequenceNumberGeneratorModel> getSupportedModelClass() {
+        return SequenceNumberGeneratorModel.class;
+    }
 
-	@Override
-	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+    @Override
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 
-		SequenceNumberGeneratorModel sequenceNumberGeneratorModel = (SequenceNumberGeneratorModel) model;
-		String className = sequenceNumberGeneratorModel.getClassName();
-		if (OptionHelper.isNullOrEmpty(className)) {
-			className = BasicSequenceNumberGenerator.class.getName();
-			addInfo("Assuming className [" + className + "]");
-		} else {
-			className = mic.getImport(className);
-		}
+        SequenceNumberGeneratorModel sequenceNumberGeneratorModel = (SequenceNumberGeneratorModel) model;
+        String className = sequenceNumberGeneratorModel.getClassName();
+        if (OptionHelper.isNullOrEmpty(className)) {
+            className = BasicSequenceNumberGenerator.class.getName();
+            addInfo("Assuming className [" + className + "]");
+        } else {
+            className = mic.getImport(className);
+        }
 
-		try {
-			addInfo("About to instantiate SequenceNumberGenerator of type [" + className + "]");
+        try {
+            addInfo("About to instantiate SequenceNumberGenerator of type [" + className + "]");
 
-			sequenceNumberGenerator = (SequenceNumberGenerator) OptionHelper.instantiateByClassName(className,
-					SequenceNumberGenerator.class, context);
-			sequenceNumberGenerator.setContext(context);
+            sequenceNumberGenerator = (SequenceNumberGenerator) OptionHelper.instantiateByClassName(className,
+                    SequenceNumberGenerator.class, context);
+            sequenceNumberGenerator.setContext(context);
 
-			mic.pushObject(sequenceNumberGenerator);
-		} catch (Exception e) {
-			inError = true;
-			addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
-			throw new ModelHandlerException(e);
-		}
-	}
+            mic.pushObject(sequenceNumberGenerator);
+        } catch (Exception e) {
+            inError = true;
+            addError("Could not create a SequenceNumberGenerator of type [" + className + "].", e);
+            throw new ModelHandlerException(e);
+        }
+    }
 
-	public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-		if (inError) {
-			return;
-		}
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        if (inError) {
+            return;
+        }
 
-		Object o = mic.peekObject();
-		if (o != sequenceNumberGenerator) {
-			addWarn("The object at the of the stack is not the hook pushed earlier.");
-		} else {
-			mic.popObject();
+        Object o = mic.peekObject();
+        if (o != sequenceNumberGenerator) {
+            addWarn("The object at the of the stack is not the hook pushed earlier.");
+        } else {
+            mic.popObject();
 
-			addInfo("Registering sequenceNumberGenerator with context.");
-			context.setSequenceNumberGenerator(sequenceNumberGenerator);
-		}
-	}
+            addInfo("Registering sequenceNumberGenerator with context.");
+            context.setSequenceNumberGenerator(sequenceNumberGenerator);
+        }
+    }
 
 }

@@ -20,22 +20,19 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
     static final String RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION = "Re-registering previous fallback configuration once more as a fallback configuration point";
     static final String FALLING_BACK_TO_SAFE_CONFIGURATION = "Given previous errors, falling back to previously registered safe configuration.";
 
-    
-    
     long birthdate = System.currentTimeMillis();
     List<ReconfigureOnChangeTaskListener> listeners;
-    
-    
+
     void addListener(ReconfigureOnChangeTaskListener listener) {
-        if(listeners==null)
+        if (listeners == null)
             listeners = new ArrayList<ReconfigureOnChangeTaskListener>();
         listeners.add(listener);
     }
-    
+
     @Override
     public void run() {
         fireEnteredRunMethod();
-        
+
         ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(context);
         if (configurationWatchList == null) {
             addWarn("Empty ConfigurationWatchList in context");
@@ -51,7 +48,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         if (!configurationWatchList.changeDetected()) {
             return;
         }
-    	System.out.println("fireChangeDetected");
+        System.out.println("fireChangeDetected");
         fireChangeDetected();
         URL mainConfigurationURL = configurationWatchList.getMainURL();
 
@@ -62,33 +59,32 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         if (mainConfigurationURL.toString().endsWith("xml")) {
             performXMLConfiguration(lc, mainConfigurationURL);
         } else if (mainConfigurationURL.toString().endsWith("groovy")) {
-           addError("Groovy configuration disabled due to Java 9 compilation issues.");
+            addError("Groovy configuration disabled due to Java 9 compilation issues.");
         }
         fireDoneReconfiguring();
     }
 
     private void fireEnteredRunMethod() {
-        if(listeners == null)
+        if (listeners == null)
             return;
-        
-        for(ReconfigureOnChangeTaskListener listener: listeners)
+
+        for (ReconfigureOnChangeTaskListener listener : listeners)
             listener.enteredRunMethod();
     }
 
     private void fireChangeDetected() {
-        if(listeners == null)
+        if (listeners == null)
             return;
-        
-        for(ReconfigureOnChangeTaskListener listener: listeners)
+
+        for (ReconfigureOnChangeTaskListener listener : listeners)
             listener.changeDetected();
     }
 
-
     private void fireDoneReconfiguring() {
-        if(listeners == null)
+        if (listeners == null)
             return;
-        
-        for(ReconfigureOnChangeTaskListener listener: listeners)
+
+        for (ReconfigureOnChangeTaskListener listener : listeners)
             listener.doneReconfiguring();
     }
 
@@ -133,7 +129,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         joranConfigurator.setContext(context);
         ConfigurationWatchList oldCWL = ConfigurationWatchListUtil.getConfigurationWatchList(context);
         ConfigurationWatchList newCWL = oldCWL.buildClone();
-        
+
         if (failsafeEvents == null || failsafeEvents.isEmpty()) {
             addWarn("No previous configuration to fall back on.");
         } else {
@@ -144,7 +140,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
                 joranConfigurator.buildAndProcessModel(failsafeEvents);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
                 joranConfigurator.registerSafeConfiguration(failsafeEvents);
-                
+
                 addInfo("after registerSafeConfiguration: " + failsafeEvents);
             } catch (JoranException e) {
                 addError("Unexpected exception thrown by a configuration considered safe.", e);

@@ -22,16 +22,19 @@ import ch.qos.logback.core.CoreConstants;
 /**
  * This logger context quite optimized for logger retrieval.
  * 
- * <p>It uses a single loggerMap where the key is the logger name and the value
- * is the logger.
+ * <p>
+ * It uses a single loggerMap where the key is the logger name and the value is
+ * the logger.
  * 
- * <p>This approach acts a lower limit for what is achievable for low memory
- * usage as well as low creation/retrieval times. However, this simplicity also
+ * <p>
+ * This approach acts a lower limit for what is achievable for low memory usage
+ * as well as low creation/retrieval times. However, this simplicity also
  * results in slow effective level evaluation, the most frequently exercised
  * part of the API.
  * 
- * <p>This class is expected to contain correct results, and serve to verify
- * the correctness of a more sophisticated implementation.
+ * <p>
+ * This class is expected to contain correct results, and serve to verify the
+ * correctness of a more sophisticated implementation.
  * 
  * @author ceki
  */

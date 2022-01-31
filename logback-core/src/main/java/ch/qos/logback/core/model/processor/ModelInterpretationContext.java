@@ -20,232 +20,229 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ModelInterpretationContext extends ContextAwareBase implements PropertyContainer {
 
-	Stack<Object> objectStack;
-	Stack<Model> modelStack;
+    Stack<Object> objectStack;
+    Stack<Model> modelStack;
 
-	Stack<ImplicitActionDataBase> implicitActionDataStack;
+    Stack<ImplicitActionDataBase> implicitActionDataStack;
 
-	Map<String, Object> objectMap;
-	Map<String, String> propertiesMap;
-	Map<String, String> importMap;
+    Map<String, Object> objectMap;
+    Map<String, String> propertiesMap;
+    Map<String, String> importMap;
 
-	final Map<Model, List<String>> dependenciesMap = new HashMap<>();
-	final List<String> startedDependencies = new ArrayList<>();
-	
-	final private BeanDescriptionCache beanDescriptionCache;
-	final DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
+    final Map<Model, List<String>> dependenciesMap = new HashMap<>();
+    final List<String> startedDependencies = new ArrayList<>();
 
-	public ModelInterpretationContext(Context context) {
-		this.context = context;
-		this.objectStack = new Stack<>();
-		this.modelStack = new Stack<>();
-		this.implicitActionDataStack = new Stack<>();
-		this.beanDescriptionCache = new BeanDescriptionCache(context);
-		objectMap = new HashMap<>(5);
-		propertiesMap = new HashMap<>(5);
-		importMap = new HashMap<>(5);
-	}
+    final private BeanDescriptionCache beanDescriptionCache;
+    final DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
 
-	public Map<String, Object> getObjectMap() {
-		return objectMap;
-	}
+    public ModelInterpretationContext(Context context) {
+        this.context = context;
+        this.objectStack = new Stack<>();
+        this.modelStack = new Stack<>();
+        this.implicitActionDataStack = new Stack<>();
+        this.beanDescriptionCache = new BeanDescriptionCache(context);
+        objectMap = new HashMap<>(5);
+        propertiesMap = new HashMap<>(5);
+        importMap = new HashMap<>(5);
+    }
 
+    public Map<String, Object> getObjectMap() {
+        return objectMap;
+    }
 
-	// moodelStack =================================
-	
-	public void pushModel(Model m) {
-		modelStack.push(m);
-	}
+    // moodelStack =================================
 
-	public Model peekModel() {
-		return modelStack.peek();
-	}
+    public void pushModel(Model m) {
+        modelStack.push(m);
+    }
 
-	public boolean isModelStackEmpty() {
-		return modelStack.isEmpty();
-	}
+    public Model peekModel() {
+        return modelStack.peek();
+    }
 
-	public Model popModel() {
-		return modelStack.pop();
-	}
+    public boolean isModelStackEmpty() {
+        return modelStack.isEmpty();
+    }
 
-	// =================== object stack
-	
-	public Stack<Object> getObjectStack() {
-		return objectStack;
-	}
-	
-	public boolean isObjectStackEmpty() {
-		return objectStack.isEmpty();
-	}
-	
-	public Object peekObject() {
-		return objectStack.peek();
-	}
+    public Model popModel() {
+        return modelStack.pop();
+    }
 
-	public void pushObject(Object o) {
-		objectStack.push(o);
-	}
+    // =================== object stack
 
-	public Object popObject() {
-		return objectStack.pop();
-	}
+    public Stack<Object> getObjectStack() {
+        return objectStack;
+    }
 
-	public Object getObject(int i) {
-		return objectStack.get(i);
-	}
-	
-	// ===================== END object stack
+    public boolean isObjectStackEmpty() {
+        return objectStack.isEmpty();
+    }
 
-	public BeanDescriptionCache getBeanDescriptionCache() {
-		return beanDescriptionCache;
-	}
+    public Object peekObject() {
+        return objectStack.peek();
+    }
 
-	public String subst(String ref) {
-		if (ref == null) {
-			return null;
-		}
+    public void pushObject(Object o) {
+        objectStack.push(o);
+    }
 
-		try {
-			return OptionHelper.substVars(ref, this, context);
-		} catch (ScanException | IllegalArgumentException e) {
-			addError("Problem while parsing [" + ref + "]", e);
-			return ref;
-		}
+    public Object popObject() {
+        return objectStack.pop();
+    }
 
-	}
- 	
-	/**
-	 * Add a property to the properties of this execution context. If the property
-	 * exists already, it is overwritten.
-	 */
-	public void addSubstitutionProperty(String key, String value) {
-		if (key == null || value == null) {
-			return;
-		}
-		// values with leading or trailing spaces are bad. We remove them now.
-		value = value.trim();
-		propertiesMap.put(key, value);
-	}
+    public Object getObject(int i) {
+        return objectStack.get(i);
+    }
 
-	public void addSubstitutionProperties(Properties props) {
-		if (props == null) {
-			return;
-		}
-		for (Object keyObject : props.keySet()) {
-			String key = (String) keyObject;
-			String val = props.getProperty(key);
-			addSubstitutionProperty(key, val);
-		}
-	}
+    // ===================== END object stack
 
-	
-	public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
-		return defaultNestedComponentRegistry;
-	}
+    public BeanDescriptionCache getBeanDescriptionCache() {
+        return beanDescriptionCache;
+    }
 
-	/**
-	 * actionDataStack contains ActionData instances We use a stack of ActionData
-	 * objects in order to support nested elements which are handled by the same
-	 * NestedComplexPropertyIA instance. We push a ActionData instance in the
-	 * isApplicable method (if the action is applicable) and pop it in the end()
-	 * method. The XML well-formedness property will guarantee that a push will
-	 * eventually be followed by a corresponding pop.
-	 */
-	public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
-		return implicitActionDataStack;
-	}
+    public String subst(String ref) {
+        if (ref == null) {
+            return null;
+        }
 
-	// ==================================  dependencies
-	public boolean hasDependencies(String name) {
+        try {
+            return OptionHelper.substVars(ref, this, context);
+        } catch (ScanException | IllegalArgumentException e) {
+            addError("Problem while parsing [" + ref + "]", e);
+            return ref;
+        }
 
-		Collection<List<String>> nameLists = dependenciesMap.values();
-		if (nameLists == null || nameLists.isEmpty())
-			return false;
+    }
 
-		for (List<String> aList : nameLists) {
-			if (aList.contains(name))
-				return true;
-		}
-		return false;
-	}
-	
+    /**
+     * Add a property to the properties of this execution context. If the property
+     * exists already, it is overwritten.
+     */
+    public void addSubstitutionProperty(String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+        // values with leading or trailing spaces are bad. We remove them now.
+        value = value.trim();
+        propertiesMap.put(key, value);
+    }
 
-	public void addDependency(Model model, String ref) {
-		List<String> refList = dependenciesMap.get(model);
-		if(refList == null) {
-			refList = new ArrayList<>();
-		}
-		refList.add(ref);
-		dependenciesMap.put(model, refList);
-	}
+    public void addSubstitutionProperties(Properties props) {
+        if (props == null) {
+            return;
+        }
+        for (Object keyObject : props.keySet()) {
+            String key = (String) keyObject;
+            String val = props.getProperty(key);
+            addSubstitutionProperty(key, val);
+        }
+    }
 
-	public List<String> getDependencies(Model model) {
-		return dependenciesMap.get(model);
-	}
+    public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
+        return defaultNestedComponentRegistry;
+    }
 
-	public void markStartOfNamedDependency(String name) {
-		startedDependencies.add(name);
-	}
-	public boolean isNamedDependencyStarted(String name) {
-		return startedDependencies.contains(name);
-	}
+    /**
+     * actionDataStack contains ActionData instances We use a stack of ActionData
+     * objects in order to support nested elements which are handled by the same
+     * NestedComplexPropertyIA instance. We push a ActionData instance in the
+     * isApplicable method (if the action is applicable) and pop it in the end()
+     * method. The XML well-formedness property will guarantee that a push will
+     * eventually be followed by a corresponding pop.
+     */
+    public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
+        return implicitActionDataStack;
+    }
 
-	
-	// ========================================== object map
-	
-	/**
-	 * If a key is found in propertiesMap then return it. Otherwise, delegate to the
-	 * context.
-	 */
-	public String getProperty(String key) {
-		String v = propertiesMap.get(key);
-		if (v != null) {
-			return v;
-		} else {
-			return context.getProperty(key);
-		}
-	}
-	@Override
-	public Map<String, String> getCopyOfPropertyMap() {
-		return new HashMap<String, String>(propertiesMap);
-	}
+    // ================================== dependencies
+    public boolean hasDependencies(String name) {
 
+        Collection<List<String>> nameLists = dependenciesMap.values();
+        if (nameLists == null || nameLists.isEmpty())
+            return false;
 
-	// imports
+        for (List<String> aList : nameLists) {
+            if (aList.contains(name))
+                return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Add an import to the importMao
-	 * 
-	 * @param stem the class to import
-	 * @param fqcn the fully qualified name of the class
-	 * 
-	 * @since 1.3
-	 */
-	public void addImport(String stem, String fqcn) {
-		importMap.put(stem, fqcn);
-	}
+    public void addDependency(Model model, String ref) {
+        List<String> refList = dependenciesMap.get(model);
+        if (refList == null) {
+            refList = new ArrayList<>();
+        }
+        refList.add(ref);
+        dependenciesMap.put(model, refList);
+    }
 
-	/**
-	 * Given a stem, get the fully qualified name of the class corresponding to the
-	 * stem. For unknown stems, returns the stem as is. If stem is null, null is
-	 * returned.
-	 * 
-	 * @param stem may be null
-	 * @return fully qualified name of the class corresponding to the stem. For
-	 *         unknown stems, returns the stem as is. If stem is null, null is
-	 *         returned.
-	 * @since 1.3
-	 */
-	public String getImport(String stem) {
-		if (stem == null)
-			return null;
+    public List<String> getDependencies(Model model) {
+        return dependenciesMap.get(model);
+    }
 
-		String result = importMap.get(stem);
-		if (result == null)
-			return stem;
-		else
-			return result;
-	}
+    public void markStartOfNamedDependency(String name) {
+        startedDependencies.add(name);
+    }
+
+    public boolean isNamedDependencyStarted(String name) {
+        return startedDependencies.contains(name);
+    }
+
+    // ========================================== object map
+
+    /**
+     * If a key is found in propertiesMap then return it. Otherwise, delegate to the
+     * context.
+     */
+    public String getProperty(String key) {
+        String v = propertiesMap.get(key);
+        if (v != null) {
+            return v;
+        } else {
+            return context.getProperty(key);
+        }
+    }
+
+    @Override
+    public Map<String, String> getCopyOfPropertyMap() {
+        return new HashMap<String, String>(propertiesMap);
+    }
+
+    // imports
+
+    /**
+     * Add an import to the importMao
+     * 
+     * @param stem the class to import
+     * @param fqcn the fully qualified name of the class
+     * 
+     * @since 1.3
+     */
+    public void addImport(String stem, String fqcn) {
+        importMap.put(stem, fqcn);
+    }
+
+    /**
+     * Given a stem, get the fully qualified name of the class corresponding to the
+     * stem. For unknown stems, returns the stem as is. If stem is null, null is
+     * returned.
+     * 
+     * @param stem may be null
+     * @return fully qualified name of the class corresponding to the stem. For
+     *         unknown stems, returns the stem as is. If stem is null, null is
+     *         returned.
+     * @since 1.3
+     */
+    public String getImport(String stem) {
+        if (stem == null)
+            return null;
+
+        String result = importMap.get(stem);
+        if (result == null)
+            return stem;
+        else
+            return result;
+    }
 
 }

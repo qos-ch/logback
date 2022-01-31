@@ -23,8 +23,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 
 /**
- * SyslogOutputStream is a wrapper around the {@link DatagramSocket} class so that it
- * behaves like an {@link OutputStream}.
+ * SyslogOutputStream is a wrapper around the {@link DatagramSocket} class so
+ * that it behaves like an {@link OutputStream}.
  */
 public class SyslogOutputStream extends OutputStream {
 

@@ -180,8 +180,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * Perform SMTPAppender specific appending actions, delegating some of them to
-     * a subclass and checking if the event triggers an e-mail to be sent.
+     * Perform SMTPAppender specific appending actions, delegating some of them to a
+     * subclass and checking if the event triggers an e-mail to be sent.
      */
     protected void append(E eventObject) {
 
@@ -257,7 +257,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         }
 
         if (this.layout == null) {
-            addError("No layout set for appender named [" + name + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
+            addError("No layout set for appender named [" + name
+                    + "]. For more information, please visit http://logback.qos.ch/codes.html#smtp_no_layout");
             return false;
         }
         return true;
@@ -291,7 +292,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
                 InternetAddress[] tmp = InternetAddress.parse(emailAdrr, true);
                 iaList.addAll(Arrays.asList(tmp));
             } catch (AddressException e) {
-                addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event [" + event + "]", e);
+                addError("Could not parse email address for [" + toPatternLayoutList.get(i) + "] for event [" + event
+                        + "]", e);
                 return iaList;
             }
         }
@@ -316,7 +318,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
      * Send the contents of the cyclic buffer as an e-mail message.
      */
     @SuppressWarnings("null")
-	protected void sendBuffer(CyclicBuffer<E> cb, E lastEventObject) {
+    protected void sendBuffer(CyclicBuffer<E> cb, E lastEventObject) {
 
         // Note: this code already owns the monitor for this
         // appender. This frees us from needing to synchronize on 'cb'.
@@ -415,16 +417,16 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * The <b>From</b> option takes a string value which should be a e-mail
-     * address of the sender.
+     * The <b>From</b> option takes a string value which should be a e-mail address
+     * of the sender.
      */
     public void setFrom(String from) {
         this.from = from;
     }
 
     /**
-     * The <b>Subject</b> option takes a string value which should be a the
-     * subject of the e-mail message.
+     * The <b>Subject</b> option takes a string value which should be a the subject
+     * of the e-mail message.
      */
     public void setSubject(String subject) {
         this.subjectStr = subject;
@@ -505,8 +507,9 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
      * Set the "mail.smtp.localhost" property to the value passed as parameter to
      * this method.
      * 
-     * <p>Useful in case the hostname for the client host is not fully qualified
-     * and as a consequence the SMTP server rejects the clients HELO/EHLO command.
+     * <p>
+     * Useful in case the hostname for the client host is not fully qualified and as
+     * a consequence the SMTP server rejects the clients HELO/EHLO command.
      * </p>
      *
      * @param localhost
@@ -536,10 +539,11 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * By default, SMTAppender transmits emails asynchronously. For synchronous email transmission set
-     * asynchronousSending to 'false'.
+     * By default, SMTAppender transmits emails asynchronously. For synchronous
+     * email transmission set asynchronousSending to 'false'.
      *
-     * @param asynchronousSending determines whether sending is done asynchronously or not
+     * @param asynchronousSending determines whether sending is done asynchronously
+     *                            or not
      * @since 1.0.4
      */
     public void setAsynchronousSending(boolean asynchronousSending) {
@@ -585,8 +589,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     /**
      * The <b>EventEvaluator</b> option takes a string value representing the name
      * of the class implementing the {@link EventEvaluator} interface. A
-     * corresponding object will be instantiated and assigned as the event
-     * evaluator for the SMTPAppender.
+     * corresponding object will be instantiated and assigned as the event evaluator
+     * for the SMTPAppender.
      */
     public void setEvaluator(EventEvaluator<E> eventEvaluator) {
         this.eventEvaluator = eventEvaluator;
@@ -621,8 +625,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * Set the location where a {@link javax.mail.Session} resource is located in JNDI. Default value is
-     * "java:comp/env/mail/Session".
+     * Set the location where a {@link javax.mail.Session} resource is located in
+     * JNDI. Default value is "java:comp/env/mail/Session".
      *
      * @param jndiLocation
      * @since 1.0.6
@@ -636,7 +640,8 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * If set to true, a {@link javax.mail.Session} resource will be retrieved from JNDI. Default is false.
+     * If set to true, a {@link javax.mail.Session} resource will be retrieved from
+     * JNDI. Default is false.
      *
      * @param sessionViaJNDI whether to obtain a javax.mail.Session by JNDI
      * @since 1.0.6

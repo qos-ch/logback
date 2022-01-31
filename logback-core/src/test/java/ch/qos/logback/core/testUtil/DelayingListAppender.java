@@ -35,4 +35,3 @@ public class DelayingListAppender<E> extends ListAppender<E> {
         super.append(e);
     }
 }
-

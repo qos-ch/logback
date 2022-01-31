@@ -33,8 +33,8 @@ public class CallerDataTest {
     }
 
     /**
-     * This test verifies that in case caller data cannot be
-     * extracted, CallerData.extract does not throw an exception
+     * This test verifies that in case caller data cannot be extracted,
+     * CallerData.extract does not throw an exception
      *
      */
     @Test

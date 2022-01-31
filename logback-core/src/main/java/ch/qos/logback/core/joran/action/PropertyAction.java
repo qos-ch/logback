@@ -29,9 +29,9 @@ public class PropertyAction extends BaseModelAction {
 
     static final String RESOURCE_ATTRIBUTE = "resource";
 
-
     @Override
-    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String localName, Attributes attributes) {
+    protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String localName,
+            Attributes attributes) {
         if ("substitutionProperty".equals(localName)) {
             addWarn("[substitutionProperty] element has been deprecated. Please use the [property] element instead.");
         }
@@ -39,7 +39,8 @@ public class PropertyAction extends BaseModelAction {
     }
 
     @Override
-    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
         PropertyModel propertyModel = new PropertyModel();
         propertyModel.setName(attributes.getValue(NAME_ATTRIBUTE));
         propertyModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
@@ -48,6 +49,5 @@ public class PropertyAction extends BaseModelAction {
         propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
         return propertyModel;
     }
-
 
 }

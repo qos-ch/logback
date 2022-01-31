@@ -53,7 +53,8 @@ public class Simulator {
         return scenario;
     }
 
-    public void simulate(List<Event<String>> scenario, LRUCache<String, String> lruCache, T_LRUCache<String> tlruCache) {
+    public void simulate(List<Event<String>> scenario, LRUCache<String, String> lruCache,
+            T_LRUCache<String> tlruCache) {
         for (Event<String> e : scenario) {
             if (e.put) {
                 lruCache.put(e.k, e.k);

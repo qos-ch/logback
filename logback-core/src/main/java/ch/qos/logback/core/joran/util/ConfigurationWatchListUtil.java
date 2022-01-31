@@ -33,10 +33,10 @@ public class ConfigurationWatchListUtil {
     private ConfigurationWatchListUtil() {
     }
 
-    
     public static void registerConfigurationWatchList(Context context, ConfigurationWatchList cwl) {
         context.putObject(CoreConstants.CONFIGURATION_WATCH_LIST, cwl);
     }
+
     public static void setMainWatchURL(Context context, URL url) {
         ConfigurationWatchList cwl = getConfigurationWatchList(context);
         if (cwl == null) {
@@ -46,7 +46,7 @@ public class ConfigurationWatchListUtil {
         } else {
             cwl.clear();
         }
-        //setConfigurationWatchListResetFlag(context, true);
+        // setConfigurationWatchListResetFlag(context, true);
         cwl.setMainURL(url);
     }
 

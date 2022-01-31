@@ -47,8 +47,8 @@ public class SerializationPerfTest extends TestCase {
      * receiving.
      * 
      * <p>
-     * For example, with 4 test methods, you can launch the
-     * ExternalMockSocketServer this way:
+     * For example, with 4 test methods, you can launch the ExternalMockSocketServer
+     * this way:
      * </p>
      * <p>
      * <code>java ch.qos.logback.classic.net.ExternalMockSocketServer 4</code>
@@ -57,52 +57,35 @@ public class SerializationPerfTest extends TestCase {
     boolean runWithExternalMockServer = true;
 
     /**
-     * Last results:
-     * Data sent mesured in kilobytes.
-     * Avg time mesured in microsecs.
+     * Last results: Data sent mesured in kilobytes. Avg time mesured in microsecs.
      * 
-     * NOPOutputStream: 
-     *   |                |  Runs | Avg time | Data sent |
-     *   | MinimalObj Ext | 10000 |          |           |
-     *   | MinimalObj Ser | 10000 |          |           |
-     *   | LoggEvent Ext  | 10000 |          |           |
-     *   | LoggEvent Ser  | 10000 |          |           |
+     * NOPOutputStream: | | Runs | Avg time | Data sent | | MinimalObj Ext | 10000 |
+     * | | | MinimalObj Ser | 10000 | | | | LoggEvent Ext | 10000 | | | | LoggEvent
+     * Ser | 10000 | | |
      * 
-     * External MockServer with 45 letters-long message: on localhost
-     * (always the same message)
-     *       |                |  Runs | Avg time | Data sent |
-     *   | MinimalObj Ext | 10000 |      -   |       -   |
-     *   | MinimalObj Ser | 10000 |     74   |     248   |
-     *   | LoggEvent Ext  | 10000 |      -   |       -   |
-     *   | LoggEvent Ser  | 10000 |    156   |     835   |
-     *       pauseFrequency = 10 and pauseLengthInMillis = 20
+     * External MockServer with 45 letters-long message: on localhost (always the
+     * same message) | | Runs | Avg time | Data sent | | MinimalObj Ext | 10000 | -
+     * | - | | MinimalObj Ser | 10000 | 74 | 248 | | LoggEvent Ext | 10000 | - | - |
+     * | LoggEvent Ser | 10000 | 156 | 835 | pauseFrequency = 10 and
+     * pauseLengthInMillis = 20
      *
-     * External MockServer with 45 letters-long message: on localhost
-     * (different message each time)
-     *       |                |  Runs | Avg time | Data sent |
-     *   | MinimalObj Ext | 10000 |          |           |
-     *   | MinimalObj Ser | 10000 |     73   |    1139   |
-     *   | LoggEvent Ext  | 10000 |          |           |
-     *   | LoggEvent Ser  | 10000 |    162   |    1752   |
-     *       pauseFrequency = 10 and pauseLengthInMillis = 20
+     * External MockServer with 45 letters-long message: on localhost (different
+     * message each time) | | Runs | Avg time | Data sent | | MinimalObj Ext | 10000
+     * | | | | MinimalObj Ser | 10000 | 73 | 1139 | | LoggEvent Ext | 10000 | | | |
+     * LoggEvent Ser | 10000 | 162 | 1752 | pauseFrequency = 10 and
+     * pauseLengthInMillis = 20
      *
-     * External MockServer with 45 letters-long message: on PIXIE
-     * (always the same message)
-     *       |                |  Runs | Avg time | Data sent |
-     *   | MinimalObj Ext | 10000 |      -   |       -   |
-     *   | MinimalObj Ser | 10000 |     29   |     248   |
-     *   | LoggEvent Ext  | 10000 |      -   |       -   |
-     *   | LoggEvent Ser  | 10000 |     42   |     835   |
-     *       pauseFrequency = 10 and pauseLengthInMillis = 20
+     * External MockServer with 45 letters-long message: on PIXIE (always the same
+     * message) | | Runs | Avg time | Data sent | | MinimalObj Ext | 10000 | - | - |
+     * | MinimalObj Ser | 10000 | 29 | 248 | | LoggEvent Ext | 10000 | - | - | |
+     * LoggEvent Ser | 10000 | 42 | 835 | pauseFrequency = 10 and
+     * pauseLengthInMillis = 20
      *
-     * External MockServer with 45 letters-long message: on PIXIE
-     * (different message each time)
-     *       |                |  Runs | Avg time | Data sent |
-     *   | MinimalObj Ext | 10000 |          |           |
-     *   | MinimalObj Ser | 10000 |     27   |    1139   |
-     *   | LoggEvent Ext  | 10000 |          |           |
-     *   | LoggEvent Ser  | 10000 |     44   |    1752   |
-     *       pauseFrequency = 10 and pauseLengthInMillis = 20
+     * External MockServer with 45 letters-long message: on PIXIE (different message
+     * each time) | | Runs | Avg time | Data sent | | MinimalObj Ext | 10000 | | | |
+     * MinimalObj Ser | 10000 | 27 | 1139 | | LoggEvent Ext | 10000 | | | |
+     * LoggEvent Ser | 10000 | 44 | 1752 | pauseFrequency = 10 and
+     * pauseLengthInMillis = 20
      *
      */
 
@@ -174,7 +157,8 @@ public class SerializationPerfTest extends TestCase {
             }
         }
         total /= 1000;
-        System.out.println(label + " : average time = " + total / loopNumber + " microsecs after " + loopNumber + " writes.");
+        System.out.println(
+                label + " : average time = " + total / loopNumber + " microsecs after " + loopNumber + " writes.");
 
         // long time2 = System.nanoTime();
         // System.out.println("********* -> Time needed to run the test method: " +

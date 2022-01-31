@@ -31,26 +31,26 @@ public class LoggerAction extends BaseModelAction {
 
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext ic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
-    	validator.validateNameAttribute();
-    	return validator.isValid();
+        PreconditionValidator validator = new PreconditionValidator(this, ic, name, attributes);
+        validator.validateNameAttribute();
+        return validator.isValid();
     }
 
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
 
-		LoggerModel loggerModel = new LoggerModel();
-		
-		
-		String nameStr = attributes.getValue(NAME_ATTRIBUTE);
-		loggerModel.setName(nameStr);
-		
-		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
-		loggerModel.setLevel(levelStr);
-	    
-		String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
-		loggerModel.setAdditivity(additivityStr);
-	    
-		return loggerModel;
-	}
+        LoggerModel loggerModel = new LoggerModel();
+
+        String nameStr = attributes.getValue(NAME_ATTRIBUTE);
+        loggerModel.setName(nameStr);
+
+        String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+        loggerModel.setLevel(levelStr);
+
+        String additivityStr = attributes.getValue(JoranConstants.ADDITIVITY_ATTRIBUTE);
+        loggerModel.setAdditivity(additivityStr);
+
+        return loggerModel;
+    }
 }

@@ -21,7 +21,8 @@ import org.junit.Test;
 import ch.qos.logback.classic.Level;
 
 /**
- * This class is for testing ControlLoggerContext which is a control class for testing HLoggerContext.
+ * This class is for testing ControlLoggerContext which is a control class for
+ * testing HLoggerContext.
  */
 public class ControlLoggerContextTest {
     ControlLoggerContext clc;

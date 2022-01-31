@@ -28,8 +28,8 @@ import ch.qos.logback.core.pattern.parser.Parser;
  * <p>
  * A flexible layout configurable with pattern string. The goal of this class is
  * to {@link #format format} a {@link ILoggingEvent} and return the results in a
- * {#link String}. The format of the result depends on the
- * <em>conversion pattern</em>.
+ * {#link String}. The format of the result depends on the <em>conversion
+ * pattern</em>.
  * <p>
  * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#PatternLayout
@@ -40,12 +40,12 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
     public static final Map<String, String> DEFAULT_CONVERTER_MAP = new HashMap<String, String>();
     public static final Map<String, String> CONVERTER_CLASS_TO_KEY_MAP = new HashMap<String, String>();
-    
+
     /**
      * @deprecated replaced by DEFAULT_CONVERTER_MAP
      */
     public static final Map<String, String> defaultConverterMap = DEFAULT_CONVERTER_MAP;
-    
+
     public static final String HEADER_PREFIX = "#logback.classic pattern: ";
 
     static {
@@ -55,52 +55,50 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_MAP.put("date", DateConverter.class.getName());
         // used by PrefixComposite conventer
         CONVERTER_CLASS_TO_KEY_MAP.put(DateConverter.class.getName(), "date");
-        
+
         DEFAULT_CONVERTER_MAP.put("ms", MicrosecondConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("micros", MicrosecondConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(MicrosecondConverter.class.getName(), "micros");
-        
-        
+
         DEFAULT_CONVERTER_MAP.put("r", RelativeTimeConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("relative", RelativeTimeConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(RelativeTimeConverter.class.getName(), "relative");
-        
+
         DEFAULT_CONVERTER_MAP.put("level", LevelConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("le", LevelConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("p", LevelConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(LevelConverter.class.getName(), "level");
-        
-        
+
         DEFAULT_CONVERTER_MAP.put("t", ThreadConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("thread", ThreadConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(ThreadConverter.class.getName(), "thread");
-        
+
         DEFAULT_CONVERTER_MAP.put("lo", LoggerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("logger", LoggerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("c", LoggerConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(LoggerConverter.class.getName(), "logger");
-        
+
         DEFAULT_CONVERTER_MAP.put("m", MessageConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("msg", MessageConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("message", MessageConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(MessageConverter.class.getName(), "message");
-        
+
         DEFAULT_CONVERTER_MAP.put("C", ClassOfCallerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("class", ClassOfCallerConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(ClassOfCallerConverter.class.getName(), "class");
-        
+
         DEFAULT_CONVERTER_MAP.put("M", MethodOfCallerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("method", MethodOfCallerConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(MethodOfCallerConverter.class.getName(), "method");
-        
+
         DEFAULT_CONVERTER_MAP.put("L", LineOfCallerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("line", LineOfCallerConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(LineOfCallerConverter.class.getName(), "line");
-        
+
         DEFAULT_CONVERTER_MAP.put("F", FileOfCallerConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("file", FileOfCallerConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(FileOfCallerConverter.class.getName(), "file");
-        
+
         DEFAULT_CONVERTER_MAP.put("X", MDCConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("mdc", MDCConverter.class.getName());
 
@@ -120,17 +118,16 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_MAP.put("cn", ContextNameConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("contextName", ContextNameConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(ContextNameConverter.class.getName(), "contextName");
-        
+
         DEFAULT_CONVERTER_MAP.put("caller", CallerDataConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(CallerDataConverter.class.getName(), "caller");
-        
+
         DEFAULT_CONVERTER_MAP.put("marker", MarkerConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(MarkerConverter.class.getName(), "marker");
-        
+
         DEFAULT_CONVERTER_MAP.put("kvp", KeyValuePairConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(KeyValuePairConverter.class.getName(), "kvp");
-        
-        
+
         DEFAULT_CONVERTER_MAP.put("property", PropertyConverter.class.getName());
 
         DEFAULT_CONVERTER_MAP.put("n", LineSeparatorConverter.class.getName());
@@ -155,9 +152,9 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
         DEFAULT_CONVERTER_MAP.put("lsn", LocalSequenceNumberConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(LocalSequenceNumberConverter.class.getName(), "lsn");
-        
+
         DEFAULT_CONVERTER_MAP.put("prefix", PrefixCompositeConverter.class.getName());
-        
+
     }
 
     public PatternLayout() {

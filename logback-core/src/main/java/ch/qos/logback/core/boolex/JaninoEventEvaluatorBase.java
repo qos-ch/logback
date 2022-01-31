@@ -54,7 +54,8 @@ abstract public class JaninoEventEvaluatorBase<E> extends EventEvaluatorBase<E> 
     public void start() {
         try {
             assert context != null;
-            scriptEvaluator = new ScriptEvaluator(getDecoratedExpression(), EXPRESSION_TYPE, getParameterNames(), getParameterTypes(), THROWN_EXCEPTIONS);
+            scriptEvaluator = new ScriptEvaluator(getDecoratedExpression(), EXPRESSION_TYPE, getParameterNames(),
+                    getParameterTypes(), THROWN_EXCEPTIONS);
             super.start();
         } catch (Exception e) {
             addError("Could not start evaluator with expression [" + expression + "]", e);

@@ -52,7 +52,8 @@ public class ExtendedThrowableProxyConverterTest {
     }
 
     private ILoggingEvent createLoggingEvent(Throwable t) {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
+        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG,
+                "test message", t, null);
     }
 
     @Test
@@ -88,32 +89,32 @@ public class ExtendedThrowableProxyConverterTest {
 
     @Test
     public void cyclicCause() {
-    	// the identical formatting check, see verify(e) call below, fails
-    	// under JDK 11. this does not mean that the presently tested code is wrong 
-    	// but that JDK 11 formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
-    	
+        // the identical formatting check, see verify(e) call below, fails
+        // under JDK 11. this does not mean that the presently tested code is wrong
+        // but that JDK 11 formats things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
+
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.initCause(e2);
         verify(e);
     }
- 
+
     @Test
     public void cyclicSuppressed() {
-    	// the identical formatting check, see verify(e) call below, fails
-    	// under JDK 11. this does not mean that the presently tested code is wrong 
-    	// but that JDK 11 formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
-    	
+        // the identical formatting check, see verify(e) call below, fails
+        // under JDK 11. this does not mean that the presently tested code is wrong
+        // but that JDK 11 formats things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
+
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);
         verify(e);
     }
-    
+
     void verify(Throwable t) {
         t.printStackTrace(pw);
 

@@ -50,8 +50,8 @@ public class MBeanUtil {
         return mbs.isRegistered(objectName);
     }
 
-    public static void createAndRegisterJMXConfigurator(MBeanServer mbs, LoggerContext loggerContext, JMXConfigurator jmxConfigurator, ObjectName objectName,
-                    Object caller) {
+    public static void createAndRegisterJMXConfigurator(MBeanServer mbs, LoggerContext loggerContext,
+            JMXConfigurator jmxConfigurator, ObjectName objectName, Object caller) {
         try {
             mbs.registerMBean(jmxConfigurator, objectName);
         } catch (Exception e) {

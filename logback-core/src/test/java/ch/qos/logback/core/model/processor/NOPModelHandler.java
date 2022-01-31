@@ -10,10 +10,10 @@ public class NOPModelHandler extends ModelHandlerBase {
         super(context);
     }
 
-	static public NOPModelHandler makeInstance(Context context, ModelInterpretationContext ic) {
-		return new NOPModelHandler(context);
-	}
-	
+    static public NOPModelHandler makeInstance(Context context, ModelInterpretationContext ic) {
+        return new NOPModelHandler(context);
+    }
+
     @Override
     public void handle(ModelInterpretationContext interpretationContext, Model model) {
     }

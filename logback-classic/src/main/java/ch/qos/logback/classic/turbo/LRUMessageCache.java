@@ -17,8 +17,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Clients of this class should only use the  {@link #getMessageCountAndThenIncrement} method. 
- * Other methods inherited via LinkedHashMap are not thread safe.
+ * Clients of this class should only use the
+ * {@link #getMessageCountAndThenIncrement} method. Other methods inherited via
+ * LinkedHashMap are not thread safe.
  */
 class LRUMessageCache extends LinkedHashMap<String, Integer> {
 

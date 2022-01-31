@@ -54,7 +54,8 @@ public class DefaultCssBuilder implements CssBuilder {
         sbuf.append("font-size: smaller; ");
         sbuf.append("}");
         sbuf.append(LINE_SEPARATOR);
-        sbuf.append("TD.RemoteHost, TD.RequestProtocol, TD.RequestHeader, TD.RequestURL, TD.RemoteUser, TD.RequestURI, TD.ServerName {");
+        sbuf.append(
+                "TD.RemoteHost, TD.RequestProtocol, TD.RequestHeader, TD.RequestURL, TD.RemoteUser, TD.RequestURI, TD.ServerName {");
         sbuf.append("text-align: left; ");
         sbuf.append("}");
         sbuf.append(LINE_SEPARATOR);

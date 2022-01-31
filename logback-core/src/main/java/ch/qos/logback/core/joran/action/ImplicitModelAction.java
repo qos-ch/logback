@@ -21,9 +21,10 @@ import ch.qos.logback.core.model.Model;
 public class ImplicitModelAction extends Action {
 
     Stack<ImplicitModel> currentImplicitModelStack = new Stack<>();
-    
+
     @Override
-    public void begin(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) throws ActionException {
+    public void begin(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes)
+            throws ActionException {
         ImplicitModel currentImplicitModel = new ImplicitModel();
         currentImplicitModel.setTag(name);
 
@@ -39,7 +40,7 @@ public class ImplicitModelAction extends Action {
         currentImplicitModelStack.push(currentImplicitModel);
         interpretationContext.pushModel(currentImplicitModel);
     }
-    
+
     @Override
     public void body(SaxEventInterpretationContext ec, String body) {
         ImplicitModel implicitModel = currentImplicitModelStack.peek();
@@ -48,20 +49,18 @@ public class ImplicitModelAction extends Action {
 
     @Override
     public void end(SaxEventInterpretationContext interpretationContext, String name) throws ActionException {
-    
+
         ImplicitModel implicitModel = currentImplicitModelStack.peek();
         Model otherImplicitModel = interpretationContext.popModel();
-        
-        if(implicitModel != otherImplicitModel) {
-            addError(implicitModel+ " does not match "+otherImplicitModel);
+
+        if (implicitModel != otherImplicitModel) {
+            addError(implicitModel + " does not match " + otherImplicitModel);
             return;
         }
         Model parentModel = interpretationContext.peekModel();
         parentModel.addSubModel(implicitModel);
         currentImplicitModelStack.pop();
-        
-    }
-    
 
+    }
 
 }

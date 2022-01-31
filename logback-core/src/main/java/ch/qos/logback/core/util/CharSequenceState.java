@@ -14,8 +14,9 @@
 package ch.qos.logback.core.util;
 
 /**
- *  Used to keep state about a char sequence.
- *  @author Ceki Gulcu
+ * Used to keep state about a char sequence.
+ * 
+ * @author Ceki Gulcu
  */
 class CharSequenceState {
     final char c;

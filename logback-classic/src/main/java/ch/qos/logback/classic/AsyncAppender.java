@@ -17,9 +17,10 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AsyncAppenderBase;
 
 /**
- * In order to optimize performance this appender deems events of level TRACE, DEBUG and INFO as discardable. See the
- * <a href="http://logback.qos.ch/manual/appenders.html#AsyncAppender">chapter on appenders</a> in the manual for
- * further information.
+ * In order to optimize performance this appender deems events of level TRACE,
+ * DEBUG and INFO as discardable. See the
+ * <a href="http://logback.qos.ch/manual/appenders.html#AsyncAppender">chapter
+ * on appenders</a> in the manual for further information.
  *
  *
  * @author Ceki G&uuml;lc&uuml;
@@ -31,6 +32,7 @@ public class AsyncAppender extends AsyncAppenderBase<ILoggingEvent> {
 
     /**
      * Events of level TRACE, DEBUG and INFO are deemed to be discardable.
+     * 
      * @param event
      * @return true if the event is of level TRACE, DEBUG or INFO false otherwise.
      */

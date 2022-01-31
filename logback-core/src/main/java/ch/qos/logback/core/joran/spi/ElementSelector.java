@@ -16,10 +16,13 @@ package ch.qos.logback.core.joran.spi;
 import java.util.List;
 
 /**
- * ElementSelector extends {@link ElementPath} with matching operations such as {@link #fullPathMatch(ElementPath)},
- * {@link #getPrefixMatchLength(ElementPath)} and {@link #getTailMatchLength(ElementPath)}.
+ * ElementSelector extends {@link ElementPath} with matching operations such as
+ * {@link #fullPathMatch(ElementPath)},
+ * {@link #getPrefixMatchLength(ElementPath)} and
+ * {@link #getTailMatchLength(ElementPath)}.
  *
- * <p>Parts of the path may contain '*' for wildcard matching.
+ * <p>
+ * Parts of the path may contain '*' for wildcard matching.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.1.0
@@ -60,8 +63,8 @@ public class ElementSelector extends ElementPath {
     }
 
     /**
-     * Returns the number of "tail" components that this pattern has in common
-     * with the pattern p passed as parameter. By "tail" components we mean the
+     * Returns the number of "tail" components that this pattern has in common with
+     * the pattern p passed as parameter. By "tail" components we mean the
      * components at the end of the pattern.
      */
     public int getTailMatchLength(ElementPath p) {

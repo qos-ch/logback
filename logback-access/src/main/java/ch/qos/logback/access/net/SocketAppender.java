@@ -22,9 +22,9 @@ import ch.qos.logback.core.spi.PreSerializationTransformer;
  * Sends {@link IAccessEvent} objects to a remote a log server, usually a
  * {@link SocketNode}.
  * 
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#AccessSocketAppender
- *  
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#AccessSocketAppender
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 

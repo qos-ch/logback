@@ -72,7 +72,8 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
 
     @Test
     public void testCreateParentFolders() {
-        String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff + "/testCreateParentFolders.txt";
+        String filename = CoreTestConstants.OUTPUT_DIR_PREFIX + "/fat-testCreateParentFolders-" + diff
+                + "/testCreateParentFolders.txt";
         File file = new File(filename);
         assertFalse(file.getParentFile().exists());
         assertFalse(file.exists());
@@ -116,7 +117,8 @@ public class FileAppenderTest extends AbstractAppenderTest<Object> {
         StatusChecker statusChecker = new StatusChecker(context);
         assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
         List<Status> statusList = sm.getCopyOfStatusList();
-        assertTrue("Expecting status list size to be 2 or larger, but was " + statusList.size(), statusList.size() >= 2);
+        assertTrue("Expecting status list size to be 2 or larger, but was " + statusList.size(),
+                statusList.size() >= 2);
         String msg1 = statusList.get(1).getMessage();
 
         assertTrue("Got message [" + msg1 + "]", msg1.startsWith("Setting \"Append\" property"));

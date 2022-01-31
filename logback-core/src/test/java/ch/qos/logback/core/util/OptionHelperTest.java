@@ -184,7 +184,8 @@ public class OptionHelperTest {
         context.putProperty("C", "${A}");
 
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${C} --> ${A}]");
+        expectedException.expectMessage(
+                "Circular variable reference detected while parsing input [${A} --> ${B} --> ${C} --> ${A}]");
         OptionHelper.substVars("${A}", context);
     }
 
@@ -192,7 +193,8 @@ public class OptionHelperTest {
     public void detectCircularReferencesInDefault() throws ScanException {
         context.putProperty("A", "${B:-${A}}");
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${A}]");
+        expectedException
+                .expectMessage("Circular variable reference detected while parsing input [${A} --> ${B} --> ${A}]");
         OptionHelper.substVars("${A}", context);
     }
 
@@ -203,7 +205,8 @@ public class OptionHelperTest {
         context.putProperty("C", "${A}");
 
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${B} --> ${C} --> ${A} --> ${B}]");
+        expectedException.expectMessage(
+                "Circular variable reference detected while parsing input [${B} --> ${C} --> ${A} --> ${B}]");
         OptionHelper.substVars("${B} ", context);
     }
 
@@ -214,7 +217,8 @@ public class OptionHelperTest {
         context.putProperty("C", "${A}");
 
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${C} --> ${A} --> ${B} --> ${C}]");
+        expectedException.expectMessage(
+                "Circular variable reference detected while parsing input [${C} --> ${A} --> ${B} --> ${C}]");
         OptionHelper.substVars("${C} and ${A}", context);
     }
 
@@ -227,7 +231,8 @@ public class OptionHelperTest {
         context.putProperty("C1", "here's the loop: ${A}");
 
         expectedException.expect(IllegalArgumentException.class);
-        expectedException.expectMessage("Circular variable reference detected while parsing input [${A} --> ${C} --> ${C1} --> ${A}]");
+        expectedException.expectMessage(
+                "Circular variable reference detected while parsing input [${A} --> ${C} --> ${C1} --> ${A}]");
         String result = OptionHelper.substVars("${A}", context);
         System.err.println(result);
     }

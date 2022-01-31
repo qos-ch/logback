@@ -37,7 +37,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Redirecting System.out is quite messy. Disable this test in Maven but not in Package.class
+ * Redirecting System.out is quite messy. Disable this test in Maven but not in
+ * Package.class
  */
 public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
@@ -157,9 +158,11 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         ca.start();
         ca.doAppend("a");
         StatusChecker checker = new StatusChecker(context);
-        // 21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo] should be one of [System.out,
+        // 21:28:01,246 + WARN in ch.qos.logback.core.ConsoleAppender[null] - [foo]
+        // should be one of [System.out,
         // System.err]
-        // 21:28:01,246 |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using previously set target, System.out by
+        // 21:28:01,246 |-WARN in ch.qos.logback.core.ConsoleAppender[null] - Using
+        // previously set target, System.out by
         // default.
         // StatusPrinter.print(context);
 

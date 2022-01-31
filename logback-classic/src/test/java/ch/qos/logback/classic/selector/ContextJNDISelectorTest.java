@@ -69,7 +69,8 @@ public class ContextJNDISelectorTest {
 
         LoggerFactory.getLogger(ContextDetachingSCLTest.class);
 
-        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton()
+                .getContextSelector();
         Context context = selector.getLoggerContext();
         assertEquals("tata", context.getName());
         System.out.println(selector.getContextNames());
@@ -81,7 +82,8 @@ public class ContextJNDISelectorTest {
         MockInitialContext mic = MockInitialContextFactory.getContext();
         mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, null);
 
-        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton().getContextSelector();
+        ContextJNDISelector selector = (ContextJNDISelector) ContextSelectorStaticBinder.getSingleton()
+                .getContextSelector();
         Context context = selector.getLoggerContext();
 
         assertEquals("default", context.getName());

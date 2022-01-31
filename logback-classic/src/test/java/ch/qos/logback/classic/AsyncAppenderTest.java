@@ -36,7 +36,8 @@ public class AsyncAppenderTest {
     AsyncAppender asyncAppender = new AsyncAppender();
     ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
     OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
-    LoggingEventBuilderInContext builder = new LoggingEventBuilderInContext(context, thisClassName, UnsynchronizedAppenderBase.class.getName());
+    LoggingEventBuilderInContext builder = new LoggingEventBuilderInContext(context, thisClassName,
+            UnsynchronizedAppenderBase.class.getName());
     int diff = RandomUtil.getPositiveInt();
 
     @Before

@@ -16,7 +16,6 @@ package ch.qos.logback.core.joran.spi;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

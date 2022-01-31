@@ -8,9 +8,8 @@ import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class ModelUtil {
-  
-	 
-	 /**
+
+    /**
      * Add all the properties found in the argument named 'props' to an
      * InterpretationContext.
      */
@@ -20,13 +19,13 @@ public class ModelUtil {
             mic.addSubstitutionProperty(key, value);
             break;
         case CONTEXT:
-        	mic.getContext().putProperty(key, value);
+            mic.getContext().putProperty(key, value);
             break;
         case SYSTEM:
             OptionHelper.setSystemProperty(mic, key, value);
         }
     }
-	
+
     /**
      * Add all the properties found in the argument named 'props' to an
      * InterpretationContext.

@@ -67,7 +67,8 @@ public class SocketNode implements Runnable {
     public void run() {
 
         try {
-            hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(new BufferedInputStream(socket.getInputStream()));
+            hardenedLoggingEventInputStream = new HardenedLoggingEventInputStream(
+                    new BufferedInputStream(socket.getInputStream()));
         } catch (Exception e) {
             logger.error("Could not open ObjectInputStream to " + socket, e);
             closed = true;

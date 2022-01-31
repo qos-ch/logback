@@ -43,8 +43,8 @@ public class HLogger extends MarkerIgnoringBase {
     private Level effectiveLevel;
 
     /**
-     * The parent of this category. All categories have at least one ancestor
-     * which is the root category.
+     * The parent of this category. All categories have at least one ancestor which
+     * is the root category.
      */
     HLogger parent;
 
@@ -59,12 +59,12 @@ public class HLogger extends MarkerIgnoringBase {
     private ArrayList<Appender<ILoggingEvent>> appenderList;
 
     /**
-     * Additivity is set to true by default, that is children inherit the
-     * appenders of their ancestors by default. If this variable is set to
-     * <code>false</code> then the appenders located in the ancestors of this
-     * logger will not be used. However, the children of this logger will inherit
-     * its appenders, unless the children have their additivity flag set to
-     * <code>false</code> too. See the user manual for more details.
+     * Additivity is set to true by default, that is children inherit the appenders
+     * of their ancestors by default. If this variable is set to <code>false</code>
+     * then the appenders located in the ancestors of this logger will not be used.
+     * However, the children of this logger will inherit its appenders, unless the
+     * children have their additivity flag set to <code>false</code> too. See the
+     * user manual for more details.
      */
     protected boolean additive = true;
 
@@ -151,8 +151,9 @@ public class HLogger extends MarkerIgnoringBase {
     }
 
     /**
-     * Remove all previously added appenders from this logger instance. <p/> This
-     * is useful when re-reading configuration information.
+     * Remove all previously added appenders from this logger instance.
+     * <p/>
+     * This is useful when re-reading configuration information.
      */
     public synchronized void removeAllAppenders() {
         if (appenderList != null) {
@@ -169,11 +170,10 @@ public class HLogger extends MarkerIgnoringBase {
     /**
      * Invoke all the appenders of this logger.
      * 
-     * @param event
-     *          The event to log
+     * @param event The event to log
      */
     public void callAppenders(ILoggingEvent event) {
-        ///int writes = 0;
+        /// int writes = 0;
 
         for (HLogger l = this; l != null; l = l.parent) {
             // Protected against simultaneous call to addAppender, removeAppender,...
@@ -228,16 +228,16 @@ public class HLogger extends MarkerIgnoringBase {
      * IMPORTANT: Calls to this method must be within a syncronized block on this
      * logger.
      * 
-     * @param lastPart
-     *          the suffix (i.e. last part) of the child logger name. This
-     *          parameter may not include dots, i.e. the logger separator
-     *          character.
+     * @param lastPart the suffix (i.e. last part) of the child logger name. This
+     *                 parameter may not include dots, i.e. the logger separator
+     *                 character.
      * @return
      */
     HLogger createChildByLastNamePart(final String lastPart) {
         int i_index = lastPart.indexOf(CoreConstants.DOT);
         if (i_index != -1) {
-            throw new IllegalArgumentException("Child name [" + lastPart + " passed as parameter, may not include [" + CoreConstants.DOT + "]");
+            throw new IllegalArgumentException(
+                    "Child name [" + lastPart + " passed as parameter, may not include [" + CoreConstants.DOT + "]");
         }
 
         if (childrenMap == null) {

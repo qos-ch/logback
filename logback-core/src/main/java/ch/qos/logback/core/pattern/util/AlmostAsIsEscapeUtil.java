@@ -29,10 +29,10 @@ public class AlmostAsIsEscapeUtil extends RestrictedEscapeUtil {
      * <p>
      * Here is the rationale. First, filename patterns do not include escape
      * combinations such as \r or \n. Moreover, characters which have special
-     * meaning in logback parsers, such as '{', or '}' cannot be part of file
-     * names (so me thinks). The left parenthesis character has special meaning
-     * only if it is preceded by %. Thus, the only characters that needs escaping
-     * are '%' and ')'.
+     * meaning in logback parsers, such as '{', or '}' cannot be part of file names
+     * (so me thinks). The left parenthesis character has special meaning only if it
+     * is preceded by %. Thus, the only characters that needs escaping are '%' and
+     * ')'.
      * 
      * <p>
      * Note that this method assumes that it is called after the escape character

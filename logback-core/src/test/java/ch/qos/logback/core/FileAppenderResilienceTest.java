@@ -87,7 +87,8 @@ public class FileAppenderResilienceTest {
         double lossinessFactor = 0.35;
         double resilianceFactor = (1 - lossinessFactor);
 
-        ResilienceUtil.verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(), bestCaseSuccessRatio * resilianceFactor);
+        ResilienceUtil.verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(),
+                bestCaseSuccessRatio * resilianceFactor);
     }
 
     private void closeLogFileOnPurpose() throws IOException {

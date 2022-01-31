@@ -22,8 +22,8 @@ import ch.qos.logback.core.model.InsertFromJNDIModel;
 import ch.qos.logback.core.model.Model;
 
 /**
- * Insert an env-entry found in JNDI as a new context variable  
-
+ * Insert an env-entry found in JNDI as a new context variable
+ * 
  * @author Ceki Gulcu
  *
  */
@@ -33,22 +33,22 @@ public class InsertFromJNDIAction extends BaseModelAction {
     public static final String AS_ATTR = "as";
 
     @Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
-			Attributes attributes) {
-    	InsertFromJNDIModel ifjm = new InsertFromJNDIModel();
-    	ifjm.setEnvEntryName(attributes.getValue(ENV_ENTRY_NAME_ATTR));
-    	ifjm.setAs(attributes.getValue(AS_ATTR));
-    	ifjm.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
-    	
-		return ifjm;
-	}
-    
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        InsertFromJNDIModel ifjm = new InsertFromJNDIModel();
+        ifjm.setEnvEntryName(attributes.getValue(ENV_ENTRY_NAME_ATTR));
+        ifjm.setAs(attributes.getValue(AS_ATTR));
+        ifjm.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
+
+        return ifjm;
+    }
+
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
-    	validator.generic(ENV_ENTRY_NAME_ATTR);
-    	validator.generic(AS_ATTR);
-    	
+        PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
+        validator.generic(ENV_ENTRY_NAME_ATTR);
+        validator.generic(AS_ATTR);
+
         return validator.isValid();
     }
 

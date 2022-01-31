@@ -82,7 +82,8 @@ public class ScaffoldingForRollingTests {
         fileContentCheck(fileArray, runLength, prefix, 0);
     }
 
-    public static void fileContentCheck(File[] fileArray, int runLength, String prefix, int runStart) throws IOException {
+    public static void fileContentCheck(File[] fileArray, int runLength, String prefix, int runStart)
+            throws IOException {
         List<String> stringList = new ArrayList<String>();
         for (File file : fileArray) {
             FileToBufferUtil.readIntoList(file, stringList);
@@ -100,7 +101,8 @@ public class ScaffoldingForRollingTests {
         sortedContentCheck(outputDirStr, runLength, prefix, 0);
     }
 
-    public static void sortedContentCheck(String outputDirStr, int runLength, String prefix, int runStart) throws IOException {
+    public static void sortedContentCheck(String outputDirStr, int runLength, String prefix, int runStart)
+            throws IOException {
         File[] fileArray = getFilesInDirectory(outputDirStr);
         FileFilterUtil.sortFileArrayByName(fileArray);
         fileContentCheck(fileArray, runLength, prefix, runStart);
@@ -191,8 +193,10 @@ public class ScaffoldingForRollingTests {
         expectedFilenameList.add(fn);
     }
 
-    protected void addExpectedFileName_ByFileIndexCounter(String randomOutputDir, String testId, long millis, int fileIndexCounter, String compressionSuffix) {
-        String fn = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt" + compressionSuffix;
+    protected void addExpectedFileName_ByFileIndexCounter(String randomOutputDir, String testId, long millis,
+            int fileIndexCounter, String compressionSuffix) {
+        String fn = randomOutputDir + testId + "-" + SDF.format(millis) + "-" + fileIndexCounter + ".txt"
+                + compressionSuffix;
         expectedFilenameList.add(fn);
     }
 
@@ -212,7 +216,8 @@ public class ScaffoldingForRollingTests {
         }
     }
 
-    protected void massageExpectedFilesToCorresponToCurrentTarget(String testId, UnaryOperator<String> filenameFunction) {
+    protected void massageExpectedFilesToCorresponToCurrentTarget(String testId,
+            UnaryOperator<String> filenameFunction) {
         int lastIndex = expectedFilenameList.size() - 1;
         String last = expectedFilenameList.remove(lastIndex);
 

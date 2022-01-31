@@ -24,9 +24,9 @@ import ch.qos.logback.core.pattern.Converter;
 
 /**
  * 
- * HTMLLayout outputs events in an HTML table. 
+ * HTMLLayout outputs events in an HTML table.
  * <p>
- * The content of the table columns are specified using a conversion pattern. 
+ * The content of the table columns are specified using a conversion pattern.
  * See {@link ch.qos.logback.access.PatternLayout} for documentation on the
  * available patterns.
  * <p>

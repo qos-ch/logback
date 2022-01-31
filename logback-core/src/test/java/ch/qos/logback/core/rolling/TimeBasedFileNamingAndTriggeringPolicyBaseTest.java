@@ -66,7 +66,8 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
         assertEquals("foo-2011-12T59.log", elapsedPeriodsFileName);
     }
 
-    // see "log rollover should be configurable using %d multiple times in file name pattern"
+    // see "log rollover should be configurable using %d multiple times in file name
+    // pattern"
     // http://jira.qos.ch/browse/LBCORE-242
 
     @Test
@@ -108,7 +109,7 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
         String pattern = "test-%d{yyyy-MM-dd'T'HH}-%i.log.zip";
         tbrp.setFileNamePattern(pattern);
         tbrp.start();
-        
+
         assertFalse(tbrp.isStarted());
         StatusChecker statusChecker = new StatusChecker(context);
         statusChecker.assertContainsMatch(Status.ERROR, "Filename pattern .{37} contains an integer token converter");

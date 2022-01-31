@@ -67,7 +67,8 @@ public class JoranConfiguratorTest {
     @Test
     public void defaultLayout() throws Exception {
         configure(AccessTestConstants.TEST_DIR_PREFIX + "input/joran/defaultLayout.xml");
-        StringListAppender<IAccessEvent> listAppender = (StringListAppender<IAccessEvent>) context.getAppender("STR_LIST");
+        StringListAppender<IAccessEvent> listAppender = (StringListAppender<IAccessEvent>) context
+                .getAppender("STR_LIST");
         IAccessEvent event = DummyAccessEventBuilder.buildNewAccessEvent();
         listAppender.doAppend(event);
         assertEquals(1, listAppender.strList.size());

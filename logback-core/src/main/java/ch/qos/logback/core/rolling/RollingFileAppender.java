@@ -128,7 +128,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
         boolean collisionsDetected = false;
         @SuppressWarnings("unchecked")
-        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context
+                .getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         if (map == null) {
             return collisionsDetected;
         }
@@ -147,7 +148,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     @Override
     public void stop() {
         super.stop();
-        
+
         if (rollingPolicy != null)
             rollingPolicy.stop();
         if (triggeringPolicy != null)
@@ -199,7 +200,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             // update the currentlyActiveFile LOGBACK-64
             currentlyActiveFile = new File(rollingPolicy.getActiveFileName());
 
-            // This will also close the file. This is OK since multiple close operations are safe.
+            // This will also close the file. This is OK since multiple close operations are
+            // safe.
             this.openFile(rollingPolicy.getActiveFileName());
         } catch (IOException e) {
             addError("setFile(" + fileName + ", false) call failed.", e);
@@ -217,8 +219,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     }
 
     /**
-    * This method differentiates RollingFileAppender from its super class.
-    */
+     * This method differentiates RollingFileAppender from its super class.
+     */
     @Override
     protected void subAppend(E event) {
         // The roll-over check must precede actual writing. This is the

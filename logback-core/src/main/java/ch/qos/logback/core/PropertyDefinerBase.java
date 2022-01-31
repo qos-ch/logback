@@ -17,8 +17,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyDefiner;
 
 /**
- * A skeleton implementation for property definers so that they derive from {@link ContextAwareBase}.
- *  
+ * A skeleton implementation for property definers so that they derive from
+ * {@link ContextAwareBase}.
+ * 
  * @author Aleksey Didik
  */
 public abstract class PropertyDefinerBase extends ContextAwareBase implements PropertyDefiner {

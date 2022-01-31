@@ -19,7 +19,7 @@ import javax.net.ssl.SSLServerSocket;
  * An {@link SSLConfigurable} wrapper for an {@link SSLServerSocket}.
  *
  * @author Carl Harris
- * @author Bruno Harbulot 
+ * @author Bruno Harbulot
  */
 public class SSLConfigurableServerSocket implements SSLConfigurable {
 
@@ -61,9 +61,9 @@ public class SSLConfigurableServerSocket implements SSLConfigurable {
         delegate.setWantClientAuth(state);
     }
 
-	@Override
-	public void setHostnameVerification(boolean verifyHostname) {
-		// This is not relevant for a server socket
-	}
+    @Override
+    public void setHostnameVerification(boolean verifyHostname) {
+        // This is not relevant for a server socket
+    }
 
 }

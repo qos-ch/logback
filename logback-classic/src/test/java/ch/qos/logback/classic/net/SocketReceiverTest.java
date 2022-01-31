@@ -167,7 +167,8 @@ public class SocketReceiverTest {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
         logger.setLevel(Level.DEBUG);
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null,
+                new Object[0]);
 
         LoggingEventVO eventVO = LoggingEventVO.build(event);
         oos.writeObject(eventVO);
@@ -191,7 +192,8 @@ public class SocketReceiverTest {
         ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
         logger.setLevel(Level.INFO);
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null,
+                new Object[0]);
 
         LoggingEventVO eventVO = LoggingEventVO.build(event);
         oos.writeObject(eventVO);
@@ -208,7 +210,8 @@ public class SocketReceiverTest {
         private boolean connectorCreated;
 
         @Override
-        protected synchronized SocketConnector newConnector(InetAddress address, int port, int initialDelay, int retryDelay) {
+        protected synchronized SocketConnector newConnector(InetAddress address, int port, int initialDelay,
+                int retryDelay) {
             connectorCreated = true;
             notifyAll();
             return connector;
@@ -257,7 +260,8 @@ public class SocketReceiverTest {
     private static class MockSocketFactory extends SocketFactory {
 
         @Override
-        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
+        public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort)
+                throws IOException {
             throw new UnsupportedOperationException();
         }
 
@@ -267,7 +271,8 @@ public class SocketReceiverTest {
         }
 
         @Override
-        public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException, UnknownHostException {
+        public Socket createSocket(String host, int port, InetAddress localHost, int localPort)
+                throws IOException, UnknownHostException {
             throw new UnsupportedOperationException();
         }
 

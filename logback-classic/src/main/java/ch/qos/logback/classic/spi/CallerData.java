@@ -18,16 +18,16 @@ import ch.qos.logback.core.CoreConstants;
 import java.util.List;
 
 /**
- * This class computes caller data returning the result in the form
- * of a StackTraceElement array.
+ * This class computes caller data returning the result in the form of a
+ * StackTraceElement array.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
 public class CallerData {
 
     /**
-     * When caller information is not available this constant is used for file
-     * name, method name, etc.
+     * When caller information is not available this constant is used for file name,
+     * method name, etc.
      */
     public static final String NA = "?";
 
@@ -52,7 +52,8 @@ public class CallerData {
      * Extract caller data information as an array based on a Throwable passed as
      * parameter
      */
-    public static StackTraceElement[] extract(Throwable t, String fqnOfInvokingClass, final int maxDepth, List<String> frameworkPackageList) {
+    public static StackTraceElement[] extract(Throwable t, String fqnOfInvokingClass, final int maxDepth,
+            List<String> frameworkPackageList) {
         if (t == null) {
             return null;
         }
@@ -87,11 +88,13 @@ public class CallerData {
         return callerDataArray;
     }
 
-    static boolean isInFrameworkSpace(String currentClass, String fqnOfInvokingClass, List<String> frameworkPackageList) {
+    static boolean isInFrameworkSpace(String currentClass, String fqnOfInvokingClass,
+            List<String> frameworkPackageList) {
         // the check for org.apache.log4j.Category class is intended to support
         // log4j-over-slf4j. it solves http://bugzilla.slf4j.org/show_bug.cgi?id=66
-        if (currentClass.equals(fqnOfInvokingClass) || currentClass.equals(LOG4J_CATEGORY) || currentClass.startsWith(SLF4J_BOUNDARY)
-                        || isInFrameworkSpaceList(currentClass, frameworkPackageList)) {
+        if (currentClass.equals(fqnOfInvokingClass) || currentClass.equals(LOG4J_CATEGORY)
+                || currentClass.startsWith(SLF4J_BOUNDARY)
+                || isInFrameworkSpaceList(currentClass, frameworkPackageList)) {
             return true;
         } else {
             return false;
@@ -99,7 +102,8 @@ public class CallerData {
     }
 
     /**
-     * Is currentClass present in the list of packages considered part of the logging framework?
+     * Is currentClass present in the list of packages considered part of the
+     * logging framework?
      */
     private static boolean isInFrameworkSpaceList(String currentClass, List<String> frameworkPackageList) {
         if (frameworkPackageList == null)
@@ -113,7 +117,8 @@ public class CallerData {
     }
 
     /**
-     * Returns a StackTraceElement where all string fields are set to {@link #NA} and line number is set to {@link #LINE_NA}.
+     * Returns a StackTraceElement where all string fields are set to {@link #NA}
+     * and line number is set to {@link #LINE_NA}.
      *
      * @return StackTraceElement with values set to NA constants.
      * @since 1.0.10

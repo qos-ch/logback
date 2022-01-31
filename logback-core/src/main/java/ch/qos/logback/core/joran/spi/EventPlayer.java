@@ -33,6 +33,7 @@ public class EventPlayer {
 
     /**
      * Return a copy of the current event list in the player.
+     * 
      * @return
      * @since 0.9.20
      */

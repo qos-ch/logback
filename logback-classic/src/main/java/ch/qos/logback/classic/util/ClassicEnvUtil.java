@@ -24,9 +24,10 @@ import ch.qos.logback.core.util.Loader;
 public class ClassicEnvUtil {
 
     /*
-     * Used to replace the ClassLoader that the ServiceLoader uses for unit testing. We need this to mock the resources
-     * the ServiceLoader attempts to load from /META-INF/services thus keeping the projects src/test/resources clean
-     * (see src/test/resources/README.txt).
+     * Used to replace the ClassLoader that the ServiceLoader uses for unit testing.
+     * We need this to mock the resources the ServiceLoader attempts to load from
+     * /META-INF/services thus keeping the projects src/test/resources clean (see
+     * src/test/resources/README.txt).
      */
     static ClassLoader testServiceLoaderClassLoader = null;
 
@@ -41,7 +42,8 @@ public class ClassicEnvUtil {
     }
 
     private static ClassLoader getServiceLoaderClassLoader() {
-        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(ClassicEnvUtil.class) : testServiceLoaderClassLoader;
+        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(ClassicEnvUtil.class)
+                : testServiceLoaderClassLoader;
     }
 
     public static <T> T loadFromServiceLoader(Class<T> c) {

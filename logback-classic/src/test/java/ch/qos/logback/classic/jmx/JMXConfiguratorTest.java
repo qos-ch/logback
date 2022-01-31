@@ -64,7 +64,8 @@ public class JMXConfiguratorTest {
 
     @Test
     public void contextReset() throws Exception {
-        String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+        String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type="
+                + this.getClass().getName();
 
         ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
         JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);
@@ -87,7 +88,8 @@ public class JMXConfiguratorTest {
 
     @Test
     public void contextStop() throws Exception {
-        String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type=" + this.getClass().getName();
+        String randomizedObjectNameAsStr = "ch.qos.logback." + diff + ":Name=" + lc.getName() + ",Type="
+                + this.getClass().getName();
 
         ObjectName objectName = MBeanUtil.string2ObjectName(lc, this, randomizedObjectNameAsStr);
         JMXConfigurator jmxConfigurator = new JMXConfigurator(lc, mbs, objectName);

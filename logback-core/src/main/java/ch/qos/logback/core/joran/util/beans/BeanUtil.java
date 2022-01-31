@@ -4,11 +4,12 @@ import java.lang.reflect.Method;
 
 /**
  * Encapsulates utility methods associated with standard java beans.
+ * 
  * @author urechm
  */
 public class BeanUtil {
 
-    //public static final BeanUtil SINGLETON = new BeanUtil();
+    // public static final BeanUtil SINGLETON = new BeanUtil();
 
     public static final String PREFIX_GETTER_IS = "is";
     public static final String PREFIX_GETTER_GET = "get";
@@ -86,7 +87,8 @@ public class BeanUtil {
 
     /**
      * @param method to get the associated property name for.
-     * @return The property name of the associated property if the given method matches a standard java beans getter or setter.
+     * @return The property name of the associated property if the given method
+     *         matches a standard java beans getter or setter.
      */
     static public String getPropertyName(Method method) {
         String methodName = method.getName();
@@ -105,11 +107,12 @@ public class BeanUtil {
 
     /**
      * Converts the given String into lower camel case form.
+     * 
      * @param string to decapitalize.
-     * @return null if the given String is null.
-     * Emtpy string if the given string is empty.
-     * The given string if the first two consecutive letters are in upper case.
-     * The given string with the first letter in lower case otherwise, which might be the given string.
+     * @return null if the given String is null. Emtpy string if the given string is
+     *         empty. The given string if the first two consecutive letters are in
+     *         upper case. The given string with the first letter in lower case
+     *         otherwise, which might be the given string.
      */
     static public String toLowerCamelCase(String string) {
         if (string == null) {

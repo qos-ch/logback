@@ -76,7 +76,7 @@ public class StaxEventRecorder extends ContextAwareBase {
         String tagName = se.getName().getLocalPart();
         this.globalElementPath.push(tagName);
         ElementPath current = globalElementPath.duplicate();
-		StartEvent startEvent = new StartEvent(current, tagName, se.getAttributes(), se.getLocation());
+        StartEvent startEvent = new StartEvent(current, tagName, se.getAttributes(), se.getLocation());
         eventList.add(startEvent);
     }
 

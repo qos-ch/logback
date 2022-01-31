@@ -60,7 +60,7 @@ public class EnvUtil {
     static public boolean isJDK16OrHigher() {
         return isJDK_N_OrHigher(16);
     }
-    
+
     static public boolean isJaninoAvailable() {
         ClassLoader classLoader = EnvUtil.class.getClassLoader();
         try {

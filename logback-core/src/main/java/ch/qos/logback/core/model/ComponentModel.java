@@ -21,10 +21,10 @@ package ch.qos.logback.core.model;
  */
 public class ComponentModel extends Model {
 
-	private static final long serialVersionUID = -7117814935763453139L;
+    private static final long serialVersionUID = -7117814935763453139L;
 
-	String className;
-    
+    String className;
+
     public String getClassName() {
         return className;
     }
@@ -35,7 +35,8 @@ public class ComponentModel extends Model {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() +" [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText + "]";
+        return this.getClass().getSimpleName() + " [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText
+                + "]";
     }
 
 }

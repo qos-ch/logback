@@ -26,8 +26,8 @@ import org.slf4j.spi.MDCAdapter;
  * typically interleaved when a server handles multiple clients
  * near-simultaneously.
  * <p/>
- * <b><em>The MDC is managed on a per thread basis</em></b>. Note that a child thread
- * <b>does not</b> inherit the mapped diagnostic context of its parent.
+ * <b><em>The MDC is managed on a per thread basis</em></b>. Note that a child
+ * thread <b>does not</b> inherit the mapped diagnostic context of its parent.
  * <p/>
  * <p/>
  * For more information about MDC, please refer to the online manual at
@@ -163,8 +163,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
 
     /**
-     * Returns the keys in the MDC as a {@link Set}. The returned value can be
-     * null.
+     * Returns the keys in the MDC as a {@link Set}. The returned value can be null.
      */
     public Set<String> getKeys() {
         Map<String, String> map = getPropertyMap();

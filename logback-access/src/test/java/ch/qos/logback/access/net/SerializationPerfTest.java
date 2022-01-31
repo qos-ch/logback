@@ -97,7 +97,8 @@ public class SerializationPerfTest extends TestCase {
         }
 
         total /= (1000);// nanos -> micros
-        System.out.println("Loop done : average time = " + total / loopNumber + " microsecs after " + loopNumber + " writes.");
+        System.out.println(
+                "Loop done : average time = " + total / loopNumber + " microsecs after " + loopNumber + " writes.");
         // average time: 26-30 microsec = 0.030 millis
     }
 

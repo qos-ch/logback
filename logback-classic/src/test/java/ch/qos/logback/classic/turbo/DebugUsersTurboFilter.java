@@ -29,8 +29,8 @@ import ch.qos.logback.core.spi.FilterReply;
  * 
  * If the level passed as a parameter is of level DEBUG, then the "user" value
  * taken from the MDC is checked against the configured user list. When the user
- * belongs to the list, the request is accepted. Otherwise a NEUTRAL response
- * is sent, thus not influencing the filter chain.  
+ * belongs to the list, the request is accepted. Otherwise a NEUTRAL response is
+ * sent, thus not influencing the filter chain.
  *
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec

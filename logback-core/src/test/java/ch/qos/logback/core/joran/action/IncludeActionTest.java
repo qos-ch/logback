@@ -110,12 +110,13 @@ public class IncludeActionTest {
                 defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
                 ModelFiler p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
                 defaultProcessor.setPhaseOneFilter(p1Filter);
-                ModelFiler p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class).denyAll();
+                ModelFiler p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class)
+                        .denyAll();
                 defaultProcessor.setPhaseTwoFilter(p2Filter);
                 return defaultProcessor;
             }
         };
-        
+
         tc.setContext(context);
     }
 
@@ -206,8 +207,8 @@ public class IncludeActionTest {
 
     @Test
     public void malformedURL() throws JoranException {
-    	String MALFORMED = "htp://logback.qos.ch";
-    		
+        String MALFORMED = "htp://logback.qos.ch";
+
         System.setProperty(INCLUDE_KEY, MALFORMED);
         tc.doConfigure(TOP_BY_URL);
         assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
@@ -240,25 +241,22 @@ public class IncludeActionTest {
         tc.doConfigure(MULTI_INCLUDE_BY_FILE);
         verifyConfig(new String[] { "IA", "IB", "SECOND" });
     }
-    
-    
+
     // See LOGBACK-1465 - xxe vulnerability
     @Test
     public void includeAsEntity() throws JoranException {
         tc.doConfigure(TOP_BY_ENTITY);
         // when entity inclusion is enabled
-        //verifyConfig(new String[] { "EA", "EB" });
-        
+        // verifyConfig(new String[] { "EA", "EB" });
+
         // when entity inclusion disabled
-        verifyConfig(new String[] { });
+        verifyConfig(new String[] {});
     }
-    
+
     void verifyConfig(String[] expected) {
         Stack<String> witness = new Stack<String>();
         witness.addAll(Arrays.asList(expected));
         assertEquals(witness, stackAction.getStack());
     }
 
-
-    
 }

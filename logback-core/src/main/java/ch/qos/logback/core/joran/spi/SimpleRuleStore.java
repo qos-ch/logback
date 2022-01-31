@@ -44,8 +44,9 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     /**
-     * Add a new rule, i.e. a pattern, action pair to the rule store. <p> Note
-     * that the added action's LoggerRepository will be set in the process.
+     * Add a new rule, i.e. a pattern, action pair to the rule store.
+     * <p>
+     * Note that the added action's LoggerRepository will be set in the process.
      */
     public void addRule(ElementSelector elementSelector, Action action) {
         action.setContext(context);

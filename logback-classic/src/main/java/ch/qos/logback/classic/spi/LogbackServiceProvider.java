@@ -20,8 +20,8 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     final static String NULL_CS_URL = CoreConstants.CODES_URL + "#null_CS";
 
     /**
-     * Declare the version of the SLF4J API this implementation is compiled against. 
-     * The value of this field is modified with each major release. 
+     * Declare the version of the SLF4J API this implementation is compiled against.
+     * The value of this field is modified with each major release.
      */
     // to avoid constant folding by the compiler, this field must *not* be final
     public static String REQUESTED_API_VERSION = "2.0.99"; // !final
@@ -29,10 +29,11 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
     private LoggerContext defaultLoggerContext;
     private IMarkerFactory markerFactory;
     private MDCAdapter mdcAdapter;
-    // private final ContextSelectorStaticBinder contextSelectorBinder = ContextSelectorStaticBinder.getSingleton();
+    // private final ContextSelectorStaticBinder contextSelectorBinder =
+    // ContextSelectorStaticBinder.getSingleton();
 //    private static Object KEY = new Object();
 //    private volatile boolean initialized = false;
-    
+
     @Override
     public void initialize() {
         defaultLoggerContext = new LoggerContext();
@@ -54,8 +55,8 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
             if (!StatusUtil.contextHasStatusListener(defaultLoggerContext)) {
                 StatusPrinter.printInCaseOfErrorsOrWarnings(defaultLoggerContext);
             }
-            //contextSelectorBinder.init(defaultLoggerContext, KEY);
-           
+            // contextSelectorBinder.init(defaultLoggerContext, KEY);
+
         } catch (Exception t) { // see LOGBACK-1159
             Util.report("Failed to instantiate [" + LoggerContext.class.getName() + "]", t);
         }
@@ -65,7 +66,7 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
 
     public ILoggerFactory getLoggerFactory() {
         return defaultLoggerContext;
-        
+
 //        if (!initialized) {
 //            return defaultLoggerContext;
 //        

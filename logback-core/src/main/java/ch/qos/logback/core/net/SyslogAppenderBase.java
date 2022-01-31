@@ -52,7 +52,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
         }
 
         if (charset == null) {
-            // Using defaultCharset() preserves the previous behavior when String.getBytes() was
+            // Using defaultCharset() preserves the previous behavior when String.getBytes()
+            // was
             // called without arguments
             charset = Charset.defaultCharset();
         }
@@ -65,7 +66,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
                 maxMessageSize = Math.min(systemDatagramSize, MAX_MESSAGE_SIZE_LIMIT);
                 addInfo("Defaulting maxMessageSize to [" + maxMessageSize + "]");
             } else if (maxMessageSize > systemDatagramSize) {
-                addWarn("maxMessageSize of [" + maxMessageSize + "] is larger than the system defined datagram size of [" + systemDatagramSize + "].");
+                addWarn("maxMessageSize of [" + maxMessageSize
+                        + "] is larger than the system defined datagram size of [" + systemDatagramSize + "].");
                 addWarn("This may result in dropped logs.");
             }
         } catch (UnknownHostException e) {
@@ -119,8 +121,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     /**
      * Returns the integer value corresponding to the named syslog facility.
      * 
-     * @throws IllegalArgumentException
-     *           if the facility string is not recognized
+     * @throws IllegalArgumentException if the facility string is not recognized
      */
     static public int facilityStringToint(String facilityStr) {
         if ("KERN".equalsIgnoreCase(facilityStr)) {
@@ -205,12 +206,12 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     /**
      * The <b>Facility</b> option must be set one of the strings KERN, USER, MAIL,
      * DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP, AUDIT,
-     * ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6,
-     * LOCAL7. Case is not important.
+     * ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.
+     * Case is not important.
      * 
      * <p>
-     * See {@link ch.qos.logback.core.net.SyslogConstants SyslogConstants} and RFC 3164 for more information about the
-     * <b>Facility</b> option.
+     * See {@link ch.qos.logback.core.net.SyslogConstants SyslogConstants} and RFC
+     * 3164 for more information about the <b>Facility</b> option.
      */
     public void setFacility(String facilityStr) {
         if (facilityStr != null) {
@@ -240,11 +241,10 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * Maximum size for the syslog message (in characters); messages
-     * longer than this are truncated. The default value is 65400 (which
-     * is near the maximum for syslog-over-UDP). Note that the value is
-     * characters; the number of bytes may vary if non-ASCII characters
-     * are present.
+     * Maximum size for the syslog message (in characters); messages longer than
+     * this are truncated. The default value is 65400 (which is near the maximum for
+     * syslog-over-UDP). Note that the value is characters; the number of bytes may
+     * vary if non-ASCII characters are present.
      */
     public void setMaxMessageSize(int maxMessageSize) {
         this.maxMessageSize = maxMessageSize;
@@ -267,17 +267,17 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-       * See {@link #setSuffixPattern #setSuffixPattern(String)}.
-       * 
-       * @return
-       */
+     * See {@link #setSuffixPattern #setSuffixPattern(String)}.
+     * 
+     * @return
+     */
     public String getSuffixPattern() {
         return suffixPattern;
     }
 
     /**
-     * The <b>suffixPattern</b> option specifies the format of the
-     * non-standardized part of the message sent to the syslog server.
+     * The <b>suffixPattern</b> option specifies the format of the non-standardized
+     * part of the message sent to the syslog server.
      * 
      * @param suffixPattern
      */
@@ -286,8 +286,8 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * Returns the Charset used to encode String messages into byte sequences when writing to
-     * syslog.
+     * Returns the Charset used to encode String messages into byte sequences when
+     * writing to syslog.
      */
     public Charset getCharset() {
         return charset;

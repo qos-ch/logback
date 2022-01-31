@@ -59,11 +59,12 @@ public class AbstractSocketAppenderIntegrationTest {
     private ObjectWriterFactory objectWriterFactory = new SpyProducingObjectWriterFactory();
     private LinkedBlockingDeque<String> deque = spy(new LinkedBlockingDeque<String>(1));
     private QueueFactory queueFactory = mock(QueueFactory.class);
-    private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender(queueFactory, objectWriterFactory);
+    private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender(queueFactory,
+            objectWriterFactory);
 
     @Before
     public void setUp() throws Exception {
-        when(queueFactory.<String> newLinkedBlockingDeque(anyInt())).thenReturn(deque);
+        when(queueFactory.<String>newLinkedBlockingDeque(anyInt())).thenReturn(deque);
         instrumentedAppender.setContext(mockContext);
     }
 

@@ -73,30 +73,35 @@ public class CompressTest {
     public void test1() throws Exception {
         Compressor compressor = new Compressor(CompressionMode.GZ);
         compressor.setContext(context);
-        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", null);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress1.txt",
+                CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", null);
 
         StatusChecker checker = new StatusChecker(context);
         assertTrue(checker.isErrorFree(0));
-        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress1.txt.gz"));
+        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz",
+                CoreTestConstants.TEST_SRC_PREFIX + "witness/compress1.txt.gz"));
     }
 
     @Test
     public void test2() throws Exception {
         Compressor compressor = new Compressor(CompressionMode.GZ);
         compressor.setContext(context);
-        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt", null);
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress2.txt",
+                CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt", null);
 
         StatusChecker checker = new StatusChecker(context);
         assertTrue(checker.isErrorFree(0));
 
-        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz", CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.gz"));
+        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz",
+                CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.gz"));
     }
 
     @Test
     public void test3() throws Exception {
         Compressor compressor = new Compressor(CompressionMode.ZIP);
         compressor.setContext(context);
-        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt", CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt", "compress3.txt");
+        compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt",
+                CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt", "compress3.txt");
         StatusChecker checker = new StatusChecker(context);
         assertTrue(checker.isErrorFree(0));
 

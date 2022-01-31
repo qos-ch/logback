@@ -23,24 +23,23 @@ import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.OptionHelper;
 
-public class TimestampModelHandler  extends ModelHandlerBase {
+public class TimestampModelHandler extends ModelHandlerBase {
 
     boolean inError = false;
-    
+
     public TimestampModelHandler(Context context) {
         super(context);
     }
-    
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new TimestampModelHandler(context);
-	}	
-		
+
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new TimestampModelHandler(context);
+    }
 
     @Override
     protected Class<TimestampModel> getSupportedModelClass() {
-    	return TimestampModel.class;
+        return TimestampModel.class;
     }
-    
+
     @Override
     public void handle(ModelInterpretationContext interpretationContext, Model model) {
         TimestampModel timestampModel = (TimestampModel) model;
@@ -74,9 +73,10 @@ public class TimestampModelHandler  extends ModelHandlerBase {
         CachingDateFormatter sdf = new CachingDateFormatter(datePatternStr);
         String val = sdf.format(timeReference);
 
-        addInfo("Adding property to the context with key=\"" + keyStr + "\" and value=\"" + val + "\" to the " + scope + " scope");
+        addInfo("Adding property to the context with key=\"" + keyStr + "\" and value=\"" + val + "\" to the " + scope
+                + " scope");
         ActionUtil.setProperty(interpretationContext, keyStr, val, scope);
-        
+
     }
 
 }

@@ -17,8 +17,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Example code illustrating locking policies in the JDK.
- * See http://jira.qos.ch/browse/LBCORE-97 for a discussion.
+ * Example code illustrating locking policies in the JDK. See
+ * http://jira.qos.ch/browse/LBCORE-97 for a discussion.
  * 
  * @author Joern Huxhorn
  */

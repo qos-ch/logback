@@ -39,7 +39,8 @@ public class DefaultRolloverChecker implements RolloverChecker {
         for (String fn : expectedFilenameList) {
             String suffix = withCompression ? addGZIfNotLast(expectedFilenameList, i, compressionSuffix) : "";
 
-            String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i + suffix;
+            String witnessFileName = CoreTestConstants.TEST_SRC_PREFIX + "witness/rolling/tbr-" + testId + "." + i
+                    + suffix;
             assertTrue(Compare.compare(fn, witnessFileName));
             i++;
         }

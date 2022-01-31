@@ -20,10 +20,12 @@ import ch.qos.logback.core.spi.LifeCycle;
 /**
  * Users should extend this class to implement customized event filtering.
  * 
- * <p>We suggest that you first try to use the built-in rules before rushing to
+ * <p>
+ * We suggest that you first try to use the built-in rules before rushing to
  * write your own custom filters.
  * 
- * <p>For more information about filters, please refer to the online manual at
+ * <p>
+ * For more information about filters, please refer to the online manual at
  * http://logback.qos.ch/manual/filters.html
  * 
  * @author Ceki G&uuml;lc&uuml;
@@ -47,14 +49,13 @@ public abstract class Filter<E> extends ContextAwareBase implements LifeCycle {
     }
 
     /**
-     * If the decision is <code>{@link FilterReply#DENY}</code>, then the event will be
-     * dropped. If the decision is <code>{@link FilterReply#NEUTRAL}</code>, then the next
-     * filter, if any, will be invoked. If the decision is
+     * If the decision is <code>{@link FilterReply#DENY}</code>, then the event will
+     * be dropped. If the decision is <code>{@link FilterReply#NEUTRAL}</code>, then
+     * the next filter, if any, will be invoked. If the decision is
      * <code>{@link FilterReply#ACCEPT}</code> then the event will be logged without
      * consulting with other filters in the chain.
      * 
-     * @param event
-     *                The event to decide upon.
+     * @param event The event to decide upon.
      */
     public abstract FilterReply decide(E event);
 

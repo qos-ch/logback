@@ -23,7 +23,7 @@ public class DummyThrowableProxy implements IThrowableProxy {
     private IThrowableProxy[] suppressed;
     private boolean cyclic;
 
-	public String getClassName() {
+    public String getClassName() {
         return className;
     }
 
@@ -70,12 +70,12 @@ public class DummyThrowableProxy implements IThrowableProxy {
     public void setSuppressed(IThrowableProxy[] suppressed) {
         this.suppressed = suppressed;
     }
-    
-    public boolean isCyclic() {
-		return cyclic;
-	}
 
-	public void setCyclic(boolean cyclic) {
-		this.cyclic = cyclic;
-	}
+    public boolean isCyclic() {
+        return cyclic;
+    }
+
+    public void setCyclic(boolean cyclic) {
+        this.cyclic = cyclic;
+    }
 }

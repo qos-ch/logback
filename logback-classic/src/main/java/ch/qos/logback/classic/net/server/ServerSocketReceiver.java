@@ -53,7 +53,8 @@ public class ServerSocketReceiver extends ReceiverBase {
      */
     protected boolean shouldStart() {
         try {
-            ServerSocket serverSocket = getServerSocketFactory().createServerSocket(getPort(), getBacklog(), getInetAddress());
+            ServerSocket serverSocket = getServerSocketFactory().createServerSocket(getPort(), getBacklog(),
+                    getInetAddress());
 
             ServerListener<RemoteAppenderClient> listener = createServerListener(serverSocket);
 
@@ -98,6 +99,7 @@ public class ServerSocketReceiver extends ReceiverBase {
      * Gets the server socket factory.
      * <p>
      * Subclasses may override to provide a custom factory.
+     * 
      * @return server socket factory
      * @throws Exception
      */
@@ -107,6 +109,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
     /**
      * Gets the local address for the listener.
+     * 
      * @return an {@link InetAddress} representation of the local address.
      * @throws UnknownHostException
      */
@@ -118,6 +121,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
     /**
      * Gets the local port for the listener.
+     * 
      * @return local port
      */
     public int getPort() {
@@ -126,6 +130,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
     /**
      * Sets the local port for the listener.
+     * 
      * @param port the local port to set
      */
     public void setPort(int port) {
@@ -135,8 +140,9 @@ public class ServerSocketReceiver extends ReceiverBase {
     /**
      * Gets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
-     * have not yet been accepted.
+     * This represents the number of connected clients whose connections have not
+     * yet been accepted.
+     * 
      * @return queue depth
      * @see java.net.ServerSocket
      */
@@ -147,8 +153,9 @@ public class ServerSocketReceiver extends ReceiverBase {
     /**
      * Sets the listener queue depth.
      * <p>
-     * This represents the number of connected clients whose connections 
-     * have not yet been accepted.
+     * This represents the number of connected clients whose connections have not
+     * yet been accepted.
+     * 
      * @param backlog the queue depth to set
      * @see java.net.ServerSocket
      */
@@ -158,6 +165,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
     /**
      * Gets the local address for the listener.
+     * 
      * @return a string representation of the local address
      */
     public String getAddress() {
@@ -166,6 +174,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
     /**
      * Sets the local address for the listener.
+     * 
      * @param address a host name or a string representation of an IP address
      */
     public void setAddress(String address) {

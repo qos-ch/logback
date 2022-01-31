@@ -67,7 +67,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     private final TurboFilterList turboFilterList = new TurboFilterList();
     private boolean packagingDataEnabled = DEFAULT_PACKAGING_DATA;
     SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
-    
+
     private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
 
     int resetCount = 0;
@@ -185,7 +185,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
 
     final void noAppenderDefinedWarning(final Logger logger) {
         if (noAppenderWarning++ == 0) {
-            getStatusManager().add(new WarnStatus("No appenders present in context [" + getName() + "] for logger [" + logger.getName() + "].", logger));
+            getStatusManager().add(new WarnStatus(
+                    "No appenders present in context [" + getName() + "] for logger [" + logger.getName() + "].",
+                    logger));
         }
     }
 
@@ -208,9 +210,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return packagingDataEnabled;
     }
 
-
     private void cancelScheduledTasks() {
-        for(ScheduledFuture<?> sf: scheduledFutures) {
+        for (ScheduledFuture<?> sf : scheduledFutures) {
             sf.cancel(false);
         }
         scheduledFutures.clear();
@@ -232,8 +233,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     /**
-     * First processPriorToRemoval all registered turbo filters and then clear the registration
-     * list.
+     * First processPriorToRemoval all registered turbo filters and then clear the
+     * registration list.
      */
     public void resetTurboFilterList() {
         for (TurboFilter tf : turboFilterList) {
@@ -242,28 +243,29 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         turboFilterList.clear();
     }
 
-    final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker, final Logger logger, final Level level, final String format,
-                    final Object[] params, final Throwable t) {
+    final FilterReply getTurboFilterChainDecision_0_3OrMore(final Marker marker, final Logger logger, final Level level,
+            final String format, final Object[] params, final Throwable t) {
         if (turboFilterList.size() == 0) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, params, t);
     }
 
-    final FilterReply getTurboFilterChainDecision_1(final Marker marker, final Logger logger, final Level level, final String format, final Object param,
-                    final Throwable t) {
+    final FilterReply getTurboFilterChainDecision_1(final Marker marker, final Logger logger, final Level level,
+            final String format, final Object param, final Throwable t) {
         if (turboFilterList.size() == 0) {
             return FilterReply.NEUTRAL;
         }
         return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param }, t);
     }
 
-    final FilterReply getTurboFilterChainDecision_2(final Marker marker, final Logger logger, final Level level, final String format, final Object param1,
-                    final Object param2, final Throwable t) {
+    final FilterReply getTurboFilterChainDecision_2(final Marker marker, final Logger logger, final Level level,
+            final String format, final Object param1, final Object param2, final Throwable t) {
         if (turboFilterList.size() == 0) {
             return FilterReply.NEUTRAL;
         }
-        return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format, new Object[] { param1, param2 }, t);
+        return turboFilterList.getTurboFilterChainDecision(marker, logger, level, format,
+                new Object[] { param1, param2 }, t);
     }
 
     // === start listeners ==============================================
@@ -336,8 +338,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     /**
      * This method clears all internal properties, except internal status messages,
      * closes all appenders, removes any turboFilters, fires an OnReset event,
-     * removes all status listeners, removes all context listeners
-     * (except those which are reset resistant).
+     * removes all status listeners, removes all context listeners (except those
+     * which are reset resistant).
      * <p/>
      * As mentioned above, internal status messages survive resets.
      */
@@ -354,7 +356,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         resetListenersExceptResetResistant();
         resetStatusListeners();
     }
-    
+
     @Override
     public String toString() {
         return this.getClass().getName() + "[" + getName() + "]";
@@ -369,11 +371,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     /**
-     * List of packages considered part of the logging framework such that they are never considered
-     * as callers of the logging framework. This list used to compute the caller for logging events.
+     * List of packages considered part of the logging framework such that they are
+     * never considered as callers of the logging framework. This list used to
+     * compute the caller for logging events.
      * <p/>
-     * To designate package "com.foo" as well as all its subpackages as being part of the logging framework, simply add
-     * "com.foo" to this list.
+     * To designate package "com.foo" as well as all its subpackages as being part
+     * of the logging framework, simply add "com.foo" to this list.
      *
      * @return list of framework packages
      */

@@ -35,7 +35,8 @@ public class FrameworkErrorListener implements FrameworkListener {
         if (t != null) {
             tString = t.toString();
         }
-        System.out.println("Framework ERROR:" + ", source " + fe.getSource() + ", bundle=" + fe.getBundle() + ", ex=" + tString);
+        System.out.println(
+                "Framework ERROR:" + ", source " + fe.getSource() + ", bundle=" + fe.getBundle() + ", ex=" + tString);
         if (t != null) {
             t.printStackTrace();
         }

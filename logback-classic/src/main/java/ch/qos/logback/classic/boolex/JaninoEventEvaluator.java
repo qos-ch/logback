@@ -47,7 +47,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
         DEFAULT_PARAM_NAME_LIST.add("loggerContext");
         DEFAULT_PARAM_NAME_LIST.add("level");
         DEFAULT_PARAM_NAME_LIST.add("timeStamp");
-        //DEFAULT_PARAM_NAME_LIST.add("markerList");
+        // DEFAULT_PARAM_NAME_LIST.add("markerList");
         DEFAULT_PARAM_NAME_LIST.add("mdc");
         DEFAULT_PARAM_NAME_LIST.add("throwableProxy");
         DEFAULT_PARAM_NAME_LIST.add("throwable");
@@ -64,7 +64,7 @@ public class JaninoEventEvaluator extends JaninoEventEvaluatorBase<ILoggingEvent
         DEFAULT_PARAM_TYPE_LIST.add(LoggerContextVO.class);
         DEFAULT_PARAM_TYPE_LIST.add(int.class);
         DEFAULT_PARAM_TYPE_LIST.add(long.class);
-        //DEFAULT_PARAM_TYPE_LIST.add(List.class);
+        // DEFAULT_PARAM_TYPE_LIST.add(List.class);
         DEFAULT_PARAM_TYPE_LIST.add(Map.class);
         DEFAULT_PARAM_TYPE_LIST.add(IThrowableProxy.class);
         DEFAULT_PARAM_TYPE_LIST.add(Throwable.class);

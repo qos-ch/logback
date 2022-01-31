@@ -56,7 +56,7 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
                 if (AUXILIARY_TOKEN.equalsIgnoreCase(option)) {
                     primary = false;
                 } else {
-                	zoneId = ZoneId.of(option);
+                    zoneId = ZoneId.of(option);
                 }
             }
         }

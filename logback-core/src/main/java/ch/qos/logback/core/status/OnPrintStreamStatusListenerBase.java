@@ -21,7 +21,8 @@ import java.io.PrintStream;
 import java.util.List;
 
 /**
- *  Print all new incoming status messages on the on the designated PrintStream.
+ * Print all new incoming status messages on the on the designated PrintStream.
+ * 
  * @author Ceki G&uuml;lc&uuml;
  */
 abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase implements StatusListener, LifeCycle {
@@ -30,24 +31,26 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
 
     static final long DEFAULT_RETROSPECTIVE = 300;
     long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
-    
+
     /**
      * The prefix to place before each status message
+     * 
      * @since 1.1.10
      */
     String prefix;
-    
+
     /**
      * The PrintStream used by derived classes
+     * 
      * @return
      */
     abstract protected PrintStream getPrintStream();
 
     private void print(Status status) {
         StringBuilder sb = new StringBuilder();
-        if(prefix != null)
+        if (prefix != null)
             sb.append(prefix);
-        
+
         StatusPrinter.buildStr(sb, "", status);
         getPrintStream().print(sb);
     }
@@ -81,8 +84,8 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
     }
 
     /**
-     * Invoking the start method can cause the instance to print status messages created less than 
-     * value of retrospectiveThresold. 
+     * Invoking the start method can cause the instance to print status messages
+     * created less than value of retrospectiveThresold.
      */
     public void start() {
         isStarted = true;
@@ -98,7 +101,7 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
-    
+
     public void setRetrospective(long retrospective) {
         this.retrospectiveThresold = retrospective;
     }

@@ -29,8 +29,7 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends TriggeringPol
     /**
      * Set the host/parent {@link TimeBasedRollingPolicy}.
      * 
-     * @param tbrp
-     *                parent TimeBasedRollingPolicy
+     * @param tbrp parent TimeBasedRollingPolicy
      */
     void setTimeBasedRollingPolicy(TimeBasedRollingPolicy<E> tbrp);
 
@@ -56,8 +55,8 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends TriggeringPol
 
     /**
      * Return the current time which is usually the value returned by
-     * System.currentMillis(). However, for <b>testing</b> purposed this value
-     * may be different than the real time.
+     * System.currentMillis(). However, for <b>testing</b> purposed this value may
+     * be different than the real time.
      * 
      * @return current time value
      */
@@ -74,8 +73,8 @@ public interface TimeBasedFileNamingAndTriggeringPolicy<E> extends TriggeringPol
      * Set some date in the current period. Only unit tests should invoke this
      * method.
      * 
-     * WARNING: method removed. A unit test should not set the
-     * date in current period. It is the job of the FNATP to compute that.
+     * WARNING: method removed. A unit test should not set the date in current
+     * period. It is the job of the FNATP to compute that.
      * 
      * @param date
      */

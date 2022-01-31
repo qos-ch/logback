@@ -151,40 +151,38 @@ public class LoggingEventSerializationTest {
         checkForEquality(event, remoteEvent);
     }
 
-
     @Test
     public void testWithMarker() throws Exception {
         Marker marker = MarkerFactory.getMarker("A_MARKER");
         LoggingEvent event = createLoggingEvent();
-        
-        
+
         event.addMarker(marker);
         assertNotNull(event.getMarkerList());
-        
+
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
 
         assertNotNull(remoteEvent.getMarkerList());
         assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
     }
-    
+
     @Test
     public void testWithTwoMarkers() throws Exception {
         Marker marker = MarkerFactory.getMarker("A_MARKER");
         Marker marker2 = MarkerFactory.getMarker("B_MARKER");
         marker.add(marker2);
         LoggingEvent event = createLoggingEvent();
-        
+
         event.addMarker(marker);
         assertNotNull(event.getMarkerList());
-        
+
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
 
         assertNotNull(remoteEvent.getMarkerList());
         assertEquals(Arrays.asList(marker), remoteEvent.getMarkerList());
     }
-    
+
     @Test
     public void testWithCallerData() throws Exception {
         LoggingEvent event = createLoggingEvent();
@@ -251,7 +249,7 @@ public class LoggingEventSerializationTest {
         oos.writeObject(ser);
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         inputStream = new HardenedLoggingEventInputStream(bis);
-        
+
         return (ILoggingEvent) inputStream.readObject();
     }
 

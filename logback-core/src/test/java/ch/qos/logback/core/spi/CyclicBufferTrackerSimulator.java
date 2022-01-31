@@ -122,7 +122,8 @@ public class CyclicBufferTrackerSimulator {
 
         @Override
         public String toString() {
-            return "SimulationEvent{" + "eventType=" + eventType + ", key='" + key + '\'' + ", timestamp=" + timestamp + '}';
+            return "SimulationEvent{" + "eventType=" + eventType + ", key='" + key + '\'' + ", timestamp=" + timestamp
+                    + '}';
         }
     }
 }

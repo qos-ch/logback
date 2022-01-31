@@ -42,7 +42,7 @@ public class PropertySetterTest {
     Context context = new ContextBase();
     StatusChecker checker = new StatusChecker(context);
     House house = new House();
-    
+
     PropertySetter setter = new PropertySetter(new BeanDescriptionCache(context), house);
 
     @Before
@@ -125,13 +125,15 @@ public class PropertySetterTest {
 
     @Test
     public void testgetClassNameViaImplicitRules() {
-        Class<?> compClass = setter.getClassNameViaImplicitRules("door", AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
+        Class<?> compClass = setter.getClassNameViaImplicitRules("door", AggregationType.AS_COMPLEX_PROPERTY,
+                defaultComponentRegistry);
         assertEquals(Door.class, compClass);
     }
 
     @Test
     public void testgetComplexPropertyColleClassNameViaImplicitRules() {
-        Class<?> compClass = setter.getClassNameViaImplicitRules("window", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, defaultComponentRegistry);
+        Class<?> compClass = setter.getClassNameViaImplicitRules("window",
+                AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, defaultComponentRegistry);
         assertEquals(Window.class, compClass);
     }
 
@@ -198,19 +200,21 @@ public class PropertySetterTest {
         Class<?> spClass = setter.getDefaultClassNameByAnnonation("SwimmingPool", relevantMethod);
         assertEquals(SwimmingPoolImpl.class, spClass);
 
-        Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("SwimmingPool", AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
+        Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("SwimmingPool",
+                AggregationType.AS_COMPLEX_PROPERTY, defaultComponentRegistry);
         assertEquals(SwimmingPoolImpl.class, classViaImplicitRules);
     }
 
     @Test
     public void testDefaultClassAnnotationForLists() {
-        Method relevantMethod = setter.getRelevantMethod("LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
+        Method relevantMethod = setter.getRelevantMethod("LargeSwimmingPool",
+                AggregationType.AS_COMPLEX_PROPERTY_COLLECTION);
         assertNotNull(relevantMethod);
         Class<?> spClass = setter.getDefaultClassNameByAnnonation("LargeSwimmingPool", relevantMethod);
         assertEquals(LargeSwimmingPoolImpl.class, spClass);
 
-        Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("LargeSwimmingPool", AggregationType.AS_COMPLEX_PROPERTY_COLLECTION,
-                        defaultComponentRegistry);
+        Class<?> classViaImplicitRules = setter.getClassNameViaImplicitRules("LargeSwimmingPool",
+                AggregationType.AS_COMPLEX_PROPERTY_COLLECTION, defaultComponentRegistry);
         assertEquals(LargeSwimmingPoolImpl.class, classViaImplicitRules);
     }
 
@@ -231,11 +235,13 @@ public class PropertySetterTest {
     @Test
     public void bridgeMethodsShouldBeIgnored() {
         Orange orange = new Orange();
-        
+
         PropertySetter orangeSetter = new PropertySetter(new BeanDescriptionCache(context), orange);
-        assertEquals(AggregationType.AS_BASIC_PROPERTY, orangeSetter.computeAggregationType(Citrus.PRECARP_PROPERTY_NAME));
-        assertEquals(AggregationType.AS_BASIC_PROPERTY, orangeSetter.computeAggregationType(Citrus.PREFIX_PROPERTY_NAME));
-        
+        assertEquals(AggregationType.AS_BASIC_PROPERTY,
+                orangeSetter.computeAggregationType(Citrus.PRECARP_PROPERTY_NAME));
+        assertEquals(AggregationType.AS_BASIC_PROPERTY,
+                orangeSetter.computeAggregationType(Citrus.PREFIX_PROPERTY_NAME));
+
         StatusPrinter.print(context);
         checker.assertIsWarningOrErrorFree();
     }

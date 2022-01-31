@@ -29,7 +29,8 @@ import ch.qos.logback.core.util.FileSize;
 public class TimeBasedArchiveRemover extends ContextAwareBase implements ArchiveRemover {
 
     static protected final long UNINITIALIZED = -1;
-    // aim for 32 days, except in case of hourly rollover, see MAX_VALUE_FOR_INACTIVITY_PERIODS
+    // aim for 32 days, except in case of hourly rollover, see
+    // MAX_VALUE_FOR_INACTIVITY_PERIODS
     static protected final long INACTIVITY_TOLERANCE_IN_MILLIS = 32L * (long) CoreConstants.MILLIS_IN_ONE_DAY;
     static final int MAX_VALUE_FOR_INACTIVITY_PERIODS = 14 * 24; // 14 days in case of hourly rollover
 
@@ -47,14 +48,16 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     int callCount = 0;
+
     public void clean(Date now) {
- 
+
         long nowInMillis = now.getTime();
         // for a live appender periodsElapsed is expected to be 1
         int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
         lastHeartBeat = nowInMillis;
         if (periodsElapsed > 1) {
-            addInfo("Multiple periods, i.e. " + periodsElapsed + " periods, seem to have elapsed. This is expected at application start.");
+            addInfo("Multiple periods, i.e. " + periodsElapsed
+                    + " periods, seem to have elapsed. This is expected at application start.");
         }
         for (int i = 0; i < periodsElapsed; i++) {
             int offset = getPeriodOffsetForDeletionTarget() - i;
@@ -112,7 +115,6 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
     }
 
-    
     protected void descendingSort(File[] matchingFileArray, Date date) {
         // nothing to do in super class
     }
@@ -138,6 +140,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     /**
      * Computes whether the fileNamePattern may create sub-folders.
+     * 
      * @param fileNamePattern
      * @return
      */

@@ -4,7 +4,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
- * Allows masking of interrupt flag if previously the flag is already set. Does nothing otherwise.
+ * Allows masking of interrupt flag if previously the flag is already set. Does
+ * nothing otherwise.
  * 
  * Typical use:
  * 
@@ -12,16 +13,19 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * InterruptUtil interruptUtil = new InterruptUtil(context);
  * 
  * try {
- *   interruptUtil.maskInterruptFlag();
- *   someOtherThread.join(delay); 
- * } catch(InterruptedException e) {
- *   // reachable only if join does not succeed within delay.
- *   // Without the maskInterruptFlag() call, the join() would have returned immediately
- *   // had the current thread been interrupted previously, i.e. before entering the above block    
+ *     interruptUtil.maskInterruptFlag();
+ *     someOtherThread.join(delay);
+ * } catch (InterruptedException e) {
+ *     // reachable only if join does not succeed within delay.
+ *     // Without the maskInterruptFlag() call, the join() would have returned
+ *     // immediately
+ *     // had the current thread been interrupted previously, i.e. before entering
+ *     // the above block
  * } finally {
- *   interruptUtil.unmaskInterruptFlag();
+ *     interruptUtil.unmaskInterruptFlag();
  * }
  * </pre>
+ * 
  * @author Ceki Gulcu
  * @since 1.2.2
  */

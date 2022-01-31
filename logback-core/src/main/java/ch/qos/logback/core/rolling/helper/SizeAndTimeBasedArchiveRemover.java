@@ -67,7 +67,7 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
                 Matcher matcher = pattern.matcher(f1.getName());
                 if (matcher.find()) {
                     String indexAsStr = matcher.group(1);
-                    
+
                     if (indexAsStr == null || indexAsStr.isEmpty())
                         return NO_INDEX; // unreachable code?
                     else

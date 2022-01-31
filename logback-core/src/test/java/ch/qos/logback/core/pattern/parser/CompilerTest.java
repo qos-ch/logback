@@ -90,6 +90,7 @@ public class CompilerTest {
             assertEquals("abc Hello", result);
         }
     }
+
     @Test
     public void testFormat() throws Exception {
         {
@@ -179,7 +180,7 @@ public class CompilerTest {
             Node t = p.parse();
             Converter<Object> head = p.compile(t, converterMap);
             String result = write(head, new Object());
-            //StatusPrinter.print(c);
+            // StatusPrinter.print(c);
             assertEquals("ABC Hello", result);
         }
         {

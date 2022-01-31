@@ -218,7 +218,7 @@ public class LoggerContextTest {
             Logger logger = lc.getLogger(loggerName);
             assertEquals(loggerName, logger.getName());
         }
-        
+
         {
             String loggerName = "toto.x$";
             Logger logger = lc.getLogger(loggerName);
@@ -250,8 +250,9 @@ public class LoggerContextTest {
         Map<String, String> fileCollisions = (Map<String, String>) lc.getObject(FA_FILENAME_COLLISION_MAP);
         assertNotNull(fileCollisions);
         assertTrue(fileCollisions.isEmpty());
-        
-        Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc.getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+
+        Map<String, FileNamePattern> filenamePatternCollisionMap = (Map<String, FileNamePattern>) lc
+                .getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         assertNotNull(filenamePatternCollisionMap);
         assertTrue(filenamePatternCollisionMap.isEmpty());
     }

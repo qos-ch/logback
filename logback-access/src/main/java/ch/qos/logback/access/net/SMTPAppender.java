@@ -21,12 +21,13 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.net.SMTPAppenderBase;
 
 /**
- * Send an e-mail when a specific access event occurs, typically when
- * certain pages are accessed.
+ * Send an e-mail when a specific access event occurs, typically when certain
+ * pages are accessed.
  * 
- * For more information about this appender, please refer to the online manual at
- * http://logback.qos.ch/manual/appenders.html#AccessSMTPAppender
+ * For more information about this appender, please refer to the online manual
+ * at http://logback.qos.ch/manual/appenders.html#AccessSMTPAppender
  * <p>
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  * 
@@ -37,15 +38,15 @@ public class SMTPAppender extends SMTPAppenderBase<IAccessEvent> {
 
     /**
      * The default constructor will instantiate the appender with a
-     * {@link EventEvaluator} that will trigger on events with level
-     * ERROR or higher.
+     * {@link EventEvaluator} that will trigger on events with level ERROR or
+     * higher.
      */
     public SMTPAppender() {
     }
 
     /**
-     * Use <code>evaluator</code> passed as parameter as the {@link
-     * EventEvaluator} for this SMTPAppender.
+     * Use <code>evaluator</code> passed as parameter as the {@link EventEvaluator}
+     * for this SMTPAppender.
      */
     public SMTPAppender(EventEvaluator<IAccessEvent> evaluator) {
         this.eventEvaluator = evaluator;

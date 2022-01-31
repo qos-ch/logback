@@ -27,7 +27,8 @@ import java.util.Set;
 import java.util.logging.LogManager;
 
 /**
- * Propagate level changes made to a logback logger into the equivalent logger in j.u.l.
+ * Propagate level changes made to a logback logger into the equivalent logger
+ * in j.u.l.
  */
 public class LevelChangePropagator extends ContextAwareBase implements LoggerContextListener, LifeCycle {
 

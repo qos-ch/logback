@@ -26,18 +26,18 @@ import ch.qos.logback.classic.Logger;
  */
 public class LogbackLoggingEventBuilder extends DefaultLoggingEventBuilder {
 
-	LoggingEvent loggingEvent;
+    LoggingEvent loggingEvent;
 
     public static final String FQCN = LogbackLoggingEventBuilder.class.getName();
 
-	public LogbackLoggingEventBuilder(Logger logger, org.slf4j.event.Level level) {
-		super(logger, level);
-	}
+    public LogbackLoggingEventBuilder(Logger logger, org.slf4j.event.Level level) {
+        super(logger, level);
+    }
 
-	@Override
-	protected void log(org.slf4j.event.LoggingEvent sle) {
-		Logger logbackLogger = (Logger) this.logger;
-		logbackLogger.log(sle);
-	}
+    @Override
+    protected void log(org.slf4j.event.LoggingEvent sle) {
+        Logger logbackLogger = (Logger) this.logger;
+        logbackLogger.log(sle);
+    }
 
 }

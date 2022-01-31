@@ -61,9 +61,11 @@ public class ReconfigureOnChangeTest {
 
     final static String SCAN_LOGBACK_474_FILE_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/scan_logback_474.xml";
 
-    final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/inclusion/topLevel0.xml";
+    final static String INCLUSION_SCAN_TOPLEVEL0_AS_STR = ClassicTestConstants.INPUT_PREFIX
+            + "turbo/inclusion/topLevel0.xml";
 
-    final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/inclusion/topByResource.xml";
+    final static String INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR = ClassicTestConstants.INPUT_PREFIX
+            + "turbo/inclusion/topByResource.xml";
 
     final static String INCLUSION_SCAN_INNER0_AS_STR = ClassicTestConstants.INPUT_PREFIX + "turbo/inclusion/inner0.xml";
 
@@ -164,7 +166,8 @@ public class ReconfigureOnChangeTest {
     }
 
     List<File> getConfigurationFileList(LoggerContext context) {
-        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
+        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil
+                .getConfigurationWatchList(loggerContext);
         return configurationWatchList.getCopyOfFileWatchList();
     }
 
@@ -195,7 +198,8 @@ public class ReconfigureOnChangeTest {
         String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
         configure(new ByteArrayInputStream(configurationStr.getBytes("UTF-8")));
 
-        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(loggerContext);
+        ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil
+                .getConfigurationWatchList(loggerContext);
         assertNull(configurationWatchList.getMainURL());
 
         ReconfigureOnChangeFilter reconfigureOnChangeFilter = (ReconfigureOnChangeFilter) getFirstTurboFilter();
@@ -207,10 +211,12 @@ public class ReconfigureOnChangeTest {
     public void fallbackToSafe() throws IOException, JoranException, InterruptedException {
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><root level=\"ERROR\"/></configuration> ");
+        writeToFile(topLevelFile,
+                "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><root level=\"ERROR\"/></configuration> ");
         configure(topLevelFile);
 
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root></configuration>");
+        writeToFile(topLevelFile,
+                "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root></configuration>");
 
         rocfDetachReconfigurationToNewThreadAndAwaitTermination();
 
@@ -222,10 +228,13 @@ public class ReconfigureOnChangeTest {
 
     @Test(timeout = 4000L)
     public void fallbackToSafeWithIncludedFile() throws IOException, JoranException, InterruptedException {
-        String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff + ".xml";
-        String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff + ".xml";
+        String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff
+                + ".xml";
+        String innerFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_inner-" + diff
+                + ".xml";
         File topLevelFile = new File(topLevelFileAsStr);
-        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include file=\"" + innerFileAsStr + "\"/></configuration> ");
+        writeToFile(topLevelFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include file=\""
+                + innerFileAsStr + "\"/></configuration> ");
 
         File innerFile = new File(innerFileAsStr);
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
@@ -340,7 +349,7 @@ public class ReconfigureOnChangeTest {
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
         long referencePerf = 68;
-        //BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(avg, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     void addInfo(String msg, Object o) {
@@ -414,7 +423,8 @@ public class ReconfigureOnChangeTest {
         }
 
         private void malformedUpdate() throws IOException {
-            writeToFile(configFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n" + "  <root level=\"ERROR\">\n" + "</configuration>");
+            writeToFile(configFile, "<configuration scan=\"true\" scanPeriod=\"50 millisecond\">\n"
+                    + "  <root level=\"ERROR\">\n" + "</configuration>");
         }
 
         private void malformedInnerUpdate() throws IOException {

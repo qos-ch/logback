@@ -23,10 +23,10 @@ import ch.qos.logback.core.util.CachingDateFormatter;
 public class DateConverter extends AccessConverter {
 
     CachingDateFormatter cachingDateFormatter = null;
- 
+
     @Override
     public void start() {
- 
+
         String datePattern = getFirstOption();
         if (datePattern == null) {
             datePattern = CoreConstants.CLF_DATE_PATTERN;
@@ -40,10 +40,10 @@ public class DateConverter extends AccessConverter {
 
         // if the option list contains a TZ option, then set it.
         if (optionList != null && optionList.size() > 1) {
-         	String zoneIdString = (String) optionList.get(1);
-        	 zoneId = ZoneId.of(zoneIdString);
+            String zoneIdString = (String) optionList.get(1);
+            zoneId = ZoneId.of(zoneIdString);
         }
-        
+
         try {
             cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
             // maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
@@ -53,8 +53,6 @@ public class DateConverter extends AccessConverter {
             cachingDateFormatter = new CachingDateFormatter(CoreConstants.CLF_DATE_PATTERN, zoneId);
         }
 
-
-   
     }
 
     @Override

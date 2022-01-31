@@ -41,9 +41,9 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 /**
  * A functional test for {@link ServerSocketReceiver}.
  * <p>
- * In this test we create a SocketServer, connect to it over the local
- * network interface, and validate that it receives messages and delivers
- * them to its appender.
+ * In this test we create a SocketServer, connect to it over the local network
+ * interface, and validate that it receives messages and delivers them to its
+ * appender.
  */
 @Ignore
 public class ServerSocketReceiverFunctionalTest {
@@ -86,7 +86,8 @@ public class ServerSocketReceiverFunctionalTest {
 
     @Test
     public void testLogEventFromClient() throws Exception {
-        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null, new Object[0]);
+        ILoggingEvent event = new LoggingEvent(logger.getName(), logger, Level.DEBUG, "test message", null,
+                new Object[0]);
         Socket socket = new Socket(InetAddress.getLocalHost(), serverSocket.getLocalPort());
 
         try {

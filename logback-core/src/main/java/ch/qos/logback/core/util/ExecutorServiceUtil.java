@@ -52,19 +52,20 @@ public class ExecutorServiceUtil {
         return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE, THREAD_FACTORY);
     }
 
-
     /**
      * Creates an executor service suitable for use by logback components.
+     * 
      * @return executor service
      */
     static public ExecutorService newExecutorService() {
-        return new ThreadPoolExecutor(CoreConstants.CORE_POOL_SIZE, CoreConstants.MAX_POOL_SIZE, 0L, TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(),
-                        THREAD_FACTORY);
+        return new ThreadPoolExecutor(CoreConstants.CORE_POOL_SIZE, CoreConstants.MAX_POOL_SIZE, 0L,
+                TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), THREAD_FACTORY);
     }
 
     /**
      * Shuts down an executor service.
      * <p>
+     * 
      * @param executorService the executor service to shut down
      */
     static public void shutdown(ExecutorService executorService) {

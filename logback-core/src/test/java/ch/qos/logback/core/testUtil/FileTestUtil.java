@@ -17,7 +17,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
-
 /**
  * @author Ceki G&uuml;lc&uuml;
  */

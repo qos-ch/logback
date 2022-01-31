@@ -36,7 +36,7 @@ public class SocketAppenderMessageLossTest {
 
     static final int TIMEOUT = 3000;
 
-    @Test  // (timeout = TIMEOUT)
+    @Test // (timeout = TIMEOUT)
     public void synchronousSocketAppender() throws Exception {
 
         SocketAppender socketAppender = new SocketAppender();
@@ -65,7 +65,8 @@ public class SocketAppenderMessageLossTest {
         runTest(socketAppender);
     }
 
-    // appender used to signal when the N'th event (as set in the latch) is received by the server
+    // appender used to signal when the N'th event (as set in the latch) is received
+    // by the server
     // this allows us to have test which are both more robust and quicker.
     static public class ListAppenderWithLatch extends AppenderBase<ILoggingEvent> {
         public List<ILoggingEvent> list = new ArrayList<ILoggingEvent>();
@@ -125,6 +126,5 @@ public class SocketAppenderMessageLossTest {
         loggerContext.stop();
         simpleSocketServer.close();
 
- 
     }
 }

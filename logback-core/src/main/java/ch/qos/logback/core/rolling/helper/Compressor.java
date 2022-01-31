@@ -48,8 +48,8 @@ public class Compressor extends ContextAwareBase {
     /**
      * @param nameOfFile2Compress
      * @param nameOfCompressedFile
-     * @param innerEntryName 
-     *            The name of the file within the zip file. Use for ZIP compression.
+     * @param innerEntryName       The name of the file within the zip file. Use for
+     *                             ZIP compression.
      */
     public void compress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) {
         switch (compressionMode) {
@@ -85,7 +85,8 @@ public class Compressor extends ContextAwareBase {
         File zippedFile = new File(nameOfZippedFile);
 
         if (zippedFile.exists()) {
-            addStatus(new WarnStatus("The target compressed file named [" + nameOfZippedFile + "] exist already.", this));
+            addStatus(
+                    new WarnStatus("The target compressed file named [" + nameOfZippedFile + "] exist already.", this));
 
             return;
         }
@@ -94,7 +95,7 @@ public class Compressor extends ContextAwareBase {
         createMissingTargetDirsIfNecessary(zippedFile);
 
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2zip));
-                        ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(nameOfZippedFile))) {
+                ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(nameOfZippedFile))) {
 
             ZipEntry zipEntry = computeZipEntry(innerEntryName);
             zos.putNextEntry(zipEntry);
@@ -108,7 +109,9 @@ public class Compressor extends ContextAwareBase {
 
             addInfo("Done ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         } catch (Exception e) {
-            addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
+            addStatus(new ErrorStatus(
+                    "Error occurred while compressing [" + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this,
+                    e));
         }
         if (!file2zip.delete()) {
             addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].", this));
@@ -155,7 +158,8 @@ public class Compressor extends ContextAwareBase {
         File gzedFile = new File(nameOfgzedFile);
 
         if (gzedFile.exists()) {
-            addWarn("The target compressed file named [" + nameOfgzedFile + "] exist already. Aborting file compression.");
+            addWarn("The target compressed file named [" + nameOfgzedFile
+                    + "] exist already. Aborting file compression.");
             return;
         }
 
@@ -163,7 +167,7 @@ public class Compressor extends ContextAwareBase {
         createMissingTargetDirsIfNecessary(gzedFile);
 
         try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(nameOfFile2gz));
-                        GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(nameOfgzedFile))) {
+                GZIPOutputStream gzos = new GZIPOutputStream(new FileOutputStream(nameOfgzedFile))) {
 
             byte[] inbuf = new byte[BUFFER_SIZE];
             int n;
@@ -174,7 +178,9 @@ public class Compressor extends ContextAwareBase {
 
             addInfo("Done ZIP compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
-            addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
+            addStatus(new ErrorStatus(
+                    "Error occurred while compressing [" + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this,
+                    e));
         }
 
         if (!file2gz.delete()) {
@@ -183,7 +189,8 @@ public class Compressor extends ContextAwareBase {
 
     }
 
-    static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr, CompressionMode compressionMode) {
+    static public String computeFileNameStrWithoutCompSuffix(String fileNamePatternStr,
+            CompressionMode compressionMode) {
         int len = fileNamePatternStr.length();
         switch (compressionMode) {
         case GZ:
@@ -214,8 +221,10 @@ public class Compressor extends ContextAwareBase {
         return this.getClass().getName();
     }
 
-    public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName) throws RolloverFailure {
-        CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile, innerEntryName);
+    public Future<?> asyncCompress(String nameOfFile2Compress, String nameOfCompressedFile, String innerEntryName)
+            throws RolloverFailure {
+        CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile,
+                innerEntryName);
         ExecutorService executorService = context.getScheduledExecutorService();
         Future<?> future = executorService.submit(runnable);
         return future;

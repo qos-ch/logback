@@ -25,47 +25,47 @@ import javax.naming.NamingException;
  * A simple utility class to create and use a JNDI Context.
  *
  * @author Ceki G&uuml;lc&uuml;
- * @author Michael Osipov 
+ * @author Michael Osipov
  * @author S&eacute;bastien Pennec
  * 
  */
 
 public class JNDIUtil {
 
-	static final String RESTRICTION_MSG = "JNDI name must start with " + JNDI_JAVA_NAMESPACE + " but was ";
+    static final String RESTRICTION_MSG = "JNDI name must start with " + JNDI_JAVA_NAMESPACE + " but was ";
 
     public static Context getInitialContext() throws NamingException {
         return new InitialContext();
     }
 
-	public static Context getInitialContext(Hashtable<?,?> props) throws NamingException {
-		return new InitialContext(props);
-	}
-
-	public static Object lookupObject(Context ctx, String name) throws NamingException {
-		if (ctx == null) {
-			return null;
-		}
-
-          if (OptionHelper.isNullOrEmpty(name)) {
-              return null;
-          }
-
-          jndiNameSecurityCheck(name);
-
-          Object lookup = ctx.lookup(name);
-          return lookup;
+    public static Context getInitialContext(Hashtable<?, ?> props) throws NamingException {
+        return new InitialContext(props);
     }
 
-	public static void jndiNameSecurityCheck(String name) throws NamingException {
-		if (!name.startsWith(JNDI_JAVA_NAMESPACE)) {
-			  throw new NamingException(RESTRICTION_MSG + name);
-         }
-	}
-	
-	public static String lookupString(Context ctx, String name) throws NamingException {
-		Object lookup = lookupObject(ctx, name);
-		return (String) lookup;
-	}
+    public static Object lookupObject(Context ctx, String name) throws NamingException {
+        if (ctx == null) {
+            return null;
+        }
+
+        if (OptionHelper.isNullOrEmpty(name)) {
+            return null;
+        }
+
+        jndiNameSecurityCheck(name);
+
+        Object lookup = ctx.lookup(name);
+        return lookup;
+    }
+
+    public static void jndiNameSecurityCheck(String name) throws NamingException {
+        if (!name.startsWith(JNDI_JAVA_NAMESPACE)) {
+            throw new NamingException(RESTRICTION_MSG + name);
+        }
+    }
+
+    public static String lookupString(Context ctx, String name) throws NamingException {
+        Object lookup = lookupObject(ctx, name);
+        return (String) lookup;
+    }
 
 }

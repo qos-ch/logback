@@ -10,7 +10,7 @@ class ConfigParameters {
     String fileNamePattern;
     long periodDurationInMillis = TimeBasedRollingWithArchiveRemoval_Test.MILLIS_IN_DAY;
     long sizeCap;
-    
+
     ConfigParameters(long simulatedTime) {
         this.simulatedTime = simulatedTime;
     }
@@ -44,7 +44,7 @@ class ConfigParameters {
         this.periodDurationInMillis = periodDurationInMillis;
         return this;
     }
-    
+
     ConfigParameters sizeCap(long sizeCap) {
         this.sizeCap = sizeCap;
         return this;

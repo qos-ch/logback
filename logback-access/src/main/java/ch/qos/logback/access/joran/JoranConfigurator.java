@@ -70,69 +70,55 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
     @Override
     protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-    	DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
         defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
-        
-        
-        defaultProcessor.addAnalyser(AppenderModel.class, new RefContainerDependencyAnalyser(context, AppenderModel.class));
+
+        defaultProcessor.addAnalyser(AppenderModel.class,
+                new RefContainerDependencyAnalyser(context, AppenderModel.class));
         defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
- 
+
         injectModelFilters(defaultProcessor);
-        
-    	return defaultProcessor;
-    	
+
+        return defaultProcessor;
+
     }
 
-	private void injectModelFilters(DefaultProcessor defaultProcessor) {
-		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
-		
-		
-		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { 
-				DefineModel.class, 
-				PropertyModel.class, 
-				TimestampModel.class, 
-				ParamModel.class};
+    private void injectModelFilters(DefaultProcessor defaultProcessor) {
+        @SuppressWarnings("unchecked")
+        Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
 
-		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] implicitModelClasses = new Class[] { 
-				ImplicitModel.class, 
-				ParamModel.class};
+        @SuppressWarnings("unchecked")
+        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { DefineModel.class, PropertyModel.class,
+                TimestampModel.class, ParamModel.class };
 
-		@SuppressWarnings("unchecked")
-		Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { 
-				ConfigurationModel.class, 
-				EventEvaluatorModel.class,
-				ShutdownHookModel.class, 
-				EventEvaluatorModel.class, 
-				IncludeModel.class,
-				};
+        @SuppressWarnings("unchecked")
+        Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class, ParamModel.class };
 
+        @SuppressWarnings("unchecked")
+        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
+                EventEvaluatorModel.class, ShutdownHookModel.class, EventEvaluatorModel.class, IncludeModel.class, };
 
+        ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+        for (Class<? extends Model> modelClass : importModelClasses)
+            fistPhaseDefintionFilter.allow(modelClass);
+        for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
+            fistPhaseDefintionFilter.allow(modelClass);
+        for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
+            fistPhaseDefintionFilter.allow(modelClass);
+        for (Class<? extends Model> modelClass : implicitModelClasses)
+            fistPhaseDefintionFilter.allow(modelClass);
 
-		ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
-		for (Class<? extends Model> modelClass : importModelClasses)
-			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
-			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
-			fistPhaseDefintionFilter.allow(modelClass);
-		for (Class<? extends Model> modelClass : implicitModelClasses)
-			fistPhaseDefintionFilter.allow(modelClass);
-		
-		fistPhaseDefintionFilter.denyAll();
-		defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
+        fistPhaseDefintionFilter.denyAll();
+        defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
 
-		// Note: AppenderModel is in the second phase
+        // Note: AppenderModel is in the second phase
 
-		defaultProcessor.setPhaseTwoFilter(new AllowAllModelFilter());
+        defaultProcessor.setPhaseTwoFilter(new AllowAllModelFilter());
 
-	}
-	
-	
+    }
+
     @Override
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
         registry.add(AppenderBase.class, "layout", PatternLayout.class);

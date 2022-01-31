@@ -27,7 +27,9 @@ import ch.qos.logback.core.util.Loader;
  * ConsoleAppender appends log events to <code>System.out</code> or
  * <code>System.err</code> using a layout specified by the user. The default
  * target is <code>System.out</code>.
- * <p>&nbsp;</p>
+ * <p>
+ * &nbsp;
+ * </p>
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#ConsoleAppender
  *
@@ -44,7 +46,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
     private final static String wrapSystemOut_METHOD_NAME = "wrapSystemOut";
     private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
-    private final static Class<?>[] ARGUMENT_TYPES = {PrintStream.class};
+    private final static Class<?>[] ARGUMENT_TYPES = { PrintStream.class };
 
     /**
      * Sets the value of the <b>Target</b> option. Recognized values are
@@ -60,8 +62,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     }
 
     /**
-     * Returns the current value of the <b>target</b> property. The default value
-     * of the option is "System.out".
+     * Returns the current value of the <b>target</b> property. The default value of
+     * the option is "System.out".
      * <p>
      * See also {@link #setTarget}.
      */
@@ -70,7 +72,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     }
 
     private void targetWarn(String val) {
-        Status status = new WarnStatus("[" + val + "] should be one of " + Arrays.toString(ConsoleTarget.values()), this);
+        Status status = new WarnStatus("[" + val + "] should be one of " + Arrays.toString(ConsoleTarget.values()),
+                this);
         status.add(new WarnStatus("Using previously set target, System.out by default.", this));
         addStatus(status);
     }
@@ -91,7 +94,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
             addInfo("Enabling JANSI AnsiPrintStream for the console.");
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
             Class<?> classObj = classLoader.loadClass(AnsiConsole_CLASS_NAME);
-            String methodName = target == ConsoleTarget.SystemOut ? wrapSystemOut_METHOD_NAME : wrapSystemErr_METHOD_NAME;
+            String methodName = target == ConsoleTarget.SystemOut ? wrapSystemOut_METHOD_NAME
+                    : wrapSystemErr_METHOD_NAME;
             Method method = classObj.getMethod(methodName, ARGUMENT_TYPES);
             return (OutputStream) method.invoke(null, new PrintStream(targetStream));
         } catch (Exception e) {
@@ -108,8 +112,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     }
 
     /**
-     * If true, this appender will output to a stream provided by the JANSI
-     * library.
+     * If true, this appender will output to a stream provided by the JANSI library.
      *
      * @param withJansi whether to use JANSI or not.
      * @since 1.0.5

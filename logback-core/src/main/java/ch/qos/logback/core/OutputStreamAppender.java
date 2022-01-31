@@ -36,8 +36,8 @@ import ch.qos.logback.core.status.ErrorStatus;
 public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
     /**
-     * It is the encoder which is ultimately responsible for writing the event to
-     * an {@link OutputStream}.
+     * It is the encoder which is ultimately responsible for writing the event to an
+     * {@link OutputStream}.
      */
     protected Encoder<E> encoder;
 
@@ -54,10 +54,10 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     boolean immediateFlush = true;
 
     /**
-    * The underlying output stream used by this appender.
-    * 
-    * @return
-    */
+     * The underlying output stream used by this appender.
+     * 
+     * @return
+     */
     public OutputStream getOutputStream() {
         return outputStream;
     }
@@ -103,8 +103,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     }
 
     /**
-     * Stop this appender instance. The underlying stream or writer is also
-     * closed.
+     * Stop this appender instance. The underlying stream or writer is also closed.
      * 
      * <p>
      * Stopped appenders cannot be reused.
@@ -154,8 +153,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * <code>OutputStream</code> will be closed when the appender instance is
      * closed.
      * 
-     * @param outputStream
-     *          An already opened OutputStream.
+     * @param outputStream An already opened OutputStream.
      */
     public void setOutputStream(OutputStream outputStream) {
         lock.lock();
@@ -181,19 +179,21 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
                 writeBytes(header);
             } catch (IOException ioe) {
                 this.started = false;
-                addStatus(new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
+                addStatus(
+                        new ErrorStatus("Failed to initialize encoder for appender named [" + name + "].", this, ioe));
             }
         }
     }
+
     protected void writeOut(E event) throws IOException {
         byte[] byteArray = this.encoder.encode(event);
         writeBytes(byteArray);
     }
 
     private void writeBytes(byte[] byteArray) throws IOException {
-        if(byteArray == null || byteArray.length == 0)
+        if (byteArray == null || byteArray.length == 0)
             return;
-        
+
         lock.lock();
         try {
             this.outputStream.write(byteArray);

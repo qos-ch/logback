@@ -28,7 +28,7 @@ public class SizeAndTimeBasedArchiveRemoverTest {
 
         assertArrayEquals(expected, fileArray);
     }
-    
+
     @Test
     public void badFilenames() {
         FileNamePattern fileNamePattern = new FileNamePattern("smoke-%d-%i.gz", context);

@@ -32,9 +32,8 @@ public class RenameUtil extends ContextAwareBase {
     static String RENAMING_ERROR_URL = CoreConstants.CODES_URL + "#renamingError";
 
     /**
-     * A relatively robust file renaming method which in case of failure due to
-     * src and target being on different volumes, falls back onto
-     * renaming by copying.
+     * A relatively robust file renaming method which in case of failure due to src
+     * and target being on different volumes, falls back onto renaming by copying.
      *
      * @param src
      * @param target
@@ -59,11 +58,13 @@ public class RenameUtil extends ContextAwareBase {
                 addWarn("Failed to rename file [" + srcFile + "] as [" + targetFile + "].");
                 Boolean areOnDifferentVolumes = areOnDifferentVolumes(srcFile, targetFile);
                 if (Boolean.TRUE.equals(areOnDifferentVolumes)) {
-                    addWarn("Detected different file systems for source [" + src + "] and target [" + target + "]. Attempting rename by copying.");
+                    addWarn("Detected different file systems for source [" + src + "] and target [" + target
+                            + "]. Attempting rename by copying.");
                     renameByCopying(src, target);
                     return;
                 } else {
-                    addWarn("Please consider leaving the [file] option of " + RollingFileAppender.class.getSimpleName() + " empty.");
+                    addWarn("Please consider leaving the [file] option of " + RollingFileAppender.class.getSimpleName()
+                            + " empty.");
                     addWarn("See also " + RENAMING_ERROR_URL);
                 }
             }
@@ -72,11 +73,10 @@ public class RenameUtil extends ContextAwareBase {
         }
     }
 
-    
-    
     /**
-     * Attempts to determine whether both files are on different volumes. Returns true if we could determine that
-     * the files are on different volumes. Returns false otherwise or if an error occurred while doing the check.
+     * Attempts to determine whether both files are on different volumes. Returns
+     * true if we could determine that the files are on different volumes. Returns
+     * false otherwise or if an error occurred while doing the check.
      *
      * @param srcFile
      * @param targetFile
@@ -86,18 +86,19 @@ public class RenameUtil extends ContextAwareBase {
         if (!EnvUtil.isJDK7OrHigher())
             return false;
 
-        // target file is not certain to exist but its parent has to exist given the call hierarchy of this method
+        // target file is not certain to exist but its parent has to exist given the
+        // call hierarchy of this method
         File parentOfTarget = targetFile.getAbsoluteFile().getParentFile();
-        
-        if(parentOfTarget == null) {
-            addWarn("Parent of target file ["+targetFile+"] is null");
+
+        if (parentOfTarget == null) {
+            addWarn("Parent of target file [" + targetFile + "] is null");
             return null;
         }
-        if(!parentOfTarget.exists()) {
-            addWarn("Parent of target file ["+targetFile+"] does not exist");
+        if (!parentOfTarget.exists()) {
+            addWarn("Parent of target file [" + targetFile + "] does not exist");
             return null;
         }
-        
+
         try {
             boolean onSameFileStore = FileStoreUtil.areOnSameFileStore(srcFile, parentOfTarget);
             return !onSameFileStore;

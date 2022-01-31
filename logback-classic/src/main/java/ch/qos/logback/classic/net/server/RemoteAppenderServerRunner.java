@@ -30,10 +30,10 @@ class RemoteAppenderServerRunner extends ConcurrentServerRunner<RemoteAppenderCl
 
     /**
      * Constructs a new server runner.
-     * @param listener the listener from which the server will accept new
-     *    clients
-     * @param executor that will be used to execute asynchronous tasks 
-     *    on behalf of the runner.
+     * 
+     * @param listener the listener from which the server will accept new clients
+     * @param executor that will be used to execute asynchronous tasks on behalf of
+     *                 the runner.
      */
     public RemoteAppenderServerRunner(ServerListener<RemoteAppenderClient> listener, Executor executor) {
         super(listener, executor);

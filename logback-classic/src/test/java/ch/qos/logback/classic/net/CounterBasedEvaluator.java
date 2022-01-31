@@ -21,7 +21,8 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * A simple EventEvaluator implementation that triggers email transmission after
  * a given number of events occur, regardless of event level.
  * 
- * <p>By default, the limit is 1024.
+ * <p>
+ * By default, the limit is 1024.
  */
 public class CounterBasedEvaluator extends ContextAwareBase implements EventEvaluator<Object> {
 

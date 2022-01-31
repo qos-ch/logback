@@ -42,7 +42,8 @@ public class RequestParameterConverter extends AccessConverter {
         if (paramArray.length == 1) {
             return paramArray[0];
         } else {
-            // for an array string {"a", "b"} named 'sa', Array.toString(sa) returns the string
+            // for an array string {"a", "b"} named 'sa', Array.toString(sa) returns the
+            // string
             // "[a, b]".
             return Arrays.toString(paramArray);
         }

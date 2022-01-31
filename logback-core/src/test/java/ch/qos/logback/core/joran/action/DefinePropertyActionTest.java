@@ -66,7 +66,7 @@ public class DefinePropertyActionTest {
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
         rulesMap.put(new ElementSelector("top"), new TopElementAction());
         rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
-        
+
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
@@ -95,16 +95,16 @@ public class DefinePropertyActionTest {
 
     @Test
     public void noName() throws JoranException {
-     try {
-    	 simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
-     } finally {
-    	 StatusPrinter.print(context);
-     }
+        try {
+            simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NONAME_XML);
+        } finally {
+            StatusPrinter.print(context);
+        }
         // get from context
         String inContextFoo = context.getProperty("foo");
         assertNull(inContextFoo);
         // check context errors
-      
+
         checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[name\\] in element \\[define\\]");
     }
 
@@ -112,7 +112,7 @@ public class DefinePropertyActionTest {
     public void noClass() throws JoranException {
         simpleConfigurator.doConfigure(DEFINE_INPUT_DIR + NOCLASS_XML);
         String inContextFoo = context.getProperty("foo");
-       
+
         StatusPrinter.print(context);
         assertNull(inContextFoo);
         checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[define\\]");

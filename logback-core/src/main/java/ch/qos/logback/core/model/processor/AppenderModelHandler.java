@@ -26,37 +26,37 @@ import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class AppenderModelHandler<E> extends ModelHandlerBase {
-	Appender<E> appender;
-	private boolean inError = false;
-	private boolean skipped = false;
-	AppenderAttachable<E> appenderAttachable;
-	
-	public AppenderModelHandler(Context context) {
-		super(context);
-	}
+    Appender<E> appender;
+    private boolean inError = false;
+    private boolean skipped = false;
+    AppenderAttachable<E> appenderAttachable;
 
-	@SuppressWarnings("rawtypes")
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
-		return new AppenderModelHandler(context);
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-		this.appender = null;
-		this.inError = false;
-		
-		AppenderModel appenderModel = (AppenderModel) model;
+    public AppenderModelHandler(Context context) {
+        super(context);
+    }
 
-		String appenderName = mic.subst(appenderModel.getName());
-	
-		if(!mic.hasDependencies(appenderName)) {
-			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
-			skipped = true;
-			appenderModel.markAsSkipped();
-			return;
-		}
-		
+    @SuppressWarnings("rawtypes")
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext mic) {
+        return new AppenderModelHandler(context);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        this.appender = null;
+        this.inError = false;
+
+        AppenderModel appenderModel = (AppenderModel) model;
+
+        String appenderName = mic.subst(appenderModel.getName());
+
+        if (!mic.hasDependencies(appenderName)) {
+            addWarn("Appender named [" + appenderName + "] not referenced. Skipping further processing.");
+            skipped = true;
+            appenderModel.markAsSkipped();
+            return;
+        }
+
 //		//this.appenderAttachable = appenderRefBag.get(appenderName);
 //		
 //		if(this.appenderAttachable == null) {
@@ -64,51 +64,52 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 //			skipped = true;
 //			return;
 //		}
-		
-		addInfo("Processing appender named ["+appenderName+"]");
-		
-		String originalClassName = appenderModel.getClassName();
-		String className = mic.getImport(originalClassName);
-		
-		try {
-			addInfo("About to instantiate appender of type [" + className + "]");
 
-			appender = (Appender<E>) OptionHelper.instantiateByClassName(className, ch.qos.logback.core.Appender.class,
-					context);
-			appender.setContext(context);
+        addInfo("Processing appender named [" + appenderName + "]");
+
+        String originalClassName = appenderModel.getClassName();
+        String className = mic.getImport(originalClassName);
+
+        try {
+            addInfo("About to instantiate appender of type [" + className + "]");
+
+            appender = (Appender<E>) OptionHelper.instantiateByClassName(className, ch.qos.logback.core.Appender.class,
+                    context);
+            appender.setContext(context);
             appender.setName(appenderName);
-			mic.pushObject(appender);
-		} catch (Exception oops) {
-			inError = true;
-			addError("Could not create an Appender of type [" + className + "].", oops);
-			throw new ModelHandlerException(oops);
-		}
-	}
+            mic.pushObject(appender);
+        } catch (Exception oops) {
+            inError = true;
+            addError("Could not create an Appender of type [" + className + "].", oops);
+            throw new ModelHandlerException(oops);
+        }
+    }
 
-	public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
-		if (inError || skipped) {
-			return;
-		}
-	    if (appender instanceof LifeCycle) {
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+        if (inError || skipped) {
+            return;
+        }
+        if (appender instanceof LifeCycle) {
             ((LifeCycle) appender).start();
         }
         mic.markStartOfNamedDependency(appender.getName());
-        
+
         Object o = mic.peekObject();
 
-    	@SuppressWarnings("unchecked")
-		Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) mic.getObjectMap()
-				.get(JoranConstants.APPENDER_BAG);
-    	appenderBag.put(appender.getName(), appender);
-    	
+        @SuppressWarnings("unchecked")
+        Map<String, Appender<E>> appenderBag = (Map<String, Appender<E>>) mic.getObjectMap()
+                .get(JoranConstants.APPENDER_BAG);
+        appenderBag.put(appender.getName(), appender);
+
         if (o != appender) {
-            addWarn("The object at the of the stack is not the appender named [" + appender.getName() + "] pushed earlier.");
+            addWarn("The object at the of the stack is not the appender named [" + appender.getName()
+                    + "] pushed earlier.");
         } else {
 //        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
 //        	appenderAttachable.addAppender(appender);
-        	mic.popObject();
+            mic.popObject();
         }
-    
-	}
+
+    }
 
 }

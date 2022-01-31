@@ -43,10 +43,9 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     final ElementPath elementPath;
     public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
     Locator locator;
-    
-    
+
     public SaxEventRecorder(Context context) {
-    	this(context, new ElementPath());
+        this(context, new ElementPath());
     }
 
     public SaxEventRecorder(Context context, ElementPath elementPath) {
@@ -54,8 +53,6 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         this.elementPath = elementPath;
     }
 
-    
-    
     final public void recordEvents(InputStream inputStream) throws JoranException {
         recordEvents(new InputSource(inputStream));
     }
@@ -68,7 +65,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         } catch (IOException ie) {
             handleError("I/O error occurred while parsing xml file", ie);
         } catch (SAXException se) {
-            // Exception added into StatusManager via Sax error handling. No need to add it again
+            // Exception added into StatusManager via Sax error handling. No need to add it
+            // again
             throw new JoranException("Problem parsing XML document. See previously reported errors.", se);
         } catch (Exception ex) {
             handleError("Unexpected exception while parsing XML document.", ex);
@@ -85,7 +83,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         try {
             SAXParserFactory spf = SAXParserFactory.newInstance();
             spf.setValidating(false);
-            //spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+            // spf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
             // See LOGBACK-1465
             spf.setFeature("http://xml.org/sax/features/external-general-entities", false);
             spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -110,13 +108,14 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     }
 
     protected boolean shouldIgnoreForElementPath(String tagName) {
-    	return false;
+        return false;
     }
+
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
 
         String tagName = getTagName(localName, qName);
-        if(!shouldIgnoreForElementPath(tagName)) {
-          elementPath.push(tagName);
+        if (!shouldIgnoreForElementPath(tagName)) {
+            elementPath.push(tagName);
         }
         ElementPath current = elementPath.duplicate();
         saxEventList.add(new StartEvent(current, namespaceURI, localName, qName, atts, getLocator()));
@@ -152,8 +151,8 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     public void endElement(String namespaceURI, String localName, String qName) {
         saxEventList.add(new EndEvent(namespaceURI, localName, qName, getLocator()));
         String tagName = getTagName(localName, qName);
-        if(!shouldIgnoreForElementPath(tagName)) {
-          elementPath.pop();
+        if (!shouldIgnoreForElementPath(tagName)) {
+            elementPath.pop();
         }
     }
 
@@ -166,17 +165,20 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
     }
 
     public void error(SAXParseException spe) throws SAXException {
-        addError(XML_PARSING + " - Parsing error on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber());
+        addError(XML_PARSING + " - Parsing error on line " + spe.getLineNumber() + " and column "
+                + spe.getColumnNumber());
         addError(spe.toString());
     }
 
     public void fatalError(SAXParseException spe) throws SAXException {
-        addError(XML_PARSING + " - Parsing fatal error on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber());
+        addError(XML_PARSING + " - Parsing fatal error on line " + spe.getLineNumber() + " and column "
+                + spe.getColumnNumber());
         addError(spe.toString());
     }
 
     public void warning(SAXParseException spe) throws SAXException {
-        addWarn(XML_PARSING + " - Parsing warning on line " + spe.getLineNumber() + " and column " + spe.getColumnNumber(), spe);
+        addWarn(XML_PARSING + " - Parsing warning on line " + spe.getLineNumber() + " and column "
+                + spe.getColumnNumber(), spe);
     }
 
     public void addError(String msg) {

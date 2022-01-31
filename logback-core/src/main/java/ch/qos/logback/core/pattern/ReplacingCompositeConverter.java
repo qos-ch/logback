@@ -32,7 +32,8 @@ public class ReplacingCompositeConverter<E> extends CompositeConverter<E> {
         int numOpts = optionList.size();
 
         if (numOpts < 2) {
-            addError("at least two options are expected whereas you have declared only " + numOpts + "as [" + optionList + "]");
+            addError("at least two options are expected whereas you have declared only " + numOpts + "as [" + optionList
+                    + "]");
             return;
         }
         regex = optionList.get(0);

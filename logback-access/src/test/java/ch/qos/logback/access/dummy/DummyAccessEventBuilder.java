@@ -24,7 +24,7 @@ public class DummyAccessEventBuilder {
         DummyResponse response = new DummyResponse();
         DummyServerAdapter adapter = new DummyServerAdapter(request, response);
         AccessContext accessContext = new AccessContext();
-        
+
         return new AccessEvent(accessContext, request, response, adapter);
     }
 

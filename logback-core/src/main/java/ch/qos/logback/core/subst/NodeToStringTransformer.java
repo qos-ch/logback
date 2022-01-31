@@ -32,7 +32,8 @@ public class NodeToStringTransformer {
     final PropertyContainer propertyContainer0;
     final PropertyContainer propertyContainer1;
 
-    public NodeToStringTransformer(Node node, PropertyContainer propertyContainer0, PropertyContainer propertyContainer1) {
+    public NodeToStringTransformer(Node node, PropertyContainer propertyContainer0,
+            PropertyContainer propertyContainer1) {
         this.node = node;
         this.propertyContainer0 = propertyContainer0;
         this.propertyContainer1 = propertyContainer1;
@@ -42,7 +43,8 @@ public class NodeToStringTransformer {
         this(node, propertyContainer0, null);
     }
 
-    public static String substituteVariable(String input, PropertyContainer pc0, PropertyContainer pc1) throws ScanException {
+    public static String substituteVariable(String input, PropertyContainer pc0, PropertyContainer pc1)
+            throws ScanException {
         Node node = tokenizeAndParseString(input);
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, pc0, pc1);
         return nodeToStringTransformer.transform();
@@ -61,7 +63,8 @@ public class NodeToStringTransformer {
         return stringBuilder.toString();
     }
 
-    private void compileNode(Node inputNode, StringBuilder stringBuilder, Stack<Node> cycleCheckStack) throws ScanException {
+    private void compileNode(Node inputNode, StringBuilder stringBuilder, Stack<Node> cycleCheckStack)
+            throws ScanException {
         Node n = inputNode;
         while (n != null) {
             switch (n.type) {
@@ -159,9 +162,10 @@ public class NodeToStringTransformer {
     }
 
     /**
-     * Determine if a node has already been visited already by checking the cycleDetectionStack
-     * for it's existence. This method is used -- rather than Stack.contains() -- because
-     * we want to ignore the Node's 'next' attribute when comparing for equality.
+     * Determine if a node has already been visited already by checking the
+     * cycleDetectionStack for it's existence. This method is used -- rather than
+     * Stack.contains() -- because we want to ignore the Node's 'next' attribute
+     * when comparing for equality.
      */
     private boolean haveVisitedNodeAlready(Node node, Stack<Node> cycleDetectionStack) {
         for (Node cycleNode : cycleDetectionStack) {

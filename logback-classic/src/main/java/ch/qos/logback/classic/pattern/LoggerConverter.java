@@ -21,5 +21,4 @@ public class LoggerConverter extends NamedConverter {
         return event.getLoggerName();
     }
 
-
 }

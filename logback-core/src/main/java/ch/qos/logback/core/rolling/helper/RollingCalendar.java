@@ -223,7 +223,8 @@ public class RollingCalendar extends GregorianCalendar {
         return innerGetEndOfNextNthPeriod(cal, periodicityType, now, 1);
     }
 
-    static private Date innerGetEndOfNextNthPeriod(Calendar cal, PeriodicityType periodicityType, Date now, int numPeriods) {
+    static private Date innerGetEndOfNextNthPeriod(Calendar cal, PeriodicityType periodicityType, Date now,
+            int numPeriods) {
         cal.setTime(now);
         switch (periodicityType) {
         case TOP_OF_MILLISECOND:

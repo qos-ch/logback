@@ -17,8 +17,8 @@ import ch.qos.logback.access.spi.IAccessEvent;
 
 public class ThreadNameConverter extends AccessConverter {
 
-  public String convert(IAccessEvent accessEvent) {
-    return accessEvent.getThreadName();
-  }
+    public String convert(IAccessEvent accessEvent) {
+        return accessEvent.getThreadName();
+    }
 
 }

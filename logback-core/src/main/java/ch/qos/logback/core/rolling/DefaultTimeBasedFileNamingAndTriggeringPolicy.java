@@ -33,11 +33,12 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
         super.start();
         if (!super.isErrorFree())
             return;
-        if(tbrp.fileNamePattern.hasIntegerTokenCOnverter()) {
-            addError("Filename pattern ["+tbrp.fileNamePattern+"] contains an integer token converter, i.e. %i, INCOMPATIBLE with this configuration. Remove it.");
+        if (tbrp.fileNamePattern.hasIntegerTokenCOnverter()) {
+            addError("Filename pattern [" + tbrp.fileNamePattern
+                    + "] contains an integer token converter, i.e. %i, INCOMPATIBLE with this configuration. Remove it.");
             return;
         }
-        
+
         archiveRemover = new TimeBasedArchiveRemover(tbrp.fileNamePattern, rc);
         archiveRemover.setContext(context);
         started = true;

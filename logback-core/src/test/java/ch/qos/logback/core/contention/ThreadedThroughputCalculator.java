@@ -40,6 +40,7 @@ public class ThreadedThroughputCalculator extends MultiThreadedHarness {
             sum += r.getCounter();
         }
 
-        System.out.println(msg + "total of " + sum + " operations, or " + ((sum) / overallDurationInMillis) + " operations per millisecond");
+        System.out.println(msg + "total of " + sum + " operations, or " + ((sum) / overallDurationInMillis)
+                + " operations per millisecond");
     }
 }

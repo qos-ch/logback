@@ -22,20 +22,20 @@ import ch.qos.logback.core.model.Model;
 
 public class AppenderRefAction extends BaseModelAction {
 
-	@Override
-	protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name,
-			Attributes attributes) {
-		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
-		pv.validateRefAttribute();
-		return pv.isValid();
-	}
-	
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
-		AppenderRefModel arm = new AppenderRefModel();
+    @Override
+    protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
+        PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
+        pv.validateRefAttribute();
+        return pv.isValid();
+    }
+
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        AppenderRefModel arm = new AppenderRefModel();
         String ref = attributes.getValue(JoranConstants.REF_ATTRIBUTE);
-		arm.setRef(ref);
-		return arm;
-	}
+        arm.setRef(ref);
+        return arm;
+    }
 
 }

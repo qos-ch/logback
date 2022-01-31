@@ -44,7 +44,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
 
     String aMessage = "Some message";
-    
+
     LoggingEvent le;
 
     public PatternLayoutTest() {
@@ -59,15 +59,15 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     }
 
     LoggingEvent makeLoggingEvent(String msg, Exception ex) {
-        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO, msg, ex, null);
+        return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO,
+                msg, ex, null);
     }
-
 
     public ILoggingEvent getEventObject() {
         return makeLoggingEvent("Some message", null);
     }
 
-      public PatternLayoutBase<ILoggingEvent> getPatternLayoutBase() {
+    public PatternLayoutBase<ILoggingEvent> getPatternLayoutBase() {
         return new PatternLayout();
     }
 
@@ -78,7 +78,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         String val = pl.doLayout(getEventObject());
         // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
         // message
-        // 2010-12-29 19:04:26,137 INFO [pool-1-thread-47] c.q.l.c.pattern.ConverterTest - Some message
+        // 2010-12-29 19:04:26,137 INFO [pool-1-thread-47] c.q.l.c.pattern.ConverterTest
+        // - Some message
         String regex = ISO_REGEX + " INFO " + MAIN_REGEX + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
 
         assertTrue("val=" + val, val.matches(regex));
@@ -137,7 +138,8 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         String val = pl.doLayout(getEventObject());
         // 2006-02-01 22:38:06,212 INFO [main] c.q.l.pattern.ConverterTest - Some
         // message
-        String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
+        String regex = ClassicTestConstants.ISO_REGEX + " INFO " + MAIN_REGEX
+                + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
         assertTrue(val.matches(regex));
     }
 
@@ -173,25 +175,25 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals("aValue", val);
     }
 
-    @Test 
+    @Test
     public void micros() {
-    	verifyMicros(122_891_479, "2011-12-03 10:15:30.122 891 Some message");
-       	verifyMicros(122_091_479, "2011-12-03 10:15:30.122 091 Some message");
-       	verifyMicros(122_001_479, "2011-12-03 10:15:30.122 001 Some message");
+        verifyMicros(122_891_479, "2011-12-03 10:15:30.122 891 Some message");
+        verifyMicros(122_091_479, "2011-12-03 10:15:30.122 091 Some message");
+        verifyMicros(122_001_479, "2011-12-03 10:15:30.122 001 Some message");
     }
 
     void verifyMicros(int nanos, String expected) {
-    	Instant instant = Instant.parse("2011-12-03T10:15:30Z");
-    	instant = instant.plusNanos(nanos);
-    	le.setInstant(instant);
-    	
-    	pl.setPattern("%date{yyyy-MM-dd HH:mm:ss.SSS, UTC} %micros %message%nopex");
-    	pl.start();
-    	
-    	String val = pl.doLayout(le);
-        assertEquals(expected, val);	
+        Instant instant = Instant.parse("2011-12-03T10:15:30Z");
+        instant = instant.plusNanos(nanos);
+        le.setInstant(instant);
+
+        pl.setPattern("%date{yyyy-MM-dd HH:mm:ss.SSS, UTC} %micros %message%nopex");
+        pl.start();
+
+        String val = pl.doLayout(le);
+        assertEquals(expected, val);
     }
-    
+
     @Override
     public Context getContext() {
         return lc;
@@ -215,7 +217,6 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(SampleConverter.SAMPLE_STR + " - " + msg, sla.strList.get(0));
     }
 
-    
     @Test
     public void smokeReplace() {
         pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");
@@ -236,7 +237,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         String val = pl.doLayout(makeLoggingEvent("", null));
         assertEquals("A\n\tB", val);
     }
-    
+
     @Test
     public void replaceWithJoran() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replace0.xml");
@@ -263,55 +264,55 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(1, sla.strList.size());
         assertEquals("A\n\tC", sla.strList.get(0));
     }
-    
+
     @Test
     public void prefixConverterSmoke() {
-    	 String pattern = "%prefix(%logger) %message";
-         pl.setPattern(pattern);
-         pl.start();
-         String val = pl.doLayout(makeLoggingEvent("hello", null));
-         assertEquals("logger="+logger.getName() + " hello", val);
+        String pattern = "%prefix(%logger) %message";
+        pl.setPattern(pattern);
+        pl.start();
+        String val = pl.doLayout(makeLoggingEvent("hello", null));
+        assertEquals("logger=" + logger.getName() + " hello", val);
     }
-    
+
     @Test
     public void prefixConverterWithMDC() {
-    	String mdcKey = "boo";
-    	String mdcVal = "moo";
-    	
-    	 String pattern = "%prefix(%level %logger %X{"+mdcKey+"}) %message";
-         pl.setPattern(pattern);
-         pl.start();
-         MDC.put(mdcKey, mdcVal);
-         try {
-        	  String val = pl.doLayout(makeLoggingEvent("hello", null));
-        	  
-              assertEquals("level="+"INFO logger="+logger.getName() +" "+mdcKey+"="+mdcVal+ " hello", val);
-              
-         } finally {
-             MDC.remove(mdcKey);
-         }
+        String mdcKey = "boo";
+        String mdcVal = "moo";
+
+        String pattern = "%prefix(%level %logger %X{" + mdcKey + "}) %message";
+        pl.setPattern(pattern);
+        pl.start();
+        MDC.put(mdcKey, mdcVal);
+        try {
+            String val = pl.doLayout(makeLoggingEvent("hello", null));
+
+            assertEquals("level=" + "INFO logger=" + logger.getName() + " " + mdcKey + "=" + mdcVal + " hello", val);
+
+        } finally {
+            MDC.remove(mdcKey);
+        }
     }
-    
+
     @Test
     public void prefixConverterWithProperty() {
-    	
-         try {
-        	 String propertyKey = "px1953";
-        	 String propertyVal = "pxVal";
-        	 
-        	 System.setProperty(propertyKey, propertyVal);	
-         	
-        	 String pattern = "%prefix(%logger %property{"+propertyKey+"}) %message";
-             pl.setPattern(pattern);
-             pl.start();
-             
-        	 String val = pl.doLayout(makeLoggingEvent("hello", null));
-        	  
-              assertEquals("logger="+logger.getName() +" "+propertyKey+"="+propertyVal+ " hello", val);
-              
-         } finally {
-        	 System.clearProperty("px");	
-         }
+
+        try {
+            String propertyKey = "px1953";
+            String propertyVal = "pxVal";
+
+            System.setProperty(propertyKey, propertyVal);
+
+            String pattern = "%prefix(%logger %property{" + propertyKey + "}) %message";
+            pl.setPattern(pattern);
+            pl.start();
+
+            String val = pl.doLayout(makeLoggingEvent("hello", null));
+
+            assertEquals("logger=" + logger.getName() + " " + propertyKey + "=" + propertyVal + " hello", val);
+
+        } finally {
+            System.clearProperty("px");
+        }
     }
 
 }

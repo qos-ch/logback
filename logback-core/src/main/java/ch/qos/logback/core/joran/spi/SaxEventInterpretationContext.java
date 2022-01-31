@@ -42,32 +42,32 @@ import ch.qos.logback.core.util.OptionHelper;
  * @author Ceki G&uuml;lc&uuml;
  */
 public class SaxEventInterpretationContext extends ContextAwareBase implements PropertyContainer {
-	// Stack<Object> xobjectStack;
-	Stack<Model> modelStack;
-	// Stack<ImplicitActionDataBase> implicitActionDataStack;
+    // Stack<Object> xobjectStack;
+    Stack<Model> modelStack;
+    // Stack<ImplicitActionDataBase> implicitActionDataStack;
 
-	// Map<String, Object> objectMap;
-	// Map<String, String> propertiesMap;
-	// Map<String, String> importMap;
+    // Map<String, Object> objectMap;
+    // Map<String, String> propertiesMap;
+    // Map<String, String> importMap;
 
 //	final HashMap<Model, List<String>> dependenciesMap = new HashMap<>();
 //	final List<String> startedDependencies = new ArrayList<>();
 
-	SaxEventInterpreter saxEventInterpreter;
+    SaxEventInterpreter saxEventInterpreter;
 //	DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
 //	private BeanDescriptionCache beanDescriptionCache;
 
-	public SaxEventInterpretationContext(Context context, SaxEventInterpreter saxEventInterpreter) {
-		this.context = context;
-		this.saxEventInterpreter = saxEventInterpreter;
-		// this.objectStack = new Stack<>();
-		this.modelStack = new Stack<>();
-		// this.implicitActionDataStack = new Stack<>();
+    public SaxEventInterpretationContext(Context context, SaxEventInterpreter saxEventInterpreter) {
+        this.context = context;
+        this.saxEventInterpreter = saxEventInterpreter;
+        // this.objectStack = new Stack<>();
+        this.modelStack = new Stack<>();
+        // this.implicitActionDataStack = new Stack<>();
 
-		// objectMap = new HashMap<>(5);
-		// propertiesMap = new HashMap<>(5);
-		// importMap = new HashMap<>(5);
-	}
+        // objectMap = new HashMap<>(5);
+        // propertiesMap = new HashMap<>(5);
+        // importMap = new HashMap<>(5);
+    }
 
 //	public BeanDescriptionCache getBeanDescriptionCache() {
 //		if (beanDescriptionCache == null) {
@@ -118,9 +118,9 @@ public class SaxEventInterpretationContext extends ContextAwareBase implements P
 //		}
 //	}
 
-	public SaxEventInterpreter getSaxEventInterpreter() {
-		return saxEventInterpreter;
-	}
+    public SaxEventInterpreter getSaxEventInterpreter() {
+        return saxEventInterpreter;
+    }
 
 //	public Stack<Object> getObjectStack() {
 //		return objectStack;
@@ -155,39 +155,39 @@ public class SaxEventInterpretationContext extends ContextAwareBase implements P
 //		return objectStack.pop();
 //	}
 
-	/**
-	 * actionDataStack contains ActionData instances We use a stack of ActionData
-	 * objects in order to support nested elements which are handled by the same
-	 * NestedComplexPropertyIA instance. We push a ActionData instance in the
-	 * isApplicable method (if the action is applicable) and pop it in the end()
-	 * method. The XML well-formedness property will guarantee that a push will
-	 * eventually be followed by a corresponding pop.
-	 */
+    /**
+     * actionDataStack contains ActionData instances We use a stack of ActionData
+     * objects in order to support nested elements which are handled by the same
+     * NestedComplexPropertyIA instance. We push a ActionData instance in the
+     * isApplicable method (if the action is applicable) and pop it in the end()
+     * method. The XML well-formedness property will guarantee that a push will
+     * eventually be followed by a corresponding pop.
+     */
 //	public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
 //		return implicitActionDataStack;
 //	}
 //
-	public Model peekModel() {
-		return modelStack.peek();
-	}
+    public Model peekModel() {
+        return modelStack.peek();
+    }
 
-	public void pushModel(Model m) {
-		modelStack.push(m);
-	}
+    public void pushModel(Model m) {
+        modelStack.push(m);
+    }
 
-	public boolean isModelStackEmpty() {
-		return modelStack.isEmpty();
-	}
+    public boolean isModelStackEmpty() {
+        return modelStack.isEmpty();
+    }
 
-	public Model popModel() {
-		return modelStack.pop();
-	}
+    public Model popModel() {
+        return modelStack.pop();
+    }
 
-	public Stack<Model> getCopyOfModelStack() {
-		Stack<Model> copy = new Stack<>();
-		copy.addAll(modelStack);
-		return copy;
-	}
+    public Stack<Model> getCopyOfModelStack() {
+        Stack<Model> copy = new Stack<>();
+        copy.addAll(modelStack);
+        return copy;
+    }
 
 //	public Object getObject(int i) {
 //		return objectStack.get(i);
@@ -221,33 +221,31 @@ public class SaxEventInterpretationContext extends ContextAwareBase implements P
 //		}
 //	}
 
-	/**
-	 * If a key is found in propertiesMap then return it. Otherwise, delegate to the
-	 * context.
-	 */
-	public String getProperty(String key) {
-		return context.getProperty(key);
-	}
+    /**
+     * If a key is found in propertiesMap then return it. Otherwise, delegate to the
+     * context.
+     */
+    public String getProperty(String key) {
+        return context.getProperty(key);
+    }
 
-	@Override
-	public Map<String, String> getCopyOfPropertyMap() {
-		return null;
-	}
+    @Override
+    public Map<String, String> getCopyOfPropertyMap() {
+        return null;
+    }
 
-	
-	public String subst(String value) {
-		if (value == null) {
-			return null;
-		}
-		
-		try  {
-		  return OptionHelper.substVars(value, this, context);
-		} catch(ScanException|IllegalArgumentException e) {
-			addError("Problem while parsing ["+value+"]", e);
-			return value;
-		}
-	}
+    public String subst(String value) {
+        if (value == null) {
+            return null;
+        }
 
+        try {
+            return OptionHelper.substVars(value, this, context);
+        } catch (ScanException | IllegalArgumentException e) {
+            addError("Problem while parsing [" + value + "]", e);
+            return value;
+        }
+    }
 
 //	public void markStartOfNamedDependency(String name) {
 //		startedDependencies.add(name);

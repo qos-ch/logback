@@ -12,37 +12,37 @@ import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 public class ParamModelHandler extends ModelHandlerBase {
 
-	private final BeanDescriptionCache beanDescriptionCache;
+    private final BeanDescriptionCache beanDescriptionCache;
 
-	public ParamModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
-		super(context);
-		this.beanDescriptionCache = beanDescriptionCache;
-	}
-	
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new ParamModelHandler(context, ic.getBeanDescriptionCache());
-	}
+    public ParamModelHandler(Context context, BeanDescriptionCache beanDescriptionCache) {
+        super(context);
+        this.beanDescriptionCache = beanDescriptionCache;
+    }
 
-	@Override
-	protected Class<ParamModel> getSupportedModelClass() {
-		return ParamModel.class;
-	}
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new ParamModelHandler(context, ic.getBeanDescriptionCache());
+    }
 
-	@Override
-	public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+    @Override
+    protected Class<ParamModel> getSupportedModelClass() {
+        return ParamModel.class;
+    }
 
-		ParamModel paramModel = (ParamModel) model;
+    @Override
+    public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
 
-		String valueStr = intercon.subst(paramModel.getValue());
+        ParamModel paramModel = (ParamModel) model;
 
-		Object o = intercon.peekObject();
+        String valueStr = intercon.subst(paramModel.getValue());
 
-		PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
-		propSetter.setContext(context);
+        Object o = intercon.peekObject();
 
-		// allow for variable substitution for name as well
-		String finalName = intercon.subst(paramModel.getName());
-	     propSetter.setProperty(finalName, valueStr);
-	}
+        PropertySetter propSetter = new PropertySetter(beanDescriptionCache, o);
+        propSetter.setContext(context);
+
+        // allow for variable substitution for name as well
+        String finalName = intercon.subst(paramModel.getName());
+        propSetter.setProperty(finalName, valueStr);
+    }
 
 }

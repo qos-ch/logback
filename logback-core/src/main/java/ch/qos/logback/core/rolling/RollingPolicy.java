@@ -30,22 +30,25 @@ public interface RollingPolicy extends LifeCycle {
     /**
      * Rolls over log files according to implementation policy.
      * 
-     * <p>This method is invoked by {@link RollingFileAppender}, usually at the
-     * behest of its {@link TriggeringPolicy}.
+     * <p>
+     * This method is invoked by {@link RollingFileAppender}, usually at the behest
+     * of its {@link TriggeringPolicy}.
      * 
-     * @throws RolloverFailure
-     *                 Thrown if the rollover operation fails for any reason.
+     * @throws RolloverFailure Thrown if the rollover operation fails for any
+     *                         reason.
      */
     void rollover() throws RolloverFailure;
 
     /**
      * Get the name of the active log file.
      * 
-     * <p>With implementations such as {@link TimeBasedRollingPolicy}, this
-     * method returns a new file name, where the actual output will be sent.
+     * <p>
+     * With implementations such as {@link TimeBasedRollingPolicy}, this method
+     * returns a new file name, where the actual output will be sent.
      * 
-     * <p>On other implementations, this method might return the FileAppender's
-     * file property.
+     * <p>
+     * On other implementations, this method might return the FileAppender's file
+     * property.
      */
     String getActiveFileName();
 

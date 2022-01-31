@@ -26,6 +26,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 /**
  * A BundleActivator which invokes slf4j loggers
+ * 
  * @author Ceki G&uuml;lc&uuml;
  *
  */

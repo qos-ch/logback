@@ -14,7 +14,8 @@
 package ch.qos.logback.core.util;
 
 /**
- * This class serves as a gateway for invocations of a "costly" operation on a critical execution path.
+ * This class serves as a gateway for invocations of a "costly" operation on a
+ * critical execution path.
  *
  * @author Ceki G&uuml;lc&uuml;
  */
@@ -22,13 +23,14 @@ public class DefaultInvocationGate implements InvocationGate {
 
     static final int MASK_DECREASE_RIGHT_SHIFT_COUNT = 2;
 
-    // experiments indicate that even for the most CPU intensive applications with 200 or more threads MASK
+    // experiments indicate that even for the most CPU intensive applications with
+    // 200 or more threads MASK
     // values in the order of 0xFFFF is appropriate
     private static final int MAX_MASK = 0xFFFF;
     static final int DEFAULT_MASK = 0xF;
 
     private volatile long mask = DEFAULT_MASK;
-    //private volatile long lastMaskCheck = System.currentTimeMillis();
+    // private volatile long lastMaskCheck = System.currentTimeMillis();
 
     // IMPORTANT: This field can be updated by multiple threads. It follows that
     // its values may *not* be incremented sequentially. However, we don't care
@@ -36,26 +38,27 @@ public class DefaultInvocationGate implements InvocationGate {
     // expression (invocationCounter++ & mask) == mask) should be true.
     private long invocationCounter = 0;
 
-    // if less than thresholdForMaskIncrease milliseconds elapse between invocations of updateMaskIfNecessary()
+    // if less than thresholdForMaskIncrease milliseconds elapse between invocations
+    // of updateMaskIfNecessary()
     // method, then the mask should be increased
     private static final long MASK_INCREASE_THRESHOLD = 100;
 
-    // if more than thresholdForMaskDecrease milliseconds elapse between invocations of updateMaskIfNecessary() method,
+    // if more than thresholdForMaskDecrease milliseconds elapse between invocations
+    // of updateMaskIfNecessary() method,
     // then the mask should be decreased
     private static final long MASK_DECREASE_THRESHOLD = MASK_INCREASE_THRESHOLD * 8;
 
-    
     public DefaultInvocationGate() {
         this(MASK_INCREASE_THRESHOLD, MASK_DECREASE_THRESHOLD, System.currentTimeMillis());
     }
-    
-    public  DefaultInvocationGate(long minDelayThreshold, long maxDelayThreshold, long currentTime) {
+
+    public DefaultInvocationGate(long minDelayThreshold, long maxDelayThreshold, long currentTime) {
         this.minDelayThreshold = minDelayThreshold;
-        this.maxDelayThreshold = maxDelayThreshold; 
+        this.maxDelayThreshold = maxDelayThreshold;
         this.lowerLimitForMaskMatch = currentTime + minDelayThreshold;
         this.upperLimitForNoMaskMatch = currentTime + maxDelayThreshold;
     }
-    
+
     private long minDelayThreshold;
     private long maxDelayThreshold;
 
@@ -91,12 +94,11 @@ public class DefaultInvocationGate implements InvocationGate {
         this.upperLimitForNoMaskMatch = currentTime + maxDelayThreshold;
     }
 
-
     // package private, for testing purposes only
     long getMask() {
         return mask;
     }
-    
+
     private void increaseMask() {
         if (mask >= MAX_MASK)
             return;

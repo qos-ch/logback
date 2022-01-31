@@ -31,10 +31,10 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     Converter<E> head;
     String pattern;
     protected PostCompileProcessor<E> postCompileProcessor;
-    
+
     Map<String, String> instanceConverterMap = new HashMap<String, String>();
     protected boolean outputPatternAsHeader = false;
-    
+
     /**
      * Concrete implementations of this class are responsible for elaborating the
      * mapping between pattern words and converters.
@@ -60,7 +60,8 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
         Context context = getContext();
         if (context != null) {
             @SuppressWarnings("unchecked")
-            Map<String, String> contextMap = (Map<String, String>) context.getObject(CoreConstants.PATTERN_RULE_REGISTRY);
+            Map<String, String> contextMap = (Map<String, String>) context
+                    .getObject(CoreConstants.PATTERN_RULE_REGISTRY);
             if (contextMap != null) {
                 effectiveMap.putAll(contextMap);
             }
@@ -101,8 +102,8 @@ abstract public class PatternLayoutBase<E> extends LayoutBase<E> {
     /**
      *
      * @param head
-     * @deprecated  Use {@link ConverterUtil#setContextForConverters} instead. This method will
-     *  be removed in future releases.
+     * @deprecated Use {@link ConverterUtil#setContextForConverters} instead. This
+     *             method will be removed in future releases.
      */
     protected void setContextForConverters(Converter<E> head) {
         ConverterUtil.setContextForConverters(getContext(), head);

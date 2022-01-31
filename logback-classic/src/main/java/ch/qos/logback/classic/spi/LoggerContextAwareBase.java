@@ -20,20 +20,21 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 public class LoggerContextAwareBase extends ContextAwareBase implements LoggerContextAware {
 
     /**
-     * Set the owning context. The owning context cannot be set more than
-     * once.
+     * Set the owning context. The owning context cannot be set more than once.
      */
     public void setLoggerContext(LoggerContext context) {
         super.setContext(context);
     }
 
     public void setContext(Context context) {
-        // check that the context is of type LoggerContext. Otherwise, throw an exception
+        // check that the context is of type LoggerContext. Otherwise, throw an
+        // exception
         // Context == null is a degenerate case but nonetheless permitted.
         if (context instanceof LoggerContext || context == null) {
             super.setContext(context);
         } else {
-            throw new IllegalArgumentException("LoggerContextAwareBase only accepts contexts of type c.l.classic.LoggerContext");
+            throw new IllegalArgumentException(
+                    "LoggerContextAwareBase only accepts contexts of type c.l.classic.LoggerContext");
         }
     }
 

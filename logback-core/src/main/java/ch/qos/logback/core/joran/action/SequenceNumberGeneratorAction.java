@@ -20,25 +20,25 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.SequenceNumberGeneratorModel;
 
 /**
- * Action which handles &lt;sequenceNumberGenerator&gt; elements in configuration files.
+ * Action which handles &lt;sequenceNumberGenerator&gt; elements in
+ * configuration files.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-public class SequenceNumberGeneratorAction extends BaseModelAction  {
+public class SequenceNumberGeneratorAction extends BaseModelAction {
 
-	
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
-			Attributes attributes) {
-		SequenceNumberGeneratorModel sngm = new SequenceNumberGeneratorModel();
-		sngm.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
-		return sngm;
-	}
-	
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        SequenceNumberGeneratorModel sngm = new SequenceNumberGeneratorModel();
+        sngm.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        return sngm;
+    }
+
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
-    	validator.validateClassAttribute();
+        PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
+        validator.validateClassAttribute();
         return validator.isValid();
     }
 }

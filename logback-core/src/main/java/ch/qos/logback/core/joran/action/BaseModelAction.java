@@ -13,27 +13,28 @@ public abstract class BaseModelAction extends Action {
     boolean inError = false;
 
     @Override
-    public void begin(SaxEventInterpretationContext intercon, String name, Attributes attributes) throws ActionException {
+    public void begin(SaxEventInterpretationContext intercon, String name, Attributes attributes)
+            throws ActionException {
         parentModel = null;
         inError = false;
-        
+
         if (!validPreconditions(intercon, name, attributes)) {
             inError = true;
             return;
         }
-        
+
         currentModel = buildCurrentModel(intercon, name, attributes);
         currentModel.setTag(name);
-        if(!intercon.isModelStackEmpty()) {
-        	parentModel = intercon.peekModel();
+        if (!intercon.isModelStackEmpty()) {
+            parentModel = intercon.peekModel();
         }
         final int lineNumber = getLineNumber(intercon);
         currentModel.setLineNumber(lineNumber);
         intercon.pushModel(currentModel);
     }
 
-    
-    abstract protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes);
+    abstract protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes);
 
     /**
      * Validate preconditions of this action.
@@ -46,28 +47,29 @@ public abstract class BaseModelAction extends Action {
      * @return
      */
     protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
-    	return true;
+        return true;
     }
 
     @Override
     public void body(SaxEventInterpretationContext ec, String body) {
-    	currentModel.addText(body);
+        currentModel.addText(body);
     }
 
     @Override
     public void end(SaxEventInterpretationContext interpretationContext, String name) throws ActionException {
-        if(inError)
+        if (inError)
             return;
-        
+
         Model m = interpretationContext.peekModel();
 
         if (m != currentModel) {
-            addWarn("The object at the of the stack is not the model [" + currentModel.idString() + "] pushed earlier.");
+            addWarn("The object at the of the stack is not the model [" + currentModel.idString()
+                    + "] pushed earlier.");
             addWarn("This is wholly unexpected.");
-        } 
-        
+        }
+
         // do not pop nor add to parent if there is no parent
-        if(parentModel != null) {
+        if (parentModel != null) {
             parentModel.addSubModel(currentModel);
             interpretationContext.popModel();
         }

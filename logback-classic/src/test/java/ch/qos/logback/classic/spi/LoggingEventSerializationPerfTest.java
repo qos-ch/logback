@@ -103,12 +103,13 @@ public class LoggingEventSerializationPerfTest {
         System.out.println("noos size " + noos.size() + " average size=" + averageSize);
         double averageSizeLimit = 62.1;
 
-        assertTrue("average size " + averageSize + " should be less than " + averageSizeLimit, averageSizeLimit > averageSize);
+        assertTrue("average size " + averageSize + " should be less than " + averageSizeLimit,
+                averageSizeLimit > averageSize);
 
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
         long referencePerf = 5000;
-        //BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 
     @Test
@@ -130,11 +131,12 @@ public class LoggingEventSerializationPerfTest {
         System.out.println("noos size " + noos.size() + " average size=" + averageSize);
 
         double averageSizeLimit = 160;
-        assertTrue("averageSize " + averageSize + " should be less than " + averageSizeLimit, averageSizeLimit > averageSize);
+        assertTrue("averageSize " + averageSize + " should be less than " + averageSizeLimit,
+                averageSizeLimit > averageSize);
 
         // the reference was computed on Orion (Ceki's computer)
         @SuppressWarnings("unused")
         long referencePerf = 7000;
-        //BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
+        // BogoPerf.assertDuration(rt, referencePerf, CoreConstants.REFERENCE_BIPS);
     }
 }

@@ -12,7 +12,7 @@
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.testUtil;
- 
+
 public class CoreTestConstants {
 
     public static final String TEST_SRC_PREFIX = "src/test/";

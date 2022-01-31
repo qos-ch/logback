@@ -20,27 +20,26 @@ import ch.qos.logback.core.util.OptionHelper;
 public class PropertyModelHandler extends ModelHandlerBase {
 
     public static final String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
-                    + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
+            + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
 
     public PropertyModelHandler(Context context) {
         super(context);
     }
 
-	static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-		return new PropertyModelHandler(context);
-	}	
-	
-    @Override
-    protected Class<PropertyModel> getSupportedModelClass() {
-    	return PropertyModel.class;
+    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+        return new PropertyModelHandler(context);
     }
 
-    
+    @Override
+    protected Class<PropertyModel> getSupportedModelClass() {
+        return PropertyModel.class;
+    }
+
     @Override
     public void handle(ModelInterpretationContext interpretationContext, Model model) {
 
         PropertyModel propertyModel = (PropertyModel) model;
-        
+
         Scope scope = ActionUtil.stringToScope(propertyModel.getScopeStr());
 
         if (checkFileAttributeSanity(propertyModel)) {
@@ -93,7 +92,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
 
-        return !(OptionHelper.isNullOrEmpty(file)) && (OptionHelper.isNullOrEmpty(name) && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(resource));
+        return !(OptionHelper.isNullOrEmpty(file)) && (OptionHelper.isNullOrEmpty(name)
+                && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(resource));
     }
 
     boolean checkResourceAttributeSanity(PropertyModel propertyModel) {
@@ -102,7 +102,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
 
-        return !(OptionHelper.isNullOrEmpty(resource)) && (OptionHelper.isNullOrEmpty(name) && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file));
+        return !(OptionHelper.isNullOrEmpty(resource)) && (OptionHelper.isNullOrEmpty(name)
+                && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file));
     }
 
     boolean checkValueNameAttributesSanity(PropertyModel propertyModel) {
@@ -110,7 +111,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String name = propertyModel.getName();
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
-        return (!(OptionHelper.isNullOrEmpty(name) || OptionHelper.isNullOrEmpty(value)) && (OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource)));
+        return (!(OptionHelper.isNullOrEmpty(name) || OptionHelper.isNullOrEmpty(value))
+                && (OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource)));
     }
 
 }

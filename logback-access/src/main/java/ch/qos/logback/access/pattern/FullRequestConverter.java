@@ -21,9 +21,10 @@ import ch.qos.logback.core.CoreConstants;
 /**
  * This class is tied to the <code>fullRequest</code> conversion word.
  * <p>
- * It has been removed from the {@link ch.qos.logback.access.PatternLayout} since
- * it needs further testing before wide use.
+ * It has been removed from the {@link ch.qos.logback.access.PatternLayout}
+ * since it needs further testing before wide use.
  * <p>
+ * 
  * @author Ceki G&uuml;lc&uuml;
  * @author S&eacute;bastien Pennec
  */

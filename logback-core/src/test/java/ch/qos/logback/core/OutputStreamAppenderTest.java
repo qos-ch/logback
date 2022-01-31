@@ -81,7 +81,8 @@ public class OutputStreamAppenderTest {
         headerFooterCheck(FILE_HEADER, PRESENTATION_HEADER, PRESENTATION_FOOTER, FILE_FOOTER);
     }
 
-    public void headerFooterCheck(String fileHeader, String presentationHeader, String presentationFooter, String fileFooter) {
+    public void headerFooterCheck(String fileHeader, String presentationHeader, String presentationFooter,
+            String fileFooter) {
         OutputStreamAppender<Object> wa = new OutputStreamAppender<Object>();
         wa.setContext(context);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

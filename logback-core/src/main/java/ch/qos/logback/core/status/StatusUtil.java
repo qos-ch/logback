@@ -35,9 +35,9 @@ public class StatusUtil {
     }
 
     /**
-     * Returns true if the StatusManager associated with the context passed
-     * as parameter has one or more StatusListener instances registered. Returns
-     * false otherwise.
+     * Returns true if the StatusManager associated with the context passed as
+     * parameter has one or more StatusListener instances registered. Returns false
+     * otherwise.
      *
      * @param context
      * @return true if one or more StatusListeners registered, false otherwise
@@ -106,7 +106,7 @@ public class StatusUtil {
     public boolean isWarningOrErrorFree(long threshold) {
         return Status.WARN > getHighestLevel(threshold);
     }
-    
+
     public boolean containsMatch(long threshold, int level, String regex) {
         List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
         Pattern p = Pattern.compile(regex);

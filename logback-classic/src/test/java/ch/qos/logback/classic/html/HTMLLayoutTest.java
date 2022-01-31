@@ -195,11 +195,13 @@ public class HTMLLayoutTest {
     public void rawLimit() throws Exception {
         StringBuilder sb = new StringBuilder();
         String header = layout.getFileHeader();
-        assertTrue(header.startsWith("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
+        assertTrue(header.startsWith(
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">"));
         sb.append(header);
         sb.append(layout.getPresentationHeader());
         for (int i = 0; i < CoreConstants.TABLE_ROW_LIMIT * 3; i++) {
-            sb.append(layout.doLayout(new LoggingEvent(this.getClass().getName(), root, Level.DEBUG, "test message" + i, null, null)));
+            sb.append(layout.doLayout(
+                    new LoggingEvent(this.getClass().getName(), root, Level.DEBUG, "test message" + i, null, null)));
         }
         sb.append(layout.getPresentationFooter());
         sb.append(layout.getFileFooter());

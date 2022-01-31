@@ -20,7 +20,7 @@ import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
  * escape codes.
  *
  * @param <E>
- * @author  Ceki G&uuml;lc&uuml;
+ * @author Ceki G&uuml;lc&uuml;
  * @since 1.0.5
  */
 public class GrayCompositeConverter<E> extends ForegroundCompositeConverterBase<E> {

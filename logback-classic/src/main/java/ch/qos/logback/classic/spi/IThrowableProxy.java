@@ -32,5 +32,5 @@ public interface IThrowableProxy {
      * @return true if cyclic, false otherwise
      * @sine 1.3.0
      */
-	boolean isCyclic();
+    boolean isCyclic();
 }

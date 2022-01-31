@@ -62,7 +62,8 @@ public class InitializationOutputTest {
 
     @Test
     public void noOutputIfContextHasAStatusListener() {
-        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
+        System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY,
+                ClassicTestConstants.INPUT_PREFIX + "issue/logback292.xml");
         System.setProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY, NopStatusListener.class.getName());
 
         LoggerFactoryFriend.reset();

@@ -21,9 +21,9 @@ import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 
 public class FruitContextAction extends Action {
-    
+
     FruitContextModel parentModel;
-    
+
     @Override
     public void begin(SaxEventInterpretationContext ic, String name, Attributes attributes) throws ActionException {
         parentModel = new FruitContextModel();
@@ -37,8 +37,9 @@ public class FruitContextAction extends Action {
         Model m = ic.peekModel();
 
         if (m != parentModel) {
-            addWarn("The object at the of the stack is not the model named [" + parentModel.getTag() + "] pushed earlier.");
-        }  
+            addWarn("The object at the of the stack is not the model named [" + parentModel.getTag()
+                    + "] pushed earlier.");
+        }
         // NOTE: top level model is NOT popped
     }
 

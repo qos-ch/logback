@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-public class LoggerTestHelper  {
+public class LoggerTestHelper {
 
     static void assertNameEquals(Logger logger, String name) {
         assertNotNull(logger);

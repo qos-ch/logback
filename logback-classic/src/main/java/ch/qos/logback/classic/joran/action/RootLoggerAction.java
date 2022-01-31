@@ -27,13 +27,14 @@ public class RootLoggerAction extends BaseModelAction {
     Logger root;
     boolean inError = false;
 
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
-		RootLoggerModel rootLoggerModel = new RootLoggerModel();
-		String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
-		rootLoggerModel.setLevel(levelStr);
-	        
-		return rootLoggerModel;
-	}
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        RootLoggerModel rootLoggerModel = new RootLoggerModel();
+        String levelStr = attributes.getValue(JoranConstants.LEVEL_ATTRIBUTE);
+        rootLoggerModel.setLevel(levelStr);
+
+        return rootLoggerModel;
+    }
 
 }

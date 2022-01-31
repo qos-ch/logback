@@ -81,9 +81,9 @@ public class LogbackValveTest {
         setupValve(fileName);
         valve.start();
         assertNotNull(valve.getScheduledExecutorService());
-        
+
     }
-    
+
     private void setupValve(final String resourceName) {
         valve.setFilename(resourceName);
         valve.setName("test");

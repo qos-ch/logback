@@ -32,7 +32,7 @@ public class ContextDetachingSCL implements ServletContextListener {
     public void contextInitialized(ServletContextEvent arg0) {
         // do nothing
     }
-    
+
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         String loggerContextName = null;
 
@@ -62,7 +62,5 @@ public class ContextDetachingSCL implements ServletContextListener {
             }
         }
     }
-
- 
 
 }

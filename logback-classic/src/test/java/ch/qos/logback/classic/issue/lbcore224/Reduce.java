@@ -20,7 +20,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Reduce a file consisting of lock and unlock operations by removing matching lock/unlocks.
+ * Reduce a file consisting of lock and unlock operations by removing matching
+ * lock/unlocks.
  */
 public class Reduce {
 
@@ -162,7 +163,8 @@ public class Reduce {
 
         @Override
         public String toString() {
-            return "Structure{" + "time=" + time + ", thread='" + thread + '\'' + ", operationType=" + operationType + '}';
+            return "Structure{" + "time=" + time + ", thread='" + thread + '\'' + ", operationType=" + operationType
+                    + '}';
         }
     }
 

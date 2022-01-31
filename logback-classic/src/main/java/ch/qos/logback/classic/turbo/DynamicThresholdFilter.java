@@ -27,26 +27,29 @@ import java.util.HashMap;
  * such as product name or company name that would be associated with requests
  * as they are processed.
  * 
- * <p> This filter will allow you to associate threshold levels to a key put in
- * the MDC. This key can be any value specified by the user. Furthermore, you
- * can pass MDC value and level threshold associations, which are then looked up
- * to find the level threshold to apply to the current logging request. If no
- * level threshold could be found, then a 'default' value specified by the user
- * is applied. We call this value 'levelAssociatedWithMDCValue'.
+ * <p>
+ * This filter will allow you to associate threshold levels to a key put in the
+ * MDC. This key can be any value specified by the user. Furthermore, you can
+ * pass MDC value and level threshold associations, which are then looked up to
+ * find the level threshold to apply to the current logging request. If no level
+ * threshold could be found, then a 'default' value specified by the user is
+ * applied. We call this value 'levelAssociatedWithMDCValue'.
  * 
- * <p> If 'levelAssociatedWithMDCValue' is higher or equal to the level of the
+ * <p>
+ * If 'levelAssociatedWithMDCValue' is higher or equal to the level of the
  * current logger request, the
  * {@link #decide(Marker, Logger, Level, String, Object[], Throwable) decide()}
- * method returns the value of {@link #getOnHigherOrEqual() onHigherOrEqual},
- * if it is lower then the value of {@link #getOnLower() onLower} is returned.
- * Both 'onHigherOrEqual' and 'onLower' can be set by the user. By default,
+ * method returns the value of {@link #getOnHigherOrEqual() onHigherOrEqual}, if
+ * it is lower then the value of {@link #getOnLower() onLower} is returned. Both
+ * 'onHigherOrEqual' and 'onLower' can be set by the user. By default,
  * 'onHigherOrEqual' is set to NEUTRAL and 'onLower' is set to DENY. Thus, if
  * the current logger request's level is lower than
  * 'levelAssociatedWithMDCValue', then the request is denied, and if it is
  * higher or equal, then this filter decides NEUTRAL letting subsequent filters
  * to make the decision on the fate of the logging request.
  * 
- * <p> The example below illustrates how logging could be enabled for only
+ * <p>
+ * The example below illustrates how logging could be enabled for only
  * individual users. In this example all events for logger names matching
  * "com.mycompany" will be logged if they are for 'user1' and at a level higher
  * than equals to DEBUG, and for 'user2' if they are at a level higher than or
@@ -162,8 +165,8 @@ public class DynamicThresholdFilter extends TurboFilter {
     }
 
     /**
-     * Get the FilterReply when the effective level is higher or equal to the
-     * level of current logging request
+     * Get the FilterReply when the effective level is higher or equal to the level
+     * of current logging request
      * 
      * @return FilterReply
      */
@@ -219,7 +222,7 @@ public class DynamicThresholdFilter extends TurboFilter {
      * 
      * @{link #defaultThreshold} value.
      * 
-     * If no such value exists, then
+     *        If no such value exists, then
      * 
      * 
      * @param marker
@@ -232,7 +235,8 @@ public class DynamicThresholdFilter extends TurboFilter {
      * @return FilterReply - this filter's decision
      */
     @Override
-    public FilterReply decide(Marker marker, Logger logger, Level level, String s, Object[] objects, Throwable throwable) {
+    public FilterReply decide(Marker marker, Logger logger, Level level, String s, Object[] objects,
+            Throwable throwable) {
 
         String mdcValue = MDC.get(this.key);
         if (!isStarted()) {

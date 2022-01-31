@@ -59,44 +59,45 @@ public interface ILoggingEvent extends DeferredProcessingAware {
     StackTraceElement[] getCallerData();
 
     /**
-     * If this event has caller data, then true is returned. Otherwise the
-     * returned value is null.
+     * If this event has caller data, then true is returned. Otherwise the returned
+     * value is null.
      * 
-     * <p>Logback components wishing to use caller data if available without
-     * causing it to be computed can invoke this method before invoking
+     * <p>
+     * Logback components wishing to use caller data if available without causing it
+     * to be computed can invoke this method before invoking
      * {@link #getCallerData()}.
      * 
      * @return whether this event has caller data
      */
     boolean hasCallerData();
 
-    
     /**
-     * Returns the first marker is the marker list or null if no markers are available.
+     * Returns the first marker is the marker list or null if no markers are
+     * available.
      * 
-     * This method is deprecated and exists solely for backward compatibility reasons.
-     * Logback components should use {@link #getMarkerList()} and cater for all available markers 
-     * and not the only the first one. 
+     * This method is deprecated and exists solely for backward compatibility
+     * reasons. Logback components should use {@link #getMarkerList()} and cater for
+     * all available markers and not the only the first one.
      * 
      * @deprecated Replaced by {@link #getMarkerList()}
-     * @return the first marker in the marker list or null if no markers are available
+     * @return the first marker in the marker list or null if no markers are
+     *         available
      */
     default Marker getMarker() {
-    	List<Marker> markers = getMarkerList();
-    	if(markers == null || markers.isEmpty())
-    		return null;
+        List<Marker> markers = getMarkerList();
+        if (markers == null || markers.isEmpty())
+            return null;
 
-    	// return the first marker. Assuming that only the first marker is useful
-    	// is obviously incorrect. However, we have no other choice if we wish
-    	// to preserve binary compatibility.
-    	return markers.get(0);
+        // return the first marker. Assuming that only the first marker is useful
+        // is obviously incorrect. However, we have no other choice if we wish
+        // to preserve binary compatibility.
+        return markers.get(0);
     }
 
-    
     /**
      * Since SLF4J 2.0.0, the slf4j logging API assumes the possibility of multiple
-     * Marker instances in a logging event. Consequently, ILoggingEvent needs to cater 
-     * for this possibility. 
+     * Marker instances in a logging event. Consequently, ILoggingEvent needs to
+     * cater for this possibility.
      * 
      * @return the marker list, may be null
      * @since 1.3.0
@@ -110,7 +111,8 @@ public interface ILoggingEvent extends DeferredProcessingAware {
 
     /**
      * Synonym for [@link #getMDCPropertyMap}.
-     * @deprecated  Replaced by [@link #getMDCPropertyMap}
+     * 
+     * @deprecated Replaced by [@link #getMDCPropertyMap}
      */
     Map<String, String> getMdc();
 
@@ -121,9 +123,9 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * @since 1.3
      */
     long getTimeStamp();
-    
+
     /**
-     * Return the number of elapsed nanoseconds found in {@link #getInstant()} 
+     * Return the number of elapsed nanoseconds found in {@link #getInstant()}
      * 
      * Will return 0 if getInstant() returns null;
      * 
@@ -131,11 +133,11 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * @since 1.3
      */
     default int getNanoseconds() {
-    	Instant instant = getInstant(); 
-    	if(instant == null)
-    		return 0;
-    	int nanoseconds = instant.getNano();
-    	return nanoseconds;
+        Instant instant = getInstant();
+        if (instant == null)
+            return 0;
+        int nanoseconds = instant.getNano();
+        return nanoseconds;
     }
 
     /**
@@ -147,14 +149,15 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * @since 1.3
      */
     default Instant getInstant() {
-    	return null;
+        return null;
     }
 
-	/**
-     * The sequence number associated with this event. 
+    /**
+     * The sequence number associated with this event.
      * 
-     * <p>Sequence numbers, if present, should be increasing monotonically.
-     *  
+     * <p>
+     * Sequence numbers, if present, should be increasing monotonically.
+     * 
      * @since 1.3.0
      */
     long getSequenceNumber();
@@ -166,7 +169,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * @since 1.3.0
      */
     List<KeyValuePair> getKeyValuePairs();
-    
+
     void prepareForDeferredProcessing();
 
 }

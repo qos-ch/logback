@@ -8,14 +8,26 @@ import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.util.CachingDateFormatter;
 
 /**
- * A layout with a fixed format. The output is equivalent to that produced by {@link ch.qos.logback.classic.PatternLayout PatternLayout} with the pattern:</p>
+ * A layout with a fixed format. The output is equivalent to that produced by
+ * {@link ch.qos.logback.classic.PatternLayout PatternLayout} with the pattern:
+ * </p>
  * 
- * <pre>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pre>
+ * <pre>
+ * %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+ * </pre>
  * 
- *<p>TTLLLayout has the advantage of faster load time whereas {@link ch.qos.logback.classic.PatternLayout PatternLayout}
- * requires roughly 40 milliseconds to load its parser classes.  Note that the second run of PatternLayout will be much much faster (approx. 10 micro-seconds).</p>
+ * <p>
+ * TTLLLayout has the advantage of faster load time whereas
+ * {@link ch.qos.logback.classic.PatternLayout PatternLayout} requires roughly
+ * 40 milliseconds to load its parser classes. Note that the second run of
+ * PatternLayout will be much much faster (approx. 10 micro-seconds).
+ * </p>
  * 
- * <p>Fixed format layouts such as TTLLLayout should be considered as an alternative to PatternLayout only if the extra 40 milliseconds at application start-up is considered significant.</p>
+ * <p>
+ * Fixed format layouts such as TTLLLayout should be considered as an
+ * alternative to PatternLayout only if the extra 40 milliseconds at application
+ * start-up is considered significant.
+ * </p>
  * 
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.1.6

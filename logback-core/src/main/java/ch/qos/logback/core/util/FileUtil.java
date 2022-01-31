@@ -37,13 +37,12 @@ public class FileUtil extends ContextAwareBase {
     }
 
     /**
-     * Creates the parent directories of a file. If parent directories not
-     * specified in file's path, then nothing is done and this returns
-     * gracefully.
+     * Creates the parent directories of a file. If parent directories not specified
+     * in file's path, then nothing is done and this returns gracefully.
      *
      * @param file file whose parent directories (if any) should be created
-     * @return {@code true} if either no parents were specified, or if all
-     * parent directories were created successfully; {@code false} otherwise
+     * @return {@code true} if either no parents were specified, or if all parent
+     *         directories were created successfully; {@code false} otherwise
      */
     static public boolean createMissingParentDirectories(File file) {
         File parent = file.getParentFile();

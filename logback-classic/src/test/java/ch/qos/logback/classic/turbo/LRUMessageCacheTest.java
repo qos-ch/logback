@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic.turbo;
 
-
-
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;

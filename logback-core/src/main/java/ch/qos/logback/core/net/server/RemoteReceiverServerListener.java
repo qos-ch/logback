@@ -27,8 +27,9 @@ class RemoteReceiverServerListener extends ServerSocketListener<RemoteReceiverCl
 
     /**
      * Constructs a new listener.
-     * @param serverSocket server socket from which new client connections
-     *    will be accepted
+     * 
+     * @param serverSocket server socket from which new client connections will be
+     *                     accepted
      */
     public RemoteReceiverServerListener(ServerSocket serverSocket) {
         super(serverSocket);

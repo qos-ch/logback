@@ -57,7 +57,6 @@ import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.model.processor.TimestampModelHandler;
 import ch.qos.logback.core.spi.AppenderAttachable;
 
-
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
 // see also http://tinyurl.com/c2rp5
 
@@ -78,7 +77,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
 
         // is "configuration/variable" referenced in the docs?
         rs.addRule(new ElementSelector("configuration/variable"), new PropertyAction());
-        rs.addRule(new ElementSelector("configuration/import"),   new ImportAction());
+        rs.addRule(new ElementSelector("configuration/import"), new ImportAction());
         rs.addRule(new ElementSelector("configuration/property"), new PropertyAction());
 
         rs.addRule(new ElementSelector("configuration/substitutionProperty"), new PropertyAction());
@@ -99,9 +98,9 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
         rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction());
         rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
-        
+
         rs.addRule(new ElementSelector("*/param"), new ParamAction());
-        
+
     }
 
     @Override
@@ -114,20 +113,20 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
 //        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
 //        nestedBasicIA.setContext(context);
 //        interpreter.addImplicitAction(nestedBasicIA);
-        
-        ImplicitModelAction implicitRuleModelAction = new  ImplicitModelAction();
+
+        ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
         implicitRuleModelAction.setContext(context);
         interpreter.addImplicitAction(implicitRuleModelAction);
     }
 
     @Override
-	public void buildTwoInterpreters() {
+    public void buildTwoInterpreters() {
         super.buildTwoInterpreters();
         Map<String, Object> omap = modelInterpretationContext.getObjectMap();
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
-        
-        //omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
+
+        // omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 
     public SaxEventInterpretationContext getInterpretationContext() {
@@ -138,11 +137,11 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
     protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
         DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
         defaultProcessor.addHandler(ImportModel.class, ImportModelHandler::makeInstance);
-        
+
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);
         defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
         defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
-        
+
         defaultProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);
         defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
         defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler::makeInstance);

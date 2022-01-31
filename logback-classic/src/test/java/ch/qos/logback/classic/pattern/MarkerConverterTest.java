@@ -86,7 +86,8 @@ public class MarkerConverterTest {
     }
 
     private ILoggingEvent createLoggingEvent(Marker marker) {
-        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", null, null);
+        LoggingEvent le = new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME),
+                Level.DEBUG, "test message", null, null);
         le.addMarker(marker);
         return le;
     }

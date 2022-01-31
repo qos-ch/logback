@@ -34,7 +34,7 @@ public class TeeServletOutputStream extends ServletOutputStream {
     byte[] getOutputStreamAsByteArray() {
         return baosCopy.toByteArray();
     }
- 
+
     @Override
     public void write(int val) throws IOException {
         if (underlyingStream != null) {

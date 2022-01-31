@@ -26,11 +26,13 @@ import static ch.qos.logback.core.CoreConstants.LINE_SEPARATOR;
 
 /**
  * 
- * HTMLLayout outputs events in an HTML table. <p> The content of the table
- * columns are specified using a conversion pattern. See
- * {@link ch.qos.logback.classic.PatternLayout} for documentation on the
- * available patterns. <p> For more information about this layout, please refer
- * to the online manual at
+ * HTMLLayout outputs events in an HTML table.
+ * <p>
+ * The content of the table columns are specified using a conversion pattern.
+ * See {@link ch.qos.logback.classic.PatternLayout} for documentation on the
+ * available patterns.
+ * <p>
+ * For more information about this layout, please refer to the online manual at
  * http://logback.qos.ch/manual/layouts.html#ClassicHTMLLayout
  * 
  * @author Ceki G&uuml;lc&uuml;

@@ -16,12 +16,14 @@ package ch.qos.logback.core.net.ssl;
 /**
  * An object that has configurable SSL parameters.
  * <p>
- * This interface allows us o decouple the {@link ch.qos.logback.core.net.ssl.SSLParametersConfiguration SSLParametersConfiguration}
- * from {@link javax.net.ssl.SSLSocket SSLSocket} and {@link javax.net.ssl.SSLServerSocket SSLServerSocket} to facilitate unit
+ * This interface allows us o decouple the
+ * {@link ch.qos.logback.core.net.ssl.SSLParametersConfiguration
+ * SSLParametersConfiguration} from {@link javax.net.ssl.SSLSocket SSLSocket}
+ * and {@link javax.net.ssl.SSLServerSocket SSLServerSocket} to facilitate unit
  * testing.
  *
  * @author Carl Harris
- * @author Bruno Harbulot 
+ * @author Bruno Harbulot
  */
 public interface SSLConfigurable {
 
@@ -29,15 +31,16 @@ public interface SSLConfigurable {
      * Gets the set of protocols that the SSL component enables by default.
      * 
      * @return protocols (generally a subset of the set returned by
-     *    {@link #getSupportedProtocols()}); the return value may be 
-     *    an empty array but must never be {@code null}.
+     *         {@link #getSupportedProtocols()}); the return value may be an empty
+     *         array but must never be {@code null}.
      */
     String[] getDefaultProtocols();
 
     /**
      * Gets the set of protocols that the SSL component supports.
-     * @return protocols supported protocols; the return value may be 
-     *    an empty array but must never be {@code null}.
+     * 
+     * @return protocols supported protocols; the return value may be an empty array
+     *         but must never be {@code null}.
      */
     String[] getSupportedProtocols();
 
@@ -52,38 +55,42 @@ public interface SSLConfigurable {
      * Gets the set of cipher suites that the SSL component enables by default.
      * 
      * @return cipher suites (generally a subset of the set returned by
-     *    {@link #getSupportedCipherSuites()}); the return value may be 
-     *    an empty array but must never be {@code null}
+     *         {@link #getSupportedCipherSuites()}); the return value may be an
+     *         empty array but must never be {@code null}
      */
     String[] getDefaultCipherSuites();
 
     /**
      * Gets the set of cipher suites that the SSL component supports.
-     * @return supported cipher suites; the return value may be 
-     *    an empty array but must never be {@code null}
+     * 
+     * @return supported cipher suites; the return value may be an empty array but
+     *         must never be {@code null}
      */
     String[] getSupportedCipherSuites();
 
     /**
      * Sets the enabled cipher suites on the SSL component.
+     * 
      * @param cipherSuites the cipher suites to enable
      */
     void setEnabledCipherSuites(String[] cipherSuites);
 
     /**
-     * Sets a flag indicating whether the SSL component should require 
-     * client authentication.
+     * Sets a flag indicating whether the SSL component should require client
+     * authentication.
+     * 
      * @param state the flag state to set
      */
     void setNeedClientAuth(boolean state);
 
     /**
-     * Sets a flag indicating whether the SSL component should request 
-     * client authentication.
+     * Sets a flag indicating whether the SSL component should request client
+     * authentication.
+     * 
      * @param state the flag state to set
      */
     void setWantClientAuth(boolean state);
-    
+
     void setHostnameVerification(boolean verifyHostname);
 
 }

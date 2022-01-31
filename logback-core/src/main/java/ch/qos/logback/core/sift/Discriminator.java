@@ -19,8 +19,9 @@ import ch.qos.logback.core.spi.LifeCycle;
  * Implement this interface in order to compute a discriminating value for a
  * given event of type &lt;E&gt;.
  * 
- * <p>The returned value can depend on any data available at the time of the
- * call, including data contained within the currently running thread.
+ * <p>
+ * The returned value can depend on any data available at the time of the call,
+ * including data contained within the currently running thread.
  * 
  * @author Ceki G&uuml;lc&uuml;
  * 
@@ -38,7 +39,7 @@ public interface Discriminator<E> extends LifeCycle {
 
     /**
      * The key or variable name under which the discriminating value should be
-     * exported into the host environment. 
+     * exported into the host environment.
      *
      * @return
      */

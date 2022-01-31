@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.core.model;
 
-public class SequenceNumberGeneratorModel extends ComponentModel  {
+public class SequenceNumberGeneratorModel extends ComponentModel {
 
-	private static final long serialVersionUID = 4109015583434648277L;
+    private static final long serialVersionUID = 4109015583434648277L;
 
 }

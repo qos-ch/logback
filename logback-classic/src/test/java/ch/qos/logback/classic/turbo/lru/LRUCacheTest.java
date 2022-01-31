@@ -71,7 +71,8 @@ public class LRUCacheTest {
         simulator.simulate(scenario, lruCache, tlruCache);
         // assertEquals(tlruCache.keyList(), lruCache.keyList());
         long end = System.nanoTime();
-        System.out.println("cacheSize=" + cacheSize + ", worldSize=" + worldSize + ", elapsed time=" + ((end - start) / (1000 * 1000)) + " in millis");
+        System.out.println("cacheSize=" + cacheSize + ", worldSize=" + worldSize + ", elapsed time="
+                + ((end - start) / (1000 * 1000)) + " in millis");
     }
 
     @Test

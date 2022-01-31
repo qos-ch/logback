@@ -74,7 +74,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         ledo.markerList = le.getMarkerList();
         ledo.keyValuePairList = le.getKeyValuePairs();
         ledo.mdcPropertyMap = le.getMDCPropertyMap();
-        
+
         ledo.timeStamp = le.getTimeStamp();
         ledo.sequenceNumber = le.getSequenceNumber();
         ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
@@ -147,7 +147,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     public long getSequenceNumber() {
         return sequenceNumber;
     }
-    
+
     public long getContextBirthTime() {
         return loggerContextVO.getBirthTime();
     }
@@ -165,10 +165,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     }
 
     @Override
-	public List<KeyValuePair> getKeyValuePairs() {
-		return this.keyValuePairList;
-	}
-    
+    public List<KeyValuePair> getKeyValuePairs() {
+        return this.keyValuePairList;
+    }
+
     public void prepareForDeferredProcessing() {
     }
 
@@ -261,5 +261,4 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return true;
     }
 
-	
 }

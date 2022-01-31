@@ -31,19 +31,19 @@ import ch.qos.logback.core.model.Model;
  */
 public class ReceiverAction extends BaseModelAction {
 
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
-			Attributes attributes) {
-		ReceiverModel rm = new ReceiverModel();
-		rm.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
-		return rm;
-	}
-	
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+        ReceiverModel rm = new ReceiverModel();
+        rm.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        return rm;
+    }
+
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext seic, String name, Attributes attributes) {
-    	PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
-    	validator.validateClassAttribute();
+        PreconditionValidator validator = new PreconditionValidator(this, seic, name, attributes);
+        validator.validateClassAttribute();
         return validator.isValid();
     }
-    
+
 }

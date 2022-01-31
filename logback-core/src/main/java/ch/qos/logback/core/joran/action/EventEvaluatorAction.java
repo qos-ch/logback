@@ -21,23 +21,23 @@ import ch.qos.logback.core.model.Model;
 
 public class EventEvaluatorAction extends BaseModelAction {
 
-	@Override
-	protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
-		PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
-		pv.validateNameAttribute();
-		return pv.isValid();
-	}
-	
-	@Override
-	protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name, Attributes attributes) {
-		
-		EventEvaluatorModel eem = new EventEvaluatorModel();
-		
-		eem.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
-		eem.setName(attributes.getValue(NAME_ATTRIBUTE));
-		
-		return eem;
-	}
+    @Override
+    protected boolean validPreconditions(SaxEventInterpretationContext intercon, String name, Attributes attributes) {
+        PreconditionValidator pv = new PreconditionValidator(this, intercon, name, attributes);
+        pv.validateNameAttribute();
+        return pv.isValid();
+    }
 
+    @Override
+    protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
+            Attributes attributes) {
+
+        EventEvaluatorModel eem = new EventEvaluatorModel();
+
+        eem.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        eem.setName(attributes.getValue(NAME_ATTRIBUTE));
+
+        return eem;
+    }
 
 }

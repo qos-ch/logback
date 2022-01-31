@@ -28,7 +28,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
 
     Context context = new ContextBase();
     StatusChecker checker = new StatusChecker(context);
-    
+
     public PatternLayoutBase<Object> getPatternLayoutBase() {
         return new SamplePatternLayout<Object>();
     }
@@ -85,17 +85,16 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         assertEquals("hello % world", s);
     }
 
-
     @Test
     public void noClosingCurlyBrace() {
         PatternLayoutBase<Object> plb = getPatternLayoutBase();
         plb.setContext(context);
         plb.setPattern("%x %hello{asd");
         plb.start();
-        
+
         checker.assertContainsMatch(Status.ERROR, "Failed to parse pattern");
     }
-    
+
     @Override
     public Context getContext() {
         return context;

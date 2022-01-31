@@ -58,7 +58,8 @@ public class ThrowableProxyConverterTest {
     }
 
     private ILoggingEvent createLoggingEvent(Throwable t) {
-        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG, "test message", t, null);
+        return new LoggingEvent(this.getClass().getName(), lc.getLogger(Logger.ROOT_LOGGER_NAME), Level.DEBUG,
+                "test message", t, null);
     }
 
     @Test
@@ -120,27 +121,27 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void cyclicCause() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
+        // Earlier JDKs may formats things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.initCause(e2);
         verify(e);
     }
- 
+
     @Test
     public void cyclicSuppressed() {
-    	// Earlier JDKs may formats things differently
-    	if(!EnvUtil.isJDK16OrHigher())
-    		return;
-        
-    	Exception e = new Exception("foo");
+        // Earlier JDKs may formats things differently
+        if (!EnvUtil.isJDK16OrHigher())
+            return;
+
+        Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);
         verify(e);
     }
-    
+
     @Test
     public void withArgumentOfOne() throws Exception {
         final Throwable t = TestHelper.makeNestedException(0);
@@ -192,7 +193,7 @@ public class ThrowableProxyConverterTest {
 
         // then
         assertThat(result).doesNotContain(nameOfContainingMethod);
-        
+
     }
 
     @Test
@@ -229,8 +230,6 @@ public class ThrowableProxyConverterTest {
         assertThat(lines).hasSize(3 + 1);
     }
 
- 
-    
     void someMethod() throws Exception {
         throw new Exception("someMethod");
     }
@@ -240,7 +239,7 @@ public class ThrowableProxyConverterTest {
 
         ILoggingEvent le = createLoggingEvent(t);
         String result = tpc.convert(le);
-        //System.out.println(result);
+        // System.out.println(result);
         result = result.replace("common frames omitted", "more");
         assertEquals(sw.toString(), result);
     }

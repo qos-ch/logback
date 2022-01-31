@@ -70,7 +70,6 @@ public class ControlLogger extends LegacyAbstractLogger {
         return name.hashCode();
     }
 
-    
     public final void trace(String o) {
         if (getEffectiveLevel().levelInt <= Level.TRACE_INT) {
             throw new UnsupportedOperationException("not yet implemented");
@@ -83,43 +82,41 @@ public class ControlLogger extends LegacyAbstractLogger {
         }
     }
 
-    
+    @Override
+    protected String getFullyQualifiedCallerName() {
+        return ControlLogger.class.getName();
+    }
 
-	@Override
-	protected String getFullyQualifiedCallerName() {
-		return ControlLogger.class.getName();
-	}
+    @Override
+    protected void handleNormalizedLoggingCall(org.slf4j.event.Level level, Marker marker, String msg,
+            Object[] arguments, Throwable throwable) {
+        // TODO Auto-generated method stub
 
-	@Override
-	protected void handleNormalizedLoggingCall(org.slf4j.event.Level level, Marker marker, String msg,
-			Object[] arguments, Throwable throwable) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
 
-	@Override
-	public boolean isTraceEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isTraceEnabled() {
+        return false;
+    }
 
-	@Override
-	public boolean isDebugEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isDebugEnabled() {
+        return false;
+    }
 
-	@Override
-	public boolean isInfoEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isInfoEnabled() {
+        return false;
+    }
 
-	@Override
-	public boolean isWarnEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isWarnEnabled() {
+        return false;
+    }
 
-	@Override
-	public boolean isErrorEnabled() {
-		return false;
-	}
+    @Override
+    public boolean isErrorEnabled() {
+        return false;
+    }
 
 }
