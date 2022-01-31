@@ -37,6 +37,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
+import ch.qos.logback.core.util.EnvUtil;
 
 public class ConverterTest {
 
@@ -74,7 +75,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("75", buf.toString());
+            assertEquals("76", buf.toString());
         }
     }
 
@@ -305,7 +306,14 @@ public class ConverterTest {
         {
             DynamicConverter<ILoggingEvent> converter = new CallerDataConverter();
             this.optionList.clear();
-            this.optionList.add("4..5");
+            
+            boolean jdk18 = EnvUtil.isJDK18OrHigher();
+            // jdk 18EA creates a different stack trace
+            if(jdk18) {
+               this.optionList.add("2..3");
+            } else {
+                this.optionList.add("4..5");
+            }
             converter.setOptionList(this.optionList);
             converter.start();
 
@@ -313,7 +321,11 @@ public class ConverterTest {
             converter.write(buf, le);
             assertTrue("buf is too short", buf.length() >= 10);
 
-            String expectedRegex = "Caller\\+4\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
+            String expectedRegex = "Caller\\+4";
+            if(jdk18) {
+                expectedRegex = "Caller\\+2";
+            }
+            expectedRegex+="\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
             String actual = buf.toString();
             assertTrue("actual: " + actual, Pattern.compile(expectedRegex).matcher(actual).find());
 

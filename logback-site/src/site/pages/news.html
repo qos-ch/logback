@@ -36,13 +36,20 @@
     
     <h3>, Release of version 1.3.0-alpha13</h3>
 
+    <p>&bull;&nbsp; Once the <code>Model</code> is created from XML
+    confifuration file, <code>Model</code> processing is now
+    independent of any XML related code.  This
+    fixes <a href="https://jira.qos.ch/browse/LOGBACK-1613">LOGBACK-1613</a>.
+    </p>
+
+
     <p>&bull;&nbsp; Fixed incorrect <code>String</code> cast in
     <code>JNDIUtil</code>. This corrects <a
     href="https://jira.qos.ch/browse/LOGBACK-1604">LOGBACK-1604</a>
     reported by Chris Cheshire.</p>
 
     <p>&bull;&nbsp; In <code>SMTPAppenderBase</code> empty username
-    parameter is now treatede the same <code>null</code>. This fixes
+    parameter is now treated same as <code>null</code>. This fixes
     <a href="https://jira.qos.ch/browse/LOGBACK-1594">LOGBACK-1594</a>
     reported by Mark Woon who also provided the relevant PR.</p>
 

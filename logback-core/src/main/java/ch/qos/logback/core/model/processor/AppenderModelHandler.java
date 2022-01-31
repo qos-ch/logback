@@ -56,14 +56,6 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
             return;
         }
 
-//		//this.appenderAttachable = appenderRefBag.get(appenderName);
-//		
-//		if(this.appenderAttachable == null) {
-//			addWarn("Appender named ["+appenderName+"] not referenced. Skipping further processing.");
-//			skipped = true;
-//			return;
-//		}
-
         addInfo("Processing appender named [" + appenderName + "]");
 
         String originalClassName = appenderModel.getClassName();
@@ -104,8 +96,6 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
             addWarn("The object at the of the stack is not the appender named [" + appender.getName()
                     + "] pushed earlier.");
         } else {
-//        	addInfo("Attaching appender ["+appender.getName()+"] to "+appenderAttachable);
-//        	appenderAttachable.addAppender(appender);
             mic.popObject();
         }
 

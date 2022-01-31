@@ -177,7 +177,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         return Collections.unmodifiableList(dependencyDefinitionList);
     }
 
-    List<String> getDependencyNamesForModel(Model model) {
+    public List<String> getDependencyNamesForModel(Model model) {
         for (DependencyDefinition dd : dependencyDefinitionList) {
             if (dd.getDependee() == model) {
                 return Collections.unmodifiableList(dd.dependenciesList);
@@ -198,30 +198,8 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         }
 
         return false;
-
-//        Collection<List<String>> nameLists = dependenciesMap.values();
-//        if (nameLists == null || nameLists.isEmpty())
-//            return false;
-//
-//        for (List<String> aList : nameLists) {
-//            if (aList.contains(name))
-//                return true;
-//        }
-//        return false;
     }
 
-//    public void addDependency(Model model, String ref) {
-//        List<String> refList = dependenciesMap.get(model);
-//        if (refList == null) {
-//            refList = new ArrayList<>();
-//        }
-//        refList.add(ref);
-//        dependenciesMap.put(model, refList);
-//    }
-//
-//    public List<String> getDependencies(Model model) {
-//        return dependenciesMap.get(model);
-//    }
 
     public void markStartOfNamedDependency(String name) {
         startedDependencies.add(name);

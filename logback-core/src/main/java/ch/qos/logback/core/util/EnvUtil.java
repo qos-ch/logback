@@ -61,6 +61,10 @@ public class EnvUtil {
         return isJDK_N_OrHigher(16);
     }
 
+    static public boolean isJDK18OrHigher() {
+        return isJDK_N_OrHigher(18);
+    }
+
     static public boolean isJaninoAvailable() {
         ClassLoader classLoader = EnvUtil.class.getClassLoader();
         try {
