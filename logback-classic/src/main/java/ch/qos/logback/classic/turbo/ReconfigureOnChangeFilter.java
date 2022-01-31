@@ -31,6 +31,7 @@ import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.StatusUtil;
 
@@ -198,31 +199,32 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
             JoranConfigurator jc = new JoranConfigurator();
             jc.setContext(context);
             StatusUtil statusUtil = new StatusUtil(context);
-            List<SaxEvent> saxEventList = jc.recallSafeConfiguration();
+            Model failSafeTop = jc.recallSafeConfiguration();
             URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
             lc.reset();
             long threshold = System.currentTimeMillis();
             try {
                 jc.doConfigure(mainConfigurationURL);
                 if (statusUtil.hasXMLParsingErrors(threshold)) {
-                    fallbackConfiguration(lc, saxEventList, mainURL);
+                    fallbackConfiguration(lc, failSafeTop, mainURL);
                 }
             } catch (JoranException e) {
-                fallbackConfiguration(lc, saxEventList, mainURL);
+                fallbackConfiguration(lc, failSafeTop, mainURL);
             }
         }
 
-        private void fallbackConfiguration(LoggerContext lc, List<SaxEvent> saxEventList, URL mainURL) {
+        private void fallbackConfiguration(LoggerContext lc, Model failSafeTop, URL mainURL) {
             JoranConfigurator joranConfigurator = new JoranConfigurator();
             joranConfigurator.setContext(context);
-            if (saxEventList != null) {
+            if (failSafeTop != null) {
                 addWarn("Falling back to previously registered safe configuration.");
                 try {
                     lc.reset();
                     JoranConfigurator.informContextOfURLUsedForConfiguration(context, mainURL);
-                    Model top = joranConfigurator.buildAndProcessModel(saxEventList);
+                    ModelUtil.resetForReuse(failSafeTop);
+                    joranConfigurator.processModel(failSafeTop);
                     addInfo("Re-registering previous fallback configuration once more as a fallback configuration point");
-                    joranConfigurator.registerSafeConfiguration(saxEventList);
+                    joranConfigurator.registerSafeConfiguration(failSafeTop);
                 } catch (Exception e) {
                     addError("Unexpected exception thrown by a configuration considered safe.", e);
                 }

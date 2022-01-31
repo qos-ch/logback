@@ -7,10 +7,11 @@ import java.util.List;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.spi.ConfigurationWatchList;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
@@ -48,7 +49,6 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         if (!configurationWatchList.changeDetected()) {
             return;
         }
-        System.out.println("fireChangeDetected");
         fireChangeDetected();
         URL mainConfigurationURL = configurationWatchList.getMainURL();
 
@@ -92,57 +92,59 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(context);
         StatusUtil statusUtil = new StatusUtil(context);
-        List<SaxEvent> eventList = jc.recallSafeConfiguration();
-
+        Model failsafeTop = jc.recallSafeConfiguration();
         URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
         lc.reset();
         long threshold = System.currentTimeMillis();
         try {
             jc.doConfigure(mainConfigurationURL);
             if (statusUtil.hasXMLParsingErrors(threshold)) {
-                fallbackConfiguration(lc, eventList, mainURL);
+                fallbackConfiguration(lc, failsafeTop, mainURL);
             }
         } catch (JoranException e) {
-            fallbackConfiguration(lc, eventList, mainURL);
+            fallbackConfiguration(lc, failsafeTop, mainURL);
         }
     }
 
-    private List<SaxEvent> removeIncludeEvents(List<SaxEvent> unsanitizedEventList) {
-        List<SaxEvent> sanitizedEvents = new ArrayList<SaxEvent>();
-        if (unsanitizedEventList == null)
-            return sanitizedEvents;
+//    private List<SaxEvent> removeIncludeEvents(List<SaxEvent> unsanitizedEventList) {
+//        List<SaxEvent> sanitizedEvents = new ArrayList<SaxEvent>();
+//        if (unsanitizedEventList == null)
+//            return sanitizedEvents;
+//
+//        for (SaxEvent e : unsanitizedEventList) {
+//            if (!"include".equalsIgnoreCase(e.getLocalName()))
+//                sanitizedEvents.add(e);
+//
+//        }
+//        return sanitizedEvents;
+//    }
 
-        for (SaxEvent e : unsanitizedEventList) {
-            if (!"include".equalsIgnoreCase(e.getLocalName()))
-                sanitizedEvents.add(e);
-
-        }
-        return sanitizedEvents;
-    }
-
-    private void fallbackConfiguration(LoggerContext lc, List<SaxEvent> eventList, URL mainURL) {
+    private void fallbackConfiguration(LoggerContext lc, Model failsafeTop, URL mainURL) {
         // failsafe events are used only in case of errors. Therefore, we must *not*
         // invoke file inclusion since the included files may be the cause of the error.
 
-        List<SaxEvent> failsafeEvents = removeIncludeEvents(eventList);
+        // List<SaxEvent> failsafeEvents = removeIncludeEvents(eventList);
         JoranConfigurator joranConfigurator = new JoranConfigurator();
         joranConfigurator.setContext(context);
         ConfigurationWatchList oldCWL = ConfigurationWatchListUtil.getConfigurationWatchList(context);
         ConfigurationWatchList newCWL = oldCWL.buildClone();
 
-        if (failsafeEvents == null || failsafeEvents.isEmpty()) {
+        if (failsafeTop == null) {
             addWarn("No previous configuration to fall back on.");
+            return;
         } else {
             addWarn(FALLING_BACK_TO_SAFE_CONFIGURATION);
+            addInfo("Safe model "+failsafeTop);
             try {
                 lc.reset();
                 ConfigurationWatchListUtil.registerConfigurationWatchList(context, newCWL);
-                joranConfigurator.buildAndProcessModel(failsafeEvents);
+                ModelUtil.resetForReuse(failsafeTop);
+                joranConfigurator.processModel(failsafeTop);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
-                joranConfigurator.registerSafeConfiguration(failsafeEvents);
+                joranConfigurator.registerSafeConfiguration(failsafeTop);
 
-                addInfo("after registerSafeConfiguration: " + failsafeEvents);
-            } catch (JoranException e) {
+                addInfo("after registerSafeConfiguration");
+            } catch (Exception e) {
                 addError("Unexpected exception thrown by a configuration considered safe.", e);
             }
         }

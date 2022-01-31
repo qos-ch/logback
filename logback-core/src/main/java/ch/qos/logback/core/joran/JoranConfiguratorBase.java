@@ -119,14 +119,11 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         interpreter.addImplicitAction(implicitRuleModelAction);
     }
 
-    @Override
-    public void buildTwoInterpreters() {
-        super.buildTwoInterpreters();
+    public void buildModelInterprtationContext() {
+        super.buildModelInterprtationContext();
         Map<String, Object> omap = modelInterpretationContext.getObjectMap();
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
-
-        // omap.put(ActionConst.FILTER_CHAIN_BAG, new HashMap());
     }
 
     public SaxEventInterpretationContext getInterpretationContext() {

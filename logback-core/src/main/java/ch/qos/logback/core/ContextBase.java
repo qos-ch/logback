@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -45,7 +46,7 @@ public class ContextBase implements Context, LifeCycle {
     // when it changes so that a new instance of propertyMap can be
     // serialized. For the time being, we ignore this shortcoming.
     Map<String, String> propertyMap = new HashMap<String, String>();
-    Map<String, Object> objectMap = new HashMap<String, Object>();
+    Map<String, Object> objectMap = new ConcurrentHashMap<>();
 
     LogbackLock configurationLock = new LogbackLock();
 

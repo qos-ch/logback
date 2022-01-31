@@ -6,9 +6,9 @@ import java.util.List;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.FilterReply;
 
-public class ChainedModelFilter implements ModelFiler {
+public class ChainedModelFilter implements ModelFilter {
 
-    List<ModelFiler> modelFilters = new ArrayList<>();
+    List<ModelFilter> modelFilters = new ArrayList<>();
 
     public ChainedModelFilter() {
     }
@@ -40,7 +40,7 @@ public class ChainedModelFilter implements ModelFiler {
     @Override
     public FilterReply decide(Model model) {
 
-        for (ModelFiler modelFilter : modelFilters) {
+        for (ModelFilter modelFilter : modelFilters) {
             FilterReply reply = modelFilter.decide(model);
 
             switch (reply) {

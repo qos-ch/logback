@@ -3,7 +3,7 @@ package ch.qos.logback.core.model.processor;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.FilterReply;
 
-public class AllowModelFilter implements ModelFiler {
+public class AllowModelFilter implements ModelFilter {
 
     final Class<? extends Model> allowedModelType;
 

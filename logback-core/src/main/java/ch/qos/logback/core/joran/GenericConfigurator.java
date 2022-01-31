@@ -48,7 +48,7 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     protected ModelInterpretationContext modelInterpretationContext;
 
     public ModelInterpretationContext getModelInterpretationContext() {
-        return modelInterpretationContext;
+        return this.modelInterpretationContext;
     }
 
     public final void doConfigure(URL url) throws JoranException {
@@ -133,18 +133,22 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         return new ElementPath();
     }
 
-    protected void buildTwoInterpreters() {
+    protected void buildSaxEventInterpreter() {
         RuleStore rs = new SimpleRuleStore(context);
         addInstanceRules(rs);
         this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath());
         SaxEventInterpretationContext interpretationContext = saxEventInterpreter.getSaxEventInterpretationContext();
         interpretationContext.setContext(context);
-        modelInterpretationContext = new ModelInterpretationContext(context);
         addImplicitRules(saxEventInterpreter);
+    }
 
+
+    protected void buildModelInterprtationContext() {
+        this.modelInterpretationContext = new ModelInterpretationContext(context);
         addDefaultNestedComponentRegistryRules(modelInterpretationContext.getDefaultNestedComponentRegistry());
     }
 
+    
     // this is the most inner form of doConfigure whereto other doConfigure
     // methods ultimately delegate
     public final void doConfigure(final InputSource inputSource) throws JoranException {
@@ -159,24 +163,18 @@ public abstract class GenericConfigurator extends ContextAwareBase {
         StatusUtil statusUtil = new StatusUtil(context);
         if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
             addInfo("Registering current configuration as safe fallback point");
-            registerSafeConfiguration(recorder.saxEventList);
+            registerSafeConfiguration(top);
         }
     }
 
-    public Model buildAndProcessModel(List<SaxEvent> saxEventList) throws JoranException {
-        Model top = buildModelFromSaxEventList(saxEventList);
-        processModel(top);
-        return top;
-    }
-
-    private SaxEventRecorder populateSaxEventRecorder(final InputSource inputSource) throws JoranException {
+    public SaxEventRecorder populateSaxEventRecorder(final InputSource inputSource) throws JoranException {
         SaxEventRecorder recorder = new SaxEventRecorder(context);
         recorder.recordEvents(inputSource);
         return recorder;
     }
 
     public Model buildModelFromSaxEventList(List<SaxEvent> saxEvents) throws JoranException {
-        buildTwoInterpreters();
+        buildSaxEventInterpreter();
         playSaxEvents(saxEvents);
         Model top = saxEventInterpreter.getSaxEventInterpretationContext().peekModel();
         return top;
@@ -187,7 +185,8 @@ public abstract class GenericConfigurator extends ContextAwareBase {
     }
 
     public void processModel(Model model) {
-        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, modelInterpretationContext);
+        buildModelInterprtationContext();
+        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, this.modelInterpretationContext);
         // disallow simultaneous configurations of the same context
         synchronized (context.getConfigurationLock()) {
             defaultProcessor.process(model);
@@ -205,15 +204,14 @@ public abstract class GenericConfigurator extends ContextAwareBase {
      *
      * @since 0.9.30
      */
-    public void registerSafeConfiguration(List<SaxEvent> eventList) {
-        context.putObject(SAFE_JORAN_CONFIGURATION, eventList);
+    public void registerSafeConfiguration(Model top) {
+        context.putObject(SAFE_JORAN_CONFIGURATION, top);
     }
 
     /**
      * Recall the event list previously registered as a safe point.
      */
-    @SuppressWarnings("unchecked")
-    public List<SaxEvent> recallSafeConfiguration() {
-        return (List<SaxEvent>) context.getObject(SAFE_JORAN_CONFIGURATION);
+    public Model recallSafeConfiguration() {
+        return (Model) context.getObject(SAFE_JORAN_CONFIGURATION);
     }
 }

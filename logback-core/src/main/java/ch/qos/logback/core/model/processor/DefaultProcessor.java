@@ -29,15 +29,15 @@ import ch.qos.logback.core.spi.FilterReply;
 public class DefaultProcessor extends ContextAwareBase {
 
     interface TraverseMethod {
-        int traverse(Model model, ModelFiler modelFiler);
+        int traverse(Model model, ModelFilter modelFiler);
     }
 
     final ModelInterpretationContext mic;
     final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
     final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
 
-    ModelFiler phaseOneFilter = new AllowAllModelFilter();
-    ModelFiler phaseTwoFilter = new DenyAllModelFilter();
+    ModelFilter phaseOneFilter = new AllowAllModelFilter();
+    ModelFilter phaseTwoFilter = new DenyAllModelFilter();
 
     public DefaultProcessor(Context context, ModelInterpretationContext mic) {
         this.setContext(context);
@@ -52,7 +52,7 @@ public class DefaultProcessor extends ContextAwareBase {
         modelClassToDependencyAnalyserMap.put(modelClass, handler);
     }
 
-    private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFiler modelfFilter, String phaseName) {
+    private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFilter modelfFilter, String phaseName) {
         int LIMIT = 3;
         for (int i = 0; i < LIMIT; i++) {
             int handledModelCount = traverseMethod.traverse(model, modelfFilter);
@@ -85,19 +85,19 @@ public class DefaultProcessor extends ContextAwareBase {
         mic.pushObject(context);
     }
 
-    public ModelFiler getPhaseOneFilter() {
+    public ModelFilter getPhaseOneFilter() {
         return phaseOneFilter;
     }
 
-    public ModelFiler getPhaseTwoFilter() {
+    public ModelFilter getPhaseTwoFilter() {
         return phaseTwoFilter;
     }
 
-    public void setPhaseOneFilter(ModelFiler phaseOneFilter) {
+    public void setPhaseOneFilter(ModelFilter phaseOneFilter) {
         this.phaseOneFilter = phaseOneFilter;
     }
 
-    public void setPhaseTwoFilter(ModelFiler phaseTwoFilter) {
+    public void setPhaseTwoFilter(ModelFilter phaseTwoFilter) {
         this.phaseTwoFilter = phaseTwoFilter;
     }
 
@@ -145,7 +145,7 @@ public class DefaultProcessor extends ContextAwareBase {
         return handler;
     }
 
-    protected int mainTraverse(Model model, ModelFiler modelFiler) {
+    protected int mainTraverse(Model model, ModelFilter modelFiler) {
 
         FilterReply filterReply = modelFiler.decide(model);
         if (filterReply == FilterReply.DENY)
@@ -179,7 +179,7 @@ public class DefaultProcessor extends ContextAwareBase {
         return count;
     }
 
-    protected int secondPhaseTraverse(Model model, ModelFiler modelFilter) {
+    protected int secondPhaseTraverse(Model model, ModelFilter modelFilter) {
 
         FilterReply filterReply = modelFilter.decide(model);
         if (filterReply == FilterReply.DENY) {

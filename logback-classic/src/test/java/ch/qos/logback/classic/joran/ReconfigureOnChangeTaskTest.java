@@ -181,28 +181,36 @@ public class ReconfigureOnChangeTaskTest {
         StatusPrinter.print(loggerContext);
         CountDownLatch changeDetectedLatch = waitForReconfigurationToBeDone(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
+
+        addInfo("registered ReconfigureOnChangeTask ", oldRoct);
         assertNotNull(oldRoct);
 
         String badXML = "<configuration scan=\"true\" scanPeriod=\"5 millisecond\">\n" + "  <root></configuration>";
         writeToFile(topLevelFile, badXML);
-        System.out.println("Waiting for changeDetectedLatch.await()");
+        addInfo("Waiting for changeDetectedLatch.await()", this);
         changeDetectedLatch.await();
-        System.out.println("Woke from changeDetectedLatch.await()");
-
+        addInfo("Woke from changeDetectedLatch.await()", this);
         StatusPrinter.print(loggerContext);
+        
+        try {
+            statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
+            statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
 
-        statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
-        statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
+            loggerContext.getStatusManager().clear();
 
-        loggerContext.getStatusManager().clear();
+            addInfo("after loggerContext.getStatusManager().clear() oldRoct="+ oldRoct, this);
+            CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
+            writeToFile(topLevelFile,
+                    "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
 
-        CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
-        writeToFile(topLevelFile,
-                "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
-        secondDoneLatch.await();
-        StatusPrinter.print(loggerContext);
-        statusChecker.assertIsErrorFree();
-        statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
+            secondDoneLatch.await();
+            StatusPrinter.print(loggerContext);
+            statusChecker.assertIsErrorFree();
+            statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
+
+        } finally {
+            StatusPrinter.print(loggerContext);
+        }
     }
 
     @Test(timeout = 4000L)
@@ -233,13 +241,17 @@ public class ReconfigureOnChangeTaskTest {
 
         loggerContext.getStatusManager().clear();
 
-        CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
-        writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
-        secondDoneLatch.await();
+        try {
+            CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
+            writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
+            secondDoneLatch.await();
 
-        StatusPrinter.print(loggerContext);
-        statusChecker.assertIsErrorFree();
-        statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
+            statusChecker.assertIsErrorFree();
+            statusChecker.containsMatch(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
+        } finally {
+            StatusPrinter.print(loggerContext);
+        }
+
     }
 
     private ReconfigureOnChangeTask getRegisteredReconfigureTask() {
@@ -300,14 +312,21 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     private CountDownLatch waitForReconfigurationToBeDone(ReconfigureOnChangeTask oldTask) throws InterruptedException {
+
+        addInfo("waitForReconfigurationToBeDone oldTask=" + oldTask, this);
         ReconfigureOnChangeTask roct = oldTask;
         while (roct == oldTask) {
             roct = getRegisteredReconfigureTask();
             Thread.yield();
+            Thread.sleep(10);
         }
 
         CountDownLatch countDownLatch = new CountDownLatch(1);
-        roct.addListener(new ReconfigurationDoneListener(countDownLatch));
+        if (roct == null) {
+            addInfo("roct is null", oldTask);
+        } else {
+            roct.addListener(new ReconfigurationDoneListener(countDownLatch));
+        }
         return countDownLatch;
     }
 

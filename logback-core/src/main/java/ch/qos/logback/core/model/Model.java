@@ -32,10 +32,29 @@ public class Model implements Serializable {
     boolean handled = false;
     boolean skipped = false;
 
+    String tag;
+    String bodyText;
+    int lineNumber;
+
+    List<Model> subModels = new ArrayList<>();
+
     public void markAsSkipped() {
         skipped = true;
     }
 
+    /**
+     * The model can re-used at reconfiguration time.
+     * 
+     * @since 1.3.0-alpha14
+     */
+    void resetForReuse() {
+       this.handled = false;
+       this.skipped = false;
+       for(Model sub: subModels) {
+           sub.resetForReuse();
+       }
+    }
+    
     public boolean isSkipped() {
         return skipped;
     }
@@ -52,11 +71,6 @@ public class Model implements Serializable {
         handled = true;
     }
 
-    String tag;
-    String bodyText;
-    int lineNumber;
-
-    List<Model> subModels = new ArrayList<>();
 
     public String getTag() {
         return tag;
@@ -99,7 +113,7 @@ public class Model implements Serializable {
 
     @Override
     public String toString() {
-        return this.getClass().getSimpleName() + " [tag=" + tag + ", bodyText=" + bodyText + "]";
+        return this.getClass().getSimpleName() + " [tag=" + tag + ", bodyText=" + bodyText + ", id="+hashCode()+"]";
     }
 
 }

@@ -41,7 +41,7 @@ import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.IncludeModelHandler;
-import ch.qos.logback.core.model.processor.ModelFiler;
+import ch.qos.logback.core.model.processor.ModelFilter;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
@@ -108,9 +108,9 @@ public class IncludeActionTest {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(IncludeModel.class, IncludeModelHandler::makeInstance);
-                ModelFiler p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
+                ModelFilter p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
                 defaultProcessor.setPhaseOneFilter(p1Filter);
-                ModelFiler p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class)
+                ModelFilter p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class)
                         .denyAll();
                 defaultProcessor.setPhaseTwoFilter(p2Filter);
                 return defaultProcessor;

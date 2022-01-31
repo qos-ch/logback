@@ -9,6 +9,13 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class ModelUtil {
 
+    
+    static public void resetForReuse(Model model) {
+        if(model == null)
+           return;
+        model.resetForReuse();
+    }
+    
     /**
      * Add all the properties found in the argument named 'props' to an
      * InterpretationContext.

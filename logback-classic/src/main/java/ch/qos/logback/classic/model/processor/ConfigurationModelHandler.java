@@ -92,6 +92,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
             ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
             rocTask.setContext(context);
 
+            addInfo("Registering a new ReconfigureOnChangeTask "+ rocTask);
             context.putObject(CoreConstants.RECONFIGURE_ON_CHANGE_TASK, rocTask);
 
             String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
