@@ -1,3 +1,16 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.model.processor;
 
 import java.lang.reflect.Constructor;
@@ -208,15 +221,15 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     private boolean dependencyIsADirectSubmodel(Model model) {
-        List<String> dependecyList = this.mic.getDependencies(model);
-        if (dependecyList == null || dependecyList.isEmpty()) {
+        List<String> dependecyNames = this.mic.getDependencyNamesForModel(model);
+        if (dependecyNames == null || dependecyNames.isEmpty()) {
             return false;
         }
         for (Model submodel : model.getSubModels()) {
             if (submodel instanceof NamedComponentModel) {
                 NamedComponentModel namedComponentModel = (NamedComponentModel) submodel;
                 String subModelName = namedComponentModel.getName();
-                if (dependecyList.contains(subModelName)) {
+                if (dependecyNames.contains(subModelName)) {
                     return true;
                 }
             }
@@ -226,11 +239,12 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     private boolean allDependenciesStarted(Model model) {
-        List<String> dependecyList = this.mic.getDependencies(model);
-        if (dependecyList == null || dependecyList.isEmpty()) {
+        List<String> dependencyNames = mic.getDependencyNamesForModel(model);
+       
+        if (dependencyNames == null || dependencyNames.isEmpty()) {
             return true;
         }
-        for (String name : dependecyList) {
+        for (String name : dependencyNames) {
             boolean isStarted = mic.isNamedDependencyStarted(name);
             if (isStarted == false) {
                 return false;

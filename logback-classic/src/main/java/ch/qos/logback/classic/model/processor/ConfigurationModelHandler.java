@@ -10,7 +10,6 @@ import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;

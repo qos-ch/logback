@@ -8,7 +8,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.LifeCycle;

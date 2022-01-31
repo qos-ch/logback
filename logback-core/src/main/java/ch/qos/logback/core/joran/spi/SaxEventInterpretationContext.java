@@ -13,20 +13,11 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Stack;
-
-import org.xml.sax.Locator;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
-import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;

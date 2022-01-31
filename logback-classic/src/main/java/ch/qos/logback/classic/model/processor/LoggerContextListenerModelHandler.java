@@ -4,7 +4,6 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerContextListenerModel;
 import ch.qos.logback.classic.spi.LoggerContextListener;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;

@@ -15,7 +15,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.SaxEventRecorder;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;

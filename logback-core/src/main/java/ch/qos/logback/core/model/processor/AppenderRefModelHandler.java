@@ -5,7 +5,6 @@ import java.util.Map;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.spi.AppenderAttachable;

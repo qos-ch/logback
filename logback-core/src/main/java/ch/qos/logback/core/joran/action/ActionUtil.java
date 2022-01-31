@@ -13,11 +13,7 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import java.util.Properties;
-
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
-import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class ActionUtil {

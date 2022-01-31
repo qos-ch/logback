@@ -1,7 +1,6 @@
 package ch.qos.logback.core.joran;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;

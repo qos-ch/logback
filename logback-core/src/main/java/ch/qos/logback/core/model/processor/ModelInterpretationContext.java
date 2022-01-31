@@ -1,7 +1,20 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.model.processor;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +42,11 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     Map<String, String> propertiesMap;
     Map<String, String> importMap;
 
-    final Map<Model, List<String>> dependenciesMap = new HashMap<>();
-    final List<String> startedDependencies = new ArrayList<>();
 
     final private BeanDescriptionCache beanDescriptionCache;
     final DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
+    List<DependencyDefinition> dependencyDefinitionList = new ArrayList<>();
+    final List<String> startedDependencies = new ArrayList<>();
 
     public ModelInterpretationContext(Context context) {
         this.context = context;
@@ -155,31 +168,60 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     }
 
     // ================================== dependencies
+
+    public void addDependencyDefinition(DependencyDefinition dd) {
+        dependencyDefinitionList.add(dd);
+    }
+
+    public List<DependencyDefinition> getDependencyDefinitions() {
+        return Collections.unmodifiableList(dependencyDefinitionList);
+    }
+
+    List<String> getDependencyNamesForModel(Model model) {
+        for (DependencyDefinition dd : dependencyDefinitionList) {
+            if (dd.getDependee() == model) {
+                return Collections.unmodifiableList(dd.dependenciesList);
+            }
+        }
+        return Collections.emptyList();
+    }
+
     public boolean hasDependencies(String name) {
 
-        Collection<List<String>> nameLists = dependenciesMap.values();
-        if (nameLists == null || nameLists.isEmpty())
-            return false;
+        if (name == null || name.trim().length() == 0) {
+            new IllegalArgumentException("Empty dependency name not allowed here");
+        }
 
-        for (List<String> aList : nameLists) {
-            if (aList.contains(name))
+        for (DependencyDefinition dd : dependencyDefinitionList) {
+            if (dd.dependenciesList.contains(name))
                 return true;
         }
+
         return false;
+
+//        Collection<List<String>> nameLists = dependenciesMap.values();
+//        if (nameLists == null || nameLists.isEmpty())
+//            return false;
+//
+//        for (List<String> aList : nameLists) {
+//            if (aList.contains(name))
+//                return true;
+//        }
+//        return false;
     }
 
-    public void addDependency(Model model, String ref) {
-        List<String> refList = dependenciesMap.get(model);
-        if (refList == null) {
-            refList = new ArrayList<>();
-        }
-        refList.add(ref);
-        dependenciesMap.put(model, refList);
-    }
-
-    public List<String> getDependencies(Model model) {
-        return dependenciesMap.get(model);
-    }
+//    public void addDependency(Model model, String ref) {
+//        List<String> refList = dependenciesMap.get(model);
+//        if (refList == null) {
+//            refList = new ArrayList<>();
+//        }
+//        refList.add(ref);
+//        dependenciesMap.put(model, refList);
+//    }
+//
+//    public List<String> getDependencies(Model model) {
+//        return dependenciesMap.get(model);
+//    }
 
     public void markStartOfNamedDependency(String name) {
         startedDependencies.add(name);

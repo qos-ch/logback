@@ -1,7 +1,6 @@
 package ch.qos.logback.core.model;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 

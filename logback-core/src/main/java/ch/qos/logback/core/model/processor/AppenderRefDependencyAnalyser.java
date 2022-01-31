@@ -35,9 +35,14 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
         String ref = mic.subst(appenderRefModel.getRef());
 
-        if (!mic.isModelStackEmpty()) {
-            Model dependentModel = mic.peekModel();
-            mic.addDependency(dependentModel, ref);
+        
+        if (mic.isModelStackEmpty()) {
+            DependencyDefinition dd = new DependencyDefinition(appenderRefModel, ref);
+            mic.addDependencyDefinition(dd);
+        } else {
+            Model parentModel = mic.peekModel();
+            DependencyDefinition dd = new DependencyDefinition(parentModel, ref);
+            mic.addDependencyDefinition(dd);
         }
     }
 
