@@ -4,9 +4,6 @@ import ch.qos.logback.core.joran.spi.ElementPath;
 
 public class IncludeModel extends Model {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = -7613821942841993495L;
     String optional;
     String file;
@@ -44,14 +41,6 @@ public class IncludeModel extends Model {
 
     public void setResource(String resource) {
         this.resource = resource;
-    }
-
-    public ElementPath getElementPath() {
-        return elementPath;
-    }
-
-    public void setElementPath(ElementPath elementPath) {
-        this.elementPath = elementPath;
     }
 
 }

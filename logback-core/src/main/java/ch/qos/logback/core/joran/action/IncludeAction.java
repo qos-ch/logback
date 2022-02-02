@@ -29,6 +29,8 @@ import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
+import ch.qos.logback.core.model.IncludeModel;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -49,18 +51,32 @@ public class IncludeAction extends Action {
     private String attributeInUse;
     private boolean optional;
 
+    Model parentModel;
+    IncludeModel includeModel;
+    boolean inError = false;
+    
     @Override
     public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) throws ActionException {
 
+        parentModel = null;
+        includeModel = null;
+        
         SaxEventRecorder recorder = new SaxEventRecorder(context);
-
+        
+        String optionalStr = attributes.getValue(OPTIONAL_ATTR);
+        
+        createModelForNonXMLUse(ec, name, attributes, optionalStr);
+        
+        
         this.attributeInUse = null;
-        this.optional = OptionHelper.toBoolean(attributes.getValue(OPTIONAL_ATTR), false);
-
+        this.optional = OptionHelper.toBoolean(optionalStr, false);
+        
         if (!checkAttributes(attributes)) {
+            inError = true;
             return;
         }
 
+        
         InputStream in = getInputStream(ec, attributes);
 
         try {
@@ -79,6 +95,31 @@ public class IncludeAction extends Action {
             close(in);
         }
 
+    }
+
+    private void createModelForNonXMLUse(SaxEventInterpretationContext seic, String name, Attributes attributes,
+            String optionalStr) {
+        this.includeModel = new IncludeModel();
+        this.includeModel.setOptional(optionalStr);
+        fillInIncludeModelAttributes(includeModel, name, attributes);
+        if (!seic.isModelStackEmpty()) {
+            parentModel = seic.peekModel();
+        }
+        final int lineNumber = getLineNumber(seic);
+        this.includeModel.setLineNumber(lineNumber);
+        seic.pushModel(includeModel);
+    }
+
+    private void fillInIncludeModelAttributes(IncludeModel includeModel, String name, Attributes attributes) {
+        this.includeModel.setTag(name);
+        String fileAttribute = attributes.getValue(FILE_ATTR);
+        String urlAttribute = attributes.getValue(URL_ATTR);
+        String resourceAttribute = attributes.getValue(RESOURCE_ATTR);
+        
+        this.includeModel.setFile(fileAttribute);
+        this.includeModel.setUrl(urlAttribute);
+        this.includeModel.setResource(resourceAttribute);
+        
     }
 
     void close(InputStream in) {
@@ -224,7 +265,23 @@ public class IncludeAction extends Action {
     }
 
     @Override
-    public void end(SaxEventInterpretationContext ec, String name) throws ActionException {
-        // do nothing
+    public void end(SaxEventInterpretationContext seic, String name) throws ActionException {
+        
+        if(inError)
+            return;
+        
+        Model m = seic.peekModel();
+
+        if (m != includeModel) {
+            addWarn("The object at the of the stack is not the model [" + includeModel.idString()
+                    + "] pushed earlier.");
+            addWarn("This is wholly unexpected.");
+        }
+
+        // do not pop nor add to parent if there is no parent
+        if (parentModel != null) {
+            parentModel.addSubModel(includeModel);
+            seic.popModel();
+        }
     }
 }

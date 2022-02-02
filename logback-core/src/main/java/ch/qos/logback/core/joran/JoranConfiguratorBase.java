@@ -40,6 +40,7 @@ import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.EventEvaluatorModel;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.ImportModel;
+import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
@@ -51,6 +52,7 @@ import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ImportModelHandler;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
@@ -138,7 +140,9 @@ abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);
         defaultProcessor.addHandler(EventEvaluatorModel.class, EventEvaluatorModelHandler::makeInstance);
         defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
+        defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
 
+        
         defaultProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);
         defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
         defaultProcessor.addHandler(TimestampModel.class, TimestampModelHandler::makeInstance);
