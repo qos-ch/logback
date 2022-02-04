@@ -188,7 +188,7 @@ p.menu_header {
 	display: block;
 }
 
-span.asGroovy {
+span.canonical {
    background: #fff; 
    color: #0079C5;   
    font-family: "Comic Sans MS", sans-serif;
@@ -201,10 +201,10 @@ span.asGroovy {
    border-bottom: 2px solid #888;    
    padding: 0px 1em 0px 1em;
    margin:  -4px 4px 0 4px; 
-   float: right;
+   float: top;
 }
  
-span.asGroovy:hover {
+span.canonical:hover {
    background: #E0E0EF;
    cursor: pointer;
 }
@@ -544,3 +544,39 @@ p.menu {
 .deftitle {
     font-weight: bold;
 }
+
+
+/* tab BEGIN ================================= */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+.tab button:hover {
+  background-color: #ddd;
+}
+
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+/* tab END ================================ */

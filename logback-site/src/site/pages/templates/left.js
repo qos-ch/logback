@@ -11,13 +11,13 @@ document.write('<p class="menu_header">Support</p>');
 document.write('<p class="menu"><a href="' + prefix + 'mailinglist.html">Mailing Lists</a></p>');
 document.write('<p class="menu"><a href="' + prefix + 'bugreport.html">Bug Report</a></p>');
 document.write('<p class="menu"><a href="https://github.com/qos-ch/logback">Source Repository</a></p>');
-document.write('<p class="menu"><a href="' + prefix + 'volunteer.html">Call for volunteers</a>');
-document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/professionalSupport">Support offerings</a>');
+//document.write('<p class="menu"><a href="' + prefix + 'volunteer.html">Call for volunteers</a>');
 
 //document.write('<p class="menu"><a href="http://www.qos.ch/shop/products/training">Training</a>');
 
 document.write('<p class="menu_header">Online Tools</p>');
 document.write('<p class="menu"><a href="https://logback.qos.ch/translator/">log4j.properties Translator</a>');
+document.write('<p class="menu"><a href="https://logback.qos.ch/translator/xml2Canon.html">logback.xml to canonical form (1.3)</a>');
 document.write('</p>');
 document.write('</div>');
 

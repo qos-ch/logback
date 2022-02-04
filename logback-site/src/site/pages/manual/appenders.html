@@ -1,18 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
   <head>
     <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
     <title>Chapter 4: Appenders</title>
     <link rel="stylesheet" type="text/css" href="../css/site.css" />    
     <link rel="stylesheet" type="text/css" href="../css/prettify.css" media="screen"/>    
   </head>
-  <body onload="prettyPrint(); decorate();">
+  <body onload="prettyPrint(); decorate(); enableLegacy();">
     <script type="text/javascript">prefix='../';</script>
     <script type="text/javascript" src="../js/prettify.js"></script>
     <script type="text/javascript" src="../js/dsl.js"></script>
     <script type="text/javascript" src="../js/jquery-min.js"></script>
     <script type="text/javascript" src="../js/decorator.js"></script>
+    <script type="text/javascript" src="../js/tab.js"></script>    
 
     <div id="container">
       <script type="text/javascript" src="../templates/header.js"></script>
@@ -41,7 +41,7 @@
 
 
     <script src="../templates/creative.js" type="text/javascript"></script>
-    <script src="../templates/setup.js" type="text/javascript"></script>
+    <script src="../templates/setup.js"    type="text/javascript"></script>
     
     <h2 class="doAnchor" name="whatIsAnAppender">What is an Appender?</h2>
     
@@ -368,7 +368,20 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   <p class="example">Example: ConsoleAppender configuration
   (logback-examples/src/main/resources/chapters/appenders/conf/logback-Console.xml)</p>
 
-  <pre id="logback_Console" class="prettyprint source">&lt;configuration>
+  
+  
+  <!--<span class="canonical" onclick="return canonical('logback_Console');">Canonical</span>-->
+
+  <div class="tab">
+    <button class="tablinks" id="button_logback_Console_legacy"
+            onclick="openTab(event, 'logback_Console', 'legacy')">Legacy</button>
+    <button class="tablinks" id="button_logback_Console_canonical"
+            onclick="openTab(event, 'logback_Console', 'canonical')">Canonical (1.3)</button>
+  </div>
+    
+
+  <div id="logback_Console_legacy" class="tabcontent">
+    <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
     &lt;!-- encoders are assigned the type
@@ -381,7 +394,15 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   &lt;root level="DEBUG">
     &lt;appender-ref ref="STDOUT" />
   &lt;/root>
-&lt;/configuration></pre>
+  &lt;/configuration>
+    </pre>
+  </div>
+
+  <div id="logback_Console_canonical" class="tabcontent">
+    <p>Requires a server call.</p>
+  </div>
+
+
 
    <p>After you have set your current path to the
    <em>logback-examples</em> directory and <a href="../setup.html">set
@@ -531,7 +552,16 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    <p class="example">Example: FileAppender configuration
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-fileAppender.xml)</p>
 
-   <pre id="logback-fileAppender"  class="prettyprint source">&lt;configuration>
+   
+   <div class="tab">
+    <button class="tablinks" id="button_logback_fileAppender_legacy"
+            onclick="openTab(event, 'logback_fileAppender', 'legacy')">Legacy</button>
+    <button class="tablinks" id="button_logback_fileAppender_canonical"
+            onclick="openTab(event, 'logback_fileAppender', 'canonical')">Canonical (1.3)</button>
+  </div>
+
+   <div id="logback_fileAppender_legacy" class="tabcontent">
+   <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="FILE" class="ch.qos.logback.core.FileAppender">
     &lt;file>testFile.log&lt;/file>
@@ -549,7 +579,13 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
+   </div>
 
+   <div id="logback_fileAppender_canonical" class="tabcontent">
+     <p>Requires a server call.</p>
+   </div>
+
+   
    <p>After changing the current directory to
    <em>logback-examples</em>, run this example by launching the
    following command:
@@ -573,7 +609,15 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
    configuration by timestamp
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-timestamp.xml)</p>
 
-   <pre id="logback-timestamp" class="prettyprint source">&lt;configuration>
+   <div class="tab">
+    <button class="tablinks" id="button_logback_timestamp_legacy"
+            onclick="openTab(event, 'logback_timestamp', 'legacy')">Legacy</button>
+    <button class="tablinks" id="button_logback_timestamp_canonical"
+            onclick="openTab(event, 'logback_timestamp', 'canonical')">Canonical (1.3)</button>
+  </div>
+
+   <div id="logback_timestamp_legacy" class="tabcontent">   
+     <pre class="prettyprint source">&lt;configuration>
 
   &lt;!-- Insert the current time formatted as "yyyyMMdd'T'HHmmss" under
        the key "bySecond" into the logger context. This value will be
@@ -592,7 +636,13 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
   &lt;root level="DEBUG">
     &lt;appender-ref ref="FILE" />
   &lt;/root>
-&lt;/configuration></pre>
+     &lt;/configuration></pre>
+   </div>
+
+   
+   <div id="logback_timestamp_canonical" class="tabcontent">
+     <p>Requires a server call.</p>
+   </div>
 
 
    <p>The timestamp element takes two mandatory attributes <span
@@ -1166,7 +1216,17 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingTimeBased.xml)</p>
 
-   <pre id="logback-RollingTimeBased" class="prettyprint source">&lt;configuration>
+   <div class="tab">
+     <button class="tablinks" id="button_logback_RollingTimeBased_legacy"
+             onclick="openTab(event, 'logback_RollingTimeBased', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_logback_RollingTimeBased_canonical"
+             onclick="openTab(event, 'logback_RollingTimeBased', 'canonical')">Canonical (1.3)</button>
+   </div>
+    
+   
+   <div id="logback_RollingTimeBased_legacy" class="tabcontent"> 
+
+     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>logFile.log&lt;/file>
     <b>&lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -1188,6 +1248,11 @@ public interface RollingPolicy extends LifeCycle {
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
+   </div>
+
+   <div id="logback_RollingTimeBased_canonical" class="tabcontent">
+     <p>Requires a server call.</p>
+   </div>   
 
     <p>The next configuration sample illustrates the use of
     <code>RollingFileAppender</code> associated with
@@ -1200,7 +1265,16 @@ public interface RollingPolicy extends LifeCycle {
    <code>TimeBasedRollingPolicy</code>
    (logback-examples/src/main/resources/chapters/appenders/conf/logback-PrudentTimeBasedRolling.xml)</p>
 
-  <pre id="logback-PrudentTimeBasedRolling" class="prettyprint source">&lt;configuration>
+   <div class="tab">
+     <button class="tablinks" id="button_logback_PrudentTimeBasedRolling_legacy"
+             onclick="openTab(event, 'logback_PrudentTimeBasedRolling', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_logback_PrudentTimeBasedRolling_canonical"
+             onclick="openTab(event, 'logback_PrudentTimeBasedRolling', 'canonical')">Canonical (1.3)</button>
+   </div>
+    
+   
+   <div id="logback_PrudentTimeBasedRolling_legacy" class="tabcontent">     
+     <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;!-- Support multiple-JVM writing to the same log file --></b>
     <b>&lt;prudent>true&lt;/prudent></b>
@@ -1219,7 +1293,11 @@ public interface RollingPolicy extends LifeCycle {
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
-
+   </div>
+   
+   <div id="logback_PrudentTimeBasedRolling_canonical" class="tabcontent">
+     <p>Requires a server call.</p>
+   </div>
   
 
     <h3 class="doAnchor" name="SizeAndTimeBasedRollingPolicy">Size and
@@ -1248,7 +1326,16 @@ public interface RollingPolicy extends LifeCycle {
   <code>SizeAndTimeBasedFNATP</code> 
   (logback-examples/src/main/resources/chapters/appenders/conf/logback-sizeAndTime.xml)</p>
 
-  <pre id="logback-sizeAndTime" class="prettyprint source">&lt;configuration>
+  
+  <div class="tab">
+    <button class="tablinks" id="button_logback_sizeAndTime_legacy"
+            onclick="openTab(event, 'logback_sizeAndTime', 'legacy')">Legacy</button>
+    <button class="tablinks" id="button_logback_sizeAndTime_canonical"
+            onclick="openTab(event, 'logback_sizeAndTime', 'canonical')">Canonical (1.3)</button>
+  </div>
+
+  <div id="logback_sizeAndTime_legacy" class="tabcontent">    
+  <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>mylog.txt&lt;/file>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -1270,6 +1357,12 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 
 &lt;/configuration></pre>
+  </div>
+
+     <div id="logback_sizeAndTime_canonical" class="tabcontent">
+      <p>Requires a server call.</p>
+    </div>
+
     
     <p>Note the "%i" conversion token in addition to "%d". <b>Both the
     %i and %d tokens are mandatory.</b> Each time the current log file
@@ -1447,7 +1540,17 @@ public interface RollingPolicy extends LifeCycle {
    <p class="example">Example: Sample configuration of a <code>RollingFileAppender</code> using a 
    <code>FixedWindowRollingPolicy</code> (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingFixedWindow.xml)</p>
 
-   <pre id="logback-RollingFixedWindow" class="prettyprint source">&lt;configuration>
+   
+   <div class="tab">
+     <button class="tablinks" id="button_logback_RollingFixedWindow_legacy"
+            onclick="openTab(event, 'logback_RollingFixedWindow', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_logback_RollingFixedWindow_canonical"
+             onclick="openTab(event, 'logback_RollingFixedWindow', 'canonical')">Canonical (1.3)</button>
+   </div>
+     
+   <div id="logback_RollingFixedWindow_legacy" class="tabcontent">
+     
+   <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     <b>&lt;file>test.log&lt;/file></b>
 
@@ -1469,20 +1572,22 @@ public interface RollingPolicy extends LifeCycle {
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
+   </div>
+   
+     <div id="logback_RollingFixedWindow_canonical" class="tabcontent">
+       <p>Requires a server call.</p>
+     </div>
 
 
-		<h2>
-      <a name="TriggeringPolicy" href="#TriggeringPolicy">Overview of
-      triggering policies</a>
-    </h2>
+    <h2 class="doAnchor" name="TriggeringPolicy">Overview of triggering policies</h2>
 		
-		<p><a
-		href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
-		implementations are responsible for instructing the
-		<code>RollingFileAppender</code> when to rollover.</p>
+    <p><a
+    href="../xref/ch/qos/logback/core/rolling/TriggeringPolicy.html"><code>TriggeringPolicy</code></a>
+    implementations are responsible for instructing the
+    <code>RollingFileAppender</code> when to rollover.</p>
 		
-		<p>The <code>TriggeringPolicy</code> interface contains only one
-		method.</p>
+    <p>The <code>TriggeringPolicy</code> interface contains only one
+    method.</p>
 	
     <pre class="prettyprint source">package ch.qos.logback.core.rolling;
 
@@ -1494,11 +1599,11 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
   <b>public boolean isTriggeringEvent(final File activeFile, final &lt;E&gt; event);</b>
 }</pre>
 
-		<p>The <code>isTriggeringEvent()</code> method takes as parameters
-		the active file and the logging event currently being
-		processed. The concrete implementation determines whether the
-		rollover should occur or not, based on these parameters.
-		</p>
+    <p>The <code>isTriggeringEvent()</code> method takes as parameters
+    the active file and the logging event currently being
+    processed. The concrete implementation determines whether the
+    rollover should occur or not, based on these parameters.
+    </p>
 
     <p>The most widely-used triggering policy, namely
     <code>TimeBasedRollingPolicy</code> which also doubles as a
@@ -1541,7 +1646,16 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     <code>SizeBasedTriggeringPolicy</code>
     (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingSizeBased.xml)</p>
 
-    <pre id="logback-RollingSizeBased" class="prettyprint source">&lt;configuration>
+    
+    <div class="tab">
+      <button class="tablinks" id="button_logback_RollingSizeBased_legacy"
+              onclick="openTab(event, 'logback_RollingSizeBased', 'legacy')">Legacy</button>
+      <button class="tablins" id="button_logback_RollingSizeBased_canonical"
+              onclick="openTab(event, 'logback_RollingSizeBased', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="logback_RollingSizeBased_legacy" class="tabcontent">
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
     &lt;file>test.log&lt;/file>
     &lt;rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
@@ -1562,71 +1676,75 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;appender-ref ref="FILE" />
   &lt;/root>
 &lt;/configuration></pre>
+    </div>
+    
+    <div id="logback_RollingSizeBased_canonical" class="tabcontent">
+      <p>Requires a server call.</p>
+    </div>
 
 	
     <!-- XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx -->
-		<a name="Classic"></a>
-		<h2>Logback Classic</h2>
-				
+    <a name="Classic"></a>
+    <h2>Logback Classic</h2>
     
-		<p>While logging events are generic in logback-core, within
-		logback-classic they are always instances of
-		<code>ILoggingEvent</code>. Logback-classic is nothing more than a
-		specialized processing pipeline handling instances of
-		<code>ILoggingEvent</code>.
-
+    
+    <p>While logging events are generic in logback-core, within
+    logback-classic they are always instances of
+    <code>ILoggingEvent</code>. Logback-classic is nothing more than a
+    specialized processing pipeline handling instances of
+    <code>ILoggingEvent</code>.
+    
     </p>
-
-		<h3 class="doAnchor" name="SocketAppender">SocketAppender and
-		SSLSocketAppender
+    
+    <h3 class="doAnchor" name="SocketAppender">SocketAppender and
+    SSLSocketAppender
     </h3>
-		
-		<p>The appenders covered thus far are only able to log to local
-		resources.  In contrast, the <a
-		href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
-		<code>SocketAppender</code></a> is designed to log to a remote
-		entity by transmitting serialized <code>ILoggingEvent</code>
-		instances over the wire.  When using <code>SocketAppender</code>
-		logging events on the wire are sent in the clear.  However, when
-		using  <a href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html">
-		<code>SSLSocketAppender</code></a>, logging events are delivered over
-		a secure channel.</p>
+    
+    <p>The appenders covered thus far are only able to log to local
+    resources.  In contrast, the <a
+    href="../xref/ch/qos/logback/classic/net/SocketAppender.html">
+    <code>SocketAppender</code></a> is designed to log to a remote
+    entity by transmitting serialized <code>ILoggingEvent</code>
+    instances over the wire.  When using <code>SocketAppender</code>
+    logging events on the wire are sent in the clear.  However, when
+    using <a
+    href="../xref/ch/qos/logback/classic/net/SSLSocketAppender.html">
+    <code>SSLSocketAppender</code></a>, logging events are delivered
+    over a secure channel.</p>
 
-    <p>
-		The actual type of the serialized event
-		is <a
-		href="../xref/ch/qos/logback/classic/spi/LoggingEventVO.html"><code>LoggingEventVO</code></a>
-		which implements the <code>ILoggingEvent</code>
-		interface. Nevertheless, remote logging is non-intrusive as far as
-		the logging event is concerned.  On the receiving end after
-		deserialization, the event can be logged as if it were generated
-		locally. Multiple <code>SocketAppender</code> instances running on
-		different machines can direct their logging output to a central
-		log server whose format is fixed.  <code>SocketAppender</code>
-		does not take an associated layout because it sends serialized
-		events to a remote server.  <code>SocketAppender</code> operates
-		above the <em>Transmission Control Protocol (TCP)</em> layer which
-		provides a reliable, sequenced, flow-controlled end-to-end octet
-		stream.  Consequently, if the remote server is reachable, then log
-		events will eventually arrive there. Otherwise, if the remote
-		server is down or unreachable, the logging events will simply be
-		dropped. If and when the server comes back up, then event
-		transmission will be resumed transparently.  This transparent
-		reconnection is performed by a connector thread which periodically
-		attempts to connect to the server.
+    <p>The actual type of the serialized event is <a
+    href="../xref/ch/qos/logback/classic/spi/LoggingEventVO.html"><code>LoggingEventVO</code></a>
+    which implements the <code>ILoggingEvent</code>
+    interface. Nevertheless, remote logging is non-intrusive as far as
+    the logging event is concerned.  On the receiving end after
+    deserialization, the event can be logged as if it were generated
+    locally. Multiple <code>SocketAppender</code> instances running on
+    different machines can direct their logging output to a central
+    log server whose format is fixed.  <code>SocketAppender</code>
+    does not take an associated layout because it sends serialized
+    events to a remote server.  <code>SocketAppender</code> operates
+    above the <em>Transmission Control Protocol (TCP)</em> layer which
+    provides a reliable, sequenced, flow-controlled end-to-end octet
+    stream.  Consequently, if the remote server is reachable, then log
+    events will eventually arrive there. Otherwise, if the remote
+    server is down or unreachable, the logging events will simply be
+    dropped. If and when the server comes back up, then event
+    transmission will be resumed transparently.  This transparent
+    reconnection is performed by a connector thread which periodically
+    attempts to connect to the server.
 		</p>
 		
-		<p>Logging events are automatically buffered by the native TCP
-		implementation.  This means that if the link to server is slow but
-		still faster than the rate of event production by the client, the
-		client will not be affected by the slow network
-		connection. However, if the network connection is slower than the
-		rate of event production, then the client can only progress at the
-		network rate. In particular, in the extreme case where the network
-		link to the server is down, the client will be eventually blocked.
-		Alternatively, if the network link is up, but the server is down,
-		the client will not be blocked, although the log events will be
-		lost due to server unavailability.
+    <p>Logging events are automatically buffered by the native TCP
+    implementation.  This means that if the link to server is slow but
+    still faster than the rate of event production by the client, the
+    client will not be affected by the slow network
+    connection. However, if the network connection is slower than the
+    rate of event production, then the client can only progress at the
+    network rate. In particular, in the extreme case where the network
+    link to the server is down, the client will be eventually blocked.
+    Alternatively, if the network link is up, but the server is down,
+    the client will not be blocked, although the log events will be
+    lost due to server unavailability.
 		</p>
 		
 		<p>Even if a <code>SocketAppender</code> is no longer attached to
@@ -1660,9 +1778,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <table class="bodyTable striped">
       <tr>
-			<th>Property Name</th>
-			<th>Type</th>
-			<th>Description</th>
+	<th>Property Name</th>
+	<th>Type</th>
+	<th>Description</th>
       </tr>
       <tr>
         <td><span class="prop" container="socket">includeCallerData</span></td>
@@ -1685,8 +1803,7 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         </td>
       </tr>	
       <tr>
-        <td><span class="prop"
-        container="socket">reconnectionDelay</span></td>
+        <td><span class="prop" container="socket">reconnectionDelay</span></td>
         <td><code><a
         href="../apidocs/ch/qos/logback/core/util/Duration.html">Duration</a></code></td>
         <td>
@@ -1831,10 +1948,19 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 			and attaches it to the root logger.
 		</p>
 
-		<p class="example">Example: SocketAppender configuration
-		(logback-examples/src/main/resources/chapters/appenders/socket/client1.xml)</p>
+    <p class="example">Example: SocketAppender configuration
+    (logback-examples/src/main/resources/chapters/appenders/socket/client1.xml)</p>
 
-<pre id="client1" class="prettyprint source">&lt;configuration>
+    
+    <div class="tab">
+      <button class="tablinks" id="button_client1_legacy"
+              onclick="return openTab(event, 'client1', 'legacy');">Legacy</button>
+      <button class="tablinks" id="button_client1_canonical"
+              onclick="return openTab(event, 'client1', 'canonical');">Canonical (1.3)</button>
+    </div>
+
+    <div id="client1_legacy" class="tabcontent">       
+      <pre class="prettyprint source">&lt;configuration>
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SocketAppender">
     &lt;remoteHost>${host}&lt;/remoteHost>
@@ -1848,7 +1974,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
   &lt;/root>  
 
 &lt;/configuration></pre>
-	
+    </div>
+
+    <div id="client1_canonical" class="tabcontent">
+      <p>Requires a server call.</p>
+    </div>
+
 		<p>
 			Note that in the above configuration scripts the values for the 
 			<span class="prop">remoteHost</span>, <span class="prop">port</span> and
@@ -1944,10 +2075,18 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     example shows the appender configuration needed:
     </p>
       
-   	<p class="example">Example: SSLSocketAppender configuration
-		(logback-examples/src/main/resources/chapters/appenders/socket/ssl/client.xml)</p>
+    <p class="example">Example: SSLSocketAppender configuration
+    (logback-examples/src/main/resources/chapters/appenders/socket/ssl/client.xml)</p>
 
-<pre id="sslclient" class="prettyprint source">&lt;configuration debug="true">
+    <div class="tab">
+      <button class="tablinks" id="button_sslclient_legacy"
+              onclick="openTab(event, 'sslclient', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_sslclient_canonical"
+              onclick="openTab(event, 'sslclient', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="sslclient_legacy" class="tabcontent">
+      <pre class="prettyprint source">&lt;configuration debug="true">
 	  
   &lt;appender name="SOCKET" class="ch.qos.logback.classic.net.SSLSocketAppender">
     &lt;remoteHost>${host}&lt;/remoteHost>
@@ -1966,18 +2105,26 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
   &lt;/root>  
 
 &lt;/configuration></pre>
-	  
-	  <p>Note that, just as in the previous example, the values for
-	  <span class="prop">remoteHost</span>, <span class="prop">port</span>
-	  are specified using substituted variable keys.  Additionally, note
-	  the presence of the <span class="prop">ssl</span> property and its
-	  nested <span class="prop">trustStore</span> property, which specifies
-	  the location and password of a trust store using substituted
-	  variables.  This configuration is necessary because our example
-	  server is using a self-signed certificate.  See 
-	  <a href="usingSSL.html">Using SSL</a> for more information on 
-	  SSL configuration properties for <code>SSLSocketAppender</code>.
-	  </p>
+    </div>
+
+    
+    <div id="sslclient_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+
+    
+    <p>Note that, just as in the previous example, the values for
+    <span class="prop">remoteHost</span>, <span
+    class="prop">port</span> are specified using substituted variable
+    keys.  Additionally, note the presence of the <span
+    class="prop">ssl</span> property and its nested <span
+    class="prop">trustStore</span> property, which specifies the
+    location and password of a trust store using substituted
+    variables.  This configuration is necessary because our example
+    server is using a self-signed certificate.  See <a
+    href="usingSSL.html">Using SSL</a> for more information on SSL
+    configuration properties for <code>SSLSocketAppender</code>.
+    </p>
 
     <p>We can run a client application using this configuration by
     specifying the substitution variable values on the command line as
@@ -1990,17 +2137,17 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     chapters.appenders.socket.SocketClient2 src/main/java/chapters/appenders/socket/ssl/client.xml
  	  </p>
  	  
- 	  <p>As in the previous examples, you can type in a message when 
- 	  prompted by the client application, and the message will be delivered
- 	  to the logging server (now over a secure channel) where it will be
- 	  displayed on the console.
- 	  </p>
+     <p>As in the previous examples, you can type in a message when
+     prompted by the client application, and the message will be
+     delivered to the logging server (now over a secure channel) where
+     it will be displayed on the console.
+     </p>
  	  
- 	  <p>Note that the <em>truststore</em> property given on the command
- 	  line specifies a file URL that identifies the location of the
- 	  trust store.  You may also use a classpath URL as described in <a
- 	  href="usingSSL.html">Using SSL</a>.
- 	  </p>
+     <p>Note that the <em>truststore</em> property given on the
+     command line specifies a file URL that identifies the location of
+     the trust store.  You may also use a classpath URL as described
+     in <a href="usingSSL.html">Using SSL</a>.
+     </p>
  
     <p>As we saw previously at server startup, because the client
     configuration has <code>debug="true"</code> specified on the root
@@ -2104,7 +2251,17 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
     <p class="example">Example: Basic ServerSocketAppender Configuration
     (logback-examples/src/main/resources/chapters/appenders/socket/server4.xml)</p>
-<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
+
+    <div class="tab">
+      <button class="tablinks" id="button_server4_legacy"
+              onclick="openTab(event, 'server4', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_server4_canonical"
+              onclick="openTab(event, 'server4', 'canonical')">Canonical (1.3)</button>
+    </div>
+    
+    <div id="server4_legacy" class="tabcontent">
+      
+<pre class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="SERVER" 
     class="ch.qos.logback.classic.net.server.ServerSocketAppender">
     &lt;port>${port}&lt;/port>
@@ -2117,6 +2274,13 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 &lt;/configuration>
 </pre>
+    </div>
+
+    <div id="server4_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+
+    
     <p>Note that this configuration differs from previous examples using
     <code>SocketAppender</code> only in the <em>class</em> specified for
     the appender, and in the absence of the <span class="prop">remoteHost</span>
@@ -2130,7 +2294,17 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
         
      <p class="example">Example: Basic SSLServerSocketAppender Configuration
     (logback-examples/src/main/resources/chapters/appenders/socket/ssl/server3.xml)</p>
-<pre id="SocketReceiver" class="prettyprint source">&lt;configuration debug="true">
+
+    <div class="tab">
+      <button class="tablinks" id="button_server3_legacy"
+              onclick="openTab(event, 'server3', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_server3_canonical"
+              onclick="openTab(event, 'server3', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="server3_legacy" class="tabcontent">
+
+    <pre class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="SERVER" 
     class="ch.qos.logback.classic.net.server.SSLServerSocketAppender">
     &lt;port>${port}&lt;/port>
@@ -2149,7 +2323,12 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 
 &lt;/configuration>
 </pre>
-   
+    </div>
+
+    <div id="server3_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+    
     <p>The principal differences between this configuration and the
     previous configuration is that the appender's <em>class</em> attribute
     identifies the <code>SSLServerSocketAppender</code> type, and the
@@ -2178,9 +2357,9 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		
    <p>The various properties for <code>SMTPAppender</code> are
    summarized in the following table.
-	 </p>
+   </p>
 		
-		<table class="bodyTable striped">
+   <table class="bodyTable striped">
       <tr>
         <th>Property Name</th>
         <th>Type</th>
@@ -2492,7 +2671,17 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
 		
     <p class="example">Example: A sample <code>SMTPAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/mail/mail1.xml)</p>	
 
-    <pre id="mail1" class="prettyprint source">&lt;configuration>	  
+    
+    <div class="tab">
+      <button class="tablinks" id="button_mail1_legacy"
+              onclick="openTab(event, 'mail1', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_mail1_canonical"
+              onclick="openTab(event, 'mail1', 'canonical')">Canonical (1.3)</button>
+    </div>
+    
+    <div id="mail1_legacy" class="tabcontent">
+
+    <pre class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/smtpHost>
     &lt;to>EMAIL-DESTINATION&lt;/to>
@@ -2508,32 +2697,40 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
+    </div>
 
-		<p>Before trying out <code>chapters.appenders.mail.Email</code> application
-		with the above configuration file, you must set the <span
-		class="prop">smtpHost</span>, <span class="prop">to</span> and
-		<span class="prop">from</span> properties to values appropriate for
-		your environment. Once you have set the correct values in the
-		configuration file, execute the following command:
-		</p>
+    
+    <div id="mail1_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+
+    
+    <p>Before trying out <code>chapters.appenders.mail.Email</code>
+    application with the above configuration file, you must set the
+    <span class="prop">smtpHost</span>, <span class="prop">to</span>
+    and <span class="prop">from</span> properties to values
+    appropriate for your environment. Once you have set the correct
+    values in the configuration file, execute the following command:
+    </p>
 		
-<div class="source">java chapters.appenders.mail.EMail 100 src/main/java/chapters/appenders/mail/mail1.xml</div>
+    <div class="source">java chapters.appenders.mail.EMail 100 src/main/java/chapters/appenders/mail/mail1.xml</div>
 
-		<p>The recipient you specified should receive an email message
-		containing 100 logging events formatted by
-		<code>PatternLayout</code> The figure below is the resulting email
-		message as shown by Mozilla Thunderbird.
+    <p>The recipient you specified should receive an email message
+    containing 100 logging events formatted by
+    <code>PatternLayout</code> The figure below is the resulting email
+    message as shown by Mozilla Thunderbird.
 		</p>
     
     <p><img src="images/chapters/appenders/smtpAppender1.jpg" alt="resulting email"/></p>
 		
-		<p>In the next example configuration file <em>mail2.xml</em>, the
-		values for the <span class="prop">smtpHost</span>, <span
-		class="prop">to</span> and <span class="prop">from</span>
-		properties are determined by variable substitution. Here is the
-		relevant part of <em>mail2.xml</em>.
+    <p>In the next example configuration file <em>mail2.xml</em>, the
+    values for the <span class="prop">smtpHost</span>, <span
+    class="prop">to</span> and <span class="prop">from</span>
+    properties are determined by variable substitution. Here is the
+    relevant part of <em>mail2.xml</em>.
 		</p>		
 
+                
     <pre class="prettyprint source">&lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
   &lt;smtpHost>${smtpHost}&lt;/smtpHost>
   &lt;to>${to}&lt;/to>
@@ -2541,22 +2738,22 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
   &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
 &lt;/appender></pre>
 		
-		<p>You can pass the required parameters on the command line:</p>
+    <p>You can pass the required parameters on the command line:</p>
 		
-<div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com -DsmtpHost=some_smtp_host \
+    <div class="source"><pre>java -Dfrom=source@xyz.com -Dto=recipient@xyz.com -DsmtpHost=some_smtp_host \
   chapters.appenders.mail.EMail 10000 src/main/java/chapters/appenders/mail/mail2.xml
 </pre></div>
 
-		<p>Be sure to replace with values as appropriate for your
-		environment.
-		</p>
+    <p>Be sure to replace with values as appropriate for your
+    environment.
+    </p>
 		
-		<p>Note that in this latest example, <code>PatternLayout</code>
-		was replaced by <code>HTMLLayout</code> which formats logs as an
-		HTML table. You can change the list and order of columns as well
-		as the CSS of the table. Please refer to <a
-		href="layouts.html#ClassicHTMLLayout">HTMLLayout</a> documentation
-		for further details.
+    <p>Note that in this latest example, <code>PatternLayout</code>
+    was replaced by <code>HTMLLayout</code> which formats logs as an
+    HTML table. You can change the list and order of columns as well
+    as the CSS of the table. Please refer to <a
+    href="layouts.html#ClassicHTMLLayout">HTMLLayout</a> documentation
+    for further details.
     </p>
     
     <p>Given that the size of the cyclic buffer is 256, the recipient
@@ -2591,7 +2788,18 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     </p>
 
    <p class="example">Example:  <code>SMTPAppender</code> configuration with a custom bufer size (logback-examples/src/main/resources/chapters/appenders/mail/customBufferSize.xml)</p>	
-    <pre class="prettyprint source">&lt;configuration>   
+
+   
+   <div class="tab">
+     <button class="tablinks" id="button_mail_customBufferSize_legacy"
+             onclick="openTab(event, 'mail_customBufferSize', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_mail_customBufferSize_canonical"
+             onclick="openTab(event, 'mail_customBufferSize', 'canonical')">Canonical (1.3)</button>
+   </div>
+
+   <div id="mail_customBufferSize_legacy" class="tabcontent">
+   
+   <pre class="prettyprint source">&lt;configuration>   
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>${smtpHost}&lt;/smtpHost>
     &lt;to>${to}&lt;/to>
@@ -2609,8 +2817,13 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration>    </pre>
-    
+   </div>
 
+   <div id="mail_customBufferSize_canonical" class="tabcontent">
+     <p>Requires a server call. Please wait a few seconds.</p>
+   </div>
+
+   
     <h3 class="doAnchor">Triggering event</h3>
 
     <p>If the Evaluator property is not set, the
@@ -2623,22 +2836,24 @@ public interface TriggeringPolicy&lt;E&gt; extends LifeCycle {
     implementation of the <code>EventEvaluator</code> interface.
     </p>
 		
-		<p>The <code>SMTPAppender</code> submits each incoming event to
-		its evaluator by calling <code>evaluate()</code> method in order
-		to check whether the event should trigger an email or just be
-		placed in the cyclic buffer.  When the evaluator gives a positive
-		answer to its evaluation, an email is sent out.  The
-		<code>SMTPAppender</code> contains one and only one evaluator
-		object.  This object may manage its own internal state. For
-		illustrative purposes, the <code>CounterBasedEvaluator</code>
-		class listed next implements an event evaluator whereby every
-		1024th event triggers an email message.
-		</p>
+    <p>The <code>SMTPAppender</code> submits each incoming event to
+    its evaluator by calling <code>evaluate()</code> method in order
+    to check whether the event should trigger an email or just be
+    placed in the cyclic buffer.  When the evaluator gives a positive
+    answer to its evaluation, an email is sent out.  The
+    <code>SMTPAppender</code> contains one and only one evaluator
+    object.  This object may manage its own internal state. For
+    illustrative purposes, the <code>CounterBasedEvaluator</code>
+    class listed next implements an event evaluator whereby every
+    1024th event triggers an email message.
+    </p>
 
-    <p class="example">Example: A <code>EventEvaluator</code> implementation
-that evaluates to <code>true</code> every 1024th event (<a href="../xref/chapters/appenders/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapters/appenders/mail/CounterBasedEvaluator.java</a>)</p>
-   
-   <pre class="prettyprint source">package chapters.appenders.mail;
+    <p class="example">Example: A <code>EventEvaluator</code>
+    implementation that evaluates to <code>true</code> every 1024th
+    event (<a
+    href="../xref/chapters/appenders/mail/CounterBasedEvaluator.html">logback-examples/src/main/java/chapters/appenders/mail/CounterBasedEvaluator.java</a>)</p>
+
+      <pre class="prettyprint source">package chapters.appenders.mail;
 
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
@@ -2672,25 +2887,34 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
   }
 }</pre>
 
-		<p>Note that this class extends <code>ContextAwareBase</code> and
-		implements <code>EventEvaluator</code>. This allows the user to
-		concentrate on the core functions of her
-		<code>EventEvaluator</code> and let the base class provide the
-		common functionality.
-		</p>
+       <p>Note that this class extends <code>ContextAwareBase</code>
+       and implements <code>EventEvaluator</code>. This allows the
+       user to concentrate on the core functions of her
+       <code>EventEvaluator</code> and let the base class provide the
+       common functionality.
+       </p>
 
-		<p>Setting the <span class="prop">Evaluator</span> option of
-		<code>SMTPAppender</code> instructs it to use a custom evaluator.
-		The next configuration file attaches a <code>SMTPAppender</code>
-		to the root logger.  This appender uses a
-		<code>CounterBasedEvaluator</code> instance as its event
-		evaluator.
-		</p>
+       <p>Setting the <span class="prop">Evaluator</span> option of
+       <code>SMTPAppender</code> instructs it to use a custom evaluator.
+       The next configuration file attaches a <code>SMTPAppender</code>
+       to the root logger.  This appender uses a
+       <code>CounterBasedEvaluator</code> instance as its event
+       evaluator.
+       </p>
 
     <p class="example">Example: <code>SMTPAppender</code> with custom 
     <code>Evaluator</code> and buffer size (logback-examples/src/main/resources/chapters/appenders/mail/mail3.xml)</p>
 
-    <pre id="mail3" class="prettyprint source">&lt;configuration>
+    <div class="tab">
+    <button class="tablinks" id="button_mail3_legacy"
+            onclick="openTab(event, 'mail3', 'legacy')">Legacy</button>
+    <button class="tablinks" id="button_mail3_canonical"
+            onclick="openTab(event, 'mail3', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="mail3_legacy" class="tabcontent">
+    
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;evaluator class="chapters.appenders.mail.CounterBasedEvaluator" /></b>
     &lt;smtpHost>${smtpHost}&lt;/smtpHost>
@@ -2705,7 +2929,13 @@ public class CounterBasedEvaluator extends ContextAwareBase implements EventEval
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
+    </div>
+
     
+    <div id="mail3_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+
 
     <h3 class="doAnchor" name="OnMarkerEvaluator">Marker based
     triggering </h3>
@@ -2740,8 +2970,16 @@ logger.error(<b>notifyAdmin</b>,
    <p class="example">Example: <code>SMTPAppender</code> with 
    <code>OnMarkerEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker.xml)</p>
 
+   <div class="tab">
+     <button class="tablinks" id="button_mailWithMarker_legacy"
+             onclick="openTab(event, 'mailWithMarker', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_mailWithMarker_canonical"
+             onclick="openTab(event, 'mailWithMarker', 'canonical')">Canonical (1.3)</button>
+   </div>
 
-   <pre id="mailWithMarker" class="prettyprint source">&lt;configuration>
+   <div id="mailWithMarker_legacy" class="tabcontent">   
+
+   <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
       &lt;marker>NOTIFY_ADMIN&lt;/marker>
@@ -2759,6 +2997,11 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
+   </div>
+   
+    <div id="mailWithMarker_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
     
     <p>Give it a whirl with the following command:</p>
 
@@ -2766,8 +3009,9 @@ logger.error(<b>notifyAdmin</b>,
   chapters.appenders.mail.Marked_EMail src/main/java/chapters/appenders/mail/mailWithMarker.xml</pre>
 
 
-  <h4 class="doAnchor" name="marker_JaninoEventEvaluator">Marker-based
-  triggering with JaninoEventEvaluator</h4>
+    <h4 class="doAnchor"
+    name="marker_JaninoEventEvaluator">Marker-based triggering with
+    JaninoEventEvaluator</h4>
 
     <p>Note that instead of using the marker-centric
     <code>OnMarkerEvaluator</code>, we could use the much more generic
@@ -2784,17 +3028,35 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: <code>SMTPAppender</code> with 
    <code>JaninoEventEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker_Janino.xml)</p>
 
-    <pre id="mailWithMarker_Janino" class="prettyprint source">&lt;configuration>
+   <div class="tab">
+     <button class="tablinks" id="button_mailWithMarker_Janino_legacy"
+             onclick="openTab(event, 'mailWithMarker_Janino', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_mailWithMarker_Janino_canonical"
+             onclick="openTab(event, 'mailWithMarker_Janino', 'canonical')">Canonical (1.3)</button>
+   </div>
+
+   <div id="mailWithMarker_Janino_legacy" class="tabcontent">
+       
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;evaluator class="ch.qos.logback.classic.boolex.JaninoEventEvaluator">
       &lt;expression>
         (marker != null) &amp;&amp;
         (marker.contains("NOTIFY_ADMIN") || marker.contains("TRANSACTION_FAILURE"))
       &lt;/expression>
-    &lt;/evaluator>    
-    ... same as above
+    &lt;/evaluator>
+    &lt;smtpHost>${smtpHost}&lt;/smtpHost>
+    &lt;to>${to}&lt;/to>
+    &lt;from>${from}&lt;/from>
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
 &lt;/configuration></pre>
+   </div>
+
+   <div id="mailWithMarker_Janino_canonical" class="tabcontent">
+     <p>Requires a server call. Please wait a few seconds.</p>
+   </div>
+   
 
     <h4 class="doAnchor" name="marker_GEventEvaluator">Marker-based
     triggering with GEventEvaluator</h4>
@@ -2805,6 +3067,15 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: the same with 
    <code>GEventEvaluator</code> (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMarker_GEvent.xml)</p>
 
+   
+   <div class="tab">
+     <button class="tablinks" id="button_mailWithMarker_GEventEvaluator_legacy"
+             onclick="openTab(event, 'mailWithMarker_GEventEvaluator', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_mailWithMarker_GEventEvaluator_canonical"
+             onclick="openTab(event, 'mailWithMarker_GEventEvaluator', 'canonical')">Canonical (1.3)</button>
+   </div>
+
+   <div id="mailWithMarker_GEventEvaluator_legacy" class="tabcontent">
 
    <pre id="mailWithMarker_GEventEvaluator" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2812,10 +3083,24 @@ logger.error(<b>notifyAdmin</b>,
       &lt;expression>
         e.marker?.contains("NOTIFY_ADMIN") || e.marker?.contains("TRANSACTION_FAILURE")
       &lt;/expression>
-    &lt;/evaluator>    
-    ... same as above
+    &lt;/evaluator>
+    &lt;smtpHost>${smtpHost}&lt;/smtpHost>
+    &lt;to>${to}&lt;/to>
+    &lt;from>${from}&lt;/from>
+    &lt;layout class="ch.qos.logback.classic.html.HTMLLayout"/>
   &lt;/appender>
 &lt;/configuration></pre>
+   </div>
+   
+   <div id="gmailSSL_canonical" class="tabcontent">
+     <p>Requires a server call. Please wait a few seconds.</p>
+   </div>
+
+   
+   
+   <div id="mailWithMarker_Janino_canonical" class="tabcontent">
+     <p>Requires a server call. Please wait a few seconds.</p>
+   </div>
 
     <p>Note that since the event may lack a marker, the value of
     e.marker can be null. Hence the use of Groovy's <a
@@ -2844,6 +3129,15 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example:: <code>SMTPAppender</code> to Gmail
     using SSL
     (logback-examples/src/main/resources/chapters/appenders/mail/gmailSSL.xml)</p>
+    
+    <div class="tab">
+      <button class="tablinks" id="button_gmailSSL_legacy"
+              onclick="openTab(event, 'gmailSSL', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_gmailSSL_canonical"
+              onclick="openTab(event, 'gmailSSL', 'canonical')">Canonical (1.3)</button>
+    </div>
+    
+    <div id="gmailSSL_legacy" class="tabcontent">
 
     <pre id="gmailSSLExample" class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
@@ -2866,8 +3160,12 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
+    </div>
 
-
+    <div id="gmailSSL_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+    
     <h3 class="doAnchor" name="gmailSTARTTLS">SMTPAppender for Gmail
     (STARTTLS)</h3>
 
@@ -2877,6 +3175,15 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: <code>SMTPAppender</code> to GMAIL using STARTTLS (logback-examples/src/main/resources/chapters/appenders/mail/gmailSTARTTLS.xml)</p>
 
 
+    <div class="tab">
+      <button class="tablinks" id="button_gmailSTARTTLSExample_legacy"
+              onclick="openTab(event, 'gmailSTARTTLSExample', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_gmailSTARTTLSExample_canonical"
+              onclick="openTab(event, 'gmailSTARTTLSExample', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="gmailSTARTTLSExample_legacy" class="tabcontent">    
+    
     <pre id="gmailSTARTTLSExample" class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>smtp.gmail.com&lt;/smtpHost>
@@ -2898,7 +3205,12 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
+    </div>
 
+    
+    <div id="gmailSTARTTLSExample_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
 
     <h3 class="doAnchor" name="smtpDiscriminator">SMTPAppender with MDCDiscriminator</h3>
 
@@ -2922,7 +3234,16 @@ logger.error(<b>notifyAdmin</b>,
     MDCBasedDsicriminator
     (logback-examples/src/main/resources/chapters/appenders/mail/mailWithMDCBasedDiscriminator.xml)</p>
 
-    <pre id="mailWithMDCBasedDiscriminator" class="prettyprint source">&lt;configuration>	  
+    <div class="tab">
+      <button class="tablinks" id="button_mailWithMDCBasedDiscriminator_legacy"
+              onclick="openTab(event, 'mailWithMDCBasedDiscriminator', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_mailWithMDCBasedDiscriminator_canonical"
+              onclick="openTab(event, 'mailWithMDCBasedDiscriminator', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="mailWithMDCBasedDiscriminator_legacy" class="tabcontent">
+    
+    <pre class="prettyprint source">&lt;configuration>	  
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;smtpHost>ADDRESS-OF-YOUR-SMTP-HOST&lt;/smtpHost>
     &lt;to>EMAIL-DESTINATION&lt;/to>
@@ -2944,6 +3265,12 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="EMAIL" />
   &lt;/root>  
 &lt;/configuration></pre>
+    </div>
+
+    <div id="mailWithMDCBasedDiscriminator_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+
 
     <p>Thus, each outgoing email generated by
     <code>SMTPAppender</code> will belong to a <em>unique</em> remote
@@ -3313,7 +3640,16 @@ logger.error(<b>notifyAdmin</b>,
 		
     <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-driverManager.xml)</p>
 
-    <pre id="append-toMySQL-with-driverManager" class="prettyprint source">&lt;configuration>
+    <div class="tab">
+      <button class="tablinks" id="button_append_toMySQL_with_driverManager_legacy"
+            onclick="openTab(event, 'append_toMySQL_with_driverManager', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_append_toMySQL_with_driverManager_canonical"
+              onclick="openTab(event, 'append_toMySQL_with_driverManager', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="append_toMySQL_with_driverManager_legacy" class="tabcontent">
+
+    <pre class="prettyprint source">&lt;configuration>
 
   <b>&lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
@@ -3328,32 +3664,35 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></pre>
+    </div>
 
-		<p>
-			The correct driver must be declared. Here, the <code>com.mysql.jdbc.Driver</code>
-			class is used. The <span class="prop">url</span> must begin with <em>jdbc:mysql://</em>.
-		</p>
-		
-		<p>
-			The 
-			<a href="../xref/ch/qos/logback/core/db/DriverManagerConnectionSource.html">
-			<code>DriverManagerConnectionSource</code></a> is an implementation of
-			<code>ConnectionSource</code> that obtains the connection in the
-			traditional JDBC manner based on the connection URL.
-		</p>
-		<p>
-			Note that this class will establish a new
-			<code>Connection</code> for each call to
-			<code>getConnection()</code>. It is recommended that you either
-			use a JDBC driver that natively supports connection pooling or
-			that you create your own implementation of
-			<code>ConnectionSource</code> that taps into whatever pooling
-			mechanism you are already using. If you have access to a JNDI
-			implementation that supports <code>javax.sql.DataSource</code>,
-			e.g. within a J2EE application server, see <a
-			href="#JNDIConnectionSource"><code>JNDIConnectionSource</code></a>
-			below.
-		</p>
+    <div id="append_toMySQL_with_driverManager_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+
+    <p>The correct driver must be declared. Here, the
+    <code>com.mysql.jdbc.Driver</code> class is used. The <span
+    class="prop">url</span> must begin with <em>jdbc:mysql://</em>.
+    </p>
+    
+    <p>The <a
+    href="../xref/ch/qos/logback/core/db/DriverManagerConnectionSource.html">
+    <code>DriverManagerConnectionSource</code></a> is an
+    implementation of <code>ConnectionSource</code> that obtains the
+    connection in the traditional JDBC manner based on the connection
+    URL.</p>
+
+    <p>Note that this class will establish a new
+    <code>Connection</code> for each call to
+    <code>getConnection()</code>. It is recommended that you either
+    use a JDBC driver that natively supports connection pooling or
+    that you create your own implementation of
+    <code>ConnectionSource</code> that taps into whatever pooling
+    mechanism you are already using. If you have access to a JNDI
+    implementation that supports <code>javax.sql.DataSource</code>,
+    e.g. within a J2EE application server, see <a
+    href="#JNDIConnectionSource"><code>JNDIConnectionSource</code></a>
+    below.</p>
 <!-- 
 		
 		HAS TO BE TESTED
@@ -3394,7 +3733,17 @@ logger.error(<b>notifyAdmin</b>,
     <p class="example">Example: <code>DBAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/db/append-with-datasource.xml)</p>	
 
 
-    <pre id="append-with-datasource" class="prettyprint source">&lt;configuration  debug="true">
+
+    <div class="tab">
+      <button class="tablinks" id="button_append_with_datasource_legacy"
+              onclick="openTab(event, 'append_with_datasource', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_append_with_datasource_canonical"
+              onclick="openTab(event, 'append_with_datasource', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="append_with_datasource_legacy" class="tabcontent">
+
+    <pre class="prettyprint source">&lt;configuration  debug="true">
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
      <b>&lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -3418,12 +3767,17 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="DB" />
   &lt;/root>  
 &lt;/configuration></pre>
+    </div>
 
-		<p>Note that in this configuration sample, we make heavy use of
-		substitution variables.  They are sometimes handy when connection
-		details have to be centralized in a single configuration file and
-		shared by logback and other frameworks.
-		</p>	
+    <div id="append_with_datasource_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+    
+    <p>Note that in this configuration sample, we make heavy use of
+    substitution variables.  They are sometimes handy when connection
+    details have to be centralized in a single configuration file and
+    shared by logback and other frameworks.
+    </p>	
 		
 <!-- TO BE TESTED 
 
@@ -3501,7 +3855,17 @@ logger.error(<b>notifyAdmin</b>,
    by <code>JNDIConnectionSource</code>
    (logback-examples/src/main/resources/chapters/appenders/db/append-via-jndi.xml)</p>
 
-<pre id="append-via-jndi" class="prettyprint source">&lt;configuration debug="true">
+   
+   <div class="tab">
+     <button class="tablinks" id="button_append_via_jndi_legacy"
+             onclick="openTab(event, 'append_via_jndi', 'legacy')">Legacy</button>
+     <button class="tablinks" id="button_append_via_jndi_canonical"
+             onclick="openTab(event, 'append_via_jndi', 'canonical')">Canonical (1.3)</button>
+   </div>
+
+   <div id="append_via_jndi_legacy" class="tabcontent">
+
+<pre class="prettyprint source">&lt;configuration debug="true">
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class=&quot;ch.qos.logback.core.db.JNDIConnectionSource&quot;&gt;
       <b>&lt;!-- please note the "java:comp/env/" prefix --&gt;</b>
@@ -3512,6 +3876,12 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="DB" />
   &lt;/root>  
 &lt;/configuration></pre>
+   </div>
+
+   
+   <div id="append_via_jndi_canonical" class="tabcontent">
+     <p>Requires a server call. Please wait a few seconds.</p>
+   </div>
 
 		<p>
 			Note that this class will obtain an
@@ -3542,7 +3912,17 @@ logger.error(<b>notifyAdmin</b>,
     without pooling
     (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-datasource.xml)</p>
 
-    <pre id="append-toMySQL-with-datasource" class="prettyprint source">&lt;configuration>
+
+
+    <div class="tab">
+      <button class="tablinks" id="button_toMySQL_with_datasource_legacy"
+              onclick="openTab(event, 'toMySQL_with_datasource', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_toMySQL_with_datasource_canonical"
+              onclick="openTab(event, 'toMySQL_with_datasource', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="toMySQL_with_datasource_legacy" class="tabcontent">        
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource class="ch.qos.logback.core.db.DataSourceConnectionSource">
@@ -3560,24 +3940,40 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></pre>
+    </div>
 
-		<p>With this configuration file, sending 500 logging events to a
-		MySQL database takes a whopping 5 seconds, that is 10 milliseconds
-		per request. This figure is unacceptable when dealing with large
-		applications.
-		</p>
+    <div id="toMySQL_with_datasource_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
 
-		<p>A dedicated external library is necessary to use connection
-		pooling with <code>DBAppender</code>. The next example uses <a
-		href="http://sourceforge.net/projects/c3p0">c3p0</a>. To be able
-		to use c3p0, one must download it and place
-		<em>c3p0-VERSION.jar</em> in the classpath.
-		</p>
+    
+    <p>With this configuration file, sending 500 logging events to a
+    MySQL database takes a whopping 5 seconds, that is 10 milliseconds
+    per request. This figure is unacceptable when dealing with large
+    applications.
+    </p>
 
+    <p>A dedicated external library is necessary to use connection
+    pooling with <code>DBAppender</code>. The next example uses <a
+    href="http://sourceforge.net/projects/c3p0">c3p0</a>. To be able
+    to use c3p0, one must download it and place
+    <em>c3p0-VERSION.jar</em> in the classpath.
+    </p>
+                
     <p class="example">Example: <code>DBAppender</code> configuration
     with pooling
     (logback-examples/src/main/resources/chapters/appenders/db/append-toMySQL-with-datasource-and-pooling.xml)</p>
-    <pre id="append-toMySQL-with-datasource-and-pooling" class="prettyprint source">&lt;configuration>
+
+
+    <div class="tab">
+      <button class="tablinks" id="button_toMySQL_ds_pooling_legacy"
+              onclick="openTab(event, 'toMySQL_ds_pooling', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_toMySQL_ds_pooling_canonical"
+              onclick="openTab(event, 'toMySQL_ds_pooling', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="toMySQL_ds_pooling_legacy" class="tabcontent">
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
     &lt;connectionSource
@@ -3596,117 +3992,133 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="DB" />
   &lt;/root>
 &lt;/configuration></pre>
+    </div>
+   
+    <div id="toMySQL_ds_pooling_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
 
-		<p>With this new configuration, sending 500 logging requests to
-		the aforementioned MySQL database takes around 0.5 seconds, for an
-		average of 1 millisecond per request, that is a tenfold
-		improvement in performance.
-		</p>
 
-		<h3 class="doAnchor" name="SyslogAppender">SyslogAppender</h3>
 
-		<p>The syslog protocol is a very simple protocol: a syslog sender
-		sends a small message to a syslog receiver.  The receiver is
-		commonly called <em>syslog daemon</em> or <em>syslog server</em>.
-		Logback can send messages to a remote syslog daemon. This is
-		achieved by using <a
-		href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
-		</p>
+     <p>With this new configuration, sending 500 logging requests to
+     the aforementioned MySQL database takes around 0.5 seconds, for
+     an average of 1 millisecond per request, that is a tenfold
+     improvement in performance.
+     </p>
+
+     <h3 class="doAnchor" name="SyslogAppender">SyslogAppender</h3>
+
+     <p>The syslog protocol is a very simple protocol: a syslog sender
+     sends a small message to a syslog receiver.  The receiver is
+     commonly called <em>syslog daemon</em> or <em>syslog server</em>.
+     Logback can send messages to a remote syslog daemon. This is
+     achieved by using <a
+     href="../xref/ch/qos/logback/classic/net/SyslogAppender.html"><code>SyslogAppender</code></a>.
+     </p>
 		
-		<p>Here are the properties you can pass to a SyslogAppender.</p>
+     <p>Here are the properties you can pass to a SyslogAppender.</p>
 
-		<table class="bodyTable striped">
-			<tr>
-				<th>Property Name</th>
-				<th>Type</th>
-				<th>Description</th>
-			</tr>
-			<tr>
-				<td><span class="prop" container="syslog">syslogHost</span></td>
-				<td><code>String</code></td>
-				<td>The host name of the syslog server.</td>
-			</tr>
-			<tr>
-				<td><span class="prop" container="syslog">port</span></td>
-				<td><code>String</code></td>
-				<td>The port number on the syslog server to connect
-				to. Normally, one would not want to change the default value
-				of <em>514</em>.
-				</td>
-			</tr>
-			<tr>
-				<td><span class="prop" container="syslog">facility</span></td>
-				<td><code>String</code></td>
-				<td>
-					<p>The <span class="prop">facility</span> is meant to identify 
-						the source of a message.</p>
-					<p>The <span class="prop">facility</span> option must be set
-					to one of the strings <em>KERN, USER, MAIL, DAEMON, AUTH,
-					SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP, AUDIT,
-					ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4,
-					LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.</p>
-				</td>
-			</tr>
-      <tr>
+     <table class="bodyTable striped">
+       <tr>
+	 <th>Property Name</th>
+	 <th>Type</th>
+	 <th>Description</th>
+       </tr>
+       <tr>
+	 <td><span class="prop" container="syslog">syslogHost</span></td>
+	 <td><code>String</code></td>
+	 <td>The host name of the syslog server.</td>
+       </tr>
+       <tr>
+	 <td><span class="prop" container="syslog">port</span></td>
+	 <td><code>String</code></td>
+	 <td>The port number on the syslog server to connect
+	 to. Normally, one would not want to change the default value
+	 of <em>514</em>.
+	 </td>
+       </tr>
+       <tr>
+	 <td><span class="prop" container="syslog">facility</span></td>
+	 <td><code>String</code></td>
+	 <td>
+	   <p>The <span class="prop">facility</span> is meant to identify 
+	   the source of a message.</p>
+	   <p>The <span class="prop">facility</span> option must be set
+	   to one of the strings <em>KERN, USER, MAIL, DAEMON, AUTH,
+	   SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, NTP, AUDIT,
+	   ALERT, CLOCK, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4,
+	   LOCAL5, LOCAL6, LOCAL7</em>. Case is not important.</p>
+	 </td>
+       </tr>
+       <tr>
         <td><span class="prop" container="syslog">suffixPattern</span></td>
-				<td><code>String</code></td>
-				<td><p>The <span class="prop">suffixPattern</span> option
-				specifies the format of the non-standardized part of the
-				message sent to the syslog server. By default, its value is
-				<em>[%thread] %logger %msg</em>. Any value that a
-				<code>PatternLayout</code> could use is a correct <span
-				class="prop">suffixPattern</span> value.
-					</p>
-				</td>
-			</tr>
-
-      <tr>
-        <td><span class="prop"
-        container="syslog">stackTracePattern</span></td>
-				<td><code>String</code></td>
-				<td><p>The <span class="prop">stackTracePattern</span>
-				property allows the customization of the string appearing just
-				before each stack trace line. The default value for this
-				property is "\t", i.e. the tab character. Any value accepted
-				by <code>PatternLayout</code> is a valid value for <span
-				class="prop">stackTracePattern</span>.</p>
-				</td>
-			</tr>
-
-			<tr>
-				<td><span class="prop" container="syslog">throwableExcluded</span></td>
-				<td><code>boolean</code></td>
-				<td>Setting <span class="prop">throwableExcluded</span> to
-				<code>true</code> will cause stack trace data associated with
-				a Throwable to be omitted. By default, <span
-				class="prop">throwableExcluded</span> is set to
-				<code>false</code> so that stack trace data is sent to the
-				syslog server. </td>
-			</tr>
-
-
-		</table>
+	<td><code>String</code></td>
+	<td><p>The <span class="prop">suffixPattern</span> option
+	specifies the format of the non-standardized part of the
+	message sent to the syslog server. By default, its value is
+	<em>[%thread] %logger %msg</em>. Any value that a
+	<code>PatternLayout</code> could use is a correct <span
+	class="prop">suffixPattern</span> value.
+      </p>
+	</td>
+       </tr>
+       
+       <tr>
+        <td><span class="prop"        container="syslog">stackTracePattern</span></td> 
+	<td><code>String</code></td>
+	<td><p>The <span class="prop">stackTracePattern</span>
+	property allows the customization of the string appearing just
+	before each stack trace line. The default value for this
+	property is "\t", i.e. the tab character. Any value accepted
+	by <code>PatternLayout</code> is a valid value for <span
+	class="prop">stackTracePattern</span>.</p>
+	</td>
+       </tr>
+       
+       <tr>
+	 <td><span class="prop" container="syslog">throwableExcluded</span></td>
+	 <td><code>boolean</code></td>
+	 <td>Setting <span class="prop">throwableExcluded</span> to
+	 <code>true</code> will cause stack trace data associated with
+	 a Throwable to be omitted. By default, <span
+	 class="prop">throwableExcluded</span> is set to
+	 <code>false</code> so that stack trace data is sent to the
+	 syslog server. </td>
+       </tr>
+       
+       
+     </table>
+     
+     <p>The syslog severity of a logging event is converted from the
+     level of the logging event.  The <em>DEBUG</em> level is
+     converted to <em>7</em>, <em>INFO</em> is converted to
+     <em>6</em>, <em>WARN</em> is converted to <em>4</em> and
+     <em>ERROR</em> is converted to <em>3</em>.
+     </p>
 		
-		<p>The syslog severity of a logging event is converted from the
-		level of the logging event.  The <em>DEBUG</em> level is converted
-		to <em>7</em>, <em>INFO</em> is converted to <em>6</em>,
-		<em>WARN</em> is converted to <em>4</em> and <em>ERROR</em> is
-		converted to <em>3</em>.
-		</p>
+     <p>Since the format of a syslog request follows rather strict
+     rules, there is no layout to be used with
+     <code>SyslogAppender</code>. However, using the <span
+     class="prop">suffixPattern</span> option lets the user display
+     whatever information she wishes.
+     </p>
 		
-		<p>Since the format of a syslog request follows rather strict
-		rules, there is no layout to be used with
-		<code>SyslogAppender</code>. However, using the <span
-		class="prop">suffixPattern</span> option lets the user display
-		whatever information she wishes.
-		</p>
+     <p>Here is a sample configuration using a
+     <code>SyslogAppender</code>.</p>
 		
-		<p>Here is a sample configuration using a
-		<code>SyslogAppender</code>.</p>
-		
-    <p class="example">Example: <code>SyslogAppender</code> configuration (logback-examples/src/main/resources/chapters/appenders/conf/logback-syslog.xml)</p>	
+    <p class="example">Example: <code>SyslogAppender</code>
+    configuration
+    (logback-examples/src/main/resources/chapters/appenders/conf/logback-syslog.xml)</p>
 
-    <pre id="logback-syslog" class="prettyprint source">&lt;configuration>
+    <div class="tab">
+      <button class="tablinks" id="button_syslog_legacy"
+              onclick="openTab(event, 'syslog', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_syslog_canonical"
+              onclick="openTab(event, 'syslog', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="syslog_legacy" class="tabcontent">
+    <pre class="prettyprint source">&lt;configuration>
 
   &lt;appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
     &lt;syslogHost>remote_home&lt;/syslogHost>
@@ -3718,12 +4130,19 @@ logger.error(<b>notifyAdmin</b>,
     &lt;appender-ref ref="SYSLOG" />
   &lt;/root>
 &lt;/configuration></pre>
+    </div>
 
-		<p>When testing this configuration, you should verify that the
-		remote syslog daemon accepts requests from an external
-		source. Experience shows that, by default, syslog daemons usually
-		deny requests coming via a network connection.
-		</p>
+    
+    <div id="syslog_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
+    
+
+    <p>When testing this configuration, you should verify that the
+    remote syslog daemon accepts requests from an external
+    source. Experience shows that, by default, syslog daemons usually
+    deny requests coming via a network connection.
+    </p>
 		
 
     <h3 class="doAnchor" name="SiftingAppender">SiftingAppender</h3>
@@ -4092,7 +4511,16 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
     configuration
     (logback-examples/src/main/resources/chapters/appenders/conc/logback-async.xml)</p>
 
-    <pre id="asyncAppender" class="prettyprint source">&lt;configuration>
+    <div class="tab">
+      <button class="tablinks" id="button_asyncAppender_legacy"
+              onclick="openTab(event, 'asyncAppender', 'legacy')">Legacy</button>
+      <button class="tablinks" id="button_asyncAppender_canonical"
+              onclick="openTab(event, 'asyncAppender', 'canonical')">Canonical (1.3)</button>
+    </div>
+
+    <div id="asyncAppender_legacy" class="tabcontent">
+
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="<b>FILE</b>" class="ch.qos.logback.core.FileAppender">
     &lt;file>myapp.log&lt;/file>
     &lt;encoder>
@@ -4107,12 +4535,18 @@ import static ch.qos.logback.classic.ClassicConstants.FINALIZE_SESSION_MARKER;
   &lt;root level="DEBUG">
     &lt;appender-ref ref="<b>ASYNC</b>" />
   &lt;/root>
-&lt;/configuration></pre>
-  
+    &lt;/configuration></pre>
+    </div>
 
-		<h3 class="doAnchor" name="WriteYourOwnAppender">Writing your own
-		Appender</h3>
+    
+    <div id="asyncAppender_canonical" class="tabcontent">
+      <p>Requires a server call. Please wait a few seconds.</p>
+    </div>
 
+
+    <h3 class="doAnchor" name="WriteYourOwnAppender">Writing your own
+    Appender</h3>
+    
 
     <p>You can easily write your appender by subclassing
     <code>AppenderBase</code>.  It handles support for filters, status
