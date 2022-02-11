@@ -13,39 +13,37 @@
  */
 package ch.qos.logback.core.model.processor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import ch.qos.logback.core.model.Model;
 
+/**
+ * Defines the relation between a dependee (Model) and a dependency (String).
+ * 
+ * Note that a dependee may have multiple dependencies but 
+ * {@link DependencyDefinition} applies to just one dependency relation.
+ * 
+ * @author ceki
+ *
+ */
 public class DependencyDefinition {
 
+    // depender: a component of type Model which depends on a dependee
+    Model depender;
+    // dependee: the string name of a component depended upon by the depender of type Model
+    String dependee;
     
-    Model dependee;
-    List<String> dependenciesList;
-    
-    public DependencyDefinition(Model dependee, String... dependencies) {
+    public DependencyDefinition(Model depender, String dependee) {
+        this.depender = depender;
         this.dependee = dependee;
-        this.dependenciesList = new ArrayList<>(1);
         
-        if(dependencies != null && dependencies.length > 0) {
-            dependenciesList.addAll(Arrays.asList(dependencies));
-        }
         
-    }
-
-    void addDependency(String dependency) {
-        this.dependenciesList.add(dependency);
     }
     
-    public List<String> getUnmodifiableDependenciesList() {
-        return Collections.unmodifiableList(this.dependenciesList);
+    public String getDependee() {
+        return dependee;
     }
 
-    public Model getDependee() {
-        return dependee;
+    public Model getDepender() {
+        return depender;
     }
     
     

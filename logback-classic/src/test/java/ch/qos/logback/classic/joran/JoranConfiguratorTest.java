@@ -83,6 +83,24 @@ public class JoranConfiguratorTest {
         assertEquals(msg, le.getMessage());
     }
 
+
+    @Test
+    public void asyncWithMultipleAppendersInRoot() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "async/logback_1614.xml");
+        StatusPrinter.print(loggerContext);
+        Logger logger = loggerContext.getLogger(this.getClass().getName());
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
+        assertNotNull(asyncAppender);
+        ConsoleAppender<ILoggingEvent> console = (ConsoleAppender<ILoggingEvent>) root.getAppender("CONSOLE");
+        assertNotNull(console);
+        assertTrue(console.isStarted());
+        //assertEquals(0, listAppender.list.size());
+        String msg = "hello world";
+        logger.warn(msg);
+        StatusPrinter.print(loggerContext);
+    }
+    
     @Test
     public void simpleListWithImports() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleListWithImports.xml");

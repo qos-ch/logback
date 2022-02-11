@@ -26,12 +26,19 @@ import ch.qos.logback.core.model.NamedComponentModel;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 
+/**
+ * DefaultProcessor traverses the Model produced at an earlier step and performs actual 
+ * configuration of logback according to the handlers it was given.
+ * 
+ * @author Ceki G&uuml;lc&uuml;
+ * @since 1.3.0
+ */
 public class DefaultProcessor extends ContextAwareBase {
 
     interface TraverseMethod {
         int traverse(Model model, ModelFilter modelFiler);
     }
-
+ 
     final ModelInterpretationContext mic;
     final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
     final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
@@ -221,7 +228,7 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     private boolean dependencyIsADirectSubmodel(Model model) {
-        List<String> dependecyNames = this.mic.getDependencyNamesForModel(model);
+        List<String> dependecyNames = this.mic.getDependeeNamesForModel(model);
         if (dependecyNames == null || dependecyNames.isEmpty()) {
             return false;
         }
@@ -239,13 +246,13 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     private boolean allDependenciesStarted(Model model) {
-        List<String> dependencyNames = mic.getDependencyNamesForModel(model);
+        List<String> dependencyNames = mic.getDependeeNamesForModel(model);
        
         if (dependencyNames == null || dependencyNames.isEmpty()) {
             return true;
         }
         for (String name : dependencyNames) {
-            boolean isStarted = mic.isNamedDependencyStarted(name);
+            boolean isStarted = mic.isNamedDependeeStarted(name);
             if (isStarted == false) {
                 return false;
             }

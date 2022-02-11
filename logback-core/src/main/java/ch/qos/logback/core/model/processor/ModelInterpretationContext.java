@@ -46,7 +46,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     final private BeanDescriptionCache beanDescriptionCache;
     final DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
     List<DependencyDefinition> dependencyDefinitionList = new ArrayList<>();
-    final List<String> startedDependencies = new ArrayList<>();
+    final List<String> startedDependees = new ArrayList<>();
 
     public ModelInterpretationContext(Context context) {
         this.context = context;
@@ -177,23 +177,24 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         return Collections.unmodifiableList(dependencyDefinitionList);
     }
 
-    public List<String> getDependencyNamesForModel(Model model) {
+    public List<String> getDependeeNamesForModel(Model model) {
+        List<String> dependencyList = new ArrayList<>();
         for (DependencyDefinition dd : dependencyDefinitionList) {
-            if (dd.getDependee() == model) {
-                return Collections.unmodifiableList(dd.dependenciesList);
+            if (dd.getDepender() == model) {
+               dependencyList.add(dd.getDependee());
             }
         }
-        return Collections.emptyList();
+        return dependencyList;
     }
 
-    public boolean hasDependencies(String name) {
+    public boolean hasDependers(String dependeeName) {
 
-        if (name == null || name.trim().length() == 0) {
-            new IllegalArgumentException("Empty dependency name not allowed here");
+        if (dependeeName == null || dependeeName.trim().length() == 0) {
+            new IllegalArgumentException("Empty dependeeName name not allowed here");
         }
 
         for (DependencyDefinition dd : dependencyDefinitionList) {
-            if (dd.dependenciesList.contains(name))
+            if (dd.dependee.equals(dependeeName))
                 return true;
         }
 
@@ -201,12 +202,12 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     }
 
 
-    public void markStartOfNamedDependency(String name) {
-        startedDependencies.add(name);
+    public void markStartOfNamedDependee(String name) {
+        startedDependees.add(name);
     }
 
-    public boolean isNamedDependencyStarted(String name) {
-        return startedDependencies.contains(name);
+    public boolean isNamedDependeeStarted(String name) {
+        return startedDependees.contains(name);
     }
 
     // ========================================== object map

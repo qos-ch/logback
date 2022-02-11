@@ -49,7 +49,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
 
         String appenderName = mic.subst(appenderModel.getName());
 
-        if (!mic.hasDependencies(appenderName)) {
+        if (!mic.hasDependers(appenderName)) {
             addWarn("Appender named [" + appenderName + "] not referenced. Skipping further processing.");
             skipped = true;
             appenderModel.markAsSkipped();
@@ -83,7 +83,7 @@ public class AppenderModelHandler<E> extends ModelHandlerBase {
         if (appender instanceof LifeCycle) {
             ((LifeCycle) appender).start();
         }
-        mic.markStartOfNamedDependency(appender.getName());
+        mic.markStartOfNamedDependee(appender.getName());
 
         Object o = mic.peekObject();
 
