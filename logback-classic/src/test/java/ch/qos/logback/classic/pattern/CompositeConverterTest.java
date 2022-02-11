@@ -25,7 +25,7 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.core.util.StatusPrinter;
 
 public class CompositeConverterTest {
 

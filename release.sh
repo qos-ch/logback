@@ -9,6 +9,7 @@ mvn site:site
 #mvn assembly:single
 mvn deploy -P javadocjar,sign-artifacts -Dgpg.passphrase=passwd
 
+# cleanHistory dep
 #uncomment diffie-hellman support in /etc/ssh/sshd_config
 
 mvn site:deploy -N # with Java 8!!!
