@@ -21,7 +21,7 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
-public class SimpleConfigurator extends GenericConfigurator {
+public class SimpleConfigurator extends GenericXMLConfigurator {
 
     HashMap<ElementSelector, Action> rulesMap;
 

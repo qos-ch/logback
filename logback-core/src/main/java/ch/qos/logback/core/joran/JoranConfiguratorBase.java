@@ -72,7 +72,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
  *
  * @author Ceki G&uuml;lc&uuml;
  */
-abstract public class JoranConfiguratorBase<E> extends GenericConfigurator {
+abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
     @Override
     protected void addInstanceRules(RuleStore rs) {

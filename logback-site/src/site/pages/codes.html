@@ -687,7 +687,26 @@ return false;</pre>
    <b>\(</b>%d{HH:mm:ss.SSS} [%thread]<b>\) </b>.
    </p>
   
+   <!-- ============================================================= -->
+   <h3 class="doAnchor" name="saxParserConfiguration">Error during SAX parser configuration</h3>
 
+   
+   <p>If you see the following error is thrown during logback configuration
+   </p>
+
+   <pre>Caused by: javax.xml.parsers.ParserConfigurationException: SAX feature 'http://xml.org/sax/features/external-general-entities' not supported.
+ at oracle.xml.jaxp.JXSAXParserFactory.setFeature(JXSAXParserFactory.java:272)
+ at ch.qos.logback.core.joran.event.SaxEventRecorder.buildSaxParser(SaxEventRecorder.java:82)
+   </pre>
+
+   <p>then we suggest that you specify a SAX parser that supports
+   selective feature enabling/disabling. Try setting the following
+   system property.</p>
+
+   <pre>-Djavax.xml.parsers.SAXParserFactory=com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl</pre>
+
+   <p>See also <a href="https://jira.qos.ch/browse/LOGBACK-1577">LOGBACK-1577</a>.</p>
+   
    <!-- ============================================================= -->
    <h3 class="doAnchor" name="appender_order">Appenders must be
    defined before they are referenced.

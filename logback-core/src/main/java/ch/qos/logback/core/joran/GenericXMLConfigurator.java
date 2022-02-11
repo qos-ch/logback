@@ -42,7 +42,7 @@ import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
 
-public abstract class GenericConfigurator extends ContextAwareBase {
+public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     protected SaxEventInterpreter saxEventInterpreter;
     protected ModelInterpretationContext modelInterpretationContext;

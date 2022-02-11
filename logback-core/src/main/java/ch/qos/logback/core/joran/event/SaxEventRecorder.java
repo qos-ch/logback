@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -89,11 +90,15 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
             spf.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
             spf.setNamespaceAware(true);
             return spf.newSAXParser();
-        } catch (Exception pce) {
-            String errMsg = "Parser configuration error occurred";
+        } catch (ParserConfigurationException pce) {
+            String errMsg = "Error during SAX paser configuration. See https://logback.qos.ch/codes.html#saxParserConfiguration";
             addError(errMsg, pce);
             throw new JoranException(errMsg, pce);
-        }
+        }  catch (SAXException pce) {
+            String errMsg = "Error during parser creation or parser configuration";
+            addError(errMsg, pce);
+            throw new JoranException(errMsg, pce);
+        } 
     }
 
     public void startDocument() {

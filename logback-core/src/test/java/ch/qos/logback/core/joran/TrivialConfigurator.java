@@ -20,7 +20,7 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.joran.spi.RuleStore;
 
-public class TrivialConfigurator extends GenericConfigurator {
+public class TrivialConfigurator extends GenericXMLConfigurator {
 
     HashMap<ElementSelector, Action> rulesMap;
 
