@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.pattern;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,41 +24,39 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.util.StatusPrinter;
 
-public class EnsureExceptionHandlingTest {
+public class CompositeConverterTest {
 
     private PatternLayout pl = new PatternLayout();
     private LoggerContext lc = new LoggerContext();
     Logger logger = lc.getLogger(this.getClass());
-
-    static final String XTH = "xth";
-    static final String XCC = "xcc";
-
+    StatusChecker sc = new StatusChecker(lc);
+    
+    
     @Before
     public void setUp() {
         pl.setContext(lc);
-        pl.getInstanceConverterMap().put(XTH, XThrowableHandlingConverter.class.getName());
-        pl.getInstanceConverterMap().put(XCC, XCompositeConverter.class.getName());
     }
 
     ILoggingEvent makeLoggingEvent(String msg, Exception ex) {
-        return new LoggingEvent(EnsureExceptionHandlingTest.class.getName(), logger, Level.INFO, msg, ex, null);
+        return new LoggingEvent(CompositeConverterTest.class.getName(), logger, Level.INFO, msg, ex, null);
     }
 
-    @Test
-    public void smoke() {
-        pl.setPattern("%m %" + XTH + ")");
-        pl.start();
-        ILoggingEvent le = makeLoggingEvent("assert", null);
-        pl.doLayout(le);
-    }
+    
 
     @Test
-    public void withinComposite() {
-        pl.setPattern("%m %" + XCC + "(%" + XTH + ")");
+    public void testLogback1582() {
+        // EVAL_REF is searched within the context, if context is not set (== null), then
+        // a NullPointerException will be thrown
+        pl.setPattern("%m  %replace(%rootException{5, EVAL_REF}){'\\n', 'XYZ'}\"");
         pl.start();
-        ILoggingEvent le = makeLoggingEvent("assert", null);
-        pl.doLayout(le);
+        ILoggingEvent le = makeLoggingEvent("assert", new Exception("test"));
+        
+        String result = pl.doLayout(le);
+        sc.assertIsErrorFree();
+        assertTrue(result.contains("XYZ"));
     }
 
 }
