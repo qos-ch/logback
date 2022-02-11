@@ -3077,7 +3077,7 @@ logger.error(<b>notifyAdmin</b>,
 
    <div id="mailWithMarker_GEventEvaluator_legacy" class="tabcontent">
 
-   <pre id="mailWithMarker_GEventEvaluator" class="prettyprint source">&lt;configuration>
+   <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     &lt;evaluator class="ch.qos.logback.classic.boolex.GEventEvaluator">
       &lt;expression>
@@ -3092,7 +3092,7 @@ logger.error(<b>notifyAdmin</b>,
 &lt;/configuration></pre>
    </div>
    
-   <div id="gmailSSL_canonical" class="tabcontent">
+   <div id="mailWithMarker_GEventEvaluator_canonical" class="tabcontent">
      <p>Requires a server call. Please wait a few seconds.</p>
    </div>
 
@@ -3139,7 +3139,7 @@ logger.error(<b>notifyAdmin</b>,
     
     <div id="gmailSSL_legacy" class="tabcontent">
 
-    <pre id="gmailSSLExample" class="prettyprint source">&lt;configuration>
+    <pre class="prettyprint source">&lt;configuration>
   &lt;appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
     <b>&lt;smtpHost>smtp.gmail.com&lt;/smtpHost></b>
     <b>&lt;smtpPort>465&lt;/smtpPort></b>
