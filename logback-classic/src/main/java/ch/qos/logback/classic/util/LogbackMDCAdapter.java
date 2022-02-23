@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic.util;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -70,13 +69,9 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
 
     private Map<String, String> duplicateAndInsertNewMap(Map<String, String> oldMap) {
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
+        Map<String, String> newMap = new HashMap<String, String>();
         if (oldMap != null) {
-            // we don't want the parent thread modifying oldMap while we are
-            // iterating over it
-            synchronized (oldMap) {
-                newMap.putAll(oldMap);
-            }
+            newMap.putAll(oldMap);
         }
 
         copyOnThreadLocal.set(newMap);
@@ -191,8 +186,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     public void setContextMap(Map<String, String> contextMap) {
         lastOperation.set(WRITE_OPERATION);
 
-        Map<String, String> newMap = Collections.synchronizedMap(new HashMap<String, String>());
-        newMap.putAll(contextMap);
+        Map<String, String> newMap = new HashMap<String, String>(contextMap);
 
         // the newMap replaces the old one for serialisation's sake
         copyOnThreadLocal.set(newMap);
