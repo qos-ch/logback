@@ -1294,6 +1294,36 @@ public interface RollingPolicy extends LifeCycle {
   &lt;/root>
 &lt;/configuration></pre>
    </div>
+        <p> If you want to add date pattern to the current logging file name,
+            Simply use the setting where <b><code>file</code> property is removed.</b>
+            (Simply, <b>Instead of changing the file name, creating and writing new file</b> for the next date pattern)
+        </p>
+        <p class="example">Example:
+            Logging <code>logFile.2022-02-28.log</code> in now, and the names of the next files are as below
+            (logback-examples/src/main/resources/chapters/appenders/conf/logback-RollingWithDateName.xml) </p>
+        <pre class="prettyprint source">
+Example
+    * Now(log appending...)   logFile.2022-02-28.log // !!NOT logFile.log!!
+    * The next day            logFile.2022-03-01.log
+    * The next two day        logFile.2022-03-02.log</pre>
+     <pre class="prettyprint source">&lt;configuration>
+  &lt;appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+     <b>&lt;!-- &lt;file>logFile.log&lt;/file> --></b>
+    &lt;rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      &lt;fileNamePattern>logFile.%d{yyyy-MM-dd}.log&lt;/fileNamePattern>
+      &lt;maxHistory>30&lt;/maxHistory>
+    &lt;/rollingPolicy>
+
+    &lt;encoder>
+      &lt;pattern>%-4relative [%thread] %-5level %logger{35} - %msg%n&lt;/pattern>
+    &lt;/encoder>
+  &lt;/appender>
+
+  &lt;root level="DEBUG">
+    &lt;appender-ref ref="FILE" />
+  &lt;/root>
+&lt;/configuration></pre>
+
    
    <div id="logback_PrudentTimeBasedRolling_canonical" class="tabcontent">
      <p>Requires a server call.</p>
