@@ -728,7 +728,10 @@ public interface Appender&lt;E> extends LifeCycle, ContextAware, FilterAttachabl
      <tr>
        <td><span class="prop" container="rfa">file</span></td>
        <td><code>String</code></td>
-       <td>See <code>FileAppender</code> properties.</td>
+       <td>See <code>FileAppender</code> properties. Note
+       that <span class="prop">file</span> can be <code>null</code> in
+       which case the output is written only to the target specified
+       by the <code>RollingPolicy</code>.</td>
      </tr>	
      <tr>
        <td><span class="prop" container="rfa">append</span></td>
@@ -874,19 +877,24 @@ public interface RollingPolicy extends LifeCycle {
 
          <p>Note that the <span class="prop">file</span> property in
          <code>RollingFileAppender</code> (the parent of
-         <code>TimeBasedRollingPolicy</code>) can be either set or
-         omitted. By setting the <span class="prop">file</span>
-         property of the containing <code>FileAppender</code>, you can
-         decouple the location of the active log file and the location
-         of the archived log files. The current logs will be always
-         targeted at the file specified by the <span
-         class="prop">file</span> property. It follows that the name
-         of the currently active log file will not change over
-         time. However, if you choose to omit the <span
-         class="prop">file</span> property, then the active file
-         will be computed anew for each period based on the value of
-         <span class="prop">fileNamePattern</span>.  The examples
-         below should clarify this point.
+         <code>TimeBasedRollingPolicy</code>) can be either set to a
+         value or omitted (=null). By setting
+         the <span class="prop">file</span> property of the
+         containing <code>FileAppender</code>, you can decouple the
+         location of the active log file and the location of the
+         archived log files. The current logs will be always targeted
+         at the file specified by the <span class="prop">file</span>
+         property. It follows that the name of the currently active
+         log file will not change over time.</p>
+
+
+         <p>However, if you choose to omit
+         the <span class="prop">file</span> property, then the active
+         file will be computed anew for each period based on the value
+         of
+         <span class="prop">fileNamePattern</span>. In this
+         configuration no roll over occur, unless file compression is
+         specified. The examples below should clarify this point.
          </p>
 
          <p>The date-and-time pattern, as found within the accolades
@@ -1115,10 +1123,11 @@ public interface RollingPolicy extends LifeCycle {
    folders.
    </p>
 
+   <h3>Automatic file compression</h3>
 
- 	 <p><code>TimeBasedRollingPolicy</code> supports automatic file
- 	 compression.  This feature is enabled if the value of the <span
- 	 class="prop">fileNamePattern</span> option ends with <em>.gz</em>
+   <p><code>TimeBasedRollingPolicy</code> supports automatic file
+      compression.  This feature is enabled if the value of the
+      <span class="prop">fileNamePattern</span> option ends with <em>.gz</em>
  	 or <em>.zip</em>.
    </p>
 
