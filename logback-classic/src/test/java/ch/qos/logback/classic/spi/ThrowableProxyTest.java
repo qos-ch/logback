@@ -15,18 +15,17 @@ package ch.qos.logback.classic.spi;
 
 import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import ch.qos.logback.classic.util.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.qos.logback.classic.util.TestHelper;
 
 public class ThrowableProxyTest {
 

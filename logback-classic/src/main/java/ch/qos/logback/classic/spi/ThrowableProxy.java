@@ -15,6 +15,8 @@ package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.core.CoreConstants;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -23,131 +25,188 @@ import java.util.Set;
 
 public class ThrowableProxy implements IThrowableProxy {
 
-    private Throwable throwable;
-    private String className;
-    private String message;
-    // package-private because of ThrowableProxyUtil
-    StackTraceElementProxy[] stackTraceElementProxyArray;
-    // package-private because of ThrowableProxyUtil
-    int commonFrames;
-    private ThrowableProxy cause;
-    private ThrowableProxy[] suppressed = NO_SUPPRESSED;
-    private final Set<Throwable> alreadyProcessedSet;
+	static final StackTraceElementProxy[] EMPTY_STEP = new StackTraceElementProxy[0];
 
-    private transient PackagingDataCalculator packagingDataCalculator;
-    private boolean calculatedPackageData = false;
+	private Throwable throwable;
+	private String className;
+	private String message;
+	// package-private because of ThrowableProxyUtil
+	StackTraceElementProxy[] stackTraceElementProxyArray;
+	// package-private because of ThrowableProxyUtil
+	int commonFrames;
+	private ThrowableProxy cause;
+	private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
+	private ThrowableProxy[] suppressed = NO_SUPPRESSED;
 
-    private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
+	// private final Set<Throwable> alreadyProcessedSet;
 
-    public ThrowableProxy(Throwable throwable) {
-        // Using Collections.newSetFromMap(new IdentityHashMap<>()) is inspired from
-        // Throwable.printStackTrace(PrintStreamOrWriter):
-        // Guard against malicious overrides of Throwable.equals by
-        // using a Set with identity equality semantics.
-        this(throwable, Collections.newSetFromMap(new IdentityHashMap<>()));
-    }
+	private transient PackagingDataCalculator packagingDataCalculator;
+	private boolean calculatedPackageData = false;
 
-    public ThrowableProxy(Throwable throwable, Set<Throwable> alreadyProcessedSet) {
+	private boolean circular;
 
-        this.throwable = throwable;
-        this.className = throwable.getClass().getName();
-        this.message = throwable.getMessage();
-        this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
-        this.alreadyProcessedSet = alreadyProcessedSet;
+	private static final Method GET_SUPPRESSED_METHOD;
 
-        alreadyProcessedSet.add(throwable);
+	static {
+		Method method = null;
+		try {
+			method = Throwable.class.getMethod("getSuppressed");
+		} catch (NoSuchMethodException e) {
+			// ignore, will get thrown in Java < 7
+		}
+		GET_SUPPRESSED_METHOD = method;
+	}
 
-        Throwable nested = throwable.getCause();
+	public ThrowableProxy(Throwable throwable) {
+		// use an identity set to detect cycles in the throwable chain
+		this(throwable, Collections.newSetFromMap(new IdentityHashMap<Throwable, Boolean>()));
+	}
 
-        if (nested != null && !alreadyProcessedSet.contains(nested)) {
-            this.cause = new ThrowableProxy(nested, alreadyProcessedSet);
-            this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(), stackTraceElementProxyArray);
-        }
-        Throwable[] throwableSuppressed = throwable.getSuppressed();
-        if (throwableSuppressed.length > 0) {
-            List<ThrowableProxy> suppressedList = new ArrayList<>(throwableSuppressed.length);
-            for (int i = 0; i < throwableSuppressed.length; i++) {
-                Throwable sup = throwableSuppressed[i];
-                if (alreadyProcessedSet.contains(sup)) {
-                    continue; // loop detected
-                }
-                ThrowableProxy throwableProxy = new ThrowableProxy(sup, alreadyProcessedSet);
-                throwableProxy.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(sup.getStackTrace(),
-                        stackTraceElementProxyArray);
-                suppressedList.add(throwableProxy);
-            }
-            this.suppressed = suppressedList.toArray(new ThrowableProxy[suppressedList.size()]);
-        }
-    }
+	// used for circular exceptions
+	private ThrowableProxy(Throwable circular, boolean isCircular) {
+		this.throwable = circular;
+		this.className = circular.getClass().getName();
+		this.message = circular.getMessage();
+		this.stackTraceElementProxyArray = EMPTY_STEP;
+		this.circular = true;
+	}
 
-    public Throwable getThrowable() {
-        return throwable;
-    }
+	public ThrowableProxy(Throwable throwable, Set<Throwable> alreadyProcessedSet) {
 
-    public String getMessage() {
-        return message;
-    }
+		this.throwable = throwable;
+		this.className = throwable.getClass().getName();
+		this.message = throwable.getMessage();
+		this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
+		this.circular = false;
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ch.qos.logback.classic.spi.IThrowableProxy#getClassName()
-     */
-    public String getClassName() {
-        return className;
-    }
+		alreadyProcessedSet.add(throwable);
 
-    public StackTraceElementProxy[] getStackTraceElementProxyArray() {
-        return stackTraceElementProxyArray;
-    }
+		Throwable nested = throwable.getCause();
+		if (nested != null) {
+			if (alreadyProcessedSet.contains(nested)) {
+				this.cause = new ThrowableProxy(nested, true);
+			} else {
+				this.cause = new ThrowableProxy(nested, alreadyProcessedSet);
+				this.cause.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(nested.getStackTrace(),
+						stackTraceElementProxyArray);
+			}
+		}
 
-    public int getCommonFrames() {
-        return commonFrames;
-    }
+		if (GET_SUPPRESSED_METHOD != null) {
+			// this will only execute on Java 7
+			Throwable[] throwableSuppressed = extractSupressedThrowables(throwable);
+			
+			if (throwableSuppressed.length > 0) {
+				List<ThrowableProxy> suppressedList = new ArrayList<ThrowableProxy>(throwableSuppressed.length);
+				for (Throwable sup : throwableSuppressed) {
+					if (alreadyProcessedSet.contains(sup)) {
+						ThrowableProxy throwableProxy = new ThrowableProxy(sup, true);
+						suppressedList.add(throwableProxy);
+					} else {
+						ThrowableProxy throwableProxy = new ThrowableProxy(sup, alreadyProcessedSet);
+						throwableProxy.commonFrames = ThrowableProxyUtil.findNumberOfCommonFrames(sup.getStackTrace(),
+								stackTraceElementProxyArray);
+						suppressedList.add(throwableProxy);
+					}
+				}
+				this.suppressed = suppressedList.toArray(new ThrowableProxy[suppressedList.size()]);
+			}
+		}
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see ch.qos.logback.classic.spi.IThrowableProxy#getCause()
-     */
-    public IThrowableProxy getCause() {
-        return cause;
-    }
+	private Throwable[] extractSupressedThrowables(Throwable t) {
+		try {
+			Object obj = GET_SUPPRESSED_METHOD.invoke(t);
+			if (obj instanceof Throwable[]) {
+				Throwable[] throwableSuppressed = (Throwable[]) obj;
+				return throwableSuppressed;
+			} else {
+				return null;
+			}
+		} catch (IllegalAccessException e) {
+			// ignore
+		} catch (IllegalArgumentException e) {
+			// ignore
+		} catch (InvocationTargetException e) {
+			// ignore
+		}
 
-    public IThrowableProxy[] getSuppressed() {
-        return suppressed;
-    }
+		return null;
 
-    public PackagingDataCalculator getPackagingDataCalculator() {
-        // if original instance (non-deserialized), and packagingDataCalculator
-        // is not already initialized, then create an instance.
-        // here we assume that (throwable == null) for deserialized instances
-        if (throwable != null && packagingDataCalculator == null) {
-            packagingDataCalculator = new PackagingDataCalculator();
-        }
-        return packagingDataCalculator;
-    }
+	}
 
-    public void calculatePackagingData() {
-        if (calculatedPackageData) {
-            return;
-        }
-        PackagingDataCalculator pdc = this.getPackagingDataCalculator();
-        if (pdc != null) {
-            calculatedPackageData = true;
-            pdc.calculate(this);
-        }
-    }
+	public Throwable getThrowable() {
+		return throwable;
+	}
 
-    public void fullDump() {
-        StringBuilder builder = new StringBuilder();
-        for (StackTraceElementProxy step : stackTraceElementProxyArray) {
-            String string = step.toString();
-            builder.append(CoreConstants.TAB).append(string);
-            ThrowableProxyUtil.subjoinPackagingData(builder, step);
-            builder.append(CoreConstants.LINE_SEPARATOR);
-        }
-        System.out.println(builder.toString());
-    }
+	public String getMessage() {
+		return message;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.qos.logback.classic.spi.IThrowableProxy#getClassName()
+	 */
+	public String getClassName() {
+		return className;
+	}
+
+	public StackTraceElementProxy[] getStackTraceElementProxyArray() {
+		return stackTraceElementProxyArray;
+	}
+
+	public boolean isCyclic() {
+		return circular;
+	}
+
+	public int getCommonFrames() {
+		return commonFrames;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see ch.qos.logback.classic.spi.IThrowableProxy#getCause()
+	 */
+	public IThrowableProxy getCause() {
+		return cause;
+	}
+
+	public IThrowableProxy[] getSuppressed() {
+		return suppressed;
+	}
+
+	public PackagingDataCalculator getPackagingDataCalculator() {
+		// if original instance (non-deserialized), and packagingDataCalculator
+		// is not already initialized, then create an instance.
+		// here we assume that (throwable == null) for deserialized instances
+		if (throwable != null && packagingDataCalculator == null) {
+			packagingDataCalculator = new PackagingDataCalculator();
+		}
+		return packagingDataCalculator;
+	}
+
+	public void calculatePackagingData() {
+		if (calculatedPackageData) {
+			return;
+		}
+		PackagingDataCalculator pdc = this.getPackagingDataCalculator();
+		if (pdc != null) {
+			calculatedPackageData = true;
+			pdc.calculate(this);
+		}
+	}
+
+	public void fullDump() {
+		StringBuilder builder = new StringBuilder();
+		for (StackTraceElementProxy step : stackTraceElementProxyArray) {
+			String string = step.toString();
+			builder.append(CoreConstants.TAB).append(string);
+			ThrowableProxyUtil.subjoinPackagingData(builder, step);
+			builder.append(CoreConstants.LINE_SEPARATOR);
+		}
+		System.out.println(builder.toString());
+	}
 
 }
