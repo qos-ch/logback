@@ -49,7 +49,7 @@
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
     <project.build.outputTimestamp>2022-02-11T22:54:00Z</project.build.outputTimestamp>    
-    <latest.stable.version>1.2.10</latest.stable.version>
+    <latest.stable.version>1.2.11</latest.stable.version>
     <jdk.version>8</jdk.version>
     <maven.compiler.source>${jdk.version}</maven.compiler.source>
     <maven.compiler.target>${jdk.version}</maven.compiler.target>
