@@ -26,12 +26,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.qos.logback.classic.util.TestHelper;
+import ch.qos.logback.core.testUtil.VersionUtil;
 
 public class ThrowableProxyTest {
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
-
+    int javaVersion = VersionUtil.getJavaMajorVersion();
+    
     @Before
     public void setUp() throws Exception {
     }
@@ -170,6 +172,9 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void nestedLoop2() {
+    	if(javaVersion < 7) {
+    		return;
+    	}
         Exception e = new Exception("foo");
         Exception e2 = new Exception(e);
         e.addSuppressed(e2);
