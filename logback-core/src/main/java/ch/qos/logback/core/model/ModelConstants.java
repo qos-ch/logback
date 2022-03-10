@@ -11,20 +11,12 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.model;
+package ch.qos.logback.core.model;
 
-import ch.qos.logback.core.model.Model;
+public class ModelConstants {
 
-public class RootLoggerModel extends Model {
-
-    private static final long serialVersionUID = -2811453129653502831L;
-    String level;
-
-    public String getLevel() {
-        return level;
-    }
-
-    public void setLevel(String level) {
-        this.level = level;
-    }
-}
+    
+    public static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
+    public static final String NULL_STR = "null";
+    
+}   

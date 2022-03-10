@@ -1,4 +1,21 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.classic.model.processor;
+
+import static ch.qos.logback.core.model.ModelConstants.DEBUG_SYSTEM_PROPERTY_KEY;
+import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
+import static java.lang.Boolean.FALSE;
 
 import java.net.URL;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +39,6 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 public class ConfigurationModelHandler extends ModelHandlerBase {
 
-    static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
     static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
 
     public ConfigurationModelHandler(Context context) {
@@ -46,13 +62,14 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         // the equivalent property in the config file. This reversal of scope priority
         // is justified
         // by the use case: the admin trying to chase rogue config file
-        String debugAttrib = getSystemProperty(DEBUG_SYSTEM_PROPERTY_KEY);
+        String debugAttrib = OptionHelper.getSystemProperty(DEBUG_SYSTEM_PROPERTY_KEY, null);
         if (debugAttrib == null) {
             debugAttrib = mic.subst(configurationModel.getDebugStr());
         }
+        
 
-        if (!(OptionHelper.isNullOrEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase("false")
-                || debugAttrib.equalsIgnoreCase("null"))) {
+        if (!(OptionHelper.isNullOrEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase(FALSE.toString())
+                || debugAttrib.equalsIgnoreCase(NULL_STR))) {
             StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
         }
 
@@ -65,18 +82,6 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
         ContextUtil contextUtil = new ContextUtil(context);
         contextUtil.addGroovyPackages(lc.getFrameworkPackages());
-    }
-
-    String getSystemProperty(String name) {
-        /*
-         * LOGBACK-743: accessing a system property in the presence of a SecurityManager
-         * (e.g. applet sandbox) can result in a SecurityException.
-         */
-        try {
-            return System.getProperty(name);
-        } catch (SecurityException ex) {
-            return null;
-        }
     }
 
     void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
