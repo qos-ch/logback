@@ -14,10 +14,12 @@
 package ch.qos.logback.classic.util;
 
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.helpers.ThreadLocalMapOfStacks;
 import org.slf4j.spi.MDCAdapter;
 
 /**
@@ -59,6 +61,8 @@ public class LogbackMDCAdapter implements MDCAdapter {
     // keeps track of the last operation performed
     final ThreadLocal<Integer> lastOperation = new ThreadLocal<Integer>();
 
+    private final ThreadLocalMapOfStacks threadLocalMapOfDeques = new ThreadLocalMapOfStacks();
+    
     private Integer getAndSetLastOperation(int op) {
         Integer lastOp = lastOperation.get();
         lastOperation.set(op);
@@ -196,5 +200,24 @@ public class LogbackMDCAdapter implements MDCAdapter {
 
         // the newMap replaces the old one for serialisation's sake
         copyOnThreadLocal.set(newMap);
+    }
+    
+    @Override
+    public void pushByKey(String key, String value) {
+        threadLocalMapOfDeques.pushByKey(key, value);
+    }
+
+    @Override
+    public String popByKey(String key) {
+        return threadLocalMapOfDeques.popByKey(key);    
+     }
+
+    @Override
+    public Deque<String> getCopyOfDequeByKey(String key) {
+        return threadLocalMapOfDeques.getCopyOfDequeByKey(key);
+    }
+    @Override
+    public void clearDequeByKey(String key) {
+        threadLocalMapOfDeques.clearDequeByKey(key);
     }
 }

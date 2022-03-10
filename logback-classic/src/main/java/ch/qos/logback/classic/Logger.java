@@ -22,11 +22,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
+import org.slf4j.spi.DefaultLoggingEventBuilder;
 import org.slf4j.spi.LocationAwareLogger;
+import org.slf4j.spi.LoggingEventAware;
 import org.slf4j.spi.LoggingEventBuilder;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LogbackLoggingEventBuilder;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LoggerNameUtil;
 import ch.qos.logback.core.Appender;
@@ -36,7 +37,7 @@ import ch.qos.logback.core.spi.AppenderAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 
 public final class Logger
-        implements org.slf4j.Logger, LocationAwareLogger, AppenderAttachable<ILoggingEvent>, Serializable {
+        implements org.slf4j.Logger, LocationAwareLogger, LoggingEventAware, AppenderAttachable<ILoggingEvent>, Serializable {
 
     private static final long serialVersionUID = 5454405123156820674L; // 8745934908040027998L;
 
@@ -765,14 +766,13 @@ public final class Logger
     }
 
     /**
-     * Creates a {@link LoggingEventBuilder} of type
-     * {@link LogbackLoggingEventBuilder}.
+     * Creates a {@link LoggingEventBuilder} of type {@link DefaultLoggingEventBuilder}.
      * 
      * @since 1.3
      */
     @Override
     public LoggingEventBuilder makeLoggingEventBuilder(org.slf4j.event.Level level) {
-        return new LogbackLoggingEventBuilder(this, level);
+        return new DefaultLoggingEventBuilder(this, level);
     }
 
     public void log(Marker marker, String fqcn, int levelInt, String message, Object[] argArray, Throwable t) {
