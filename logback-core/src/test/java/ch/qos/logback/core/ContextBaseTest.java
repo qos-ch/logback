@@ -22,6 +22,7 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import ch.qos.logback.core.spi.LifeCycle;
+import ch.qos.logback.core.util.NetworkAddressUtil;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -39,6 +40,13 @@ public class ContextBaseTest {
         System.out.println("printing system properties");
         Properties p = System.getProperties();
         p.forEach( (k, v) -> System.out.println(k+"="+v));
+    }
+    
+    @Test
+    public void printHostnme() {
+        NetworkAddressUtil nau = new NetworkAddressUtil(context);
+        String hostname = nau.safelyGetLocalHostName();
+        System.out.println("hostname="+hostname);
     }
     
     @Test
