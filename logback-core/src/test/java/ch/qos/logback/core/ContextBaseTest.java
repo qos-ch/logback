@@ -24,6 +24,7 @@ import org.junit.Test;
 import ch.qos.logback.core.spi.LifeCycle;
 
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 public class ContextBaseTest {
@@ -32,6 +33,14 @@ public class ContextBaseTest {
 
     private InstrumentedContextBase context = new InstrumentedContextBase(lifeCycleManager);
 
+    
+    @Test
+    public void printSystemProperties() {
+        System.out.println("printing system properties");
+        Properties p = System.getProperties();
+        p.forEach( (k, v) -> System.out.println(k+"="+v));
+    }
+    
     @Test
     public void renameDefault() {
         context.setName(CoreConstants.DEFAULT_CONTEXT_NAME);
