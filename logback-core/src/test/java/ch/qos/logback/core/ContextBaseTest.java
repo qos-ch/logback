@@ -19,14 +19,12 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+
 import org.junit.Test;
 
 import ch.qos.logback.core.spi.LifeCycle;
-import ch.qos.logback.core.util.NetworkAddressUtil;
-
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 public class ContextBaseTest {
 
@@ -34,21 +32,6 @@ public class ContextBaseTest {
 
     private InstrumentedContextBase context = new InstrumentedContextBase(lifeCycleManager);
 
-    
-    @Test
-    public void printSystemProperties() {
-        System.out.println("printing system properties");
-        Properties p = System.getProperties();
-        p.forEach( (k, v) -> System.out.println(k+"="+v));
-    }
-    
-    @Test
-    public void printHostnme() {
-        NetworkAddressUtil nau = new NetworkAddressUtil(context);
-        String hostname = nau.safelyGetLocalHostName();
-        System.out.println("hostname="+hostname);
-    }
-    
     @Test
     public void renameDefault() {
         context.setName(CoreConstants.DEFAULT_CONTEXT_NAME);

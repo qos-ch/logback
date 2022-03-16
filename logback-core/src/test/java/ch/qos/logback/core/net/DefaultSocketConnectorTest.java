@@ -36,6 +36,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
+import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
 /**
  * Unit tests for {@link DefaultSocketConnector}.
@@ -57,6 +58,9 @@ public class DefaultSocketConnectorTest {
 
     @Before
     public void setUp() throws Exception {
+        if(EnvUtilForTests.isGithubAction())
+            return;
+        
         serverSocket = ServerSocketUtil.createServerSocket();
         connector = new DefaultSocketConnector(serverSocket.getInetAddress(), serverSocket.getLocalPort(), 0,
                 RETRY_DELAY);
@@ -65,6 +69,9 @@ public class DefaultSocketConnectorTest {
 
     @After
     public void tearDown() throws Exception {
+        if(EnvUtilForTests.isGithubAction())
+            return;
+        
         if (serverSocket != null) {
             serverSocket.close();
         }
@@ -72,6 +79,9 @@ public class DefaultSocketConnectorTest {
 
     @Test
     public void testConnect() throws Exception {
+        if(EnvUtilForTests.isGithubAction())
+            return;
+        
         Future<Socket> connectorTask = executor.submit(connector);
 
         Socket socket = connectorTask.get(DELAY, TimeUnit.MILLISECONDS);
@@ -84,6 +94,9 @@ public class DefaultSocketConnectorTest {
 
     @Test
     public void testConnectionFails() throws Exception {
+        if(EnvUtilForTests.isGithubAction())
+            return;
+        
         serverSocket.close();
         Future<Socket> connectorTask = executor.submit(connector);
 
@@ -104,6 +117,9 @@ public class DefaultSocketConnectorTest {
 
     @Test(timeout = 5000)
     public void testConnectEventually() throws Exception {
+        if(EnvUtilForTests.isGithubAction())
+            return;
+        
         serverSocket.close();
 
         Future<Socket> connectorTask = executor.submit(connector);

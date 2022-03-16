@@ -18,6 +18,23 @@ import java.net.UnknownHostException;
 
 public class EnvUtilForTests {
 
+    static String GITHUB_HOME = "/home/runner";
+
+    static String LOCAL_REPOSITORY_PREFIX = GITHUB_HOME;
+
+    static public boolean isGithubAction() {
+        String userHome = System.getProperty("user.home");
+        String localRepository = System.getProperty("localRepository");
+
+        if (GITHUB_HOME.equals(userHome))
+            return true;
+
+        if (localRepository != null && localRepository.startsWith(LOCAL_REPOSITORY_PREFIX))
+            return true;
+        
+        return false;
+    }
+
     static public boolean isWindows() {
         return System.getProperty("os.name").indexOf("Windows") != -1;
     }
