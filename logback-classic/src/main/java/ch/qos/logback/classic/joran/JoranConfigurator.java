@@ -45,6 +45,7 @@ import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.util.ParentTag_Tag_Class_Tuple;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.DefineModel;
@@ -64,7 +65,9 @@ import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
+import ch.qos.logback.core.model.util.TagUtil;
 
+import java.util.List;
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
  *
@@ -189,30 +192,5 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.setPhaseTwoFilter(secondPhaseDefintionFilter);
 
     }
-
-//	protected void miniBuildInterpreter() {
-//		RuleStore rs = new SimpleRuleStore(context);
-//		this.interpreter = new SaxEventInterpreter(context, rs, initialElementPath());
-//		InterpretationContext interpretationContext = interpreter.getInterpretationContext();
-//		interpretationContext.setContext(context);
-//		Map<String, Object> omap = interpreter.getInterpretationContext().getObjectMap();
-//		omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
-//		omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
-//	}
-
-//	public void doT() throws JoranException {
-//		miniBuildInterpreter();
-//		Model top;
-//		try {
-//			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(TTT));
-//			top = (Model) ois.readObject();
-//			ois.close();
-//			interpreter.getInterpretationContext().pushModel(top);
-//			processModel(top);
-//		} catch (IOException | ClassNotFoundException e1) {
-//			e1.printStackTrace();
-//		}
-//
-//	}
 
 }
