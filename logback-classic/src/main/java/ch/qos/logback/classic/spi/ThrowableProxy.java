@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.OptionHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -93,10 +94,10 @@ public class ThrowableProxy implements IThrowableProxy {
 		}
 
 		if (GET_SUPPRESSED_METHOD != null) {
-			// this will only execute on Java 7
+			// this will only execute on Java 7 and later
 			Throwable[] throwableSuppressed = extractSupressedThrowables(throwable);
 			
-			if (throwableSuppressed.length > 0) {
+			if (OptionHelper.isNotEmtpy(throwableSuppressed)) {
 				List<ThrowableProxy> suppressedList = new ArrayList<ThrowableProxy>(throwableSuppressed.length);
 				for (Throwable sup : throwableSuppressed) {
 					if (alreadyProcessedSet.contains(sup)) {
