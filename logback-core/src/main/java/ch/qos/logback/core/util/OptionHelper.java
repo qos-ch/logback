@@ -273,4 +273,14 @@ public class OptionHelper {
         return ((str == null) || str.trim().length() == 0);
     }
 
+    final public static boolean isNullOrEmpty(Object[] array) {
+        if(array == null || array.length == 0)
+                return true;
+        else
+                return false;
+    }
+
+    final public static boolean isNotEmtpy(Object[] array) {
+        return !isNullOrEmpty(array);
+    }
 }

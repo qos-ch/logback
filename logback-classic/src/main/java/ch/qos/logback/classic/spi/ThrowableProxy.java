@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.spi;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,7 +81,9 @@ public class ThrowableProxy implements IThrowableProxy {
         }
 
         Throwable[] throwableSuppressed = throwable.getSuppressed();
-        if (throwableSuppressed.length > 0) {
+        // while JDK's implementation of getSuppressed() will always return a non-null array,
+        // this might not be the case in mocked throwables. We are being extra defensive here.
+        if (OptionHelper.isNotEmtpy(throwableSuppressed)) {
             List<ThrowableProxy> suppressedList = new ArrayList<>(throwableSuppressed.length);
             for (Throwable sup : throwableSuppressed) {
                 if (alreadyProcessedSet.contains(sup)) {
