@@ -44,6 +44,7 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -87,7 +88,6 @@ public class JoranConfiguratorTest {
     @Test
     public void asyncWithMultipleAppendersInRoot() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "async/logback_1614.xml");
-        StatusPrinter.print(loggerContext);
         Logger logger = loggerContext.getLogger(this.getClass().getName());
         Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         AsyncAppender asyncAppender = (AsyncAppender) root.getAppender("ASYNC");
@@ -104,7 +104,6 @@ public class JoranConfiguratorTest {
     @Test
     public void simpleListWithImports() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "simpleListWithImports.xml");
-        StatusPrinter.print(loggerContext);
         Logger logger = loggerContext.getLogger(this.getClass().getName());
         Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
@@ -180,7 +179,6 @@ public class JoranConfiguratorTest {
     @Test
     public void statusListener() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
-        StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertIsErrorFree();
         checker.assertContainsMatch(Status.WARN,
                 "Please use \"level\" attribute within <logger> or <root> elements instead.");
@@ -189,8 +187,7 @@ public class JoranConfiguratorTest {
     @Test
     public void statusListenerWithImports() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListenerWithImports.xml");
-        StatusPrinter.print(loggerContext);
-        StatusChecker checker = new StatusChecker(loggerContext);
+        //StatusPrinter.print(loggerContext);
         checker.assertIsErrorFree();
         checker.assertContainsMatch(Status.WARN,
                 "Please use \"level\" attribute within <logger> or <root> elements instead.");
@@ -397,7 +394,6 @@ public class JoranConfiguratorTest {
 
         assertEquals("UTF-8", encoder.getCharset().displayName());
 
-        StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertIsErrorFree();
     }
 
@@ -419,7 +415,6 @@ public class JoranConfiguratorTest {
         java.util.logging.Logger.getLogger(loggerName).setLevel(java.util.logging.Level.INFO);
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator0.xml";
         configure(configFileAsStr);
-        StatusChecker checker = new StatusChecker(loggerContext);
 
         checker.assertIsErrorFree();
         verifyJULLevel(loggerName, null);
@@ -435,7 +430,7 @@ public class JoranConfiguratorTest {
         verifyJULLevel(loggerName, Level.INFO);
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator1.xml";
         configure(configFileAsStr);
-        StatusChecker checker = new StatusChecker(loggerContext);
+
         checker.assertIsErrorFree();
         verifyJULLevel(loggerName, Level.INFO); //
         verifyJULLevel("a.b.c." + diff, Level.WARN);
@@ -569,7 +564,6 @@ public class JoranConfiguratorTest {
 
         final ListAppender<ILoggingEvent> listAppenderA = (ListAppender<ILoggingEvent>) root.getAppender("A");
         assertNotNull(listAppenderA);
-        StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertContainsMatch(Status.WARN, "Appender named \\[B\\] not referenced. Skipping further processing.");
     }
 
@@ -628,7 +622,18 @@ public class JoranConfiguratorTest {
         assertTrue(slAppender.strList.get(2).contains("null=\"" + kvpNullKey.value + "\" " + msg));
         assertTrue(slAppender.strList.get(3).contains(kvpNullValue.key + "=\"null\" " + msg));
     }
-
+ 
+    
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46697
+    @Test
+    public void ossFuzz_46697() throws JoranException  {
+        System.out.println("==========");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-46697.xml");
+         
+        checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
+        StatusPrinter.print(loggerContext);
+    }  
+    
 //	@Test
 //	public void doTest() throws JoranException {
 //		int LIMIT = 0;

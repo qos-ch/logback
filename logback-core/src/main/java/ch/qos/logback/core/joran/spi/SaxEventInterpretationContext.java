@@ -158,7 +158,15 @@ public class SaxEventInterpretationContext extends ContextAwareBase implements P
 //		return implicitActionDataStack;
 //	}
 //
+    /**
+     * Return the Model at the top of the model stack, may return null.
+     * 
+     * @return
+     */
     public Model peekModel() {
+        if(modelStack.isEmpty()) {
+            return null;
+        }
         return modelStack.peek();
     }
 

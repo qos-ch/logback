@@ -40,6 +40,7 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.status.StatusUtil;
 
 public abstract class GenericXMLConfigurator extends ContextAwareBase {
@@ -157,6 +158,10 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
         SaxEventRecorder recorder = populateSaxEventRecorder(inputSource);
         Model top = buildModelFromSaxEventList(recorder.saxEventList);
+        if(top == null) {
+            addError(ErrorCodes.EMPTY_MODEL_STACK);
+            return;
+        }
         processModel(top);
 
         // no exceptions a this level

@@ -45,7 +45,6 @@ import ch.qos.logback.core.joran.action.IncludeAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.joran.util.ParentTag_Tag_Class_Tuple;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.DefineModel;
@@ -65,9 +64,7 @@ import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
-import ch.qos.logback.core.model.util.TagUtil;
 
-import java.util.List;
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
  *
@@ -101,9 +98,6 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         // rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
         // rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
 
-        // add jmxConfigurator only if we have JMX available.
-        // If running under JDK 1.4 (retrotranslateed logback) then we
-        // might not have JMX.
         if (PlatformInfo.hasJMXObjectName()) {
             rs.addRule(new ElementSelector("configuration/jmxConfigurator"), new JMXConfiguratorAction());
         }

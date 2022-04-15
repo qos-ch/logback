@@ -1,3 +1,16 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.joran.action;
 
 import java.util.Stack;
@@ -8,6 +21,7 @@ import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.spi.ErrorCodes;
 
 /**
  * 
@@ -58,7 +72,12 @@ public class ImplicitModelAction extends Action {
             return;
         }
         Model parentModel = interpretationContext.peekModel();
-        parentModel.addSubModel(implicitModel);
+        if(parentModel != null) {
+            parentModel.addSubModel(implicitModel);
+        } else {
+            addWarn(ErrorCodes.PARENT_MODEL_NOT_FOUND);      
+            addWarn(ErrorCodes.SKIPPING_IMCICIT_MODEL_ADDITION);      
+        }
         currentImplicitModelStack.pop();
 
     }

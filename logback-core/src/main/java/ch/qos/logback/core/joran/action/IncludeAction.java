@@ -65,7 +65,7 @@ public class IncludeAction extends Action {
         
         String optionalStr = attributes.getValue(OPTIONAL_ATTR);
         
-        createModelForNonXMLUse(ec, name, attributes, optionalStr);
+        createModelForAlternateUse(ec, name, attributes, optionalStr);
         
         
         this.attributeInUse = null;
@@ -97,7 +97,8 @@ public class IncludeAction extends Action {
 
     }
 
-    private void createModelForNonXMLUse(SaxEventInterpretationContext seic, String name, Attributes attributes,
+    // model created for later use, not necessarily for configuration purposes.
+    private void createModelForAlternateUse(SaxEventInterpretationContext seic, String name, Attributes attributes,
             String optionalStr) {
         this.includeModel = new IncludeModel();
         this.includeModel.setOptional(optionalStr);
