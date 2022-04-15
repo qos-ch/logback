@@ -3337,6 +3337,13 @@ logger.error(<b>notifyAdmin</b>,
 		independent of the Java programming language.
 		</p>
 
+                <p>As of logback version 1.2.8 DBAppender no longer
+                ships with logback-classic. However,
+                <code>DBAppender</code> for logback-classic is
+                available under the following Maven coordinates:</p>
+
+                <p><code>ch.qos.logback.db:logback-classic-db:1.2.11</code></p>
+
 		<p>These three tables are <em>logging_event</em>,
 		<em>logging_event_property</em> and
 		<em>logging_event_exception</em>. They must exist before
@@ -4780,6 +4787,14 @@ public class CountingConsoleAppender extends AppenderBase&lt;ILoggingEvent> {
 		is used to insert the access events into a database.
 		</p>
 
+                <p>As of logback version 1.2.8 <code>DBAppender</code> no longer
+                ships with logback-access. However,
+                <code>DBAppender</code> for logback-access is
+                available under the following Maven coordinates:</p>
+
+                <p><code>ch.qos.logback.db:logback-access-db:1.2.11</code></p>
+
+                
 		<p>Two tables are used by <code>DBAppender</code>:
 		<em>access_event</em> and <em>access_event_header</em>. They both
 		must exist before <code>DBAppender</code> can be used. Logback
