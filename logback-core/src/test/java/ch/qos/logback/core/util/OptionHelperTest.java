@@ -193,6 +193,20 @@ public class OptionHelperTest {
         assertEquals(expectedMessage, e.getMessage());
     }
 
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46755
+    @Test
+    public void recursionErrorWithNullLiteralPayload() throws ScanException {
+
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+           OptionHelper.substVars("abc${AA$AA${}}}xyz", context);
+        });
+        System.out.println(e.getMessage());
+        String expectedMessage = 
+                "Circular variable reference detected while parsing input [${AA} --> ${}]";
+        assertEquals(expectedMessage, e.getMessage());
+    }
+
+    
     @Test
     public void detectCircularReferencesInDefault() throws ScanException {
         context.putProperty("A", "${B:-${A}}");

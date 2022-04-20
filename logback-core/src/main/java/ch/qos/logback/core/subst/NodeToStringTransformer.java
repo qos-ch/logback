@@ -145,6 +145,9 @@ public class NodeToStringTransformer {
 
     private String variableNodeValue(Node variableNode) {
         Node literalPayload = (Node) variableNode.payload;
+        if(literalPayload == null) {
+            return CoreConstants.EMPTY_STRING;
+        }
         return (String) literalPayload.payload;
     }
 
