@@ -33,7 +33,9 @@ import java.util.List;
  * @author Ceki Gulcu
  */
 public class Parser {
-
+    
+    static final public String EXPECTING_DATA_AFTER_LEFT_ACCOLADE = "Expecting at least a literal between left accolade and ':-'";
+    
     final List<Token> tokenList;
     int pointer = 0;
 
@@ -118,6 +120,7 @@ public class Parser {
         return variable;
     }
 
+    
     // C = E(':='E|~)
     private Node C() throws ScanException {
         Node e0 = E();
@@ -125,6 +128,9 @@ public class Parser {
         if (isDefaultToken(t)) {
             advanceTokenPointer();
             Node literal = makeNewLiteralNode(CoreConstants.DEFAULT_VALUE_SEPARATOR);
+            if(e0 == null) {
+              throw new ScanException(EXPECTING_DATA_AFTER_LEFT_ACCOLADE);
+            }
             e0.append(literal);
             Node e1 = E();
             e0.append(e1);

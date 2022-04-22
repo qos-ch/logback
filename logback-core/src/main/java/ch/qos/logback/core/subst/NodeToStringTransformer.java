@@ -28,6 +28,7 @@ import java.util.Stack;
  */
 public class NodeToStringTransformer {
 
+    public static final String CIRCULAR_VARIABLE_REFERENCE_DETECTED = "Circular variable reference detected while parsing input [";
     final Node node;
     final PropertyContainer propertyContainer0;
     final PropertyContainer propertyContainer1;
@@ -152,7 +153,7 @@ public class NodeToStringTransformer {
     }
 
     private String constructRecursionErrorMessage(Stack<Node> recursionNodes) {
-        StringBuilder errorBuilder = new StringBuilder("Circular variable reference detected while parsing input [");
+        StringBuilder errorBuilder = new StringBuilder(CIRCULAR_VARIABLE_REFERENCE_DETECTED);
 
         for (Node stackNode : recursionNodes) {
             errorBuilder.append("${").append(variableNodeValue(stackNode)).append("}");

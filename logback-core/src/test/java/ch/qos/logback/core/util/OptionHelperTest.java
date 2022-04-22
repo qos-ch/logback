@@ -13,9 +13,10 @@
  */
 package ch.qos.logback.core.util;
 
+import static ch.qos.logback.core.subst.NodeToStringTransformer.CIRCULAR_VARIABLE_REFERENCE_DETECTED;
+import static ch.qos.logback.core.subst.Parser.EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-
 import static org.junit.Assert.fail;
 
 import java.util.HashMap;
@@ -143,6 +144,8 @@ public class OptionHelperTest {
         Exception e = assertThrows(Exception.class, () -> {
             OptionHelper.substVars(text, context);
         });
+        String expectedMessage =  CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${v2} --> ${v3} --> ${v4} --> ${v2}]";
+        assertEquals(expectedMessage, e.getMessage());
     }
 
     @Test
@@ -163,7 +166,7 @@ public class OptionHelperTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
            OptionHelper.substVars("${A}", context);
         });
-        String expectedMessage = "Circular variable reference detected while parsing input [${A} --> ${A}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${A}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
@@ -175,7 +178,7 @@ public class OptionHelperTest {
             OptionHelper.substVars("${A}", context);
         });
         
-        String expectedMessage = "Circular variable reference detected while parsing input [${A} --> ${A}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${A}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
@@ -188,8 +191,7 @@ public class OptionHelperTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
            OptionHelper.substVars("${A}", context);
         });
-        String expectedMessage = 
-                "Circular variable reference detected while parsing input [${A} --> ${B} --> ${C} --> ${A}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${B} --> ${C} --> ${A}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
@@ -200,12 +202,22 @@ public class OptionHelperTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
            OptionHelper.substVars("abc${AA$AA${}}}xyz", context);
         });
-        System.out.println(e.getMessage());
-        String expectedMessage = 
-                "Circular variable reference detected while parsing input [${AA} --> ${}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${AA} --> ${}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46892
+    @Test
+    public void leftAccoladeFollowedByDefaultStateWithNoLiteral() throws ScanException {
+        Exception e = assertThrows(ScanException.class, () -> {
+            OptionHelper.substVars("x{:-a}", context);
+        });
+        String expectedMessage = EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
+        assertEquals(expectedMessage, e.getMessage());
+    }
+
+        
+    
     
     @Test
     public void detectCircularReferencesInDefault() throws ScanException {
@@ -216,7 +228,7 @@ public class OptionHelperTest {
             OptionHelper.substVars("${A}", context);
         });
 
-        String expectedMessage = "Circular variable reference detected while parsing input [${A} --> ${B} --> ${A}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${B} --> ${A}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
@@ -229,8 +241,7 @@ public class OptionHelperTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             OptionHelper.substVars("${B} ", context);
         });
-        String expectedMessage = 
-                "Circular variable reference detected while parsing input [${B} --> ${C} --> ${A} --> ${B}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED + "${B} --> ${C} --> ${A} --> ${B}]";
         assertEquals(expectedMessage, e.getMessage());
 
     }
@@ -245,8 +256,7 @@ public class OptionHelperTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             OptionHelper.substVars("${C} and ${A}", context);
         });
-        String expectedMessage = 
-                "Circular variable reference detected while parsing input [${C} --> ${A} --> ${B} --> ${C}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${C} --> ${A} --> ${B} --> ${C}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
@@ -262,8 +272,7 @@ public class OptionHelperTest {
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
             OptionHelper.substVars("${A}", context);
         });
-        String expectedMessage = 
-                "Circular variable reference detected while parsing input [${A} --> ${C} --> ${C1} --> ${A}]";
+        String expectedMessage = CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${A} --> ${C} --> ${C1} --> ${A}]";
         assertEquals(expectedMessage, e.getMessage());
     }
 
