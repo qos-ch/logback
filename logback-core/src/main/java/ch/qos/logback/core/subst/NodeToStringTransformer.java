@@ -16,6 +16,7 @@ package ch.qos.logback.core.subst;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.subst.Node.Type;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.List;
@@ -145,11 +146,19 @@ public class NodeToStringTransformer {
     }
 
     private String variableNodeValue(Node variableNode) {
-        Node literalPayload = (Node) variableNode.payload;
-        if(literalPayload == null) {
+        Node payload = (Node) variableNode.payload;
+        if(payload == null) {
             return CoreConstants.EMPTY_STRING;
         }
-        return (String) literalPayload.payload;
+        
+        if(payload.type == Type.LITERAL) {
+            return (String) payload.payload;
+        }
+        
+        if(payload.type == Type.VARIABLE) {
+            return " ? " + variableNodeValue(payload);
+        }
+        throw new IllegalStateException("unreachable code");
     }
 
     private String constructRecursionErrorMessage(Stack<Node> recursionNodes) {

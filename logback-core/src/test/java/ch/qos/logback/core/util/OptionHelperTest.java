@@ -147,7 +147,7 @@ public class OptionHelperTest {
         String expectedMessage =  CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${v2} --> ${v3} --> ${v4} --> ${v2}]";
         assertEquals(expectedMessage, e.getMessage());
     }
-
+    
     @Test
     public void nonCircularGraphShouldWork() throws ScanException {
         context.putProperty("A", "${B} and ${C}");
@@ -216,7 +216,17 @@ public class OptionHelperTest {
         assertEquals(expectedMessage, e.getMessage());
     }
 
-        
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46966
+    @Test
+    public void nestedEmptyVariables() throws ScanException {
+
+        Exception e = assertThrows(Exception.class, () -> {
+            OptionHelper.substVars("${${${}}}", context);
+        });
+        String expectedMessage =  CIRCULAR_VARIABLE_REFERENCE_DETECTED+"${ ?  ? } --> ${ ? } --> ${}]";
+        assertEquals(expectedMessage, e.getMessage());
+    }
+    
     
     
     @Test
