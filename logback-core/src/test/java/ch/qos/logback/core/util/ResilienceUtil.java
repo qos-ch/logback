@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -23,7 +22,7 @@ import java.util.regex.Pattern;
 
 public class ResilienceUtil {
 
-    static public void verify(String logfile, String regexp, long totalSteps, double successRatioLowerBound)
+    static public int countLines(String logfile, String regexp)
             throws NumberFormatException, IOException {
         FileReader fr = new FileReader(logfile);
         BufferedReader br = new BufferedReader(fr);
@@ -48,11 +47,13 @@ public class ResilienceUtil {
         fr.close();
         br.close();
 
-        int lowerLimit = (int) (totalSteps * successRatioLowerBound);
-        assertTrue("totalLines=" + totalLines + " less than " + lowerLimit, totalLines > lowerLimit);
-
-        // we want at least one gap indicating recuperation
-        assertTrue("gaps=" + gaps + " less than 1", gaps >= 1);
+        return totalLines;
+        
+//        int lowerLimit = (int) (totalSteps * successRatioLowerBound);
+//        assertTrue("totalLines=" + totalLines + " less than " + lowerLimit, totalLines > lowerLimit);
+//
+//        // we want at least one gap indicating recuperation
+//        assertTrue("gaps=" + gaps + " less than 1", gaps >= 1);
 
     }
 }

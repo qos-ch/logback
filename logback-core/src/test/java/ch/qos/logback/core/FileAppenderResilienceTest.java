@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
@@ -24,15 +27,19 @@ import org.junit.Test;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.recovery.RecoveryCoordinator;
+import ch.qos.logback.core.recovery.RecoveryListener;
 import ch.qos.logback.core.recovery.ResilientFileOutputStream;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.ResilienceUtil;
 
-public class FileAppenderResilienceTest {
+public class FileAppenderResilienceTest implements RecoveryListener {
 
     FileAppender<Object> fa = new FileAppender<Object>();
+    
+    ResilientFileOutputStream resilientFOS;
+    
     Context context = new ContextBase();
     int diff = RandomUtil.getPositiveInt();
     String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "resilience-" + diff + "/";
@@ -41,6 +48,12 @@ public class FileAppenderResilienceTest {
     // "/";;
     String logfileStr = outputDirStr + "output.log";
 
+    boolean failedState = false;
+
+    int recoveryCounter = 0;
+    int failureCounter = 0;
+    
+    
     @Before
     public void setUp() throws InterruptedException {
 
@@ -54,6 +67,9 @@ public class FileAppenderResilienceTest {
         fa.setEncoder(new EchoEncoder<Object>());
         fa.setFile(logfileStr);
         fa.start();
+        resilientFOS = (ResilientFileOutputStream) fa.getOutputStream();
+        resilientFOS.addRecoveryListener(this);
+        
     }
 
     @Test
@@ -87,8 +103,25 @@ public class FileAppenderResilienceTest {
         double lossinessFactor = 0.35;
         double resilianceFactor = (1 - lossinessFactor);
 
-        ResilienceUtil.verify(logfileStr, "^hello (\\d{1,5})$", runner.getCounter(),
-                bestCaseSuccessRatio * resilianceFactor);
+        assertTrue("at least one recovery should have occured", recoveryCounter > 0);
+        assertTrue("at least one failure should have occured", failureCounter > 0);
+        
+        System.out.println("recoveryCounter=" + recoveryCounter);
+        System.out.println("failureCounter=" + failureCounter);
+        
+       
+                
+        String errmsg0 = "failureCounter="+failureCounter+" must be greater or equal to recoveryCounter="+recoveryCounter;
+        assertTrue(errmsg0, failureCounter >= recoveryCounter);
+        
+        String errmsg1 = "Difference between failureCounter="+failureCounter+" and recoveryCounter="+recoveryCounter+" should not exceeed 1";
+        assertTrue(errmsg1, failureCounter - recoveryCounter <= 1);
+        
+        
+        
+        int actuallyWritten = ResilienceUtil.countLines(logfileStr, "^hello (\\d{1,5})$");
+        long exptectedWrites = runner.getCounter()-recoveryCounter;
+        assertEquals(exptectedWrites, actuallyWritten);
     }
 
     private void closeLogFileOnPurpose() throws IOException {
@@ -96,26 +129,42 @@ public class FileAppenderResilienceTest {
         FileChannel fileChannel = resilientFOS.getChannel();
         fileChannel.close();
     }
-}
 
-class Runner extends RunnableWithCounterAndDone {
-    FileAppender<Object> fa;
-
-    Runner(FileAppender<Object> fa) {
-        this.fa = fa;
+    @Override
+    public void newFailure(IOException e) {
+        failedState = true;
+        failureCounter++;
+        
     }
 
-    public void run() {
-        while (!isDone()) {
-            counter++;
-            fa.doAppend("hello " + counter);
-            if (counter % 128 == 0) {
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
+    @Override
+    public void recoveryOccured() {
+        failedState = false;
+        recoveryCounter++;
+    }
+    
+    class Runner extends RunnableWithCounterAndDone {
+        FileAppender<Object> fa;
+
+        Runner(FileAppender<Object> fa) {
+            this.fa = fa;
+        }
+
+        public void run() {
+            while (!isDone()) {
+                fa.doAppend("hello " + counter);
+                if(!FileAppenderResilienceTest.this.failedState) { 
+                    counter++;
+                }
+                if (counter % 128 == 0) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                    }
                 }
             }
         }
-    }
 
+    }
 }
+
