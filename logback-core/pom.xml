@@ -74,8 +74,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- <argLine>-Xmx2048m ==permit-illegal-access</argLine>  -->
-          <parallel>none</parallel>
-          <useUnlimitedThreads>false</useUnlimitedThreads>
+          <parallel>classes</parallel>
+          <useUnlimitedThreads>true</useUnlimitedThreads>
           <forkCount>2C</forkCount>
           <reuseForks>true</reuseForks>
           <reportFormat>plain</reportFormat>
