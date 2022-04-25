@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
@@ -115,6 +116,7 @@ public class DefaultSocketConnectorTest {
         assertTrue(connectorTask.isCancelled());
     }
 
+    @Ignore
     @Test(timeout = 5000)
     public void testConnectEventually() throws Exception {
         if(EnvUtilForTests.isGithubAction())
