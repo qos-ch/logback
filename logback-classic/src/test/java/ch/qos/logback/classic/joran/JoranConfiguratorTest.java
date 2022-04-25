@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -41,6 +42,8 @@ import ch.qos.logback.classic.turbo.TurboFilter;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
+import ch.qos.logback.core.joran.action.ParamAction;
+import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.read.ListAppender;
@@ -218,6 +221,19 @@ public class JoranConfiguratorTest {
         assertTrue(str1.contains(" DEBUG - hello world"));
     }
 
+    
+    @Test
+    public void missingConfigurationElement() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/noConfig.xml");
+        StatusPrinter.print(loggerContext);
+        
+        String msg1 = "Exception in body\\(\\) method for action \\["+ParamAction.class.getName()+"\\]";
+        checker.assertContainsMatch(Status.ERROR, msg1);
+        
+        String msg2 = "current model is null. Is <configuration> element missing?";
+        checker.assertContainsException(ActionException.class, msg2 );
+    }
+    
     @Test
     public void turboFilter() throws JoranException {
         // Although this test uses turbo filters, it only checks
@@ -461,7 +477,7 @@ public class JoranConfiguratorTest {
     public void LOGBACK_111() throws JoranException {
         String configFileAsStr = ClassicTestConstants.ISSUES_PREFIX + "lbcore193.xml";
         configure(configFileAsStr);
-        checker.asssertContainsException(ScanException.class);
+        checker.assertContainsException(ScanException.class);
         checker.assertContainsMatch(Status.ERROR, "Expecting RIGHT_PARENTHESIS token but got null");
         checker.assertContainsMatch(Status.ERROR, "See also " + Parser.MISSING_RIGHT_PARENTHESIS);
     }

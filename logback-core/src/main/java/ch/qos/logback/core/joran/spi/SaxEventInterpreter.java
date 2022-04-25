@@ -271,7 +271,7 @@ public class SaxEventInterpreter {
             try {
                 action.body(interpretationContext, body);
             } catch (ActionException ae) {
-                cai.addError("Exception in end() methd for action [" + action + "]", ae);
+                cai.addError("Exception in body() method for action [" + action + "]", ae);
             }
         }
     }

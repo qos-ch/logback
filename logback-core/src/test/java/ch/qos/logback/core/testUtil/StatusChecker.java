@@ -45,10 +45,14 @@ public class StatusChecker extends StatusUtil {
         assertTrue(containsMatch(regex));
     }
 
-    public void asssertContainsException(Class<?> scanExceptionClass) {
+    public void assertContainsException(Class<?> scanExceptionClass) {
         assertTrue(containsException(scanExceptionClass));
     }
 
+    public void assertContainsException(Class<?> scanExceptionClass, String msg) {
+        assertTrue(containsException(scanExceptionClass, msg));
+    }
+    
     public void assertIsErrorFree() {
         assertTrue(isErrorFree(0));
     }

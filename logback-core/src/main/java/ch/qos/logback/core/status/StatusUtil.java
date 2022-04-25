@@ -17,7 +17,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.CoreConstants;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -154,19 +153,32 @@ public class StatusUtil {
     }
 
     public boolean containsException(Class<?> exceptionType) {
-        Iterator<Status> stati = sm.getCopyOfStatusList().iterator();
-        while (stati.hasNext()) {
-            Status status = stati.next();
+        return containsException(exceptionType, null);
+    }
+
+    public boolean containsException(Class<?> exceptionType, String msgRegex) {
+        for (Status status: sm.getCopyOfStatusList()) {
             Throwable t = status.getThrowable();
             while (t != null) {
                 if (t.getClass().getName().equals(exceptionType.getName())) {
-                    return true;
+                    if(msgRegex == null) {
+                      return true;
+                    } else if(checkRegexMatch(t.getMessage(), msgRegex)) {
+                        return true;
+                    }
                 }
                 t = t.getCause();
             }
         }
         return false;
     }
+    
+    private boolean checkRegexMatch(String message, String msgRegex) {
+        Pattern p = Pattern.compile(msgRegex);
+        Matcher matcher = p.matcher(message);
+        return matcher.lookingAt();
+    }
+
 
     /**
      * Return the time of last reset. -1 if last reset time could not be found
