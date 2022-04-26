@@ -1,3 +1,16 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.classic.joran;
 
 import java.io.File;
@@ -22,11 +35,11 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
     static final String FALLING_BACK_TO_SAFE_CONFIGURATION = "Given previous errors, falling back to previously registered safe configuration.";
 
     long birthdate = System.currentTimeMillis();
-    List<ReconfigureOnChangeTaskListener> listeners;
+    List<ReconfigureOnChangeTaskListener> listeners = null;
 
     void addListener(ReconfigureOnChangeTaskListener listener) {
         if (listeners == null)
-            listeners = new ArrayList<ReconfigureOnChangeTaskListener>();
+            listeners = new ArrayList<ReconfigureOnChangeTaskListener>(1);
         listeners.add(listener);
     }
 
