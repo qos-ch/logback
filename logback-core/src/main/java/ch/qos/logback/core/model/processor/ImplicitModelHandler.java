@@ -64,6 +64,8 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         case NOT_FOUND:
             addWarn("Ignoring unkown property [" + nestedElementTagName + "] in [" + o.getClass().getName() + "]");
             inError = true;
+            // no point in processing submodels
+            implicitModel.markAsSkipped();
             return;
         case AS_BASIC_PROPERTY:
         case AS_BASIC_PROPERTY_COLLECTION:
@@ -163,7 +165,11 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
         Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
         ImplicitActionDataBase actionData = actionDataStack.pop();
-
+        // the action data can in an incorrect state, in which case we need to 
+        // disengage
+        if(actionData.inError) {
+            return;
+        }
         if (actionData instanceof ImplicitActionDataForComplexProperty) {
             postHandleComplex(intercon, model, actionData);
         }

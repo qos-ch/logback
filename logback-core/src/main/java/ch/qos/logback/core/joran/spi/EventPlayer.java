@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +25,12 @@ import ch.qos.logback.core.joran.event.StartEvent;
 public class EventPlayer {
 
     final SaxEventInterpreter interpreter;
-    List<SaxEvent> eventList;
+    final List<SaxEvent> saxEvents;
     int currentIndex;
 
-    public EventPlayer(SaxEventInterpreter interpreter) {
+    public EventPlayer(SaxEventInterpreter interpreter, List<SaxEvent> saxEvents) {
         this.interpreter = interpreter;
+        this.saxEvents = saxEvents;
     }
 
     /**
@@ -38,14 +40,13 @@ public class EventPlayer {
      * @since 0.9.20
      */
     public List<SaxEvent> getCopyOfPlayerEventList() {
-        return new ArrayList<SaxEvent>(eventList);
+        return new ArrayList<SaxEvent>(saxEvents);
     }
 
-    public void play(List<SaxEvent> aSaxEventList) {
-        eventList = aSaxEventList;
-        SaxEvent se;
-        for (currentIndex = 0; currentIndex < eventList.size(); currentIndex++) {
-            se = eventList.get(currentIndex);
+    public void play() {
+         
+        for (currentIndex = 0; currentIndex < saxEvents.size(); currentIndex++) {
+            SaxEvent se = saxEvents.get(currentIndex);
 
             if (se instanceof StartEvent) {
                 interpreter.startElement((StartEvent) se);
@@ -61,6 +62,6 @@ public class EventPlayer {
     }
 
     public void addEventsDynamically(List<SaxEvent> eventList, int offset) {
-        this.eventList.addAll(currentIndex + offset, eventList);
+        this.saxEvents.addAll(currentIndex + offset, eventList);
     }
 }

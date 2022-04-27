@@ -22,7 +22,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -225,13 +224,29 @@ public class JoranConfiguratorTest {
     @Test
     public void missingConfigurationElement() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/noConfig.xml");
-        StatusPrinter.print(loggerContext);
         
         String msg1 = "Exception in body\\(\\) method for action \\["+ParamAction.class.getName()+"\\]";
         checker.assertContainsMatch(Status.ERROR, msg1);
         
         String msg2 = "current model is null. Is <configuration> element missing?";
         checker.assertContainsException(ActionException.class, msg2 );
+    }
+
+    @Test
+    public void ignoreUnknownProperty() throws JoranException {
+        
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/unknownProperty.xml");
+        String msg = "Ignoring unkown property \\[a\\] in \\[ch.qos.logback.classic.LoggerContext\\]";
+        checker.assertContainsMatch(Status.WARN, msg);
+    }
+    
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46995
+    @Test
+    public void complexCollectionWihhNoKnownClass() throws JoranException {
+        
+       configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/nestedComplexWithNoKnownClass.xml");
+       String msg = "Could not find an appropriate class for property \\[listener\\]";
+       checker.assertContainsMatch(Status.ERROR, msg);
     }
     
     @Test

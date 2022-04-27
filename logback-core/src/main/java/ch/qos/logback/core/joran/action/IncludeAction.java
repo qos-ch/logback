@@ -75,8 +75,7 @@ public class IncludeAction extends Action {
             inError = true;
             return;
         }
-
-        
+         
         InputStream in = getInputStream(ec, attributes);
 
         try {
@@ -87,7 +86,7 @@ public class IncludeAction extends Action {
 
                 // offset = 2, because we need to get past this element as well as the end
                 // element
-                ec.getSaxEventInterpreter().getEventPlayer().addEventsDynamically(recorder.saxEventList, 2);
+                ec.getSaxEventInterpreter().getEventPlayer().addEventsDynamically(recorder.getSaxEventList(), 2);
             }
         } catch (JoranException e) {
             addError("Error while parsing  " + attributeInUse, e);
@@ -243,7 +242,9 @@ public class IncludeAction extends Action {
         // Let's remove the two <included> events before
         // adding the events to the player.
 
-        List<SaxEvent> saxEventList = recorder.saxEventList;
+        // note saxEventList.size() changes over time as events are removed 
+        
+        List<SaxEvent> saxEventList = recorder.getSaxEventList();
 
         if (saxEventList.size() == 0) {
             return;
@@ -253,10 +254,10 @@ public class IncludeAction extends Action {
         if (first != null && first.qName.equalsIgnoreCase(INCLUDED_TAG)) {
             saxEventList.remove(0);
         }
-
-        SaxEvent last = saxEventList.get(recorder.saxEventList.size() - 1);
+        
+        SaxEvent last = saxEventList.get(saxEventList.size() - 1);
         if (last != null && last.qName.equalsIgnoreCase(INCLUDED_TAG)) {
-            saxEventList.remove(recorder.saxEventList.size() - 1);
+            saxEventList.remove(saxEventList.size() - 1);
         }
     }
 

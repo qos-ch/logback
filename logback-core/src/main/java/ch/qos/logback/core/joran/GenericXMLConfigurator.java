@@ -134,10 +134,10 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         return new ElementPath();
     }
 
-    protected void buildSaxEventInterpreter() {
+    protected void buildSaxEventInterpreter(List<SaxEvent> saxEvents) {
         RuleStore rs = new SimpleRuleStore(context);
         addInstanceRules(rs);
-        this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath());
+        this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath(), saxEvents);
         SaxEventInterpretationContext interpretationContext = saxEventInterpreter.getSaxEventInterpretationContext();
         interpretationContext.setContext(context);
         addImplicitRules(saxEventInterpreter);
@@ -157,7 +157,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         long threshold = System.currentTimeMillis();
 
         SaxEventRecorder recorder = populateSaxEventRecorder(inputSource);
-        Model top = buildModelFromSaxEventList(recorder.saxEventList);
+        Model top = buildModelFromSaxEventList(recorder.getSaxEventList());
         if(top == null) {
             addError(ErrorCodes.EMPTY_MODEL_STACK);
             return;
@@ -179,14 +179,14 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     }
 
     public Model buildModelFromSaxEventList(List<SaxEvent> saxEvents) throws JoranException {
-        buildSaxEventInterpreter();
-        playSaxEvents(saxEvents);
+        buildSaxEventInterpreter(saxEvents);
+        playSaxEvents();
         Model top = saxEventInterpreter.getSaxEventInterpretationContext().peekModel();
         return top;
     }
 
-    private void playSaxEvents(final List<SaxEvent> eventList) throws JoranException {
-        saxEventInterpreter.getEventPlayer().play(eventList);
+    private void playSaxEvents() throws JoranException {
+        saxEventInterpreter.getEventPlayer().play();
     }
 
     public void processModel(Model model) {

@@ -42,7 +42,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
 
     final ContextAwareImpl contextAwareImpl;
     final ElementPath elementPath;
-    public List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
+    List<SaxEvent> saxEventList = new ArrayList<SaxEvent>();
     Locator locator;
 
     public SaxEventRecorder(Context context) {
@@ -58,11 +58,11 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         recordEvents(new InputSource(inputStream));
     }
 
-    public List<SaxEvent> recordEvents(InputSource inputSource) throws JoranException {
+    public void recordEvents(InputSource inputSource) throws JoranException {
         SAXParser saxParser = buildSaxParser();
         try {
             saxParser.parse(inputSource, this);
-            return saxEventList;
+            return;
         } catch (IOException ie) {
             handleError("I/O error occurred while parsing xml file", ie);
         } catch (SAXException se) {

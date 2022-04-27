@@ -25,6 +25,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.event.BodyEvent;
 import ch.qos.logback.core.joran.event.EndEvent;
+import ch.qos.logback.core.joran.event.SaxEvent;
 import ch.qos.logback.core.joran.event.StartEvent;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 
@@ -88,20 +89,20 @@ public class SaxEventInterpreter {
      */
     ElementPath skip = null;
 
-    public SaxEventInterpreter(Context context, RuleStore rs, ElementPath initialElementPath) {
+    public SaxEventInterpreter(Context context, RuleStore rs, ElementPath initialElementPath, List<SaxEvent> saxEvents) {
         this.cai = new CAI_WithLocatorSupport(context, this);
         ruleStore = rs;
         interpretationContext = new SaxEventInterpretationContext(context, this);
         implicitActions = new ArrayList<Action>(3);
         this.elementPath = initialElementPath;
         actionListStack = new Stack<List<Action>>();
-        eventPlayer = new EventPlayer(this);
+        eventPlayer = new EventPlayer(this, saxEvents);
     }
 
-    public SaxEventInterpreter duplicate(ElementPath initial) {
-        SaxEventInterpreter clone = new SaxEventInterpreter(this.cai.getContext(), ruleStore, initial);
+    public SaxEventInterpreter xduplicate(ElementPath initial) {
+        SaxEventInterpreter clone = new SaxEventInterpreter(this.cai.getContext(), ruleStore, initial, eventPlayer.getCopyOfPlayerEventList());
         clone.addImplicitActions(implicitActions);
-        clone.elementPath = initial;
+        clone.elementPath = initial; 
         return clone;
     }
 
