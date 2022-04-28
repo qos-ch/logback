@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

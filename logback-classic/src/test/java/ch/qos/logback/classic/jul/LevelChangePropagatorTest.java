@@ -19,19 +19,15 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 public class LevelChangePropagatorTest {
     int rand = RandomUtil.getPositiveInt();
     LoggerContext loggerContext = new LoggerContext();
     LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
 
     @Before
     public void setUp() {
@@ -74,9 +70,10 @@ public class LevelChangePropagatorTest {
 
     @Test
     public void julHelperAsJulLevelRejectsNull() {
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("Unexpected level [null]");
-        JULHelper.asJULLevel(null);
+        Exception e = assertThrows(IllegalArgumentException.class, () -> {
+            JULHelper.asJULLevel(null);
+        });
+        assertEquals("Unexpected level [null]", e.getMessage());
     }
 
     @Test
