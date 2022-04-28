@@ -194,7 +194,7 @@ public class LogbackValve extends ValveBase
             addInfo("Found configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
             return candidateFile;
         } else {
-            addInfo("Could NOT find configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
+            addInfo("Could NOT configuration file [" + candidatePath + "] using property \"" + propertyKey + "\"");
             return null;
         }
     }
