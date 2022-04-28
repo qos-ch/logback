@@ -55,6 +55,18 @@ public class LogbackValveTest {
     }
 
     @Test
+    public void nonExistingConfigFileUnderCatalinaBaseShouldResultInWarning() throws LifecycleException {
+        final String path = AccessTestConstants.JORAN_INPUT_PREFIX + "tomcat/";
+        final String fileName = "logback-test2-config.xml";
+        final String fullPath = path + fileName;
+        System.setProperty(LogbackValve.CATALINA_BASE_KEY, path);
+        setupValve(fileName);
+        valve.start();
+        checker.assertContainsMatch("Could NOT find configuration file");
+        checker.assertIsErrorFree();
+    }
+
+    @Test
     public void fileUnderCatalinaHomeShouldBeFound() throws LifecycleException {
         System.setProperty(LogbackValve.CATALINA_HOME_KEY, AccessTestConstants.JORAN_INPUT_PREFIX + "tomcat/");
         final String fileName = "logback-access.xml";
