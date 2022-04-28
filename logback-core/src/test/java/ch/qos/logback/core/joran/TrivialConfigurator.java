@@ -29,7 +29,7 @@ public class TrivialConfigurator extends GenericXMLConfigurator {
     }
 
     @Override
-    protected void addImplicitRules(SaxEventInterpreter interpreter) {
+    protected void setImplicitRule(SaxEventInterpreter interpreter) {
     }
 
     @Override

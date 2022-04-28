@@ -106,7 +106,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
     }
 
     @Override
-    protected void addImplicitRules(SaxEventInterpreter interpreter) {
+    protected void setImplicitRule(SaxEventInterpreter interpreter) {
         // The following line adds the capability to parse nested components
 //        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
 //        nestedComplexPropertyIA.setContext(context);
@@ -118,7 +118,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
         ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
         implicitRuleModelAction.setContext(context);
-        interpreter.addImplicitAction(implicitRuleModelAction);
+        interpreter.setImplicitAction(implicitRuleModelAction);
     }
 
     public void buildModelInterprtationContext() {

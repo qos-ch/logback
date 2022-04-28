@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -23,6 +21,7 @@ import org.xml.sax.Locator;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
+import ch.qos.logback.core.joran.action.NOPAction;
 import ch.qos.logback.core.joran.event.BodyEvent;
 import ch.qos.logback.core.joran.event.EndEvent;
 import ch.qos.logback.core.joran.event.SaxEvent;
@@ -63,25 +62,25 @@ import ch.qos.logback.core.spi.ContextAwareImpl;
  * 
  */
 public class SaxEventInterpreter {
-    private static List<Action> EMPTY_LIST = new ArrayList<>(0);
+    private static Action NOP_ACTION_SINGLETON = new NOPAction();
 
     final private RuleStore ruleStore;
     final private SaxEventInterpretationContext interpretationContext;
-    final private ArrayList<Action> implicitActions;
+    private Action implicitAction;
     final private CAI_WithLocatorSupport cai;
     private ElementPath elementPath;
     Locator locator;
     EventPlayer eventPlayer;
 
     /**
-     * The <id>actionListStack</id> contains a list of actions that are executing
+     * The <id>actionStack</id> contain the action that is executing
      * for the given XML element.
      * 
-     * A list of actions is pushed by the {link #startElement} and popped by
+     * An action is pushed by the {link #startElement} and popped by
      * {@link #endElement}.
      * 
      */
-    Stack<List<Action>> actionListStack;
+    Stack<Action> actionStack;
 
     /**
      * If the skip nested is set, then we skip all its nested elements until it is
@@ -93,15 +92,14 @@ public class SaxEventInterpreter {
         this.cai = new CAI_WithLocatorSupport(context, this);
         ruleStore = rs;
         interpretationContext = new SaxEventInterpretationContext(context, this);
-        implicitActions = new ArrayList<Action>(3);
         this.elementPath = initialElementPath;
-        actionListStack = new Stack<List<Action>>();
+        actionStack = new Stack<>();
         eventPlayer = new EventPlayer(this, saxEvents);
     }
 
     public SaxEventInterpreter xduplicate(ElementPath initial) {
         SaxEventInterpreter clone = new SaxEventInterpreter(this.cai.getContext(), ruleStore, initial, eventPlayer.getCopyOfPlayerEventList());
-        clone.addImplicitActions(implicitActions);
+        clone.setImplicitAction(implicitAction);
         clone.elementPath = initial; 
         return clone;
     }
@@ -133,21 +131,22 @@ public class SaxEventInterpreter {
     private void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
 
         String tagName = getTagName(localName, qName);
+   
         elementPath.push(tagName);
 
         if (skip != null) {
             // every startElement pushes an action list
-            pushEmptyActionList();
+            pushEmptyAction();
             return;
         }
 
-        List<Action> applicableActionList = getApplicableActionList(elementPath, atts);
-        if (applicableActionList != null) {
-            actionListStack.add(applicableActionList);
-            callBeginAction(applicableActionList, tagName, atts);
+        Action applicableAction = getApplicableAction(elementPath, atts);
+        if (applicableAction != null) {
+            actionStack.add(applicableAction);
+            callBeginAction(applicableAction, tagName, atts);
         } else {
             // every startElement pushes an action list
-            pushEmptyActionList();
+            pushEmptyAction();
             String errMsg = "no applicable action for [" + tagName + "], current ElementPath  is [" + elementPath + "]";
             cai.addError(errMsg);
         }
@@ -156,8 +155,8 @@ public class SaxEventInterpreter {
     /**
      * This method is used to
      */
-    private void pushEmptyActionList() {
-        actionListStack.add(EMPTY_LIST);
+    private void pushEmptyAction() {
+       actionStack.push(NOP_ACTION_SINGLETON);       
     }
 
     public void characters(BodyEvent be) {
@@ -165,13 +164,12 @@ public class SaxEventInterpreter {
         setDocumentLocator(be.locator);
 
         String body = be.getText();
-        List<Action> applicableActionList = actionListStack.peek();
+        Action applicableAction = actionStack.peek();
 
         if (body != null) {
             body = body.trim();
             if (body.length() > 0) {
-                // System.out.println("calling body method with ["+body+ "]");
-                callBodyAction(applicableActionList, body);
+                callBodyAction(applicableAction, body);
             }
         }
     }
@@ -182,17 +180,16 @@ public class SaxEventInterpreter {
     }
 
     private void endElement(String namespaceURI, String localName, String qName) {
-        // given that an action list is always pushed for every startElement, we
-        // need
-        // to always pop for every endElement
-        List<Action> applicableActionList = (List<Action>) actionListStack.pop();
+        // given that an action is always pushed for every startElement, we
+        // need to always pop for every endElement
+        Action applicableAction =  actionStack.pop();
 
         if (skip != null) {
             if (skip.equals(elementPath)) {
                 skip = null;
             }
-        } else if (applicableActionList != EMPTY_LIST) {
-            callEndAction(applicableActionList, getTagName(localName, qName));
+        } else if (applicableAction != NOP_ACTION_SINGLETON) {
+            callEndAction(applicableAction, getTagName(localName, qName));
         }
 
         // given that we always push, we must also pop the pattern
@@ -218,87 +215,68 @@ public class SaxEventInterpreter {
         return tagName;
     }
 
-    public void addImplicitActions(List<Action> actionList) {
-        implicitActions.addAll(actionList);
-    }
-
-    public void addImplicitAction(Action ia) {
-        implicitActions.add(ia);
+    public void setImplicitAction(Action action) {
+        this.implicitAction = action;
     }
 
     /**
      * Return the list of applicable patterns for this
      */
-    List<Action> getApplicableActionList(ElementPath elementPath, Attributes attributes) {
-        List<Action> applicableActionList = ruleStore.matchActions(elementPath);
+    Action getApplicableAction(ElementPath elementPath, Attributes attributes) {
+        Action applicableAction = ruleStore.matchActions(elementPath);
 
-        if (applicableActionList == null) {
-            applicableActionList = implicitActions;
-        }
-
-        return applicableActionList;
-    }
-
-    void callBeginAction(List<Action> applicableActionList, String tagName, Attributes atts) {
-        if (applicableActionList == null) {
-            return;
-        }
-
-        Iterator<Action> i = applicableActionList.iterator();
-        while (i.hasNext()) {
-            Action action = (Action) i.next();
-            // now let us invoke the action. We catch and report any eventual
-            // exceptions
-            try {
-                action.begin(interpretationContext, tagName, atts);
-            } catch (ActionException e) {
-                skip = elementPath.duplicate();
-                cai.addError("ActionException in Action for tag [" + tagName + "]", e);
-            } catch (RuntimeException e) {
-                skip = elementPath.duplicate();
-                cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
-            }
+        if (applicableAction != null) {
+            return applicableAction;
+        } else {
+            return implicitAction;
         }
     }
 
-    private void callBodyAction(List<Action> applicableActionList, String body) {
-        if (applicableActionList == null) {
+    void callBeginAction(Action applicableAction, String tagName, Attributes atts) {
+        if (applicableAction == null) {
             return;
         }
-        Iterator<Action> i = applicableActionList.iterator();
 
-        while (i.hasNext()) {
-            Action action = i.next();
-            try {
-                action.body(interpretationContext, body);
-            } catch (ActionException ae) {
-                cai.addError("Exception in body() method for action [" + action + "]", ae);
-            }
+        // now let us invoke the action. We catch and report any eventual
+        // exceptions
+        try {
+             applicableAction.begin(interpretationContext, tagName, atts);
+        } catch (ActionException e) {
+            skip = elementPath.duplicate();
+            cai.addError("ActionException in Action for tag [" + tagName + "]", e);
+        } catch (RuntimeException e) {
+            skip = elementPath.duplicate();
+            cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
+        }
+        
+    }
+
+    private void callBodyAction(Action applicableAction, String body) {
+        if (applicableAction == null) {
+            return;
+        }
+
+        try {
+            applicableAction.body(interpretationContext, body);
+        } catch (ActionException ae) {
+            cai.addError("Exception in body() method for action [" + applicableAction + "]", ae);
         }
     }
 
-    private void callEndAction(List<Action> applicableActionList, String tagName) {
-        if (applicableActionList == null) {
+    private void callEndAction(Action applicableAction, String tagName) {
+        if (applicableAction == null) {
             return;
         }
 
-        // logger.debug("About to call end actions on node: [" + localName + "]");
-        Iterator<Action> i = applicableActionList.iterator();
-
-        while (i.hasNext()) {
-            Action action = i.next();
-            // now let us invoke the end method of the action. We catch and report
-            // any eventual exceptions
-            try {
-                action.end(interpretationContext, tagName);
-            } catch (ActionException ae) {
-                // at this point endAction, there is no point in skipping children as
-                // they have been already processed
-                cai.addError("ActionException in Action for tag [" + tagName + "]", ae);
-            } catch (RuntimeException e) {
-                // no point in setting skip
-                cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
-            }
+        try {
+            applicableAction.end(interpretationContext, tagName);
+        } catch (ActionException ae) {
+            // at this point endAction, there is no point in skipping children as
+            // they have been already processed
+            cai.addError("ActionException in Action for tag [" + tagName + "]", ae);
+        } catch (RuntimeException e) {
+            // no point in setting skip
+            cai.addError("RuntimeException in Action for tag [" + tagName + "]", e);
         }
     }
 

@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import java.util.List;
-
 import ch.qos.logback.core.joran.action.Action;
 
 /**
@@ -55,5 +53,5 @@ public interface RuleStore {
      * @param elementPath the path to match for
      * @return list of matching actions
      */
-    List<Action> matchActions(ElementPath elementPath);
+    Action matchActions(ElementPath elementPath);
 }

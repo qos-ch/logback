@@ -34,7 +34,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     static String KLEENE_STAR = "*";
 
     // key: Pattern instance, value: ArrayList containing actions
-    HashMap<ElementSelector, List<Action>> rules = new HashMap<ElementSelector, List<Action>>();
+    HashMap<ElementSelector, Action> rules = new HashMap<>();
 
     // public SimpleRuleStore() {
     // }
@@ -51,14 +51,13 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     public void addRule(ElementSelector elementSelector, Action action) {
         action.setContext(context);
 
-        List<Action> a4p = rules.get(elementSelector);
-
-        if (a4p == null) {
-            a4p = new ArrayList<Action>();
-            rules.put(elementSelector, a4p);
+        Action existing = rules.get(elementSelector);
+        
+        if (existing == null) {
+            rules.put(elementSelector, action);
+        } else {
+            throw new IllegalStateException(elementSelector.toString() + " already has an associated action");
         }
-
-        a4p.add(action);
     }
 
     public void addRule(ElementSelector elementSelector, String actionClassName) {
@@ -81,23 +80,23 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     // if no suffix match, check for prefix match, i.e. matches for x/*
     // match for x/y/* has higher priority than matches for x/*
 
-    public List<Action> matchActions(ElementPath elementPath) {
-        List<Action> actionList;
+    public Action matchActions(ElementPath elementPath) {
+        Action action;
 
-        if ((actionList = fullPathMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = suffixMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = prefixMatch(elementPath)) != null) {
-            return actionList;
-        } else if ((actionList = middleMatch(elementPath)) != null) {
-            return actionList;
+        if ((action = fullPathMatch(elementPath)) != null) {
+            return action;
+        } else if ((action = suffixMatch(elementPath)) != null) {
+            return action;
+        } else if ((action = prefixMatch(elementPath)) != null) {
+            return action;
+        } else if ((action = middleMatch(elementPath)) != null) {
+            return action;
         } else {
             return null;
         }
     }
 
-    List<Action> fullPathMatch(ElementPath elementPath) {
+    Action fullPathMatch(ElementPath elementPath) {
         for (ElementSelector selector : rules.keySet()) {
             if (selector.fullPathMatch(elementPath))
                 return rules.get(selector);
@@ -106,7 +105,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     // Suffix matches are matches of type */x/y
-    List<Action> suffixMatch(ElementPath elementPath) {
+    Action suffixMatch(ElementPath elementPath) {
         int max = 0;
         ElementSelector longestMatchingElementSelector = null;
 
@@ -131,7 +130,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         return (p.size() > 1) && p.get(0).equals(KLEENE_STAR);
     }
 
-    List<Action> prefixMatch(ElementPath elementPath) {
+    Action prefixMatch(ElementPath elementPath) {
         int max = 0;
         ElementSelector longestMatchingElementSelector = null;
 
@@ -158,7 +157,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         return KLEENE_STAR.equals(last);
     }
 
-    List<Action> middleMatch(ElementPath path) {
+    Action middleMatch(ElementPath path) {
 
         int max = 0;
         ElementSelector longestMatchingElementSelector = null;

@@ -124,7 +124,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     protected abstract void addInstanceRules(RuleStore rs);
 
-    protected abstract void addImplicitRules(SaxEventInterpreter interpreter);
+    protected abstract void setImplicitRule(SaxEventInterpreter interpreter);
 
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
         // nothing bu default
@@ -140,7 +140,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath(), saxEvents);
         SaxEventInterpretationContext interpretationContext = saxEventInterpreter.getSaxEventInterpretationContext();
         interpretationContext.setContext(context);
-        addImplicitRules(saxEventInterpreter);
+        setImplicitRule(saxEventInterpreter);
     }
 
 
