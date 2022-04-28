@@ -97,13 +97,6 @@ public class SaxEventInterpreter {
         eventPlayer = new EventPlayer(this, saxEvents);
     }
 
-    public SaxEventInterpreter xduplicate(ElementPath initial) {
-        SaxEventInterpreter clone = new SaxEventInterpreter(this.cai.getContext(), ruleStore, initial, eventPlayer.getCopyOfPlayerEventList());
-        clone.setImplicitAction(implicitAction);
-        clone.elementPath = initial; 
-        return clone;
-    }
-
     public EventPlayer getEventPlayer() {
         return eventPlayer;
     }
@@ -111,10 +104,6 @@ public class SaxEventInterpreter {
     public ElementPath getCopyOfElementPath() {
         return elementPath.duplicate();
     }
-
-//	public void setInterpretationContextPropertiesMap(Map<String, String> propertiesMap) {
-//		interpretationContext.setPropertiesMap(propertiesMap);
-//	}
 
     public SaxEventInterpretationContext getSaxEventInterpretationContext() {
         return interpretationContext;
@@ -132,8 +121,9 @@ public class SaxEventInterpreter {
 
         String tagName = getTagName(localName, qName);
    
+        
         elementPath.push(tagName);
-
+   
         if (skip != null) {
             // every startElement pushes an action list
             pushEmptyAction();

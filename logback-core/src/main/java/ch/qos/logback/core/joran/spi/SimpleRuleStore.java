@@ -15,6 +15,8 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
@@ -81,18 +83,32 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
     public Action matchActions(ElementPath elementPath) {
         Action action;
+        
+        ElementPath cleanedElementPath = elementPath;
 
-        if ((action = fullPathMatch(elementPath)) != null) {
+        //ElementPath cleanedElementPath = cleanElementPath(elementPath);
+        
+        if ((action = fullPathMatch(cleanedElementPath)) != null) {
             return action;
-        } else if ((action = suffixMatch(elementPath)) != null) {
+        } else if ((action = suffixMatch(cleanedElementPath)) != null) {
             return action;
-        } else if ((action = prefixMatch(elementPath)) != null) {
+        } else if ((action = prefixMatch(cleanedElementPath)) != null) {
             return action;
-        } else if ((action = middleMatch(elementPath)) != null) {
+        } else if ((action = middleMatch(cleanedElementPath)) != null) {
             return action;
         } else {
             return null;
         }
+    }
+
+    private ElementPath cleanElementPath(ElementPath uncleanElementPath) {
+        Stream<String> stream = uncleanElementPath.partList.stream();
+        
+        List<String> cleanedList = stream.filter(e -> e.equalsIgnoreCase("if")).collect(Collectors.toList());
+        
+        return new ElementPath(cleanedList);
+        
+        
     }
 
     Action fullPathMatch(ElementPath elementPath) {
