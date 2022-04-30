@@ -13,10 +13,9 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.Action;
@@ -37,13 +36,28 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     // key: Pattern instance, value: ArrayList containing actions
     HashMap<ElementSelector, Action> rules = new HashMap<>();
 
-    // public SimpleRuleStore() {
-    // }
+    List<String> transparentPathParts = new ArrayList<>(2);
 
     public SimpleRuleStore(Context context) {
         setContext(context);
     }
 
+    public void addTransparentPathPart(String pathPart) {
+        if(pathPart == null) 
+            throw new IllegalArgumentException("pathPart cannot be null");
+        
+        pathPart = pathPart.trim();
+        
+        if(pathPart.isEmpty()) 
+            throw new IllegalArgumentException("pathPart cannot be empty or to consist of only spaces");
+        
+        if(pathPart.contains("/")) 
+            throw new IllegalArgumentException("pathPart cannot contain '/', i.e. the forward slash character");
+
+        transparentPathParts.add(pathPart);
+        
+        
+    }
     /**
      * Add a new rule, i.e. a pattern, action pair to the rule store.
      * <p>
@@ -83,10 +97,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
 
     public Action matchActions(ElementPath elementPath) {
         Action action;
-        
-        ElementPath cleanedElementPath = elementPath;
-
-        //ElementPath cleanedElementPath = cleanElementPath(elementPath);
+        ElementPath cleanedElementPath = removeTransparentPathParts(elementPath);
         
         if ((action = fullPathMatch(cleanedElementPath)) != null) {
             return action;
@@ -101,12 +112,19 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         }
     }
 
-    private ElementPath cleanElementPath(ElementPath uncleanElementPath) {
-        Stream<String> stream = uncleanElementPath.partList.stream();
+    private ElementPath removeTransparentPathParts(ElementPath originalElementPath) {
         
-        List<String> cleanedList = stream.filter(e -> e.equalsIgnoreCase("if")).collect(Collectors.toList());
         
-        return new ElementPath(cleanedList);
+        List<String> preservedElementList = new ArrayList<>(originalElementPath.partList.size());
+        
+        for(String part: originalElementPath.partList) {
+           boolean  shouldKeep = transparentPathParts.stream().noneMatch(p -> p.equalsIgnoreCase(part));
+           if(shouldKeep)
+               preservedElementList.add(part);
+        }
+        
+     
+        return new ElementPath(preservedElementList);
         
         
     }

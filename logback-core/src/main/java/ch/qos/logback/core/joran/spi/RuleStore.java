@@ -54,4 +54,6 @@ public interface RuleStore {
      * @return list of matching actions
      */
     Action matchActions(ElementPath elementPath);
+    
+    void addTransparentPathPart(String pathPart);
 }

@@ -94,6 +94,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
         // add if-then-else support
         rs.addRule(new ElementSelector("*/if"), new IfAction());
+        rs.addTransparentPathPart("if");
+        
         // rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
         // rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
         // rs.addRule(new ElementSelector("*/if/else"), new ElseAction());

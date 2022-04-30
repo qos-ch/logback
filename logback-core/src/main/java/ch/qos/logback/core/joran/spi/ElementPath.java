@@ -23,7 +23,7 @@ import java.util.List;
  * @since 1.1.0
  */
 public class ElementPath {
-    // contains String instances
+    
     ArrayList<String> partList = new ArrayList<String>();
 
     public ElementPath() {
