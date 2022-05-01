@@ -84,6 +84,8 @@ public class JettyBasicTest {
 
         assertEquals("127.0.0.1", event.getRemoteHost());
         assertEquals("localhost", event.getServerName());
+        assertEquals("123", event.getResponseHeader("CORRELATION-ID"));
+        assertEquals("123", event.getResponseHeader("correlation-id"));
         listAppender.list.clear();
     }
 

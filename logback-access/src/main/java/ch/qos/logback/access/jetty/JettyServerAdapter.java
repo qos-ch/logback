@@ -20,8 +20,8 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * A jetty specific implementation of the {@link ServerAdapter} interface.
@@ -56,7 +56,7 @@ public class JettyServerAdapter implements ServerAdapter {
 
     @Override
     public Map<String, String> buildResponseHeaderMap() {
-        Map<String, String> responseHeaderMap = new HashMap<String, String>();
+        Map<String, String> responseHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         HttpFields httpFields = response.getHttpFields();
         Enumeration e = httpFields.getFieldNames();
         while (e.hasMoreElements()) {
