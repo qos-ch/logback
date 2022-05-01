@@ -22,11 +22,11 @@ class MinSlf4jLevel extends java.util.logging.Level {
      * converts to a SLF4J WARN.
      */
     public static MinSlf4jLevel MIN_WARN = new MinSlf4jLevel(
-        "MIN_INFO", java.util.logging.Level.INFO.intValue() + 1);
+        "MIN_WARN", java.util.logging.Level.INFO.intValue() + 1);
     /**
      * A JUL Level with the smallest intValue that jul-to-slf4j
      * converts to a SLF4J ERROR.
      */
     public static MinSlf4jLevel MIN_ERROR = new MinSlf4jLevel(
-        "MIN_INFO", java.util.logging.Level.WARNING.intValue() + 1);
+        "MIN_ERROR", java.util.logging.Level.WARNING.intValue() + 1);
 }
