@@ -12,12 +12,14 @@
  * as published by the Free Software Foundation.
  */
 
-package ch.qos.logback.core.joran.action;
+package ch.qos.logback.core.joran.conditional;
 
 import org.xml.sax.Attributes;
 
+import ch.qos.logback.core.joran.action.BaseModelAction;
+import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
-import ch.qos.logback.core.model.IfModel;
+import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.Model;
 
 public class IfAction extends BaseModelAction  {

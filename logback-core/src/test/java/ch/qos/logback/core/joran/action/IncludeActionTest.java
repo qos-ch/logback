@@ -37,12 +37,14 @@ import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.IncludeModel;
+import ch.qos.logback.core.model.StackModel;
 import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelFilter;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
+import ch.qos.logback.core.model.processor.StackModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.FileTestUtil;
@@ -91,7 +93,6 @@ public class IncludeActionTest {
 
     int diff = RandomUtil.getPositiveInt();
 
-    StackAction stackAction = new StackAction();
 
     @Before
     public void setUp() throws Exception {
@@ -99,7 +100,7 @@ public class IncludeActionTest {
         HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
         rulesMap.put(new ElementSelector("x"), new TopElementAction());
         rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
-        rulesMap.put(new ElementSelector("x/stack"), stackAction);
+        rulesMap.put(new ElementSelector("x/stack"), new StackAction());
 
         tc = new TrivialConfigurator(rulesMap) {
             @Override
@@ -107,9 +108,10 @@ public class IncludeActionTest {
                 DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
+                defaultProcessor.addHandler(StackModel.class, StackModelHandler::makeInstance);
                 ModelFilter p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
                 defaultProcessor.setPhaseOneFilter(p1Filter);
-                ModelFilter p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class)
+                ModelFilter p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(StackModel.class).allow(IncludeModel.class)
                         .denyAll();
                 defaultProcessor.setPhaseTwoFilter(p2Filter);
                 return defaultProcessor;
@@ -230,7 +232,9 @@ public class IncludeActionTest {
         expected.push("a");
         expected.push("b");
         expected.push("c");
-        assertEquals(expected, stackAction.getStack());
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
+        assertEquals(expected, aStack);
     }
 
     @Test
@@ -255,7 +259,9 @@ public class IncludeActionTest {
     void verifyConfig(String[] expected) {
         Stack<String> witness = new Stack<String>();
         witness.addAll(Arrays.asList(expected));
-        assertEquals(witness, stackAction.getStack());
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
+        assertEquals(witness, aStack);
     }
 
 }

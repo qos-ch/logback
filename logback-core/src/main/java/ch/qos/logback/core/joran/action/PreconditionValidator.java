@@ -24,6 +24,19 @@ public class PreconditionValidator extends ContextAwareBase {
         this.attributes = attributes;
     }
 
+    public PreconditionValidator validateZeroAttributes() {
+        if(attributes == null) 
+            return this;
+        
+        if(attributes.getLength() != 0) {
+            addError("Element [" + tag + "] should have no attributes, near line "
+                    + Action.getLineNumber(intercon));
+            this.valid = false;
+        }
+        return this;
+    }
+
+    
     public PreconditionValidator validateClassAttribute() {
         return generic(Action.CLASS_ATTRIBUTE);
     }

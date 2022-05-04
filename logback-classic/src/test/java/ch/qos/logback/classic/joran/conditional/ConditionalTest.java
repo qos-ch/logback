@@ -39,7 +39,6 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-@Ignore
 public class ConditionalTest {
 
     LoggerContext context = new LoggerContext();

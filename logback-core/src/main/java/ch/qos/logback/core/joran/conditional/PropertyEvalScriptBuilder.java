@@ -31,7 +31,7 @@ public class PropertyEvalScriptBuilder extends ContextAwareBase {
 
     final PropertyContainer localPropContainer;
 
-    PropertyEvalScriptBuilder(PropertyContainer localPropContainer) {
+    public PropertyEvalScriptBuilder(PropertyContainer localPropContainer) {
         this.localPropContainer = localPropContainer;
     }
 

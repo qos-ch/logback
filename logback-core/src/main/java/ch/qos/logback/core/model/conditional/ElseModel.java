@@ -11,22 +11,11 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.model;
+package ch.qos.logback.core.model.conditional;
 
-public class IfModel extends Model {
+import ch.qos.logback.core.model.Model;
 
-    private static final long serialVersionUID = 1516046821762377019L;
+public class ElseModel extends Model  {
 
-    String condition;
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-    
-    
-
+    private static final long serialVersionUID = -8409916706993952710L;
 }
