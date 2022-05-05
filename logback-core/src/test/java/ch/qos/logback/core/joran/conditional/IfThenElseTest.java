@@ -13,13 +13,15 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 
-import ch.qos.logback.core.joran.action.PropertyAction;
-import ch.qos.logback.core.joran.action.TopElementAction;
-import ch.qos.logback.core.joran.spi.ElementSelector;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,36 +29,33 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.SimpleConfigurator;
-import ch.qos.logback.core.joran.TrivialConfigurator;
 import ch.qos.logback.core.joran.action.Action;
-import ch.qos.logback.core.joran.action.NOPAction;
+import ch.qos.logback.core.joran.action.PropertyAction;
+import ch.qos.logback.core.joran.action.TopElementAction;
 import ch.qos.logback.core.joran.action.ext.StackAction;
+import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.ImplicitModel;
+import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.StackModel;
 import ch.qos.logback.core.model.TopModel;
+import ch.qos.logback.core.model.conditional.ElseModel;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.ThenModel;
-import ch.qos.logback.core.model.conditional.ElseModel;
-
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
+import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.StackModelHandler;
+import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
 import ch.qos.logback.core.model.processor.conditional.IfModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
-import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
-
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
-
-import static org.junit.Assert.*;
 
 public class IfThenElseTest {
 
@@ -99,11 +98,10 @@ public class IfThenElseTest {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 
                 defaultProcessor.addHandler(StackModel.class, StackModelHandler::makeInstance);
-                defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
+                defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
                 defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
                 defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
-
                 defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
 
                 return defaultProcessor;
@@ -155,6 +153,7 @@ public class IfThenElseTest {
     @Test
     public void nestedIf() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf.xml");
+        StatusPrinter.print(context);
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
         assertTrue(checker.isErrorFree(0));
     }
@@ -182,6 +181,7 @@ public class IfThenElseTest {
         Stack<String> witness = new Stack<String>();
         witness.addAll(Arrays.asList(expected));
         
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
         assertEquals(witness, aStack);
     }

@@ -79,7 +79,7 @@ public abstract class BaseModelAction extends Action {
         Model m = interpretationContext.peekModel();
 
         if (m != currentModel) {
-            addWarn("The object at the of the stack is not the model [" + currentModel.idString()
+            addWarn("The object "+ m +"] at the top of the stack differs from the model [" + currentModel.idString()
                     + "] pushed earlier.");
             addWarn("This is wholly unexpected.");
         }

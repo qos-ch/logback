@@ -41,5 +41,9 @@ public class StackModelHandler  extends ModelHandlerBase {
         }
         aStack.push(name);
     }
+    
+    @Override
+    public void postHandle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+    }
 
 }

@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran.action;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -109,11 +110,13 @@ public class IncludeActionTest {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(StackModel.class, StackModelHandler::makeInstance);
-                ModelFilter p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
-                defaultProcessor.setPhaseOneFilter(p1Filter);
-                ModelFilter p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(StackModel.class).allow(IncludeModel.class)
-                        .denyAll();
-                defaultProcessor.setPhaseTwoFilter(p2Filter);
+//                ModelFilter p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
+//                defaultProcessor.setPhaseOneFilter(p1Filter);
+//                ModelFilter p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(StackModel.class).allow(IncludeModel.class)
+//                        .denyAll();
+//                defaultProcessor.setPhaseTwoFilter(p2Filter);
+
+                
                 return defaultProcessor;
             }
         };
@@ -253,14 +256,21 @@ public class IncludeActionTest {
         // verifyConfig(new String[] { "EA", "EB" });
 
         // when entity inclusion disabled
-        verifyConfig(new String[] {});
+        verifyConfig(null);
     }
 
     void verifyConfig(String[] expected) {
-        Stack<String> witness = new Stack<String>();
-        witness.addAll(Arrays.asList(expected));
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
+
+        if(expected == null) {
+            assertNull(aStack);
+            return;
+        } 
+        
+        Stack<String> witness = new Stack<String>();
+        witness.addAll(Arrays.asList(expected));
+            
         assertEquals(witness, aStack);
     }
 

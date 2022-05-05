@@ -20,7 +20,6 @@ import ch.qos.logback.core.joran.action.PreconditionValidator;
 import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.conditional.ElseModel;
-import ch.qos.logback.core.model.conditional.ThenModel;
 
 public class ElseAction extends BaseModelAction {
 
@@ -34,9 +33,7 @@ public class ElseAction extends BaseModelAction {
     @Override
     protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
             Attributes attributes) {
-        
         ElseModel elseModel = new ElseModel();
-        
         return elseModel;
     }
 

@@ -35,6 +35,7 @@ public class IfModelHandler extends ModelHandlerBase {
 
     enum Branch {IF_BRANCH, ELSE_BRANCH; }
     
+    IfModel ifModel = null;
     
     public IfModelHandler(Context context) {
         super(context);
@@ -52,13 +53,15 @@ public class IfModelHandler extends ModelHandlerBase {
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         
-        IfModel ifModel = (IfModel) model;
+        ifModel = (IfModel) model;
         
         if (!EnvUtil.isJaninoAvailable()) {
             addError(MISSING_JANINO_MSG);
             addError(MISSING_JANINO_SEE);
             return;
         }
+        
+        mic.pushModel(ifModel);
         Condition condition = null;
         
         String conditionStr = ifModel.getCondition();
@@ -92,5 +95,15 @@ public class IfModelHandler extends ModelHandlerBase {
     }
     
     
+    @Override
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
+
+        Object o = mic.peekObject();
+        if (o != ifModel) {
+            addWarn("The object [" + o + "] on the top the of the stack is not the expected ]" + ifModel);
+        } else {
+            mic.popObject();
+        }
+    }
 
 }

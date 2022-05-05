@@ -43,21 +43,21 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     public void addTransparentPathPart(String pathPart) {
-        if(pathPart == null) 
+        if (pathPart == null)
             throw new IllegalArgumentException("pathPart cannot be null");
-        
+
         pathPart = pathPart.trim();
-        
-        if(pathPart.isEmpty()) 
+
+        if (pathPart.isEmpty())
             throw new IllegalArgumentException("pathPart cannot be empty or to consist of only spaces");
-        
-        if(pathPart.contains("/")) 
+
+        if (pathPart.contains("/"))
             throw new IllegalArgumentException("pathPart cannot contain '/', i.e. the forward slash character");
 
         transparentPathParts.add(pathPart);
-        
-        
+
     }
+
     /**
      * Add a new rule, i.e. a pattern, action pair to the rule store.
      * <p>
@@ -67,7 +67,7 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
         action.setContext(context);
 
         Action existing = rules.get(elementSelector);
-        
+
         if (existing == null) {
             rules.put(elementSelector, action);
         } else {
@@ -96,16 +96,26 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     // match for x/y/* has higher priority than matches for x/*
 
     public Action matchActions(ElementPath elementPath) {
-        Action action;
-        ElementPath cleanedElementPath = removeTransparentPathParts(elementPath);
         
-        if ((action = fullPathMatch(cleanedElementPath)) != null) {
+        Action action = internalMatchAction(elementPath);
+        if(action != null) {
             return action;
-        } else if ((action = suffixMatch(cleanedElementPath)) != null) {
+        } else {
+            ElementPath cleanedElementPath = removeTransparentPathParts(elementPath);
+            return internalMatchAction(cleanedElementPath);
+        }
+    }
+
+    private Action internalMatchAction(ElementPath elementPath) {
+        Action action;
+
+        if ((action = fullPathMatch(elementPath)) != null) {
             return action;
-        } else if ((action = prefixMatch(cleanedElementPath)) != null) {
+        } else if ((action = suffixMatch(elementPath)) != null) {
             return action;
-        } else if ((action = middleMatch(cleanedElementPath)) != null) {
+        } else if ((action = prefixMatch(elementPath)) != null) {
+            return action;
+        } else if ((action = middleMatch(elementPath)) != null) {
             return action;
         } else {
             return null;
@@ -113,20 +123,17 @@ public class SimpleRuleStore extends ContextAwareBase implements RuleStore {
     }
 
     private ElementPath removeTransparentPathParts(ElementPath originalElementPath) {
-        
-        
+
         List<String> preservedElementList = new ArrayList<>(originalElementPath.partList.size());
-        
-        for(String part: originalElementPath.partList) {
-           boolean  shouldKeep = transparentPathParts.stream().noneMatch(p -> p.equalsIgnoreCase(part));
-           if(shouldKeep)
-               preservedElementList.add(part);
+
+        for (String part : originalElementPath.partList) {
+            boolean shouldKeep = transparentPathParts.stream().noneMatch(p -> p.equalsIgnoreCase(part));
+            if (shouldKeep)
+                preservedElementList.add(part);
         }
-        
-     
+
         return new ElementPath(preservedElementList);
-        
-        
+
     }
 
     Action fullPathMatch(ElementPath elementPath) {
