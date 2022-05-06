@@ -15,6 +15,7 @@ package ch.qos.logback.core.joran.spi;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -66,12 +67,13 @@ public class SaxEventInterpreter {
 
     final private RuleStore ruleStore;
     final private SaxEventInterpretationContext interpretationContext;
-    private Action implicitAction;
+    private Supplier<Action> implicitActionSupplier;
     final private CAI_WithLocatorSupport cai;
     private ElementPath elementPath;
     Locator locator;
     EventPlayer eventPlayer;
-
+    Context context;
+    
     /**
      * The <id>actionStack</id> contain the action that is executing
      * for the given XML element.
@@ -89,6 +91,7 @@ public class SaxEventInterpreter {
     ElementPath skip = null;
 
     public SaxEventInterpreter(Context context, RuleStore rs, ElementPath initialElementPath, List<SaxEvent> saxEvents) {
+        this.context = context;
         this.cai = new CAI_WithLocatorSupport(context, this);
         ruleStore = rs;
         interpretationContext = new SaxEventInterpretationContext(context, this);
@@ -126,7 +129,7 @@ public class SaxEventInterpreter {
    
         if (skip != null) {
             // every startElement pushes an action list
-            pushEmptyAction();
+            pushEmptyActionOntoActionStack();
             return;
         }
 
@@ -136,7 +139,7 @@ public class SaxEventInterpreter {
             callBeginAction(applicableAction, tagName, atts);
         } else {
             // every startElement pushes an action list
-            pushEmptyAction();
+            pushEmptyActionOntoActionStack();
             String errMsg = "no applicable action for [" + tagName + "], current ElementPath  is [" + elementPath + "]";
             cai.addError(errMsg);
         }
@@ -145,7 +148,7 @@ public class SaxEventInterpreter {
     /**
      * This method is used to
      */
-    private void pushEmptyAction() {
+    private void pushEmptyActionOntoActionStack() {
        actionStack.push(NOP_ACTION_SINGLETON);       
     }
 
@@ -205,19 +208,23 @@ public class SaxEventInterpreter {
         return tagName;
     }
 
-    public void setImplicitAction(Action action) {
-        this.implicitAction = action;
+    public void setImplicitActionSupplier(Supplier<Action> actionSupplier) {
+        this.implicitActionSupplier = actionSupplier;
     }
 
     /**
      * Return the list of applicable patterns for this
      */
     Action getApplicableAction(ElementPath elementPath, Attributes attributes) {
-        Action applicableAction = ruleStore.matchActions(elementPath);
+        Supplier<Action> applicableActionSupplier = ruleStore.matchActions(elementPath);
 
-        if (applicableAction != null) {
+        if (applicableActionSupplier != null) {
+            Action applicableAction = applicableActionSupplier.get();
+            applicableAction.setContext(context);
             return applicableAction;
         } else {
+            Action implicitAction = implicitActionSupplier.get();
+            implicitAction.setContext(context);
             return implicitAction;
         }
     }

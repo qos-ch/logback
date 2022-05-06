@@ -63,9 +63,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
     public void addInstanceRules(RuleStore rs) {
         super.addInstanceRules(rs);
 
-        rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
-        rs.addRule(new ElementSelector("configuration/appender-ref"), new AppenderRefAction());
-        rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
+        rs.addRule(new ElementSelector("configuration"), () -> new ConfigurationAction());
+        rs.addRule(new ElementSelector("configuration/appender-ref"), () -> new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/include"), () -> new IncludeAction());
     }
 
     @Override

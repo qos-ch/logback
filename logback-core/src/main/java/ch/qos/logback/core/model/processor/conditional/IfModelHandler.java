@@ -87,7 +87,7 @@ public class IfModelHandler extends ModelHandlerBase {
                 boolean boolResult = condition.evaluate();
                 ifModel.setBranchState(boolResult);
             } else {
-                addError("The condition variable is null. This shoud not occur.");
+                addError("The condition variable is null. This should not occur.");
                 ifModel.setBranchState(BranchState.IN_ERROR);
                 return;
             }
@@ -98,11 +98,11 @@ public class IfModelHandler extends ModelHandlerBase {
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 
-        Object o = mic.peekObject();
+        Object o = mic.peekModel();
         if (o != ifModel) {
-            addWarn("The object [" + o + "] on the top the of the stack is not the expected ]" + ifModel);
+            addWarn("The object [" + o + "] on the top the of the stack is not the expected [" + ifModel);
         } else {
-            mic.popObject();
+            mic.popModel();
         }
     }
 

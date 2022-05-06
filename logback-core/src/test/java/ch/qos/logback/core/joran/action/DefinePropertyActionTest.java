@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Before;
@@ -62,9 +63,9 @@ public class DefinePropertyActionTest {
     @Before
     public void setUp() throws Exception {
 
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("top"), new TopElementAction());
-        rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("top"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("top/define"), () -> new DefinePropertyAction());
 
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             @Override

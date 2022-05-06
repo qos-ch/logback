@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.spi.ElementSelector;
@@ -22,21 +23,21 @@ import ch.qos.logback.core.joran.spi.RuleStore;
 
 public class TrivialConfigurator extends GenericXMLConfigurator {
 
-    HashMap<ElementSelector, Action> rulesMap;
+    HashMap<ElementSelector, Supplier<Action>> rulesMap;
 
-    public TrivialConfigurator(HashMap<ElementSelector, Action> rules) {
+    public TrivialConfigurator(HashMap<ElementSelector, Supplier<Action>> rules) {
         this.rulesMap = rules;
     }
 
     @Override
-    protected void setImplicitRule(SaxEventInterpreter interpreter) {
+    protected void setImplicitRuleSupplier(SaxEventInterpreter interpreter) {
     }
 
     @Override
     protected void addInstanceRules(RuleStore rs) {
         for (ElementSelector elementSelector : rulesMap.keySet()) {
-            Action action = rulesMap.get(elementSelector);
-            rs.addRule(elementSelector, action);
+            Supplier<Action> actionSupplier = rulesMap.get(elementSelector);
+            rs.addRule(elementSelector, actionSupplier);
         }
     }
 

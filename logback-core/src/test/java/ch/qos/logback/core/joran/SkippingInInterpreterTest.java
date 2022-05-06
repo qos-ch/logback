@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -48,7 +49,7 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
  */
 public class SkippingInInterpreterTest {
 
-    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
     Context context = new ContextBase();
     StatusManager sm = context.getStatusManager();
 
@@ -59,18 +60,18 @@ public class SkippingInInterpreterTest {
 
     void doTest(String filename, Integer expectedInt, Class<?> exceptionClass) throws Exception {
 
-        rulesMap.put(new ElementSelector("test"), new TopElementAction());
-        rulesMap.put(new ElementSelector("test/badBegin"), new BadBeginAction());
-        rulesMap.put(new ElementSelector("test/badBegin/touch"), new TouchAction());
-        rulesMap.put(new ElementSelector("test/badEnd"), new BadEndAction());
-        rulesMap.put(new ElementSelector("test/badEnd/touch"), new TouchAction());
-        rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
+        rulesMap.put(new ElementSelector("test"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("test/badBegin"), () -> new BadBeginAction());
+        rulesMap.put(new ElementSelector("test/badBegin/touch"), () -> new TouchAction());
+        rulesMap.put(new ElementSelector("test/badEnd"), () -> new BadEndAction());
+        rulesMap.put(new ElementSelector("test/badEnd/touch"), () -> new TouchAction());
+        rulesMap.put(new ElementSelector("test/hello"), () -> new HelloAction());
 
-        rulesMap.put(new ElementSelector("test/isolate"), new NOPAction());
-        rulesMap.put(new ElementSelector("test/isolate/badEnd"), new BadEndAction());
-        rulesMap.put(new ElementSelector("test/isolate/badEnd/touch"), new TouchAction());
-        rulesMap.put(new ElementSelector("test/isolate/touch"), new TouchAction());
-        rulesMap.put(new ElementSelector("test/hello"), new HelloAction());
+        rulesMap.put(new ElementSelector("test/isolate"), () -> new NOPAction());
+        rulesMap.put(new ElementSelector("test/isolate/badEnd"), () -> new BadEndAction());
+        rulesMap.put(new ElementSelector("test/isolate/badEnd/touch"), () -> new TouchAction());
+        rulesMap.put(new ElementSelector("test/isolate/touch"), () -> new TouchAction());
+        rulesMap.put(new ElementSelector("test/hello"), () -> new HelloAction());
 
         TrivialConfigurator tc = new TrivialConfigurator(rulesMap);
         tc.setContext(context);

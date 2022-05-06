@@ -22,7 +22,6 @@ import java.net.UnknownHostException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;

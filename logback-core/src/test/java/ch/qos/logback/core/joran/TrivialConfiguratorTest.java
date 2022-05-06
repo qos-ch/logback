@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.function.Supplier;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
@@ -46,13 +47,13 @@ import ch.qos.logback.core.testUtil.TrivialStatusListener;
 public class TrivialConfiguratorTest {
 
     Context context = new ContextBase();
-    HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
+    HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
 
     @Before
     public void setUp() {
         // rule store is case insensitve
-        rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/inc"), new IncAction());
+        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("x/inc"), () -> new IncAction());
 
     }
 

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,9 +51,9 @@ public class ImplicitActionTest {
     @Before
     public void setUp() throws Exception {
         fruitContext.setName("fruits");
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("/context/"), new FruitContextAction());
-        rulesMap.put(new ElementSelector("/context/statusListener"), new StatusListenerAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("/context/"), () -> new FruitContextAction());
+        rulesMap.put(new ElementSelector("/context/statusListener"), () -> new StatusListenerAction());
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             @Override
             protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {

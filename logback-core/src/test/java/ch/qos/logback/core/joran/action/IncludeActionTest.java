@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Before;
@@ -40,9 +41,7 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.StackModel;
 import ch.qos.logback.core.model.TopModel;
-import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.ModelFilter;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.StackModelHandler;
@@ -98,10 +97,10 @@ public class IncludeActionTest {
     @Before
     public void setUp() throws Exception {
         FileTestUtil.makeTestOutputDir();
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
-        rulesMap.put(new ElementSelector("x/stack"), new StackAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("x/include"), () -> new IncludeAction());
+        rulesMap.put(new ElementSelector("x/stack"), () -> new StackAction());
 
         tc = new TrivialConfigurator(rulesMap) {
             @Override

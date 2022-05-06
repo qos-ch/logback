@@ -33,8 +33,8 @@ import ch.qos.logback.core.joran.action.ShutdownHookAction;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.action.TimestampAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
-import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.RuleStore;
+import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
 import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 import ch.qos.logback.core.model.DefineModel;
 import ch.qos.logback.core.model.EventEvaluatorModel;
@@ -78,47 +78,36 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
     protected void addInstanceRules(RuleStore rs) {
 
         // is "configuration/variable" referenced in the docs?
-        rs.addRule(new ElementSelector("configuration/variable"), new PropertyAction());
-        rs.addRule(new ElementSelector("configuration/import"), new ImportAction());
-        rs.addRule(new ElementSelector("configuration/property"), new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/variable"), () -> new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/import"), () -> new ImportAction());
+        rs.addRule(new ElementSelector("configuration/property"), () -> new PropertyAction());
 
-        rs.addRule(new ElementSelector("configuration/substitutionProperty"), new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/substitutionProperty"), () -> new PropertyAction());
 
-        rs.addRule(new ElementSelector("configuration/timestamp"), new TimestampAction());
-        rs.addRule(new ElementSelector("configuration/shutdownHook"), new ShutdownHookAction());
-        rs.addRule(new ElementSelector("configuration/define"), new DefinePropertyAction());
-        rs.addRule(new ElementSelector("configuration/evaluator"), new EventEvaluatorAction());
+        rs.addRule(new ElementSelector("configuration/timestamp"), () -> new TimestampAction());
+        rs.addRule(new ElementSelector("configuration/shutdownHook"), () -> new ShutdownHookAction());
+        rs.addRule(new ElementSelector("configuration/define"), () -> new DefinePropertyAction());
+        rs.addRule(new ElementSelector("configuration/evaluator"), () -> new EventEvaluatorAction());
 
         // the contextProperty pattern is deprecated. It is undocumented
         // and will be dropped in future versions of logback
-        rs.addRule(new ElementSelector("configuration/contextProperty"), new ContextPropertyAction());
+        rs.addRule(new ElementSelector("configuration/contextProperty"), () -> new ContextPropertyAction());
 
-        rs.addRule(new ElementSelector("configuration/conversionRule"), new ConversionRuleAction());
+        rs.addRule(new ElementSelector("configuration/conversionRule"), () -> new ConversionRuleAction());
 
-        rs.addRule(new ElementSelector("configuration/statusListener"), new StatusListenerAction());
+        rs.addRule(new ElementSelector("configuration/statusListener"), () -> new StatusListenerAction());
 
-        rs.addRule(new ElementSelector("configuration/appender"), new AppenderAction());
-        rs.addRule(new ElementSelector("configuration/appender/appender-ref"), new AppenderRefAction());
-        rs.addRule(new ElementSelector("configuration/newRule"), new NewRuleAction());
+        rs.addRule(new ElementSelector("configuration/appender"), () -> new AppenderAction());
+        rs.addRule(new ElementSelector("configuration/appender/appender-ref"), () -> new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/newRule"), () -> new NewRuleAction());
 
-        rs.addRule(new ElementSelector("*/param"), new ParamAction());
+        rs.addRule(new ElementSelector("*/param"), () -> new ParamAction());
 
     }
 
     @Override
-    protected void setImplicitRule(SaxEventInterpreter interpreter) {
-        // The following line adds the capability to parse nested components
-//        NestedComplexPropertyIA nestedComplexPropertyIA = new NestedComplexPropertyIA(getBeanDescriptionCache());
-//        nestedComplexPropertyIA.setContext(context);
-//        interpreter.addImplicitAction(nestedComplexPropertyIA);
-//
-//        NestedBasicPropertyIA nestedBasicIA = new NestedBasicPropertyIA(getBeanDescriptionCache());
-//        nestedBasicIA.setContext(context);
-//        interpreter.addImplicitAction(nestedBasicIA);
-
-        ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
-        implicitRuleModelAction.setContext(context);
-        interpreter.setImplicitAction(implicitRuleModelAction);
+    protected void setImplicitRuleSupplier(SaxEventInterpreter interpreter) {
+        interpreter.setImplicitActionSupplier( () -> new ImplicitModelAction() );
     }
 
     public void buildModelInterprtationContext() {

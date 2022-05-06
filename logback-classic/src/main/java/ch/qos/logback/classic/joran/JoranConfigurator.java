@@ -78,22 +78,22 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         // add parent rules
         super.addInstanceRules(rs);
 
-        rs.addRule(new ElementSelector("configuration"), new ConfigurationAction());
+        rs.addRule(new ElementSelector("configuration"), () -> new ConfigurationAction());
 
-        rs.addRule(new ElementSelector("configuration/contextName"), new ContextNameAction());
-        rs.addRule(new ElementSelector("configuration/contextListener"), new LoggerContextListenerAction());
-        rs.addRule(new ElementSelector("configuration/insertFromJNDI"), new InsertFromJNDIAction());
+        rs.addRule(new ElementSelector("configuration/contextName"), () -> new ContextNameAction());
+        rs.addRule(new ElementSelector("configuration/contextListener"), () -> new LoggerContextListenerAction());
+        rs.addRule(new ElementSelector("configuration/insertFromJNDI"), () -> new InsertFromJNDIAction());
 
-        rs.addRule(new ElementSelector("configuration/logger"), new LoggerAction());
-        rs.addRule(new ElementSelector("configuration/logger/level"), new LevelAction());
+        rs.addRule(new ElementSelector("configuration/logger"), () -> new LoggerAction());
+        rs.addRule(new ElementSelector("configuration/logger/level"), () -> new LevelAction());
 
-        rs.addRule(new ElementSelector("configuration/root"), new RootLoggerAction());
-        rs.addRule(new ElementSelector("configuration/root/level"), new LevelAction());
-        rs.addRule(new ElementSelector("configuration/logger/appender-ref"), new AppenderRefAction());
-        rs.addRule(new ElementSelector("configuration/root/appender-ref"), new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/root"), () -> new RootLoggerAction());
+        rs.addRule(new ElementSelector("configuration/root/level"), () -> new LevelAction());
+        rs.addRule(new ElementSelector("configuration/logger/appender-ref"), () -> new AppenderRefAction());
+        rs.addRule(new ElementSelector("configuration/root/appender-ref"), () -> new AppenderRefAction());
 
         // add if-then-else support
-        rs.addRule(new ElementSelector("*/if"), new IfAction());
+        rs.addRule(new ElementSelector("*/if"), () -> new IfAction());
         rs.addTransparentPathPart("if");
         
         // rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
@@ -102,13 +102,13 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         // rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
 
         if (PlatformInfo.hasJMXObjectName()) {
-            rs.addRule(new ElementSelector("configuration/jmxConfigurator"), new JMXConfiguratorAction());
+            rs.addRule(new ElementSelector("configuration/jmxConfigurator"), () -> new JMXConfiguratorAction());
         }
-        rs.addRule(new ElementSelector("configuration/include"), new IncludeAction());
+        rs.addRule(new ElementSelector("configuration/include"), () -> new IncludeAction());
 
-        rs.addRule(new ElementSelector("configuration/consolePlugin"), new ConsolePluginAction());
+        rs.addRule(new ElementSelector("configuration/consolePlugin"), () -> new ConsolePluginAction());
 
-        rs.addRule(new ElementSelector("configuration/receiver"), new ReceiverAction());
+        rs.addRule(new ElementSelector("configuration/receiver"), () -> new ReceiverAction());
 
     }
 

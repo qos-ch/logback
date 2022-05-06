@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Before;
@@ -72,13 +73,13 @@ public class IfThenElseTest {
 
     @Before
     public void setUp() throws Exception {
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/stack"), new StackAction());
-        rulesMap.put(new ElementSelector("x/property"), new PropertyAction());
-        rulesMap.put(new ElementSelector("*/if"), new IfAction());
-        rulesMap.put(new ElementSelector("*/if/then"), new ThenAction());
-        rulesMap.put(new ElementSelector("*/if/else"), new ElseAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("x/stack"), () -> new StackAction());
+        rulesMap.put(new ElementSelector("x/property"), () -> new PropertyAction());
+        rulesMap.put(new ElementSelector("*/if"), () -> new IfAction());
+        rulesMap.put(new ElementSelector("*/if/then"), () -> new ThenAction());
+        rulesMap.put(new ElementSelector("*/if/else"), () -> new ElseAction());
 
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             
@@ -153,7 +154,7 @@ public class IfThenElseTest {
     @Test
     public void nestedIf() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf.xml");
-        StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
         assertTrue(checker.isErrorFree(0));
     }

@@ -50,12 +50,15 @@ public class EventPlayer {
 
             if (se instanceof StartEvent) {
                 interpreter.startElement((StartEvent) se);
+                continue;
             }
             if (se instanceof BodyEvent) {
                 interpreter.characters((BodyEvent) se);
+                continue;
             }
             if (se instanceof EndEvent) {
                 interpreter.endElement((EndEvent) se);
+                continue;
             }
 
         }

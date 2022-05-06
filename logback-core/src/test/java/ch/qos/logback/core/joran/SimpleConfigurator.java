@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.ImplicitModelAction;
@@ -23,18 +24,15 @@ import ch.qos.logback.core.joran.spi.SaxEventInterpreter;
 
 public class SimpleConfigurator extends GenericXMLConfigurator {
 
-    HashMap<ElementSelector, Action> rulesMap;
+    HashMap<ElementSelector, Supplier<Action>> rulesMap;
 
-    public SimpleConfigurator(HashMap<ElementSelector, Action> rules) {
+    public SimpleConfigurator(HashMap<ElementSelector, Supplier<Action>> rules) {
         this.rulesMap = rules;
     }
 
     @Override
-    protected void setImplicitRule(SaxEventInterpreter interpreter) {
-
-        ImplicitModelAction implicitRuleModelAction = new ImplicitModelAction();
-        interpreter.setImplicitAction(implicitRuleModelAction);
-
+    protected void setImplicitRuleSupplier(SaxEventInterpreter interpreter) {
+        interpreter.setImplicitActionSupplier(() -> new ImplicitModelAction());
     }
 
     public SaxEventInterpreter getInterpreter() {
@@ -44,8 +42,8 @@ public class SimpleConfigurator extends GenericXMLConfigurator {
     @Override
     protected void addInstanceRules(RuleStore rs) {
         for (ElementSelector elementSelector : rulesMap.keySet()) {
-            Action action = rulesMap.get(elementSelector);
-            rs.addRule(elementSelector, action);
+            Supplier<Action> actionSupplier = rulesMap.get(elementSelector);
+            rs.addRule(elementSelector, actionSupplier);
         }
     }
 }
