@@ -42,6 +42,9 @@ import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.model.TimestampModel;
+import ch.qos.logback.core.model.conditional.ElseModel;
+import ch.qos.logback.core.model.conditional.IfModel;
+import ch.qos.logback.core.model.conditional.ThenModel;
 import ch.qos.logback.core.model.processor.AllowAllModelFilter;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
@@ -98,7 +101,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
         @SuppressWarnings("unchecked")
         Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
-                EventEvaluatorModel.class, ShutdownHookModel.class, EventEvaluatorModel.class, IncludeModel.class, };
+                EventEvaluatorModel.class, ShutdownHookModel.class, EventEvaluatorModel.class, IncludeModel.class, 
+                IfModel.class, ThenModel.class, ElseModel.class};
 
         ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
         for (Class<? extends Model> modelClass : importModelClasses)

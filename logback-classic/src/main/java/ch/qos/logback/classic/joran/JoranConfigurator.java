@@ -42,7 +42,6 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
-import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
@@ -58,6 +57,9 @@ import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
 import ch.qos.logback.core.model.TimestampModel;
+import ch.qos.logback.core.model.conditional.ElseModel;
+import ch.qos.logback.core.model.conditional.IfModel;
+import ch.qos.logback.core.model.conditional.ThenModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
@@ -91,16 +93,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         rs.addRule(new ElementSelector("configuration/root/level"), () -> new LevelAction());
         rs.addRule(new ElementSelector("configuration/logger/appender-ref"), () -> new AppenderRefAction());
         rs.addRule(new ElementSelector("configuration/root/appender-ref"), () -> new AppenderRefAction());
-
-        // add if-then-else support
-        rs.addRule(new ElementSelector("*/if"), () -> new IfAction());
-        rs.addTransparentPathPart("if");
         
-        // rs.addRule(new ElementSelector("*/if/then"), new ThenAction());
-        // rs.addRule(new ElementSelector("*/if/then/*"), new NOPAction());
-        // rs.addRule(new ElementSelector("*/if/else"), new ElseAction());
-        // rs.addRule(new ElementSelector("*/if/else/*"), new NOPAction());
-
         if (PlatformInfo.hasJMXObjectName()) {
             rs.addRule(new ElementSelector("configuration/jmxConfigurator"), () -> new JMXConfiguratorAction());
         }
@@ -159,14 +152,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         @SuppressWarnings("unchecked")
         Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
                 EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
-                IncludeModel.class, };
-
-//		@SuppressWarnings("unchecked")
-//		Class<? extends Model>[] secondPhaseModelClasses = new Class[] { 
-//				LoggerModel.class, 
-//				RootLoggerModel.class, 
-//				AppenderModel.class,
-//				AppenderRefModel.class };
+                IncludeModel.class, IfModel.class, ThenModel.class, ElseModel.class};
 
         // MOTE: AppenderModelHandler is delayed to second phase
 
@@ -183,10 +169,10 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         fistPhaseDefintionFilter.denyAll();
         defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
 
-        ChainedModelFilter secondPhaseDefintionFilter = new ChainedModelFilter();
-        secondPhaseDefintionFilter.allowAll();
+        ChainedModelFilter secondPhaseDefinitionFilter = new ChainedModelFilter();
+        secondPhaseDefinitionFilter.allowAll();
 
-        defaultProcessor.setPhaseTwoFilter(secondPhaseDefintionFilter);
+        defaultProcessor.setPhaseTwoFilter(secondPhaseDefinitionFilter);
 
     }
 
