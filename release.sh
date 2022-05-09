@@ -7,7 +7,12 @@ mvn site:site
 
 #mvn javadoc:jar
 #mvn assembly:single
+
+export GPG_TTY=$(tty)
+password
 mvn deploy -P javadocjar,sign-artifacts -Dgpg.passphrase=passwd
+
+
 
 # cleanHistory dep
 #uncomment diffie-hellman support in /etc/ssh/sshd_config
