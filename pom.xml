@@ -42,7 +42,6 @@
     <module>logback-core</module>
     <module>logback-classic</module>
     <module>logback-access</module>
-    <module>logback-site</module>
     <module>logback-examples</module>
   </modules>
 
