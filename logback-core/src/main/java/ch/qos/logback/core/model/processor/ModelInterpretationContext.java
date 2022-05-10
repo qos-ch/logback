@@ -22,7 +22,6 @@ import java.util.Properties;
 import java.util.Stack;
 
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.action.ImplicitModelData;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
@@ -35,8 +34,6 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
 
     Stack<Object> objectStack;
     Stack<Model> modelStack;
-
-    //Stack<ImplicitModelData> implicitActionDataStack;
 
     Map<String, Object> objectMap;
     Map<String, String> propertiesMap;
@@ -52,7 +49,6 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         this.context = context;
         this.objectStack = new Stack<>();
         this.modelStack = new Stack<>();
-        //this.implicitActionDataStack = new Stack<>();
         this.beanDescriptionCache = new BeanDescriptionCache(context);
         objectMap = new HashMap<>(5);
         propertiesMap = new HashMap<>(5);
@@ -154,21 +150,6 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
         return defaultNestedComponentRegistry;
     }
-
-//    /**
-//     * implicitActionDataStack contains ImplicitModelData instances 
-//     * 
-//     * We use a stack of ActionData objects in order to support nested elements which 
-//     * are handled by the same NestedComplexPropertyIA instance. We push a 
-//     * ActionData instance in the isApplicable method (if the action is applicable) and pop it in the end()
-//     * method. 
-//     * 
-//     * The XML well-formedness property will guarantee that a push will
-//     * eventually be followed by a corresponding pop.
-//     */
-//    public Stack<ImplicitModelData> getImplicitModelDataStack() {
-//        return implicitActionDataStack;
-//    }
 
     // ================================== dependencies
 
