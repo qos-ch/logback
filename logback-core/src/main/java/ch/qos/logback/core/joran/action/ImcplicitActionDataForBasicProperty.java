@@ -21,7 +21,7 @@ import ch.qos.logback.core.util.AggregationType;
  * 
  * @author Ceki Gulcu
  */
-public class ImcplicitActionDataForBasicProperty extends ImplicitActionDataBase {
+public class ImcplicitActionDataForBasicProperty extends ImplicitModelData {
 
     public ImcplicitActionDataForBasicProperty(PropertySetter parentBean, AggregationType aggregationType,
             String propertyName) {
