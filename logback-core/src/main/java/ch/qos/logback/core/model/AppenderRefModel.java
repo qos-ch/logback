@@ -13,6 +13,10 @@
  */
 package ch.qos.logback.core.model;
 
+import ch.qos.logback.core.model.processor.PhaseIndicator;
+import ch.qos.logback.core.model.processor.ProcessingPhase;
+
+@PhaseIndicator(phase = ProcessingPhase.SECOND)
 public class AppenderRefModel extends Model {
 
     private static final long serialVersionUID = 5238705468395447547L;

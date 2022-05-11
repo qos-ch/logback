@@ -47,23 +47,9 @@ import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
-import ch.qos.logback.core.model.DefineModel;
-import ch.qos.logback.core.model.EventEvaluatorModel;
-import ch.qos.logback.core.model.ImplicitModel;
-import ch.qos.logback.core.model.ImportModel;
-import ch.qos.logback.core.model.IncludeModel;
-import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.ParamModel;
-import ch.qos.logback.core.model.PropertyModel;
-import ch.qos.logback.core.model.ShutdownHookModel;
-import ch.qos.logback.core.model.TimestampModel;
-import ch.qos.logback.core.model.conditional.ElseModel;
-import ch.qos.logback.core.model.conditional.IfModel;
-import ch.qos.logback.core.model.conditional.ThenModel;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
-import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
@@ -133,47 +119,52 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
         defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
 
-        injectModelFilters(defaultProcessor);
+        closeModelFilters(defaultProcessor);
 
         return defaultProcessor;
     }
 
-    private void injectModelFilters(DefaultProcessor defaultProcessor) {
-        @SuppressWarnings("unchecked")
-        Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
-
-        @SuppressWarnings("unchecked")
-        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
-                DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
-
-        @SuppressWarnings("unchecked")
-        Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
-
-        @SuppressWarnings("unchecked")
-        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
-                EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
-                IncludeModel.class, IfModel.class, ThenModel.class, ElseModel.class};
-
-        // MOTE: AppenderModelHandler is delayed to second phase
-
-        ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
-        for (Class<? extends Model> modelClass : importModelClasses)
-            fistPhaseDefintionFilter.allow(modelClass);
-        for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
-            fistPhaseDefintionFilter.allow(modelClass);
-        for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
-            fistPhaseDefintionFilter.allow(modelClass);
-        for (Class<? extends Model> modelClass : implicitModelClasses)
-            fistPhaseDefintionFilter.allow(modelClass);
-
-        fistPhaseDefintionFilter.denyAll();
-        defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
-
-        ChainedModelFilter secondPhaseDefinitionFilter = new ChainedModelFilter();
-        secondPhaseDefinitionFilter.allowAll();
-
-        defaultProcessor.setPhaseTwoFilter(secondPhaseDefinitionFilter);
-
+    private void closeModelFilters(DefaultProcessor defaultProcessor) {
+        defaultProcessor.getPhaseOneFilter().denyAll();
+        defaultProcessor.getPhaseTwoFilter().allowAll();
     }
+    
+//    private void injectModelFilters(DefaultProcessor defaultProcessor) {
+//        @SuppressWarnings("unchecked")
+//        Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
+//
+//        @SuppressWarnings("unchecked")
+//        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
+//                DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
+//
+//        @SuppressWarnings("unchecked")
+//        Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
+//
+//        @SuppressWarnings("unchecked")
+//        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
+//                EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
+//                IncludeModel.class, IfModel.class, ThenModel.class, ElseModel.class};
+//
+//        // MOTE: AppenderModelHandler is delayed to second phase
+//
+//        ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
+//        for (Class<? extends Model> modelClass : importModelClasses)
+//            fistPhaseDefintionFilter.allow(modelClass);
+//        for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
+//            fistPhaseDefintionFilter.allow(modelClass);
+//        for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
+//            fistPhaseDefintionFilter.allow(modelClass);
+//        for (Class<? extends Model> modelClass : implicitModelClasses)
+//            fistPhaseDefintionFilter.allow(modelClass);
+//
+//        fistPhaseDefintionFilter.denyAll();
+//        defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
+//
+//        ChainedModelFilter secondPhaseDefinitionFilter = new ChainedModelFilter();
+//        secondPhaseDefinitionFilter.allowAll();
+//
+//        defaultProcessor.setPhaseTwoFilter(secondPhaseDefinitionFilter);
+//
+//    }
 
 }

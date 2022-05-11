@@ -21,7 +21,7 @@ import java.util.List;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.ModelFactoryMethod;
+import ch.qos.logback.core.model.ModelHandlerFactoryMethod;
 import ch.qos.logback.core.model.NamedComponentModel;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
@@ -40,19 +40,43 @@ public class DefaultProcessor extends ContextAwareBase {
     }
  
     final ModelInterpretationContext mic;
-    final HashMap<Class<? extends Model>, ModelFactoryMethod> modelClassToHandlerMap = new HashMap<>();
+    final HashMap<Class<? extends Model>, ModelHandlerFactoryMethod> modelClassToHandlerMap = new HashMap<>();
     final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
 
-    ModelFilter phaseOneFilter = new AllowAllModelFilter();
-    ModelFilter phaseTwoFilter = new DenyAllModelFilter();
+    ChainedModelFilter phaseOneFilter = new ChainedModelFilter();
+    ChainedModelFilter phaseTwoFilter = new ChainedModelFilter();
 
     public DefaultProcessor(Context context, ModelInterpretationContext mic) {
         this.setContext(context);
         this.mic = mic;
     }
 
-    public void addHandler(Class<? extends Model> modelClass, ModelFactoryMethod modelFactoryMethod) {
+    public void addHandler(Class<? extends Model> modelClass, ModelHandlerFactoryMethod modelFactoryMethod) {
+        
         modelClassToHandlerMap.put(modelClass, modelFactoryMethod);
+        
+        ProcessingPhase phase = determineProcessingPhase(modelClass);
+        switch(phase) {
+        case FIRST:
+            getPhaseOneFilter().allow(modelClass);
+            break;
+        case SECOND:
+            getPhaseTwoFilter().allow(modelClass);
+            break;
+        default:
+            throw new IllegalArgumentException("unexpected value " + phase + " for model class "+ modelClass.getName());        
+        }
+    }
+
+    private ProcessingPhase determineProcessingPhase(Class<? extends Model> modelClass) {
+        
+        PhaseIndicator phaseIndicator =  modelClass.getAnnotation(PhaseIndicator.class);
+        if(phaseIndicator == null) {
+            return ProcessingPhase.FIRST;
+        }
+        
+        ProcessingPhase phase = phaseIndicator.phase();
+        return phase;
     }
 
     public void addAnalyser(Class<? extends Model> modelClass, ModelHandlerBase handler) {
@@ -92,21 +116,14 @@ public class DefaultProcessor extends ContextAwareBase {
         mic.pushObject(context);
     }
 
-    public ModelFilter getPhaseOneFilter() {
+    public ChainedModelFilter getPhaseOneFilter() {
         return phaseOneFilter;
     }
 
-    public ModelFilter getPhaseTwoFilter() {
+    public ChainedModelFilter getPhaseTwoFilter() {
         return phaseTwoFilter;
     }
 
-    public void setPhaseOneFilter(ModelFilter phaseOneFilter) {
-        this.phaseOneFilter = phaseOneFilter;
-    }
-
-    public void setPhaseTwoFilter(ModelFilter phaseTwoFilter) {
-        this.phaseTwoFilter = phaseTwoFilter;
-    }
 
     protected void analyseDependencies(Model model) {
         ModelHandlerBase handler = modelClassToDependencyAnalyserMap.get(model.getClass());
@@ -134,7 +151,7 @@ public class DefaultProcessor extends ContextAwareBase {
     static final int DENIED = -1;
 
     private ModelHandlerBase createHandler(Model model) {
-        ModelFactoryMethod modelFactoryMethod = modelClassToHandlerMap.get(model.getClass());
+        ModelHandlerFactoryMethod modelFactoryMethod = modelClassToHandlerMap.get(model.getClass());
 
         if (modelFactoryMethod == null) {
             addError("Can't handle model of type " + model.getClass() + "  with tag: " + model.getTag() + " at line "

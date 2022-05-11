@@ -11,13 +11,16 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.model;
+package ch.qos.logback.core.model.processor;
 
-import ch.qos.logback.core.model.processor.PhaseIndicator;
-import ch.qos.logback.core.model.processor.ProcessingPhase;
+import java.lang.annotation.Target;
+import java.lang.annotation.ElementType;
 
-@PhaseIndicator(phase = ProcessingPhase.SECOND)
-public class AppenderModel extends NamedComponentModel {
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-    private static final long serialVersionUID = 1096234203123945432L;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface PhaseIndicator {
+    ProcessingPhase phase() default ProcessingPhase.FIRST;
 }

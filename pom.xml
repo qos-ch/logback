@@ -83,7 +83,7 @@
     <maven-release-plugin.version>3.0.0-M4</maven-release-plugin.version>
     <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.2.0</maven-dependency-plugin.version>
-    <maven-bundle-plugin.version>5.1.5</maven-bundle-plugin.version>
+    <maven-bundle-plugin.version>5.1.4</maven-bundle-plugin.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
   </properties>
 

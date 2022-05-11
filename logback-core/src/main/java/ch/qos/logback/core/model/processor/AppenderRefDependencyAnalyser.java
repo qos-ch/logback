@@ -35,16 +35,18 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
         String ref = mic.subst(appenderRefModel.getRef());
 
-        
+        Model depender;
         if (mic.isModelStackEmpty()) {
             // appenderRefModel maybe the dependent model. This is the case in logback-access
-            DependencyDefinition dd = new DependencyDefinition(appenderRefModel, ref);
-            mic.addDependencyDefinition(dd);
+            depender = appenderRefModel;
         } else {
             Model parentModel = mic.peekModel();
-            DependencyDefinition dd = new DependencyDefinition(parentModel, ref);
-            mic.addDependencyDefinition(dd);
+            depender = parentModel;
         }
+
+        DependencyDefinition dd = new DependencyDefinition(depender, ref);
+        mic.addDependencyDefinition(dd);
+        
     }
 
 }

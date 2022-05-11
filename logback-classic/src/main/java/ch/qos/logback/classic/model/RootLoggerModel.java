@@ -14,7 +14,10 @@
 package ch.qos.logback.classic.model;
 
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.processor.PhaseIndicator;
+import ch.qos.logback.core.model.processor.ProcessingPhase;
 
+@PhaseIndicator(phase = ProcessingPhase.SECOND)
 public class RootLoggerModel extends Model {
 
     private static final long serialVersionUID = -2811453129653502831L;
