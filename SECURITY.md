@@ -19,3 +19,17 @@ Key fingerprint = 475F 3B8E 59E6 E63A A780  6748 2C7B 12F2 A511 E325
 uid   Ceki Gulcu <ceki@qos.ch>
 sub   2048R/7FBFA159 2012-04-26
 ```
+
+
+## Preventing commit history overwrite
+
+In order to prevent loss of commit history, developers of the project
+are highly encouraged to deny branch deletions or history overwrites
+by invoking the following two commands on their local copy of the
+repository.
+
+
+```
+git config receive.denyDelete true
+git config receive.denyNonFastForwards true
+```
