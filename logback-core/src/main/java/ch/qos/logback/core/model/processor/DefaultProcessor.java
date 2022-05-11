@@ -17,6 +17,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -41,7 +42,7 @@ public class DefaultProcessor extends ContextAwareBase {
  
     final ModelInterpretationContext mic;
     final HashMap<Class<? extends Model>, ModelHandlerFactoryMethod> modelClassToHandlerMap = new HashMap<>();
-    final HashMap<Class<? extends Model>, ModelHandlerBase> modelClassToDependencyAnalyserMap = new HashMap<>();
+    final HashMap<Class<? extends Model>, Supplier<ModelHandlerBase>> modelClassToDependencyAnalyserMap = new HashMap<>();
 
     ChainedModelFilter phaseOneFilter = new ChainedModelFilter();
     ChainedModelFilter phaseTwoFilter = new ChainedModelFilter();
@@ -79,8 +80,8 @@ public class DefaultProcessor extends ContextAwareBase {
         return phase;
     }
 
-    public void addAnalyser(Class<? extends Model> modelClass, ModelHandlerBase handler) {
-        modelClassToDependencyAnalyserMap.put(modelClass, handler);
+    public void addAnalyser(Class<? extends Model> modelClass, Supplier<ModelHandlerBase> analyserSupplier) {
+        modelClassToDependencyAnalyserMap.put(modelClass, analyserSupplier);
     }
 
     private void traversalLoop(TraverseMethod traverseMethod, Model model, ModelFilter modelfFilter, String phaseName) {
@@ -126,11 +127,17 @@ public class DefaultProcessor extends ContextAwareBase {
 
 
     protected void analyseDependencies(Model model) {
-        ModelHandlerBase handler = modelClassToDependencyAnalyserMap.get(model.getClass());
-
-        if (handler != null) {
+        Supplier<ModelHandlerBase> analyserSupplier = modelClassToDependencyAnalyserMap.get(model.getClass());
+        
+        ModelHandlerBase analyser = null;
+        
+        if(analyserSupplier != null) {
+            analyser = analyserSupplier.get();
+        }
+        
+        if (analyser != null) {
             try {
-                handler.handle(mic, model);
+                analyser.handle(mic, model);
             } catch (ModelHandlerException e) {
                 addError("Failed to traverse model " + model.getTag(), e);
             }
@@ -139,11 +146,11 @@ public class DefaultProcessor extends ContextAwareBase {
         for (Model m : model.getSubModels()) {
             analyseDependencies(m);
         }
-        if (handler != null) {
+        if (analyser != null) {
             try {
-                handler.postHandle(mic, model);
+                analyser.postHandle(mic, model);
             } catch (ModelHandlerException e) {
-                addError("Failed to invole postHandle on model " + model.getTag(), e);
+                addError("Failed to invoke postHandle on model " + model.getTag(), e);
             }
         }
     }

@@ -63,9 +63,9 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance); 
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
 
-        defaultProcessor.addAnalyser(AppenderModel.class,
+        defaultProcessor.addAnalyser(AppenderModel.class, () -> 
                 new RefContainerDependencyAnalyser(context, AppenderModel.class));
-        defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(AppenderRefModel.class, () -> new AppenderRefDependencyAnalyser(context));
 
         closeModelFilters(defaultProcessor);
 

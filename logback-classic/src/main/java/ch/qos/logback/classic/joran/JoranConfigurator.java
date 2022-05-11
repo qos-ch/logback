@@ -109,15 +109,17 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
         defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
 
-        defaultProcessor.addAnalyser(LoggerModel.class, new RefContainerDependencyAnalyser(context, LoggerModel.class));
+        defaultProcessor.addAnalyser(LoggerModel.class, 
+                () -> new RefContainerDependencyAnalyser(context, LoggerModel.class));
 
         defaultProcessor.addAnalyser(RootLoggerModel.class,
-                new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
+                () -> new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
 
         defaultProcessor.addAnalyser(AppenderModel.class,
-                new RefContainerDependencyAnalyser(context, AppenderModel.class));
+                () -> new RefContainerDependencyAnalyser(context, AppenderModel.class));
 
-        defaultProcessor.addAnalyser(AppenderRefModel.class, new AppenderRefDependencyAnalyser(context));
+        defaultProcessor.addAnalyser(AppenderRefModel.class, 
+                () -> new AppenderRefDependencyAnalyser(context));
 
         closeModelFilters(defaultProcessor);
 

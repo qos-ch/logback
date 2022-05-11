@@ -17,6 +17,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 
+@PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
     public AppenderRefDependencyAnalyser(Context context) {
