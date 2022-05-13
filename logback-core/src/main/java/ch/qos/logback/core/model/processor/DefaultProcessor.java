@@ -186,7 +186,9 @@ public class DefaultProcessor extends ContextAwareBase {
 
         try {
             ModelHandlerBase handler = null;
-            if (model.isUnhandled()) {
+            boolean unhandled = model.isUnhandled();
+
+            if (unhandled) {
                 handler = createHandler(model);
                 if (handler != null) {
                     handler.handle(mic, model);
@@ -201,7 +203,7 @@ public class DefaultProcessor extends ContextAwareBase {
                 }
             }
 
-            if (model.isUnhandled() && handler != null) {
+            if (unhandled && handler != null) {
                 handler.postHandle(mic, model);
             }
         } catch (ModelHandlerException e) {
