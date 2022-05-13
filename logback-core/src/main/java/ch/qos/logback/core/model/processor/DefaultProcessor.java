@@ -195,13 +195,13 @@ public class DefaultProcessor extends ContextAwareBase {
                 }
             }
             // recurse into submodels handled or not
-
             if (!model.isSkipped()) {
                 for (Model m : model.getSubModels()) {
                     count += mainTraverse(m, modelFiler);
                 }
             }
-            if (handler != null) {
+
+            if (model.isUnhandled() && handler != null) {
                 handler.postHandle(mic, model);
             }
         } catch (ModelHandlerException e) {

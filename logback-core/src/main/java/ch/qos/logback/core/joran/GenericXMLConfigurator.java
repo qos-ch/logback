@@ -122,7 +122,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         doConfigure(inputSource);
     }
 
-    protected abstract void addInstanceRules(RuleStore rs);
+    protected abstract void addElementSelectorAndActionAssociations(RuleStore rs);
  
     protected abstract void setImplicitRuleSupplier(SaxEventInterpreter interpreter);
 
@@ -136,7 +136,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     protected void buildSaxEventInterpreter(List<SaxEvent> saxEvents) {
         RuleStore rs = new SimpleRuleStore(context);
-        addInstanceRules(rs);
+        addElementSelectorAndActionAssociations(rs);
         this.saxEventInterpreter = new SaxEventInterpreter(context, rs, initialElementPath(), saxEvents);
         SaxEventInterpretationContext interpretationContext = saxEventInterpreter.getSaxEventInterpretationContext();
         interpretationContext.setContext(context);
@@ -144,7 +144,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     }
 
 
-    protected void buildModelInterprtationContext() {
+    protected void buildModelInterpretationContext() {
         this.modelInterpretationContext = new ModelInterpretationContext(context);
         addDefaultNestedComponentRegistryRules(modelInterpretationContext.getDefaultNestedComponentRegistry());
     }
@@ -190,19 +190,19 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     }
 
     public void processModel(Model model) {
-        buildModelInterprtationContext();
-        DefaultProcessor defaultProcessor = buildDefaultProcessor(context, this.modelInterpretationContext);
+        buildModelInterpretationContext();
+        DefaultProcessor defaultProcessor = new DefaultProcessor(context,  this.modelInterpretationContext);
+        addModelHandlerAssociations(defaultProcessor);
+
         // disallow simultaneous configurations of the same context
         synchronized (context.getConfigurationLock()) {
             defaultProcessor.process(model);
         }
     }
 
-    protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-        DefaultProcessor defaultProcessor = new DefaultProcessor(context, mic);
-        return defaultProcessor;
+    protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
     }
-
+    
     /**
      * Register the current event list in currently in the interpreter as a safe
      * configuration point.

@@ -21,7 +21,6 @@ import ch.qos.logback.access.model.ConfigurationModel;
 import ch.qos.logback.access.model.processor.ConfigurationModelHandler;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
@@ -36,7 +35,6 @@ import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
 import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
@@ -48,8 +46,8 @@ import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
     @Override
-    public void addInstanceRules(RuleStore rs) {
-        super.addInstanceRules(rs);
+    public void addElementSelectorAndActionAssociations(RuleStore rs) {
+        super.addElementSelectorAndActionAssociations(rs);
 
         rs.addRule(new ElementSelector("configuration"), () -> new ConfigurationAction());
         rs.addRule(new ElementSelector("configuration/appender-ref"), () -> new AppenderRefAction());
@@ -57,8 +55,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
     }
 
     @Override
-    protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+    protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
+        super.addModelHandlerAssociations(defaultProcessor);
         defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance); 
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
@@ -67,13 +65,14 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
                 new RefContainerDependencyAnalyser(context, AppenderModel.class));
         defaultProcessor.addAnalyser(AppenderRefModel.class, () -> new AppenderRefDependencyAnalyser(context));
 
-        closeModelFilters(defaultProcessor);
-
-        return defaultProcessor;
-
+        sealModelFilters(defaultProcessor);
     }
 
-    private void closeModelFilters(DefaultProcessor defaultProcessor) {
+    // The final filters in the two filter chain are rather crucial.
+    // They ensure that only Models attached to the firstPhaseFilter will
+    // be handled in the first phase and all models not previously handled
+    // in the second phase will be handled in a catch-all fallback case.
+    private void sealModelFilters(DefaultProcessor defaultProcessor) {
         defaultProcessor.getPhaseOneFilter().denyAll();
         defaultProcessor.getPhaseTwoFilter().allowAll();
     }

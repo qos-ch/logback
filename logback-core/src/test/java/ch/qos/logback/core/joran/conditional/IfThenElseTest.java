@@ -46,7 +46,6 @@ import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.model.conditional.ThenModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.StackModelHandler;
@@ -74,18 +73,18 @@ public class IfThenElseTest {
     @Before
     public void setUp() throws Exception {
         HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
-        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
-        rulesMap.put(new ElementSelector("x/stack"), () -> new StackAction());
-        rulesMap.put(new ElementSelector("x/property"), () -> new PropertyAction());
-        rulesMap.put(new ElementSelector("*/if"), () -> new IfAction());
-        rulesMap.put(new ElementSelector("*/if/then"), () -> new ThenAction());
-        rulesMap.put(new ElementSelector("*/if/else"), () -> new ElseAction());
+        rulesMap.put(new ElementSelector("x"), TopElementAction::new);
+        rulesMap.put(new ElementSelector("x/stack"), StackAction::new);
+        rulesMap.put(new ElementSelector("x/property"), PropertyAction::new);
+        rulesMap.put(new ElementSelector("*/if"), IfAction::new);
+        rulesMap.put(new ElementSelector("*/if/then"), ThenAction::new);
+        rulesMap.put(new ElementSelector("*/if/else"), ElseAction::new);
 
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
             
             @Override
-            protected void addInstanceRules(RuleStore rs) {
-                super.addInstanceRules(rs);
+            protected void addElementSelectorAndActionAssociations(RuleStore rs) {
+                super.addElementSelectorAndActionAssociations(rs);
                 
                 rs.addTransparentPathPart("if");
                 rs.addTransparentPathPart("then");
@@ -94,8 +93,7 @@ public class IfThenElseTest {
             }
             
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 
                 defaultProcessor.addHandler(StackModel.class, StackModelHandler::makeInstance);
@@ -104,8 +102,6 @@ public class IfThenElseTest {
                 defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
                 defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
                 defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
-
-                return defaultProcessor;
             }
         };
         
@@ -179,7 +175,7 @@ public class IfThenElseTest {
     }
 
     private void verifyConfig(String[] expected) {
-        Stack<String> witness = new Stack<String>();
+        Stack<String> witness = new Stack<>();
         witness.addAll(Arrays.asList(expected));
         
         @SuppressWarnings({ "unchecked", "rawtypes" })

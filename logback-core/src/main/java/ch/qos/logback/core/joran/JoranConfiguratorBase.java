@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
@@ -57,7 +56,6 @@ import ch.qos.logback.core.model.processor.DefineModelHandler;
 import ch.qos.logback.core.model.processor.EventEvaluatorModelHandler;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ImportModelHandler;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
@@ -74,7 +72,7 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 /**
  * A JoranConfiguratorBase lays most of the groundwork for concrete
  * configurators derived from it. Concrete configurators only need to implement
- * the {@link #addInstanceRules} method.
+ * the {@link #addElementSelectorAndActionAssociations} method.
  * <p>
  * A JoranConfiguratorBase instance should not be used more than once to
  * configure a Context.
@@ -84,50 +82,51 @@ import ch.qos.logback.core.spi.AppenderAttachable;
 abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
     @Override
-    protected void addInstanceRules(RuleStore rs) {
+    protected void addElementSelectorAndActionAssociations(RuleStore rs) {
 
         // is "configuration/variable" referenced in the docs?
-        rs.addRule(new ElementSelector("configuration/variable"), () -> new PropertyAction());
-        rs.addRule(new ElementSelector("configuration/import"), () -> new ImportAction());
-        rs.addRule(new ElementSelector("configuration/property"), () -> new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/variable"), PropertyAction::new);
+        rs.addRule(new ElementSelector("configuration/import"), ImportAction::new);
+        rs.addRule(new ElementSelector("configuration/property"),  PropertyAction::new);
 
-        rs.addRule(new ElementSelector("configuration/substitutionProperty"), () -> new PropertyAction());
+        rs.addRule(new ElementSelector("configuration/substitutionProperty"),  PropertyAction::new);
 
-        rs.addRule(new ElementSelector("configuration/timestamp"), () -> new TimestampAction());
-        rs.addRule(new ElementSelector("configuration/shutdownHook"), () -> new ShutdownHookAction());
-        rs.addRule(new ElementSelector("configuration/define"), () -> new DefinePropertyAction());
-        rs.addRule(new ElementSelector("configuration/evaluator"), () -> new EventEvaluatorAction());
+        rs.addRule(new ElementSelector("configuration/timestamp"),  TimestampAction::new);
+        rs.addRule(new ElementSelector("configuration/shutdownHook"),  ShutdownHookAction::new);
+        rs.addRule(new ElementSelector("configuration/define"),  DefinePropertyAction::new);
+        rs.addRule(new ElementSelector("configuration/evaluator"),  EventEvaluatorAction::new);
 
         // the contextProperty pattern is deprecated. It is undocumented
         // and will be dropped in future versions of logback
-        rs.addRule(new ElementSelector("configuration/contextProperty"), () -> new ContextPropertyAction());
+        rs.addRule(new ElementSelector("configuration/contextProperty"),  ContextPropertyAction::new);
 
-        rs.addRule(new ElementSelector("configuration/conversionRule"), () -> new ConversionRuleAction());
+        rs.addRule(new ElementSelector("configuration/conversionRule"),  ConversionRuleAction::new);
 
-        rs.addRule(new ElementSelector("configuration/statusListener"), () -> new StatusListenerAction());
+        rs.addRule(new ElementSelector("configuration/statusListener"),  StatusListenerAction::new);
 
-        rs.addRule(new ElementSelector("configuration/appender"), () -> new AppenderAction());
-        rs.addRule(new ElementSelector("configuration/appender/appender-ref"), () -> new AppenderRefAction());
-        rs.addRule(new ElementSelector("configuration/newRule"), () -> new NewRuleAction());
+        rs.addRule(new ElementSelector("configuration/appender"),  AppenderAction::new);
+        rs.addRule(new ElementSelector("configuration/appender/appender-ref"),  AppenderRefAction::new);
+        rs.addRule(new ElementSelector("configuration/newRule"),  NewRuleAction::new);
 
-        rs.addRule(new ElementSelector("*/param"), () -> new ParamAction());
+        rs.addRule(new ElementSelector("*/param"),  ParamAction::new);
 
         // add if-then-else support
-        rs.addRule(new ElementSelector("*/if"), () -> new IfAction());
+        rs.addRule(new ElementSelector("*/if"),  IfAction::new);
         rs.addTransparentPathPart("if");
-        rs.addRule(new ElementSelector("*/if/then"), () -> new ThenAction());
+        rs.addRule(new ElementSelector("*/if/then"),  ThenAction::new);
         rs.addTransparentPathPart("then");
-        rs.addRule(new ElementSelector("*/if/else"), () -> new ElseAction());
+        rs.addRule(new ElementSelector("*/if/else"),  ElseAction::new);
         rs.addTransparentPathPart("else");
     }
 
     @Override
     protected void setImplicitRuleSupplier(SaxEventInterpreter interpreter) {
-        interpreter.setImplicitActionSupplier( () -> new ImplicitModelAction() );
+        interpreter.setImplicitActionSupplier(  ImplicitModelAction::new );
     }
 
-    public void buildModelInterprtationContext() {
-        super.buildModelInterprtationContext();
+    @Override
+    public void buildModelInterpretationContext() {
+        super.buildModelInterpretationContext();
         Map<String, Object> omap = modelInterpretationContext.getObjectMap();
         omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
@@ -138,8 +137,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
     }
 
     @Override
-    protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-        DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+    protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
         defaultProcessor.addHandler(ImportModel.class, ImportModelHandler::makeInstance);
 
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);
@@ -157,8 +155,6 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
         defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
         defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
-
-        return defaultProcessor;
     }
 
 }

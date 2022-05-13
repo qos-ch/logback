@@ -34,7 +34,7 @@ public class TrivialConfigurator extends GenericXMLConfigurator {
     }
 
     @Override
-    protected void addInstanceRules(RuleStore rs) {
+    protected void addElementSelectorAndActionAssociations(RuleStore rs) {
         for (ElementSelector elementSelector : rulesMap.keySet()) {
             Supplier<Action> actionSupplier = rulesMap.get(elementSelector);
             rs.addRule(elementSelector, actionSupplier);
