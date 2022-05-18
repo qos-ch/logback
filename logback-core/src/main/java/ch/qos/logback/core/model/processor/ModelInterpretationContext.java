@@ -21,10 +21,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
@@ -36,9 +39,8 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     Stack<Model> modelStack;
 
     Map<String, Object> objectMap;
-    Map<String, String> propertiesMap;
-    Map<String, String> importMap;
-
+    protected Map<String, String> propertiesMap;
+    protected Map<String, String> importMap;
 
     final private BeanDescriptionCache beanDescriptionCache;
     final DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
@@ -55,10 +57,22 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         importMap = new HashMap<>(5);
     }
 
+    public ModelInterpretationContext(ModelInterpretationContext otherMic) {
+        this(otherMic.context);
+        importMap = new HashMap<>(otherMic.importMap);
+        propertiesMap = new HashMap<>(otherMic.propertiesMap);
+        createAppenderBags();
+    } 
+        
     public Map<String, Object> getObjectMap() {
         return objectMap;
     }
 
+    public void createAppenderBags() {
+        objectMap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
+        objectMap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+    }
+    
     // moodelStack =================================
 
     public void pushModel(Model m) {
@@ -228,6 +242,11 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         importMap.put(stem, fqcn);
     }
 
+    public Map<String, String> getImportMapCopy() {
+        return new HashMap<>(importMap);
+    }
+
+    
     /**
      * Given a stem, get the fully qualified name of the class corresponding to the
      * stem. For unknown stems, returns the stem as is. If stem is null, null is

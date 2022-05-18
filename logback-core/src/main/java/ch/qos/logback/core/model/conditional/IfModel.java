@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.model.conditional;
 
+import java.util.Objects;
+
 import ch.qos.logback.core.model.Model;
 
 public class IfModel extends Model {
@@ -23,6 +25,19 @@ public class IfModel extends Model {
     
     String condition;
     BranchState branchState = null;
+    
+    @Override
+    protected IfModel makeNewInstance() {
+        return new IfModel();
+    }
+    
+    @Override
+    protected void mirror(Model that) {
+        IfModel actual = (IfModel) that;
+        super.mirror(actual);
+        this.condition = actual.condition;
+        this.branchState = actual.branchState;
+    }
     
     public String getCondition() {
         return condition;
@@ -55,6 +70,26 @@ public class IfModel extends Model {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " [condition=\""+condition+"\"]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(branchState, condition);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        IfModel other = (IfModel) obj;
+        return branchState == other.branchState && Objects.equals(condition, other.condition);
     }
         
 

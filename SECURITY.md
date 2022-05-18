@@ -20,6 +20,15 @@ uid   Ceki Gulcu <ceki@qos.ch>
 sub   2048R/7FBFA159 2012-04-26
 ```
 
+A copy of this key is stored on the
+[keys.openpgp.org](https://keys.openpgp.org) keyserver. To add it to
+your public key ring use the following command:
+
+```
+> FINGER_PRINT=475F3B8E59E6E63AA78067482C7B12F2A511E325
+> gpg  --keyserver hkps://keys.openpgp.org --recv-keys $FINGER_PRINT
+```
+
 
 ## Preventing commit history overwrite
 

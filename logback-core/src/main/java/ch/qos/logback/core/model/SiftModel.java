@@ -13,12 +13,13 @@
  */
 package ch.qos.logback.core.model;
 
-public class EventEvaluatorModel extends NamedComponentModel  {
-    private static final long serialVersionUID = 4600344286104093766L;
+public class SiftModel extends Model {
 
+    private static final long serialVersionUID = 6456117795231083546L;
 
     @Override
-    protected EventEvaluatorModel makeNewInstance() {
-        return new EventEvaluatorModel();
+    protected SiftModel makeNewInstance() {
+        return new SiftModel();
     }
+    
 }

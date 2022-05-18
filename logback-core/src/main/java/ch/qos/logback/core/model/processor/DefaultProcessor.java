@@ -40,7 +40,7 @@ public class DefaultProcessor extends ContextAwareBase {
         int traverse(Model model, ModelFilter modelFiler);
     }
  
-    final ModelInterpretationContext mic;
+    final protected ModelInterpretationContext mic;
     final HashMap<Class<? extends Model>, ModelHandlerFactoryMethod> modelClassToHandlerMap = new HashMap<>();
     final HashMap<Class<? extends Model>, Supplier<ModelHandlerBase>> modelClassToDependencyAnalyserMap = new HashMap<>();
 

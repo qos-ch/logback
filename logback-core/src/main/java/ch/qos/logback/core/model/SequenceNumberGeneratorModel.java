@@ -17,4 +17,8 @@ public class SequenceNumberGeneratorModel extends ComponentModel {
 
     private static final long serialVersionUID = 4109015583434648277L;
 
+    @Override
+    protected SequenceNumberGeneratorModel makeNewInstance() {
+        return new SequenceNumberGeneratorModel();
+    }
 }

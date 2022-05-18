@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.core.joran;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.joran.action.AppenderAction;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.ContextPropertyAction;
@@ -29,6 +25,7 @@ import ch.qos.logback.core.joran.action.NewRuleAction;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.action.PropertyAction;
 import ch.qos.logback.core.joran.action.ShutdownHookAction;
+import ch.qos.logback.core.joran.action.SiftAction;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
 import ch.qos.logback.core.joran.action.TimestampAction;
 import ch.qos.logback.core.joran.conditional.ElseAction;
@@ -46,6 +43,7 @@ import ch.qos.logback.core.model.IncludeModel;
 import ch.qos.logback.core.model.ParamModel;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.ShutdownHookModel;
+import ch.qos.logback.core.model.SiftModel;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.TimestampModel;
 import ch.qos.logback.core.model.conditional.ElseModel;
@@ -64,7 +62,7 @@ import ch.qos.logback.core.model.processor.TimestampModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
 import ch.qos.logback.core.model.processor.conditional.IfModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
-import ch.qos.logback.core.spi.AppenderAttachable;
+import ch.qos.logback.core.sift.SiftModelHandler;
 
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
 // see also http://tinyurl.com/c2rp5
@@ -104,7 +102,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
         rs.addRule(new ElementSelector("configuration/statusListener"),  StatusListenerAction::new);
 
-        rs.addRule(new ElementSelector("configuration/appender"),  AppenderAction::new);
+        rs.addRule(new ElementSelector("*/appender"),  AppenderAction::new);
         rs.addRule(new ElementSelector("configuration/appender/appender-ref"),  AppenderRefAction::new);
         rs.addRule(new ElementSelector("configuration/newRule"),  NewRuleAction::new);
 
@@ -117,6 +115,11 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         rs.addTransparentPathPart("then");
         rs.addRule(new ElementSelector("*/if/else"),  ElseAction::new);
         rs.addTransparentPathPart("else");
+        
+        rs.addRule(new ElementSelector("configuration/appender/sift"),  SiftAction::new);
+        rs.addTransparentPathPart("sift");
+        
+        
     }
 
     @Override
@@ -127,9 +130,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
     @Override
     public void buildModelInterpretationContext() {
         super.buildModelInterpretationContext();
-        Map<String, Object> omap = modelInterpretationContext.getObjectMap();
-        omap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
-        omap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+        modelInterpretationContext.createAppenderBags();
     }
 
     public SaxEventInterpretationContext getInterpretationContext() {
@@ -155,6 +156,9 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         defaultProcessor.addHandler(IfModel.class, IfModelHandler::makeInstance);
         defaultProcessor.addHandler(ThenModel.class, ThenModelHandler::makeInstance);
         defaultProcessor.addHandler(ElseModel.class, ElseModelHandler::makeInstance);
+        
+        defaultProcessor.addHandler(SiftModel.class, SiftModelHandler::makeInstance);
+        
     }
 
 }

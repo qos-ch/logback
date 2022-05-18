@@ -20,4 +20,10 @@ import ch.qos.logback.core.model.processor.ProcessingPhase;
 public class AppenderModel extends NamedComponentModel {
 
     private static final long serialVersionUID = 1096234203123945432L;
+
+    @Override
+    protected AppenderModel makeNewInstance() {
+        return new AppenderModel();
+    }
+    
 }

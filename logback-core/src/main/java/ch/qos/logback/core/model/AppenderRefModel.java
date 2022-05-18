@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.model;
 
+import java.util.Objects;
+
 import ch.qos.logback.core.model.processor.PhaseIndicator;
 import ch.qos.logback.core.model.processor.ProcessingPhase;
 
@@ -23,6 +25,17 @@ public class AppenderRefModel extends Model {
 
     String ref;
 
+    protected AppenderRefModel makeNewInstance() {
+        return new AppenderRefModel();
+    }
+    
+    @Override
+    protected void mirror(Model that) {
+        AppenderRefModel actual = (AppenderRefModel) that;
+        super.mirror(actual);
+        this.ref = actual.ref;
+    }
+    
     public String getRef() {
         return ref;
     }
@@ -30,5 +43,27 @@ public class AppenderRefModel extends Model {
     public void setRef(String ref) {
         this.ref = ref;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(ref);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        AppenderRefModel other = (AppenderRefModel) obj;
+        return Objects.equals(ref, other.ref);
+    }
+    
+
 
 }
