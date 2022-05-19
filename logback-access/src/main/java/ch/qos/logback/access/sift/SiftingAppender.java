@@ -11,17 +11,12 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.sift;
+package ch.qos.logback.access.sift;
 
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.joran.spi.DefaultClass;
 import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
-
-import java.util.List;
-
-import org.slf4j.Marker;
 
 /**
  * This appender can contains other appenders which it can build dynamically
@@ -33,28 +28,26 @@ import org.slf4j.Marker;
  * 
  * @author Ceki Gulcu
  */
-public class SiftingAppender extends SiftingAppenderBase<ILoggingEvent> {
+public class SiftingAppender extends SiftingAppenderBase<IAccessEvent> {
 
     @Override
-    protected long getTimestamp(ILoggingEvent event) {
+    public void start() {
+        super.start();
+    }
+
+    @Override
+    protected long getTimestamp(IAccessEvent event) {
         return event.getTimeStamp();
     }
 
     @Override
-    @DefaultClass(MDCBasedDiscriminator.class)
-    public void setDiscriminator(Discriminator<ILoggingEvent> discriminator) {
-        super.setDiscriminator(discriminator);
+    protected boolean eventMarksEndOfLife(IAccessEvent event) {
+        return false;
     }
 
-    protected boolean eventMarksEndOfLife(ILoggingEvent event) {
-        List<Marker> markers = event.getMarkerList();
-        if (markers == null)
-            return false;
-
-        for(Marker m: markers) {
-            if(m.contains(ClassicConstants.FINALIZE_SESSION_MARKER))
-                return true;
-        }
-        return false;
+    @Override
+    @DefaultClass(AccessEventDiscriminator.class)
+    public void setDiscriminator(Discriminator<IAccessEvent> discriminator) {
+        super.setDiscriminator(discriminator);
     }
 }

@@ -40,6 +40,7 @@ public class SiftModelHandler extends ModelHandlerBase {
         return SiftModel.class;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         
@@ -62,12 +63,14 @@ public class SiftModelHandler extends ModelHandlerBase {
         
         
         Object o = mic.peekObject();
-        if (o instanceof SiftingAppenderBase<?>) {
+        if (o instanceof SiftingAppenderBase) {
+            @SuppressWarnings("rawtypes")
             SiftingAppenderBase sa = (SiftingAppenderBase) o;
 
             String key = sa.getDiscriminatorKey();
-            AppenderFactoryUsingSiftModel<?> afusm = new AppenderFactoryUsingSiftModel<>(mic, siftModel, key);
-            
+            @SuppressWarnings("rawtypes")
+            AppenderFactoryUsingSiftModel afusm = new AppenderFactoryUsingSiftModel(mic, siftModel, key);
+         
             sa.setAppenderFactory(afusm);
             
         } else {
