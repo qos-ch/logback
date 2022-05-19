@@ -66,8 +66,8 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
 
     }
 
-    private String defaultClassName(ModelInterpretationContext intercon, EventEvaluatorModel model) {
-        DefaultNestedComponentRegistry registry = intercon.getDefaultNestedComponentRegistry();
+    private String defaultClassName(ModelInterpretationContext mic, EventEvaluatorModel model) {
+        DefaultNestedComponentRegistry registry = mic.getDefaultNestedComponentRegistry();
         return registry.findDefaultComponentTypeByTag(model.getTag());
     }
 

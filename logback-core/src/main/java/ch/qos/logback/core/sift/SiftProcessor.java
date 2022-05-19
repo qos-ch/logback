@@ -13,22 +13,9 @@
  */
 package ch.qos.logback.core.sift;
 
-import java.util.List;
-import java.util.Map;
-
-import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.action.*;
-import ch.qos.logback.core.joran.event.SaxEvent;
-import ch.qos.logback.core.joran.spi.ElementSelector;
-
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
-import ch.qos.logback.core.spi.ContextAwareBase;
 
 public class SiftProcessor<E> extends DefaultProcessor {
 

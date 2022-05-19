@@ -82,12 +82,14 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
     @Override
     protected void addElementSelectorAndActionAssociations(RuleStore rs) {
 
-        // is "configuration/variable" referenced in the docs?
-        rs.addRule(new ElementSelector("configuration/variable"), PropertyAction::new);
-        rs.addRule(new ElementSelector("configuration/import"), ImportAction::new);
-        rs.addRule(new ElementSelector("configuration/property"),  PropertyAction::new);
+        // is "*/variable" referenced in the docs?
+        rs.addRule(new ElementSelector("*/variable"), PropertyAction::new);
+        rs.addRule(new ElementSelector("*/property"),  PropertyAction::new);
+        // substitutionProperty is deprecated
+        rs.addRule(new ElementSelector("*/substitutionProperty"),  PropertyAction::new);
 
-        rs.addRule(new ElementSelector("configuration/substitutionProperty"),  PropertyAction::new);
+        rs.addRule(new ElementSelector("configuration/import"), ImportAction::new);
+        
 
         rs.addRule(new ElementSelector("configuration/timestamp"),  TimestampAction::new);
         rs.addRule(new ElementSelector("configuration/shutdownHook"),  ShutdownHookAction::new);

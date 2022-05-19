@@ -13,16 +13,11 @@
  */
 package ch.qos.logback.access.joran;
 
-import ch.qos.logback.access.PatternLayout;
-import ch.qos.logback.access.PatternLayoutEncoder;
-import ch.qos.logback.access.boolex.JaninoEventEvaluator;
 import ch.qos.logback.access.joran.action.ConfigurationAction;
 import ch.qos.logback.access.model.ConfigurationModel;
 import ch.qos.logback.access.model.processor.ConfigurationModelHandler;
+import ch.qos.logback.access.model.processor.LogbackAccessDefaultNestedComponentRegistryRules;
 import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.core.AppenderBase;
-import ch.qos.logback.core.UnsynchronizedAppenderBase;
-import ch.qos.logback.core.filter.EvaluatorFilter;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
@@ -36,7 +31,6 @@ import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
-import ch.qos.logback.core.net.ssl.SSLNestedComponentRegistryRules;
 
 /**
  * This JoranConfiguratorclass adds rules specific to logback-access.
@@ -79,12 +73,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<IAccessEvent> {
 
     @Override
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-        registry.add(AppenderBase.class, "layout", PatternLayout.class);
-        registry.add(EvaluatorFilter.class, "evaluator", JaninoEventEvaluator.class);
-
-        registry.add(AppenderBase.class, "encoder", PatternLayoutEncoder.class);
-        registry.add(UnsynchronizedAppenderBase.class, "encoder", PatternLayoutEncoder.class);
-        SSLNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);
+        LogbackAccessDefaultNestedComponentRegistryRules.addDefaultNestedComponentRegistryRules(registry);    
     }
 
 }

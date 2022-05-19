@@ -20,6 +20,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.ParamModelHandler;
+import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.ImplicitModel;
@@ -43,17 +44,24 @@ public class AppenderFactoryUsingSiftModel<E> implements AppenderFactory<E> {
     final Model siftModel;
     protected String discriminatingKey;
     protected ModelInterpretationContext parentMic;
+    protected DefaultNestedComponentRegistry registry;
     
     public AppenderFactoryUsingSiftModel(ModelInterpretationContext parentMic, Model aSiftModel, String discriminatingKey)  {
         this.siftModel = Model.duplicate(aSiftModel);
         this.discriminatingKey = discriminatingKey;
         this.parentMic = parentMic;
         this.context = parentMic.getContext();
+      
     }
 
 
     public SiftProcessor<E> getSiftingModelProcessor(String value) {
-        SiftModelInterpretationContext smic = new SiftModelInterpretationContext(parentMic);
+        ModelInterpretationContext smic = new ModelInterpretationContext(parentMic) {
+            @Override
+            public boolean hasDependers(String dependeeName) {
+                return true;
+            } 
+        };
         SiftProcessor<E> siftProcessor = new SiftProcessor<>(context, smic); 
         siftProcessor.addHandler(ParamModel.class, ParamModelHandler::makeInstance);
         siftProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);

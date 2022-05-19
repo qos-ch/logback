@@ -127,7 +127,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     protected abstract void setImplicitRuleSupplier(SaxEventInterpreter interpreter);
 
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-        // nothing bu default
+        // nothing by default
     }
 
     protected ElementPath initialElementPath() {

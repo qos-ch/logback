@@ -13,7 +13,11 @@
  */
 package ch.qos.logback.core.sift;
 
+import java.util.stream.Stream;
+
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.SiftModel;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
@@ -21,7 +25,8 @@ import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
 public class SiftModelHandler extends ModelHandlerBase {
-
+    final static String ONE_AND_ONLY_ONE_URL = CoreConstants.CODES_URL + "#1andOnly1";
+    
     public SiftModelHandler(Context context) {
         super(context);
     }
@@ -42,6 +47,20 @@ public class SiftModelHandler extends ModelHandlerBase {
         // don't let the processor handle sub-models
         siftModel.markAsSkipped();
         
+        long appenderModelCount = computeAppenderModelCount(siftModel);
+        
+        if(appenderModelCount == 0) {
+            String errMsg = "No nested appenders found within the <sift> element in SiftingAppender.";    
+            addError(errMsg);
+            return;
+        }
+        if(appenderModelCount > 1) {
+            String errMsg = "Only and only one appender can be nested the <sift> element in SiftingAppender. See also " + ONE_AND_ONLY_ONE_URL;
+            addError(errMsg);
+            return;
+        }
+        
+        
         Object o = mic.peekObject();
         if (o instanceof SiftingAppenderBase<?>) {
             SiftingAppenderBase sa = (SiftingAppenderBase) o;
@@ -54,10 +73,12 @@ public class SiftModelHandler extends ModelHandlerBase {
         } else {
             addError("Unexpected object "+ o);
         }
-        
-//        AbstractAppenderFactoryUsingModels appenderFactory = new AbstractAppenderFactoryUsingModels(model, 
-//                sa.getDiscriminatorKey(), propertyMap);
-//        
+    }
+
+    private long computeAppenderModelCount(SiftModel siftModel) {
+        Stream<Model> stream = siftModel.getSubModels().stream();
+        long count = stream.filter((Model m) -> m instanceof AppenderModel).count();
+        return count;
     }
 
 }

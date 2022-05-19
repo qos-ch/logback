@@ -32,12 +32,12 @@ import ch.qos.logback.classic.model.RootLoggerModel;
 import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
 import ch.qos.logback.classic.model.processor.ContextNameModelHandler;
 import ch.qos.logback.classic.model.processor.LevelModelHandler;
+import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
 import ch.qos.logback.classic.model.processor.LoggerModelHandler;
 import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.PlatformInfo;
-import ch.qos.logback.classic.util.DefaultNestedComponentRules;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
@@ -91,7 +91,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
     @Override
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
-        DefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
+        LogbackClassicDefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(registry);
     }
 
     @Override
@@ -131,43 +131,5 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         defaultProcessor.getPhaseOneFilter().denyAll();
         defaultProcessor.getPhaseTwoFilter().allowAll();
     }
-    
-//    private void injectModelFilters(DefaultProcessor defaultProcessor) {
-//        @SuppressWarnings("unchecked")
-//        Class<? extends Model>[] importModelClasses = new Class[] { ImportModel.class };
-//
-//        @SuppressWarnings("unchecked")
-//        Class<? extends Model>[] variableDefinitionModelClasses = new Class[] { ContextNameModel.class,
-//                DefineModel.class, PropertyModel.class, TimestampModel.class, ParamModel.class };
-//
-//        @SuppressWarnings("unchecked")
-//        Class<? extends Model>[] implicitModelClasses = new Class[] { ImplicitModel.class };
-//
-//        @SuppressWarnings("unchecked")
-//        Class<? extends Model>[] otherFirstPhaseModelClasses = new Class[] { ConfigurationModel.class,
-//                EventEvaluatorModel.class, LoggerContextListenerModel.class, ShutdownHookModel.class,
-//                IncludeModel.class, IfModel.class, ThenModel.class, ElseModel.class};
-//
-//        // MOTE: AppenderModelHandler is delayed to second phase
-//
-//        ChainedModelFilter fistPhaseDefintionFilter = new ChainedModelFilter();
-//        for (Class<? extends Model> modelClass : importModelClasses)
-//            fistPhaseDefintionFilter.allow(modelClass);
-//        for (Class<? extends Model> modelClass : variableDefinitionModelClasses)
-//            fistPhaseDefintionFilter.allow(modelClass);
-//        for (Class<? extends Model> modelClass : otherFirstPhaseModelClasses)
-//            fistPhaseDefintionFilter.allow(modelClass);
-//        for (Class<? extends Model> modelClass : implicitModelClasses)
-//            fistPhaseDefintionFilter.allow(modelClass);
-//
-//        fistPhaseDefintionFilter.denyAll();
-//        defaultProcessor.setPhaseOneFilter(fistPhaseDefintionFilter);
-//
-//        ChainedModelFilter secondPhaseDefinitionFilter = new ChainedModelFilter();
-//        secondPhaseDefinitionFilter.allowAll();
-//
-//        defaultProcessor.setPhaseTwoFilter(secondPhaseDefinitionFilter);
-//
-//    }
 
 }

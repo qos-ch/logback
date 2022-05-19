@@ -57,7 +57,8 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.FileSize;
-import ch.qos.logback.core.util.StatusPrinter;
+//import ch.qos.logback.core.util.StatusPrinter;
+
 
 public class SiftingAppenderTest {
 
@@ -121,10 +122,8 @@ public class SiftingAppenderTest {
         logger.debug("hello");
         logger.debug("hello");
 
-        Appender<ILoggingEvent> nopa = getAppenderTracker().find("zeroDefault");
-        assertNotNull(nopa);
-        assertThat(nopa).isInstanceOf(NOPAppender.class);
-        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+        assertNull(getAppenderTracker());
+        //StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
         statusChecker.assertContainsMatch(ErrorStatus.ERROR, "No nested appenders found");
     }
@@ -136,10 +135,9 @@ public class SiftingAppenderTest {
         logger.debug("hello");
         logger.debug("hello");
 
-        Appender<ILoggingEvent> listAppender = getAppenderTracker().find("multipleDefault");
-        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+        assertNull(getAppenderTracker());
+        //StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
-        assertNotNull(listAppender);
         statusChecker.assertContainsMatch(ErrorStatus.ERROR, "Only and only one appender can be nested");
     }
 
@@ -392,7 +390,7 @@ public class SiftingAppenderTest {
         logger.info("bla2");
         MDC.clear();
 
-        StatusPrinter.print(loggerContext);
+        //StatusPrinter.print(loggerContext);
 
     }
 }

@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.util;
+package ch.qos.logback.classic.model.processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ import ch.qos.logback.core.net.ssl.TrustManagerFactoryFactoryBean;
  * @author Ceki Gulcu
  * 
  */
-public class DefaultNestedComponentRules {
+public class LogbackClassicDefaultNestedComponentRules {
 
     static public List<ParentTag_Tag_Class_Tuple> TUPLES_LIST = createTuplesList();
 

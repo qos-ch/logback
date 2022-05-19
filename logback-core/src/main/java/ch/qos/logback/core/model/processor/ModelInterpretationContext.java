@@ -61,6 +61,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         this(otherMic.context);
         importMap = new HashMap<>(otherMic.importMap);
         propertiesMap = new HashMap<>(otherMic.propertiesMap);
+        defaultNestedComponentRegistry.duplicate(otherMic.getDefaultNestedComponentRegistry());
         createAppenderBags();
     } 
         
