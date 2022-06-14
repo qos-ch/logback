@@ -180,7 +180,8 @@ public class LoggerTest {
         checkLevelThreshold(loggerTest, Level.WARN);
     }
 
-    public void testEnabledX_Errror() throws Exception {
+    @Test
+    public void testEnabledX_Error() throws Exception {
         root.setLevel(Level.ERROR);
         checkLevelThreshold(loggerTest, Level.ERROR);
     }
