@@ -26,19 +26,17 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
  */
 public class MarkerConverter extends ClassicConverter {
 
-    private static String EMPTY = "";
-
     public String convert(ILoggingEvent le) {
         List<Marker> markers = le.getMarkerList();
         if (markers == null || markers.isEmpty()) {
-            return EMPTY;
+            return "";
         }
         int size = markers.size();
 
         if (size == 1)
             return markers.get(0).toString();
 
-        StringBuffer buf = new StringBuffer(32);
+        StringBuilder buf = new StringBuilder(32);
         for (int i = 0; i < size; i++) {
             if (i != 0)
                 buf.append(' ');
