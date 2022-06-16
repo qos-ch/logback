@@ -15,24 +15,25 @@ package ch.qos.logback.classic.spi;
 
 import static ch.qos.logback.classic.util.TestHelper.addSuppressed;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
-import ch.qos.logback.classic.util.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.qos.logback.classic.util.TestHelper;
+import ch.qos.logback.core.testUtil.VersionUtil;
 
 public class ThrowableProxyTest {
 
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
-
+    int javaVersion = VersionUtil.getJavaMajorVersion();
+    
     @Before
     public void setUp() throws Exception {
     }
@@ -157,6 +158,27 @@ public class ThrowableProxyTest {
             w = new Exception("wrapping", e);
         }
         verify(w);
+    }
+
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void nestedLoop1() {
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        new ThrowableProxy(e);
+    }
+
+    // see also https://jira.qos.ch/browse/LOGBACK-1454
+    @Test
+    public void nestedLoop2() {
+    	if(javaVersion < 7) {
+    		return;
+    	}
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        new ThrowableProxy(e);
     }
 
     void someMethod() throws Exception {

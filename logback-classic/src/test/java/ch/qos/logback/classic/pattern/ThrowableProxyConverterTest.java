@@ -22,6 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.testUtil.VersionUtil;
+import ch.qos.logback.classic.util.EnvUtil;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,6 +48,8 @@ public class ThrowableProxyConverterTest {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
+    int javaVersion = VersionUtil.getJavaMajorVersion();
+    
     @Before
     public void setUp() throws Exception {
         tpc.setContext(lc);
@@ -122,6 +127,28 @@ public class ThrowableProxyConverterTest {
         verify(t);
     }
 
+
+    @Test
+    public void cyclicCause() {
+
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.initCause(e2);
+        convertToStringResult(e);
+    }
+    
+    @Test
+    public void cyclicSuppressed() {
+
+    	if(javaVersion < 7) {
+    		return;
+    	}
+        Exception e = new Exception("foo");
+        Exception e2 = new Exception(e);
+        e.addSuppressed(e2);
+        convertToStringResult(e);
+    }
+    
     @Test
     public void withArgumentOfOne() throws Exception {
         final Throwable t = TestHelper.makeNestedException(0);
@@ -217,10 +244,15 @@ public class ThrowableProxyConverterTest {
     void verify(Throwable t) {
         t.printStackTrace(pw);
 
-        ILoggingEvent le = createLoggingEvent(t);
+        String result = convertToStringResult(t);
+        assertEquals(sw.toString(), result);
+    }
+
+	private String convertToStringResult(Throwable t) {
+		ILoggingEvent le = createLoggingEvent(t);
         String result = tpc.convert(le);
         System.out.println(result);
         result = result.replace("common frames omitted", "more");
-        assertEquals(sw.toString(), result);
-    }
+		return result;
+	}
 }
