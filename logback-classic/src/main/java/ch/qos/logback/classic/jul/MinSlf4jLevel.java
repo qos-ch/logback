@@ -1,6 +1,6 @@
 package ch.qos.logback.classic.jul;
 
-class MinSlf4jLevel extends java.util.logging.Level {
+public class MinSlf4jLevel extends java.util.logging.Level {
     private MinSlf4jLevel(String name, int value) {
         super(name, value);
     }
