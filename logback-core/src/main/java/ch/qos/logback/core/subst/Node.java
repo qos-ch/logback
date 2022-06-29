@@ -56,10 +56,12 @@ public class Node {
         case VARIABLE:
             StringBuilder payloadBuf = new StringBuilder();
             StringBuilder defaultPartBuf2 = new StringBuilder();
-            if (defaultPart != null)
+            if (defaultPart != null && defaultPart instanceof Node){
                 recursive((Node) defaultPart, defaultPartBuf2);
-
-            recursive((Node) payload, payloadBuf);
+            }
+            if(payload instanceof Node){   
+                recursive((Node) payload, payloadBuf);
+            }
             String r = "Node{" + "type=" + type + ", payload='" + payloadBuf.toString() + "'";
             if (defaultPart != null)
                 r += ", defaultPart=" + defaultPartBuf2.toString();
