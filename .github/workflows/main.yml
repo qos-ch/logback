@@ -17,6 +17,9 @@ concurrency:
   group: ${{ (github.ref == 'refs/heads/branch_1.2.18' || github.ref == 'refs/heads/main' || github.ref == 'refs/heads/release' ) && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   Test:
     name: JDK ${{ matrix.jdk }}, ${{ matrix.os }}
