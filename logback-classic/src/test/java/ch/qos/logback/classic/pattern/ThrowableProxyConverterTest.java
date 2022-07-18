@@ -121,7 +121,7 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void cyclicCause() {
-        // Earlier JDKs may formats things differently
+        // Earlier JDKs may format things differently
         if (!EnvUtil.isJDK16OrHigher())
             return;
         Exception e = new Exception("foo");
@@ -132,7 +132,7 @@ public class ThrowableProxyConverterTest {
 
     @Test
     public void cyclicSuppressed() {
-        // Earlier JDKs may formats things differently
+        // Earlier JDKs may format things differently
         if (!EnvUtil.isJDK16OrHigher())
             return;
 

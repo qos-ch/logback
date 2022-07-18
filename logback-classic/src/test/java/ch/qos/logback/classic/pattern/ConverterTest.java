@@ -47,7 +47,7 @@ public class ConverterTest {
     List<String> optionList = new ArrayList<String>();
 
     // The LoggingEvent is massaged with an FCQN of FormattingConverter. This
-    // forces the returned caller information to match the caller stack for this
+    // forces the returned caller information to match the caller stack for
     // this particular test.
     LoggingEvent makeLoggingEvent(Exception ex) {
         return new LoggingEvent(ch.qos.logback.core.pattern.FormattingConverter.class.getName(), logger, Level.INFO,

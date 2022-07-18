@@ -99,7 +99,7 @@ public class FileAppenderResilienceTest implements RecoveryListener {
         t.join();
 
         double bestCaseSuccessRatio = 1 / delayCoefficient;
-        // expect to loose at most 35% of the events
+        // expect to lose at most 35% of the events
         double lossinessFactor = 0.35;
         double resilianceFactor = (1 - lossinessFactor);
 

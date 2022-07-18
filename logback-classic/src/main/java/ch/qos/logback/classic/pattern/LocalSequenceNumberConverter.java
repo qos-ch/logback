@@ -17,7 +17,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * A converters based on a a locally incremented sequence number. The sequence
+ * A converters based on a locally incremented sequence number. The sequence
  * number is initialized to the number of milliseconds elapsed since 1970-01-01
  * until this instance is initialized.
  *

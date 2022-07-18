@@ -52,9 +52,9 @@ public abstract class BaseModelAction extends Action {
     /**
      * Validate preconditions of this action.
      * 
-     * By default, true is returned. Sub-classes should override appropriately.
+     * By default, true is returned. Subclasses should override appropriately.
      * 
-     * @param interpretationContext
+     * @param intercon
      * @param name
      * @param attributes
      * @return

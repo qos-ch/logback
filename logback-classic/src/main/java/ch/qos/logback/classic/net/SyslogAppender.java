@@ -63,7 +63,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
 
     /**
      * Convert a level to equivalent syslog severity. Only levels for printing
-     * methods i.e DEBUG, WARN, INFO and ERROR are converted.
+     * methods i.e. DEBUG, WARN, INFO and ERROR are converted.
      *
      * @see ch.qos.logback.core.net.SyslogAppenderBase#getSeverityForEvent(java.lang.Object)
      */
@@ -172,7 +172,7 @@ public class SyslogAppender extends SyslogAppenderBase<ILoggingEvent> {
      * Stack trace lines are sent to the syslog server separately from the main
      * message For stack trace lines, the stackTracePattern is used instead of
      * {@link #suffixPattern}. The <b>stackTracePattern</b> option allows
-     * specification of a separately format for the non-standardized part of stack
+     * specification of a separate format for the non-standardized part of stack
      * trace lines.
      *
      * @param stackTracePattern

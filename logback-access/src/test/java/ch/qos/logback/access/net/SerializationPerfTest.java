@@ -72,7 +72,7 @@ public class SerializationPerfTest extends TestCase {
         Long total = 0L;
         resetCounter = 0;
         pauseCounter = 0;
-        // System.out.println("Beginning mesured run");
+        // System.out.println("Beginning measured run");
         for (int i = 0; i < loopNumber; i++) {
             try {
                 IAccessEvent ae = DummyAccessEventBuilder.buildNewAccessEvent();

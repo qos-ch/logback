@@ -74,7 +74,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         objectMap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
     }
     
-    // moodelStack =================================
+    // modelStack =================================
 
     public void pushModel(Model m) {
         modelStack.push(m);

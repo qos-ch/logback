@@ -37,7 +37,7 @@ public class LoggingEventWithParametersBuilder implements Builder<LoggingEvent> 
         le.setMessage(msg);
 
         // compute formatted message
-        // this forces le.formmatedMessage to be set (this is the whole point of the
+        // this forces le.formattedMessage to be set (this is the whole point of the
         // exercise)
         le.getFormattedMessage();
         le.setLevel(Level.DEBUG);

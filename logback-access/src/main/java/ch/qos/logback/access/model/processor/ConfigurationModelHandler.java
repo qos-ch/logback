@@ -41,7 +41,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
     @Override
     public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         ConfigurationModel configurationModel = (ConfigurationModel) model;
-        // See LBCLASSIC-225 (the system property is looked up first. Thus, it overrides
+        // See LBCLASSIC-225 (the system property is looked up first). Thus, it overrides
         // the equivalent property in the config file. This reversal of scope priority
         // is justified
         // by the use case: the admin trying to chase rogue config file

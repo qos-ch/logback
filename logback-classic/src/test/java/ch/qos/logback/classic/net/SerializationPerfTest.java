@@ -57,7 +57,7 @@ public class SerializationPerfTest extends TestCase {
     boolean runWithExternalMockServer = true;
 
     /**
-     * Last results: Data sent mesured in kilobytes. Avg time mesured in microsecs.
+     * Last results: Data sent measured in kilobytes. Avg time measured in microsecs.
      * 
      * NOPOutputStream: | | Runs | Avg time | Data sent | | MinimalObj Ext | 10000 |
      * | | | MinimalObj Ser | 10000 | | | | LoggEvent Ext | 10000 | | | | LoggEvent
@@ -136,7 +136,7 @@ public class SerializationPerfTest extends TestCase {
         Long total = 0L;
         resetCounter = 0;
         pauseCounter = 0;
-        // System.out.println("Beginning mesured run");
+        // System.out.println("Beginning measured run");
         for (int i = 0; i < loopNumber; i++) {
             try {
                 t1 = System.nanoTime();

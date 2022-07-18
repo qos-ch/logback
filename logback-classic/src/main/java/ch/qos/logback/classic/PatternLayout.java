@@ -53,7 +53,7 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
 
         DEFAULT_CONVERTER_MAP.put("d", DateConverter.class.getName());
         DEFAULT_CONVERTER_MAP.put("date", DateConverter.class.getName());
-        // used by PrefixComposite conventer
+        // used by PrefixComposite converter
         CONVERTER_CLASS_TO_KEY_MAP.put(DateConverter.class.getName(), "date");
 
         DEFAULT_CONVERTER_MAP.put("ms", MicrosecondConverter.class.getName());

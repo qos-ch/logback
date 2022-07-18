@@ -46,7 +46,7 @@ public class StatusPrinter {
 
     /**
      * Print the contents of the context status, but only if they contain warnings
-     * or errors occurring later then the threshold.
+     * or errors occurring later than the threshold.
      *
      * @param context
      */

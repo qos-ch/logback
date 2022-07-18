@@ -51,7 +51,7 @@ public interface ServerListener<T extends Client> extends Closeable {
      * listener.
      * <p>
      * Note that (as described in Doug Lea's discussion about interrupting I/O
-     * operations in "Concurrent Programming in Java" (Addison-Wesley Professional,
+     * operations in "Concurrent Programming in Java" - Addison-Wesley Professional,
      * 2nd edition, 1999) this method is used to interrupt any blocked I/O operation
      * in the client when the server is shutting down. The client implementation
      * must anticipate this potential, and gracefully exit when the blocked I/O

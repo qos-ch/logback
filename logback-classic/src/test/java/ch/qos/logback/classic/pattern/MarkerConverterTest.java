@@ -32,7 +32,7 @@ public class MarkerConverterTest {
 
     LoggerContext lc;
     MarkerConverter converter;
-    // use a different facotry for each test so that they are independent
+    // use a different factory for each test so that they are independent
     IMarkerFactory markerFactory = new BasicMarkerFactory();
 
     @Before

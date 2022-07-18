@@ -60,7 +60,7 @@ public abstract class ConcurrentServerRunner<T extends Client> extends ContextAw
      * Constructs a new server runner.
      * 
      * @param listener the listener from which the server will accept new clients
-     * @param executor a executor that will facilitate execution of the listening
+     * @param executor an executor that will facilitate execution of the listening
      *                 and client-handling tasks; while any {@link Executor} is
      *                 allowed here, outside of unit testing the only reasonable
      *                 choice is a bounded thread pool of some kind.

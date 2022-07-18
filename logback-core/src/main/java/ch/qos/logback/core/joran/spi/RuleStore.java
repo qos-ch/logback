@@ -33,7 +33,7 @@ import ch.qos.logback.core.joran.action.Action;
 public interface RuleStore {
 
     /**
-     * Add a new rule, given by a pattern and a action class (String).
+     * Add a new rule, given by a pattern and an action class (String).
      *
      * @param elementSelector
      * @param actionClassStr

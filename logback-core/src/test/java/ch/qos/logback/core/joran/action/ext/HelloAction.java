@@ -23,7 +23,7 @@ public class HelloAction extends Action {
     static final public String PROPERTY_KEY = "name";
 
     /**
-     * Instantiates an layout of the given class and sets its name.
+     * Instantiates a layout of the given class and sets its name.
      *
      */
     public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {

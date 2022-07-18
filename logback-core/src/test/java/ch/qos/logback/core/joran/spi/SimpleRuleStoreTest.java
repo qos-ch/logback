@@ -31,7 +31,7 @@ import ch.qos.logback.core.joran.action.Action;
 /**
  * Test SimpleRuleStore for various explicit rule combinations.
  * 
- * We also test that explicit patterns are case sensitive.
+ * We also test that explicit patterns are case-sensitive.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

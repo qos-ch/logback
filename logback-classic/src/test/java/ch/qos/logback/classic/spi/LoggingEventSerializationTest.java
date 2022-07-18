@@ -114,7 +114,7 @@ public class LoggingEventSerializationTest {
         Serializable s2 = pst.transform(event2);
         oos.writeObject(s2);
 
-        // create the input stream based on the ouput stream
+        // create the input stream based on the output stream
         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
         inputStream = new ObjectInputStream(bis);
 

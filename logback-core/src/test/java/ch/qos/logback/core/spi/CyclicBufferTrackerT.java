@@ -19,7 +19,7 @@ import ch.qos.logback.core.helpers.CyclicBuffer;
 import java.util.*;
 
 /**
- * Another tracker implementtion for testing purposes only.
+ * Another tracker implementation for testing purposes only.
  *
  * @author Ceki G&uuml;lc&uuml;
  */

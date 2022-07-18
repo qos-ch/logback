@@ -39,7 +39,7 @@ public interface AppenderAttachable<E> {
     Appender<E> getAppender(String name);
 
     /**
-     * Returns <code>true</code> if the specified appender is in list of attached
+     * Returns <code>true</code> if the specified appender is in list of
      * attached, <code>false</code> otherwise.
      */
     boolean isAttached(Appender<E> appender);

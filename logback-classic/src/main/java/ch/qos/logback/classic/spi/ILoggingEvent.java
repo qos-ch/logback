@@ -77,7 +77,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * 
      * This method is deprecated and exists solely for backward compatibility
      * reasons. Logback components should use {@link #getMarkerList()} and cater for
-     * all available markers and not the only the first one.
+     * all available markers and not only the first one.
      * 
      * @deprecated Replaced by {@link #getMarkerList()}
      * @return the first marker in the marker list or null if no markers are

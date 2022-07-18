@@ -24,7 +24,7 @@ import java.util.List;
 import org.slf4j.Marker;
 
 /**
- * This appender can contains other appenders which it can build dynamically
+ * This appender can contain other appenders which it can build dynamically
  * depending on MDC values. The built appender is specified as part of a
  * configuration file.
  * 

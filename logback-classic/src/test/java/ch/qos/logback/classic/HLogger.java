@@ -95,7 +95,7 @@ public class HLogger extends MarkerIgnoringBase {
      * Get a child by its suffix.
      * 
      * <p>
-     * IMPORTANT: Calls to this method must be within a syncronized block on this
+     * IMPORTANT: Calls to this method must be within a synchronized block on this
      * logger!
      * 
      * @param suffix
@@ -225,7 +225,7 @@ public class HLogger extends MarkerIgnoringBase {
      * lastPart is "z", then the created child logger will be named "x.y.z".
      * 
      * <p>
-     * IMPORTANT: Calls to this method must be within a syncronized block on this
+     * IMPORTANT: Calls to this method must be within a synchronized block on this
      * logger.
      * 
      * @param lastPart the suffix (i.e. last part) of the child logger name. This

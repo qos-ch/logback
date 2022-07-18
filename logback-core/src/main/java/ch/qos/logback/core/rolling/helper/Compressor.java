@@ -121,7 +121,7 @@ public class Compressor extends ContextAwareBase {
     // http://jira.qos.ch/browse/LBCORE-98
     // The name of the compressed file as nested within the zip archive
     //
-    // Case 1: RawFile = null, Patern = foo-%d.zip
+    // Case 1: RawFile = null, Pattern = foo-%d.zip
     // nestedFilename = foo-${current-date}
     //
     // Case 2: RawFile = hello.txt, Pattern = = foo-%d.zip

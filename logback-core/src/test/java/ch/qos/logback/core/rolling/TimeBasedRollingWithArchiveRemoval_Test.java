@@ -102,10 +102,8 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     // test that the number of files at the end of the test is same as the expected
-    // number taking into account end dates
-    // near the beginning of a new year. This test has been run in a loop with start
-    // date varying over a two years
-    // with success.
+    // number taking into account end dates near the beginning of a new year.
+    // This test has been run in a loop with start date varying over two years with success.
     @Test
     public void monthlyRolloverOverManyPeriods() {
         this.slashCount = computeSlashCount(MONTHLY_CRONOLOG_DATE_PATTERN);

@@ -76,7 +76,7 @@ public class MDCInsertingServletFilter implements Filter {
         MDC.remove(ClassicConstants.REQUEST_REMOTE_HOST_MDC_KEY);
         MDC.remove(ClassicConstants.REQUEST_REQUEST_URI);
         MDC.remove(ClassicConstants.REQUEST_QUERY_STRING);
-        // removing possibly inexistent item is OK
+        // removing possibly nonexistent item is OK
         MDC.remove(ClassicConstants.REQUEST_REQUEST_URL);
         MDC.remove(ClassicConstants.REQUEST_METHOD);
         MDC.remove(ClassicConstants.REQUEST_USER_AGENT_MDC_KEY);

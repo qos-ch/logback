@@ -74,7 +74,7 @@ abstract public class StatusBase implements Status {
         return level;
     }
 
-    // status messages are not supposed to contains cycles.
+    // status messages are not supposed to contain cycles.
     // cyclic status arrangements are like to cause deadlocks
     // when this method is called from different thread on
     // different status objects lying on the same cycle

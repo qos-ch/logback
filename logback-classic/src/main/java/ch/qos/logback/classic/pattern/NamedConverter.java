@@ -223,9 +223,8 @@ public abstract class NamedConverter extends ClassicConverter {
             int effectiveTotal = NamedConverter.this.totalCalls - totalsMilestone;
 
             if (effectiveTotal < MIN_SAMPLE_SIZE) {
-                // cache miss rate cannot be negative. Woth a negative value, we signal the
-                // caller of
-                // insufficient sample size.
+                // cache miss rate cannot be negative. With a negative value, we signal the
+                // caller of insufficient sample size.
                 return NEGATIVE;
             }
 

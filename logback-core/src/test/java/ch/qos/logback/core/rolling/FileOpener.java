@@ -17,7 +17,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 
 /**
- * Keep the file "output/test.log open for 10 seconds so that we can test
+ * Keep the file "output/test.log" open for 10 seconds so that we can test
  * RollingFileAppender's ability to roll file open by another process.
  * 
  * @author Ceki G&uuml;lc&uuml;
