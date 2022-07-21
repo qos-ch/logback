@@ -40,7 +40,7 @@ import java.util.HashMap;
  * current logger request, the
  * {@link #decide(Marker, Logger, Level, String, Object[], Throwable) decide()}
  * method returns the value of {@link #getOnHigherOrEqual() onHigherOrEqual}, if
- * it is lower then the value of {@link #getOnLower() onLower} is returned. Both
+ * it is lower than the value of {@link #getOnLower() onLower} is returned. Both
  * 'onHigherOrEqual' and 'onLower' can be set by the user. By default,
  * 'onHigherOrEqual' is set to NEUTRAL and 'onLower' is set to DENY. Thus, if
  * the current logger request's level is lower than
@@ -218,7 +218,7 @@ public class DynamicThresholdFilter extends TurboFilter {
      * This method first finds the MDC value for 'key'. It then finds the level
      * threshold associated with this MDC value from the list of MDCValueLevelPair
      * passed to this filter. This value is stored in a variable called
-     * 'levelAssociatedWithMDCValue'. If it null, then it is set to the
+     * 'levelAssociatedWithMDCValue'. If it is null, then it is set to the
      * 
      * @{link #defaultThreshold} value.
      * 

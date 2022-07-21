@@ -59,7 +59,7 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
      * This method computes whether a chain of converters handles exceptions or not.
      * 
      * @param head The first element of the chain
-     * @return true if can handle throwables contained in logging events
+     * @return true if it can handle throwables contained in logging events
      */
     public boolean chainHandlesThrowable(Converter<ILoggingEvent> head) {
         Converter<ILoggingEvent> c = head;
@@ -79,8 +79,8 @@ public class EnsureExceptionHandling implements PostCompileProcessor<ILoggingEve
     /**
      * This method computes whether a composite converter handles exceptions or not.
      *
-     * @param converter The composite converter
-     * @return true if can handle throwables contained in logging events
+     * @param compositeConverter The composite converter
+     * @return true if it can handle throwables contained in logging events
      */
     public boolean compositeHandlesThrowable(CompositeConverter<ILoggingEvent> compositeConverter) {
         Converter<ILoggingEvent> childConverter = compositeConverter.getChildConverter();

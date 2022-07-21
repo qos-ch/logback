@@ -36,7 +36,7 @@ public class LocationUtil {
      * 
      * @param location String describing the location
      * @return URL object that refers to {@code location}
-     * @throws MalformedURLException if {@code location} is not a syntatically valid
+     * @throws MalformedURLException if {@code location} is not a syntactically valid
      *                               URL
      * @throws FileNotFoundException if {@code location} specifies a non-existent
      *                               classpath resource

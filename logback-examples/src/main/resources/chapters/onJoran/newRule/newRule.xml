@@ -1,7 +1,7 @@
 <!-- 
   This file is intended to be executed by NewRuleCalculator. 
 	Note that the rules for adding and multiplying are learned on 
-  the fly, while parsingthis file.
+  the fly, while parsing this file.
 -->
 
 <computation name="toto">

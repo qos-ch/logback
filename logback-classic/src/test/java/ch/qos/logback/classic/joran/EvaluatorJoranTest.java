@@ -60,7 +60,7 @@ public class EvaluatorJoranTest {
         assertFalse(evaluator.evaluate(event1));
     }
 
-    @Ignore // markers are no longer suported in Janino
+    @Ignore // markers are no longer supported in Janino
     @Test
     public void testIgnoreMarker() throws NullPointerException, EvaluationException, JoranException {
         JoranConfigurator jc = new JoranConfigurator();

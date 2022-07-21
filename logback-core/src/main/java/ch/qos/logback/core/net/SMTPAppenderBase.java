@@ -309,7 +309,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * Allows extend classes to update mime message (e.g.: Add headers)
+     * Allows to extend classes to update mime message (e.g.: Add headers)
      */
     protected void updateMimeMsg(MimeMessage mimeMsg, CyclicBuffer<E> cb, E lastEventObject) {
     }
@@ -417,7 +417,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * The <b>From</b> option takes a string value which should be a e-mail address
+     * The <b>From</b> option takes a string value which should be an e-mail address
      * of the sender.
      */
     public void setFrom(String from) {
@@ -425,7 +425,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * The <b>Subject</b> option takes a string value which should be a the subject
+     * The <b>Subject</b> option takes a string value which should be the subject
      * of the e-mail message.
      */
     public void setSubject(String subject) {
@@ -442,7 +442,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * The <b>smtpHost</b> option takes a string value which should be a the host
+     * The <b>smtpHost</b> option takes a string value which should be the host
      * name of the SMTP server that will send the e-mail message.
      */
     public void setSmtpHost(String smtpHost) {

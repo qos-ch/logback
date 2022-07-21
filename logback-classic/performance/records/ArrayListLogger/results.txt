@@ -4,11 +4,11 @@
   children in an ArrayList.
 
 - LoggerContext has a cache of existing loggers in a map. This
-  significantly improves the performance of retrival of existing
+  significantly improves the performance of retrieval of existing
   loggers.
 
 
-Memomy footprint for 1000 loggers:
+Memory footprint for 1000 loggers:
 ==================================
 
 The memory consumption of various logger implementations are shown
@@ -27,7 +27,7 @@ LOG4J implementation.
 The logger cache adds a memory overhead but very significantly
 improves the efficiency of retreiving an existing logger.
 
-The mem foorprint without the logger cache:
+The mem footprint without the logger cache:
 
  73 kB - 2,046 alloc. com.logback.LoggerCreation.testListLoggers
 
@@ -47,7 +47,7 @@ CategoryKey for every call to the Hierarchy.getLogger method.
 Speed of creating of a logger:
 ==============================
 
-Emtpy logger creation:  1229 nanoseconds per creation.
+Empty logger creation:  1229 nanoseconds per creation.
 List  logger creation: 13139 nanoseconds per creation.
 JUL   logger creation: 61990 nanoseconds per creation.
 LOG4J logger creation: 23503 nanoseconds per creation.

@@ -101,7 +101,7 @@ public class DefaultSocketConnectorTest {
         serverSocket.close();
         Future<Socket> connectorTask = executor.submit(connector);
 
-        // this connection attempt will always timeout
+        // this connection attempt will always time out
         try {
             connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
             fail();
@@ -125,14 +125,14 @@ public class DefaultSocketConnectorTest {
         serverSocket.close();
 
         Future<Socket> connectorTask = executor.submit(connector);
-        // this connection attempt will always timeout
+        // this connection attempt will always time out
         try {
             connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
             fail();
         } catch (TimeoutException e) {
         }
 
-        // the following call requries over 1000 millis
+        // the following call requires over 1000 millis
         Exception lastException = exceptionHandler.awaitConnectionFailed();
         assertNotNull(lastException);
         assertTrue(lastException instanceof ConnectException);

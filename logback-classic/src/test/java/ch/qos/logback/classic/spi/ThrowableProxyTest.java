@@ -160,7 +160,7 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void cyclicCause() {
-        // Earlier JDKs may formats things differently
+        // Earlier JDKs may format things differently
         if (!EnvUtil.isJDK16OrHigher())
             return;
         Exception e = new Exception("foo");
@@ -172,7 +172,7 @@ public class ThrowableProxyTest {
     // see also https://jira.qos.ch/browse/LOGBACK-1454
     @Test
     public void cyclicSuppressed() {
-        // Earlier JDKs may formats things differently
+        // Earlier JDKs may format things differently
         if (!EnvUtil.isJDK16OrHigher())
             return;
         Exception e = new Exception("foo");

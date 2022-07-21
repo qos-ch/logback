@@ -28,7 +28,7 @@ import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.util.ContextUtil;
 
 /**
- * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the
+ * <code>RollingFileAppender</code> extends {@link FileAppender} to back up the
  * log files depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
  * 
  * <p>

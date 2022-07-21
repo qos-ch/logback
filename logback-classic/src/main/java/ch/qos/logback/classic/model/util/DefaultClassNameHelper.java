@@ -25,7 +25,7 @@ import ch.qos.logback.core.model.util.TagUtil;
  * Injects missing class names into ImplicitModel instances missing class name.
  * 
  * @author ceki
- * @since 1.3.0-aplha15
+ * @since 1.3.0-alpha15
  */
 public class DefaultClassNameHelper {
 

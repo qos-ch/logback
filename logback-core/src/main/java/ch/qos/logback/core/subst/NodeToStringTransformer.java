@@ -176,7 +176,7 @@ public class NodeToStringTransformer {
 
     /**
      * Determine if a node has already been visited already by checking the
-     * cycleDetectionStack for it's existence. This method is used -- rather than
+     * cycleDetectionStack for its existence. This method is used -- rather than
      * Stack.contains() -- because we want to ignore the Node's 'next' attribute
      * when comparing for equality.
      */

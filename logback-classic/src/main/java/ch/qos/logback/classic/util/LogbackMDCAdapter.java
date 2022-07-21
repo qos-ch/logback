@@ -115,7 +115,7 @@ public class LogbackMDCAdapter implements MDCAdapter {
     }
 
     /**
-     * Remove the the context identified by the <code>key</code> parameter.
+     * Remove the context identified by the <code>key</code> parameter.
      * <p/>
      */
     public void remove(String key) {

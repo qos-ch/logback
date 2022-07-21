@@ -235,7 +235,7 @@ public final class Level implements java.io.Serializable {
     }
 
     /**
-     * Return the flyweight instance of the level received through serizalization,
+     * Return the flyweight instance of the level received through serialization,
      * i.e. 'this'.
      *
      * @return The appropriate flyweight instance

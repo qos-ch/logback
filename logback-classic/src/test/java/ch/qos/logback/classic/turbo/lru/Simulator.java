@@ -63,7 +63,7 @@ public class Simulator {
                 String r0 = lruCache.get(e.k);
                 String r1 = tlruCache.get(e.k);
                 if (!multiThreaded) {
-                    // if the simulation is used in a multi-threaded
+                    // if the simulation is used in a multithreaded
                     // context, then the state of lruCache may be different than
                     // that of tlruCache. In single threaded mode, they should
                     // return the same values all the time

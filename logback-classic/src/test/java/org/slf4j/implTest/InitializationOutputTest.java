@@ -42,7 +42,7 @@ public class InitializationOutputTest {
     @Before
     public void setUp() {
         original = System.out;
-        // tee will output bytes on System out but it will also
+        // tee will output bytes on System.out but it will also
         // collect them so that the output can be compared against
         // some expected output data
 

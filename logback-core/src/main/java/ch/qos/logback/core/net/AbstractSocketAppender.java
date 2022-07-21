@@ -304,7 +304,7 @@ public abstract class AbstractSocketAppender<E> extends AppenderBase<E> implemen
     protected abstract PreSerializationTransformer<E> getPST();
 
     /**
-     * The <b>RemoteHost</b> property takes the name of of the host where a
+     * The <b>RemoteHost</b> property takes the name of the host where a
      * corresponding server is running.
      */
     public void setRemoteHost(String host) {

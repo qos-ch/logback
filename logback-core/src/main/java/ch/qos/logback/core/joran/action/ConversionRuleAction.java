@@ -27,7 +27,7 @@ public class ConversionRuleAction extends Action {
     boolean inError = false;
 
     /**
-     * Instantiates an layout of the given class and sets its name.
+     * Instantiates a layout of the given class and sets its name.
      *
      */
     @SuppressWarnings("unchecked")

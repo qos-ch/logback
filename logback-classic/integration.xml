@@ -14,8 +14,8 @@
 	<echo message="hamcrest:  ${org.hamcrest:hamcrest-core:jar}" />
 	
 	<path id="basicClasspath">
-		<!-- post junit version 4.12, we neeed to add hamcrest manually to the 
-		     classpath, even though the m-ant-plugin declares a dependecy on hamcrest! -->
+		<!-- post junit version 4.12, we need to add hamcrest manually to the
+		     classpath, even though the m-ant-plugin declares a dependency on hamcrest! -->
 		<pathelement location="${org.hamcrest:hamcrest-core:jar}" />
 		<pathelement location="../logback-core/target/classes/" />
 		<pathelement location="../logback-core/target/test-classes/" />
@@ -39,7 +39,7 @@
     <echo>Making lib/ folder in case it does not already exist.</echo>
   	<mkdir dir="lib/"/>
     <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
-    <!-- sneak in a clean up procedure of the ../logback-examples/lib/ folder-->
+    <!-- sneak in a cleanup procedure of the ../logback-examples/lib/ folder-->
     <delete quiet="true">
       <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
     </delete>

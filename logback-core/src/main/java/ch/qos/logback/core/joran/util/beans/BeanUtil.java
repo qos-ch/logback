@@ -109,7 +109,7 @@ public class BeanUtil {
      * Converts the given String into lower camel case form.
      * 
      * @param string to decapitalize.
-     * @return null if the given String is null. Emtpy string if the given string is
+     * @return null if the given String is null. Empty string if the given string is
      *         empty. The given string if the first two consecutive letters are in
      *         upper case. The given string with the first letter in lower case
      *         otherwise, which might be the given string.
