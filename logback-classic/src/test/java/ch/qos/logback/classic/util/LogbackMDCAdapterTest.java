@@ -93,6 +93,13 @@ public class LogbackMDCAdapterTest {
         assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
     }
 
+    @Test
+    public void setContextMapHandlesNull() {
+        mdcAdapter.setContextMap(null);
+        // Should not throw first of all and then
+        assertNull(mdcAdapter.getCopyOfContextMap());
+    }
+
     // =================================================
 
     /**
