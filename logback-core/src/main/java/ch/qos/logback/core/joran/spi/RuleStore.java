@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import java.util.function.Supplier;
+
 import ch.qos.logback.core.joran.action.Action;
 
 /**
@@ -31,7 +33,7 @@ import ch.qos.logback.core.joran.action.Action;
 public interface RuleStore {
 
     /**
-     * Add a new rule, given by a pattern and a action class (String).
+     * Add a new rule, given by a pattern and an action class (String).
      *
      * @param elementSelector
      * @param actionClassStr
@@ -45,7 +47,7 @@ public interface RuleStore {
      * @param elementSelector
      * @param action
      */
-    void addRule(ElementSelector elementSelector, Action action);
+    void addRule(ElementSelector elementSelector, Supplier<Action> actionSupplier);
 
     /**
      * Return a list of actions matching a pattern.
@@ -53,7 +55,7 @@ public interface RuleStore {
      * @param elementPath the path to match for
      * @return list of matching actions
      */
-    Action matchActions(ElementPath elementPath);
+    Supplier<Action> matchActions(ElementPath elementPath);
     
     void addTransparentPathPart(String pathPart);
 }

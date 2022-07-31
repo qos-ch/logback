@@ -23,7 +23,7 @@ public class ActionUtil {
     };
 
     /**
-     * Convert a string into a scope. Scole.LOCAL is returned by default.
+     * Convert a string into a scope. Scope.LOCAL is returned by default.
      * 
      * @param scopeStr
      * @return a scope corresponding to the input string; Scope.LOCAL by default.

@@ -116,7 +116,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
             Thread.sleep(DELAY);
         }
         p.waitFor();
-        // the extrernal script has the file system ready for IO 50% of the time
+        // the external script has the file system ready for IO 50% of the time
         double bestCase = 0.5;
         ResilienceUtil.countLines(logfileStr, "^(\\d{1,3}) x*$");
         System.out.println("Done go");

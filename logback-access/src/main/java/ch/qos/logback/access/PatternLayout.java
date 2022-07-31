@@ -180,7 +180,7 @@ public class PatternLayout extends PatternLayoutBase<IAccessEvent> {
     public PatternLayout() {
         // set a default value for pattern
         setPattern(CLF_PATTERN);
-        // by default postCompileProcessor the is an EnsureLineSeparation instance
+        // by default postCompileProcessor is an EnsureLineSeparation instance
         this.postCompileProcessor = new EnsureLineSeparation();
     }
 

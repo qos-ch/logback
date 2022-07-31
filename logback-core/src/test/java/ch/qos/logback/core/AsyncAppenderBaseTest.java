@@ -154,7 +154,7 @@ public class AsyncAppenderBaseTest {
         }
         lossyAsyncAppender.stop();
         // events 0, 3, 6 and 9 are discardable. However, for events 0 and 3
-        // the buffer is not not yet full. Thus, only events 6 and 9 will be
+        // the buffer is not yet full. Thus, only events 6 and 9 will be
         // effectively discarded.
         verify(delayingListAppender, loopLen - 2);
     }

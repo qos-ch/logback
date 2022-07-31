@@ -37,7 +37,7 @@ public class LoggerSerializationTest {
 
     static final String SERIALIZATION_PREFIX = CoreTestConstants.TEST_INPUT_PREFIX + "/serialization/";
 
-    // force SLF4J initialization for subsequent Logger readResolce ooperaiton
+    // force SLF4J initialization for subsequent Logger readResolve operation
     org.slf4j.Logger unused = LoggerFactory.getLogger(this.getClass());
     LoggerContext lc;
     Logger logger;

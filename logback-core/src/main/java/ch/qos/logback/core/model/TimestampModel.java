@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.model;
 
+import java.util.Objects;
+
 public class TimestampModel extends NamedModel {
 
     private static final long serialVersionUID = 2096655273673863306L;
@@ -23,6 +25,20 @@ public class TimestampModel extends NamedModel {
     String timeReference;
     String scopeStr;
 
+    @Override
+    protected TimestampModel makeNewInstance() {
+        return new TimestampModel();
+    }
+    
+    @Override
+    protected void mirror(Model that) {
+        TimestampModel actual = (TimestampModel) that;
+        super.mirror(actual);
+        this.datePattern = actual.datePattern;
+        this.timeReference = actual.timeReference;
+        this.scopeStr = actual.scopeStr;
+    }
+    
     public String getKey() {
         return getName();
     }
@@ -55,4 +71,26 @@ public class TimestampModel extends NamedModel {
         this.scopeStr = scopeStr;
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(datePattern, scopeStr, timeReference);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TimestampModel other = (TimestampModel) obj;
+        return Objects.equals(datePattern, other.datePattern) && Objects.equals(scopeStr, other.scopeStr)
+                && Objects.equals(timeReference, other.timeReference);
+    }
+
+    
 }

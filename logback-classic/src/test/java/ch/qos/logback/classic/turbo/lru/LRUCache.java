@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An lru cache based on Java's LinkedHashMap.
+ * An LRU cache based on Java's LinkedHashMap.
  * 
  * @author Ceki Gulcu
  *

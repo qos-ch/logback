@@ -18,7 +18,7 @@ import java.util.Random;
 public class RandomUtil {
 
     /**
-     * Approximate a gaussian distrib with only positive integer values
+     * Approximate a gaussian distribution with only positive integer values
      * 
      * @param average
      * @param stdDeviation

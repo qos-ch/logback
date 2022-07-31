@@ -44,11 +44,11 @@ abstract public class AbstractComponentTracker<C> implements ComponentTracker<C>
     protected int maxComponents = DEFAULT_MAX_COMPONENTS;
     protected long timeout = DEFAULT_TIMEOUT;
 
-    // an access ordered map. Least recently accessed element will be removed after
+    // an access-ordered map. Least recently accessed element will be removed after
     // a 'timeout'
     LinkedHashMap<String, Entry<C>> liveMap = new LinkedHashMap<String, Entry<C>>(32, .75f, ACCESS_ORDERED);
 
-    // an access ordered map. Least recently accessed element will be removed after
+    // an access-ordered map. Least recently accessed element will be removed after
     // LINGERING_TIMEOUT
     LinkedHashMap<String, Entry<C>> lingerersMap = new LinkedHashMap<String, Entry<C>>(16, .75f, ACCESS_ORDERED);
     long lastCheck = 0;

@@ -181,6 +181,7 @@ public class JoranConfiguratorTest {
     @Test
     public void statusListener() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
+        StatusPrinter.print(loggerContext);
         checker.assertIsErrorFree();
         checker.assertContainsMatch(Status.WARN,
                 "Please use \"level\" attribute within <logger> or <root> elements instead.");

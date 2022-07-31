@@ -16,6 +16,7 @@ package ch.qos.logback.core.model.processor;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.Model;
 
+@PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class RefContainerDependencyAnalyser extends ModelHandlerBase {
 
     final Class<?> modelClass;

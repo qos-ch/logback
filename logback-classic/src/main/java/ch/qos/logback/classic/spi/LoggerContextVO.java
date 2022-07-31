@@ -25,7 +25,7 @@ import ch.qos.logback.classic.LoggerContext;
  * 
  * <p>
  * Some of the LoggerContext or Logger attributes MUST not survive
- * serialization, e.g appenders, level values etc, as these attributes may have
+ * serialization, e.g. appenders, level values etc., as these attributes may have
  * other values on the remote platform. LoggerContextVO class exposes the
  * minimal and relevant attributes to the remote host, instead of having to deal
  * with an incomplete LoggerContext with many null references.

@@ -52,7 +52,7 @@ public class XMLLayout extends LayoutBase<ILoggingEvent> {
     /**
      * The <b>LocationInfo</b> option takes a boolean value. By default, it is set
      * to false which means there will be no location information output by this
-     * layout. If the the option is set to true, then the file name and line number
+     * layout. If the option is set to true, then the file name and line number
      * of the statement at the origin of the log statement will be output.
      * 
      * <p>

@@ -21,11 +21,13 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
+import ch.qos.logback.core.joran.JoranConstants;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
@@ -36,12 +38,9 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     Stack<Object> objectStack;
     Stack<Model> modelStack;
 
-    Stack<ImplicitActionDataBase> implicitActionDataStack;
-
     Map<String, Object> objectMap;
-    Map<String, String> propertiesMap;
-    Map<String, String> importMap;
-
+    protected Map<String, String> propertiesMap;
+    protected Map<String, String> importMap;
 
     final private BeanDescriptionCache beanDescriptionCache;
     final DefaultNestedComponentRegistry defaultNestedComponentRegistry = new DefaultNestedComponentRegistry();
@@ -52,18 +51,30 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         this.context = context;
         this.objectStack = new Stack<>();
         this.modelStack = new Stack<>();
-        this.implicitActionDataStack = new Stack<>();
         this.beanDescriptionCache = new BeanDescriptionCache(context);
         objectMap = new HashMap<>(5);
         propertiesMap = new HashMap<>(5);
         importMap = new HashMap<>(5);
     }
 
+    public ModelInterpretationContext(ModelInterpretationContext otherMic) {
+        this(otherMic.context);
+        importMap = new HashMap<>(otherMic.importMap);
+        propertiesMap = new HashMap<>(otherMic.propertiesMap);
+        defaultNestedComponentRegistry.duplicate(otherMic.getDefaultNestedComponentRegistry());
+        createAppenderBags();
+    } 
+        
     public Map<String, Object> getObjectMap() {
         return objectMap;
     }
 
-    // moodelStack =================================
+    public void createAppenderBags() {
+        objectMap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
+        objectMap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
+    }
+    
+    // modelStack =================================
 
     public void pushModel(Model m) {
         modelStack.push(m);
@@ -155,18 +166,6 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         return defaultNestedComponentRegistry;
     }
 
-    /**
-     * actionDataStack contains ActionData instances We use a stack of ActionData
-     * objects in order to support nested elements which are handled by the same
-     * NestedComplexPropertyIA instance. We push a ActionData instance in the
-     * isApplicable method (if the action is applicable) and pop it in the end()
-     * method. The XML well-formedness property will guarantee that a push will
-     * eventually be followed by a corresponding pop.
-     */
-    public Stack<ImplicitActionDataBase> getImplcitActionDataStack() {
-        return implicitActionDataStack;
-    }
-
     // ================================== dependencies
 
     public void addDependencyDefinition(DependencyDefinition dd) {
@@ -244,6 +243,11 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         importMap.put(stem, fqcn);
     }
 
+    public Map<String, String> getImportMapCopy() {
+        return new HashMap<>(importMap);
+    }
+
+    
     /**
      * Given a stem, get the fully qualified name of the class corresponding to the
      * stem. For unknown stems, returns the stem as is. If stem is null, null is

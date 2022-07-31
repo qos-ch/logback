@@ -17,6 +17,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.Model;
 
+@PhaseIndicator(phase = ProcessingPhase.DEPENDENCY_ANALYSIS)
 public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
     public AppenderRefDependencyAnalyser(Context context) {
@@ -35,16 +36,18 @@ public class AppenderRefDependencyAnalyser extends ModelHandlerBase {
 
         String ref = mic.subst(appenderRefModel.getRef());
 
-        
+        Model depender;
         if (mic.isModelStackEmpty()) {
             // appenderRefModel maybe the dependent model. This is the case in logback-access
-            DependencyDefinition dd = new DependencyDefinition(appenderRefModel, ref);
-            mic.addDependencyDefinition(dd);
+            depender = appenderRefModel;
         } else {
             Model parentModel = mic.peekModel();
-            DependencyDefinition dd = new DependencyDefinition(parentModel, ref);
-            mic.addDependencyDefinition(dd);
+            depender = parentModel;
         }
+
+        DependencyDefinition dd = new DependencyDefinition(depender, ref);
+        mic.addDependencyDefinition(dd);
+        
     }
 
 }

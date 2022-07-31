@@ -76,7 +76,7 @@ import ch.qos.logback.core.util.StatusListenerConfigHelper;
  * <p>
  * For more information on using LogbackValve please refer to the online
  * documentation on
- * <a href="http://logback.qos.ch/access.html#tomcat">logback-acces and
+ * <a href="http://logback.qos.ch/access.html#tomcat">logback-access and
  * tomcat</a>.
  * 
  * @author Ceki G&uuml;lc&uuml;

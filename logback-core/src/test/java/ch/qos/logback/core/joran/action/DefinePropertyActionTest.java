@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Before;
@@ -62,19 +63,17 @@ public class DefinePropertyActionTest {
     @Before
     public void setUp() throws Exception {
 
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("top"), new TopElementAction());
-        rulesMap.put(new ElementSelector("top/define"), new DefinePropertyAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("top"), TopElementAction::new);
+        rulesMap.put(new ElementSelector("top/define"), DefinePropertyAction::new);
 
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
+            
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(DefineModel.class, DefineModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
-
-                return defaultProcessor;
             }
         };
         simpleConfigurator.setContext(context);

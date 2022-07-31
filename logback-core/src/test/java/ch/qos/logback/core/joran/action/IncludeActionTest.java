@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran.action;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -24,6 +25,7 @@ import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.function.Supplier;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,12 +39,11 @@ import ch.qos.logback.core.joran.action.ext.StackAction;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.model.IncludeModel;
+import ch.qos.logback.core.model.StackModel;
 import ch.qos.logback.core.model.TopModel;
-import ch.qos.logback.core.model.processor.ChainedModelFilter;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.ModelFilter;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
+import ch.qos.logback.core.model.processor.StackModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.FileTestUtil;
@@ -91,28 +92,23 @@ public class IncludeActionTest {
 
     int diff = RandomUtil.getPositiveInt();
 
-    StackAction stackAction = new StackAction();
 
     @Before
     public void setUp() throws Exception {
         FileTestUtil.makeTestOutputDir();
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("x"), new TopElementAction());
-        rulesMap.put(new ElementSelector("x/include"), new IncludeAction());
-        rulesMap.put(new ElementSelector("x/stack"), stackAction);
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
+        rulesMap.put(new ElementSelector("x/include"), () -> new IncludeAction());
+        rulesMap.put(new ElementSelector("x/stack"), () -> new StackAction());
 
         tc = new TrivialConfigurator(rulesMap) {
+            
+            
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(TopModel.class, NOPModelHandler::makeInstance);
                 defaultProcessor.addHandler(IncludeModel.class, NOPModelHandler::makeInstance);
-                ModelFilter p1Filter = ChainedModelFilter.newInstance().allow(TopModel.class).denyAll();
-                defaultProcessor.setPhaseOneFilter(p1Filter);
-                ModelFilter p2Filter = ChainedModelFilter.newInstance().allow(TopModel.class).allow(IncludeModel.class)
-                        .denyAll();
-                defaultProcessor.setPhaseTwoFilter(p2Filter);
-                return defaultProcessor;
+                defaultProcessor.addHandler(StackModel.class, StackModelHandler::makeInstance);
             }
         };
 
@@ -230,7 +226,9 @@ public class IncludeActionTest {
         expected.push("a");
         expected.push("b");
         expected.push("c");
-        assertEquals(expected, stackAction.getStack());
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
+        assertEquals(expected, aStack);
     }
 
     @Test
@@ -249,13 +247,22 @@ public class IncludeActionTest {
         // verifyConfig(new String[] { "EA", "EB" });
 
         // when entity inclusion disabled
-        verifyConfig(new String[] {});
+        verifyConfig(null);
     }
 
     void verifyConfig(String[] expected) {
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
+
+        if(expected == null) {
+            assertNull(aStack);
+            return;
+        } 
+        
         Stack<String> witness = new Stack<String>();
         witness.addAll(Arrays.asList(expected));
-        assertEquals(witness, stackAction.getStack());
+            
+        assertEquals(witness, aStack);
     }
 
 }

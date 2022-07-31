@@ -23,7 +23,7 @@ public class NewRuleAction extends Action {
     boolean inError = false;
 
     /**
-     * Instantiates an layout of the given class and sets its name.
+     * Instantiates a layout of the given class and sets its name.
      */
     public void begin(SaxEventInterpretationContext ec, String localName, Attributes attributes) {
         // Let us forget about previous errors (in this object)

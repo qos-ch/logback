@@ -18,11 +18,11 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
 import ch.qos.logback.core.joran.action.StatusListenerAction;
@@ -32,7 +32,6 @@ import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.StatusListenerModel;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ImplicitModelHandler;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
@@ -50,19 +49,17 @@ public class ImplicitActionTest {
     @Before
     public void setUp() throws Exception {
         fruitContext.setName("fruits");
-        HashMap<ElementSelector, Action> rulesMap = new HashMap<ElementSelector, Action>();
-        rulesMap.put(new ElementSelector("/context/"), new FruitContextAction());
-        rulesMap.put(new ElementSelector("/context/statusListener"), new StatusListenerAction());
+        HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
+        rulesMap.put(new ElementSelector("/context/"), () -> new FruitContextAction());
+        rulesMap.put(new ElementSelector("/context/statusListener"), () -> new StatusListenerAction());
         simpleConfigurator = new SimpleConfigurator(rulesMap) {
+           
             @Override
-            protected DefaultProcessor buildDefaultProcessor(Context context, ModelInterpretationContext mic) {
-                DefaultProcessor defaultProcessor = super.buildDefaultProcessor(context, mic);
+            protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
                 defaultProcessor.addHandler(FruitContextModel.class, FruitContextModelHandler::makeInstance);
                 defaultProcessor.addHandler(PropertyModel.class, PropertyModelHandler::makeInstance);
                 defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
                 defaultProcessor.addHandler(StatusListenerModel.class, StatusListenerModelHandler::makeInstance);
-
-                return defaultProcessor;
             }
 
         };

@@ -137,7 +137,7 @@ public class CoreConstants {
     public static final int TABLE_ROW_LIMIT = 10000;
 
     // reset the ObjectOutputStream every OOS_RESET_FREQUENCY calls
-    // this avoid serious memory leaks
+    // this avoids serious memory leaks
     public static final int OOS_RESET_FREQUENCY = 70;
 
     // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
@@ -199,8 +199,20 @@ public class CoreConstants {
     public static final String LEFT_ACCOLADE = new String(new char[] { CURLY_LEFT });
     public static final String RIGHT_ACCOLADE = new String(new char[] { CURLY_RIGHT });
     public static final long UNBOUNDED_TOTAL_SIZE_CAP = 0;
-    public static final int UNBOUND_HISTORY = 0;
 
+    /**
+     * If Rolling
+     */
+    public static final int UNBOUNDED_HISTORY = 0;
+    
+    /**
+     * Replaced by {@link CoreConstants#UNBOUNDED_HISTORY} with the same identical value.
+
+     * @deprecated
+     * @see UNBOUNDED_HISTORY
+     */
+    public static final int UNBOUND_HISTORY = UNBOUNDED_HISTORY;
+    
     public static final String RECONFIGURE_ON_CHANGE_TASK = "RECONFIGURE_ON_CHANGE_TASK";
     public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
 

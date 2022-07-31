@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.model;
 
+import java.util.Objects;
+
 /**
  * Abstract representation of configuration elements
  * 
@@ -25,6 +27,19 @@ public class ComponentModel extends Model {
 
     String className;
 
+    @Override
+    protected ComponentModel makeNewInstance() {
+        return new ComponentModel();
+    }
+    
+    @Override
+    protected void mirror(Model that) {
+        ComponentModel actual = (ComponentModel) that;
+        super.mirror(actual);
+        this.className = actual.className;
+    }
+    
+    
     public String getClassName() {
         return className;
     }
@@ -37,6 +52,26 @@ public class ComponentModel extends Model {
     public String toString() {
         return this.getClass().getSimpleName() + " [tag=" + tag + ", className=" + className + ", bodyText=" + bodyText
                 + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(className);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ComponentModel other = (ComponentModel) obj;
+        return Objects.equals(className, other.className);
     }
 
 }

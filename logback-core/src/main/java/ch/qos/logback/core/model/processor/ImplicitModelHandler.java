@@ -1,11 +1,22 @@
+/**
+ * Logback: the reliable, generic, fast and flexible logging framework.
+ * Copyright (C) 1999-2002, QOS.ch. All rights reserved.
+ *
+ * This program and the accompanying materials are dual-licensed under
+ * either the terms of the Eclipse Public License v1.0 as published by
+ * the Eclipse Foundation
+ *
+ *   or (per the licensee's choosing)
+ *
+ * under the terms of the GNU Lesser General Public License version 2.1
+ * as published by the Free Software Foundation.
+ */
 package ch.qos.logback.core.model.processor;
-
-import java.util.Stack;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ImcplicitActionDataForBasicProperty;
-import ch.qos.logback.core.joran.action.ImplicitActionDataBase;
-import ch.qos.logback.core.joran.action.ImplicitActionDataForComplexProperty;
+import ch.qos.logback.core.joran.action.ImplicitModelData;
+import ch.qos.logback.core.joran.action.ImplicitModelDataForComplexProperty;
 import ch.qos.logback.core.joran.spi.NoAutoStartUtil;
 import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
@@ -21,7 +32,8 @@ import ch.qos.logback.core.util.OptionHelper;
 public class ImplicitModelHandler extends ModelHandlerBase {
 
     private final BeanDescriptionCache beanDescriptionCache;
-
+    private ImplicitModelData implicitModelData;
+    
     static final String PARENT_PROPPERTY_KEY = "parent";
 
     boolean inError = false;
@@ -35,30 +47,30 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         return ImplicitModel.class;
     }
 
-    static public ImplicitModelHandler makeInstance(Context context, ModelInterpretationContext ic) {
-        BeanDescriptionCache beanDescriptionCache = ic.getBeanDescriptionCache();
+    static public ImplicitModelHandler makeInstance(Context context, ModelInterpretationContext mic) {
+        BeanDescriptionCache beanDescriptionCache = mic.getBeanDescriptionCache();
         return new ImplicitModelHandler(context, beanDescriptionCache);
     }
 
     @Override
-    public void handle(ModelInterpretationContext intercon, Model model) {
+    public void handle(ModelInterpretationContext mic, Model model) {
 
         ImplicitModel implicitModel = (ImplicitModel) model;
 
         // calling intercon.peekObject with an empty stack will throw an exception
-        if (intercon.isObjectStackEmpty()) {
+        if (mic.isObjectStackEmpty()) {
             inError = true;
             return;
         }
         String nestedElementTagName = implicitModel.getTag();
 
-        Object o = intercon.peekObject();
+        Object o = mic.peekObject();
         PropertySetter parentBean = new PropertySetter(beanDescriptionCache, o);
         parentBean.setContext(context);
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
 
-        Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
+//        Stack<ImplicitModelData> actionDataStack = mic.getImplicitModelDataStack();
 
         switch (aggregationType) {
         case NOT_FOUND:
@@ -71,16 +83,16 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         case AS_BASIC_PROPERTY_COLLECTION:
             ImcplicitActionDataForBasicProperty adBasicProperty = new ImcplicitActionDataForBasicProperty(parentBean,
                     aggregationType, nestedElementTagName);
-            actionDataStack.push(adBasicProperty);
-            doBasicProperty(intercon, model, adBasicProperty);
+            implicitModelData = adBasicProperty;
+            doBasicProperty(mic, model, adBasicProperty);
             return;
         // we only push action data if NestComponentIA is applicable
         case AS_COMPLEX_PROPERTY_COLLECTION:
         case AS_COMPLEX_PROPERTY:
-            ImplicitActionDataForComplexProperty adComplex = new ImplicitActionDataForComplexProperty(parentBean,
+            ImplicitModelDataForComplexProperty adComplex = new ImplicitModelDataForComplexProperty(parentBean,
                     aggregationType, nestedElementTagName);
-            actionDataStack.push(adComplex);
-            doComplex(intercon, implicitModel, adComplex);
+            implicitModelData = adComplex;
+            doComplex(mic, implicitModel, adComplex);
             return;
         default:
             addError("PropertySetter.computeAggregationType returned " + aggregationType);
@@ -108,7 +120,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
     }
 
     public void doComplex(ModelInterpretationContext interpretationContext, ComponentModel componentModel,
-            ImplicitActionDataForComplexProperty actionData) {
+            ImplicitModelDataForComplexProperty actionData) {
 
         String className = componentModel.getClassName();
         // perform variable name substitution
@@ -163,57 +175,57 @@ public class ImplicitModelHandler extends ModelHandlerBase {
             return;
         }
 
-        Stack<ImplicitActionDataBase> actionDataStack = intercon.getImplcitActionDataStack();
-        ImplicitActionDataBase actionData = actionDataStack.pop();
+        if(implicitModelData == null)
+            return;
+        
         // the action data can in an incorrect state, in which case we need to 
         // disengage
-        if(actionData.inError) {
+        if(implicitModelData.inError) {
             return;
         }
-        if (actionData instanceof ImplicitActionDataForComplexProperty) {
-            postHandleComplex(intercon, model, actionData);
+        if (implicitModelData instanceof ImplicitModelDataForComplexProperty) {
+            postHandleComplex(intercon, model, (ImplicitModelDataForComplexProperty) implicitModelData);
         }
 
     }
 
-    private void postHandleComplex(ModelInterpretationContext intercon, Model model,
-            ImplicitActionDataBase actionData) {
-        ImplicitActionDataForComplexProperty complexActionData = (ImplicitActionDataForComplexProperty) actionData;
+    private void postHandleComplex(ModelInterpretationContext mic, Model model,
+            ImplicitModelDataForComplexProperty imdComplex) {
 
         PropertySetter nestedBean = new PropertySetter(beanDescriptionCache,
-                complexActionData.getNestedComplexProperty());
+                imdComplex.getNestedComplexProperty());
         nestedBean.setContext(context);
 
         // have the nested element point to its parent if possible
         if (nestedBean.computeAggregationType(PARENT_PROPPERTY_KEY) == AggregationType.AS_COMPLEX_PROPERTY) {
-            nestedBean.setComplexProperty(PARENT_PROPPERTY_KEY, actionData.parentBean.getObj());
+            nestedBean.setComplexProperty(PARENT_PROPPERTY_KEY, imdComplex.parentBean.getObj());
         }
 
         // start the nested complex property if it implements LifeCycle and is not
         // marked with a @NoAutoStart annotation
-        Object nestedComplexProperty = complexActionData.getNestedComplexProperty();
+        Object nestedComplexProperty = imdComplex.getNestedComplexProperty();
         if (nestedComplexProperty instanceof LifeCycle
                 && NoAutoStartUtil.notMarkedWithNoAutoStart(nestedComplexProperty)) {
             ((LifeCycle) nestedComplexProperty).start();
         }
 
-        Object o = intercon.peekObject();
+        Object o = mic.peekObject();
 
-        if (o != complexActionData.getNestedComplexProperty()) {
+        if (o != imdComplex.getNestedComplexProperty()) {
             addError("The object on the top the of the stack is not the component pushed earlier.");
         } else {
-            intercon.popObject();
+            mic.popObject();
             // Now let us attach the component
-            switch (actionData.aggregationType) {
+            switch (imdComplex.aggregationType) {
             case AS_COMPLEX_PROPERTY:
-                actionData.parentBean.setComplexProperty(model.getTag(), complexActionData.getNestedComplexProperty());
+                imdComplex.parentBean.setComplexProperty(model.getTag(), imdComplex.getNestedComplexProperty());
 
                 break;
             case AS_COMPLEX_PROPERTY_COLLECTION:
-                actionData.parentBean.addComplexProperty(model.getTag(), complexActionData.getNestedComplexProperty());
+                imdComplex.parentBean.addComplexProperty(model.getTag(), imdComplex.getNestedComplexProperty());
                 break;
             default:
-                addError("Unexpected aggregationType " + actionData.aggregationType);
+                addError("Unexpected aggregationType " + imdComplex.aggregationType);
             }
         }
     }

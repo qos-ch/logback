@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static ch.qos.logback.core.CoreConstants.UNBOUND_HISTORY;
+import static ch.qos.logback.core.CoreConstants.UNBOUNDED_HISTORY;
 import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
@@ -33,8 +33,8 @@ import ch.qos.logback.core.util.FileSize;
 
 /**
  * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
- * powerful. It allows the roll over to be made based on time. It is possible to
- * specify that the roll over occur once per day, per week or per month.
+ * powerful. It allows the rollover to be made based on time. It is possible to
+ * specify that the rollover occur once per day, per week or per month.
  * 
  * <p>
  * For more information, please refer to the online manual at
@@ -52,7 +52,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
     Future<?> compressionFuture;
     Future<?> cleanUpFuture;
 
-    private int maxHistory = UNBOUND_HISTORY;
+    private int maxHistory = UNBOUNDED_HISTORY;
     protected FileSize totalSizeCap = new FileSize(UNBOUNDED_TOTAL_SIZE_CAP);
 
     private ArchiveRemover archiveRemover;
@@ -90,7 +90,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
 
         if (timeBasedFileNamingAndTriggeringPolicy == null) {
-            timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<E>();
+            timeBasedFileNamingAndTriggeringPolicy = new DefaultTimeBasedFileNamingAndTriggeringPolicy<>();
         }
         timeBasedFileNamingAndTriggeringPolicy.setContext(context);
         timeBasedFileNamingAndTriggeringPolicy.setTimeBasedRollingPolicy(this);
@@ -104,7 +104,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         // the maxHistory property is given to TimeBasedRollingPolicy instead of to
         // the TimeBasedFileNamingAndTriggeringPolicy. This makes it more convenient
         // for the user at the cost of inconsistency here.
-        if (maxHistory != UNBOUND_HISTORY) {
+        if (maxHistory != UNBOUNDED_HISTORY) {
             archiveRemover = timeBasedFileNamingAndTriggeringPolicy.getArchiveRemover();
             archiveRemover.setMaxHistory(maxHistory);
             archiveRemover.setTotalSizeCap(totalSizeCap.getSize());

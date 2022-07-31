@@ -23,7 +23,7 @@ public class TouchAction extends Action {
     public static final String KEY = "touched";
 
     /**
-     * Instantiates an layout of the given class and sets its name.
+     * Instantiates a layout of the given class and sets its name.
      *
      */
     public void begin(SaxEventInterpretationContext ec, String name, Attributes attributes) {

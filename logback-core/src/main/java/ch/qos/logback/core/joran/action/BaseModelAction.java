@@ -26,24 +26,24 @@ public abstract class BaseModelAction extends Action {
     boolean inError = false;
 
     @Override
-    public void begin(SaxEventInterpretationContext intercon, String name, Attributes attributes)
+    public void begin(SaxEventInterpretationContext saxEventInterpretationContext, String name, Attributes attributes)
             throws ActionException {
         parentModel = null;
         inError = false;
 
-        if (!validPreconditions(intercon, name, attributes)) {
+        if (!validPreconditions(saxEventInterpretationContext, name, attributes)) {
             inError = true;
             return;
         }
 
-        currentModel = buildCurrentModel(intercon, name, attributes);
+        currentModel = buildCurrentModel(saxEventInterpretationContext, name, attributes);
         currentModel.setTag(name);
-        if (!intercon.isModelStackEmpty()) {
-            parentModel = intercon.peekModel();
+        if (!saxEventInterpretationContext.isModelStackEmpty()) {
+            parentModel = saxEventInterpretationContext.peekModel();
         }
-        final int lineNumber = getLineNumber(intercon);
+        final int lineNumber = getLineNumber(saxEventInterpretationContext);
         currentModel.setLineNumber(lineNumber);
-        intercon.pushModel(currentModel);
+        saxEventInterpretationContext.pushModel(currentModel);
     }
 
     abstract protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
@@ -52,9 +52,9 @@ public abstract class BaseModelAction extends Action {
     /**
      * Validate preconditions of this action.
      * 
-     * By default, true is returned. Sub-classes should override appropriatelly.
+     * By default, true is returned. Subclasses should override appropriately.
      * 
-     * @param interpretationContext
+     * @param intercon
      * @param name
      * @param attributes
      * @return
@@ -72,14 +72,14 @@ public abstract class BaseModelAction extends Action {
     }
 
     @Override
-    public void end(SaxEventInterpretationContext interpretationContext, String name) throws ActionException {
+    public void end(SaxEventInterpretationContext saxEventInterpretationContext, String name) throws ActionException {
         if (inError)
             return;
 
-        Model m = interpretationContext.peekModel();
+        Model m = saxEventInterpretationContext.peekModel();
 
         if (m != currentModel) {
-            addWarn("The object at the of the stack is not the model [" + currentModel.idString()
+            addWarn("The object "+ m +"] at the top of the stack differs from the model [" + currentModel.idString()
                     + "] pushed earlier.");
             addWarn("This is wholly unexpected.");
         }
@@ -87,7 +87,7 @@ public abstract class BaseModelAction extends Action {
         // do not pop nor add to parent if there is no parent
         if (parentModel != null) {
             parentModel.addSubModel(currentModel);
-            interpretationContext.popModel();
+            saxEventInterpretationContext.popModel();
         }
     }
 }

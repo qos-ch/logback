@@ -24,7 +24,7 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
     }
 
     /**
-     * Subclasses should return the sub-class of Model that they expect to handle.
+     * Subclasses should return the subclass of Model that they expect to handle.
      * 
      * The default implementation assumes that all Model classes are supported. This
      * a very lax assumption which is usually not true.

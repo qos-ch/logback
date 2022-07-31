@@ -106,7 +106,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     }
 
     /**
-     * Post process an event received via {@link #append append()}.
+     * Postprocess an event received via {@link #append append()}.
      * 
      * @param event
      */

@@ -22,7 +22,6 @@ import java.net.UnknownHostException;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -39,7 +38,6 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-@Ignore
 public class ConditionalTest {
 
     LoggerContext context = new LoggerContext();

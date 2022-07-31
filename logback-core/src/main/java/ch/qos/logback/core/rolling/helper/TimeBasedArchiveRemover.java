@@ -36,7 +36,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     final FileNamePattern fileNamePattern;
     final RollingCalendar rc;
-    private int maxHistory = CoreConstants.UNBOUND_HISTORY;
+    private int maxHistory = CoreConstants.UNBOUNDED_HISTORY;
     private long totalSizeCap = CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
     final boolean parentClean;
     long lastHeartBeat = UNINITIALIZED;
@@ -150,7 +150,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         if (dtc.getDatePattern().indexOf('/') != -1) {
             return true;
         }
-        // if the literal string subsequent to the dtc contains a /, we also
+        // if the literal string after the dtc contains a /, we also
         // need parent cleaning
 
         Converter<Object> p = fileNamePattern.headTokenConverter;

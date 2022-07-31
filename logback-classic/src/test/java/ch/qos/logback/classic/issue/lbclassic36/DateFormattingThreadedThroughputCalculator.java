@@ -17,7 +17,7 @@ import ch.qos.logback.classic.issue.lbclassic36.SelectiveDateFormattingRunnable.
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
 /**
- * Measure the threaded throughtput of date formatting operations
+ * Measure the threaded throughput of date formatting operations
  * 
  * @author Joern Huxhorn
  * @author Ceki Gulcu

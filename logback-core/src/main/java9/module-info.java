@@ -24,6 +24,7 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.filter;
 
     exports ch.qos.logback.core.model;
+    exports ch.qos.logback.core.model.conditional;
     exports ch.qos.logback.core.model.processor;
 
     exports ch.qos.logback.core.joran;

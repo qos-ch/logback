@@ -14,7 +14,7 @@
 package ch.qos.logback.core.net.ssl;
 
 /**
- * A interface used to identify components that have an SSL configuration.
+ * An interface used to identify components that have an SSL configuration.
  *
  * @author Carl Harris
  */

@@ -338,7 +338,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
 
     public void buildRequestHeaderMap() {
-        // according to RFC 2616 header names are case insensitive
+        // according to RFC 2616 header names are case-insensitive
         // latest versions of Tomcat return header names in lower-case
         requestHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         Enumeration<String> e = httpRequest.getHeaderNames();
@@ -551,7 +551,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
             responseContent = "[IMAGE CONTENTS SUPPRESSED]";
         } else {
 
-            // retreive the byte array previously placed by TeeFilter
+            // retrieve the byte array previously placed by TeeFilter
             byte[] outputBuffer = (byte[]) httpRequest.getAttribute(AccessConstants.LB_OUTPUT_BUFFER);
 
             if (outputBuffer != null) {

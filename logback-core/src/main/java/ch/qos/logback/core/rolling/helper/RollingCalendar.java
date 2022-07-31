@@ -62,9 +62,9 @@ public class RollingCalendar extends GregorianCalendar {
         return periodicityType;
     }
 
-    // This method computes the roll over period by looping over the
+    // This method computes the roll-over period by looping over the
     // periods, starting with the shortest, and stopping when the r0 is
-    // different from from r1, where r0 is the epoch formatted according
+    // different from r1, where r0 is the epoch formatted according
     // the datePattern (supplied by the user) and r1 is the
     // epoch+nextMillis(i) formatted according to datePattern. All date
     // formatting is done in GMT and not local format because the test

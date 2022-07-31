@@ -15,7 +15,7 @@ package ch.qos.logback.classic.model.util;
 
 import java.util.List;
 
-import ch.qos.logback.classic.util.DefaultNestedComponentRules;
+import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import ch.qos.logback.core.joran.util.ParentTag_Tag_Class_Tuple;
 import ch.qos.logback.core.model.ImplicitModel;
 import ch.qos.logback.core.model.Model;
@@ -25,11 +25,11 @@ import ch.qos.logback.core.model.util.TagUtil;
  * Injects missing class names into ImplicitModel instances missing class name.
  * 
  * @author ceki
- * @since 1.3.0-aplha15
+ * @since 1.3.0-alpha15
  */
 public class DefaultClassNameHelper {
 
-    List<ParentTag_Tag_Class_Tuple> tupleList = DefaultNestedComponentRules.TUPLES_LIST;
+    List<ParentTag_Tag_Class_Tuple> tupleList = LogbackClassicDefaultNestedComponentRules.TUPLES_LIST;
 
     /**
      * This method injects default components classes to implicit models missing a

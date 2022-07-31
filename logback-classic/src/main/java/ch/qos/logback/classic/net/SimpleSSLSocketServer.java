@@ -31,7 +31,7 @@ import ch.qos.logback.core.net.ssl.SSLParametersConfiguration;
  * </pre>
  * 
  * where <em>port</em> is a port number where the server listens and
- * <em>configFile</em> is an xml configuration file fed to
+ * <em>configFile</em> is an XML configuration file fed to
  * {@link JoranConfigurator}.
  * 
  * When running the SimpleSSLServerFactory as shown above, it is necessary to

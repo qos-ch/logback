@@ -33,7 +33,7 @@ public class PropertyAction extends BaseModelAction {
     protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String localName,
             Attributes attributes) {
         if ("substitutionProperty".equals(localName)) {
-            addWarn("[substitutionProperty] element has been deprecated. Please use the [property] element instead.");
+            addWarn("[substitutionProperty] element has been deprecated. Please use the [variable] element instead.");
         }
         return true;
     }

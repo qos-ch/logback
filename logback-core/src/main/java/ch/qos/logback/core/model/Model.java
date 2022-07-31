@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2021, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -16,6 +16,7 @@ package ch.qos.logback.core.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Abstract representation of configuration elements
@@ -38,6 +39,27 @@ public class Model implements Serializable {
 
     List<Model> subModels = new ArrayList<>();
 
+    static public Model duplicate(Model that) {
+        Model copy = that.makeNewInstance();
+        copy.mirror(that);
+        for(Model m: that.subModels) {
+            Model duplicate = duplicate(m);
+            copy.subModels.add(duplicate);
+        }
+        return copy;
+    }
+    
+    protected Model makeNewInstance() {
+        return new Model();
+    }
+    
+    protected void mirror(Model that) {
+        this.tag = that.tag;
+        this.bodyText = that.bodyText;
+        this.lineNumber = that.lineNumber;
+    }
+    
+    
     public void markAsSkipped() {
         skipped = true;
     }
@@ -111,6 +133,26 @@ public class Model implements Serializable {
         return "<" + tag + "> at line " + lineNumber;
     }
 
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(bodyText, lineNumber, subModels, tag);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Model other = (Model) obj;
+        return Objects.equals(bodyText, other.bodyText) && lineNumber == other.lineNumber
+                && Objects.equals(subModels, other.subModels) && Objects.equals(tag, other.tag);
+    }
+
+    
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " [tag=" + tag + ", bodyText=" + bodyText + ", id="+hashCode()+"]";

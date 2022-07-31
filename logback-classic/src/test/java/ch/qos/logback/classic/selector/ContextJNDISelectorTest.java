@@ -43,7 +43,7 @@ public class ContextJNDISelectorTest {
         MockInitialContext mic = MockInitialContextFactory.getContext();
         mic.map.put(ClassicConstants.JNDI_CONTEXT_NAME, "toto");
 
-        // The property must be set after we setup the Mock
+        // The property must be set after we set up the Mock
         System.setProperty(INITIAL_CONTEXT_KEY, MockInitialContextFactory.class.getName());
 
         // this call will create the context "toto"

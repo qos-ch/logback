@@ -278,7 +278,7 @@ public class SSLContextFactoryBean {
     /**
      * Sets the key manager factory configuration.
      * 
-     * @param keyManagerFactory the key manager factory factory bean to set
+     * @param keyManagerFactory the key manager factory bean to set
      */
     public void setKeyManagerFactory(KeyManagerFactoryFactoryBean keyManagerFactory) {
         this.keyManagerFactory = keyManagerFactory;

@@ -13,15 +13,26 @@
  */
 package ch.qos.logback.core.model;
 
+import java.util.Objects;
+
 public class NamedModel extends Model implements INamedModel {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 3549881638769570183L;
 
     String name;
 
+    @Override
+    protected NamedModel makeNewInstance() {
+        return new NamedModel();
+    }
+    
+    @Override
+    protected void mirror(Model that) {
+        NamedModel actual = (NamedModel) that;
+        super.mirror(actual);
+        this.name = actual.name;
+    }
+    
     public String getName() {
         return name;
     }
@@ -29,4 +40,26 @@ public class NamedModel extends Model implements INamedModel {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(name);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        NamedModel other = (NamedModel) obj;
+        return Objects.equals(name, other.name);
+    }
+    
+    
 }

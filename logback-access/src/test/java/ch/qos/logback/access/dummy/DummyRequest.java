@@ -271,7 +271,7 @@ public class DummyRequest implements HttpServletRequest {
 
     public Enumeration<String> getParameterNames() {
         return parameterMap.keys();
-        // eturn Collections.enumeration(parameterMap.keySet());
+        // return Collections.enumeration(parameterMap.keySet());
     }
 
     public String[] getParameterValues(String arg) {
