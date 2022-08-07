@@ -664,8 +664,24 @@ public class JoranConfiguratorTest {
          
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
         StatusPrinter.print(loggerContext);
-    }  
-    
+    }
+
+    // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=47093
+    // In previous versions of the code, there
+    @Test
+    public void ossFuzz_47093() throws JoranException  {
+        System.out.println("==========");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47093.xml");
+
+        assertEquals("a\\t", loggerContext.getProperty("fuzz-47093-a"));
+        assertEquals("a\\\\", loggerContext.getProperty("fuzz-47093-b"));
+
+
+        //checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
+        StatusPrinter.print(loggerContext);
+    }
+
+
 //	@Test
 //	public void doTest() throws JoranException {
 //		int LIMIT = 0;

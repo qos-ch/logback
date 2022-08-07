@@ -68,7 +68,10 @@ public class PropertyModelHandler extends ModelHandlerBase {
                 }
             }
         } else if (checkValueNameAttributesSanity(propertyModel)) {
-            String value = RegularEscapeUtil.basicEscape(propertyModel.getValue());
+            // earlier versions performed Java '\' escapes for '\\' '\t' etc. Howevver, there is no
+            // need to do this. See RegularEscapeUtil.__UNUSED__basicEscape
+            String value = propertyModel.getValue();
+
             // now remove both leading and trailing spaces
             value = value.trim();
             value = interpretationContext.subst(value);

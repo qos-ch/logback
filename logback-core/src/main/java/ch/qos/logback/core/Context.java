@@ -140,6 +140,11 @@ public interface Context extends PropertyContainer {
      */
     void register(LifeCycle component);
 
+    /**
+     * Add scheduledFuture parameter to the list of known futures.
+     *
+     * @param scheduledFuture
+     */
     void addScheduledFuture(ScheduledFuture<?> scheduledFuture);
 
     SequenceNumberGenerator getSequenceNumberGenerator();

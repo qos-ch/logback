@@ -1,0 +1,4 @@
+<configuration>
+  <variable scope="context" name="fuzz-47093-a" value="a\t"/>
+  <variable scope="context" name="fuzz-47093-b" value="a\\"/>  
+</configuration>
