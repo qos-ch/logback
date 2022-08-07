@@ -67,7 +67,7 @@ import ch.qos.logback.core.util.OptionHelper;
  * By default, RequestLogImpl looks for a logback configuration file called
  * logback-access.xml, in the same folder where jetty.xml is located, that is
  * <em>etc/logback-access.xml</em>. The logback-access.xml file is slightly
- * different than the usual logback classic configuration file. Most of it is
+ * different from the usual logback classic configuration file. Most of it is
  * the same: Appenders and Layouts are declared the exact same way. However,
  * loggers elements are not allowed.
  * <p>

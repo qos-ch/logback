@@ -87,7 +87,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     /**
      * Pre-process the event prior to queueing. The base class does no
-     * pre-processing but sub-classes can override this behavior.
+     * pre-processing but subclasses can override this behavior.
      *
      * @param eventObject
      */

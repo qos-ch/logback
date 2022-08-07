@@ -21,7 +21,7 @@ import java.io.PrintStream;
 import java.util.List;
 
 /**
- * Print all new incoming status messages on the on the designated PrintStream.
+ * Print all new incoming status messages on the designated PrintStream.
  * 
  * @author Ceki G&uuml;lc&uuml;
  */

@@ -185,7 +185,7 @@ public abstract class SyslogAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * The <b>SyslogHost</b> option is the name of the the syslog host where log
+     * The <b>SyslogHost</b> option is the name of the syslog host where log
      * output should go.
      * 
      * <b>WARNING</b> If the SyslogHost is not set, then this appender will fail.

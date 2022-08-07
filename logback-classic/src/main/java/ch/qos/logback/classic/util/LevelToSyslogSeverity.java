@@ -21,7 +21,7 @@ public class LevelToSyslogSeverity {
 
     /*
      * Convert a level to equivalent syslog severity. Only levels for printing
-     * methods i.e TRACE, DEBUG, WARN, INFO and ERROR are converted.
+     * methods i.e. TRACE, DEBUG, WARN, INFO and ERROR are converted.
      */
     static public int convert(ILoggingEvent event) {
 

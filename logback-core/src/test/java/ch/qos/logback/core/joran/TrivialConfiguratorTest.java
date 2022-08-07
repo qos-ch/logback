@@ -51,7 +51,7 @@ public class TrivialConfiguratorTest {
 
     @Before
     public void setUp() {
-        // rule store is case insensitve
+        // rule store is case-insensitive
         rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
         rulesMap.put(new ElementSelector("x/inc"), () -> new IncAction());
 

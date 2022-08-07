@@ -42,17 +42,16 @@ looks forward to your contribution. Please follow this process:
 2. Fork qos-ch/logback. Ideally, create a new branch from your fork for
    your contribution to make it easier to merge your changes back.
 
-3. Make your changes on the branch you hopefuly created in Step 2. Be
+3. Make your changes on the branch you hopefully created in Step 2. Be
    sure that your code passes existing unit tests.
 
 4. Please add unit tests for your work if appropriate. It usually is.
 
-5. Push your changes to your fork/branch in github. Don't push it to
+5. Push your changes to your fork/branch in GitHub. Don't push it to
    your master! If you do it will make it harder to submit new changes
    later.
 
-6. Submit a pull request to logback from from your commit page on
-   github.
+6. Submit a pull request to logback from your commit page on GitHub.
 
 
 # Build Status

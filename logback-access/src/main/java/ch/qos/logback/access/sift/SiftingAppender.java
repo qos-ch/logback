@@ -19,7 +19,7 @@ import ch.qos.logback.core.sift.Discriminator;
 import ch.qos.logback.core.sift.SiftingAppenderBase;
 
 /**
- * This appender can contains other appenders which it can build dynamically
+ * This appender can contain other appenders which it can build dynamically
  * depending on MDC values. The built appender is specified as part of a
  * configuration file.
  * 

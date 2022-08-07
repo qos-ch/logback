@@ -137,7 +137,7 @@ public class FixedWindowRollingPolicy extends RollingPolicyBase {
             for (int i = maxIndex - 1; i >= minIndex; i--) {
                 String toRenameStr = fileNamePattern.convertInt(i);
                 File toRename = new File(toRenameStr);
-                // no point in trying to rename an inexistent file
+                // no point in trying to rename a nonexistent file
                 if (toRename.exists()) {
                     util.rename(toRenameStr, fileNamePattern.convertInt(i + 1));
                 } else {

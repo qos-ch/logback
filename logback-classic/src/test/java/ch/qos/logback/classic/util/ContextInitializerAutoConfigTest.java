@@ -51,7 +51,7 @@ public class ContextInitializerAutoConfigTest {
     // this test works only if logback-test.xml or logback.xml files are on the
     // classpath.
     // However, this is something we try to avoid in order to simplify the life
-    // of users trying to follows the manual and logback-examples from an IDE
+    // of users trying to follow the manual and logback-examples from an IDE
     public void autoconfig() {
         LoggerContext iLoggerFactory = (LoggerContext) LoggerFactory.getILoggerFactory();
         iLoggerFactory.reset();

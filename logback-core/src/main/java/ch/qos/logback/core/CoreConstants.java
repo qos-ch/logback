@@ -137,7 +137,7 @@ public class CoreConstants {
     public static final int TABLE_ROW_LIMIT = 10000;
 
     // reset the ObjectOutputStream every OOS_RESET_FREQUENCY calls
-    // this avoid serious memory leaks
+    // this avoids serious memory leaks
     public static final int OOS_RESET_FREQUENCY = 70;
 
     // See https://jakarta.ee/specifications/platform/8/platform-spec-8.html#a616
