@@ -14,11 +14,11 @@
 package ch.qos.logback.core.testUtil;
 
 import ch.qos.logback.core.Context;
+import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.StatusUtil;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 /**
  * Extend StatusUtil with assertions.
@@ -57,7 +57,14 @@ public class StatusChecker extends StatusUtil {
         assertTrue(isErrorFree(0));
     }
 
+    public void assertIsErrorCount(int count) {
+        assertEquals(count, levelCount(Status.ERROR, 0));
+    }
+
     public void assertIsWarningOrErrorFree() {
         assertTrue(isWarningOrErrorFree(0));
+    }
+
+    public void assertErrorCount(int i) {
     }
 }

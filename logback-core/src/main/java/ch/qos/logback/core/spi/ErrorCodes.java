@@ -18,6 +18,7 @@ public class ErrorCodes {
     
     public static final String EMPTY_MODEL_STACK = "Could not find valid configuration instuctions. Exiting.";
     public static final String PARENT_MODEL_NOT_FOUND = "Could not find parent model.";
-    public static final String SKIPPING_IMCICIT_MODEL_ADDITION = " Will not add current implicit model as subModel.";
-    
+    public static final String SKIPPING_IMPLICIT_MODEL_ADDITION = " Will not add current implicit model as subModel.";
+    public static final String ROOT_LEVEL_CANNOT_BE_SET_TO_NULL = "The level for the ROOT logger cannot be set to NULL or INHERITED. Ignoring.";
+
 }

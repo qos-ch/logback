@@ -12,6 +12,7 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class LoggerModelHandler extends ModelHandlerBase {
@@ -46,8 +47,12 @@ public class LoggerModelHandler extends ModelHandlerBase {
         String levelStr = mic.subst(loggerModel.getLevel());
         if (!OptionHelper.isNullOrEmpty(levelStr)) {
             if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
-                addInfo("Setting level of logger [" + finalLoggerName + "] to null, i.e. INHERITED");
-                logger.setLevel(null);
+                if(Logger.ROOT_LOGGER_NAME.equalsIgnoreCase(finalLoggerName)) {
+                    addError(ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+                } else {
+                    addInfo("Setting level of logger [" + finalLoggerName + "] to null, i.e. INHERITED");
+                    logger.setLevel(null);
+                }
             } else {
                 Level level = Level.toLevel(levelStr);
                 addInfo("Setting level of logger [" + finalLoggerName + "] to " + level);

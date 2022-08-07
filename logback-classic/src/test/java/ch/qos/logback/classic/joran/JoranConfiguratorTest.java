@@ -667,20 +667,39 @@ public class JoranConfiguratorTest {
     }
 
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=47093
-    // In previous versions of the code, there
+    // In previous versions of the code, we honored String literal
+    // escape sequences for the 'value' attribute named 'value'. After
+    // analysis this was deemed superfluous.
     @Test
     public void ossFuzz_47093() throws JoranException  {
         System.out.println("==========");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47093.xml");
-
         assertEquals("a\\t", loggerContext.getProperty("fuzz-47093-a"));
         assertEquals("a\\\\", loggerContext.getProperty("fuzz-47093-b"));
-
-
-        //checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
-        StatusPrinter.print(loggerContext);
     }
 
+    @Test
+    public void ossFuzz_41117() throws JoranException  {
+        System.out.println("==========");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117.xml");
+        checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+        checker.assertErrorCount(2);
+        //StatusPrinter.print(loggerContext);
+    }
+
+    @Test
+    public void ossFuzz_41117_bis() throws JoranException  {
+        System.out.println("==========");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117-bis.xml");
+        checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+    }
+
+    @Test
+    public void ossFuzz_41117_bis2() throws JoranException  {
+        System.out.println("==========");
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117-bis2.xml");
+        checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+    }
 
 //	@Test
 //	public void doTest() throws JoranException {

@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -139,6 +139,17 @@ public class StatusUtil {
         return false;
     }
 
+    public int levelCount(int level, long threshold) {
+        List<Status> filteredList = filterStatusListByTimeThreshold(sm.getCopyOfStatusList(), threshold);
+
+        int count = 0;
+        for (Status status : filteredList) {
+            if (status.getLevel() == level)
+                count++;
+        }
+        return count;
+    }
+
     public int matchCount(String regex) {
         int count = 0;
         Pattern p = Pattern.compile(regex);
@@ -157,13 +168,13 @@ public class StatusUtil {
     }
 
     public boolean containsException(Class<?> exceptionType, String msgRegex) {
-        for (Status status: sm.getCopyOfStatusList()) {
+        for (Status status : sm.getCopyOfStatusList()) {
             Throwable t = status.getThrowable();
             while (t != null) {
                 if (t.getClass().getName().equals(exceptionType.getName())) {
-                    if(msgRegex == null) {
-                      return true;
-                    } else if(checkRegexMatch(t.getMessage(), msgRegex)) {
+                    if (msgRegex == null) {
+                        return true;
+                    } else if (checkRegexMatch(t.getMessage(), msgRegex)) {
                         return true;
                     }
                 }
@@ -172,7 +183,7 @@ public class StatusUtil {
         }
         return false;
     }
-    
+
     private boolean checkRegexMatch(String message, String msgRegex) {
         Pattern p = Pattern.compile(msgRegex);
         Matcher matcher = p.matcher(message);

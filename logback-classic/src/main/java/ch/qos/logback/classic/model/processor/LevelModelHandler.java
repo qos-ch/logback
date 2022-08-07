@@ -11,6 +11,7 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.spi.ErrorCodes;
 
 public class LevelModelHandler extends ModelHandlerBase {
 
@@ -46,7 +47,10 @@ public class LevelModelHandler extends ModelHandlerBase {
         LevelModel levelModel = (LevelModel) model;
         String levelStr = mic.subst(levelModel.getValue());
         if (INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
-            l.setLevel(null);
+            if(Logger.ROOT_LOGGER_NAME.equalsIgnoreCase(loggerName))
+                addError(ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+            else
+               l.setLevel(null);
         } else {
             l.setLevel(Level.toLevel(levelStr, Level.DEBUG));
         }

@@ -69,7 +69,7 @@ public class ImplicitModelAction extends Action {
             parentModel.addSubModel(implicitModel);
         } else {
             addWarn(ErrorCodes.PARENT_MODEL_NOT_FOUND);      
-            addWarn(ErrorCodes.SKIPPING_IMCICIT_MODEL_ADDITION);      
+            addWarn(ErrorCodes.SKIPPING_IMPLICIT_MODEL_ADDITION);
         }
         currentImplicitModelStack.pop();
 
