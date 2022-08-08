@@ -45,12 +45,11 @@ public class PropertyModelHandler extends ModelHandlerBase {
         if (checkFileAttributeSanity(propertyModel)) {
             String file = propertyModel.getFile();
             file = interpretationContext.subst(file);
-            try {
-                FileInputStream istream = new FileInputStream(file);
+            try (FileInputStream istream = new FileInputStream(file)) {
                 loadAndSetProperties(interpretationContext, istream, scope);
             } catch (FileNotFoundException e) {
                 addError("Could not find properties file [" + file + "].");
-            } catch (IOException e1) {
+            } catch (IOException|IllegalArgumentException e1) {
                 addError("Could not read properties file [" + file + "].", e1);
             }
         } else if (checkResourceAttributeSanity(propertyModel)) {
@@ -60,8 +59,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
             if (resourceURL == null) {
                 addError("Could not find resource [" + resource + "].");
             } else {
-                try {
-                    InputStream istream = resourceURL.openStream();
+                try ( InputStream istream = resourceURL.openStream();) {
                     loadAndSetProperties(interpretationContext, istream, scope);
                 } catch (IOException e) {
                     addError("Could not read resource file [" + resource + "].", e);
@@ -85,7 +83,6 @@ public class PropertyModelHandler extends ModelHandlerBase {
     void loadAndSetProperties(ModelInterpretationContext mic, InputStream istream, Scope scope) throws IOException {
         Properties props = new Properties();
         props.load(istream);
-        istream.close();
         ModelUtil.setProperties(mic, props, scope);
     }
 
