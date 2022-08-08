@@ -659,7 +659,6 @@ public class JoranConfiguratorTest {
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=46697
     @Test
     public void ossFuzz_46697() throws JoranException  {
-        System.out.println("==========");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-46697.xml");
          
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
@@ -672,7 +671,6 @@ public class JoranConfiguratorTest {
     // analysis this was deemed superfluous.
     @Test
     public void ossFuzz_47093() throws JoranException  {
-        System.out.println("==========");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47093.xml");
         assertEquals("a\\t", loggerContext.getProperty("fuzz-47093-a"));
         assertEquals("a\\\\", loggerContext.getProperty("fuzz-47093-b"));
@@ -680,7 +678,6 @@ public class JoranConfiguratorTest {
 
     @Test
     public void ossFuzz_41117() throws JoranException  {
-        System.out.println("==========");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
         checker.assertErrorCount(2);
@@ -689,16 +686,20 @@ public class JoranConfiguratorTest {
 
     @Test
     public void ossFuzz_41117_bis() throws JoranException  {
-        System.out.println("==========");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117-bis.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
     }
 
     @Test
     public void ossFuzz_41117_bis2() throws JoranException  {
-        System.out.println("==========");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47117-bis2.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
+    }
+
+    @Test
+    public void ossFuzz_47293() throws JoranException  {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47293.xml");
+        checker.assertContainsMatch(Status.ERROR, ErrorCodes.MISSING_IF_EMPTY_MODEL_STACK);
     }
 
 //	@Test

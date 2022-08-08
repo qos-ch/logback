@@ -22,6 +22,8 @@ import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 
+import static ch.qos.logback.core.spi.ErrorCodes.MISSING_IF_EMPTY_MODEL_STACK;
+
 public class ThenModelHandler extends ModelHandlerBase {
 
     public ThenModelHandler(Context context) {
@@ -42,6 +44,11 @@ public class ThenModelHandler extends ModelHandlerBase {
 
         ThenModel thenModel = (ThenModel) model;
 
+        if(mic.isModelStackEmpty()) {
+            addError(MISSING_IF_EMPTY_MODEL_STACK);
+            thenModel.markAsSkipped();
+            return;
+        }
         Model parent = mic.peekModel();
 
         if (!(parent instanceof IfModel)) {
