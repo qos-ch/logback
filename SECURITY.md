@@ -17,7 +17,7 @@ Elliptic curve algorithm instead of RSA previously.
 
 ### After 2022-08-08
 
-To verify the signature use [this public key](https://www.slf4j.org/public-keys/ceki-public-key.pgp). Here is its fingerprint:
+To verify the signature use [this public key](https://www.slf4j.org/public-keys/60200AC4AE761F1614D6C46766D68DAA073BE985.gpg). Here is its fingerprint:
 ```
 pub   nistp521 2022-08-08 [SC]
       60200AC4AE761F1614D6C46766D68DAA073BE985
