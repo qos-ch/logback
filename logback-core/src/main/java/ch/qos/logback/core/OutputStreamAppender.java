@@ -109,6 +109,9 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * Stopped appenders cannot be reused.
      */
     public void stop() {
+        if(!isStarted())
+            return;
+
         lock.lock();
         try {
             closeOutputStream();

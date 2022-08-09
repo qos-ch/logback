@@ -147,7 +147,10 @@ public class RollingFileAppender<E> extends FileAppender<E> {
 
     @Override
     public void stop() {
-        super.stop();
+        if(!isStarted()) {
+            return;
+        }
+         super.stop();
 
         if (rollingPolicy != null)
             rollingPolicy.stop();

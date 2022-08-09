@@ -49,7 +49,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
                 loadAndSetProperties(interpretationContext, istream, scope);
             } catch (FileNotFoundException e) {
                 addError("Could not find properties file [" + file + "].");
-            } catch (IOException|IllegalArgumentException e1) {
+            } catch (IOException|IllegalArgumentException e1) { // IllegalArgumentException is thrown in case the file
+                                                                // is badly malformed, i.e a binary.
                 addError("Could not read properties file [" + file + "].", e1);
             }
         } else if (checkResourceAttributeSanity(propertyModel)) {

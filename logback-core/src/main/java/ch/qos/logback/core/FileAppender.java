@@ -140,6 +140,9 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
 
     @Override
     public void stop() {
+        if(!isStarted())
+            return;
+
         super.stop();
 
         Map<String, String> map = ContextUtil.getFilenameCollisionMap(context);

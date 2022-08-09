@@ -96,6 +96,8 @@ public abstract class SiftingAppenderBase<E> extends AppenderBase<E> {
 
     @Override
     public void stop() {
+        if(!isStarted())
+            return;
         for (Appender<E> appender : appenderTracker.allComponents()) {
             appender.stop();
         }

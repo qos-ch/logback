@@ -84,6 +84,7 @@ public abstract class AbstractServerSocketAppender<E> extends AppenderBase<E> {
     public void stop() {
         if (!isStarted())
             return;
+        
         try {
             runner.stop();
             super.stop();

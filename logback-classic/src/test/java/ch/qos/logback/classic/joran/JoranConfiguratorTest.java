@@ -702,6 +702,13 @@ public class JoranConfiguratorTest {
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.MISSING_IF_EMPTY_MODEL_STACK);
     }
 
+    // reproduction requires placing a binary properties file. Probably not worth the effort.
+//    @Test
+//    public void ossFuzz_47249() throws JoranException  {
+//        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47249.xml");
+//         StatusPrinter.print(loggerContext);
+//    }
+
 //	@Test
 //	public void doTest() throws JoranException {
 //		int LIMIT = 0;
