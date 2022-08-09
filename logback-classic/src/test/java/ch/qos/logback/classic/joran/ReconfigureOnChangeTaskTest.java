@@ -34,7 +34,9 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -99,6 +101,11 @@ public class ReconfigureOnChangeTaskTest {
         jc.doConfigure(is);
     }
 
+
+    @Before
+    public void before() {
+        System.out.println(this.getClass().getName()+"#before");
+    }
 //    void gConfigure(File file) throws JoranException {
 //        GafferConfigurator gc = new GafferConfigurator(loggerContext);
 //        gc.run(file);
@@ -179,7 +186,7 @@ public class ReconfigureOnChangeTaskTest {
                 "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
         configure(topLevelFile);
         StatusPrinter.print(loggerContext);
-        CountDownLatch changeDetectedLatch = waitForReconfigurationToBeDone(null);
+        CountDownLatch changeDetectedLatch = registerNewReconfigurationDoneListener_WithNewROCT(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
 
         addInfo("registered ReconfigureOnChangeTask ", oldRoct);
@@ -199,7 +206,7 @@ public class ReconfigureOnChangeTaskTest {
             loggerContext.getStatusManager().clear();
 
             addInfo("after loggerContext.getStatusManager().clear() oldRoct="+ oldRoct, this);
-            CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
+            CountDownLatch secondDoneLatch = registerNewReconfigurationDoneListener_WithNewROCT(oldRoct);
             writeToFile(topLevelFile,
                     "<configuration scan=\"true\" scanPeriod=\"5 millisecond\"><root level=\"ERROR\"/></configuration> ");
 
@@ -213,7 +220,7 @@ public class ReconfigureOnChangeTaskTest {
         }
     }
 
-    @Test(timeout = 4000L)
+    @Test(timeout = 3000L)
     public void fallbackToSafeWithIncludedFile_FollowedByRecovery()
             throws IOException, JoranException, InterruptedException, ExecutionException {
         String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff
@@ -229,12 +236,12 @@ public class ReconfigureOnChangeTaskTest {
         writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
         configure(topLevelFile);
 
-        CountDownLatch doneLatch = waitForReconfigurationToBeDone(null);
+        CountDownLatch doneLatch = registerNewReconfigurationDoneListener_WithNewROCT(null);
         ReconfigureOnChangeTask oldRoct = getRegisteredReconfigureTask();
         assertNotNull(oldRoct);
 
         writeToFile(innerFile, "<included>\n<root>\n</included>");
-        doneLatch.await();
+        doneLatch.await(2000, TimeUnit.MILLISECONDS);
 
         statusChecker.assertContainsMatch(Status.WARN, FALLING_BACK_TO_SAFE_CONFIGURATION);
         statusChecker.assertContainsMatch(Status.INFO, RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
@@ -242,7 +249,7 @@ public class ReconfigureOnChangeTaskTest {
         loggerContext.getStatusManager().clear();
 
         try {
-            CountDownLatch secondDoneLatch = waitForReconfigurationToBeDone(oldRoct);
+            CountDownLatch secondDoneLatch = registerNewReconfigurationDoneListener_WithNewROCT(oldRoct);
             writeToFile(innerFile, "<included><root level=\"ERROR\"/></included> ");
             secondDoneLatch.await();
 
@@ -311,7 +318,7 @@ public class ReconfigureOnChangeTaskTest {
         return roct;
     }
 
-    private CountDownLatch waitForReconfigurationToBeDone(ReconfigureOnChangeTask oldTask) throws InterruptedException {
+    private CountDownLatch registerNewReconfigurationDoneListener_WithNewROCT(ReconfigureOnChangeTask oldTask) throws InterruptedException {
 
         addInfo("waitForReconfigurationToBeDone oldTask=" + oldTask, this);
         ReconfigureOnChangeTask roct = oldTask;
