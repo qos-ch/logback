@@ -12,10 +12,8 @@ module ch.qos.logback.classic {
   exports ch.qos.logback.classic.boolex;
   exports ch.qos.logback.classic.encoder;
   exports ch.qos.logback.classic.filter;
-  //exports ch.qos.logback.classic.gaffer;
   exports ch.qos.logback.classic.helpers;
   exports ch.qos.logback.classic.html;
-  exports ch.qos.logback.classic.jmx;
   exports ch.qos.logback.classic.joran;
   exports ch.qos.logback.classic.joran.action;
   exports ch.qos.logback.classic.jul;

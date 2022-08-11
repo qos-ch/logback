@@ -21,7 +21,8 @@ public class MockConfigurator extends ContextAwareBase implements Configurator {
 
     static LoggerContext context = null;
 
-    public void configure(LoggerContext loggerContext) {
+    public ExecutionStatus configure(LoggerContext loggerContext) {
         context = loggerContext;
+        return ExecutionStatus.NEUTRAL;
     }
 }

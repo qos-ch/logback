@@ -13,7 +13,9 @@
  */
 package ch.qos.logback.classic.util;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ServiceLoader;
 
 import ch.qos.logback.core.util.Loader;
@@ -29,7 +31,7 @@ public class ClassicEnvUtil {
      * /META-INF/services thus keeping the projects src/test/resources clean (see
      * src/test/resources/README.txt).
      */
-    static ClassLoader testServiceLoaderClassLoader = null;
+    //static ClassLoader testServiceLoaderClassLoader = null;
 
     static public boolean isGroovyAvailable() {
         ClassLoader classLoader = Loader.getClassLoaderOfClass(ClassicEnvUtil.class);
@@ -40,18 +42,20 @@ public class ClassicEnvUtil {
             return false;
         }
     }
+//
+//    private static ClassLoader getServiceLoaderClassLoader() {
+//        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(ClassicEnvUtil.class)
+//                : testServiceLoaderClassLoader;
+//    }
 
-    private static ClassLoader getServiceLoaderClassLoader() {
-        return testServiceLoaderClassLoader == null ? Loader.getClassLoaderOfClass(ClassicEnvUtil.class)
-                : testServiceLoaderClassLoader;
-    }
-
-    public static <T> T loadFromServiceLoader(Class<T> c) {
-        ServiceLoader<T> loader = ServiceLoader.load(c, getServiceLoaderClassLoader());
+    public static <T> List<T> loadFromServiceLoader(Class<T> c, ClassLoader classLoader) {
+        ServiceLoader<T> loader = ServiceLoader.load(c, classLoader);
+        List<T> listOfT = new ArrayList<>();
         Iterator<T> it = loader.iterator();
-        if (it.hasNext())
-            return it.next();
-        return null;
+        while(it.hasNext()) {
+            listOfT.add(it.next());
+        }
+        return listOfT;
     }
 
 }

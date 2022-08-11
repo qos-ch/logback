@@ -21,13 +21,21 @@ import ch.qos.logback.core.spi.ContextAware;
  * ServiceLoader is typically used to instantiate implementations and thus
  * implementations will need to follow the guidelines of the ServiceLoader
  * specifically a no-arg constructor is required.
+ *
+ * The return type of {@link #configure(LoggerContext)  configure} was changed from 'void' to
+ * {@link ExecutionStatus) in logback version 1.3.0.
  */
 public interface Configurator extends ContextAware {
 
+    enum ExecutionStatus {
+        NEUTRAL, // let the caller decide
+        INVOKE_NEXT_IF_ANY, // invoke other
+        DO_NOT_INVOKE_NEXT_IF_ANY
+    }
     /**
      * The context will also be set before this method is called via
      * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
      */
-    public void configure(LoggerContext loggerContext);
+    ExecutionStatus configure(LoggerContext loggerContext);
 
 }

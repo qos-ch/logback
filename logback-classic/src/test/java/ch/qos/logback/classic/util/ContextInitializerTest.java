@@ -61,6 +61,7 @@ public class ContextInitializerTest {
     public void tearDown() throws Exception {
         System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
         System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
+        //ClassicEnvUtil.testServiceLoaderClassLoader = null;
         MockConfigurator.context = null;
     }
 
@@ -103,9 +104,9 @@ public class ContextInitializerTest {
     @Test
     public void autoConfigFromServiceLoaderJDK6andAbove() throws Exception {
         assumeTrue(!isJDK5());
-        setupMockServiceLoader();
+        ClassLoader mockClassLoader = buildMockServiceLoader(this.getClass().getClassLoader());
         assertNull(MockConfigurator.context);
-        new ContextInitializer(loggerContext).autoConfig();
+        new ContextInitializer(loggerContext).autoConfig(mockClassLoader);
         assertNotNull(MockConfigurator.context);
         assertSame(loggerContext, MockConfigurator.context);
     }
@@ -113,9 +114,9 @@ public class ContextInitializerTest {
     @Test
     public void autoConfigFromServiceLoaderJDK5() throws Exception {
         assumeTrue(isJDK5());
-        setupMockServiceLoader();
+        ClassLoader mockClassLoader = buildMockServiceLoader(this.getClass().getClassLoader());
         assertNull(MockConfigurator.context);
-        new ContextInitializer(loggerContext).autoConfig();
+        new ContextInitializer(loggerContext).autoConfig(mockClassLoader);
         assertNull(MockConfigurator.context);
     }
 
@@ -187,9 +188,9 @@ public class ContextInitializerTest {
         return jdk5;
     }
 
-    private void setupMockServiceLoader() {
-        final ClassLoader realLoader = ClassicEnvUtil.class.getClassLoader();
-        ClassicEnvUtil.testServiceLoaderClassLoader = new WrappedClassLoader(realLoader) {
+    private ClassLoader buildMockServiceLoader(ClassLoader realLoader) {
+        //final ClassLoader realLoader = ClassicEnvUtil.class.getClassLoader();
+        ClassLoader wrapperClassLoader = new WrappedClassLoader(realLoader) {
 
             @Override
             public Enumeration<URL> getResources(String name) throws IOException {
@@ -205,6 +206,8 @@ public class ContextInitializerTest {
                 return r;
             }
         };
+
+        return wrapperClassLoader;
     }
 
     static class WrappedClassLoader extends ClassLoader {

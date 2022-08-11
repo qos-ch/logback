@@ -32,7 +32,7 @@ public class BasicConfigurator extends ContextAwareBase implements Configurator 
     public BasicConfigurator() {
     }
 
-    public void configure(LoggerContext lc) {
+    public ExecutionStatus configure(LoggerContext lc) {
         addInfo("Setting up default configuration.");
 
         ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
@@ -56,5 +56,8 @@ public class BasicConfigurator extends ContextAwareBase implements Configurator 
 
         Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.addAppender(ca);
+
+        // let the caller decide
+        return ExecutionStatus.NEUTRAL;
     }
 }

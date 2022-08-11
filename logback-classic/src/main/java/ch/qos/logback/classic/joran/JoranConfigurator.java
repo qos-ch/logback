@@ -17,7 +17,6 @@ import ch.qos.logback.classic.joran.action.ConfigurationAction;
 import ch.qos.logback.classic.joran.action.ConsolePluginAction;
 import ch.qos.logback.classic.joran.action.ContextNameAction;
 import ch.qos.logback.classic.joran.action.InsertFromJNDIAction;
-import ch.qos.logback.classic.joran.action.JMXConfiguratorAction;
 import ch.qos.logback.classic.joran.action.LevelAction;
 import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
@@ -77,10 +76,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
         rs.addRule(new ElementSelector("configuration/root/level"), () -> new LevelAction());
         rs.addRule(new ElementSelector("configuration/logger/appender-ref"), () -> new AppenderRefAction());
         rs.addRule(new ElementSelector("configuration/root/appender-ref"), () -> new AppenderRefAction());
-        
-        if (PlatformInfo.hasJMXObjectName()) {
-            rs.addRule(new ElementSelector("configuration/jmxConfigurator"), () -> new JMXConfiguratorAction());
-        }
+
         rs.addRule(new ElementSelector("configuration/include"), () -> new IncludeAction());
 
         rs.addRule(new ElementSelector("configuration/consolePlugin"), () -> new ConsolePluginAction());
