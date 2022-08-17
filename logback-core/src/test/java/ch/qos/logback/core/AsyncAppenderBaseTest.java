@@ -97,7 +97,7 @@ public class AsyncAppenderBaseTest {
 
     @Test(timeout = 2000)
     public void workerShouldStopEvenIfInterruptExceptionConsumedWithinSubappender() {
-        delayingListAppender.delay = 100;
+        delayingListAppender.delay = 2000;
         asyncAppenderBase.addAppender(delayingListAppender);
         asyncAppenderBase.start();
         asyncAppenderBase.doAppend(0);
