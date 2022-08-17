@@ -153,6 +153,10 @@ public class PatternLayout extends PatternLayoutBase<ILoggingEvent> {
         DEFAULT_CONVERTER_MAP.put("lsn", LocalSequenceNumberConverter.class.getName());
         CONVERTER_CLASS_TO_KEY_MAP.put(LocalSequenceNumberConverter.class.getName(), "lsn");
 
+        DEFAULT_CONVERTER_MAP.put("sn", SequenceNumberConverter.class.getName());
+        DEFAULT_CONVERTER_MAP.put("sequenceNumber", SequenceNumberConverter.class.getName());
+        CONVERTER_CLASS_TO_KEY_MAP.put(SequenceNumberConverter.class.getName(), "sequenceNumber");
+
         DEFAULT_CONVERTER_MAP.put("prefix", PrefixCompositeConverter.class.getName());
 
     }

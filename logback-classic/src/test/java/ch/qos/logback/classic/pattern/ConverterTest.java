@@ -410,4 +410,15 @@ public class ConverterTest {
         String result = converter.convert(event);
         assertEquals("v", result);
     }
+    
+    @Test
+    public void testSequenceNumber() {
+        SequenceNumberConverter converter = new SequenceNumberConverter();
+        converter.setContext(lc);
+
+        LoggingEvent event = makeLoggingEvent(null);
+
+        event.setSquenceNumber(123);
+        assertEquals("123", converter.convert(event));
+    }
 }
