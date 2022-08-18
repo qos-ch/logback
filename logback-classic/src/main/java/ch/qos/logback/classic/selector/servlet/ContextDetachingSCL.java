@@ -17,8 +17,8 @@ import static ch.qos.logback.classic.ClassicConstants.JNDI_CONTEXT_NAME;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
-import jakarta.servlet.ServletContextEvent;
-import jakarta.servlet.ServletContextListener;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
 

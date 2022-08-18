@@ -259,6 +259,8 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         return false;
     }
 
+
+
     public boolean isQuiet() {
         return quiet;
     }
@@ -322,16 +324,15 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         return fai.getFilterChainDecision(event);
     }
 
+
     @Override
-    public boolean addEventListener(EventListener listener) {
-        // we'll implement this when asked
-        return false;
+    public void addLifeCycleListener(Listener listener) {
+        // ?
     }
 
     @Override
-    public boolean removeEventListener(EventListener listener) {
-        // we'll implement this when asked
-        return false;
+    public void removeLifeCycleListener(Listener listener) {
+        // ?
     }
 
 }

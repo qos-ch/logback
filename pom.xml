@@ -56,7 +56,11 @@
     <junit.version>4.13.1</junit.version>
     <hamcrest.version>1.3</hamcrest.version>
     <!--<javax.mail.version>1.6.2</javax.mail.version>-->
-    <jakarta.mail.version>2.0.1</jakarta.mail.version>
+    <javax.mail.version>1.6.2</javax.mail.version>
+    <javax.activation.version>1.2.0</javax.activation.version>
+    <servlet-api.version>4.0.1</servlet-api.version>
+    <javax.servlet.version>${servlet-api.version}</javax.servlet.version>
+
     <janino.version>3.1.7</janino.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
@@ -64,10 +68,10 @@
     <slf4j.version>2.0.0-beta1</slf4j.version>
     <cal10n.version>0.8.1</cal10n.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
-    <tomcat.version>10.0.10</tomcat.version>
-    <jetty.version>11.0.6</jetty.version>
+    <tomcat.version>9.0.65</tomcat.version>
+    <jetty.version>9.4.48.v20220622</jetty.version>
     <compiler-plugin.version>3.8.0</compiler-plugin.version> <!-- 3.6.1, 3.7.0 -->
-    <servlet-api.version>5.0.0</servlet-api.version>
+
     <jansi.version>1.18</jansi.version>
 
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
@@ -174,21 +178,21 @@
       -->
 
       <dependency>
-        <groupId>jakarta.mail</groupId>
-        <artifactId>jakarta.mail-api</artifactId>
-        <version>${jakarta.mail.version}</version>
+        <groupId>javax.mail</groupId>
+        <artifactId>javax.mail-api</artifactId>
+        <version>${javax.mail.version}</version>
       </dependency>
 
       <dependency>
-        <groupId>jakarta.activation</groupId>
-        <artifactId>jakarta.activation-api</artifactId>
-        <version>${jakarta.mail.version}</version>
+        <groupId>javax.activation</groupId>
+        <artifactId>javax.activation-api</artifactId>
+        <version>${javax.activation.version}</version>
       </dependency>
 
       <dependency>
         <groupId>com.sun.mail</groupId>
-        <artifactId>jakarta.mail</artifactId>
-        <version>${jakarta.mail.version}</version>        
+        <artifactId>javax.mail</artifactId>
+        <version>${javax.mail.version}</version>
       </dependency>
 
       <dependency>
@@ -213,9 +217,9 @@
       </dependency>
 
       <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
-        <version>${servlet-api.version}</version>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>${javax.servlet.version}</version>
       </dependency>
 
       <dependency>

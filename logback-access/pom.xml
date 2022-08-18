@@ -32,6 +32,13 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
@@ -58,11 +65,13 @@
     </dependency>
 
     <dependency>
-      <groupId>jakarta.mail</groupId>
-      <artifactId>jakarta.mail-api</artifactId>
+      <groupId>javax.mail</groupId>
+      <artifactId>javax.mail-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
+
 
   </dependencies>
 
@@ -126,7 +135,7 @@
             <Import-Package>
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
-              jakarta.servlet.*;version="5.0.0",
+              javax.servlet.*;version="4.0.0",
               org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
               org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
               *

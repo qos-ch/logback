@@ -13,8 +13,8 @@
  */
 package ch.qos.logback.access.sift;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.sift.AbstractDiscriminator;

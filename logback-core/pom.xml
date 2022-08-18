@@ -35,33 +35,34 @@
     </dependency>
 
     <dependency>
-      <groupId>jakarta.mail</groupId>
-      <artifactId>jakarta.mail-api</artifactId>
+      <groupId>javax.mail</groupId>
+      <artifactId>javax.mail-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+
     <dependency>
-      <groupId>jakarta.activation</groupId>
-      <artifactId>jakarta.activation-api</artifactId>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
  
     <dependency>
       <groupId>com.sun.mail</groupId>
-      <artifactId>jakarta.mail</artifactId>      
+      <artifactId>javax.mail</artifactId>
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>jakarta.servlet</groupId>
-        <artifactId>jakarta.servlet-api</artifactId>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
         <scope>compile</scope>
         <optional>true</optional>
       </dependency>    
