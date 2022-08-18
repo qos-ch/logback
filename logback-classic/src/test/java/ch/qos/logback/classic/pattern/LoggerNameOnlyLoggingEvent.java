@@ -79,13 +79,16 @@ public class LoggerNameOnlyLoggingEvent implements ILoggingEvent {
 
     @Override
     public Map<String, String> getMdc() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public long getTimeStamp() {
-        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int getNanoseconds() {
         return 0;
     }
 

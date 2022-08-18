@@ -55,6 +55,7 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
     public List<KeyValuePair> kvpList;
     public Map<String, String> mdcPropertyMap;
     public long timeStamp;
+    public int nanoseconds;
     public long sequenceNumber;
 
     public String getThreadName() {
@@ -113,6 +114,11 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
 
     public long getTimeStamp() {
         return timeStamp;
+    }
+
+    @Override
+    public int getNanoseconds() {
+        return nanoseconds;
     }
 
     public long getSequenceNumber() {
