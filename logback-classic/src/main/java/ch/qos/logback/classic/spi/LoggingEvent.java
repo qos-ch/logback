@@ -305,6 +305,16 @@ public class LoggingEvent implements ILoggingEvent {
         return timeStamp;
     }
 
+
+    /**
+     * Return the number of nanoseconds past the {@link #getTimeStamp() timestamp in seconds}.
+     * @since 1.3.0
+     */
+    @Override
+    public int getNanoseconds() {
+        return nanoseconds;
+    }
+
     /**
      * Set the number of elapsed milliseconds since epoch in UTC.
      * 

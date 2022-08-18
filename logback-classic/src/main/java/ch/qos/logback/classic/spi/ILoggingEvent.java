@@ -127,25 +127,19 @@ public interface ILoggingEvent extends DeferredProcessingAware {
     /**
      * Return the number of elapsed nanoseconds found in {@link #getInstant()}
      * 
-     * Will return 0 if getInstant() returns null;
-     * 
-     * @return the number of elapsed nanoseconds since epoch
+     * May return -1 if data unavailable.
+     *
+     * @return the number of elapsed nanoseconds as found in {@link #getInstant()}
      * @since 1.3
      */
-    default int getNanoseconds() {
-        Instant instant = getInstant();
-        if (instant == null)
-            return 0;
-        int nanoseconds = instant.getNano();
-        return nanoseconds;
-    }
+    int getNanoseconds();
 
     /**
-     * Return the Instant the event was created.
+     * Return the {@link java.time.Instant Instant} the event was created.
      * 
      * Default implementation returns null.
      * 
-     * @return the Instant the event was created.
+     * @return the  {@link java.time.Instant Instant}  the event was created.
      * @since 1.3
      */
     default Instant getInstant() {

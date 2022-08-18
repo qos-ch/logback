@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,10 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     private List<Marker> markerList;
     private List<KeyValuePair> keyValuePairList;
     private Map<String, String> mdcPropertyMap;
-    private long timeStamp;
+
+    private long timestamp;
+    private int nanoseconds;
+
     private long sequenceNumber;
 
     public static LoggingEventVO build(ILoggingEvent le) {
@@ -74,8 +78,8 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         ledo.markerList = le.getMarkerList();
         ledo.keyValuePairList = le.getKeyValuePairs();
         ledo.mdcPropertyMap = le.getMDCPropertyMap();
-
-        ledo.timeStamp = le.getTimeStamp();
+        ledo.timestamp = le.getTimeStamp();
+        ledo.nanoseconds = le.getNanoseconds();
         ledo.sequenceNumber = le.getSequenceNumber();
         ledo.throwableProxy = ThrowableProxyVO.build(le.getThrowableProxy());
         // add caller data only if it is there already
@@ -140,9 +144,11 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         return markerList;
     }
 
-    public long getTimeStamp() {
-        return timeStamp;
-    }
+    @Override
+    public long getTimeStamp() { return timestamp; }
+
+    @Override
+    public int getNanoseconds() {  return nanoseconds; }
 
     public long getSequenceNumber() {
         return sequenceNumber;
@@ -211,10 +217,12 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
     @Override
     public int hashCode() {
         final int prime = 31;
+        long millis = getTimeStamp();
+
         int result = 1;
         result = prime * result + ((message == null) ? 0 : message.hashCode());
         result = prime * result + ((threadName == null) ? 0 : threadName.hashCode());
-        result = prime * result + (int) (timeStamp ^ (timeStamp >>> 32));
+        result = prime * result + (int) (millis ^ (millis >>> 32));
         return result;
     }
 
@@ -244,7 +252,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
                 return false;
         } else if (!threadName.equals(other.threadName))
             return false;
-        if (timeStamp != other.timeStamp)
+        if (getTimeStamp() != other.getTimeStamp())
             return false;
 
         if (markerList == null) {
