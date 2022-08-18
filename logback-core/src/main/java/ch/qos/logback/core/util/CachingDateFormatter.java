@@ -48,14 +48,13 @@ public class CachingDateFormatter {
     }
 
     public CachingDateFormatter(String pattern, ZoneId aZoneId) {
-        dtf = DateTimeFormatter.ofPattern(pattern);
         if (aZoneId == null) {
             this.zoneId = ZoneId.systemDefault();
         } else {
             this.zoneId = aZoneId;
-
         }
-        dtf.withZone(this.zoneId);
+
+        dtf = DateTimeFormatter.ofPattern(pattern).withZone(this.zoneId);
         CacheTuple cacheTuple = new CacheTuple(-1, null);
         this.atomicReference = new AtomicReference<>(cacheTuple);
     }
@@ -66,8 +65,7 @@ public class CachingDateFormatter {
 
         if (now != localCacheTuple.lastTimestamp) {
             Instant instant = Instant.ofEpochMilli(now);
-            OffsetDateTime currentTime = OffsetDateTime.ofInstant(instant, this.zoneId);
-            String result = dtf.format(currentTime);
+            String result = dtf.format(instant);
             localCacheTuple = new CacheTuple(now, result);
             // allow a single thread to update the cache reference
             atomicReference.compareAndSet(oldCacheTuple, localCacheTuple);
