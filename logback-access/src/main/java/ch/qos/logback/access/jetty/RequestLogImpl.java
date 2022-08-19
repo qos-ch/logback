@@ -35,6 +35,7 @@ import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
+import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.FileUtil;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
@@ -240,28 +241,19 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
 
         // plumb the depths of Jetty and the environment ...
-        if (classIsPresent("jakarta.servlet.http.HttpServlet")) {
+        if (EnvUtil.isClassAvailable(this.getClass(), "jakarta.servlet.http.HttpServlet")) {
             throw new RuntimeException("The new jakarta.servlet classes are not supported by this " +
                 "version of logback-access (check for a newer version of logback-access that " +
                 "does support it)");
         }
 
         // look for modern approach to RequestLog
-        modernJettyRequestLog = classIsPresent("org.eclipse.jetty.server.CustomRequestLog");
-    }
-
-    private boolean classIsPresent(String className) {
-        try {
-            Class.forName(className);
-            return true;
-        } catch (ClassNotFoundException e)  {
-            return false;
-        }
+        modernJettyRequestLog = EnvUtil.isClassAvailable(this.getClass(), "org.eclipse.jetty.server.CustomRequestLog");
     }
 
     @Override
     public void log(Request jettyRequest, Response jettyResponse) {
-        JettyServerAdapter adapter = newJettyServerAdapter(jettyRequest, jettyResponse);
+        JettyServerAdapter adapter = makeJettyServerAdapter(jettyRequest, jettyResponse);
         IAccessEvent accessEvent = new AccessEvent(this, jettyRequest, jettyResponse, adapter);
         if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
             return;
@@ -269,7 +261,7 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         aai.appendLoopOnAppenders(accessEvent);
     }
 
-    private JettyServerAdapter newJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
+    private JettyServerAdapter makeJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
         if (modernJettyRequestLog) {
             return new JettyModernServerAdapter(jettyRequest, jettyResponse);
         } else {

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ServiceLoader;
 
+import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.Loader;
 
 /**
@@ -34,13 +35,7 @@ public class ClassicEnvUtil {
     //static ClassLoader testServiceLoaderClassLoader = null;
 
     static public boolean isGroovyAvailable() {
-        ClassLoader classLoader = Loader.getClassLoaderOfClass(ClassicEnvUtil.class);
-        try {
-            Class<?> bindingClass = classLoader.loadClass("groovy.lang.Binding");
-            return (bindingClass != null);
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
+        return EnvUtil.isClassAvailable(ClassicEnvUtil.class, "groovy.lang.Binding");
     }
 //
 //    private static ClassLoader getServiceLoaderClassLoader() {

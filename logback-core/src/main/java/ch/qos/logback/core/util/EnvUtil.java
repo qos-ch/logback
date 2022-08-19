@@ -80,4 +80,14 @@ public class EnvUtil {
         return os.startsWith("Windows");
     }
 
+    static public boolean isClassAvailable(Class callerClass, String className) {
+        ClassLoader classLoader = Loader.getClassLoaderOfClass(callerClass);
+        try {
+            Class<?> bindingClass = classLoader.loadClass(className);
+            return (bindingClass != null);
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
 }
