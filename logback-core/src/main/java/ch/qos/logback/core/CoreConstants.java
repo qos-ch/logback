@@ -104,6 +104,14 @@ public class CoreConstants {
     public static final String EMPTY_STRING = "";
 
     /**
+     * String value returned in case data is not available.
+     *
+     * For example, when caller information is not available this constant is used for file name,
+     * method name, etc.
+     */
+    public static final String NA = "?";
+
+    /**
      * An empty string array.
      */
     public static final String[] EMPTY_STRING_ARRAY = new String[] {};

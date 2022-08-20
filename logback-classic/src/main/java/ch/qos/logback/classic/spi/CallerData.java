@@ -17,6 +17,8 @@ import ch.qos.logback.core.CoreConstants;
 
 import java.util.List;
 
+import static ch.qos.logback.core.CoreConstants.NA;
+
 /**
  * This class computes caller data returning the result in the form of a
  * StackTraceElement array.
@@ -25,11 +27,6 @@ import java.util.List;
  */
 public class CallerData {
 
-    /**
-     * When caller information is not available this constant is used for file name,
-     * method name, etc.
-     */
-    public static final String NA = "?";
 
     // All logger call's in log4j-over-slf4j use the Category class
     private static final String LOG4J_CATEGORY = "org.apache.log4j.Category";
@@ -117,7 +114,7 @@ public class CallerData {
     }
 
     /**
-     * Returns a StackTraceElement where all string fields are set to {@link #NA}
+     * Returns a StackTraceElement where all string fields are set to {@link CoreConstants#NA}
      * and line number is set to {@link #LINE_NA}.
      *
      * @return StackTraceElement with values set to NA constants.

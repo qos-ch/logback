@@ -14,17 +14,24 @@
 package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.CoreConstants;
 
 /**
  * Return the event's sequence number.
  * 
  * @author Bertrand Renuart
+ * @since 1.3.0
  */
 public class SequenceNumberConverter extends ClassicConverter {
 
 	@Override
 	public void start() {
-		if (getContext() == null || getContext().getSequenceNumberGenerator() == null) {
+		if(getContext() == null) {
+			//
+			return;
+		}
+
+		if (getContext().getSequenceNumberGenerator() == null) {
 			addWarn("No <sequenceNumberGenerator> defined in Logback configuration - event sequence numbers will not be incremented.");
 		}
 		super.start();
@@ -33,7 +40,11 @@ public class SequenceNumberConverter extends ClassicConverter {
 	
 	@Override
     public String convert(ILoggingEvent event) {
-        return Long.toString(event.getSequenceNumber());
+        if(!isStarted()) {
+			return CoreConstants.NA;
+		} else {
+			return Long.toString(event.getSequenceNumber());
+		}
     }
 
 }
