@@ -15,6 +15,7 @@ package ch.qos.logback.classic.pattern;
 
 import ch.qos.logback.classic.spi.CallerData;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.CoreConstants;
 
 public class LineOfCallerConverter extends ClassicConverter {
 
@@ -23,7 +24,7 @@ public class LineOfCallerConverter extends ClassicConverter {
         if (cda != null && cda.length > 0) {
             return Integer.toString(cda[0].getLineNumber());
         } else {
-            return CallerData.NA;
+            return CoreConstants.NA;
         }
     }
 
