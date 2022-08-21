@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import ch.qos.logback.core.spi.BasicSequenceNumberGenerator;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -75,7 +77,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("76", buf.toString());
+            assertEquals("77", buf.toString());
         }
     }
 
@@ -413,12 +415,16 @@ public class ConverterTest {
     
     @Test
     public void testSequenceNumber() {
+        //lc.setSequenceNumberGenerator(new BasicSequenceNumberGenerator());
         SequenceNumberConverter converter = new SequenceNumberConverter();
         converter.setContext(lc);
+        converter.start();
 
+        assertTrue(converter.isStarted());
         LoggingEvent event = makeLoggingEvent(null);
 
         event.setSquenceNumber(123);
         assertEquals("123", converter.convert(event));
+        StatusPrinter.print(lc);
     }
 }
