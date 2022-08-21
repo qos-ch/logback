@@ -284,6 +284,13 @@
           <version>${maven-jar-plugin.version}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
+            <archive>
+            <index>true</index>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              </manifest>
+            </archive>
           </configuration>
         </plugin>
         <plugin>
