@@ -27,12 +27,12 @@ public class SequenceNumberConverter extends ClassicConverter {
 	@Override
 	public void start() {
 		if(getContext() == null) {
-			//
+			// this should not happen
 			return;
 		}
 
 		if (getContext().getSequenceNumberGenerator() == null) {
-			addWarn("No <sequenceNumberGenerator> defined in Logback configuration - event sequence numbers will not be incremented.");
+			addWarn("It looks like no <sequenceNumberGenerator> was defined in Logback configuration.");
 		}
 		super.start();
 	}
@@ -40,11 +40,7 @@ public class SequenceNumberConverter extends ClassicConverter {
 	
 	@Override
     public String convert(ILoggingEvent event) {
-        if(!isStarted()) {
-			return CoreConstants.NA;
-		} else {
-			return Long.toString(event.getSequenceNumber());
-		}
-    }
+ 		return Long.toString(event.getSequenceNumber());
+   }
 
 }

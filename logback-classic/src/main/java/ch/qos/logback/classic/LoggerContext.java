@@ -384,7 +384,14 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return frameworkPackages;
     }
 
+
+    @Override
+    public void setSequenceNumberGenerator(SequenceNumberGenerator sng) {
+        this.sequenceNumberGenerator = sng;
+    }
+
+    @Override
     public SequenceNumberGenerator getSequenceNumberGenerator() {
-        return null;
+        return sequenceNumberGenerator;
     }
 }
