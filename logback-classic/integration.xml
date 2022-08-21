@@ -9,7 +9,8 @@
 		
 		ant  -Dslf4jVersion=1.5.4-SNAPSHOT	
 	-->
-	
+
+	<echo message="project.version:  ${project.version}" />        
 	<echo message="slf4j.version:  ${slf4j.version}" />
 	<echo message="hamcrest:  ${org.hamcrest:hamcrest-core:jar}" />
 	
@@ -17,12 +18,12 @@
 		<!-- post junit version 4.12, we need to add hamcrest manually to the
 		     classpath, even though the m-ant-plugin declares a dependency on hamcrest! -->
 		<pathelement location="${org.hamcrest:hamcrest-core:jar}" />
-		<pathelement location="../logback-core/target/classes/" />
+		<pathelement location="../logback-core/target/logback-core-${project.version}.jar/" />
 		<pathelement location="../logback-core/target/test-classes/" />
 		<pathelement location="./target/classes/" />
 		<pathelement location="./target/test-classes/" />
 		<pathelement location="./lib/slf4j-api-${slf4j.version}.jar" />
-        <pathelement location="./src/test/input/integration/autoInit/" />
+                <pathelement location="./src/test/input/integration/autoInit/" />
 	</path >
 
 
@@ -33,28 +34,28 @@
 	<target name="init" depends="copySLF4J_JAR">
 	   <echo message="in init"/>
 	   <mkdir dir="target/unit-reports" />
-   </target>
+        </target>
 
-  <target name="copySLF4J_JAR">
-    <echo>Making lib/ folder in case it does not already exist.</echo>
-  	<mkdir dir="lib/"/>
-    <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
-    <!-- sneak in a cleanup procedure of the ../logback-examples/lib/ folder-->
-    <delete quiet="true">
-      <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
-    </delete>
-    <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/" />
-  </target>
-
+        <target name="copySLF4J_JAR">
+          <echo>Making lib/ folder in case it does not already exist.</echo>
+  	  <mkdir dir="lib/"/>
+          <echo>Copying ${org.slf4j:slf4j-api:jar} to lib/</echo>
+          <!-- sneak in a cleanup procedure of the ../logback-examples/lib/ folder-->
+          <delete quiet="true">
+            <fileset dir="../logback-examples/lib/" includes="slf4j-*SNAPSHOT.jar" />
+          </delete>
+          <copy file="${org.slf4j:slf4j-api:jar}" todir="lib/" />
+        </target>
+        
 
 	<target name="testWithoutGroovy" unless="maven.test.skip">
-		<junit printsummary="yes" fork="no" haltonfailure="yes">
-			<classpath refid="basicClasspath" />
-			<formatter type="plain" />
-			<test fork="yes" todir="target/unit-reports" 
-            outfile="TEST-NoGroovy" 
-            name="ch.qos.logback.classic.util.InitializationIntegrationTest" />
-		</junit>
+	  <junit printsummary="yes" fork="no" haltonfailure="yes">
+	    <classpath refid="basicClasspath" />
+	    <formatter type="plain" />
+	    <test fork="yes" todir="target/unit-reports" 
+                  outfile="TEST-NoGroovy" 
+                  name="ch.qos.logback.classic.util.InitializationIntegrationTest" />
+	  </junit>
 	</target>
 
 

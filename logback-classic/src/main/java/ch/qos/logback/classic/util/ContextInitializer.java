@@ -13,27 +13,20 @@
  */
 package ch.qos.logback.classic.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.status.WarnStatus;
-import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.OptionHelper;
+import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 // contributors
@@ -85,6 +78,8 @@ public class ContextInitializer {
     }
 
     public void autoConfig(ClassLoader classLoader) throws JoranException {
+        String versionStr = EnvUtil.ourVersion();
+        loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
         StatusListenerConfigHelper.installIfAsked(loggerContext);
         List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
         sortByPriority(configuratorList);

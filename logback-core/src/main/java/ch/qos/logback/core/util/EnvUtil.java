@@ -13,12 +13,30 @@
  */
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.CoreConstants;
+
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
 public class EnvUtil {
 
     private EnvUtil() {
+    }
+
+    /**
+     * <p>Returns the current version of logback, or null if data is not
+     * available.
+     * </p>
+     *
+     * @since 1.3.0
+     * @return current version or null if missing version data
+     */
+    static public String ourVersion() {
+        Package pkg = EnvUtil.class.getPackage();
+        if(pkg == null) {
+            return null;
+        }
+        return pkg.getImplementationVersion();
     }
 
     static public int getJDKVersion(String javaVersionStr) {

@@ -208,7 +208,7 @@
             </goals>
           </execution>
            -->
-		  <execution>
+	  <execution>
             <id>ant-integration-test</id>
             <phase>package</phase>
             <configuration>

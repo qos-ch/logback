@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import ch.qos.logback.core.CoreConstants;
 import org.junit.After;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Patrick Reinhart

@@ -1,0 +1,24 @@
+package ch.qos.logback.classic.util;
+
+import ch.qos.logback.core.util.EnvUtil;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class EnvUtilTest {
+
+
+    // this test runs fine if run from logback-classic but fails when
+    // run from logback-core. This is due to the fact that package information
+    // is added when creating the jar.
+    @Test
+    public void versionTest() {
+        String versionStr = EnvUtil.ourVersion();
+        assertNotNull(versionStr);
+        assertTrue(versionStr.startsWith("1.3"));
+    }
+
+
+
+
+}
