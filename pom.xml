@@ -285,8 +285,11 @@
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
             <archive>
-            <index>true</index>
+              <index>true</index>
               <manifest>
+                <!-- Add version information into the MANIFEST so it is accessible by
+                     calling Package#getImplementationVersion()
+                 -->
                 <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                 <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
               </manifest>
