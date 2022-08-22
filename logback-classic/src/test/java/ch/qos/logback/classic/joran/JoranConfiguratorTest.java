@@ -630,6 +630,33 @@ public class JoranConfiguratorTest {
     }
 
     @Test
+    public void sequenceNumberGenerator() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "sequenceNumberGenerator.xml");
+        final ListAppender<ILoggingEvent> listAppender= (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(listAppender);
+
+        logger.atDebug().setMessage("hello").log();
+        logger.atDebug().setMessage("world").log();
+
+        ILoggingEvent le0 = listAppender.list.get(0);
+        ILoggingEvent le1 = listAppender.list.get(1);
+
+        long se0 = le0.getSequenceNumber();
+        long se1 = le1.getSequenceNumber();
+        assertEquals(1, se1 - se0);
+        StatusPrinter.print(loggerContext);
+    }
+
+    @Test
+    public void sequenceNumberGenerator_missingClass() throws JoranException {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "sequenceNumberGenerator-missingClass.xml");
+        StatusPrinter.print(loggerContext);
+        final ListAppender<ILoggingEvent> listAppender= (ListAppender<ILoggingEvent>) root.getAppender("LIST");
+        assertNotNull(listAppender);
+        checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[sequenceNumberGenerator\\]");
+    }
+
+        @Test
     public void kvp() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/kvp.xml");
 

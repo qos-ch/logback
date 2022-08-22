@@ -30,7 +30,7 @@ public class SequenceNumberGeneratorModelHandler extends ModelHandlerBase {
     }
 
     static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
-        return new ShutdownHookModelHandler(context);
+        return new SequenceNumberGeneratorModelHandler(context);
     }
 
     @Override
@@ -44,8 +44,9 @@ public class SequenceNumberGeneratorModelHandler extends ModelHandlerBase {
         SequenceNumberGeneratorModel sequenceNumberGeneratorModel = (SequenceNumberGeneratorModel) model;
         String className = sequenceNumberGeneratorModel.getClassName();
         if (OptionHelper.isNullOrEmpty(className)) {
-            className = BasicSequenceNumberGenerator.class.getName();
-            addInfo("Assuming className [" + className + "]");
+            addWarn("Missing className. This should have been caught earlier.");
+            inError = true;
+            return;
         } else {
             className = mic.getImport(className);
         }
@@ -76,7 +77,7 @@ public class SequenceNumberGeneratorModelHandler extends ModelHandlerBase {
         } else {
             mic.popObject();
 
-            addInfo("Registering sequenceNumberGenerator with context.");
+            addInfo("Registering "+o+" with context.");
             context.setSequenceNumberGenerator(sequenceNumberGenerator);
         }
     }
