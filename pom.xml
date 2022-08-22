@@ -327,21 +327,6 @@
           <version>${maven-bundle-plugin.version}</version>
         </plugin>
 
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.16</version>
-          <configuration>
-            <ignores>
-              <ignore>sun.reflect.Reflection</ignore>
-            </ignores>
-            <signature>
-              <groupId>org.codehaus.mojo.signature</groupId>
-              <artifactId>java17</artifactId>
-              <version>1.0</version>
-            </signature>
-          </configuration>
-        </plugin>
 
         <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
         <plugin>
