@@ -13,7 +13,7 @@ public class EnvUtilTest {
     // is added when creating the jar.
     @Test
     public void versionTest() {
-        String versionStr = EnvUtil.ourVersion();
+        String versionStr = EnvUtil.logbackVersion();
         assertNotNull(versionStr);
         assertTrue(versionStr.startsWith("1.3"));
     }
