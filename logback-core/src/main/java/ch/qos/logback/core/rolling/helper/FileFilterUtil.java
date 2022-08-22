@@ -79,11 +79,9 @@ public class FileFilterUtil {
         if (!file.exists() || !file.isDirectory()) {
             return new File[0];
         }
-        return file.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.matches(stemRegex);
-            }
-        });
+
+        Pattern regex = Pattern.compile(stemRegex);
+        return file.listFiles((dir, name) -> regex.matcher(name).matches());
     }
 
     static public int findHighestCounter(File[] matchingFileArray, final String stemRegex) {
