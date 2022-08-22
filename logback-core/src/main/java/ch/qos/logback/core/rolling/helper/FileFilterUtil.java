@@ -80,8 +80,9 @@ public class FileFilterUtil {
             return new File[0];
         }
 
-        Pattern regex = Pattern.compile(stemRegex);
-        return file.listFiles((dir, name) -> regex.matcher(name).matches());
+        // better compile the regex. See also LOGBACK-1409
+        Pattern pattern = Pattern.compile(stemRegex);
+        return file.listFiles((dir, name) -> pattern.matcher(name).matches());
     }
 
     static public int findHighestCounter(File[] matchingFileArray, final String stemRegex) {
