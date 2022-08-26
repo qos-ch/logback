@@ -103,11 +103,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.doAppend(0);
         asyncAppenderBase.stop();
         verify(delayingListAppender, 1);
-        if(delayingListAppender.list.size() == 0) {
-            assertTrue(delayingListAppender.interrupted);
-        } else {
-            return;
-        }
+        assertTrue(delayingListAppender.interrupted);
         Thread.interrupted();
     }
 
