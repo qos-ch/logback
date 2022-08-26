@@ -15,7 +15,7 @@ public class EnvUtilTest {
     public void versionTest() {
         String versionStr = EnvUtil.logbackVersion();
         assertNotNull(versionStr);
-        assertTrue(versionStr.startsWith("1.3"));
+        assertTrue(versionStr.startsWith("1.4"));
     }
 
 

@@ -35,37 +35,40 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>javax.mail-api</artifactId>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
 
     <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>javax.activation-api</artifactId>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
  
     <dependency>
       <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
+      <artifactId>jakarta.mail</artifactId>
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
+
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
 
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>javax.servlet-api</artifactId>
-        <scope>compile</scope>
-        <optional>true</optional>
-      </dependency>    
+
   </dependencies>
 
   <build>
@@ -138,7 +141,7 @@
             <_failok>true</_failok> <!-- Jigsaw -->
             <Export-Package>ch.qos.logback.core.*</Export-Package>
             <Import-Package>
-              javax.*;resolution:=optional,
+              jakarta.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               org.fusesource.jansi;resolution:=optional,
               org.codehaus.janino;resolution:=optional,

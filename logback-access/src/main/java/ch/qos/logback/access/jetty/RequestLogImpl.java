@@ -15,6 +15,7 @@ package ch.qos.logback.access.jetty;
 
 import java.io.File;
 import java.net.URL;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -243,20 +244,10 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
     String fileName;
     String resource;
 
-    // Jetty 9.4.x and newer is considered modern.
-    boolean modernJettyRequestLog;
     boolean quiet = false;
 
     public RequestLogImpl() {
         putObject(CoreConstants.EVALUATOR_MAP, new HashMap<String, EventEvaluator<?>>());
-
-        // plumb the depths of Jetty and the environment ...
-        if (EnvUtil.isClassAvailable(this.getClass(), "jakarta.servlet.http.HttpServlet")) {
-            throw new RuntimeException("The new jakarta.servlet classes are not supported by this " + "version of logback-access (check for a newer version of logback-access that " + "does support it)");
-        }
-
-        // look for modern approach to RequestLog
-        modernJettyRequestLog = EnvUtil.isClassAvailable(this.getClass(), "org.eclipse.jetty.server.CustomRequestLog");
     }
 
     @Override
@@ -270,11 +261,7 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
     }
 
     private JettyServerAdapter makeJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
-        if (modernJettyRequestLog) {
-            return new JettyModernServerAdapter(jettyRequest, jettyResponse);
-        } else {
-            return new JettyServerAdapter(jettyRequest, jettyResponse);
-        }
+       return new JettyModernServerAdapter(jettyRequest, jettyResponse);
     }
 
     protected void addInfo(String msg) {
@@ -402,6 +389,16 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         return state == State.FAILED;
     }
 
+    @Override
+    public boolean addEventListener(EventListener listener) {
+        return false;
+    }
+
+    @Override
+    public boolean removeEventListener(EventListener listener) {
+        return false;
+    }
+
 
     public boolean isQuiet() {
         return quiet;
@@ -466,13 +463,10 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
         return fai.getFilterChainDecision(event);
     }
 
-
-    @Override
     public void addLifeCycleListener(LifeCycle.Listener listener) {
         // we'll implement this when asked
     }
 
-    @Override
     public void removeLifeCycleListener(LifeCycle.Listener listener) {
         // we'll implement this when asked
     }

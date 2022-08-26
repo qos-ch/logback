@@ -34,8 +34,8 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -65,8 +65,15 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>javax.mail-api</artifactId>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
@@ -135,7 +142,7 @@
             <Import-Package>
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
-              javax.servlet.*;version="4.0.0",
+              jakarta.servlet.*;version="4.0.0",
               org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
               org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
               *

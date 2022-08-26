@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.Message;
+import jakarta.mail.Multipart;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.mail.internet.AddressException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeBodyPart;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 import javax.naming.Context;
 
 import ch.qos.logback.core.AppenderBase;
@@ -625,7 +625,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * Set the location where a {@link javax.mail.Session} resource is located in
+     * Set the location where a {@link jakarta.mail.Session} resource is located in
      * JNDI. Default value is "java:comp/env/mail/Session".
      *
      * @param jndiLocation
@@ -640,7 +640,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     }
 
     /**
-     * If set to true, a {@link javax.mail.Session} resource will be retrieved from
+     * If set to true, a {@link jakarta.mail.Session} resource will be retrieved from
      * JNDI. Default is false.
      *
      * @param sessionViaJNDI whether to obtain a javax.mail.Session by JNDI

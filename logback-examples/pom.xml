@@ -40,8 +40,8 @@
       <version>1.2.18.4</version>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>    

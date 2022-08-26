@@ -1,11 +1,11 @@
-module ch.qos.logback.core { 
+module ch.qos.logback.core {
     requires static transitive java.sql;
     requires static transitive java.naming;
     requires static transitive java.xml; 
-    //requires static javax.mail;
-    //requires static javax.activation;
+    requires static jakarta.mail;
+    requires static jakarta.activation;
     
-    //requires static jakarta.servlet;
+    requires static jakarta.servlet;
     requires static janino;
     requires static commons.compiler;
     
@@ -46,6 +46,10 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.sift;
     exports ch.qos.logback.core.spi;
     exports ch.qos.logback.core.status;
+
+    exports ch.qos.logback.core.model.util;
+
+    exports ch.qos.logback.core.recovery;
 
     exports ch.qos.logback.core.util;
     exports ch.qos.logback.core.read;

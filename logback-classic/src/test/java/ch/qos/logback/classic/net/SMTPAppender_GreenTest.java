@@ -51,9 +51,9 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StatusPrinter;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.MimeMultipart;
 
 public class SMTPAppender_GreenTest {
 

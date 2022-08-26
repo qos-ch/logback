@@ -17,9 +17,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class DummyResponse implements HttpServletResponse {
 
