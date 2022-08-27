@@ -1,6 +1,7 @@
 module ch.qos.logback.classic { 
   requires org.slf4j;
   requires static java.management;
+
   //requires static javax.servlet;
 
   requires ch.qos.logback.core;
