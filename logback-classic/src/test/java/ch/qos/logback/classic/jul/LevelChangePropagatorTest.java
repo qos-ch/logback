@@ -21,8 +21,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.*;
 
 public class LevelChangePropagatorTest {
     int rand = RandomUtil.getPositiveInt();
@@ -43,6 +42,8 @@ public class LevelChangePropagatorTest {
 
         assertEquals(julLevel, julLogger.getLevel());
     }
+
+
 
     @Test
     public void smoke() {
@@ -66,6 +67,19 @@ public class LevelChangePropagatorTest {
         java.util.logging.Level julLevel = JULHelper.asJULLevel(Level.INFO);
 
         assertEquals(julLevel, julLogger.getLevel());
+    }
+
+    // https://jira.qos.ch/browse/LOGBACK-1612
+    @Test
+    public void jonathan() {
+        Level level = Level.INFO;
+        Logger logger = loggerContext.getLogger("aaa");
+        logger.setLevel(level);
+
+        java.util.logging.Logger julLogger = JULHelper.asJULLogger(logger);
+        java.util.logging.Level julLevel = JULHelper.asJULLevel(level);
+
+        assertFalse(julLogger.isLoggable(java.util.logging.Level.CONFIG));
     }
 
     @Test
