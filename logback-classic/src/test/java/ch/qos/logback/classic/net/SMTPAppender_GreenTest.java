@@ -441,6 +441,7 @@ public class SMTPAppender_GreenTest {
         System.clearProperty(PREFIX + "socketFactory.fallback");
     }
 
+    @Ignore
     @Test
     public void authenticatedSSL() throws Exception {
         try {
