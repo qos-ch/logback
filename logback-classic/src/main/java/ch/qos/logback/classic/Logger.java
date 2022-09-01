@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
@@ -101,6 +102,11 @@ public final class Logger
     transient private boolean additive = true;
 
     final transient LoggerContext loggerContext;
+
+    /**
+     * Function for potential transformation and wrapping ILoggingEvent
+     */
+    transient private ILoggingEventTransformer loggingEventTransformer = null;
 
     Logger(String name, Logger parent, LoggerContext loggerContext) {
         this.name = name;
@@ -423,7 +429,7 @@ public final class Logger
             final String msg, final Object[] params, final Throwable t) {
         LoggingEvent le = new LoggingEvent(localFQCN, this, level, msg, t, params);
         le.addMarker(marker);
-        callAppenders(le);
+        callAppenders(loggingEventTransformer != null ? loggingEventTransformer.transform(le) : le);
     }
 
     public void trace(String msg) {
@@ -735,6 +741,14 @@ public final class Logger
 
     public void setAdditive(boolean additive) {
         this.additive = additive;
+    }
+
+    public ILoggingEventTransformer getLoggingEventTransformer() {
+        return loggingEventTransformer;
+    }
+
+    public void setLoggingEventTransformer(ILoggingEventTransformer loggingEventTransformer) {
+        this.loggingEventTransformer = loggingEventTransformer;
     }
 
     public String toString() {
