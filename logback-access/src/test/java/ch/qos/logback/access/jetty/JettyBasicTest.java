@@ -83,6 +83,7 @@ public class JettyBasicTest {
 
         assertEquals("127.0.0.1", event.getRemoteHost());
         assertEquals("localhost", event.getServerName());
+        assertEquals("text/plain;charset=utf-8", event.getResponseHeader("Content-Type"));
         listAppender.list.clear();
     }
 
