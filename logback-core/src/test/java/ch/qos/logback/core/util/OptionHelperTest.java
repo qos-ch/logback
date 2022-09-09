@@ -18,19 +18,18 @@ import static ch.qos.logback.core.subst.Parser.EXPECTING_DATA_AFTER_LEFT_ACCOLAD
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ScanException;
-import org.junit.jupiter.api.Timeout;
 
 public class OptionHelperTest {
 
@@ -60,16 +59,10 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void testSubstVarsVariableNotClosed() throws ScanException {
+    public void testSubstVarsVariableNotClosed() {
         String noSubst = "testing if ${v1 works";
 
-        try {
-            @SuppressWarnings("unused")
-            String result = OptionHelper.substVars(noSubst, context);
-            fail();
-        } catch (IllegalArgumentException e) {
-            // ok
-        }
+        assertThrows(IllegalArgumentException.class, () -> OptionHelper.substVars(noSubst, context));
     }
 
     @Test
