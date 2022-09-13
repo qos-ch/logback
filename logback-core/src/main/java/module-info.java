@@ -15,12 +15,13 @@ module ch.qos.logback.core {
     
     exports ch.qos.logback.core.rolling;
     exports ch.qos.logback.core.rolling.helper;
-    
+    exports ch.qos.logback.core.util;
+
     exports ch.qos.logback.core.encoder;
 
     exports ch.qos.logback.core.helpers;
     exports ch.qos.logback.core.html;
-    
+
     exports ch.qos.logback.core.filter;
 
     exports ch.qos.logback.core.model;
@@ -51,7 +52,6 @@ module ch.qos.logback.core {
 
     exports ch.qos.logback.core.recovery;
 
-    exports ch.qos.logback.core.util;
     exports ch.qos.logback.core.read;
     
     

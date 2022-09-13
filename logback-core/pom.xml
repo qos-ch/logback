@@ -94,11 +94,6 @@
         
         <configuration>
           <archive>
-            <manifestEntries>
-              <Multi-Release>true</Multi-Release>
-              <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>	
-              <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
-            </manifestEntries>
             <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>

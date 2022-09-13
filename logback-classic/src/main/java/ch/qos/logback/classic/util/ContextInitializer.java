@@ -79,6 +79,9 @@ public class ContextInitializer {
 
     public void autoConfig(ClassLoader classLoader) throws JoranException {
         String versionStr = EnvUtil.logbackVersion();
+        if(versionStr == null) {
+            versionStr = CoreConstants.NA;
+        }
         loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
         StatusListenerConfigHelper.installIfAsked(loggerContext);
         List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
