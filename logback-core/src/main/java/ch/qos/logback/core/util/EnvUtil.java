@@ -1,17 +1,22 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.util;
+
+import java.lang.module.ModuleDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -30,11 +35,52 @@ public class EnvUtil {
      * @return current version or null if missing version data
      */
     static public String logbackVersion() {
+        String moduleVersion = logbackVersionByModule();
+        if(moduleVersion != null) {
+            return moduleVersion;
+        }
+
         Package pkg = EnvUtil.class.getPackage();
-        if(pkg == null) {
+        if (pkg == null) {
             return null;
         }
         return pkg.getImplementationVersion();
+    }
+
+    /**
+     * <p>Returns the current version of logback via class.getModule() or null if data is not
+     * available.
+     * </p>
+     *
+     * @since 1.3.0
+     * @return current version or null if missing version data
+     */
+    static private String logbackVersionByModule() {
+        if(!isJDK9OrHigher()) {
+            return null;
+        }
+
+        try {
+            //Module module = EnvUtil.class.getModule();
+            Object moduleObject = ReflectionUtil.invokeMethodOnObject(EnvUtil.class, "getModule");
+            if (moduleObject == null)
+                return null;
+
+            // ModuleDescriptor md = module.getDescriptor();
+            Object moduleDescriptorObject = ReflectionUtil.invokeMethodOnObject(moduleObject, "getDescriptor");
+            if (moduleDescriptorObject == null)
+                return null;
+
+            // Optional<String> opt = md.rawVersion();
+            Object optionalStringObject = ReflectionUtil.invokeMethodOnObject(moduleDescriptorObject, "rawVersion");
+            if(optionalStringObject == null)
+                return null;
+
+            Optional<String> opt = (Optional<String>) optionalStringObject;
+            return opt.orElse(null);
+        } catch(NoSuchMethodException|IllegalAccessException| InvocationTargetException e) {
+            return null;
+        }
     }
 
     static public int getJDKVersion(String javaVersionStr) {
@@ -71,6 +117,10 @@ public class EnvUtil {
 
     static public boolean isJDK7OrHigher() {
         return isJDK_N_OrHigher(7);
+    }
+
+    static public boolean isJDK9OrHigher() {
+        return isJDK_N_OrHigher(9);
     }
 
     static public boolean isJDK16OrHigher() {
