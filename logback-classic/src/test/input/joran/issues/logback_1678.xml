@@ -1,0 +1,13 @@
+<configuration debug="false">
+
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
+        <delay>10</delay>
+    </shutdownHook>
+
+    <appender name="A" class="ch.qos.logback.core.read.ListAppender"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="A" />
+    </root>
+
+</configuration>

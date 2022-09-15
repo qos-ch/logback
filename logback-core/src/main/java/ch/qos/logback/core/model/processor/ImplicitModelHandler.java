@@ -35,6 +35,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
     private ImplicitModelData implicitModelData;
     
     static final String PARENT_PROPPERTY_KEY = "parent";
+    static public final String IGNORING_UNKNOWN_PROP = "Ignoring unknown property";
 
     boolean inError = false;
 
@@ -70,11 +71,9 @@ public class ImplicitModelHandler extends ModelHandlerBase {
 
         AggregationType aggregationType = parentBean.computeAggregationType(nestedElementTagName);
 
-//        Stack<ImplicitModelData> actionDataStack = mic.getImplicitModelDataStack();
-
         switch (aggregationType) {
         case NOT_FOUND:
-            addWarn("Ignoring unkown property [" + nestedElementTagName + "] in [" + o.getClass().getName() + "]");
+            addWarn(IGNORING_UNKNOWN_PROP+" [" + nestedElementTagName + "] in [" + o.getClass().getName() + "]");
             inError = true;
             // no point in processing submodels
             implicitModel.markAsSkipped();
