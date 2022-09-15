@@ -15,6 +15,7 @@ package ch.qos.logback.core.hook;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
 /**
@@ -39,4 +40,5 @@ public abstract class ShutdownHookBase extends ContextAwareBase implements Shutd
             context.stop();
         }
     }
+
 }

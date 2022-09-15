@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.joran;
 
+import static ch.qos.logback.core.model.processor.ImplicitModelHandler.IGNORING_UNKNOWN_PROP;
+import static ch.qos.logback.core.model.processor.ShutdownHookModelHandler.RENAME_WARNING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -23,6 +25,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ch.qos.logback.core.model.ShutdownHookModel;
+import ch.qos.logback.core.model.processor.ImplicitModelHandler;
+import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.MDC;
@@ -237,7 +242,7 @@ public class JoranConfiguratorTest {
     public void ignoreUnknownProperty() throws JoranException {
         
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/unknownProperty.xml");
-        String msg = "Ignoring unkown property \\[a\\] in \\[ch.qos.logback.classic.LoggerContext\\]";
+        String msg = IGNORING_UNKNOWN_PROP+" \\[a\\] in \\[ch.qos.logback.classic.LoggerContext\\]";
         checker.assertContainsMatch(Status.WARN, msg);
     }
     
@@ -486,7 +491,7 @@ public class JoranConfiguratorTest {
         configure(configFileAsStr);
         checker.assertContainsMatch(Status.WARN,
                 "Appender named \\[EMAIL\\] not referenced. Skipping further processing.");
-        checker.assertNoMatch("Ignoring unkown property \\[evaluator\\]");
+        checker.assertNoMatch(IGNORING_UNKNOWN_PROP+" \\[evaluator\\]");
     }
 
     @Test
@@ -570,7 +575,29 @@ public class JoranConfiguratorTest {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1162.xml";
         loggerContext.putProperty("output_dir", ClassicTestConstants.OUTPUT_DIR_PREFIX + "logback_issue_1162/");
         configure(configFileAsStr);
-        assertNotNull(loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD));
+        Thread thread = (Thread) loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+        assertNotNull(thread);
+    }
+
+
+    @Test
+    public void shutdownHookWithDelayParameter() throws JoranException {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1672.xml";
+        configure(configFileAsStr);
+
+        Thread thread = (Thread) loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+        assertNotNull(thread);
+        checker.assertNoMatch(IGNORING_UNKNOWN_PROP);
+    }
+
+    @Test
+    public void migrateShutdownHookClassName() throws JoranException {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1678.xml";
+        configure(configFileAsStr);
+
+        Thread thread = (Thread) loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
+        assertNotNull(thread);
+        checker.assertContainsMatch(RENAME_WARNING);
     }
 
     @Test
@@ -626,7 +653,7 @@ public class JoranConfiguratorTest {
         assertNotNull(listAppender);
         assertTrue(listAppender.isStarted());
         checker.assertContainsMatch(Status.WARN,
-                "Ignoring unkown property \\[inexistent\\] in \\[ch.qos.logback.core.read.ListAppender\\]");
+                IGNORING_UNKNOWN_PROP+" \\[inexistent\\] in \\[ch.qos.logback.core.read.ListAppender\\]");
     }
 
     @Test
