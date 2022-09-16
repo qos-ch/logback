@@ -17,6 +17,8 @@ import ch.qos.logback.core.joran.action.*;
 import ch.qos.logback.core.joran.conditional.ElseAction;
 import ch.qos.logback.core.joran.conditional.IfAction;
 import ch.qos.logback.core.joran.conditional.ThenAction;
+import ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker;
+import ch.qos.logback.core.joran.sanity.SanityChecker;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.joran.spi.SaxEventInterpretationContext;
@@ -30,6 +32,7 @@ import ch.qos.logback.core.model.processor.conditional.ElseModelHandler;
 import ch.qos.logback.core.model.processor.conditional.IfModelHandler;
 import ch.qos.logback.core.model.processor.conditional.ThenModelHandler;
 import ch.qos.logback.core.sift.SiftModelHandler;
+import ch.qos.logback.core.spi.ContextAware;
 
 // Based on 310985 revision 310985 as attested by http://tinyurl.com/8njps
 // see also http://tinyurl.com/c2rp5
@@ -91,6 +94,21 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         rs.addTransparentPathPart("sift");
         
         
+    }
+
+    /**
+     * Perform sanity check and issue warning if necessary.
+     *
+     * @param topModel
+     */
+    protected void sanityCheck(Model topModel) {
+        performCheck(new AppenderWithinAppenderSanityChecker(), topModel);
+    }
+
+    protected void performCheck(SanityChecker sc, Model model) {
+        if(sc instanceof ContextAware)
+            ((ContextAware) sc).setContext(context);
+        sc.check(model);
     }
 
     @Override

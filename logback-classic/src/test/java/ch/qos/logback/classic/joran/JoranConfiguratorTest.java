@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.joran;
 
+import static ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker.NESTED_APPENDERS_WARNING;
 import static ch.qos.logback.core.model.processor.ImplicitModelHandler.IGNORING_UNKNOWN_PROP;
 import static ch.qos.logback.core.model.processor.ShutdownHookModelHandler.RENAME_WARNING;
 import static org.junit.Assert.assertEquals;
@@ -105,7 +106,6 @@ public class JoranConfiguratorTest {
         //assertEquals(0, listAppender.list.size());
         String msg = "hello world";
         logger.warn(msg);
-        StatusPrinter.print(loggerContext);
     }
     
     @Test
@@ -186,7 +186,7 @@ public class JoranConfiguratorTest {
     @Test
     public void statusListener() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "statusListener.xml");
-        StatusPrinter.print(loggerContext);
+        //StatusPrinter.print(loggerContext);
         checker.assertIsErrorFree();
         checker.assertContainsMatch(Status.WARN,
                 "Please use \"level\" attribute within <logger> or <root> elements instead.");
@@ -584,8 +584,6 @@ public class JoranConfiguratorTest {
         loggerContext.putProperty("EXTRA", "true");
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673.xml";
         configure(configFileAsStr);
-        StatusPrinter.print(loggerContext);
-
     }
 
     @Test
@@ -599,8 +597,6 @@ public class JoranConfiguratorTest {
 
         ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
         assertNull(listElse);
-
-        StatusPrinter.print(loggerContext);
     }
 
     @Test
@@ -613,8 +609,14 @@ public class JoranConfiguratorTest {
 
         ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
         assertNotNull(listElse);
+    }
 
-        StatusPrinter.print(loggerContext);
+    @Test
+    public void nestedAppendersDisallowed() throws JoranException {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1674.xml";
+        configure(configFileAsStr);
+        checker.assertContainsMatch(Status.WARN, NESTED_APPENDERS_WARNING);
+        checker.assertContainsMatch(Status.WARN,"Appender at line ");
     }
 
     @Test
@@ -708,13 +710,12 @@ public class JoranConfiguratorTest {
         long se0 = le0.getSequenceNumber();
         long se1 = le1.getSequenceNumber();
         assertEquals(1, se1 - se0);
-        StatusPrinter.print(loggerContext);
     }
 
     @Test
     public void sequenceNumberGenerator_missingClass() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "sequenceNumberGenerator-missingClass.xml");
-        StatusPrinter.print(loggerContext);
+        //StatusPrinter.print(loggerContext);
         final ListAppender<ILoggingEvent> listAppender= (ListAppender<ILoggingEvent>) root.getAppender("LIST");
         assertNotNull(listAppender);
         checker.assertContainsMatch(Status.ERROR, "Missing attribute \\[class\\] in element \\[sequenceNumberGenerator\\]");
@@ -753,7 +754,6 @@ public class JoranConfiguratorTest {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-46697.xml");
          
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.EMPTY_MODEL_STACK);
-        StatusPrinter.print(loggerContext);
     }
 
     // https://bugs.chromium.org/p/oss-fuzz/issues/detail?id=47093
