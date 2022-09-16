@@ -36,7 +36,6 @@ import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
 import ch.qos.logback.classic.model.processor.LoggerModelHandler;
 import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.PlatformInfo;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;

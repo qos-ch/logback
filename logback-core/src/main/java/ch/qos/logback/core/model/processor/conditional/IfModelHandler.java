@@ -63,13 +63,14 @@ public class IfModelHandler extends ModelHandlerBase {
         
         mic.pushModel(ifModel);
         Condition condition = null;
-        
+        int lineNum = model.getLineNumber();
+
         String conditionStr = ifModel.getCondition();
         if (!OptionHelper.isNullOrEmpty(conditionStr)) {
             try {
                 conditionStr = OptionHelper.substVars(conditionStr, mic, context);
             } catch (ScanException e) {
-               addError("Failed to parse input [" + conditionStr + "]", e);
+               addError("Failed to parse input [" + conditionStr + "] on line "+lineNum, e);
                ifModel.setBranchState(BranchState.IN_ERROR);
                return;
             }
@@ -79,12 +80,13 @@ public class IfModelHandler extends ModelHandlerBase {
                 condition = pesb.build(conditionStr);
             } catch (Exception e) {
                 ifModel.setBranchState(BranchState.IN_ERROR);
-                addError("Failed to parse condition [" + conditionStr + "]", e);
+                addError("Failed to parse condition [" + conditionStr + "] on line "+lineNum, e);
                 return;
             }
 
             if (condition != null) {
                 boolean boolResult = condition.evaluate();
+                addInfo("Condition ["+conditionStr+"] evaluated to "+boolResult+ " on line "+lineNum);
                 ifModel.setBranchState(boolResult);
             } else {
                 addError("The condition variable is null. This should not occur.");

@@ -579,6 +579,43 @@ public class JoranConfiguratorTest {
         assertNotNull(thread);
     }
 
+    @Test
+    public void conditional1673() throws JoranException  {
+        loggerContext.putProperty("EXTRA", "true");
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673.xml";
+        configure(configFileAsStr);
+        StatusPrinter.print(loggerContext);
+
+    }
+
+    @Test
+    public void conditional1673bisWithActiveThen() throws JoranException  {
+        loggerContext.putProperty("EXTRA", "true");
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673bis.xml";
+        configure(configFileAsStr);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        ListAppender<ILoggingEvent> listThen = (ListAppender<ILoggingEvent>) root.getAppender("LIST_THEN");
+        assertNotNull(listThen);
+
+        ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
+        assertNull(listElse);
+
+        StatusPrinter.print(loggerContext);
+    }
+
+    @Test
+    public void conditional1673bisWithActiveElse() throws JoranException  {
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673bis.xml";
+        configure(configFileAsStr);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+        ListAppender<ILoggingEvent> listThen = (ListAppender<ILoggingEvent>) root.getAppender("LIST_THEN");
+        assertNull(listThen);
+
+        ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
+        assertNotNull(listElse);
+
+        StatusPrinter.print(loggerContext);
+    }
 
     @Test
     public void shutdownHookWithDelayParameter() throws JoranException {
@@ -755,6 +792,9 @@ public class JoranConfiguratorTest {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/fuzz-47293.xml");
         checker.assertContainsMatch(Status.ERROR, ErrorCodes.MISSING_IF_EMPTY_MODEL_STACK);
     }
+
+
+
 
     // reproduction requires placing a binary properties file. Probably not worth the effort.
 //    @Test

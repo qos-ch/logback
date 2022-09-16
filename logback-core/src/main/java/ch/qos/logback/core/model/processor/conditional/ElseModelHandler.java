@@ -52,11 +52,8 @@ public class ElseModelHandler extends ModelHandlerBase {
               
         IfModel ifModel = (IfModel) parent;
         if(ifModel.getBranchState() != BranchState.ELSE_BRANCH) {
-            elseModel.markAsSkipped();
-        } else {
-                 
+            elseModel.deepMarkAsSkipped();
         }
-
     }
 
 }

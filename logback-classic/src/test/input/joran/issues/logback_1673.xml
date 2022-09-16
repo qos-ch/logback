@@ -1,0 +1,23 @@
+<configuration debug="false">
+
+    <appender name="LIST" class="ch.qos.logback.core.read.ListAppender"/>
+
+    <!-- Uncomment this property if you need the extra appender -->
+    <!-- property name="EXTRA" value="ON" /> -->
+    <if condition='isDefined("EXTRA")'>
+        <then>
+            <appender name="EXTRA_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                ...
+            </appender>
+        </then>
+    </if>
+
+    <root level="INFO">
+        <appender-ref ref="LIST"/>
+        <if condition='isDefined("EXTRA")'>
+            <then>
+                <appender-ref ref="EXTRA_APPENDER"/>
+            </then>
+        </if>
+    </root>
+</configuration>

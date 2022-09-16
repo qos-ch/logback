@@ -20,7 +20,7 @@ public class RootLoggerModelHandler extends ModelHandlerBase {
         super(context);
     }
 
-    static public ModelHandlerBase makeInstance(Context context, ModelInterpretationContext ic) {
+    static public RootLoggerModelHandler makeInstance(Context context, ModelInterpretationContext ic) {
         return new RootLoggerModelHandler(context);
     }
 
