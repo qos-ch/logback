@@ -63,7 +63,12 @@ public class Model implements Serializable {
     public void markAsSkipped() {
         skipped = true;
     }
-
+    public void deepMarkAsSkipped() {
+        markAsSkipped();
+        for(Model m: this.getSubModels()) {
+            m.deepMarkAsSkipped();
+        }
+    }
     /**
      * The model can re-used at reconfiguration time.
      * 
@@ -92,6 +97,8 @@ public class Model implements Serializable {
     public void markAsHandled() {
         handled = true;
     }
+
+
 
 
     public String getTag() {

@@ -59,11 +59,8 @@ public class ThenModelHandler extends ModelHandlerBase {
               
         IfModel ifModel = (IfModel) parent;
         if(ifModel.getBranchState() != BranchState.IF_BRANCH) {
-            thenModel.markAsSkipped();
-        } else {
-                 
+            thenModel.deepMarkAsSkipped();
         }
-
     }
 
 }

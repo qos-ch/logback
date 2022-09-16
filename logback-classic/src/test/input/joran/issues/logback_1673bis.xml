@@ -1,0 +1,22 @@
+<configuration debug="false">
+
+
+
+    <appender name="LIST_THEN" class="ch.qos.logback.core.read.ListAppender"/>
+    <appender name="LIST_ELSE" class="ch.qos.logback.core.read.ListAppender"/>
+
+    <root level="INFO"/>
+
+    <if condition='isDefined("EXTRA")'>
+        <then>
+            <root>
+                <appender-ref ref="LIST_THEN"/>
+            </root>
+        </then>
+        <else>
+            <root>
+                <appender-ref ref="LIST_ELSE"/>
+            </root>
+        </else>
+    </if>
+</configuration>

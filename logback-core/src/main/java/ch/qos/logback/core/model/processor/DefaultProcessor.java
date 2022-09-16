@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -28,9 +28,9 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
- * DefaultProcessor traverses the Model produced at an earlier step and performs actual 
+ * DefaultProcessor traverses the Model produced at an earlier step and performs actual
  * configuration of logback according to the handlers it was given.
- * 
+ *
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3.0
  */
@@ -39,7 +39,7 @@ public class DefaultProcessor extends ContextAwareBase {
     interface TraverseMethod {
         int traverse(Model model, ModelFilter modelFiler);
     }
- 
+
     final protected ModelInterpretationContext mic;
     final HashMap<Class<? extends Model>, ModelHandlerFactoryMethod> modelClassToHandlerMap = new HashMap<>();
     final HashMap<Class<? extends Model>, Supplier<ModelHandlerBase>> modelClassToDependencyAnalyserMap = new HashMap<>();
@@ -53,29 +53,29 @@ public class DefaultProcessor extends ContextAwareBase {
     }
 
     public void addHandler(Class<? extends Model> modelClass, ModelHandlerFactoryMethod modelFactoryMethod) {
-        
+
         modelClassToHandlerMap.put(modelClass, modelFactoryMethod);
-        
+
         ProcessingPhase phase = determineProcessingPhase(modelClass);
-        switch(phase) {
-        case FIRST:
-            getPhaseOneFilter().allow(modelClass);
-            break;
-        case SECOND:
-            getPhaseTwoFilter().allow(modelClass);
-            break;
-        default:
-            throw new IllegalArgumentException("unexpected value " + phase + " for model class "+ modelClass.getName());        
+        switch (phase) {
+            case FIRST:
+                getPhaseOneFilter().allow(modelClass);
+                break;
+            case SECOND:
+                getPhaseTwoFilter().allow(modelClass);
+                break;
+            default:
+                throw new IllegalArgumentException("unexpected value " + phase + " for model class " + modelClass.getName());
         }
     }
 
     private ProcessingPhase determineProcessingPhase(Class<? extends Model> modelClass) {
-        
-        PhaseIndicator phaseIndicator =  modelClass.getAnnotation(PhaseIndicator.class);
-        if(phaseIndicator == null) {
+
+        PhaseIndicator phaseIndicator = modelClass.getAnnotation(PhaseIndicator.class);
+        if (phaseIndicator == null) {
             return ProcessingPhase.FIRST;
         }
-        
+
         ProcessingPhase phase = phaseIndicator.phase();
         return phase;
     }
@@ -128,30 +128,39 @@ public class DefaultProcessor extends ContextAwareBase {
 
     protected void analyseDependencies(Model model) {
         Supplier<ModelHandlerBase> analyserSupplier = modelClassToDependencyAnalyserMap.get(model.getClass());
-        
+
         ModelHandlerBase analyser = null;
-        
-        if(analyserSupplier != null) {
+
+        if (analyserSupplier != null) {
             analyser = analyserSupplier.get();
         }
-        
-        if (analyser != null) {
-            try {
-                analyser.handle(mic, model);
-            } catch (ModelHandlerException e) {
-                addError("Failed to traverse model " + model.getTag(), e);
-            }
+
+        if (analyser != null && !model.isSkipped()) {
+            callAnalyserHandleOnModel(model, analyser);
         }
 
         for (Model m : model.getSubModels()) {
             analyseDependencies(m);
         }
-        if (analyser != null) {
-            try {
-                analyser.postHandle(mic, model);
-            } catch (ModelHandlerException e) {
-                addError("Failed to invoke postHandle on model " + model.getTag(), e);
-            }
+
+        if (analyser != null && !model.isSkipped()) {
+            callAnalyserPostHandleOnModel(model, analyser);
+        }
+    }
+
+    private void callAnalyserPostHandleOnModel(Model model, ModelHandlerBase analyser) {
+        try {
+            analyser.postHandle(mic, model);
+        } catch (ModelHandlerException e) {
+            addError("Failed to invoke postHandle on model " + model.getTag(), e);
+        }
+    }
+
+    private void callAnalyserHandleOnModel(Model model, ModelHandlerBase analyser) {
+        try {
+            analyser.handle(mic, model);
+        } catch (ModelHandlerException e) {
+            addError("Failed to traverse model " + model.getTag(), e);
         }
     }
 
@@ -273,7 +282,7 @@ public class DefaultProcessor extends ContextAwareBase {
 
     private boolean allDependenciesStarted(Model model) {
         List<String> dependencyNames = mic.getDependeeNamesForModel(model);
-       
+
         if (dependencyNames == null || dependencyNames.isEmpty()) {
             return true;
         }
