@@ -162,6 +162,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
             addError(ErrorCodes.EMPTY_MODEL_STACK);
             return;
         }
+        sanityCheck(top);
         processModel(top);
 
         // no exceptions a this level
@@ -198,6 +199,18 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         synchronized (context.getConfigurationLock()) {
             defaultProcessor.process(model);
         }
+    }
+
+    /**
+     * Perform sanity check and issue warning if necessary.
+     *
+     * Default implementation does nothing.
+     *
+     * @param topModel
+     * @since 1.3.2 and 1.4.2
+     */
+    protected void sanityCheck(Model topModel) {
+
     }
 
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
