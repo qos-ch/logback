@@ -33,6 +33,7 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.joran.spi;
     exports ch.qos.logback.core.joran.event;  
     exports ch.qos.logback.core.joran.util;
+    exports ch.qos.logback.core.joran.sanity;
     exports ch.qos.logback.core.joran.conditional;
     exports ch.qos.logback.core.joran.util.beans;
     
