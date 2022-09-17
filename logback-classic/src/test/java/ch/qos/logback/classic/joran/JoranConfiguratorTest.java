@@ -612,6 +612,15 @@ public class JoranConfiguratorTest {
     }
 
     @Test
+    public void nestedIf() throws JoranException  {
+        loggerContext.putProperty("EXTRA", "true");
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1678.xml";
+        configure(configFileAsStr);
+        StatusPrinter.print(loggerContext);
+
+    }
+
+    @Test
     public void nestedAppendersDisallowed() throws JoranException {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1674.xml";
         configure(configFileAsStr);
@@ -631,7 +640,7 @@ public class JoranConfiguratorTest {
 
     @Test
     public void migrateShutdownHookClassName() throws JoranException {
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1678.xml";
+        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1678_shutdown.xml";
         configure(configFileAsStr);
 
         Thread thread = (Thread) loggerContext.getObject(CoreConstants.SHUTDOWN_HOOK_THREAD);
