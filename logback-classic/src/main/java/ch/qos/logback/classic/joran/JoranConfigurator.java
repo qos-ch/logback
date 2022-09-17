@@ -22,6 +22,7 @@ import ch.qos.logback.classic.joran.action.LoggerAction;
 import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
 import ch.qos.logback.classic.joran.action.ReceiverAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
+import ch.qos.logback.classic.joran.sanity.IfNestedWithinSecondPhaseElementSC;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.classic.model.ContextNameModel;
 import ch.qos.logback.classic.model.LevelModel;
@@ -39,16 +40,20 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
+import ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker;
+import ch.qos.logback.core.joran.sanity.SanityChecker;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
+import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
+import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -82,6 +87,13 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
         rs.addRule(new ElementSelector("configuration/receiver"), () -> new ReceiverAction());
 
+    }
+
+
+    @Override
+    protected void sanityCheck(Model topModel) {
+        super.sanityCheck(topModel);
+        performCheck(new IfNestedWithinSecondPhaseElementSC(), topModel);
     }
 
     @Override

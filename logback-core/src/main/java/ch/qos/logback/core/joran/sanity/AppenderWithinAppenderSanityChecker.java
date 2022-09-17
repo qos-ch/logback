@@ -29,38 +29,18 @@ public class AppenderWithinAppenderSanityChecker extends ContextAwareBase implem
         if (model == null)
             return;
 
-        List<AppenderModel> appenderModels = new ArrayList<>();
+        List<Model> appenderModels = new ArrayList<>();
         deepFindAllModelsOfType(AppenderModel.class, appenderModels, model);
 
-        List<String> warnings = new ArrayList<>();
+        List<Pair<Model, Model>> nestedPairs = deepFindNestedSubModelsOfType(AppenderModel.class, appenderModels);
 
-
-        for(AppenderModel appenderModel: appenderModels) {
-            List<AppenderModel> nestedAppenders = new ArrayList<>();
-
-            appenderModel.getSubModels().stream().forEach( m -> deepFindAllModelsOfType(AppenderModel.class, nestedAppenders, m));
-
-            if(!nestedAppenders.isEmpty()) {
-                AppenderModel inner = nestedAppenders.get(0);
-                warnings.add("Appender at line "+appenderModel.getLineNumber() + " contains nested appenders.");
-                warnings.add("First nested appender occurrence at line "+inner.getLineNumber());
-            }
-        }
-
-        if(warnings.isEmpty())
+        if(nestedPairs.isEmpty())
             return;
 
         addWarn(NESTED_APPENDERS_WARNING);
-        warnings.forEach( w -> addWarn(w));
-    }
-
-    private <T extends Model> void deepFindAllModelsOfType(Class<T> modelClass, List<T> modelList, Model model) {
-        if(modelClass.isInstance(model)) {
-            modelList.add((T) model);
-        }
-
-        for(Model m: model.getSubModels()) {
-            deepFindAllModelsOfType(modelClass, modelList, m);
+        for(Pair<Model, Model> pair: nestedPairs) {
+            addWarn("Appender at line "+pair.first.getLineNumber() + " contains a nested appender at line "+pair.second.getLineNumber());
         }
     }
+
 }
