@@ -18,8 +18,10 @@ import org.junit.Test;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -34,5 +36,11 @@ public class ConfigurationWatchListTest {
         ConfigurationWatchList cwl = new ConfigurationWatchList();
         File back = cwl.convertToFile(url);
         assertEquals(file.getName(), back.getName());
+    }
+
+    @Test
+    public void testGetCopyOfFileWatchListAndBuildClone() throws MalformedURLException {
+        ConfigurationWatchList cwl = new ConfigurationWatchList();
+        assertTrue(((Collection<?>) (cwl.buildClone().getCopyOfFileWatchList())).isEmpty());
     }
 }
