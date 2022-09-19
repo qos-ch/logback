@@ -16,6 +16,11 @@ package ch.qos.logback.core.joran.spi;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.junit.Test;
 
 public class NoAutoStartUtilTest {
@@ -30,5 +35,72 @@ public class NoAutoStartUtilTest {
     public void markedWithNoAutoStart() {
         DoNotAutoStart o = new DoNotAutoStart();
         assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
+    
+
+    
+    /*
+     * Annotation declared on implemented interface
+     */
+    @Test
+    public void noAutoStartOnInterface() {
+    	ComponentWithNoAutoStartOnInterface o = new ComponentWithNoAutoStartOnInterface();
+        assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
+
+    @NoAutoStart
+    public interface NoAutoStartInterface {
+    }
+    
+    private static class ComponentWithNoAutoStartOnInterface implements NoAutoStartInterface {
+    }
+
+    
+    
+    /*
+     * Annotation declared on ancestor
+     */
+    @Test
+    public void noAutoStartOnAncestor() {
+    	ComponentWithNoAutoStartOnAncestor o = new ComponentWithNoAutoStartOnAncestor();
+        assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
+    
+    private static class ComponentWithNoAutoStartOnAncestor extends DoNotAutoStart {	
+    }
+
+    
+    
+    /*
+     * Annotation declared on interface implemented by an ancestor
+     */
+    @Test
+    public void noAutoStartOnInterfaceImplementedByAncestor() {
+    	ComponentWithAncestorImplementingInterfaceWithNoAutoStart o = new ComponentWithAncestorImplementingInterfaceWithNoAutoStart();
+        assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
+    
+    private static class ComponentWithAncestorImplementingInterfaceWithNoAutoStart extends ComponentWithNoAutoStartOnInterface {	
+    }
+    
+    
+
+    /*
+     * Custom annotation annotated with @NoAutoStart
+     */
+    @Test
+    public void noAutoStartAsMetaAnnotation() {
+    	ComponentWithMetaAnnotation o = new ComponentWithMetaAnnotation();
+        assertFalse(NoAutoStartUtil.notMarkedWithNoAutoStart(o));
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @NoAutoStart
+    public @interface MetaNoAutoStart {
+    }
+    
+    @MetaNoAutoStart
+    private static class ComponentWithMetaAnnotation {
     }
 }
