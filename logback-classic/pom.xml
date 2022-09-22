@@ -333,10 +333,17 @@
               *
             </Import-Package>
             <!-- Needed to integrate ServiceLoader mechanism with OSGi -->
-            <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
-            <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
-
-
+            <Require-Capability><![CDATA[
+              osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.processor)(version>=1.0.0)(!(version>=2.0.0)))",
+              osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.registrar)(version>=1.0.0)(!(version>=2.0.0)))",
+              osgi.serviceloader;filter:="(osgi.serviceloader=ch.qos.logback.classic.spi.Configurator)";osgi.serviceloader="ch.qos.logback.classic.spi.Configurator";cardinality:=multiple
+            ]]></Require-Capability>
+            <Provide-Capability><![CDATA[
+              osgi.service;objectClass:List<String>="jakarta.servlet.ServletContainerInitializer";effective:=active,
+              osgi.service;objectClass:List<String>="org.slf4j.spi.SLF4JServiceProvider";effective:=active,
+              osgi.serviceloader;osgi.serviceloader="jakarta.servlet.ServletContainerInitializer";register:="ch.qos.logback.classic.servlet.LogbackServletContainerInitializer",
+              osgi.serviceloader;osgi.serviceloader="org.slf4j.spi.SLF4JServiceProvider";register:="ch.qos.logback.classic.spi.LogbackServiceProvider"
+            ]]></Provide-Capability>
           </instructions>
         </configuration>
       </plugin>
