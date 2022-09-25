@@ -3,20 +3,14 @@ package ch.qos.logback.classic.joran.sanity;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.model.RootLoggerModel;
-import ch.qos.logback.core.Context;
-import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class IfNestedWithinSecondPhaseElementSCTest {
 
@@ -32,14 +26,14 @@ public class IfNestedWithinSecondPhaseElementSCTest {
     @Test
     public void smoke() {
 
-        TopModel topModel = new TopModel();
+        ClassicTopModel topModel = new ClassicTopModel();
         inwspeChecker.check(topModel);
         statusChecker.assertIsWarningOrErrorFree();
     }
 
     @Test
     public void singleAppender() {
-        TopModel topModel = new TopModel();
+        ClassicTopModel topModel = new ClassicTopModel();
         AppenderModel appenderModel0 = new AppenderModel();
         appenderModel0.setLineNumber(1);
         topModel.addSubModel(appenderModel0);
@@ -49,7 +43,7 @@ public class IfNestedWithinSecondPhaseElementSCTest {
 
     @Test
     public void singleLoggerWithNestedIf() {
-        TopModel topModel = new TopModel();
+        ClassicTopModel topModel = new ClassicTopModel();
         Model rootLoggerModel = setupModel(new RootLoggerModel(), "root", 1);
         topModel.addSubModel(rootLoggerModel);
 
