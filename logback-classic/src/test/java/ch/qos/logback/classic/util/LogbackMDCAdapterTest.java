@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
@@ -63,14 +64,18 @@ public class LogbackMDCAdapterTest {
     }
 
     @Test
+    @Ignore
     public void sequenceWithGet() {
         mdcAdapter.put("k0", "v0");
-        Map<String, String> map0 = mdcAdapter.copyOnThreadLocal.get();
+        Map<String, String> map0 = mdcAdapter.getPropertyMap();
         mdcAdapter.get("k0");
         mdcAdapter.put("k1", "v1"); // no map copy required
 
-        // verify that map0 is the same instance and that value was updated
-        assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
+        Map<String, String> witness = new HashMap<>();
+        witness.put("k0", "v0");
+        witness.put("k1", "v1");
+
+        assertEquals(witness, mdcAdapter.getPropertyMap());
     }
 
     @Test
@@ -83,14 +88,28 @@ public class LogbackMDCAdapterTest {
     }
 
     @Test
+    public void basicGetPropertyMap() {
+        mdcAdapter.put("k0", "v0");
+        mdcAdapter.put("k1", "v1");
+
+        Map<String, String> map0 = mdcAdapter.getPropertyMap(); // point 0
+        mdcAdapter.put("k0", "v1"); // new map should be created
+        // verify that map0 is that in point 0
+        assertEquals("v0", map0.get("k0"));
+        assertEquals("v1", map0.get("k1"));
+
+    }
+
+    @Test
+    @Ignore
     public void sequenceWithCopyContextMap() {
         mdcAdapter.put("k0", "v0");
-        Map<String, String> map0 = mdcAdapter.copyOnThreadLocal.get();
+        Map<String, String> map0 = mdcAdapter.getPropertyMap();
         mdcAdapter.getCopyOfContextMap();
         mdcAdapter.put("k1", "v1"); // no map copy required
 
         // verify that map0 is the same instance and that value was updated
-        assertSame(map0, mdcAdapter.copyOnThreadLocal.get());
+        assertSame(map0, mdcAdapter.getPropertyMap());
     }
 
     // =================================================
@@ -130,7 +149,7 @@ public class LogbackMDCAdapterTest {
 
     }
 
-    // see also http://jira.qos.ch/browse/LBCLASSIC-253
+    // see also https://jira.qos.ch/browse/LOGBACK-325
     @Test
     public void clearOnChildThreadShouldNotAffectParent() throws InterruptedException {
         String firstKey = "x" + diff;
@@ -153,7 +172,7 @@ public class LogbackMDCAdapterTest {
         assertEquals(firstKey + A_SUFFIX, mdcAdapter.get(firstKey));
     }
 
-    // see http://jira.qos.ch/browse/LBCLASSIC-289
+    // see https://jira.qos.ch/browse/LOGBACK-434
     // this test used to fail without synchronization code in LogbackMDCAdapter
     @Test
     public void nearSimultaneousPutsShouldNotCauseConcurrentModificationException() throws InterruptedException {
@@ -189,8 +208,8 @@ public class LogbackMDCAdapterTest {
     }
 
     Map<String, String> getMapFromMDCAdapter(LogbackMDCAdapter lma) {
-        ThreadLocal<Map<String, String>> copyOnThreadLocal = lma.copyOnThreadLocal;
-        return copyOnThreadLocal.get();
+        ThreadLocal<Map<String, String>> tlMap = lma.readWriteThreadLocalMap;
+        return tlMap.get();
     }
 
     // ========================== various thread classes
