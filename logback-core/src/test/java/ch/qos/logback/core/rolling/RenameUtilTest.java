@@ -23,9 +23,9 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +47,7 @@ public class RenameUtilTest {
     protected String randomOutputDirAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
     protected File randomOutputDir = new File(randomOutputDirAsStr);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         encoder = new EchoEncoder<Object>();
         // if this the fist test run after 'build clean up' then the
@@ -92,7 +92,7 @@ public class RenameUtilTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void MANUAL_renamingOnDifferentVolumesOnLinux() throws IOException, RolloverFailure {
         RenameUtil renameUtil = new RenameUtil();
         renameUtil.setContext(context);
@@ -105,7 +105,7 @@ public class RenameUtilTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void MANUAL_renamingOnDifferentVolumesOnWindows() throws IOException, RolloverFailure {
         RenameUtil renameUtil = new RenameUtil();
         renameUtil.setContext(context);

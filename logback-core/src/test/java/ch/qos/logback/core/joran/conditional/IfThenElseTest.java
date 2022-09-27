@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Supplier;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -70,7 +70,7 @@ public class IfThenElseTest {
     String sysKey = "sysKey";
     String dynaKey = "dynaKey";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
         rulesMap.put(new ElementSelector("x"), TopElementAction::new);
@@ -108,7 +108,7 @@ public class IfThenElseTest {
         simpleConfigurator.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StatusPrinter.printIfErrorsOccured(context);
         System.clearProperty(sysKey);

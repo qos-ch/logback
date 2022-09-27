@@ -21,8 +21,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 
@@ -37,7 +37,7 @@ public class ServerSocketListenerTest {
     @SuppressWarnings("rawtypes")
     private ServerSocketListener listener;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
         assertNotNull(serverSocket);

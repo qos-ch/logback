@@ -26,9 +26,9 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.test.MockServerListener;
@@ -44,12 +44,12 @@ public class ConcurrentServerRunnerTest {
     private ExecutorService executor = Executors.newCachedThreadPool();
     private InstrumentedConcurrentServerRunner runner = new InstrumentedConcurrentServerRunner(listener, executor);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         runner.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         executor.shutdownNow();
         assertTrue(executor.awaitTermination(DELAY, TimeUnit.MILLISECONDS));

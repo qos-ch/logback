@@ -5,7 +5,7 @@ import static org.junit.Assert.assertArrayEquals;
 import java.io.File;
 import java.util.Date;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;

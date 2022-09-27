@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -38,7 +38,7 @@ public class CompressTest {
 
     Context context = new ContextBase();
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         // Copy source files
         // Delete output files

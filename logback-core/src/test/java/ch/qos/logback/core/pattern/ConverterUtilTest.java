@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -23,7 +23,7 @@ public class ConverterUtilTest {
     Map<String, String> converterMap = new HashMap<String, String>();
     Context context = new ContextBase();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converterMap.put("OTT", Converter123.class.getName());
         converterMap.put("hello", ConverterHello.class.getName());

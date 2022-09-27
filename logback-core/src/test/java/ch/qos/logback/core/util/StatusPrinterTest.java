@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -34,14 +34,14 @@ public class StatusPrinterTest {
     ByteArrayOutputStream outputStream;
     PrintStream ps;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         outputStream = new ByteArrayOutputStream();
         ps = new PrintStream(outputStream);
         StatusPrinter.setPrintStream(ps);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StatusPrinter.setPrintStream(System.out);
         ps = null;

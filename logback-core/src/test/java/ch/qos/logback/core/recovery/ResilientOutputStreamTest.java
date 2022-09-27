@@ -18,8 +18,8 @@ import static org.mockito.Mockito.verify;
 
 import java.io.File;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -35,7 +35,7 @@ public class ResilientOutputStreamTest {
     int diff = RandomUtil.getPositiveInt();
     Context context = new ContextBase();
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() {
         File file = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
         file.mkdirs();

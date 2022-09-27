@@ -37,9 +37,9 @@ import java.util.regex.Pattern;
 //import org.joda.time.DateTimeZone;
 //import org.joda.time.Days;
 //import org.joda.time.LocalDate;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.SpacePadder;
@@ -81,7 +81,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     ConfigParameters cp; // initialized in setup
     FixedRateInvocationGate fixedRateInvocationGate = new FixedRateInvocationGate(ticksPerPeriod / 2);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         super.setUp();
         this.cp = new ConfigParameters(currentTime);
@@ -368,7 +368,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         checkFileCount(expectedCountWithoutFolders(maxHistory));
     }
 
-    @Ignore
+    @Disabled
     @Test
     // this test assumes a high degree of collisions in the archived files. Every 24
     // hours, the archive

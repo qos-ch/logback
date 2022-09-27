@@ -18,8 +18,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.assertEquals;
 
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
@@ -27,6 +27,7 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.Test;
 
 public class PrudentFileAppenderInterruptTest {
 
@@ -36,7 +37,7 @@ public class PrudentFileAppenderInterruptTest {
     String outputDirStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "resilience-" + diff + "/";
     String logfileStr = outputDirStr + "output.log";
 
-    @Before
+    @BeforeEach
     public void setUp() throws InterruptedException {
         context.getStatusManager().add(new OnConsoleStatusListener());
 

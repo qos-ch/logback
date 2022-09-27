@@ -22,7 +22,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.spi.LifeCycle;
 

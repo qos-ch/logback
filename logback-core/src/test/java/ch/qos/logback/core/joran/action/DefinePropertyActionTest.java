@@ -20,10 +20,10 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 import java.util.function.Supplier;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -60,7 +60,7 @@ public class DefinePropertyActionTest {
     Context context = new ContextBase();
     StatusChecker checker = new StatusChecker(context);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
         HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
@@ -79,7 +79,7 @@ public class DefinePropertyActionTest {
         simpleConfigurator.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
@@ -126,7 +126,7 @@ public class DefinePropertyActionTest {
         checker.assertContainsMatch(Status.ERROR, "Could not create an PropertyDefiner of type");
     }
 
-    @Ignore // on certain hosts this test takes 5 seconds to complete
+    @Disabled // on certain hosts this test takes 5 seconds to complete
     @Test
     public void canonicalHostNameProperty() throws JoranException {
         String configFileAsStr = DEFINE_INPUT_DIR + "canonicalHostname.xml";

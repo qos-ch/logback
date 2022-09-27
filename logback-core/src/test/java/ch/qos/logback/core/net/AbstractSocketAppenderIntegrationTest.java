@@ -33,10 +33,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
@@ -62,13 +62,13 @@ public class AbstractSocketAppenderIntegrationTest {
     private InstrumentedSocketAppender instrumentedAppender = new InstrumentedSocketAppender(queueFactory,
             objectWriterFactory);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         when(queueFactory.<String>newLinkedBlockingDeque(anyInt())).thenReturn(deque);
         instrumentedAppender.setContext(mockContext);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         instrumentedAppender.stop();
         assertFalse(instrumentedAppender.isStarted());
@@ -76,7 +76,7 @@ public class AbstractSocketAppenderIntegrationTest {
         assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
     }
 
-    @Ignore // JDK 16
+    @Disabled // JDK 16
     @Test
     public void dispatchesEvents() throws Exception {
 

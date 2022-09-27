@@ -13,9 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
-import ch.qos.logback.core.CoreConstants;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
 import static org.junit.Assert.*;
@@ -28,7 +27,7 @@ public class EnvUtilTest {
     @Mock
     private String savedVersion = System.getProperty("java.version");
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setProperty("java.version", savedVersion);
     }

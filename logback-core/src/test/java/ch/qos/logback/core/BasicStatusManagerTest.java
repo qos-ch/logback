@@ -23,7 +23,7 @@ import java.util.List;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.StatusListener;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.Status;

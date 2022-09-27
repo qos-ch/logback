@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.net.ssl.TrustManagerFactory;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link TrustManagerFactoryFactoryBean}.

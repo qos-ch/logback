@@ -16,13 +16,12 @@ package ch.qos.logback.core.appender;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.Test;
 
 abstract public class AbstractAppenderTest<E> {
 

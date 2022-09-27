@@ -24,9 +24,9 @@ import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
 
 import org.fusesource.jansi.AnsiPrintStream;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -47,7 +47,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
     PrintStream originalOut;
     PrintStream originalErr;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         originalOut = System.out;
         originalErr = System.err;
@@ -65,7 +65,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         System.setErr(new PrintStream(teeErr));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.setOut(originalOut);
         System.setErr(originalErr);

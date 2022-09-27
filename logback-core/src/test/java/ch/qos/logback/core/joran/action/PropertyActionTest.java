@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -58,7 +58,7 @@ public class PropertyActionTest {
     TopModel topModel = new TopModel();
     String tagName = "property";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         context = new ContextBase();
         interpretationContext = new SaxEventInterpretationContext(context, null);
@@ -74,7 +74,7 @@ public class PropertyActionTest {
         defaultProcessor.addHandler(ImplicitModel.class, ImplicitModelHandler::makeInstance);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StatusPrinter.print(context);
         context = null;

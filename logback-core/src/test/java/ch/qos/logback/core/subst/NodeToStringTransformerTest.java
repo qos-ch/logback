@@ -15,8 +15,8 @@ package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.spi.ScanException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -28,7 +28,7 @@ public class NodeToStringTransformerTest {
 
     ContextBase propertyContainer0 = new ContextBase();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         propertyContainer0.putProperty("k0", "v0");
         propertyContainer0.putProperty("zero", "0");

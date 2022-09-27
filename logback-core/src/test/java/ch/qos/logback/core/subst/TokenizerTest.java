@@ -14,7 +14,7 @@
 package ch.qos.logback.core.subst;
 
 import ch.qos.logback.core.spi.ScanException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;

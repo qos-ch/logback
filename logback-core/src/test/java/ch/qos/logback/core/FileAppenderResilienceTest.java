@@ -20,9 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
@@ -54,7 +54,7 @@ public class FileAppenderResilienceTest implements RecoveryListener {
     int failureCounter = 0;
     
     
-    @Before
+    @BeforeEach
     public void setUp() throws InterruptedException {
 
         context.getStatusManager().add(new OnConsoleStatusListener());
@@ -73,7 +73,7 @@ public class FileAppenderResilienceTest implements RecoveryListener {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void manual() throws InterruptedException, IOException {
         Runner runner = new Runner(fa);
         Thread t = new Thread(runner);

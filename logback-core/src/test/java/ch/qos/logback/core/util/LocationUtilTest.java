@@ -24,7 +24,8 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link LocationUtil}.
@@ -54,14 +55,18 @@ public class LocationUtilTest {
         validateResource(url);
     }
 
-    @Test(expected = MalformedURLException.class)
+    @Test
     public void testExplicitClasspathUrlEmptyPath() throws Exception {
-        LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME);
+        Assertions.assertThrows(MalformedURLException.class, () -> {
+            LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME);
+        });
     }
 
-    @Test(expected = MalformedURLException.class)
+    @Test
     public void testExplicitClasspathUrlWithRootPath() throws Exception {
-        LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + "/");
+        Assertions.assertThrows(MalformedURLException.class, () -> {
+            LocationUtil.urlForResource(LocationUtil.CLASSPATH_SCHEME + "/");
+        });
     }
 
     @Test

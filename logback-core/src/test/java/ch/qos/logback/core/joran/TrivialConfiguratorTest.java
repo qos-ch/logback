@@ -28,8 +28,8 @@ import java.util.function.Supplier;
 import java.util.jar.JarOutputStream;
 import java.util.zip.ZipEntry;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -49,7 +49,7 @@ public class TrivialConfiguratorTest {
     Context context = new ContextBase();
     HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // rule store is case-insensitive
         rulesMap.put(new ElementSelector("x"), () -> new TopElementAction());
