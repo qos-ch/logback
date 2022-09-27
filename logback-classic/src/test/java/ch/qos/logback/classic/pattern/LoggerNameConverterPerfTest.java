@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,7 +20,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.testUtil.Gaussian;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 
-@Ignore
+@Disabled
 public class LoggerNameConverterPerfTest {
 
     static final String NAMES_FILE = ClassicTestConstants.INPUT_PREFIX + "fqcn.txt";
@@ -39,7 +39,7 @@ public class LoggerNameConverterPerfTest {
 
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @BeforeClass
+    @BeforeAll
     static public void loadClassNames() throws IOException {
 
         NAMES_LIST = Files.lines(Paths.get(NAMES_FILE)).collect(Collectors.toList());
@@ -51,7 +51,7 @@ public class LoggerNameConverterPerfTest {
         System.out.println("names list size=" + SIZE);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         OnConsoleStatusListener ocsl = new OnConsoleStatusListener();
         ocsl.setContext(loggerContext);
@@ -62,7 +62,7 @@ public class LoggerNameConverterPerfTest {
         loggerConverter.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
 
     }

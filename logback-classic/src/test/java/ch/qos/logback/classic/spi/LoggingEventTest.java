@@ -16,8 +16,8 @@ package ch.qos.logback.classic.spi;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
@@ -27,7 +27,7 @@ public class LoggingEventTest {
     LoggerContext loggerContext = new LoggerContext();
     Logger logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 

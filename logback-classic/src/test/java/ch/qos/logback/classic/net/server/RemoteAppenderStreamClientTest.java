@@ -20,8 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -44,7 +44,7 @@ public class RemoteAppenderStreamClientTest {
     private LoggingEvent event;
     private RemoteAppenderStreamClient client;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 

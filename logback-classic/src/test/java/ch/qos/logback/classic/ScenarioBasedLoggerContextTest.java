@@ -19,8 +19,8 @@ import static org.junit.Assert.assertNull;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.control.ControlLogger;
 import ch.qos.logback.classic.control.ControlLoggerContext;
@@ -49,7 +49,7 @@ public class ScenarioBasedLoggerContextTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void testLengthLong() {
         doScenarioedTest(100 * 1000);
     }

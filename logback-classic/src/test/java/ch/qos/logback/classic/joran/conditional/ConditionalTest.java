@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -46,13 +46,13 @@ public class ConditionalTest {
     int diff = RandomUtil.getPositiveInt();
     String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
-    @Before
+    @BeforeEach
     public void setUp() throws UnknownHostException {
         context.setName("c" + diff);
         context.putProperty("randomOutputDir", randomOutputDir);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         StatusPrinter.printIfErrorsOccured(context);
     }

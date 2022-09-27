@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.classic.rolling;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -44,12 +44,12 @@ public class UniqueFileTest {
     int diff = RandomUtil.getPositiveInt() % 1000;
     String diffAsStr = Integer.toString(diff);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         System.setProperty(UNIK_DIFF, diffAsStr);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty(UNIK_DIFF);
     }

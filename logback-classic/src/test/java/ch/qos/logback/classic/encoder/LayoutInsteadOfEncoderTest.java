@@ -17,8 +17,8 @@ import static ch.qos.logback.core.CoreConstants.CODES_URL;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -38,7 +38,7 @@ public class LayoutInsteadOfEncoderTest {
     JoranConfigurator jc = new JoranConfigurator();
     LoggerContext loggerContext = new LoggerContext();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         jc.setContext(loggerContext);
 

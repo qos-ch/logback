@@ -16,10 +16,10 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -36,7 +36,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 
 import java.nio.charset.Charset;
 
-@Ignore
+@Disabled
 public class SyslogAppenderTest {
 
     private static final String SYSLOG_PREFIX_REGEX = "<\\d{2}>\\w{3} [\\d ]\\d \\d{2}(:\\d{2}){2} [\\w.-]* ";
@@ -47,13 +47,13 @@ public class SyslogAppenderTest {
     String loggerName = this.getClass().getName();
     Logger logger = lc.getLogger(loggerName);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc.setName("test");
         sa.setContext(lc);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

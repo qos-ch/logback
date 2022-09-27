@@ -13,19 +13,14 @@
  */
 package ch.qos.logback.classic.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-
-import org.junit.Ignore;
-import org.junit.Test;
-import ch.qos.logback.core.testUtil.RandomUtil;
 
 public class LogbackMDCAdapterTest {
 
@@ -44,13 +39,13 @@ public class LogbackMDCAdapterTest {
     @Test
     public void LOGBACK_442() throws InterruptedException {
         Map<String, String> parentHM = getMapFromMDCAdapter(mdcAdapter);
-        assertNull(parentHM);
+        Assertions.assertNull(parentHM);
 
         ChildThreadForMDCAdapter childThread = new ChildThreadForMDCAdapter(mdcAdapter);
         childThread.start();
         childThread.join();
-        assertTrue(childThread.successul);
-        assertNull(childThread.childHM);
+        Assertions.assertTrue(childThread.successul);
+        Assertions.assertNull(childThread.childHM);
     }
 
     @Test
@@ -64,7 +59,7 @@ public class LogbackMDCAdapterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void sequenceWithGet() {
         mdcAdapter.put("k0", "v0");
         Map<String, String> map0 = mdcAdapter.getPropertyMap();
@@ -75,7 +70,7 @@ public class LogbackMDCAdapterTest {
         witness.put("k0", "v0");
         witness.put("k1", "v1");
 
-        assertEquals(witness, mdcAdapter.getPropertyMap());
+        Assertions.assertEquals(witness, mdcAdapter.getPropertyMap());
     }
 
     @Test
@@ -84,7 +79,7 @@ public class LogbackMDCAdapterTest {
         Map<String, String> map0 = mdcAdapter.getPropertyMap(); // point 0
         mdcAdapter.put("k0", "v1"); // new map should be created
         // verify that map0 is that in point 0
-        assertEquals("v0", map0.get("k0"));
+        Assertions.assertEquals("v0", map0.get("k0"));
     }
 
     @Test
@@ -95,13 +90,13 @@ public class LogbackMDCAdapterTest {
         Map<String, String> map0 = mdcAdapter.getPropertyMap(); // point 0
         mdcAdapter.put("k0", "v1"); // new map should be created
         // verify that map0 is that in point 0
-        assertEquals("v0", map0.get("k0"));
-        assertEquals("v1", map0.get("k1"));
+        Assertions.assertEquals("v0", map0.get("k0"));
+        Assertions.assertEquals("v1", map0.get("k1"));
 
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void sequenceWithCopyContextMap() {
         mdcAdapter.put("k0", "v0");
         Map<String, String> map0 = mdcAdapter.getPropertyMap();
@@ -109,7 +104,7 @@ public class LogbackMDCAdapterTest {
         mdcAdapter.put("k1", "v1"); // no map copy required
 
         // verify that map0 is the same instance and that value was updated
-        assertSame(map0, mdcAdapter.getPropertyMap());
+        Assertions.assertSame(map0, mdcAdapter.getPropertyMap());
     }
 
     // =================================================
@@ -133,19 +128,19 @@ public class LogbackMDCAdapterTest {
         mdcAdapter.put(firstKey, firstKey + B_SUFFIX);
         childThread.join();
 
-        assertNull(mdcAdapter.get(secondKey));
-        assertTrue(childThread.successful);
+        Assertions.assertNull(mdcAdapter.get(secondKey));
+        Assertions.assertTrue(childThread.successful);
 
         Map<String, String> parentHM = getMapFromMDCAdapter(mdcAdapter);
-        assertTrue(parentHM != childThread.childHM);
+        Assertions.assertTrue(parentHM != childThread.childHM);
 
         HashMap<String, String> parentHMWitness = new HashMap<String, String>();
         parentHMWitness.put(firstKey, firstKey + B_SUFFIX);
-        assertEquals(parentHMWitness, parentHM);
+        Assertions.assertEquals(parentHMWitness, parentHM);
 
         HashMap<String, String> childHMWitness = new HashMap<String, String>();
         childHMWitness.put(secondKey, secondKey + A_SUFFIX);
-        assertEquals(childHMWitness, childThread.childHM);
+        Assertions.assertEquals(childHMWitness, childThread.childHM);
 
     }
 
@@ -156,20 +151,20 @@ public class LogbackMDCAdapterTest {
         String secondKey = "o" + diff;
 
         mdcAdapter.put(firstKey, firstKey + A_SUFFIX);
-        assertEquals(firstKey + A_SUFFIX, mdcAdapter.get(firstKey));
+        Assertions.assertEquals(firstKey + A_SUFFIX, mdcAdapter.get(firstKey));
 
         Thread clearer = new ChildThread(mdcAdapter, firstKey, secondKey) {
             @Override
             public void run() {
                 mdcAdapter.clear();
-                assertNull(mdcAdapter.get(firstKey));
+                Assertions.assertNull(mdcAdapter.get(firstKey));
             }
         };
 
         clearer.start();
         clearer.join();
 
-        assertEquals(firstKey + A_SUFFIX, mdcAdapter.get(firstKey));
+        Assertions.assertEquals(firstKey + A_SUFFIX, mdcAdapter.get(firstKey));
     }
 
     // see https://jira.qos.ch/browse/LOGBACK-434
@@ -204,7 +199,7 @@ public class LogbackMDCAdapterTest {
             mdcAdapter.put("K" + i, "V" + i);
         }
         childThread.join();
-        assertTrue(childThread.successful);
+        Assertions.assertTrue(childThread.successful);
     }
 
     Map<String, String> getMapFromMDCAdapter(LogbackMDCAdapter lma) {
@@ -260,11 +255,11 @@ public class LogbackMDCAdapterTest {
         @Override
         public void run() {
             logbackMDCAdapter.put(secondKey, secondKey + A_SUFFIX);
-            assertNull(logbackMDCAdapter.get(firstKey));
+            Assertions.assertNull(logbackMDCAdapter.get(firstKey));
             if (countDownLatch != null)
                 countDownLatch.countDown();
-            assertNotNull(logbackMDCAdapter.get(secondKey));
-            assertEquals(secondKey + A_SUFFIX, logbackMDCAdapter.get(secondKey));
+            Assertions.assertNotNull(logbackMDCAdapter.get(secondKey));
+            Assertions.assertEquals(secondKey + A_SUFFIX, logbackMDCAdapter.get(secondKey));
 
             successful = true;
             childHM = getMapFromMDCAdapter(logbackMDCAdapter);

@@ -13,8 +13,8 @@ import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
@@ -24,7 +24,7 @@ public class IfNestedWithinSecondPhaseElementSCTest {
     IfNestedWithinSecondPhaseElementSC inwspeChecker = new IfNestedWithinSecondPhaseElementSC();
     StatusChecker statusChecker = new StatusChecker(context);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         inwspeChecker.setContext(context);
     }

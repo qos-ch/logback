@@ -17,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.BasicContextListener.UpdateType;
@@ -28,7 +28,7 @@ public class ContextListenerTest {
     LoggerContext context;
     BasicContextListener listener;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         context = new LoggerContext();
         listener = new BasicContextListener();

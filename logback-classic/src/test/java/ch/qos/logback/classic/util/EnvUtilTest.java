@@ -1,12 +1,18 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.core.util.EnvUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
 public class EnvUtilTest {
 
+
+    @BeforeEach
+    public void setUp() throws Exception {
+
+    }
 
     // this test runs fine if run from logback-classic but fails when
     // run from logback-core. This is due to the fact that package information

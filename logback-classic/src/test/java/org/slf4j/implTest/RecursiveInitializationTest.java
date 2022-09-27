@@ -13,9 +13,9 @@
  */
 package org.slf4j.implTest;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
@@ -30,13 +30,13 @@ public class RecursiveInitializationTest {
 
     int diff = RandomUtil.getPositiveInt();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         System.setProperty(ClassicConstants.CONFIG_FILE_PROPERTY, "recursiveInit.xml");
         LoggerFactoryFriend.reset();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
     }

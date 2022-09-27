@@ -21,10 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import ch.qos.logback.core.spi.BasicSequenceNumberGenerator;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.slf4j.MarkerFactory;
 
@@ -60,7 +59,7 @@ public class ConverterTest {
         return new Exception(msg, cause);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         Exception rootEx = getException("Innermost", null);
         Exception nestedEx = getException("Nested", rootEx);

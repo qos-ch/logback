@@ -20,10 +20,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.net.NOPOutputStream;
@@ -45,7 +45,7 @@ import ch.qos.logback.core.CoreConstants;
 //   average time per logging event: 4034
 //   average size 57, with params, average size=148
 
-@Ignore
+@Disabled
 public class LoggingEventSerializationPerfTest {
 
     static int LOOP_LEN = 10 * 1000;
@@ -53,13 +53,13 @@ public class LoggingEventSerializationPerfTest {
     NOPOutputStream noos = new NOPOutputStream();
     ObjectOutputStream oos;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         MDC.clear();
         oos = new ObjectOutputStream(noos);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

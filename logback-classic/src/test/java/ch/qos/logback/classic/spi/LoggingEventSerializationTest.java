@@ -26,9 +26,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
@@ -50,7 +50,7 @@ public class LoggingEventSerializationTest {
     ObjectInputStream inputStream;
     PreSerializationTransformer<ILoggingEvent> pst = new LoggingEventPreSerializationTransformer();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         loggerContext = new LoggerContext();
         loggerContext.setName("testContext");
@@ -60,7 +60,7 @@ public class LoggingEventSerializationTest {
         oos = new ObjectOutputStream(bos);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         loggerContext = null;
         logger = null;

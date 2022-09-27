@@ -30,10 +30,10 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -51,7 +51,7 @@ import ch.qos.logback.core.status.Status;
  *
  * @author Carl Harris
  */
-@Ignore
+@Disabled
 public class SocketReceiverTest {
 
     private static final int DELAY = 1000;
@@ -67,7 +67,7 @@ public class SocketReceiverTest {
 
     private InstrumentedSocketReceiver receiver = new InstrumentedSocketReceiver();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
         socket = new Socket(serverSocket.getInetAddress(), serverSocket.getLocalPort());
@@ -82,7 +82,7 @@ public class SocketReceiverTest {
         logger.addAppender(appender);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         receiver.stop();
         ExecutorService executor = lc.getExecutorService();

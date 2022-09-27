@@ -26,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import com.icegreen.greenmail.util.DummySSLSocketFactory;
@@ -78,7 +78,7 @@ public class SMTPAppender_GreenTest {
     static String REQUIRED_USERNAME = "alice";
     static String REQUIRED_PASSWORD = "alicepass";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         StatusListenerConfigHelper.addOnConsoleListenerInstance(loggerContext, new OnConsoleStatusListener());
         MDC.clear();
@@ -103,7 +103,7 @@ public class SMTPAppender_GreenTest {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         greenMailServer.stop();
     }
@@ -476,7 +476,7 @@ public class SMTPAppender_GreenTest {
     static String GMAIL_USER_NAME = "xx@gmail.com";
     static String GMAIL_PASSWORD = "xxx";
 
-    @Ignore
+    @Disabled
     @Test
     public void authenticatedGmailStartTLS() throws Exception {
         smtpAppender.setSMTPHost("smtp.gmail.com");
@@ -499,7 +499,7 @@ public class SMTPAppender_GreenTest {
         StatusPrinter.print(loggerContext);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void authenticatedGmail_SSL() throws Exception {
         smtpAppender.setSMTPHost("smtp.gmail.com");

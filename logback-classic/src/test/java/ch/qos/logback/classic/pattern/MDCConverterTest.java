@@ -16,9 +16,9 @@ package ch.qos.logback.classic.pattern;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.Level;
@@ -34,7 +34,7 @@ public class MDCConverterTest {
     MDCConverter converter;
     int diff = RandomUtil.getPositiveInt();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         converter = new MDCConverter();
@@ -42,7 +42,7 @@ public class MDCConverterTest {
         MDC.clear();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         converter.stop();

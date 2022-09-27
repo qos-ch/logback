@@ -13,8 +13,7 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -22,6 +21,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import org.junit.jupiter.api.Test;
 
 public class EnsureExceptionHandlingTest {
 
@@ -32,7 +32,7 @@ public class EnsureExceptionHandlingTest {
     static final String XTH = "xth";
     static final String XCC = "xcc";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         pl.setContext(lc);
         pl.getInstanceConverterMap().put(XTH, XThrowableHandlingConverter.class.getName());

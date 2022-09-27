@@ -16,9 +16,9 @@ package ch.qos.logback.classic.net;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
@@ -35,7 +35,7 @@ public class DilutedSMTPAppenderTest {
     CyclicBufferTracker<ILoggingEvent> cbTracker;
     CyclicBuffer<ILoggingEvent> cb;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         LoggerContext lc = new LoggerContext();
         appender = new SMTPAppender();
@@ -62,7 +62,7 @@ public class DilutedSMTPAppenderTest {
         return layout;
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         appender = null;
     }

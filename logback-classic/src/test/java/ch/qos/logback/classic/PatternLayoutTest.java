@@ -26,8 +26,8 @@ import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import static ch.qos.logback.classic.ClassicTestConstants.ISO_REGEX;
@@ -53,7 +53,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         le = makeLoggingEvent(aMessage, ex);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         pl.setContext(lc);
     }

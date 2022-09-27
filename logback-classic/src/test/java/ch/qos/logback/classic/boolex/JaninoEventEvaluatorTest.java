@@ -20,8 +20,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.slf4j.MarkerFactory;
 
@@ -116,7 +116,7 @@ public class JaninoEventEvaluatorTest {
         MDC.remove(k);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void marker() throws Exception {
         jee.setExpression("markerList.stream().anyMatch( m -> m.contains(\"BLUE\"))");
@@ -128,7 +128,7 @@ public class JaninoEventEvaluatorTest {
         assertTrue(jee.evaluate(event));
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void withNullMarker_LBCORE_118() throws Exception {
         jee.setExpression("markerList.contains(\"BLUE\")");

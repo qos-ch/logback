@@ -24,10 +24,10 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -45,7 +45,7 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
  * interface, and validate that it receives messages and delivers them to its
  * appender.
  */
-@Ignore
+@Disabled
 public class ServerSocketReceiverFunctionalTest {
 
     private static final int EVENT_COUNT = 10;
@@ -57,7 +57,7 @@ public class ServerSocketReceiverFunctionalTest {
     private InstrumentedServerSocketReceiver receiver;
     private LoggerContext lc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
 
@@ -75,7 +75,7 @@ public class ServerSocketReceiverFunctionalTest {
         receiver.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         receiver.stop();
         ExecutorService executor = lc.getScheduledExecutorService();

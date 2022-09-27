@@ -18,14 +18,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.pattern.LineOfCallerConverter;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.pattern.DynamicConverter;
+import org.junit.jupiter.api.Test;
 
 public class FluentAPILocationExtractionTest {
     static public class WithLocationInfoListAppender extends AppenderBase<ILoggingEvent> {
@@ -43,7 +43,7 @@ public class FluentAPILocationExtractionTest {
     Logger logger = lc.getLogger(ConverterTest.class);
     WithLocationInfoListAppender wlila = new WithLocationInfoListAppender();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         wlila.setContext(lc);
         wlila.start();
@@ -51,7 +51,7 @@ public class FluentAPILocationExtractionTest {
         logger.addAppender(wlila);
     }
 
-    @Test 
+    @Test
     public void smoke() {
         logger.addAppender(wlila);
         // line number to retain is the next line's number

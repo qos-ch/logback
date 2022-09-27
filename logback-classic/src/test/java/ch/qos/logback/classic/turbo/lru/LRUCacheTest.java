@@ -18,10 +18,10 @@ import static org.junit.Assert.assertEquals;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class LRUCacheTest {
 
     @Test
@@ -76,7 +76,7 @@ public class LRUCacheTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     // slow test that is known to pass
     public void multiThreadedScenario() throws InterruptedException {
         int cacheSize = 100;

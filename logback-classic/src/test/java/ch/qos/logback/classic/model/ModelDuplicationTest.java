@@ -3,10 +3,9 @@ package ch.qos.logback.classic.model;
 import static org.junit.Assert.assertEquals;
 //import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import ch.qos.logback.core.model.ImportModel;
 import ch.qos.logback.core.model.Model;
+import org.junit.jupiter.api.Test;
 
 public class ModelDuplicationTest {
 

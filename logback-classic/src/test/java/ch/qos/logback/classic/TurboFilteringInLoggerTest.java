@@ -18,8 +18,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 
@@ -34,7 +34,7 @@ public class TurboFilteringInLoggerTest {
     Logger logger;
     Marker blueMarker = MarkerFactory.getMarker(BLUE);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         context = new LoggerContext();
         context.setName("test");

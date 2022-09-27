@@ -14,13 +14,15 @@
 package ch.qos.logback.classic;
 
 import java.io.ByteArrayInputStream;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
+import org.junit.jupiter.api.Timeout;
 
 public class LoggerContextDeadlockTest {
 
@@ -28,16 +30,17 @@ public class LoggerContextDeadlockTest {
     JoranConfigurator jc = new JoranConfigurator();
     GetLoggerThread getLoggerThread = new GetLoggerThread(loggerContext);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         jc.setContext(loggerContext);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 
-    @Test(timeout = 20000)
+    @Test
+    @Timeout(value = 20, unit= TimeUnit.SECONDS)
     public void testLBCLASSIC_81() throws JoranException {
 
         getLoggerThread.start();

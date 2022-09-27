@@ -36,9 +36,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -56,6 +56,7 @@ import ch.qos.logback.core.testUtil.FileTestUtil;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.Timeout;
 
 public class ReconfigureOnChangeTaskTest {
     final static int THREAD_COUNT = 5;
@@ -84,7 +85,7 @@ public class ReconfigureOnChangeTaskTest {
     Logger logger = loggerContext.getLogger(this.getClass());
     StatusChecker statusChecker = new StatusChecker(loggerContext);
 
-    @BeforeClass
+    @BeforeAll
     static public void classSetup() {
         FileTestUtil.makeTestOutputDir();
     }
@@ -102,7 +103,7 @@ public class ReconfigureOnChangeTaskTest {
     }
 
 
-    @Before
+    @BeforeEach
     public void before() {
         System.out.println(this.getClass().getName()+"#before");
     }
@@ -111,7 +112,8 @@ public class ReconfigureOnChangeTaskTest {
 //        gc.run(file);
 //    }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void checkBasicLifecyle() throws JoranException, IOException, InterruptedException {
         File file = new File(SCAN1_FILE_AS_STR);
         configure(file);
@@ -137,7 +139,8 @@ public class ReconfigureOnChangeTaskTest {
         return configurationWatchList.getCopyOfFileWatchList();
     }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void scanWithFileInclusion() throws JoranException, IOException, InterruptedException {
         File topLevelFile = new File(INCLUSION_SCAN_TOPLEVEL0_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER0_AS_STR);
@@ -149,7 +152,8 @@ public class ReconfigureOnChangeTaskTest {
         checkThatTaskCanBeStopped();
     }
 
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void scanWithResourceInclusion() throws JoranException, IOException, InterruptedException {
         File topLevelFile = new File(INCLUSION_SCAN_TOP_BY_RESOURCE_AS_STR);
         File innerFile = new File(INCLUSION_SCAN_INNER1_AS_STR);
@@ -160,7 +164,8 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     // See also http://jira.qos.ch/browse/LOGBACK-338
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void reconfigurationIsNotPossibleInTheAbsenceOfATopFile()
             throws IOException, JoranException, InterruptedException {
         String configurationStr = "<configuration scan=\"true\" scanPeriod=\"50 millisecond\"><include resource=\"asResource/inner1.xml\"/></configuration>";
@@ -178,7 +183,8 @@ public class ReconfigureOnChangeTaskTest {
         assertEquals(0, loggerContext.getCopyOfScheduledFutures().size());
     }
 
-    @Test(timeout = 3000L)
+    @Test
+    @Timeout(value = 3, unit= TimeUnit.SECONDS)
     public void fallbackToSafe_FollowedByRecovery() throws IOException, JoranException, InterruptedException {
         String path = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_fallbackToSafe-" + diff + ".xml";
         File topLevelFile = new File(path);
@@ -220,7 +226,8 @@ public class ReconfigureOnChangeTaskTest {
         }
     }
 
-    @Test(timeout = 3000L)
+    @Test
+    @Timeout(value = 3, unit= TimeUnit.SECONDS)
     public void fallbackToSafeWithIncludedFile_FollowedByRecovery()
             throws IOException, JoranException, InterruptedException, ExecutionException {
         String topLevelFileAsStr = CoreTestConstants.OUTPUT_DIR_PREFIX + "reconfigureOnChangeConfig_top-" + diff
@@ -359,7 +366,8 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     // check for deadlocks
-    @Test(timeout = 4000L)
+    @Test
+    @Timeout(value = 4, unit= TimeUnit.SECONDS)
     public void scan_LOGBACK_474() throws JoranException, IOException, InterruptedException {
         loggerContext.setName("scan_LOGBACK_474");
         File file = new File(SCAN_LOGBACK_474_FILE_AS_STR);

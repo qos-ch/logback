@@ -29,10 +29,10 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -53,11 +53,11 @@ public class ContextInitializerTest {
     LoggerContext loggerContext = new LoggerContext();
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
         System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
@@ -66,7 +66,7 @@ public class ContextInitializerTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     // this test works only if logback-test.xml or logback.xml files are on the
     // classpath.
     // However, this is something we try to avoid in order to simplify the life
