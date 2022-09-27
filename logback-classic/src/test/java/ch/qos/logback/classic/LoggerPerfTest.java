@@ -15,9 +15,9 @@ package ch.qos.logback.classic;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
@@ -25,7 +25,7 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
 
-@Ignore
+@Disabled
 public class LoggerPerfTest {
 
     static final long NANOS_IN_ONE_SEC = 1000 * 1000 * 1000L;
@@ -36,7 +36,7 @@ public class LoggerPerfTest {
     Logger lbLogger = lc.getLogger(this.getClass());
     org.slf4j.Logger logger = lbLogger;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 

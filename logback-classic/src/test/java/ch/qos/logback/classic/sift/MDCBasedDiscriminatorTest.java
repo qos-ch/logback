@@ -19,9 +19,9 @@ import ch.qos.logback.classic.LoggerContext;
 
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import org.slf4j.MDC;
 
@@ -46,7 +46,7 @@ public class MDCBasedDiscriminatorTest {
     String value = "MDCBasedDiscriminatorTest_val" + diff;
     LoggingEvent event;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MDC.clear();
         discriminator.setContext(context);
@@ -56,7 +56,7 @@ public class MDCBasedDiscriminatorTest {
         assertTrue(discriminator.isStarted());
     }
 
-    @After
+    @AfterEach
     public void teaDown() {
         MDC.clear();
     }

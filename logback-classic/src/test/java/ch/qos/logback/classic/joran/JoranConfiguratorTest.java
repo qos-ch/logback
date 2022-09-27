@@ -26,11 +26,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import ch.qos.logback.core.model.ShutdownHookModel;
-import ch.qos.logback.core.model.processor.ImplicitModelHandler;
-import ch.qos.logback.core.model.processor.ShutdownHookModelHandler;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 import org.slf4j.event.KeyValuePair;
 
@@ -475,7 +472,7 @@ public class JoranConfiguratorTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void onConsoleRetro() throws JoranException, IOException, InterruptedException {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/onConsoleRetro.xml";
         configure(configFileAsStr);

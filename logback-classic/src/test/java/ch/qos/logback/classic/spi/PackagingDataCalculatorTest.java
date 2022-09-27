@@ -20,8 +20,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.util.TestHelper;
 import ch.qos.logback.core.util.SystemInfo;
@@ -75,7 +75,7 @@ public class PackagingDataCalculatorTest {
         return (1.0 * System.nanoTime() - start) / len / 1000;
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void perfTest() {
         int len = 1000;

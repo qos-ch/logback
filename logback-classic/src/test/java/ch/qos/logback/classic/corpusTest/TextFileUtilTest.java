@@ -20,9 +20,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.junit.Test;
-
 import ch.qos.logback.classic.corpus.TextFileUtil;
+import org.junit.jupiter.api.Test;
 
 public class TextFileUtilTest {
 

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;

@@ -16,8 +16,8 @@ package ch.qos.logback.classic.boolex;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MarkerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -31,7 +31,7 @@ public class OnMarkerEvaluatorTest {
     LoggingEvent event = makeEvent();
     OnMarkerEvaluator evaluator = new OnMarkerEvaluator();
 
-    @Before
+    @BeforeEach
     public void before() {
         evaluator.setContext(lc);
     }

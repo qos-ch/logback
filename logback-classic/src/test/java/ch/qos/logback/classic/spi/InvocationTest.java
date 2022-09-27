@@ -4,9 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.PrintStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
@@ -19,12 +19,12 @@ public class InvocationTest {
     final String loggerName = this.getClass().getName();
     StringPrintStream sps = new StringPrintStream(oldErr, true);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         System.setErr(sps);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         LoggerFactoryFriend.reset();
         System.setErr(oldErr);

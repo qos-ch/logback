@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -46,7 +46,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     int fileIndexCounter = -1;
     int sizeThreshold;
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
         lc.setName("test");
@@ -54,7 +54,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         lc.putProperty("randomOutputDir", randomOutputDir);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

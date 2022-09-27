@@ -20,8 +20,8 @@ import static org.junit.Assert.assertNull;
 import java.util.HashMap;
 
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 public class MDCTest {
@@ -57,7 +57,7 @@ public class MDCTest {
 
 
     // this test shows the
-    @Ignore
+    @Disabled
     @Test
     public void closableTestA() {
         String key = "key-" + diff;

@@ -16,8 +16,8 @@ package org.dummy;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
@@ -39,7 +39,7 @@ public class Log4jInvocation {
     LoggerContext lc;
     ch.qos.logback.classic.Logger rootLogger;
 
-    @Before
+    @BeforeEach
     public void fixture() {
         lc = (LoggerContext) LoggerFactory.getILoggerFactory();
         lc.reset();

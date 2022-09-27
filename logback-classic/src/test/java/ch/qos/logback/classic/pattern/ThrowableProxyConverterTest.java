@@ -27,9 +27,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -47,13 +47,13 @@ public class ThrowableProxyConverterTest {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         tpc.setContext(lc);
         tpc.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

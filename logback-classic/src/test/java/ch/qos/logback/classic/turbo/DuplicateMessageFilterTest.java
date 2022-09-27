@@ -15,7 +15,7 @@ package ch.qos.logback.classic.turbo;
 
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.spi.FilterReply;
 

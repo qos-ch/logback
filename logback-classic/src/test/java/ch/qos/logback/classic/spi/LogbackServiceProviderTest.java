@@ -2,9 +2,8 @@ package ch.qos.logback.classic.spi;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
-
 import ch.qos.logback.classic.LoggerContext;
+import org.junit.jupiter.api.Test;
 
 public class LogbackServiceProviderTest {
 

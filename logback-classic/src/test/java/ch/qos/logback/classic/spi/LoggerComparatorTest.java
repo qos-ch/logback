@@ -13,12 +13,13 @@
  */
 package ch.qos.logback.classic.spi;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+
 import static org.junit.Assert.*;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import org.junit.jupiter.api.Test;
 
 public class LoggerComparatorTest {
 
@@ -30,7 +31,7 @@ public class LoggerComparatorTest {
     Logger a = lc.getLogger("a");
     Logger b = lc.getLogger("b");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
 
     }

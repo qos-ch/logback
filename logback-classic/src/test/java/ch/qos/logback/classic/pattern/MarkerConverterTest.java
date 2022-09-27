@@ -15,9 +15,9 @@ package ch.qos.logback.classic.pattern;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.IMarkerFactory;
 import org.slf4j.Marker;
 import org.slf4j.helpers.BasicMarkerFactory;
@@ -35,14 +35,14 @@ public class MarkerConverterTest {
     // use a different factory for each test so that they are independent
     IMarkerFactory markerFactory = new BasicMarkerFactory();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         converter = new MarkerConverter();
         converter.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         converter.stop();

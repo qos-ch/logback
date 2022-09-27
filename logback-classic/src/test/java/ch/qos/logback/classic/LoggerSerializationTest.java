@@ -24,9 +24,9 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
@@ -47,7 +47,7 @@ public class LoggerSerializationTest {
     HardenedLoggingEventInputStream hardenedLoggingEventInputStream;
     List<String> whitelist = new ArrayList<String>();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         lc.setName("testContext");
@@ -58,7 +58,7 @@ public class LoggerSerializationTest {
         whitelist.add(Foo.class.getName());
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         logger = null;

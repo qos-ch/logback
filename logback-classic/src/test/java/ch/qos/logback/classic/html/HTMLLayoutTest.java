@@ -24,10 +24,10 @@ import java.util.List;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.EntityResolver;
 
 import ch.qos.logback.classic.ClassicTestConstants;
@@ -51,7 +51,7 @@ public class HTMLLayoutTest {
     Logger root;
     HTMLLayout layout;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         lc.setName("default");
@@ -66,7 +66,7 @@ public class HTMLLayoutTest {
 
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         layout = null;
@@ -191,7 +191,7 @@ public class HTMLLayoutTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void rawLimit() throws Exception {
         StringBuilder sb = new StringBuilder();
         String header = layout.getFileHeader();

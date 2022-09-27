@@ -23,18 +23,18 @@ import static org.junit.Assert.fail;
 
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.status.StatusManager;
+import org.junit.jupiter.api.Test;
 
 public class LoggerContextTest {
     LoggerContext lc;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         lc.setName("x");

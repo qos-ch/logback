@@ -18,9 +18,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -28,8 +29,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.Duration;
+import org.junit.jupiter.api.Timeout;
 
-@Ignore
+@Disabled
 public class SocketAppenderMessageLossTest {
     int runLen = 100;
     Duration reconnectionDelay = new Duration(1000);
@@ -46,7 +48,8 @@ public class SocketAppenderMessageLossTest {
         runTest(socketAppender);
     }
 
-    @Test(timeout = TIMEOUT)
+    @Test
+    @Timeout(value = TIMEOUT, unit= TimeUnit.MILLISECONDS)
     public void smallQueueSocketAppender() throws Exception {
 
         SocketAppender socketAppender = new SocketAppender();
@@ -56,7 +59,8 @@ public class SocketAppenderMessageLossTest {
         runTest(socketAppender);
     }
 
-    @Test(timeout = TIMEOUT)
+    @Test
+    @Timeout(value = TIMEOUT, unit= TimeUnit.MILLISECONDS)
     public void largeQueueSocketAppender() throws Exception {
         SocketAppender socketAppender = new SocketAppender();
         socketAppender.setReconnectionDelay(reconnectionDelay);

@@ -21,9 +21,9 @@ import java.io.StringWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -40,14 +40,14 @@ public class ExtendedThrowableProxyConverterTest {
     StringWriter sw = new StringWriter();
     PrintWriter pw = new PrintWriter(sw);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc.setPackagingDataEnabled(true);
         etpc.setContext(lc);
         etpc.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

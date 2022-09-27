@@ -19,8 +19,8 @@ import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import static org.junit.Assert.*;
@@ -40,7 +40,7 @@ public class AsyncAppenderTest {
             UnsynchronizedAppenderBase.class.getName());
     int diff = RandomUtil.getPositiveInt();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         onConsoleStatusListener.setContext(context);
         context.getStatusManager().add(onConsoleStatusListener);

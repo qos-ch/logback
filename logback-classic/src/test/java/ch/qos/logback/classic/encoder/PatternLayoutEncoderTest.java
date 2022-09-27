@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import ch.qos.logback.classic.PatternLayout;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -37,7 +37,7 @@ public class PatternLayoutEncoderTest {
     Logger logger = context.getLogger(PatternLayoutEncoderTest.class);
     Charset utf8Charset = Charset.forName("UTF-8");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ple.setPattern("%m");
         ple.setContext(context);

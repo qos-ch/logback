@@ -19,8 +19,15 @@ import java.io.ObjectOutputStream;
 import ch.qos.logback.access.spi.IAccessEvent;
 import junit.framework.TestCase;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-public class SerializationPerfTest extends TestCase {
+import static org.junit.jupiter.api.Assertions.fail;
+
+@Disabled
+public class SerializationPerfTest {
 
     ObjectOutputStream oos;
 
@@ -29,18 +36,18 @@ public class SerializationPerfTest extends TestCase {
     int pauseFrequency = 10;
     long pauseLengthInMillis = 20;
 
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         oos = new ObjectOutputStream(new NOPOutputStream());
-
     }
 
+    @AfterEach
     public void tearDown() throws Exception {
-        super.tearDown();
         oos.close();
         oos = null;
     }
 
+    @Test
     public void test1() throws Exception {
         // first run for just in time compiler
         int resetCounter = 0;

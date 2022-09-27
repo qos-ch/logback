@@ -90,7 +90,7 @@
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
-    
+
     <dependency>
       <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
@@ -106,7 +106,7 @@
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
-    </dependency>        
+    </dependency>
 
     <dependency>
       <groupId>com.icegreen</groupId>
@@ -137,14 +137,14 @@
     </resources>
 
     <plugins>
-     
+
        <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
             <manifestEntries>
-                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>	
+                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                 <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
             </manifestEntries>
             <manifestFile>
@@ -166,31 +166,45 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.8</version>
+        <version>${maven-antrun-plugin.version}</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-junit</artifactId>
-            <version>1.9.0</version>
+            <version>${ant.version}</version>
           </dependency>
           <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junitlauncher</artifactId>
+            <version>${ant.version}</version>
           </dependency>
+
+          <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-api.version}</version>
+          </dependency>
+
+
+          <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>${junit-vintage-engine.version}</version>
+          </dependency>
+
           <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
             <version>${hamcrest.version}</version>
           </dependency>
-          
+
         </dependencies>
 
         <executions>
           <!-- Disabled osgi tests given current OSGi/ServiceLoader integration failure -->
-          <!-- 
+          <!--
           <execution>
-          
+
             <id>ant-osgi-test</id>
             <phase>package</phase>
             <configuration>
@@ -304,10 +318,10 @@
             </Import-Package>
             <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
             <!-- Needed to integrate ServiceLoader mechanism with OSGi -->
-            <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability> 
+            <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
             <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
-    
-    
+
+
           </instructions>
         </configuration>
       </plugin>

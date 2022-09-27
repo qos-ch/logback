@@ -21,10 +21,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import ch.qos.logback.classic.ClassicConstants;
@@ -75,12 +75,12 @@ public class SiftingAppenderTest {
         jc.doConfigure(file);
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MDC.clear();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         MDC.clear();
     }
@@ -321,7 +321,7 @@ public class SiftingAppenderTest {
     }
 
     // LOGBACK-1127
-    @Ignore
+    @Disabled
     @Test
     public void programmicSiftingAppender() {
 

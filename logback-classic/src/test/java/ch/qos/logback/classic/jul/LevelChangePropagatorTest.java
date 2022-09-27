@@ -18,8 +18,8 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.testUtil.RandomUtil;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.Assert.*;
 
@@ -28,7 +28,7 @@ public class LevelChangePropagatorTest {
     LoggerContext loggerContext = new LoggerContext();
     LevelChangePropagator levelChangePropagator = new LevelChangePropagator();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         levelChangePropagator.setContext(loggerContext);
         loggerContext.addListener(levelChangePropagator);

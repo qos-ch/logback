@@ -20,8 +20,8 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -43,7 +43,7 @@ public class RootCauseFirstThrowableProxyConverterTest {
     private StringWriter stringWriter = new StringWriter();
     private PrintWriter printWriter = new PrintWriter(stringWriter);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         converter.setContext(context);
         converter.start();

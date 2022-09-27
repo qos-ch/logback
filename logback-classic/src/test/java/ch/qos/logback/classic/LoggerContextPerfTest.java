@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.classic;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.corpus.CorpusModel;
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.contention.ThreadedThroughputCalculator;
 
-@Ignore
+@Disabled
 public class LoggerContextPerfTest {
 
     static int THREAD_COUNT = 10000;
@@ -34,7 +34,7 @@ public class LoggerContextPerfTest {
 
     CorpusModel corpusMaker;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
     }
 

@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import org.junit.Ignore;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 import junit.framework.TestCase;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
@@ -25,9 +28,10 @@ import ch.qos.logback.classic.net.testObjectBuilders.MinimalSer;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;
 import ch.qos.logback.classic.net.testObjectBuilders.TrivialLoggingEventVOBuilder;
 import ch.qos.logback.classic.spi.LoggingEventVO;
+import org.junit.jupiter.api.Test;
 
-@Ignore
-public class SerializationPerfTest extends TestCase {
+@Disabled
+public class SerializationPerfTest {
 
     ObjectOutputStream oos;
 
@@ -89,8 +93,8 @@ public class SerializationPerfTest extends TestCase {
      *
      */
 
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         if (runWithExternalMockServer) {
             oos = new ObjectOutputStream(new Socket("localhost", ExternalMockSocketServer.PORT).getOutputStream());
         } else {
@@ -98,8 +102,8 @@ public class SerializationPerfTest extends TestCase {
         }
     }
 
+    @AfterEach
     public void tearDown() throws Exception {
-        super.tearDown();
         oos.close();
         oos = null;
     }
@@ -126,7 +130,7 @@ public class SerializationPerfTest extends TestCase {
                 }
 
             } catch (IOException ex) {
-                fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             }
         }
 
@@ -153,7 +157,7 @@ public class SerializationPerfTest extends TestCase {
                     pauseCounter = 0;
                 }
             } catch (IOException ex) {
-                fail(ex.getMessage());
+                Assertions.fail(ex.getMessage());
             }
         }
         total /= 1000;
@@ -170,6 +174,7 @@ public class SerializationPerfTest extends TestCase {
     // runPerfTest(builder, "Minimal object externalization");
     // }
 
+    @Test
     public void testWithMinimalSerialization() throws Exception {
         Builder<MinimalSer> builder = new MinimalSerBuilder();
         runPerfTest(builder, "Minimal object serialization");
@@ -180,6 +185,7 @@ public class SerializationPerfTest extends TestCase {
     // runPerfTest(builder, "LoggingEvent object externalization");
     // }
 
+    @Test
     public void testWithSerialization() throws Exception {
         Builder<LoggingEventVO> builder = new TrivialLoggingEventVOBuilder();
         runPerfTest(builder, "LoggingEventVO object serialization");

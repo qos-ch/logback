@@ -17,9 +17,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.time.Instant;
 
-import org.junit.Test;
-
 import ch.qos.logback.classic.spi.LoggingEvent;
+import org.junit.jupiter.api.Test;
 
 public class MicrosecondConverterTest {
 

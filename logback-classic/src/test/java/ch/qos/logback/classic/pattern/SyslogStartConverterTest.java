@@ -17,10 +17,10 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,7 +37,7 @@ public class SyslogStartConverterTest {
     private final String HOSTNAME = findHostname();
     private final Calendar calendar = Calendar.getInstance(Locale.US);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
         converter = new SyslogStartConverter();
@@ -45,7 +45,7 @@ public class SyslogStartConverterTest {
         converter.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         lc = null;
         converter.stop();
@@ -104,7 +104,7 @@ public class SyslogStartConverterTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void hostnameShouldNotIncludeDomain() throws Exception {
         // RFC 3164, section 4.1.2:
         // The Domain Name MUST NOT be included in the HOSTNAME field.

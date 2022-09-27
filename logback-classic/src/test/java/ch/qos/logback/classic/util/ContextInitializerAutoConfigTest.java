@@ -16,10 +16,10 @@ package ch.qos.logback.classic.util;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.ClassicConstants;
@@ -35,19 +35,19 @@ public class ContextInitializerAutoConfigTest {
     org.slf4j.Logger logger = LoggerFactory.getLogger(this.getClass());
     Logger root = (Logger) LoggerFactory.getLogger("root");
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         logger.debug("Hello-didily-odily");
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty(ClassicConstants.CONFIG_FILE_PROPERTY);
         System.clearProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
     }
 
     @Test
-    @Ignore
+    @Disabled
     // this test works only if logback-test.xml or logback.xml files are on the
     // classpath.
     // However, this is something we try to avoid in order to simplify the life
