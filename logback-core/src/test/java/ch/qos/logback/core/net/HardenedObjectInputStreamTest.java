@@ -7,9 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class HardenedObjectInputStreamTest {
 
@@ -18,13 +18,13 @@ public class HardenedObjectInputStreamTest {
     HardenedObjectInputStream inputStream;
     String[] whitelist = new String[] { Innocent.class.getName() };
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         bos = new ByteArrayOutputStream();
         oos = new ObjectOutputStream(bos);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

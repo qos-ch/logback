@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.joran.SimpleConfigurator;
 import ch.qos.logback.core.joran.action.Action;
@@ -46,7 +46,7 @@ public class ImplicitActionTest {
     SimpleConfigurator simpleConfigurator;
     StatusChecker checker = new StatusChecker(fruitContext);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         fruitContext.setName("fruits");
         HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();

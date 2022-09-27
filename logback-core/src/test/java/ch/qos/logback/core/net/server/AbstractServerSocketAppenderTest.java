@@ -22,9 +22,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.net.ServerSocket;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.net.server.test.MockServerListener;
@@ -49,14 +49,14 @@ public class AbstractServerSocketAppenderTest {
     private ServerSocket serverSocket;
     private InstrumentedServerSocketAppenderBase appender;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
         appender = new InstrumentedServerSocketAppenderBase(serverSocket, listener, runner);
         appender.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         serverSocket.close();
     }

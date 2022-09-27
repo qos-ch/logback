@@ -8,8 +8,8 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class CachingDateFotmatterTest {
 
@@ -19,7 +19,7 @@ public class CachingDateFotmatterTest {
     TimeZone perthTZ = TimeZone.getTimeZone("Australia/Perth");
     TimeZone utcTZ = TimeZone.getTimeZone("UTC");
 
-    @Before
+    @BeforeEach
     public void setUp() {
         sdf.setTimeZone(utcTZ);
     }

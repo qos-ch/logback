@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Locale;
 
 import ch.qos.logback.core.rolling.helper.DateTokenConverter;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.CoreConstants;
 
@@ -33,7 +33,7 @@ public class DatePatternToRegexTest {
     static Locale CZ_LOCALE = new Locale("cs", "CZ");
     static Locale KO_LOCALE = new Locale("ko", "KR");
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpCalendars() {
         CAL_2009_08_3_NIGHT.set(2009, 8, 3, 21, 57, 16);
         CAL_2009_08_3_NIGHT.set(Calendar.MILLISECOND, 333);

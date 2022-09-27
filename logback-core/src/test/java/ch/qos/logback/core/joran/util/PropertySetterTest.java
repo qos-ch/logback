@@ -22,9 +22,9 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
@@ -45,12 +45,12 @@ public class PropertySetterTest {
 
     PropertySetter setter = new PropertySetter(new BeanDescriptionCache(context), house);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         setter.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 

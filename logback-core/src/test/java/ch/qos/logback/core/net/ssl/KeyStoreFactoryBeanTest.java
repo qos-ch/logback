@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyStore;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit tests for {@link KeyStoreFactoryBean}.

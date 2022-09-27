@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,15 +11,16 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
+
 package ch.qos.logback.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.read.ListAppender;
@@ -27,6 +28,9 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.DelayingListAppender;
 import ch.qos.logback.core.testUtil.NPEAppender;
 import ch.qos.logback.core.testUtil.StatusChecker;
+import org.junit.jupiter.api.Timeout;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -42,7 +46,7 @@ public class AsyncAppenderBaseTest {
     OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
     StatusChecker statusChecker = new StatusChecker(context);
 
-    @Before
+    @BeforeEach
     public void setUp() {
         onConsoleStatusListener.setContext(context);
         context.getStatusManager().add(onConsoleStatusListener);
@@ -60,7 +64,8 @@ public class AsyncAppenderBaseTest {
         delayingListAppender.start();
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void smoke() {
         asyncAppenderBase.addAppender(listAppender);
         asyncAppenderBase.start();
@@ -87,7 +92,8 @@ public class AsyncAppenderBaseTest {
         assertEquals(AppenderBase.ALLOWED_REPEATS, statusChecker.matchCount("Appender \\[bad\\] failed to append."));
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void emptyQueueShouldBeStoppable() {
         asyncAppenderBase.addAppender(listAppender);
         asyncAppenderBase.start();
@@ -95,7 +101,8 @@ public class AsyncAppenderBaseTest {
         verify(listAppender, 0);
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void workerShouldStopEvenIfInterruptExceptionConsumedWithinSubappender() {
         delayingListAppender.delay = 100;
         asyncAppenderBase.addAppender(delayingListAppender);
@@ -107,7 +114,8 @@ public class AsyncAppenderBaseTest {
         Thread.interrupted();
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void noEventLoss() throws InterruptedException {
         int bufferSize = 10;
         int loopLen = bufferSize * 2;
@@ -123,7 +131,8 @@ public class AsyncAppenderBaseTest {
         verify(delayingListAppender, loopLen);
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void eventLossIfNeverBlock() {
         int bufferSize = 10;
         int loopLen = bufferSize * 200;
@@ -141,7 +150,8 @@ public class AsyncAppenderBaseTest {
         statusChecker.assertIsErrorFree();
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void lossyAppenderShouldOnlyLoseCertainEvents() {
         int bufferSize = 5;
         int loopLen = bufferSize * 2;
@@ -159,7 +169,8 @@ public class AsyncAppenderBaseTest {
         verify(delayingListAppender, loopLen - 2);
     }
 
-    @Test(timeout = 2000)
+    @Test
+    @Timeout(value=2, unit = TimeUnit.SECONDS)
     public void lossyAppenderShouldBeNonLossyIfDiscardingThresholdIsZero() {
         int bufferSize = 5;
         int loopLen = bufferSize * 2;
@@ -282,7 +293,7 @@ public class AsyncAppenderBaseTest {
     }
 
     // In JDK non started threads can be interrupted
-    @Ignore
+    @Disabled
     @Test
     public void verifyInterruptionOfWorkerIsSwallowed() {
         asyncAppenderBase.addAppender(delayingListAppender);

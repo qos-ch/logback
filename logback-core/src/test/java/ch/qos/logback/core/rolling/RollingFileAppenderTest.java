@@ -18,9 +18,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
@@ -42,7 +42,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
     int diff = RandomUtil.getPositiveInt();
     String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         // noStartTest fails if the context is set in setUp
         // rfa.setContext(context);
@@ -53,7 +53,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         tbrp.setParent(rfa);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
     }
 

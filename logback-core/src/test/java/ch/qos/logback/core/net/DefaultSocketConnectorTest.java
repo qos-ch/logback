@@ -30,14 +30,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 import ch.qos.logback.core.net.SocketConnector.ExceptionHandler;
 import ch.qos.logback.core.net.server.test.ServerSocketUtil;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 /**
  * Unit tests for {@link DefaultSocketConnector}.
@@ -57,7 +58,7 @@ public class DefaultSocketConnectorTest {
 
     ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         if(EnvUtilForTests.isGithubAction())
             return;
@@ -68,7 +69,7 @@ public class DefaultSocketConnectorTest {
         connector.setExceptionHandler(exceptionHandler);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         if(EnvUtilForTests.isGithubAction())
             return;
@@ -116,8 +117,9 @@ public class DefaultSocketConnectorTest {
         assertTrue(connectorTask.isCancelled());
     }
 
-    @Ignore
-    @Test(timeout = 5000)
+    @Disabled
+    @Test
+    @Timeout(value=5, unit = TimeUnit.SECONDS)
     public void testConnectEventually() throws Exception {
         if(EnvUtilForTests.isGithubAction())
             return;

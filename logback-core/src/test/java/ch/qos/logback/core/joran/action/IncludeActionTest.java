@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Supplier;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
 
 import ch.qos.logback.core.Context;
@@ -93,7 +93,7 @@ public class IncludeActionTest {
     int diff = RandomUtil.getPositiveInt();
 
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         FileTestUtil.makeTestOutputDir();
         HashMap<ElementSelector, Supplier<Action>> rulesMap = new HashMap<>();
@@ -115,7 +115,7 @@ public class IncludeActionTest {
         tc.setContext(context);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StatusPrinter.printInCaseOfErrorsOrWarnings(context);
         context = null;

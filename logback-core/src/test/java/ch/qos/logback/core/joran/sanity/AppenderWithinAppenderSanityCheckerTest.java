@@ -6,9 +6,8 @@ import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker.NESTED_APPENDERS_WARNING;
 
@@ -19,7 +18,7 @@ public class AppenderWithinAppenderSanityCheckerTest {
     AppenderWithinAppenderSanityChecker awasc = new AppenderWithinAppenderSanityChecker();
     StatusChecker statusChecker = new StatusChecker(context);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         awasc.setContext(context);
     }

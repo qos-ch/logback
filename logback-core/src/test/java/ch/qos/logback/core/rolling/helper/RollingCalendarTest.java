@@ -21,9 +21,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.EnvUtil;
@@ -32,7 +32,7 @@ public class RollingCalendarTest {
 
     String dailyPattern = "yyyy-MM-dd";
 
-    @Before
+    @BeforeEach
     public void setUp() {
 
         // Most surprisingly, in certain environments (e.g. Windows 7), setting the
@@ -54,7 +54,7 @@ public class RollingCalendarTest {
         Locale.setDefault(oldLocale);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 

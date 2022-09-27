@@ -15,6 +15,7 @@ package ch.qos.logback.core.util;
 
 import static ch.qos.logback.core.subst.NodeToStringTransformer.CIRCULAR_VARIABLE_REFERENCE_DETECTED;
 import static ch.qos.logback.core.subst.Parser.EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.fail;
@@ -22,13 +23,14 @@ import static org.junit.Assert.fail;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.spi.ScanException;
+import org.junit.jupiter.api.Timeout;
 
 public class OptionHelperTest {
 
@@ -37,7 +39,7 @@ public class OptionHelperTest {
     Context context = new ContextBase();
     Map<String, String> secondaryMap;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         secondaryMap = new HashMap<String, String>();
     }
@@ -134,7 +136,8 @@ public class OptionHelperTest {
         assertEquals("logs/archive/LOGBACK_trace_archive.log", result);
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void stubstVarsShouldNotGoIntoInfiniteLoop() throws ScanException {
         context.putProperty("v1", "if");
         context.putProperty("v2", "${v3}");
@@ -160,7 +163,8 @@ public class OptionHelperTest {
         assertEquals("B1-value and C1-value and B1-value", result);
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences0() throws ScanException {
         context.putProperty("A", "${A}");
         Exception e = assertThrows(IllegalArgumentException.class, () -> {
@@ -170,7 +174,8 @@ public class OptionHelperTest {
         assertEquals(expectedMessage, e.getMessage());
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences1() throws ScanException {
         context.putProperty("A", "${A}a");
 
@@ -182,7 +187,8 @@ public class OptionHelperTest {
         assertEquals(expectedMessage, e.getMessage());
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences2() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
@@ -242,7 +248,8 @@ public class OptionHelperTest {
         assertEquals(expectedMessage, e.getMessage());
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences3() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");
@@ -256,7 +263,8 @@ public class OptionHelperTest {
 
     }
 
-    @Test(timeout = 1000)
+    @Test
+    @Timeout(value = 1, unit = SECONDS)
     public void detectCircularReferences4() throws ScanException {
         context.putProperty("A", "${B}");
         context.putProperty("B", "${C}");

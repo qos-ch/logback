@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.MalformedURLException;

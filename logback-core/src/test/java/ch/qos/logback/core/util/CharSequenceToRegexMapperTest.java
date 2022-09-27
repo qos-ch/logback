@@ -13,9 +13,9 @@
  */
 package ch.qos.logback.core.util;
 
-import org.junit.After;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
@@ -27,7 +27,7 @@ public class CharSequenceToRegexMapperTest {
     static Locale KO_LOCALE = new Locale("ko", "KR");
     Locale oldLocale = Locale.getDefault();
 
-    @After
+    @AfterEach
     public void tearDown() {
         Locale.setDefault(oldLocale);
     }
@@ -49,14 +49,14 @@ public class CharSequenceToRegexMapperTest {
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void noneOfTheSymbolsAreOfZeroLengthForKorean() {
         Locale.setDefault(KO_LOCALE);
         noneOfTheSymbolsAreOfZeroLength();
     }
 
     @Test
-    @Ignore
+    @Disabled
     public void noneOfTheSymbolsAreOfZeroLengthForSwiss() {
         Locale.setDefault(new Locale("fr", "CH"));
         noneOfTheSymbolsAreOfZeroLength();

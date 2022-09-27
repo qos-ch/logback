@@ -15,8 +15,8 @@ package ch.qos.logback.core.net.server;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
@@ -34,7 +34,7 @@ public class SSLServerSocketAppenderBaseTest {
     @SuppressWarnings("rawtypes")
     private SSLServerSocketAppenderBase appender = new InstrumentedSSLServerSocketAppenderBase();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         appender.setContext(context);
     }

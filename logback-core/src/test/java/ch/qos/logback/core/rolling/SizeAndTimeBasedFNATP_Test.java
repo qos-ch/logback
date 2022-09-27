@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
@@ -44,7 +44,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     int fileIndexCounter = 0;
     int sizeThreshold = 0;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         super.setUp();
     }

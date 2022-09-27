@@ -22,13 +22,12 @@ import java.util.List;
 
 import javax.xml.stream.events.Attribute;
 
-import org.junit.Test;
-
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.StatusChecker;
+import org.junit.jupiter.api.Test;
 
 public class StaxEventRecorderTest {
 

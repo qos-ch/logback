@@ -2,10 +2,9 @@ package ch.qos.logback.core.rolling;
 
 import java.util.Date;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.EchoEncoder;
@@ -15,8 +14,9 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTests {
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
@@ -27,7 +27,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
 
     EchoEncoder<Object> encoder = new EchoEncoder<Object>();
 
-    @Before
+    @BeforeEach
     @Override
     public void setUp() {
         super.setUp();
@@ -53,12 +53,12 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
         rfa.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         StatusPrinter.print(context);
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void test1() {
         Thread shutdownThread = new Thread(delayingShutdownHook);

@@ -20,8 +20,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 
@@ -42,7 +42,7 @@ public class RemoteReceiverStreamClientTest {
 
     private RemoteReceiverStreamClient client = new RemoteReceiverStreamClient("someId", outputStream);
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         client.setContext(context);
         client.setQueue(queue);

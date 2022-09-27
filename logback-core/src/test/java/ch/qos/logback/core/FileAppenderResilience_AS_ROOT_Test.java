@@ -18,17 +18,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.ResilienceUtil;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.Test;
 
-@Ignore
+@Disabled
 public class FileAppenderResilience_AS_ROOT_Test {
 
     static String MOUNT_POINT = "/mnt/loop/";
@@ -52,7 +52,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
         return EnvUtilForTests.isLocalHostNameInList(new String[] { "haro" });
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException, InterruptedException {
         if (!isConformingHost()) {
             return;
@@ -89,7 +89,7 @@ public class FileAppenderResilience_AS_ROOT_Test {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws IOException, InterruptedException {
         if (!isConformingHost()) {
             return;

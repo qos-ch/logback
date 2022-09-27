@@ -20,12 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.helpers.NOPAppender;
+import org.junit.jupiter.api.Test;
 
 /**
  * This test case verifies all the methods of AppenderAttableImpl work properly.
@@ -36,12 +36,12 @@ public class AppenderAttachableImplTest {
 
     private AppenderAttachableImpl<TestEvent> aai;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         aai = new AppenderAttachableImpl<TestEvent>();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         aai = null;
     }

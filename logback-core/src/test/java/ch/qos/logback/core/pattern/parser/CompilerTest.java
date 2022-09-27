@@ -20,8 +20,8 @@ import ch.qos.logback.core.pattern.Converter123;
 import ch.qos.logback.core.pattern.ConverterHello;
 import ch.qos.logback.core.testUtil.StatusChecker;
 //import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class CompilerTest {
     Map<String, String> converterMap = new HashMap<String, String>();
     Context context = new ContextBase();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         converterMap.put("OTT", Converter123.class.getName());
         converterMap.put("hello", ConverterHello.class.getName());
