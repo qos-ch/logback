@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
+import org.junit.Ignore;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -441,7 +442,7 @@ public class SMTPAppender_GreenTest {
         System.clearProperty(PREFIX + "socketFactory.fallback");
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void authenticatedSSL() throws Exception {
         try {
