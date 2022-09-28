@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -198,4 +199,11 @@ public class FileNamePatternTest {
         FileNamePattern fnp = new FileNamePattern("%d{hh, " + tz.getId() + "}", context);
         assertEquals(tz, fnp.getPrimaryDateTokenConverter().getZoneId());
     }
+
+    @Test
+    public void testNotEqualsNull() {
+        FileNamePattern pp = new FileNamePattern("t", context);
+        assertFalse(pp.equals(null));
+    }
+
 }
