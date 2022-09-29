@@ -16,9 +16,9 @@ package ch.qos.logback.core.util;
 import static ch.qos.logback.core.subst.NodeToStringTransformer.CIRCULAR_VARIABLE_REFERENCE_DETECTED;
 import static ch.qos.logback.core.subst.Parser.EXPECTING_DATA_AFTER_LEFT_ACCOLADE;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.HashMap;
 import java.util.Map;

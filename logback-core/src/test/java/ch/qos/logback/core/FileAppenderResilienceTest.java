@@ -13,13 +13,11 @@
  */
 package ch.qos.logback.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -103,25 +101,25 @@ public class FileAppenderResilienceTest implements RecoveryListener {
         double lossinessFactor = 0.35;
         double resilianceFactor = (1 - lossinessFactor);
 
-        assertTrue("at least one recovery should have occured", recoveryCounter > 0);
-        assertTrue("at least one failure should have occured", failureCounter > 0);
-        
+        Assertions.assertTrue(recoveryCounter > 0, "at least one recovery should have occured");
+        Assertions.assertTrue(failureCounter > 0, "at least one failure should have occured");
+
         System.out.println("recoveryCounter=" + recoveryCounter);
         System.out.println("failureCounter=" + failureCounter);
-        
-       
-                
+
+
+
         String errmsg0 = "failureCounter="+failureCounter+" must be greater or equal to recoveryCounter="+recoveryCounter;
-        assertTrue(errmsg0, failureCounter >= recoveryCounter);
-        
+        Assertions.assertTrue(failureCounter >= recoveryCounter, errmsg0);
+
         String errmsg1 = "Difference between failureCounter="+failureCounter+" and recoveryCounter="+recoveryCounter+" should not exceeed 1";
-        assertTrue(errmsg1, failureCounter - recoveryCounter <= 1);
-        
-        
-        
+        Assertions.assertTrue(failureCounter - recoveryCounter <= 1, errmsg1);
+
+
+
         int actuallyWritten = ResilienceUtil.countLines(logfileStr, "^hello (\\d{1,5})$");
         long exptectedWrites = runner.getCounter()-recoveryCounter;
-        assertEquals(exptectedWrites, actuallyWritten);
+        Assertions.assertEquals(exptectedWrites, actuallyWritten);
     }
 
     private void closeLogFileOnPurpose() throws IOException {

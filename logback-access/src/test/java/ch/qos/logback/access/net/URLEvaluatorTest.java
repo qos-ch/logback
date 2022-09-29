@@ -16,9 +16,9 @@ package ch.qos.logback.access.net;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
@@ -38,7 +38,7 @@ public class URLEvaluatorTest {
     DummyResponse response;
     DummyServerAdapter serverAdapter;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         evaluator = new URLEvaluator();
         evaluator.setContext(accessContext);
@@ -49,7 +49,7 @@ public class URLEvaluatorTest {
         serverAdapter = new DummyServerAdapter(request, response);
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         evaluator.stop();
         evaluator = null;

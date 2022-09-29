@@ -13,14 +13,14 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import ch.qos.logback.core.util.ExecutorServiceUtil;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * Unit tests for {@link SSLServerSocketAppenderBase}.

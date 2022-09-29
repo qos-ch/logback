@@ -13,14 +13,13 @@
  */
 package ch.qos.logback.core.subst;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import ch.qos.logback.core.spi.ScanException;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.core.spi.ScanException;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Created with IntelliJ IDEA. User: ceki Date: 05.08.12 Time: 00:15 To change

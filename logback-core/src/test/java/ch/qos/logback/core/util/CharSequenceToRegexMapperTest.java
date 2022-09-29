@@ -14,14 +14,14 @@
 package ch.qos.logback.core.util;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.DateFormatSymbols;
 import java.util.Locale;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CharSequenceToRegexMapperTest {
     static Locale KO_LOCALE = new Locale("ko", "KR");
@@ -75,7 +75,7 @@ public class CharSequenceToRegexMapperTest {
     private void checkEmptyString(String[] symbolArray, String category) {
         for (String s : symbolArray) {
             System.out.println(category + " [" + s + "]");
-            assertTrue(category + " contains empty strings", s.length() > 0);
+            Assertions.assertTrue(s.length() > 0, category + " contains empty strings");
         }
     }
 

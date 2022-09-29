@@ -36,8 +36,8 @@ import java.util.function.UnaryOperator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Scaffolding for various rolling tests. Some assumptions are made: - rollover
@@ -70,7 +70,7 @@ public class ScaffoldingForRollingTests {
     }
 
     public static void existenceCheck(String filename) {
-        assertTrue("File " + filename + " does not exist", new File(filename).exists());
+        assertTrue(new File(filename).exists(), "File " + filename + " does not exist");
     }
 
     public static File[] getFilesInDirectory(String outputDirStr) {
@@ -116,7 +116,7 @@ public class ScaffoldingForRollingTests {
 
     public static void existenceCheck(List<String> filenameList) {
         for (String filename : filenameList) {
-            assertTrue("File " + filename + " does not exist", new File(filename).exists());
+            assertTrue(new File(filename).exists(), "File " + filename + " does not exist");
         }
     }
 

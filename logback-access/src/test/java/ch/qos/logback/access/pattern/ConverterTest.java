@@ -21,9 +21,9 @@ import java.util.List;
 import jakarta.servlet.http.Cookie;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
@@ -38,12 +38,12 @@ public class ConverterTest {
     DummyResponse response = new DummyResponse();
     AccessContext accessContext = new AccessContext();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         event = createEvent();
     }
 
-    @After
+    @AfterEach
     public void tearDown() throws Exception {
         event = null;
         request = null;

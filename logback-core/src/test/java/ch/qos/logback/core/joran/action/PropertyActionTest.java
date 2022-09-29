@@ -13,12 +13,10 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Iterator;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -89,7 +87,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("work", mic.getProperty("v1"));
+        Assertions.assertEquals("work", mic.getProperty("v1"));
     }
 
     @Test
@@ -100,7 +98,7 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("work", mic.getProperty("v1"));
+        Assertions.assertEquals("work", mic.getProperty("v1"));
     }
 
     @Test
@@ -109,8 +107,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(2, context.getStatusManager().getCount());
-        assertTrue(checkError());
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        Assertions.assertTrue(checkError());
     }
 
     @Test
@@ -119,8 +117,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(2, context.getStatusManager().getCount());
-        assertTrue(checkError());
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        Assertions.assertTrue(checkError());
     }
 
     @Test
@@ -128,8 +126,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, "noAttributes", atts);
         propertyAction.end(interpretationContext, "noAttributes");
         defaultProcessor.process(topModel);
-        assertEquals(2, context.getStatusManager().getCount());
-        assertTrue(checkError());
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        Assertions.assertTrue(checkError());
         StatusPrinter.print(context);
     }
 
@@ -140,8 +138,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(2, context.getStatusManager().getCount());
-        assertTrue(checkError());
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        Assertions.assertTrue(checkError());
     }
 
     @Test
@@ -151,8 +149,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", mic.getProperty("v1"));
-        assertEquals("toto", mic.getProperty("v2"));
+        Assertions.assertEquals("tata", mic.getProperty("v1"));
+        Assertions.assertEquals("toto", mic.getProperty("v2"));
     }
 
     @Test
@@ -161,8 +159,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", mic.getProperty("v1"));
-        assertEquals("toto", mic.getProperty("v2"));
+        Assertions.assertEquals("tata", mic.getProperty("v1"));
+        Assertions.assertEquals("toto", mic.getProperty("v2"));
     }
 
     @Test
@@ -171,8 +169,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", mic.getProperty("r1"));
-        assertEquals("toto", mic.getProperty("r2"));
+        Assertions.assertEquals("tata", mic.getProperty("r1"));
+        Assertions.assertEquals("toto", mic.getProperty("r2"));
     }
 
     @Test
@@ -182,8 +180,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals("tata", mic.getProperty("r1"));
-        assertEquals("toto", mic.getProperty("r2"));
+        Assertions.assertEquals("tata", mic.getProperty("r1"));
+        Assertions.assertEquals("toto", mic.getProperty("r2"));
     }
 
     @Test
@@ -192,8 +190,8 @@ public class PropertyActionTest {
         propertyAction.begin(interpretationContext, tagName, atts);
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
-        assertEquals(2, context.getStatusManager().getCount());
-        assertTrue(checkFileErrors());
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        Assertions.assertTrue(checkFileErrors());
     }
 
     private boolean checkError() {

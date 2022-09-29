@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.*;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
@@ -28,6 +26,8 @@ import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.WarnStatus;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StatusPrinterTest {
 

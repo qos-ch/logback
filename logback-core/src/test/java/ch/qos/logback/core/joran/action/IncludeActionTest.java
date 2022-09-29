@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -28,6 +24,7 @@ import java.util.Stack;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXParseException;
@@ -145,7 +142,7 @@ public class IncludeActionTest {
         tc.doConfigure(TOP_OPTIONAL_RESOURCE);
         verifyConfig(new String[] { "IA", "IB" });
         StatusPrinter.print(context);
-        assertEquals(Status.INFO, statusChecker.getHighestLevel(0));
+        Assertions.assertEquals(Status.INFO, statusChecker.getHighestLevel(0));
     }
 
     @Test
@@ -167,7 +164,7 @@ public class IncludeActionTest {
     public void noFileFound() throws JoranException {
         System.setProperty(INCLUDE_KEY, "toto");
         tc.doConfigure(TOP_BY_FILE);
-        assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
+        Assertions.assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
     }
 
     @Test
@@ -175,15 +172,15 @@ public class IncludeActionTest {
         String tmpOut = copyToTemp(INVALID);
         System.setProperty(INCLUDE_KEY, tmpOut);
         tc.doConfigure(TOP_BY_FILE);
-        assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
+        Assertions.assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
         StatusPrinter.print(context);
-        assertTrue(statusChecker.containsException(SAXParseException.class));
+        Assertions.assertTrue(statusChecker.containsException(SAXParseException.class));
 
         // we like to erase the temp file in order to see
         // if http://jira.qos.ch/browse/LBCORE-122 was fixed
         File f = new File(tmpOut);
-        assertTrue(f.exists());
-        assertTrue(f.delete());
+        Assertions.assertTrue(f.exists());
+        Assertions.assertTrue(f.delete());
 
     }
 
@@ -206,15 +203,15 @@ public class IncludeActionTest {
 
         System.setProperty(INCLUDE_KEY, MALFORMED);
         tc.doConfigure(TOP_BY_URL);
-        assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
-        assertTrue(statusChecker.containsException(MalformedURLException.class));
+        Assertions.assertEquals(Status.ERROR, statusChecker.getHighestLevel(0));
+        Assertions.assertTrue(statusChecker.containsException(MalformedURLException.class));
     }
 
     @Test
     public void unknownURL() throws JoranException {
         System.setProperty(INCLUDE_KEY, "http://logback2345.qos.ch");
         tc.doConfigure(TOP_BY_URL);
-        assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
+        Assertions.assertEquals(Status.WARN, statusChecker.getHighestLevel(0));
     }
 
     @Test
@@ -228,7 +225,7 @@ public class IncludeActionTest {
         expected.push("c");
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
-        assertEquals(expected, aStack);
+        Assertions.assertEquals(expected, aStack);
     }
 
     @Test
@@ -255,14 +252,14 @@ public class IncludeActionTest {
         Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
 
         if(expected == null) {
-            assertNull(aStack);
+            Assertions.assertNull(aStack);
             return;
         } 
         
         Stack<String> witness = new Stack<String>();
         witness.addAll(Arrays.asList(expected));
             
-        assertEquals(witness, aStack);
+        Assertions.assertEquals(witness, aStack);
     }
 
 }

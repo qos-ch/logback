@@ -1,7 +1,5 @@
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
@@ -13,6 +11,10 @@ import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class StatusListenerConfigHelperTest {
 

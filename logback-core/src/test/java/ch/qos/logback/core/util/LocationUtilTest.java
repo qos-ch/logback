@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -85,7 +83,7 @@ public class LocationUtilTest {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             String line = reader.readLine();
-            assertEquals(TEST_PATTERN, line);
+            Assertions.assertEquals(TEST_PATTERN, line);
         } finally {
             try {
                 inputStream.close();

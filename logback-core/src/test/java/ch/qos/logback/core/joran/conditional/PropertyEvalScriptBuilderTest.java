@@ -13,11 +13,8 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,14 +50,14 @@ public class PropertyEvalScriptBuilderTest {
 
     void buildAndAssertTrue(String scriptStr) throws Exception {
         Condition condition = pesb.build(scriptStr);
-        assertNotNull(condition);
-        assertTrue(condition.evaluate());
+        Assertions.assertNotNull(condition);
+        Assertions.assertTrue(condition.evaluate());
     }
 
     void buildAndAssertFalse(String scriptStr) throws Exception {
         Condition condition = pesb.build(scriptStr);
-        assertNotNull(condition);
-        assertFalse(condition.evaluate());
+        Assertions.assertNotNull(condition);
+        Assertions.assertFalse(condition.evaluate());
     }
 
     @Test

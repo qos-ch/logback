@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.helpers;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -23,6 +21,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.CoreConstants;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ThrowableToStringArrayTest {
 

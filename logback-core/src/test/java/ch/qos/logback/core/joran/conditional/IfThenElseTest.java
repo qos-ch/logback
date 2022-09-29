@@ -13,17 +13,13 @@
  */
 package ch.qos.logback.core.joran.conditional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -144,7 +140,7 @@ public class IfThenElseTest {
     public void whenNoPropertyIsDefined_IfThenBranchIsNotEvaluated_NO_ELSE_DEFINED() throws JoranException {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifWithoutElse.xml");
         verifyConfig(new String[] { "BEGIN", "END" });
-        assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(checker.isErrorFree(0));
     }
 
     @Test
@@ -152,26 +148,26 @@ public class IfThenElseTest {
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "nestedIf.xml");
         //StatusPrinter.print(context);
         verifyConfig(new String[] { "BEGIN", "a", "c", "END" });
-        assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(checker.isErrorFree(0));
     }
 
     @Test
     public void useNonExistenceOfSystemPropertyToDefineAContextProperty() throws JoranException {
-        assertNull(System.getProperty(sysKey));
-        assertNull(context.getProperty(dynaKey));
+        Assertions.assertNull(System.getProperty(sysKey));
+        Assertions.assertNull(context.getProperty(dynaKey));
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem.xml");
         System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
-        assertNotNull(context.getProperty(dynaKey));
+        Assertions.assertNotNull(context.getProperty(dynaKey));
     }
 
     @Test
     public void noContextPropertyShouldBeDefinedIfSystemPropertyExists() throws JoranException {
         System.setProperty(sysKey, "a");
-        assertNull(context.getProperty(dynaKey));
+        Assertions.assertNull(context.getProperty(dynaKey));
         System.out.println("before " + dynaKey + "=" + context.getProperty(dynaKey));
         simpleConfigurator.doConfigure(CONDITIONAL_DIR_PREFIX + "ifSystem.xml");
         System.out.println(dynaKey + "=" + context.getProperty(dynaKey));
-        assertNull(context.getProperty(dynaKey));
+        Assertions.assertNull(context.getProperty(dynaKey));
     }
 
     private void verifyConfig(String[] expected) {
@@ -180,7 +176,7 @@ public class IfThenElseTest {
         
         @SuppressWarnings({ "unchecked", "rawtypes" })
         Stack<String> aStack = (Stack) context.getObject(StackModelHandler.STACK_TEST);
-        assertEquals(witness, aStack);
+        Assertions.assertEquals(witness, aStack);
     }
 
 }

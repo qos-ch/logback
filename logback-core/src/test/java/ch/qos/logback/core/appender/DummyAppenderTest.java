@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.appender;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -24,6 +22,8 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.encoder.DummyEncoder;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.layout.DummyLayout;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DummyAppenderTest extends AbstractAppenderTest<Object> {
 

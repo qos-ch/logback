@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -34,6 +31,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -71,9 +69,9 @@ public class AbstractSocketAppenderIntegrationTest {
     @AfterEach
     public void tearDown() throws Exception {
         instrumentedAppender.stop();
-        assertFalse(instrumentedAppender.isStarted());
+        Assertions.assertFalse(instrumentedAppender.isStarted());
         executorService.shutdownNow();
-        assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
+        Assertions.assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
     }
 
     @Disabled // JDK 16
@@ -98,7 +96,7 @@ public class AbstractSocketAppenderIntegrationTest {
 
         // then
         ObjectInputStream ois = new ObjectInputStream(appenderSocket.getInputStream());
-        assertEquals("some event", ois.readObject());
+        Assertions.assertEquals( ois.readObject(), "some event");
         appenderSocket.close();
     }
 

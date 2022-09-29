@@ -14,11 +14,9 @@
 package ch.qos.logback.core.util;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotEquals;
 
 /**
  * @author Patrick Reinhart
@@ -34,93 +32,93 @@ public class EnvUtilTest {
 
     @Test
     public void jdkVersion() {
-        assertEquals(4, EnvUtil.getJDKVersion("1.4.xx"));
-        assertEquals(5, EnvUtil.getJDKVersion("1.5"));
-        assertEquals(5, EnvUtil.getJDKVersion("1.5.xx"));
-        assertEquals(5, EnvUtil.getJDKVersion("1.5AA"));
-        assertEquals(9, EnvUtil.getJDKVersion("9EA"));
-        assertEquals(9, EnvUtil.getJDKVersion("9.0.1"));
-        assertEquals(18, EnvUtil.getJDKVersion("18.3+xx"));
+        Assertions.assertEquals(4, EnvUtil.getJDKVersion("1.4.xx"));
+        Assertions.assertEquals(5, EnvUtil.getJDKVersion("1.5"));
+        Assertions.assertEquals(5, EnvUtil.getJDKVersion("1.5.xx"));
+        Assertions.assertEquals(5, EnvUtil.getJDKVersion("1.5AA"));
+        Assertions.assertEquals(9, EnvUtil.getJDKVersion("9EA"));
+        Assertions.assertEquals(9, EnvUtil.getJDKVersion("9.0.1"));
+        Assertions.assertEquals(18, EnvUtil.getJDKVersion("18.3+xx"));
     }
 
     @Test
     public void testJava1_4() {
         System.setProperty("java.version", "1.4.xx");
 
-        assertFalse(EnvUtil.isJDK5());
-        assertFalse(EnvUtil.isJDK6OrHigher());
-        assertFalse(EnvUtil.isJDK7OrHigher());
+        Assertions.assertFalse(EnvUtil.isJDK5());
+        Assertions.assertFalse(EnvUtil.isJDK6OrHigher());
+        Assertions.assertFalse(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava1_5() {
         System.setProperty("java.version", "1.5");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertFalse(EnvUtil.isJDK6OrHigher());
-        assertFalse(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertFalse(EnvUtil.isJDK6OrHigher());
+        Assertions.assertFalse(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava1_5_x() {
         System.setProperty("java.version", "1.5.xx");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertFalse(EnvUtil.isJDK6OrHigher());
-        assertFalse(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertFalse(EnvUtil.isJDK6OrHigher());
+        Assertions.assertFalse(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava1_6() {
         System.setProperty("java.version", "1.6.xx");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertTrue(EnvUtil.isJDK6OrHigher());
-        assertFalse(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertTrue(EnvUtil.isJDK6OrHigher());
+        Assertions.assertFalse(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava1_7() {
         System.setProperty("java.version", "1.7.xx");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertTrue(EnvUtil.isJDK6OrHigher());
-        assertTrue(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertTrue(EnvUtil.isJDK6OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava1_8() {
         System.setProperty("java.version", "1.8.xx");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertTrue(EnvUtil.isJDK6OrHigher());
-        assertTrue(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertTrue(EnvUtil.isJDK6OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava9() {
         System.setProperty("java.version", "9");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertTrue(EnvUtil.isJDK6OrHigher());
-        assertTrue(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertTrue(EnvUtil.isJDK6OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava9_1() {
         System.setProperty("java.version", "9.xx");
 
-        assertTrue(EnvUtil.isJDK5());
-        assertTrue(EnvUtil.isJDK6OrHigher());
-        assertTrue(EnvUtil.isJDK7OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertTrue(EnvUtil.isJDK6OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK7OrHigher());
     }
 
     @Test
     public void testJava18_3() {
         System.setProperty("java.version", "18.3+xx");
-        assertEquals(18, EnvUtil.getJDKVersion("18.3+xx"));
-        assertTrue(EnvUtil.isJDK5());
-        assertTrue(EnvUtil.isJDK6OrHigher());
-        assertTrue(EnvUtil.isJDK7OrHigher());
+        Assertions.assertEquals(18, EnvUtil.getJDKVersion("18.3+xx"));
+        Assertions.assertTrue(EnvUtil.isJDK5());
+        Assertions.assertTrue(EnvUtil.isJDK6OrHigher());
+        Assertions.assertTrue(EnvUtil.isJDK7OrHigher());
     }
 }

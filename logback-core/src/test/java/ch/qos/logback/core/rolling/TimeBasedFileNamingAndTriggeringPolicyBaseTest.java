@@ -13,10 +13,7 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +60,7 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
         timeBasedFNATP.setCurrentTime(startTime + MILLIS_IN_MINUTE);
         timeBasedFNATP.isTriggeringEvent(null, null);
         String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
-        assertEquals("foo-2011-12T59.log", elapsedPeriodsFileName);
+        Assertions.assertEquals("foo-2011-12T59.log", elapsedPeriodsFileName);
     }
 
     // see "log rollover should be configurable using %d multiple times in file name
@@ -82,9 +79,9 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 
         timeBasedFNATP.setCurrentTime(startTime + MILLIS_IN_MINUTE);
         boolean triggerred = timeBasedFNATP.isTriggeringEvent(null, null);
-        assertTrue(triggerred);
+        Assertions.assertTrue(triggerred);
         String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
-        assertEquals("foo-2011-12/59.log", elapsedPeriodsFileName);
+        Assertions.assertEquals("foo-2011-12/59.log", elapsedPeriodsFileName);
     }
 
     @Test
@@ -99,9 +96,9 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 
         timeBasedFNATP.setCurrentTime(startTime + MILLIS_IN_MINUTE + 2 * MILLIS_IN_HOUR);
         boolean triggerred = timeBasedFNATP.isTriggeringEvent(null, null);
-        assertTrue(triggerred);
+        Assertions.assertTrue(triggerred);
         String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
-        assertEquals("foo-2011-12-20.log", elapsedPeriodsFileName);
+        Assertions.assertEquals("foo-2011-12-20.log", elapsedPeriodsFileName);
     }
 
     @Test
@@ -110,7 +107,7 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
         tbrp.setFileNamePattern(pattern);
         tbrp.start();
 
-        assertFalse(tbrp.isStarted());
+        Assertions.assertFalse(tbrp.isStarted());
         StatusChecker statusChecker = new StatusChecker(context);
         statusChecker.assertContainsMatch(Status.ERROR, "Filename pattern .{37} contains an integer token converter");
     }

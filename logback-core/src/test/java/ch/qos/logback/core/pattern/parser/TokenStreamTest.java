@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +20,9 @@ import ch.qos.logback.core.spi.ScanException;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.pattern.util.AlmostAsIsEscapeUtil;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TokenStreamTest {
 

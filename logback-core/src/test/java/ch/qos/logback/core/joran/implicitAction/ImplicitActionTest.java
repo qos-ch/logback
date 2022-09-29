@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.joran.implicitAction;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -37,6 +34,9 @@ import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ImplicitActionTest {
 

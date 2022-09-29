@@ -15,7 +15,10 @@ package ch.qos.logback.core;
 
 import static ch.qos.logback.core.BasicStatusManager.MAX_HEADER_COUNT;
 import static ch.qos.logback.core.BasicStatusManager.TAIL_SIZE;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;

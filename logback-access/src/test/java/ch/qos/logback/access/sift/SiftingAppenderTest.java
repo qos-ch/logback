@@ -20,9 +20,9 @@ import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.access.jetty.JettyFixtureBase;
 import ch.qos.logback.access.jetty.RequestLogImpl;
@@ -39,12 +39,12 @@ public class SiftingAppenderTest {
     JettyFixtureBase jettyFixture;
     RequestLogImpl rli = new RequestLogImpl();
 
-    @Before
+    @BeforeEach
     public void startServer() throws Exception {
         jettyFixture = new JettyFixtureBase(rli, RANDOM_SERVER_PORT);
     }
 
-    @After
+    @AfterEach
     public void stopServer() throws Exception {
         if (jettyFixture != null) {
             jettyFixture.stop();

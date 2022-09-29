@@ -18,9 +18,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.core.contention.RunnableWithCounterAndDone;
 import ch.qos.logback.core.encoder.EchoEncoder;
@@ -72,7 +72,7 @@ public class PrudentFileAppenderInterruptTest {
         fr.close();
         br.close();
 
-        assertEquals("Incorrect number of logged lines", 2, totalLines);
+        Assertions.assertEquals(2, totalLines, "Incorrect number of logged lines");
     }
 
     class Runner extends RunnableWithCounterAndDone {

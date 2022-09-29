@@ -1,21 +1,21 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.DAILY_DATE_PATTERN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 //import org.joda.time.DateTimeZone;
 //import org.joda.time.Days;
 //import org.joda.time.LocalDate;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -509,7 +510,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         findAllFoldersInFolderRecursively(dir, dirList);
         String msg = "expectedDirCountMin=" + expectedDirCountMin + ", expectedDirCountMax=" + expectedDirCountMax
                 + " actual value=" + dirList.size();
-        assertTrue(msg, expectedDirCountMin <= dirList.size() && dirList.size() <= expectedDirCountMax);
+        assertTrue(expectedDirCountMin <= dirList.size() && dirList.size() <= expectedDirCountMax, msg);
     }
 
     void checkFileCount(int expectedCount) {
@@ -525,8 +526,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         findAllDirsOrStringContainsFilesRecursively(dir, fileList, "clean");
         int fileListSize = fileList.size();
 
-        assertTrue("file list size " + fileListSize + ", expectedCount=" + expectedCount,
-                fileListSize <= expectedCount);
+        assertTrue(fileListSize <= expectedCount, "file list size " + fileListSize + ", expectedCount=" + expectedCount);
     }
 
     int expectedCountWithoutFoldersWithInactivity(int maxHistory, int totalPeriods, int endOfInactivity) {
@@ -536,7 +536,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
     }
 
     void genericFindMatching(final FileMatchFunction matchFunc, File dir, List<File> fileList, final String pattern,
-            boolean includeDirs) {
+                             boolean includeDirs) {
         if (dir.isDirectory()) {
             File[] matchArray = dir.listFiles(new FileFilter() {
                 public boolean accept(File f) {

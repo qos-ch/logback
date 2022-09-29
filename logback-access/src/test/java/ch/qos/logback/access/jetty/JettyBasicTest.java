@@ -22,9 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.access.spi.Util;
@@ -39,14 +39,14 @@ public class JettyBasicTest {
     private static final int TIMEOUT = 5;
     static int RANDOM_SERVER_PORT = RandomUtil.getRandomServerPort();
 
-    @BeforeClass
+    @BeforeAll
     static public void startServer() throws Exception {
         REQUEST_LOG_IMPL = new RequestLogImpl();
         JETTY_FIXTURE = new JettyFixtureWithListAndConsoleAppenders(REQUEST_LOG_IMPL, RANDOM_SERVER_PORT);
         JETTY_FIXTURE.start();
     }
 
-    @AfterClass
+    @AfterAll
     static public void stopServer() throws Exception {
         if (JETTY_FIXTURE != null) {
             JETTY_FIXTURE.stop();

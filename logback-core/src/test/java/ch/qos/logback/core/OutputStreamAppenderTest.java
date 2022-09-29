@@ -13,11 +13,10 @@
  */
 package ch.qos.logback.core;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayOutputStream;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -110,10 +109,10 @@ public class OutputStreamAppenderTest {
         String expectedHeader = emtptyIfNull(fileHeader) + emtptyIfNull(presentationHeader);
 
         System.out.println(result);
-        assertTrue(result, result.startsWith(expectedHeader));
+        Assertions.assertTrue(result.startsWith(expectedHeader), result);
 
         String expectedFooter = emtptyIfNull(presentationFooter) + emtptyIfNull(fileFooter);
-        assertTrue(result, result.endsWith(expectedFooter));
+        Assertions.assertTrue(result.endsWith(expectedFooter), result);
     }
 
     String emtptyIfNull(String s) {

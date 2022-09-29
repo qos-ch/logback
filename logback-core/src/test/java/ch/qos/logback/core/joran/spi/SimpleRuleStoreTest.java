@@ -13,13 +13,6 @@
  */
 package ch.qos.logback.core.joran.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Test;
@@ -27,6 +20,13 @@ import org.xml.sax.Attributes;
 
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.action.Action;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test SimpleRuleStore for various explicit rule combinations.

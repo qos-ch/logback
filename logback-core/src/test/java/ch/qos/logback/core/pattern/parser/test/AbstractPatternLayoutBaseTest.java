@@ -13,9 +13,7 @@
  */
 package ch.qos.logback.core.pattern.parser.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
@@ -23,6 +21,9 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.ExceptionalConverter;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.testUtil.StatusChecker;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 abstract public class AbstractPatternLayoutBaseTest<E> {
 

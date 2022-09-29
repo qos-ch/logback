@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -22,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,8 +76,8 @@ public class CompressTest {
                 CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz", null);
 
         StatusChecker checker = new StatusChecker(context);
-        assertTrue(checker.isErrorFree(0));
-        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz",
+        Assertions.assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress1.txt.gz",
                 CoreTestConstants.TEST_SRC_PREFIX + "witness/compress1.txt.gz"));
     }
 
@@ -90,9 +89,9 @@ public class CompressTest {
                 CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt", null);
 
         StatusChecker checker = new StatusChecker(context);
-        assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(checker.isErrorFree(0));
 
-        assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz",
+        Assertions.assertTrue(Compare.gzCompare(CoreTestConstants.OUTPUT_DIR_PREFIX + "compress2.txt.gz",
                 CoreTestConstants.TEST_SRC_PREFIX + "witness/compress2.txt.gz"));
     }
 
@@ -103,10 +102,10 @@ public class CompressTest {
         compressor.compress(CoreTestConstants.TEST_SRC_PREFIX + "input/compress3.txt",
                 CoreTestConstants.OUTPUT_DIR_PREFIX + "compress3.txt", "compress3.txt");
         StatusChecker checker = new StatusChecker(context);
-        assertTrue(checker.isErrorFree(0));
+        Assertions.assertTrue(checker.isErrorFree(0));
 
         // we don't know how to compare .zip files
-        // assertTrue(Compare.compare(CoreTestConstants.OUTPUT_DIR_PREFIX
+        // Assertions.assertTrue(Compare.compare(CoreTestConstants.OUTPUT_DIR_PREFIX
         // + "compress3.txt.zip", CoreTestConstants.TEST_SRC_PREFIX
         // + "witness/compress3.txt.zip"));
     }

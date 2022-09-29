@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.core.joran;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
@@ -40,6 +36,10 @@ import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test the way Interpreter skips child elements in case of exceptions thrown by

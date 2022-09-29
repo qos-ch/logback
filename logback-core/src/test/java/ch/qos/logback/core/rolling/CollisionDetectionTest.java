@@ -2,11 +2,13 @@ package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.FA_FILENAME_COLLISION_MAP;
 import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Map;
 
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -86,15 +88,15 @@ public class CollisionDetectionTest {
     private void assertCollisionMapHasEntry(String mapName, String key) {
         @SuppressWarnings("unchecked")
         Map<String, ?> map = (Map<String, ?>) context.getObject(mapName);
-        Assert.assertNotNull(map);
-        Assert.assertNotNull(map.get(key));
+        assertNotNull(map);
+        assertNotNull(map.get(key));
     }
 
     private void assertCollisionMapHasNoEntry(String mapName, String key) {
         @SuppressWarnings("unchecked")
         Map<String, ?> map = (Map<String, ?>) context.getObject(mapName);
-        Assert.assertNotNull(map);
-        Assert.assertNull(map.get(key));
+        assertNotNull(map);
+        assertNull(map.get(key));
     }
 
     @Test

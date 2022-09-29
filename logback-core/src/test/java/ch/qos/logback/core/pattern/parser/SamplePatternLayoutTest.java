@@ -13,8 +13,7 @@
  */
 package ch.qos.logback.core.pattern.parser;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
@@ -49,7 +48,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
 
         // StatusManager sm = context.getStatusManager();
         // StatusPrinter.print(sm);
-        assertEquals("x123", s);
+        Assertions.assertEquals("x123", s);
     }
 
     @Test
@@ -60,7 +59,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setPattern("x(%OTT\\)y");
         plb.start();
         String s = plb.doLayout(new Object());
-        assertEquals("x(123)y", s);
+        Assertions.assertEquals("x(123)y", s);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setPattern("x\\(%OTT\\)y");
         plb.start();
         String s = plb.doLayout(new Object());
-        assertEquals("x(123)y", s);
+        Assertions.assertEquals("x(123)y", s);
     }
 
     @Test
@@ -82,7 +81,7 @@ public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Objec
         plb.setPattern("hello \\% world");
         plb.start();
         String s = plb.doLayout(new Object());
-        assertEquals("hello % world", s);
+        Assertions.assertEquals("hello % world", s);
     }
 
     @Test

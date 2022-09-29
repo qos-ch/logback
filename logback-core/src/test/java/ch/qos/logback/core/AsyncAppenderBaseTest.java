@@ -14,10 +14,7 @@
 
 package ch.qos.logback.core;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -83,13 +80,13 @@ public class AsyncAppenderBaseTest {
 
         asyncAppenderBase.addAppender(npeAppender);
         asyncAppenderBase.start();
-        assertTrue(asyncAppenderBase.isStarted());
+        Assertions.assertTrue(asyncAppenderBase.isStarted());
         for (int i = 0; i < 10; i++)
             asyncAppenderBase.append(i);
 
         asyncAppenderBase.stop();
-        assertFalse(asyncAppenderBase.isStarted());
-        assertEquals(AppenderBase.ALLOWED_REPEATS, statusChecker.matchCount("Appender \\[bad\\] failed to append."));
+        Assertions.assertFalse(asyncAppenderBase.isStarted());
+        Assertions.assertEquals(AppenderBase.ALLOWED_REPEATS, statusChecker.matchCount("Appender \\[bad\\] failed to append."));
     }
 
     @Test
@@ -110,7 +107,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.doAppend(0);
         asyncAppenderBase.stop();
         verify(delayingListAppender, 1);
-        assertTrue(delayingListAppender.interrupted);
+        Assertions.assertTrue(delayingListAppender.interrupted);
         Thread.interrupted();
     }
 
@@ -189,9 +186,9 @@ public class AsyncAppenderBaseTest {
     public void invalidQueueCapacityShouldResultInNonStartedAppender() {
         asyncAppenderBase.addAppender(new NOPAppender<Integer>());
         asyncAppenderBase.setQueueSize(0);
-        assertEquals(0, asyncAppenderBase.getQueueSize());
+        Assertions.assertEquals(0, asyncAppenderBase.getQueueSize());
         asyncAppenderBase.start();
-        assertFalse(asyncAppenderBase.isStarted());
+        Assertions.assertFalse(asyncAppenderBase.isStarted());
         statusChecker.assertContainsMatch("Invalid queue size");
     }
 
@@ -209,13 +206,13 @@ public class AsyncAppenderBaseTest {
         for (int i = 0; i < loopLen; i++) {
             asyncAppenderBase.doAppend(i);
         }
-        assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
-        assertEquals(0, la.list.size());
+        Assertions.assertEquals(loopLen, asyncAppenderBase.getNumberOfElementsInQueue());
+        Assertions.assertEquals(0, la.list.size());
 
         asyncAppenderBase.worker.resume();
         asyncAppenderBase.stop();
 
-        assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
+        Assertions.assertEquals(0, asyncAppenderBase.getNumberOfElementsInQueue());
         verify(la, loopLen);
     }
 
@@ -251,7 +248,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.start();
         Thread.currentThread().interrupt();
         asyncAppenderBase.doAppend(Integer.valueOf(0));
-        assertTrue(Thread.currentThread().isInterrupted());
+        Assertions.assertTrue(Thread.currentThread().isInterrupted());
         // clear interrupt flag for subsequent tests
         Thread.interrupted();
     }
@@ -267,7 +264,7 @@ public class AsyncAppenderBaseTest {
         Thread.currentThread().interrupt();
         asyncAppenderBase.doAppend(Integer.valueOf(1));
         asyncAppenderBase.doAppend(Integer.valueOf(1));
-        assertTrue(Thread.currentThread().isInterrupted());
+        Assertions.assertTrue(Thread.currentThread().isInterrupted());
         // the interruption needs to be consumed
         Thread.interrupted();
         asyncAppenderBase.stop();
@@ -280,7 +277,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.start();
         Thread.currentThread().interrupt();
         asyncAppenderBase.stop();
-        assertTrue(Thread.currentThread().isInterrupted());
+        Assertions.assertTrue(Thread.currentThread().isInterrupted());
         Thread.interrupted();
     }
 
@@ -289,7 +286,7 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.addAppender(listAppender);
         asyncAppenderBase.start();
         asyncAppenderBase.stop();
-        assertFalse(Thread.currentThread().isInterrupted());
+        Assertions.assertFalse(Thread.currentThread().isInterrupted());
     }
 
     // In JDK non started threads can be interrupted
@@ -300,13 +297,13 @@ public class AsyncAppenderBaseTest {
         asyncAppenderBase.start();
         Thread.yield();
         asyncAppenderBase.stop();
-        assertFalse(asyncAppenderBase.worker.isInterrupted());
+        Assertions.assertFalse(asyncAppenderBase.worker.isInterrupted());
     }
 
     private void verify(ListAppender<Integer> la, int atLeast) {
         // ListAppender passes as parameter should be stopped at this stage
-        assertFalse(la.isStarted());
-        assertTrue(atLeast + " <= " + la.list.size(), atLeast <= la.list.size());
+        Assertions.assertFalse(la.isStarted());
+        Assertions.assertTrue( atLeast <= la.list.size(), atLeast + " <= " + la.list.size());
         statusChecker.assertIsErrorFree();
         statusChecker.assertContainsMatch("Worker thread will flush remaining events before exiting.");
     }

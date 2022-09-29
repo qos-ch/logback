@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.core.testUtil;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.File;
 
@@ -27,7 +27,7 @@ public class FileTestUtil {
         if (target.exists() && target.isDirectory()) {
             File testoutput = new File(CoreTestConstants.OUTPUT_DIR_PREFIX);
             if (!testoutput.exists())
-                assertTrue(testoutput.mkdir());
+                Assertions.assertTrue(testoutput.mkdir());
         } else {
             throw new IllegalStateException(CoreTestConstants.TARGET_DIR + " does not exist");
         }

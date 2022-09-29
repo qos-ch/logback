@@ -23,9 +23,9 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -38,7 +38,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Ceki G&uuml;lc&uuml;
  */
-@Ignore
+@Disabled
 public class ConditionalTest {
 
     AccessContext context = new AccessContext();
@@ -47,7 +47,7 @@ public class ConditionalTest {
     int diff = RandomUtil.getPositiveInt();
     String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         InetAddress localhost = null;
         try {
