@@ -1,11 +1,9 @@
 package ch.qos.logback.core.pattern;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +53,7 @@ public class ConverterUtilTest {
         while (c != null) {
             if (c instanceof LifeCycle) {
                 LifeCycle ca = (LifeCycle) c;
-                assertTrue(ca.isStarted());
+                Assertions.assertTrue(ca.isStarted());
             }
             if (c instanceof CompositeConverter) {
                 CompositeConverter<Object> cc = (CompositeConverter<Object>) c;
@@ -72,7 +70,7 @@ public class ConverterUtilTest {
         while (c != null) {
             if (c instanceof ContextAware) {
                 ContextAware ca = (ContextAware) c;
-                assertNotNull(ca.getContext());
+                Assertions.assertNotNull(ca.getContext());
             }
             if (c instanceof CompositeConverter) {
                 CompositeConverter<Object> cc = (CompositeConverter<Object>) c;

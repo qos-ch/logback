@@ -13,16 +13,12 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -64,40 +60,40 @@ public class AbstractServerSocketAppenderTest {
     @Test
     public void testStartStop() throws Exception {
         appender.start();
-        assertTrue(runner.isContextInjected());
-        assertTrue(runner.isRunning());
-        assertSame(listener, appender.getLastListener());
+        Assertions.assertTrue(runner.isContextInjected());
+        Assertions.assertTrue(runner.isRunning());
+        Assertions.assertSame(listener, appender.getLastListener());
 
         appender.stop();
-        assertFalse(runner.isRunning());
+        Assertions.assertFalse(runner.isRunning());
     }
 
     @Test
     public void testStartWhenAlreadyStarted() throws Exception {
         appender.start();
         appender.start();
-        assertEquals(1, runner.getStartCount());
+        Assertions.assertEquals(1, runner.getStartCount());
     }
 
     @Test
     public void testStopThrowsException() throws Exception {
         appender.start();
-        assertTrue(appender.isStarted());
+        Assertions.assertTrue(appender.isStarted());
         IOException ex = new IOException("test exception");
         runner.setStopException(ex);
         appender.stop();
 
         Status status = context.getLastStatus();
-        assertNotNull(status);
-        assertTrue(status instanceof ErrorStatus);
-        assertTrue(status.getMessage().contains(ex.getMessage()));
-        assertSame(ex, status.getThrowable());
+        Assertions.assertNotNull(status);
+        Assertions.assertTrue(status instanceof ErrorStatus);
+        Assertions.assertTrue(status.getMessage().contains(ex.getMessage()));
+        Assertions.assertSame(ex, status.getThrowable());
     }
 
     @Test
     public void testStopWhenNotStarted() throws Exception {
         appender.stop();
-        assertEquals(0, runner.getStartCount());
+        Assertions.assertEquals(0, runner.getStartCount());
     }
 
 }

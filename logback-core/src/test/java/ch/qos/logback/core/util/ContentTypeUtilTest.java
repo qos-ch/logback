@@ -13,8 +13,7 @@
  */
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.*;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ContentTypeUtilTest {
@@ -22,21 +21,21 @@ public class ContentTypeUtilTest {
     @Test
     public void smoke() {
         String contextType = "text/html";
-        assertTrue(ContentTypeUtil.isTextual(contextType));
-        assertEquals("html", ContentTypeUtil.getSubType(contextType));
+        Assertions.assertTrue(ContentTypeUtil.isTextual(contextType));
+        Assertions.assertEquals("html", ContentTypeUtil.getSubType(contextType));
     }
 
     @Test
     public void nullContext() {
         String contextType = null;
-        assertFalse(ContentTypeUtil.isTextual(contextType));
-        assertNull(ContentTypeUtil.getSubType(contextType));
+        Assertions.assertFalse(ContentTypeUtil.isTextual(contextType));
+        Assertions.assertNull(ContentTypeUtil.getSubType(contextType));
     }
 
     @Test
     public void emptySubtype() {
         String contextType = "text/";
-        assertTrue(ContentTypeUtil.isTextual(contextType));
-        assertNull(ContentTypeUtil.getSubType(contextType));
+        Assertions.assertTrue(ContentTypeUtil.isTextual(contextType));
+        Assertions.assertNull(ContentTypeUtil.getSubType(contextType));
     }
 }

@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.core.net;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.net.ConnectException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -31,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
@@ -87,10 +83,10 @@ public class DefaultSocketConnectorTest {
         Future<Socket> connectorTask = executor.submit(connector);
 
         Socket socket = connectorTask.get(DELAY, TimeUnit.MILLISECONDS);
-        assertNotNull(socket);
+        Assertions.assertNotNull(socket);
         connectorTask.cancel(true);
 
-        assertTrue(connectorTask.isDone());
+        Assertions.assertTrue(connectorTask.isDone());
         socket.close();
     }
 
@@ -105,16 +101,16 @@ public class DefaultSocketConnectorTest {
         // this connection attempt will always time out
         try {
             connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
-            fail();
+            Assertions.fail();
         } catch (TimeoutException e) {
         }
         Exception lastException = exceptionHandler.awaitConnectionFailed();
-        assertTrue(lastException instanceof ConnectException);
-        assertFalse(connectorTask.isDone());
+        Assertions.assertTrue(lastException instanceof ConnectException);
+        Assertions.assertFalse(connectorTask.isDone());
         connectorTask.cancel(true);
 
         // thread.join(4 * DELAY);
-        assertTrue(connectorTask.isCancelled());
+        Assertions.assertTrue(connectorTask.isCancelled());
     }
 
     @Disabled
@@ -130,14 +126,14 @@ public class DefaultSocketConnectorTest {
         // this connection attempt will always time out
         try {
             connectorTask.get(SHORT_DELAY, TimeUnit.MILLISECONDS);
-            fail();
+            Assertions.fail();
         } catch (TimeoutException e) {
         }
 
         // the following call requires over 1000 millis
         Exception lastException = exceptionHandler.awaitConnectionFailed();
-        assertNotNull(lastException);
-        assertTrue(lastException instanceof ConnectException);
+        Assertions.assertNotNull(lastException);
+        Assertions.assertTrue(lastException instanceof ConnectException);
 
         // now rebind to the same local address
         SocketAddress address = serverSocket.getLocalSocketAddress();
@@ -148,9 +144,9 @@ public class DefaultSocketConnectorTest {
         // now we should be able to connect
         Socket socket = connectorTask.get(2 * DELAY, TimeUnit.MILLISECONDS);
 
-        assertNotNull(socket);
+        Assertions.assertNotNull(socket);
 
-        assertFalse(connectorTask.isCancelled());
+        Assertions.assertFalse(connectorTask.isCancelled());
         socket.close();
     }
 

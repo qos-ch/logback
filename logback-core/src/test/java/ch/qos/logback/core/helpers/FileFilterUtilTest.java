@@ -17,9 +17,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.rolling.helper.FileFilterUtil;
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.text.ParseException;
@@ -50,6 +49,6 @@ public class FileFilterUtilTest {
         rexexp = fnp.toRegexForFixedDate(sdf.parse("2010-08-10"));
         String stemRegex = FileFilterUtil.afterLastSlash(rexexp);
         int result = FileFilterUtil.findHighestCounter(matchingFileArray, stemRegex);
-        assertEquals(12, result);
+        Assertions.assertEquals(12, result);
     }
 }

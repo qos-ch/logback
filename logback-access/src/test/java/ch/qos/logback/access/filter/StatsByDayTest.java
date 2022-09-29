@@ -15,9 +15,8 @@ package ch.qos.logback.access.filter;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Test;
-
 import ch.qos.logback.core.util.TimeUtil;
+import org.junit.jupiter.api.Test;
 
 public class StatsByDayTest {
 

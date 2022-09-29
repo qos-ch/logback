@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.rolling;
 
-import static org.junit.Assert.assertFalse;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -31,6 +29,8 @@ import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     private SizeAndTimeBasedFNATP<Object> sizeAndTimeBasedFNATP = null;

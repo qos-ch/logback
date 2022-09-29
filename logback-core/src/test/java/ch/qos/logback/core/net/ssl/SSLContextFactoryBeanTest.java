@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.net.ssl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +21,9 @@ import ch.qos.logback.core.net.ssl.mock.MockKeyManagerFactoryFactoryBean;
 import ch.qos.logback.core.net.ssl.mock.MockKeyStoreFactoryBean;
 import ch.qos.logback.core.net.ssl.mock.MockSecureRandomFactoryBean;
 import ch.qos.logback.core.net.ssl.mock.MockTrustManagerFactoryFactoryBean;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for {@link SSLContextFactoryBean}.

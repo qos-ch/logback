@@ -1,17 +1,17 @@
 package ch.qos.logback.core.util;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
-
 import java.util.Hashtable;
 
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.MockInitialContextFactory;
+
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JNDIUtilTest {
 
@@ -39,7 +39,7 @@ public class JNDIUtilTest {
         props.put(CoreTestConstants.JAVA_NAMING_FACTORY_INITIAL, MockInitialContextFactory.class.getCanonicalName());
         Context ctxt = JNDIUtil.getInitialContext(props);
         String x = JNDIUtil.lookupString(ctxt, "java:comp:/inexistent");
-        assertNull(x);
+        Assertions.assertNull(x);
     }
 
     public String castToString(Object input) {

@@ -13,14 +13,11 @@
  */
 package ch.qos.logback.core.net.ssl;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -34,14 +31,14 @@ public class SecureRandomFactoryBeanTest {
 
     @Test
     public void testDefaults() throws Exception {
-        assertNotNull(factoryBean.createSecureRandom());
+        Assertions.assertNotNull(factoryBean.createSecureRandom());
     }
 
     @Test
     public void testExplicitProvider() throws Exception {
         SecureRandom secureRandom = SecureRandom.getInstance(SSL.DEFAULT_SECURE_RANDOM_ALGORITHM);
         factoryBean.setProvider(secureRandom.getProvider().getName());
-        assertNotNull(factoryBean.createSecureRandom());
+        Assertions.assertNotNull(factoryBean.createSecureRandom());
     }
 
     @Test
@@ -49,9 +46,9 @@ public class SecureRandomFactoryBeanTest {
         factoryBean.setProvider(SSLTestConstants.FAKE_PROVIDER_NAME);
         try {
             factoryBean.createSecureRandom();
-            fail("expected NoSuchProviderException");
+            Assertions.fail("expected NoSuchProviderException");
         } catch (NoSuchProviderException ex) {
-            assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_PROVIDER_NAME));
+            Assertions.assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_PROVIDER_NAME));
         }
     }
 
@@ -60,9 +57,9 @@ public class SecureRandomFactoryBeanTest {
         factoryBean.setAlgorithm(SSLTestConstants.FAKE_ALGORITHM_NAME);
         try {
             factoryBean.createSecureRandom();
-            fail("expected NoSuchAlgorithmException");
+            Assertions.fail("expected NoSuchAlgorithmException");
         } catch (NoSuchAlgorithmException ex) {
-            assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_ALGORITHM_NAME));
+            Assertions.assertTrue(ex.getMessage().contains(SSLTestConstants.FAKE_ALGORITHM_NAME));
         }
     }
 

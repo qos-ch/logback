@@ -1,13 +1,13 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
@@ -15,28 +15,32 @@ package ch.qos.logback.core.status;
 
 import java.util.Iterator;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class StatusBaseTest extends TestCase {
+public class StatusBaseTest {
 
+
+    @Test
     public void testAddStatus() {
         {
             InfoStatus status = new InfoStatus("testing", this);
             status.add(new ErrorStatus("error", this));
             Iterator<Status> it = status.iterator();
-            assertTrue("No status was added", it.hasNext());
-            assertTrue("hasChilden method reported wrong result", status.hasChildren());
+            Assertions.assertTrue(it.hasNext(), "No status was added");
+            Assertions.assertTrue(status.hasChildren(), "hasChilden method reported wrong result");
         }
         {
             InfoStatus status = new InfoStatus("testing", this);
             try {
                 status.add(null);
-                fail("method should have thrown an Exception");
+                Assertions.fail("method should have thrown an Exception");
             } catch (NullPointerException ex) {
             }
         }
     }
 
+    @Test
     public void testRemoveStatus() {
         {
             InfoStatus status = new InfoStatus("testing", this);
@@ -44,16 +48,16 @@ public class StatusBaseTest extends TestCase {
             status.add(error);
             boolean result = status.remove(error);
             Iterator<Status> it = status.iterator();
-            assertTrue("Remove failed", result);
-            assertFalse("No status was removed", it.hasNext());
-            assertFalse("hasChilden method reported wrong result", status.hasChildren());
+            Assertions.assertTrue(result, "Remove failed");
+            Assertions.assertFalse(it.hasNext(), "No status was removed");
+            Assertions.assertFalse(status.hasChildren(), "hasChilden method reported wrong result");
         }
         {
             InfoStatus status = new InfoStatus("testing", this);
             ErrorStatus error = new ErrorStatus("error", this);
             status.add(error);
             boolean result = status.remove(null);
-            assertFalse("Remove result was not false", result);
+            Assertions.assertFalse(result, "Remove result was not false");
         }
     }
 
@@ -63,7 +67,7 @@ public class StatusBaseTest extends TestCase {
             ErrorStatus status = new ErrorStatus("error", this);
             WarnStatus warn = new WarnStatus("warning", this);
             status.add(warn);
-            assertEquals("effective level misevaluated", status.getEffectiveLevel(), Status.ERROR);
+            Assertions.assertEquals(status.getEffectiveLevel(), Status.ERROR, "effective level misevaluated");
         }
 
         {
@@ -71,7 +75,7 @@ public class StatusBaseTest extends TestCase {
             InfoStatus status = new InfoStatus("info", this);
             WarnStatus warn = new WarnStatus("warning", this);
             status.add(warn);
-            assertEquals("effective level misevaluated", status.getEffectiveLevel(), Status.WARN);
+            Assertions.assertEquals(status.getEffectiveLevel(), Status.WARN, "effective level misevaluated");
         }
 
         {
@@ -81,7 +85,7 @@ public class StatusBaseTest extends TestCase {
             ErrorStatus error = new ErrorStatus("error", this);
             status.add(warn);
             warn.add(error);
-            assertEquals("effective level misevaluated", status.getEffectiveLevel(), Status.ERROR);
+            Assertions.assertEquals(status.getEffectiveLevel(), Status.ERROR, "effective level misevaluated");
         }
     }
 

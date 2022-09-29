@@ -13,8 +13,7 @@
  */
 package ch.qos.logback.core.net;
 
-import static org.junit.Assert.assertNotNull;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +41,7 @@ public class AbstractSSLSocketAppenderTest {
         // should be able to start and stop successfully with no SSL
         // configuration at all
         appender.start();
-        assertNotNull(appender.getSocketFactory());
+        Assertions.assertNotNull(appender.getSocketFactory());
         appender.stop();
     }
 

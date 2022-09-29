@@ -15,19 +15,19 @@ package ch.qos.logback.access.servlet;
 
 import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServletOutputStream;
-import org.junit.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertArrayEquals;
 
-@RunWith(Parameterized.class)
 public class TeeHttpServletResponseTest {
 
     String characterEncoding;
@@ -40,17 +40,17 @@ public class TeeHttpServletResponseTest {
         this.expectedBytes = expectedBytes;
     }
 
-    @Parameterized.Parameters
-    public static Collection<?> inputValues() {
-        return Arrays.asList(new Object[][] {
-                { "utf-8", "G\u00FClc\u00FC",
+    public static Stream<Arguments> inputValues() {
+        return Stream.of(
+                Arguments.of( "utf-8", "G\u00FClc\u00FC",
                         new byte[] { (byte) 0x47, (byte) 0xC3, (byte) 0xBC, (byte) 0x6C, (byte) 0x63, (byte) 0xC3,
-                                (byte) 0xBC } },
-                { "iso-8859-1", "G\u00FClc\u00FC",
-                        new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC } } });
+                                (byte) 0xBC}),
+                Arguments.of("iso-8859-1", "G\u00FClc\u00FC",
+                        new byte[] { (byte) 0x47, (byte) 0xFC, (byte) 0x6C, (byte) 0x63, (byte) 0xFC}));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("inputValues")
     public void testWriterEncoding() throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 

@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.core.net.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -24,6 +21,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -62,7 +60,7 @@ public class ServerSocketAppenderBaseFunctionalTest {
     public void tearDown() throws Exception {
         executor.shutdownNow();
         executor.awaitTermination(10000, TimeUnit.MILLISECONDS);
-        assertTrue(executor.isTerminated());
+        Assertions.assertTrue(executor.isTerminated());
     }
 
     @Test
@@ -75,7 +73,7 @@ public class ServerSocketAppenderBaseFunctionalTest {
 
         for (int i = 0; i < EVENT_COUNT; i++) {
             appender.append(TEST_EVENT + i);
-            assertEquals(TEST_EVENT + i, ois.readObject());
+            Assertions.assertEquals(TEST_EVENT + i, ois.readObject());
         }
 
         socket.close();

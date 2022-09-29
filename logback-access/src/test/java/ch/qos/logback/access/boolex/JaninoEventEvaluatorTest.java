@@ -16,8 +16,7 @@ package ch.qos.logback.access.boolex;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.access.dummy.DummyRequest;
 import ch.qos.logback.access.dummy.DummyResponse;
@@ -26,6 +25,7 @@ import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
+import org.junit.jupiter.api.Test;
 
 public class JaninoEventEvaluatorTest {
 
@@ -38,7 +38,7 @@ public class JaninoEventEvaluatorTest {
     DummyServerAdapter serverAdapter;
     AccessContext accessContext = new AccessContext();
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         evaluator = new JaninoEventEvaluator();
         evaluator.setContext(accessContext);

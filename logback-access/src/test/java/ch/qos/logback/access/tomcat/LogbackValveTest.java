@@ -17,8 +17,8 @@ import static org.junit.Assert.*;
 
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.ContainerBase;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.core.status.Status;
@@ -29,7 +29,7 @@ public class LogbackValveTest {
     LogbackValve valve = new LogbackValve();
     StatusChecker checker = new StatusChecker(valve);
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.clearProperty(LogbackValve.CATALINA_BASE_KEY);
         System.clearProperty(LogbackValve.CATALINA_HOME_KEY);

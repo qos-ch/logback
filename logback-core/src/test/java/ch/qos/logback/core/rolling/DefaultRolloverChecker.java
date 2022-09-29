@@ -19,7 +19,7 @@ import ch.qos.logback.core.util.Compare;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DefaultRolloverChecker implements RolloverChecker {
 

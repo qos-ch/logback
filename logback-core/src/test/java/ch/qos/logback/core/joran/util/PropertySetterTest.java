@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.core.joran.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
@@ -34,6 +29,11 @@ import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PropertySetterTest {
 
