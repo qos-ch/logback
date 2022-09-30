@@ -48,7 +48,9 @@ public class ClassicEnvUtil {
         List<T> listOfT = new ArrayList<>();
         Iterator<T> it = loader.iterator();
         while(it.hasNext()) {
-            listOfT.add(it.next());
+            T t = it.next();
+            System.out.println("loaded "+t);
+            listOfT.add(t);
         }
         return listOfT;
     }

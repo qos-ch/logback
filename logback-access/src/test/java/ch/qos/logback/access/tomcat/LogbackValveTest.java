@@ -13,16 +13,15 @@
  */
 package ch.qos.logback.access.tomcat;
 
-import static org.junit.Assert.*;
-
+import ch.qos.logback.access.AccessTestConstants;
+import ch.qos.logback.core.status.Status;
+import ch.qos.logback.core.testUtil.StatusChecker;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.ContainerBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.access.AccessTestConstants;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LogbackValveTest {
 

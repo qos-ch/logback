@@ -1,16 +1,15 @@
 package ch.qos.logback.access.spi;
 
-import static org.junit.Assert.*;
-
-import java.util.Map;
-
+import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
-import ch.qos.logback.access.dummy.DummyRequest;
-import ch.qos.logback.core.testUtil.RandomUtil;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AccessEventTest {
 

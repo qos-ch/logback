@@ -17,6 +17,7 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
@@ -27,16 +28,20 @@ import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.testUtil.TrivialStatusListener;
 import ch.qos.logback.core.util.Loader;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.module.ModuleDescriptor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.Vector;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,6 +54,8 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ContextInitializerTest {
 
+    static final String PATH_TO_META_INF_CONF_SERVICE = "META-INF/services/ch.qos.logback.classic.spi.Configurator";
+    static final String FAKE_META_INF_SERVICES = "FAKE_META_INF_SERVICES_ch_qos_logback_classic_spi_Configurator";
     LoggerContext loggerContext = new LoggerContext();
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
@@ -89,7 +96,7 @@ public class ContextInitializerTest {
         doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
         doAutoConfigFromSystemProperties("autoConfigAsResource.xml");
         // test passing a URL. note the relative path syntax with file:src/test/...
-        doAutoConfigFromSystemProperties("file:" + ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
+        doAutoConfigFromSystemProperties("file://./" + ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
     }
 
     public void doAutoConfigFromSystemProperties(String val) throws JoranException {
@@ -100,6 +107,18 @@ public class ContextInitializerTest {
         assertNotNull(appender);
     }
 
+
+    // this test as constructed cannot run in a modular environment since
+    // ServiceLoader will not honor providers specified in a provider-configuration file (META-INF/..)
+    // if module-info.java in the same module declares a provider
+    //
+    // https://docs.oracle.com/en/java/javase/18/docs/api/java.base/java/util/ServiceLoader.html#
+    //
+    //In a provider-configuration file, any mention of a service provider that is deployed
+    // in a named module is ignored. This is to avoid duplicates that would otherwise arise
+    // when a named module has both a provides directive and a provider-configuration file
+    // that mention the same service provider.
+    @Disabled
     @Test
     public void autoConfigFromServiceLoaderJDK6andAbove() throws Exception {
         assumeTrue(!isJDK5());
@@ -188,15 +207,25 @@ public class ContextInitializerTest {
     }
 
     private ClassLoader buildMockServiceLoader(ClassLoader realLoader) {
+
+
         //final ClassLoader realLoader = ClassicEnvUtil.class.getClassLoader();
         ClassLoader wrapperClassLoader = new WrappedClassLoader(realLoader) {
 
             @Override
+            public String toString() {
+                return "wrapperClassLoader: " +super.toString();
+            }
+
+            @Override
             public Enumeration<URL> getResources(String name) throws IOException {
                 final Enumeration<URL> r;
-                if (name.endsWith("META-INF/services/ch.qos.logback.classic.spi.Configurator")) {
+                if (name.endsWith(PATH_TO_META_INF_CONF_SERVICE)) {
+                    System.out.println("Hit on "+PATH_TO_META_INF_CONF_SERVICE);
                     Vector<URL> vs = new Vector<URL>();
-                    URL u = super.getResource("FAKE_META_INF_SERVICES_ch_qos_logback_classic_spi_Configurator");
+                    URL u = super.getResource(FAKE_META_INF_SERVICES);
+                    Assertions.assertNotNull(u);
+                    System.out.println("Found url: "+u);
                     vs.add(u);
                     return vs.elements();
                 } else {

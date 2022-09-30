@@ -79,7 +79,7 @@ public class ContextInitializer {
 
     public void autoConfig(ClassLoader classLoader) throws JoranException {
         String versionStr = EnvUtil.logbackVersion();
-        if(versionStr == null) {
+        if (versionStr == null) {
             versionStr = CoreConstants.NA;
         }
         loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
@@ -87,6 +87,12 @@ public class ContextInitializer {
         List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
         sortByPriority(configuratorList);
 
+        // this should never happen as we do have DefaultJoranConfigurator shipping with logback-classic
+        if (configuratorList == null) {
+            fallbackOnToBasicConfigurator();
+            return;
+        }
+        configuratorList.forEach(c -> System.out.println("Found "+c.toString()));
         for (Configurator c : configuratorList) {
             try {
                 c.setContext(loggerContext);
@@ -100,14 +106,16 @@ public class ContextInitializer {
                                 c != null ? c.getClass().getCanonicalName() : "null"),
                         e);
             }
-
         }
-
         // at this stage invoke basicConfigurator
+        fallbackOnToBasicConfigurator();
+
+    }
+
+    private void fallbackOnToBasicConfigurator() {
         BasicConfigurator basicConfigurator = new BasicConfigurator();
         basicConfigurator.setContext(loggerContext);
         basicConfigurator.configure(loggerContext);
-
     }
 
     private void sortByPriority(List<Configurator> configuratorList) {

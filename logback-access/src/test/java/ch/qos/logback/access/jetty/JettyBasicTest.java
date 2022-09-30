@@ -13,8 +13,13 @@
  */
 package ch.qos.logback.access.jetty;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.access.spi.Util;
+import ch.qos.logback.access.testUtil.NotifyingListAppender;
+import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -22,14 +27,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.access.spi.IAccessEvent;
-import ch.qos.logback.access.spi.Util;
-import ch.qos.logback.access.testUtil.NotifyingListAppender;
-import ch.qos.logback.core.testUtil.RandomUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class JettyBasicTest {
 
@@ -79,7 +78,7 @@ public class JettyBasicTest {
 
         NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
         IAccessEvent event = listAppender.list.poll(TIMEOUT, TimeUnit.SECONDS);
-        assertNotNull("No events received", event);
+        assertNotNull(event, "No events received");
 
         assertEquals("127.0.0.1", event.getRemoteHost());
         assertEquals("localhost", event.getServerName());
@@ -111,7 +110,7 @@ public class JettyBasicTest {
         NotifyingListAppender listAppender = (NotifyingListAppender) REQUEST_LOG_IMPL.getAppender("list");
 
         IAccessEvent event = listAppender.list.poll(TIMEOUT, TimeUnit.SECONDS);
-        assertNotNull("No events received", event);
+        assertNotNull(event, "No events received");
 
         // we should test the contents of the requests
         // assertEquals(msg, event.getRequestContent());
