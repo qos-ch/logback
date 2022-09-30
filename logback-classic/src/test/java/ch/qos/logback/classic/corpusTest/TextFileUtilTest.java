@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic.corpusTest;
 
-import static org.junit.Assert.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -22,6 +20,8 @@ import java.util.List;
 
 import ch.qos.logback.classic.corpus.TextFileUtil;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TextFileUtilTest {
 

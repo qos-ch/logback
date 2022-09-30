@@ -1,30 +1,29 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.spi;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.classic.util.TestHelper;
+import ch.qos.logback.core.util.SystemInfo;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.classic.util.TestHelper;
-import ch.qos.logback.core.util.SystemInfo;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PackagingDataCalculatorTest {
 
@@ -93,16 +92,15 @@ public class PackagingDataCalculatorTest {
             // be more lenient with other JDKs
             slackFactor = 15;
         }
-        assertTrue(
+        assertTrue(d0 * slackFactor > d1,
                 "computing class packaging data (" + d1 + ") should have been less than " + slackFactor
-                        + " times the time it takes to process an exception " + (d0 * slackFactor),
-                d0 * slackFactor > d1);
+                + " times the time it takes to process an exception " + (d0 * slackFactor));
 
     }
 
     private ClassLoader makeBogusClassLoader() throws MalformedURLException {
         ClassLoader currentClassLoader = this.getClass().getClassLoader();
-        return new BogusClassLoader(new URL[] {}, currentClassLoader);
+        return new BogusClassLoader(new URL[]{}, currentClassLoader);
     }
 
     @Test

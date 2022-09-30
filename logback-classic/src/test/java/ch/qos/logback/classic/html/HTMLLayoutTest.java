@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.classic.html;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.util.List;
 
@@ -44,6 +39,11 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HTMLLayoutTest {
 
@@ -80,6 +80,7 @@ public class HTMLLayoutTest {
         Document doc = parseOutput(header + "</body></html>");
         Element rootElement = doc.getRootElement();
         assertNotNull(rootElement.element("body"));
+
     }
 
     @Test

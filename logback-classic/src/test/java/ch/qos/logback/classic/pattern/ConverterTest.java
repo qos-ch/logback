@@ -13,20 +13,6 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import ch.qos.logback.core.util.StatusPrinter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
-import org.slf4j.MarkerFactory;
-
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
@@ -39,6 +25,19 @@ import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import ch.qos.logback.core.pattern.FormatInfo;
 import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+import org.slf4j.MarkerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConverterTest {
 
@@ -76,7 +75,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("78", buf.toString());
+            assertEquals("76", buf.toString());
         }
     }
 
@@ -320,7 +319,7 @@ public class ConverterTest {
 
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
-            assertTrue("buf is too short", buf.length() >= 10);
+            assertTrue( buf.length() >= 10, "buf is too short");
 
             String expectedRegex = "Caller\\+4";
             if(jdk18) {
@@ -328,7 +327,7 @@ public class ConverterTest {
             }
             expectedRegex+="\t at (java.base\\/)?java.lang.reflect.Method.invoke.*$";
             String actual = buf.toString();
-            assertTrue("actual: " + actual, Pattern.compile(expectedRegex).matcher(actual).find());
+            assertTrue( Pattern.compile(expectedRegex).matcher(actual).find(), "actual: " + actual);
 
         }
     }

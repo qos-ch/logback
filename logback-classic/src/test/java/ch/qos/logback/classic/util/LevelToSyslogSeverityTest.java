@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.classic.util;
 
-import static org.junit.Assert.assertEquals;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.net.SyslogConstants;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LevelToSyslogSeverityTest {
 

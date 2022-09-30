@@ -13,13 +13,13 @@
  */
 package ch.qos.logback.classic.turbo.lru;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled
 public class LRUCacheTest {

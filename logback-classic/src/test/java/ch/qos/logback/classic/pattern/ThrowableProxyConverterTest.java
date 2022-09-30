@@ -13,11 +13,17 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.TestHelper;
+import ch.qos.logback.core.CoreConstants;
+import ch.qos.logback.core.util.EnvUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
@@ -27,18 +33,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.util.TestHelper;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.util.EnvUtil;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ThrowableProxyConverterTest {
 
@@ -154,10 +153,11 @@ public class ThrowableProxyConverterTest {
 
         final String result = tpc.convert(le);
 
+        System.out.println(result);
         final BufferedReader reader = new BufferedReader(new StringReader(result));
         assertTrue(reader.readLine().contains(t.getMessage()));
         assertNotNull(reader.readLine());
-        assertNull("Unexpected line in stack trace", reader.readLine());
+        assertNull(reader.readLine(), "Unexpected line in stack trace");
     }
 
     @Test
@@ -175,7 +175,7 @@ public class ThrowableProxyConverterTest {
         final BufferedReader reader = new BufferedReader(new StringReader(result));
         assertTrue(reader.readLine().contains(t.getMessage()));
         assertNotNull(reader.readLine());
-        assertNull("Unexpected line in stack trace", reader.readLine());
+        assertNull(reader.readLine(), "Unexpected line in stack trace");
     }
 
     @Test

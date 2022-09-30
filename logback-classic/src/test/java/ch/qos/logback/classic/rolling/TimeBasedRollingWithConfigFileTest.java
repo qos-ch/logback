@@ -1,26 +1,17 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.rolling;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -36,6 +27,14 @@ import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTests {
 
@@ -147,8 +146,8 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         // for various reasons, it is extremely difficult to have the files
         // match exactly the expected archive files. Thus, we aim for
         // an approximate match
-        assertTrue("exitenceCount=" + eCount + ", expectedFilenameList.size=" + expectedFilenameList.size(),
-                eCount >= 4 && eCount > expectedFilenameList.size() / 2);
+        assertTrue(eCount >= 4 && eCount > expectedFilenameList.size() / 2,
+                "exitenceCount=" + eCount + ", expectedFilenameList.size=" + expectedFilenameList.size());
     }
 
     @Test

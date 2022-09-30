@@ -13,13 +13,12 @@
  */
 package ch.qos.logback.classic.spi;
 
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.Assert.*;
-
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LoggerComparatorTest {
 

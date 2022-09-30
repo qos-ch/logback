@@ -13,8 +13,11 @@
  */
 package ch.qos.logback.classic.selector;
 
-import static org.junit.Assert.assertEquals;
-
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
+import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
+import ch.qos.logback.core.testUtil.MockInitialContext;
+import ch.qos.logback.core.testUtil.MockInitialContextFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -22,11 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.selector.servlet.ContextDetachingSCL;
-import ch.qos.logback.classic.util.ContextSelectorStaticBinder;
-import ch.qos.logback.core.testUtil.MockInitialContext;
-import ch.qos.logback.core.testUtil.MockInitialContextFactory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled
 public class ContextDetachingSCLTest {

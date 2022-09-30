@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +26,9 @@ import ch.qos.logback.classic.control.ScenarioAction;
 import ch.qos.logback.classic.control.ScenarioMaker;
 import ch.qos.logback.classic.control.SetLevel;
 import ch.qos.logback.classic.control.Scenario;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ScenarioBasedLoggerContextTest {
     LoggerContext lc;

@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic.corpusTest;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Random;
 
 import org.junit.jupiter.api.Assertions;

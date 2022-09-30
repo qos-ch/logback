@@ -14,8 +14,8 @@
 package ch.qos.logback.classic.encoder;
 
 import static ch.qos.logback.core.CoreConstants.CODES_URL;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

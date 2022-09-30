@@ -4,8 +4,8 @@ import ch.qos.logback.core.util.EnvUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 public class EnvUtilTest {
 
 

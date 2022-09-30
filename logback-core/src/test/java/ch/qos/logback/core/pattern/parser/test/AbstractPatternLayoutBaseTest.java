@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.pattern.parser.test;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
@@ -42,6 +41,8 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
         assertEquals("", s);
     }
 
+
+
     /**
      * This test checks that the pattern layout implementation starts its
      * converters. ExceptionalConverter throws an exception if it's convert method
@@ -51,11 +52,20 @@ abstract public class AbstractPatternLayoutBaseTest<E> {
     public void testConverterStart() {
         PatternLayoutBase<E> plb = getPatternLayoutBase();
         plb.setContext(getContext());
-        plb.getInstanceConverterMap().put("EX", ExceptionalConverter.class.getName());
+        plb.getInstanceConverterMap().put("EX", getExceptionalConverterClassName());
         plb.setPattern("%EX");
         plb.start();
         String result = plb.doLayout(getEventObject());
         assertFalse(result.contains("%PARSER_ERROR_EX"));
+    }
+
+    /**
+     *
+     * @return the class for the ExceptionalConverter (used in tests)
+     * @since 1.4.2
+     */
+    protected String getExceptionalConverterClassName() {
+        return ExceptionalConverter.class.getName();
     }
 
     @Test

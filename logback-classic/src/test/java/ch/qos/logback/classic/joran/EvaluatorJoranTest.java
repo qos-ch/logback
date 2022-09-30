@@ -13,10 +13,6 @@
  */
 package ch.qos.logback.classic.joran;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Map;
 
 import org.junit.jupiter.api.Disabled;
@@ -35,6 +31,10 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.boolex.EvaluationException;
 import ch.qos.logback.core.boolex.EventEvaluator;
 import ch.qos.logback.core.joran.spi.JoranException;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EvaluatorJoranTest {
 

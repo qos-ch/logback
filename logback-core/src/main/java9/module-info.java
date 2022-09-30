@@ -1,18 +1,19 @@
 module ch.qos.logback.core { 
     requires static transitive java.sql;
     requires static transitive java.naming;
+
     requires static transitive java.xml;
 
-    requires static jakarta.mail;
-    requires static jakarta.activation;
-
+    requires static transitive java.xml; 
+    requires static transitive jakarta.mail;
+    requires static transitive jakarta.activation;
     
     requires static jakarta.servlet;
     requires static janino;
     requires static commons.compiler;
 
-    //requires static org.codehaus.janino.janino;
-    //requires static org.codehaus.janino.commons.compiler;
+    requires static org.codehaus.janino.janino;
+    requires static org.codehaus.janino.commons.compiler;
 
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;

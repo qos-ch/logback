@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -24,6 +22,8 @@ import ch.qos.logback.classic.turbo.NOPTurboFilter;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.helpers.NOPAppender;
 import ch.qos.logback.core.testUtil.EnvUtilForTests;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
 public class LoggerPerfTest {
@@ -215,7 +215,7 @@ public class LoggerPerfTest {
         double actual = ((double) (end - start)) / NANOS_IN_ONE_SEC;
         System.out.printf("Sleep duration: %,.4f seconds. Max expected: %,.4f seconds, Serialized: %,.4f\n", actual,
                 max, serialized);
-        assertTrue("Exceeded maximum expected time.", actual < max);
+        assertTrue(actual < max, "Exceeded maximum expected time.");
     }
 
     // ============================================================

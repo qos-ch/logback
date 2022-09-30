@@ -13,18 +13,6 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
@@ -32,6 +20,17 @@ import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.util.EnvUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExtendedThrowableProxyConverterTest {
 

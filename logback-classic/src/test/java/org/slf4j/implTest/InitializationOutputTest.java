@@ -13,21 +13,20 @@
  */
 package org.slf4j.implTest;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.PrintStream;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.LoggerFactoryFriend;
-
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.status.NopStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.TeeOutputStream;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactoryFriend;
+
+import java.io.PrintStream;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Ceki G&uuml;lc&uuml;

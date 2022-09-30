@@ -13,15 +13,15 @@
  */
 package ch.qos.logback.classic.net.server;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import javax.net.ServerSocketFactory;
 
 import org.junit.jupiter.api.BeforeEach;
 
 import ch.qos.logback.core.net.mock.MockContext;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for {@link SSLServerSocketReceiver}.

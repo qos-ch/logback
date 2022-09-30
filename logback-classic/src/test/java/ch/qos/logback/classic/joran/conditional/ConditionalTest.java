@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.classic.joran.conditional;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,6 +34,9 @@ import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ConditionalTest {
 

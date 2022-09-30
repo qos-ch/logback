@@ -112,6 +112,12 @@
       <groupId>com.icegreen</groupId>
       <artifactId>greenmail</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -237,13 +243,34 @@
         </executions>
       </plugin>
 
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration combine.self="append">
+          <compilerArgs>
+            <arg>add-reads</arg>
+            <arg>ch.qos.logback.core=ch.qos.logback.core=org.codehaus.janino.commons.compiler,org.codehaus.janino.janino</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      -->
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <executions>
           <execution>
             <id>default-test</id>
-            <configuration>
+            <configuration  combine.self="append">
+
+              <!--<argLine>XXadd-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming</argLine>-->
+              <!--<argLine>XXadd-reads ch.qos.logback.classic=ch.qos.logback.classic/ch.qos.logback.core.testUtil XXadd-reads ch.qos.logback.core=ALL-UNNAMED</argLine>-->
+              <argLine>
+                --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
+                --add-reads ch.qos.logback.core=org.codehaus.janino.commons.compiler,org.codehaus.janino.janino
+              </argLine>
               <parallel>classes</parallel>
               <threadCount>8</threadCount>
               <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
@@ -259,6 +286,9 @@
                 <exclude>org.slf4j.implTest.InitializationOutputTest.java</exclude>
                 <exclude>ch.qos.logback.classic.util.ContextInitializerTest.java</exclude>
                 <exclude>ch.qos.logback.classic.spi.InvocationTest.java</exclude>
+                <!--- temporary -->
+                <exclude>**/JaninoEventEvaluatorTest.java</exclude>
+                <exclude>**/ConditionalTest.java</exclude>
               </excludes>
             </configuration>
           </execution>
