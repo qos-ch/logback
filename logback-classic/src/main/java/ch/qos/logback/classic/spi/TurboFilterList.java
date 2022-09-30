@@ -52,7 +52,7 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
             }
         }
 
-        Object[] tfa = toArray();
+        Object[] tfa = getArray();
         final int len = tfa.length;
         for (int i = 0; i < len; i++) {
             // for (TurboFilter tf : this) {
