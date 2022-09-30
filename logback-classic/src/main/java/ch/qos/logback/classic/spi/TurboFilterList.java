@@ -52,12 +52,15 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
             }
         }
 
-        Object[] tfa = toArray();
-        final int len = tfa.length;
-        for (int i = 0; i < len; i++) {
+        for (int i = 0; i < size; i++) {
             // for (TurboFilter tf : this) {
-            final TurboFilter tf = (TurboFilter) tfa[i];
-            final FilterReply r = tf.decide(marker, logger, level, format, params, t);
+            FilterReply r;
+            try {
+                final TurboFilter tf = (TurboFilter) this.get(i);
+                r = tf.decide(marker, logger, level, format, params, t);
+            } catch (IndexOutOfBoundsException iobe) {
+                r = FilterReply.NEUTRAL;
+            }
             if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
                 return r;
             }
