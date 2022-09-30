@@ -55,9 +55,12 @@
     <junit-jupiter-api.version>5.9.0</junit-jupiter-api.version>
     <junit-vintage-engine.version>5.9.0</junit-vintage-engine.version>
     <junit-jupiter-params.version>5.9.0</junit-jupiter-params.version>
+    <assertj-core.version>3.23.1</assertj-core.version>
     <hamcrest.version>2.2</hamcrest.version>
-    <jakarta.mail.version>2.0.1</jakarta.mail.version>
+    <jakarta.mail.version>2.1.0</jakarta.mail.version>
     <jakarta.activation.version>2.1.0</jakarta.activation.version>
+    <jakarta.angus-mail.version>1.0.0</jakarta.angus-mail.version>
+
     <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
     <greenmail.version>2.0.0-alpha-1</greenmail.version>
 
@@ -112,7 +115,7 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>1.7.1</version>
+      <version>${assertj-core.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -201,9 +204,9 @@
       </dependency>
 
       <dependency>
-        <groupId>com.sun.mail</groupId>
-        <artifactId>jakarta.mail</artifactId>
-        <version>${jakarta.mail.version}</version>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>angus-mail</artifactId>
+        <version>${jakarta.angus-mail.version}</version>
       </dependency>
 
       <dependency>

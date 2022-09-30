@@ -48,10 +48,9 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>jakarta.mail</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
+      <groupId>org.eclipse.angus</groupId>
+      <artifactId>angus-mail</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

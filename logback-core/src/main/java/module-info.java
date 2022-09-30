@@ -3,7 +3,7 @@ module ch.qos.logback.core {
     requires static transitive java.naming;
     requires static transitive java.xml; 
     requires static transitive jakarta.mail;
-    requires static transitive jakarta.activation;
+    //requires static jakarta.activation;
     
     requires static jakarta.servlet;
     //requires static janino;
