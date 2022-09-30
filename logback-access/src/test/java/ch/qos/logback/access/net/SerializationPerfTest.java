@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 import ch.qos.logback.access.spi.IAccessEvent;
-import junit.framework.TestCase;
 import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

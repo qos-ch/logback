@@ -18,27 +18,15 @@ import ch.qos.logback.access.dummy.DummyServletOutputStream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class TeeHttpServletResponseTest {
-
-    String characterEncoding;
-    String testString;
-    byte[] expectedBytes;
-
-    public TeeHttpServletResponseTest(String characterEncoding, String testString, byte[] expectedBytes) {
-        this.characterEncoding = characterEncoding;
-        this.testString = testString;
-        this.expectedBytes = expectedBytes;
-    }
 
     public static Stream<Arguments> inputValues() {
         return Stream.of(
@@ -51,7 +39,7 @@ public class TeeHttpServletResponseTest {
 
     @ParameterizedTest
     @MethodSource("inputValues")
-    public void testWriterEncoding() throws IOException {
+    public void testWriterEncoding(String characterEncoding, String testString, byte[] expectedBytes) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
         DummyResponse dummyResponse = new DummyResponse();

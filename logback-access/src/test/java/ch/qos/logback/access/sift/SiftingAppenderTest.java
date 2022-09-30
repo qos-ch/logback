@@ -13,17 +13,6 @@
  */
 package ch.qos.logback.access.sift;
 
-import static org.junit.Assert.assertEquals;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import ch.qos.logback.access.jetty.JettyFixtureBase;
 import ch.qos.logback.access.jetty.RequestLogImpl;
 import ch.qos.logback.access.spi.IAccessEvent;
@@ -31,6 +20,16 @@ import ch.qos.logback.access.spi.Util;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SiftingAppenderTest {
     static final String PREFIX = "src/test/input/jetty/";

@@ -13,21 +13,20 @@
  */
 package ch.qos.logback.access.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
+import ch.qos.logback.access.dummy.DummyRequest;
+import ch.qos.logback.access.dummy.DummyResponse;
+import ch.qos.logback.access.dummy.DummyServerAdapter;
+import ch.qos.logback.access.net.HardenedAccessEventInputStream;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.access.dummy.DummyAccessEventBuilder;
-import ch.qos.logback.access.dummy.DummyRequest;
-import ch.qos.logback.access.dummy.DummyResponse;
-import ch.qos.logback.access.dummy.DummyServerAdapter;
-import ch.qos.logback.access.net.HardenedAccessEventInputStream;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class AccessEventSerializationTest {
 
