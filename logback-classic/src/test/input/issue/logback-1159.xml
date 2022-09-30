@@ -2,7 +2,7 @@
 <configuration debug="true">
 
 	<statusListener
-		class="ch.qos.logback.classic.issue.logback1159.LogbackListener" />
+		class="ch.qos.logback.classic.util.LogbackListener1159" />
 
 	<property name="logback.rollingPattern" value="%d{yyyy-MM-dd}.gz" />
 

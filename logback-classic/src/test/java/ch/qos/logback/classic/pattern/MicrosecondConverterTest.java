@@ -13,12 +13,12 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
-import ch.qos.logback.classic.spi.LoggingEvent;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MicrosecondConverterTest {
 

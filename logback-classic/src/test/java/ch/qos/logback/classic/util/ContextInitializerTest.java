@@ -13,27 +13,6 @@
  */
 package ch.qos.logback.classic.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Vector;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
@@ -47,6 +26,26 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.testUtil.TrivialStatusListener;
 import ch.qos.logback.core.util.Loader;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ContextInitializerTest {
 
@@ -127,10 +126,10 @@ public class ContextInitializerTest {
         assertEquals(0, statusListenerList.size());
         doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
         statusListenerList = loggerContext.getStatusManager().getCopyOfStatusListenerList();
-        assertTrue(statusListenerList.size() + " should be 1", statusListenerList.size() == 1);
+        assertTrue( statusListenerList.size() == 1, statusListenerList.size() + " should be 1");
         // LOGBACK-767
         TrivialStatusListener tsl = (TrivialStatusListener) statusListenerList.get(0);
-        assertTrue("expecting at least one event in list", tsl.list.size() > 0);
+        assertTrue( tsl.list.size() > 0, "expecting at least one event in list");
     }
 
     @Test
@@ -140,7 +139,7 @@ public class ContextInitializerTest {
         assertEquals(0, sll.size());
         doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
         sll = loggerContext.getStatusManager().getCopyOfStatusListenerList();
-        assertTrue(sll.size() + " should be 1", sll.size() == 1);
+        assertTrue(sll.size() == 1, sll.size() + " should be 1");
     }
 
     @Test

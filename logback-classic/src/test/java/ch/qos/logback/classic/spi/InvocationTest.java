@@ -1,7 +1,5 @@
 package ch.qos.logback.classic.spi;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.PrintStream;
 
 import org.junit.jupiter.api.AfterEach;
@@ -12,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 
 import ch.qos.logback.classic.testUtil.StringPrintStream;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class InvocationTest {
 

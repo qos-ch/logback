@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,17 +11,19 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.pattern;
 
-/**
- * Testing purposes only
- */
-public class ExceptionalConverter extends DynamicConverter<Object> {
+package ch.qos.logback.classic.pattern;
 
-    public String convert(Object event) {
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.pattern.DynamicConverter;
+
+public class ExceptionalConverter2 extends DynamicConverter<ILoggingEvent> {
+
+    public String convert(ILoggingEvent iLoggingEvent) {
         if (!isStarted()) {
             throw new IllegalStateException("this converter must be started before use");
         }
         return "";
     }
 }
+

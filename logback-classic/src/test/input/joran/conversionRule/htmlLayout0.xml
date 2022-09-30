@@ -1,7 +1,7 @@
 <configuration>
 
   <conversionRule conversionWord="sample"
-    converterClass="ch.qos.logback.classic.testUtil.SampleConverter" />
+    converterClass="ch.qos.logback.classic.pattern.SampleConverter" />
 
   <appender name="LIST" class="ch.qos.logback.core.testUtil.StringListAppender">
     <layout class="ch.qos.logback.classic.html.HTMLLayout">

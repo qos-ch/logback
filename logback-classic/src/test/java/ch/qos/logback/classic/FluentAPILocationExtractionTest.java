@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic;
 
-import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +25,8 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 import ch.qos.logback.core.pattern.DynamicConverter;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FluentAPILocationExtractionTest {
     static public class WithLocationInfoListAppender extends AppenderBase<ILoggingEvent> {
@@ -59,7 +60,7 @@ public class FluentAPILocationExtractionTest {
         
         assertEquals(1, wlila.list.size());
         String result = wlila.list.get(0);
-        assertEquals("58", result);
+        assertEquals("59", result);
     }
 
 }

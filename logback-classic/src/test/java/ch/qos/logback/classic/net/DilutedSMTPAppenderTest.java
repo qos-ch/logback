@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +25,9 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Layout;
 import ch.qos.logback.core.helpers.CyclicBuffer;
 import ch.qos.logback.core.spi.CyclicBufferTracker;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DilutedSMTPAppenderTest {
 

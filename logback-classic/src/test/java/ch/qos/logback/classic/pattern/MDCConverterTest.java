@@ -13,20 +13,19 @@
  */
 package ch.qos.logback.classic.pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MDCConverterTest {
 
@@ -68,7 +67,7 @@ public class MDCConverterTest {
         ILoggingEvent le = createLoggingEvent();
         String result = converter.convert(le);
         boolean isConform = result.matches("testKey2?=testValue2?, testKey2?=testValue2?");
-        assertTrue(result + " is not conform", isConform);
+        assertTrue( isConform, result + " is not conform");
     }
 
     private ILoggingEvent createLoggingEvent() {

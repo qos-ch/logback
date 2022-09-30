@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.classic.spi;
 
-import static org.junit.Assert.assertEquals;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -22,6 +21,8 @@ import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.BasicContextListener.UpdateType;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContextListenerTest {
 

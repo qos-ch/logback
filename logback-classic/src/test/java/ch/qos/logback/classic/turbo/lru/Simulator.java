@@ -13,11 +13,11 @@
  */
 package ch.qos.logback.classic.turbo.lru;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Simulator {
 

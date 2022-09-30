@@ -18,7 +18,6 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.issue.lbclassic135.LoggingRunnable;
-import ch.qos.logback.classic.issue.logback1159.LogbackListenerTest;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.TurboFilterList;
 import ch.qos.logback.core.CoreConstants;
@@ -43,15 +42,21 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 @Disabled
 public class ReconfigureOnChangeTest {
     final static int THREAD_COUNT = 5;
@@ -298,7 +303,7 @@ public class ReconfigureOnChangeTest {
 
         // there might be more effective resets than the expected amount
         // since the harness may be sleeping while a reset occurs
-        assertTrue(failMsg, expected <= effectiveResets && (expected + 2) >= effectiveResets);
+        assertTrue(expected <= effectiveResets && (expected + 2) >= effectiveResets, failMsg);
 
     }
 

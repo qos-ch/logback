@@ -13,11 +13,10 @@
  */
 package ch.qos.logback.classic.turbo;
 
-import static org.junit.Assert.*;
-
+import ch.qos.logback.core.spi.FilterReply;
 import org.junit.jupiter.api.Test;
 
-import ch.qos.logback.core.spi.FilterReply;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DuplicateMessageFilterTest {
 

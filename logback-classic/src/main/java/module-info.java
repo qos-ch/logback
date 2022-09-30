@@ -31,5 +31,6 @@ module ch.qos.logback.classic {
   exports ch.qos.logback.classic.spi;
   exports ch.qos.logback.classic.turbo;
   exports ch.qos.logback.classic.util;
+
 }
 

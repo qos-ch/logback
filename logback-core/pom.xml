@@ -73,27 +73,32 @@
   <build>
     <plugins>
 
+      <!--
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration combine.self="append">
           <compilerArgs>
-            <arg>--add-reads</arg>
-            <arg>ch.qos.logback.core=ALL-UNNAMED</arg>
+            <arg>XXadd-reads</arg>
+            <arg>ch.qos.logback.core=ch.qos.logback.core=org.codehaus.janino.commons.compiler,org.codehaus.janino.janino</arg>
           </compilerArgs>
         </configuration>
       </plugin>
-
+      -->
 
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <configuration  combine.self="append">
+        <configuration>
 
           <!--<argLine>XXadd-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming</argLine>-->
-          <argLine>--add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming --add-reads ch.qos.logback.core=ALL-UNNAMED</argLine>
-          <!-- <argLine>-Xmx2048m ==permit-illegal-access</argLine>  -->
+          <!--<argLine>add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+                       add-reads ch.qos.logback.core=ALL-UNNAMED</argLine>-->
+          <argLine>
+            --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+            --add-reads ch.qos.logback.core=ALL-UNNAMED
+          </argLine>
           <parallel>classes</parallel>
           <threadCount>8</threadCount>
           <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
@@ -110,8 +115,8 @@
             <exclude>**/ConsoleAppenderTest.java</exclude>
 
             <!-- temporary -->
-            <exclude>**/AbstractServerSocketAppenderTest.java</exclude>
-            <exclude>**/ConcurrentServerRunnerTest.java</exclude>
+            <exclude>**/IfThenElseTest.java</exclude>
+            <exclude>**/PropertyEvalScriptBuilderTest.java</exclude>
 
           </excludes>
         </configuration>

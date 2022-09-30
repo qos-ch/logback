@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 
-import junit.framework.TestCase;
 import ch.qos.logback.classic.net.testObjectBuilders.Builder;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSer;
 import ch.qos.logback.classic.net.testObjectBuilders.MinimalSerBuilder;

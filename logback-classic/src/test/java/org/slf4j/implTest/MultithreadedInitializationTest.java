@@ -1,14 +1,9 @@
 package org.slf4j.implTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.atomic.AtomicLong;
-
+import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.ClassicTestConstants;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.LoggerFactoryFriend;
 import org.slf4j.helpers.SubstituteLogger;
 
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.ClassicTestConstants;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class MultithreadedInitializationTest {
 

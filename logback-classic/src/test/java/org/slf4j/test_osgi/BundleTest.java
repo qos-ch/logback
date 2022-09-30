@@ -13,27 +13,32 @@
  */
 package org.slf4j.test_osgi;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
 
-import junit.framework.TestCase;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BundleTest extends TestCase {
+public class BundleTest  {
 
     FrameworkErrorListener fel = new FrameworkErrorListener();
     CheckingBundleListener mbl = new CheckingBundleListener();
 
     FelixHost felixHost = new FelixHost(fel, mbl);
 
-    protected void setUp() throws Exception {
-        super.setUp();
+    @BeforeEach
+    public void setUp() throws Exception {
         felixHost.doLaunch();
     }
 
+    @AfterEach
     protected void tearDown() throws Exception {
-        super.tearDown();
         felixHost.stop();
     }
 
+    @Test
     public void testSmoke() {
         System.out.println("===========" + new File(".").getAbsolutePath());
         mbl.dumpAll();

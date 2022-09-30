@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -35,6 +32,9 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 
 import java.nio.charset.Charset;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Disabled
 public class SyslogAppenderTest {
@@ -173,7 +173,7 @@ public class SyslogAppenderTest {
     }
 
     private void checkRegexMatch(String s, String regex) {
-        assertTrue("The string [" + s + "] did not match regex [" + regex + "]", s.matches(regex));
+        assertTrue(s.matches(regex), "The string [" + s + "] did not match regex [" + regex + "]");
     }
 
     @Test

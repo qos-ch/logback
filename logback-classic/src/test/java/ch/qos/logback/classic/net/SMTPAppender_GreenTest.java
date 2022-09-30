@@ -13,11 +13,6 @@
  */
 package ch.qos.logback.classic.net;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -54,6 +49,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SMTPAppender_GreenTest {
 
@@ -219,7 +219,7 @@ public class SMTPAppender_GreenTest {
         waitUntilEmailIsSent();
         MimeMultipart mp = verifyAndExtractMimeMultipart(subject);
         String body = GreenMailUtil.getBody(mp.getBodyPart(0));
-        assertTrue("actual [" + body + "]", body.contains("DEBUG " + this.getClass().getName() + " - LOGBACK-734"));
+        assertTrue(body.contains("DEBUG " + this.getClass().getName() + " - LOGBACK-734"), "actual [" + body + "]");
     }
 
     // lost MDC
@@ -424,7 +424,7 @@ public class SMTPAppender_GreenTest {
 
         MimeMessage[] mma = greenMailServer.getReceivedMessages();
         assertNotNull(mma);
-        assertTrue("body should not be empty", mma.length == 1);
+        assertTrue(mma.length == 1, "body should not be empty");
     }
 
     void setSystemPropertiesForStartTLS() {
@@ -463,7 +463,7 @@ public class SMTPAppender_GreenTest {
 
             MimeMessage[] mma = greenMailServer.getReceivedMessages();
             assertNotNull(mma);
-            assertTrue("body should not be empty", mma.length == 1);
+            assertTrue(mma.length == 1, "body should not be empty");
         } finally {
             unsetSystemPropertiesForStartTLS();
         }

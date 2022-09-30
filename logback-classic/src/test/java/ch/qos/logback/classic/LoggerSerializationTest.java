@@ -1,20 +1,17 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
- *
+ * <p>
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
  * the Eclipse Foundation
- *
- *   or (per the licensee's choosing)
- *
+ * <p>
+ * or (per the licensee's choosing)
+ * <p>
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +29,9 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
 import ch.qos.logback.core.net.HardenedObjectInputStream;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LoggerSerializationTest {
 
@@ -113,10 +113,10 @@ public class LoggerSerializationTest {
         oos.close();
         int sizeB = bos.size();
 
-        assertTrue("serialized logger should be less than 100 bytes", sizeA < 100);
+        assertTrue(sizeA < 100, "serialized logger should be less than 100 bytes");
         // logger tree should not influnce serialization
-        assertTrue("serialized loggers should be nearly the same size a:" + sizeA + ", sizeB:" + sizeB,
-                (sizeA - sizeB) < 10);
+        assertTrue((sizeA - sizeB) < 10,
+                "serialized loggers should be nearly the same size a:" + sizeA + ", sizeB:" + sizeB);
     }
 
     private Foo writeAndRead(Foo foo) throws IOException, ClassNotFoundException {
@@ -146,8 +146,8 @@ public class LoggerSerializationTest {
     public void testCompatibilityWith_v1_0_11() throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX + "logger_v1.0.11.ser");
         HardenedObjectInputStream ois = new HardenedLoggingEventInputStream(fis); // new String[]
-                                                                                  // {Logger.class.getName(),
-                                                                                  // LoggerRemoteView.class.getName()});
+        // {Logger.class.getName(),
+        // LoggerRemoteView.class.getName()});
         Logger a = (Logger) ois.readObject();
         ois.close();
         assertEquals("a", a.getName());
@@ -161,7 +161,7 @@ public class LoggerSerializationTest {
     @Test
     public void testCompatibilityWith_v1_0_12() throws IOException, ClassNotFoundException {
         FileInputStream fis = new FileInputStream(SERIALIZATION_PREFIX + "logger_v1.0.12.ser");
-        HardenedObjectInputStream ois = new HardenedObjectInputStream(fis, new String[] { Logger.class.getName() });
+        HardenedObjectInputStream ois = new HardenedObjectInputStream(fis, new String[]{Logger.class.getName()});
         Logger a = (Logger) ois.readObject();
         ois.close();
         assertEquals("a", a.getName());

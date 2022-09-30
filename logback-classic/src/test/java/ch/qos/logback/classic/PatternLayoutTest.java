@@ -15,9 +15,10 @@ package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.pattern.ConverterTest;
+import ch.qos.logback.classic.pattern.ExceptionalConverter2;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.testUtil.SampleConverter;
+import ch.qos.logback.classic.pattern.SampleConverter;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
@@ -32,7 +33,9 @@ import org.slf4j.MDC;
 
 import static ch.qos.logback.classic.ClassicTestConstants.ISO_REGEX;
 import static ch.qos.logback.classic.ClassicTestConstants.MAIN_REGEX;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 
@@ -56,6 +59,15 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     @BeforeEach
     public void setUp() {
         pl.setContext(lc);
+    }
+
+    /**
+     * Circumvent JMPS issue: java.lang.NoClassDefFoundError: ch/qos/logback/core/pattern/ExceptionalConverter
+     * Is logback-clasic not open to logback-core?
+     * @return
+     */
+    protected String getExceptionalConverterClassName() {
+        return ExceptionalConverter2.class.getName();
     }
 
     LoggingEvent makeLoggingEvent(String msg, Exception ex) {
@@ -82,7 +94,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         // - Some message
         String regex = ISO_REGEX + " INFO " + MAIN_REGEX + " c.q.l.c.pattern.ConverterTest - Some message\\s*";
 
-        assertTrue("val=" + val, val.matches(regex));
+        assertTrue( val.matches(regex), "val=" + val);
     }
 
     @Test
@@ -221,7 +233,6 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     public void smokeReplace() {
         pl.setPattern("%replace(a1234b){'\\d{4}', 'XXXX'}");
         pl.start();
-        StatusPrinter.print(lc);
         String val = pl.doLayout(getEventObject());
         assertEquals("aXXXXb", val);
     }
@@ -233,7 +244,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         assertEquals(pattern, substPattern);
         pl.setPattern(substPattern);
         pl.start();
-        StatusPrinter.print(lc);
+        //StatusPrinter.print(lc);
         String val = pl.doLayout(makeLoggingEvent("", null));
         assertEquals("A\n\tB", val);
     }
@@ -241,7 +252,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     @Test
     public void replaceWithJoran() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replace0.xml");
-        StatusPrinter.print(lc);
+        //StatusPrinter.print(lc);
         root.getAppender("LIST");
         String msg = "And the number is 4111111111110000, expiring on 12/2010";
         logger.debug(msg);
@@ -255,7 +266,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     public void replaceWithJoran_NEWLINE() throws JoranException {
         lc.putProperty("TAB", "\t");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replaceNewline.xml");
-        StatusPrinter.print(lc);
+        //StatusPrinter.print(lc);
         root.getAppender("LIST");
         String msg = "A\nC";
         logger.debug(msg);

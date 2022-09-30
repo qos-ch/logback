@@ -13,17 +13,16 @@
  */
 package ch.qos.logback.classic.spi;
 
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.core.util.EnvUtil;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import ch.qos.logback.core.util.EnvUtil;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ThrowableProxyTest {
 
