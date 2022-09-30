@@ -65,7 +65,7 @@
     <javax.servlet.version>4.0.1</javax.servlet.version>
     <greenmail.version>1.5.14</greenmail.version>
 
-    <janino.version>3.1.9-SNAPSHOT</janino.version>
+    <janino.version>3.1.8</janino.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
     -->    

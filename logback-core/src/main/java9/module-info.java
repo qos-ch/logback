@@ -8,12 +8,13 @@ module ch.qos.logback.core {
     requires static transitive jakarta.mail;
     //requires static jakarta.activation;
     
-    requires static jakarta.servlet;
+    requires static transitive java.servlet;
+
     requires static janino;
     requires static commons.compiler;
 
-    requires static org.codehaus.janino.janino;
-    requires static org.codehaus.janino.commons.compiler;
+    //requires static org.codehaus.janino.janino;
+    //requires static org.codehaus.janino.commons.compiler;
 
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
