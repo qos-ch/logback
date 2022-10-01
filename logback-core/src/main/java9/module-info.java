@@ -1,14 +1,11 @@
 module ch.qos.logback.core { 
     requires static transitive java.sql;
     requires static transitive java.naming;
-
     requires static transitive java.xml;
 
-    requires static transitive java.xml; 
-    requires static transitive jakarta.mail;
+    //requires static transitive java.mail;
     //requires static jakarta.activation;
-    
-    requires static transitive java.servlet;
+    //requires static transitive javax.servlet;
 
     requires static janino;
     requires static commons.compiler;

@@ -16,7 +16,6 @@ import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
 
 public class IfNestedWithinSecondPhaseElementSCTest {
 

@@ -30,7 +30,7 @@ import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
-import jakarta.servlet.http.Cookie;
+import javax.servlet.http.Cookie;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
