@@ -22,11 +22,6 @@
             <artifactId>logback-classic</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>com.sun.mail</groupId>

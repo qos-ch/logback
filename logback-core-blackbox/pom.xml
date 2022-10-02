@@ -28,21 +28,13 @@
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
             <scope>test</scope>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>javax.activation</groupId>
-            <artifactId>javax.activation-api</artifactId>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
 
     </dependencies>
 
