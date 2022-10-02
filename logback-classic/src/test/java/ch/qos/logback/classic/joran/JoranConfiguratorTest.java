@@ -205,27 +205,6 @@ public class JoranConfiguratorTest {
         assertEquals("wombat", loggerContext.getName());
     }
 
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void eval() throws JoranException {
-        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "callerData.xml");
-        String msg = "hello world";
-        logger.debug("toto");
-        logger.debug(msg);
-
-        StringListAppender<ILoggingEvent> slAppender = (StringListAppender<ILoggingEvent>) loggerContext
-                .getLogger("root").getAppender("STR_LIST");
-        assertNotNull(slAppender);
-        assertEquals(2, slAppender.strList.size());
-        assertTrue(slAppender.strList.get(0).contains(" DEBUG - toto"));
-
-        String str1 = slAppender.strList.get(1);
-        assertTrue(str1.contains("Caller+0"));
-        assertTrue(str1.contains(" DEBUG - hello world"));
-    }
-
-    
     @Test
     public void missingConfigurationElement() throws JoranException {
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "ossfuzz/noConfig.xml");
@@ -299,45 +278,7 @@ public class JoranConfiguratorTest {
         assertEquals("hello", back.getMessage());
     }
 
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void testEvaluatorFilter() throws JoranException {
-        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "evaluatorFilter.xml");
 
-        // StatusPrinter.print(loggerContext);
-
-        logger.warn("hello");
-        logger.error("to be ignored");
-
-        ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
-
-        assertNotNull(listAppender);
-        assertEquals(1, listAppender.list.size());
-        ILoggingEvent back = listAppender.list.get(0);
-        assertEquals(Level.WARN, back.getLevel());
-        assertEquals("hello", back.getMessage());
-    }
-
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void testEvaluatorFilterWithImports() throws JoranException {
-        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "evaluatorFilterWithImports.xml");
-
-        // StatusPrinter.print(loggerContext);
-
-        logger.warn("hello");
-        logger.error("to be ignored");
-
-        ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) root.getAppender("LIST");
-
-        assertNotNull(listAppender);
-        assertEquals(1, listAppender.list.size());
-        ILoggingEvent back = listAppender.list.get(0);
-        assertEquals(Level.WARN, back.getLevel());
-        assertEquals("hello", back.getMessage());
-    }
 
     @Test
     public void testTurboDynamicThreshold() throws JoranException {
@@ -477,8 +418,8 @@ public class JoranConfiguratorTest {
         verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
     }
 
+    @Disabled // because slow
     @Test
-    @Disabled
     public void onConsoleRetro() throws JoranException, IOException, InterruptedException {
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/onConsoleRetro.xml";
         configure(configFileAsStr);
@@ -582,54 +523,6 @@ public class JoranConfiguratorTest {
         assertNotNull(thread);
     }
 
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void conditional1673() throws JoranException  {
-        loggerContext.putProperty("EXTRA", "true");
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673.xml";
-        configure(configFileAsStr);
-    }
-
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void conditional1673bisWithActiveThen() throws JoranException  {
-        loggerContext.putProperty("EXTRA", "true");
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673bis.xml";
-        configure(configFileAsStr);
-        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-        ListAppender<ILoggingEvent> listThen = (ListAppender<ILoggingEvent>) root.getAppender("LIST_THEN");
-        assertNotNull(listThen);
-
-        ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
-        assertNull(listElse);
-    }
-
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void conditional1673bisWithActiveElse() throws JoranException  {
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1673bis.xml";
-        configure(configFileAsStr);
-        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
-        ListAppender<ILoggingEvent> listThen = (ListAppender<ILoggingEvent>) root.getAppender("LIST_THEN");
-        assertNull(listThen);
-
-        ListAppender<ILoggingEvent> listElse = (ListAppender<ILoggingEvent>) root.getAppender("LIST_ELSE");
-        assertNotNull(listElse);
-    }
-
-    // DISABLED TEMPORARILY 2022-09-30
-    @Disabled
-    @Test
-    public void nestedIf() throws JoranException  {
-        loggerContext.putProperty("EXTRA", "true");
-        String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "issues/logback_1678.xml";
-        configure(configFileAsStr);
-        StatusPrinter.print(loggerContext);
-
-    }
 
     @Test
     public void nestedAppendersDisallowed() throws JoranException {
