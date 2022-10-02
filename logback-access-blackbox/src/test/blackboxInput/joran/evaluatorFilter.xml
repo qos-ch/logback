@@ -1,0 +1,19 @@
+<configuration>
+
+  <appender name="LIST"
+             class="ch.qos.logback.core.read.ListAppender">
+
+    <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+      <Name>myFilter</Name>
+      <OnMatch>DENY</OnMatch>
+      <Evaluator>
+        <Name>mdcEvaluator</Name>
+        <Expression>"to be ignored".equals(message)</Expression>
+      </Evaluator>
+    </filter>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>

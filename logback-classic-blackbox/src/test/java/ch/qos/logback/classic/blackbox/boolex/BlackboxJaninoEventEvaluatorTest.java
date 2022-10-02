@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,10 +11,11 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.boolex;
+package ch.qos.logback.classic.blackbox.boolex;
 
 import java.io.IOException;
 
+import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -23,7 +24,6 @@ import org.slf4j.MarkerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.pattern.ConverterTest;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.boolex.EvaluationException;
@@ -39,10 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class JaninoEventEvaluatorTest {
+public class BlackboxJaninoEventEvaluatorTest {
 
     LoggerContext loggerContext = new LoggerContext();
-    Logger logger = loggerContext.getLogger(ConverterTest.class);
+    Logger logger = loggerContext.getLogger(BlackboxJaninoEventEvaluatorTest.class);
 
     Matcher matcherX = new Matcher();
 
@@ -50,7 +50,7 @@ public class JaninoEventEvaluatorTest {
 
     int diff = RandomUtil.getPositiveInt();
 
-    public JaninoEventEvaluatorTest() {
+    public BlackboxJaninoEventEvaluatorTest() {
         jee.setContext(loggerContext);
 
         matcherX.setName("x");

@@ -1,0 +1,21 @@
+<configuration>
+
+  <import class="ch.qos.logback.core.read.ListAppender"/>
+  <import class="ch.qos.logback.core.filter.EvaluatorFilter"/>
+  
+  <appender name="LIST" class="ListAppender">
+
+    <filter class="EvaluatorFilter">
+      <Name>myFilter</Name>
+      <OnMatch>DENY</OnMatch>
+      <Evaluator>
+        <Name>mdcEvaluator</Name>
+        <Expression>"to be ignored".equals(message)</Expression>
+      </Evaluator>
+    </filter>
+  </appender>
+
+  <root level="debug">
+    <appender-ref ref="LIST" />
+  </root>
+</configuration>
