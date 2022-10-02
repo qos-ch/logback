@@ -3,13 +3,10 @@ module ch.qos.logback.core {
     requires static transitive java.naming;
     requires static transitive java.xml;
 
-    //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> autonamed javax.servlet.api
+    //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> auto-named as javax.servlet.api
     requires static javax.servlet.api;
     requires static janino;
     requires static commons.compiler;
-
-    //requires static org.codehaus.janino.janino;
-    //requires static org.codehaus.janino.commons.compiler;
 
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;

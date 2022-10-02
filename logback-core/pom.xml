@@ -19,7 +19,7 @@
   <properties>
     <module-name>ch.qos.logback.core</module-name>
   </properties>
-  
+
   <dependencies>
 
     <dependency>
@@ -77,20 +77,6 @@
   <build>
     <plugins>
 
-      <!--
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration combine.self="append">
-          <compilerArgs>
-            <arg>XXadd-reads</arg>
-            <arg>ch.qos.logback.core=ch.qos.logback.core=org.codehaus.janino.commons.compiler,org.codehaus.janino.janino</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-      -->
-
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -118,9 +104,6 @@
             <!-- ConsoleAppenderTest redirects System.out which is not well tolerated by Maven -->
             <exclude>**/ConsoleAppenderTest.java</exclude>
 
-            <!-- temporary -->
-            <exclude>**/IfThenElseTest.java</exclude>
-            <exclude>**/PropertyEvalScriptBuilderTest.java</exclude>
 
           </excludes>
         </configuration>
@@ -128,7 +111,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        
+
         <configuration>
           <archive>
             <manifestEntries>
@@ -153,7 +136,7 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        
+
         <executions>
           <execution>
             <id>bundle-manifest</id>
