@@ -3,11 +3,8 @@ module ch.qos.logback.core {
     requires static transitive java.naming;
     requires static transitive java.xml;
 
-    //requires static transitive java.mail;
-    //requires static jakarta.activation;
-
-    // jakarta.servlet 5.0 is not modular
-    requires static jakarta.servlet;
+    //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> autonamed javax.servlet.api
+    requires static javax.servlet.api;
     requires static janino;
     requires static commons.compiler;
 
