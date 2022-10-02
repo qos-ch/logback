@@ -21,7 +21,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 public class SamplePatternLayoutTest extends AbstractPatternLayoutBaseTest<Object> {
 

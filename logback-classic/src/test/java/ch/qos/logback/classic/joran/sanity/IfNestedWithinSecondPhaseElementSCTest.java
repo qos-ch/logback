@@ -11,7 +11,7 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.model.conditional.IfModel;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

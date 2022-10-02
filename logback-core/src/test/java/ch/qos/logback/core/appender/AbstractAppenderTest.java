@@ -16,7 +16,7 @@ package ch.qos.logback.core.appender;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

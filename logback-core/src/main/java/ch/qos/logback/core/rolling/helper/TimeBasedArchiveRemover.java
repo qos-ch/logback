@@ -49,6 +49,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     int callCount = 0;
 
+    @Override
     public void clean(Date now) {
 
         long nowInMillis = now.getTime();

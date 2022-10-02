@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 /**
  * @author Ceki G&uuml;lc&uuml;

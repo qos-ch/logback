@@ -5,7 +5,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.TopModel;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

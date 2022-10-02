@@ -26,7 +26,7 @@ import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.FilterReply;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.StatusPrinter;
 

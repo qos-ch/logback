@@ -880,7 +880,7 @@ ch.qos.logback.core.joran.action.ext.TouchAction
 ch.qos.logback.core.joran.action.IncludeActionTest
 ch.qos.logback.core.joran.action.PropertyActionTest
 ch.qos.logback.core.joran.action.TopElementAction
-ch.qos.logback.core.joran.conditional.PropertyEvalScriptBuilderTest
+ch.qos.logback.core.blackbox.joran.conditional.PropertyEvalScriptBuilderTest
 ch.qos.logback.core.joran.event.SaxEventRecorderTest
 ch.qos.logback.core.joran.event.stax.StaxEventRecorderTest
 ch.qos.logback.core.joran.implicitAction.Cake
@@ -1008,7 +1008,7 @@ ch.qos.logback.core.testUtil.FileTestUtil
 ch.qos.logback.core.testUtil.FileToBufferUtil
 ch.qos.logback.core.testUtil.NPEAppender
 ch.qos.logback.core.testUtil.RandomUtil
-ch.qos.logback.core.testUtil.StatusChecker
+ch.qos.logback.core.status.testUtil.StatusChecker
 ch.qos.logback.core.testUtil.StringListAppender
 ch.qos.logback.core.testUtil.TeeOutputStream
 ch.qos.logback.core.testUtil.TrivialStatusListener

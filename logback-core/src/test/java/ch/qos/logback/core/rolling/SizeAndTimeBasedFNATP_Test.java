@@ -27,7 +27,7 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
