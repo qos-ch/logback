@@ -92,7 +92,6 @@ public class ContextInitializer {
             fallbackOnToBasicConfigurator();
             return;
         }
-        configuratorList.forEach(c -> System.out.println("Found "+c.toString()));
         for (Configurator c : configuratorList) {
             try {
                 c.setContext(loggerContext);
