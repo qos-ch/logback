@@ -35,9 +35,10 @@ import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.spi.AbstractComponentTracker;
 import ch.qos.logback.core.spi.ComponentTracker;
 import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.FileSize;
 import org.junit.jupiter.api.AfterEach;

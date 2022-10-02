@@ -37,7 +37,6 @@ import java.util.regex.Pattern;
 //import org.joda.time.DateTimeZone;
 //import org.joda.time.Days;
 //import org.joda.time.LocalDate;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -46,7 +45,7 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.pattern.SpacePadder;
 import ch.qos.logback.core.rolling.helper.RollingCalendar;
 import ch.qos.logback.core.rolling.testUtil.ScaffoldingForRollingTests;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.FixedRateInvocationGate;
 

@@ -6,7 +6,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

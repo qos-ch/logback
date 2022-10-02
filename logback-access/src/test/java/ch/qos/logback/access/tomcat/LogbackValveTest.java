@@ -15,7 +15,7 @@ package ch.qos.logback.access.tomcat;
 
 import ch.qos.logback.access.AccessTestConstants;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.core.ContainerBase;
 import org.junit.jupiter.api.AfterEach;

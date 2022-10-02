@@ -36,7 +36,7 @@ import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

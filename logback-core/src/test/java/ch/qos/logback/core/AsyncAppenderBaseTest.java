@@ -24,7 +24,7 @@ import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.DelayingListAppender;
 import ch.qos.logback.core.testUtil.NPEAppender;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import org.junit.jupiter.api.Timeout;
 
 import java.util.concurrent.TimeUnit;

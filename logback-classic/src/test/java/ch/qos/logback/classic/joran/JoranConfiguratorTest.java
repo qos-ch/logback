@@ -53,7 +53,7 @@ import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.StatusPrinter;

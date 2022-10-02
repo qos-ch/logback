@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.Map;
 
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.RandomUtil;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class CollisionDetectionTest {

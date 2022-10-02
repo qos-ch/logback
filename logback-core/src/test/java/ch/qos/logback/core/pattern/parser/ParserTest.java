@@ -23,7 +23,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.pattern.FormatInfo;
 import ch.qos.logback.core.spi.ScanException;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 
 public class ParserTest {
 

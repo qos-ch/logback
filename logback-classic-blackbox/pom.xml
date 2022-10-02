@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-parent</artifactId>
+        <version>1.4.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>logback-classic-blackbox</artifactId>
+    <packaging>jar</packaging>
+    <name>Logback Classic Blackbox Testing</name>
+    <description>Logback Classic Blackbox Testing Module</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <configuration>
+
+                            <argLine>
+                            </argLine>
+                            <parallel>classes</parallel>
+                            <threadCount>8</threadCount>
+                            <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
+                            <forkCount>1C</forkCount>
+                            <reuseForks>true</reuseForks>
+                            <reportFormat>plain</reportFormat>
+                            <trimStackTrace>false</trimStackTrace>
+                            <!-- See https://issues.apache.org/jira/browse/SUREFIRE-1265 -->
+                            <!--<childDelegation>true</childDelegation>-->
+                            <useModulePath>true</useModulePath>
+
+                            <excludes>
+                                <!--- temporary -->
+                                <exclude>**/JaninoEventEvaluatorTest.java</exclude>
+                                <exclude>**/ConditionalTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>singleJVM</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <forkCount>4</forkCount>
+                            <reuseForks>false</reuseForks>
+                            <includes>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>

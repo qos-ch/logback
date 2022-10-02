@@ -32,7 +32,7 @@ import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
 import ch.qos.logback.core.model.processor.StatusListenerModelHandler;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
-import ch.qos.logback.core.testUtil.StatusChecker;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.util.StatusPrinter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -40,7 +40,9 @@
 
   <modules>
     <module>logback-core</module>
+    <module>logback-core-blackbox</module>
     <module>logback-classic</module>
+    <module>logback-classic-blackbox</module>    
     <module>logback-access</module>
     <module>logback-examples</module>
   </modules>
@@ -52,9 +54,9 @@
     <maven.compiler.release>${jdk.version}</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <junit.version>4.13.1</junit.version>
-    <junit-jupiter-api.version>5.9.0</junit-jupiter-api.version>
-    <junit-vintage-engine.version>5.9.0</junit-vintage-engine.version>
-    <junit-jupiter-params.version>5.9.0</junit-jupiter-params.version>
+    <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
+    <junit-vintage-engine.version>5.9.1</junit-vintage-engine.version>
+    <junit-jupiter-params.version>5.9.1</junit-jupiter-params.version>
     <assertj-core.version>3.23.1</assertj-core.version>
     <hamcrest.version>2.2</hamcrest.version>
     <jakarta.mail.version>2.1.0</jakarta.mail.version>
