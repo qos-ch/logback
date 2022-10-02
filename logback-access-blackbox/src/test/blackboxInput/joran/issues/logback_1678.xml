@@ -1,0 +1,21 @@
+<configuration debug="false">
+
+    <if condition='isDefined("EXTRA")'>
+        <then>
+            <appender name="EXTRA_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+                ...
+            </appender>
+        </then>
+    </if>
+    ...
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <if condition='isDefined("EXTRA")'>
+            <then>
+                <appender-ref ref="EXTRA_APPENDER" />
+            </then>
+        </if>
+    </root>
+
+</configuration>

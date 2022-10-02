@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration>
+
+<configuration>
+
+  <evaluator name="helloEval">
+    <Expression>m.matches(message)</Expression>
+    <matcher>
+      <name>m</name>
+      <regex>^hello.*</regex>
+      <CaseSensitive>false</CaseSensitive>
+    </matcher>
+  </evaluator>
+
+  <appender name="STR_LIST"
+    class="ch.qos.logback.core.testUtil.StringListAppender">
+    <layout>
+      <Pattern>%caller{4, helloEval}%d %level - %m%n</Pattern>
+    </layout>
+  </appender>
+
+  <root>
+    <level value="DEBUG" />
+    <appender-ref ref="STR_LIST" />
+  </root>
+
+
+
+</configuration>

@@ -11,15 +11,15 @@
         <version>1.4.2-SNAPSHOT</version>
     </parent>
 
-    <artifactId>logback-classic-blackbox</artifactId>
+    <artifactId>logback-access-blackbox</artifactId>
     <packaging>jar</packaging>
-    <name>Logback Classic Blackbox Testing</name>
-    <description>Logback Classic Blackbox Testing Module</description>
+    <name>Logback Access Blackbox Testing</name>
+    <description>Logback Access Blackbox Testing Module</description>
 
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
+            <artifactId>logback-access</artifactId>
         </dependency>
 
         <dependency>
@@ -33,11 +33,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.codehaus.janino</groupId>
-            <artifactId>janino</artifactId>
-            <scope>compile</scope>
-        </dependency>
 
     </dependencies>
 
@@ -65,9 +60,6 @@
                             <useModulePath>true</useModulePath>
 
                             <excludes>
-                                <!--- temporary -->
-
-                                <exclude>**/ConditionalTest.java</exclude>
                             </excludes>
                         </configuration>
                     </execution>
