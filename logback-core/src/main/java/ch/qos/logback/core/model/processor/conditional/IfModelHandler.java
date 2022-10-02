@@ -74,11 +74,12 @@ public class IfModelHandler extends ModelHandlerBase {
                ifModel.setBranchState(BranchState.IN_ERROR);
                return;
             }
-            PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(mic);
-            pesb.setContext(context);
+
             try {
+                PropertyEvalScriptBuilder pesb = new PropertyEvalScriptBuilder(mic);
+                pesb.setContext(context);
                 condition = pesb.build(conditionStr);
-            } catch (Exception e) {
+            } catch (Exception|NoClassDefFoundError e) {
                 ifModel.setBranchState(BranchState.IN_ERROR);
                 addError("Failed to parse condition [" + conditionStr + "] on line "+lineNum, e);
                 return;

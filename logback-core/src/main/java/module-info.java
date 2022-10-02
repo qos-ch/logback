@@ -3,17 +3,13 @@ module ch.qos.logback.core {
     requires static transitive java.naming;
     requires static transitive java.xml; 
     requires static transitive jakarta.mail;
-    //requires static jakarta.activation;
 
-    // jakarta.servlet 5.0 is not modular
+    // jakarta.servlet 5.0 is not modular so it cannot be declared 'transitive'
     requires static jakarta.servlet;
+
     requires static janino;
     requires static commons.compiler;
 
-    //requires static org.codehaus.janino.janino;
-    //requires static org.codehaus.janino.commons.compiler;
-
-    
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
     
