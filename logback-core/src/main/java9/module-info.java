@@ -5,8 +5,9 @@ module ch.qos.logback.core {
 
     //requires static transitive java.mail;
     //requires static jakarta.activation;
-    //requires static transitive javax.servlet;
 
+    // jakarta.servlet 5.0 is not modular
+    requires static jakarta.servlet;
     requires static janino;
     requires static commons.compiler;
 
