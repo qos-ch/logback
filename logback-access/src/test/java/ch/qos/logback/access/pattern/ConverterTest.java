@@ -65,6 +65,7 @@ public class ConverterTest {
         assertEquals(converter.cachingDateFormatter.format(event.getTimeStamp()), result);
     }
 
+    @Test
     public void testLineLocalPortConverter() {
         LocalPortConverter converter = new LocalPortConverter();
         converter.start();
