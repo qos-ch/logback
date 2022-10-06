@@ -39,25 +39,14 @@ final public class TurboFilterList extends CopyOnWriteArrayList<TurboFilter> {
     public FilterReply getTurboFilterChainDecision(final Marker marker, final Logger logger, final Level level,
             final String format, final Object[] params, final Throwable t) {
 
-        final int size = size();
-        // if (size == 0) {
-        // return FilterReply.NEUTRAL;
-        // }
-        if (size == 1) {
+        for (int i = 0; i < size(); i++) {
+            final FilterReply r;
             try {
-                TurboFilter tf = get(0);
-                return tf.decide(marker, logger, level, format, params, t);
+                final TurboFilter tf = get(i);
+                r = tf.decide(marker, logger, level, format, params, t);
             } catch (IndexOutOfBoundsException iobe) {
-                return FilterReply.NEUTRAL;
+                continue;
             }
-        }
-
-        Object[] tfa = toArray();
-        final int len = tfa.length;
-        for (int i = 0; i < len; i++) {
-            // for (TurboFilter tf : this) {
-            final TurboFilter tf = (TurboFilter) tfa[i];
-            final FilterReply r = tf.decide(marker, logger, level, format, params, t);
             if (r == FilterReply.DENY || r == FilterReply.ACCEPT) {
                 return r;
             }
