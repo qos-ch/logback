@@ -1,10 +1,18 @@
-module ch.qos.logback.core { 
-    requires static transitive java.sql;
-    requires static transitive java.naming;
+module ch.qos.logback.core {
     requires static transitive java.xml;
+    requires static java.sql;
+
+    // required by the optional SMTPAppenderBase component
+    requires static java.naming;
+
+    // transitive _imposes_ the presence of javax.mail on downstream users,
+    // let them declare it if they need it
+    requires static javax.mail.api;
 
     //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> auto-named as javax.servlet.api
     requires static javax.servlet.api;
+
+
     requires static janino;
     requires static commons.compiler;
 
@@ -56,6 +64,5 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.testUtil;
     exports ch.qos.logback.core.util;
 
-    
 }
 

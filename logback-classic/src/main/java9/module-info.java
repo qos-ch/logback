@@ -1,7 +1,17 @@
 module ch.qos.logback.classic { 
-  requires org.slf4j;
   requires static java.management;
 
+  // used by the optional ContextJNDISelector component
+  requires static java.naming;
+
+  // used by the optional LevelChangePropagator component
+  requires static java.logging;
+
+  // used by the optional ContextJNDISelector, MDCInsertingServletFilter among other components
+  //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> auto-named as javax.servlet.api
+  requires static javax.servlet.api;
+
+  requires org.slf4j;
   requires ch.qos.logback.core;
   uses ch.qos.logback.classic.spi.Configurator;
   provides org.slf4j.spi.SLF4JServiceProvider with ch.qos.logback.classic.spi.LogbackServiceProvider;
