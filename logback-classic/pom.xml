@@ -71,6 +71,7 @@
       <version>1.2.18.4</version>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
@@ -95,6 +96,7 @@
       <artifactId>janino</artifactId>
       <optional>true</optional>
     </dependency>
+
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
@@ -105,19 +107,6 @@
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.icegreen</groupId>
-      <artifactId>greenmail</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>junit</groupId>
-          <artifactId>junit</artifactId>
-        </exclusion>
-
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -286,9 +275,6 @@
                 <exclude>org.slf4j.implTest.InitializationOutputTest.java</exclude>
                 <exclude>ch.qos.logback.classic.util.ContextInitializerTest.java</exclude>
                 <exclude>ch.qos.logback.classic.spi.InvocationTest.java</exclude>
-                <!--- temporary -->
-                <exclude>**/JaninoEventEvaluatorTest.java</exclude>
-                <exclude>**/ConditionalTest.java</exclude>
               </excludes>
             </configuration>
           </execution>

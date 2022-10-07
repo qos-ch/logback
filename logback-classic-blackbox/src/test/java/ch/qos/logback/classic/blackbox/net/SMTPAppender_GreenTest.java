@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,7 +11,7 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.net;
+package ch.qos.logback.classic.blackbox.net;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
+import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
+import ch.qos.logback.classic.net.SMTPAppender;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.AfterEach;
@@ -32,12 +34,12 @@ import com.icegreen.greenmail.util.GreenMail;
 import com.icegreen.greenmail.util.GreenMailUtil;
 import com.icegreen.greenmail.util.ServerSetup;
 
-import ch.qos.logback.classic.ClassicTestConstants;
+//import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.html.HTMLLayout;
-import ch.qos.logback.classic.html.XHTMLEntityResolver;
+import ch.qos.logback.classic.blackbox.html.XHTMLEntityResolver;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Layout;
@@ -297,7 +299,7 @@ public class SMTPAppender_GreenTest {
     @Test
     public void testCustomEvaluator() throws Exception {
         startSMTPServer(NO_SSL);
-        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "smtp/customEvaluator.xml");
+        configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "smtp/customEvaluator.xml");
 
         logger.debug("test");
         String msg2 = "CustomEvaluator";
@@ -313,7 +315,7 @@ public class SMTPAppender_GreenTest {
     @Test
     public void testCustomBufferSize() throws Exception {
         startSMTPServer(NO_SSL);
-        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "smtp/customBufferSize.xml");
+        configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "smtp/customBufferSize.xml");
 
         logger.debug("invisible1");
         logger.debug("invisible2");
