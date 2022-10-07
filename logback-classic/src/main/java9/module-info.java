@@ -11,6 +11,8 @@ module ch.qos.logback.classic {
   //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> auto-named as javax.servlet.api
   requires static javax.servlet.api;
 
+
+
   requires org.slf4j;
   requires ch.qos.logback.core;
   uses ch.qos.logback.classic.spi.Configurator;

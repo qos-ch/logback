@@ -1,6 +1,9 @@
 module logback.classic.blackbox {
+    requires java.xml;
+
     requires ch.qos.logback.core;
     requires ch.qos.logback.classic;
+
     requires janino;
 
     requires org.junit.jupiter.api;
