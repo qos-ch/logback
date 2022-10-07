@@ -1,9 +1,12 @@
 module ch.qos.logback.core {
-    requires static transitive java.xml;
+    requires transitive java.xml;
     requires static java.sql;
 
     // required by the optional SMTPAppenderBase component
     requires static java.naming;
+
+    requires static janino;
+    requires static commons.compiler;
 
     // transitive _imposes_ the presence of jakarta.mail on downstream users,
     // let them declare it if they need it
@@ -12,12 +15,8 @@ module ch.qos.logback.core {
     // jakarta.servlet 5.0 is not modular
     requires static jakarta.servlet;
 
-    requires static janino;
-    requires static commons.compiler;
-
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
-    
 
     exports ch.qos.logback.core.encoder;
 
@@ -26,11 +25,9 @@ module ch.qos.logback.core {
 
     exports ch.qos.logback.core.filter;
 
-
     exports ch.qos.logback.core.joran;
     exports ch.qos.logback.core.joran.action;
     exports ch.qos.logback.core.joran.conditional;
-
     exports ch.qos.logback.core.joran.event;
     exports ch.qos.logback.core.joran.sanity;
     exports ch.qos.logback.core.joran.spi;
@@ -64,7 +61,5 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.testUtil;
     exports ch.qos.logback.core.util;
 
-    
-    
 }
 
