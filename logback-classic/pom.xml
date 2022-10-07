@@ -270,16 +270,12 @@
           <execution>
             <id>default-test</id>
             <configuration>
-
-              <!--<argLine>XXadd-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming</argLine>-->
-              <!--<argLine>XXadd-reads ch.qos.logback.classic=ch.qos.logback.classic/ch.qos.logback.core.testUtil XXadd-reads ch.qos.logback.core=ALL-UNNAMED</argLine>-->
+              <!-- x-show-module-resolution -->
               <argLine>
-                --show-module-resolution
                 --add-modules jakarta.mail
                 --add-modules jakarta.servlet
                 --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
                 --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
-                --add-reads ch.qos.logback.core=org.codehaus.janino.commons.compiler,org.codehaus.janino.janino
               </argLine>
               <parallel>classes</parallel>
               <threadCount>8</threadCount>

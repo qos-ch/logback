@@ -24,6 +24,7 @@
         </dependency>
 
 
+        <!--
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
@@ -34,6 +35,7 @@
             <artifactId>jakarta.mail-api</artifactId>
             <scope>compile</scope>
         </dependency>
+        -->
 
         <dependency>
             <groupId>org.codehaus.janino</groupId>

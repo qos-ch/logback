@@ -1,10 +1,15 @@
 module ch.qos.logback.core {
-    requires static transitive java.sql;
-    requires static transitive java.naming;
-    requires static transitive java.xml; 
-    requires static transitive jakarta.mail;
+    requires static transitive java.xml;
+    requires static java.sql;
 
-    // jakarta.servlet 5.0 is not modular so it cannot be declared 'transitive'
+    // required by the optional SMTPAppenderBase component
+    requires static java.naming;
+
+    // transitive _imposes_ the presence of jakarta.mail on downstream users,
+    // let them declare it if they need it
+    requires static jakarta.mail;
+
+    // jakarta.servlet 5.0 is not modular
     requires static jakarta.servlet;
 
     requires static janino;
