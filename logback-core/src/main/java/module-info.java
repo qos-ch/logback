@@ -34,12 +34,13 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.joran.util;
     exports ch.qos.logback.core.joran.util.beans;
 
+    exports ch.qos.logback.core.layout;
+
     exports ch.qos.logback.core.model;
     exports ch.qos.logback.core.model.conditional;
     exports ch.qos.logback.core.model.processor;
     exports ch.qos.logback.core.model.processor.conditional;
     exports ch.qos.logback.core.model.util;
-
 
     exports ch.qos.logback.core.net;
     exports ch.qos.logback.core.net.server;
