@@ -15,8 +15,6 @@ module ch.qos.logback.core {
     //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> auto-named as javax.servlet.api
     requires static javax.servlet.api;
 
-
-
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
     
@@ -30,7 +28,6 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.joran;
     exports ch.qos.logback.core.joran.action;
     exports ch.qos.logback.core.joran.conditional;
-
     exports ch.qos.logback.core.joran.event;
     exports ch.qos.logback.core.joran.sanity;
     exports ch.qos.logback.core.joran.spi;
