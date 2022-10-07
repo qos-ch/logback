@@ -373,7 +373,7 @@ ch.qos.logback.classic.multiJVM.FileAppenderPerf
 ch.qos.logback.classic.multiJVM.LoggingThread
 ch.qos.logback.classic.multiJVM.SafeModeFileAppender
 ch.qos.logback.classic.multiJVM.SafeModeRollingFileAppender
-ch.qos.logback.classic.net.CounterBasedEvaluator
+ch.qos.logback.classic.blackbox.net.CounterBasedEvaluator
 ch.qos.logback.classic.net.DilutedSMTPAppenderTest
 ch.qos.logback.classic.net.ExternalMockSocketServer
 ch.qos.logback.classic.net.mock.MockAppender
@@ -387,7 +387,7 @@ ch.qos.logback.classic.net.server.RemoteAppenderStreamClientTest
 ch.qos.logback.classic.net.server.ServerSocketReceiverFunctionalTest
 ch.qos.logback.classic.net.server.ServerSocketReceiverTest
 ch.qos.logback.classic.net.server.SSLServerSocketReceiverTest
-ch.qos.logback.classic.net.SMTPAppender_GreenTest
+ch.qos.logback.classic.blackbox.net.SMTPAppender_GreenTest
 ch.qos.logback.classic.net.SocketAppenderMessageLossTest
 ch.qos.logback.classic.net.SocketMin
 ch.qos.logback.classic.net.SocketReceiverTest
