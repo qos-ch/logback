@@ -19,8 +19,7 @@ More details on building logback is documented at:
 # Urgent issues
 
 For urgent issues do not hesitate to [champion a release](https://github.com/sponsors/qos-ch/sponsorships?tier_id=77436).
-
-# In case of problems
+In principle, most issues are solved within 3 business days ensued by a release.
 
 In case of problems please do not hesitate to post an e-mail message
 on the logback-user@qos.ch mailing list.  However, please do not
