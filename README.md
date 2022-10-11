@@ -28,7 +28,7 @@ questions.
 # Urgent issues
 
 For urgent issues do not hesitate to [champion a release](https://github.com/sponsors/qos-ch/sponsorships?tier_id=77436).
-In principle, most issues are solved within 3 business days ensued by a release.
+In principle, most championed issues are solved within 3 business days ensued by a release.
 
 
 # Pull requests
