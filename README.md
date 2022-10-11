@@ -16,6 +16,10 @@ More details on building logback is documented at:
 
   https://logback.qos.ch/setup.html#ide
 
+# Urgent issues
+
+For urgent issues do not hesitate to [champion a release](https://github.com/sponsors/qos-ch/sponsorships?tier_id=77436).
+
 # In case of problems
 
 In case of problems please do not hesitate to post an e-mail message
