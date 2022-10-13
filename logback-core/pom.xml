@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -23,7 +21,7 @@
   <dependencies>
 
     <dependency>
-       <groupId>org.codehaus.janino</groupId>
+      <groupId>org.codehaus.janino</groupId>
       <artifactId>janino</artifactId>
       <scope>compile</scope>
       <optional>true</optional>
@@ -60,7 +58,6 @@
       <optional>true</optional>
     </dependency>
 
-
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
@@ -80,10 +77,8 @@
           <!--<argLine>XXadd-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming</argLine>-->
           <!--<argLine>add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
                        add-reads ch.qos.logback.core=ALL-UNNAMED</argLine>-->
-          <argLine>
-            --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
-            --add-reads ch.qos.logback.core=ALL-UNNAMED
-          </argLine>
+          <argLine>--add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
+            --add-reads ch.qos.logback.core=ALL-UNNAMED</argLine>
           <parallel>classes</parallel>
           <threadCount>8</threadCount>
           <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
@@ -98,7 +93,6 @@
             <exclude>**/PackageTest.java</exclude>
             <!-- ConsoleAppenderTest redirects System.out which is not well tolerated by Maven -->
             <exclude>**/ConsoleAppenderTest.java</exclude>
-
 
           </excludes>
         </configuration>
@@ -116,10 +110,10 @@
         <executions>
           <execution>
             <id>bundle-test-jar</id>
-            <phase>package</phase>
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>package</phase>
           </execution>
         </executions>
       </plugin>
@@ -128,33 +122,32 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <instructions>
-            <_noee>true</_noee> <!-- Jigsaw -->
-            <_failok>true</_failok> <!-- Jigsaw -->
+            <_noee>true</_noee>
+            <!-- Jigsaw -->
+            <_failok>true</_failok>
+            <!-- Jigsaw -->
             <Export-Package>ch.qos.logback.core.*</Export-Package>
-            <Import-Package>
-              jakarta.*;resolution:=optional,
+            <Import-Package>jakarta.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               org.fusesource.jansi;resolution:=optional,
               org.codehaus.janino;resolution:=optional,
               org.codehaus.commons.compiler;resolution:=optional,
-              *
-            </Import-Package>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
-            </Bundle-RequiredExecutionEnvironment>
+              *</Import-Package>
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
+
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <phase>process-classes</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

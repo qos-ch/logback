@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -19,7 +17,7 @@
   <properties>
     <module-name>ch.qos.logback.access</module-name>
   </properties>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -118,10 +116,10 @@
         <executions>
           <execution>
             <id>bundle-test-jar</id>
-            <phase>package</phase>
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>package</phase>
           </execution>
         </executions>
       </plugin>
@@ -129,15 +127,6 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <instructions>
             <Export-Package>ch.qos.logback.access.*</Export-Package>
@@ -146,23 +135,28 @@
                 are created via IOC (xml config files). They won't be found by
                 Bnd's analysis of java code.
             -->
-            <Import-Package>
-              ch.qos.logback.core.rolling,
+            <Import-Package>ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
               jakarta.servlet.*;version="4.0.0",
               org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
               org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
-              *
-            </Import-Package>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
-            </Bundle-RequiredExecutionEnvironment>
+              *</Import-Package>
+            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <phase>process-classes</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
 
-  <profiles>
-  </profiles>
+  <profiles/>
 
 </project>

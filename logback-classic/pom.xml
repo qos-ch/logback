@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -29,25 +27,25 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-<!--     <dependency>
+    <!--dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-ext</artifactId>
       <version>${slf4j.version}</version>
       <scope>test</scope>
-    </dependency> -->
+    </dependency -->
 
-<!--     <dependency>
+    <!--dependency>
       <groupId>ch.qos.cal10n.plugins</groupId>
       <artifactId>maven-cal10n-plugin</artifactId>
       <version>${cal10n.version}</version>
       <scope>test</scope>
-    </dependency> -->
+    </dependency -->
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <type>test-jar</type>
       <version>${slf4j.version}</version>
+      <type>test-jar</type>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -140,25 +138,22 @@
 
     <plugins>
 
-       <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
-            <manifestEntries>
-            </manifestEntries>
-            <manifestFile>
-              ${project.build.outputDirectory}/META-INF/MANIFEST.MF
-            </manifestFile>
+            <manifestEntries/>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>
         <executions>
           <execution>
             <id>bundle-test-jar</id>
-            <phase>package</phase>
             <goals>
               <goal>test-jar</goal>
             </goals>
+            <phase>package</phase>
           </execution>
         </executions>
       </plugin>
@@ -184,7 +179,6 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit-jupiter-api.version}</version>
           </dependency>
-
 
           <dependency>
             <groupId>org.junit.vintage</groupId>
@@ -220,8 +214,11 @@
             </goals>
           </execution>
            -->
-	  <execution>
+          <execution>
             <id>ant-integration-test</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
             <phase>package</phase>
             <configuration>
               <target>
@@ -229,9 +226,6 @@
                 <ant antfile="${basedir}/integration.xml"/>
               </target>
             </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -257,12 +251,10 @@
             <id>default-test</id>
             <configuration>
               <!-- x-show-module-resolution -->
-              <argLine>
-                --add-modules jakarta.mail
+              <argLine>--add-modules jakarta.mail
                 --add-modules jakarta.servlet
                 --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
-                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
-              </argLine>
+                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core</argLine>
               <parallel>classes</parallel>
               <threadCount>8</threadCount>
               <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
@@ -307,19 +299,12 @@
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <instructions>
-            <_noee>true</_noee> <!-- Jigsaw -->
-            <_failok>true</_failok> <!-- Jigsaw -->
+            <!-- Jigsaw -->
+            <_noee>true</_noee>
+            <!-- Jigsaw -->
+            <_failok>true</_failok>
             <Export-Package>ch.qos.logback.classic*, org.slf4j.impl;version=${slf4j.version}</Export-Package>
             <!-- LB-CLASSIC It is necessary to specify the rolling
                  file packages as classes are created via IOC (xml
@@ -343,15 +328,19 @@
             <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
             <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
 
-
           </instructions>
         </configuration>
+        <executions>
+          <execution>
+            <id>bundle-manifest</id>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+            <phase>process-classes</phase>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-      </plugins>
-    </pluginManagement>
   </build>
 
 </project>

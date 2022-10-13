@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -14,12 +12,12 @@
   <description>logback project pom.xml file</description>
 
   <url>http://logback.qos.ch</url>
+  <inceptionYear>2005</inceptionYear>
 
   <organization>
     <name>QOS.ch</name>
     <url>http://www.qos.ch</url>
   </organization>
-  <inceptionYear>2005</inceptionYear>
 
   <licenses>
     <license>
@@ -33,23 +31,46 @@
     </license>
   </licenses>
 
-  <scm>
-    <url>https://github.com/qos-ch/logback</url>
-    <connection>scm:git@github.com:qos-ch/logback.git</connection>
-  </scm>
+  <developers>
+    <developer>
+      <id>ceki</id>
+      <name>Ceki Gulcu</name>
+      <email>ceki@qos.ch</email>
+    </developer>
+
+    <developer>
+      <id>hixi</id>
+      <name>Joern Huxhorn</name>
+      <email>huxi@undisclosed.org</email>
+    </developer>
+  </developers>
 
   <modules>
     <module>logback-core</module>
     <module>logback-core-blackbox</module>
     <module>logback-classic</module>
-    <module>logback-classic-blackbox</module>    
+    <module>logback-classic-blackbox</module>
     <module>logback-access</module>
     <module>logback-examples</module>
   </modules>
 
+  <scm>
+    <connection>scm:git@github.com:qos-ch/logback.git</connection>
+    <url>https://github.com/qos-ch/logback</url>
+  </scm>
+
+  <distributionManagement>
+
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+
+  </distributionManagement>
+
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
-    <project.build.outputTimestamp>2022-10-07T20:47:29Z</project.build.outputTimestamp>    
+    <project.build.outputTimestamp>2022-10-07T20:47:29Z</project.build.outputTimestamp>
     <jdk.version>11</jdk.version>
     <maven.compiler.release>${jdk.version}</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -69,7 +90,7 @@
     <janino.version>3.1.8</janino.version>
     <!-- slf4j.version property is used below, in
          logback-classic/pom.xml, /logback-examples/src/main/resources/setClasspath.cmd, download.html
-    -->    
+    -->
     <slf4j.version>2.0.1</slf4j.version>
     <cal10n.version>0.8.1</cal10n.version>
     <consolePlugin.version>1.1.0</consolePlugin.version>
@@ -97,52 +118,8 @@
     <maven-antrun-plugin.version>3.1.0</maven-antrun-plugin.version>
     <ant.version>1.10.12</ant.version>
     <cobertura.maven.plugin.version>2.7</cobertura.maven.plugin.version>
+    <sortpom.maven.plugin.version>3.0.1</sortpom.maven.plugin.version>
   </properties>
-
-  <developers>
-    <developer>
-      <id>ceki</id>
-      <name>Ceki Gulcu</name>
-      <email>ceki@qos.ch</email>
-    </developer>
-
-    <developer>
-      <id>hixi</id>
-      <name>Joern Huxhorn</name>
-      <email>huxi@undisclosed.org</email>
-    </developer>
-  </developers>
-
-  <dependencies>
-
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <version>${assertj-core.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit-jupiter-api.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit-jupiter-api.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-      <version>${hamcrest.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
 
   <dependencyManagement>
 
@@ -259,15 +236,38 @@
     </dependencies>
   </dependencyManagement>
 
+  <dependencies>
+
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit-jupiter-api.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit-jupiter-api.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
 
   <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>2.10</version>
-      </extension>
-    </extensions>
 
     <pluginManagement>
       <plugins>
@@ -355,19 +355,34 @@
           <version>${maven-bundle-plugin.version}</version>
         </plugin>
 
-
         <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
         <plugin>
-        	<groupId>org.eclipse.m2e</groupId>
-        	<artifactId>lifecycle-mapping</artifactId>
-        	<version>1.0.0</version>
-        	<configuration>
-        		<lifecycleMappingMetadata>
-        			<pluginExecutions>
-           			</pluginExecutions>
-        		</lifecycleMappingMetadata>
-        	</configuration>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions/>
+            </lifecycleMappingMetadata>
+          </configuration>
         </plugin>
+
+        <plugin>
+          <groupId>com.github.ekryd.sortpom</groupId>
+          <artifactId>sortpom-maven-plugin</artifactId>
+          <version>${sortpom.maven.plugin.version}</version>
+          <configuration>
+            <createBackupFile>false</createBackupFile>
+            <expandEmptyElements>false</expandEmptyElements>
+            <keepBlankLines>true</keepBlankLines>
+            <lineSeparator>\n</lineSeparator>
+            <nrOfIndentSpace>2</nrOfIndentSpace>
+            <sortModules>false</sortModules>
+            <sortDependencies>none</sortDependencies>
+            <sortProperties>false</sortProperties>
+          </configuration>
+        </plugin>
+
       </plugins>
 
     </pluginManagement>
@@ -381,7 +396,7 @@
           <release>${jdk.version}</release>
         </configuration>
       </plugin>
- 
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
@@ -403,17 +418,29 @@
         <version>1.16.0</version>
       </plugin>
       -->
+
+      <plugin>
+        <groupId>com.github.ekryd.sortpom</groupId>
+        <artifactId>sortpom-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>sort</goal>
+            </goals>
+            <phase>validate</phase>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh</artifactId>
+        <version>2.10</version>
+      </extension>
+    </extensions>
   </build>
-
-  <distributionManagement>
-
-    <repository>
-      <id>sonatype-nexus-staging</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-
-  </distributionManagement>
 
   <reporting>
     <plugins>
@@ -440,13 +467,12 @@
           <linkJavadoc>true</linkJavadoc>
         </configuration>
       </plugin>
-      
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        
-        <configuration>                                
+
+        <configuration>
           <aggregate>true</aggregate>
           <linkJavadoc>true</linkJavadoc>
           <linksource>true</linksource>
@@ -455,40 +481,33 @@
             <sourceFileExclude>**/module-info.java</sourceFileExclude>
           </sourceFileExcludes>
           <links>
-            <link>
-              http://docs.oracle.com/javase/7/docs/api/
-            </link>
+            <link>http://docs.oracle.com/javase/7/docs/api/</link>
           </links>
-          
+
           <groups>
             <group>
               <title>Logback Core</title>
-              <packages>ch.qos.logback.core:ch.qos.logback.core.*
-              </packages>
+              <packages>ch.qos.logback.core:ch.qos.logback.core.*</packages>
             </group>
             <group>
               <title>Logback Classic</title>
-              <packages>
-                ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*
-              </packages>
+              <packages>ch.qos.logback:ch.qos.logback.classic:ch.qos.logback.classic.*</packages>
             </group>
             <group>
               <title>Logback Access</title>
-              <packages>ch.qos.logback.access:ch.qos.logback.access.*
-              </packages>
+              <packages>ch.qos.logback.access:ch.qos.logback.access.*</packages>
             </group>
             <group>
               <title>Examples</title>
               <packages>chapter*:joran*</packages>
             </group>
-          </groups>                  
+          </groups>
         </configuration>
       </plugin>
-      
-            
+
     </plugins>
   </reporting>
-  
+
   <profiles>
     <profile>
       <id>testSkip</id>
@@ -535,20 +554,20 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>${maven-javadoc-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>            
-            </executions>
             <configuration>
               <doclint>none</doclint>
               <sourceFileExcludes>
                 <sourceFileExclude>**/module-info.java</sourceFileExclude>
               </sourceFileExcludes>
             </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
           </plugin>
         </plugins>
       </build>
@@ -565,10 +584,10 @@
             <executions>
               <execution>
                 <id>sign-artifacts</id>
-                <phase>verify</phase>
                 <goals>
                   <goal>sign</goal>
                 </goals>
+                <phase>verify</phase>
               </execution>
             </executions>
           </plugin>
