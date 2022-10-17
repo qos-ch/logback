@@ -88,7 +88,7 @@
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
-      <scope>runtime</scope>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -103,9 +103,11 @@
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
+
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
+      <optional>true</optional>
       <scope>provided</scope>
     </dependency>
 
