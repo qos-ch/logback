@@ -8,6 +8,26 @@ The Logback documentation can be found on the [project
 web-site](https://logback.qos.ch/documentation.html) as well as under
 the docs/ folder of the logback distribution.
 
+# Java EE and Jackarta EE versions
+
+Given that downstream users are likely to depend on either Java EE (in
+the javax namespace) or on Jakarta EE (in the jakarta namespace) in
+their projects, it was deemed important for logback to support both EE
+alternatives.
+
+**Version 1.3.x supports Java EE, while version 1.4.x supports Jakarta EE.** 
+The two versions are feature identical. Both versions require slf4j-api 
+version 2.0.0 or later.
+
+Both 1.3.x and 1.4.x series require the fluent-API introduced in SLF4J
+2.0.x.
+
+The 1.3.x series requires Java 8 at runtime. If you wish to build
+logback from source, you will need Java 9. Reproducible builds require
+Java 18.
+
+The 1.4.x series requires Java 11 at build time and at runtime.
+
 # Building logback
 
 Version 1.3.x requires Java 9 to compile and build.
