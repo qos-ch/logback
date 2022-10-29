@@ -24,7 +24,8 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.html;
     
     exports ch.qos.logback.core.filter;
-
+    exports ch.qos.logback.core.hook;
+    
     exports ch.qos.logback.core.joran;
     exports ch.qos.logback.core.joran.action;
     exports ch.qos.logback.core.joran.conditional;
