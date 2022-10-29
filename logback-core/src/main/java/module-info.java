@@ -25,6 +25,8 @@ module ch.qos.logback.core {
 
     exports ch.qos.logback.core.filter;
 
+    exports ch.qos.logback.core.hook;
+
     exports ch.qos.logback.core.joran;
     exports ch.qos.logback.core.joran.action;
     exports ch.qos.logback.core.joran.conditional;
@@ -33,6 +35,7 @@ module ch.qos.logback.core {
     exports ch.qos.logback.core.joran.spi;
     exports ch.qos.logback.core.joran.util;
     exports ch.qos.logback.core.joran.util.beans;
+
 
     exports ch.qos.logback.core.layout;
 
