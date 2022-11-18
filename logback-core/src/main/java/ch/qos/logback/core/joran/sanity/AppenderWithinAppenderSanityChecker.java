@@ -19,6 +19,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AppenderWithinAppenderSanityChecker extends ContextAwareBase implements SanityChecker  {
 
@@ -34,13 +35,26 @@ public class AppenderWithinAppenderSanityChecker extends ContextAwareBase implem
 
         List<Pair<Model, Model>> nestedPairs = deepFindNestedSubModelsOfType(AppenderModel.class, appenderModels);
 
-        if(nestedPairs.isEmpty())
-            return;
+        List<Pair<Model, Model>> filteredNestedPairs = nestedPairs.stream().filter(pair -> !isSiftingAppender(pair.first)).collect(Collectors.toList());
 
+        if(filteredNestedPairs.isEmpty()) {
+            return;
+        }
         addWarn(NESTED_APPENDERS_WARNING);
-        for(Pair<Model, Model> pair: nestedPairs) {
+        for(Pair<Model, Model> pair: filteredNestedPairs) {
             addWarn("Appender at line "+pair.first.getLineNumber() + " contains a nested appender at line "+pair.second.getLineNumber());
         }
+    }
+
+    private boolean isSiftingAppender(Model first) {
+        if(first instanceof  AppenderModel) {
+            AppenderModel appenderModel = (AppenderModel) first;
+            String classname = appenderModel.getClassName();
+            if(classname == null)
+                return false;
+            return appenderModel.getClassName().contains("SiftingAppender");
+        }
+        return false;
     }
 
 }

@@ -1,5 +1,5 @@
 
-<configuration debug="true">
+<configuration debug="false">
 
   <property name="X" value="composite"/>  
 
