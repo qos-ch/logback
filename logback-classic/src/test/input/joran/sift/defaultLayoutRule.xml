@@ -1,4 +1,4 @@
-<configuration debug="true">
+<configuration debug="false">
 
   <appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
     <discriminator>
