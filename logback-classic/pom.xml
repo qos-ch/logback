@@ -114,6 +114,7 @@
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
 
     <dependency>
