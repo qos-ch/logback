@@ -6,6 +6,9 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LayoutBase;
 import ch.qos.logback.core.util.CachingDateFormatter;
+import org.slf4j.event.KeyValuePair;
+
+import java.util.List;
 
 /**
  * A layout with a fixed format. The output is equivalent to that produced by
@@ -59,7 +62,9 @@ public class TTLLLayout extends LayoutBase<ILoggingEvent> {
         sb.append(event.getLevel().toString());
         sb.append(" ");
         sb.append(event.getLoggerName());
-        sb.append(" - ");
+        sb.append(" -");
+        kvp(event, sb);
+        sb.append("- ");
         sb.append(event.getFormattedMessage());
         sb.append(CoreConstants.LINE_SEPARATOR);
         IThrowableProxy tp = event.getThrowableProxy();
@@ -68,6 +73,27 @@ public class TTLLLayout extends LayoutBase<ILoggingEvent> {
             sb.append(stackTrace);
         }
         return sb.toString();
+    }
+
+    static final char DOUBLE_QUOTE_CHAR = '"';
+    private void kvp(ILoggingEvent event, StringBuilder sb) {
+        List<KeyValuePair> kvpList = event.getKeyValuePairs();
+        if (kvpList == null || kvpList.isEmpty()) {
+            return;
+        }
+
+        int len = kvpList.size();
+
+        for (int i = 0; i < len; i++) {
+            KeyValuePair kvp = kvpList.get(i);
+            if (i != 0)
+                sb.append(' ');
+            sb.append(String.valueOf(kvp.key));
+            sb.append('=');
+            sb.append(DOUBLE_QUOTE_CHAR);
+            sb.append(String.valueOf(kvp.value));
+            sb.append(DOUBLE_QUOTE_CHAR);
+        }
     }
 
 }

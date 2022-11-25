@@ -3,7 +3,7 @@
   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>${USER_HOME}/myApp.log</file>
     <encoder>
-      <pattern>%msg%n</pattern>
+      <pattern>%kvp %msg%n</pattern>
     </encoder>
   </appender>
 
