@@ -6,7 +6,7 @@
     <!-- encoders are assigned by default the type
          ch.qos.logback.classic.encoder.PatternLayoutEncoder -->
     <encoder>
-      <param name="Pattern" value="%d - %m%n" />
+      <pattern>%d -%kvp- %m%n</pattern>
     </encoder>
   </appender>
 

@@ -76,12 +76,12 @@ public class KeyValuePairConverter extends ClassicConverter {
                 sb.append(' ');
             sb.append(String.valueOf(kvp.key));
             sb.append('=');
-            Character c = valueQuoteSpec.asChar();
-            if (c != null)
-                sb.append(c);
+            Character quoteChar = valueQuoteSpec.asChar();
+            if (quoteChar != null)
+                sb.append(quoteChar);
             sb.append(String.valueOf(kvp.value));
-            if (c != null)
-                sb.append(c);
+            if (quoteChar != null)
+                sb.append(quoteChar);
         }
 
         return sb.toString();
