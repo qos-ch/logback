@@ -38,6 +38,7 @@ jobs:
       if: ${{ matrix.jdk != '8' }}
       uses: actions/setup-java@v2
       with:
+        distribution: 'temurin'
         java-version: ${{ matrix.jdk }}
     - name: Install
       # download dependencies, etc, so test log looks better
