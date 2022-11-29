@@ -71,7 +71,7 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
         StatusManager sm = context.getStatusManager();
         List<Status> statusList = sm.getCopyOfStatusList();
         for (Status status : statusList) {
-            long timestampOfStatusMesage = status.getDate();
+            long timestampOfStatusMesage = status.getTimestamp();
             if (isElapsedTimeLongerThanThreshold(now, timestampOfStatusMesage)) {
                 print(status);
             }

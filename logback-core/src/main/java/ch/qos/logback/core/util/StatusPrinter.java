@@ -169,7 +169,7 @@ public class StatusPrinter {
         }
 
         if (cachingDateFormat != null) {
-            String dateStr = cachingDateFormat.format(s.getDate());
+            String dateStr = cachingDateFormat.format(s.getTimestamp());
             sb.append(dateStr).append(" ");
         }
         sb.append(prefix).append(s).append(CoreConstants.LINE_SEPARATOR);

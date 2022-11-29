@@ -16,6 +16,7 @@ package ch.qos.logback.core.status;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 abstract public class StatusBase implements Status {
 
@@ -26,7 +27,7 @@ abstract public class StatusBase implements Status {
     final Object origin;
     List<Status> childrenList;
     Throwable throwable;
-    long date;
+    long timestamp;
 
     StatusBase(int level, String msg, Object origin) {
         this(level, msg, origin, null);
@@ -37,7 +38,7 @@ abstract public class StatusBase implements Status {
         this.message = msg;
         this.origin = origin;
         this.throwable = t;
-        this.date = System.currentTimeMillis();
+        this.timestamp = System.currentTimeMillis();
     }
 
     public synchronized void add(Status child) {
@@ -106,8 +107,8 @@ abstract public class StatusBase implements Status {
         return throwable;
     }
 
-    public Long getDate() {
-        return date;
+    public long getTimestamp() {
+        return timestamp;
     }
 
     @Override
@@ -142,31 +143,18 @@ abstract public class StatusBase implements Status {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + level;
-        result = prime * result + ((message == null) ? 0 : message.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        StatusBase that = (StatusBase) o;
+        return level == that.level && timestamp == that.timestamp && Objects.equals(message, that.message);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final StatusBase other = (StatusBase) obj;
-        if (level != other.level)
-            return false;
-        if (message == null) {
-            if (other.message != null)
-                return false;
-        } else if (!message.equals(other.message))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(level, message, timestamp);
     }
 
 }

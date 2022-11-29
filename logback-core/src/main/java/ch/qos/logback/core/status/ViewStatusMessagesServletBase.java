@@ -160,7 +160,7 @@ abstract public class ViewStatusMessagesServletBase extends HttpServlet {
             trClass = "odd";
         }
         buf.append("  <tr class=\"").append(trClass).append("\">\r\n");
-        String dateStr = SDF.format(s.getDate());
+        String dateStr = SDF.format(s.getTimestamp());
         buf.append("    <td class=\"date\">").append(dateStr).append("</td>\r\n");
         buf.append("    <td class=\"level\">").append(statusLevelAsString(s)).append("</td>\r\n");
         buf.append("    <td>").append(abbreviatedOrigin(s)).append("</td>\r\n");

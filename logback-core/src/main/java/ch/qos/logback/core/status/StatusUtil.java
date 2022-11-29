@@ -56,7 +56,7 @@ public class StatusUtil {
     static public List<Status> filterStatusListByTimeThreshold(List<Status> rawList, long threshold) {
         List<Status> filteredList = new ArrayList<Status>();
         for (Status s : rawList) {
-            if (s.getDate() >= threshold)
+            if (s.getTimestamp() >= threshold)
                 filteredList.add(s);
         }
         return filteredList;
@@ -99,7 +99,7 @@ public class StatusUtil {
     }
 
     public boolean isErrorFree(long threshold) {
-        return Status.ERROR > getHighestLevel(threshold);
+        return getHighestLevel(threshold) < Status.ERROR;
     }
 
     public boolean isWarningOrErrorFree(long threshold) {
@@ -205,7 +205,7 @@ public class StatusUtil {
         for (int i = len - 1; i >= 0; i--) {
             Status s = statusList.get(i);
             if (CoreConstants.RESET_MSG_PREFIX.equals(s.getMessage())) {
-                return s.getDate();
+                return s.getTimestamp();
             }
         }
         return -1;
