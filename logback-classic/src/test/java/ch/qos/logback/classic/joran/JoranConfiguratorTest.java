@@ -707,6 +707,14 @@ public class JoranConfiguratorTest {
     }
 
 
+    @Test
+    public void dateConverterWithLocale() throws JoranException  {
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "dateWithLocale.xml");
+        checker.assertContainsMatch(Status.INFO, "Setting zoneId to \"Australia/Perth\"");
+        checker.assertContainsMatch(Status.INFO, "Setting locale to \"en_AU\"");
+        //StatusPrinter.print(loggerContext);
+    }
+
 
 
     // reproduction requires placing a binary properties file. Probably not worth the effort.

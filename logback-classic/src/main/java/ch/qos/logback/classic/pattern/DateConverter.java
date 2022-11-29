@@ -44,12 +44,14 @@ public class DateConverter extends ClassicConverter {
         if (optionList != null && optionList.size() > 1) {
             String zoneIdString = (String) optionList.get(1);
             zoneId = ZoneId.of(zoneIdString);
+            addInfo("Setting zoneId to \""+zoneId+"\"");
         }
 
         Locale locale = null;
         if (optionList != null && optionList.size() > 2) {
             String localeIdStr = (String) optionList.get(2);
             locale = Locale.forLanguageTag(localeIdStr);
+            addInfo("Setting locale to \""+locale+"\"");
         }
         try {
             // if zoneId is null, the CachingDateFormatter will use the ZoneId.systemDefault()
