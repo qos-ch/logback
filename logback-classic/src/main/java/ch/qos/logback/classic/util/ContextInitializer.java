@@ -52,6 +52,12 @@ public class ContextInitializer {
         this.loggerContext = loggerContext;
     }
 
+    /**
+     * This method is deprecated with no replacement
+     * @param url
+     * @throws JoranException
+     */
+    @Deprecated
     public void configureByResource(URL url) throws JoranException {
         if (url == null) {
             throw new IllegalArgumentException("URL argument cannot be null");
@@ -65,12 +71,6 @@ public class ContextInitializer {
             throw new LogbackException(
                     "Unexpected filename extension of file [" + url + "]. Should be .xml");
         }
-    }
-
-    void joranConfigureByResource(URL url) throws JoranException {
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(loggerContext);
-        configurator.doConfigure(url);
     }
 
     public void autoConfig() throws JoranException {
