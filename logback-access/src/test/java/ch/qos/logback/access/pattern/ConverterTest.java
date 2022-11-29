@@ -81,9 +81,6 @@ public class ConverterTest {
 
     @Test
     public void testDateConverter_AU_locale() {
-        Locale auLocale = Locale.forLanguageTag("en-AU");
-        //Locale.setDefault(auLocale);
-
         DateConverter converter = new DateConverter();
         List<String> optionsList = Lists.list(CoreConstants.CLF_DATE_PATTERN, "Australia/Sydney", "en-AU");
 
