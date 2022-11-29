@@ -131,11 +131,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
 
     public void setTimeStamp(long timeStamp) {
-        if (this.timeStamp != 0) {
-            throw new IllegalStateException("timeStamp has been already set for this event.");
-        } else {
-            this.timeStamp = timeStamp;
-        }
+        this.timeStamp = timeStamp;
     }
 
     public long getSequenceNumber() {
