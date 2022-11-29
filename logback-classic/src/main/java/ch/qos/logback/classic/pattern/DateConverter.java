@@ -15,6 +15,7 @@ package ch.qos.logback.classic.pattern;
 
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -45,8 +46,14 @@ public class DateConverter extends ClassicConverter {
             zoneId = ZoneId.of(zoneIdString);
         }
 
+        Locale locale = null;
+        if (optionList != null && optionList.size() > 2) {
+            String localeIdStr = (String) optionList.get(2);
+            locale = Locale.forLanguageTag(localeIdStr);
+        }
         try {
-            cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
+            // if zoneId is null, the CachingDateFormatter will use the ZoneId.systemDefault()
+            cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId, locale);
         } catch (IllegalArgumentException e) {
             addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
             // default to the ISO8601 format
