@@ -224,8 +224,8 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     private void addResetResistantOnConsoleStatusListener() {
-        if(1==1)
-            return;
+//        if(1==1)
+//            return;
         OnConsoleStatusListener ocs = new OnConsoleStatusListener();
         ocs.setContext(loggerContext);
         ocs.setResetResistant(true);
@@ -368,7 +368,7 @@ public class ReconfigureOnChangeTaskTest {
         configure(file);
 
         // ReconfigureOnChangeTask roct = waitForReconfigureOnChangeTaskToRun();
-        System.out.println(" ------------ creating ReconfigureOnChangeTaskHarness");
+G        System.out.println(" ------------ creating ReconfigureOnChangeTaskHarness");
 
         int expectedResets = 2;
         ReconfigureOnChangeTaskHarness harness = new ReconfigureOnChangeTaskHarness(loggerContext, expectedResets);
