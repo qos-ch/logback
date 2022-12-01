@@ -34,4 +34,5 @@ public interface LoggerContextListener {
     void onStop(LoggerContext context);
 
     void onLevelChange(Logger logger, Level level);
+
 }

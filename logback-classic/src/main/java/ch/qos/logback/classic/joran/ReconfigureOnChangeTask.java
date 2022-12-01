@@ -15,8 +15,8 @@ package ch.qos.logback.classic.joran;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.CoreConstants;
@@ -25,8 +25,12 @@ import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelUtil;
+import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.StatusUtil;
+
+import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationChangeDetectorRunningEvent;
+import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedEvent;
 
 public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnable {
 
@@ -37,15 +41,11 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
     long birthdate = System.currentTimeMillis();
     List<ReconfigureOnChangeTaskListener> listeners = null;
 
-    void addListener(ReconfigureOnChangeTaskListener listener) {
-        if (listeners == null)
-            listeners = new ArrayList<ReconfigureOnChangeTaskListener>(1);
-        listeners.add(listener);
-    }
+    ScheduledFuture<?> scheduledFuture;
 
     @Override
     public void run() {
-        fireEnteredRunMethod();
+        context.fireConfigurationEvent(newConfigurationChangeDetectorRunningEvent(this));
 
         ConfigurationWatchList configurationWatchList = ConfigurationWatchListUtil.getConfigurationWatchList(context);
         if (configurationWatchList == null) {
@@ -62,7 +62,9 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         if (!configurationWatchList.changeDetected()) {
             return;
         }
-        fireChangeDetected();
+        context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectedEvent(this));
+        cancelFutureInvocationsOfThisTaskInstance();
+
         URL mainConfigurationURL = configurationWatchList.getMainURL();
 
         addInfo(DETECTED_CHANGE_IN_CONFIGURATION_FILES);
@@ -74,31 +76,14 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         } else if (mainConfigurationURL.toString().endsWith("groovy")) {
             addError("Groovy configuration disabled due to Java 9 compilation issues.");
         }
-        fireDoneReconfiguring();
+        //fireDoneReconfiguring();
     }
 
-    private void fireEnteredRunMethod() {
-        if (listeners == null)
-            return;
-
-        for (ReconfigureOnChangeTaskListener listener : listeners)
-            listener.enteredRunMethod();
-    }
-
-    private void fireChangeDetected() {
-        if (listeners == null)
-            return;
-
-        for (ReconfigureOnChangeTaskListener listener : listeners)
-            listener.changeDetected();
-    }
-
-    private void fireDoneReconfiguring() {
-        if (listeners == null)
-            return;
-
-        for (ReconfigureOnChangeTaskListener listener : listeners)
-            listener.doneReconfiguring();
+    private void cancelFutureInvocationsOfThisTaskInstance() {
+        boolean result = scheduledFuture.cancel(false);
+        if(!result) {
+            addWarn("could not cancel "+ this.toString());
+        }
     }
 
     private void performXMLConfiguration(LoggerContext lc, URL mainConfigurationURL) {
@@ -111,26 +96,15 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
         long threshold = System.currentTimeMillis();
         try {
             jc.doConfigure(mainConfigurationURL);
+            // e.g. IncludeAction will add a status regarding XML parsing errors but no exception will reach here
             if (statusUtil.hasXMLParsingErrors(threshold)) {
                 fallbackConfiguration(lc, failsafeTop, mainURL);
             }
         } catch (JoranException e) {
+            addWarn("Exception occurred during reconfiguration", e);
             fallbackConfiguration(lc, failsafeTop, mainURL);
         }
     }
-
-//    private List<SaxEvent> removeIncludeEvents(List<SaxEvent> unsanitizedEventList) {
-//        List<SaxEvent> sanitizedEvents = new ArrayList<SaxEvent>();
-//        if (unsanitizedEventList == null)
-//            return sanitizedEvents;
-//
-//        for (SaxEvent e : unsanitizedEventList) {
-//            if (!"include".equalsIgnoreCase(e.getLocalName()))
-//                sanitizedEvents.add(e);
-//
-//        }
-//        return sanitizedEvents;
-//    }
 
     private void fallbackConfiguration(LoggerContext lc, Model failsafeTop, URL mainURL) {
         // failsafe events are used only in case of errors. Therefore, we must *not*
@@ -155,7 +129,7 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
                 joranConfigurator.processModel(failsafeTop);
                 addInfo(RE_REGISTERING_PREVIOUS_SAFE_CONFIGURATION);
                 joranConfigurator.registerSafeConfiguration(failsafeTop);
-
+                context.fireConfigurationEvent(newConfigurationEndedEvent(this));
                 addInfo("after registerSafeConfiguration");
             } catch (Exception e) {
                 addError("Unexpected exception thrown by a configuration considered safe.", e);
@@ -166,5 +140,10 @@ public class ReconfigureOnChangeTask extends ContextAwareBase implements Runnabl
     @Override
     public String toString() {
         return "ReconfigureOnChangeTask(born:" + birthdate + ")";
+    }
+
+
+    public void setScheduredFuture(ScheduledFuture<?> aScheduledFuture) {
+        this.scheduledFuture = aScheduledFuture;
     }
 }

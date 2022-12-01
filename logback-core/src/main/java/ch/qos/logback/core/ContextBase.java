@@ -28,6 +28,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
+import ch.qos.logback.core.spi.ConfigurationEvent;
+import ch.qos.logback.core.spi.ConfigurationEventListener;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.LogbackLock;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
@@ -49,6 +51,8 @@ public class ContextBase implements Context, LifeCycle {
     Map<String, Object> objectMap = new ConcurrentHashMap<>();
 
     LogbackLock configurationLock = new LogbackLock();
+
+    final private List<ConfigurationEventListener> configurationEventListenerList = new ArrayList<>();
 
     private ScheduledExecutorService scheduledExecutorService;
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
@@ -304,4 +308,13 @@ public class ContextBase implements Context, LifeCycle {
         this.sequenceNumberGenerator = sequenceNumberGenerator;
     }
 
+    @Override
+    public void addConfigurationEventListener(ConfigurationEventListener listener) {
+        configurationEventListenerList.add(listener);
+    }
+
+    @Override
+    public void fireConfigurationEvent(ConfigurationEvent configurationEvent) {
+        configurationEventListenerList.forEach( l -> l.listen(configurationEvent));
+    }
 }

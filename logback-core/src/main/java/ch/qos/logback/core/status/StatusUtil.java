@@ -18,6 +18,7 @@ import ch.qos.logback.core.CoreConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -211,4 +212,18 @@ public class StatusUtil {
         return -1;
     }
 
+    public static String diff(Status left, Status right) {
+        StringBuilder sb = new StringBuilder();
+        if( left.getLevel() != right.getLevel()) {
+            sb.append(" left.level ").append(left.getLevel()).append(" != right.level ").append(right.getLevel());
+        }
+        if( left.getTimestamp() != right.getTimestamp()) {
+            sb.append(" left.timestamp ").append(left.getTimestamp()).append(" != right.timestamp ").append(right.getTimestamp());
+        }
+        if( !Objects.equals(left.getMessage(), right.getMessage())) {
+            sb.append(" left.message ").append(left.getMessage()).append(" != right.message ").append(right.getMessage());
+        }
+
+        return sb.toString();
+    }
 }

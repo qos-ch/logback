@@ -21,4 +21,14 @@ package ch.qos.logback.core.status;
  */
 public interface StatusListener {
     void addStatusEvent(Status status);
+
+    /**
+     * Reset resistant status listeners return true here. Default is false.
+     *
+     * @return whether this listener is reset resistant
+     * @since 1.3.6/1.4.6
+     */
+    default boolean isResetResistant() {
+        return false;
+    }
 }

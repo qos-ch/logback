@@ -31,6 +31,7 @@ import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
@@ -98,7 +99,8 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
             rocTask.setContext(context);
 
             addInfo("Registering a new ReconfigureOnChangeTask "+ rocTask);
-            context.putObject(CoreConstants.RECONFIGURE_ON_CHANGE_TASK, rocTask);
+
+            context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectorRegisteredEvent(rocTask));
 
             String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
             Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
@@ -114,6 +116,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
             ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask,
                     duration.getMilliseconds(), duration.getMilliseconds(), TimeUnit.MILLISECONDS);
+            rocTask.setScheduredFuture(scheduledFuture);
             context.addScheduledFuture(scheduledFuture);
         }
     }

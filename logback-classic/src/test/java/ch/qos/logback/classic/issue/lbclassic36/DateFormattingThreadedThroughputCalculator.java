@@ -37,11 +37,13 @@ public class DateFormattingThreadedThroughputCalculator {
             tp.execute(buildArray(FormattingModel.JODA));
         }
 
-        tp.execute(buildArray(FormattingModel.JODA));
-        tp.printThroughput("JODA: ");
+        SelectiveDateFormattingRunnable[] runnnableArrayJODA = buildArray(FormattingModel.JODA);
+        tp.execute(runnnableArrayJODA);
+        tp.printThroughput(runnnableArrayJODA, "JODA: ");
 
-        tp.execute(buildArray(FormattingModel.SDF));
-        tp.printThroughput("SDF:  ");
+        SelectiveDateFormattingRunnable[] runnnableArraySDF =  buildArray(FormattingModel.JODA);
+        tp.execute(runnnableArraySDF);
+        tp.printThroughput(runnnableArraySDF, "SDF:  ");
 
     }
 

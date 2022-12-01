@@ -66,8 +66,7 @@ public class SaxEventRecorder extends DefaultHandler implements ContextAware {
         } catch (IOException ie) {
             handleError("I/O error occurred while parsing xml file", ie);
         } catch (SAXException se) {
-            // Exception added into StatusManager via Sax error handling. No need to add it
-            // again
+            // Exception added into StatusManager via Sax error handling. No need to add it again
             throw new JoranException("Problem parsing XML document. See previously reported errors.", se);
         } catch (Exception ex) {
             handleError("Unexpected exception while parsing XML document.", ex);

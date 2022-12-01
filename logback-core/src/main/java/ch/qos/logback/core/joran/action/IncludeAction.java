@@ -88,8 +88,8 @@ public class IncludeAction extends Action {
                 // element
                 ec.getSaxEventInterpreter().getEventPlayer().addEventsDynamically(recorder.getSaxEventList(), 2);
             }
-        } catch (JoranException e) {
-            addError("Error while parsing  " + attributeInUse, e);
+        } catch (JoranException je) {
+            addError("Error while parsing  " + attributeInUse, je);
         } finally {
             close(in);
         }
