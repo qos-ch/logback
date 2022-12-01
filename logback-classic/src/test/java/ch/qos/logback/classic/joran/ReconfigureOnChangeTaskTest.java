@@ -63,6 +63,7 @@ public class ReconfigureOnChangeTaskTest {
     final static int THREAD_COUNT = 5;
 
     final static int TIMEOUT = 4;
+    final static int TIMEOUT_LONG = 10;
 
     int diff = RandomUtil.getPositiveInt();
 
@@ -234,7 +235,7 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     @Test
-    @Timeout(value = TIMEOUT, unit = TimeUnit.SECONDS)
+    @Timeout(value = TIMEOUT_LONG, unit = TimeUnit.SECONDS)
     public void fallbackToSafeWithIncludedFile_FollowedByRecovery()
             throws IOException, JoranException, InterruptedException, ExecutionException {
         String topLevelFileAsStr =
