@@ -152,6 +152,8 @@ abstract public class StatusBase implements Status {
         return level == that.level && timestamp == that.timestamp && Objects.equals(message, that.message);
     }
 
+
+
     @Override
     public int hashCode() {
         return Objects.hash(level, message, timestamp);

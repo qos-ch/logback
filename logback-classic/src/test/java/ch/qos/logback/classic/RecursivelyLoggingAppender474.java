@@ -15,7 +15,6 @@ package ch.qos.logback.classic;
 
 import org.slf4j.Logger;
 
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;
 
@@ -25,7 +24,7 @@ import ch.qos.logback.core.AppenderBase;
  * @author Ralph Goers
  */
 
-public class LoggingAppender474 extends AppenderBase<ILoggingEvent> {
+public class RecursivelyLoggingAppender474 extends AppenderBase<ILoggingEvent> {
 
     Logger logger;
 

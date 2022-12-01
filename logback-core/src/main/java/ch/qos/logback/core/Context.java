@@ -18,6 +18,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import ch.qos.logback.core.spi.ConfigurationEvent;
+import ch.qos.logback.core.spi.ConfigurationEventListener;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.SequenceNumberGenerator;
@@ -150,5 +152,30 @@ public interface Context extends PropertyContainer {
     SequenceNumberGenerator getSequenceNumberGenerator();
 
     void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator);
+
+    /**
+     * Add a {@link ConfigurationEventListener} to this context.
+     *
+     * <p>Configuration events are supposed to be rare and listeners to such events rarer still.</p>
+     *
+     * <p>The propagation of {@link ConfigurationEvent configuration events} is intended for internal testing
+     * as well as some coordination between configurators.</p>
+     *
+     *
+     * @param listener
+     * @since 1.3.6/1.4.6
+     */
+    void addConfigurationEventListener(ConfigurationEventListener listener);
+
+    /**
+     * Fire {@link ConfigurationEvent} by invoking {@link #addConfigurationEventListener registered listeners}.
+     *
+     * <p>Note that it is the role of configurators to invoke this method as a context does
+     * not necessarily know when it is being configured.</p>
+     *
+     * @param configurationEvent
+     * @since 1.3.6/1.4.6
+     */
+    void fireConfigurationEvent(ConfigurationEvent configurationEvent);
 
 }

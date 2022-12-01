@@ -15,6 +15,7 @@ package ch.qos.logback.core;
 
 import static ch.qos.logback.core.BasicStatusManager.MAX_HEADER_COUNT;
 import static ch.qos.logback.core.BasicStatusManager.TAIL_SIZE;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,8 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.status.StatusBase;
 import ch.qos.logback.core.status.StatusListener;
 
+import ch.qos.logback.core.status.StatusUtil;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.status.ErrorStatus;
@@ -55,7 +58,7 @@ public class BasicStatusManagerTest {
             Status s = new ErrorStatus("" + i, this);
             bsm.add(s);
             if(i < MAX_HEADER_COUNT) {
-                witness.add(new ErrorStatus("" + i, this));
+                witness.add(s);
             }
             if(i >= MAX_HEADER_COUNT + margin) {
                 witness.add(s);
@@ -66,7 +69,28 @@ public class BasicStatusManagerTest {
         assertNotNull(statusList);
         assertEquals(MAX_HEADER_COUNT + TAIL_SIZE, statusList.size());
 
-        assertEquals(witness, statusList);
+        arrayDiff(witness, statusList);
+    }
+
+    private void arrayDiff(List<Status> witness, List<Status> otherList) {
+        int witnessSize = witness.size();
+        int otherSize = otherList.size();
+        boolean diff = false;
+        for(int i = 0; i < witness.size(); i++) {
+
+            Status w = witness.get(i);
+            Status o = otherList.get(i);
+            if(!w.equals(o)) {
+                System.out.println("at "+i + " differs w.message=" + w.getMessage() + " and o.message=" +o.getMessage());
+                String diffMsg = StatusUtil.diff(w, o);
+                System.out.println(diffMsg);
+                diff = true;
+            }
+        }
+
+
+        assertEquals(witnessSize, otherSize, "witnessSize="+witnessSize+" does not match resultSize="+otherSize);
+        assertFalse(diff, "diff detected");
     }
 
     @Test

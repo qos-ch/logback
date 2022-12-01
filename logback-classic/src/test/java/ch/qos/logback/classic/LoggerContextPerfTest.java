@@ -70,7 +70,7 @@ public class LoggerContextPerfTest {
     @Test
     public void computeResults() throws InterruptedException {
         harness.execute(runnableArray);
-        harness.printThroughput("getLogger performance: ", true);
+        harness.printThroughput(runnableArray,"getLogger performance: ", true);
     }
 
     private class GetLoggerRunnable extends RunnableWithCounterAndDone {

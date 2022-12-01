@@ -27,11 +27,11 @@ public class ThreadedThroughputCalculator extends MultiThreadedHarness {
         super(overallDurationInMillis);
     }
 
-    public void printThroughput(String msg) throws InterruptedException {
-        printThroughput(msg, false);
+    public void printThroughput(RunnableWithCounterAndDone[] runnableArray, String msg) throws InterruptedException {
+        printThroughput(runnableArray, msg, false);
     }
 
-    public void printThroughput(String msg, boolean detailed) throws InterruptedException {
+    public void printThroughput( RunnableWithCounterAndDone[] runnableArray, String msg, boolean detailed) throws InterruptedException {
         long sum = 0;
         for (RunnableWithCounterAndDone r : runnableArray) {
             if (detailed) {

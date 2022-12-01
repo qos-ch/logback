@@ -217,10 +217,12 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         scheduledFutures.clear();
     }
 
-    private void resetStatusListeners() {
+    private void resetStatusListenersExceptResetResistant() {
         StatusManager sm = getStatusManager();
         for (StatusListener sl : sm.getCopyOfStatusListenerList()) {
-            sm.remove(sl);
+            if(!sl.isResetResistant()) {
+                sm.remove(sl);
+            }
         }
     }
 
@@ -354,7 +356,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         cancelScheduledTasks();
         fireOnReset();
         resetListenersExceptResetResistant();
-        resetStatusListeners();
+        resetStatusListenersExceptResetResistant();
     }
 
     @Override

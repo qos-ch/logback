@@ -1,4 +1,4 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
  * Copyright (C) 1999-2022, QOS.ch. All rights reserved.
  *
@@ -11,16 +11,16 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.joran;
 
-class ReconfigureOnChangeTaskListener {
-   
-    void enteredRunMethod() {
-    }
+package ch.qos.logback.core.spi;
 
-    void changeDetected() {
-    }
+/**
+ * A listener of {@link ConfigurationEvent configuration events}.
+ *
+ * @since 1.3.6/1.4.6
+ */
+public interface ConfigurationEventListener {
 
-    void doneReconfiguring() {
-    }
+    void listen(ConfigurationEvent configurationEvent);
+
 }

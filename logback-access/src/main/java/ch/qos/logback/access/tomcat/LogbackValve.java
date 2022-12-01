@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import ch.qos.logback.core.spi.ConfigurationEvent;
+import ch.qos.logback.core.spi.ConfigurationEventListener;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 
@@ -95,6 +98,8 @@ public class LogbackValve extends ValveBase
     private long birthTime = System.currentTimeMillis();
 
     LogbackLock configurationLock = new LogbackLock();
+
+    final private List<ConfigurationEventListener> configurationEventListenerList = new ArrayList<>();
 
     // Attributes from ContextBase:
     private String name;
@@ -468,5 +473,16 @@ public class LogbackValve extends ValveBase
 
     public void setSequenceNumberGenerator(SequenceNumberGenerator sequenceNumberGenerator) {
         this.sequenceNumberGenerator = sequenceNumberGenerator;
+    }
+
+
+    @Override
+    public void addConfigurationEventListener(ConfigurationEventListener listener) {
+        configurationEventListenerList.add(listener);
+    }
+
+    @Override
+    public void fireConfigurationEvent(ConfigurationEvent configurationEvent) {
+        configurationEventListenerList.forEach( l -> l.listen(configurationEvent));
     }
 }

@@ -32,6 +32,8 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
     static final long DEFAULT_RETROSPECTIVE = 300;
     long retrospectiveThresold = DEFAULT_RETROSPECTIVE;
 
+    boolean resetResistant = false;
+
     /**
      * The prefix to place before each status message
      * 
@@ -117,5 +119,15 @@ abstract public class OnPrintStreamStatusListenerBase extends ContextAwareBase i
     public boolean isStarted() {
         return isStarted;
     }
+
+    @Override
+    public boolean  isResetResistant() {
+        return resetResistant;
+    }
+    public void setResetResistant(boolean resetResistant) {
+        this.resetResistant = resetResistant;
+    }
+
+
 
 }

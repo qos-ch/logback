@@ -1,19 +1,21 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.joran;
 
 import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
+import static ch.qos.logback.core.spi.ConfigurationEvent.EventType.CONFIGURATION_ENDED;
+import static ch.qos.logback.core.spi.ConfigurationEvent.EventType.CONFIGURATION_STARTED;
+import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedEvent;
+import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationStartedEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +25,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
+import ch.qos.logback.core.spi.ConfigurationEvent;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.xml.sax.InputSource;
 
 import ch.qos.logback.core.Context;
@@ -123,7 +127,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
     }
 
     protected abstract void addElementSelectorAndActionAssociations(RuleStore rs);
- 
+
     protected abstract void setImplicitRuleSupplier(SaxEventInterpreter interpreter);
 
     protected void addDefaultNestedComponentRegistryRules(DefaultNestedComponentRegistry registry) {
@@ -143,34 +147,40 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
         setImplicitRuleSupplier(saxEventInterpreter);
     }
 
-
     protected void buildModelInterpretationContext() {
         this.modelInterpretationContext = new ModelInterpretationContext(context);
         addDefaultNestedComponentRegistryRules(modelInterpretationContext.getDefaultNestedComponentRegistry());
     }
 
-    
     // this is the most inner form of doConfigure whereto other doConfigure
     // methods ultimately delegate
     public final void doConfigure(final InputSource inputSource) throws JoranException {
 
+        context.fireConfigurationEvent(newConfigurationStartedEvent(this));
         long threshold = System.currentTimeMillis();
 
         SaxEventRecorder recorder = populateSaxEventRecorder(inputSource);
+        List<SaxEvent> saxEvents = recorder.getSaxEventList();
+        if (saxEvents.isEmpty()) {
+            addWarn("Empty sax event list");
+            return;
+        }
         Model top = buildModelFromSaxEventList(recorder.getSaxEventList());
-        if(top == null) {
+        if (top == null) {
             addError(ErrorCodes.EMPTY_MODEL_STACK);
             return;
         }
         sanityCheck(top);
         processModel(top);
 
-        // no exceptions a this level
+        // no exceptions at this level
         StatusUtil statusUtil = new StatusUtil(context);
         if (statusUtil.noXMLParsingErrorsOccurred(threshold)) {
             addInfo("Registering current configuration as safe fallback point");
             registerSafeConfiguration(top);
         }
+        context.fireConfigurationEvent(newConfigurationEndedEvent(this));
+
     }
 
     public SaxEventRecorder populateSaxEventRecorder(final InputSource inputSource) throws JoranException {
@@ -192,7 +202,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     public void processModel(Model model) {
         buildModelInterpretationContext();
-        DefaultProcessor defaultProcessor = new DefaultProcessor(context,  this.modelInterpretationContext);
+        DefaultProcessor defaultProcessor = new DefaultProcessor(context, this.modelInterpretationContext);
         addModelHandlerAssociations(defaultProcessor);
 
         // disallow simultaneous configurations of the same context
@@ -215,7 +225,7 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
     }
-    
+
     /**
      * Register the current event list in currently in the interpreter as a safe
      * configuration point.
