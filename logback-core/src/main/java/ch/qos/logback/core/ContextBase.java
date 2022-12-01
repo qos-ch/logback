@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -52,7 +53,7 @@ public class ContextBase implements Context, LifeCycle {
 
     LogbackLock configurationLock = new LogbackLock();
 
-    final private List<ConfigurationEventListener> configurationEventListenerList = new ArrayList<>();
+    final private List<ConfigurationEventListener> configurationEventListenerList = new CopyOnWriteArrayList<>();
 
     private ScheduledExecutorService scheduledExecutorService;
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
