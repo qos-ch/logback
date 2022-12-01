@@ -225,8 +225,8 @@ public class ReconfigureOnChangeTaskTest {
     }
 
     private void addResetResistantOnConsoleStatusListener() {
-//        if(1==1)
-//            return;
+        if(1==1)
+            return;
         OnConsoleStatusListener ocs = new OnConsoleStatusListener();
         ocs.setContext(loggerContext);
         ocs.setResetResistant(true);
