@@ -368,7 +368,7 @@ public class ReconfigureOnChangeTaskTest {
         configure(file);
 
         // ReconfigureOnChangeTask roct = waitForReconfigureOnChangeTaskToRun();
-G        System.out.println(" ------------ creating ReconfigureOnChangeTaskHarness");
+        System.out.println(" ------------ creating ReconfigureOnChangeTaskHarness");
 
         int expectedResets = 2;
         ReconfigureOnChangeTaskHarness harness = new ReconfigureOnChangeTaskHarness(loggerContext, expectedResets);
