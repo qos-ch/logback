@@ -316,7 +316,7 @@ public class ContextBase implements Context, LifeCycle {
 
     @Override
     public void fireConfigurationEvent(ConfigurationEvent configurationEvent) {
-        System.out.println("xxxx fireConfigurationEvent  of "+configurationEvent);
+        //System.out.println("xxxx fireConfigurationEvent  of "+configurationEvent);
         configurationEventListenerList.forEach( l -> l.listen(configurationEvent));
     }
 }
