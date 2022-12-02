@@ -77,5 +77,11 @@ looks forward to your contribution. Please follow this process:
 6. Submit a pull request to logback from your commit page on GitHub.
 
 
-# Build Status
-[![Build Status](https://travis-ci.org/qos-ch/slf4j.png)](https://travis-ci.org/qos-ch/slf4j)
+# Continous integration build status
+
+| Branch | Last results |
+| ------ | -------------|
+| master | ![CI master](https://github.com/qos-ch/logback/actions/workflows/main.yml/badge.svg) |
+| 1.3 branch | ![CI 1.3 branch](https://github.com/qos-ch/logback/actions/workflows/main.yml/badge.svg?branch=branch_1.3.x) |
+
+
