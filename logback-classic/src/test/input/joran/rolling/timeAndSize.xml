@@ -8,6 +8,7 @@
       <fileNamePattern>
         ${randomOutputDir}${testId}-%d{yyyy-MM-dd_HH_mm_ss}.%i
       </fileNamePattern>
+      <checkIncrement>25</checkIncrement>
       <maxFileSize>${sizeThreshold}</maxFileSize>
     </rollingPolicy>
     <encoder>
