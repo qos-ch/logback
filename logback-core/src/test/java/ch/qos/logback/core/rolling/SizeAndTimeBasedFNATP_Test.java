@@ -60,6 +60,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     private void initPolicies(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp,
             String filenamePattern, int sizeThreshold, long givenTime, long lastCheck) {
         sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
+        sizeAndTimeBasedFNATP.setCheckIncrement(10);
         tbrp.setContext(context);
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
         tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);

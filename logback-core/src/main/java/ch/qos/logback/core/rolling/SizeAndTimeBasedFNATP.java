@@ -27,6 +27,7 @@ import ch.qos.logback.core.rolling.helper.SizeAndTimeBasedArchiveRemover;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
+import ch.qos.logback.core.util.SimpleInvocationGate;
 
 @NoAutoStart
 public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPolicyBase<E> {
@@ -37,13 +38,18 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     int currentPeriodsCounter = 0;
     FileSize maxFileSize;
-    // String maxFileSizeAsString;
+
+
+
+    Integer checkIncrement = null;
 
     long nextSizeCheck = 0;
     static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
     static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
 
     private final Usage usage;
+
+    InvocationGate invocationGate = new SimpleInvocationGate();
 
     public SizeAndTimeBasedFNATP() {
         this(Usage.DIRECT);
@@ -70,6 +76,9 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             addError("maxFileSize property is mandatory.");
             withErrors();
         }
+
+        if(checkIncrement != null)
+            invocationGate = new SimpleInvocationGate(checkIncrement);
 
         if (!validateDateAndIntegerTokens()) {
             withErrors();
@@ -131,7 +140,6 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         }
     }
 
-    InvocationGate invocationGate = new DefaultInvocationGate();
 
     @Override
     public boolean isTriggeringEvent(File activeFile, final E event) {
@@ -171,6 +179,14 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         }
 
         return false;
+    }
+
+    public Integer getCheckIncrement() {
+        return checkIncrement;
+    }
+
+    public void setCheckIncrement(Integer checkIncrement) {
+        this.checkIncrement = checkIncrement;
     }
 
     @Override
