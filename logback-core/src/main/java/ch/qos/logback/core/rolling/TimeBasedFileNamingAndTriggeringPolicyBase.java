@@ -41,6 +41,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
     protected Date dateInCurrentPeriod = null;
 
     protected long nextCheck;
+    protected long previousCheck;
     protected boolean started = false;
     protected boolean errorFree = true;
 
@@ -90,6 +91,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
 
     protected void computeNextCheck() {
         nextCheck = rc.getNextTriggeringDate(dateInCurrentPeriod).getTime();
+        previousCheck = rc.getEndOfNextNthPeriod(dateInCurrentPeriod, 0).getTime();
     }
 
     protected void setDateInCurrentPeriod(long now) {
