@@ -23,17 +23,29 @@ import java.util.regex.Pattern;
 public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
 
     protected static final int NO_INDEX = -1;
+    private CompressionMode compressionMode;
 
-    public SizeAndTimeBasedArchiveRemover(FileNamePattern fileNamePattern, RollingCalendar rc) {
+    public SizeAndTimeBasedArchiveRemover(FileNamePattern fileNamePattern, CompressionMode compressionMode, RollingCalendar rc) {
         super(fileNamePattern, rc);
+        this.compressionMode = compressionMode;
     }
 
     protected File[] getFilesInPeriod(Date dateOfPeriodToClean) {
         File archive0 = new File(fileNamePattern.convertMultipleArguments(dateOfPeriodToClean, 0));
         File parentDir = getParentDir(archive0);
-        String stemRegex = createStemRegex(dateOfPeriodToClean);
+        String stemRegex = createStemRegexWithoutCompression(dateOfPeriodToClean);
         File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
         return matchingFileArray;
+    }
+
+    /**
+     * Method to create the stem regex without compression suffix.
+     * @param dateOfPeriodToClean Date of the period to clean.
+     * @return Regex without compression suffix.
+     */
+    private String createStemRegexWithoutCompression(final Date dateOfPeriodToClean) {
+        String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean).replaceAll(compressionMode.name().toLowerCase(), "*");
+        return FileFilterUtil.afterLastSlash(regex);
     }
 
     private String createStemRegex(final Date dateOfPeriodToClean) {
