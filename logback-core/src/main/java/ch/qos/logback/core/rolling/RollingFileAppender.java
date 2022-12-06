@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.FileAppender;
@@ -42,6 +44,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     File currentlyActiveFile;
     TriggeringPolicy<E> triggeringPolicy;
     RollingPolicy rollingPolicy;
+
+    Lock triggeringPolicyLock = new ReentrantLock();
 
     static private String RFA_NO_TP_URL = CODES_URL + "#rfa_no_tp";
     static private String RFA_NO_RP_URL = CODES_URL + "#rfa_no_rp";
@@ -221,6 +225,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         }
     }
 
+
+
     /**
      * This method differentiates RollingFileAppender from its super class.
      */
@@ -229,13 +235,12 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         // The roll-over check must precede actual writing. This is the
         // only correct behavior for time driven triggers.
 
-        // We need to synchronize on triggeringPolicy so that only one rollover
-        // occurs at a time
-        synchronized (triggeringPolicy) {
-            if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
-                rollover();
-            }
+        // the next method is assumed to return true only once per period (or whatever
+        // the decision criteria is) in a multi-threaded environment
+        if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
+          rollover();
         }
+
 
         super.subAppend(event);
     }

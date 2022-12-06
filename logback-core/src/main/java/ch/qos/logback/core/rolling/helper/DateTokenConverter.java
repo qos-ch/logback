@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +69,10 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
         return cdf.format(date.getTime());
     }
 
+    public String convert(Instant instant) {
+        return cdf.format(instant.toEpochMilli());
+    }
+
     public String convert(Object o) {
         if (o == null) {
             throw new IllegalArgumentException("Null argument forbidden");
@@ -75,6 +80,10 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
         if (o instanceof Date) {
             return convert((Date) o);
         }
+        if (o instanceof Instant) {
+            return convert((Instant) o);
+        }
+
         throw new IllegalArgumentException("Cannot convert " + o + " of type" + o.getClass().getName());
     }
 
@@ -90,7 +99,11 @@ public class DateTokenConverter<E> extends DynamicConverter<E> implements MonoTy
     }
 
     public boolean isApplicable(Object o) {
-        return (o instanceof Date);
+        if(o instanceof Date)
+            return true;
+        if(o instanceof Instant)
+            return true;
+        return false;
     }
 
     public String toRegex() {

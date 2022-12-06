@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -131,7 +132,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
         // wait for compression to finish
         waitForJobsToComplete();
 
-        // StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         existenceCheck(expectedFilenameList);
         sortedContentCheck(randomOutputDir, runLength, prefix);
     }

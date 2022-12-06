@@ -21,6 +21,7 @@ abstract public class AbstractMultiThreadedHarness {
         Thread[] threadArray = new Thread[runnableArray.length];
 
         for (int i = 0; i < runnableArray.length; i++) {
+            System.out.println("Starting "+runnableArray[i]);
             threadArray[i] = new Thread(runnableArray[i], "Harness[" + i + "]");
         }
         for (Thread t : threadArray) {

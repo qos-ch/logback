@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -93,7 +94,7 @@ public class RollingCalendarTest {
         }
 
         {
-            RollingCalendar rc = new RollingCalendar("yyyy-WW");
+            RollingCalendar rc = new RollingCalendar("yyyy-W");
             Assertions.assertEquals(PeriodicityType.TOP_OF_WEEK, rc.getPeriodicityType());
         }
     }
@@ -106,9 +107,9 @@ public class RollingCalendarTest {
 
         for (int p = 100; p > -100; p--) {
             long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
-            Date result = rc.getEndOfNextNthPeriod(new Date(now), p);
+            Instant result = rc.getEndOfNextNthPeriod(Instant.ofEpochMilli(now), p);
             long expected = now - (now % (MILLIS_IN_HOUR)) + p * MILLIS_IN_HOUR;
-            Assertions.assertEquals(expected, result.getTime());
+            Assertions.assertEquals(expected, result.toEpochMilli());
         }
     }
 
@@ -119,13 +120,13 @@ public class RollingCalendarTest {
 
         for (int p = 20; p > -100; p--) {
             long now = 1223325293589L; // Mon Oct 06 22:34:53 CEST 2008
-            Date nowDate = new Date(now);
-            Date result = rc.getEndOfNextNthPeriod(nowDate, p);
+            Instant nowInstant = Instant.ofEpochMilli(now);
+            Instant result = rc.getEndOfNextNthPeriod(nowInstant, p);
             long offset = rc.getTimeZone().getRawOffset() + rc.getTimeZone().getDSTSavings();
 
             long origin = now - ((now + offset) % (MILLIS_IN_DAY));
             long expected = origin + p * MILLIS_IN_DAY;
-            Assertions.assertEquals(expected, result.getTime(), "p=" + p);
+            Assertions.assertEquals(expected, result.toEpochMilli(), "p=" + p);
         }
     }
 
@@ -171,15 +172,15 @@ public class RollingCalendarTest {
         checkCollisionFreeness("DDD", false);
 
         // 'u' is new to JDK 7
-        if (EnvUtil.isJDK7OrHigher()) {
-            checkCollisionFreeness("yyyy-MM-dd-uu", true);
-            checkCollisionFreeness("yyyy-MM-uu", false);
-        }
+//        if (EnvUtil.isJDK7OrHigher()) {
+//            checkCollisionFreeness("yyyy-MM-dd-uu", true);
+//            checkCollisionFreeness("yyyy-MM-uu", false);
+//        }
 
         // weekly
-        checkCollisionFreeness("yyyy-MM-WW", true);
+        checkCollisionFreeness("yyyy-MM-W", true);
         dumpCurrentLocale(Locale.getDefault());
-        checkCollisionFreeness("yyyy-WW", false);
+        checkCollisionFreeness("yyyy-W", false);
         checkCollisionFreeness("yyyy-ww", true);
         checkCollisionFreeness("ww", false);
     }

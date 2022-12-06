@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling.helper;
 import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -50,9 +51,9 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     int callCount = 0;
 
     @Override
-    public void clean(Date now) {
+    public void clean(Instant now) {
 
-        long nowInMillis = now.getTime();
+        long nowInMillis = now.toEpochMilli();
         // for a live appender periodsElapsed is expected to be 1
         int periodsElapsed = computeElapsedPeriodsSinceLastClean(nowInMillis);
         lastHeartBeat = nowInMillis;
@@ -62,13 +63,13 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
         for (int i = 0; i < periodsElapsed; i++) {
             int offset = getPeriodOffsetForDeletionTarget() - i;
-            Date dateOfPeriodToClean = rc.getEndOfNextNthPeriod(now, offset);
-            cleanPeriod(dateOfPeriodToClean);
+            Instant instantOfPeriodToClean = rc.getEndOfNextNthPeriod(now, offset);
+            cleanPeriod(instantOfPeriodToClean);
         }
     }
 
-    protected File[] getFilesInPeriod(Date dateOfPeriodToClean) {
-        String filenameToDelete = fileNamePattern.convert(dateOfPeriodToClean);
+    protected File[] getFilesInPeriod(Instant instantOfPeriodToClean) {
+        String filenameToDelete = fileNamePattern.convert(instantOfPeriodToClean);
         File file2Delete = new File(filenameToDelete);
 
         if (fileExistsAndIsFile(file2Delete)) {
@@ -82,8 +83,8 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         return file2Delete.exists() && file2Delete.isFile();
     }
 
-    public void cleanPeriod(Date dateOfPeriodToClean) {
-        File[] matchingFileArray = getFilesInPeriod(dateOfPeriodToClean);
+    public void cleanPeriod(Instant instantOfPeriodToClean) {
+        File[] matchingFileArray = getFilesInPeriod(instantOfPeriodToClean);
 
         for (File f : matchingFileArray) {
             addInfo("deleting " + f);
@@ -96,13 +97,13 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         }
     }
 
-    void capTotalSize(Date now) {
+    void capTotalSize(Instant now) {
         long totalSize = 0;
         long totalRemoved = 0;
         for (int offset = 0; offset < maxHistory; offset++) {
-            Date date = rc.getEndOfNextNthPeriod(now, -offset);
-            File[] matchingFileArray = getFilesInPeriod(date);
-            descendingSort(matchingFileArray, date);
+            Instant instant = rc.getEndOfNextNthPeriod(now, -offset);
+            File[] matchingFileArray = getFilesInPeriod(instant);
+            descendingSort(matchingFileArray, instant);
             for (File f : matchingFileArray) {
                 long size = f.length();
                 if (totalSize + size > totalSizeCap) {
@@ -116,7 +117,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
     }
 
-    protected void descendingSort(File[] matchingFileArray, Date date) {
+    protected void descendingSort(File[] matchingFileArray, Instant instant) {
         // nothing to do in super class
     }
 
@@ -218,7 +219,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         return "c.q.l.core.rolling.helper.TimeBasedArchiveRemover";
     }
 
-    public Future<?> cleanAsynchronously(Date now) {
+    public Future<?> cleanAsynchronously(Instant now) {
         ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
         ExecutorService executorService = context.getScheduledExecutorService();
         Future<?> future = executorService.submit(runnable);
@@ -226,9 +227,9 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     }
 
     public class ArhiveRemoverRunnable implements Runnable {
-        Date now;
+        Instant now;
 
-        ArhiveRemoverRunnable(Date now) {
+        ArhiveRemoverRunnable(Instant now) {
             this.now = now;
         }
 
