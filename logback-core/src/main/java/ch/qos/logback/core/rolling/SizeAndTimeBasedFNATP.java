@@ -1,21 +1,20 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.rolling;
 
 import static ch.qos.logback.core.CoreConstants.MANUAL_URL_PREFIX;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 
 import ch.qos.logback.core.CoreConstants;
@@ -34,16 +33,15 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
     enum Usage {
         EMBEDDED, DIRECT
-    };
+    }
 
-    int currentPeriodsCounter = 0;
+    ;
+
+    volatile int currentPeriodsCounter = 0;
     FileSize maxFileSize;
-
-
 
     Integer checkIncrement = null;
 
-    long nextSizeCheck = 0;
     static String MISSING_INT_TOKEN = "Missing integer token, that is %i, in FileNamePattern [";
     static String MISSING_DATE_TOKEN = "Missing date token, that is %d, in FileNamePattern [";
 
@@ -77,7 +75,7 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             withErrors();
         }
 
-        if(checkIncrement != null)
+        if (checkIncrement != null)
             invocationGate = new SimpleInvocationGate(checkIncrement);
 
         if (!validateDateAndIntegerTokens()) {
@@ -140,25 +138,29 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
         }
     }
 
-
     @Override
     public boolean isTriggeringEvent(File activeFile, final E event) {
 
-        long time = getCurrentTime();
+        long currentTime = getCurrentTime();
+        long localNextCheck = atomicNextCheck.get();
 
         // first check for roll-over based on time
-        if (time >= nextCheck) {
-            Date dateInElapsedPeriod = dateInCurrentPeriod;
-            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(dateInElapsedPeriod,
-                    currentPeriodsCounter);
-            currentPeriodsCounter = 0;
-            setDateInCurrentPeriod(time);
-            computeNextCheck();
-            return true;
+        if (currentTime >= localNextCheck) {
+
+            long nextCheckCandidate = computeNextCheck(currentTime);
+            boolean success = atomicNextCheck.compareAndSet(localNextCheck, nextCheckCandidate);
+            if (success) {
+                Instant instantInElapsedPeriod = dateInCurrentPeriod;
+                elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(
+                        instantInElapsedPeriod, currentPeriodsCounter);
+                currentPeriodsCounter = 0;
+                setDateInCurrentPeriod(currentTime);
+            }
+            return success;
         }
 
         // next check for roll-over based on size
-        if (invocationGate.isTooSoon(time)) {
+        if (invocationGate.isTooSoon(currentTime)) {
             return false;
         }
 

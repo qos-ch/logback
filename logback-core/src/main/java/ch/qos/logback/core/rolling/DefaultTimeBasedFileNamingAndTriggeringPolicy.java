@@ -14,6 +14,7 @@
 package ch.qos.logback.core.rolling;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 
 import ch.qos.logback.core.joran.spi.NoAutoStart;
@@ -45,14 +46,19 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     }
 
     public boolean isTriggeringEvent(File activeFile, final E event) {
-        long time = getCurrentTime();
-        if (time >= nextCheck) {
-            Date dateOfElapsedPeriod = dateInCurrentPeriod;
-            addInfo("Elapsed period: " + dateOfElapsedPeriod);
-            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convert(dateOfElapsedPeriod);
-            setDateInCurrentPeriod(time);
-            computeNextCheck();
-            return true;
+        long currentTime = getCurrentTime();
+        long localNextCheck = atomicNextCheck.get();
+        if (currentTime >= localNextCheck) {
+            long nextCheckCandidate = computeNextCheck(currentTime);
+            boolean success = atomicNextCheck.compareAndSet(localNextCheck, nextCheckCandidate);
+            if(success) {
+                //Date dateOfElapsedPeriod = new Date(this.dateInCurrentPeriod.getTime());
+                Instant instantOfElapsedPeriod = dateInCurrentPeriod;
+                addInfo("Elapsed period: " + instantOfElapsedPeriod.toString());
+                this.elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convert(instantOfElapsedPeriod);
+                setDateInCurrentPeriod(currentTime);
+            }
+            return success;
         } else {
             return false;
         }
@@ -62,4 +68,5 @@ public class DefaultTimeBasedFileNamingAndTriggeringPolicy<E> extends TimeBasedF
     public String toString() {
         return "c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy";
     }
+
 }

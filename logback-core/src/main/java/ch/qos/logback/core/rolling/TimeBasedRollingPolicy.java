@@ -17,6 +17,7 @@ import static ch.qos.logback.core.CoreConstants.UNBOUNDED_HISTORY;
 import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -94,6 +95,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
         timeBasedFileNamingAndTriggeringPolicy.setContext(context);
         timeBasedFileNamingAndTriggeringPolicy.setTimeBasedRollingPolicy(this);
+        addInfo("xxxxxxxxxxxxxxxxxxx timeBasedFileNamingAndTriggeringPolicy  "+System.identityHashCode(timeBasedFileNamingAndTriggeringPolicy));
         timeBasedFileNamingAndTriggeringPolicy.start();
 
         if (!timeBasedFileNamingAndTriggeringPolicy.isStarted()) {
@@ -110,7 +112,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
             archiveRemover.setTotalSizeCap(totalSizeCap.getSize());
             if (cleanHistoryOnStart) {
                 addInfo("Cleaning on start up");
-                Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+                Instant now = Instant.ofEpochMilli(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
                 cleanUpFuture = archiveRemover.cleanAsynchronously(now);
             }
         } else if (!isUnboundedTotalSizeCap()) {
@@ -183,7 +185,7 @@ public class TimeBasedRollingPolicy<E> extends RollingPolicyBase implements Trig
         }
 
         if (archiveRemover != null) {
-            Date now = new Date(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
+            Instant now = Instant.ofEpochMilli(timeBasedFileNamingAndTriggeringPolicy.getCurrentTime());
             this.cleanUpFuture = archiveRemover.cleanAsynchronously(now);
         }
     }

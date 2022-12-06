@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,8 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Ceki G&uuml;lc&uuml;
@@ -52,13 +55,13 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
         // Tuesday December 20th 17:59:01 CET 2011
         long startTime = 1324400341553L;
         tbrp.setFileNamePattern("foo-%d{yyyy-MM'T'mm}.log");
+        timeBasedFNATP.setCurrentTime(startTime);
         tbrp.start();
 
-        timeBasedFNATP.setCurrentTime(startTime);
-        timeBasedFNATP.start();
-
         timeBasedFNATP.setCurrentTime(startTime + MILLIS_IN_MINUTE);
-        timeBasedFNATP.isTriggeringEvent(null, null);
+        boolean result = timeBasedFNATP.isTriggeringEvent(null, null);
+        StatusPrinter.print(context);
+        assertTrue(result);
         String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
         Assertions.assertEquals("foo-2011-12T59.log", elapsedPeriodsFileName);
     }
@@ -79,7 +82,7 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 
         timeBasedFNATP.setCurrentTime(startTime + MILLIS_IN_MINUTE);
         boolean triggerred = timeBasedFNATP.isTriggeringEvent(null, null);
-        Assertions.assertTrue(triggerred);
+        assertTrue(triggerred);
         String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
         Assertions.assertEquals("foo-2011-12/59.log", elapsedPeriodsFileName);
     }
@@ -96,7 +99,7 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
 
         timeBasedFNATP.setCurrentTime(startTime + MILLIS_IN_MINUTE + 2 * MILLIS_IN_HOUR);
         boolean triggerred = timeBasedFNATP.isTriggeringEvent(null, null);
-        Assertions.assertTrue(triggerred);
+        assertTrue(triggerred);
         String elapsedPeriodsFileName = timeBasedFNATP.getElapsedPeriodsFileName();
         Assertions.assertEquals("foo-2011-12-20.log", elapsedPeriodsFileName);
     }

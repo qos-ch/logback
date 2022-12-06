@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling;
 
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -147,7 +148,7 @@ public class RollingFileAppenderTest extends AbstractAppenderTest<Object> {
         rfa.setRollingPolicy(tbrp);
         rfa.start();
 
-        // StatusPrinter.print(context);
+        //StatusPrinter.print(context);
         Assertions.assertTrue(tbrp.isStarted());
         Assertions.assertTrue(rfa.isStarted());
         rfa.stop();

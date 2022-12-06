@@ -14,6 +14,7 @@
 package ch.qos.logback.core.rolling.helper;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -28,23 +29,23 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
         super(fileNamePattern, rc);
     }
 
-    protected File[] getFilesInPeriod(Date dateOfPeriodToClean) {
-        File archive0 = new File(fileNamePattern.convertMultipleArguments(dateOfPeriodToClean, 0));
+    protected File[] getFilesInPeriod(Instant instantOfPeriodToClean) {
+        File archive0 = new File(fileNamePattern.convertMultipleArguments(instantOfPeriodToClean, 0));
         File parentDir = getParentDir(archive0);
-        String stemRegex = createStemRegex(dateOfPeriodToClean);
+        String stemRegex = createStemRegex(instantOfPeriodToClean);
         File[] matchingFileArray = FileFilterUtil.filesInFolderMatchingStemRegex(parentDir, stemRegex);
         return matchingFileArray;
     }
 
-    private String createStemRegex(final Date dateOfPeriodToClean) {
-        String regex = fileNamePattern.toRegexForFixedDate(dateOfPeriodToClean);
+    private String createStemRegex(final Instant instantOfPeriodToClean) {
+        String regex = fileNamePattern.toRegexForFixedDate(instantOfPeriodToClean);
         return FileFilterUtil.afterLastSlash(regex);
     }
 
     @Override
-    protected void descendingSort(File[] matchingFileArray, Date date) {
+    protected void descendingSort(File[] matchingFileArray, Instant instant) {
 
-        String regexForIndexExtreaction = createStemRegex(date);
+        String regexForIndexExtreaction = createStemRegex(instant);
         final Pattern pattern = Pattern.compile(regexForIndexExtreaction);
 
         Arrays.sort(matchingFileArray, new Comparator<File>() {

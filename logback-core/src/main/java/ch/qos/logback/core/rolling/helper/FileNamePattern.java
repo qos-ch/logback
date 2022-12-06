@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.core.rolling.helper;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -208,6 +209,32 @@ public class FileNamePattern extends ContextAwareBase {
         }
         return buf.toString();
     }
+
+
+    /**
+     * Given date, convert this instance to a regular expression.
+     *
+     * Used to compute sub-regex when the pattern has both %d and %i, and the date
+     * is known.
+     *
+     * @param instant - known instant
+     */
+    public String toRegexForFixedDate(Instant instant) {
+        StringBuilder buf = new StringBuilder();
+        Converter<Object> p = headTokenConverter;
+        while (p != null) {
+            if (p instanceof LiteralConverter) {
+                buf.append(p.convert(null));
+            } else if (p instanceof IntegerTokenConverter) {
+                buf.append("(\\d+)");
+            } else if (p instanceof DateTokenConverter) {
+                buf.append(p.convert(instant));
+            }
+            p = p.getNext();
+        }
+        return buf.toString();
+    }
+
 
     /**
      * Given date, convert this instance to a regular expression
