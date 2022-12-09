@@ -147,7 +147,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         // match exactly the expected archive files. Thus, we aim for
         // an approximate match
         assertTrue(eCount >= 4 && eCount > expectedFilenameList.size() / 2,
-                "exitenceCount=" + eCount + ", expectedFilenameList.size=" + expectedFilenameList.size());
+                "existenceCount=" + eCount + ", expectedFilenameList.size=" + expectedFilenameList.size());
     }
 
     @Test

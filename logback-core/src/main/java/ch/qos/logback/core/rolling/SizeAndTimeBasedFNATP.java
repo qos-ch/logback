@@ -146,17 +146,15 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
 
         // first check for roll-over based on time
         if (currentTime >= localNextCheck) {
-
             long nextCheckCandidate = computeNextCheck(currentTime);
-            boolean success = atomicNextCheck.compareAndSet(localNextCheck, nextCheckCandidate);
-            if (success) {
-                Instant instantInElapsedPeriod = dateInCurrentPeriod;
-                elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(
-                        instantInElapsedPeriod, currentPeriodsCounter);
-                currentPeriodsCounter = 0;
-                setDateInCurrentPeriod(currentTime);
-            }
-            return success;
+            atomicNextCheck.set(nextCheckCandidate);
+            Instant instantInElapsedPeriod = dateInCurrentPeriod;
+            elapsedPeriodsFileName = tbrp.fileNamePatternWithoutCompSuffix.convertMultipleArguments(
+                    instantInElapsedPeriod, currentPeriodsCounter);
+            currentPeriodsCounter = 0;
+            setDateInCurrentPeriod(currentTime);
+
+            return true;
         }
 
         // next check for roll-over based on size
