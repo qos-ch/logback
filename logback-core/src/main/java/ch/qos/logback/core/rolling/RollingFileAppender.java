@@ -232,13 +232,21 @@ public class RollingFileAppender<E> extends FileAppender<E> {
      */
     @Override
     protected void subAppend(E event) {
+
+        // We need to synchronize on triggeringPolicy so that only one rollover
+        // occurs at a time. We should also ensure that the triggeringPolicy.isTriggeringEvent
+        // method can ensure that it updates itself properly when isTriggeringEvent returns true
+
         // The roll-over check must precede actual writing. This is the
         // only correct behavior for time driven triggers.
 
-        // the next method is assumed to return true only once per period (or whatever
-        // the decision criteria is) in a multi-threaded environment
-        if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
-          rollover();
+        triggeringPolicyLock.lock();
+        try {
+            if (triggeringPolicy.isTriggeringEvent(currentlyActiveFile, event)) {
+                rollover();
+            }
+        } finally {
+            triggeringPolicyLock.unlock();
         }
 
 
