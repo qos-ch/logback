@@ -27,6 +27,11 @@ import java.util.List;
 // V = E|E :- E
 //   = E(':-'E|~)
 
+// new definition
+
+// V = E | E :- Eopt
+//   = E (~| :- Eopt)
+
 /**
  * Parse a token list returning a node chain.
  *
@@ -107,21 +112,25 @@ public class Parser {
         return new Node(Node.Type.LITERAL, s);
     }
 
-    // V = E(':='E|~)
+    // V = E (~| :- Eopt)
     private Node V() throws ScanException {
         Node e = E();
         Node variable = new Node(Node.Type.VARIABLE, e);
         Token t = peekAtCurentToken();
         if (isDefaultToken(t)) {
             advanceTokenPointer();
-            Node def = E();
-            variable.defaultPart = def;
+            Node def = Eopt();
+            if(def != null) {
+                variable.defaultPart = def;
+            } else {
+                variable.defaultPart = makeNewLiteralNode(CoreConstants.EMPTY_STRING);
+            }
         }
         return variable;
     }
 
     
-    // C = E(':='E|~)
+    // C = E(':-'E|~)
     private Node C() throws ScanException {
         Node e0 = E();
         Token t = peekAtCurentToken();

@@ -97,6 +97,7 @@ public class NodeToStringTransformer {
         String key = keyBuffer.toString();
         String value = lookupKey(key);
 
+        // empty values are considered valid
         if (value != null) {
             Node innerNode = tokenizeAndParseString(value);
             compileNode(innerNode, stringBuilder, cycleCheckStack);
@@ -104,6 +105,7 @@ public class NodeToStringTransformer {
             return;
         }
 
+        // empty default literal is a valid value
         if (n.defaultPart == null) {
             stringBuilder.append(key + CoreConstants.UNDEFINED_PROPERTY_SUFFIX);
             cycleCheckStack.pop();

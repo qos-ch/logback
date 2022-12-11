@@ -22,8 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Created with IntelliJ IDEA. User: ceki Date: 05.08.12 Time: 00:15 To change
- * this template use File | Settings | File Templates.
+ *
  */
 public class ParserTest {
 
@@ -164,6 +163,17 @@ public class ParserTest {
         witness.defaultPart = new Node(Node.Type.LITERAL, "c");
         assertEquals(witness, node);
     }
+
+    @Test
+    public void withEmptryDefault() throws ScanException {
+        Tokenizer tokenizer = new Tokenizer("${b:-}");
+        Parser parser = new Parser(tokenizer.tokenize());
+        Node node = parser.parse();
+        Node witness = new Node(Node.Type.VARIABLE, new Node(Node.Type.LITERAL, "b"));
+        witness.defaultPart = new Node(Node.Type.LITERAL, "");
+        assertEquals(witness, node);
+    }
+
 
     @Test
     public void defaultSeparatorOutsideOfAVariable() throws ScanException {
