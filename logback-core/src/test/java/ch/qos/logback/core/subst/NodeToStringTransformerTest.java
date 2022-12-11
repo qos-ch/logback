@@ -175,4 +175,22 @@ public class NodeToStringTransformerTest {
         NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
         Assertions.assertEquals("a: {y}", nodeToStringTransformer.transform());
     }
+
+    @Test
+    public void definedAsEmpty() throws ScanException {
+        propertyContainer0.putProperty("empty", "");
+        String input = "a=${empty}";
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+        Assertions.assertEquals("a=", nodeToStringTransformer.transform());
+    }
+
+    @Test
+    public void emptyDefault() throws ScanException {
+        propertyContainer0.putProperty("empty", "");
+        String input = "a=${undef:-${empty}}";
+        Node node = makeNode(input);
+        NodeToStringTransformer nodeToStringTransformer = new NodeToStringTransformer(node, propertyContainer0);
+        Assertions.assertEquals("a=", nodeToStringTransformer.transform());
+    }
 }

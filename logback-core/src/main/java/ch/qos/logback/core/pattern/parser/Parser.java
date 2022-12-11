@@ -27,7 +27,7 @@ import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.ScanException;
 
-// ~=lamda
+// ~=lambda
 // E = TE|T
 
 // Left factorization

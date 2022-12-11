@@ -23,7 +23,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.util.HashMap;
 import java.util.Map;
 
+import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Context;
@@ -38,6 +40,8 @@ public class OptionHelperTest {
     String expected = "Testing if variable substitution works";
     Context context = new ContextBase();
     Map<String, String> secondaryMap;
+
+    int diff = RandomUtil.getPositiveInt();
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -308,9 +312,29 @@ public class OptionHelperTest {
     }
 
     @Test
-    public void doesNotThrowNullPointerExceptionForEmptyVariable() throws JoranException, ScanException {
-        context.putProperty("var", "");
-        OptionHelper.substVars("${var}", context);
+    public void emptyVariableIsAccepted() throws JoranException, ScanException {
+        String varName = "var"+diff;
+        context.putProperty(varName, "");
+        String r = OptionHelper.substVars("x ${"+varName+"} b", context);
+        assertEquals("x  b", r);
+    }
+
+    // https://jira.qos.ch/browse/LOGBACK-1012
+    // conflicts with the idea that variables assigned the empty string are valid
+    @Disabled
+    @Test
+    public void defaultExpansionForEmptyVariables() throws JoranException, ScanException {
+        String varName = "var"+diff;
+        context.putProperty(varName, "");
+
+        String r = OptionHelper.substVars("x ${"+varName+":-def} b", context);
+        assertEquals("x def b", r);
+    }
+
+    @Test
+    public void emptyDefault() throws ScanException {
+        String r = OptionHelper.substVars("a${undefinedX:-}b", context);
+        assertEquals("ab", r);
     }
 
     @Test
@@ -331,6 +355,9 @@ public class OptionHelperTest {
         String r = OptionHelper.substVars("${var}" + suffix, context);
         assertEquals(prefix + suffix, r);
     }
+
+
+
 
     @Test
     public void curlyBraces_LOGBACK_1101() throws ScanException {
