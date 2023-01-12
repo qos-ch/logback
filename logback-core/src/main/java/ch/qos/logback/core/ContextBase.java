@@ -166,8 +166,8 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     /**
-     * Clear the internal objectMap and all properties. Removes registered
-     * shutdown hook
+     * Clear the internal objectMap and all properties. Removes any registered
+     * shutdown hook.
      */
     public void reset() {
 

@@ -3,7 +3,6 @@ package ch.qos.logback.core.rolling;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.util.Date;
 
 import org.junit.After;
@@ -13,7 +12,7 @@ import org.junit.Test;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.EchoEncoder;
-import ch.qos.logback.core.hook.DelayingShutdownHook;
+import ch.qos.logback.core.hook.DefaultShutdownHook;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
@@ -23,7 +22,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
 
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
-    DelayingShutdownHook delayingShutdownHook = new DelayingShutdownHook();
+    DefaultShutdownHook defaultShutdownHook = new DefaultShutdownHook();
     
     static final long FRI_2016_05_13_T_170415_GMT = 1463159055630L;
                                                     
@@ -34,7 +33,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
     public void setUp() {
         super.setUp();
         StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
-        delayingShutdownHook.setContext(context);
+        defaultShutdownHook.setContext(context);
         initRFA(rfa);
     }
 
@@ -62,7 +61,7 @@ public class JVMExitBeforeCompressionISDoneTest extends ScaffoldingForRollingTes
     @Ignore
     @Test
     public void test1() {
-        Thread shutdownThread = new Thread(delayingShutdownHook);
+        Thread shutdownThread = new Thread(defaultShutdownHook);
         Runtime.getRuntime().addShutdownHook(shutdownThread);
         
         String patternPrefix = "test1";

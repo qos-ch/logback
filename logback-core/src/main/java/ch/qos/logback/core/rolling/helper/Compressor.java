@@ -118,6 +118,7 @@ public class Compressor extends ContextAwareBase {
             if (!file2zip.delete()) {
                 addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].", this));
             }
+            addInfo("Done ZIP compressing [" + file2zip + "] as [" + zippedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2zip + "] into [" + nameOfZippedFile + "].", this, e));
         } finally {
@@ -136,7 +137,9 @@ public class Compressor extends ContextAwareBase {
                 }
             }
         }
-
+        if (!file2zip.delete()) {
+            addStatus(new WarnStatus("Could not delete [" + nameOfFile2zip + "].", this));
+        }
     }
 
     // http://jira.qos.ch/browse/LBCORE-98
@@ -206,6 +209,7 @@ public class Compressor extends ContextAwareBase {
             if (!file2gz.delete()) {
                 addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].", this));
             }
+            addInfo("Done ZIP compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus("Error occurred while compressing [" + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this, e));
         } finally {
@@ -223,6 +227,9 @@ public class Compressor extends ContextAwareBase {
                     // ignore
                 }
             }
+        }
+        if (!file2gz.delete()) {
+            addStatus(new WarnStatus("Could not delete [" + nameOfFile2gz + "].", this));
         }
     }
 
