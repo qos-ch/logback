@@ -144,7 +144,11 @@ public class LogbackValve extends ValveBase
         // String catalinaBase = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
         // String catalinaHome = OptionHelper.getSystemProperty(CATALINA_BASE_KEY);
 
-        File configFile = searchForConfigFileTomcatProperty(filename, CATALINA_BASE_KEY);
+        File configFile = searchForConfigFileFileSystem(filename);
+
+        if (configFile == null) {
+            configFile = searchForConfigFileTomcatProperty(filename, CATALINA_BASE_KEY);
+        }
         if (configFile == null) {
             configFile = searchForConfigFileTomcatProperty(filename, CATALINA_HOME_KEY);
         }
@@ -184,6 +188,16 @@ public class LogbackValve extends ValveBase
         else
             addInfo("Could NOT find [" + filename + "] as a resource.");
         return result;
+    }
+
+    private File searchForConfigFileFileSystem(String filename) {
+        File candidateFile = new File(filename);
+        if (candidateFile.exists()) {
+            addInfo("Found configuration file [" + candidateFile + "] using file on file system");
+            return candidateFile;
+        } else {
+            return null;
+        }
     }
 
     private File searchForConfigFileTomcatProperty(String filename, String propertyKey) {
