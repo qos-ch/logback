@@ -101,6 +101,11 @@ public class IfModelHandler extends ModelHandlerBase {
     @Override
     public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
 
+        if(mic.isModelStackEmpty()) {
+            addError("Unexpected unexpected empty model stack.");
+            return;
+        }
+
         Object o = mic.peekModel();
         if (o != ifModel) {
             addWarn("The object [" + o + "] on the top the of the stack is not the expected [" + ifModel);

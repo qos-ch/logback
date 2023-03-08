@@ -17,11 +17,14 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
+import ch.qos.logback.classic.sift.SiftingAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.sift.AppenderTracker;
 import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -33,7 +36,9 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,6 +47,8 @@ public class ConditionalTest {
 
     LoggerContext context = new LoggerContext();
     Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
+
+    Logger logger = context.getLogger(this.getClass().getName());
 
     StatusUtil checker = new StatusUtil(context);
     int diff = RandomUtil.getPositiveInt();
@@ -142,4 +149,24 @@ public class ConditionalTest {
         assertTrue(checker.isErrorFree(0));
     }
 
+    private AppenderTracker<ILoggingEvent> getAppenderTracker() {
+        SiftingAppender ha = (SiftingAppender) root.getAppender("SIFT");
+        return ha.getAppenderTracker();
+    }
+
+    // see also https://jira.qos.ch/browse/LOGBACK-1713
+    @Test
+    public void nestedWithinIfThen() throws JoranException {
+        configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/siftNestedWithinIfThen.xml");
+        StatusPrinter.print(context);
+        String msg = "nestedWithinIfThen";
+        logger.debug(msg);
+        Appender<ILoggingEvent> appender = getAppenderTracker().find("ifThenDefault");
+        assertNotNull(appender);
+        ListAppender<ILoggingEvent> listAppender = (ListAppender<ILoggingEvent>) appender;
+        List<ILoggingEvent> eventList = listAppender.list;
+        assertEquals(1, listAppender.list.size());
+        assertEquals(msg, eventList.get(0).getMessage());
+        checker.isWarningOrErrorFree(0);
+    }
 }
