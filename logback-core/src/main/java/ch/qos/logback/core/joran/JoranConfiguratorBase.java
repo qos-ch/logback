@@ -90,7 +90,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         rs.addRule(new ElementSelector("*/if/else"),  ElseAction::new);
         rs.addTransparentPathPart("else");
         
-        rs.addRule(new ElementSelector("configuration/appender/sift"),  SiftAction::new);
+        rs.addRule(new ElementSelector("*/appender/sift"),  SiftAction::new);
         rs.addTransparentPathPart("sift");
         
         
