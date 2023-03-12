@@ -16,7 +16,9 @@ package ch.qos.logback.core;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Optional;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
 import ch.qos.logback.core.status.Status;
@@ -44,6 +46,8 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
     protected boolean withJansi = false;
 
     private final static String AnsiConsole_CLASS_NAME = "org.fusesource.jansi.AnsiConsole";
+    private final static String JANSI2_OUT_METHOD_NAME = "out";
+    private final static String JANSI2_ERR_METHOD_NAME = "err";
     private final static String wrapSystemOut_METHOD_NAME = "wrapSystemOut";
     private final static String wrapSystemErr_METHOD_NAME = "wrapSystemErr";
     private final static Class<?>[] ARGUMENT_TYPES = { PrintStream.class };
@@ -94,6 +98,22 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
             addInfo("Enabling JANSI AnsiPrintStream for the console.");
             ClassLoader classLoader = Loader.getClassLoaderOfObject(context);
             Class<?> classObj = classLoader.loadClass(AnsiConsole_CLASS_NAME);
+
+            // check for JAnsi 2
+            String methodNameJansi2 = target == ConsoleTarget.SystemOut ? JANSI2_OUT_METHOD_NAME
+                    : JANSI2_ERR_METHOD_NAME;
+            final Optional<Method> optOutMethod = Arrays.stream(classObj.getMethods())
+                    .filter(m -> m.getName().equals(methodNameJansi2))
+                    .filter(m -> m.getParameters().length == 0)
+                    .filter(m -> Modifier.isStatic(m.getModifiers()))
+                    .filter(m -> PrintStream.class.isAssignableFrom(m.getReturnType()))
+                    .findAny();
+            if (optOutMethod.isPresent()) {
+                final Method outMethod = optOutMethod.orElseThrow();
+                return (PrintStream) outMethod.invoke(null);
+            }
+
+            // JAnsi 1
             String methodName = target == ConsoleTarget.SystemOut ? wrapSystemOut_METHOD_NAME
                     : wrapSystemErr_METHOD_NAME;
             Method method = classObj.getMethod(methodName, ARGUMENT_TYPES);
