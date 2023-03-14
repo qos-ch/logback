@@ -307,7 +307,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -319,8 +318,6 @@
         </executions>
         <configuration>
           <instructions>
-            <_noee>true</_noee> <!-- Jigsaw -->
-            <_failok>true</_failok> <!-- Jigsaw -->
             <Export-Package>ch.qos.logback.classic*, org.slf4j.impl;version=${slf4j.version}</Export-Package>
             <!-- LB-CLASSIC It is necessary to specify the rolling
                  file packages as classes are created via IOC (xml
@@ -330,16 +327,11 @@
               sun.reflect;resolution:=optional,
               jakarta.*;resolution:=optional,
               org.xml.*;resolution:=optional,
-              org.slf4j,
-              org.slf4j.spi,
-              org.slf4j.event,
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
-              ch.qos.logback.core.util,
               ch.qos.logback.core.read,
               *
             </Import-Package>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6</Bundle-RequiredExecutionEnvironment>
             <!-- Needed to integrate ServiceLoader mechanism with OSGi -->
             <Require-Capability>osgi.extender; filter:="(osgi.extender=osgi.serviceloader.registrar)"</Require-Capability>
             <Provide-Capability>osgi.serviceloader;osgi.serviceloader=org.slf4j.spi.SLF4JServiceProvider</Provide-Capability>
