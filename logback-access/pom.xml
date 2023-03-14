@@ -128,7 +128,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
         <executions>
           <execution>
             <id>bundle-manifest</id>
@@ -149,13 +148,10 @@
             <Import-Package>
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
-              jakarta.servlet.*;version="4.0.0",
               org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
               org.eclipse.jetty.*;version="${jetty.version}";resolution:=optional,
               *
             </Import-Package>
-            <Bundle-RequiredExecutionEnvironment>JavaSE-1.6
-            </Bundle-RequiredExecutionEnvironment>
           </instructions>
         </configuration>
       </plugin>
