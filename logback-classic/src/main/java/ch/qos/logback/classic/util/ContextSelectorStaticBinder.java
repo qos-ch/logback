@@ -74,7 +74,7 @@ public class ContextSelectorStaticBinder {
         if (contextSelectorStr == null) {
             try {
                 Context ctx = JNDIUtil.getInitialContext();
-                contextSelectorStr = (String) JNDIUtil.lookup(ctx, ClassicConstants.JNDI_LOGBACK_CONTEXT_SELECTOR);
+                contextSelectorStr = JNDIUtil.lookupString(ctx, ClassicConstants.JNDI_LOGBACK_CONTEXT_SELECTOR);
             } catch (NamingException ne) {
                 // We can't log here
             }
