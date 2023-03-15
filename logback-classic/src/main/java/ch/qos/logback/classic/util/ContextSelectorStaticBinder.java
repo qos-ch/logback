@@ -16,11 +16,15 @@ package ch.qos.logback.classic.util;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import javax.naming.Context;
+import javax.naming.NamingException;
+
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.selector.ContextJNDISelector;
 import ch.qos.logback.classic.selector.ContextSelector;
 import ch.qos.logback.classic.selector.DefaultContextSelector;
+import ch.qos.logback.core.util.JNDIUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -34,8 +38,8 @@ public class ContextSelectorStaticBinder {
 
     static ContextSelectorStaticBinder singleton = new ContextSelectorStaticBinder();
 
-    ContextSelector contextSelector;
-    Object key;
+    ContextSelector                    contextSelector;
+    Object                             key;
 
     public static ContextSelectorStaticBinder getSingleton() {
         return singleton;
@@ -59,20 +63,39 @@ public class ContextSelectorStaticBinder {
             throw new IllegalAccessException("Only certain classes can access this method.");
         }
 
-        String contextSelectorStr = OptionHelper.getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+        // First try to find a selector class in the System environment
+        // If not there, then try the System properties
+        String contextSelectorStr = OptionHelper.getEnv(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+        if (contextSelectorStr == null) {
+            contextSelectorStr = OptionHelper.getSystemProperty(ClassicConstants.LOGBACK_CONTEXT_SELECTOR);
+        }
+
+        // If not there, check for a custom selector class specified by JNDI (this is not the same as specifying "JNDI")
+        if (contextSelectorStr == null) {
+            try {
+                Context ctx = JNDIUtil.getInitialContext();
+                contextSelectorStr = (String) JNDIUtil.lookup(ctx, ClassicConstants.JNDI_LOGBACK_CONTEXT_SELECTOR);
+            } catch (NamingException ne) {
+                // We can't log here
+            }
+        }
+
         if (contextSelectorStr == null) {
             contextSelector = new DefaultContextSelector(defaultLoggerContext);
         } else if (contextSelectorStr.equals("JNDI")) {
             // if jndi is specified, let's use the appropriate class
             contextSelector = new ContextJNDISelector(defaultLoggerContext);
         } else {
-            contextSelector = dynamicalContextSelector(defaultLoggerContext, contextSelectorStr);
+            try {
+                contextSelector = dynamicalContextSelector(defaultLoggerContext, contextSelectorStr);
+            } catch (Exception e) {
+                contextSelector = new DefaultContextSelector(defaultLoggerContext);
+            }
         }
     }
 
     /**
-     * Instantiate the context selector class designated by the user. The selector
-     * must have a constructor taking a LoggerContext instance as an argument.
+     * Instantiate the context selector class designated by the user. The selector must have a constructor taking a LoggerContext instance as an argument.
      * 
      * @param defaultLoggerContext
      * @param contextSelectorStr

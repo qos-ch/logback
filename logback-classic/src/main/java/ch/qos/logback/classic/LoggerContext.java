@@ -154,6 +154,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
                 childLogger = logger.getChildByName(childName);
                 if (childLogger == null) {
                     childLogger = logger.createChildByName(childName);
+                    customizeNewLogger(childLogger);
                     loggerCache.put(childName, childLogger);
                     incSize();
                 }
@@ -165,6 +166,15 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         }
     }
 
+    /**
+     * Allows subclasses to perform post-create modifications on newly-created {@link Logger} instances.
+     * By default, this method does nothing
+     *  
+     * @param childLogger
+     */
+    protected void customizeNewLogger(final Logger childLogger) {
+    }
+    
     private void incSize() {
         size++;
     }

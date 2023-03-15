@@ -28,6 +28,9 @@ public class ClassicConstants {
             + "comp/env/logback/configuration-resource";
     public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_NAMESPACE + "comp/env/logback/context-name";
 
+    /** JNDI name of custom contextSelector classname, if used */
+    public static final String JNDI_LOGBACK_CONTEXT_SELECTOR = "java:comp/env/logback/contextSelector";
+    
     /**
      * The maximum number of package separators (dots) that abbreviation algorithms
      * can handle. Class or logger names with more separators will have their first
