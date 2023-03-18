@@ -1639,6 +1639,13 @@ import ch.qos.logback.classic.LoggerContext;
 &lt;/configuration></pre>
 
 
+   <p>If the specified file or resource cannot be found, logback will
+   throw an error. In case the included file is optional, you can suppress
+   that error by setting <span class="attr">optional</span> attribute to
+   <code>true</code> in the <code>&lt;property&gt;</code> element.</p>
+
+   <pre class="prettyprint source">&lt;property <b>optional="true"</b> ... /></pre>
+
    <h4 class="doAnchor" name="scopes">Scopes</h4>
 
    <p>A property can be defined for insertion in <em>local scope</em>,
