@@ -19,8 +19,8 @@ import ch.qos.logback.core.util.OptionHelper;
 
 public class PropertyModelHandler extends ModelHandlerBase {
 
-    public static final String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
-            + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
+    public static final String INVALID_ATTRIBUTES = "In <property> element, set either both \"name\" and \"value\" "
+            + "attributes, or one of \"file\" or \"resource\" (optionally paired with \"optional\").";
 
     public PropertyModelHandler(Context context) {
         super(context);
@@ -48,7 +48,9 @@ public class PropertyModelHandler extends ModelHandlerBase {
             try (FileInputStream istream = new FileInputStream(file)) {
                 loadAndSetProperties(interpretationContext, istream, scope);
             } catch (FileNotFoundException e) {
-                addError("Could not find properties file [" + file + "].");
+                if (!OptionHelper.toBoolean(propertyModel.getOptional(), false)) {
+                    addError("Could not find properties file [" + file + "].");
+                }
             } catch (IOException|IllegalArgumentException e1) { // IllegalArgumentException is thrown in case the file
                                                                 // is badly malformed, i.e a binary.
                 addError("Could not read properties file [" + file + "].", e1);
@@ -58,7 +60,9 @@ public class PropertyModelHandler extends ModelHandlerBase {
             resource = interpretationContext.subst(resource);
             URL resourceURL = Loader.getResourceBySelfClassLoader(resource);
             if (resourceURL == null) {
-                addError("Could not find resource [" + resource + "].");
+                if (!OptionHelper.toBoolean(propertyModel.getOptional(), false)) {
+                    addError("Could not find resource [" + resource + "].");
+                }
             } else {
                 try ( InputStream istream = resourceURL.openStream();) {
                     loadAndSetProperties(interpretationContext, istream, scope);
@@ -112,6 +116,10 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String name = propertyModel.getName();
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
+
+        // Note: not checking that the "optional" attribute is empty because there's a risk that doing so would cause
+        // problems and break existing configuration files.
+
         return (!(OptionHelper.isNullOrEmpty(name) || OptionHelper.isNullOrEmpty(value))
                 && (OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource)));
     }

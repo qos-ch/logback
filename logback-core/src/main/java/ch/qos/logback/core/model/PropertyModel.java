@@ -4,13 +4,14 @@ import java.util.Objects;
 
 public class PropertyModel extends NamedModel {
 
-    private static final long serialVersionUID = 1494176979175092052L;
-    
+    private static final long serialVersionUID = -1590419905698271317L;
+
     String value;
     String scopeStr;
 
     String file;
     String resource;
+    String optional;
 
     @Override
     protected PropertyModel makeNewInstance() {
@@ -25,7 +26,7 @@ public class PropertyModel extends NamedModel {
         this.scopeStr = actual.scopeStr;
         this.file = actual.file;
         this.resource = actual.resource;
-        
+        this.optional = actual.optional;
     }
     
     public String getValue() {
@@ -60,11 +61,19 @@ public class PropertyModel extends NamedModel {
         this.resource = resource;
     }
 
+    public String getOptional() {
+        return optional;
+    }
+
+    public void setOptional(String optional) {
+        this.optional = optional;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(file, resource, scopeStr, value);
+        result = prime * result + Objects.hash(file, resource, optional, scopeStr, value);
         return result;
     }
 
@@ -78,8 +87,8 @@ public class PropertyModel extends NamedModel {
             return false;
         PropertyModel other = (PropertyModel) obj;
         return Objects.equals(file, other.file) && Objects.equals(resource, other.resource)
-                && Objects.equals(scopeStr, other.scopeStr) && Objects.equals(value, other.value);
+                && Objects.equals(optional, other.optional) && Objects.equals(scopeStr, other.scopeStr)
+                && Objects.equals(value, other.value);
     }
 
-    
 }
