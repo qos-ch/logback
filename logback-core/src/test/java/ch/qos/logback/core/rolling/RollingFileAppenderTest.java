@@ -13,7 +13,6 @@
  */
 package ch.qos.logback.core.rolling;
 
-import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,7 @@ import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.appender.AbstractAppenderTest;
-import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.testUtil.RandomUtil;

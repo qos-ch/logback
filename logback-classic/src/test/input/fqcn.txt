@@ -842,7 +842,7 @@ ch.qos.logback.core.appender.ConsoleAppenderTest
 ch.qos.logback.core.appender.DummyAppenderTest
 ch.qos.logback.core.appender.DummyWriterAppender
 ch.qos.logback.core.appender.FileAppenderTest
-ch.qos.logback.core.appender.XTeeOutputStream
+ch.qos.logback.core.testUtil.XTeeOutputStream
 ch.qos.logback.core.AsyncAppenderBaseTest
 ch.qos.logback.core.BasicStatusManagerTest
 ch.qos.logback.core.boolex.MatcherTest
@@ -853,7 +853,7 @@ ch.qos.logback.core.contention.ThreadedThroughputCalculator
 ch.qos.logback.core.contention.WaitOnExecutionMultiThreadedHarness
 ch.qos.logback.core.ContextBaseTest
 ch.qos.logback.core.encoder.ByteArrayUtilTest
-ch.qos.logback.core.encoder.DummyEncoder
+ch.qos.logback.core.testUtil.DummyEncoder
 ch.qos.logback.core.encoder.NopEncoder
 ch.qos.logback.core.FileAppenderResilienceTest
 ch.qos.logback.core.FileAppenderResilience_AS_ROOT_Test

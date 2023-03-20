@@ -19,7 +19,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Appender;
-import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.layout.DummyLayout;
 

@@ -53,6 +53,7 @@
                     <execution>
                         <id>default-test</id>
                         <configuration>
+                            <argLine>--add-opens java.base/java.io=ch.qos.logback.core.blackbox</argLine>
                             <reuseForks>true</reuseForks>
                             <reportFormat>plain</reportFormat>
                             <trimStackTrace>false</trimStackTrace>

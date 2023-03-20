@@ -16,21 +16,20 @@ package ch.qos.logback.core.appender;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.encoder.EchoEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.layout.DummyLayout;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
 
-import org.fusesource.jansi.AnsiPrintStream;
+import ch.qos.logback.core.testUtil.XTeeOutputStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
@@ -51,9 +50,7 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
         originalErr = System.err;
         // teeOut will output bytes on System out but it will also
         // collect them so that the output can be compared against
-        // some expected output data
-        // teeOut = new TeeOutputStream(originalOut);
-
+  
         // keep the console quiet
         teeOut = new XTeeOutputStream(null);
         teeErr = new XTeeOutputStream(null);
@@ -166,35 +163,5 @@ public class ConsoleAppenderTest extends AbstractAppenderTest<Object> {
 
         checker.assertContainsMatch(Status.WARN, "\\[foo\\] should be one of \\[System.out, System.err\\]");
 
-    }
-
-    @Test
-    public void jansiSystemOut() {
-        ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
-        DummyEncoder<Object> dummyEncoder = new DummyEncoder<>();
-        ca.setEncoder(dummyEncoder);
-        ca.setTarget("System.out");
-        ca.setContext(context);
-        ca.setWithJansi(true);
-        ca.start();
-        Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
-        ca.doAppend(new Object());
-        // broken in Jansi 2.x as it uses java.io.FileDescriptor instead of System.out
-        //Assertions.assertEquals(DummyLayout.DUMMY, teeOut.toString());
-    }
-
-    @Test
-    public void jansiSystemErr() {
-        ConsoleAppender<Object> ca = (ConsoleAppender<Object>) getAppender();
-        DummyEncoder<Object> dummyEncoder = new DummyEncoder<>();
-        ca.setEncoder(dummyEncoder);
-        ca.setTarget("System.err");
-        ca.setContext(context);
-        ca.setWithJansi(true);
-        ca.start();
-        Assertions.assertTrue(ca.getOutputStream() instanceof AnsiPrintStream);
-        ca.doAppend(new Object());
-        // broken in Jansi 2.x as it uses java.io.FileDescriptor instead of System.err
-        // Assertions.assertEquals(DummyLayout.DUMMY, teeErr.toString());
     }
 }

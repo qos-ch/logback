@@ -15,6 +15,9 @@ module ch.qos.logback.core {
     // jakarta.servlet 5.0 is not modular
     requires static jakarta.servlet;
 
+    // optionally require jansi
+    requires static org.fusesource.jansi;
+
     exports ch.qos.logback.core;
     exports ch.qos.logback.core.boolex;
 

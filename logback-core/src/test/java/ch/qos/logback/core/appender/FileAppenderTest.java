@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.FileAppender;
-import ch.qos.logback.core.encoder.DummyEncoder;
+import ch.qos.logback.core.testUtil.DummyEncoder;
 import ch.qos.logback.core.encoder.NopEncoder;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusManager;
