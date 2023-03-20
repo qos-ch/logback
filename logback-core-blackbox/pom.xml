@@ -8,7 +8,7 @@
     <parent>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-parent</artifactId>
-        <version>1.4.6</version>
+        <version>1.4.7-SNAPSHOT</version>
     </parent>
 
     <artifactId>logback-core-blackbox</artifactId>
@@ -27,6 +27,18 @@
         <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.codehaus.janino</groupId>
+            <artifactId>janino</artifactId>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
             <scope>compile</scope>
         </dependency>
 
