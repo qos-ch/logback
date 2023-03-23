@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.2.12</version>
+  <version>1.2.13-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -47,7 +47,7 @@
   </modules>
 
   <properties>
-    <project.build.outputTimestamp>2023-03-23T21:02:00Z</project.build.outputTimestamp>    
+    <project.build.outputTimestamp>2023-03-23T22:06:22Z</project.build.outputTimestamp>    
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
