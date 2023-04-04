@@ -1,12 +1,7 @@
 package ch.qos.logback.core.util;
 
-import java.io.Closeable;
-import java.io.FileDescriptor;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -16,9 +11,8 @@ import java.nio.charset.StandardCharsets;
  * @author Henry John Kupty
  * @see <a href="https://github.com/hkupty/penna">penna</a>
  */
-public final class DirectJson implements Closeable {
-    private static final int INITIAL_BUFFER_SIZE = 32 * 1024;
-    private static final byte[] LINE_BREAK = System.getProperty("line.separator").getBytes(StandardCharsets.UTF_8);
+public final class DirectJson {
+    private static final int INITIAL_BUFFER_SIZE = 1024;
     private static final byte QUOTE = '"';
     private static final byte ENTRY_SEP = ':';
     private static final byte KV_SEP = ',';
@@ -64,19 +58,10 @@ public final class DirectJson implements Closeable {
             'l'
     };
 
-    private final FileOutputStream backingOs;
-    private final FileChannel channel;
-    // This is not private only for the sake of testing
-    ByteBuffer buffer = ByteBuffer.allocateDirect(INITIAL_BUFFER_SIZE);
+    private ByteBuffer buffer;
 
-    public DirectJson(FileChannel channel) {
-        this.backingOs = null;
-        this.channel = channel;
-    }
-    @SuppressWarnings("PMD.AvoidFileStream")
     public DirectJson() {
-        this.backingOs = new FileOutputStream(FileDescriptor.out);
-        this.channel = backingOs.getChannel();
+        buffer = ByteBuffer.allocateDirect(INITIAL_BUFFER_SIZE);
     }
 
     public void openObject() { buffer.put(OPEN_OBJ); }
@@ -240,7 +225,6 @@ public final class DirectJson implements Closeable {
     }
 
     public void checkSpace(int size) {
-        // buffer at ~80% of the capacity
         if (buffer.position() + size >= buffer.capacity()) {
             var newSize = (buffer.capacity() + size) * 2;
             ByteBuffer newBuffer = ByteBuffer.allocateDirect(newSize);
@@ -250,16 +234,12 @@ public final class DirectJson implements Closeable {
         }
     }
 
-    public void flush() throws IOException {
-        buffer.put(LINE_BREAK);
+    public byte[] flush() {
+        byte[] result = new byte[buffer.position()];
         buffer.flip();
-        channel.write(buffer);
-        buffer.clear();
-    }
+        buffer.get(result);
+        buffer.reset();
 
-    @Override
-    public void close() throws IOException {
-        channel.close();
-        if (this.backingOs != null) backingOs.close();
+        return result;
     }
 }
