@@ -146,6 +146,7 @@
                 Bnd's analysis of java code.
             -->
             <Import-Package>
+              ch.qos.logback.access*;version="${range;[==,+);${maven_version;${project.version}}}",
               ch.qos.logback.core.rolling,
               ch.qos.logback.core.rolling.helper,
               org.apache.catalina.*;version="${tomcat.version}";resolution:=optional,
