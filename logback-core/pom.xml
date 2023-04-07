@@ -139,8 +139,9 @@
         </executions>
         <configuration>
           <instructions>
-            <Export-Package>ch.qos.logback.core.*</Export-Package>
+            <Export-Package>ch.qos.logback.core*</Export-Package>
             <Import-Package>
+              ch.qos.logback.core*;version="${range;[==,+);${maven_version;${project.version}}}",
               jakarta.*;resolution:=optional,
               org.xml.*;resolution:=optional,
               org.fusesource.jansi;resolution:=optional,
