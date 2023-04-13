@@ -75,4 +75,9 @@ public class MockServerListener<T extends Client> implements ServerListener<T> {
         }
     }
 
+    @Override
+    public boolean isListening() {
+        return !isClosed();
+    }
+
 }
