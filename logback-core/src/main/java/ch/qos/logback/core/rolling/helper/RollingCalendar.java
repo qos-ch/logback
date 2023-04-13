@@ -195,8 +195,7 @@ public class RollingCalendar extends GregorianCalendar {
         case TOP_OF_MINUTE:
             return diff / MILLIS_IN_ONE_MINUTE;
         case TOP_OF_HOUR:
-
-            return (int) diff / MILLIS_IN_ONE_HOUR;
+            return diff / MILLIS_IN_ONE_HOUR;
         case TOP_OF_DAY:
             return diff / MILLIS_IN_ONE_DAY;
         case TOP_OF_WEEK:
