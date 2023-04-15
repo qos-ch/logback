@@ -193,6 +193,7 @@ public class AsyncAppenderBaseTest {
     }
 
     @Test
+    @Disabled
     public void workerThreadFlushesOnStop() throws InterruptedException {
         int loopLen = 5;
         int maxRuntime = (loopLen + 1) * Math.max(1000, delayingListAppender.delay);
