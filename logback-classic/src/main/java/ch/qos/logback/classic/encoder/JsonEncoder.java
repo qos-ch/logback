@@ -1,6 +1,8 @@
 package ch.qos.logback.classic.encoder;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.encoder.JsonEncoderBase;
+import ch.qos.logback.core.util.DirectJson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.List;
  *
  * @author Henry John Kupty
  */
-public class JsonEncoder extends ch.qos.logback.core.encoder.JsonEncoder<ILoggingEvent> {
+public class JsonEncoder extends JsonEncoderBase<ILoggingEvent> {
 
 
     // Excerpt below imported from
@@ -52,28 +54,31 @@ public class JsonEncoder extends ch.qos.logback.core.encoder.JsonEncoder<ILoggin
         this.includeContextName = true;
     }
 
-    public void writeMessage(ILoggingEvent event) {
+    //protected  = new DirectJson();
+
+
+    public void writeMessage(DirectJson jsonWriter, ILoggingEvent event) {
         jsonWriter.writeStringValue(MESSAGE_ATTR_NAME, event.getMessage());
     }
 
-    public void writeFormattedMessage(ILoggingEvent event) {
+    public void writeFormattedMessage(DirectJson jsonWriter, ILoggingEvent event) {
         jsonWriter.writeStringValue(FORMATTED_MESSAGE_ATTR_NAME, event.getFormattedMessage());
     }
 
-    public void writeLogger(ILoggingEvent event) {
+    public void writeLogger(DirectJson jsonWriter, ILoggingEvent event) {
         jsonWriter.writeStringValue(LOGGER_ATTR_NAME, event.getLoggerName());
     }
 
-    public void writeThreadName(ILoggingEvent event) {
+    public void writeThreadName(DirectJson jsonWriter, ILoggingEvent event) {
         jsonWriter.writeStringValue(THREAD_ATTR_NAME, event.getThreadName());
     }
 
-    public void writeLevel(ILoggingEvent event) {
+    public void writeLevel(DirectJson jsonWriter, ILoggingEvent event) {
         jsonWriter.writeStringValue(LEVEL_ATTR_NAME, event.getLevel().levelStr);
     }
 
 
-    public void writeMarkers(ILoggingEvent event) {
+    public void writeMarkers(DirectJson jsonWriter, ILoggingEvent event) {
         var markers = event.getMarkerList();
         if (!markers.isEmpty()) {
             jsonWriter.openArray(MARKERS_ATTR_NAME);
@@ -87,7 +92,7 @@ public class JsonEncoder extends ch.qos.logback.core.encoder.JsonEncoder<ILoggin
         }
     }
 
-    public void writeMdc(ILoggingEvent event) {
+    public void writeMdc(DirectJson jsonWriter, ILoggingEvent event) {
         var mdc = event.getMDCPropertyMap();
         if (!mdc.isEmpty()) {
             jsonWriter.openObject(MDC_ATTR_NAME);
@@ -122,10 +127,11 @@ public class JsonEncoder extends ch.qos.logback.core.encoder.JsonEncoder<ILoggin
         if (emitters.isEmpty()) {
             buildEmitterList();
         }
+        DirectJson jsonWriter = new DirectJson();
         jsonWriter.openObject();
 
         for (var emitter: emitters) {
-            emitter.write(event);
+            emitter.write(jsonWriter, event);
         }
 
         jsonWriter.closeObject();

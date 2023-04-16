@@ -238,7 +238,7 @@ public final class DirectJson {
         byte[] result = new byte[buffer.position()];
         buffer.flip();
         buffer.get(result);
-        buffer.reset();
+        buffer.clear();
 
         return result;
     }
