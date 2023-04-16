@@ -10,15 +10,13 @@ import java.nio.charset.StandardCharsets;
  * @param <E>
  * @author Henry John Kupty
  */
-public abstract class JsonEncoder<E> extends EncoderBase<E> {
+public abstract class JsonEncoderBase<E> extends EncoderBase<E> {
     @FunctionalInterface
     protected interface Emitter<E> {
-        void write(E event);
+        void write(DirectJson jsonWriter, E event);
     }
 
     private static final byte[] LINE_BREAK = System.getProperty("line.separator").getBytes(StandardCharsets.UTF_8);
-
-    protected DirectJson jsonWriter = new DirectJson();
 
     @Override
     public byte[] headerBytes() {
