@@ -36,7 +36,7 @@ public abstract class ReceiverBase extends ContextAwareBase implements LifeCycle
             throw new IllegalStateException("context not set");
         }
         if (shouldStart()) {
-            getContext().getScheduledExecutorService().execute(getRunnableTask());
+            getContext().getExecutorService().execute(getRunnableTask());
             started = true;
         }
     }

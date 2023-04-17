@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class SSLServerSocketAppenderBaseTest {
 
-    private MockContext context = new MockContext(ExecutorServiceUtil.newScheduledExecutorService());
+    private MockContext context = new MockContext(ExecutorServiceUtil.newThreadPoolExecutor());
 
     @SuppressWarnings("rawtypes")
     private SSLServerSocketAppenderBase appender = new InstrumentedSSLServerSocketAppenderBase();

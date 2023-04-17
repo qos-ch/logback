@@ -25,15 +25,12 @@ public class CoreConstants {
     public static final int CORE_POOL_SIZE = 0;
 
     // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be
-    // submitted from
-    // within a running task unless the pool has worker threads already available.
-    // ThreadPoolExecutor
-    // does not have this limitation.
-    // This causes tests failures in
-    // SocketReceiverTest.testDispatchEventForEnabledLevel and
+    // submitted from within a running task unless the pool has worker threads already available.
+    // ThreadPoolExecutor does not have this limitation.
+    // This causes tests failures in SocketReceiverTest.testDispatchEventForEnabledLevel and
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
     // We thus set a pool size > 0 for tests to pass.
-    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 1;
+    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 2;
 
     /**
      * Maximum number of threads to allow in a context's executor service.
