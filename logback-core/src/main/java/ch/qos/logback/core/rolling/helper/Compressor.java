@@ -225,7 +225,7 @@ public class Compressor extends ContextAwareBase {
             throws RolloverFailure {
         CompressionRunnable runnable = new CompressionRunnable(nameOfFile2Compress, nameOfCompressedFile,
                 innerEntryName);
-        ExecutorService executorService = context.getScheduledExecutorService();
+        ExecutorService executorService = context.getExecutorService();
         Future<?> future = executorService.submit(runnable);
         return future;
     }

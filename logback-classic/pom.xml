@@ -324,7 +324,7 @@
                  config files). They won't be found by Bnd's analysis
                  of java code. -->
             <Import-Package>
-              ch.qos.logback.classic*;version="${range;[==,+);${maven_version;${project.version}}}",
+              ch.qos.logback.classic*;version="${range;[==,+);${version_cleanup;${project.version}}}",
               sun.reflect;resolution:=optional,
               jakarta.*;resolution:=optional,
               org.xml.*;resolution:=optional,

@@ -22,11 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.*;
 
 import ch.qos.logback.core.rolling.helper.FileNamePattern;
 import ch.qos.logback.core.spi.ConfigurationEvent;
@@ -56,6 +52,9 @@ public class ContextBase implements Context, LifeCycle {
     final private List<ConfigurationEventListener> configurationEventListenerList = new CopyOnWriteArrayList<>();
 
     private ScheduledExecutorService scheduledExecutorService;
+
+    private ThreadPoolExecutor threadPoolExecutor;
+
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
     private SequenceNumberGenerator sequenceNumberGenerator;
@@ -166,9 +165,9 @@ public class ContextBase implements Context, LifeCycle {
     }
 
     public void stop() {
-        // We don't check "started" here, because the executor service uses
+        // We don't check "started" here, because the executor services use
         // lazy initialization, rather than being created in the start method
-        stopExecutorService();
+        stopExecutorServices();
 
         started = false;
     }
@@ -216,13 +215,16 @@ public class ContextBase implements Context, LifeCycle {
         return configurationLock;
     }
 
+
+
     @Override
-    /**
-     * @deprecated replaced by getScheduledExecutorService
-     */
     public synchronized ExecutorService getExecutorService() {
-        return getScheduledExecutorService();
+        if (threadPoolExecutor == null) {
+            threadPoolExecutor = (ThreadPoolExecutor) ExecutorServiceUtil.newThreadPoolExecutor();
+        }
+        return threadPoolExecutor;
     }
+
 
     @Override
     public synchronized ScheduledExecutorService getScheduledExecutorService() {
@@ -232,11 +234,12 @@ public class ContextBase implements Context, LifeCycle {
         return scheduledExecutorService;
     }
 
-    private synchronized void stopExecutorService() {
-        if (scheduledExecutorService != null) {
-            ExecutorServiceUtil.shutdown(scheduledExecutorService);
-            scheduledExecutorService = null;
-        }
+    private synchronized void stopExecutorServices() {
+        ExecutorServiceUtil.shutdown(scheduledExecutorService);
+        scheduledExecutorService = null;
+
+        ExecutorServiceUtil.shutdown(threadPoolExecutor);
+        threadPoolExecutor = null;
     }
 
     private void removeShutdownHook() {

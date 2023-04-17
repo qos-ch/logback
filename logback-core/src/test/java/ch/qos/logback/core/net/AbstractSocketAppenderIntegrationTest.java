@@ -28,6 +28,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
@@ -51,8 +52,8 @@ public class AbstractSocketAppenderIntegrationTest {
 
     private static final int TIMEOUT = 2000;
 
-    private ScheduledExecutorService executorService = ExecutorServiceUtil.newScheduledExecutorService();
-    private MockContext mockContext = new MockContext(executorService);
+    private ThreadPoolExecutor threadPoolExecutor = ExecutorServiceUtil.newThreadPoolExecutor();
+    private MockContext mockContext = new MockContext(threadPoolExecutor);
     private AutoFlushingObjectWriter objectWriter;
     private ObjectWriterFactory objectWriterFactory = new SpyProducingObjectWriterFactory();
     private LinkedBlockingDeque<String> deque = spy(new LinkedBlockingDeque<String>(1));
@@ -70,8 +71,8 @@ public class AbstractSocketAppenderIntegrationTest {
     public void tearDown() throws Exception {
         instrumentedAppender.stop();
         Assertions.assertFalse(instrumentedAppender.isStarted());
-        executorService.shutdownNow();
-        Assertions.assertTrue(executorService.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
+        threadPoolExecutor.shutdownNow();
+        Assertions.assertTrue(threadPoolExecutor.awaitTermination(TIMEOUT, TimeUnit.MILLISECONDS));
     }
 
     @Disabled // JDK 16

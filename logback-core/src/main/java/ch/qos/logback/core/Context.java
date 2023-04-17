@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.spi.ConfigurationEventListener;
@@ -111,12 +112,11 @@ public interface Context extends PropertyContainer {
     /**
      * Returns the ScheduledExecutorService for this context.
      * 
-     * @return
+     * @return ScheduledExecutorService
      * @since 1.1.7
      */
     // Apparently ScheduledThreadPoolExecutor has limitation where a task cannot be
-    // submitted from
-    // within a running task. ThreadPoolExecutor does not have this limitation.
+    // submitted from within a running task. ThreadPoolExecutor does not have this limitation.
     // This causes tests failures in
     // SocketReceiverTest.testDispatchEventForEnabledLevel and
     // ServerSocketReceiverFunctionalTest.testLogEventFromClient.
@@ -127,10 +127,11 @@ public interface Context extends PropertyContainer {
      * tasks in a separate thread.
      *
      * @return the executor for this context.
-     * @since 1.0.0
-     * @deprecated use {@link#getScheduledExecutorService()} instead
+     * @since 1.0.00 (undeprecated in 1.4.7)
+     *
      */
     ExecutorService getExecutorService();
+
 
     /**
      * Register a component that participates in the context's life cycle.

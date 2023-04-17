@@ -58,7 +58,7 @@ public class ServerSocketReceiver extends ReceiverBase {
 
             ServerListener<RemoteAppenderClient> listener = createServerListener(serverSocket);
 
-            runner = createServerRunner(listener, getContext().getScheduledExecutorService());
+            runner = createServerRunner(listener, getContext().getExecutorService());
             runner.setContext(getContext());
             return true;
         } catch (Exception ex) {

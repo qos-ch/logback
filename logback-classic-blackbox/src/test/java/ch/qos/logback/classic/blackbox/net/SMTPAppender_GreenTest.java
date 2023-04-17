@@ -17,6 +17,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
@@ -52,10 +53,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SMTPAppender_GreenTest {
 
@@ -161,8 +159,14 @@ public class SMTPAppender_GreenTest {
     }
 
     void waitUntilEmailIsSent() throws InterruptedException {
-        loggerContext.getScheduledExecutorService().shutdown();
-        loggerContext.getScheduledExecutorService().awaitTermination(1000, TimeUnit.MILLISECONDS);
+        ExecutorService es = loggerContext.getExecutorService();
+        es.shutdown();
+        boolean terminated = es.awaitTermination(1000, TimeUnit.MILLISECONDS);
+        // this assertion may be needlessly strict
+        if(!terminated) {
+            fail("executor elapsed before accorded delay");
+        }
+
     }
 
     @Test

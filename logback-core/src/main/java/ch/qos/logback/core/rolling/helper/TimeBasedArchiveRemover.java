@@ -17,7 +17,6 @@ import static ch.qos.logback.core.CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -221,7 +220,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     public Future<?> cleanAsynchronously(Instant now) {
         ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
-        ExecutorService executorService = context.getScheduledExecutorService();
+        ExecutorService executorService = context.getExecutorService();
         Future<?> future = executorService.submit(runnable);
         return future;
     }
