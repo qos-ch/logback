@@ -152,7 +152,7 @@ public class ReconfigureOnChangeFilter extends TurboFilter {
     // reader lock.
     void detachReconfigurationToNewThread() {
         addInfo("Detected change in [" + configurationWatchList.getCopyOfFileWatchList() + "]");
-        context.getScheduledExecutorService().submit(new ReconfiguringThread());
+        context.getExecutorService().submit(new ReconfiguringThread());
     }
 
     void updateNextCheck(long now) {

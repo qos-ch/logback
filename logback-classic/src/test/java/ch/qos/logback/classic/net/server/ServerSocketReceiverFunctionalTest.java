@@ -26,7 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
@@ -45,7 +44,6 @@ import ch.qos.logback.core.net.server.test.ServerSocketUtil;
  * interface, and validate that it receives messages and delivers them to its
  * appender.
  */
-@Disabled
 public class ServerSocketReceiverFunctionalTest {
 
     private static final int EVENT_COUNT = 10;
@@ -78,7 +76,7 @@ public class ServerSocketReceiverFunctionalTest {
     @AfterEach
     public void tearDown() throws Exception {
         receiver.stop();
-        ExecutorService executor = lc.getScheduledExecutorService();
+        ExecutorService executor = lc.getExecutorService();
         executor.shutdownNow();
         executor.awaitTermination(SHUTDOWN_DELAY, TimeUnit.MILLISECONDS);
         assertTrue(executor.isTerminated());

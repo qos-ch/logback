@@ -204,7 +204,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
                 if (asynchronousSending) {
                     // perform actual sending asynchronously
                     SenderRunnable senderRunnable = new SenderRunnable(cbClone, eventObject);
-                    this.asynchronousSendingFuture = context.getScheduledExecutorService().submit(senderRunnable);
+                    this.asynchronousSendingFuture = context.getExecutorService().submit(senderRunnable);
                 } else {
                     // synchronous sending
                     sendBuffer(cbClone, eventObject);
