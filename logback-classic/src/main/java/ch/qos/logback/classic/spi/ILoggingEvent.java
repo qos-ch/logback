@@ -143,7 +143,7 @@ public interface ILoggingEvent extends DeferredProcessingAware {
      * @since 1.3
      */
     default Instant getInstant() {
-        return null;
+        return Instant.ofEpochMilli(getTimeStamp());
     }
 
     /**
