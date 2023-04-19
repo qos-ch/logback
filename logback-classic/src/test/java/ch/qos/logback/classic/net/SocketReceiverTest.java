@@ -32,7 +32,6 @@ import javax.net.SocketFactory;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Level;
@@ -50,9 +49,7 @@ import ch.qos.logback.core.status.Status;
  * Unit tests for {@link SocketReceiver}.
  *
  * @author Carl Harris
- */
-@Disabled
-public class SocketReceiverTest {
+ */public class SocketReceiverTest {
 
     private static final int DELAY = 1000;
     private static final String TEST_HOST_NAME = "NOT.A.VALID.HOST.NAME";

@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Logger;
@@ -31,7 +30,6 @@ import org.junit.jupiter.api.Timeout;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled
 public class SocketAppenderMessageLossTest {
     int runLen = 100;
     Duration reconnectionDelay = new Duration(1000);
