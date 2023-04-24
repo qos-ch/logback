@@ -331,9 +331,9 @@
             </Import-Package>
             <!-- Needed to integrate ServiceLoader mechanism with OSGi -->
             <Require-Capability><![CDATA[
-              osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.processor)(version>=1.0.0)(!(version>=2.0.0)))",
+              osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.processor)(version>=1.0.0)(!(version>=2.0.0)))";resolution:=optional,
               osgi.extender;filter:="(&(osgi.extender=osgi.serviceloader.registrar)(version>=1.0.0)(!(version>=2.0.0)))",
-              osgi.serviceloader;filter:="(osgi.serviceloader=ch.qos.logback.classic.spi.Configurator)";osgi.serviceloader="ch.qos.logback.classic.spi.Configurator";cardinality:=multiple
+              osgi.serviceloader;filter:="(osgi.serviceloader=ch.qos.logback.classic.spi.Configurator)";osgi.serviceloader="ch.qos.logback.classic.spi.Configurator";resolution:=optional;cardinality:=multiple
             ]]></Require-Capability>
             <Provide-Capability><![CDATA[
               osgi.service;objectClass:List<String>="jakarta.servlet.ServletContainerInitializer";effective:=active,
