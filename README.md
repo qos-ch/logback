@@ -47,7 +47,7 @@ questions.
 For urgent issues do not hesitate to [champion a
 release](https://github.com/sponsors/qos-ch/sponsorships?tier_id=77436).
 In principle, most championed issues are solved within 3 business days
-ensued by a release.
+followed up by a release.
 
 # Pull requests
 
@@ -55,9 +55,10 @@ If you are interested in improving logback, great! The logback community
 looks forward to your contribution. Please follow this process:
 
 1. Please file a [bug
-   report](https://logback.qos.ch/bugreport.html). Pull requests with
-   an associated JIRA issue will get more attention.
-
+   report](https://logback.qos.ch/bugreport.html) before filing a pull requests. 
+   Note that pull requests wit an associated JIRA issue will get more attention. 
+   Moreover, your pull request will *not* be merged without an associated jira issue.
+   
    Optional: Start a discussion on the [logback-dev mailing
    list](https://logback.qos.ch/mailinglist.html) about your proposed
    change.
