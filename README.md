@@ -57,7 +57,7 @@ looks forward to your contribution. Please follow this process:
 1. Please file a [bug
    report](https://logback.qos.ch/bugreport.html) before filing a pull requests. 
    Note that pull requests wit an associated JIRA issue will get more attention. 
-   Moreover, your pull request will *not* be merged without an associated jira issue.
+   Moreover, your pull request is unlikely to be merged without an associated jira issue.
    
    Optional: Start a discussion on the [logback-dev mailing
    list](https://logback.qos.ch/mailinglist.html) about your proposed
