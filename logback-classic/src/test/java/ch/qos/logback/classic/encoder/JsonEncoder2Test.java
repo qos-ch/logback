@@ -29,12 +29,7 @@ import java.nio.charset.Charset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-
-@Disabled
 public class JsonEncoderTest {
-
-
 
     LoggerContext context = new LoggerContext();
     ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -54,7 +49,32 @@ public class JsonEncoderTest {
         ILoggingEvent event = makeLoggingEvent(msg);
         byte[] eventBytes = je.encode(event);
         baos.write(eventBytes);
-        assertEquals(msg, baos.toString());
+        String witnessPattern = makeWitness(event);
+        assertEquals(witnessPattern, baos.toString());
+    }
+
+    @Test
+    public void twoEvents() throws IOException {
+
+        ILoggingEvent event0 = makeLoggingEvent("hello");
+        ILoggingEvent event1 = makeLoggingEvent("world");
+
+        byte[] eventBytes0 = je.encode(event0);
+        byte[] eventBytes1 = je.encode(event1);
+
+        baos.write(eventBytes0);
+        baos.write(eventBytes1);
+
+        String witnessPattern0 = makeWitness(event0);
+        String witnessPattern1 = makeWitness(event1);
+
+        assertEquals(witnessPattern0+witnessPattern1, baos.toString());
+    }
+
+
+    private static String makeWitness(ILoggingEvent event) {
+        return "{\"level\":\"" + event.getLevel() + "\",\"message\":\"" + event.getMessage() + "\",\"thread\":\""
+                + event.getThreadName() + "\",\"logger\":\"" + event.getLoggerName() + "\"}";
     }
 
     ILoggingEvent makeLoggingEvent(String message) {

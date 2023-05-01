@@ -13,6 +13,9 @@
  */
 package ch.qos.logback.core;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 public class CoreConstants {
 
     final public static String DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY = "logbackDisableServletContainerInitializer";
@@ -107,6 +110,8 @@ public class CoreConstants {
      */
     public static final String[] EMPTY_STRING_ARRAY = new String[] {};
 
+    public static final Charset UTF_8_CHARSET = StandardCharsets.UTF_8;
+
     /**
      * An empty Class array.
      */
@@ -129,6 +134,7 @@ public class CoreConstants {
     public static final char DASH_CHAR = '-';
     public static final String DEFAULT_VALUE_SEPARATOR = ":-";
 
+    public static final String NULL_STR = "null";
     /**
      * Number of rows before in an HTML table before, we close the table and create
      * a new one
