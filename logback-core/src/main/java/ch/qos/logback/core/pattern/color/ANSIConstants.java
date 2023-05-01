@@ -18,6 +18,7 @@ public class ANSIConstants {
     public final static String ESC_START = "\033[";
     public final static String ESC_END = "m";
     public final static String BOLD = "1;";
+    public final static String RESET = "0;";
 
     public final static String BLACK_FG = "30";
     public final static String RED_FG = "31";
