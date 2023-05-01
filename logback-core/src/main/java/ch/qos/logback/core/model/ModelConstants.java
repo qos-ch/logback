@@ -13,10 +13,12 @@
  */
 package ch.qos.logback.core.model;
 
+import ch.qos.logback.core.CoreConstants;
+
 public class ModelConstants {
 
     
     public static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
-    public static final String NULL_STR = "null";
+    public static final String NULL_STR = CoreConstants.NULL_STR;
     
 }   
