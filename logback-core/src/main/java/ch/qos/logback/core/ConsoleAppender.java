@@ -18,6 +18,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import ch.qos.logback.core.joran.spi.ConsoleTarget;
@@ -109,7 +110,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
                     .filter(m -> PrintStream.class.isAssignableFrom(m.getReturnType()))
                     .findAny();
             if (optOutMethod.isPresent()) {
-                final Method outMethod = optOutMethod.orElseThrow();
+                final Method outMethod = optOutMethod.orElseThrow(() -> new NoSuchElementException("No value present"));
                 return (PrintStream) outMethod.invoke(null);
             }
 
