@@ -109,7 +109,7 @@ public class ConsoleAppender<E> extends OutputStreamAppender<E> {
                     .filter(m -> PrintStream.class.isAssignableFrom(m.getReturnType()))
                     .findAny();
             if (optOutMethod.isPresent()) {
-                final Method outMethod = optOutMethod.orElseThrow();
+                final Method outMethod = optOutMethod.orElseThrow(() -> new NoSuchElementException("No value present"));
                 return (PrintStream) outMethod.invoke(null);
             }
 
