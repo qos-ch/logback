@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JsonEscapeUtilTest {
 
     @Test
-    public void testEscapeCodes() {
+    public void smokeTestEscapeCodes() {
         assertEquals("\\u0001", JsonEscapeUtil.ESCAPE_CODES[1]);
         assertEquals("\\u0005", JsonEscapeUtil.ESCAPE_CODES[5]);
         assertEquals("\\b", JsonEscapeUtil.ESCAPE_CODES[8]);
@@ -36,9 +36,23 @@ class JsonEscapeUtilTest {
     }
 
     @Test
-    public void testEscapeString() {
+    public void smokeTestEscapeString() {
         assertEquals("abc", JsonEscapeUtil.jsonEscapeString("abc"));
         assertEquals("{world: \\\"world\\\"}", JsonEscapeUtil.jsonEscapeString("{world: \"world\"}"));
         assertEquals("{world: "+'\\'+'"'+"world\\\"}", JsonEscapeUtil.jsonEscapeString("{world: \"world\"}"));
+    }
+
+    @Test
+    public void testEscapingLF() {
+        String input = "{\nhello: \"wo\nrld\"}";
+        System.out.println(input);
+        assertEquals("{\\nhello: "+'\\'+'"'+"wo\\nrld\\\"}", JsonEscapeUtil.jsonEscapeString(input));
+    }
+
+    @Test
+    public void testEscapingTab() {
+        String input = "{hello: \"\tworld\"}";
+        System.out.println(input);
+        assertEquals("{hello: "+'\\'+'"'+"\\tworld\\\"}", JsonEscapeUtil.jsonEscapeString(input));
     }
 }
