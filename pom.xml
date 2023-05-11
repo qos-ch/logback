@@ -409,12 +409,16 @@
   </build>
 
   <distributionManagement>
-
     <repository>
-      <id>sonatype-nexus-staging</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <id>artifactory central</id>
+      <name>a0uvvlcxlpyjx-artifactory-primary-0-releases</name>
+      <url>https://sandec.jfrog.io/artifactory/repo</url>
     </repository>
-
+    <snapshotRepository>
+      <id>artifactory snapshots</id>
+      <name>a0uvvlcxlpyjx-artifactory-primary-0-snapshots</name>
+      <url>https://sandec.jfrog.io/artifactory/repo</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <reporting>
