@@ -37,9 +37,9 @@ public class LoggerContextVO implements Serializable {
 
     private static final long serialVersionUID = 5488023392483144387L;
 
-    final String name;
-    final Map<String, String> propertyMap;
-    final long birthTime;
+    protected String name;
+    protected Map<String, String> propertyMap;
+    protected long birthTime;
 
     public LoggerContextVO(LoggerContext lc) {
         this.name = lc.getName();

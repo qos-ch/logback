@@ -22,6 +22,7 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.PubLoggerContextVO;
 import ch.qos.logback.classic.spi.PubLoggingEventVO;
 import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import ch.qos.logback.core.CoreConstants;
@@ -71,7 +72,7 @@ public class Corpus {
     }
 
     static public ILoggingEvent[] make(CorpusModel corpusModel, int n, boolean withCallerData) {
-        LoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
+        PubLoggerContextVO lcVO = corpusModel.getRandomlyNamedLoggerContextVO();
         PubLoggingEventVO[] plevoArray = new PubLoggingEventVO[n];
         for (int i = 0; i < n; i++) {
             PubLoggingEventVO e = new PubLoggingEventVO();
