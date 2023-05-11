@@ -264,10 +264,7 @@
               <!--<argLine>XXadd-reads ch.qos.logback.classic=ch.qos.logback.classic/ch.qos.logback.core.testUtil XXadd-reads ch.qos.logback.core=ALL-UNNAMED</argLine>-->
               <!--show-module-resolution -->
               <argLine>
-
                 --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
-                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
-                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
               </argLine>
               <parallel>classes</parallel>
               <threadCount>8</threadCount>
