@@ -137,7 +137,7 @@ public class LoggingEvent implements ILoggingEvent {
         }
 
         if (throwable == null) {
-            throwable = extractThrowableAnRearrangeArguments(argArray);
+            throwable = extractThrowableAndRearrangeArguments(argArray);
         }
 
         if (throwable != null) {
@@ -157,7 +157,7 @@ public class LoggingEvent implements ILoggingEvent {
         this.timeStamp = (epochSecond * 1000) + (milliseconds);
     }
 
-    private Throwable extractThrowableAnRearrangeArguments(Object[] argArray) {
+    private Throwable extractThrowableAndRearrangeArguments(Object[] argArray) {
         Throwable extractedThrowable = EventArgUtil.extractThrowable(argArray);
         if (EventArgUtil.successfulExtraction(extractedThrowable)) {
             this.argumentArray = EventArgUtil.trimmedCopy(argArray);
