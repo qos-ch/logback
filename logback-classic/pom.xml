@@ -130,6 +130,13 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -263,9 +270,11 @@
                 --add-modules jakarta.servlet
                 --add-opens ch.qos.logback.core/ch.qos.logback.core.testUtil=java.naming
                 --add-opens ch.qos.logback.classic/ch.qos.logback.classic.testUtil=ch.qos.logback.core
+                --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
               </argLine>
               <parallel>classes</parallel>
               <threadCount>8</threadCount>
+
               <!--<useUnlimitedThreads>false</useUnlimitedThreads>-->
               <forkCount>1C</forkCount>
               <reuseForks>true</reuseForks>

@@ -424,7 +424,7 @@ ch.qos.logback.classic.spi.BogusClassLoader
 ch.qos.logback.classic.spi.CallerDataTest
 ch.qos.logback.classic.spi.ContextListenerTest
 ch.qos.logback.classic.spi.CPDCSpecial
-ch.qos.logback.classic.spi.DummyThrowableProxy
+ch.qos.logback.classic.spi.PubThrowableProxy
 ch.qos.logback.classic.spi.LocalFirstClassLoader
 ch.qos.logback.classic.spi.LoggerComparatorTest
 ch.qos.logback.classic.spi.LoggingEventSerializationPerfTest

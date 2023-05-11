@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2023, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -13,11 +13,17 @@
  */
 package ch.qos.logback.classic.spi;
 
-public class DummyThrowableProxy implements IThrowableProxy {
+import ch.qos.logback.classic.spi.IThrowableProxy;
+import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import com.fasterxml.jackson.annotation.JsonAlias;
+
+public class PubThrowableProxy implements IThrowableProxy {
 
     private String className;
     private String message;
     private int commonFramesCount;
+
+    @JsonAlias("stepArray")
     private StackTraceElementProxy[] stackTraceElementProxyArray;
     private IThrowableProxy cause;
     private IThrowableProxy[] suppressed;

@@ -20,6 +20,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonValueInstantiator;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
@@ -40,13 +44,14 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
 
     public String threadName;
     public String loggerName;
-    public LoggerContextVO loggerContextVO;
+    public PubLoggerContextVO loggerContextVO;
 
     public transient Level level;
     public String message;
 
     private transient String formattedMessage;
 
+    @JsonAlias
     public Object[] argumentArray;
 
     public IThrowableProxy throwableProxy;
@@ -70,6 +75,8 @@ public class PubLoggingEventVO implements ILoggingEvent, Serializable {
         return loggerName;
     }
 
+
+    @JsonIgnore
     public Level getLevel() {
         return level;
     }

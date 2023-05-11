@@ -20,6 +20,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ClassPackagingData;
 import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.PubLoggerContextVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.classic.spi.ThrowableProxyVO;
@@ -167,10 +168,10 @@ public class CorpusModel {
         return lastTimeStamp;
     }
 
-    LoggerContextVO getRandomlyNamedLoggerContextVO() {
+    PubLoggerContextVO getRandomlyNamedLoggerContextVO() {
         LoggerContext lc = new LoggerContext();
         lc.setName(getRandomJavaIdentifier());
-        return new LoggerContextVO(lc);
+        return new PubLoggerContextVO(lc);
     }
 
     String getRandomWord() {
