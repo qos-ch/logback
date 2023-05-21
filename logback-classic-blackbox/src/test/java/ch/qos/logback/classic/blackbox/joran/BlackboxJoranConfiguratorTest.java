@@ -20,6 +20,7 @@ import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
@@ -34,12 +35,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BlackboxJoranConfiguratorTest {
     LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     //StatusChecker checker = new StatusChecker(loggerContext);
     int diff = RandomUtil.getPositiveInt();
 
     void configure(String file) throws JoranException {
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         JoranConfigurator jc = new JoranConfigurator();
         jc.setContext(loggerContext);
         loggerContext.putProperty("diff", "" + diff);

@@ -18,6 +18,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
+import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.EncoderBase;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
@@ -34,7 +35,8 @@ import static ch.qos.logback.core.encoder.JsonEscapeUtil.jsonEscapeString;
 import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
 
 /**
- *
+ *  http://ndjson.org/
+ *  https://datatracker.ietf.org/doc/html/rfc8259
  */
 public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     static final boolean DO_NOT_ADD_QUOTE_KEY = false;
@@ -139,6 +141,7 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
         appendThrowableProxy(sb, event);
         sb.append(CLOSE_OBJ);
+        sb.append(CoreConstants.JSON_LINE_SEPARATOR);
         return sb.toString().getBytes(UTF_8_CHARSET);
     }
 

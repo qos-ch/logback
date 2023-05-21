@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.MDC;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
@@ -405,11 +404,11 @@ public class LoggingEvent implements ILoggingEvent {
     public Map<String, String> getMDCPropertyMap() {
         // populate mdcPropertyMap if null
         if (mdcPropertyMap == null) {
-            MDCAdapter mdc = MDC.getMDCAdapter();
-            if (mdc instanceof LogbackMDCAdapter)
-                mdcPropertyMap = ((LogbackMDCAdapter) mdc).getPropertyMap();
+            LogbackMDCAdapter mdcAdapter = loggerContext.getMDCAdapter();
+            if (mdcAdapter instanceof LogbackMDCAdapter)
+                mdcPropertyMap = ((LogbackMDCAdapter) mdcAdapter).getPropertyMap();
             else
-                mdcPropertyMap = mdc.getCopyOfContextMap();
+                mdcPropertyMap = mdcAdapter.getCopyOfContextMap();
         }
         // mdcPropertyMap still null, use emptyMap()
         if (mdcPropertyMap == null)

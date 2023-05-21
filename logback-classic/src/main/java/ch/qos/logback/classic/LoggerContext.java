@@ -24,6 +24,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.status.InfoStatus;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Marker;
 
@@ -68,6 +71,9 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     private boolean packagingDataEnabled = DEFAULT_PACKAGING_DATA;
     SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
 
+    LogbackMDCAdapter mdcAdapter;
+
+
     private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
 
     int resetCount = 0;
@@ -109,6 +115,8 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         super.setName(name);
         updateLoggerContextVO();
     }
+
+
 
     public final Logger getLogger(final Class<?> clazz) {
         return getLogger(clazz.getName());
@@ -395,5 +403,18 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     @Override
     public SequenceNumberGenerator getSequenceNumberGenerator() {
         return sequenceNumberGenerator;
+    }
+
+    public LogbackMDCAdapter getMDCAdapter() {
+        return mdcAdapter;
+    }
+
+    public void setMDCAdapter(LogbackMDCAdapter anAdapter) {
+        if(this.mdcAdapter ==  null) {
+            this.mdcAdapter = anAdapter;
+        } else {
+            StatusManager sm = getStatusManager();
+            sm.add(new ErrorStatus("mdcAdapter already set", this, new Throwable()));
+        }
     }
 }

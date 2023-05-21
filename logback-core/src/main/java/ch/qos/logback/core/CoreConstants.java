@@ -222,4 +222,5 @@ public class CoreConstants {
     public static final String SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED = "SizeAndTimeBasedFNATP is deprecated. Use SizeAndTimeBasedRollingPolicy instead";
 
     public static final String LOGBACK_CLASSIC_VERSION_MESSAGE = "This is logback-classic version ";
+    public static final char JSON_LINE_SEPARATOR = '\n';
 }

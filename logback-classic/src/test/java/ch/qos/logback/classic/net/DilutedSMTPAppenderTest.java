@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.classic.net;
 
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,14 +32,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DilutedSMTPAppenderTest {
-
+    LoggerContext lc = new LoggerContext();
+    Logger logger = lc.getLogger(this.getClass());
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     SMTPAppender appender;
     CyclicBufferTracker<ILoggingEvent> cbTracker;
     CyclicBuffer<ILoggingEvent> cb;
 
     @BeforeEach
     public void setUp() throws Exception {
-        LoggerContext lc = new LoggerContext();
+
+        lc.setMDCAdapter(logbackMDCAdapter);
         appender = new SMTPAppender();
         appender.setContext(lc);
         appender.setName("smtp");
@@ -81,6 +86,7 @@ public class DilutedSMTPAppenderTest {
         LoggingEvent event = new LoggingEvent();
         event.setThreadName("thead name");
         event.setLevel(Level.DEBUG);
+        event.setLoggerContext(lc);
         appender.subAppend(cb, event);
         assertEquals(1, cb.length());
     }

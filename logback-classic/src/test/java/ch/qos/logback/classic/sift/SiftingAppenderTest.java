@@ -22,6 +22,7 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.FileAppender;
@@ -62,6 +63,7 @@ public class SiftingAppenderTest {
     static String SIFT_FOLDER_PREFIX = ClassicTestConstants.JORAN_INPUT_PREFIX + "sift/";
 
     LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(this.getClass().getName());
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
     StatusChecker statusChecker = new StatusChecker(loggerContext);
@@ -77,12 +79,12 @@ public class SiftingAppenderTest {
 
     @BeforeEach
     public void setUp() {
-        MDC.clear();
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
     }
 
     @AfterEach
     public void tearDown() {
-        MDC.clear();
+
     }
 
     @Test
@@ -161,17 +163,17 @@ public class SiftingAppenderTest {
 
         long timestamp = System.currentTimeMillis();
 
-        MDC.put(key, "A-"+diff);
+        logbackMDCAdapter.put(key, "A-"+diff);
         logNewEventViaSiftingAppender(sa, timestamp);
         FileAppender<ILoggingEvent> fileAppenderA = (FileAppender<ILoggingEvent>) sa.getAppenderTracker().find("A-"+diff);
         assertNotNull(fileAppenderA);
         assertTrue(fileAppenderA.isStarted());
         timestamp += ComponentTracker.DEFAULT_TIMEOUT + 1;
-        MDC.put(key, "B-"+diff);
+        logbackMDCAdapter.put(key, "B-"+diff);
         logNewEventViaSiftingAppender(sa, timestamp);
         assertFalse(fileAppenderA.isStarted());
-        
-        MDC.put(key, "A-"+diff);
+
+        logbackMDCAdapter.put(key, "A-"+diff);
         timestamp += 1;
         logNewEventViaSiftingAppender(sa, timestamp);
         FileAppender<ILoggingEvent> fileAppenderA_2 = (FileAppender<ILoggingEvent>) sa.getAppenderTracker().find("A-"+diff);
@@ -189,7 +191,7 @@ public class SiftingAppenderTest {
     public void testWholeCycle() throws JoranException {
         String mdcKey = "cycle";
         configure(SIFT_FOLDER_PREFIX + "completeCycle.xml");
-        MDC.put(mdcKey, "a");
+        logbackMDCAdapter.put(mdcKey, "a");
         logger.debug("smoke");
         long timestamp = System.currentTimeMillis();
         SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
@@ -199,7 +201,7 @@ public class SiftingAppenderTest {
         assertEquals(1, listAppender.list.size());
         assertEquals("smoke", eventList.get(0).getMessage());
 
-        MDC.remove(mdcKey);
+        logbackMDCAdapter.remove(mdcKey);
         logNewEventViaSiftingAppender(sa, timestamp);
         assertFalse(listAppender.isStarted());
         assertEquals(1, sa.getAppenderTracker().allKeys().size());
@@ -211,7 +213,7 @@ public class SiftingAppenderTest {
         String mdcKey = "linger";
         String mdcVal = "session" + diff;
         configure(SIFT_FOLDER_PREFIX + "lingering.xml");
-        MDC.put(mdcKey, mdcVal);
+        logbackMDCAdapter.put(mdcKey, mdcVal);
         logger.debug("linger 1");
         logger.debug(ClassicConstants.FINALIZE_SESSION_MARKER, "linger 2");
         long now = System.currentTimeMillis();
@@ -236,7 +238,8 @@ public class SiftingAppenderTest {
         String msg = "localPropertiesShouldBeVisible";
         String prefix = "Y";
         configure(SIFT_FOLDER_PREFIX + "propertyPropagation.xml");
-        MDC.put(mdcKey, mdcVal);
+
+        logbackMDCAdapter.put(mdcKey, mdcVal);
         logger.debug(msg);
         SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
         StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa.getAppenderTracker().find(mdcVal);
@@ -253,7 +256,7 @@ public class SiftingAppenderTest {
         String msg = "propertyDefinedWithinSiftElementShouldBeVisible";
         String prefix = "Y";
         configure(SIFT_FOLDER_PREFIX + "propertyDefinedInSiftElement.xml");
-        MDC.put(mdcKey, mdcVal);
+        logbackMDCAdapter.put(mdcKey, mdcVal);
         logger.debug(msg);
         SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
         StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa.getAppenderTracker().find(mdcVal);
@@ -270,7 +273,7 @@ public class SiftingAppenderTest {
         String msg = "compositePropertyShouldCombineWithinAndWithoutSiftElement";
         String prefix = "composite";
         configure(SIFT_FOLDER_PREFIX + "compositeProperty.xml");
-        MDC.put(mdcKey, mdcVal);
+        logbackMDCAdapter.put(mdcKey, mdcVal);
         logger.debug(msg);
         SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
         StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa.getAppenderTracker().find(mdcVal);
@@ -287,7 +290,7 @@ public class SiftingAppenderTest {
         SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
         String mdcKey = "max";
         for (int i = 0; i <= max; i++) {
-            MDC.put(mdcKey, "" + (diff + i));
+            logbackMDCAdapter.put(mdcKey, "" + (diff + i));
             LoggingEvent event = new LoggingEvent("", logger, Level.DEBUG, "max" + i, null, null);
             event.setTimeStamp(now);
             sa.doAppend(event);
@@ -380,13 +383,13 @@ public class SiftingAppenderTest {
         logger.setLevel(Level.DEBUG);
         logger.setAdditive(false);
 
-        MDC.put("SKEY", "K1");
+        logbackMDCAdapter.put("SKEY", "K1");
         logger.info("bla1");
-        MDC.clear();
+        logbackMDCAdapter.clear();
 
-        MDC.put("SKEY", "K2");
+        logbackMDCAdapter.put("SKEY", "K2");
         logger.info("bla2");
-        MDC.clear();
+        logbackMDCAdapter.clear();
 
         //StatusPrinter.print(loggerContext);
 

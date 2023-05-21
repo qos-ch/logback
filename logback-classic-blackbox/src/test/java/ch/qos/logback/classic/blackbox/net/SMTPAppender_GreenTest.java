@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.net.SMTPAppender;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.AfterEach;
@@ -73,6 +74,7 @@ public class SMTPAppender_GreenTest {
 
     SMTPAppender smtpAppender;
     LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(this.getClass());
 
     static String REQUIRED_USERNAME = "alice";
@@ -80,8 +82,8 @@ public class SMTPAppender_GreenTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         StatusListenerConfigHelper.addOnConsoleListenerInstance(loggerContext, new OnConsoleStatusListener());
-        MDC.clear();
     }
 
     void startSMTPServer(boolean withSSL) {
@@ -238,9 +240,9 @@ public class SMTPAppender_GreenTest {
         smtpAppender.setLayout(buildPatternLayout(DEFAULT_PATTERN));
         smtpAppender.start();
         logger.addAppender(smtpAppender);
-        MDC.put("key", "val");
+        logbackMDCAdapter.put("key", "val");
         logger.debug("LBCLASSIC_104");
-        MDC.clear();
+        logbackMDCAdapter.clear();
         logger.error("en error", new Exception("test"));
 
         MimeMultipart mp = verifyAndExtractMimeMultipart(subject);

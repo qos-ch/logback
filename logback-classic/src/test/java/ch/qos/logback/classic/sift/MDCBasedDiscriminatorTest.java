@@ -17,6 +17,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,8 +37,9 @@ public class MDCBasedDiscriminatorTest {
     static String DEFAULT_VAL = "DEFAULT_VAL";
 
     MDCBasedDiscriminator discriminator = new MDCBasedDiscriminator();
-    LoggerContext context = new LoggerContext();
-    Logger logger = context.getLogger(this.getClass());
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    Logger logger = loggerContext.getLogger(this.getClass());
 
     int diff = RandomUtil.getPositiveInt();
     String key = "MDCBasedDiscriminatorTest_key" + diff;
@@ -46,8 +48,8 @@ public class MDCBasedDiscriminatorTest {
 
     @BeforeEach
     public void setUp() {
-        MDC.clear();
-        discriminator.setContext(context);
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
+        discriminator.setContext(loggerContext);
         discriminator.setKey(key);
         discriminator.setDefaultValue(DEFAULT_VAL);
         discriminator.start();
@@ -61,7 +63,7 @@ public class MDCBasedDiscriminatorTest {
 
     @Test
     public void smoke() {
-        MDC.put(key, value);
+        logbackMDCAdapter.put(key, value);
         event = new LoggingEvent("a", logger, Level.DEBUG, "", null, null);
 
         String discriminatorValue = discriminator.getDiscriminatingValue(event);

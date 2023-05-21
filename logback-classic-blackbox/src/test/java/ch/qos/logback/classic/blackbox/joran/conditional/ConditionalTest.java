@@ -19,6 +19,7 @@ import ch.qos.logback.classic.blackbox.BlackboxClassicTestConstants;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.sift.SiftingAppender;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
@@ -45,29 +46,31 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ConditionalTest {
 
-    LoggerContext context = new LoggerContext();
-    Logger root = context.getLogger(Logger.ROOT_LOGGER_NAME);
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
-    Logger logger = context.getLogger(this.getClass().getName());
+    Logger logger = loggerContext.getLogger(this.getClass().getName());
 
-    StatusUtil checker = new StatusUtil(context);
+    StatusUtil checker = new StatusUtil(loggerContext);
     int diff = RandomUtil.getPositiveInt();
     String randomOutputDir = CoreTestConstants.OUTPUT_DIR_PREFIX + diff + "/";
 
     @BeforeEach
     public void setUp() throws UnknownHostException {
-        context.setName("c" + diff);
-        context.putProperty("randomOutputDir", randomOutputDir);
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
+        loggerContext.setName("c" + diff);
+        loggerContext.putProperty("randomOutputDir", randomOutputDir);
     }
 
     @AfterEach
     public void tearDown() {
-        StatusPrinter.printIfErrorsOccured(context);
+        StatusPrinter.printIfErrorsOccured(loggerContext);
     }
 
     void configure(String file) throws JoranException {
         JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(context);
+        jc.setContext(loggerContext);
         jc.doConfigure(file);
     }
 
@@ -77,7 +80,7 @@ public class ConditionalTest {
         InetAddress localhost = InetAddress.getLocalHost();
         System.out.println("In conditionalConsoleApp_IF_THEN_True, canonicalHostName=\""
                 + localhost.getCanonicalHostName() + "] and hostNmae=\"" + localhost.getHostName() + "\"");
-        context.putProperty("aHost", localhost.getHostName());
+        loggerContext.putProperty("aHost", localhost.getHostName());
 
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/conditionalConsoleApp.xml";
         configure(configFileAsStr);
@@ -129,7 +132,7 @@ public class ConditionalTest {
         String configFileAsStr = BlackboxClassicTestConstants.JORAN_INPUT_PREFIX
                 + "conditional/conditionalIncludeExistingFile.xml";
         configure(configFileAsStr);
-        StatusPrinter.print(context);
+        StatusPrinter.print(loggerContext);
 
         ConsoleAppender<ILoggingEvent> consoleAppender = (ConsoleAppender<ILoggingEvent>) root.getAppender("CON");
         assertNotNull(consoleAppender);
@@ -158,7 +161,7 @@ public class ConditionalTest {
     @Test
     public void nestedWithinIfThen() throws JoranException {
         configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "conditional/siftNestedWithinIfThen.xml");
-        StatusPrinter.print(context);
+        StatusPrinter.print(loggerContext);
         String msg = "nestedWithinIfThen";
         logger.debug(msg);
         Appender<ILoggingEvent> appender = getAppenderTracker().find("ifThenDefault");

@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.net;
 
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -41,6 +42,8 @@ public class SyslogAppenderTest {
     private static final String SYSLOG_PREFIX_REGEX = "<\\d{2}>\\w{3} [\\d ]\\d \\d{2}(:\\d{2}){2} [\\w.-]* ";
 
     LoggerContext lc = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+
     SyslogAppender sa = new SyslogAppender();
     MockSyslogServer mockServer;
     String loggerName = this.getClass().getName();
@@ -49,6 +52,7 @@ public class SyslogAppenderTest {
     @BeforeEach
     public void setUp() throws Exception {
         lc.setName("test");
+        lc.setMDCAdapter(logbackMDCAdapter);
         sa.setContext(lc);
     }
 

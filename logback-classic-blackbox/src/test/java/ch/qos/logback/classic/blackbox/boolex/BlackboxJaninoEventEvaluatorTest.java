@@ -16,6 +16,8 @@ package ch.qos.logback.classic.blackbox.boolex;
 import java.io.IOException;
 
 import ch.qos.logback.classic.boolex.JaninoEventEvaluator;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
@@ -42,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class BlackboxJaninoEventEvaluatorTest {
 
     LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger = loggerContext.getLogger(BlackboxJaninoEventEvaluatorTest.class);
 
     Matcher matcherX = new Matcher();
@@ -50,7 +53,9 @@ public class BlackboxJaninoEventEvaluatorTest {
 
     int diff = RandomUtil.getPositiveInt();
 
-    public BlackboxJaninoEventEvaluatorTest() {
+    @BeforeEach
+    public void setup()  {
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         jee.setContext(loggerContext);
 
         matcherX.setName("x");
@@ -106,14 +111,14 @@ public class BlackboxJaninoEventEvaluatorTest {
     public void mdcAsString() throws Exception {
         String k = "key" + diff;
 
-        MDC.put("key" + diff, "value" + diff);
+        logbackMDCAdapter.put("key" + diff, "value" + diff);
         jee.setExpression("((String) mdc.get(\"" + k + "\")).contains(\"alue\")");
         jee.start();
         StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
 
         LoggingEvent event = makeLoggingEvent(null);
         assertTrue(jee.evaluate(event));
-        MDC.remove(k);
+        logbackMDCAdapter.remove(k);
     }
 
     @Disabled

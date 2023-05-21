@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.SocketFactory;
 
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,6 +61,8 @@ import ch.qos.logback.core.status.Status;
     private MockSocketConnector connector;
     private MockAppender appender;
     private LoggerContext lc;
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+
     private Logger logger;
 
     private InstrumentedSocketReceiver receiver = new InstrumentedSocketReceiver();
@@ -71,6 +74,7 @@ import ch.qos.logback.core.status.Status;
         connector = new MockSocketConnector(socket);
 
         lc = new LoggerContext();
+        lc.setMDCAdapter(logbackMDCAdapter);
         lc.reset();
         receiver.setContext(lc);
         appender = new MockAppender();

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.Test;
 
 import ch.qos.logback.classic.Logger;
@@ -88,6 +89,8 @@ public class SocketAppenderMessageLossTest {
         final int port = RandomUtil.getRandomServerPort();
 
         LoggerContext serverLoggerContext = new LoggerContext();
+        LogbackMDCAdapter serverLogbackMDCAdapter = new LogbackMDCAdapter();
+        serverLoggerContext.setMDCAdapter(serverLogbackMDCAdapter);
         serverLoggerContext.setName("serverLoggerContext");
 
         CountDownLatch allMessagesReceivedLatch = new CountDownLatch(runLen);
@@ -100,6 +103,9 @@ public class SocketAppenderMessageLossTest {
         serverRootLogger.addAppender(listAppender);
 
         LoggerContext loggerContext = new LoggerContext();
+        LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
+
         loggerContext.setName("clientLoggerContext");
         socketAppender.setContext(loggerContext);
 
