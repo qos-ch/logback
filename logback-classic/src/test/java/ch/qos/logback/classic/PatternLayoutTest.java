@@ -19,11 +19,13 @@ import ch.qos.logback.classic.pattern.ExceptionalConverter2;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.pattern.SampleConverter;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.pattern.PatternLayoutBase;
 import ch.qos.logback.core.pattern.parser.test.AbstractPatternLayoutBaseTest;
 import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.OptionHelper;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,23 +43,25 @@ import java.time.Instant;
 public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEvent> {
 
     private PatternLayout pl = new PatternLayout();
-    private LoggerContext lc = new LoggerContext();
-    Logger logger = lc.getLogger(ConverterTest.class);
-    Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+    private LoggerContext loggerContext = new LoggerContext();
+
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    Logger logger = loggerContext.getLogger(ConverterTest.class);
+    Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
+
+    int diff = RandomUtil.getPositiveInt();
 
     String aMessage = "Some message";
 
-    LoggingEvent le;
+    Exception ex = new Exception("Bogus exception");
 
-    public PatternLayoutTest() {
-        super();
-        Exception ex = new Exception("Bogus exception");
-        le = makeLoggingEvent(aMessage, ex);
-    }
+
 
     @BeforeEach
     public void setUp() {
-        pl.setContext(lc);
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
+        pl.setContext(loggerContext);
+        //le = makeLoggingEvent(aMessage, ex);
     }
 
     /**
@@ -100,7 +104,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     public void testNoExeptionHandler() {
         pl.setPattern("%m%n");
         pl.start();
-        String val = pl.doLayout(le);
+        String val = pl.doLayout(makeLoggingEvent(aMessage, ex));
         assertTrue(val.contains("java.lang.Exception: Bogus exception"));
     }
 
@@ -118,7 +122,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     public void contextProperty() {
         pl.setPattern("%property{a}");
         pl.start();
-        lc.putProperty("a", "b");
+        loggerContext.putProperty("a", "b");
 
         String val = pl.doLayout(getEventObject());
         assertEquals("b", val);
@@ -128,7 +132,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     public void testNopExeptionHandler() {
         pl.setPattern("%nopex %m%n");
         pl.start();
-        String val = pl.doLayout(le);
+        String val = pl.doLayout(makeLoggingEvent(aMessage, ex));
         assertTrue(!val.contains("java.lang.Exception: Bogus exception"));
     }
 
@@ -136,7 +140,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     public void testWithParenthesis() {
         pl.setPattern("\\(%msg:%msg\\) %msg");
         pl.start();
-        le = makeLoggingEvent(aMessage, null);
+        LoggingEvent le = makeLoggingEvent(aMessage, null);
         String val = pl.doLayout(le);
         assertEquals("(Some message:Some message) Some message", val);
     }
@@ -156,22 +160,25 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     @Test
     public void mdcWithDefaultValue() throws ScanException {
-        String pattern = "%msg %mdc{foo} %mdc{bar:-[null]}";
-        pl.setPattern(OptionHelper.substVars(pattern, lc));
+        String pattern = "%msg %mdc{foo1} %mdc{bar:-[null]}";
+        pl.setPattern(OptionHelper.substVars(pattern, loggerContext));
         pl.start();
-        MDC.put("foo", "foo");
+
+        String key = "foo1";
+
+        logbackMDCAdapter.put(key, key);
         try {
             String val = pl.doLayout(getEventObject());
-            assertEquals("Some message foo [null]", val);
+            assertEquals("Some message foo1 [null]", val);
         } finally {
-            MDC.remove("foo");
+            logbackMDCAdapter.remove(key);
         }
     }
 
     @Test
     public void contextNameTest() {
         pl.setPattern("%contextName");
-        lc.setName("aValue");
+        loggerContext.setName("aValue");
         pl.start();
         String val = pl.doLayout(getEventObject());
         assertEquals("aValue", val);
@@ -180,7 +187,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     @Test
     public void cnTest() {
         pl.setPattern("%cn");
-        lc.setName("aValue");
+        loggerContext.setName("aValue");
         pl.start();
         String val = pl.doLayout(getEventObject());
         assertEquals("aValue", val);
@@ -196,6 +203,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     void verifyMicros(int nanos, String expected) {
         Instant instant = Instant.parse("2011-12-03T10:15:30Z");
         instant = instant.plusNanos(nanos);
+        LoggingEvent le = makeLoggingEvent(aMessage, null);
         le.setInstant(instant);
 
         pl.setPattern("%date{yyyy-MM-dd HH:mm:ss.SSS, UTC} %micros %message%nopex");
@@ -207,12 +215,12 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     @Override
     public Context getContext() {
-        return lc;
+        return loggerContext;
     }
 
     void configure(String file) throws JoranException {
         JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(lc);
+        jc.setContext(loggerContext);
         jc.doConfigure(file);
     }
 
@@ -239,7 +247,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
     @Test
     public void replaceNewline() throws ScanException {
         String pattern = "%replace(A\nB){'\n', '\n\t'}";
-        String substPattern = OptionHelper.substVars(pattern, null, lc);
+        String substPattern = OptionHelper.substVars(pattern, null, loggerContext);
         assertEquals(pattern, substPattern);
         pl.setPattern(substPattern);
         pl.start();
@@ -263,7 +271,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
 
     @Test
     public void replaceWithJoran_NEWLINE() throws JoranException {
-        lc.putProperty("TAB", "\t");
+        loggerContext.putProperty("TAB", "\t");
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "pattern/replaceNewline.xml");
         //StatusPrinter.print(lc);
         root.getAppender("LIST");
@@ -292,7 +300,7 @@ public class PatternLayoutTest extends AbstractPatternLayoutBaseTest<ILoggingEve
         String pattern = "%prefix(%level %logger %X{" + mdcKey + "}) %message";
         pl.setPattern(pattern);
         pl.start();
-        MDC.put(mdcKey, mdcVal);
+        logbackMDCAdapter.put(mdcKey, mdcVal);
         try {
             String val = pl.doLayout(makeLoggingEvent("hello", null));
 

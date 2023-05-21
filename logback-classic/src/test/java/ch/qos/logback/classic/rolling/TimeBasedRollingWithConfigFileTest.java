@@ -18,6 +18,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.rolling.RollingFileAppender;
@@ -38,9 +39,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTests {
 
-    LoggerContext lc = new LoggerContext();
-    StatusChecker statusChecker = new StatusChecker(lc);
-    Logger logger = lc.getLogger(this.getClass());
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    StatusChecker statusChecker = new StatusChecker(loggerContext);
+    Logger logger = loggerContext.getLogger(this.getClass());
     int fileSize = 0;
     int fileIndexCounter = -1;
     int sizeThreshold;
@@ -48,9 +50,10 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     @BeforeEach
     @Override
     public void setUp() {
-        lc.setName("test");
+        loggerContext.setName("test");
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         super.setUp();
-        lc.putProperty("randomOutputDir", randomOutputDir);
+        loggerContext.putProperty("randomOutputDir", randomOutputDir);
     }
 
     @AfterEach
@@ -59,7 +62,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
 
     void loadConfig(String confifFile) throws JoranException {
         JoranConfigurator jc = new JoranConfigurator();
-        jc.setContext(lc);
+        jc.setContext(loggerContext);
         jc.doConfigure(confifFile);
         currentTime = System.currentTimeMillis();
         recomputeRolloverThreshold(currentTime);
@@ -68,11 +71,11 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     @Test
     public void basic() throws Exception {
         String testId = "basic";
-        lc.putProperty("testId", testId);
+        loggerContext.putProperty("testId", testId);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
         statusChecker.assertIsErrorFree();
 
-        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
         expectedFilenameList.add(randomOutputDir + "z" + testId);
 
@@ -97,30 +100,30 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     @Test
     public void depratedSizeAndTimeBasedFNATPWarning() throws Exception {
         String testId = "depratedSizeAndTimeBasedFNATPWarning";
-        lc.putProperty("testId", testId);
+        loggerContext.putProperty("testId", testId);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
-        StatusPrinter.print(lc);
+        StatusPrinter.print(loggerContext);
         statusChecker.assertContainsMatch(Status.WARN, CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
     }
 
     @Test
     public void timeAndSize() throws Exception {
         String testId = "timeAndSize";
-        lc.putProperty("testId", testId);
+        loggerContext.putProperty("testId", testId);
         String prefix = "Hello-----";
 
         // the number of times the log file will be written to before time based
         // roll-over occurs
         int approxWritesPerPeriod = 64;
         sizeThreshold = prefix.length() * approxWritesPerPeriod;
-        lc.putProperty("sizeThreshold", "" + sizeThreshold);
+        loggerContext.putProperty("sizeThreshold", "" + sizeThreshold);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
 
-        StatusPrinter.print(lc);
+        StatusPrinter.print(loggerContext);
         // Test http://jira.qos.ch/browse/LOGBACK-1236
         statusChecker.assertNoMatch(CoreConstants.SIZE_AND_TIME_BASED_FNATP_IS_DEPRECATED);
 
-        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
 
         expectedFilenameList.add(randomOutputDir + "z" + testId);
 
@@ -154,10 +157,10 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     public void timeAndSizeWithoutIntegerToken() throws Exception {
         String testId = "timeAndSizeWithoutIntegerToken";
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
-        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
-        StatusPrinter.print(lc);
+        StatusPrinter.print(loggerContext);
 
         statusChecker.assertContainsMatch("Missing integer token");
         assertFalse(rfa.isStarted());
@@ -168,21 +171,21 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     public void timeAndSizeWithoutMaxFileSize() throws Exception {
         String testId = "timeAndSizeWithoutMaxFileSize";
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
-        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         // expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
 
         // statusChecker.assertContainsMatch("Missing integer token");
         assertFalse(rfa.isStarted());
-        StatusPrinter.print(lc);
+        StatusPrinter.print(loggerContext);
     }
 
     @Test
     public void totalSizeCapSmallerThanMaxFileSize() throws Exception {
         String testId = "totalSizeCapSmallerThanMaxFileSize";
-        lc.putProperty("testId", testId);
+        loggerContext.putProperty("testId", testId);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
-        Logger root = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         // expectedFilenameList.add(randomOutputDir + "z" + testId);
         RollingFileAppender<ILoggingEvent> rfa = (RollingFileAppender<ILoggingEvent>) root.getAppender("ROLLING");
 

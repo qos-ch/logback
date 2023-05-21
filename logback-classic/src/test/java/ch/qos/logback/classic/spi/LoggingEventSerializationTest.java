@@ -18,6 +18,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.net.LoggingEventPreSerializationTransformer;
 import ch.qos.logback.classic.net.server.HardenedLoggingEventInputStream;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.spi.PreSerializationTransformer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class LoggingEventSerializationTest {
 
     LoggerContext loggerContext;
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     Logger logger;
 
     ByteArrayOutputStream bos;
@@ -53,6 +55,7 @@ public class LoggingEventSerializationTest {
     public void setUp() throws Exception {
         loggerContext = new LoggerContext();
         loggerContext.setName("testContext");
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         logger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         // create the byte output stream
         bos = new ByteArrayOutputStream();
@@ -93,7 +96,7 @@ public class LoggingEventSerializationTest {
 
     @Test
     public void MDC() throws Exception {
-        MDC.put("key", "testValue");
+        logbackMDCAdapter.put("key", "testValue");
         ILoggingEvent event = createLoggingEvent();
         ILoggingEvent remoteEvent = writeAndRead(event);
         checkForEquality(event, remoteEvent);
@@ -103,12 +106,12 @@ public class LoggingEventSerializationTest {
 
     @Test
     public void updatedMDC() throws Exception {
-        MDC.put("key", "testValue");
+        logbackMDCAdapter.put("key", "testValue");
         ILoggingEvent event1 = createLoggingEvent();
         Serializable s1 = pst.transform(event1);
         oos.writeObject(s1);
 
-        MDC.put("key", "updatedTestValue");
+        logbackMDCAdapter.put("key", "updatedTestValue");
         ILoggingEvent event2 = createLoggingEvent();
         Serializable s2 = pst.transform(event2);
         oos.writeObject(s2);

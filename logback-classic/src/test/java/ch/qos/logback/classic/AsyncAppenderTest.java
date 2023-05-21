@@ -15,6 +15,7 @@ package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.net.testObjectBuilders.LoggingEventBuilderInContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.UnsynchronizedAppenderBase;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
@@ -34,22 +35,24 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AsyncAppenderTest {
 
     String thisClassName = this.getClass().getName();
-    LoggerContext context = new LoggerContext();
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     AsyncAppender asyncAppender = new AsyncAppender();
     ListAppender<ILoggingEvent> listAppender = new ListAppender<ILoggingEvent>();
     OnConsoleStatusListener onConsoleStatusListener = new OnConsoleStatusListener();
-    LoggingEventBuilderInContext builder = new LoggingEventBuilderInContext(context, thisClassName,
+    LoggingEventBuilderInContext builder = new LoggingEventBuilderInContext(loggerContext, thisClassName,
             UnsynchronizedAppenderBase.class.getName());
     int diff = RandomUtil.getPositiveInt();
 
     @BeforeEach
     public void setUp() {
-        onConsoleStatusListener.setContext(context);
-        context.getStatusManager().add(onConsoleStatusListener);
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
+        onConsoleStatusListener.setContext(loggerContext);
+        loggerContext.getStatusManager().add(onConsoleStatusListener);
         onConsoleStatusListener.start();
 
-        asyncAppender.setContext(context);
-        listAppender.setContext(context);
+        asyncAppender.setContext(loggerContext);
+        listAppender.setContext(loggerContext);
         listAppender.setName("list");
         listAppender.start();
     }
@@ -60,7 +63,7 @@ public class AsyncAppenderTest {
         asyncAppender.start();
 
         String k = "k" + diff;
-        MDC.put(k, "v");
+        logbackMDCAdapter.put(k, "v");
         asyncAppender.doAppend(builder.build(diff));
         MDC.clear();
 

@@ -24,6 +24,7 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,10 +55,11 @@ public class ServerSocketReceiverFunctionalTest {
     private ServerSocket serverSocket;
     private InstrumentedServerSocketReceiver receiver;
     private LoggerContext lc;
-
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
     @BeforeEach
     public void setUp() throws Exception {
         lc = new LoggerContext();
+        lc.setMDCAdapter(logbackMDCAdapter);
 
         appender = new MockAppender();
         appender.start();

@@ -717,6 +717,9 @@ public class JoranConfiguratorTest {
 
 
 
+
+
+
     // reproduction requires placing a binary properties file. Probably not worth the effort.
 //    @Test
 //    public void ossFuzz_47249() throws JoranException  {

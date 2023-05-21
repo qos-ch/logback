@@ -28,7 +28,7 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
 
     private LoggerContext defaultLoggerContext;
     private IMarkerFactory markerFactory;
-    private MDCAdapter mdcAdapter;
+    private LogbackMDCAdapter mdcAdapter;
     // private final ContextSelectorStaticBinder contextSelectorBinder =
     // ContextSelectorStaticBinder.getSingleton();
 //    private static Object KEY = new Object();
@@ -42,6 +42,8 @@ public class LogbackServiceProvider implements SLF4JServiceProvider {
         defaultLoggerContext.start();
         markerFactory = new BasicMarkerFactory();
         mdcAdapter = new LogbackMDCAdapter();
+        // set the MDCAdapter for the defaultLoggerContext immediately
+        defaultLoggerContext.setMDCAdapter(mdcAdapter);
     }
 
     private void initializeLoggerContext() {

@@ -20,6 +20,7 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.net.SyslogConstants;
 import ch.qos.logback.core.pattern.DynamicConverter;
@@ -28,7 +29,6 @@ import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
 import org.slf4j.MarkerFactory;
 
 import java.util.ArrayList;
@@ -41,8 +41,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConverterTest {
 
-    LoggerContext lc = new LoggerContext();
-    Logger logger = lc.getLogger(ConverterTest.class);
+    LoggerContext loggerContext = new LoggerContext();
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
+    Logger logger = loggerContext.getLogger(ConverterTest.class);
     LoggingEvent le;
     List<String> optionList = new ArrayList<String>();
 
@@ -60,6 +61,7 @@ public class ConverterTest {
 
     @BeforeEach
     public void setUp() throws Exception {
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
         Exception rootEx = getException("Innermost", null);
         Exception nestedEx = getException("Nested", rootEx);
 
@@ -75,7 +77,7 @@ public class ConverterTest {
             StringBuilder buf = new StringBuilder();
             converter.write(buf, le);
             // the number below should be the line number of the previous line
-            assertEquals("76", buf.toString());
+            assertEquals("78", buf.toString());
         }
     }
 
@@ -366,8 +368,8 @@ public class ConverterTest {
 
     @Test
     public void testMDCConverter() throws Exception {
-        MDC.clear();
-        MDC.put("someKey", "someValue");
+        logbackMDCAdapter.clear();
+        logbackMDCAdapter.put("someKey", "someValue");
         MDCConverter converter = new MDCConverter();
         this.optionList.clear();
         this.optionList.add("someKey");
@@ -388,7 +390,7 @@ public class ConverterTest {
         lcOther.setName("another");
         converter.setContext(lcOther);
 
-        lc.setName("aValue");
+        loggerContext.setName("aValue");
         ILoggingEvent event = makeLoggingEvent(null);
 
         String result = converter.convert(event);
@@ -398,13 +400,13 @@ public class ConverterTest {
     @Test
     public void contextProperty() {
         PropertyConverter converter = new PropertyConverter();
-        converter.setContext(lc);
+        converter.setContext(loggerContext);
         List<String> ol = new ArrayList<String>();
         ol.add("k");
         converter.setOptionList(ol);
         converter.start();
-        lc.setName("aValue");
-        lc.putProperty("k", "v");
+        loggerContext.setName("aValue");
+        loggerContext.putProperty("k", "v");
         ILoggingEvent event = makeLoggingEvent(null);
 
         String result = converter.convert(event);
@@ -415,7 +417,7 @@ public class ConverterTest {
     public void testSequenceNumber() {
         //lc.setSequenceNumberGenerator(new BasicSequenceNumberGenerator());
         SequenceNumberConverter converter = new SequenceNumberConverter();
-        converter.setContext(lc);
+        converter.setContext(loggerContext);
         converter.start();
 
         assertTrue(converter.isStarted());
@@ -423,6 +425,6 @@ public class ConverterTest {
 
         event.setSquenceNumber(123);
         assertEquals("123", converter.convert(event));
-        StatusPrinter.print(lc);
+        StatusPrinter.print(loggerContext);
     }
 }

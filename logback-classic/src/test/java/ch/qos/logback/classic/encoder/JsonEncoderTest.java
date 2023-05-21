@@ -14,14 +14,21 @@
 
 package ch.qos.logback.classic.encoder;
 
+import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.jsonTest.JsonLoggingEvent;
 import ch.qos.logback.classic.jsonTest.JsonStringToLoggingEventMapper;
 import ch.qos.logback.classic.jsonTest.ThrowableProxyComparator;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.LoggingEvent;
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.testUtil.RandomUtil;
+import ch.qos.logback.core.util.StatusPrinter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +37,10 @@ import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.BasicMarkerFactory;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +50,11 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+
+// When running from an IDE, add the following on the command line
+//
+//          --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
+//
 class JsonEncoderTest {
 
     int diff = RandomUtil.getPositiveInt();
@@ -55,14 +70,21 @@ class JsonEncoderTest {
 
     Marker markerB = markerFactory.getMarker("B");
 
+    ListAppender<ILoggingEvent> listAppender = new ListAppender();
     JsonStringToLoggingEventMapper stringToLoggingEventMapper = new JsonStringToLoggingEventMapper(markerFactory);
+
+    LogbackMDCAdapter logbackMDCAdapter = new LogbackMDCAdapter();
 
     @BeforeEach
     void setUp() {
         loggerContext.setName("test_" + diff);
+        loggerContext.setMDCAdapter(logbackMDCAdapter);
 
         jsonEncoder.setContext(loggerContext);
         jsonEncoder.start();
+
+        listAppender.setContext(loggerContext);
+        listAppender.start();
     }
 
     @AfterEach
@@ -85,7 +107,7 @@ class JsonEncoderTest {
     @Test
     void contextWithProperties() throws JsonProcessingException {
         loggerContext.putProperty("k", "v");
-        loggerContext.putProperty("k"+diff, "v"+diff);
+        loggerContext.putProperty("k" + diff, "v" + diff);
 
         LoggingEvent event = new LoggingEvent("x", logger, Level.WARN, "hello", null, null);
 
@@ -241,5 +263,48 @@ class JsonEncoderTest {
         System.out.println(resultString);
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
+    }
+
+    void configure(String file) throws JoranException {
+        JoranConfigurator jc = new JoranConfigurator();
+        jc.setContext(loggerContext);
+        loggerContext.putProperty("diff", "" + diff);
+        jc.doConfigure(file);
+
+    }
+
+    @Test
+    void withJoran() throws JoranException, IOException {
+        String configFilePathStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "json/jsonEncoder.xml";
+
+
+
+        configure(configFilePathStr);
+        Logger logger = loggerContext.getLogger(this.getClass().getName());
+        logger.addAppender(listAppender);
+
+
+        logger.debug("hello");
+        logbackMDCAdapter.put("a1", "v1"+diff);
+        logger.atInfo().addKeyValue("ik"+diff, "iv"+diff).addKeyValue("a", "b").log("bla bla \"x\" foobar");
+        logbackMDCAdapter.put("a2", "v2"+diff);
+        logger.atWarn().addMarker(markerA).setMessage("some warning message").log();
+        logbackMDCAdapter.remove("a2");
+        logger.atError().addKeyValue("ek"+diff, "v"+diff).setCause(new RuntimeException("an error")).log("some error occurred");
+
+        StatusPrinter.print(loggerContext);
+
+        Path configFilePath = Path.of(ClassicTestConstants.OUTPUT_DIR_PREFIX+"json/test-" + diff + ".json");
+        List<String> lines = Files.readAllLines(configFilePath);
+        int count = 4;
+        assertEquals(count, lines.size());
+
+        for(int i = 0; i < count; i++) {
+            System.out.println("i = "+ i);
+            LoggingEvent withnessEvent = (LoggingEvent) listAppender.list.get(i);
+            JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(lines.get(i));
+            compareEvents(withnessEvent, resultEvent);
+        }
+
     }
 }
