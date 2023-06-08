@@ -29,7 +29,7 @@ public class ClassicConstants {
     public static final String JNDI_CONTEXT_NAME = JNDI_JAVA_NAMESPACE + "comp/env/logback/context-name";
 
     /** JNDI name of custom contextSelector classname, if used */
-    public static final String JNDI_LOGBACK_CONTEXT_SELECTOR = "java:comp/env/logback/contextSelector";
+    public static final String JNDI_LOGBACK_CONTEXT_SELECTOR = JNDI_JAVA_NAMESPACE + "comp/env/logback/contextSelector";
 
     /**
      * The maximum number of package separators (dots) that abbreviation algorithms
