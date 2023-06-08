@@ -15,7 +15,6 @@
   <packaging>jar</packaging>
   <name>Logback Classic Module</name>
   <description>logback-classic module</description>
-  <version>1.4.6.IDFC.1</version>
 
   <properties>
     <module-name>ch.qos.logback.classic</module-name>
@@ -25,7 +24,6 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>${project.parent.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -109,7 +107,6 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
-      <version>${project.parent.version}</version>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>
