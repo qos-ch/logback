@@ -16,6 +16,11 @@ package ch.qos.logback.classic.spi;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.spi.ContextAware;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Allows programmatic initialization and configuration of Logback. The
  * ServiceLoader is typically used to instantiate implementations and thus
@@ -32,6 +37,19 @@ public interface Configurator extends ContextAware {
         INVOKE_NEXT_IF_ANY, // invoke other
         DO_NOT_INVOKE_NEXT_IF_ANY
     }
+
+    enum RankValue {
+        FIRST,
+        REGULAR,
+        FALLBACK;
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    public @interface Rank {
+        RankValue value() default RankValue.REGULAR;
+    }
+
     /**
      * The context will also be set before this method is called via
      * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.

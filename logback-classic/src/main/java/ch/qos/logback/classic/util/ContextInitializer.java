@@ -1,33 +1,35 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  * <p>
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  * <p>
  * or (per the licensee's choosing)
  * <p>
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.util;
-
-import java.net.URL;
-import java.util.Comparator;
-import java.util.List;
 
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
+
+import java.net.URL;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ServiceLoader;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
@@ -62,8 +64,7 @@ public class ContextInitializer {
             configurator.setContext(loggerContext);
             configurator.doConfigure(url);
         } else {
-            throw new LogbackException(
-                    "Unexpected filename extension of file [" + url + "]. Should be .xml");
+            throw new LogbackException("Unexpected filename extension of file [" + url + "]. Should be .xml");
         }
     }
 
@@ -82,32 +83,44 @@ public class ContextInitializer {
         if (versionStr == null) {
             versionStr = CoreConstants.NA;
         }
-        loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
+        loggerContext.getStatusManager()
+                .add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
         StatusListenerConfigHelper.installIfAsked(loggerContext);
-        List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
-        sortByPriority(configuratorList);
+        //List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
+        //sortByPriority(configuratorList);
+        ServiceLoader<Configurator> loader = ServiceLoader.load(Configurator.class, classLoader);
+        List<ServiceLoader.Provider<Configurator>> configuratorFactories = loader.stream().collect(Collectors.toList());
 
         // this should never happen as we do have DefaultJoranConfigurator shipping with logback-classic
-        if (configuratorList == null) {
+        if (configuratorFactories == null) {
             fallbackOnToBasicConfigurator();
             return;
         }
-        for (Configurator c : configuratorList) {
+
+        configuratorFactories.sort(rankComparator);
+
+        for (ServiceLoader.Provider<Configurator> configuratorProvider : configuratorFactories) {
             try {
+                Configurator c = configuratorProvider.get();
                 c.setContext(loggerContext);
                 Configurator.ExecutionStatus status = c.configure(loggerContext);
                 if (status == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
                     return;
                 }
             } catch (Exception e) {
-                throw new LogbackException(
-                        String.format("Failed to initialize Configurator: %s using ServiceLoader",
-                                c != null ? c.getClass().getCanonicalName() : "null"),
-                        e);
+                throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader",
+                        configuratorProvider != null ? configuratorProvider.type().getCanonicalName() : "null"), e);
             }
         }
         // at this stage invoke basicConfigurator
         fallbackOnToBasicConfigurator();
+
+    }
+
+     void foo(Class<Configurator> c, ClassLoader classLoader) {
+        ServiceLoader<Configurator> loader = ServiceLoader.load(c, classLoader);
+        List<ServiceLoader.Provider<Configurator>> pngFactories = loader.stream().collect(Collectors.toList());
+        pngFactories.sort(rankComparator);
 
     }
 
@@ -117,21 +130,66 @@ public class ContextInitializer {
         basicConfigurator.configure(loggerContext);
     }
 
-    private void sortByPriority(List<Configurator> configuratorList) {
-        configuratorList.sort(new Comparator<Configurator>() {
-            @Override
-            public int compare(Configurator o1, Configurator o2) {
-                if (o1.getClass() == o2.getClass())
-                    return 0;
-                if (o1 instanceof DefaultJoranConfigurator) {
-                    return 1;
-                }
+//    private void sortByPriority(List<Configurator> configuratorList) {
+//        configuratorList.sort(new Comparator<Configurator>() {
+//            @Override
+//            public int compare(Configurator o1, Configurator o2) {
+//                if (o1.getClass() == o2.getClass())
+//                    return 0;
+//                if (o1 instanceof DefaultJoranConfigurator) {
+//                    return 1;
+//                }
+//
+//                // otherwise do not intervene
+//                return 0;
+//            }
+//        });
+//    }
 
-                // otherwise do not intervene
+    Comparator<ServiceLoader.Provider<Configurator>> rankComparator =  new Comparator<ServiceLoader.Provider<Configurator>>() {
+        @Override
+        public int compare(ServiceLoader.Provider<Configurator> p1, ServiceLoader.Provider<Configurator> p2) {
+            Class<Configurator> c1 = (Class<Configurator>) p1.type();
+            Class<Configurator> c2 = (Class<Configurator>) p2.type();
+
+            ConfiguratorRank r1 = c1.getAnnotation(ConfiguratorRank.class);
+            ConfiguratorRank r2 = c2.getAnnotation(ConfiguratorRank.class);
+
+            ConfiguratorRank.Value value1 = r1 == null ? ConfiguratorRank.Value.REGULAR : r1.value();
+            ConfiguratorRank.Value value2 = r2 == null ? ConfiguratorRank.Value.REGULAR : r2.value();
+
+            int result = compareRankValue(value1, value2);
+            // reverse the result for high to low sort
+            return  (- result);
+        }
+    };
+
+
+    private int compareRankValue(ConfiguratorRank.Value value1, ConfiguratorRank.Value value2) {
+
+        switch (value1) {
+        case FIRST:
+            if(value2 == ConfiguratorRank.Value.FIRST)
                 return 0;
-            }
-        });
-    }
+            else
+                return 1;
+        case REGULAR:
+            if(value2 == ConfiguratorRank.Value.FALLBACK)
+                return 1;
+            else if (value2 == ConfiguratorRank.Value.REGULAR)
+                return 0;
+            else
+                return -1;
+        case FALLBACK:
+            if(value2 == ConfiguratorRank.Value.FALLBACK)
+                return 0;
+            else
+                return -1;
 
+        default:
+            return 0;
+        }
+
+    }
 
 }

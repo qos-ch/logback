@@ -3,6 +3,7 @@ package ch.qos.logback.classic.util;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.InfoStatus;
@@ -18,9 +19,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
 
+import static ch.qos.logback.classic.spi.Configurator.RankValue.REGULAR;
+
 /**
  * @since 1.3.0-beta1
  */
+@ConfiguratorRank(value = ConfiguratorRank.Value.REGULAR)
 public class DefaultJoranConfigurator extends ContextAwareBase implements Configurator {
 
     final public static String AUTOCONFIG_FILE = "logback.xml";
