@@ -15,6 +15,7 @@ package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.layout.TTLLLayout;
 import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
@@ -27,6 +28,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
+@ConfiguratorRank(value = ConfiguratorRank.Value.FALLBACK)
 public class BasicConfigurator extends ContextAwareBase implements Configurator {
 
     public BasicConfigurator() {
