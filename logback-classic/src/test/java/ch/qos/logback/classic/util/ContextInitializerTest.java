@@ -1,15 +1,13 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.classic.util;
 
@@ -17,6 +15,7 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
@@ -103,7 +102,6 @@ public class ContextInitializerTest {
         assertNotNull(appender);
     }
 
-
     // this test as constructed cannot run in a modular environment since
     // ServiceLoader will not honor providers specified in a provider-configuration file (META-INF/..)
     // if module-info.java in the same module declares a provider
@@ -141,10 +139,10 @@ public class ContextInitializerTest {
         assertEquals(0, statusListenerList.size());
         doAutoConfigFromSystemProperties(ClassicTestConstants.INPUT_PREFIX + "autoConfig.xml");
         statusListenerList = loggerContext.getStatusManager().getCopyOfStatusListenerList();
-        assertTrue( statusListenerList.size() == 1, statusListenerList.size() + " should be 1");
+        assertTrue(statusListenerList.size() == 1, statusListenerList.size() + " should be 1");
         // LOGBACK-767
         TrivialStatusListener tsl = (TrivialStatusListener) statusListenerList.get(0);
-        assertTrue( tsl.list.size() > 0, "expecting at least one event in list");
+        assertTrue(tsl.list.size() > 0, "expecting at least one event in list");
     }
 
     @Test
@@ -157,39 +155,48 @@ public class ContextInitializerTest {
         assertTrue(sll.size() == 1, sll.size() + " should be 1");
     }
 
-    @Test
-    public void shouldConfigureFromXmlFile() throws MalformedURLException, JoranException {
-        LoggerContext loggerContext = new LoggerContext();
-        ContextInitializer initializer = new ContextInitializer(loggerContext);
-        assertNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
+        @Test
+        public void shouldConfigureFromXmlFile() throws MalformedURLException, JoranException {
+            assertNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
 
-        URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml",
-                Thread.currentThread().getContextClassLoader());
-        initializer.configureByResource(configurationFileUrl);
+            URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml",
+                    Thread.currentThread().getContextClassLoader());
+            configureByResource(configurationFileUrl);
 
-        assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
+            assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
+        }
+
+    //    @Test
+    //    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
+    //        LoggerContext loggerContext = new LoggerContext();
+    //        ContextInitializer initializer = new ContextInitializer(loggerContext);
+    //        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+    //
+    //        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
+    //        initializer.configureByResource(configurationFileUrl);
+    //
+    //        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+    //    }
+
+    private  void configureByResource(URL url) throws JoranException {
+        if (url == null) {
+            throw new IllegalArgumentException("URL argument cannot be null");
+        }
+        final String urlString = url.toString();
+        if (urlString.endsWith("xml")) {
+            JoranConfigurator configurator = new JoranConfigurator();
+            configurator.setContext(loggerContext);
+            configurator.doConfigure(url);
+        } else {
+            throw new LogbackException("Unexpected filename extension of file [" + url + "]. Should be .xml");
+        }
     }
-
-//    @Test
-//    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
-//        LoggerContext loggerContext = new LoggerContext();
-//        ContextInitializer initializer = new ContextInitializer(loggerContext);
-//        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-//
-//        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
-//        initializer.configureByResource(configurationFileUrl);
-//
-//        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-//    }
 
     @Test
     public void shouldThrowExceptionIfUnexpectedConfigurationFileExtension() throws JoranException {
-        LoggerContext loggerContext = new LoggerContext();
-        ContextInitializer initializer = new ContextInitializer(loggerContext);
-
         URL configurationFileUrl = Loader.getResource("README.txt", Thread.currentThread().getContextClassLoader());
         try {
-            initializer.configureByResource(configurationFileUrl);
+            this.configureByResource(configurationFileUrl);
             fail("Should throw LogbackException");
         } catch (LogbackException expectedException) {
             // pass
@@ -204,24 +211,23 @@ public class ContextInitializerTest {
 
     private ClassLoader buildMockServiceLoader(ClassLoader realLoader) {
 
-
         //final ClassLoader realLoader = ClassicEnvUtil.class.getClassLoader();
         ClassLoader wrapperClassLoader = new WrappedClassLoader(realLoader) {
 
             @Override
             public String toString() {
-                return "wrapperClassLoader: " +super.toString();
+                return "wrapperClassLoader: " + super.toString();
             }
 
             @Override
             public Enumeration<URL> getResources(String name) throws IOException {
                 final Enumeration<URL> r;
                 if (name.endsWith(PATH_TO_META_INF_CONF_SERVICE)) {
-                    System.out.println("Hit on "+PATH_TO_META_INF_CONF_SERVICE);
+                    System.out.println("Hit on " + PATH_TO_META_INF_CONF_SERVICE);
                     Vector<URL> vs = new Vector<URL>();
                     URL u = super.getResource(FAKE_META_INF_SERVICES);
                     Assertions.assertNotNull(u);
-                    System.out.println("Found url: "+u);
+                    System.out.println("Found url: " + u);
                     vs.add(u);
                     return vs.elements();
                 } else {

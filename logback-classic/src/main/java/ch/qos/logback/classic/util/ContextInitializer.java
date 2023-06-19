@@ -14,7 +14,6 @@ package ch.qos.logback.classic.util;
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.CoreConstants;
@@ -54,25 +53,6 @@ public class ContextInitializer {
         this.loggerContext = loggerContext;
     }
 
-    public void configureByResource(URL url) throws JoranException {
-        if (url == null) {
-            throw new IllegalArgumentException("URL argument cannot be null");
-        }
-        final String urlString = url.toString();
-        if (urlString.endsWith("xml")) {
-            JoranConfigurator configurator = new JoranConfigurator();
-            configurator.setContext(loggerContext);
-            configurator.doConfigure(url);
-        } else {
-            throw new LogbackException("Unexpected filename extension of file [" + url + "]. Should be .xml");
-        }
-    }
-
-    void joranConfigureByResource(URL url) throws JoranException {
-        JoranConfigurator configurator = new JoranConfigurator();
-        configurator.setContext(loggerContext);
-        configurator.doConfigure(url);
-    }
 
     public void autoConfig() throws JoranException {
         autoConfig(Configurator.class.getClassLoader());
