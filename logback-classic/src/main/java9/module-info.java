@@ -1,4 +1,7 @@
-module ch.qos.logback.classic { 
+
+module ch.qos.logback.classic {
+
+  // requires static means optional
   requires static java.management;
 
   // used by the optional ContextJNDISelector component
@@ -11,14 +14,11 @@ module ch.qos.logback.classic {
   //  javax.servlet:javax.servlet-api:jar:4.0.1:compile -> auto-named as javax.servlet.api
   requires static javax.servlet.api;
 
-
-
   requires org.slf4j;
   requires ch.qos.logback.core;
-  uses ch.qos.logback.classic.spi.Configurator;
+  uses ch.qos.logback.core.spi.Configurator;
   provides org.slf4j.spi.SLF4JServiceProvider with ch.qos.logback.classic.spi.LogbackServiceProvider;
-
-  provides ch.qos.logback.classic.spi.Configurator with ch.qos.logback.classic.util.DefaultJoranConfigurator;
+  provides ch.qos.logback.classic.spi.Configurator with ch.qos.logback.classic.joran.SerializedModelConfigurator;
   
   exports ch.qos.logback.classic;
   exports ch.qos.logback.classic.boolex;

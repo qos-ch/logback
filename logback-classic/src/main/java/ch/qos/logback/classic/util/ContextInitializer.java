@@ -13,23 +13,19 @@ package ch.qos.logback.classic.util;
 import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.core.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.status.ErrorStatus;
+import ch.qos.logback.core.spi.ContextAware;
+import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.status.StatusUtil;
 import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
-import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 // contributors
 // Ted Graham, Matt Fowles, see also http://jira.qos.ch/browse/LBCORE-32
@@ -50,8 +46,11 @@ public class ContextInitializer {
 
     final LoggerContext loggerContext;
 
+    final ContextAware contextAware;
+
     public ContextInitializer(LoggerContext loggerContext) {
         this.loggerContext = loggerContext;
+        this.contextAware = new ContextAwareImpl(loggerContext, this);
     }
 
     public void autoConfig() throws JoranException {
@@ -65,17 +64,13 @@ public class ContextInitializer {
         }
         loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
         StatusListenerConfigHelper.installIfAsked(loggerContext);
-        //List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
-        //sortByPriority(configuratorList);
-        ServiceLoader<Configurator> loader = ServiceLoader.load(Configurator.class, classLoader);
-        List<ServiceLoader.Provider<Configurator>> configuratorFactories = loader.stream().collect(Collectors.toList());
+        List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
 
-        configuratorFactories.sort(rankComparator);
+        configuratorList.sort(rankComparator);
 
-        for (ServiceLoader.Provider<Configurator> configuratorProvider : configuratorFactories) {
+        for (Configurator c : configuratorList) {
             try {
-                Configurator c = configuratorProvider.get();
-                System.out.println("Constructed configurator of type " + c.getClass());
+                contextAware.addInfo("Constructed configurator of type " + c.getClass());
                 c.setContext(loggerContext);
                 Configurator.ExecutionStatus status = c.configure(loggerContext);
                 if (status == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
@@ -83,7 +78,7 @@ public class ContextInitializer {
                 }
             } catch (Exception e) {
                 throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader",
-                        configuratorProvider != null ? configuratorProvider.type().getCanonicalName() : "null"), e);
+                        c != null ? c.getClass().getCanonicalName() : "null"), e);
             }
         }
 
@@ -103,16 +98,9 @@ public class ContextInitializer {
             c.setContext(loggerContext);
             return c.configure(loggerContext);
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            loggerContext.getStatusManager().add(new ErrorStatus("unexpected exception while instantiating DefaultJoranConfigurator", e));
+            contextAware.addError("unexpected exception while instantiating DefaultJoranConfigurator", e);
             return Configurator.ExecutionStatus.INVOKE_NEXT_IF_ANY;
         }
-
-    }
-
-    void foo(Class<Configurator> c, ClassLoader classLoader) {
-        ServiceLoader<Configurator> loader = ServiceLoader.load(c, classLoader);
-        List<ServiceLoader.Provider<Configurator>> pngFactories = loader.stream().collect(Collectors.toList());
-        pngFactories.sort(rankComparator);
 
     }
 
@@ -138,17 +126,12 @@ public class ContextInitializer {
     //        });
     //    }
 
-    Comparator<ServiceLoader.Provider<Configurator>> rankComparator = new Comparator<ServiceLoader.Provider<Configurator>>() {
+    Comparator<Configurator> rankComparator = new Comparator<Configurator>() {
         @Override
-        public int compare(ServiceLoader.Provider<Configurator> p1, ServiceLoader.Provider<Configurator> p2) {
-            Class<Configurator> c1 = (Class<Configurator>) p1.type();
-            Class<Configurator> c2 = (Class<Configurator>) p2.type();
+        public int compare(Configurator c1, Configurator c2) {
 
-            System.out.println("Seen class c1=" + c1);
-            System.out.println("Seen class c2=" + c2);
-
-            ConfiguratorRank r1 = c1.getAnnotation(ConfiguratorRank.class);
-            ConfiguratorRank r2 = c2.getAnnotation(ConfiguratorRank.class);
+            ConfiguratorRank r1 = c1.getClass().getAnnotation(ConfiguratorRank.class);
+            ConfiguratorRank r2 = c2.getClass().getAnnotation(ConfiguratorRank.class);
 
             ConfiguratorRank.Value value1 = r1 == null ? ConfiguratorRank.Value.REGULAR : r1.value();
             ConfiguratorRank.Value value2 = r2 == null ? ConfiguratorRank.Value.REGULAR : r2.value();
@@ -185,5 +168,4 @@ public class ContextInitializer {
         }
 
     }
-
 }

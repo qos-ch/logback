@@ -23,39 +23,16 @@ import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
 import ch.qos.logback.classic.joran.action.ReceiverAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.classic.joran.sanity.IfNestedWithinSecondPhaseElementSC;
-import ch.qos.logback.classic.model.ConfigurationModel;
-import ch.qos.logback.classic.model.ContextNameModel;
-import ch.qos.logback.classic.model.LevelModel;
-import ch.qos.logback.classic.model.LoggerContextListenerModel;
-import ch.qos.logback.classic.model.LoggerModel;
-import ch.qos.logback.classic.model.RootLoggerModel;
-import ch.qos.logback.classic.model.processor.ConfigurationModelHandler;
-import ch.qos.logback.classic.model.processor.ContextNameModelHandler;
-import ch.qos.logback.classic.model.processor.LevelModelHandler;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
-import ch.qos.logback.classic.model.processor.LoggerContextListenerModelHandler;
-import ch.qos.logback.classic.model.processor.LoggerModelHandler;
-import ch.qos.logback.classic.model.processor.RootLoggerModelHandler;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
 import ch.qos.logback.core.joran.action.AppenderRefAction;
 import ch.qos.logback.core.joran.action.IncludeAction;
-import ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker;
-import ch.qos.logback.core.joran.sanity.SanityChecker;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.spi.ElementSelector;
 import ch.qos.logback.core.joran.spi.RuleStore;
-import ch.qos.logback.core.model.AppenderModel;
-import ch.qos.logback.core.model.AppenderRefModel;
-import ch.qos.logback.core.model.InsertFromJNDIModel;
 import ch.qos.logback.core.model.Model;
-import ch.qos.logback.core.model.processor.AppenderModelHandler;
-import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
-import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
-import ch.qos.logback.core.model.processor.InsertFromJNDIModelHandler;
-import ch.qos.logback.core.model.processor.RefContainerDependencyAnalyser;
-import ch.qos.logback.core.spi.ContextAware;
 
 /**
  * JoranConfigurator class adds rules specific to logback-classic.
@@ -105,32 +82,8 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
 
     @Override
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
-        super.addModelHandlerAssociations(defaultProcessor);
-        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
-        defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler::makeInstance);
-        defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler::makeInstance);
-
-        defaultProcessor.addHandler(InsertFromJNDIModel.class, InsertFromJNDIModelHandler::makeInstance);
-
-        defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
-        defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
-        defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler::makeInstance);
-        defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
-        defaultProcessor.addHandler(LevelModel.class, LevelModelHandler::makeInstance);
-
-        defaultProcessor.addAnalyser(LoggerModel.class, 
-                () -> new RefContainerDependencyAnalyser(context, LoggerModel.class));
-
-        defaultProcessor.addAnalyser(RootLoggerModel.class,
-                () -> new RefContainerDependencyAnalyser(context, RootLoggerModel.class));
-
-        defaultProcessor.addAnalyser(AppenderModel.class,
-                () -> new RefContainerDependencyAnalyser(context, AppenderModel.class));
-
-        defaultProcessor.addAnalyser(AppenderRefModel.class, 
-                () -> new AppenderRefDependencyAnalyser(context));
-
-        sealModelFilters(defaultProcessor);
+        ModelClassToModelHandlerLinker m = new ModelClassToModelHandlerLinker(context);
+        m.link(defaultProcessor);
     }
 
 

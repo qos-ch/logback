@@ -64,6 +64,7 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
         rs.addRule(new ElementSelector("configuration/timestamp"),  TimestampAction::new);
         rs.addRule(new ElementSelector("configuration/shutdownHook"),  ShutdownHookAction::new);
         rs.addRule(new ElementSelector("configuration/sequenceNumberGenerator"),  SequenceNumberGeneratorAction::new);
+        rs.addRule(new ElementSelector("configuration/serializeModel"),  SerializeModelAction::new);
 
         rs.addRule(new ElementSelector("configuration/define"),  DefinePropertyAction::new);
         rs.addRule(new ElementSelector("configuration/evaluator"),  EventEvaluatorAction::new);

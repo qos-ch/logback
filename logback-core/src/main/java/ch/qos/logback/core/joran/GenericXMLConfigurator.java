@@ -12,8 +12,6 @@
 package ch.qos.logback.core.joran;
 
 import static ch.qos.logback.core.CoreConstants.SAFE_JORAN_CONFIGURATION;
-import static ch.qos.logback.core.spi.ConfigurationEvent.EventType.CONFIGURATION_ENDED;
-import static ch.qos.logback.core.spi.ConfigurationEvent.EventType.CONFIGURATION_STARTED;
 import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationEndedEvent;
 import static ch.qos.logback.core.spi.ConfigurationEvent.newConfigurationStartedEvent;
 
@@ -25,8 +23,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.List;
 
-import ch.qos.logback.core.spi.ConfigurationEvent;
-import ch.qos.logback.core.util.StatusPrinter;
 import org.xml.sax.InputSource;
 
 import ch.qos.logback.core.Context;
@@ -202,6 +198,8 @@ public abstract class GenericXMLConfigurator extends ContextAwareBase {
 
     public void processModel(Model model) {
         buildModelInterpretationContext();
+        this.modelInterpretationContext.setTopModel(model);
+        modelInterpretationContext.setConfiguratorHint(this);
         DefaultProcessor defaultProcessor = new DefaultProcessor(context, this.modelInterpretationContext);
         addModelHandlerAssociations(defaultProcessor);
 

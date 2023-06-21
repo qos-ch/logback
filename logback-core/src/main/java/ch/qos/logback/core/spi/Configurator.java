@@ -1,6 +1,6 @@
-/**
+/*
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2023, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -11,9 +11,9 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.classic.spi;
+package ch.qos.logback.core.spi;
 
-import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAware;
 
 import java.lang.annotation.ElementType;
@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * implementations will need to follow the guidelines of the ServiceLoader
  * specifically a no-arg constructor is required.
  *
- * The return type of {@link #configure(LoggerContext)  configure} was changed from 'void' to
+ * The return type of {@link #configure(Context)  configure} was changed from 'void' to
  * {@link ExecutionStatus) in logback version 1.3.0.
  */
 public interface Configurator extends ContextAware {
@@ -54,6 +54,6 @@ public interface Configurator extends ContextAware {
      * The context will also be set before this method is called via
      * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
      */
-    ExecutionStatus configure(LoggerContext loggerContext);
+    ExecutionStatus configure(Context context);
 
 }

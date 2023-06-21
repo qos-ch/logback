@@ -62,6 +62,5 @@ module ch.qos.logback.core {
 
     exports ch.qos.logback.core.testUtil;
     exports ch.qos.logback.core.util;
-
 }
 
