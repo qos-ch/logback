@@ -47,8 +47,17 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     List<DependencyDefinition> dependencyDefinitionList = new ArrayList<>();
     final List<String> startedDependees = new ArrayList<>();
 
+    Object configuratorHint;
+
+    Model topModel;
+
     public ModelInterpretationContext(Context context) {
+        this(context, null);
+    }
+
+    public ModelInterpretationContext(Context context, Object configuratorHint) {
         this.context = context;
+        this.configuratorHint = configuratorHint;
         this.objectStack = new Stack<>();
         this.modelStack = new Stack<>();
         this.beanDescriptionCache = new BeanDescriptionCache(context);
@@ -58,7 +67,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     }
 
     public ModelInterpretationContext(ModelInterpretationContext otherMic) {
-        this(otherMic.context);
+        this(otherMic.context, otherMic.configuratorHint);
         importMap = new HashMap<>(otherMic.importMap);
         propertiesMap = new HashMap<>(otherMic.propertiesMap);
         defaultNestedComponentRegistry.duplicate(otherMic.getDefaultNestedComponentRegistry());
@@ -73,10 +82,19 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         objectMap.put(JoranConstants.APPENDER_BAG, new HashMap<String, Appender<?>>());
         objectMap.put(JoranConstants.APPENDER_REF_BAG, new HashMap<String, AppenderAttachable<?>>());
     }
-    
+
+    public Model getTopModel() {
+        return topModel;
+    }
+
+    public void setTopModel(Model topModel) {
+        this.topModel = topModel;
+    }
+
     // modelStack =================================
 
     public void pushModel(Model m) {
+        System.out.println("pushing "+m.toString());
         modelStack.push(m);
     }
 
@@ -119,6 +137,14 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     }
 
     // ===================== END object stack
+
+    public Object getConfiguratorHint() {
+        return configuratorHint;
+    }
+
+    public void setConfiguratorHint(Object configuratorHint) {
+        this.configuratorHint = configuratorHint;
+    }
 
     public BeanDescriptionCache getBeanDescriptionCache() {
         return beanDescriptionCache;

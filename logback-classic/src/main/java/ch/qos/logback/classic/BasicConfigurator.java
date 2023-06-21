@@ -14,10 +14,11 @@
 package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.layout.TTLLLayout;
-import ch.qos.logback.classic.spi.Configurator;
+import ch.qos.logback.core.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.spi.ContextAwareBase;
 
@@ -34,14 +35,16 @@ public class BasicConfigurator extends ContextAwareBase implements Configurator 
     public BasicConfigurator() {
     }
 
-    public ExecutionStatus configure(LoggerContext lc) {
+    public ExecutionStatus configure(Context context) {
         addInfo("Setting up default configuration.");
 
+        LoggerContext loggerContext = (LoggerContext) context;
+
         ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
-        ca.setContext(lc);
+        ca.setContext(context);
         ca.setName("console");
         LayoutWrappingEncoder<ILoggingEvent> encoder = new LayoutWrappingEncoder<ILoggingEvent>();
-        encoder.setContext(lc);
+        encoder.setContext(context);
 
         // same as
         // PatternLayout layout = new PatternLayout();
@@ -49,14 +52,14 @@ public class BasicConfigurator extends ContextAwareBase implements Configurator 
         // %msg%n");
         TTLLLayout layout = new TTLLLayout();
 
-        layout.setContext(lc);
+        layout.setContext(context);
         layout.start();
         encoder.setLayout(layout);
 
         ca.setEncoder(encoder);
         ca.start();
 
-        Logger rootLogger = lc.getLogger(Logger.ROOT_LOGGER_NAME);
+        Logger rootLogger = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
         rootLogger.addAppender(ca);
 
         // let the caller decide

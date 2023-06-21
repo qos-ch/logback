@@ -13,30 +13,15 @@
  */
 package ch.qos.logback.classic.joran;
 
-import static ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker.NESTED_APPENDERS_WARNING;
-import static ch.qos.logback.core.model.processor.ImplicitModelHandler.IGNORING_UNKNOWN_PROP;
-import static ch.qos.logback.core.model.processor.ShutdownHookModelHandler.RENAME_WARNING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.slf4j.MDC;
-import org.slf4j.event.KeyValuePair;
-
 import ch.qos.logback.classic.AsyncAppender;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
 import ch.qos.logback.classic.jul.JULHelper;
+import ch.qos.logback.classic.model.ConfigurationModel;
+import ch.qos.logback.classic.model.LoggerModel;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.turbo.DebugUsersTurboFilter;
 import ch.qos.logback.classic.turbo.NOPTurboFilter;
@@ -47,16 +32,40 @@ import ch.qos.logback.core.encoder.LayoutWrappingEncoder;
 import ch.qos.logback.core.joran.action.ParamAction;
 import ch.qos.logback.core.joran.spi.ActionException;
 import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.SerializeModelModel;
 import ch.qos.logback.core.pattern.parser.Parser;
 import ch.qos.logback.core.read.ListAppender;
 import ch.qos.logback.core.spi.ErrorCodes;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.status.testUtil.StatusChecker;
+import ch.qos.logback.core.testUtil.CoreTestConstants;
+import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.CachingDateFormatter;
 import ch.qos.logback.core.util.StatusPrinter;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.MDC;
+import org.slf4j.event.KeyValuePair;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import static ch.qos.logback.core.CoreConstants.MODEL_CONFIG_FILE_EXTENSION;
+import static ch.qos.logback.core.joran.sanity.AppenderWithinAppenderSanityChecker.NESTED_APPENDERS_WARNING;
+import static ch.qos.logback.core.model.processor.ImplicitModelHandler.IGNORING_UNKNOWN_PROP;
+import static ch.qos.logback.core.model.processor.ShutdownHookModelHandler.RENAME_WARNING;
+import static ch.qos.logback.core.testUtil.CoreTestConstants.OUTPUT_DIR_PREFIX;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JoranConfiguratorTest {
 
@@ -713,6 +722,42 @@ public class JoranConfiguratorTest {
         checker.assertContainsMatch(Status.INFO, "Setting zoneId to \"Australia/Perth\"");
         checker.assertContainsMatch(Status.INFO, "Setting locale to \"en_AU\"");
         //StatusPrinter.print(loggerContext);
+    }
+
+    @Test
+    public void modelSerialization() throws JoranException, IOException, ClassNotFoundException {
+        String outputPath = OUTPUT_DIR_PREFIX+"minimal_"+diff+ MODEL_CONFIG_FILE_EXTENSION;
+
+        loggerContext.putProperty("target.smo", outputPath);
+        configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "model/minimal.xml");
+        StatusPrinter.print(loggerContext);
+
+        FileInputStream fis = new FileInputStream(outputPath);
+        HardenedModelInputStream hmis = new HardenedModelInputStream(fis);
+
+        Model model = (Model) hmis.readObject();
+
+        assertNotNull(model);
+        assertTrue(model instanceof ConfigurationModel);
+
+        ConfigurationModel configurationModel = (ConfigurationModel) model;
+
+        assertEquals("false", configurationModel.getDebugStr());
+
+        assertEquals(2, configurationModel.getSubModels().size());
+
+        SerializeModelModel smm = (SerializeModelModel)  configurationModel.getSubModels().get(0);
+        assertEquals("${target.smo}", smm.getFile());
+
+
+        LoggerModel loggerModel = (LoggerModel)  configurationModel.getSubModels().get(1);
+        assertEquals("ModelSerializationTest", loggerModel.getName());
+
+        //    <serializeModel file="${target.smo}"/>
+        //    <logger name="ModelSerializationTest" level="DEBUG"/>
+
+
+
     }
 
 
