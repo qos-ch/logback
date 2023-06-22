@@ -94,7 +94,6 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     // modelStack =================================
 
     public void pushModel(Model m) {
-        System.out.println("pushing "+m.toString());
         modelStack.push(m);
     }
 
