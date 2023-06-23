@@ -8,8 +8,6 @@ import ch.qos.logback.core.util.Duration;
 public class ConfigurationModel extends Model {
 
     private static final long serialVersionUID = 1286156598561818515L;
-    static final String DEBUG_SYSTEM_PROPERTY_KEY = "logback.debug";
-    static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
 
     String debugStr;
     String scanStr;
