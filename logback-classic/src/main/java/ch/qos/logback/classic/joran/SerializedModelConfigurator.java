@@ -17,12 +17,12 @@ package ch.qos.logback.classic.joran;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
-import ch.qos.logback.core.spi.Configurator;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.spi.Configurator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
@@ -52,6 +52,8 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
     @Override
     public ExecutionStatus configure(Context context) {
 
+        setContext(context);
+
         URL url = performMultiStepModelFileSearch(true);
         if (url != null) {
             configureByResource(url);
@@ -70,6 +72,7 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
                 return;
             }
             buildModelInterpretationContext(model);
+
             DefaultProcessor defaultProcessor = new DefaultProcessor(context, this.modelInterpretationContext);
             ModelClassToModelHandlerLinker mc2mhl = new ModelClassToModelHandlerLinker(context);
             mc2mhl.link(defaultProcessor);
@@ -78,7 +81,6 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
             synchronized (context.getConfigurationLock()) {
                 defaultProcessor.process(model);
             }
-
         } else {
             throw new LogbackException(
                     "Unexpected filename extension of file [" + url.toString() + "]. Should be " + MODEL_CONFIG_FILE_EXTENSION);

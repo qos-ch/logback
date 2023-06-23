@@ -65,7 +65,7 @@ public class ContextInitializer {
         loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
         StatusListenerConfigHelper.installIfAsked(loggerContext);
 
-        long start = System.currentTimeMillis();
+        long startConfigurationAsAService = System.currentTimeMillis();
         List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
 
         configuratorList.sort(rankComparator);
@@ -76,7 +76,7 @@ public class ContextInitializer {
                 c.setContext(loggerContext);
                 Configurator.ExecutionStatus status = c.configure(loggerContext);
                 if (status == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-                    printConfigurationAsAServiveDuration(start, true);
+                    printDuration(startConfigurationAsAService, "Configuration as a service duration ", true);
                     return;
                 }
             } catch (Exception e) {
@@ -85,21 +85,25 @@ public class ContextInitializer {
             }
         }
 
-        printConfigurationAsAServiveDuration(start, false);
+        printDuration(startConfigurationAsAService, "Configuration as a service duration ", false);
 
+        long startJoranConfiguration = System.currentTimeMillis();
         Configurator.ExecutionStatus es = attemptConfigurationUsingJoranUsingReflexion(classLoader);
 
-        if (es == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY)
+        if (es == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
+            printDuration(startJoranConfiguration, "JoranConfiguration duration", true);
             return;
+        }
+        printDuration(startJoranConfiguration, "JoranConfiguration duration", false);
 
         // at this stage invoke basicConfigurator
         fallbackOnToBasicConfigurator();
     }
 
-    private void printConfigurationAsAServiveDuration(long start, boolean success) {
+    private void printDuration(long start, String message, boolean success) {
         long end = System.currentTimeMillis();
         long configurationAsAServiceDuration = end - start;
-        contextAware.addInfo("Configuration as a service lasted "+configurationAsAServiceDuration + " milliseconds. Success status="+success);
+        contextAware.addInfo(message+configurationAsAServiceDuration + " milliseconds. Success status="+success);
     }
 
     private Configurator.ExecutionStatus attemptConfigurationUsingJoranUsingReflexion(ClassLoader classLoader) {
