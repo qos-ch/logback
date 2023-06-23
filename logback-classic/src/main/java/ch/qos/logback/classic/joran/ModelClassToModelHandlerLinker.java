@@ -31,6 +31,7 @@ import ch.qos.logback.core.joran.ModelClassToModelHandlerLinkerBase;
 import ch.qos.logback.core.model.AppenderModel;
 import ch.qos.logback.core.model.AppenderRefModel;
 import ch.qos.logback.core.model.InsertFromJNDIModel;
+import ch.qos.logback.core.model.ModelHandlerFactoryMethod;
 import ch.qos.logback.core.model.processor.AppenderModelHandler;
 import ch.qos.logback.core.model.processor.AppenderRefDependencyAnalyser;
 import ch.qos.logback.core.model.processor.AppenderRefModelHandler;
@@ -53,10 +54,12 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
         super(context);
     }
 
+    ModelHandlerFactoryMethod configurationModelHandlerFactoryMethod;
+
     @Override
     public void link(DefaultProcessor defaultProcessor) {
         super.link(defaultProcessor);
-        defaultProcessor.addHandler(ConfigurationModel.class, ConfigurationModelHandler::makeInstance);
+        defaultProcessor.addHandler(ConfigurationModel.class, getConfigurationModelHandlerFactoryMethod());
         defaultProcessor.addHandler(ContextNameModel.class, ContextNameModelHandler::makeInstance);
         defaultProcessor.addHandler(LoggerContextListenerModel.class, LoggerContextListenerModelHandler::makeInstance);
 
@@ -81,6 +84,27 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
 
         sealModelFilters(defaultProcessor);
 
+    }
+
+    public ModelHandlerFactoryMethod getConfigurationModelHandlerFactoryMethod() {
+        if(configurationModelHandlerFactoryMethod == null) {
+            System.out.println("returning default ConfigurationModelHandler::makeInstance;");
+            return  ConfigurationModelHandler::makeInstance;
+        } else {
+            System.out.println("returning set "+configurationModelHandlerFactoryMethod);
+
+            return configurationModelHandlerFactoryMethod;
+        }
+    }
+
+
+    /**
+     * Allow configurators to override the factory method for ConfigurationModelHandler
+     *
+     */
+    public void setConfigurationModelHandlerFactoryMethod(ModelHandlerFactoryMethod cmhfm) {
+        //System.out.println("setConfigurationModelHandlerFactoryMethod called with "+cmhfm);
+        this.configurationModelHandlerFactoryMethod = cmhfm;
     }
 
 }

@@ -23,6 +23,7 @@ import ch.qos.logback.classic.joran.action.LoggerContextListenerAction;
 import ch.qos.logback.classic.joran.action.ReceiverAction;
 import ch.qos.logback.classic.joran.action.RootLoggerAction;
 import ch.qos.logback.classic.joran.sanity.IfNestedWithinSecondPhaseElementSC;
+import ch.qos.logback.classic.model.processor.ConfigurationModelHandlerFull;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.joran.JoranConfiguratorBase;
@@ -83,6 +84,7 @@ public class JoranConfigurator extends JoranConfiguratorBase<ILoggingEvent> {
     @Override
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
         ModelClassToModelHandlerLinker m = new ModelClassToModelHandlerLinker(context);
+        m.setConfigurationModelHandlerFactoryMethod(ConfigurationModelHandlerFull::makeInstance2);
         m.link(defaultProcessor);
     }
 

@@ -71,8 +71,8 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
             }
             buildModelInterpretationContext(model);
             DefaultProcessor defaultProcessor = new DefaultProcessor(context, this.modelInterpretationContext);
-            ModelClassToModelHandlerLinker mha = new ModelClassToModelHandlerLinker(context);
-            mha.link(defaultProcessor);
+            ModelClassToModelHandlerLinker mc2mhl = new ModelClassToModelHandlerLinker(context);
+            mc2mhl.link(defaultProcessor);
 
             // disallow simultaneous configurations of the same context
             synchronized (context.getConfigurationLock()) {

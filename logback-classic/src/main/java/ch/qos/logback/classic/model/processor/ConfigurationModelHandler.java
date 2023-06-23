@@ -13,31 +13,32 @@
  */
 package ch.qos.logback.classic.model.processor;
 
-import static ch.qos.logback.core.model.ModelConstants.DEBUG_SYSTEM_PROPERTY_KEY;
-import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
-import static java.lang.Boolean.FALSE;
-
-import java.net.URL;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
-import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
-import ch.qos.logback.core.spi.ConfigurationEvent;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
+import static ch.qos.logback.core.model.ModelConstants.DEBUG_SYSTEM_PROPERTY_KEY;
+import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
+import static java.lang.Boolean.FALSE;
+
+/**
+ * In 1.3.9/1.49, ConfigurationModelHandler has been reduced in functionality and no
+ * longer initiates a reconfiguration task. This change was justified by the need
+ * to remove java.xml reachability. See also LOGBACK-1717.
+ *
+ * <p>
+ * See {@link ConfigurationModelHandlerFull} subclass offering configuration
+ * reloading support.
+ * </p>
+ */
 public class ConfigurationModelHandler extends ModelHandlerBase {
 
     static final Duration SCAN_PERIOD_DEFAULT = Duration.buildByMinutes(1);
@@ -85,59 +86,13 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         contextUtil.addGroovyPackages(lc.getFrameworkPackages());
     }
 
-    void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
+    protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
+        System.out.println("This is overriden processScanAttrib");
         String scanStr = mic.subst(configurationModel.getScanStr());
         if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
-
-            ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
-            URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
-            if (mainURL == null) {
-                addWarn("Due to missing top level configuration file, reconfiguration on change (configuration file scanning) cannot be done.");
-                return;
-            }
-            ReconfigureOnChangeTask rocTask = new ReconfigureOnChangeTask();
-            rocTask.setContext(context);
-
-            addInfo("Registering a new ReconfigureOnChangeTask "+ rocTask);
-
-            context.fireConfigurationEvent(ConfigurationEvent.newConfigurationChangeDetectorRegisteredEvent(rocTask));
-
-            String scanPeriodStr = mic.subst(configurationModel.getScanPeriodStr());
-            Duration duration = getDurationOfScanPeriodAttribute(scanPeriodStr, SCAN_PERIOD_DEFAULT);
-
-            addInfo("Will scan for changes in [" + mainURL + "] ");
-            // Given that included files are encountered at a later phase, the complete list
-            // of files
-            // to scan can only be determined when the configuration is loaded in full.
-            // However, scan can be active if mainURL is set. Otherwise, when changes are
-            // detected
-            // the top level config file cannot be accessed.
-            addInfo("Setting ReconfigureOnChangeTask scanning period to " + duration);
-
-            ScheduledFuture<?> scheduledFuture = scheduledExecutorService.scheduleAtFixedRate(rocTask,
-                    duration.getMilliseconds(), duration.getMilliseconds(), TimeUnit.MILLISECONDS);
-            rocTask.setScheduredFuture(scheduledFuture);
-            context.addScheduledFuture(scheduledFuture);
+            addInfo("Skipping ReconfigureOnChangeTask registration");
         }
     }
 
-    private Duration getDurationOfScanPeriodAttribute(String scanPeriodAttrib, Duration defaultDuration) {
-        Duration duration = null;
-
-        if (!OptionHelper.isNullOrEmpty(scanPeriodAttrib)) {
-            try {
-                duration = Duration.valueOf(scanPeriodAttrib);
-            } catch (IllegalStateException | IllegalArgumentException e) {
-                addWarn("Failed to parse 'scanPeriod' attribute [" + scanPeriodAttrib + "]", e);
-                // default duration will be set below
-            }
-        }
-
-        if (duration == null) {
-            addInfo("No 'scanPeriod' specified. Defaulting to " + defaultDuration.toString());
-            duration = defaultDuration;
-        }
-        return duration;
-    }
 
 }
