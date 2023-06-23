@@ -88,11 +88,10 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
 
     public ModelHandlerFactoryMethod getConfigurationModelHandlerFactoryMethod() {
         if(configurationModelHandlerFactoryMethod == null) {
-            System.out.println("returning default ConfigurationModelHandler::makeInstance;");
+            //System.out.println("returning default ConfigurationModelHandler::makeInstance;");
             return  ConfigurationModelHandler::makeInstance;
         } else {
-            System.out.println("returning set "+configurationModelHandlerFactoryMethod);
-
+            //System.out.println("returning set "+configurationModelHandlerFactoryMethod);
             return configurationModelHandlerFactoryMethod;
         }
     }
