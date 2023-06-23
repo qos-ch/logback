@@ -1,18 +1,17 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.core.model.processor.ModelInterpretationContext;
-import ch.qos.logback.core.spi.Configurator;
+import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
+import ch.qos.logback.core.joran.spi.JoranException;
+import ch.qos.logback.core.spi.Configurator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
 
 import java.io.File;
 import java.io.IOException;
