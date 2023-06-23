@@ -90,6 +90,7 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
         this.modelInterpretationContext.setTopModel(topModel);
         LogbackClassicDefaultNestedComponentRules.addDefaultNestedComponentRegistryRules(
                 modelInterpretationContext.getDefaultNestedComponentRegistry());
+        this.modelInterpretationContext.createAppenderBags();
     }
 
     private Model retrieveModel(URL url)  {

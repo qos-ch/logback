@@ -45,7 +45,7 @@ public class SerializeModelModelHandler extends ModelHandlerBase {
         Object configuratorHint = modelInterpretationContext.getConfiguratorHint();
 
         if(configuratorHint != null && configuratorHint.getClass().getName().equals("ch.qos.logback.classic.joran.SerializedModelConfigurator")) {
-            addWarn("Skipping model serialization as calling configurator is model based.");
+            addInfo("Skipping model serialization as calling configurator is model based.");
             return;
         }
 
