@@ -20,6 +20,7 @@ import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedCompone
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.Configurator;
@@ -52,8 +53,6 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
     @Override
     public ExecutionStatus configure(Context context) {
 
-        setContext(context);
-
         URL url = performMultiStepModelFileSearch(true);
         if (url != null) {
             configureByResource(url);
@@ -71,6 +70,7 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
                 addWarn("Empty model. Abandoning.");
                 return;
             }
+            ModelUtil.resetForReuse(model);
             buildModelInterpretationContext(model);
 
             DefaultProcessor defaultProcessor = new DefaultProcessor(context, this.modelInterpretationContext);
