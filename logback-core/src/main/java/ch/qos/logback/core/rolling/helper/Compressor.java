@@ -176,7 +176,7 @@ public class Compressor extends ContextAwareBase {
                 gzos.write(inbuf, 0, n);
             }
 
-            addInfo("Done ZIP compressing [" + file2gz + "] as [" + gzedFile + "]");
+            addInfo("Done GZ compressing [" + file2gz + "] as [" + gzedFile + "]");
         } catch (Exception e) {
             addStatus(new ErrorStatus(
                     "Error occurred while compressing [" + nameOfFile2gz + "] into [" + nameOfgzedFile + "].", this,
