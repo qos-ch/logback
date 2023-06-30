@@ -16,7 +16,7 @@ import java.util.List;
  * </p>
  * 
  * <pre>
- * %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+ * %d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n
  * </pre>
  * 
  * <p>
