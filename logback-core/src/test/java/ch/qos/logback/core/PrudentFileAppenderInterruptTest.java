@@ -54,7 +54,7 @@ public class PrudentFileAppenderInterruptTest {
 
     @Test
     public void smoke() throws InterruptedException, IOException {
-        Runner runner = new Runner(fa);
+        InterruptAndLogRunner runner = new InterruptAndLogRunner(fa);
         Thread t = new Thread(runner);
         t.start();
 
@@ -72,15 +72,15 @@ public class PrudentFileAppenderInterruptTest {
         fr.close();
         br.close();
 
-        Assertions.assertEquals(2, totalLines, "Incorrect number of logged lines");
+        Assertions.assertEquals(2, totalLines, "Incorrect number of logged lines "+outputDirStr);
     }
 
-    class Runner extends RunnableWithCounterAndDone {
+    class InterruptAndLogRunner extends RunnableWithCounterAndDone {
         FileAppender<Object> fa;
         CountDownLatch latch = new CountDownLatch(1); // Just to make sure this is executed before we log in the test
                                                       // method
 
-        Runner(FileAppender<Object> fa) {
+        InterruptAndLogRunner(FileAppender<Object> fa) {
             this.fa = fa;
         }
 

@@ -44,7 +44,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
     /**
      * All synchronization in this class is done via the lock object.
      */
-    protected final ReentrantLock lock = new ReentrantLock(false);
+    protected final ReentrantLock streamWriteLock = new ReentrantLock(false);
 
     /**
      * This is the {@link OutputStream outputStream} where output will be written.
@@ -112,12 +112,12 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         if(!isStarted())
             return;
 
-        lock.lock();
+        streamWriteLock.lock();
         try {
             closeOutputStream();
             super.stop();
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
         }
     }
 
@@ -159,7 +159,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
      * @param outputStream An already opened OutputStream.
      */
     public void setOutputStream(OutputStream outputStream) {
-        lock.lock();
+        streamWriteLock.lock();
         try {
             // close any previously opened output stream
             closeOutputStream();
@@ -171,7 +171,7 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
 
             encoderInit();
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
         }
     }
 
@@ -197,14 +197,23 @@ public class OutputStreamAppender<E> extends UnsynchronizedAppenderBase<E> {
         if (byteArray == null || byteArray.length == 0)
             return;
 
-        lock.lock();
+        streamWriteLock.lock();
         try {
-            this.outputStream.write(byteArray);
-            if (immediateFlush) {
-                this.outputStream.flush();
-            }
+            writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
+        }
+    }
+
+    /**
+     * A simple method to write to an outputStream and flush the stream if immediateFlush is set to true.
+     *
+     * @since 1.3.9/1.4.9
+     */
+    protected final void writeByteArrayToOutputStreamWithPossibleFlush(byte[] byteArray) throws IOException {
+        this.outputStream.write(byteArray);
+        if (immediateFlush) {
+            this.outputStream.flush();
         }
     }
 
