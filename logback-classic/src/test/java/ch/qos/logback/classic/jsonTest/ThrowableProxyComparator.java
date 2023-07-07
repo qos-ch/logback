@@ -39,41 +39,83 @@ public class ThrowableProxyComparator {
         if(!left.getMessage().equals(right.getMessage()))
             return false;
 
+        System.out.println("before equalsSTEPArray left.message="+left.getMessage()+", right.message="+right.getMessage());
+
 
         StackTraceElementProxy[] leftStepArray = left.getStackTraceElementProxyArray();
         StackTraceElementProxy[] rightStepArray = right.getStackTraceElementProxyArray();
 
-        System.out.println("before equalsSTEPArray");
+        if(left.getCommonFrames() != right.getCommonFrames()) {
+            return false;
+        }
 
-        if(!equalsSTEPArray(leftStepArray, rightStepArray))
+        if(!equalsSTEPArray(leftStepArray, rightStepArray, left.getCommonFrames()))
             return false;
 
+        boolean causeComparaison = areEqual(left.getCause(), right.getCause());
+        if(!causeComparaison)
+            return causeComparaison;
+
+        if (!compareSuppressedThrowables(left, right))
+            return false;
 
         return true;
     }
 
-    static public boolean equalsSTEPArray( StackTraceElementProxy[] leftStepArray,  StackTraceElementProxy[] rightStepArray) {
+    private static boolean compareSuppressedThrowables(IThrowableProxy left, IThrowableProxy right) {
+        IThrowableProxy[] leftSuppressedThrowableArray = left.getSuppressed();
+        IThrowableProxy[] rightSuppressedThrowableArray = right.getSuppressed();
+
+
+        //System.out.println("leftSuppressedThrowableArray="+leftSuppressedThrowableArray);
+        //System.out.println("rightSuppressedThrowableArray="+rightSuppressedThrowableArray);
+
+        if(leftSuppressedThrowableArray == null && rightSuppressedThrowableArray == null) {
+            return true;
+        }
+        if(leftSuppressedThrowableArray.length == 0 && rightSuppressedThrowableArray == null) {
+            return true;
+        }
+
+        if(leftSuppressedThrowableArray.length != rightSuppressedThrowableArray.length) {
+            System.out.println("suppressed array length discrepancy");
+            return false;
+        }
+
+        for(int i = 0; i < leftSuppressedThrowableArray.length; i++) {
+            IThrowableProxy leftSuppressed = leftSuppressedThrowableArray[i];
+            IThrowableProxy rightSuppressed = rightSuppressedThrowableArray[i];
+
+            boolean suppressedComparison = areEqual(leftSuppressed, rightSuppressed);
+            if(!suppressedComparison) {
+                System.out.println("suppressed ITP comparison failed at position "+i);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static public boolean equalsSTEPArray( StackTraceElementProxy[] leftStepArray,  StackTraceElementProxy[] rightStepArray, int commonFrames) {
         if (leftStepArray==rightStepArray)
             return true;
         if (leftStepArray==null || rightStepArray==null)
             return false;
 
-        int length = leftStepArray.length;
+        int length = leftStepArray.length - commonFrames;
         if (rightStepArray.length != length) {
             System.out.println("length discrepancy");
             return false;
         }
 
-        System.out.println("checking ste array elements");
+        System.out.println("checking ste array elements ");
 
-        for (int i=0; i<length; i++) {
+        for (int i=0; i< (length -commonFrames); i++) {
             StackTraceElementProxy leftStep = leftStepArray[i];
             StackTraceElementProxy rightStep = rightStepArray[i];
 
             if (!equalsSTEP(leftStep, rightStep)) {
                 System.out.println("left "+leftStep);
                 System.out.println("right "+rightStep);
-
                 return false;
             }
         }
