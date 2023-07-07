@@ -38,6 +38,10 @@ public class STEPDeserializer extends StdDeserializer<StackTraceElementProxy> {
     public StackTraceElementProxy deserialize(JsonParser jp, DeserializationContext ctxt)
             throws IOException, JsonProcessingException {
         JsonNode node = jp.getCodec().readTree(jp);
+        return jsonNodeToSTEP(node);
+    }
+
+    public static StackTraceElementProxy jsonNodeToSTEP(JsonNode node) {
         String className = node.get("className").asText();
         String methodName = node.get("methodName").asText();
         String fileName = node.get("fileName").asText();

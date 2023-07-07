@@ -97,7 +97,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        //System.out.println(resultString);
 
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
@@ -113,7 +113,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+       // System.out.println(resultString);
 
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
@@ -200,7 +200,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        //System.out.println(resultString);
 
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
@@ -212,7 +212,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        //System.out.println(resultString);
 
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
@@ -227,7 +227,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        //System.out.println(resultString);
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
     }
@@ -248,7 +248,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        //System.out.println(resultString);
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
     }
@@ -260,7 +260,38 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-        System.out.println(resultString);
+        JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
+        compareEvents(event, resultEvent);
+    }
+
+    @Test
+    void withThrowableHavingCause() throws JsonProcessingException {
+        Throwable cause = new IllegalStateException("test cause");
+
+        Throwable t = new RuntimeException("test", cause);
+
+
+        LoggingEvent event = new LoggingEvent("in withThrowableHavingCause test", logger, Level.WARN, "hello kvp", t, null);
+
+        byte[] resultBytes = jsonEncoder.encode(event);
+        String resultString = new String(resultBytes, StandardCharsets.UTF_8);
+        //System.out.println(resultString);
+        JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
+        compareEvents(event, resultEvent);
+    }
+
+    @Test
+    void withThrowableHavingSuppressed() throws JsonProcessingException {
+        Throwable suppressed = new IllegalStateException("test suppressed");
+
+        Throwable t = new RuntimeException("test");
+        t.addSuppressed(suppressed);
+
+        LoggingEvent event = new LoggingEvent("in withThrowableHavingCause test", logger, Level.WARN, "hello kvp", t, null);
+
+        byte[] resultBytes = jsonEncoder.encode(event);
+        String resultString = new String(resultBytes, StandardCharsets.UTF_8);
+        //System.out.println(resultString);
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
     }

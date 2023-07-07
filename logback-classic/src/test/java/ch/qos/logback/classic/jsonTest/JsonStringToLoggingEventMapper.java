@@ -17,6 +17,7 @@ package ch.qos.logback.classic.jsonTest;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.encoder.JsonEncoder;
 import ch.qos.logback.classic.spi.LoggerContextVO;
+import ch.qos.logback.classic.spi.PubThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -47,6 +48,7 @@ public class JsonStringToLoggingEventMapper {
         module.addDeserializer(Marker.class, new MarkerDeserializer(markerFactory));
         module.addDeserializer(KeyValuePair.class, new KeyValuePairDeserializer());
         module.addDeserializer(LoggerContextVO.class, new LoggerContextVODeserializer());
+        module.addDeserializer(PubThrowableProxy.class, new PubThrowableProxyDeserializer());
 
         objectMapper.registerModule(module);
 

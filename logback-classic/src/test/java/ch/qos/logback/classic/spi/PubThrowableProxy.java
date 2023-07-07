@@ -17,6 +17,8 @@ import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
 import com.fasterxml.jackson.annotation.JsonAlias;
 
+import java.util.Arrays;
+
 public class PubThrowableProxy implements IThrowableProxy {
 
     private String className;
@@ -25,8 +27,8 @@ public class PubThrowableProxy implements IThrowableProxy {
 
     @JsonAlias("stepArray")
     private StackTraceElementProxy[] stackTraceElementProxyArray;
-    private IThrowableProxy cause;
-    private IThrowableProxy[] suppressed;
+    private PubThrowableProxy cause;
+    private PubThrowableProxy[] suppressed;
     private boolean cyclic;
 
     public String getClassName() {
@@ -61,19 +63,19 @@ public class PubThrowableProxy implements IThrowableProxy {
         this.stackTraceElementProxyArray = stackTraceElementProxyArray;
     }
 
-    public IThrowableProxy getCause() {
+    public PubThrowableProxy getCause() {
         return cause;
     }
 
-    public void setCause(IThrowableProxy cause) {
+    public void setCause(PubThrowableProxy cause) {
         this.cause = cause;
     }
 
-    public IThrowableProxy[] getSuppressed() {
+    public PubThrowableProxy[] getSuppressed() {
         return suppressed;
     }
 
-    public void setSuppressed(IThrowableProxy[] suppressed) {
+    public void setSuppressed(PubThrowableProxy[] suppressed) {
         this.suppressed = suppressed;
     }
 
@@ -83,5 +85,13 @@ public class PubThrowableProxy implements IThrowableProxy {
 
     public void setCyclic(boolean cyclic) {
         this.cyclic = cyclic;
+    }
+
+    @Override
+    public String toString() {
+        return "PubThrowableProxy{" + "className='" + className + '\'' + ", message='" + message + '\''
+                + ", commonFramesCount=" + commonFramesCount + ", stackTraceElementProxyArray=" + Arrays.toString(
+                stackTraceElementProxyArray) + ", cause=" + cause + ", suppressed=" + Arrays.toString(suppressed)
+                + ", cyclic=" + cyclic + '}';
     }
 }
