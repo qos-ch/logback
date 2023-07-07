@@ -195,7 +195,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
      * @param file_name The path to the log file.
      */
     public void openFile(String file_name) throws IOException {
-        lock.lock();
+        streamWriteLock.lock();
         try {
             File file = new File(file_name);
             boolean result = FileUtil.createMissingParentDirectories(file);
@@ -207,7 +207,7 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             resilientFos.setContext(context);
             setOutputStream(resilientFos);
         } finally {
-            lock.unlock();
+            streamWriteLock.unlock();
         }
     }
 
@@ -239,7 +239,29 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         this.bufferSize = bufferSize;
     }
 
-    private void safeWrite(E event) throws IOException {
+    @Override
+    protected void writeOut(E event) throws IOException {
+        if (prudent) {
+            safeWriteOut(event);
+        } else {
+            super.writeOut(event);
+        }
+    }
+
+    private void safeWriteOut(E event) {
+        byte[] byteArray = this.encoder.encode(event);
+        if (byteArray == null || byteArray.length == 0)
+            return;
+
+        streamWriteLock.lock();
+        try {
+           safeWriteBytes(byteArray);
+        } finally {
+            streamWriteLock.unlock();
+        }
+    }
+
+    private void safeWriteBytes(byte[] byteArray) {
         ResilientFileOutputStream resilientFOS = (ResilientFileOutputStream) getOutputStream();
         FileChannel fileChannel = resilientFOS.getChannel();
         if (fileChannel == null) {
@@ -257,14 +279,12 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
             if (size != position) {
                 fileChannel.position(size);
             }
-            super.writeOut(event);
+            writeByteArrayToOutputStreamWithPossibleFlush(byteArray);
         } catch (IOException e) {
             // Mainly to catch FileLockInterruptionExceptions (see LOGBACK-875)
             resilientFOS.postIOFailure(e);
         } finally {
-            if (fileLock != null && fileLock.isValid()) {
-                fileLock.release();
-            }
+            releaseFileLock(fileLock);
 
             // Re-interrupt if we started in an interrupted state (see LOGBACK-875)
             if (interrupted) {
@@ -273,12 +293,13 @@ public class FileAppender<E> extends OutputStreamAppender<E> {
         }
     }
 
-    @Override
-    protected void writeOut(E event) throws IOException {
-        if (prudent) {
-            safeWrite(event);
-        } else {
-            super.writeOut(event);
+    private void releaseFileLock(FileLock fileLock) {
+        if (fileLock != null && fileLock.isValid()) {
+            try {
+                fileLock.release();
+            } catch (IOException e) {
+                addError("failed to release lock", e);
+            }
         }
     }
 }
