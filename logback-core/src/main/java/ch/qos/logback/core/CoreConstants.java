@@ -22,6 +22,8 @@ public class CoreConstants {
     final public static String STATUS_LISTENER_CLASS_KEY = "logback.statusListenerClass";
     final public static String SYSOUT = "SYSOUT";
 
+    final public static String STDOUT = "STDOUT";
+
     /**
      * Number of idle threads to retain in a context's executor service.
      */

@@ -18,7 +18,11 @@ import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.LifeCycle;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
+import ch.qos.logback.core.status.OnErrorConsoleStatusListener;
 import ch.qos.logback.core.status.StatusListener;
+
+import static ch.qos.logback.core.CoreConstants.STDOUT;
+import static ch.qos.logback.core.CoreConstants.SYSOUT;
 
 public class StatusListenerConfigHelper {
 
@@ -31,7 +35,7 @@ public class StatusListenerConfigHelper {
 
     private static void addStatusListener(Context context, String listenerClassName) {
         StatusListener listener = null;
-        if (CoreConstants.SYSOUT.equalsIgnoreCase(listenerClassName)) {
+        if (SYSOUT.equalsIgnoreCase(listenerClassName) || STDOUT.equalsIgnoreCase(listenerClassName)) {
             listener = new OnConsoleStatusListener();
         } else {
             listener = createListenerPerClassName(context, listenerClassName);

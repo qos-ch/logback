@@ -43,6 +43,8 @@ public class ContextInitializer {
      * @deprecated Please use ClassicConstants.CONFIG_FILE_PROPERTY instead
      */
     final public static String CONFIG_FILE_PROPERTY = ClassicConstants.CONFIG_FILE_PROPERTY;
+    private static final String JORAN_CONFIGURATION_DURATION_MSG = "JoranConfiguration duration ";
+    private static final String CONFIGURATION_AS_A_SERVICE_DURATION_MSG = "Configuration as a service duration ";
 
     final LoggerContext loggerContext;
 
@@ -76,7 +78,7 @@ public class ContextInitializer {
                 c.setContext(loggerContext);
                 Configurator.ExecutionStatus status = c.configure(loggerContext);
                 if (status == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-                    printDuration(startConfigurationAsAService, "Configuration as a service duration ", true);
+                    printDuration(startConfigurationAsAService, CONFIGURATION_AS_A_SERVICE_DURATION_MSG, true);
                     return;
                 }
             } catch (Exception e) {
@@ -85,16 +87,16 @@ public class ContextInitializer {
             }
         }
 
-        printDuration(startConfigurationAsAService, "Configuration as a service duration ", false);
+        printDuration(startConfigurationAsAService, CONFIGURATION_AS_A_SERVICE_DURATION_MSG, false);
 
         long startJoranConfiguration = System.currentTimeMillis();
         Configurator.ExecutionStatus es = attemptConfigurationUsingJoranUsingReflexion(classLoader);
 
         if (es == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-            printDuration(startJoranConfiguration, "JoranConfiguration duration", true);
+            printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, true);
             return;
         }
-        printDuration(startJoranConfiguration, "JoranConfiguration duration", false);
+        printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, false);
 
         // at this stage invoke basicConfigurator
         fallbackOnToBasicConfigurator();
