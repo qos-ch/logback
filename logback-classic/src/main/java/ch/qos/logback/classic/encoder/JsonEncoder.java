@@ -18,7 +18,6 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.classic.spi.IThrowableProxy;
 import ch.qos.logback.classic.spi.LoggerContextVO;
 import ch.qos.logback.classic.spi.StackTraceElementProxy;
-import ch.qos.logback.classic.spi.ThrowableProxy;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.encoder.EncoderBase;
 import org.slf4j.Marker;
@@ -31,7 +30,6 @@ import java.util.Set;
 import static ch.qos.logback.core.CoreConstants.COLON_CHAR;
 import static ch.qos.logback.core.CoreConstants.COMMA_CHAR;
 import static ch.qos.logback.core.CoreConstants.DOUBLE_QUOTE_CHAR;
-import static ch.qos.logback.core.CoreConstants.SUPPRESSED;
 import static ch.qos.logback.core.CoreConstants.UTF_8_CHARSET;
 import static ch.qos.logback.core.encoder.JsonEscapeUtil.jsonEscapeString;
 import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
@@ -72,6 +70,8 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
     public static final String KEY_VALUE_PAIRS_ATTR_NAME = "kvpList";
 
     public static final String THROWABLE_ATTR_NAME = "throwable";
+
+    private static final String CYCLIC_THROWABLE_ATTR_NAME = "cyclic";
 
     public static final String CAUSE_ATTR_NAME = "cause";
 
@@ -199,6 +199,9 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
 
     private void appendThrowableProxy(StringBuilder sb, String attributeName, IThrowableProxy itp) {
 
+
+        // in the nominal case, attributeName != null. However, attributeName will be null for suppressed
+        // IThrowableProxy array, in which case no attribute name is needed
         if(attributeName != null) {
             sb.append(QUOTE).append(attributeName).append(QUOTE_COL);
             if (itp == null) {
@@ -210,10 +213,19 @@ public class JsonEncoder extends EncoderBase<ILoggingEvent> {
         sb.append(OPEN_OBJ);
 
         appenderMember(sb, CLASS_NAME_ATTR_NAME, nullSafeStr(itp.getClassName()));
+
         sb.append(VALUE_SEPARATOR);
         appenderMember(sb, MESSAGE_ATTR_NAME, jsonEscape(itp.getMessage()));
+
+
+        if(itp.isCyclic()) {
+            sb.append(VALUE_SEPARATOR);
+            appenderMember(sb, CYCLIC_THROWABLE_ATTR_NAME, jsonEscape("true"));
+        }
+
         sb.append(VALUE_SEPARATOR);
         appendSTEPArray(sb, itp.getStackTraceElementProxyArray(), itp.getCommonFrames());
+
         if(itp.getCommonFrames() != 0) {
             sb.append(VALUE_SEPARATOR);
             appenderMemberWithIntValue(sb, COMMON_FRAMES_COUNT_ATTR_NAME, itp.getCommonFrames());

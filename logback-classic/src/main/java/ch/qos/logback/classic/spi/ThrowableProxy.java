@@ -41,7 +41,8 @@ public class ThrowableProxy implements IThrowableProxy {
     private transient PackagingDataCalculator packagingDataCalculator;
     private boolean calculatedPackageData = false;
 
-    private boolean circular;
+    // the getter is called isCyclic
+    private boolean cyclic;
 
     private static final ThrowableProxy[] NO_SUPPRESSED = new ThrowableProxy[0];
 
@@ -51,12 +52,12 @@ public class ThrowableProxy implements IThrowableProxy {
     }
 
     // used for circular exceptions
-    private ThrowableProxy(Throwable circular, boolean isCircular) {
+    private ThrowableProxy(Throwable circular, boolean isCyclic) {
         this.throwable = circular;
         this.className = circular.getClass().getName();
         this.message = circular.getMessage();
         this.stackTraceElementProxyArray = EMPTY_STEP;
-        this.circular = true;
+        this.cyclic = true;
     }
 
     public ThrowableProxy(Throwable throwable, Set<Throwable> alreadyProcessedSet) {
@@ -65,7 +66,7 @@ public class ThrowableProxy implements IThrowableProxy {
         this.className = throwable.getClass().getName();
         this.message = throwable.getMessage();
         this.stackTraceElementProxyArray = ThrowableProxyUtil.steArrayToStepArray(throwable.getStackTrace());
-        this.circular = false;
+        this.cyclic = false;
 
         alreadyProcessedSet.add(throwable);
 
@@ -123,7 +124,7 @@ public class ThrowableProxy implements IThrowableProxy {
 
     @Override
     public boolean isCyclic() {
-        return circular;
+        return cyclic;
     }
 
     public int getCommonFrames() {
