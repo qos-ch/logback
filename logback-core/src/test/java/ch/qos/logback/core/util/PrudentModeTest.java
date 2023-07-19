@@ -67,13 +67,14 @@ public class PrudentModeTest {
     // see https://jira.qos.ch/browse/LOGBACK-1754
     @Test
     public void assertNoOverlappingFileLockException () throws IOException {
-        CountDownLatch latch = new CountDownLatch(THREAD_COUNT);
+        CountDownLatch latch = new CountDownLatch(1);
         List<Thread> threads = new ArrayList<>(THREAD_COUNT);
         for (int i = 0; i < THREAD_COUNT; i++) {
             LoggerThread thread = new LoggerThread(latch, "message from thread " + i);
             thread.start();
             threads.add(thread);
         }
+        latch.countDown();
         int i = 0;
         for (Thread thread : threads) {
             try {
@@ -106,13 +107,17 @@ public class PrudentModeTest {
 
         @Override
         public void run() {
-            latch.countDown();
-            for (int i = 0; i < LOOP_COUNT; i++) {
-                if ((i & 0x08) == 0) {
-                    // yield to spice it up
-                    Thread.yield();
+            try {
+                latch.await();
+                for (int i = 0; i < LOOP_COUNT; i++) {
+                    if ((i & 0x08) == 0) {
+                        // yield to spice it up
+                        Thread.yield();
+                    }
+                    PrudentModeTest.this.fa.doAppend(message + " i=" + i);
                 }
-                PrudentModeTest.this.fa.doAppend(message + " i=" + i);
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
 
