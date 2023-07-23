@@ -137,7 +137,8 @@ public interface ILoggingEvent extends DeferredProcessingAware {
     /**
      * Return the {@link java.time.Instant Instant} the event was created.
      * 
-     * Default implementation returns null.
+     * Default implementation returns the instant corresponding to the value returned by @link
+     * {@link #getTimeStamp()}.
      * 
      * @return the  {@link java.time.Instant Instant}  the event was created.
      * @since 1.3
