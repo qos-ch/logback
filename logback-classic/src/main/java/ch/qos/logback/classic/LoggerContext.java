@@ -44,6 +44,7 @@ import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import ch.qos.logback.core.status.StatusListener;
 import ch.qos.logback.core.status.StatusManager;
 import ch.qos.logback.core.status.WarnStatus;
+import org.slf4j.spi.MDCAdapter;
 
 /**
  * LoggerContext glues many of the logback-classic components together. In
@@ -71,7 +72,7 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     private boolean packagingDataEnabled = DEFAULT_PACKAGING_DATA;
     SequenceNumberGenerator sequenceNumberGenerator = null; // by default there is no SequenceNumberGenerator
 
-    LogbackMDCAdapter mdcAdapter;
+    MDCAdapter mdcAdapter;
 
 
     private int maxCallerDataDepth = ClassicConstants.DEFAULT_MAX_CALLEDER_DATA_DEPTH;
@@ -405,16 +406,16 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
         return sequenceNumberGenerator;
     }
 
-    public LogbackMDCAdapter getMDCAdapter() {
+    public MDCAdapter getMDCAdapter() {
         return mdcAdapter;
     }
 
-    public void setMDCAdapter(LogbackMDCAdapter anAdapter) {
+    public void setMDCAdapter(MDCAdapter anAdapter) {
         if(this.mdcAdapter ==  null) {
             this.mdcAdapter = anAdapter;
         } else {
             StatusManager sm = getStatusManager();
-            sm.add(new ErrorStatus("mdcAdapter already set", this, new Throwable()));
+            sm.add(new ErrorStatus("mdcAdapter cannot be set multiple times", this, new IllegalStateException("mdcAdapter already set")));
         }
     }
 }
