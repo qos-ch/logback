@@ -23,8 +23,7 @@ import java.util.Set;
  * @since 1.3.0-beta1
  */
 // Note that DefaultJoranConfigurator is invoked via reflection
-
-    @ConfiguratorRank(value = ConfiguratorRank.NOMINAL)
+@ConfiguratorRank(value = ConfiguratorRank.NOMINAL)
 public class DefaultJoranConfigurator extends ContextAwareBase implements Configurator {
 
     final public static String AUTOCONFIG_FILE = "logback.xml";
