@@ -25,10 +25,10 @@ public class ClassicConstants {
     public static final String CONFIG_FILE_PROPERTY = "logback.configurationFile";
 
     /**
-     * property name for the model file used for configuration
+     * property name designating the path for the serialized configuration model file
      * @since 1.3.9/1.4.9
      */
-    public static final String MODEL_CONFIG_FILE_PROPERTY = "logback.serializedModelFilew";
+    public static final String MODEL_CONFIG_FILE_PROPERTY = "logback.scmoFile";
 
     public static final String JNDI_CONFIGURATION_RESOURCE = JNDI_JAVA_NAMESPACE
             + "comp/env/logback/configuration-resource";
