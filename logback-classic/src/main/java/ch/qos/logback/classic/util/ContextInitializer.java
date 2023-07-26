@@ -43,8 +43,6 @@ public class ContextInitializer {
      * @deprecated Please use ClassicConstants.CONFIG_FILE_PROPERTY instead
      */
     final public static String CONFIG_FILE_PROPERTY = ClassicConstants.CONFIG_FILE_PROPERTY;
-    private static final String JORAN_CONFIGURATION_DURATION_MSG = "JoranConfiguration duration ";
-    private static final String CONFIGURATION_AS_A_SERVICE_DURATION_MSG = "Configuration as a service duration ";
 
     final LoggerContext loggerContext;
 
@@ -67,18 +65,21 @@ public class ContextInitializer {
         loggerContext.getStatusManager().add(new InfoStatus(CoreConstants.LOGBACK_CLASSIC_VERSION_MESSAGE + versionStr, loggerContext));
         StatusListenerConfigHelper.installIfAsked(loggerContext);
 
-        long startConfigurationAsAService = System.currentTimeMillis();
+
         List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
 
         configuratorList.sort(rankComparator);
 
+        printConfiguratorOrder(configuratorList);
+
         for (Configurator c : configuratorList) {
             try {
+                long start = System.currentTimeMillis();
                 contextAware.addInfo("Constructed configurator of type " + c.getClass());
                 c.setContext(loggerContext);
                 Configurator.ExecutionStatus status = c.configure(loggerContext);
+                printDuration(start, c, status);
                 if (status == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-                    printDuration(startConfigurationAsAService, CONFIGURATION_AS_A_SERVICE_DURATION_MSG, true);
                     return;
                 }
             } catch (Exception e) {
@@ -87,25 +88,33 @@ public class ContextInitializer {
             }
         }
 
-        printDuration(startConfigurationAsAService, CONFIGURATION_AS_A_SERVICE_DURATION_MSG, false);
 
-        long startJoranConfiguration = System.currentTimeMillis();
-        Configurator.ExecutionStatus es = attemptConfigurationUsingJoranUsingReflexion(classLoader);
 
-        if (es == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-            printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, true);
-            return;
-        }
-        printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, false);
-
-        // at this stage invoke basicConfigurator
-        fallbackOnToBasicConfigurator();
+//        long startJoranConfiguration = System.currentTimeMillis();
+//        Configurator.ExecutionStatus es = attemptConfigurationUsingJoranUsingReflexion(classLoader);
+//
+//        if (es == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
+//            printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, true);
+//            return;
+//        }
+//        printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, false);
+//
+//        // at this stage invoke basicConfigurator
+//        fallbackOnToBasicConfigurator();
     }
 
-    private void printDuration(long start, String message, boolean success) {
+    private void printConfiguratorOrder(List<Configurator> configuratorList) {
+        contextAware.addInfo("Here is a list of configurators discovered as a service, by rank: ");
+        for(Configurator c: configuratorList) {
+            contextAware.addInfo("  "+c.getClass().getName());
+        }
+        contextAware.addInfo("They will be invoked in order until ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY is returned.");
+    }
+
+    private void printDuration(long start, Configurator configurator, Configurator.ExecutionStatus executionStatus) {
         long end = System.currentTimeMillis();
-        long configurationAsAServiceDuration = end - start;
-        contextAware.addInfo(message+configurationAsAServiceDuration + " milliseconds. Success status="+success);
+        long diff = end - start;
+        contextAware.addInfo( configurator.getClass().getName()+".configure() call lasted "+diff + " milliseconds. ExecutionStatus="+executionStatus);
     }
 
     private Configurator.ExecutionStatus attemptConfigurationUsingJoranUsingReflexion(ClassLoader classLoader) {
@@ -128,21 +137,6 @@ public class ContextInitializer {
         basicConfigurator.configure(loggerContext);
     }
 
-    //    private void sortByPriority(List<Configurator> configuratorList) {
-    //        configuratorList.sort(new Comparator<Configurator>() {
-    //            @Override
-    //            public int compare(Configurator o1, Configurator o2) {
-    //                if (o1.getClass() == o2.getClass())
-    //                    return 0;
-    //                if (o1 instanceof DefaultJoranConfigurator) {
-    //                    return 1;
-    //                }
-    //
-    //                // otherwise do not intervene
-    //                return 0;
-    //            }
-    //        });
-    //    }
 
     Comparator<Configurator> rankComparator = new Comparator<Configurator>() {
         @Override
@@ -151,8 +145,8 @@ public class ContextInitializer {
             ConfiguratorRank r1 = c1.getClass().getAnnotation(ConfiguratorRank.class);
             ConfiguratorRank r2 = c2.getClass().getAnnotation(ConfiguratorRank.class);
 
-            ConfiguratorRank.Value value1 = r1 == null ? ConfiguratorRank.Value.REGULAR : r1.value();
-            ConfiguratorRank.Value value2 = r2 == null ? ConfiguratorRank.Value.REGULAR : r2.value();
+            int value1 = r1 == null ? ConfiguratorRank.DEFAULT : r1.value();
+            int value2 = r2 == null ? ConfiguratorRank.DEFAULT : r2.value();
 
             int result = compareRankValue(value1, value2);
             // reverse the result for high to low sort
@@ -160,30 +154,12 @@ public class ContextInitializer {
         }
     };
 
-    private int compareRankValue(ConfiguratorRank.Value value1, ConfiguratorRank.Value value2) {
-
-        switch (value1) {
-        case FIRST:
-            if (value2 == ConfiguratorRank.Value.FIRST)
-                return 0;
-            else
-                return 1;
-        case REGULAR:
-            if (value2 == ConfiguratorRank.Value.FALLBACK)
-                return 1;
-            else if (value2 == ConfiguratorRank.Value.REGULAR)
-                return 0;
-            else
-                return -1;
-        case FALLBACK:
-            if (value2 == ConfiguratorRank.Value.FALLBACK)
-                return 0;
-            else
-                return -1;
-
-        default:
+    private int compareRankValue(int value1, int value2) {
+        if(value1 > value2)
+            return 1;
+        else if (value1 == value2)
             return 0;
-        }
+        else return -1;
 
     }
 }
