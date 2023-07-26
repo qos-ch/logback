@@ -3,7 +3,7 @@
 
 <configuration debug="false">
 
-    <serializeModel file="${target.smo}"/>
+    <serializeModel file="${targetModelFile}"/>
 
     <logger name="ModelSerializationTest" level="DEBUG"/>
 </configuration>

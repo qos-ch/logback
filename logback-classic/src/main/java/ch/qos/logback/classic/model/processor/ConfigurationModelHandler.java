@@ -86,7 +86,6 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
     }
 
     protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
-        System.out.println("This is overriden processScanAttrib");
         String scanStr = mic.subst(configurationModel.getScanStr());
         if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
             addInfo("Skipping ReconfigureOnChangeTask registration");

@@ -29,7 +29,7 @@ import ch.qos.logback.core.spi.ContextAwareBase;
  * 
  * @author Ceki G&uuml;lc&uuml;
  */
-@ConfiguratorRank(value = ConfiguratorRank.Value.FALLBACK)
+@ConfiguratorRank(value = ConfiguratorRank.FALLBACK)
 public class BasicConfigurator extends ContextAwareBase implements Configurator {
 
     public BasicConfigurator() {

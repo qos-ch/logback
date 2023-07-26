@@ -22,7 +22,9 @@ import java.util.Set;
 /**
  * @since 1.3.0-beta1
  */
-@ConfiguratorRank(value = ConfiguratorRank.Value.REGULAR)
+// Note that DefaultJoranConfigurator is invoked via reflection
+
+    @ConfiguratorRank(value = ConfiguratorRank.NOMINAL)
 public class DefaultJoranConfigurator extends ContextAwareBase implements Configurator {
 
     final public static String AUTOCONFIG_FILE = "logback.xml";
@@ -37,7 +39,7 @@ public class DefaultJoranConfigurator extends ContextAwareBase implements Config
             } catch (JoranException e) {
                 e.printStackTrace();
             }
-            // we tried and that counts Mary.
+            // You tried and that counts Mary.
             return ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY;
         } else {
             return ExecutionStatus.INVOKE_NEXT_IF_ANY;
