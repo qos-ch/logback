@@ -151,6 +151,9 @@ public class SMTPAppender_GreenTest {
         int expectedEmailCount = 1;
         // wait for the server to receive the messages
         waitForServerToReceiveEmails(expectedEmailCount);
+        while (!ch.qos.logback.core.net.SMTPAppenderBase.getExecutionStatus()) {
+            Thread.yield();
+        }
         MimeMessage[] mma = greenMailServer.getReceivedMessages();
         assertNotNull(mma);
         assertEquals(expectedEmailCount, mma.length);
@@ -304,6 +307,7 @@ public class SMTPAppender_GreenTest {
 
     @Test
     public void testCustomEvaluator() throws Exception {
+        ch.qos.logback.core.net.SMTPAppenderBase.reset();
         startSMTPServer(NO_SSL);
         configure(BlackboxClassicTestConstants.JORAN_INPUT_PREFIX + "smtp/customEvaluator.xml");
 

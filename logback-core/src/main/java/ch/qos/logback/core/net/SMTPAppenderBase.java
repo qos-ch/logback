@@ -70,6 +70,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
     protected Layout<E> subjectLayout;
     protected Layout<E> layout;
 
+    public static volatile boolean hasExecuted;
     private List<PatternLayoutBase<E>> toPatternLayoutList = new ArrayList<PatternLayoutBase<E>>();
     private String from;
     private String subjectStr = null;
@@ -650,6 +651,14 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
         this.sessionViaJNDI = sessionViaJNDI;
     }
 
+    public static boolean getExecutionStatus() {
+        return hasExecuted;
+    }
+
+    public static void reset() {
+        hasExecuted = false;
+    }
+
     /**
      * Set the character set encoding of the outgoing email messages. The default
      * encoding is "UTF-8" which usually works well for most purposes.
@@ -680,6 +689,7 @@ public abstract class SMTPAppenderBase<E> extends AppenderBase<E> {
 
         public void run() {
             sendBuffer(cyclicBuffer, e);
+            hasExecuted = true;
         }
     }
 }
