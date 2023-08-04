@@ -98,10 +98,13 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
     }
 
     private Model retrieveModel(URL url)  {
+        long start = System.currentTimeMillis();
         try (InputStream is = url.openStream()) {
             HardenedModelInputStream hmis = new HardenedModelInputStream(is);
 
             Model model = (Model) hmis.readObject();
+            long diff = System.currentTimeMillis() - start;
+            addInfo("Model at ["+url+"] read in "+diff + " milliseconds");
             return model;
         } catch(IOException e) {
             addError("Failed to open "+url, e);

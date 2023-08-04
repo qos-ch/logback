@@ -26,9 +26,6 @@ import java.util.Set;
 @ConfiguratorRank(value = ConfiguratorRank.NOMINAL)
 public class DefaultJoranConfigurator extends ContextAwareBase implements Configurator {
 
-    final public static String AUTOCONFIG_FILE = "logback.xml";
-    final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
-
     @Override
     public ExecutionStatus configure(Context context) {
         URL url = performMultiStepConfigurationFileSearch(true);
@@ -52,12 +49,12 @@ public class DefaultJoranConfigurator extends ContextAwareBase implements Config
             return url;
         }
 
-        url = getResource(TEST_AUTOCONFIG_FILE, myClassLoader, updateStatus);
+        url = getResource(ClassicConstants.TEST_AUTOCONFIG_FILE, myClassLoader, updateStatus);
         if (url != null) {
             return url;
         }
 
-        return getResource(AUTOCONFIG_FILE, myClassLoader, updateStatus);
+        return getResource(ClassicConstants.AUTOCONFIG_FILE, myClassLoader, updateStatus);
     }
     public void configureByResource(URL url) throws JoranException {
         if (url == null) {

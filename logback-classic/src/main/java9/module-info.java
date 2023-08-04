@@ -18,9 +18,6 @@ module ch.qos.logback.classic {
   requires ch.qos.logback.core;
   uses ch.qos.logback.core.spi.Configurator;
   provides org.slf4j.spi.SLF4JServiceProvider with ch.qos.logback.classic.spi.LogbackServiceProvider;
-  provides ch.qos.logback.core.spi.Configurator with ch.qos.logback.classic.joran.SerializedModelConfigurator,
-          ch.qos.logback.classic.util.DefaultJoranConfigurator,
-          ch.qos.logback.classic.BasicConfigurator;
 
   exports ch.qos.logback.classic;
   exports ch.qos.logback.classic.boolex;

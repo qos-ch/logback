@@ -332,7 +332,7 @@ public class LoggingEvent implements ILoggingEvent {
         return sequenceNumber;
     }
 
-    public void setSquenceNumber(long sn) {
+    public void setSequenceNumber(long sn) {
         sequenceNumber = sn;
     }
 

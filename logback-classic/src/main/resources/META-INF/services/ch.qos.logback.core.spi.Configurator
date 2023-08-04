@@ -1,9 +1,0 @@
-# Configurators are invoked according to their rank, highest rank is invoked first
-# SerializedModelConfigurator has rank 10
-# DefaultJoranConfigurator has rank 0 (NOMINAL)
-# BasicConfigurator has rank -10 (FALLBACK)
-#
-ch.qos.logback.classic.joran.SerializedModelConfigurator
-ch.qos.logback.classic.util.DefaultJoranConfigurator
-ch.qos.logback.classic.BasicConfigurator
-
