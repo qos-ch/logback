@@ -423,7 +423,7 @@ public class ConverterTest {
         assertTrue(converter.isStarted());
         LoggingEvent event = makeLoggingEvent(null);
 
-        event.setSquenceNumber(123);
+        event.setSequenceNumber(123);
         assertEquals("123", converter.convert(event));
         StatusPrinter.print(loggerContext);
     }

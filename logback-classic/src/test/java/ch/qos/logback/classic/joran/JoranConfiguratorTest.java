@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.joran;
 
 import ch.qos.logback.classic.AsyncAppender;
+import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -728,7 +729,7 @@ public class JoranConfiguratorTest {
     public void modelSerialization() throws JoranException, IOException, ClassNotFoundException {
         String outputPath = OUTPUT_DIR_PREFIX+"minimal_"+diff+ MODEL_CONFIG_FILE_EXTENSION;
 
-        loggerContext.putProperty("target.smo", outputPath);
+        loggerContext.putProperty("targetModelFile", outputPath);
         configure(ClassicTestConstants.JORAN_INPUT_PREFIX + "model/minimal.xml");
         StatusPrinter.print(loggerContext);
 
@@ -747,13 +748,13 @@ public class JoranConfiguratorTest {
         assertEquals(2, configurationModel.getSubModels().size());
 
         SerializeModelModel smm = (SerializeModelModel)  configurationModel.getSubModels().get(0);
-        assertEquals("${target.smo}", smm.getFile());
+        assertEquals("${targetModelFile}", smm.getFile());
 
 
         LoggerModel loggerModel = (LoggerModel)  configurationModel.getSubModels().get(1);
         assertEquals("ModelSerializationTest", loggerModel.getName());
 
-        //    <serializeModel file="${target.smo}"/>
+        //    <serializeModel file="${targetModelFile}"/>
         //    <logger name="ModelSerializationTest" level="DEBUG"/>
 
 

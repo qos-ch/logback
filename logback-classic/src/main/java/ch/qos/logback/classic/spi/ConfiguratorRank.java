@@ -24,12 +24,19 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface ConfiguratorRank {
-    enum Value {
-        FIRST,
-        REGULAR,
-        FALLBACK;
-    }
 
-    Value value() default Value.REGULAR;
+    static public int FALLBACK = -10;
+    static public int NOMINAL = 0;
+    static public int SERIALIZED_MODEL = 10;
 
+    static public int DEFAULT = 20;
+
+    static public int CUSTOM_LOW_PRIORITY = DEFAULT;
+
+    static public int CUSTOM_NORMAL_PRIORITY = 30;
+
+    static public int CUSTOM_HIGH_PRIORITY = 40;
+
+    static public int CUSTOM_TOP_PRIORITY = 50;
+    public int value() default DEFAULT;
 }

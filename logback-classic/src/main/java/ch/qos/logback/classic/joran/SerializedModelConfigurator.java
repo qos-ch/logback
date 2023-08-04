@@ -17,6 +17,7 @@ package ch.qos.logback.classic.joran;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
+import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;
 import ch.qos.logback.core.model.Model;
@@ -43,6 +44,7 @@ import static ch.qos.logback.core.CoreConstants.MODEL_CONFIG_FILE_EXTENSION;
  */
 
 // BEWARE: the fqcn is used in SerializedModelModelHandler
+@ConfiguratorRank(value = ConfiguratorRank.SERIALIZED_MODEL)
 public class SerializedModelConfigurator extends ContextAwareBase implements Configurator {
 
     final public static String AUTOCONFIG_MODEL_FILE = "logback"+ MODEL_CONFIG_FILE_EXTENSION;
@@ -96,10 +98,13 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
     }
 
     private Model retrieveModel(URL url)  {
+        long start = System.currentTimeMillis();
         try (InputStream is = url.openStream()) {
             HardenedModelInputStream hmis = new HardenedModelInputStream(is);
 
             Model model = (Model) hmis.readObject();
+            long diff = System.currentTimeMillis() - start;
+            addInfo("Model at ["+url+"] read in "+diff + " milliseconds");
             return model;
         } catch(IOException e) {
             addError("Failed to open "+url, e);
