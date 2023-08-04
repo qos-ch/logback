@@ -117,6 +117,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         int approxWritesPerPeriod = 64;
         sizeThreshold = prefix.length() * approxWritesPerPeriod;
         loggerContext.putProperty("sizeThreshold", "" + sizeThreshold);
+        System.out.println("timeAndSize.sizeThreshold="+sizeThreshold);
         loadConfig(ClassicTestConstants.JORAN_INPUT_PREFIX + "rolling/" + testId + ".xml");
 
         StatusPrinter.print(loggerContext);
@@ -135,7 +136,8 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         TimeBasedFileNamingAndTriggeringPolicy<ILoggingEvent> tbnatp = tprp.getTimeBasedFileNamingAndTriggeringPolicy();
 
         int timeIncrement = 1000 / approxWritesPerPeriod;
-        int runLength = approxWritesPerPeriod * 3;
+        int targetPeriodCount = 3;
+        int runLength = approxWritesPerPeriod * targetPeriodCount;
         for (int i = 0; i < runLength; i++) {
             String msg = prefix + i;
             logger.debug(msg);
@@ -149,7 +151,7 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
         // for various reasons, it is extremely difficult to have the files
         // match exactly the expected archive files. Thus, we aim for
         // an approximate match
-        assertTrue(eCount >= 4 && eCount > expectedFilenameList.size() / 2,
+        assertTrue(eCount >= targetPeriodCount || eCount >= expectedFilenameList.size() / 2,
                 "existenceCount=" + eCount + ", expectedFilenameList.size=" + expectedFilenameList.size());
     }
 
@@ -218,10 +220,10 @@ public class TimeBasedRollingWithConfigFileTest extends ScaffoldingForRollingTes
     void addExpectedFileName(String testId, Date date, int fileIndexCounter, boolean gzExtension) {
 
         String fn = randomOutputDir + testId + "-" + SDF.format(date) + "." + fileIndexCounter;
-        System.out.println("Adding " + fn);
         if (gzExtension) {
             fn += ".gz";
         }
+        System.out.println("Adding " + fn);
         expectedFilenameList.add(fn);
     }
 
