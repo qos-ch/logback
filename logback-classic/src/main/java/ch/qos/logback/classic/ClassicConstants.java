@@ -60,4 +60,6 @@ public class ClassicConstants {
 
     public static final String FINALIZE_SESSION = "FINALIZE_SESSION";
     public static final Marker FINALIZE_SESSION_MARKER = MarkerFactory.getMarker(FINALIZE_SESSION);
+    final public static String AUTOCONFIG_FILE = "logback.xml";
+    final public static String TEST_AUTOCONFIG_FILE = "logback-test.xml";
 }

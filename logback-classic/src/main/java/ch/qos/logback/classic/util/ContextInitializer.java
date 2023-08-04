@@ -37,12 +37,21 @@ import java.util.List;
  */
 public class ContextInitializer {
 
-    final public static String AUTOCONFIG_FILE = DefaultJoranConfigurator.AUTOCONFIG_FILE;
-    final public static String TEST_AUTOCONFIG_FILE = DefaultJoranConfigurator.TEST_AUTOCONFIG_FILE;
+    /**
+     *  @deprecated Please use ClassicConstants.AUTOCONFIG_FILE instead
+     */
+    final public static String AUTOCONFIG_FILE = ClassicConstants.AUTOCONFIG_FILE;
+    /**
+     * @deprecated Please use ClassicConstants.TEST_AUTOCONFIG_FILE instead
+     */
+    final public static String TEST_AUTOCONFIG_FILE = ClassicConstants.TEST_AUTOCONFIG_FILE;
     /**
      * @deprecated Please use ClassicConstants.CONFIG_FILE_PROPERTY instead
      */
     final public static String CONFIG_FILE_PROPERTY = ClassicConstants.CONFIG_FILE_PROPERTY;
+
+    String[] INTERNAL_CONFIGURATOR_CLASSNAME_LIST = {"ch.qos.logback.classic.joran.SerializedModelConfigurator",
+            "ch.qos.logback.classic.util.DefaultJoranConfigurator", "ch.qos.logback.classic.BasicConfigurator"};
 
     final LoggerContext loggerContext;
 
@@ -66,41 +75,59 @@ public class ContextInitializer {
         StatusListenerConfigHelper.installIfAsked(loggerContext);
 
 
+        // invoke custom configurators
         List<Configurator> configuratorList = ClassicEnvUtil.loadFromServiceLoader(Configurator.class, classLoader);
-
         configuratorList.sort(rankComparator);
-
-        printConfiguratorOrder(configuratorList);
-
-        for (Configurator c : configuratorList) {
-            try {
-                long start = System.currentTimeMillis();
-                contextAware.addInfo("Constructed configurator of type " + c.getClass());
-                c.setContext(loggerContext);
-                Configurator.ExecutionStatus status = c.configure(loggerContext);
-                printDuration(start, c, status);
-                if (status == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-                    return;
-                }
-            } catch (Exception e) {
-                throw new LogbackException(String.format("Failed to initialize Configurator: %s using ServiceLoader",
-                        c != null ? c.getClass().getCanonicalName() : "null"), e);
-            }
+        if (configuratorList.isEmpty()) {
+            contextAware.addInfo("No custom configurators were discovered as a service.");
+        } else {
+            printConfiguratorOrder(configuratorList);
         }
 
+        for (Configurator c : configuratorList) {
+            if (invokeConfigure(c) == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY)
+                return;
+        }
 
+        // invoke internal configurators
+        for (String configuratorClassName : INTERNAL_CONFIGURATOR_CLASSNAME_LIST) {
+            contextAware.addInfo("Trying to configure with "+configuratorClassName);
+            Configurator c = instantiateConfiguratorByClassName(configuratorClassName, classLoader);
+            if(c == null)
+                continue;
+            if (invokeConfigure(c) == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY)
+                return;
+        }
+    }
 
-//        long startJoranConfiguration = System.currentTimeMillis();
-//        Configurator.ExecutionStatus es = attemptConfigurationUsingJoranUsingReflexion(classLoader);
-//
-//        if (es == Configurator.ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY) {
-//            printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, true);
-//            return;
-//        }
-//        printDuration(startJoranConfiguration, JORAN_CONFIGURATION_DURATION_MSG, false);
-//
-//        // at this stage invoke basicConfigurator
-//        fallbackOnToBasicConfigurator();
+    private Configurator instantiateConfiguratorByClassName(String configuratorClassName, ClassLoader classLoader) {
+        try {
+            Class<?> classObj = classLoader.loadClass(configuratorClassName);
+            return (Configurator) classObj.getConstructor().newInstance();
+        } catch (ReflectiveOperationException  e) {
+            contextAware.addInfo("Instantiation failure: " + e.toString());
+            return null;
+        }
+    }
+
+    /**
+     *
+     * @param configurator
+     * @return true if enclosing loop should break, false otherwise
+     */
+    private Configurator.ExecutionStatus invokeConfigure(Configurator configurator) {
+        try {
+            long start = System.currentTimeMillis();
+            contextAware.addInfo("Constructed configurator of type " + configurator.getClass());
+            configurator.setContext(loggerContext);
+            Configurator.ExecutionStatus status = configurator.configure(loggerContext);
+            printDuration(start, configurator, status);
+            return status;
+
+        } catch (Exception e) {
+            throw new LogbackException(String.format("Failed to initialize or to run Configurator: %s",
+                    configurator != null ? configurator.getClass().getCanonicalName() : "null"), e);
+        }
     }
 
     private void printConfiguratorOrder(List<Configurator> configuratorList) {
@@ -130,13 +157,6 @@ public class ContextInitializer {
         }
 
     }
-
-    private void fallbackOnToBasicConfigurator() {
-        BasicConfigurator basicConfigurator = new BasicConfigurator();
-        basicConfigurator.setContext(loggerContext);
-        basicConfigurator.configure(loggerContext);
-    }
-
 
     Comparator<Configurator> rankComparator = new Comparator<Configurator>() {
         @Override
