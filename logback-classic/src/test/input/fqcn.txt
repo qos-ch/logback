@@ -240,7 +240,7 @@ ch.qos.logback.classic.sift.JNDIBasedContextDiscriminator
 ch.qos.logback.classic.sift.MDCBasedDiscriminator
 ch.qos.logback.classic.spi.CallerData
 ch.qos.logback.classic.spi.ClassPackagingData
-ch.qos.logback.core.spi.Configurator
+ch.qos.logback.classic.spi.Configurator
 ch.qos.logback.classic.spi.EventArgUtil
 ch.qos.logback.classic.spi.ILoggingEvent
 ch.qos.logback.classic.spi.IThrowableProxy
