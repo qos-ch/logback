@@ -38,18 +38,6 @@ public interface Configurator extends ContextAware {
         DO_NOT_INVOKE_NEXT_IF_ANY
     }
 
-    enum RankValue {
-        FIRST,
-        REGULAR,
-        FALLBACK;
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    public @interface Rank {
-        RankValue value() default RankValue.REGULAR;
-    }
-
     /**
      * The context will also be set before this method is called via
      * {@link ContextAware#setContext(ch.qos.logback.core.Context)}.
