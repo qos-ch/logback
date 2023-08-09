@@ -1,3 +1,4 @@
+import ch.qos.logback.classic.spi.Configurator;
 
 module ch.qos.logback.classic {
 
@@ -16,7 +17,7 @@ module ch.qos.logback.classic {
 
   requires org.slf4j;
   requires ch.qos.logback.core;
-  uses ch.qos.logback.core.spi.Configurator;
+  uses Configurator;
   provides org.slf4j.spi.SLF4JServiceProvider with ch.qos.logback.classic.spi.LogbackServiceProvider;
 
   exports ch.qos.logback.classic;

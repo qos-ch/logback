@@ -13,7 +13,7 @@
  */
 package ch.qos.logback.classic.util;
 
-import ch.qos.logback.core.spi.Configurator;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;

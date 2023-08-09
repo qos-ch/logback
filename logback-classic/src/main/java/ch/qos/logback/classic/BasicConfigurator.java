@@ -14,7 +14,7 @@
 package ch.qos.logback.classic;
 
 import ch.qos.logback.classic.layout.TTLLLayout;
-import ch.qos.logback.core.spi.Configurator;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.ConsoleAppender;

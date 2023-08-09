@@ -24,7 +24,7 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.model.processor.DefaultProcessor;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
-import ch.qos.logback.core.spi.Configurator;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.status.StatusManager;

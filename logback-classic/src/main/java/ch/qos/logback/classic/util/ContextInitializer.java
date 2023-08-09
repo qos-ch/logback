@@ -10,10 +10,9 @@
  */
 package ch.qos.logback.classic.util;
 
-import ch.qos.logback.classic.BasicConfigurator;
 import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.spi.Configurator;
+import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.LogbackException;

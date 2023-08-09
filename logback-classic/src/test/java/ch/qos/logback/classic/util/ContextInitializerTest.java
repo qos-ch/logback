@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 public class ContextInitializerTest {
 
-    static final String PATH_TO_META_INF_CONF_SERVICE = "META-INF/services/ch.qos.logback.core.spi.Configurator";
+    static final String PATH_TO_META_INF_CONF_SERVICE = "META-INF/services/ch.qos.logback.classic.spi.Configurator";
     static final String FAKE_META_INF_SERVICES = "FAKE_META_INF_SERVICES_ch_qos_logback_classic_spi_Configurator";
     LoggerContext loggerContext = new LoggerContext();
     Logger root = loggerContext.getLogger(Logger.ROOT_LOGGER_NAME);
