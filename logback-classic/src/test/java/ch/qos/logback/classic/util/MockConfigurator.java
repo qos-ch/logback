@@ -13,6 +13,7 @@
  */
 package ch.qos.logback.classic.util;
 
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.spi.Configurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.Context;
@@ -23,7 +24,7 @@ public class MockConfigurator extends ContextAwareBase implements Configurator {
 
     static Context context = null;
 
-    public ExecutionStatus configure(Context aContext) {
+    public ExecutionStatus configure(LoggerContext aContext) {
         context = aContext;
         return ExecutionStatus.NEUTRAL;
     }

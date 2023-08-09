@@ -1,6 +1,7 @@
 package ch.qos.logback.classic.util;
 
 import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
 import ch.qos.logback.core.Context;
@@ -27,7 +28,7 @@ import java.util.Set;
 public class DefaultJoranConfigurator extends ContextAwareBase implements Configurator {
 
     @Override
-    public ExecutionStatus configure(Context context) {
+    public ExecutionStatus configure(LoggerContext context) {
         URL url = performMultiStepConfigurationFileSearch(true);
         if (url != null) {
             try {

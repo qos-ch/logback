@@ -112,7 +112,7 @@ public class ContextInitializer {
     /**
      *
      * @param configurator
-     * @return true if enclosing loop should break, false otherwise
+     * @return ExecutionStatus
      */
     private Configurator.ExecutionStatus invokeConfigure(Configurator configurator) {
         try {
