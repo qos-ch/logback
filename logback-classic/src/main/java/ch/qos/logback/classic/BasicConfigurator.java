@@ -35,10 +35,8 @@ public class BasicConfigurator extends ContextAwareBase implements Configurator 
     public BasicConfigurator() {
     }
 
-    public ExecutionStatus configure(Context context) {
+    public ExecutionStatus configure(LoggerContext loggerContext) {
         addInfo("Setting up default configuration.");
-
-        LoggerContext loggerContext = (LoggerContext) context;
 
         ConsoleAppender<ILoggingEvent> ca = new ConsoleAppender<ILoggingEvent>();
         ca.setContext(context);

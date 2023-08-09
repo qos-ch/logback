@@ -15,6 +15,7 @@
 package ch.qos.logback.classic.joran;
 
 import ch.qos.logback.classic.ClassicConstants;
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.serializedModel.HardenedModelInputStream;
 import ch.qos.logback.classic.model.processor.LogbackClassicDefaultNestedComponentRules;
 import ch.qos.logback.classic.spi.ConfiguratorRank;
@@ -53,7 +54,7 @@ public class SerializedModelConfigurator extends ContextAwareBase implements Con
     protected ModelInterpretationContext modelInterpretationContext;
 
     @Override
-    public ExecutionStatus configure(Context context) {
+    public ExecutionStatus configure(LoggerContext loggerContext) {
 
         URL url = performMultiStepModelFileSearch(true);
         if (url != null) {
