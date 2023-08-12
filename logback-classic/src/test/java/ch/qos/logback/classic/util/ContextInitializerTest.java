@@ -15,7 +15,6 @@ import ch.qos.logback.classic.ClassicConstants;
 import ch.qos.logback.classic.ClassicTestConstants;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ConsoleAppender;
@@ -161,7 +160,9 @@ public class ContextInitializerTest {
 
         URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml",
                 Thread.currentThread().getContextClassLoader());
-        configureByResource(configurationFileUrl);
+        DefaultJoranConfigurator joranConfigurator = new DefaultJoranConfigurator();
+        joranConfigurator.setContext(loggerContext);
+        joranConfigurator.configureByResource(configurationFileUrl);
 
         assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
     }
@@ -178,25 +179,13 @@ public class ContextInitializerTest {
 //        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
 //    }
 
-    private  void configureByResource(URL url) throws JoranException {
-        if (url == null) {
-            throw new IllegalArgumentException("URL argument cannot be null");
-        }
-        final String urlString = url.toString();
-        if (urlString.endsWith("xml")) {
-            JoranConfigurator configurator = new JoranConfigurator();
-            configurator.setContext(loggerContext);
-            configurator.doConfigure(url);
-        } else {
-            throw new LogbackException("Unexpected filename extension of file [" + url + "]. Should be .xml");
-        }
-    }
-
     @Test
     public void shouldThrowExceptionIfUnexpectedConfigurationFileExtension() throws JoranException {
         URL configurationFileUrl = Loader.getResource("README.txt", Thread.currentThread().getContextClassLoader());
         try {
-            this.configureByResource(configurationFileUrl);
+            DefaultJoranConfigurator joranConfigurator = new DefaultJoranConfigurator();
+            joranConfigurator.setContext(loggerContext);
+            joranConfigurator.configureByResource(configurationFileUrl);
             fail("Should throw LogbackException");
         } catch (LogbackException expectedException) {
             // pass
