@@ -155,28 +155,28 @@ public class ContextInitializerTest {
         assertTrue(sll.size() == 1, sll.size() + " should be 1");
     }
 
-        @Test
-        public void shouldConfigureFromXmlFile() throws MalformedURLException, JoranException {
-            assertNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
+    @Test
+    public void shouldConfigureFromXmlFile() throws MalformedURLException, JoranException {
+        assertNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
 
-            URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml",
-                    Thread.currentThread().getContextClassLoader());
-            configureByResource(configurationFileUrl);
+        URL configurationFileUrl = Loader.getResource("BOO_logback-test.xml",
+                Thread.currentThread().getContextClassLoader());
+        configureByResource(configurationFileUrl);
 
-            assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
-        }
+        assertNotNull(loggerContext.getObject(CoreConstants.SAFE_JORAN_CONFIGURATION));
+    }
 
-    //    @Test
-    //    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
-    //        LoggerContext loggerContext = new LoggerContext();
-    //        ContextInitializer initializer = new ContextInitializer(loggerContext);
-    //        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-    //
-    //        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
-    //        initializer.configureByResource(configurationFileUrl);
-    //
-    //        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
-    //    }
+//    @Test
+//    public void shouldConfigureFromGroovyScript() throws MalformedURLException, JoranException {
+//        LoggerContext loggerContext = new LoggerContext();
+//        ContextInitializer initializer = new ContextInitializer(loggerContext);
+//        assertNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+//
+//        URL configurationFileUrl = Loader.getResource("test.groovy", Thread.currentThread().getContextClassLoader());
+//        initializer.configureByResource(configurationFileUrl);
+//
+//        assertNotNull(loggerContext.getObject(CoreConstants.CONFIGURATION_WATCH_LIST));
+//    }
 
     private  void configureByResource(URL url) throws JoranException {
         if (url == null) {
