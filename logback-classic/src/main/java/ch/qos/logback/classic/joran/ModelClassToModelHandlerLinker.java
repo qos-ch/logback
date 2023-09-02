@@ -57,6 +57,7 @@ public class ModelClassToModelHandlerLinker extends ModelClassToModelHandlerLink
         defaultProcessor.addHandler(InsertFromJNDIModel.class, InsertFromJNDIModelHandler::makeInstance);
 
         defaultProcessor.addHandler(AppenderModel.class, AppenderModelHandler::makeInstance);
+        defaultProcessor.addHandler(ReceiverModel.class, ReceiverModelHandler::makeInstance);
         defaultProcessor.addHandler(AppenderRefModel.class, AppenderRefModelHandler::makeInstance);
         defaultProcessor.addHandler(RootLoggerModel.class, RootLoggerModelHandler::makeInstance);
         defaultProcessor.addHandler(LoggerModel.class, LoggerModelHandler::makeInstance);
