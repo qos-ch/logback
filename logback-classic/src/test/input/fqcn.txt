@@ -224,6 +224,7 @@ ch.qos.logback.classic.pattern.RootCauseFirstThrowableProxyConverter
 ch.qos.logback.classic.pattern.SyslogStartConverter
 ch.qos.logback.classic.pattern.TargetLengthBasedClassNameAbbreviator
 ch.qos.logback.classic.pattern.ThreadConverter
+ch.qos.logback.classic.pattern.ThreadIdConverter
 ch.qos.logback.classic.pattern.ThrowableHandlingConverter
 ch.qos.logback.classic.pattern.ThrowableProxyConverter
 ch.qos.logback.classic.pattern.Util
