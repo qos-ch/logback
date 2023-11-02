@@ -275,14 +275,23 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
 
     public void detachAndStopAllAppenders() {
         aai.detachAndStopAllAppenders();
+        appenderCount = 0;
     }
 
     public boolean detachAppender(Appender<E> eAppender) {
-        return aai.detachAppender(eAppender);
+        boolean detached = aai.detachAppender(eAppender);
+        if (detached) {
+            appenderCount --;
+        }
+        return detached;
     }
 
     public boolean detachAppender(String name) {
-        return aai.detachAppender(name);
+        boolean detached = aai.detachAppender(name);
+        if (detached) {
+            appenderCount --;
+        }
+        return detached;
     }
 
     class Worker extends Thread {
