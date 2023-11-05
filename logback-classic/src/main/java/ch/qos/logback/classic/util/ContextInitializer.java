@@ -100,6 +100,10 @@ public class ContextInitializer {
     }
 
     private Configurator instantiateConfiguratorByClassName(String configuratorClassName, ClassLoader classLoader) {
+        if (classLoader == null) {
+            contextAware.addInfo("Instantiation failure: null ClassLoader");
+            return null;
+        }
         try {
             Class<?> classObj = classLoader.loadClass(configuratorClassName);
             return (Configurator) classObj.getConstructor().newInstance();
