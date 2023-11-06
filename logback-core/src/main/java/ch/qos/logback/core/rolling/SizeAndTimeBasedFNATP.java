@@ -157,6 +157,10 @@ public class SizeAndTimeBasedFNATP<E> extends TimeBasedFileNamingAndTriggeringPo
             return true;
         }
 
+        return checkSizeBasedTrigger(activeFile, currentTime);
+    }
+
+    private boolean checkSizeBasedTrigger(File activeFile, long currentTime) {
         // next check for roll-over based on size
         if (invocationGate.isTooSoon(currentTime)) {
             return false;
