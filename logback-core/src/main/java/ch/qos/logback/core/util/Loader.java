@@ -165,18 +165,14 @@ public class Loader {
 
     /**
      * Return the class loader which loaded the class passed as argument. Return the
-     * system class loader if appropriate.
+     * system class loader if the class loader of 'clazz' argument is null.
      *
      * @param clazz
      * @return
      */
     public static ClassLoader getClassLoaderOfClass(final Class<?> clazz) {
         ClassLoader cl = clazz.getClassLoader();
-        if (cl == null) {
-            return ClassLoader.getSystemClassLoader();
-        } else {
-            return cl;
-        }
+        return systemClassloaderIfNull(cl);
     }
 
     /**
