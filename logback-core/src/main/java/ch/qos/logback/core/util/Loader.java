@@ -57,6 +57,21 @@ public class Loader {
     }
 
     /**
+     * This method is used to sanitize the <code>cl</code> argument in case it is null.
+     *
+     * @param cl a class loader, may be null
+     * @return the system class loader if the <code>cl</code> argument is null, return <code>cl</code> otherwise.
+     *
+     * @since 1.4.12
+     */
+    public static ClassLoader systemClassloaderIfNull(ClassLoader cl) {
+        if(cl == null)
+            return ClassLoader.getSystemClassLoader();
+        else
+            return cl;
+    }
+
+    /**
      * Compute the number of occurrences a resource can be found by a class loader.
      *
      * @param resource
@@ -64,7 +79,6 @@ public class Loader {
      * @return
      * @throws IOException
      */
-
     public static Set<URL> getResources(String resource, ClassLoader classLoader) throws IOException {
         // See LBCLASSIC-159
         Set<URL> urlSet = new HashSet<URL>();

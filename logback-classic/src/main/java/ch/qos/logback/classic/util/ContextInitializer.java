@@ -21,6 +21,7 @@ import ch.qos.logback.core.spi.ContextAware;
 import ch.qos.logback.core.spi.ContextAwareImpl;
 import ch.qos.logback.core.status.InfoStatus;
 import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 import java.util.Comparator;
@@ -65,7 +66,12 @@ public class ContextInitializer {
         autoConfig(Configurator.class.getClassLoader());
     }
 
+
     public void autoConfig(ClassLoader classLoader) throws JoranException {
+
+        // see https://github.com/qos-ch/logback/issues/715
+        classLoader = Loader.systemClassloaderIfNull(classLoader);
+
         String versionStr = EnvUtil.logbackVersion();
         if (versionStr == null) {
             versionStr = CoreConstants.NA;
