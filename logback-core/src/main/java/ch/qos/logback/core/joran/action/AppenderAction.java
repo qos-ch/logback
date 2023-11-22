@@ -20,7 +20,7 @@ public class AppenderAction extends BaseModelAction {
     protected Model buildCurrentModel(SaxEventInterpretationContext interpretationContext, String name,
             Attributes attributes) {
         AppenderModel appenderModel = new AppenderModel();
-        appenderModel.setClassName(attributes.getValue(CLASS_ATTRIBUTE));
+        appenderModel.setClassName(interpretationContext.subst(attributes.getValue(CLASS_ATTRIBUTE)));
         appenderModel.setName(attributes.getValue(NAME_ATTRIBUTE));
         return appenderModel;
     }
