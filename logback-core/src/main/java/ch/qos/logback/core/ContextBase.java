@@ -54,6 +54,8 @@ public class ContextBase implements Context, LifeCycle {
     private ScheduledExecutorService scheduledExecutorService;
 
     private ThreadPoolExecutor threadPoolExecutor;
+    private ExecutorService alternateExecutorService;
+
 
     protected List<ScheduledFuture<?>> scheduledFutures = new ArrayList<ScheduledFuture<?>>(1);
     private LifeCycleManager lifeCycleManager;
@@ -225,8 +227,15 @@ public class ContextBase implements Context, LifeCycle {
         return threadPoolExecutor;
     }
 
-
     @Override
+    public synchronized ExecutorService getAlternateExecutorService() {
+        if(alternateExecutorService == null) {
+            alternateExecutorService = ExecutorServiceUtil.newAlternateThreadPoolExecutor();
+        }
+        return alternateExecutorService;
+    }
+
+        @Override
     public synchronized ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
             scheduledExecutorService = ExecutorServiceUtil.newScheduledExecutorService();

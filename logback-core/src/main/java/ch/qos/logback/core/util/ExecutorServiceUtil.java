@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,11 +35,39 @@ import ch.qos.logback.core.CoreConstants;
  */
 public class ExecutorServiceUtil {
 
-    private static final ThreadFactory THREAD_FACTORY = new ThreadFactory() {
+    static private final String  NEW_VIRTUAL_TPT_METHOD_NAME = "newVirtualThreadPerTaskExecutor";
 
-        private final ThreadFactory defaultFactory = Executors.defaultThreadFactory();
+    private static final ThreadFactory THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE = new ThreadFactory() {
+
         private final AtomicInteger threadNumber = new AtomicInteger(1);
 
+
+        private final ThreadFactory defaultFactory = makeThreadFactory();
+
+        /**
+         * A thread factory which may be a virtual thread factory if available.
+         *
+         * @return
+         */
+        private ThreadFactory makeThreadFactory() {
+            if(EnvUtil.isJDK21OrHigher()) {
+                try {
+                    Method ofVirtualMethod = Thread.class.getMethod("ofVirtual");
+                    Object threadBuilderOfVirtual = ofVirtualMethod.invoke(null);
+                    Method factoryMethod = threadBuilderOfVirtual.getClass().getMethod("factory");
+                    System.out.println("virtual THREAD FACTORY");
+                    return (ThreadFactory) factoryMethod.invoke(threadBuilderOfVirtual);
+                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    return Executors.defaultThreadFactory();
+                }
+
+            } else {
+                System.out.println("default THREAD FACTORY");
+                return Executors.defaultThreadFactory();
+            }
+        }
+
+        @Override
         public Thread newThread(Runnable r) {
             Thread thread = defaultFactory.newThread(r);
             if (!thread.isDaemon()) {
@@ -49,7 +79,8 @@ public class ExecutorServiceUtil {
     };
 
     static public ScheduledExecutorService newScheduledExecutorService() {
-        return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE, THREAD_FACTORY);
+        return new ScheduledThreadPoolExecutor(CoreConstants.SCHEDULED_EXECUTOR_POOL_SIZE,
+                THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE);
     }
 
     /**
@@ -68,7 +99,7 @@ public class ExecutorServiceUtil {
      */
     static public ThreadPoolExecutor newThreadPoolExecutor() {
         return new ThreadPoolExecutor(CoreConstants.CORE_POOL_SIZE, CoreConstants.MAX_POOL_SIZE, 0L,
-                TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), THREAD_FACTORY);
+                TimeUnit.MILLISECONDS, new SynchronousQueue<Runnable>(), THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE);
     }
 
     /**
@@ -83,4 +114,23 @@ public class ExecutorServiceUtil {
         }
     }
 
+    /**
+     * An alternate implementation of {@linl #newThreadPoolExecutor} which returns a virtual thread per task executor when
+     * available.
+     *
+     * @since 1.3.12/1.4.12
+     */
+    static public ExecutorService newAlternateThreadPoolExecutor() {
+
+        if(EnvUtil.isJDK21OrHigher()) {
+            try {
+                Method newVirtualTPTMethod = Executors.class.getMethod(NEW_VIRTUAL_TPT_METHOD_NAME);
+                return (ExecutorService) newVirtualTPTMethod.invoke(null);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                return newThreadPoolExecutor();
+            }
+        } else {
+            return newThreadPoolExecutor();
+        }
+    }
 }

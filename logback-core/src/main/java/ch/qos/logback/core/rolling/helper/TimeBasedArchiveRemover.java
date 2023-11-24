@@ -47,6 +47,18 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     int callCount = 0;
 
+    public Future<?> cleanAsynchronously(Instant now) {
+        ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
+        ExecutorService alternateExecutorService = context.getAlternateExecutorService();
+        Future<?> future = alternateExecutorService.submit(runnable);
+        return future;
+    }
+
+    /**
+     * Called from the cleaning thread.
+     *
+     * @param now
+     */
     @Override
     public void clean(Instant now) {
 
@@ -233,12 +245,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
         return "c.q.l.core.rolling.helper.TimeBasedArchiveRemover";
     }
 
-    public Future<?> cleanAsynchronously(Instant now) {
-        ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
-        ExecutorService executorService = context.getExecutorService();
-        Future<?> future = executorService.submit(runnable);
-        return future;
-    }
+
 
     public class ArhiveRemoverRunnable implements Runnable {
         Instant now;

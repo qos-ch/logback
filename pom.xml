@@ -49,12 +49,13 @@
 
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
-    <project.build.outputTimestamp>2023-08-09T19:42:13Z</project.build.outputTimestamp>    
+    <project.build.outputTimestamp>2023-08-09T19:42:13Z</project.build.outputTimestamp>
+
+    <!-- minimal JDK version at runtime -->
     <jdk.version>8</jdk.version>
-    <maven.compiler.source>${jdk.version}</maven.compiler.source>
-    <maven.compiler.target>${jdk.version}</maven.compiler.target>
+    <maven.compiler.release>${jdk.version}</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>4.13.1</junit.version>
+
     <junit-jupiter-api.version>5.9.1</junit-jupiter-api.version>
     <junit-vintage-engine.version>5.9.1</junit-vintage-engine.version>
     <junit-jupiter-params.version>5.9.1</junit-jupiter-params.version>
@@ -380,6 +381,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+<<<<<<< HEAD
           
         <executions>
           <execution>
@@ -408,6 +410,12 @@
             </configuration>
           </execution>
         </executions>
+=======
+
+        <configuration>
+          <release>${jdk.version}</release>
+        </configuration>
+>>>>>>> 9a1fc44f8 (add support for Virtual threads)
       </plugin>
  
       <plugin>
