@@ -29,13 +29,14 @@ public class CoreConstants {
      */
     public static final int CORE_POOL_SIZE = 0;
 
-    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 2;
+    // In Java 21 and later the actual threads are assumed to be virtual
+    public static final int SCHEDULED_EXECUTOR_POOL_SIZE = 4;
 
     /**
      * Maximum number of threads to allow in a context's executor service.
      */
-    // if you need a different MAX_POOL_SIZE, please file create a jira issue
-    // asking to make MAX_POOL_SIZE a parameter.
+    // if you need a different MAX_POOL_SIZE, please file create a github issue
+    // asking for a larger MAX_POOL_SIZE parameter.
     public static final int MAX_POOL_SIZE = 32;
 
     // Note that the line.separator property can be looked up even by

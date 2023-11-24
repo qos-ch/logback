@@ -108,6 +108,14 @@ public class EnvUtil {
         return isJDK_N_OrHigher(18);
     }
 
+    /**
+     * @since logback 1.3.12/1.4.12
+     * @return true if runtime JDK is version 21 or higher
+     */
+    static public boolean isJDK21OrHigher() {
+        return isJDK_N_OrHigher(21);
+    }
+
     static public boolean isJaninoAvailable() {
         ClassLoader classLoader = EnvUtil.class.getClassLoader();
         try {

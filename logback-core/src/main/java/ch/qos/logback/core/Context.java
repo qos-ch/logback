@@ -132,6 +132,13 @@ public interface Context extends PropertyContainer {
      */
     ExecutorService getExecutorService();
 
+    /**
+     * Return an alternate {@link ExecutorService} used for one task per thread execution.
+     * @return ExecutorService
+     */
+    default ExecutorService getAlternateExecutorService() {
+        return getExecutorService();
+    }
 
     /**
      * Register a component that participates in the context's life cycle.
