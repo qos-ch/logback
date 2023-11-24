@@ -43,7 +43,7 @@ public class InvocationGateTest {
     @Test
     public void smoke() {
         InvocationGate sig = new SimpleInvocationGate();
-        int currentTime = SimpleInvocationGate.DEFAULT_INCREMENT + 1;
+        long currentTime = SimpleInvocationGate.DEFAULT_INCREMENT.getMilliseconds() + 1;
         assertFalse(sig.isTooSoon(currentTime));
         currentTime++;
         assertTrue(sig.isTooSoon(currentTime));
@@ -52,7 +52,7 @@ public class InvocationGateTest {
     @Disabled
     @Test
     void checkThreadSafety() throws InterruptedException {
-        InvocationGate sig = new SimpleInvocationGate(1);
+        InvocationGate sig = new SimpleInvocationGate(Duration.buildByMilliseconds(1));
 
         long initialTime = currentTime.get();
         sig.isTooSoon(initialTime); // sync invocation gate with current time

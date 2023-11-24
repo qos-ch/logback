@@ -29,14 +29,16 @@ public class SimpleInvocationGate implements InvocationGate {
     //volatile long next = 0;
 
     AtomicLong atomicNext = new AtomicLong(0);
-    final long increment;
-    final public static int DEFAULT_INCREMENT = 10_000;
+    final Duration increment;
+
+    // 60 seconds by default
+    final public static Duration DEFAULT_INCREMENT = Duration.buildBySeconds(60);
 
     public SimpleInvocationGate() {
         this(DEFAULT_INCREMENT);
     }
 
-    public SimpleInvocationGate(int anIncrement) {
+    public SimpleInvocationGate(Duration anIncrement) {
         this.increment = anIncrement;
     }
 
@@ -47,7 +49,7 @@ public class SimpleInvocationGate implements InvocationGate {
 
         long localNext = atomicNext.get();
         if (currentTime >= localNext) {
-            long next2 = currentTime+increment;
+            long next2 = currentTime+increment.getMilliseconds();
             // if success, we were able to set the variable, otherwise some other thread beat us to it
             boolean success = atomicNext.compareAndSet(localNext, next2);
             // while we have crossed 'next', the other thread already returned true. There is
