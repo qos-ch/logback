@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.function.UnaryOperator;
 
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +62,7 @@ public class SizeAndTimeBasedFNATP_Test extends ScaffoldingForRollingTests {
     private void initPolicies(RollingFileAppender<Object> rfa, TimeBasedRollingPolicy<Object> tbrp,
             String filenamePattern, int sizeThreshold, long givenTime, long lastCheck) {
         sizeAndTimeBasedFNATP = new SizeAndTimeBasedFNATP<Object>();
-        sizeAndTimeBasedFNATP.setCheckIncrement(10);
+        sizeAndTimeBasedFNATP.setCheckIncrement(Duration.buildByMilliseconds(10));
         tbrp.setContext(context);
         sizeAndTimeBasedFNATP.setMaxFileSize(new FileSize(sizeThreshold));
         tbrp.setTimeBasedFileNamingAndTriggeringPolicy(sizeAndTimeBasedFNATP);

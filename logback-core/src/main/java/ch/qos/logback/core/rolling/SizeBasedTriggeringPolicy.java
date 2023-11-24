@@ -15,6 +15,7 @@ package ch.qos.logback.core.rolling;
 
 import java.io.File;
 
+import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.FileSize;
 import ch.qos.logback.core.util.DefaultInvocationGate;
 import ch.qos.logback.core.util.InvocationGate;
@@ -41,10 +42,7 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
 
     FileSize maxFileSize = new FileSize(DEFAULT_MAX_FILE_SIZE);
     InvocationGate invocationGate = new SimpleInvocationGate();
-
-
-
-    Integer checkIncrement = null;
+    Duration checkIncrement = null;
 
     public SizeBasedTriggeringPolicy() {
     }
@@ -72,11 +70,11 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
         this.maxFileSize = aMaxFileSize;
     }
 
-    public Integer getCheckIncrement() {
+    public Duration getCheckIncrement() {
         return checkIncrement;
     }
 
-    public void setCheckIncrement(Integer checkIncrement) {
+    public void setCheckIncrement(Duration checkIncrement) {
         this.checkIncrement = checkIncrement;
     }
 }

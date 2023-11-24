@@ -16,6 +16,7 @@ package ch.qos.logback.core.rolling;
 import java.io.IOException;
 import java.util.List;
 
+import ch.qos.logback.core.util.Duration;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,7 +72,7 @@ public class SizeBasedRollingTest extends ScaffoldingForRollingTests {
         initRFA(randomOutputDir + fileName);
 
         sizeBasedTriggeringPolicy.setMaxFileSize(new FileSize(100));
-        sizeBasedTriggeringPolicy.setCheckIncrement(50);
+        sizeBasedTriggeringPolicy.setCheckIncrement(Duration.buildByMilliseconds(50));
         fwrp.setMinIndex(0);
         fwrp.setFileNamePattern(randomOutputDir + filenamePattern);
 
