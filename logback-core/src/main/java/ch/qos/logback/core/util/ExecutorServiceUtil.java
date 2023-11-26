@@ -45,7 +45,7 @@ public class ExecutorServiceUtil {
         private final ThreadFactory defaultFactory = makeThreadFactory();
 
         /**
-         * A thread factory which may be a virtual thread factory if available.
+         * A thread factory which may be a virtual thread factory the JDK supports it.
          *
          * @return
          */
