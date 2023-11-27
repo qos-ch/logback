@@ -3,7 +3,6 @@ package ch.qos.logback.core.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
-import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ public class HardenedObjectInputStream extends ObjectInputStream {
 
     public HardenedObjectInputStream(InputStream in, String[] whitelist) throws IOException {
         super(in);
-        this.initObjectFilter();
         this.whitelistedClassNames = new ArrayList<String>();
         if (whitelist != null) {
             for (int i = 0; i < whitelist.length; i++) {
@@ -37,11 +35,7 @@ public class HardenedObjectInputStream extends ObjectInputStream {
         }
     }
 
-    private void initObjectFilter() {
-        this.setObjectInputFilter(ObjectInputFilter.Config.createFilter(
-                "maxarray=" + ARRAY_LIMIT + ";maxdepth=" + DEPTH_LIMIT + ";"
-        ));
-    }
+
     public HardenedObjectInputStream(InputStream in, List<String> whitelist) throws IOException {
         super(in);
 
