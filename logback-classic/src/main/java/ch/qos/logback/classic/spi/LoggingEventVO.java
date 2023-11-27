@@ -14,6 +14,7 @@
 package ch.qos.logback.classic.spi;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -25,6 +26,7 @@ import org.slf4j.helpers.MessageFormatter;
 import ch.qos.logback.classic.Level;
 
 // http://www.riehle.org/computer-science/research/1998/ubilab-tr-1998-10-1.html
+// See also the paper https://www.riehle.org/computer-science/research/1998/ubilab-tr-1998-10-1.pdf
 
 /**
  * A read-only and serializable implementation of {@link ILoggingEvent}.
@@ -38,6 +40,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
 
     private static final int NULL_ARGUMENT_ARRAY = -1;
     private static final String NULL_ARGUMENT_ARRAY_ELEMENT = "NULL_ARGUMENT_ARRAY_ELEMENT";
+    private static final int ARGUMENT_ARRAY_DESERIALIZATION_LIMIT = 128;
 
     private String threadName;
     private String loggerName;
@@ -181,6 +184,12 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         level = Level.toLevel(levelInt);
 
         int argArrayLen = in.readInt();
+
+        // Prevent DOS attacks via large or negative arrays
+        if (argArrayLen < 0 || argArrayLen > ARGUMENT_ARRAY_DESERIALIZATION_LIMIT) {
+            throw new InvalidObjectException("Argument array length is invalid: " + argArrayLen);
+        }
+
         if (argArrayLen != NULL_ARGUMENT_ARRAY) {
             argumentArray = new String[argArrayLen];
             for (int i = 0; i < argArrayLen; i++) {

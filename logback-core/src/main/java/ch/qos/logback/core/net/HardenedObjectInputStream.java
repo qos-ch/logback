@@ -3,6 +3,7 @@ package ch.qos.logback.core.net;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.util.ArrayList;
@@ -20,20 +21,27 @@ import java.util.List;
  */
 public class HardenedObjectInputStream extends ObjectInputStream {
 
-    final List<String> whitelistedClassNames;
-    final static String[] JAVA_PACKAGES = new String[] { "java.lang", "java.util" };
+    final private List<String> whitelistedClassNames;
+    final private static String[] JAVA_PACKAGES = new String[] { "java.lang", "java.util" };
+    final private static int DEPTH_LIMIT = 16;
+    final private static int ARRAY_LIMIT = 10000;
 
-    public HardenedObjectInputStream(InputStream in, String[] whilelist) throws IOException {
+    public HardenedObjectInputStream(InputStream in, String[] whitelist) throws IOException {
         super(in);
-
+        this.initObjectFilter();
         this.whitelistedClassNames = new ArrayList<String>();
-        if (whilelist != null) {
-            for (int i = 0; i < whilelist.length; i++) {
-                this.whitelistedClassNames.add(whilelist[i]);
+        if (whitelist != null) {
+            for (int i = 0; i < whitelist.length; i++) {
+                this.whitelistedClassNames.add(whitelist[i]);
             }
         }
     }
 
+    private void initObjectFilter() {
+        this.setObjectInputFilter(ObjectInputFilter.Config.createFilter(
+                "maxarray=" + ARRAY_LIMIT + ";maxdepth=" + DEPTH_LIMIT + ";"
+        ));
+    }
     public HardenedObjectInputStream(InputStream in, List<String> whitelist) throws IOException {
         super(in);
 
