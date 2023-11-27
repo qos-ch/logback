@@ -208,7 +208,7 @@ public class LoggingEventVO implements ILoggingEvent, Serializable {
         int argArrayLen = in.readInt();
 
         // Prevent DOS attacks via large or negative arrays
-        if (argArrayLen < 0 || argArrayLen > ARGUMENT_ARRAY_DESERIALIZATION_LIMIT) {
+        if (argArrayLen < NULL_ARGUMENT_ARRAY || argArrayLen > ARGUMENT_ARRAY_DESERIALIZATION_LIMIT) {
             throw new InvalidObjectException("Argument array length is invalid: " + argArrayLen);
         }
 
