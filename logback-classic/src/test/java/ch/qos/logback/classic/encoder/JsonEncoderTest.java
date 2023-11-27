@@ -39,6 +39,7 @@ import org.slf4j.helpers.BasicMarkerFactory;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -318,7 +319,7 @@ class JsonEncoderTest {
 
         StatusPrinter.print(loggerContext);
 
-        Path configFilePath = Path.of(ClassicTestConstants.OUTPUT_DIR_PREFIX+"json/test-" + diff + ".json");
+        Path configFilePath =  FileSystems.getDefault().getPath(ClassicTestConstants.OUTPUT_DIR_PREFIX+"json/test-" + diff + ".json");
         List<String> lines = Files.readAllLines(configFilePath);
         int count = 4;
         assertEquals(count, lines.size());

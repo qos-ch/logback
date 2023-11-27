@@ -381,8 +381,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-<<<<<<< HEAD
-          
+
         <executions>
           <execution>
             <id>default-compile</id>
@@ -410,12 +409,6 @@
             </configuration>
           </execution>
         </executions>
-=======
-
-        <configuration>
-          <release>${jdk.version}</release>
-        </configuration>
->>>>>>> 9a1fc44f8 (add support for Virtual threads)
       </plugin>
  
       <plugin>
