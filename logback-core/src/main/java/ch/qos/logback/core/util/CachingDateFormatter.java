@@ -68,10 +68,10 @@ public class CachingDateFormatter {
     public final String format(long now) {
         CacheTuple localCacheTuple = atomicReference.get();
         CacheTuple oldCacheTuple = localCacheTuple;
-
+        DateTimeFormatter dtf1 = DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.of("UTC"));
         if (now != localCacheTuple.lastTimestamp) {
             Instant instant = Instant.ofEpochMilli(now);
-            String result = dtf.format(instant);
+            String result = dtf1.format(instant);
             localCacheTuple = new CacheTuple(now, result);
             // allow a single thread to update the cache reference
             atomicReference.compareAndSet(oldCacheTuple, localCacheTuple);
