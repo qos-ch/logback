@@ -55,14 +55,12 @@ public class ExecutorServiceUtil {
                     Method ofVirtualMethod = Thread.class.getMethod("ofVirtual");
                     Object threadBuilderOfVirtual = ofVirtualMethod.invoke(null);
                     Method factoryMethod = threadBuilderOfVirtual.getClass().getMethod("factory");
-                    System.out.println("virtual THREAD FACTORY");
                     return (ThreadFactory) factoryMethod.invoke(threadBuilderOfVirtual);
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     return Executors.defaultThreadFactory();
                 }
 
             } else {
-                System.out.println("default THREAD FACTORY");
                 return Executors.defaultThreadFactory();
             }
         }
