@@ -60,7 +60,7 @@ public class HardenedObjectInputStream extends ObjectInputStream {
     }
     public HardenedObjectInputStream(InputStream in, List<String> whitelist) throws IOException {
         super(in);
-
+        this.initObjectFilter();
         this.whitelistedClassNames = new ArrayList<String>();
         this.whitelistedClassNames.addAll(whitelist);
     }
