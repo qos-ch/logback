@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Logback: the reliable, generic, fast and flexible logging framework.
+  ~ Copyright (C) 1999-2023, QOS.ch. All rights reserved.
+  ~
+  ~ This program and the accompanying materials are dual-licensed under
+  ~ either the terms of the Eclipse Public License v1.0 as published by
+  ~ the Eclipse Foundation
+  ~
+  ~   or (per the licensee's choosing)
+  ~
+  ~ under the terms of the GNU Lesser General Public License version 2.1
+  ~ as published by the Free Software Foundation.
+  -->
+
+<configuration debug="true">
+    <appender name="GENERAL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${logback_1754_targetDirectory}/test-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>120</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} [%level] %logger{0} [%thread] [%class{3}:%line] : %msg%n</pattern>
+        </encoder>
+        <prudent>true</prudent>
+    </appender>
+    <root level="debug">
+        <appender-ref ref="GENERAL" />
+    </root>
+</configuration>

@@ -1,6 +1,6 @@
 /**
  * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Copyright (C) 1999-2023, QOS.ch. All rights reserved.
  *
  * This program and the accompanying materials are dual-licensed under
  * either the terms of the Eclipse Public License v1.0 as published by
@@ -22,22 +22,27 @@ import java.util.List;
 public class EnvUtil {
 
     static private boolean isJDK_N_OrHigher(int n) {
-        List<String> versionList = new ArrayList<String>();
-        // this code should work at least until JDK 10 (assuming n parameter is
-        // always 6 or more)
-        for (int i = 0; i < 5; i++) {
-            versionList.add("1." + (n + i));
-        }
-
-        String javaVersion = System.getProperty("java.version");
-        if (javaVersion == null) {
+        String javaVersionStr = System.getProperty("java.version", "");
+        if (javaVersionStr.isEmpty())
             return false;
+
+        int version = getJDKVersion(javaVersionStr);
+        return version > 0 && n <= version;
+    }
+
+    static public int getJDKVersion(String javaVersionStr) {
+        int version = 0;
+
+        for (char ch : javaVersionStr.toCharArray()) {
+            if (Character.isDigit(ch)) {
+                version = (version * 10) + (ch - 48);
+            } else if (version == 1) {
+                version = 0;
+            } else {
+                break;
+            }
         }
-        for (String v : versionList) {
-            if (javaVersion.startsWith(v))
-                return true;
-        }
-        return false;
+        return version;
     }
 
     static public boolean isJDK5() {
@@ -50,6 +55,10 @@ public class EnvUtil {
 
     static public boolean isJDK7OrHigher() {
         return isJDK_N_OrHigher(7);
+    }
+
+    static public boolean isJDK9OrHigher() {
+        return isJDK_N_OrHigher(9);
     }
 
     static public boolean isJaninoAvailable() {
