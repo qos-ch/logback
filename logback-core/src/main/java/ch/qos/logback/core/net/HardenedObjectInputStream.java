@@ -13,11 +13,16 @@
  */
 package ch.qos.logback.core.net;
 
+import ch.qos.logback.core.util.EnvUtil;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
+import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +48,7 @@ public class HardenedObjectInputStream extends ObjectInputStream {
 
     public HardenedObjectInputStream(InputStream in, String[] whitelist) throws IOException {
         super(in);
+        this.initObjectFilter();
         this.whitelistedClassNames = new ArrayList<String>();
         if (whitelist != null) {
             for (int i = 0; i < whitelist.length; i++) {
@@ -54,9 +60,34 @@ public class HardenedObjectInputStream extends ObjectInputStream {
 
     public HardenedObjectInputStream(InputStream in, List<String> whitelist) throws IOException {
         super(in);
-
+        this.initObjectFilter();
         this.whitelistedClassNames = new ArrayList<String>();
         this.whitelistedClassNames.addAll(whitelist);
+    }
+
+    private void initObjectFilter() {
+
+        // invoke the following code by reflection
+        //  this.setObjectInputFilter(ObjectInputFilter.Config.createFilter(
+        //                "maxarray=" + ARRAY_LIMIT + ";maxdepth=" + DEPTH_LIMIT + ";"
+        //        ));
+        if(EnvUtil.isJDK9OrHigher()) {
+            try {
+                ClassLoader classLoader = this.getClass().getClassLoader();
+
+                Class oifClass = classLoader.loadClass("java.io.ObjectInputFilter");
+                Class oifConfigClass = classLoader.loadClass("java.io.ObjectInputFilter$Config");
+                Method setObjectInputFilterMethod = this.getClass().getMethod("setObjectInputFilter", oifClass);
+
+                Method createFilterMethod = oifConfigClass.getMethod("createFilter", String.class);
+                Object filter = createFilterMethod.invoke(null, "maxarray=" + ARRAY_LIMIT + ";maxdepth=" + DEPTH_LIMIT + ";");
+                setObjectInputFilterMethod.invoke(this, filter);
+            } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+                // this code should be unreachable
+                throw new RuntimeException("Failed to initialize object filter", e);
+            }
+
+        }
     }
 
     @Override
