@@ -18,7 +18,6 @@ import ch.qos.logback.core.util.EnvUtil;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
-import java.io.ObjectInputFilter;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
 import java.lang.reflect.InvocationTargetException;
