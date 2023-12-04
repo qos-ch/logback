@@ -55,13 +55,11 @@ import org.eclipse.jetty.util.component.LifeCycle;
  * </p>
  * <h2>Supported Jetty Versions</h2>
  * <p>
- * This {@code RequestLogImpl} only supports Jetty 7.0.0 through Jetty 10.
- * If you are using Jetty 11 with the new Jakarta Servlets (namespace {@code jakarta.servlet})
- * then you will need a more modern version of {@code logback-access}.
- * </p>
- * <h2>Configuring for Jetty 9.4.x through to Jetty 10.0.x</h2>
+ * This {@code RequestLogImpl} only supports Jetty 11+ with the new Jakarta Servlets
+ * (namespace {@code jakarta.servlet}).  For Jetty 9.4.x through to Jetty 10.0.x you will
+ * need to use Logback &lt; 1.4.
  * <p>
- * Jetty 9.4.x and Jetty 10.x use a modern {@code org.eclipse.jetty.server.Server.setRequestLog(RequestLog)}
+ * Jetty 11+ uses a modern {@code org.eclipse.jetty.server.Server.setRequestLog(RequestLog)}
  * interface that is based on a Server level RequestLog behavior.  This means all requests are logged,
  * even bad requests, and context-less requests.
  * </p>
