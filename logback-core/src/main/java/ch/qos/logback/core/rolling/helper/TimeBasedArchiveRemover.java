@@ -247,7 +247,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
 
 
-    protected class ArchiveRemoverRunnable implements Runnable {
+    public class ArchiveRemoverRunnable implements Runnable {
         Instant now;
 
         ArchiveRemoverRunnable(Instant now) {
