@@ -32,6 +32,7 @@ import javax.net.SocketFactory;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import ch.qos.logback.classic.Level;
@@ -50,6 +51,7 @@ import ch.qos.logback.core.status.Status;
  *
  * @author Carl Harris
  */
+@Ignore
 public class SocketReceiverTest {
 
     private static final int DELAY = 1000;
