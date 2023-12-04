@@ -16,8 +16,6 @@ package ch.qos.logback.core.joran.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,8 +23,6 @@ import org.junit.Test;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.joran.spi.InterpretationContext;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.util.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -145,18 +141,38 @@ public class PropertyActionTest {
         atts.setValue("file", "toto");
         propertyAction.begin(ec, null, atts);
         assertEquals(1, context.getStatusManager().getCount());
-        assertTrue(checkFileErrors());
+        assertEquals("Could not find properties file [toto].", getFirstStatusMessage());
+    }
+
+    @Test
+    public void testLoadOptionalMissingFile() {
+        atts.setValue("file", "toto");
+        atts.setValue("optional", "true");
+        propertyAction.begin(ec, null, atts);
+        assertEquals(0, context.getStatusManager().getCount());
+    }
+
+    @Test
+    public void testLoadResourceNotPossible() {
+        atts.setValue("resource", "toto");
+        propertyAction.begin(ec, null, atts);
+        assertEquals(1, context.getStatusManager().getCount());
+        assertEquals("Could not find resource [toto].", getFirstStatusMessage());
+    }
+
+    @Test
+    public void testLoadOptionalMissingResource() {
+        atts.setValue("resource", "toto");
+        atts.setValue("optional", "true");
+        propertyAction.begin(ec, null, atts);
+        assertEquals(0, context.getStatusManager().getCount());
     }
 
     private boolean checkError() {
-        Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
-        ErrorStatus es = (ErrorStatus) it.next();
-        return PropertyAction.INVALID_ATTRIBUTES.equals(es.getMessage());
+        return PropertyAction.INVALID_ATTRIBUTES.equals(getFirstStatusMessage());
     }
 
-    private boolean checkFileErrors() {
-        Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
-        ErrorStatus es1 = (ErrorStatus) it.next();
-        return "Could not find properties file [toto].".equals(es1.getMessage());
+    private String getFirstStatusMessage() {
+        return context.getStatusManager().getCopyOfStatusList().get(0).getMessage();
     }
 }

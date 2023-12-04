@@ -41,9 +41,10 @@ import ch.qos.logback.core.util.OptionHelper;
 public class PropertyAction extends Action {
 
     static final String RESOURCE_ATTRIBUTE = "resource";
+    private static final String OPTIONAL_ATTR = "optional";
 
-    static String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
-                    + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
+    static String INVALID_ATTRIBUTES = "In <property> element, set either both \"name\" and \"value\" attributes, or "
+                    + "one of \"file\" or \"resource\" (optionally paired with \"optional\").";
 
     /**
      * Set a new property for the execution context by name, value pair, or adds
@@ -69,7 +70,9 @@ public class PropertyAction extends Action {
                 FileInputStream istream = new FileInputStream(file);
                 loadAndSetProperties(ec, istream, scope);
             } catch (FileNotFoundException e) {
-                addError("Could not find properties file [" + file + "].");
+                if (!OptionHelper.toBoolean(attributes.getValue(OPTIONAL_ATTR), false)) {
+                    addError("Could not find properties file [" + file + "].");
+                }
             } catch (IOException e1) {
                 addError("Could not read properties file [" + file + "].", e1);
             }
@@ -78,7 +81,9 @@ public class PropertyAction extends Action {
             resource = ec.subst(resource);
             URL resourceURL = Loader.getResourceBySelfClassLoader(resource);
             if (resourceURL == null) {
-                addError("Could not find resource [" + resource + "].");
+                if (!OptionHelper.toBoolean(attributes.getValue(OPTIONAL_ATTR), false)) {
+                    addError("Could not find resource [" + resource + "].");
+                }
             } else {
                 try {
                     InputStream istream = resourceURL.openStream();
@@ -129,6 +134,9 @@ public class PropertyAction extends Action {
         String name = attributes.getValue(NAME_ATTRIBUTE);
         String value = attributes.getValue(VALUE_ATTRIBUTE);
         String resource = attributes.getValue(RESOURCE_ATTRIBUTE);
+
+        // Note: not checking that the "optional" attribute is empty because there's a risk that doing so would cause
+        // problems and break existing configuration files.
 
         return (!(OptionHelper.isEmpty(name) || OptionHelper.isEmpty(value)) && (OptionHelper.isEmpty(file) && OptionHelper.isEmpty(resource)));
     }
