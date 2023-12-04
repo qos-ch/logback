@@ -48,7 +48,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     int callCount = 0;
 
     public Future<?> cleanAsynchronously(Instant now) {
-        ArhiveRemoverRunnable runnable = new ArhiveRemoverRunnable(now);
+        ArchiveRemoverRunnable runnable = new ArchiveRemoverRunnable(now);
         ExecutorService alternateExecutorService = context.getAlternateExecutorService();
         Future<?> future = alternateExecutorService.submit(runnable);
         return future;
@@ -247,10 +247,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
 
 
-    public class ArhiveRemoverRunnable implements Runnable {
+    protected class ArchiveRemoverRunnable implements Runnable {
         Instant now;
 
-        ArhiveRemoverRunnable(Instant now) {
+        ArchiveRemoverRunnable(Instant now) {
             this.now = now;
         }
 
