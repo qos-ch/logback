@@ -326,14 +326,20 @@ public class JoranConfiguratorTest {
         checker.assertIsErrorFree();
     }
 
-    void verifyJULLevel(String loggerName, Level expectedLevel) {
+    void verifyJULLevel(String loggerName, Level minExpectedLevel, Level tooHighLevel) {
         java.util.logging.Logger julLogger = JULHelper.asJULLogger(loggerName);
         java.util.logging.Level julLevel = julLogger.getLevel();
 
-        if (expectedLevel == null) {
+        if (minExpectedLevel == null) {
             assertNull(julLevel);
         } else {
-            assertEquals(JULHelper.asJULLevel(expectedLevel), julLevel);
+            int julLevelInt = julLevel.intValue();
+            java.util.logging.Level minJulLevel = JULHelper.asJULLevel(minExpectedLevel);
+            int minJulLevelInt = minJulLevel.intValue();
+            java.util.logging.Level tooHighJulLevel = JULHelper.asJULLevel(tooHighLevel);
+            int tooHighJulLevelInt = tooHighJulLevel.intValue();
+            assertTrue("expected " + minJulLevel + "<=level<" + tooHighLevel + "; got level=" + julLevel,
+                minJulLevelInt <= julLevelInt && julLevelInt < tooHighJulLevelInt);
         }
 
     }
@@ -346,9 +352,9 @@ public class JoranConfiguratorTest {
         configure(configFileAsStr);
         StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertIsErrorFree();
-        verifyJULLevel(loggerName, null);
-        verifyJULLevel("a.b.c." + diff, Level.WARN);
-        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
+        verifyJULLevel(loggerName, null, null);
+        verifyJULLevel("a.b.c." + diff, Level.WARN, Level.ERROR);
+        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE, Level.DEBUG);
     }
 
     @Test
@@ -356,14 +362,14 @@ public class JoranConfiguratorTest {
         String loggerName = "changePropagator1" + diff;
         java.util.logging.Logger logger1 = java.util.logging.Logger.getLogger(loggerName);
         logger1.setLevel(java.util.logging.Level.INFO);
-        verifyJULLevel(loggerName, Level.INFO);
+        verifyJULLevel(loggerName, Level.INFO, Level.WARN);
         String configFileAsStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "/jul/levelChangePropagator1.xml";
         configure(configFileAsStr);
         StatusChecker checker = new StatusChecker(loggerContext);
         checker.assertIsErrorFree();
-        verifyJULLevel(loggerName, Level.INFO); //
-        verifyJULLevel("a.b.c." + diff, Level.WARN);
-        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE);
+        verifyJULLevel(loggerName, Level.INFO, Level.WARN); //
+        verifyJULLevel("a.b.c." + diff, Level.WARN, Level.ERROR);
+        verifyJULLevel(Logger.ROOT_LOGGER_NAME, Level.TRACE, Level.DEBUG);
     }
 
     @Test

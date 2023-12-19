@@ -30,23 +30,29 @@ public class JULHelper {
         return julLogger.getName().equals("");
     }
 
+    /**
+     * @param lbLevel
+     * @return the lowest JUL level that jul-to-slf4j SLF4JBridgeHandler
+     * logs at the given logback level. This will be used as the argument
+     * for java.util.logging.Logger.setLevel.
+     * @see java.util.logging.Logger#setLevel(java.util.logging.Level)
+     */
     static public java.util.logging.Level asJULLevel(Level lbLevel) {
         if (lbLevel == null)
             throw new IllegalArgumentException("Unexpected level [null]");
 
         switch (lbLevel.levelInt) {
-        case Level.ALL_INT:
-            return java.util.logging.Level.ALL;
+        case Level.ALL_INT: // pass through
         case Level.TRACE_INT:
-            return java.util.logging.Level.FINEST;
+            return java.util.logging.Level.ALL;
         case Level.DEBUG_INT:
-            return java.util.logging.Level.FINE;
+            return MinSlf4jLevel.MIN_DEBUG;
         case Level.INFO_INT:
-            return java.util.logging.Level.INFO;
+            return MinSlf4jLevel.MIN_INFO;
         case Level.WARN_INT:
-            return java.util.logging.Level.WARNING;
+            return MinSlf4jLevel.MIN_WARN;
         case Level.ERROR_INT:
-            return java.util.logging.Level.SEVERE;
+            return MinSlf4jLevel.MIN_ERROR;
         case Level.OFF_INT:
             return java.util.logging.Level.OFF;
         default:
