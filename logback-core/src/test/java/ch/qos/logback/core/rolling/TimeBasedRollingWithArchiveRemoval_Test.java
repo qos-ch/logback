@@ -273,8 +273,10 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         tbfnatp = sizeAndTimeBasedFNATP;
         this.slashCount = computeSlashCount(DAILY_DATE_PATTERN);
 
-        // 2016-03-05 00:14:39 CET
-        long simulatedTime = 1457133279186L;
+        // 2016-03-05 00:14:39 at your timezone
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2016, Calendar.MARCH, 5, 00, 14, 39);
+        long simulatedTime = calendar.getTimeInMillis();
         ConfigParameters params = new ConfigParameters(simulatedTime);
         String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i";
         params.maxHistory(60).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(10).sizeCap(sizeCap);

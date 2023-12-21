@@ -13,10 +13,7 @@
  */
 package ch.qos.logback.core.net;
 
-import java.net.ConnectException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
+import java.net.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,7 +57,7 @@ public class DefaultSocketConnectorTest {
     @Before
     public void setUp() throws Exception {
         serverSocket = ServerSocketUtil.createServerSocket();
-        connector = new DefaultSocketConnector(serverSocket.getInetAddress(), serverSocket.getLocalPort(), 0, RETRY_DELAY);
+        connector = new DefaultSocketConnector(InetAddress.getLocalHost(), serverSocket.getLocalPort(), 0, RETRY_DELAY);
         connector.setExceptionHandler(exceptionHandler);
     }
 
