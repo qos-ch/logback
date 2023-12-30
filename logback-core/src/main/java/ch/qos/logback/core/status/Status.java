@@ -32,7 +32,7 @@ public interface Status {
     Throwable getThrowable();
 
     /**
-     * @eprecated. Use getTimestamp instead.
+     * @deprecated. Use getTimestamp instead.
      * @return
      */
     @Deprecated
