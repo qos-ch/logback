@@ -13,17 +13,15 @@
  */
 package ch.qos.logback.access.jetty;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
+
 import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Handler;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
+import org.eclipse.jetty.util.Callback;
 
 public class JettyFixtureBase {
     final protected RequestLogImpl requestLogImpl;
@@ -69,14 +67,12 @@ public class JettyFixtureBase {
         return handler;
     }
 
-    class BasicHandler extends AbstractHandler {
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("text/plain");
-            Writer writer = response.getWriter();
-            writer.write("hello world");
-            writer.flush();
-            baseRequest.setHandled(true);
+    static class BasicHandler extends Handler.Wrapper {
+        @Override
+        public boolean handle(Request request, Response response, Callback callback) {
+            response.write(true, ByteBuffer.wrap("hello world".getBytes(StandardCharsets.UTF_8)), callback);
+            callback.succeeded();
+            return true;
         }
     }
 }

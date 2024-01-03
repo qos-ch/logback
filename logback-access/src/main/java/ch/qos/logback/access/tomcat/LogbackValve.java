@@ -267,7 +267,7 @@ public class LogbackValve extends ValveBase
             getNext().invoke(request, response);
 
             TomcatServerAdapter adapter = new TomcatServerAdapter(request, response);
-            IAccessEvent accessEvent = new AccessEvent(this, request, response, adapter);
+            IAccessEvent accessEvent = new AccessEvent(this, adapter);
 
             addThreadName(accessEvent);
 

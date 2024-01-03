@@ -15,49 +15,33 @@ package ch.qos.logback.access.tomcat;
 
 import ch.qos.logback.access.spi.ServerAdapter;
 
+import ch.qos.logback.access.spi.ServletApiServerAdapter;
 import org.apache.catalina.connector.Request;
 import org.apache.catalina.connector.Response;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A tomcat specific implementation of the {@link ServerAdapter} interface.
  *
  * @author S&eacute;bastien Pennec
  */
-public class TomcatServerAdapter implements ServerAdapter {
+public class TomcatServerAdapter extends ServletApiServerAdapter {
 
     Request request;
     Response response;
 
     public TomcatServerAdapter(Request tomcatRequest, Response tomcatResponse) {
+        super(tomcatRequest, tomcatResponse);
         this.request = tomcatRequest;
         this.response = tomcatResponse;
     }
 
     @Override
-    public long getContentLength() {
+    public long getResponseContentLength() {
         return response.getContentLength();
-    }
-
-    @Override
-    public int getStatusCode() {
-        return response.getStatus();
     }
 
     @Override
     public long getRequestTimestamp() {
         return request.getCoyoteRequest().getStartTime();
-    }
-
-    @Override
-    public Map<String, String> buildResponseHeaderMap() {
-        Map<String, String> responseHeaderMap = new HashMap<String, String>();
-        for (String key : response.getHeaderNames()) {
-            String value = response.getHeader(key);
-            responseHeaderMap.put(key, value);
-        }
-        return responseHeaderMap;
     }
 }

@@ -19,9 +19,7 @@ import ch.qos.logback.access.dummy.DummyResponse;
 import ch.qos.logback.access.dummy.DummyServerAdapter;
 import ch.qos.logback.access.spi.AccessContext;
 import ch.qos.logback.access.spi.AccessEvent;
-import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
-import ch.qos.logback.core.model.TimestampModel;
 import jakarta.servlet.http.Cookie;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.AfterEach;
@@ -62,7 +60,7 @@ public class ConverterTest {
         ContentLengthConverter converter = new ContentLengthConverter();
         converter.start();
         String result = converter.convert(event);
-        assertEquals(Long.toString(event.getServerAdapter().getContentLength()), result);
+        assertEquals(Long.toString(event.getServerAdapter().getResponseContentLength()), result);
     }
 
     @Test
@@ -220,7 +218,7 @@ public class ConverterTest {
 
     private AccessEvent createEvent() {
         DummyServerAdapter dummyAdapter = new DummyServerAdapter(request, response);
-        return new AccessEvent(accessContext, request, response, dummyAdapter);
+        return new AccessEvent(accessContext, dummyAdapter);
     }
 
 }

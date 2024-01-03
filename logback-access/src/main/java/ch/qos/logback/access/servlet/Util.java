@@ -15,30 +15,15 @@ package ch.qos.logback.access.servlet;
 
 import ch.qos.logback.access.AccessConstants;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 public class Util {
-
-    public static boolean isFormUrlEncoded(HttpServletRequest request) {
-
-        String contentTypeStr = request.getContentType();
-        if ("POST".equalsIgnoreCase(request.getMethod()) && contentTypeStr != null
-                && contentTypeStr.startsWith(AccessConstants.X_WWW_FORM_URLECODED)) {
-            return true;
-        } else {
-            return false;
-        }
+    private Util() {
     }
 
-    public static boolean isImageResponse(HttpServletResponse response) {
+    public static boolean isFormUrlEncoded(String contentType, String method) {
+        return "POST".equalsIgnoreCase(method) && contentType != null && contentType.startsWith(AccessConstants.X_WWW_FORM_URLECODED);
+    }
 
-        String responseType = response.getContentType();
-
-        if (responseType != null && responseType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE)) {
-            return true;
-        } else {
-            return false;
-        }
+    public static boolean isImageResponse(String contentType) {
+        return contentType != null && contentType.startsWith(AccessConstants.IMAGE_CONTENT_TYPE);
     }
 }

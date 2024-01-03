@@ -38,7 +38,7 @@ class TeeHttpServletRequest extends HttpServletRequestWrapper {
         super(request);
         // we can't access the input stream and access the request parameters
         // at the same time
-        if (Util.isFormUrlEncoded(request)) {
+        if (Util.isFormUrlEncoded(request.getContentType(), request.getMethod())) {
             postedParametersMode = true;
         } else {
             inStream = new TeeServletInputStream(request);

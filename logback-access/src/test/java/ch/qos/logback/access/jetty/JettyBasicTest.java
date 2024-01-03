@@ -25,10 +25,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JettyBasicTest {
 
@@ -68,7 +72,8 @@ public class JettyBasicTest {
 
     @Test
     public void eventGoesToAppenders() throws Exception {
-        URL url = new URL(JETTY_FIXTURE.getUrl());
+        long testStart = System.currentTimeMillis();
+        URL url = new URL(JETTY_FIXTURE.getUrl() + "foo/bar?param1=value1");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setDoInput(true);
 
@@ -82,6 +87,25 @@ public class JettyBasicTest {
 
         assertEquals("127.0.0.1", event.getRemoteHost());
         assertEquals("localhost", event.getServerName());
+        assertTrue(event.getTimeStamp() >= testStart);
+        assertTrue(event.getTimeStamp() <= System.currentTimeMillis());
+        assertTrue(event.getElapsedTime() >= 0);
+        assertEquals("/foo/bar", event.getRequestURI());
+        assertEquals("GET /foo/bar?param1=value1 HTTP/1.1", event.getRequestURL());
+        assertEquals("HTTP/1.1", event.getProtocol());
+        assertEquals("GET", event.getMethod());
+        assertEquals("-", event.getSessionID());
+        assertEquals("?param1=value1", event.getQueryString());
+        assertEquals("127.0.0.1", event.getRemoteAddr());
+        assertTrue(event.getRequestHeaderMap().size() > 0);
+        assertFalse(event.getRequestHeader("Host").isEmpty());
+        assertArrayEquals(new String[] { "value1" }, event.getRequestParameter("param1"));
+        assertTrue(event.getRequestParameterMap().size() == 1);
+        assertEquals(11, event.getContentLength());
+        assertEquals(200, event.getStatusCode());
+        assertTrue(event.getResponseHeader("Server").toLowerCase(Locale.ENGLISH).startsWith("jetty"));
+        assertTrue(event.getResponseHeaderMap().size() > 1);
+
         listAppender.list.clear();
     }
 

@@ -23,6 +23,7 @@ import java.util.List;
 import ch.qos.logback.access.joran.JoranConfigurator;
 import ch.qos.logback.access.spi.AccessEvent;
 import ch.qos.logback.access.spi.IAccessEvent;
+import ch.qos.logback.access.spi.ServerAdapter;
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.ContextBase;
 import ch.qos.logback.core.CoreConstants;
@@ -36,10 +37,10 @@ import ch.qos.logback.core.spi.FilterAttachableImpl;
 import ch.qos.logback.core.spi.FilterReply;
 import ch.qos.logback.core.status.ErrorStatus;
 import ch.qos.logback.core.status.InfoStatus;
-import ch.qos.logback.core.util.EnvUtil;
 import ch.qos.logback.core.util.FileUtil;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusPrinter;
+import jakarta.servlet.http.HttpServletRequest;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Response;
@@ -252,16 +253,20 @@ public class RequestLogImpl extends ContextBase implements org.eclipse.jetty.uti
 
     @Override
     public void log(Request jettyRequest, Response jettyResponse) {
-        JettyServerAdapter adapter = makeJettyServerAdapter(jettyRequest, jettyResponse);
-        IAccessEvent accessEvent = new AccessEvent(this, jettyRequest, jettyResponse, adapter);
+        ServerAdapter adapter = makeJettyServerAdapter(jettyRequest, jettyResponse);
+        IAccessEvent accessEvent = new AccessEvent(this, adapter);
         if (getFilterChainDecision(accessEvent) == FilterReply.DENY) {
             return;
         }
         aai.appendLoopOnAppenders(accessEvent);
     }
 
-    private JettyServerAdapter makeJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
-       return new JettyModernServerAdapter(jettyRequest, jettyResponse);
+    private ServerAdapter makeJettyServerAdapter(Request jettyRequest, Response jettyResponse) {
+        if (jettyRequest instanceof HttpServletRequest) {
+            return new JettyServletApiServerAdapter(jettyRequest, jettyResponse);
+        } else {
+            return new JettyNoServletApiServerAdapter(jettyRequest, jettyResponse);
+        }
     }
 
     protected void addInfo(String msg) {
