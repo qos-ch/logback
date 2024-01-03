@@ -13,21 +13,18 @@
  */
 package ch.qos.logback.access.dummy;
 
-import ch.qos.logback.access.spi.ServerAdapter;
+import ch.qos.logback.access.spi.ServletApiServerAdapter;
 
-import java.util.Map;
+public class DummyServerAdapter extends ServletApiServerAdapter {
 
-public class DummyServerAdapter implements ServerAdapter {
-
-    DummyRequest request;
     DummyResponse response;
 
     public DummyServerAdapter(DummyRequest dummyRequest, DummyResponse dummyResponse) {
-        this.request = dummyRequest;
+        super(dummyRequest, dummyResponse);
         this.response = dummyResponse;
     }
 
-    public long getContentLength() {
+    public long getResponseContentLength() {
         return response.getContentCount();
     }
 
@@ -38,9 +35,4 @@ public class DummyServerAdapter implements ServerAdapter {
     public long getRequestTimestamp() {
         return -1;
     }
-
-    public Map<String, String> buildResponseHeaderMap() {
-        return response.headerMap;
-    }
-
 }

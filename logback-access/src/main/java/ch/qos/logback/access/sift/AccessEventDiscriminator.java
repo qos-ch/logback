@@ -13,9 +13,6 @@
  */
 package ch.qos.logback.access.sift;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.sift.AbstractDiscriminator;
 
@@ -100,18 +97,12 @@ public class AccessEventDiscriminator extends AbstractDiscriminator<IAccessEvent
     }
 
     private String getSessionAttribute(IAccessEvent acccessEvent) {
-        HttpServletRequest req = acccessEvent.getRequest();
-        if (req != null) {
-            HttpSession session = req.getSession(false);
-            if (session != null) {
-                if ("id".equalsIgnoreCase(additionalKey)) {
-                    return session.getId();
-                } else {
-                    Object v = session.getAttribute(additionalKey);
-                    if (v != null) {
-                        return v.toString();
-                    }
-                }
+        if ("id".equalsIgnoreCase(additionalKey)) {
+            return acccessEvent.getSessionID();
+        } else {
+            Object v = acccessEvent.getSessionAttribute(additionalKey);
+            if (v != null) {
+                return v.toString();
             }
         }
         return null;
@@ -135,7 +126,7 @@ public class AccessEventDiscriminator extends AbstractDiscriminator<IAccessEvent
         case REQUEST_ATTRIBUTE:
         case COOKIE:
             if (additionalKey == null) {
-                addError("\"OptionalKey\" property is mandatory for field name " + fieldName.toString());
+                addError("\"OptionalKey\" property is mandatory for field name " + fieldName);
                 errorCount++;
             }
         }

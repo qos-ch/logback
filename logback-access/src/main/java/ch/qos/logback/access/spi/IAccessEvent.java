@@ -43,7 +43,9 @@ public interface IAccessEvent extends DeferredProcessingAware {
      * value will be null.
      *
      * @return
+     * @deprecated Don't rely on a HttpServletRequest being available
      */
+    @Deprecated
     HttpServletRequest getRequest();
 
     /**
@@ -51,7 +53,9 @@ public interface IAccessEvent extends DeferredProcessingAware {
      * value will be null.
      *
      * @return
+     * @deprecated Don't rely on a HttpServletResponse being available
      */
+    @Deprecated
     HttpServletResponse getResponse();
 
     /**
@@ -101,6 +105,8 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
     String getSessionID();
 
+    Object getSessionAttribute(String key);
+
     void setThreadName(String threadName);
 
     String getThreadName();
@@ -133,6 +139,11 @@ public interface IAccessEvent extends DeferredProcessingAware {
 
     int getLocalPort();
 
+    /**
+     * Access to internal adapter is deprecated
+     * @deprecated do not access the internal adapter but use the matching properties instead
+     */
+    @Deprecated
     ServerAdapter getServerAdapter();
 
     String getResponseHeader(String key);

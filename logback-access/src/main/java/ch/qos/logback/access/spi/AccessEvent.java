@@ -22,16 +22,15 @@ import ch.qos.logback.core.spi.SequenceNumberGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.Vector;
 
 // Contributors:  Joern Huxhorn (see also bug #110)
 
@@ -51,9 +50,6 @@ public class AccessEvent implements Serializable, IAccessEvent {
     private static final long serialVersionUID = 866718993618836343L;
 
     private static final String EMPTY = "";
-
-    private transient final HttpServletRequest httpRequest;
-    private transient final HttpServletResponse httpResponse;
 
     String queryString;
     String requestURI;
@@ -89,10 +85,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     private long sequenceNumber = 0;
 
-    public AccessEvent(Context context, HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            ServerAdapter adapter) {
-        this.httpRequest = httpRequest;
-        this.httpResponse = httpResponse;
+    public AccessEvent(Context context, ServerAdapter adapter) {
         this.timeStamp = System.currentTimeMillis();
 
         SequenceNumberGenerator sng = context.getSequenceNumberGenerator();
@@ -103,26 +96,20 @@ public class AccessEvent implements Serializable, IAccessEvent {
         this.elapsedTime = calculateElapsedTime();
     }
 
-    /**
-     * Returns the underlying HttpServletRequest. After serialization the returned
-     * value will be null.
-     *
-     * @return
-     */
     @Override
     public HttpServletRequest getRequest() {
-        return httpRequest;
+        if (serverAdapter != null) {
+            return serverAdapter.getRequest();
+        }
+        return null;
     }
 
-    /**
-     * Returns the underlying HttpServletResponse. After serialization the returned
-     * value will be null.
-     *
-     * @return
-     */
     @Override
     public HttpServletResponse getResponse() {
-        return httpResponse;
+        if (serverAdapter != null) {
+            return serverAdapter.getResponse();
+        }
+        return null;
     }
 
     @Override
@@ -157,8 +144,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getRequestURI() {
         if (requestURI == null) {
-            if (httpRequest != null) {
-                requestURI = httpRequest.getRequestURI();
+            if (serverAdapter != null) {
+                requestURI = serverAdapter.getRequestURI();
             } else {
                 requestURI = NA;
             }
@@ -169,9 +156,9 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getQueryString() {
         if (queryString == null) {
-            if (httpRequest != null) {
+            if (serverAdapter != null) {
                 StringBuilder buf = new StringBuilder();
-                final String qStr = httpRequest.getQueryString();
+                final String qStr = serverAdapter.getQueryString();
                 if (qStr != null) {
                     buf.append(AccessConverter.QUESTION_CHAR);
                     buf.append(qStr);
@@ -190,14 +177,14 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getRequestURL() {
         if (requestURL == null) {
-            if (httpRequest != null) {
+            if (serverAdapter != null) {
                 StringBuilder buf = new StringBuilder();
-                buf.append(httpRequest.getMethod());
+                buf.append(serverAdapter.getMethod());
                 buf.append(AccessConverter.SPACE_CHAR);
-                buf.append(httpRequest.getRequestURI());
+                buf.append(serverAdapter.getRequestURI());
                 buf.append(getQueryString());
                 buf.append(AccessConverter.SPACE_CHAR);
-                buf.append(httpRequest.getProtocol());
+                buf.append(serverAdapter.getProtocol());
                 requestURL = buf.toString();
             } else {
                 requestURL = NA;
@@ -209,11 +196,12 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getRemoteHost() {
         if (remoteHost == null) {
-            if (httpRequest != null) {
+            if (serverAdapter != null) {
                 // the underlying implementation of HttpServletRequest will
                 // determine if remote lookup will be performed
-                remoteHost = httpRequest.getRemoteHost();
-            } else {
+                remoteHost = serverAdapter.getRemoteHost();
+            }
+            if (remoteHost == null) {
                 remoteHost = NA;
             }
         }
@@ -223,9 +211,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getRemoteUser() {
         if (remoteUser == null) {
-            if (httpRequest != null) {
-                remoteUser = httpRequest.getRemoteUser();
-            } else {
+            if (serverAdapter != null) {
+                remoteUser = serverAdapter.getRemoteUser();
+            }
+            if (remoteUser == null) {
                 remoteUser = NA;
             }
         }
@@ -235,9 +224,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getProtocol() {
         if (protocol == null) {
-            if (httpRequest != null) {
-                protocol = httpRequest.getProtocol();
-            } else {
+            if (serverAdapter != null) {
+                protocol = serverAdapter.getProtocol();
+            }
+            if (protocol == null) {
                 protocol = NA;
             }
         }
@@ -247,9 +237,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getMethod() {
         if (method == null) {
-            if (httpRequest != null) {
-                method = httpRequest.getMethod();
-            } else {
+            if (serverAdapter != null) {
+                method = serverAdapter.getMethod();
+            }
+            if (method == null) {
                 method = NA;
             }
         }
@@ -259,12 +250,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getSessionID() {
         if (sessionID == null) {
-            if (httpRequest != null) {
-                final HttpSession session = httpRequest.getSession(false);
-                if (session != null) {
-                    sessionID = session.getId();
-                }
-            } else {
+            if (serverAdapter != null) {
+                sessionID = serverAdapter.getSessionId();
+            }
+            if (sessionID == null) {
                 sessionID = NA;
             }
         }
@@ -274,9 +263,10 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getServerName() {
         if (serverName == null) {
-            if (httpRequest != null) {
-                serverName = httpRequest.getServerName();
-            } else {
+            if (serverAdapter != null) {
+                serverName = serverAdapter.getServerName();
+            }
+            if (serverName == null) {
                 serverName = NA;
             }
         }
@@ -286,8 +276,8 @@ public class AccessEvent implements Serializable, IAccessEvent {
     @Override
     public String getRemoteAddr() {
         if (remoteAddr == null) {
-            if (httpRequest != null) {
-                remoteAddr = httpRequest.getRemoteAddr();
+            if (serverAdapter != null) {
+                remoteAddr = serverAdapter.getRemoteAddr();
             } else {
                 remoteAddr = NA;
             }
@@ -297,81 +287,46 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     @Override
     public String getRequestHeader(String key) {
-        String result = null;
         key = key.toLowerCase();
-        if (requestHeaderMap == null) {
-            if (httpRequest != null) {
-                buildRequestHeaderMap();
-                result = requestHeaderMap.get(key);
-            }
-        } else {
-            result = requestHeaderMap.get(key);
+        Map<String, String> headerMap = getRequestHeaderMap();
+        String result = headerMap.get(key);
+        if (result == null) {
+            result = NA;
         }
-
-        if (result != null) {
-            return result;
-        } else {
-            return NA;
-        }
+        return result;
     }
 
     @Override
     public Enumeration<String> getRequestHeaderNames() {
-        // post-serialization
-        if (httpRequest == null) {
-            Vector<String> list = new Vector<String>(getRequestHeaderMap().keySet());
-            return list.elements();
-        }
-        return httpRequest.getHeaderNames();
+        return Collections.enumeration(getRequestHeaderMap().keySet());
     }
 
     @Override
     public Map<String, String> getRequestHeaderMap() {
         if (requestHeaderMap == null) {
-            buildRequestHeaderMap();
+            // according to RFC 2616 header names are case-insensitive
+            // latest versions of Tomcat return header names in lower-case
+            requestHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
+            Enumeration<String> e = serverAdapter.getHeaderNames();
+            if (e != null) {
+                while (e.hasMoreElements()) {
+                    String key = e.nextElement();
+                    requestHeaderMap.put(key, serverAdapter.getHeader(key));
+                }
+            }
         }
         return requestHeaderMap;
-    }
-
-    public void buildRequestHeaderMap() {
-        // according to RFC 2616 header names are case-insensitive
-        // latest versions of Tomcat return header names in lower-case
-        requestHeaderMap = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-        Enumeration<String> e = httpRequest.getHeaderNames();
-        if (e == null) {
-            return;
-        }
-        while (e.hasMoreElements()) {
-            String key = e.nextElement();
-            requestHeaderMap.put(key, httpRequest.getHeader(key));
-        }
-    }
-
-    public void buildRequestParameterMap() {
-        requestParameterMap = new HashMap<String, String[]>();
-        try {
-            Enumeration<String> e = httpRequest.getParameterNames();
-            if (e == null) {
-                return;
-            }
-            while (e.hasMoreElements()) {
-                String key = e.nextElement();
-                requestParameterMap.put(key, httpRequest.getParameterValues(key));
-            }
-        } catch(Throwable t) {
-            // The use of HttpServletRequest.getParameterNames() can cause
-            // a READ of the Request body content.  This can fail with various
-            // Throwable failures depending on the state of the Request
-            // at the time this method is called.
-            // We don't want to fail the logging due to these types of requests
-            t.printStackTrace();
-        }
     }
 
     @Override
     public Map<String, String[]> getRequestParameterMap() {
         if (requestParameterMap == null) {
-            buildRequestParameterMap();
+            requestParameterMap = new HashMap<String, String[]>();
+            Enumeration<String> e = serverAdapter.getParameterNames();
+            while (e.hasMoreElements()) {
+                String key = e.nextElement();
+                requestParameterMap.put(key, serverAdapter.getParameterValues(key));
+            }
         }
         return requestParameterMap;
     }
@@ -383,9 +338,9 @@ public class AccessEvent implements Serializable, IAccessEvent {
             // Event was prepared for deferred processing so we have a copy of attribute map
             // and must use that copy
             value = attributeMap.get(key);
-        } else if (httpRequest != null) {
+        } else if (serverAdapter != null) {
             // We have original request so take attribute from it
-            value = httpRequest.getAttribute(key);
+            value = serverAdapter.getAttribute(key);
         }
 
         return value != null ? value.toString() : NA;
@@ -393,7 +348,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     private void copyAttributeMap() {
 
-        if (httpRequest == null) {
+        if (serverAdapter == null) {
             return;
         }
 
@@ -404,11 +359,11 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
         attributeMap = new HashMap<String, Object>();
 
-        Enumeration<String> names = httpRequest.getAttributeNames();
+        Enumeration<String> names = serverAdapter.getAttributeNames();
         while (names.hasMoreElements()) {
             String name = names.nextElement();
 
-            Object value = httpRequest.getAttribute(name);
+            Object value = serverAdapter.getAttribute(name);
             if (shouldCopyAttribute(name, value)) {
                 attributeMap.put(name, value);
             }
@@ -433,22 +388,15 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     @Override
     public String[] getRequestParameter(String key) {
-        String[] value = null;
-
-        if (requestParameterMap != null) {
-            value = requestParameterMap.get(key);
-        } else if (httpRequest != null) {
-            value = httpRequest.getParameterValues(key);
-        }
-
+        Map<String, String[]> parameterMap = getRequestParameterMap();
+        String[] value = parameterMap.get(key);
         return (value != null) ? value : NA_STRING_ARRAY;
     }
 
     @Override
     public String getCookie(String key) {
-
-        if (httpRequest != null) {
-            Cookie[] cookieArray = httpRequest.getCookies();
+        if (serverAdapter != null) {
+            Cookie[] cookieArray = serverAdapter.getCookies();
             if (cookieArray == null) {
                 return NA;
             }
@@ -464,20 +412,15 @@ public class AccessEvent implements Serializable, IAccessEvent {
 
     @Override
     public long getContentLength() {
-        if (contentLength == SENTINEL) {
-            if (httpResponse != null) {
-                contentLength = serverAdapter.getContentLength();
-                return contentLength;
-            }
+        if (contentLength == SENTINEL && serverAdapter != null) {
+            contentLength = serverAdapter.getResponseContentLength();
         }
         return contentLength;
     }
 
     public int getStatusCode() {
-        if (statusCode == SENTINEL) {
-            if (httpResponse != null) {
-                statusCode = serverAdapter.getStatusCode();
-            }
+        if (statusCode == SENTINEL && serverAdapter != null) {
+            statusCode = serverAdapter.getStatusCode();
         }
         return statusCode;
     }
@@ -491,7 +434,7 @@ public class AccessEvent implements Serializable, IAccessEvent {
     }
 
     private long calculateElapsedTime() {
-        if (serverAdapter.getRequestTimestamp() < 0) {
+        if (serverAdapter == null || serverAdapter.getRequestTimestamp() < 0) {
             return -1;
         }
         return getTimeStamp() - serverAdapter.getRequestTimestamp();
@@ -502,51 +445,40 @@ public class AccessEvent implements Serializable, IAccessEvent {
             return requestContent;
         }
 
-        if (Util.isFormUrlEncoded(httpRequest)) {
-            StringBuilder buf = new StringBuilder();
-
-            try {
-                Enumeration<String> pramEnumeration = httpRequest.getParameterNames();
+        if (serverAdapter != null) {
+            if (Util.isFormUrlEncoded(serverAdapter.getContentType(), serverAdapter.getMethod())) {
+                StringBuilder buf = new StringBuilder();
+                Enumeration<String> paramEnumeration = serverAdapter.getParameterNames();
 
                 // example: id=1234&user=cgu
                 // number=1233&x=1
                 int count = 0;
-                while (pramEnumeration.hasMoreElements()) {
-
-                    String key = pramEnumeration.nextElement();
+                while (paramEnumeration.hasMoreElements()) {
+                    String key = paramEnumeration.nextElement();
                     if (count++ != 0) {
                         buf.append("&");
                     }
                     buf.append(key);
                     buf.append("=");
-                    String val = httpRequest.getParameter(key);
+                    String val = serverAdapter.getParameterValues(key)[0];
                     if (val != null) {
                         buf.append(val);
                     } else {
                         buf.append("");
                     }
                 }
-            } catch (Throwable t) {
-                // The use of HttpServletRequest.getParameterNames() and
-                // HttpServletRequest.getParameter(String) can cause
-                // a READ of the Request body content.  This can fail with various
-                // Throwable failures depending on the state of the Request
-                // at the time this method is called.
-                // We don't want to fail the logging due to these types of requests
-                t.printStackTrace();
+                requestContent = buf.toString();
+            } else {
+                // retrieve the byte array placed by TeeFilter
+                byte[] inputBuffer = (byte[]) serverAdapter.getAttribute(AccessConstants.LB_INPUT_BUFFER);
+                if (inputBuffer != null) {
+                    requestContent = new String(inputBuffer);
+                }
             }
-            requestContent = buf.toString();
-        } else {
-            // retrieve the byte array placed by TeeFilter
-            byte[] inputBuffer = (byte[]) httpRequest.getAttribute(AccessConstants.LB_INPUT_BUFFER);
+        }
 
-            if (inputBuffer != null) {
-                requestContent = new String(inputBuffer);
-            }
-
-            if (requestContent == null || requestContent.length() == 0) {
-                requestContent = EMPTY;
-            }
+        if (requestContent == null || requestContent.isEmpty()) {
+            requestContent = EMPTY;
         }
 
         return requestContent;
@@ -557,57 +489,57 @@ public class AccessEvent implements Serializable, IAccessEvent {
             return responseContent;
         }
 
-        if (Util.isImageResponse(httpResponse)) {
-            responseContent = "[IMAGE CONTENTS SUPPRESSED]";
-        } else {
+        if (serverAdapter != null) {
+            if (Util.isImageResponse(serverAdapter.getResponseType())) {
+                responseContent = "[IMAGE CONTENTS SUPPRESSED]";
+            } else {
+                // retrieve the byte array previously placed by TeeFilter
+                byte[] outputBuffer = (byte[]) serverAdapter.getAttribute(AccessConstants.LB_OUTPUT_BUFFER);
 
-            // retrieve the byte array previously placed by TeeFilter
-            byte[] outputBuffer = (byte[]) httpRequest.getAttribute(AccessConstants.LB_OUTPUT_BUFFER);
+                if (outputBuffer != null) {
+                    responseContent = new String(outputBuffer);
+                }
+            }
+        }
 
-            if (outputBuffer != null) {
-                responseContent = new String(outputBuffer);
-            }
-            if (responseContent == null || responseContent.length() == 0) {
-                responseContent = EMPTY;
-            }
+        if (responseContent == null || responseContent.isEmpty()) {
+            responseContent = EMPTY;
         }
 
         return responseContent;
     }
 
     public int getLocalPort() {
-        if (localPort == SENTINEL) {
-            if (httpRequest != null) {
-                localPort = httpRequest.getLocalPort();
-            }
-
+        if (localPort == SENTINEL && serverAdapter != null) {
+            localPort = serverAdapter.getLocalPort();
         }
         return localPort;
     }
 
+    @Override
     public ServerAdapter getServerAdapter() {
         return serverAdapter;
     }
 
     public String getResponseHeader(String key) {
-        buildResponseHeaderMap();
-        return responseHeaderMap.get(key);
-    }
-
-    void buildResponseHeaderMap() {
-        if (responseHeaderMap == null) {
-            responseHeaderMap = serverAdapter.buildResponseHeaderMap();
-        }
+        return getResponseHeaderMap().get(key);
     }
 
     public Map<String, String> getResponseHeaderMap() {
-        buildResponseHeaderMap();
+        if (responseHeaderMap == null) {
+            responseHeaderMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+            responseHeaderMap.putAll(serverAdapter.getResponseHeaderMap());
+        }
         return responseHeaderMap;
     }
 
     public List<String> getResponseHeaderNameList() {
-        buildResponseHeaderMap();
-        return new ArrayList<String>(responseHeaderMap.keySet());
+        return new ArrayList<String>(getResponseHeaderMap().keySet());
+    }
+
+    @Override
+    public Object getSessionAttribute(String key) {
+        return serverAdapter.getSessionAttribute(key);
     }
 
     public void prepareForDeferredProcessing() {

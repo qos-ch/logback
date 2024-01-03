@@ -13,6 +13,11 @@
  */
 package ch.qos.logback.access.spi;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.Enumeration;
 import java.util.Map;
 
 /**
@@ -26,9 +31,59 @@ public interface ServerAdapter {
 
     long getRequestTimestamp();
 
-    long getContentLength();
+    long getResponseContentLength();
 
     int getStatusCode();
 
-    Map<String, String> buildResponseHeaderMap();
+    String getContentType();
+
+    String getRequestURI();
+
+    String getQueryString();
+
+    String getMethod();
+
+    String getProtocol();
+
+    String getRemoteHost();
+
+    String getRemoteUser();
+
+    String getSessionId();
+
+    Object getSessionAttribute(String key);
+
+    int getLocalPort();
+
+    String getServerName();
+
+    String getRemoteAddr();
+
+    Enumeration<String> getHeaderNames();
+
+    String getHeader(String key);
+
+    Map<String, String> getResponseHeaderMap();
+
+    Enumeration<String> getParameterNames();
+
+    String[] getParameterValues(String key);
+
+    Enumeration<String> getAttributeNames();
+
+    Object getAttribute(String key);
+
+    Cookie[] getCookies();
+
+    String getResponseType();
+
+    /**
+     * Will be null for some server implementations. Don't rely on it being available!
+     */
+    HttpServletRequest getRequest();
+
+    /**
+     * Will be null for some server implementations. Don't rely on it being available!
+     */
+    HttpServletResponse getResponse();
 }
