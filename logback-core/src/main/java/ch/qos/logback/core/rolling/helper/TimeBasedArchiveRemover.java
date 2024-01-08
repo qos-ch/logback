@@ -36,6 +36,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     final RollingCalendar rc;
     private int maxHistory = CoreConstants.UNBOUNDED_HISTORY;
     private long totalSizeCap = CoreConstants.UNBOUNDED_TOTAL_SIZE_CAP;
+    private boolean cleanLogsByLastModifiedDate = false;
     final boolean parentClean;
     long lastHeartBeat = UNINITIALIZED;
 
@@ -70,10 +71,54 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             addInfo("Multiple periods, i.e. " + periodsElapsed
                     + " periods, seem to have elapsed. This is expected at application start.");
         }
-        for (int i = 0; i < periodsElapsed; i++) {
-            int offset = getPeriodOffsetForDeletionTarget() - i;
-            Instant instantOfPeriodToClean = rc.getEndOfNextNthPeriod(now, offset);
-            cleanPeriod(instantOfPeriodToClean);
+
+        if (cleanLogsByLastModifiedDate) {
+            // Delete old logs based on date the file was last modified
+            cleanLogsByDateModified(now);
+        } else {
+            // Delete old logs based on expected file name
+            for (int i = 0; i < periodsElapsed; i++) {
+                int offset = getPeriodOffsetForDeletionTarget() - i;
+                Instant instantOfPeriodToClean = rc.getEndOfNextNthPeriod(now, offset);
+                cleanPeriod(instantOfPeriodToClean);
+            }
+        }
+    }
+
+    /**
+     * Iterates through log files and deletes files outside the rollover window
+     * Expects the file name to occur before the date specifier
+     * Does not work well with file patterns that have auxiliary date specifiers
+     *
+     * @param now
+     */
+    private void cleanLogsByDateModified(Instant now) {
+        File filePattern = new File(fileNamePattern.getPattern());
+        String fileNameBeforeDateSpecifier = filePattern.getName().split("\\%d\\{.+\\}")[0];
+        Instant cleanupCutoff = rc.getEndOfNextNthPeriod(now, getPeriodOffsetForDeletionTarget());
+        
+        File parentDir;
+        parentDir = getParentDir(cleanupCutoff);
+        if (parentDir == null) {
+            addError("Cannot get parent directory");
+            return;
+        }
+        
+        File[] matchedFiles;
+        matchedFiles = parentDir.listFiles((dir, name) -> name.contains(fileNameBeforeDateSpecifier));
+        if (matchedFiles == null) {
+            addError("Failed to find relevant log files");
+            return;
+        }
+        
+        for (File file : matchedFiles) {
+            Instant lastModifiedDate = Instant.ofEpochMilli(file.lastModified());
+            if (cleanupCutoff.isAfter(lastModifiedDate)) {
+                checkAndDeleteFile(file);
+            }
+        }
+        if (parentClean && matchedFiles.length > 0) {
+            removeFolderIfEmpty(parentDir);
         }
     }
 
@@ -146,6 +191,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     protected void descendingSort(File[] matchingFileArray, Instant instant) {
         // nothing to do in super class
+    }
+
+    File getParentDir(Instant cleanupCutoff) {
+        return getParentDir(new File(fileNamePattern.convert(cleanupCutoff)));
     }
 
     File getParentDir(File file) {
@@ -239,6 +288,10 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
 
     public void setTotalSizeCap(long totalSizeCap) {
         this.totalSizeCap = totalSizeCap;
+    }
+
+    public void setCleanLogsByLastModifiedDate(boolean cleanLogsByLastModifiedDate) {
+        this.cleanLogsByLastModifiedDate = cleanLogsByLastModifiedDate;
     }
 
     public String toString() {
