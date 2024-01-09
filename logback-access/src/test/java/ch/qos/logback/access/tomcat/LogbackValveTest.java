@@ -21,6 +21,14 @@ import org.apache.catalina.core.ContainerBase;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class LogbackValveTest {
@@ -40,6 +48,19 @@ public class LogbackValveTest {
         setupValve(resourceName);
         valve.start();
         checker.assertContainsMatch(Status.WARN, "Failed to find valid");
+    }
+
+    @Test
+    public void fileOnFileSystemShouldBeFound() throws LifecycleException, IOException {
+        System.clearProperty(LogbackValve.CATALINA_BASE_KEY);
+        System.clearProperty(LogbackValve.CATALINA_HOME_KEY);
+        final File configFile = createAccessLogConfigFile();
+        final String fileName = configFile.getAbsolutePath();
+        setupValve(fileName);
+        valve.start();
+        checker.assertContainsMatch("Found configuration file");
+        checker.assertContainsMatch("Done configuring");
+        checker.assertIsErrorFree();
     }
 
     @Test
@@ -104,5 +125,23 @@ public class LogbackValveTest {
                 return "getObjectNameKeyProperties-test";
             }
         });
+    }
+
+    private File createAccessLogConfigFile() throws IOException {
+        File configFile = File.createTempFile("logback-access", ".xml");
+
+       try (BufferedReader in = new BufferedReader(new InputStreamReader(this.getClass()
+                                                                             .getClassLoader()
+                                                                             .getResourceAsStream("logback-asResource.xml")))) {
+          try (PrintWriter out = new PrintWriter(new FileWriter(configFile))) {
+             String line = in.readLine();
+             while (line != null) {
+                out.println(line);
+                line = in.readLine();
+             }
+          }
+       }
+
+        return configFile;
     }
 }
