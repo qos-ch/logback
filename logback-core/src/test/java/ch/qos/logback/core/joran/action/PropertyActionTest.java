@@ -13,8 +13,6 @@
  */
 package ch.qos.logback.core.joran.action;
 
-import java.util.Iterator;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,8 +31,6 @@ import ch.qos.logback.core.model.processor.ImplicitModelHandler;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.model.processor.NOPModelHandler;
 import ch.qos.logback.core.model.processor.PropertyModelHandler;
-import ch.qos.logback.core.status.ErrorStatus;
-import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.testUtil.CoreTestConstants;
 import ch.qos.logback.core.util.StatusPrinter;
 
@@ -191,18 +187,46 @@ public class PropertyActionTest {
         propertyAction.end(interpretationContext, tagName);
         defaultProcessor.process(topModel);
         Assertions.assertEquals(2, context.getStatusManager().getCount());
-        Assertions.assertTrue(checkFileErrors());
+        Assertions.assertEquals("Could not find properties file [toto].", getFirstStatusMessage());
+    }
+
+    @Test
+    public void testLoadMissingOptionalFile() throws ActionException {
+        atts.setValue("file", "toto");
+        atts.setValue("optional", "true");
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
+        defaultProcessor.process(topModel);
+        Assertions.assertEquals(1, context.getStatusManager().getCount());
+        Assertions.assertEquals("End of configuration.", getFirstStatusMessage());
+    }
+
+    @Test
+    public void testLoadResourceNotPossible() throws ActionException {
+        atts.setValue("resource", "toto");
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
+        defaultProcessor.process(topModel);
+        Assertions.assertEquals(2, context.getStatusManager().getCount());
+        Assertions.assertEquals("Could not find resource [toto].", getFirstStatusMessage());
+    }
+
+    @Test
+    public void testLoadMissingOptionalResource() throws ActionException {
+        atts.setValue("resource", "toto");
+        atts.setValue("optional", "true");
+        propertyAction.begin(interpretationContext, tagName, atts);
+        propertyAction.end(interpretationContext, tagName);
+        defaultProcessor.process(topModel);
+        Assertions.assertEquals(1, context.getStatusManager().getCount());
+        Assertions.assertEquals("End of configuration.", getFirstStatusMessage());
     }
 
     private boolean checkError() {
-        Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
-        ErrorStatus es = (ErrorStatus) it.next();
-        return PropertyModelHandler.INVALID_ATTRIBUTES.equals(es.getMessage());
+        return PropertyModelHandler.INVALID_ATTRIBUTES.equals(getFirstStatusMessage());
     }
 
-    private boolean checkFileErrors() {
-        Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
-        ErrorStatus es1 = (ErrorStatus) it.next();
-        return "Could not find properties file [toto].".equals(es1.getMessage());
+    private String getFirstStatusMessage() {
+        return context.getStatusManager().getCopyOfStatusList().get(0).getMessage();
     }
 }

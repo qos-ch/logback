@@ -28,6 +28,7 @@ import ch.qos.logback.core.model.PropertyModel;
 public class PropertyAction extends BaseModelAction {
 
     static final String RESOURCE_ATTRIBUTE = "resource";
+    static final String OPTIONAL_ATTRIBUTE = "optional";
 
     @Override
     protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String localName,
@@ -47,6 +48,7 @@ public class PropertyAction extends BaseModelAction {
         propertyModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
         propertyModel.setFile(attributes.getValue(FILE_ATTRIBUTE));
         propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
+        propertyModel.setOptional(attributes.getValue(OPTIONAL_ATTRIBUTE));
         return propertyModel;
     }
 
