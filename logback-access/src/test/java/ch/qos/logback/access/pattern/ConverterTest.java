@@ -76,7 +76,7 @@ public class ConverterTest {
     @Test
     public void testDateConverter_AU_locale() {
         DateConverter converter = new DateConverter();
-        List<String> optionsList = Lists.list(CoreConstants.CLF_DATE_PATTERN, "Australia/Sydney", "en-AU");
+        List<String> optionsList = Lists.list(CoreConstants.CLF_DATE_PATTERN, "Australia/Sydney", "en_AU");
 
         converter.setOptionList(optionsList);
         converter.start();
