@@ -53,7 +53,6 @@ public class DateConverter extends AccessConverter {
 
         try {
             cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId, locale);
-            // maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
         } catch (IllegalArgumentException e) {
             addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
             addWarn("Defaulting to  " + CoreConstants.CLF_DATE_PATTERN);
