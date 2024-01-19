@@ -15,6 +15,7 @@ package ch.qos.logback.access.pattern;
 
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Locale;
 
 import ch.qos.logback.access.spi.IAccessEvent;
 import ch.qos.logback.core.CoreConstants;
@@ -44,13 +45,19 @@ public class DateConverter extends AccessConverter {
             zoneId = ZoneId.of(zoneIdString);
         }
 
+        Locale locale = null;
+        if (optionList != null && optionList.size() > 2) {
+            String localeIdStr = optionList.get(2);
+            locale = Locale.forLanguageTag(localeIdStr);
+        }
+
         try {
-            cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId);
+            cachingDateFormatter = new CachingDateFormatter(datePattern, zoneId, locale);
             // maximumCacheValidity = CachedDateFormat.getMaximumCacheValidity(pattern);
         } catch (IllegalArgumentException e) {
             addWarn("Could not instantiate SimpleDateFormat with pattern " + datePattern, e);
             addWarn("Defaulting to  " + CoreConstants.CLF_DATE_PATTERN);
-            cachingDateFormatter = new CachingDateFormatter(CoreConstants.CLF_DATE_PATTERN, zoneId);
+            cachingDateFormatter = new CachingDateFormatter(CoreConstants.CLF_DATE_PATTERN, zoneId, locale);
         }
 
     }

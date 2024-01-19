@@ -291,7 +291,7 @@ public class TimeBasedRollingWithArchiveRemoval_Test extends ScaffoldingForRolli
         // 2016-03-05 00:14:39 CET
         long simulatedTime = 1457133279186L;
         ConfigParameters params = new ConfigParameters(simulatedTime);
-        String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + "}-clean.%i";
+        String fileNamePattern = randomOutputDir + "/%d{" + DAILY_DATE_PATTERN + ", CET}-clean.%i";
         params.maxHistory(60).fileNamePattern(fileNamePattern).simulatedNumberOfPeriods(10).sizeCap(sizeCap);
         logOverMultiplePeriods(params);
 
