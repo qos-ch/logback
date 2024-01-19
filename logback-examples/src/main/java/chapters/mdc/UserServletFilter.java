@@ -27,8 +27,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.MDC;
 
 /**
- * A simple servlet filter that puts the username
- * found either in the Principal.
+ * A simple servlet filter that stores the username
+ * found in the Principal in the MDC.
  * 
  * <p> The value is removed from the MDC once the request has been
  * fully processed.
