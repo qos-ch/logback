@@ -74,7 +74,7 @@ public class UserServletFilter implements Filter {
      * @return true id the user can be successfully registered
      */
     private boolean registerUsername(String username) {
-        if (username != null && username.trim().length() > 0) {
+        if (username != null && !username.trim().isEmpty()) {
             MDC.put(USER_KEY, username);
             return true;
         }
