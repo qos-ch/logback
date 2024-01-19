@@ -30,8 +30,9 @@ import org.slf4j.MDC;
  * A simple servlet filter that stores the username
  * found in the Principal in the MDC.
  * 
- * <p> The value is removed from the MDC once the request has been
- * fully processed.
+ * <p> The value is removed from the MDC once all following
+ * filters/servlets have been fully processed. Note, however,
+ * the value is not available in an error handler servlet.
  *
  * @author S&eacute;bastien Pennec
  */
