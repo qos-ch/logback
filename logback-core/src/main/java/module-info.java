@@ -1,9 +1,6 @@
 module ch.qos.logback.core {
-    requires transitive java.xml;
-    requires static java.sql;
 
     // required by the optional SMTPAppenderBase component
-    requires static java.naming;
 
     requires static janino;
     requires static commons.compiler;
@@ -32,7 +29,6 @@ module ch.qos.logback.core {
 
     exports ch.qos.logback.core.joran;
     exports ch.qos.logback.core.joran.action;
-    exports ch.qos.logback.core.joran.conditional;
     exports ch.qos.logback.core.joran.event;
     exports ch.qos.logback.core.joran.sanity;
     exports ch.qos.logback.core.joran.spi;
