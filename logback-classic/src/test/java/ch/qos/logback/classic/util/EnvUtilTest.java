@@ -8,6 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 public class EnvUtilTest {
 
+    // Beware: ----------------------------------------
+    // Beware:  needs to be updated upon version change
+    // Beware: ----------------------------------------
+    static final String EXPECTED_VERSION = "1.5";
+
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -21,7 +26,7 @@ public class EnvUtilTest {
     public void versionTest() {
         String versionStr = EnvUtil.logbackVersion();
         assertNotNull(versionStr);
-        assertTrue(versionStr.startsWith("1.4"));
+        assertTrue(versionStr.startsWith(EXPECTED_VERSION));
     }
 
 
