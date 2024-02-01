@@ -42,8 +42,7 @@
     <module>logback-core</module>
     <module>logback-core-blackbox</module>
     <module>logback-classic</module>
-    <module>logback-classic-blackbox</module>    
-    <module>logback-access</module>
+    <module>logback-classic-blackbox</module>
     <module>logback-examples</module>
   </modules>
 
