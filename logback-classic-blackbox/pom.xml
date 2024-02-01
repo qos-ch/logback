@@ -8,7 +8,7 @@
     <parent>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-parent</artifactId>
-        <version>1.4.15-SNAPSHOT</version>
+        <version>1.5.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>logback-classic-blackbox</artifactId>
