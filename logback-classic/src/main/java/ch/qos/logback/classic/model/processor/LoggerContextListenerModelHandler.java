@@ -34,7 +34,7 @@ public class LoggerContextListenerModelHandler extends ModelHandlerBase {
         LoggerContextListenerModel lclModel = (LoggerContextListenerModel) model;
 
         String className = lclModel.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addError("Empty class name for LoggerContextListener");
             inError = true;
         } else {

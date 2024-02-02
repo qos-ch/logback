@@ -40,12 +40,12 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
 
         String envEntryValue;
 
-        if (OptionHelper.isNullOrEmpty(envEntryName)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(envEntryName)) {
             addError("[" + InsertFromJNDIModel.ENV_ENTRY_NAME_ATTR + "] missing");
             errorCount++;
         }
 
-        if (OptionHelper.isNullOrEmpty(asKey)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(asKey)) {
             addError("[" + InsertFromJNDIModel.AS_ATTR + "] missing");
             errorCount++;
         }
@@ -57,7 +57,7 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
         try {
             javax.naming.Context ctx = JNDIUtil.getInitialContext();
             envEntryValue = JNDIUtil.lookupString(ctx, envEntryName);
-            if (OptionHelper.isNullOrEmpty(envEntryValue)) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(envEntryValue)) {
                 addError("[" + envEntryName + "] has null or empty value");
             } else {
                 addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");

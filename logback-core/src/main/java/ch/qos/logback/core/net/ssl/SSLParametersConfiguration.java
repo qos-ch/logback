@@ -85,8 +85,8 @@ public class SSLParametersConfiguration extends ContextAwareBase {
         if (enabledProtocols == null) {
             // we're assuming that the same engine is used for all configurables
             // so once we determine the enabled set, we won't do it again
-            if (OptionHelper.isNullOrEmpty(getIncludedProtocols())
-                    && OptionHelper.isNullOrEmpty(getExcludedProtocols())) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(getIncludedProtocols())
+                    && OptionHelper.isNullOrEmptyOrAllSpaces(getExcludedProtocols())) {
                 enabledProtocols = Arrays.copyOf(defaultProtocols, defaultProtocols.length);
             } else {
                 enabledProtocols = includedStrings(supportedProtocols, getIncludedProtocols(), getExcludedProtocols());
@@ -109,8 +109,8 @@ public class SSLParametersConfiguration extends ContextAwareBase {
         if (enabledCipherSuites == null) {
             // we're assuming that the same engine is used for all configurables
             // so once we determine the enabled set, we won't do it again
-            if (OptionHelper.isNullOrEmpty(getIncludedCipherSuites())
-                    && OptionHelper.isNullOrEmpty(getExcludedCipherSuites())) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(getIncludedCipherSuites())
+                    && OptionHelper.isNullOrEmptyOrAllSpaces(getExcludedCipherSuites())) {
                 enabledCipherSuites = Arrays.copyOf(defaultCipherSuites, defaultCipherSuites.length);
             } else {
                 enabledCipherSuites = includedStrings(supportedCipherSuites, getIncludedCipherSuites(),

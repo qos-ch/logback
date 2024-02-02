@@ -13,30 +13,20 @@
  */
 package ch.qos.logback.classic.model.processor;
 
-import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.ReconfigureOnChangeTask;
 import ch.qos.logback.classic.model.ConfigurationModel;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.util.ConfigurationWatchListUtil;
-import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.processor.ModelHandlerBase;
-import ch.qos.logback.core.model.processor.ModelHandlerException;
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
 import ch.qos.logback.core.spi.ConfigurationEvent;
-import ch.qos.logback.core.status.OnConsoleStatusListener;
-import ch.qos.logback.core.util.ContextUtil;
 import ch.qos.logback.core.util.Duration;
 import ch.qos.logback.core.util.OptionHelper;
-import ch.qos.logback.core.util.StatusListenerConfigHelper;
 
 import java.net.URL;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import static ch.qos.logback.core.model.ModelConstants.DEBUG_SYSTEM_PROPERTY_KEY;
-import static ch.qos.logback.core.model.ModelConstants.NULL_STR;
-import static java.lang.Boolean.FALSE;
 
 /**
  * This is a subclass of {@link ConfigurationModelHandler} offering configuration reloading support.
@@ -57,7 +47,7 @@ public class ConfigurationModelHandlerFull extends  ConfigurationModelHandler {
 
     protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
         String scanStr = mic.subst(configurationModel.getScanStr());
-        if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
 
             ScheduledExecutorService scheduledExecutorService = context.getScheduledExecutorService();
             URL mainURL = ConfigurationWatchListUtil.getMainWatchURL(context);
@@ -94,7 +84,7 @@ public class ConfigurationModelHandlerFull extends  ConfigurationModelHandler {
     private Duration getDurationOfScanPeriodAttribute(String scanPeriodAttrib, Duration defaultDuration) {
         Duration duration = null;
 
-        if (!OptionHelper.isNullOrEmpty(scanPeriodAttrib)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanPeriodAttrib)) {
             try {
                 duration = Duration.valueOf(scanPeriodAttrib);
             } catch (IllegalStateException | IllegalArgumentException e) {

@@ -37,6 +37,9 @@ public class ExecutorServiceUtil {
 
     static private final String  NEW_VIRTUAL_TPT_METHOD_NAME = "newVirtualThreadPerTaskExecutor";
 
+    public static final String OF_VIRTUAL_METHOD_NAME = "ofVirtual";
+    public static final String FACTORY_METHOD_NAME = "factory";
+
     private static final ThreadFactory THREAD_FACTORY_FOR_SCHEDULED_EXECUTION_SERVICE = new ThreadFactory() {
 
         private final AtomicInteger threadNumber = new AtomicInteger(1);
@@ -52,9 +55,9 @@ public class ExecutorServiceUtil {
         private ThreadFactory makeThreadFactory() {
             if(EnvUtil.isJDK21OrHigher()) {
                 try {
-                    Method ofVirtualMethod = Thread.class.getMethod("ofVirtual");
+                    Method ofVirtualMethod = Thread.class.getMethod(OF_VIRTUAL_METHOD_NAME);
                     Object threadBuilderOfVirtual = ofVirtualMethod.invoke(null);
-                    Method factoryMethod = threadBuilderOfVirtual.getClass().getMethod("factory");
+                    Method factoryMethod = threadBuilderOfVirtual.getClass().getMethod(FACTORY_METHOD_NAME);
                     return (ThreadFactory) factoryMethod.invoke(threadBuilderOfVirtual);
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     return Executors.defaultThreadFactory();

@@ -44,12 +44,12 @@ public class TimestampModelHandler extends ModelHandlerBase {
     public void handle(ModelInterpretationContext interpretationContext, Model model) {
         TimestampModel timestampModel = (TimestampModel) model;
         String keyStr = timestampModel.getKey();
-        if (OptionHelper.isNullOrEmpty(keyStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(keyStr)) {
             addError("Attribute named [" + Action.KEY_ATTRIBUTE + "] cannot be empty");
             inError = true;
         }
         String datePatternStr = timestampModel.getDatePattern();
-        if (OptionHelper.isNullOrEmpty(datePatternStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(datePatternStr)) {
             addError("Attribute named [" + TimestampAction.DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
             inError = true;
         }

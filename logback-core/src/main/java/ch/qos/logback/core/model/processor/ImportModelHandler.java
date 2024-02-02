@@ -26,7 +26,7 @@ public class ImportModelHandler extends ModelHandlerBase {
         ImportModel importModel = (ImportModel) model;
 
         String className = importModel.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addWarn("Empty className not allowed");
             return;
         }

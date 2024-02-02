@@ -45,7 +45,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
         logger = loggerContext.getLogger(finalLoggerName);
 
         String levelStr = mic.subst(loggerModel.getLevel());
-        if (!OptionHelper.isNullOrEmpty(levelStr)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(levelStr)) {
             if (JoranConstants.INHERITED.equalsIgnoreCase(levelStr) || NULL.equalsIgnoreCase(levelStr)) {
                 if(Logger.ROOT_LOGGER_NAME.equalsIgnoreCase(finalLoggerName)) {
                     addError(ErrorCodes.ROOT_LEVEL_CANNOT_BE_SET_TO_NULL);
@@ -61,7 +61,7 @@ public class LoggerModelHandler extends ModelHandlerBase {
         }
 
         String additivityStr = mic.subst(loggerModel.getAdditivity());
-        if (!OptionHelper.isNullOrEmpty(additivityStr)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(additivityStr)) {
             boolean additive = OptionHelper.toBoolean(additivityStr, true);
             addInfo("Setting additivity of logger [" + finalLoggerName + "] to " + additive);
             logger.setAdditive(additive);

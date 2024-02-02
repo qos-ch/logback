@@ -34,7 +34,7 @@ public class StatusListenerModelHandler extends ModelHandlerBase {
 
         String className = slModel.getClassName();
 
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addError("Empty class name for StatusListener");
             inError = true;
             return;

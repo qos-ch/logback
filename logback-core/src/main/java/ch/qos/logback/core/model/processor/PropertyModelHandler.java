@@ -13,7 +13,6 @@ import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.model.PropertyModel;
-import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import ch.qos.logback.core.util.Loader;
 import ch.qos.logback.core.util.OptionHelper;
 
@@ -93,8 +92,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
 
-        return !(OptionHelper.isNullOrEmpty(file)) && (OptionHelper.isNullOrEmpty(name)
-                && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(resource));
+        return !(OptionHelper.isNullOrEmptyOrAllSpaces(file)) && (OptionHelper.isNullOrEmptyOrAllSpaces(name)
+                && OptionHelper.isNullOrEmptyOrAllSpaces(value) && OptionHelper.isNullOrEmptyOrAllSpaces(resource));
     }
 
     boolean checkResourceAttributeSanity(PropertyModel propertyModel) {
@@ -103,8 +102,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
 
-        return !(OptionHelper.isNullOrEmpty(resource)) && (OptionHelper.isNullOrEmpty(name)
-                && OptionHelper.isNullOrEmpty(value) && OptionHelper.isNullOrEmpty(file));
+        return !(OptionHelper.isNullOrEmptyOrAllSpaces(resource)) && (OptionHelper.isNullOrEmptyOrAllSpaces(name)
+                && OptionHelper.isNullOrEmptyOrAllSpaces(value) && OptionHelper.isNullOrEmptyOrAllSpaces(file));
     }
 
     boolean checkValueNameAttributesSanity(PropertyModel propertyModel) {
@@ -112,8 +111,8 @@ public class PropertyModelHandler extends ModelHandlerBase {
         String name = propertyModel.getName();
         String value = propertyModel.getValue();
         String resource = propertyModel.getResource();
-        return (!(OptionHelper.isNullOrEmpty(name) || OptionHelper.isNullOrEmpty(value))
-                && (OptionHelper.isNullOrEmpty(file) && OptionHelper.isNullOrEmpty(resource)));
+        return (!(OptionHelper.isNullOrEmptyOrAllSpaces(name) || OptionHelper.isNullOrEmptyOrAllSpaces(value))
+                && (OptionHelper.isNullOrEmptyOrAllSpaces(file) && OptionHelper.isNullOrEmptyOrAllSpaces(resource)));
     }
 
 }

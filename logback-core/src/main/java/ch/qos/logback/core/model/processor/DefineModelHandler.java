@@ -62,7 +62,7 @@ public class DefineModelHandler extends ModelHandlerBase {
 
         scope = ActionUtil.stringToScope(scopeStr);
 
-        if (OptionHelper.isNullOrEmpty(propertyName)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(propertyName)) {
             addError("Missing property name for property definer. Near [" + model.getTag() + "] line "
                     + model.getLineNumber());
             inError = true;
@@ -70,7 +70,7 @@ public class DefineModelHandler extends ModelHandlerBase {
 
         // read property definer class name
         String className = defineModel.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addError("Missing class name for property definer. Near [" + model.getTag() + "] line "
                     + model.getLineNumber());
             inError = true;

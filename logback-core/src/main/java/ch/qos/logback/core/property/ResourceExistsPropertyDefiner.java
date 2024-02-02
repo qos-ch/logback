@@ -56,7 +56,7 @@ public class ResourceExistsPropertyDefiner extends PropertyDefinerBase {
      *         classpath
      */
     public String getPropertyValue() {
-        if (OptionHelper.isNullOrEmpty(resourceStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(resourceStr)) {
             addError("The \"resource\" property must be set.");
             return null;
         }

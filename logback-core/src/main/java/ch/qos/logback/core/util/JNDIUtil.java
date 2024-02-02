@@ -47,7 +47,7 @@ public class JNDIUtil {
             return null;
         }
 
-        if (OptionHelper.isNullOrEmpty(name)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(name)) {
             return null;
         }
 

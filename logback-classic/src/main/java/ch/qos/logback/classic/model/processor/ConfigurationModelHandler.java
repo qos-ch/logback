@@ -69,7 +69,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
         }
         
 
-        if (!(OptionHelper.isNullOrEmpty(debugAttrib) || debugAttrib.equalsIgnoreCase(FALSE.toString())
+        if (!(OptionHelper.isNullOrEmptyOrAllSpaces(debugAttrib) || debugAttrib.equalsIgnoreCase(FALSE.toString())
                 || debugAttrib.equalsIgnoreCase(NULL_STR))) {
             StatusListenerConfigHelper.addOnConsoleListenerInstance(context, new OnConsoleStatusListener());
         }
@@ -87,7 +87,7 @@ public class ConfigurationModelHandler extends ModelHandlerBase {
 
     protected void processScanAttrib(ModelInterpretationContext mic, ConfigurationModel configurationModel) {
         String scanStr = mic.subst(configurationModel.getScanStr());
-        if (!OptionHelper.isNullOrEmpty(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(scanStr) && !"false".equalsIgnoreCase(scanStr)) {
             addInfo("Skipping ReconfigureOnChangeTask registration");
         }
     }

@@ -130,7 +130,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         Class<?> componentClass = null;
         try {
 
-            if (!OptionHelper.isNullOrEmpty(fqcn)) {
+            if (!OptionHelper.isNullOrEmptyOrAllSpaces(fqcn)) {
                 componentClass = Loader.loadClass(fqcn, context);
             } else {
                 // guess class name via implicit rules
@@ -146,7 +146,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
                 return;
             }
 
-            if (OptionHelper.isNullOrEmpty(fqcn)) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(fqcn)) {
                 addInfo("Assuming default type [" + componentClass.getName() + "] for [" + componentModel.getTag()
                         + "] property");
             }

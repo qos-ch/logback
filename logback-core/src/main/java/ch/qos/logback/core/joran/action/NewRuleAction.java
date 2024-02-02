@@ -32,14 +32,14 @@ public class NewRuleAction extends Action {
         String pattern = attributes.getValue(Action.PATTERN_ATTRIBUTE);
         String actionClass = attributes.getValue(Action.ACTION_CLASS_ATTRIBUTE);
 
-        if (OptionHelper.isNullOrEmpty(pattern)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(pattern)) {
             inError = true;
             errorMsg = "No 'pattern' attribute in <newRule>";
             addError(errorMsg);
             return;
         }
 
-        if (OptionHelper.isNullOrEmpty(actionClass)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(actionClass)) {
             inError = true;
             errorMsg = "No 'actionClass' attribute in <newRule>";
             addError(errorMsg);

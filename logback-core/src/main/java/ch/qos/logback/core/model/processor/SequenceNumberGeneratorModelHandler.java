@@ -43,7 +43,7 @@ public class SequenceNumberGeneratorModelHandler extends ModelHandlerBase {
 
         SequenceNumberGeneratorModel sequenceNumberGeneratorModel = (SequenceNumberGeneratorModel) model;
         String className = sequenceNumberGeneratorModel.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addWarn("Missing className. This should have been caught earlier.");
             inError = true;
             return;

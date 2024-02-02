@@ -51,11 +51,11 @@ public class LogbackServletContainerInitializer implements ServletContainerIniti
             disableAttributeStr = (String) disableAttribute;
         }
 
-        if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(disableAttributeStr)) {
             disableAttributeStr = OptionHelper.getSystemProperty(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
         }
 
-        if (OptionHelper.isNullOrEmpty(disableAttributeStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(disableAttributeStr)) {
             disableAttributeStr = OptionHelper.getEnv(DISABLE_SERVLET_CONTAINER_INITIALIZER_KEY);
         }
 

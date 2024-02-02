@@ -28,7 +28,7 @@ public class StatusListenerConfigHelper {
 
     public static void installIfAsked(Context context) {
         String slClass = OptionHelper.getSystemProperty(CoreConstants.STATUS_LISTENER_CLASS_KEY);
-        if (!OptionHelper.isNullOrEmpty(slClass)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(slClass)) {
             addStatusListener(context, slClass);
         }
     }

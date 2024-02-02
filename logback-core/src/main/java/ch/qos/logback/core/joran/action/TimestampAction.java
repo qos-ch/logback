@@ -38,12 +38,12 @@ public class TimestampAction extends BaseModelAction {
             Attributes attributes) {
         boolean valid = true;
         String keyStr = attributes.getValue(KEY_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(keyStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(keyStr)) {
             addError("Attribute named [" + KEY_ATTRIBUTE + "] cannot be empty");
             valid = false;
         }
         String datePatternStr = attributes.getValue(DATE_PATTERN_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(datePatternStr)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(datePatternStr)) {
             addError("Attribute named [" + DATE_PATTERN_ATTRIBUTE + "] cannot be empty");
             valid = false;
         }

@@ -66,7 +66,7 @@ public class IfModelHandler extends ModelHandlerBase {
         int lineNum = model.getLineNumber();
 
         String conditionStr = ifModel.getCondition();
-        if (!OptionHelper.isNullOrEmpty(conditionStr)) {
+        if (!OptionHelper.isNullOrEmptyOrAllSpaces(conditionStr)) {
             try {
                 conditionStr = OptionHelper.substVars(conditionStr, mic, context);
             } catch (ScanException e) {

@@ -36,9 +36,9 @@ public class EventEvaluatorModelHandler extends ModelHandlerBase {
         EventEvaluatorModel eem = (EventEvaluatorModel) model;
 
         String className = eem.getClassName();
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             String defaultClassName = defaultClassName(intercon, eem);
-            if (OptionHelper.isNullOrEmpty(defaultClassName)) {
+            if (OptionHelper.isNullOrEmptyOrAllSpaces(defaultClassName)) {
                 inError = true;
                 addError("Mandatory \"" + CLASS_ATTRIBUTE + "\" attribute missing for <evaluator>");
                 addError("No default classname could be found.");

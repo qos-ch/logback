@@ -51,7 +51,7 @@ public class ReceiverModelHandler extends ModelHandlerBase {
         ReceiverModel receiverModel = (ReceiverModel) model;
         String className = receiverModel.getClassName();
 
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addError("Missing class name for receiver. ");
             inError = true;
             return;

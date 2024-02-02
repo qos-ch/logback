@@ -260,7 +260,7 @@ public class OptionHelper {
      * @since 1.3
      */
     public static boolean isEmpty(String str) {
-        return isNullOrEmpty(str);
+        return isNullOrEmptyOrAllSpaces(str);
     }
 
     /**
@@ -272,6 +272,17 @@ public class OptionHelper {
     public static boolean isNullOrEmpty(String str) {
         return ((str == null) || str.trim().length() == 0);
     }
+
+    /**
+     * isNullOrEmpty xisNullOrEmptyOrAllSpaces
+     * @param str
+     * @return
+     * @since  1.5.0
+     */
+    public static boolean isNullOrEmptyOrAllSpaces(String str) {
+        return ((str == null) || str.trim().length() == 0);
+    }
+
 
     final public static boolean isNullOrEmpty(Object[] array) {
         if(array == null || array.length == 0)

@@ -31,7 +31,7 @@ public class StatusListenerAction extends BaseModelAction {
     protected boolean validPreconditions(SaxEventInterpretationContext interpretationContext, String name,
             Attributes attributes) {
         String className = attributes.getValue(CLASS_ATTRIBUTE);
-        if (OptionHelper.isNullOrEmpty(className)) {
+        if (OptionHelper.isNullOrEmptyOrAllSpaces(className)) {
             addError("Missing class name for statusListener. Near [" + name + "] line "
                     + getLineNumber(interpretationContext));
             return false;

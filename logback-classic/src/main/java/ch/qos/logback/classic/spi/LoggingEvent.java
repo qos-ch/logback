@@ -225,7 +225,7 @@ public class LoggingEvent implements ILoggingEvent {
             return CoreConstants.NA;
         }
         String threadName = aThread.getName();
-        if (threadName != null)
+        if (threadName != null && !threadName.isEmpty())
             return threadName;
         Long virtualThreadId = getVirtualThreadId(aThread);
         if (virtualThreadId != null) {
