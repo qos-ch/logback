@@ -27,6 +27,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.read.ListAppender;
+import ch.qos.logback.core.status.testUtil.StatusChecker;
 import ch.qos.logback.core.testUtil.RandomUtil;
 import ch.qos.logback.core.util.StatusPrinter;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -50,7 +51,6 @@ import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 // When running from an IDE, add the following on the command line
 //
 //          --add-opens ch.qos.logback.classic/ch.qos.logback.classic.jsonTest=ALL-UNNAMED
@@ -60,6 +60,7 @@ class JsonEncoderTest {
     int diff = RandomUtil.getPositiveInt();
 
     LoggerContext loggerContext = new LoggerContext();
+    StatusChecker statusChecker = new StatusChecker(loggerContext);
     Logger logger = loggerContext.getLogger(JsonEncoderTest.class);
 
     JsonEncoder jsonEncoder = new JsonEncoder();
@@ -113,7 +114,7 @@ class JsonEncoderTest {
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
-       // System.out.println(resultString);
+        // System.out.println(resultString);
 
         JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
         compareEvents(event, resultEvent);
@@ -134,6 +135,8 @@ class JsonEncoderTest {
         assertTrue(ThrowableProxyComparator.areEqual(event.getThrowableProxy(), resultEvent.getThrowableProxy()));
 
         assertEquals(event.getMessage(), resultEvent.getMessage());
+        assertEquals(event.getFormattedMessage(), resultEvent.getFormattedMessage());
+
         assertTrue(Arrays.equals(event.getArgumentArray(), resultEvent.getArgumentArray()));
 
     }
@@ -209,6 +212,20 @@ class JsonEncoderTest {
     }
 
     @Test
+    void withFormattedMessage() throws JsonProcessingException {
+        LoggingEvent event = new LoggingEvent("x", logger, Level.WARN, "hello {} {}", null,
+                new Object[] { "arg1", "arg2" });
+        jsonEncoder.setWithFormattedMessage(true);
+
+        byte[] resultBytes = jsonEncoder.encode(event);
+        String resultString = new String(resultBytes, StandardCharsets.UTF_8);
+        System.out.println(resultString);
+
+        JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(resultString);
+        compareEvents(event, resultEvent);
+    }
+
+    @Test
     void withMDC() throws JsonProcessingException {
         Map<String, String> map = new HashMap<>();
         map.put("key", "value");
@@ -246,8 +263,8 @@ class JsonEncoderTest {
 
         Throwable t = new RuntimeException("test", cause);
 
-
-        LoggingEvent event = new LoggingEvent("in withThrowableHavingCause test", logger, Level.WARN, "hello kvp", t, null);
+        LoggingEvent event = new LoggingEvent("in withThrowableHavingCause test", logger, Level.WARN, "hello kvp", t,
+                null);
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
@@ -263,7 +280,8 @@ class JsonEncoderTest {
         Throwable t = new RuntimeException("test", cause);
         cause.initCause(t);
 
-        LoggingEvent event = new LoggingEvent("in withThrowableHavingCyclicCause test", logger, Level.WARN, "hello kvp", t, null);
+        LoggingEvent event = new LoggingEvent("in withThrowableHavingCyclicCause test", logger, Level.WARN, "hello kvp",
+                t, null);
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
@@ -272,7 +290,6 @@ class JsonEncoderTest {
         compareEvents(event, resultEvent);
     }
 
-
     @Test
     void withThrowableHavingSuppressed() throws JsonProcessingException {
         Throwable suppressed = new IllegalStateException("test suppressed");
@@ -280,7 +297,8 @@ class JsonEncoderTest {
         Throwable t = new RuntimeException("test");
         t.addSuppressed(suppressed);
 
-        LoggingEvent event = new LoggingEvent("in withThrowableHavingCause test", logger, Level.WARN, "hello kvp", t, null);
+        LoggingEvent event = new LoggingEvent("in withThrowableHavingCause test", logger, Level.WARN, "hello kvp", t,
+                null);
 
         byte[] resultBytes = jsonEncoder.encode(event);
         String resultString = new String(resultBytes, StandardCharsets.UTF_8);
@@ -294,41 +312,63 @@ class JsonEncoderTest {
         jc.setContext(loggerContext);
         loggerContext.putProperty("diff", "" + diff);
         jc.doConfigure(file);
-
     }
 
     @Test
     void withJoran() throws JoranException, IOException {
         String configFilePathStr = ClassicTestConstants.JORAN_INPUT_PREFIX + "json/jsonEncoder.xml";
 
-
-
         configure(configFilePathStr);
         Logger logger = loggerContext.getLogger(this.getClass().getName());
         logger.addAppender(listAppender);
 
-
         logger.debug("hello");
-        logbackMDCAdapter.put("a1", "v1"+diff);
-        logger.atInfo().addKeyValue("ik"+diff, "iv"+diff).addKeyValue("a", "b").log("bla bla \"x\" foobar");
-        logbackMDCAdapter.put("a2", "v2"+diff);
+        logbackMDCAdapter.put("a1", "v1" + diff);
+        logger.atInfo().addKeyValue("ik" + diff, "iv" + diff).addKeyValue("a", "b").log("bla bla \"x\" foobar");
+        logbackMDCAdapter.put("a2", "v2" + diff);
         logger.atWarn().addMarker(markerA).setMessage("some warning message").log();
         logbackMDCAdapter.remove("a2");
-        logger.atError().addKeyValue("ek"+diff, "v"+diff).setCause(new RuntimeException("an error")).log("some error occurred");
+        logger.atError().addKeyValue("ek" + diff, "v" + diff).setCause(new RuntimeException("an error"))
+                .log("some error occurred");
 
-        StatusPrinter.print(loggerContext);
+        //StatusPrinter.print(loggerContext);
 
-        Path configFilePath = Path.of(ClassicTestConstants.OUTPUT_DIR_PREFIX+"json/test-" + diff + ".json");
-        List<String> lines = Files.readAllLines(configFilePath);
+        Path outputFilePath = Path.of(ClassicTestConstants.OUTPUT_DIR_PREFIX + "json/test-" + diff + ".json");
+        List<String> lines = Files.readAllLines(outputFilePath);
         int count = 4;
         assertEquals(count, lines.size());
 
-        for(int i = 0; i < count; i++) {
-            System.out.println("i = "+ i);
+        for (int i = 0; i < count; i++) {
+            //System.out.println("i = " + i);
             LoggingEvent withnessEvent = (LoggingEvent) listAppender.list.get(i);
             JsonLoggingEvent resultEvent = stringToLoggingEventMapper.mapStringToLoggingEvent(lines.get(i));
             compareEvents(withnessEvent, resultEvent);
         }
+    }
 
+    @Test
+    void withJoranAndEnabledFormattedMessage() throws JoranException, IOException {
+        String configFilePathStr =
+                ClassicTestConstants.JORAN_INPUT_PREFIX + "json/jsonEncoderAndEnabledFormattedMessage.xml";
+
+        configure(configFilePathStr);
+        Logger logger = loggerContext.getLogger(this.getClass().getName());
+
+        //StatusPrinter.print(loggerContext);
+        statusChecker.isWarningOrErrorFree(0);
+
+        logger.atError().addKeyValue("ek1", "v1").addArgument("arg1").log("this is {}");
+
+        Path outputFilePath = Path.of(ClassicTestConstants.OUTPUT_DIR_PREFIX + "json/test-" + diff + ".json");
+        List<String> lines = Files.readAllLines(outputFilePath);
+
+        int count = 1;
+        assertEquals(count, lines.size());
+
+        String withness = "{\"sequenceNumber\":0,\"level\":\"ERROR\",\"threadName\":\"main\","
+                + "\"loggerName\":\"ch.qos.logback.classic.encoder.JsonEncoderTest\",\"mdc\": {},"
+                + "\"kvpList\": [{\"ek1\":\"v1\"}],\"formattedMessage\":\"this is arg1\",\"throwable\":null}";
+
+        assertEquals(withness, lines.get(0));
     }
 }

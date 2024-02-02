@@ -24,6 +24,7 @@ import java.util.Map;
 
 import ch.qos.logback.core.CoreConstants;
 import ch.qos.logback.core.util.EnvUtil;
+import ch.qos.logback.core.util.StringUtil;
 import org.slf4j.Marker;
 import org.slf4j.event.KeyValuePair;
 import org.slf4j.helpers.MessageFormatter;
@@ -225,7 +226,7 @@ public class LoggingEvent implements ILoggingEvent {
             return CoreConstants.NA;
         }
         String threadName = aThread.getName();
-        if (threadName != null && !threadName.isEmpty())
+        if (StringUtil.notNullNorEmpty(threadName))
             return threadName;
         Long virtualThreadId = getVirtualThreadId(aThread);
         if (virtualThreadId != null) {

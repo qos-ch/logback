@@ -44,7 +44,7 @@ public class JsonLoggingEvent implements ILoggingEvent {
     public Level level;
     public String message;
 
-    private transient String formattedMessage;
+    private String formattedMessage;
 
     @JsonAlias({"arguments"})
     public Object[] argumentArray;
