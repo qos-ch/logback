@@ -47,9 +47,9 @@ abstract public class ModelHandlerBase extends ContextAwareBase {
         }
     }
 
-    abstract public void handle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException;
+    abstract public void handle(ModelInterpretationContext mic, Model model) throws ModelHandlerException;
 
-    public void postHandle(ModelInterpretationContext intercon, Model model) throws ModelHandlerException {
+    public void postHandle(ModelInterpretationContext mic, Model model) throws ModelHandlerException {
         // let specialized handlers override
     }
 
