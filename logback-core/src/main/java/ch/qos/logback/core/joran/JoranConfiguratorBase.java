@@ -129,6 +129,8 @@ abstract public class JoranConfiguratorBase<E> extends GenericXMLConfigurator {
 
     @Override
     protected void addModelHandlerAssociations(DefaultProcessor defaultProcessor) {
+        // code moved to ModelClassToModelHandlerLinkerBase
+        // the code below is inactive
         defaultProcessor.addHandler(ImportModel.class, ImportModelHandler::makeInstance);
 
         defaultProcessor.addHandler(ShutdownHookModel.class, ShutdownHookModelHandler::makeInstance);

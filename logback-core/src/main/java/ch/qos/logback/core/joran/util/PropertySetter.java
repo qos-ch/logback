@@ -14,18 +14,15 @@
 // Contributors:  Georg Lundesgaard
 package ch.qos.logback.core.joran.util;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import ch.qos.logback.core.joran.spi.DefaultClass;
+import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.spi.DefaultNestedComponentRegistry;
 import ch.qos.logback.core.joran.util.beans.BeanDescription;
 import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
-import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.PropertySetterException;
+
+import java.lang.reflect.Method;
 
 /**
  * General purpose Object property setter. Clients repeatedly invokes
@@ -55,6 +52,7 @@ public class PropertySetter extends ContextAwareBase {
     protected final Object obj;
     protected final Class<?> objClass;
     protected final BeanDescription beanDescription;
+    protected final AggregationAssessor aggregationAssessor;
 
     /**
      * Create a new PropertySetter for the specified Object. This is done in
@@ -66,7 +64,15 @@ public class PropertySetter extends ContextAwareBase {
         this.obj = obj;
         this.objClass = obj.getClass();
         this.beanDescription = beanDescriptionCache.getBeanDescription(objClass);
+        this.aggregationAssessor = new AggregationAssessor(beanDescriptionCache, this.objClass);
     }
+
+    @Override
+    public void setContext(Context context) {
+        super.setContext(context);
+        aggregationAssessor.setContext(context);
+    }
+
 
     /**
      * Set a property on this PropertySetter's Object. If successful, this method
@@ -88,12 +94,12 @@ public class PropertySetter extends ContextAwareBase {
         if (value == null) {
             return;
         }
-        Method setter = findSetterMethod(name);
+        Method setter = aggregationAssessor.findSetterMethod(name);
         if (setter == null) {
             addWarn("No setter for property [" + name + "] in " + objClass.getName() + ".");
         } else {
             try {
-                setProperty(setter, name, value);
+                setProperty(setter, value);
             } catch (PropertySetterException ex) {
                 addWarn("Failed to set property [" + name + "] to value \"" + value + "\". ", ex);
             }
@@ -101,14 +107,13 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     /**
-     * Set the named property given a {@link PropertyDescriptor}.
+     * Set the named property using a {@link Method setter}.
      *
-     * @param prop  A PropertyDescriptor describing the characteristics of the
+     * @param setter  A Method describing the characteristics of the
      *              property to set.
-     * @param name  The named of the property to set.
      * @param value The value of the property.
      */
-    private void setProperty(Method setter, String name, String value) throws PropertySetterException {
+    private void setProperty(Method setter, String value) throws PropertySetterException {
         Class<?>[] paramTypes = setter.getParameterTypes();
 
         Object arg;
@@ -130,102 +135,51 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     public AggregationType computeAggregationType(String name) {
-        String cName = capitalizeFirstLetter(name);
-
-        Method addMethod = findAdderMethod(cName);
-
-        if (addMethod != null) {
-            AggregationType type = computeRawAggregationType(addMethod);
-            switch (type) {
-            case NOT_FOUND:
-                return AggregationType.NOT_FOUND;
-            case AS_BASIC_PROPERTY:
-                return AggregationType.AS_BASIC_PROPERTY_COLLECTION;
-
-            case AS_COMPLEX_PROPERTY:
-                return AggregationType.AS_COMPLEX_PROPERTY_COLLECTION;
-            case AS_BASIC_PROPERTY_COLLECTION:
-            case AS_COMPLEX_PROPERTY_COLLECTION:
-                addError("Unexpected AggregationType " + type);
-            }
-        }
-
-        Method setter = findSetterMethod(name);
-        if (setter != null) {
-            return computeRawAggregationType(setter);
-        } else {
-            // we have failed
-            return AggregationType.NOT_FOUND;
-        }
+        return this.aggregationAssessor.computeAggregationType(name);
     }
 
-    private Method findAdderMethod(String name) {
-        String propertyName = BeanUtil.toLowerCamelCase(name);
-        return beanDescription.getAdder(propertyName);
-    }
+//    private Method findAdderMethod(String name) {
+//        String propertyName = BeanUtil.toLowerCamelCase(name);
+//        return beanDescription.getAdder(propertyName);
+//    }
+//
+//    private Method findSetterMethod(String name) {
+//        String propertyName = BeanUtil.toLowerCamelCase(name);
+//        return beanDescription.getSetter(propertyName);
+//    }
 
-    private Method findSetterMethod(String name) {
-        String propertyName = BeanUtil.toLowerCamelCase(name);
-        return beanDescription.getSetter(propertyName);
-    }
+//    private Class<?> getParameterClassForMethod(Method method) {
+//        if (method == null) {
+//            return null;
+//        }
+//        Class<?>[] classArray = method.getParameterTypes();
+//        if (classArray.length != 1) {
+//            return null;
+//        } else {
+//            return classArray[0];
+//        }
+//    }
 
-    private Class<?> getParameterClassForMethod(Method method) {
-        if (method == null) {
-            return null;
-        }
-        Class<?>[] classArray = method.getParameterTypes();
-        if (classArray.length != 1) {
-            return null;
-        } else {
-            return classArray[0];
-        }
-    }
+//    private AggregationType computeRawAggregationType(Method method) {
+//        Class<?> parameterClass = getParameterClassForMethod(method);
+//        if (parameterClass == null) {
+//            return AggregationType.NOT_FOUND;
+//        }
+//        if (StringToObjectConverter.canBeBuiltFromSimpleString(parameterClass)) {
+//            return AggregationType.AS_BASIC_PROPERTY;
+//        } else {
+//            return AggregationType.AS_COMPLEX_PROPERTY;
+//        }
+//    }
 
-    private AggregationType computeRawAggregationType(Method method) {
-        Class<?> parameterClass = getParameterClassForMethod(method);
-        if (parameterClass == null) {
-            return AggregationType.NOT_FOUND;
-        }
-        if (StringToObjectConverter.canBeBuiltFromSimpleString(parameterClass)) {
-            return AggregationType.AS_BASIC_PROPERTY;
-        } else {
-            return AggregationType.AS_COMPLEX_PROPERTY;
-        }
-    }
 
-    /**
-     * Can the given clazz instantiable with certainty?
-     *
-     * @param clazz The class to test for instantiability
-     * @return true if clazz can be instantiated, and false otherwise.
-     */
-    private boolean isUnequivocallyInstantiable(Class<?> clazz) {
-        if (clazz.isInterface()) {
-            return false;
-        }
-        // checking for constructors would be more elegant, but in
-        // classes without any declared constructors, Class.getConstructor()
-        // returns null.
-        Object o;
-        try {
-            o = clazz.getDeclaredConstructor().newInstance();
-            if (o != null) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException
-                | NoSuchMethodException e) {
-            return false;
-        }
-    }
 
     public Class<?> getObjClass() {
         return objClass;
     }
 
     public void addComplexProperty(String name, Object complexProperty) {
-        Method adderMethod = findAdderMethod(name);
+        Method adderMethod = aggregationAssessor.findAdderMethod(name);
         // first let us use the addXXX method
         if (adderMethod != null) {
             Class<?>[] paramTypes = adderMethod.getParameterTypes();
@@ -254,8 +208,8 @@ public class PropertySetter extends ContextAwareBase {
             return;
         }
 
-        name = capitalizeFirstLetter(name);
-        Method adderMethod = findAdderMethod(name);
+        name = aggregationAssessor.capitalizeFirstLetter(name);
+        Method adderMethod =aggregationAssessor.findAdderMethod(name);
 
         if (adderMethod == null) {
             addError("No adder for property [" + name + "].");
@@ -278,7 +232,7 @@ public class PropertySetter extends ContextAwareBase {
     }
 
     public void setComplexProperty(String name, Object complexProperty) {
-        Method setter = findSetterMethod(name);
+        Method setter = aggregationAssessor.findSetterMethod(name);
 
         if (setter == null) {
             addWarn("Not setter method for property [" + name + "] in " + obj.getClass().getName());
@@ -320,76 +274,18 @@ public class PropertySetter extends ContextAwareBase {
         return true;
     }
 
-    private String capitalizeFirstLetter(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
-
     public Object getObj() {
         return obj;
     }
 
-    Method getRelevantMethod(String name, AggregationType aggregationType) {
-        Method relevantMethod;
-        if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY_COLLECTION) {
-            relevantMethod = findAdderMethod(name);
-        } else if (aggregationType == AggregationType.AS_COMPLEX_PROPERTY) {
-            relevantMethod = findSetterMethod(name);
-        } else {
-            throw new IllegalStateException(aggregationType + " not allowed here");
-        }
-        return relevantMethod;
-    }
-
-    <T extends Annotation> T getAnnotation(String name, Class<T> annonationClass, Method relevantMethod) {
-
-        if (relevantMethod != null) {
-            return relevantMethod.getAnnotation(annonationClass);
-        } else {
-            return null;
-        }
-    }
-
-    Class<?> getDefaultClassNameByAnnonation(String name, Method relevantMethod) {
-        DefaultClass defaultClassAnnon = getAnnotation(name, DefaultClass.class, relevantMethod);
-        if (defaultClassAnnon != null) {
-            return defaultClassAnnon.value();
-        }
-        return null;
-    }
-
-    Class<?> getByConcreteType(String name, Method relevantMethod) {
-
-        Class<?> paramType = getParameterClassForMethod(relevantMethod);
-        if (paramType == null) {
-            return null;
-        }
-
-        boolean isUnequivocallyInstantiable = isUnequivocallyInstantiable(paramType);
-        if (isUnequivocallyInstantiable) {
-            return paramType;
-        } else {
-            return null;
-        }
-
-    }
 
     public Class<?> getClassNameViaImplicitRules(String name, AggregationType aggregationType,
             DefaultNestedComponentRegistry registry) {
-
-        Class<?> registryResult = registry.findDefaultComponentType(obj.getClass(), name);
-        if (registryResult != null) {
-            return registryResult;
-        }
-        // find the relevant method for the given property name and aggregationType
-        Method relevantMethod = getRelevantMethod(name, aggregationType);
-        if (relevantMethod == null) {
-            return null;
-        }
-        Class<?> byAnnotation = getDefaultClassNameByAnnonation(name, relevantMethod);
-        if (byAnnotation != null) {
-            return byAnnotation;
-        }
-        return getByConcreteType(name, relevantMethod);
+        return aggregationAssessor.getClassNameViaImplicitRules(name, aggregationType, registry);
     }
 
-}
+
+
+
+
+    }

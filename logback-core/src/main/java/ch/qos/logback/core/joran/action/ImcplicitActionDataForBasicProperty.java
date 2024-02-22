@@ -17,7 +17,7 @@ import ch.qos.logback.core.joran.util.PropertySetter;
 import ch.qos.logback.core.util.AggregationType;
 
 /**
- * Lump together several fields for use by {@link NestedBasicPropertyIA}.
+ * Lump together several fields for use by {@link ImcplicitActionDataForBasicProperty}.
  * 
  * @author Ceki Gulcu
  */
