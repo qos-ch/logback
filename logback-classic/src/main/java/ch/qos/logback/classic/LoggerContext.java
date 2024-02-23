@@ -411,11 +411,10 @@ public class LoggerContext extends ContextBase implements ILoggerFactory, LifeCy
     }
 
     public void setMDCAdapter(MDCAdapter anAdapter) {
-        if(this.mdcAdapter ==  null) {
-            this.mdcAdapter = anAdapter;
-        } else {
+        if(this.mdcAdapter !=  null) {
             StatusManager sm = getStatusManager();
-            sm.add(new ErrorStatus("mdcAdapter cannot be set multiple times", this, new IllegalStateException("mdcAdapter already set")));
+            sm.add(new WarnStatus("mdcAdapter being reset a second time", this));
         }
+        this.mdcAdapter = anAdapter;
     }
 }
