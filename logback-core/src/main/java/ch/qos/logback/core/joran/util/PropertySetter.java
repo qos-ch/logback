@@ -21,6 +21,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
 import ch.qos.logback.core.util.PropertySetterException;
+import ch.qos.logback.core.util.StringUtil;
 
 import java.lang.reflect.Method;
 
@@ -208,7 +209,7 @@ public class PropertySetter extends ContextAwareBase {
             return;
         }
 
-        name = aggregationAssessor.capitalizeFirstLetter(name);
+        name = StringUtil.capitalizeFirstLetter(name);
         Method adderMethod =aggregationAssessor.findAdderMethod(name);
 
         if (adderMethod == null) {

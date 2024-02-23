@@ -39,4 +39,11 @@ public class StringUtil {
     public static boolean notNullNorEmpty(String str) {
         return !isNullOrEmpty(str);
     }
+
+    public static String capitalizeFirstLetter(String name) {
+        if(isNullOrEmpty(name))
+            return name;
+        else
+            return name.substring(0, 1).toUpperCase() + name.substring(1);
+    }
 }

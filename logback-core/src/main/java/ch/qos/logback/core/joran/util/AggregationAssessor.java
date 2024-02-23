@@ -21,6 +21,7 @@ import ch.qos.logback.core.joran.util.beans.BeanDescriptionCache;
 import ch.qos.logback.core.joran.util.beans.BeanUtil;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.AggregationType;
+import ch.qos.logback.core.util.StringUtil;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -53,7 +54,7 @@ public class AggregationAssessor extends ContextAwareBase  {
      * @return the computed {@link AggregationType}
      */
     public AggregationType computeAggregationType(String name) {
-        String cName = capitalizeFirstLetter(name);
+        String cName = StringUtil.capitalizeFirstLetter(name);
 
         Method addMethod = findAdderMethod(cName);
 
@@ -82,9 +83,10 @@ public class AggregationAssessor extends ContextAwareBase  {
         }
     }
 
-    String capitalizeFirstLetter(String name) {
-        return name.substring(0, 1).toUpperCase() + name.substring(1);
-    }
+
+//    String capitalizeFirstLetter(String name) {
+//        return StringUtil.capitalizeFirstLetter(name);
+//    }
 
     Method findAdderMethod(String name) {
         String propertyName = BeanUtil.toLowerCamelCase(name);
