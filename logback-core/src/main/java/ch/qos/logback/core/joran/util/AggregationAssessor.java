@@ -88,12 +88,12 @@ public class AggregationAssessor extends ContextAwareBase  {
 //        return StringUtil.capitalizeFirstLetter(name);
 //    }
 
-    Method findAdderMethod(String name) {
+    public Method findAdderMethod(String name) {
         String propertyName = BeanUtil.toLowerCamelCase(name);
         return beanDescription.getAdder(propertyName);
     }
 
-    Method findSetterMethod(String name) {
+    public Method findSetterMethod(String name) {
         String propertyName = BeanUtil.toLowerCamelCase(name);
         return beanDescription.getSetter(propertyName);
     }

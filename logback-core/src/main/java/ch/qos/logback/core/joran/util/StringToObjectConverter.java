@@ -97,7 +97,7 @@ public class StringToObjectConverter {
     }
 
     // returned value may be null and in most cases it is null.
-    public static Method getValueOfMethod(Class<?> type) {
+    static public Method getValueOfMethod(Class<?> type) {
         try {
             return type.getMethod(CoreConstants.VALUE_OF, STRING_CLASS_PARAMETER);
         } catch (NoSuchMethodException e) {
@@ -107,7 +107,7 @@ public class StringToObjectConverter {
         }
     }
 
-    static private boolean followsTheValueOfConvention(Class<?> parameterClass) {
+    static public boolean followsTheValueOfConvention(Class<?> parameterClass) {
         Method valueOfMethod = getValueOfMethod(parameterClass);
         if (valueOfMethod == null)
             return false;

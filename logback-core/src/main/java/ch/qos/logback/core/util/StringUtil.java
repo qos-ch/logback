@@ -29,7 +29,6 @@ public class StringUtil {
         return ((str == null) || str.isEmpty());
     }
 
-
     /**
      * Returns true if input str is not null nor empty.
      *
@@ -41,9 +40,23 @@ public class StringUtil {
     }
 
     public static String capitalizeFirstLetter(String name) {
-        if(isNullOrEmpty(name))
+        if (isNullOrEmpty(name))
             return name;
-        else
+
+        if(name.length() == 1) {
+            return name.toUpperCase();
+        } else
             return name.substring(0, 1).toUpperCase() + name.substring(1);
     }
+
+    public static String lowercaseFirstLetter(String name) {
+        if (isNullOrEmpty(name))
+            return name;
+
+        if(name.length() == 1) {
+            return name.toLowerCase();
+        } else
+            return name.substring(0, 1).toLowerCase() + name.substring(1);
+    }
+
 }
