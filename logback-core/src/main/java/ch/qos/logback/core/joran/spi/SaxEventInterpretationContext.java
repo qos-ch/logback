@@ -77,6 +77,10 @@ public class SaxEventInterpretationContext extends ContextAwareBase implements P
         return copy;
     }
 
+    public void addSubstitutionProperty(String key, String value) {
+        throw new UnsupportedOperationException();
+    }
+
     /**
      * If a key is found in propertiesMap then return it. Otherwise, delegate to the
      * context.
@@ -85,7 +89,6 @@ public class SaxEventInterpretationContext extends ContextAwareBase implements P
         return context.getProperty(key);
     }
 
-    @Override
     public Map<String, String> getCopyOfPropertyMap() {
         return null;
     }

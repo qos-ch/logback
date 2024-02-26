@@ -11,15 +11,13 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.ModelConstants;
 import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.model.PropertyModel;
+import ch.qos.logback.core.model.util.PropertyModelUtil;
 import ch.qos.logback.core.util.Loader;
-import ch.qos.logback.core.util.OptionHelper;
 
 public class PropertyModelHandler extends ModelHandlerBase {
-
-    public static final String INVALID_ATTRIBUTES = "In <property> element, either the \"file\" attribute alone, or "
-            + "the \"resource\" element alone, or both the \"name\" and \"value\" attributes must be set.";
 
     public PropertyModelHandler(Context context) {
         super(context);
@@ -41,7 +39,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
 
         Scope scope = ActionUtil.stringToScope(propertyModel.getScopeStr());
 
-        if (checkFileAttributeSanity(propertyModel)) {
+        if (PropertyModelUtil.checkFileAttributeSanity(propertyModel)) {
             String file = propertyModel.getFile();
             file = interpretationContext.subst(file);
             try (FileInputStream istream = new FileInputStream(file)) {
@@ -52,7 +50,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
                                                                 // is badly malformed, i.e a binary.
                 addError("Could not read properties file [" + file + "].", e1);
             }
-        } else if (checkResourceAttributeSanity(propertyModel)) {
+        } else if (PropertyModelUtil.checkResourceAttributeSanity(propertyModel)) {
             String resource = propertyModel.getResource();
             resource = interpretationContext.subst(resource);
             URL resourceURL = Loader.getResourceBySelfClassLoader(resource);
@@ -65,7 +63,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
                     addError("Could not read resource file [" + resource + "].", e);
                 }
             }
-        } else if (checkValueNameAttributesSanity(propertyModel)) {
+        } else if (PropertyModelUtil.checkValueNameAttributesSanity(propertyModel)) {
             // earlier versions performed Java '\' escapes for '\\' '\t' etc. Howevver, there is no
             // need to do this. See RegularEscapeUtil.__UNUSED__basicEscape
             String value = propertyModel.getValue();
@@ -76,7 +74,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
             ActionUtil.setProperty(interpretationContext, propertyModel.getName(), value, scope);
 
         } else {
-            addError(INVALID_ATTRIBUTES);
+            addError(ModelConstants.INVALID_ATTRIBUTES);
         }
     }
 
@@ -84,35 +82,6 @@ public class PropertyModelHandler extends ModelHandlerBase {
         Properties props = new Properties();
         props.load(istream);
         ModelUtil.setProperties(mic, props, scope);
-    }
-
-    boolean checkFileAttributeSanity(PropertyModel propertyModel) {
-        String file = propertyModel.getFile();
-        String name = propertyModel.getName();
-        String value = propertyModel.getValue();
-        String resource = propertyModel.getResource();
-
-        return !(OptionHelper.isNullOrEmptyOrAllSpaces(file)) && (OptionHelper.isNullOrEmptyOrAllSpaces(name)
-                && OptionHelper.isNullOrEmptyOrAllSpaces(value) && OptionHelper.isNullOrEmptyOrAllSpaces(resource));
-    }
-
-    boolean checkResourceAttributeSanity(PropertyModel propertyModel) {
-        String file = propertyModel.getFile();
-        String name = propertyModel.getName();
-        String value = propertyModel.getValue();
-        String resource = propertyModel.getResource();
-
-        return !(OptionHelper.isNullOrEmptyOrAllSpaces(resource)) && (OptionHelper.isNullOrEmptyOrAllSpaces(name)
-                && OptionHelper.isNullOrEmptyOrAllSpaces(value) && OptionHelper.isNullOrEmptyOrAllSpaces(file));
-    }
-
-    boolean checkValueNameAttributesSanity(PropertyModel propertyModel) {
-        String file = propertyModel.getFile();
-        String name = propertyModel.getName();
-        String value = propertyModel.getValue();
-        String resource = propertyModel.getResource();
-        return (!(OptionHelper.isNullOrEmptyOrAllSpaces(name) || OptionHelper.isNullOrEmptyOrAllSpaces(value))
-                && (OptionHelper.isNullOrEmptyOrAllSpaces(file) && OptionHelper.isNullOrEmptyOrAllSpaces(resource)));
     }
 
 }

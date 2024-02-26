@@ -42,6 +42,7 @@ import ch.qos.logback.core.testUtil.RandomUtil;
 
 import ch.qos.logback.core.testUtil.StringListAppender;
 import ch.qos.logback.core.util.FileSize;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -244,6 +245,7 @@ public class SiftingAppenderTest {
         SiftingAppender sa = (SiftingAppender) root.getAppender("SIFT");
         StringListAppender<ILoggingEvent> listAppender = (StringListAppender<ILoggingEvent>) sa.getAppenderTracker().find(mdcVal);
         assertNotNull(listAppender);
+       
         List<String> strList = listAppender.strList;
         assertEquals(1, listAppender.strList.size());
         assertEquals(prefix + msg, strList.get(0));

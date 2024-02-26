@@ -107,6 +107,16 @@ public class ContextBase implements Context, LifeCycle {
         putObject(RFA_FILENAME_PATTERN_COLLISION_MAP, new HashMap<String, FileNamePattern>());
     }
 
+    @Override
+    public void addSubstitutionProperty(String key, String value) {
+        if (key == null || value == null) {
+            return;
+        }
+        // values with leading or trailing spaces are bad. We remove them now.
+        value = value.trim();
+        propertyMap.put(key, value);
+    }
+
     /**
      * Given a key, return the corresponding property value. If invoked with the
      * special key "CONTEXT_NAME", the name of the context is returned.

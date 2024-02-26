@@ -15,6 +15,7 @@ package ch.qos.logback.core.joran.action;
 
 import java.util.Iterator;
 
+import ch.qos.logback.core.model.ModelConstants;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -197,7 +198,7 @@ public class PropertyActionTest {
     private boolean checkError() {
         Iterator<Status> it = context.getStatusManager().getCopyOfStatusList().iterator();
         ErrorStatus es = (ErrorStatus) it.next();
-        return PropertyModelHandler.INVALID_ATTRIBUTES.equals(es.getMessage());
+        return ModelConstants.INVALID_ATTRIBUTES.equals(es.getMessage());
     }
 
     private boolean checkFileErrors() {

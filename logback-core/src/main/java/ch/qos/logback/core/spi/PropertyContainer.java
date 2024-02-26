@@ -14,10 +14,25 @@
 package ch.qos.logback.core.spi;
 
 import java.util.Map;
+import java.util.Properties;
 
 public interface PropertyContainer {
+
+
+    void addSubstitutionProperty(String key, String value);
 
     String getProperty(String key);
 
     Map<String, String> getCopyOfPropertyMap();
+
+    default void addSubstitutionProperties(Properties props) {
+        if (props == null) {
+            return;
+        }
+        for (Object keyObject : props.keySet()) {
+            String key = (String) keyObject;
+            String val = props.getProperty(key);
+            addSubstitutionProperty(key, val);
+        }
+    }
 }
