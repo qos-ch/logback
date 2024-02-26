@@ -52,6 +52,7 @@
 
     <!-- minimal JDK version at runtime -->
     <jdk.version>11</jdk.version>
+    <!-- See https://maven.apache.org/plugins/maven-compiler-plugin/examples/set-compiler-release.html -->
     <maven.compiler.release>${jdk.version}</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
