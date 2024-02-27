@@ -30,9 +30,10 @@ import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.AppenderAttachable;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.spi.PropertyContainer;
 
-public class ModelInterpretationContext extends ContextAwareBase implements PropertyContainer {
+public class ModelInterpretationContext extends ContextAwareBase implements ContextAwarePropertyContainer {
 
     Stack<Object> objectStack;
     Stack<Model> modelStack;
@@ -152,13 +153,6 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         return variableSubstitutionsHelper.subst(ref);
     }
 
-    /**
-     * Add a property to the properties of this execution context. If the property
-     * exists already, it is overwritten.
-     */
-    public void addSubstitutionProperty(String key, String value) {
-       variableSubstitutionsHelper.addSubstitutionProperty(key, value);
-    }
 
     public DefaultNestedComponentRegistry getDefaultNestedComponentRegistry() {
         return defaultNestedComponentRegistry;
@@ -210,6 +204,15 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
     // ========================================== object map
 
     /**
+     * Add a property to the properties of this execution context. If the property
+     * exists already, it is overwritten.
+     */
+    @Override
+    public void addSubstitutionProperty(String key, String value) {
+        variableSubstitutionsHelper.addSubstitutionProperty(key, value);
+    }
+
+    /**
      * If a key is found in propertiesMap then return it. Otherwise, delegate to the
      * context.
      */
@@ -222,7 +225,7 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         return variableSubstitutionsHelper.getCopyOfPropertyMap();
     }
 
-    // imports
+    // imports ===================================================================
 
     /**
      * Add an import to the importMao
@@ -262,5 +265,4 @@ public class ModelInterpretationContext extends ContextAwareBase implements Prop
         else
             return result;
     }
-
 }

@@ -7,9 +7,9 @@ import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.model.InsertFromJNDIModel;
 import ch.qos.logback.core.model.Model;
+import ch.qos.logback.core.model.util.PropertyModelUtil;
 import ch.qos.logback.core.util.JNDIUtil;
 import ch.qos.logback.core.util.OptionHelper;
-import ch.qos.logback.core.model.ModelUtil;
 
 public class InsertFromJNDIModelHandler extends ModelHandlerBase {
 
@@ -61,7 +61,7 @@ public class InsertFromJNDIModelHandler extends ModelHandlerBase {
                 addError("[" + envEntryName + "] has null or empty value");
             } else {
                 addInfo("Setting variable [" + asKey + "] to [" + envEntryValue + "] in [" + scope + "] scope");
-                ModelUtil.setProperty(mic, asKey, envEntryValue, scope);
+                PropertyModelUtil.setProperty(mic, asKey, envEntryValue, scope);
             }
         } catch (NamingException e) {
             addError("Failed to lookup JNDI env-entry [" + envEntryName + "]");

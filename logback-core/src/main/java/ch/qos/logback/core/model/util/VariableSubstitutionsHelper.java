@@ -16,6 +16,7 @@ package ch.qos.logback.core.model.util;
 
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.util.OptionHelper;
@@ -25,11 +26,11 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Helper methods to deal with properties/
+ * Helper methods to deal with properties.
  *
  * @since 1.5.1
  */
-public class VariableSubstitutionsHelper extends ContextAwareBase implements PropertyContainer {
+public class VariableSubstitutionsHelper extends ContextAwareBase implements ContextAwarePropertyContainer {
 
     protected Map<String, String> propertiesMap;
 
@@ -61,6 +62,7 @@ public class VariableSubstitutionsHelper extends ContextAwareBase implements Pro
      * Add a property to the properties of this execution context. If the property
      * exists already, it is overwritten.
      */
+    @Override
     public void addSubstitutionProperty(String key, String value) {
         if (key == null || value == null) {
             return;

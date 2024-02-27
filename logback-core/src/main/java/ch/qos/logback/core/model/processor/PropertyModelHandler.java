@@ -12,7 +12,6 @@ import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.joran.action.ActionUtil.Scope;
 import ch.qos.logback.core.model.Model;
 import ch.qos.logback.core.model.ModelConstants;
-import ch.qos.logback.core.model.ModelUtil;
 import ch.qos.logback.core.model.PropertyModel;
 import ch.qos.logback.core.model.util.PropertyModelUtil;
 import ch.qos.logback.core.util.Loader;
@@ -81,7 +80,7 @@ public class PropertyModelHandler extends ModelHandlerBase {
     void loadAndSetProperties(ModelInterpretationContext mic, InputStream istream, Scope scope) throws IOException {
         Properties props = new Properties();
         props.load(istream);
-        ModelUtil.setProperties(mic, props, scope);
+        PropertyModelUtil.setProperties(mic, props, scope);
     }
 
 }

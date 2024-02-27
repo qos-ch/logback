@@ -11,15 +11,13 @@
  * under the terms of the GNU Lesser General Public License version 2.1
  * as published by the Free Software Foundation.
  */
-package ch.qos.logback.core.model;
 
-public class ModelUtil {
+package ch.qos.logback.core.spi;
 
-    
-    static public void resetForReuse(Model model) {
-        if(model == null)
-           return;
-        model.resetForReuse();
-    }
-
+/**
+ * An interface extending both {@link PropertyContainer} and {@link ContextAware}
+ *
+ * @since 1.5.1
+ */
+public interface ContextAwarePropertyContainer extends PropertyContainer, ContextAware {
 }
