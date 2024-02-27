@@ -17,13 +17,11 @@ package ch.qos.logback.core.model.util;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
-import ch.qos.logback.core.spi.PropertyContainer;
 import ch.qos.logback.core.spi.ScanException;
 import ch.qos.logback.core.util.OptionHelper;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * Helper methods to deal with properties.
@@ -44,6 +42,7 @@ public class VariableSubstitutionsHelper extends ContextAwareBase implements Con
         this.propertiesMap = new HashMap<>(otherMap);
     }
 
+    @Override
     public String subst(String ref) {
         if (ref == null) {
             return null;

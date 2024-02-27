@@ -14,6 +14,7 @@
 package ch.qos.logback.core.joran.action;
 
 import ch.qos.logback.core.model.processor.ModelInterpretationContext;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.util.OptionHelper;
 
 public class ActionUtil {
@@ -50,7 +51,7 @@ public class ActionUtil {
 //        }
 //    }
 
-    static public void setProperty(ModelInterpretationContext ic, String key, String value, Scope scope) {
+    static public void setProperty(ContextAwarePropertyContainer ic, String key, String value, Scope scope) {
         switch (scope) {
         case LOCAL:
             ic.addSubstitutionProperty(key, value);

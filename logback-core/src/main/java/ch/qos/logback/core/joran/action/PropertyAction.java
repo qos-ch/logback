@@ -44,9 +44,9 @@ public class PropertyAction extends BaseModelAction {
         PropertyModel propertyModel = new PropertyModel();
         propertyModel.setName(attributes.getValue(NAME_ATTRIBUTE));
         propertyModel.setValue(attributes.getValue(VALUE_ATTRIBUTE));
-        propertyModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
         propertyModel.setFile(attributes.getValue(FILE_ATTRIBUTE));
         propertyModel.setResource(attributes.getValue(RESOURCE_ATTRIBUTE));
+        propertyModel.setScopeStr(attributes.getValue(SCOPE_ATTRIBUTE));
         return propertyModel;
     }
 

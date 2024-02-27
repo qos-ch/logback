@@ -18,7 +18,7 @@ import ch.qos.logback.core.Context;
 import ch.qos.logback.core.joran.action.ActionUtil;
 import ch.qos.logback.core.model.ModelConstants;
 import ch.qos.logback.core.model.PropertyModel;
-import ch.qos.logback.core.model.util.PropertyModelUtil;
+import ch.qos.logback.core.model.util.PropertyModelHandlerHelper;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ContextAwareBase;
 import ch.qos.logback.core.util.ContextUtil;
@@ -47,7 +47,7 @@ public class VariableModelHelper extends ContextAwareBase  {
     void updateProperties(PropertyModel propertyModel) {
 
         ActionUtil.Scope scope = ActionUtil.stringToScope(propertyModel.getScopeStr());
-        if (PropertyModelUtil.checkFileAttributeSanity(propertyModel)) {
+        if (PropertyModelHandlerHelper.checkFileAttributeSanity(propertyModel)) {
             String file = propertyModel.getFile();
             file = tylerConfiguratorBase.subst(file);
             try (FileInputStream istream = new FileInputStream(file)) {
@@ -58,7 +58,7 @@ public class VariableModelHelper extends ContextAwareBase  {
                 // is badly malformed, i.e a binary.
                 addError("Could not read properties file [" + file + "].", e1);
             }
-        } else if (PropertyModelUtil.checkResourceAttributeSanity(propertyModel)) {
+        } else if (PropertyModelHandlerHelper.checkResourceAttributeSanity(propertyModel)) {
             String resource = propertyModel.getResource();
             resource = tylerConfiguratorBase.subst(resource);
             URL resourceURL = Loader.getResourceBySelfClassLoader(resource);
@@ -71,7 +71,7 @@ public class VariableModelHelper extends ContextAwareBase  {
                     addError("Could not read resource file [" + resource + "].", e);
                 }
             }
-        } else if (PropertyModelUtil.checkValueNameAttributesSanity(propertyModel)) {
+        } else if (PropertyModelHandlerHelper.checkValueNameAttributesSanity(propertyModel)) {
             // earlier versions performed Java '\' escapes for '\\' '\t' etc. Howevver, there is no
             // need to do this. See RegularEscapeUtil.__UNUSED__basicEscape
             String value = propertyModel.getValue();

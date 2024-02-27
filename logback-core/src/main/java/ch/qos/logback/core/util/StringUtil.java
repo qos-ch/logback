@@ -14,10 +14,19 @@
 
 package ch.qos.logback.core.util;
 
+import ch.qos.logback.core.CoreConstants;
+
 /**
  * @since 1.5.0
  */
 public class StringUtil {
+
+    public static String nullStringToEmpty(String input) {
+        if (input != null)
+            return input;
+        else
+            return CoreConstants.EMPTY_STRING;
+    }
 
     /**
      * Returns true if input str is null or empty.
@@ -43,7 +52,7 @@ public class StringUtil {
         if (isNullOrEmpty(name))
             return name;
 
-        if(name.length() == 1) {
+        if (name.length() == 1) {
             return name.toUpperCase();
         } else
             return name.substring(0, 1).toUpperCase() + name.substring(1);
@@ -53,7 +62,7 @@ public class StringUtil {
         if (isNullOrEmpty(name))
             return name;
 
-        if(name.length() == 1) {
+        if (name.length() == 1) {
             return name.toLowerCase();
         } else
             return name.substring(0, 1).toLowerCase() + name.substring(1);

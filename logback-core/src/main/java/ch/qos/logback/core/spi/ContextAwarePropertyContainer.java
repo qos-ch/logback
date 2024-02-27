@@ -20,4 +20,14 @@ package ch.qos.logback.core.spi;
  * @since 1.5.1
  */
 public interface ContextAwarePropertyContainer extends PropertyContainer, ContextAware {
+
+
+    /**
+     * This method is used tp perform variable substitution.
+     *
+     * @param input
+     * @return a new string after variable substitution, if any.
+     */
+    String subst(String input);
+
 }

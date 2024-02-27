@@ -17,35 +17,50 @@ package ch.qos.logback.classic.tyler;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.util.LevelUtil;
+import ch.qos.logback.core.Context;
+import ch.qos.logback.core.model.util.PropertyModelHandlerHelper;
 import ch.qos.logback.core.model.util.VariableSubstitutionsHelper;
 import ch.qos.logback.core.spi.ContextAwareBase;
-import ch.qos.logback.core.spi.PropertyContainer;
-import ch.qos.logback.core.spi.ScanException;
+import ch.qos.logback.core.spi.ContextAwarePropertyContainer;
 import ch.qos.logback.core.status.OnConsoleStatusListener;
 import ch.qos.logback.core.util.OptionHelper;
 import ch.qos.logback.core.util.StatusListenerConfigHelper;
 import ch.qos.logback.core.util.StringUtil;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class TylerConfiguratorBase extends ContextAwareBase implements PropertyContainer {
+public class TylerConfiguratorBase extends ContextAwareBase implements ContextAwarePropertyContainer {
 
-    public static final String SET_CONTEXT_NAME = "setContextName";
+    public static final String SET_CONTEXT_METHOD_NAME = "setContext";
+    public static final String SET_CONTEXT_NAME_METHOD_NAME = "setContextName";
     public static final String SETUP_LOGGER_METHOD_NAME = "setupLogger";
+    public static final String VARIABLE_SUBSTITUTIONS_HELPER_FIELD_NAME = "variableSubstitutionsHelper";
+    public static final String PROPERTY_MODEL_HANDLER_HELPER_FIELD_NAME = "propertyModelHandlerHelper";
 
-    VariableSubstitutionsHelper variableSubstitutionsHelper;
+    // initialized via #setContext
+    protected VariableSubstitutionsHelper variableSubstitutionsHelper;
+    // context set in #setContext
+    protected PropertyModelHandlerHelper propertyModelHandlerHelper = new PropertyModelHandlerHelper(this);
 
-    private Logger setupLogger(String loggerName, Level level, String levelString, Boolean additivity) {
+    protected Logger setupLogger(String loggerName, String levelString, Boolean additivity) {
         LoggerContext loggerContext = (LoggerContext) context;
         Logger logger = loggerContext.getLogger(loggerName);
         if (!OptionHelper.isNullOrEmptyOrAllSpaces(levelString)) {
+            Level level = LevelUtil.levelStringToLevel(levelString);
             logger.setLevel(level);
         }
         if (additivity != null) {
             logger.setAdditive(additivity);
         }
         return logger;
+    }
+
+    @Override
+    public void setContext(Context context) {
+        super.setContext(context);
+        variableSubstitutionsHelper = new VariableSubstitutionsHelper(context);
+        propertyModelHandlerHelper.setContext(context);
     }
 
     protected void setContextName(String name) {
@@ -72,17 +87,9 @@ public class TylerConfiguratorBase extends ContextAwareBase implements PropertyC
      * @param ref
      * @return
      */
+    @Override
     public String subst(String ref) {
-        if (ref == null) {
-            return null;
-        }
-
-        try {
-            return OptionHelper.substVars(ref, this, context);
-        } catch (ScanException | IllegalArgumentException e) {
-            addError("Problem while parsing [" + ref + "]", e);
-            return ref;
-        }
+        return variableSubstitutionsHelper.subst(ref);
     }
 
     @Override
