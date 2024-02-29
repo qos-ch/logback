@@ -33,6 +33,7 @@ module ch.qos.logback.classic {
   exports ch.qos.logback.classic.layout;
   exports ch.qos.logback.classic.log4j;
   exports ch.qos.logback.classic.model;
+  exports ch.qos.logback.classic.model.processor;   
   exports ch.qos.logback.classic.net;
   exports ch.qos.logback.classic.net.server;
   exports ch.qos.logback.classic.pattern;
@@ -43,6 +44,7 @@ module ch.qos.logback.classic {
   exports ch.qos.logback.classic.sift;
   exports ch.qos.logback.classic.spi;
   exports ch.qos.logback.classic.turbo;
+  exports ch.qos.logback.classic.tyler;
   exports ch.qos.logback.classic.util;
 }
 
