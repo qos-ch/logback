@@ -13,6 +13,8 @@
  */
 package ch.qos.logback.core.joran.spi;
 
+import ch.qos.logback.core.spi.LifeCycle;
+
 public class NoAutoStartUtil {
 
     /**
@@ -23,12 +25,23 @@ public class NoAutoStartUtil {
      * @return true for classes not marked with the NoAutoStart annotation
      */
     static public boolean notMarkedWithNoAutoStart(Object o) {
-        if (o == null) {
-            return false;
-        }
         Class<?> clazz = o.getClass();
         NoAutoStart a = clazz.getAnnotation(NoAutoStart.class);
         return a == null;
+    }
+
+    /**
+     * Is the object a {@link LifeCycle} and is it marked not marked with
+     * the NoAutoStart annotation.
+     * @param o
+     * @return
+     * @ since 1.5.2
+     */
+    static public boolean shouldBeStarted(Object o) {
+        if(o instanceof LifeCycle) {
+            return notMarkedWithNoAutoStart(o);
+        } else
+            return false;
     }
 
 }

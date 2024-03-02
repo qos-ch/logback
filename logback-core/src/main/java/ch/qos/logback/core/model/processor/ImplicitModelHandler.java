@@ -203,8 +203,7 @@ public class ImplicitModelHandler extends ModelHandlerBase {
         // start the nested complex property if it implements LifeCycle and is not
         // marked with a @NoAutoStart annotation
         Object nestedComplexProperty = imdComplex.getNestedComplexProperty();
-        if (nestedComplexProperty instanceof LifeCycle
-                && NoAutoStartUtil.notMarkedWithNoAutoStart(nestedComplexProperty)) {
+        if (NoAutoStartUtil.shouldBeStarted(nestedComplexProperty)) {
             ((LifeCycle) nestedComplexProperty).start();
         }
 
