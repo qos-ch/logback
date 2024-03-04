@@ -38,18 +38,6 @@ public class ActionUtil {
         return Scope.LOCAL;
     }
 
-//    static public void setProperty(SaxEventInterpretationContext ic, String key, String value, Scope scope) {
-//        switch (scope) {
-//        case LOCAL:
-//            ic.addSubstitutionProperty(key, value);
-//            break;
-//        case CONTEXT:
-//            ic.getContext().putProperty(key, value);
-//            break;
-//        case SYSTEM:
-//            OptionHelper.setSystemProperty(ic, key, value);
-//        }
-//    }
 
     static public void setProperty(ContextAwarePropertyContainer ic, String key, String value, Scope scope) {
         switch (scope) {
@@ -63,23 +51,4 @@ public class ActionUtil {
             OptionHelper.setSystemProperty(ic, key, value);
         }
     }
-
-//    /**
-//     * Add all the properties found in the argument named 'props' to an
-//     * InterpretationContext.
-//     */
-//    static public void setProperties(SaxEventInterpretationContext ic, Properties props, Scope scope) {
-//        switch (scope) {
-//        case LOCAL:
-//            ic.addSubstitutionProperties(props);
-//            break;
-//        case CONTEXT:
-//            ContextUtil cu = new ContextUtil(ic.getContext());
-//            cu.addProperties(props);
-//            break;
-//        case SYSTEM:
-//            OptionHelper.setSystemProperties(ic, props);
-//        }
-//    }
-
 }
