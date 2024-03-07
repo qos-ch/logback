@@ -7,7 +7,7 @@
 
   <groupId>ch.qos.logback</groupId>
   <artifactId>logback-parent</artifactId>
-  <version>1.5.3</version>
+  <version>1.5.4-SNAPSHOT</version>
   <packaging>pom</packaging>
 
   <name>Logback-Parent</name>
@@ -48,7 +48,7 @@
 
   <properties>
     <!-- yyyy-MM-dd'T'HH:mm:ss'Z' -->
-    <project.build.outputTimestamp>2024-03-04T11:36:00Z</project.build.outputTimestamp>
+    <project.build.outputTimestamp>2024-03-07T10:52:46Z</project.build.outputTimestamp>
 
     <!-- minimal JDK version at runtime -->
     <jdk.version>11</jdk.version>
@@ -354,19 +354,6 @@
           <version>${maven-bundle-plugin.version}</version>
         </plugin>
 
-
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-        	<groupId>org.eclipse.m2e</groupId>
-        	<artifactId>lifecycle-mapping</artifactId>
-        	<version>1.0.0</version>
-        	<configuration>
-        		<lifecycleMappingMetadata>
-        			<pluginExecutions>
-           			</pluginExecutions>
-        		</lifecycleMappingMetadata>
-        	</configuration>
-        </plugin>
       </plugins>
 
     </pluginManagement>
