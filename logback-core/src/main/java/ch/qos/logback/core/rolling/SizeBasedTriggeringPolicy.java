@@ -54,12 +54,17 @@ public class SizeBasedTriggeringPolicy<E> extends TriggeringPolicyBase<E> {
     }
 
 
-    public boolean isTriggeringEvent(final File activeFile, final E event) {
+    @Override
+    public boolean isTriggeringEvent(File activeFile, E event, long currentFilePosition) {
         long now = System.currentTimeMillis();
         if (invocationGate.isTooSoon(now))
             return false;
+        long activeFileLength = currentFilePosition >= 0 ? currentFilePosition : activeFile.length();
+        return (activeFileLength >= maxFileSize.getSize());
+    }
 
-        return (activeFile.length() >= maxFileSize.getSize());
+    public boolean isTriggeringEvent(final File activeFile, final E event) {
+        return isTriggeringEvent(activeFile, event, -1);
     }
 
     public FileSize getMaxFileSize() {
