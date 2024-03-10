@@ -28,7 +28,7 @@ public class StatusPrinter {
 
     private static PrintStream ps = System.out;
 
-    static CachingDateFormatter cachingDateFormat = new CachingDateFormatter("HH:mm:ss,SSS");
+    static CachingDateFormatter cachingDateFormat = new CachingDateFormatter("yyyy-MM-dd HH:mm:ss,SSS");
 
     public static void setPrintStream(PrintStream printStream) {
         ps = printStream;
