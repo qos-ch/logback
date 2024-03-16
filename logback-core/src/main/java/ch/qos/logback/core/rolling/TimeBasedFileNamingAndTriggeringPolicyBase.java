@@ -32,6 +32,7 @@ abstract public class TimeBasedFileNamingAndTriggeringPolicyBase<E> extends Cont
         implements TimeBasedFileNamingAndTriggeringPolicy<E> {
 
     static private String COLLIDING_DATE_FORMAT_URL = CODES_URL + "#rfa_collision_in_dateFormat";
+    protected static final int UNKNOWN_FILE_POSITION = -1;
 
     protected TimeBasedRollingPolicy<E> tbrp;
 
