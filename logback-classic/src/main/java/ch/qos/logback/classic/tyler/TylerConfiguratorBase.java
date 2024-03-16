@@ -110,4 +110,47 @@ public class TylerConfiguratorBase extends ContextAwareBase implements ContextAw
         return variableSubstitutionsHelper.getCopyOfPropertyMap();
     }
 
+    public boolean isNull(String k) {
+        String val = OptionHelper.propertyLookup(k, this, context);
+        return (val == null);
+    }
+
+    /**
+     * Method used in conditional evaluation
+     *
+     * @param k  a property name
+     * @return true if the property is defined
+     * @since 1.5.4
+     */
+    public boolean isDefined(String k) {
+        String val = OptionHelper.propertyLookup(k, this, context);
+        return (val != null);
+    }
+
+    /**
+     * Shorthand for {@link #property(String)}.
+     *
+     * @param k a property name
+     * @return value of property k
+     * @since 1.5.4
+     */
+    public String p(String k) {
+        return property(k);
+    }
+
+    /**
+     * Return the value of the property named k. If the value is null, then the
+     * empty string is returned to avoid null checks.
+     *
+     * @param k property name
+     * @return the value of the property named k
+     * @since 1.5.4
+     */
+    public String property(String k) {
+        String val = OptionHelper.propertyLookup(k, this, context);
+        if (val != null)
+            return val;
+        else
+            return "";
+    }
 }
