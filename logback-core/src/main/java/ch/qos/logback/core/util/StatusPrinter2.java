@@ -30,7 +30,7 @@ import static ch.qos.logback.core.status.StatusUtil.filterStatusListByTimeThresh
 
 /**
  *
- * Same as StatusPrinter but with instance methods not static.
+ * Same as StatusPrinter but with instance methods instead of static.
  *
  * @since 1.5.4
  */
@@ -49,7 +49,7 @@ public class StatusPrinter2 {
      * Print the contents of the context statuses, but only if they contain warnings
      * or errors.
      *
-     * @param context
+     * @param context a context to print
      */
     public void printInCaseOfErrorsOrWarnings(Context context) {
         printInCaseOfErrorsOrWarnings(context, 0);
@@ -59,7 +59,8 @@ public class StatusPrinter2 {
      * Print the contents of the context status, but only if they contain warnings
      * or errors occurring later than the threshold.
      *
-     * @param context
+     * @param context a context to print
+     * @param threshold filter events later than the threshold
      */
     public void printInCaseOfErrorsOrWarnings(Context context, long threshold) {
         if (context == null) {
@@ -80,7 +81,7 @@ public class StatusPrinter2 {
     /**
      * Print the contents of the context statuses, but only if they contain errors.
      *
-     * @param context
+     * @param context  a context to print
      */
     public void printIfErrorsOccured(Context context) {
         if (context == null) {
@@ -101,7 +102,7 @@ public class StatusPrinter2 {
     /**
      * Print the contents of the context's status data.
      *
-     * @param context
+     * @param context a context to print
      */
     public void print(Context context) {
         print(context, 0);
@@ -110,7 +111,7 @@ public class StatusPrinter2 {
     /**
      * Print context's status data with a timestamp higher than the threshold.
      *
-     * @param context
+     * @param context a context to print
      */
     public  void print(Context context, long threshold) {
         if (context == null) {
@@ -150,11 +151,7 @@ public class StatusPrinter2 {
         }
     }
 
-    // private static void buildStrFromStatusManager(StringBuilder sb, StatusManager
-    // sm) {
-    // }
-
-    private static void appendThrowable(StringBuilder sb, Throwable t) {
+    private void appendThrowable(StringBuilder sb, Throwable t) {
         String[] stringRep = ThrowableToStringArray.convert(t);
 
         for (String s : stringRep) {
@@ -171,7 +168,7 @@ public class StatusPrinter2 {
         }
     }
 
-    public static void buildStr(StringBuilder sb, String indentation, Status s) {
+    public void buildStr(StringBuilder sb, String indentation, Status s) {
         String prefix;
         if (s.hasChildren()) {
             prefix = indentation + "+ ";
