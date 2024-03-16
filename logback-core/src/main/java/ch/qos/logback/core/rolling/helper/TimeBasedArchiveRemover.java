@@ -114,7 +114,7 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
             addWarn("Cannot delete non existent file");
             return false;
         }
-       
+
         boolean result = f.delete();
         if (!result) {
             addWarn("Failed to delete file " + f.toString());
@@ -125,23 +125,37 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     void capTotalSize(Instant now) {
         long totalSize = 0;
         long totalRemoved = 0;
+        int successfulDeletions = 0;
+        int failedDeletions = 0;
+
         for (int offset = 0; offset < maxHistory; offset++) {
             Instant instant = rc.getEndOfNextNthPeriod(now, -offset);
             File[] matchingFileArray = getFilesInPeriod(instant);
             descendingSort(matchingFileArray, instant);
             for (File f : matchingFileArray) {
                 long size = f.length();
-                if (totalSize + size > totalSizeCap) {
-                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
-                    // assume that deletion attempt will succeed.
-                    totalRemoved += size;
-
-                    checkAndDeleteFile(f);
-                }
                 totalSize += size;
+                if (totalSize > totalSizeCap) {
+                    addInfo("Deleting [" + f + "]" + " of size " + new FileSize(size));
+
+                    boolean success = checkAndDeleteFile(f);
+                    if (success) {
+                        successfulDeletions++;
+                        totalRemoved += size;
+                    } else {
+                        failedDeletions++;
+                    }
+                }
             }
         }
-        addInfo("Removed  " + new FileSize(totalRemoved) + " of files");
+        if ((successfulDeletions + failedDeletions) == 0) {
+            addInfo("No removal attempts were made.");
+        } else {
+            addInfo("Removed  " + new FileSize(totalRemoved) + " of files in " + successfulDeletions + " files.");
+            if (failedDeletions != 0) {
+                addInfo("There were " + failedDeletions + " failed deletion attempts.");
+            }
+        }
     }
 
     protected void descendingSort(File[] matchingFileArray, Instant instant) {
@@ -244,8 +258,6 @@ public class TimeBasedArchiveRemover extends ContextAwareBase implements Archive
     public String toString() {
         return "c.q.l.core.rolling.helper.TimeBasedArchiveRemover";
     }
-
-
 
     public class ArchiveRemoverRunnable implements Runnable {
         Instant now;
