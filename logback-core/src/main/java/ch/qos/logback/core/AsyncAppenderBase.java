@@ -305,7 +305,7 @@ public class AsyncAppenderBase<E> extends UnsynchronizedAppenderBase<E> implemen
                     // exit if interrupted
                     break;
                 } catch (Exception e) {
-                    addError("This is an unknown error exit. ");
+                    addError("This is an unknown error , exit. ");
                     break;
                 }
             }
