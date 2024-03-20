@@ -29,6 +29,10 @@ public class SizeAndTimeBasedArchiveRemover extends TimeBasedArchiveRemover {
         super(fileNamePattern, rc);
     }
 
+    File getParentDir(Instant cleanupCutoff) {
+        return getParentDir(new File(fileNamePattern.convertMultipleArguments(cleanupCutoff, 0)));
+    }
+
     protected File[] getFilesInPeriod(Instant instantOfPeriodToClean) {
         File archive0 = new File(fileNamePattern.convertMultipleArguments(instantOfPeriodToClean, 0));
         File parentDir = getParentDir(archive0);
