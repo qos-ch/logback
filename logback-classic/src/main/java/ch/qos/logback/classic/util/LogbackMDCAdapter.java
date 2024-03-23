@@ -118,6 +118,10 @@ public class LogbackMDCAdapter implements MDCAdapter  {
         readOnlyThreadLocalMap.set(null);
     }
 
+    private void nullifyReadOnlyThreadLocalMapOfStacks() {
+        readOnlyThreadLocalMapOfDeques.set(null);
+    }
+
     /**
      * Clear all entries in the MDC.
      */
@@ -198,11 +202,14 @@ public class LogbackMDCAdapter implements MDCAdapter  {
     @Override
     public void pushByKey(String key, String value) {
         threadLocalMapOfDeques.pushByKey(key, value);
+        nullifyReadOnlyThreadLocalMapOfStacks();
     }
 
     @Override
     public String popByKey(String key) {
-        return threadLocalMapOfDeques.popByKey(key);
+        String rv =  threadLocalMapOfDeques.popByKey(key);
+        nullifyReadOnlyThreadLocalMapOfStacks();
+        return rv;
     }
 
     @Override
