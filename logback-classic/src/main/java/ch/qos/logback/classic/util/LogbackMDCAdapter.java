@@ -47,6 +47,7 @@ public class LogbackMDCAdapter implements MDCAdapter  {
     final ThreadLocal<Map<String, String>> readWriteThreadLocalMap = new ThreadLocal<Map<String, String>>();
     final ThreadLocal<Map<String, String>> readOnlyThreadLocalMap = new ThreadLocal<Map<String, String>>();
     private final ThreadLocalMapOfStacks threadLocalMapOfDeques = new ThreadLocalMapOfStacks();
+    private final ThreadLocal<Map<String, Deque<String>>> readOnlyThreadLocalMapOfDeques = new ThreadLocal<>();
 
     /**
      * Put a context value (the <code>val</code> parameter) as identified with the
@@ -143,6 +144,16 @@ public class LogbackMDCAdapter implements MDCAdapter  {
                 readOnlyThreadLocalMap.set(readOnlyMap);
             }
         }
+        return readOnlyMap;
+    }
+
+    public Map<String, Deque<String>> getDequeuedPropertyMap() {
+        Map<String, Deque<String>> readOnlyMap = readOnlyThreadLocalMapOfDeques.get();
+        if (readOnlyMap == null) {
+            readOnlyMap = threadLocalMapOfDeques.getReadOnlyView(); // needs to be implemented
+            readOnlyThreadLocalMapOfDeques.set(readOnlyMap);
+        }
+
         return readOnlyMap;
     }
 
