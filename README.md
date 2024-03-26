@@ -78,7 +78,7 @@ looks forward to your contribution. Please follow this process:
 6. Submit a pull request to logback from your commit page on GitHub.
 
 
-# Continous integration build status
+# Continuous integration build status
 
 | Branch | Last results |
 | ------ | -------------|
