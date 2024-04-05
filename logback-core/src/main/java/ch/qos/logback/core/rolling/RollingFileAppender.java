@@ -1,15 +1,13 @@
 /**
- * Logback: the reliable, generic, fast and flexible logging framework.
- * Copyright (C) 1999-2015, QOS.ch. All rights reserved.
+ * Logback: the reliable, generic, fast and flexible logging framework. Copyright (C) 1999-2015, QOS.ch. All rights
+ * reserved.
  *
- * This program and the accompanying materials are dual-licensed under
- * either the terms of the Eclipse Public License v1.0 as published by
- * the Eclipse Foundation
+ * This program and the accompanying materials are dual-licensed under either the terms of the Eclipse Public License
+ * v1.0 as published by the Eclipse Foundation
  *
- *   or (per the licensee's choosing)
+ * or (per the licensee's choosing)
  *
- * under the terms of the GNU Lesser General Public License version 2.1
- * as published by the Free Software Foundation.
+ * under the terms of the GNU Lesser General Public License version 2.1 as published by the Free Software Foundation.
  */
 package ch.qos.logback.core.rolling;
 
@@ -32,7 +30,7 @@ import ch.qos.logback.core.util.ContextUtil;
 /**
  * <code>RollingFileAppender</code> extends {@link FileAppender} to back up the
  * log files depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
- * 
+ *
  * <p>
  * For more information about this appender, please refer to the online manual
  * at http://logback.qos.ch/manual/appenders.html#RollingFileAppender
@@ -51,6 +49,7 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     static private String RFA_NO_RP_URL = CODES_URL + "#rfa_no_rp";
     static private String COLLISION_URL = CODES_URL + "#rfa_collision";
     static private String RFA_LATE_FILE_URL = CODES_URL + "#rfa_file_after";
+    static private String RFA_RESET_RP_OR_TP = CODES_URL + "#rfa_reset_rp_or_tp";
 
     public void start() {
         if (triggeringPolicy == null) {
@@ -132,8 +131,8 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     private boolean innerCheckForFileNamePatternCollisionInPreviousRFA(FileNamePattern fileNamePattern) {
         boolean collisionsDetected = false;
         @SuppressWarnings("unchecked")
-        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context
-                .getObject(CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
+        Map<String, FileNamePattern> map = (Map<String, FileNamePattern>) context.getObject(
+                CoreConstants.RFA_FILENAME_PATTERN_COLLISION_MAP);
         if (map == null) {
             return collisionsDetected;
         }
@@ -151,10 +150,10 @@ public class RollingFileAppender<E> extends FileAppender<E> {
 
     @Override
     public void stop() {
-        if(!isStarted()) {
+        if (!isStarted()) {
             return;
         }
-         super.stop();
+        super.stop();
 
         if (rollingPolicy != null)
             rollingPolicy.stop();
@@ -225,8 +224,6 @@ public class RollingFileAppender<E> extends FileAppender<E> {
         }
     }
 
-
-
     /**
      * This method differentiates RollingFileAppender from its super class.
      */
@@ -249,7 +246,6 @@ public class RollingFileAppender<E> extends FileAppender<E> {
             triggeringPolicyLock.unlock();
         }
 
-
         super.subAppend(event);
     }
 
@@ -270,6 +266,12 @@ public class RollingFileAppender<E> extends FileAppender<E> {
      */
     @SuppressWarnings("unchecked")
     public void setRollingPolicy(RollingPolicy policy) {
+        if (rollingPolicy instanceof TriggeringPolicy) {
+            String className = rollingPolicy.getClass().getSimpleName();
+            addWarn("A rolling policy of type " + className + " was already set.");
+            addWarn("Note that " + className + " doubles as a TriggeringPolicy");
+            addWarn("See also "+RFA_RESET_RP_OR_TP);
+        }
         rollingPolicy = policy;
         if (rollingPolicy instanceof TriggeringPolicy) {
             triggeringPolicy = (TriggeringPolicy<E>) policy;
@@ -278,6 +280,12 @@ public class RollingFileAppender<E> extends FileAppender<E> {
     }
 
     public void setTriggeringPolicy(TriggeringPolicy<E> policy) {
+        if (triggeringPolicy instanceof RollingPolicy) {
+            String className = triggeringPolicy.getClass().getSimpleName();
+            addWarn("A triggering policy of type " + className + " was already set.");
+            addWarn("Note that " + className + " doubles as a RollingPolicy");
+            addWarn("See also "+RFA_RESET_RP_OR_TP);
+        }
         triggeringPolicy = policy;
         if (policy instanceof RollingPolicy) {
             rollingPolicy = (RollingPolicy) policy;

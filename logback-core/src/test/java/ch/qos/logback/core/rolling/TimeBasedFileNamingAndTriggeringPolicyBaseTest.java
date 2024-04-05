@@ -37,7 +37,7 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
     RollingFileAppender<Object> rfa = new RollingFileAppender<Object>();
     TimeBasedRollingPolicy<Object> tbrp = new TimeBasedRollingPolicy<Object>();
     DefaultTimeBasedFileNamingAndTriggeringPolicy<Object> timeBasedFNATP = new DefaultTimeBasedFileNamingAndTriggeringPolicy<Object>();
-
+    StatusChecker statusChecker = new StatusChecker(context);
     @BeforeEach
     public void setUp() {
         rfa.setContext(context);
@@ -48,6 +48,12 @@ public class TimeBasedFileNamingAndTriggeringPolicyBaseTest {
         tbrp.setParent(rfa);
         tbrp.setTimeBasedFileNamingAndTriggeringPolicy(timeBasedFNATP);
         timeBasedFNATP.setTimeBasedRollingPolicy(tbrp);
+    }
+
+    @Test
+    public void doublePolicySet() {
+        rfa.setTriggeringPolicy(new SizeBasedTriggeringPolicy<>());
+        statusChecker.assertContainsMatch(Status.WARN, "A triggering policy of type " );
     }
 
     @Test
