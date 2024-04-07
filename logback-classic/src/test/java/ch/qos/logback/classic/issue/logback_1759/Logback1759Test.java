@@ -24,7 +24,6 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.util.StatusPrinter2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.spi.MDCAdapter;
 
 public class Logback1759Test {
 
@@ -68,6 +67,7 @@ public class Logback1759Test {
         consoleAppender.stop();
 
         init();
+        consoleAppender.setWithJansi(true);
         consoleAppender.start();
 
         consoleAppender.doAppend(le);
